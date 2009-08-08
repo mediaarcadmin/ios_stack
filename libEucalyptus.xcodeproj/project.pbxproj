@@ -1,0 +1,1620 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7D516E02102872AC005F3C46 /* EucBookViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E00102872AC005F3C46 /* EucBookViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E03102872AC005F3C46 /* EucBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E01102872AC005F3C46 /* EucBookViewController.m */; };
+		7D516E0D102872DB005F3C46 /* EucPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E05102872DB005F3C46 /* EucPageView.m */; };
+		7D516E0E102872DB005F3C46 /* EucPageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E06102872DB005F3C46 /* EucPageView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E0F102872DB005F3C46 /* EucPageTurningView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E07102872DB005F3C46 /* EucPageTurningView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E10102872DB005F3C46 /* EucPageTurningView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E08102872DB005F3C46 /* EucPageTurningView.m */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
+		7D516E11102872DB005F3C46 /* EucBookContentsTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E09102872DB005F3C46 /* EucBookContentsTableViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E12102872DB005F3C46 /* EucBookContentsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E0A102872DB005F3C46 /* EucBookContentsTableViewController.m */; };
+		7D516E13102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E0B102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E14102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E0C102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m */; };
+		7D516E1D10287311005F3C46 /* EAGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E1910287311005F3C46 /* EAGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E1E10287311005F3C46 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E1A10287311005F3C46 /* EAGLView.m */; };
+		7D516E1F10287311005F3C46 /* TransitionView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E1B10287311005F3C46 /* TransitionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E2010287311005F3C46 /* TransitionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E1C10287311005F3C46 /* TransitionView.m */; };
+		7D516E251028735A005F3C46 /* THLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E231028735A005F3C46 /* THLog.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E261028735A005F3C46 /* THLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E241028735A005F3C46 /* THLog.m */; };
+		7D516E3C102873BE005F3C46 /* THUIViewThreadSafeDrawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E3D102873BE005F3C46 /* THUIViewThreadSafeDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E3B102873BE005F3C46 /* THUIViewThreadSafeDrawing.m */; };
+		7D516E4510287405005F3C46 /* EucBookTextStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E4310287405005F3C46 /* EucBookTextStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E4610287405005F3C46 /* EucBookTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E4410287405005F3C46 /* EucBookTextStyle.m */; };
+		7D516E5010287458005F3C46 /* THNavigationButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E4E10287458005F3C46 /* THNavigationButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E5110287458005F3C46 /* THNavigationButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E4F10287458005F3C46 /* THNavigationButton.m */; };
+		7D516E561028746B005F3C46 /* THTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E541028746B005F3C46 /* THTimer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E571028746B005F3C46 /* THTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E551028746B005F3C46 /* THTimer.m */; };
+		7D516E5D10287486005F3C46 /* THUIViewAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E5B10287486005F3C46 /* THUIViewAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E5E10287486005F3C46 /* THUIViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E5C10287486005F3C46 /* THUIViewAdditions.m */; };
+		7D516E64102874A6005F3C46 /* THUIImageAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E62102874A6005F3C46 /* THUIImageAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E65102874A6005F3C46 /* THUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E63102874A6005F3C46 /* THUIImageAdditions.m */; };
+		7D516E6C102874C0005F3C46 /* THPair.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E6A102874C0005F3C46 /* THPair.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E6D102874C0005F3C46 /* THPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E6B102874C0005F3C46 /* THPair.m */; };
+		7D516E73102874E4005F3C46 /* THAlertViewWithUserInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E71102874E4005F3C46 /* THAlertViewWithUserInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E74102874E4005F3C46 /* THAlertViewWithUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E72102874E4005F3C46 /* THAlertViewWithUserInfo.m */; };
+		7D516E7F1028750A005F3C46 /* EucBookTitleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E7D1028750A005F3C46 /* EucBookTitleView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E801028750A005F3C46 /* EucBookTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E7E1028750A005F3C46 /* EucBookTitleView.m */; };
+		7D516E9310287585005F3C46 /* EucBookPageIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E8F10287585005F3C46 /* EucBookPageIndex.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E9410287585005F3C46 /* EucBookPageIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E9010287585005F3C46 /* EucBookPageIndex.m */; };
+		7D516E9510287585005F3C46 /* EucBookPageIndexPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E9110287585005F3C46 /* EucBookPageIndexPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516E9610287585005F3C46 /* EucBookPageIndexPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E9210287585005F3C46 /* EucBookPageIndexPoint.m */; };
+		7D516FF610287905005F3C46 /* THRoundRectView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516FF210287905005F3C46 /* THRoundRectView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516FF710287905005F3C46 /* THRoundRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FF310287905005F3C46 /* THRoundRectView.m */; };
+		7D516FF810287905005F3C46 /* THRoundRects.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516FF410287905005F3C46 /* THRoundRects.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516FF910287905005F3C46 /* THRoundRects.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FF510287905005F3C46 /* THRoundRects.c */; };
+		7D516FFE10287922005F3C46 /* THCopyWithCoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516FFC10287922005F3C46 /* THCopyWithCoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D516FFF10287922005F3C46 /* THCopyWithCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FFD10287922005F3C46 /* THCopyWithCoder.m */; };
+		7D51700A1028796E005F3C46 /* EucChapterNameFormatting.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170081028796E005F3C46 /* EucChapterNameFormatting.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51700B1028796E005F3C46 /* EucChapterNameFormatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170091028796E005F3C46 /* EucChapterNameFormatting.m */; };
+		7D51701310287987005F3C46 /* VCTitleCase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51700F10287987005F3C46 /* VCTitleCase.h */; settings = {ATTRIBUTES = (); }; };
+		7D51701410287987005F3C46 /* VCTitleCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51701010287987005F3C46 /* VCTitleCase.m */; };
+		7D51701B102879C7005F3C46 /* THGeometryUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D517019102879C7005F3C46 /* THGeometryUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51701C102879C7005F3C46 /* THGeometryUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D51701A102879C7005F3C46 /* THGeometryUtils.c */; };
+		7D51702410287A0D005F3C46 /* EucPageLayoutController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51702310287A0D005F3C46 /* EucPageLayoutController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51703F102884F1005F3C46 /* THStringRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51703D102884F1005F3C46 /* THStringRenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D517040102884F1005F3C46 /* THStringRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51703E102884F1005F3C46 /* THStringRenderer.m */; };
+		7D5170481028852B005F3C46 /* THBackgroundProcessingMediator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170461028852B005F3C46 /* THBackgroundProcessingMediator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5170491028852B005F3C46 /* THBackgroundProcessingMediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170471028852B005F3C46 /* THBackgroundProcessingMediator.m */; };
+		7D51704E10288543005F3C46 /* EucNameAndPageNumberView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51704C10288543005F3C46 /* EucNameAndPageNumberView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51704F10288543005F3C46 /* EucNameAndPageNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51704D10288543005F3C46 /* EucNameAndPageNumberView.m */; };
+		7D51705410288562005F3C46 /* EucBookSection.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51705210288562005F3C46 /* EucBookSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51705510288562005F3C46 /* EucBookSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51705310288562005F3C46 /* EucBookSection.m */; };
+		7D51705A10288579005F3C46 /* THNSStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51705810288579005F3C46 /* THNSStringAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51705B10288579005F3C46 /* THNSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51705910288579005F3C46 /* THNSStringAdditions.m */; };
+		7D51706010288585005F3C46 /* THRegex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51705E10288585005F3C46 /* THRegex.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51706110288585005F3C46 /* THRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51705F10288585005F3C46 /* THRegex.m */; };
+		7D5170681028876D005F3C46 /* THIntegerCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170641028876D005F3C46 /* THIntegerCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5170691028876D005F3C46 /* THIntegerCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170651028876D005F3C46 /* THIntegerCache.m */; };
+		7D51706A1028876D005F3C46 /* THLowMemoryDictionaryEmptier.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51706B1028876D005F3C46 /* THLowMemoryDictionaryEmptier.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */; };
+		7D5170E81028ADD6005F3C46 /* HyphenationRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E01028ADD6005F3C46 /* HyphenationRule.cpp */; };
+		7D5170E91028ADD6005F3C46 /* HyphenationRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170E11028ADD6005F3C46 /* HyphenationRule.h */; };
+		7D5170EA1028ADD6005F3C46 /* HyphenationTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E21028ADD6005F3C46 /* HyphenationTree.cpp */; };
+		7D5170EB1028ADD6005F3C46 /* HyphenationTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170E31028ADD6005F3C46 /* HyphenationTree.h */; };
+		7D5170EC1028ADD6005F3C46 /* Hyphenator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E41028ADD6005F3C46 /* Hyphenator.cpp */; };
+		7D5170ED1028ADD6005F3C46 /* Hyphenator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170E51028ADD6005F3C46 /* Hyphenator.h */; };
+		7D5170EE1028ADD6005F3C46 /* Language.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E61028ADD6005F3C46 /* Language.cpp */; };
+		7D5170EF1028ADD6005F3C46 /* Language.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170E71028ADD6005F3C46 /* Language.h */; };
+		7D51710E1028AF47005F3C46 /* EucBookPaginator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51710C1028AF47005F3C46 /* EucBookPaginator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51710F1028AF47005F3C46 /* EucBookPaginator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51710D1028AF47005F3C46 /* EucBookPaginator.m */; };
+		7D51711D1028AF94005F3C46 /* EucBookReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51711C1028AF94005F3C46 /* EucBookReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51718B1028B53C005F3C46 /* EucEPubPageLayoutController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171891028B53C005F3C46 /* EucEPubPageLayoutController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D51718C1028B53C005F3C46 /* EucEPubPageLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51718A1028B53C005F3C46 /* EucEPubPageLayoutController.m */; };
+		7D51719E1028B554005F3C46 /* css21Lexer.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171901028B554005F3C46 /* css21Lexer.c */; settings = {COMPILER_FLAGS = "-Wno-unused $(ARM_NOT_THUMB)"; }; };
+		7D51719F1028B554005F3C46 /* css21Lexer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171911028B554005F3C46 /* css21Lexer.h */; };
+		7D5171A01028B554005F3C46 /* css21Parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171921028B554005F3C46 /* css21Parser.c */; settings = {COMPILER_FLAGS = "-Wno-unused $(ARM_NOT_THUMB)"; }; };
+		7D5171A11028B554005F3C46 /* css21Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171931028B554005F3C46 /* css21Parser.h */; };
+		7D5171A21028B554005F3C46 /* EucEPubStyleStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171941028B554005F3C46 /* EucEPubStyleStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5171A31028B554005F3C46 /* EucEPubStyleStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171951028B554005F3C46 /* EucEPubStyleStore.m */; };
+		7D5171A41028B554005F3C46 /* EucEPubBookReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171961028B554005F3C46 /* EucEPubBookReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5171A51028B554005F3C46 /* EucEPubBookReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171971028B554005F3C46 /* EucEPubBookReader.m */; };
+		7D5171A61028B554005F3C46 /* EucEPubBookParagraph.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171981028B554005F3C46 /* EucEPubBookParagraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5171A71028B554005F3C46 /* EucEPubBookParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171991028B554005F3C46 /* EucEPubBookParagraph.m */; };
+		7D5171A81028B554005F3C46 /* EucEPubLocalBookReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51719A1028B554005F3C46 /* EucEPubLocalBookReference.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5171A91028B554005F3C46 /* EucEPubLocalBookReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51719B1028B554005F3C46 /* EucEPubLocalBookReference.m */; };
+		7D5171AA1028B554005F3C46 /* EucEPubBook.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51719C1028B554005F3C46 /* EucEPubBook.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5171AB1028B554005F3C46 /* EucEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51719D1028B554005F3C46 /* EucEPubBook.m */; };
+		7D5172A61028B771005F3C46 /* EucBookParagraph.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172A51028B771005F3C46 /* EucBookParagraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5173101028B98A005F3C46 /* antlr3config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172BB1028B989005F3C46 /* antlr3config.h */; };
+		7D5173111028B98A005F3C46 /* antlr3.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CA1028B989005F3C46 /* antlr3.h */; };
+		7D5173121028B98A005F3C46 /* antlr3baserecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CB1028B989005F3C46 /* antlr3baserecognizer.h */; };
+		7D5173131028B98A005F3C46 /* antlr3basetree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CC1028B989005F3C46 /* antlr3basetree.h */; };
+		7D5173141028B98A005F3C46 /* antlr3basetreeadaptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CD1028B989005F3C46 /* antlr3basetreeadaptor.h */; };
+		7D5173151028B98A005F3C46 /* antlr3bitset.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CE1028B989005F3C46 /* antlr3bitset.h */; };
+		7D5173161028B98A005F3C46 /* antlr3collections.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CF1028B989005F3C46 /* antlr3collections.h */; };
+		7D5173171028B98A005F3C46 /* antlr3commontoken.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D01028B989005F3C46 /* antlr3commontoken.h */; };
+		7D5173181028B98A005F3C46 /* antlr3commontree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D11028B989005F3C46 /* antlr3commontree.h */; };
+		7D5173191028B98A005F3C46 /* antlr3commontreeadaptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D21028B989005F3C46 /* antlr3commontreeadaptor.h */; };
+		7D51731A1028B98A005F3C46 /* antlr3commontreenodestream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D31028B989005F3C46 /* antlr3commontreenodestream.h */; };
+		7D51731B1028B98A005F3C46 /* antlr3convertutf.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D41028B989005F3C46 /* antlr3convertutf.h */; };
+		7D51731C1028B98A005F3C46 /* antlr3cyclicdfa.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D51028B989005F3C46 /* antlr3cyclicdfa.h */; };
+		7D51731D1028B98A005F3C46 /* antlr3debugeventlistener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D61028B989005F3C46 /* antlr3debugeventlistener.h */; };
+		7D51731E1028B98A005F3C46 /* antlr3defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D71028B989005F3C46 /* antlr3defs.h */; };
+		7D51731F1028B98A005F3C46 /* antlr3encodings.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D81028B989005F3C46 /* antlr3encodings.h */; };
+		7D5173201028B98A005F3C46 /* antlr3errors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D91028B989005F3C46 /* antlr3errors.h */; };
+		7D5173211028B98A005F3C46 /* antlr3exception.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DA1028B989005F3C46 /* antlr3exception.h */; };
+		7D5173221028B98A005F3C46 /* antlr3filestream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DB1028B989005F3C46 /* antlr3filestream.h */; };
+		7D5173231028B98A005F3C46 /* antlr3input.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DC1028B989005F3C46 /* antlr3input.h */; };
+		7D5173241028B98A005F3C46 /* antlr3interfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DD1028B989005F3C46 /* antlr3interfaces.h */; };
+		7D5173251028B98A005F3C46 /* antlr3intstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DE1028B989005F3C46 /* antlr3intstream.h */; };
+		7D5173261028B98A005F3C46 /* antlr3lexer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DF1028B989005F3C46 /* antlr3lexer.h */; };
+		7D5173271028B98A005F3C46 /* antlr3memory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E01028B989005F3C46 /* antlr3memory.h */; };
+		7D5173281028B98A005F3C46 /* antlr3parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E11028B989005F3C46 /* antlr3parser.h */; };
+		7D5173291028B98A005F3C46 /* antlr3parsetree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E21028B989005F3C46 /* antlr3parsetree.h */; };
+		7D51732A1028B98A005F3C46 /* antlr3recognizersharedstate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E31028B989005F3C46 /* antlr3recognizersharedstate.h */; };
+		7D51732B1028B98A005F3C46 /* antlr3rewritestreams.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E41028B989005F3C46 /* antlr3rewritestreams.h */; };
+		7D51732C1028B98A005F3C46 /* antlr3string.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E51028B989005F3C46 /* antlr3string.h */; };
+		7D51732D1028B98A005F3C46 /* antlr3stringstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E61028B989005F3C46 /* antlr3stringstream.h */; };
+		7D51732E1028B98A005F3C46 /* antlr3tokenstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E71028B989005F3C46 /* antlr3tokenstream.h */; };
+		7D51732F1028B98A005F3C46 /* antlr3treeparser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E81028B989005F3C46 /* antlr3treeparser.h */; };
+		7D5173301028B98A005F3C46 /* antlr3baserecognizer.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F21028B989005F3C46 /* antlr3baserecognizer.c */; };
+		7D5173311028B98A005F3C46 /* antlr3basetree.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F31028B989005F3C46 /* antlr3basetree.c */; };
+		7D5173321028B98A005F3C46 /* antlr3basetreeadaptor.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F41028B989005F3C46 /* antlr3basetreeadaptor.c */; };
+		7D5173331028B98A005F3C46 /* antlr3bitset.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F51028B989005F3C46 /* antlr3bitset.c */; };
+		7D5173341028B98A005F3C46 /* antlr3collections.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F61028B989005F3C46 /* antlr3collections.c */; };
+		7D5173351028B98A005F3C46 /* antlr3commontoken.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F71028B989005F3C46 /* antlr3commontoken.c */; };
+		7D5173361028B98A005F3C46 /* antlr3commontree.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F81028B989005F3C46 /* antlr3commontree.c */; };
+		7D5173371028B98A005F3C46 /* antlr3commontreeadaptor.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F91028B989005F3C46 /* antlr3commontreeadaptor.c */; };
+		7D5173381028B98A005F3C46 /* antlr3commontreenodestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FA1028B989005F3C46 /* antlr3commontreenodestream.c */; };
+		7D5173391028B98A005F3C46 /* antlr3convertutf.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FB1028B989005F3C46 /* antlr3convertutf.c */; };
+		7D51733A1028B98A005F3C46 /* antlr3cyclicdfa.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FC1028B989005F3C46 /* antlr3cyclicdfa.c */; };
+		7D51733B1028B98A005F3C46 /* antlr3debughandlers.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FD1028B989005F3C46 /* antlr3debughandlers.c */; };
+		7D51733C1028B98A005F3C46 /* antlr3encodings.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FE1028B989005F3C46 /* antlr3encodings.c */; };
+		7D51733D1028B98A005F3C46 /* antlr3exception.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FF1028B989005F3C46 /* antlr3exception.c */; };
+		7D51733E1028B98A005F3C46 /* antlr3filestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173001028B989005F3C46 /* antlr3filestream.c */; };
+		7D51733F1028B98A005F3C46 /* antlr3inputstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173011028B989005F3C46 /* antlr3inputstream.c */; };
+		7D5173401028B98A005F3C46 /* antlr3intstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173021028B989005F3C46 /* antlr3intstream.c */; };
+		7D5173411028B98A005F3C46 /* antlr3lexer.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173031028B989005F3C46 /* antlr3lexer.c */; };
+		7D5173421028B98A005F3C46 /* antlr3parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173041028B989005F3C46 /* antlr3parser.c */; };
+		7D5173431028B98A005F3C46 /* antlr3rewritestreams.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173051028B989005F3C46 /* antlr3rewritestreams.c */; };
+		7D5173441028B98A005F3C46 /* antlr3string.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173061028B98A005F3C46 /* antlr3string.c */; };
+		7D5173451028B98A005F3C46 /* antlr3stringstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173071028B98A005F3C46 /* antlr3stringstream.c */; };
+		7D5173461028B98A005F3C46 /* antlr3tokenstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173081028B98A005F3C46 /* antlr3tokenstream.c */; };
+		7D5173471028B98A005F3C46 /* antlr3treeparser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173091028B98A005F3C46 /* antlr3treeparser.c */; };
+		7D5173481028B98A005F3C46 /* antlr3ucs2inputstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D51730A1028B98A005F3C46 /* antlr3ucs2inputstream.c */; };
+		7D5173F31028BA14005F3C46 /* ascii.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739A1028BA14005F3C46 /* ascii.h */; };
+		7D5173F41028BA14005F3C46 /* asciitab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739B1028BA14005F3C46 /* asciitab.h */; };
+		7D5173F51028BA14005F3C46 /* expat.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739D1028BA14005F3C46 /* expat.h */; };
+		7D5173F61028BA14005F3C46 /* expat_external.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739E1028BA14005F3C46 /* expat_external.h */; };
+		7D5173F71028BA14005F3C46 /* iasciitab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173A21028BA14005F3C46 /* iasciitab.h */; };
+		7D5173F81028BA14005F3C46 /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173A31028BA14005F3C46 /* internal.h */; };
+		7D5173F91028BA14005F3C46 /* latin1tab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173A41028BA14005F3C46 /* latin1tab.h */; };
+		7D5173FA1028BA14005F3C46 /* macconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173A71028BA14005F3C46 /* macconfig.h */; };
+		7D5173FB1028BA14005F3C46 /* nametab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173A91028BA14005F3C46 /* nametab.h */; };
+		7D5173FC1028BA14005F3C46 /* utf8tab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173AA1028BA14005F3C46 /* utf8tab.h */; };
+		7D5173FE1028BA14005F3C46 /* xmlparse.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173AC1028BA14005F3C46 /* xmlparse.c */; };
+		7D5173FF1028BA14005F3C46 /* xmlrole.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173AD1028BA14005F3C46 /* xmlrole.c */; };
+		7D5174001028BA14005F3C46 /* xmlrole.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173AE1028BA14005F3C46 /* xmlrole.h */; };
+		7D5174011028BA14005F3C46 /* xmltok.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173AF1028BA14005F3C46 /* xmltok.c */; };
+		7D5174021028BA14005F3C46 /* xmltok.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173B01028BA14005F3C46 /* xmltok.h */; };
+		7D5174031028BA14005F3C46 /* xmltok_impl.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173B11028BA14005F3C46 /* xmltok_impl.c */; };
+		7D5174041028BA14005F3C46 /* xmltok_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173B21028BA14005F3C46 /* xmltok_impl.h */; };
+		7D5174051028BA14005F3C46 /* xmltok_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173B31028BA14005F3C46 /* xmltok_ns.c */; };
+		7D51741D1028BA14005F3C46 /* expat_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173DE1028BA14005F3C46 /* expat_config.h */; };
+		7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAC841028DEAD006289E6 /* THScalableSlider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAC851028DEAD006289E6 /* THScalableSlider.m */; };
+		7D6AAD561028E75C006289E6 /* EucBookTextView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD541028E75C006289E6 /* EucBookTextView.mm */; };
+		7D6AAD571028E75C006289E6 /* EucBookTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD551028E75C006289E6 /* EucBookTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D6AAD5C1028E774006289E6 /* thjust.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD581028E774006289E6 /* thjust.h */; settings = {ATTRIBUTES = (); }; };
+		7D6AAD5D1028E774006289E6 /* EucSharedHyphenator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD591028E774006289E6 /* EucSharedHyphenator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D6AAD5E1028E774006289E6 /* EucSharedHyphenator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD5A1028E774006289E6 /* EucSharedHyphenator.mm */; };
+		7D6AAD5F1028E774006289E6 /* thjust.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD5B1028E774006289E6 /* thjust.c */; };
+		7D6AAD621028E78E006289E6 /* EucBook.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD611028E78E006289E6 /* EucBook.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D6AAD651028E7A9006289E6 /* EucBookReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD631028E7A9006289E6 /* EucBookReference.m */; };
+		7D6AAD661028E7A9006289E6 /* EucBookReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD641028E7A9006289E6 /* EucBookReference.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D6AAD691028E7BD006289E6 /* EucLocalBookReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD671028E7BD006289E6 /* EucLocalBookReference.m */; };
+		7D6AAD6A1028E7BD006289E6 /* EucLocalBookReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */; };
+		7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */; settings = {ATTRIBUTES = (); }; };
+		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		7D5171B21028B5FB005F3C46 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.g";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Parser.h",
+				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Parser.c",
+				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Lexer.h",
+				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Lexer.c",
+			);
+			script = "java -classpath \"${SRCROOT}/ThirdParty/antlr-3.1.3.jar\" org.antlr.Tool \"${INPUT_FILE_PATH}\" -o \"${INPUT_FILE_DIR}\"";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXContainerItemProxy section */
+		7D5170CF1028AD46005F3C46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D5170771028AD1B005F3C46;
+			remoteInfo = libhyphenate;
+		};
+		7D5171AC1028B591005F3C46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D51717A1028B4A4005F3C46;
+			remoteInfo = libEucalyptusEPub;
+		};
+		7D5171DD1028B6FB005F3C46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D5171BC1028B6AE005F3C46;
+			remoteInfo = libexpat;
+		};
+		7D5171DF1028B6FD005F3C46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D5171CB1028B6B9005F3C46;
+			remoteInfo = libantlr;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		7D516E00102872AC005F3C46 /* EucBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookViewController.h; sourceTree = "<group>"; };
+		7D516E01102872AC005F3C46 /* EucBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookViewController.m; sourceTree = "<group>"; };
+		7D516E05102872DB005F3C46 /* EucPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageView.m; sourceTree = "<group>"; };
+		7D516E06102872DB005F3C46 /* EucPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageView.h; sourceTree = "<group>"; };
+		7D516E07102872DB005F3C46 /* EucPageTurningView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageTurningView.h; sourceTree = "<group>"; };
+		7D516E08102872DB005F3C46 /* EucPageTurningView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageTurningView.m; sourceTree = "<group>"; };
+		7D516E09102872DB005F3C46 /* EucBookContentsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookContentsTableViewController.h; sourceTree = "<group>"; };
+		7D516E0A102872DB005F3C46 /* EucBookContentsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookContentsTableViewController.m; sourceTree = "<group>"; };
+		7D516E0B102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookContentsTableViewCellBackground.h; sourceTree = "<group>"; };
+		7D516E0C102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookContentsTableViewCellBackground.m; sourceTree = "<group>"; };
+		7D516E1910287311005F3C46 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
+		7D516E1A10287311005F3C46 /* EAGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EAGLView.m; sourceTree = "<group>"; };
+		7D516E1B10287311005F3C46 /* TransitionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransitionView.h; sourceTree = "<group>"; };
+		7D516E1C10287311005F3C46 /* TransitionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionView.m; sourceTree = "<group>"; };
+		7D516E231028735A005F3C46 /* THLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLog.h; sourceTree = "<group>"; };
+		7D516E241028735A005F3C46 /* THLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLog.m; sourceTree = "<group>"; };
+		7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THUIViewThreadSafeDrawing.h; sourceTree = "<group>"; };
+		7D516E3B102873BE005F3C46 /* THUIViewThreadSafeDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THUIViewThreadSafeDrawing.m; sourceTree = "<group>"; };
+		7D516E4310287405005F3C46 /* EucBookTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookTextStyle.h; sourceTree = "<group>"; };
+		7D516E4410287405005F3C46 /* EucBookTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookTextStyle.m; sourceTree = "<group>"; };
+		7D516E4E10287458005F3C46 /* THNavigationButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNavigationButton.h; sourceTree = "<group>"; };
+		7D516E4F10287458005F3C46 /* THNavigationButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNavigationButton.m; sourceTree = "<group>"; };
+		7D516E541028746B005F3C46 /* THTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTimer.h; sourceTree = "<group>"; };
+		7D516E551028746B005F3C46 /* THTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTimer.m; sourceTree = "<group>"; };
+		7D516E5B10287486005F3C46 /* THUIViewAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THUIViewAdditions.h; sourceTree = "<group>"; };
+		7D516E5C10287486005F3C46 /* THUIViewAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THUIViewAdditions.m; sourceTree = "<group>"; };
+		7D516E62102874A6005F3C46 /* THUIImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THUIImageAdditions.h; sourceTree = "<group>"; };
+		7D516E63102874A6005F3C46 /* THUIImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THUIImageAdditions.m; sourceTree = "<group>"; };
+		7D516E6A102874C0005F3C46 /* THPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THPair.h; sourceTree = "<group>"; };
+		7D516E6B102874C0005F3C46 /* THPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THPair.m; sourceTree = "<group>"; };
+		7D516E71102874E4005F3C46 /* THAlertViewWithUserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THAlertViewWithUserInfo.h; sourceTree = "<group>"; };
+		7D516E72102874E4005F3C46 /* THAlertViewWithUserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THAlertViewWithUserInfo.m; sourceTree = "<group>"; };
+		7D516E7D1028750A005F3C46 /* EucBookTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookTitleView.h; sourceTree = "<group>"; };
+		7D516E7E1028750A005F3C46 /* EucBookTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookTitleView.m; sourceTree = "<group>"; };
+		7D516E8F10287585005F3C46 /* EucBookPageIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookPageIndex.h; sourceTree = "<group>"; };
+		7D516E9010287585005F3C46 /* EucBookPageIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookPageIndex.m; sourceTree = "<group>"; };
+		7D516E9110287585005F3C46 /* EucBookPageIndexPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookPageIndexPoint.h; sourceTree = "<group>"; };
+		7D516E9210287585005F3C46 /* EucBookPageIndexPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookPageIndexPoint.m; sourceTree = "<group>"; };
+		7D516FF210287905005F3C46 /* THRoundRectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THRoundRectView.h; sourceTree = "<group>"; };
+		7D516FF310287905005F3C46 /* THRoundRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THRoundRectView.m; sourceTree = "<group>"; };
+		7D516FF410287905005F3C46 /* THRoundRects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THRoundRects.h; sourceTree = "<group>"; };
+		7D516FF510287905005F3C46 /* THRoundRects.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = THRoundRects.c; sourceTree = "<group>"; };
+		7D516FFC10287922005F3C46 /* THCopyWithCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THCopyWithCoder.h; sourceTree = "<group>"; };
+		7D516FFD10287922005F3C46 /* THCopyWithCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCopyWithCoder.m; sourceTree = "<group>"; };
+		7D5170081028796E005F3C46 /* EucChapterNameFormatting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucChapterNameFormatting.h; sourceTree = "<group>"; };
+		7D5170091028796E005F3C46 /* EucChapterNameFormatting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucChapterNameFormatting.m; sourceTree = "<group>"; };
+		7D51700F10287987005F3C46 /* VCTitleCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCTitleCase.h; sourceTree = "<group>"; };
+		7D51701010287987005F3C46 /* VCTitleCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCTitleCase.m; sourceTree = "<group>"; };
+		7D517019102879C7005F3C46 /* THGeometryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THGeometryUtils.h; sourceTree = "<group>"; };
+		7D51701A102879C7005F3C46 /* THGeometryUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = THGeometryUtils.c; sourceTree = "<group>"; };
+		7D51702310287A0D005F3C46 /* EucPageLayoutController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageLayoutController.h; sourceTree = "<group>"; };
+		7D51703D102884F1005F3C46 /* THStringRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THStringRenderer.h; sourceTree = "<group>"; };
+		7D51703E102884F1005F3C46 /* THStringRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THStringRenderer.m; sourceTree = "<group>"; };
+		7D5170461028852B005F3C46 /* THBackgroundProcessingMediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THBackgroundProcessingMediator.h; sourceTree = "<group>"; };
+		7D5170471028852B005F3C46 /* THBackgroundProcessingMediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THBackgroundProcessingMediator.m; sourceTree = "<group>"; };
+		7D51704C10288543005F3C46 /* EucNameAndPageNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucNameAndPageNumberView.h; sourceTree = "<group>"; };
+		7D51704D10288543005F3C46 /* EucNameAndPageNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucNameAndPageNumberView.m; sourceTree = "<group>"; };
+		7D51705210288562005F3C46 /* EucBookSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookSection.h; sourceTree = "<group>"; };
+		7D51705310288562005F3C46 /* EucBookSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookSection.m; sourceTree = "<group>"; };
+		7D51705810288579005F3C46 /* THNSStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSStringAdditions.h; sourceTree = "<group>"; };
+		7D51705910288579005F3C46 /* THNSStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSStringAdditions.m; sourceTree = "<group>"; };
+		7D51705E10288585005F3C46 /* THRegex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THRegex.h; sourceTree = "<group>"; };
+		7D51705F10288585005F3C46 /* THRegex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THRegex.m; sourceTree = "<group>"; };
+		7D5170641028876D005F3C46 /* THIntegerCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THIntegerCache.h; sourceTree = "<group>"; };
+		7D5170651028876D005F3C46 /* THIntegerCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THIntegerCache.m; sourceTree = "<group>"; };
+		7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLowMemoryDictionaryEmptier.h; sourceTree = "<group>"; };
+		7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLowMemoryDictionaryEmptier.m; sourceTree = "<group>"; };
+		7D5170CE1028AD1B005F3C46 /* libhyphenate.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhyphenate.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D5170D21028ADD6005F3C46 /* BUGS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BUGS; sourceTree = "<group>"; };
+		7D5170D31028ADD6005F3C46 /* CHANGELOG */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG; sourceTree = "<group>"; };
+		7D5170D41028ADD6005F3C46 /* COPYRIGHT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYRIGHT; sourceTree = "<group>"; };
+		7D5170D51028ADD6005F3C46 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		7D5170D61028ADD6005F3C46 /* README.nonstandard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.nonstandard; sourceTree = "<group>"; };
+		7D5170D91028ADD6005F3C46 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = de; sourceTree = "<group>"; };
+		7D5170DA1028ADD6005F3C46 /* de-1901 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "de-1901"; sourceTree = "<group>"; };
+		7D5170DB1028ADD6005F3C46 /* de-DE-1901 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "de-DE-1901"; sourceTree = "<group>"; };
+		7D5170DC1028ADD6005F3C46 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = en; sourceTree = "<group>"; };
+		7D5170DD1028ADD6005F3C46 /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = es; sourceTree = "<group>"; };
+		7D5170DE1028ADD6005F3C46 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fr; sourceTree = "<group>"; };
+		7D5170E01028ADD6005F3C46 /* HyphenationRule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HyphenationRule.cpp; sourceTree = "<group>"; };
+		7D5170E11028ADD6005F3C46 /* HyphenationRule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HyphenationRule.h; sourceTree = "<group>"; };
+		7D5170E21028ADD6005F3C46 /* HyphenationTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HyphenationTree.cpp; sourceTree = "<group>"; };
+		7D5170E31028ADD6005F3C46 /* HyphenationTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HyphenationTree.h; sourceTree = "<group>"; };
+		7D5170E41028ADD6005F3C46 /* Hyphenator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Hyphenator.cpp; sourceTree = "<group>"; };
+		7D5170E51028ADD6005F3C46 /* Hyphenator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hyphenator.h; sourceTree = "<group>"; };
+		7D5170E61028ADD6005F3C46 /* Language.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Language.cpp; sourceTree = "<group>"; };
+		7D5170E71028ADD6005F3C46 /* Language.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Language.h; sourceTree = "<group>"; };
+		7D51710C1028AF47005F3C46 /* EucBookPaginator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookPaginator.h; sourceTree = "<group>"; };
+		7D51710D1028AF47005F3C46 /* EucBookPaginator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookPaginator.m; sourceTree = "<group>"; };
+		7D51711C1028AF94005F3C46 /* EucBookReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookReader.h; sourceTree = "<group>"; };
+		7D5171881028B4A4005F3C46 /* libEucalyptusEPub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusEPub.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D5171891028B53C005F3C46 /* EucEPubPageLayoutController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubPageLayoutController.h; sourceTree = "<group>"; };
+		7D51718A1028B53C005F3C46 /* EucEPubPageLayoutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubPageLayoutController.m; sourceTree = "<group>"; };
+		7D51718E1028B553005F3C46 /* css21.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = css21.g; sourceTree = "<group>"; };
+		7D5171901028B554005F3C46 /* css21Lexer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = css21Lexer.c; sourceTree = "<group>"; };
+		7D5171911028B554005F3C46 /* css21Lexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = css21Lexer.h; sourceTree = "<group>"; };
+		7D5171921028B554005F3C46 /* css21Parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = css21Parser.c; sourceTree = "<group>"; };
+		7D5171931028B554005F3C46 /* css21Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = css21Parser.h; sourceTree = "<group>"; };
+		7D5171941028B554005F3C46 /* EucEPubStyleStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubStyleStore.h; sourceTree = "<group>"; };
+		7D5171951028B554005F3C46 /* EucEPubStyleStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubStyleStore.m; sourceTree = "<group>"; };
+		7D5171961028B554005F3C46 /* EucEPubBookReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubBookReader.h; sourceTree = "<group>"; };
+		7D5171971028B554005F3C46 /* EucEPubBookReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubBookReader.m; sourceTree = "<group>"; };
+		7D5171981028B554005F3C46 /* EucEPubBookParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubBookParagraph.h; sourceTree = "<group>"; };
+		7D5171991028B554005F3C46 /* EucEPubBookParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubBookParagraph.m; sourceTree = "<group>"; };
+		7D51719A1028B554005F3C46 /* EucEPubLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubLocalBookReference.h; sourceTree = "<group>"; };
+		7D51719B1028B554005F3C46 /* EucEPubLocalBookReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubLocalBookReference.m; sourceTree = "<group>"; };
+		7D51719C1028B554005F3C46 /* EucEPubBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubBook.h; sourceTree = "<group>"; };
+		7D51719D1028B554005F3C46 /* EucEPubBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubBook.m; sourceTree = "<group>"; };
+		7D5171AE1028B59C005F3C46 /* antlr-3.1.3.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = "antlr-3.1.3.jar"; sourceTree = "<group>"; };
+		7D5171CA1028B6AE005F3C46 /* libexpat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libexpat.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D5171D91028B6B9005F3C46 /* libantlr.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libantlr.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D5172A51028B771005F3C46 /* EucBookParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookParagraph.h; sourceTree = "<group>"; };
+		7D5172BA1028B989005F3C46 /* aclocal.m4 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = aclocal.m4; sourceTree = "<group>"; };
+		7D5172BB1028B989005F3C46 /* antlr3config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3config.h; sourceTree = "<group>"; };
+		7D5172BC1028B989005F3C46 /* antlr3config.h.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = antlr3config.h.in; sourceTree = "<group>"; };
+		7D5172BD1028B989005F3C46 /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AUTHORS; sourceTree = "<group>"; };
+		7D5172BE1028B989005F3C46 /* C.sln */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = C.sln; sourceTree = "<group>"; };
+		7D5172BF1028B989005F3C46 /* C.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = C.vcproj; sourceTree = "<group>"; };
+		7D5172C01028B989005F3C46 /* C.vcproj.vspscc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = C.vcproj.vspscc; sourceTree = "<group>"; };
+		7D5172C11028B989005F3C46 /* C.vssscc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = C.vssscc; sourceTree = "<group>"; };
+		7D5172C21028B989005F3C46 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
+		7D5172C31028B989005F3C46 /* config.guess */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = config.guess; sourceTree = "<group>"; };
+		7D5172C41028B989005F3C46 /* config.sub */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = config.sub; sourceTree = "<group>"; };
+		7D5172C51028B989005F3C46 /* configure */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = configure; sourceTree = "<group>"; };
+		7D5172C61028B989005F3C46 /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = configure.ac; sourceTree = "<group>"; };
+		7D5172C71028B989005F3C46 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
+		7D5172C81028B989005F3C46 /* depcomp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = depcomp; sourceTree = "<group>"; };
+		7D5172CA1028B989005F3C46 /* antlr3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3.h; sourceTree = "<group>"; };
+		7D5172CB1028B989005F3C46 /* antlr3baserecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3baserecognizer.h; sourceTree = "<group>"; };
+		7D5172CC1028B989005F3C46 /* antlr3basetree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3basetree.h; sourceTree = "<group>"; };
+		7D5172CD1028B989005F3C46 /* antlr3basetreeadaptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3basetreeadaptor.h; sourceTree = "<group>"; };
+		7D5172CE1028B989005F3C46 /* antlr3bitset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3bitset.h; sourceTree = "<group>"; };
+		7D5172CF1028B989005F3C46 /* antlr3collections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3collections.h; sourceTree = "<group>"; };
+		7D5172D01028B989005F3C46 /* antlr3commontoken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3commontoken.h; sourceTree = "<group>"; };
+		7D5172D11028B989005F3C46 /* antlr3commontree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3commontree.h; sourceTree = "<group>"; };
+		7D5172D21028B989005F3C46 /* antlr3commontreeadaptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3commontreeadaptor.h; sourceTree = "<group>"; };
+		7D5172D31028B989005F3C46 /* antlr3commontreenodestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3commontreenodestream.h; sourceTree = "<group>"; };
+		7D5172D41028B989005F3C46 /* antlr3convertutf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3convertutf.h; sourceTree = "<group>"; };
+		7D5172D51028B989005F3C46 /* antlr3cyclicdfa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3cyclicdfa.h; sourceTree = "<group>"; };
+		7D5172D61028B989005F3C46 /* antlr3debugeventlistener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3debugeventlistener.h; sourceTree = "<group>"; };
+		7D5172D71028B989005F3C46 /* antlr3defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3defs.h; sourceTree = "<group>"; };
+		7D5172D81028B989005F3C46 /* antlr3encodings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3encodings.h; sourceTree = "<group>"; };
+		7D5172D91028B989005F3C46 /* antlr3errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3errors.h; sourceTree = "<group>"; };
+		7D5172DA1028B989005F3C46 /* antlr3exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3exception.h; sourceTree = "<group>"; };
+		7D5172DB1028B989005F3C46 /* antlr3filestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3filestream.h; sourceTree = "<group>"; };
+		7D5172DC1028B989005F3C46 /* antlr3input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3input.h; sourceTree = "<group>"; };
+		7D5172DD1028B989005F3C46 /* antlr3interfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3interfaces.h; sourceTree = "<group>"; };
+		7D5172DE1028B989005F3C46 /* antlr3intstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3intstream.h; sourceTree = "<group>"; };
+		7D5172DF1028B989005F3C46 /* antlr3lexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3lexer.h; sourceTree = "<group>"; };
+		7D5172E01028B989005F3C46 /* antlr3memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3memory.h; sourceTree = "<group>"; };
+		7D5172E11028B989005F3C46 /* antlr3parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3parser.h; sourceTree = "<group>"; };
+		7D5172E21028B989005F3C46 /* antlr3parsetree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3parsetree.h; sourceTree = "<group>"; };
+		7D5172E31028B989005F3C46 /* antlr3recognizersharedstate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3recognizersharedstate.h; sourceTree = "<group>"; };
+		7D5172E41028B989005F3C46 /* antlr3rewritestreams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3rewritestreams.h; sourceTree = "<group>"; };
+		7D5172E51028B989005F3C46 /* antlr3string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3string.h; sourceTree = "<group>"; };
+		7D5172E61028B989005F3C46 /* antlr3stringstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3stringstream.h; sourceTree = "<group>"; };
+		7D5172E71028B989005F3C46 /* antlr3tokenstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3tokenstream.h; sourceTree = "<group>"; };
+		7D5172E81028B989005F3C46 /* antlr3treeparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3treeparser.h; sourceTree = "<group>"; };
+		7D5172E91028B989005F3C46 /* INSTALL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = INSTALL; sourceTree = "<group>"; };
+		7D5172EA1028B989005F3C46 /* install-sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "install-sh"; sourceTree = "<group>"; };
+		7D5172EB1028B989005F3C46 /* ltmain.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = ltmain.sh; sourceTree = "<group>"; };
+		7D5172EC1028B989005F3C46 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		7D5172ED1028B989005F3C46 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		7D5172EE1028B989005F3C46 /* missing */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = missing; sourceTree = "<group>"; };
+		7D5172EF1028B989005F3C46 /* NEWS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NEWS; sourceTree = "<group>"; };
+		7D5172F01028B989005F3C46 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		7D5172F21028B989005F3C46 /* antlr3baserecognizer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3baserecognizer.c; sourceTree = "<group>"; };
+		7D5172F31028B989005F3C46 /* antlr3basetree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3basetree.c; sourceTree = "<group>"; };
+		7D5172F41028B989005F3C46 /* antlr3basetreeadaptor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3basetreeadaptor.c; sourceTree = "<group>"; };
+		7D5172F51028B989005F3C46 /* antlr3bitset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3bitset.c; sourceTree = "<group>"; };
+		7D5172F61028B989005F3C46 /* antlr3collections.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3collections.c; sourceTree = "<group>"; };
+		7D5172F71028B989005F3C46 /* antlr3commontoken.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3commontoken.c; sourceTree = "<group>"; };
+		7D5172F81028B989005F3C46 /* antlr3commontree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3commontree.c; sourceTree = "<group>"; };
+		7D5172F91028B989005F3C46 /* antlr3commontreeadaptor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3commontreeadaptor.c; sourceTree = "<group>"; };
+		7D5172FA1028B989005F3C46 /* antlr3commontreenodestream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3commontreenodestream.c; sourceTree = "<group>"; };
+		7D5172FB1028B989005F3C46 /* antlr3convertutf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3convertutf.c; sourceTree = "<group>"; };
+		7D5172FC1028B989005F3C46 /* antlr3cyclicdfa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3cyclicdfa.c; sourceTree = "<group>"; };
+		7D5172FD1028B989005F3C46 /* antlr3debughandlers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3debughandlers.c; sourceTree = "<group>"; };
+		7D5172FE1028B989005F3C46 /* antlr3encodings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3encodings.c; sourceTree = "<group>"; };
+		7D5172FF1028B989005F3C46 /* antlr3exception.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3exception.c; sourceTree = "<group>"; };
+		7D5173001028B989005F3C46 /* antlr3filestream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3filestream.c; sourceTree = "<group>"; };
+		7D5173011028B989005F3C46 /* antlr3inputstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3inputstream.c; sourceTree = "<group>"; };
+		7D5173021028B989005F3C46 /* antlr3intstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3intstream.c; sourceTree = "<group>"; };
+		7D5173031028B989005F3C46 /* antlr3lexer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3lexer.c; sourceTree = "<group>"; };
+		7D5173041028B989005F3C46 /* antlr3parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3parser.c; sourceTree = "<group>"; };
+		7D5173051028B989005F3C46 /* antlr3rewritestreams.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3rewritestreams.c; sourceTree = "<group>"; };
+		7D5173061028B98A005F3C46 /* antlr3string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3string.c; sourceTree = "<group>"; };
+		7D5173071028B98A005F3C46 /* antlr3stringstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3stringstream.c; sourceTree = "<group>"; };
+		7D5173081028B98A005F3C46 /* antlr3tokenstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3tokenstream.c; sourceTree = "<group>"; };
+		7D5173091028B98A005F3C46 /* antlr3treeparser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3treeparser.c; sourceTree = "<group>"; };
+		7D51730A1028B98A005F3C46 /* antlr3ucs2inputstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3ucs2inputstream.c; sourceTree = "<group>"; };
+		7D51730C1028B98A005F3C46 /* antlr3lexer.rules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = antlr3lexer.rules; sourceTree = "<group>"; };
+		7D51730D1028B98A005F3C46 /* antlr3lexerandparser.rules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = antlr3lexerandparser.rules; sourceTree = "<group>"; };
+		7D51730E1028B98A005F3C46 /* antlr3parser.rules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = antlr3parser.rules; sourceTree = "<group>"; };
+		7D51730F1028B98A005F3C46 /* antlr3treeparser.rules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = antlr3treeparser.rules; sourceTree = "<group>"; };
+		7D51739A1028BA14005F3C46 /* ascii.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ascii.h; sourceTree = "<group>"; };
+		7D51739B1028BA14005F3C46 /* asciitab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asciitab.h; sourceTree = "<group>"; };
+		7D51739D1028BA14005F3C46 /* expat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expat.h; sourceTree = "<group>"; };
+		7D51739E1028BA14005F3C46 /* expat_external.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expat_external.h; sourceTree = "<group>"; };
+		7D5173A21028BA14005F3C46 /* iasciitab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iasciitab.h; sourceTree = "<group>"; };
+		7D5173A31028BA14005F3C46 /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
+		7D5173A41028BA14005F3C46 /* latin1tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = latin1tab.h; sourceTree = "<group>"; };
+		7D5173A71028BA14005F3C46 /* macconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macconfig.h; sourceTree = "<group>"; };
+		7D5173A91028BA14005F3C46 /* nametab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nametab.h; sourceTree = "<group>"; };
+		7D5173AA1028BA14005F3C46 /* utf8tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8tab.h; sourceTree = "<group>"; };
+		7D5173AB1028BA14005F3C46 /* winconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = winconfig.h; sourceTree = "<group>"; };
+		7D5173AC1028BA14005F3C46 /* xmlparse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmlparse.c; sourceTree = "<group>"; };
+		7D5173AD1028BA14005F3C46 /* xmlrole.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmlrole.c; sourceTree = "<group>"; };
+		7D5173AE1028BA14005F3C46 /* xmlrole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmlrole.h; sourceTree = "<group>"; };
+		7D5173AF1028BA14005F3C46 /* xmltok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok.c; sourceTree = "<group>"; };
+		7D5173B01028BA14005F3C46 /* xmltok.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmltok.h; sourceTree = "<group>"; };
+		7D5173B11028BA14005F3C46 /* xmltok_impl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok_impl.c; sourceTree = "<group>"; };
+		7D5173B21028BA14005F3C46 /* xmltok_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmltok_impl.h; sourceTree = "<group>"; };
+		7D5173B31028BA14005F3C46 /* xmltok_ns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok_ns.c; sourceTree = "<group>"; };
+		7D5173B41028BA14005F3C46 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		7D5173B51028BA14005F3C46 /* MANIFEST */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MANIFEST; sourceTree = "<group>"; };
+		7D5173B61028BA14005F3C46 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		7D5173DE1028BA14005F3C46 /* expat_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expat_config.h; sourceTree = "<group>"; };
+		7D6AAC841028DEAD006289E6 /* THScalableSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THScalableSlider.h; sourceTree = "<group>"; };
+		7D6AAC851028DEAD006289E6 /* THScalableSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THScalableSlider.m; sourceTree = "<group>"; };
+		7D6AAD541028E75C006289E6 /* EucBookTextView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucBookTextView.mm; sourceTree = "<group>"; };
+		7D6AAD551028E75C006289E6 /* EucBookTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookTextView.h; sourceTree = "<group>"; };
+		7D6AAD581028E774006289E6 /* thjust.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thjust.h; sourceTree = "<group>"; };
+		7D6AAD591028E774006289E6 /* EucSharedHyphenator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSharedHyphenator.h; sourceTree = "<group>"; };
+		7D6AAD5A1028E774006289E6 /* EucSharedHyphenator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucSharedHyphenator.mm; sourceTree = "<group>"; };
+		7D6AAD5B1028E774006289E6 /* thjust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thjust.c; sourceTree = "<group>"; };
+		7D6AAD611028E78E006289E6 /* EucBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBook.h; sourceTree = "<group>"; };
+		7D6AAD631028E7A9006289E6 /* EucBookReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookReference.m; sourceTree = "<group>"; };
+		7D6AAD641028E7A9006289E6 /* EucBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookReference.h; sourceTree = "<group>"; };
+		7D6AAD671028E7BD006289E6 /* EucLocalBookReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucLocalBookReference.m; sourceTree = "<group>"; };
+		7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLocalBookReference.h; sourceTree = "<group>"; };
+		7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSFileManagerAdditions.m; sourceTree = "<group>"; };
+		7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSFileManagerAdditions.h; sourceTree = "<group>"; };
+		AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libEucalyptus_Prefix.pch; sourceTree = SOURCE_ROOT; };
+		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		D2AAC07E0554694100DB518D /* libEucalyptus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptus.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D2AAC07C0554694100DB518D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC07E0554694100DB518D /* libEucalyptus.a */,
+				7D5170CE1028AD1B005F3C46 /* libhyphenate.a */,
+				7D5171881028B4A4005F3C46 /* libEucalyptusEPub.a */,
+				7D5171CA1028B6AE005F3C46 /* libexpat.a */,
+				7D5171D91028B6B9005F3C46 /* libantlr.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* libEucalyptus */ = {
+			isa = PBXGroup;
+			children = (
+				7D516DFF102872A5005F3C46 /* BookView */,
+				7D516E42102873FA005F3C46 /* Model */,
+				7D516E221028734C005F3C46 /* Utils */,
+				7D5171751028B470005F3C46 /* ePub */,
+				7D516E1710287300005F3C46 /* ThirdParty */,
+				32C88DFF0371C24200C91783 /* Other Sources */,
+				0867D69AFE84028FC02AAC07 /* Frameworks */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = libEucalyptus;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		32C88DFF0371C24200C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		7D516DFF102872A5005F3C46 /* BookView */ = {
+			isa = PBXGroup;
+			children = (
+				7D516E00102872AC005F3C46 /* EucBookViewController.h */,
+				7D516E01102872AC005F3C46 /* EucBookViewController.m */,
+				7D516E07102872DB005F3C46 /* EucPageTurningView.h */,
+				7D516E08102872DB005F3C46 /* EucPageTurningView.m */,
+				7D516E06102872DB005F3C46 /* EucPageView.h */,
+				7D516E05102872DB005F3C46 /* EucPageView.m */,
+				7D6AAD541028E75C006289E6 /* EucBookTextView.mm */,
+				7D6AAD551028E75C006289E6 /* EucBookTextView.h */,
+				7D516E09102872DB005F3C46 /* EucBookContentsTableViewController.h */,
+				7D516E0A102872DB005F3C46 /* EucBookContentsTableViewController.m */,
+				7D516E0B102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h */,
+				7D516E0C102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m */,
+				7D5170081028796E005F3C46 /* EucChapterNameFormatting.h */,
+				7D5170091028796E005F3C46 /* EucChapterNameFormatting.m */,
+				7D51704C10288543005F3C46 /* EucNameAndPageNumberView.h */,
+				7D51704D10288543005F3C46 /* EucNameAndPageNumberView.m */,
+				7D516E7D1028750A005F3C46 /* EucBookTitleView.h */,
+				7D516E7E1028750A005F3C46 /* EucBookTitleView.m */,
+				7D6AAD591028E774006289E6 /* EucSharedHyphenator.h */,
+				7D6AAD5A1028E774006289E6 /* EucSharedHyphenator.mm */,
+				7D6AAD581028E774006289E6 /* thjust.h */,
+				7D6AAD5B1028E774006289E6 /* thjust.c */,
+				7D51702310287A0D005F3C46 /* EucPageLayoutController.h */,
+			);
+			path = BookView;
+			sourceTree = "<group>";
+		};
+		7D516E1710287300005F3C46 /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				7D5171AE1028B59C005F3C46 /* antlr-3.1.3.jar */,
+				7D51700C10287987005F3C46 /* VCTitleCase */,
+				7D516E1810287300005F3C46 /* Apple */,
+				7D5170D11028ADD6005F3C46 /* libhyphenate */,
+				7D51734D1028BA13005F3C46 /* expat */,
+				7D5173DE1028BA14005F3C46 /* expat_config.h */,
+				7D5172B91028B989005F3C46 /* libantlr */,
+			);
+			path = ThirdParty;
+			sourceTree = "<group>";
+		};
+		7D516E1810287300005F3C46 /* Apple */ = {
+			isa = PBXGroup;
+			children = (
+				7D516E1910287311005F3C46 /* EAGLView.h */,
+				7D516E1A10287311005F3C46 /* EAGLView.m */,
+				7D516E1B10287311005F3C46 /* TransitionView.h */,
+				7D516E1C10287311005F3C46 /* TransitionView.m */,
+			);
+			path = Apple;
+			sourceTree = "<group>";
+		};
+		7D516E221028734C005F3C46 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				7D516E39102873B0005F3C46 /* UI */,
+				7D516E231028735A005F3C46 /* THLog.h */,
+				7D516E241028735A005F3C46 /* THLog.m */,
+				7D516E541028746B005F3C46 /* THTimer.h */,
+				7D516E551028746B005F3C46 /* THTimer.m */,
+				7D516E6A102874C0005F3C46 /* THPair.h */,
+				7D516E6B102874C0005F3C46 /* THPair.m */,
+				7D51705810288579005F3C46 /* THNSStringAdditions.h */,
+				7D51705910288579005F3C46 /* THNSStringAdditions.m */,
+				7D51705E10288585005F3C46 /* THRegex.h */,
+				7D51705F10288585005F3C46 /* THRegex.m */,
+				7D516FFC10287922005F3C46 /* THCopyWithCoder.h */,
+				7D516FFD10287922005F3C46 /* THCopyWithCoder.m */,
+				7D5170461028852B005F3C46 /* THBackgroundProcessingMediator.h */,
+				7D5170471028852B005F3C46 /* THBackgroundProcessingMediator.m */,
+				7D5170641028876D005F3C46 /* THIntegerCache.h */,
+				7D5170651028876D005F3C46 /* THIntegerCache.m */,
+				7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */,
+				7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */,
+				7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */,
+				7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		7D516E39102873B0005F3C46 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				7D6AAC841028DEAD006289E6 /* THScalableSlider.h */,
+				7D6AAC851028DEAD006289E6 /* THScalableSlider.m */,
+				7D51703D102884F1005F3C46 /* THStringRenderer.h */,
+				7D51703E102884F1005F3C46 /* THStringRenderer.m */,
+				7D516E71102874E4005F3C46 /* THAlertViewWithUserInfo.h */,
+				7D516E72102874E4005F3C46 /* THAlertViewWithUserInfo.m */,
+				7D516E5B10287486005F3C46 /* THUIViewAdditions.h */,
+				7D516E5C10287486005F3C46 /* THUIViewAdditions.m */,
+				7D516E62102874A6005F3C46 /* THUIImageAdditions.h */,
+				7D516E63102874A6005F3C46 /* THUIImageAdditions.m */,
+				7D516E4E10287458005F3C46 /* THNavigationButton.h */,
+				7D516E4F10287458005F3C46 /* THNavigationButton.m */,
+				7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */,
+				7D516E3B102873BE005F3C46 /* THUIViewThreadSafeDrawing.m */,
+				7D516FF210287905005F3C46 /* THRoundRectView.h */,
+				7D516FF310287905005F3C46 /* THRoundRectView.m */,
+				7D516FF410287905005F3C46 /* THRoundRects.h */,
+				7D516FF510287905005F3C46 /* THRoundRects.c */,
+				7D517019102879C7005F3C46 /* THGeometryUtils.h */,
+				7D51701A102879C7005F3C46 /* THGeometryUtils.c */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		7D516E42102873FA005F3C46 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7D51710B1028AF47005F3C46 /* BookPaginator */,
+				7D6AAD611028E78E006289E6 /* EucBook.h */,
+				7D5172A51028B771005F3C46 /* EucBookParagraph.h */,
+				7D51711C1028AF94005F3C46 /* EucBookReader.h */,
+				7D6AAD641028E7A9006289E6 /* EucBookReference.h */,
+				7D6AAD631028E7A9006289E6 /* EucBookReference.m */,
+				7D6AAD671028E7BD006289E6 /* EucLocalBookReference.m */,
+				7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */,
+				7D516E4310287405005F3C46 /* EucBookTextStyle.h */,
+				7D516E4410287405005F3C46 /* EucBookTextStyle.m */,
+				7D51705210288562005F3C46 /* EucBookSection.h */,
+				7D51705310288562005F3C46 /* EucBookSection.m */,
+				7D516E9110287585005F3C46 /* EucBookPageIndexPoint.h */,
+				7D516E9210287585005F3C46 /* EucBookPageIndexPoint.m */,
+				7D516E8F10287585005F3C46 /* EucBookPageIndex.h */,
+				7D516E9010287585005F3C46 /* EucBookPageIndex.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		7D51700C10287987005F3C46 /* VCTitleCase */ = {
+			isa = PBXGroup;
+			children = (
+				7D51700F10287987005F3C46 /* VCTitleCase.h */,
+				7D51701010287987005F3C46 /* VCTitleCase.m */,
+			);
+			path = VCTitleCase;
+			sourceTree = "<group>";
+		};
+		7D5170D11028ADD6005F3C46 /* libhyphenate */ = {
+			isa = PBXGroup;
+			children = (
+				7D5170D21028ADD6005F3C46 /* BUGS */,
+				7D5170D31028ADD6005F3C46 /* CHANGELOG */,
+				7D5170D41028ADD6005F3C46 /* COPYRIGHT */,
+				7D5170D51028ADD6005F3C46 /* README */,
+				7D5170D61028ADD6005F3C46 /* README.nonstandard */,
+				7D5170D71028ADD6005F3C46 /* share */,
+				7D5170DF1028ADD6005F3C46 /* src */,
+			);
+			path = libhyphenate;
+			sourceTree = "<group>";
+		};
+		7D5170D71028ADD6005F3C46 /* share */ = {
+			isa = PBXGroup;
+			children = (
+				7D5170D81028ADD6005F3C46 /* patterns */,
+			);
+			path = share;
+			sourceTree = "<group>";
+		};
+		7D5170D81028ADD6005F3C46 /* patterns */ = {
+			isa = PBXGroup;
+			children = (
+				7D5170D91028ADD6005F3C46 /* de */,
+				7D5170DA1028ADD6005F3C46 /* de-1901 */,
+				7D5170DB1028ADD6005F3C46 /* de-DE-1901 */,
+				7D5170DC1028ADD6005F3C46 /* en */,
+				7D5170DD1028ADD6005F3C46 /* es */,
+				7D5170DE1028ADD6005F3C46 /* fr */,
+			);
+			path = patterns;
+			sourceTree = "<group>";
+		};
+		7D5170DF1028ADD6005F3C46 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				7D5170E01028ADD6005F3C46 /* HyphenationRule.cpp */,
+				7D5170E11028ADD6005F3C46 /* HyphenationRule.h */,
+				7D5170E21028ADD6005F3C46 /* HyphenationTree.cpp */,
+				7D5170E31028ADD6005F3C46 /* HyphenationTree.h */,
+				7D5170E41028ADD6005F3C46 /* Hyphenator.cpp */,
+				7D5170E51028ADD6005F3C46 /* Hyphenator.h */,
+				7D5170E61028ADD6005F3C46 /* Language.cpp */,
+				7D5170E71028ADD6005F3C46 /* Language.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		7D51710B1028AF47005F3C46 /* BookPaginator */ = {
+			isa = PBXGroup;
+			children = (
+				7D51710C1028AF47005F3C46 /* EucBookPaginator.h */,
+				7D51710D1028AF47005F3C46 /* EucBookPaginator.m */,
+			);
+			path = BookPaginator;
+			sourceTree = "<group>";
+		};
+		7D5171751028B470005F3C46 /* ePub */ = {
+			isa = PBXGroup;
+			children = (
+				7D5171781028B493005F3C46 /* BookView */,
+				7D5171771028B493005F3C46 /* Model */,
+			);
+			path = ePub;
+			sourceTree = "<group>";
+		};
+		7D5171771028B493005F3C46 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7D51718D1028B553005F3C46 /* CSSParser */,
+				7D5171941028B554005F3C46 /* EucEPubStyleStore.h */,
+				7D5171951028B554005F3C46 /* EucEPubStyleStore.m */,
+				7D5171961028B554005F3C46 /* EucEPubBookReader.h */,
+				7D5171971028B554005F3C46 /* EucEPubBookReader.m */,
+				7D5171981028B554005F3C46 /* EucEPubBookParagraph.h */,
+				7D5171991028B554005F3C46 /* EucEPubBookParagraph.m */,
+				7D51719A1028B554005F3C46 /* EucEPubLocalBookReference.h */,
+				7D51719B1028B554005F3C46 /* EucEPubLocalBookReference.m */,
+				7D51719C1028B554005F3C46 /* EucEPubBook.h */,
+				7D51719D1028B554005F3C46 /* EucEPubBook.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		7D5171781028B493005F3C46 /* BookView */ = {
+			isa = PBXGroup;
+			children = (
+				7D5171891028B53C005F3C46 /* EucEPubPageLayoutController.h */,
+				7D51718A1028B53C005F3C46 /* EucEPubPageLayoutController.m */,
+			);
+			path = BookView;
+			sourceTree = "<group>";
+		};
+		7D51718D1028B553005F3C46 /* CSSParser */ = {
+			isa = PBXGroup;
+			children = (
+				7D51718F1028B553005F3C46 /* Auto-Generated */,
+				7D51718E1028B553005F3C46 /* css21.g */,
+			);
+			path = CSSParser;
+			sourceTree = "<group>";
+		};
+		7D51718F1028B553005F3C46 /* Auto-Generated */ = {
+			isa = PBXGroup;
+			children = (
+				7D5171901028B554005F3C46 /* css21Lexer.c */,
+				7D5171911028B554005F3C46 /* css21Lexer.h */,
+				7D5171921028B554005F3C46 /* css21Parser.c */,
+				7D5171931028B554005F3C46 /* css21Parser.h */,
+			);
+			name = "Auto-Generated";
+			sourceTree = "<group>";
+		};
+		7D5172B91028B989005F3C46 /* libantlr */ = {
+			isa = PBXGroup;
+			children = (
+				7D5172BA1028B989005F3C46 /* aclocal.m4 */,
+				7D5172BB1028B989005F3C46 /* antlr3config.h */,
+				7D5172BC1028B989005F3C46 /* antlr3config.h.in */,
+				7D5172BD1028B989005F3C46 /* AUTHORS */,
+				7D5172BE1028B989005F3C46 /* C.sln */,
+				7D5172BF1028B989005F3C46 /* C.vcproj */,
+				7D5172C01028B989005F3C46 /* C.vcproj.vspscc */,
+				7D5172C11028B989005F3C46 /* C.vssscc */,
+				7D5172C21028B989005F3C46 /* ChangeLog */,
+				7D5172C31028B989005F3C46 /* config.guess */,
+				7D5172C41028B989005F3C46 /* config.sub */,
+				7D5172C51028B989005F3C46 /* configure */,
+				7D5172C61028B989005F3C46 /* configure.ac */,
+				7D5172C71028B989005F3C46 /* COPYING */,
+				7D5172C81028B989005F3C46 /* depcomp */,
+				7D5172C91028B989005F3C46 /* include */,
+				7D5172E91028B989005F3C46 /* INSTALL */,
+				7D5172EA1028B989005F3C46 /* install-sh */,
+				7D5172EB1028B989005F3C46 /* ltmain.sh */,
+				7D5172EC1028B989005F3C46 /* Makefile.am */,
+				7D5172ED1028B989005F3C46 /* Makefile.in */,
+				7D5172EE1028B989005F3C46 /* missing */,
+				7D5172EF1028B989005F3C46 /* NEWS */,
+				7D5172F01028B989005F3C46 /* README */,
+				7D5172F11028B989005F3C46 /* src */,
+				7D51730B1028B98A005F3C46 /* vsrulefiles */,
+			);
+			path = libantlr;
+			sourceTree = "<group>";
+		};
+		7D5172C91028B989005F3C46 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				7D5172CA1028B989005F3C46 /* antlr3.h */,
+				7D5172CB1028B989005F3C46 /* antlr3baserecognizer.h */,
+				7D5172CC1028B989005F3C46 /* antlr3basetree.h */,
+				7D5172CD1028B989005F3C46 /* antlr3basetreeadaptor.h */,
+				7D5172CE1028B989005F3C46 /* antlr3bitset.h */,
+				7D5172CF1028B989005F3C46 /* antlr3collections.h */,
+				7D5172D01028B989005F3C46 /* antlr3commontoken.h */,
+				7D5172D11028B989005F3C46 /* antlr3commontree.h */,
+				7D5172D21028B989005F3C46 /* antlr3commontreeadaptor.h */,
+				7D5172D31028B989005F3C46 /* antlr3commontreenodestream.h */,
+				7D5172D41028B989005F3C46 /* antlr3convertutf.h */,
+				7D5172D51028B989005F3C46 /* antlr3cyclicdfa.h */,
+				7D5172D61028B989005F3C46 /* antlr3debugeventlistener.h */,
+				7D5172D71028B989005F3C46 /* antlr3defs.h */,
+				7D5172D81028B989005F3C46 /* antlr3encodings.h */,
+				7D5172D91028B989005F3C46 /* antlr3errors.h */,
+				7D5172DA1028B989005F3C46 /* antlr3exception.h */,
+				7D5172DB1028B989005F3C46 /* antlr3filestream.h */,
+				7D5172DC1028B989005F3C46 /* antlr3input.h */,
+				7D5172DD1028B989005F3C46 /* antlr3interfaces.h */,
+				7D5172DE1028B989005F3C46 /* antlr3intstream.h */,
+				7D5172DF1028B989005F3C46 /* antlr3lexer.h */,
+				7D5172E01028B989005F3C46 /* antlr3memory.h */,
+				7D5172E11028B989005F3C46 /* antlr3parser.h */,
+				7D5172E21028B989005F3C46 /* antlr3parsetree.h */,
+				7D5172E31028B989005F3C46 /* antlr3recognizersharedstate.h */,
+				7D5172E41028B989005F3C46 /* antlr3rewritestreams.h */,
+				7D5172E51028B989005F3C46 /* antlr3string.h */,
+				7D5172E61028B989005F3C46 /* antlr3stringstream.h */,
+				7D5172E71028B989005F3C46 /* antlr3tokenstream.h */,
+				7D5172E81028B989005F3C46 /* antlr3treeparser.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		7D5172F11028B989005F3C46 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				7D5172F21028B989005F3C46 /* antlr3baserecognizer.c */,
+				7D5172F31028B989005F3C46 /* antlr3basetree.c */,
+				7D5172F41028B989005F3C46 /* antlr3basetreeadaptor.c */,
+				7D5172F51028B989005F3C46 /* antlr3bitset.c */,
+				7D5172F61028B989005F3C46 /* antlr3collections.c */,
+				7D5172F71028B989005F3C46 /* antlr3commontoken.c */,
+				7D5172F81028B989005F3C46 /* antlr3commontree.c */,
+				7D5172F91028B989005F3C46 /* antlr3commontreeadaptor.c */,
+				7D5172FA1028B989005F3C46 /* antlr3commontreenodestream.c */,
+				7D5172FB1028B989005F3C46 /* antlr3convertutf.c */,
+				7D5172FC1028B989005F3C46 /* antlr3cyclicdfa.c */,
+				7D5172FD1028B989005F3C46 /* antlr3debughandlers.c */,
+				7D5172FE1028B989005F3C46 /* antlr3encodings.c */,
+				7D5172FF1028B989005F3C46 /* antlr3exception.c */,
+				7D5173001028B989005F3C46 /* antlr3filestream.c */,
+				7D5173011028B989005F3C46 /* antlr3inputstream.c */,
+				7D5173021028B989005F3C46 /* antlr3intstream.c */,
+				7D5173031028B989005F3C46 /* antlr3lexer.c */,
+				7D5173041028B989005F3C46 /* antlr3parser.c */,
+				7D5173051028B989005F3C46 /* antlr3rewritestreams.c */,
+				7D5173061028B98A005F3C46 /* antlr3string.c */,
+				7D5173071028B98A005F3C46 /* antlr3stringstream.c */,
+				7D5173081028B98A005F3C46 /* antlr3tokenstream.c */,
+				7D5173091028B98A005F3C46 /* antlr3treeparser.c */,
+				7D51730A1028B98A005F3C46 /* antlr3ucs2inputstream.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		7D51730B1028B98A005F3C46 /* vsrulefiles */ = {
+			isa = PBXGroup;
+			children = (
+				7D51730C1028B98A005F3C46 /* antlr3lexer.rules */,
+				7D51730D1028B98A005F3C46 /* antlr3lexerandparser.rules */,
+				7D51730E1028B98A005F3C46 /* antlr3parser.rules */,
+				7D51730F1028B98A005F3C46 /* antlr3treeparser.rules */,
+			);
+			path = vsrulefiles;
+			sourceTree = "<group>";
+		};
+		7D51734D1028BA13005F3C46 /* expat */ = {
+			isa = PBXGroup;
+			children = (
+				7D5173981028BA13005F3C46 /* lib */,
+				7D5173B41028BA14005F3C46 /* Makefile.in */,
+				7D5173B51028BA14005F3C46 /* MANIFEST */,
+				7D5173B61028BA14005F3C46 /* README */,
+			);
+			path = expat;
+			sourceTree = "<group>";
+		};
+		7D5173981028BA13005F3C46 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				7D51739A1028BA14005F3C46 /* ascii.h */,
+				7D51739B1028BA14005F3C46 /* asciitab.h */,
+				7D51739D1028BA14005F3C46 /* expat.h */,
+				7D51739E1028BA14005F3C46 /* expat_external.h */,
+				7D5173A21028BA14005F3C46 /* iasciitab.h */,
+				7D5173A31028BA14005F3C46 /* internal.h */,
+				7D5173A41028BA14005F3C46 /* latin1tab.h */,
+				7D5173A71028BA14005F3C46 /* macconfig.h */,
+				7D5173A91028BA14005F3C46 /* nametab.h */,
+				7D5173AA1028BA14005F3C46 /* utf8tab.h */,
+				7D5173AB1028BA14005F3C46 /* winconfig.h */,
+				7D5173AC1028BA14005F3C46 /* xmlparse.c */,
+				7D5173AD1028BA14005F3C46 /* xmlrole.c */,
+				7D5173AE1028BA14005F3C46 /* xmlrole.h */,
+				7D5173AF1028BA14005F3C46 /* xmltok.c */,
+				7D5173B01028BA14005F3C46 /* xmltok.h */,
+				7D5173B11028BA14005F3C46 /* xmltok_impl.c */,
+				7D5173B21028BA14005F3C46 /* xmltok_impl.h */,
+				7D5173B31028BA14005F3C46 /* xmltok_ns.c */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		7D5170781028AD1B005F3C46 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5170E91028ADD6005F3C46 /* HyphenationRule.h in Headers */,
+				7D5170EB1028ADD6005F3C46 /* HyphenationTree.h in Headers */,
+				7D5170ED1028ADD6005F3C46 /* Hyphenator.h in Headers */,
+				7D5170EF1028ADD6005F3C46 /* Language.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D51717B1028B4A4005F3C46 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D51718B1028B53C005F3C46 /* EucEPubPageLayoutController.h in Headers */,
+				7D51719F1028B554005F3C46 /* css21Lexer.h in Headers */,
+				7D5171A11028B554005F3C46 /* css21Parser.h in Headers */,
+				7D5171A21028B554005F3C46 /* EucEPubStyleStore.h in Headers */,
+				7D5171A41028B554005F3C46 /* EucEPubBookReader.h in Headers */,
+				7D5171A61028B554005F3C46 /* EucEPubBookParagraph.h in Headers */,
+				7D5171A81028B554005F3C46 /* EucEPubLocalBookReference.h in Headers */,
+				7D5171AA1028B554005F3C46 /* EucEPubBook.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D5171BD1028B6AE005F3C46 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5173F31028BA14005F3C46 /* ascii.h in Headers */,
+				7D5173F41028BA14005F3C46 /* asciitab.h in Headers */,
+				7D5173F51028BA14005F3C46 /* expat.h in Headers */,
+				7D5173F61028BA14005F3C46 /* expat_external.h in Headers */,
+				7D5173F71028BA14005F3C46 /* iasciitab.h in Headers */,
+				7D5173F81028BA14005F3C46 /* internal.h in Headers */,
+				7D5173F91028BA14005F3C46 /* latin1tab.h in Headers */,
+				7D5173FA1028BA14005F3C46 /* macconfig.h in Headers */,
+				7D5173FB1028BA14005F3C46 /* nametab.h in Headers */,
+				7D5173FC1028BA14005F3C46 /* utf8tab.h in Headers */,
+				7D5174001028BA14005F3C46 /* xmlrole.h in Headers */,
+				7D5174021028BA14005F3C46 /* xmltok.h in Headers */,
+				7D5174041028BA14005F3C46 /* xmltok_impl.h in Headers */,
+				7D51741D1028BA14005F3C46 /* expat_config.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D5171CC1028B6B9005F3C46 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5173101028B98A005F3C46 /* antlr3config.h in Headers */,
+				7D5173111028B98A005F3C46 /* antlr3.h in Headers */,
+				7D5173121028B98A005F3C46 /* antlr3baserecognizer.h in Headers */,
+				7D5173131028B98A005F3C46 /* antlr3basetree.h in Headers */,
+				7D5173141028B98A005F3C46 /* antlr3basetreeadaptor.h in Headers */,
+				7D5173151028B98A005F3C46 /* antlr3bitset.h in Headers */,
+				7D5173161028B98A005F3C46 /* antlr3collections.h in Headers */,
+				7D5173171028B98A005F3C46 /* antlr3commontoken.h in Headers */,
+				7D5173181028B98A005F3C46 /* antlr3commontree.h in Headers */,
+				7D5173191028B98A005F3C46 /* antlr3commontreeadaptor.h in Headers */,
+				7D51731A1028B98A005F3C46 /* antlr3commontreenodestream.h in Headers */,
+				7D51731B1028B98A005F3C46 /* antlr3convertutf.h in Headers */,
+				7D51731C1028B98A005F3C46 /* antlr3cyclicdfa.h in Headers */,
+				7D51731D1028B98A005F3C46 /* antlr3debugeventlistener.h in Headers */,
+				7D51731E1028B98A005F3C46 /* antlr3defs.h in Headers */,
+				7D51731F1028B98A005F3C46 /* antlr3encodings.h in Headers */,
+				7D5173201028B98A005F3C46 /* antlr3errors.h in Headers */,
+				7D5173211028B98A005F3C46 /* antlr3exception.h in Headers */,
+				7D5173221028B98A005F3C46 /* antlr3filestream.h in Headers */,
+				7D5173231028B98A005F3C46 /* antlr3input.h in Headers */,
+				7D5173241028B98A005F3C46 /* antlr3interfaces.h in Headers */,
+				7D5173251028B98A005F3C46 /* antlr3intstream.h in Headers */,
+				7D5173261028B98A005F3C46 /* antlr3lexer.h in Headers */,
+				7D5173271028B98A005F3C46 /* antlr3memory.h in Headers */,
+				7D5173281028B98A005F3C46 /* antlr3parser.h in Headers */,
+				7D5173291028B98A005F3C46 /* antlr3parsetree.h in Headers */,
+				7D51732A1028B98A005F3C46 /* antlr3recognizersharedstate.h in Headers */,
+				7D51732B1028B98A005F3C46 /* antlr3rewritestreams.h in Headers */,
+				7D51732C1028B98A005F3C46 /* antlr3string.h in Headers */,
+				7D51732D1028B98A005F3C46 /* antlr3stringstream.h in Headers */,
+				7D51732E1028B98A005F3C46 /* antlr3tokenstream.h in Headers */,
+				7D51732F1028B98A005F3C46 /* antlr3treeparser.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2AAC07A0554694100DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */,
+				7D516E02102872AC005F3C46 /* EucBookViewController.h in Headers */,
+				7D516E0E102872DB005F3C46 /* EucPageView.h in Headers */,
+				7D516E0F102872DB005F3C46 /* EucPageTurningView.h in Headers */,
+				7D516E11102872DB005F3C46 /* EucBookContentsTableViewController.h in Headers */,
+				7D516E13102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h in Headers */,
+				7D516E1D10287311005F3C46 /* EAGLView.h in Headers */,
+				7D516E1F10287311005F3C46 /* TransitionView.h in Headers */,
+				7D516E251028735A005F3C46 /* THLog.h in Headers */,
+				7D516E3C102873BE005F3C46 /* THUIViewThreadSafeDrawing.h in Headers */,
+				7D516E4510287405005F3C46 /* EucBookTextStyle.h in Headers */,
+				7D516E5010287458005F3C46 /* THNavigationButton.h in Headers */,
+				7D516E561028746B005F3C46 /* THTimer.h in Headers */,
+				7D516E5D10287486005F3C46 /* THUIViewAdditions.h in Headers */,
+				7D516E64102874A6005F3C46 /* THUIImageAdditions.h in Headers */,
+				7D516E6C102874C0005F3C46 /* THPair.h in Headers */,
+				7D516E73102874E4005F3C46 /* THAlertViewWithUserInfo.h in Headers */,
+				7D516E7F1028750A005F3C46 /* EucBookTitleView.h in Headers */,
+				7D516E9310287585005F3C46 /* EucBookPageIndex.h in Headers */,
+				7D516E9510287585005F3C46 /* EucBookPageIndexPoint.h in Headers */,
+				7D516FF610287905005F3C46 /* THRoundRectView.h in Headers */,
+				7D516FF810287905005F3C46 /* THRoundRects.h in Headers */,
+				7D516FFE10287922005F3C46 /* THCopyWithCoder.h in Headers */,
+				7D51700A1028796E005F3C46 /* EucChapterNameFormatting.h in Headers */,
+				7D51701310287987005F3C46 /* VCTitleCase.h in Headers */,
+				7D51701B102879C7005F3C46 /* THGeometryUtils.h in Headers */,
+				7D51702410287A0D005F3C46 /* EucPageLayoutController.h in Headers */,
+				7D51703F102884F1005F3C46 /* THStringRenderer.h in Headers */,
+				7D5170481028852B005F3C46 /* THBackgroundProcessingMediator.h in Headers */,
+				7D51704E10288543005F3C46 /* EucNameAndPageNumberView.h in Headers */,
+				7D51705410288562005F3C46 /* EucBookSection.h in Headers */,
+				7D51705A10288579005F3C46 /* THNSStringAdditions.h in Headers */,
+				7D51706010288585005F3C46 /* THRegex.h in Headers */,
+				7D5170681028876D005F3C46 /* THIntegerCache.h in Headers */,
+				7D51706A1028876D005F3C46 /* THLowMemoryDictionaryEmptier.h in Headers */,
+				7D51710E1028AF47005F3C46 /* EucBookPaginator.h in Headers */,
+				7D51711D1028AF94005F3C46 /* EucBookReader.h in Headers */,
+				7D5172A61028B771005F3C46 /* EucBookParagraph.h in Headers */,
+				7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */,
+				7D6AAD571028E75C006289E6 /* EucBookTextView.h in Headers */,
+				7D6AAD5C1028E774006289E6 /* thjust.h in Headers */,
+				7D6AAD5D1028E774006289E6 /* EucSharedHyphenator.h in Headers */,
+				7D6AAD621028E78E006289E6 /* EucBook.h in Headers */,
+				7D6AAD661028E7A9006289E6 /* EucBookReference.h in Headers */,
+				7D6AAD6A1028E7BD006289E6 /* EucLocalBookReference.h in Headers */,
+				7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		7D5170771028AD1B005F3C46 /* libhyphenate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D5170CB1028AD1B005F3C46 /* Build configuration list for PBXNativeTarget "libhyphenate" */;
+			buildPhases = (
+				7D5170781028AD1B005F3C46 /* Headers */,
+				7D5170A21028AD1B005F3C46 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libhyphenate;
+			productName = libEucalyptus;
+			productReference = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		7D51717A1028B4A4005F3C46 /* libEucalyptusEPub */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D5171851028B4A4005F3C46 /* Build configuration list for PBXNativeTarget "libEucalyptusEPub" */;
+			buildPhases = (
+				7D51717B1028B4A4005F3C46 /* Headers */,
+				7D5171801028B4A4005F3C46 /* Sources */,
+			);
+			buildRules = (
+				7D5171B21028B5FB005F3C46 /* PBXBuildRule */,
+			);
+			dependencies = (
+				7D5171DE1028B6FB005F3C46 /* PBXTargetDependency */,
+				7D5171E01028B6FD005F3C46 /* PBXTargetDependency */,
+			);
+			name = libEucalyptusEPub;
+			productName = libEucalyptus;
+			productReference = 7D5171881028B4A4005F3C46 /* libEucalyptusEPub.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		7D5171BC1028B6AE005F3C46 /* libexpat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D5171C71028B6AE005F3C46 /* Build configuration list for PBXNativeTarget "libexpat" */;
+			buildPhases = (
+				7D5171BD1028B6AE005F3C46 /* Headers */,
+				7D5171C21028B6AE005F3C46 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libexpat;
+			productName = libEucalyptus;
+			productReference = 7D5171CA1028B6AE005F3C46 /* libexpat.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		7D5171CB1028B6B9005F3C46 /* libantlr */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D5171D61028B6B9005F3C46 /* Build configuration list for PBXNativeTarget "libantlr" */;
+			buildPhases = (
+				7D5171CC1028B6B9005F3C46 /* Headers */,
+				7D5171D11028B6B9005F3C46 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libantlr;
+			productName = libEucalyptus;
+			productReference = 7D5171D91028B6B9005F3C46 /* libantlr.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		D2AAC07D0554694100DB518D /* libEucalyptus */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB921E08733DC00010E9CD /* Build configuration list for PBXNativeTarget "libEucalyptus" */;
+			buildPhases = (
+				D2AAC07A0554694100DB518D /* Headers */,
+				D2AAC07B0554694100DB518D /* Sources */,
+				D2AAC07C0554694100DB518D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7D5171AD1028B591005F3C46 /* PBXTargetDependency */,
+				7D5170D01028AD46005F3C46 /* PBXTargetDependency */,
+			);
+			name = libEucalyptus;
+			productName = libEucalyptus;
+			productReference = D2AAC07E0554694100DB518D /* libEucalyptus.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "libEucalyptus" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* libEucalyptus */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC07D0554694100DB518D /* libEucalyptus */,
+				7D5170771028AD1B005F3C46 /* libhyphenate */,
+				7D51717A1028B4A4005F3C46 /* libEucalyptusEPub */,
+				7D5171BC1028B6AE005F3C46 /* libexpat */,
+				7D5171CB1028B6B9005F3C46 /* libantlr */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7D5170A21028AD1B005F3C46 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5170E81028ADD6005F3C46 /* HyphenationRule.cpp in Sources */,
+				7D5170EA1028ADD6005F3C46 /* HyphenationTree.cpp in Sources */,
+				7D5170EC1028ADD6005F3C46 /* Hyphenator.cpp in Sources */,
+				7D5170EE1028ADD6005F3C46 /* Language.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D5171801028B4A4005F3C46 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D51718C1028B53C005F3C46 /* EucEPubPageLayoutController.m in Sources */,
+				7D51719E1028B554005F3C46 /* css21Lexer.c in Sources */,
+				7D5171A01028B554005F3C46 /* css21Parser.c in Sources */,
+				7D5171A31028B554005F3C46 /* EucEPubStyleStore.m in Sources */,
+				7D5171A51028B554005F3C46 /* EucEPubBookReader.m in Sources */,
+				7D5171A71028B554005F3C46 /* EucEPubBookParagraph.m in Sources */,
+				7D5171A91028B554005F3C46 /* EucEPubLocalBookReference.m in Sources */,
+				7D5171AB1028B554005F3C46 /* EucEPubBook.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D5171C21028B6AE005F3C46 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5173FE1028BA14005F3C46 /* xmlparse.c in Sources */,
+				7D5173FF1028BA14005F3C46 /* xmlrole.c in Sources */,
+				7D5174011028BA14005F3C46 /* xmltok.c in Sources */,
+				7D5174031028BA14005F3C46 /* xmltok_impl.c in Sources */,
+				7D5174051028BA14005F3C46 /* xmltok_ns.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D5171D11028B6B9005F3C46 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5173301028B98A005F3C46 /* antlr3baserecognizer.c in Sources */,
+				7D5173311028B98A005F3C46 /* antlr3basetree.c in Sources */,
+				7D5173321028B98A005F3C46 /* antlr3basetreeadaptor.c in Sources */,
+				7D5173331028B98A005F3C46 /* antlr3bitset.c in Sources */,
+				7D5173341028B98A005F3C46 /* antlr3collections.c in Sources */,
+				7D5173351028B98A005F3C46 /* antlr3commontoken.c in Sources */,
+				7D5173361028B98A005F3C46 /* antlr3commontree.c in Sources */,
+				7D5173371028B98A005F3C46 /* antlr3commontreeadaptor.c in Sources */,
+				7D5173381028B98A005F3C46 /* antlr3commontreenodestream.c in Sources */,
+				7D5173391028B98A005F3C46 /* antlr3convertutf.c in Sources */,
+				7D51733A1028B98A005F3C46 /* antlr3cyclicdfa.c in Sources */,
+				7D51733B1028B98A005F3C46 /* antlr3debughandlers.c in Sources */,
+				7D51733C1028B98A005F3C46 /* antlr3encodings.c in Sources */,
+				7D51733D1028B98A005F3C46 /* antlr3exception.c in Sources */,
+				7D51733E1028B98A005F3C46 /* antlr3filestream.c in Sources */,
+				7D51733F1028B98A005F3C46 /* antlr3inputstream.c in Sources */,
+				7D5173401028B98A005F3C46 /* antlr3intstream.c in Sources */,
+				7D5173411028B98A005F3C46 /* antlr3lexer.c in Sources */,
+				7D5173421028B98A005F3C46 /* antlr3parser.c in Sources */,
+				7D5173431028B98A005F3C46 /* antlr3rewritestreams.c in Sources */,
+				7D5173441028B98A005F3C46 /* antlr3string.c in Sources */,
+				7D5173451028B98A005F3C46 /* antlr3stringstream.c in Sources */,
+				7D5173461028B98A005F3C46 /* antlr3tokenstream.c in Sources */,
+				7D5173471028B98A005F3C46 /* antlr3treeparser.c in Sources */,
+				7D5173481028B98A005F3C46 /* antlr3ucs2inputstream.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2AAC07B0554694100DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D516E03102872AC005F3C46 /* EucBookViewController.m in Sources */,
+				7D516E0D102872DB005F3C46 /* EucPageView.m in Sources */,
+				7D516E10102872DB005F3C46 /* EucPageTurningView.m in Sources */,
+				7D516E12102872DB005F3C46 /* EucBookContentsTableViewController.m in Sources */,
+				7D516E14102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m in Sources */,
+				7D516E1E10287311005F3C46 /* EAGLView.m in Sources */,
+				7D516E2010287311005F3C46 /* TransitionView.m in Sources */,
+				7D516E261028735A005F3C46 /* THLog.m in Sources */,
+				7D516E3D102873BE005F3C46 /* THUIViewThreadSafeDrawing.m in Sources */,
+				7D516E4610287405005F3C46 /* EucBookTextStyle.m in Sources */,
+				7D516E5110287458005F3C46 /* THNavigationButton.m in Sources */,
+				7D516E571028746B005F3C46 /* THTimer.m in Sources */,
+				7D516E5E10287486005F3C46 /* THUIViewAdditions.m in Sources */,
+				7D516E65102874A6005F3C46 /* THUIImageAdditions.m in Sources */,
+				7D516E6D102874C0005F3C46 /* THPair.m in Sources */,
+				7D516E74102874E4005F3C46 /* THAlertViewWithUserInfo.m in Sources */,
+				7D516E801028750A005F3C46 /* EucBookTitleView.m in Sources */,
+				7D516E9410287585005F3C46 /* EucBookPageIndex.m in Sources */,
+				7D516E9610287585005F3C46 /* EucBookPageIndexPoint.m in Sources */,
+				7D516FF710287905005F3C46 /* THRoundRectView.m in Sources */,
+				7D516FF910287905005F3C46 /* THRoundRects.c in Sources */,
+				7D516FFF10287922005F3C46 /* THCopyWithCoder.m in Sources */,
+				7D51700B1028796E005F3C46 /* EucChapterNameFormatting.m in Sources */,
+				7D51701410287987005F3C46 /* VCTitleCase.m in Sources */,
+				7D51701C102879C7005F3C46 /* THGeometryUtils.c in Sources */,
+				7D517040102884F1005F3C46 /* THStringRenderer.m in Sources */,
+				7D5170491028852B005F3C46 /* THBackgroundProcessingMediator.m in Sources */,
+				7D51704F10288543005F3C46 /* EucNameAndPageNumberView.m in Sources */,
+				7D51705510288562005F3C46 /* EucBookSection.m in Sources */,
+				7D51705B10288579005F3C46 /* THNSStringAdditions.m in Sources */,
+				7D51706110288585005F3C46 /* THRegex.m in Sources */,
+				7D5170691028876D005F3C46 /* THIntegerCache.m in Sources */,
+				7D51706B1028876D005F3C46 /* THLowMemoryDictionaryEmptier.m in Sources */,
+				7D51710F1028AF47005F3C46 /* EucBookPaginator.m in Sources */,
+				7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */,
+				7D6AAD561028E75C006289E6 /* EucBookTextView.mm in Sources */,
+				7D6AAD5E1028E774006289E6 /* EucSharedHyphenator.mm in Sources */,
+				7D6AAD5F1028E774006289E6 /* thjust.c in Sources */,
+				7D6AAD651028E7A9006289E6 /* EucBookReference.m in Sources */,
+				7D6AAD691028E7BD006289E6 /* EucLocalBookReference.m in Sources */,
+				7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7D5170D01028AD46005F3C46 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D5170771028AD1B005F3C46 /* libhyphenate */;
+			targetProxy = 7D5170CF1028AD46005F3C46 /* PBXContainerItemProxy */;
+		};
+		7D5171AD1028B591005F3C46 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D51717A1028B4A4005F3C46 /* libEucalyptusEPub */;
+			targetProxy = 7D5171AC1028B591005F3C46 /* PBXContainerItemProxy */;
+		};
+		7D5171DE1028B6FB005F3C46 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D5171BC1028B6AE005F3C46 /* libexpat */;
+			targetProxy = 7D5171DD1028B6FB005F3C46 /* PBXContainerItemProxy */;
+		};
+		7D5171E01028B6FD005F3C46 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D5171CB1028B6B9005F3C46 /* libantlr */;
+			targetProxy = 7D5171DF1028B6FD005F3C46 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB921F08733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				PRODUCT_NAME = Eucalyptus;
+				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+			};
+			name = Debug;
+		};
+		1DEB922008733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				PRODUCT_NAME = Eucalyptus;
+				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+			};
+			name = Release;
+		};
+		1DEB922308733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARM_NOT_THUMB = "";
+				"ARM_NOT_THUMB[sdk=iphoneos*][arch=*]" = "-marm";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PREBINDING = NO;
+				SDKROOT = iphoneos3.0;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Debug;
+		};
+		1DEB922408733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARM_NOT_THUMB = "";
+				"ARM_NOT_THUMB[sdk=iphoneos*][arch=*]" = "-marm";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PREBINDING = NO;
+				SDKROOT = iphoneos3.0;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Release;
+		};
+		7D5170CC1028AD1B005F3C46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = hyphenate;
+			};
+			name = Debug;
+		};
+		7D5170CD1028AD1B005F3C46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = hyphenate;
+			};
+			name = Release;
+		};
+		7D5171861028B4A4005F3C46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libantlr\"",
+					"\"$(SRCROOT)/ThirdParty/libantlr/include\"",
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				PRODUCT_NAME = EucalyptusEPub;
+				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+			};
+			name = Debug;
+		};
+		7D5171871028B4A4005F3C46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libantlr\"",
+					"\"$(SRCROOT)/ThirdParty/libantlr/include\"",
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				PRODUCT_NAME = EucalyptusEPub;
+				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+			};
+			name = Release;
+		};
+		7D5171C81028B6AE005F3C46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_EXPAT_CONFIG_H;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = expat;
+			};
+			name = Debug;
+		};
+		7D5171C91028B6AE005F3C46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_EXPAT_CONFIG_H;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = expat;
+			};
+			name = Release;
+		};
+		7D5171D71028B6B9005F3C46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = antlr;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wno-unused",
+				);
+			};
+			name = Debug;
+		};
+		7D5171D81028B6B9005F3C46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = antlr;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wno-unused",
+				);
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB921E08733DC00010E9CD /* Build configuration list for PBXNativeTarget "libEucalyptus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB921F08733DC00010E9CD /* Debug */,
+				1DEB922008733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "libEucalyptus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB922308733DC00010E9CD /* Debug */,
+				1DEB922408733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D5170CB1028AD1B005F3C46 /* Build configuration list for PBXNativeTarget "libhyphenate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D5170CC1028AD1B005F3C46 /* Debug */,
+				7D5170CD1028AD1B005F3C46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D5171851028B4A4005F3C46 /* Build configuration list for PBXNativeTarget "libEucalyptusEPub" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D5171861028B4A4005F3C46 /* Debug */,
+				7D5171871028B4A4005F3C46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D5171C71028B6AE005F3C46 /* Build configuration list for PBXNativeTarget "libexpat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D5171C81028B6AE005F3C46 /* Debug */,
+				7D5171C91028B6AE005F3C46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D5171D61028B6B9005F3C46 /* Build configuration list for PBXNativeTarget "libantlr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D5171D71028B6B9005F3C46 /* Debug */,
+				7D5171D81028B6B9005F3C46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
