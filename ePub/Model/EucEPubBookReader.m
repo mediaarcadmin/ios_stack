@@ -15,6 +15,41 @@
 #import "THLog.h"
 #import <sys/stat.h>
 
+#define kMaxCachedFiles 3
+
+@interface _CachedXHTMLFile : NSObject {
+    NSData *xhtmlData;
+    NSURL *baseURL;
+    NSString *packageRelativePath;
+    int32_t startOffset;
+    EucEPubStyleStore *styleStore;
+}
+@property (nonatomic, retain) NSData *xhtmlData;
+@property (nonatomic, retain) NSURL *baseURL;
+@property (nonatomic, retain) NSString *packageRelativePath;
+@property (nonatomic, assign) int32_t startOffset;
+@property (nonatomic, retain) EucEPubStyleStore *styleStore;
+@end
+
+@implementation _CachedXHTMLFile
+@synthesize xhtmlData;
+@synthesize baseURL;
+@synthesize packageRelativePath;
+@synthesize startOffset;
+@synthesize styleStore;
+
+- (void)dealloc
+{
+    [xhtmlData release];
+    [baseURL release];
+    [packageRelativePath release];
+    [styleStore release];
+    [super dealloc];
+}
+
+@end
+
+
 NSDictionary *sXHTMLEntityMap = nil;
 
 @interface EucEPubBookReader ()
@@ -46,6 +81,8 @@ NSDictionary *sXHTMLEntityMap = nil;
         _whitespaceAndNewlineCharacterSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] retain];
         _paragraphBuildingStyleStack = [[NSMutableArray alloc] init];
         _parser = XML_ParserCreate("UTF-8");
+        
+        _xHTMLfileCache = [[NSMutableArray alloc] initWithCapacity:kMaxCachedFiles];
         
         NSArray *files = book.spineFiles; 
         NSUInteger filesCount = files.count;
@@ -84,6 +121,8 @@ NSDictionary *sXHTMLEntityMap = nil;
     }
     [_book release];
     free(_fileStartOffsetMap);
+    [_xHTMLfileCache release];
+    
     [super dealloc];
 }
 
@@ -387,31 +426,69 @@ void paragraphBuildingSkippedEntityHandler(void *ctx, const XML_Char *entityName
     XML_SetUserData(_parser, (void *)self);    
 }
 
-
 - (void)_setCurrentFileIndex:(NSUInteger)index
 {
-     NSString *path = [_book.spineFiles objectAtIndex:index];
+    NSString *path = [_book.spineFiles objectAtIndex:index];
+    NSURL *baseURL = [NSURL fileURLWithPath:path isDirectory:NO];
     
-    [_baseURL release];
-    _baseURL = [[NSURL fileURLWithPath:path isDirectory:NO] retain];
-
-    [_packageRelativePath release];
-    _packageRelativePath = [[[_baseURL path] stringByReplacingOccurrencesOfString:[_book path]
-                                                                       withString:@""] retain];
+    _CachedXHTMLFile *file = nil;
+    for(_CachedXHTMLFile *potentialCachedFile in _xHTMLfileCache) {
+        if([potentialCachedFile.baseURL isEqual:baseURL]) {
+            file = [potentialCachedFile retain];
+            break;
+        }
+    }
+    
+    if(file) {
+        [file retain];
+        [_xHTMLfileCache removeObject:file]; // We'll re-add it in the 'most recent' position later.
+        
+        [_baseURL release];
+        _baseURL = [file.baseURL retain];
+        [_xhtmlData release];
+        _xhtmlData = [file.xhtmlData retain];
+        [_packageRelativePath release];
+        _packageRelativePath = [file.packageRelativePath retain];
+        _startOffset = file.startOffset;
+        [_styleStore release];
+        _styleStore = [file.styleStore retain];            
+    } else {
+        [_baseURL release];
+        _baseURL = [baseURL retain];
+        
+        [_xhtmlData release];
+        _xhtmlData = [[NSData dataWithContentsOfMappedFile:path] retain];
+        
+        [_packageRelativePath release];
+        _packageRelativePath = [[[baseURL path] stringByReplacingOccurrencesOfString:[_book path]
+                                                                          withString:@""] retain];
+        [_styleStore release];
+        _styleStore = [[EucEPubStyleStore alloc] init];
+        [_styleStore addStylesFromCSSFile:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];
+        
+        _startOffset = [self _parseHeader]; 
+        
+        file = [[_CachedXHTMLFile alloc] init];
+        file.baseURL = _baseURL;
+        file.xhtmlData = _xhtmlData;
+        file.packageRelativePath = _packageRelativePath;
+        file.startOffset = _startOffset;
+        file.styleStore = _styleStore;
+    }
+    
+    
+    if(_xHTMLfileCache.count > kMaxCachedFiles) {
+        [_xHTMLfileCache removeObjectAtIndex:0];
+    }
+    [_xHTMLfileCache addObject:file];
+    [file release];
+    
+    _currentFileIndex = index;
+    
     if(_anchorIDStore) {
         [_anchorIDStore setObject:[NSNumber numberWithInteger:_fileStartOffsetMap[index]]
                            forKey:_packageRelativePath];        
-    }
-    
-    [_styleStore release];
-    _styleStore = [[EucEPubStyleStore alloc] init];
-    [_styleStore addStylesFromCSSFile:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];
-    
-    [_xhtmlData release];
-    _xhtmlData = [[NSData alloc] initWithContentsOfMappedFile:path];
-    _startOffset = [self _parseHeader]; 
-    
-    _currentFileIndex = index;
+    }    
 }
 
 - (EucEPubBookParagraph *)paragraphAtOffset:(size_t)offset maxOffset:(size_t)maxOffset

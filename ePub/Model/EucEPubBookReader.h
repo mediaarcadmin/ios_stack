@@ -17,12 +17,16 @@
 
     size_t *_fileStartOffsetMap;
     NSUInteger _fileStartOffsetMapCount;
+    
+    NSMutableDictionary *_anchorIDStore;
+
     NSUInteger _currentFileIndex;
+    NSData *_xhtmlData;
     NSURL *_baseURL;
     NSString *_packageRelativePath;
-    
+    int32_t _startOffset;
     EucEPubStyleStore *_styleStore;
-    NSData *_xhtmlData;
+    
     XML_Parser _parser;
     
     size_t _paragraphBuildingStartOffset;
@@ -33,9 +37,7 @@
     
     NSCharacterSet *_whitespaceAndNewlineCharacterSet;
     
-    int32_t _startOffset;
-    
-    NSMutableDictionary *_anchorIDStore;
+    NSMutableArray *_xHTMLfileCache;
 }
 
 @property (nonatomic, assign) BOOL shouldCollectPaginationData;
