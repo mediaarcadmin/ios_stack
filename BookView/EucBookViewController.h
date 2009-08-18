@@ -12,7 +12,7 @@
 #import "EucPageView.h"
 
 @class TransitionView, EucBookPageIndex, EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
-@protocol EucBook;
+@protocol EucBook, EucBookViewControllerDelegate;
 
 typedef enum {
     BookViewControlleUIFadeStateNone = 0,
@@ -21,7 +21,10 @@ typedef enum {
 } BookViewControllerUIFadeState;
 
 @interface EucBookViewController : UIViewController <EucPageTurningViewDelegate, EucPageViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, BookContentsTableViewControllerDelegate> {
-    BOOL showToolbarsOnCreation;
+    id<EucBookViewControllerDelegate> _delegate;
+    
+    BOOL _showToolbarsOnFirstAppearance;
+    BOOL _firstAppearance;
     
     TransitionView *_transitionView;
     EucPageTurningView *_pageTurningView;
@@ -65,10 +68,9 @@ typedef enum {
     CGFloat _scaleStartPointSize;
     CGFloat _scaleCurrentPointSize;
     
-    
     BOOL _bookWasDeleted;
 }
-
+@property (nonatomic, assign) id<EucBookViewControllerDelegate> delegate;
 @property (nonatomic, retain) TransitionView *transitionView;
 @property (nonatomic, retain) EucBookReference<EucBook> * book;
 @property (nonatomic) NSInteger pageNumber;
@@ -78,7 +80,9 @@ typedef enum {
 
 - (id)initWithTransitionViewForBookContent:(TransitionView *)transitionView withToolbars:(BOOL)withToolbars;
 
-//- (void)jumpToSectionWithUuid:(NSString *)uuid;
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+@end
 
+@protocol EucBookViewControllerDelegate <NSObject>
+@optional
+- (BOOL)bookViewController:(EucBookViewController *)controller shouldHandleTapOnHyperlink:(NSURL *)link withAttributes:(NSDictionary *)attributes;
 @end

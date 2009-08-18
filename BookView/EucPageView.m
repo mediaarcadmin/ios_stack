@@ -351,10 +351,10 @@
     }
 }
 
-- (void)bookTextView:(EucBookTextView *)bookTextView didReceiveTapOnHyperlink:(id)linkObject
+- (void)bookTextView:(EucBookTextView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
 {
-    if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapOnHyperlink:)]) {
-        [_delegate pageView:self didReceiveTapOnHyperlink:linkObject];
+    if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapOnHyperlinkWithAttributes:)]) {
+        [_delegate pageView:self didReceiveTapOnHyperlinkWithAttributes:attributes];
     }
 }
 

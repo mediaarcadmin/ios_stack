@@ -41,10 +41,12 @@
 - (float)_pageToSliderByte:(NSInteger)page;
 - (NSInteger)_sliderByteToPage:(float)byte;
 - (void)_setFontPointSize:(CGFloat)pointSize;
+- (void)_setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 @end;
 
 @implementation EucBookViewController
 
+@synthesize delegate = _delegate;
 @synthesize transitionView = _transitionView;
 @synthesize undimAfterAppearance = _undimAfterAppearance;
 
@@ -67,7 +69,7 @@
 - (id)initWithTransitionViewForBookContent:(TransitionView *)transitionView withToolbars:(BOOL)withToolbars
 {
 	if ((self = [super initWithNibName:nil bundle:nil])) {
-        showToolbarsOnCreation = withToolbars;
+        _showToolbarsOnFirstAppearance = withToolbars;
         
         self.hidesBottomBarWhenPushed = YES;
 
@@ -92,6 +94,8 @@
         
         _pageViewToIndexPoint = [[NSMutableDictionary alloc] init];    
         _pageViewToIndexPointCounts = [[NSCountedSet alloc] init];
+        
+        _firstAppearance = YES;
     }
 	return self;
 }
@@ -168,7 +172,7 @@
 {
     NSInteger currentPageNumber = self.pageNumber;
     if(newPageNumber != currentPageNumber) {
-        [self setPageNumber:newPageNumber animated:YES];
+        [self _setPageNumber:newPageNumber animated:YES];
         _savedJumpPage = currentPageNumber;
         _directionalJumpCount = newPageNumber > currentPageNumber ? 1 : -1;
         _jumpShouldBeSaved = YES;
@@ -180,30 +184,40 @@
     [self jumpToPage:[_pageLayoutController pageNumberForUuid:uuid]];
 }
 
-- (void)_hyperlinkTapped:(id)linkObject
+- (void)_hyperlinkTapped:(NSDictionary *)attributes
 {
-    NSURL *url = [NSURL URLWithString:linkObject];
-    if(url) {
-        NSString *scheme = url.scheme;
-        if(scheme) {
-            NSString *message = nil;
-            if([scheme caseInsensitiveCompare:@"internal"] == NSOrderedSame) {
-                [self jumpToUuid:url.resourceSpecifier];
-            } else if([scheme caseInsensitiveCompare:@"http"] == NSOrderedSame) {
-                message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to a page at “%@”, on the Internet.\n\nDo you want to switch to Safari to view it now?", @"Message for sheet in book view askng if the user want's to open a clicked URL hyperlink in Safari"), url.host];
-            } else if([scheme caseInsensitiveCompare:@"mailto"] == NSOrderedSame) {
-                message = [NSString stringWithFormat:NSLocalizedString(@"Do you want to switch to the Mail application to write an email to “%@” now?", @"Message for sheet in book view askng if the user want's to open a clicked mailto hyperlink in Mail"), url.resourceSpecifier];
-            } 
-            
-            if(message) {
-                THAlertViewWithUserInfo *alertView = [[THAlertViewWithUserInfo alloc] initWithTitle:nil
-                                                                                            message:message
-                                                                                           delegate:self
-                                                                          cancelButtonTitle:NSLocalizedString(@"Don’t Switch", @"Button to cancel opening of a clicked hyperlink") 
-                                                                          otherButtonTitles:NSLocalizedString(@"Switch", @"Button to confirm opening of a clicked hyperlink"), nil];
-                alertView.userInfo = url;
-                [alertView show];
-                [alertView release];
+    NSString *URLString = [attributes objectForKey:@"href"];
+    if(URLString) {
+        NSURL *url = [NSURL URLWithString:URLString];
+        if(url) {
+            NSString *scheme = url.scheme;
+            if(scheme) {
+                NSString *message = nil;
+                if([scheme caseInsensitiveCompare:@"internal"] == NSOrderedSame) {
+                    // This is an internal link - jump to the specified section.
+                    [self jumpToUuid:url.resourceSpecifier];
+                } else {
+                    // See if our delegate wants to handle the link.
+                    if(![_delegate respondsToSelector:@selector(bookViewController:shouldHandleTapOnHyperlink:withAttributes:)] ||
+                       [_delegate bookViewController:self shouldHandleTapOnHyperlink:url withAttributes:attributes]) {
+                        if([scheme caseInsensitiveCompare:@"http"] == NSOrderedSame) {
+                            message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to a page at “%@”, on the Internet.\n\nDo you want to switch to Safari to view it now?", @"Message for sheet in book view askng if the user want's to open a clicked URL hyperlink in Safari"), url.host];
+                        } else if([scheme caseInsensitiveCompare:@"mailto"] == NSOrderedSame) {
+                            message = [NSString stringWithFormat:NSLocalizedString(@"Do you want to switch to the Mail application to write an email to “%@” now?", @"Message for sheet in book view askng if the user want's to open a clicked mailto hyperlink in Mail"), url.resourceSpecifier];
+                        } 
+                        
+                        if(message) {
+                            THAlertViewWithUserInfo *alertView = [[THAlertViewWithUserInfo alloc] initWithTitle:nil
+                                                                                                        message:message
+                                                                                                       delegate:self
+                                                                                      cancelButtonTitle:NSLocalizedString(@"Don’t Switch", @"Button to cancel opening of a clicked hyperlink") 
+                                                                                      otherButtonTitles:NSLocalizedString(@"Switch", @"Button to confirm opening of a clicked hyperlink"), nil];
+                            alertView.userInfo = url;
+                            [alertView show];
+                            [alertView release];
+                        }
+                    }
+                }
             }
         }
     }
@@ -214,7 +228,7 @@
     if(_directionalJumpCount == -1) {
         // If the last page turn we did was a jump on the opposite direction,
         // jump back to the position we used to be at.
-        [self setPageNumber:_savedJumpPage animated:YES];
+        [self _setPageNumber:_savedJumpPage animated:YES];
         return;
     }  
        
@@ -255,7 +269,7 @@
     }*/
     
     if(newPageNumber != currentPageNumber) {
-        [self setPageNumber:newPageNumber animated:YES];
+        [self _setPageNumber:newPageNumber animated:YES];
         // Save our previous position so that we can jump back to it if the user
         // taps the next section button.
         ++jumpCount;
@@ -272,7 +286,7 @@
     if(_directionalJumpCount == 1) {
         // If the last page turn we did was a jump on the opposite direction,
         // jump back to the position we used to be at.
-        [self setPageNumber:_savedJumpPage animated:YES];
+        [self _setPageNumber:_savedJumpPage animated:YES];
         return;
     }
     
@@ -332,7 +346,7 @@
     }*/
        
     if(newPageNumber != currentPageNumber) {
-        [self setPageNumber:newPageNumber animated:YES];
+        [self _setPageNumber:newPageNumber animated:YES];
         // Save our previous position so that we can jump back to it if the user
         // taps the next section button.
         --jumpCount;
@@ -636,7 +650,7 @@
     self.view = mainSuperview;
     [mainSuperview release];
         
-    if(!showToolbarsOnCreation) {
+    if(!_showToolbarsOnFirstAppearance) {
         _toolbar.hidden = YES;
         self.navigationController.navigationBar.hidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
@@ -738,9 +752,10 @@
         NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];
         [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
     }
-    if(!showToolbarsOnCreation) {
+    if(_firstAppearance && !_showToolbarsOnFirstAppearance) {
         [[UIApplication sharedApplication] setStatusBarHidden:YES animated:animated];    
     }
+    _firstAppearance = NO;
 }
 
 - (EucBookReference<EucBook> * )book 
@@ -1030,7 +1045,7 @@
 }
 
 
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
+- (void)_setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
 {
     NSInteger oldPageNumber = self.pageNumber;
     if(oldPageNumber != pageNumber) {
@@ -1065,7 +1080,7 @@
 
 - (void)setPageNumber:(NSInteger)pageNumber
 {
-    [self setPageNumber:pageNumber animated:NO];
+    [self _setPageNumber:pageNumber animated:NO];
 }
 
 
@@ -1095,7 +1110,7 @@
 
 - (void)_afterPageSliderSlid:(THScalableSlider *)sender
 {
-    [self setPageNumber:[self _sliderByteToPage:sender.scaledValue] animated:YES];
+    [self _setPageNumber:[self _sliderByteToPage:sender.scaledValue] animated:YES];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
@@ -1223,16 +1238,16 @@
     }
 }
 
-- (void)pageView:(EucPageView *)bookTextView didReceiveTapOnHyperlink:(id)linkObject
+- (void)pageView:(EucPageView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
 {
-    if(_toolbar.hidden) {
-        // Stop tracking the touch - we don't want to display the toolbar on a
+    if(_touch) {
+        // Stop tracking the touch - we don't want to show/hide the toolbar on a
         // tap if it was on a hyperlink.
         [_touch release];
         _touch = nil;
     }
-    THLog(@"BookViewController received tap on hyperlink: %@", linkObject);
-    [self _hyperlinkTapped:linkObject];
+    THLog(@"BookViewController received tap on hyperlink: %@", attributes);
+    [self _hyperlinkTapped:attributes];
 }
 
 - (UIView *)pageTurningView:(EucPageTurningView *)pageTurningView previousViewForView:(UIView *)view

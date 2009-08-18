@@ -2,7 +2,7 @@
 //  THRegex.m
 //
 //  Created by James Montgomerie on 22/05/2008.
-//  Copyright 2008 James Montgomerie. All rights reserved.
+//  Copyright 2008-2009 James Montgomerie. All rights reserved.
 //
 
 #import "THRegex.h"
@@ -20,8 +20,9 @@
             char errorString[errorStringLength];
             regerror(err, &_regex, errorString, errorStringLength);            
             
-            [NSException raise: NSInvalidArgumentException
-                        format: @"Error %d compiling regular expression (\"%s\")", err, errorStringLength?errorString:""];
+            [NSException raise:NSInvalidArgumentException
+                        format:@"Error %d compiling regular expression (\"%s\")",
+                               err, errorStringLength ? errorString : ""];
 
             [self dealloc];
             return nil;
@@ -38,25 +39,43 @@
 
 + (id)regexDataWithPOSIXRegex:(NSString *)regexString flags:(int)flags
 {
-    static NSMutableDictionary *compiledRegexCache = nil;
-    
     THRegexData *ret = nil;
-    id key = flags == REG_EXTENDED ? [regexString retain] : [[THPair alloc] initWithFirst:regexString second:[NSNumber numberWithInt:flags]];
-    @synchronized(self) {
-        ret = [compiledRegexCache objectForKey:key];
+    
+#ifndef THREGEX_DONT_CACHE
+    static NSMutableDictionary *sCompiledRegexCache = nil;
+    id key;
+    if(flags == REG_EXTENDED) {
+        // This is the most popular form of regex, so we just use the string
+        // directly as the cache key, to avoid the performance hit of creating
+        // a key.
+        key = [regexString retain];
+    } else {
+        // The unmatched '(' will make this key be an invalid regex,
+        // so it's guaranteed not to clash with a 'normal' key, above. 
+        key = [[NSString alloc] initWithFormat:@"%@(%d", regexString, flags];
     }
+    @synchronized(self) {
+        ret = [sCompiledRegexCache objectForKey:key];
+    }
+
     if(!ret) {
+#endif
+        
         ret = [[[THRegexData alloc] initWithPOSIXRegex:regexString flags:flags] autorelease];
+
+#ifndef THREGEX_DONT_CACHE
         if(ret) {
             @synchronized(self) {
-                if(!compiledRegexCache) {
-                    compiledRegexCache = [[NSMutableDictionary alloc] init];
+                if(!sCompiledRegexCache) {
+                    sCompiledRegexCache = [[NSMutableDictionary alloc] init];
                 }
-                [compiledRegexCache setObject:ret forKey:key];
+                [sCompiledRegexCache setObject:ret forKey:key];
             }
-        }
+        }        
     }
     [key release];
+#endif
+    
     return ret;
 }
 
@@ -147,8 +166,9 @@
         char errorString[errorStringLength];
         regerror(err, regex, errorString, errorStringLength);            
         
-        [NSException raise: NSInvalidArgumentException
-                    format: @"Error %d running regular expression (\"%s\")", err, errorStringLength?errorString:""];
+        [NSException raise:NSInvalidArgumentException
+                    format:@"Error %d running regular expression (\"%s\")", 
+                           err, errorStringLength ? errorString : ""];
     }
     return NO;
 }
@@ -163,7 +183,9 @@
         if(start != end)    {
             // Don't use substringWithRange, because it counts in characters, not
             // bytes.
-            return [[[NSString alloc] initWithBytes:_UTF8buffer + start length:end - start encoding:NSUTF8StringEncoding] autorelease];
+            return [[[NSString alloc] initWithBytes:_UTF8buffer + start 
+                                             length:end - start 
+                                           encoding:NSUTF8StringEncoding] autorelease];
         }
     } 
     return nil;

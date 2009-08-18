@@ -24,6 +24,8 @@
 }
 
 @synthesize flags = _flags;
+@synthesize image = _image;
+@synthesize attributes = _attributes;
 
 - (id)init
 {
@@ -74,7 +76,7 @@
 {
     EucBookTextStyle *newStyle = [[self copy] autorelease];
     [newStyle setFlag:otherStyle->_flags];
-    newStyle.hyperlink = otherStyle.hyperlink;
+    [newStyle->_attributes addEntriesFromDictionary:otherStyle->_attributes];
     [newStyle->_cssStyles addEntriesFromDictionary:otherStyle->_cssStyles];
     newStyle->_fontSizePercentage *= otherStyle->_fontSizePercentage;
     return newStyle;
@@ -95,15 +97,13 @@
     _flags ^= flag;
 }
 
-@synthesize hyperlink = _hyperlink;
-@synthesize image = _image;
 
 - (id)initByCopying:(EucBookTextStyle *)oldStyle
 {
     if((self = [super init])) {
         _flags = oldStyle->_flags;
         _cssStyles = [oldStyle->_cssStyles mutableCopy];
-        _hyperlink = [oldStyle->_hyperlink retain];
+        _attributes = [oldStyle->_attributes mutableCopy];
         _fontSizePercentage = oldStyle->_fontSizePercentage;
         _image = [oldStyle->_image retain];
     }
@@ -118,7 +118,7 @@
 - (void)dealloc
 {
     [_cssStyles release];
-    [_hyperlink release];
+    [_attributes release];
     [_cachedRenderer release];
     [_image release];
     [super dealloc];
@@ -127,7 +127,7 @@
 
 - (BOOL)isNonDefault
 {
-    return _flags || _hyperlink || [_cssStyles count] || _fontSizePercentage != 1.0f || _image;
+    return _flags || _attributes || [_cssStyles count] || _fontSizePercentage != 1.0f || _image;
 }
 
 - (THStringRenderer *)stringRenderer
@@ -214,6 +214,22 @@
         if(_cssStyles.count == 0) {
             [_cssStyles release];
             _cssStyles = nil;
+        }
+    }
+}
+
+- (void)setAttribute:(NSString *)attributeName to:(NSString *)value
+{
+    if(value.length) {
+        if(!_attributes) {
+            _attributes = [[NSMutableDictionary alloc] init];
+        }
+        [_attributes setObject:value forKey:attributeName];
+    } else {
+        [_attributes removeObjectForKey:attributeName];
+        if(!_attributes.count) {
+            [_attributes release];
+            _attributes = nil;
         }
     }
 }
@@ -349,7 +365,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"flags: %lx, fontSizePercentage: %f, hyperlink: %@, %@", (long)_flags, _fontSizePercentage, _hyperlink, _cssStyles];
+    return [NSString stringWithFormat:@"flags: %lx, fontSizePercentage: %f, attributes: %@, %@", (long)_flags, _fontSizePercentage, _attributes, _cssStyles];
 }
 
 @end
@@ -370,7 +386,10 @@
             _flags &= !_LegacyBookTextAttributeFlagItalic;
         }
         if((_flags & _LegacyBookTextAttributeFlagHyperlink) != 0) {
-            self.hyperlink = [coder decodeObjectForKey:@"object"];
+            NSString *hyperlink = [coder decodeObjectForKey:@"object"];
+            if(hyperlink) {
+                [self setAttribute:@"href" to:hyperlink];
+            }
             _flags &= !_LegacyBookTextAttributeFlagHyperlink;
         }
     }

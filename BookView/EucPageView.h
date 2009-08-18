@@ -71,6 +71,6 @@ typedef enum EucPageViewTitleLineContents
 @protocol EucPageViewDelegate <NSObject>
 
 @optional
-- (void)pageView:(EucPageView *)pageView didReceiveTapOnHyperlink:(id)linkObject;
+- (void)pageView:(EucPageView *)pageView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes;
 
 @end

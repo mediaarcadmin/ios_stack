@@ -30,9 +30,9 @@
     XML_Parser _parser;
     
     size_t _paragraphBuildingStartOffset;
-    NSMutableArray *_paragraphBuildingStyleStack;
     NSMutableArray *_paragraphBuildingWords;
     NSMutableArray *_paragraphBuildingAttributes;
+    NSMutableArray *_paragraphBuildingStyleStack;
     BOOL _paragraphBuildingCharactersEndedInWhitespace;
     
     NSCharacterSet *_whitespaceAndNewlineCharacterSet;

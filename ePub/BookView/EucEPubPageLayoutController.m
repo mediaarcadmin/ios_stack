@@ -264,8 +264,8 @@ static void readRightRaggedJustificationDefault()
             if(wordCount) {
                 NSArray *wordFormattingAttributes = paragraph.wordFormattingAttributes;
                 
-                if(wordOffset) {
-                    wordCount = words.count-wordOffset;
+                if(wordOffset && wordOffset <= wordCount) {
+                    wordCount -= wordOffset;
                     NSRange rangeOnPage = NSMakeRange(wordOffset, wordCount);
                     words = [words subarrayWithRange:rangeOnPage];
                     wordFormattingAttributes = [wordFormattingAttributes subarrayWithRange:rangeOnPage];

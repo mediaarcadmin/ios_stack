@@ -98,7 +98,7 @@ using namespace Hyphenate;
                 CGPoint afterDrawingPoint = [[attribute stringRenderer] drawString:string inContext:cgContext atPoint:point pointSize:[attribute fontPointSizeForPointSize:_pointSize]];
                 CGFloat stringWidth = afterDrawingPoint.x - point.x;
                 
-                NSString *wordHyperlink = attribute.hyperlink;
+                NSString *wordHyperlink = [attribute.attributes objectForKey:@"href"];
                 
                 if(inHyperlink && (!wordHyperlink || ![hyperlinkObject isEqual:wordHyperlink])) {
                     // Draw link up to previous word.
@@ -127,7 +127,7 @@ using namespace Hyphenate;
                         }
                     } else {                    
                         hyperlinkStartPoint = point;
-                        hyperlinkObject = attribute.hyperlink;
+                        hyperlinkObject = [attribute.attributes objectForKey:@"href"];
                         inHyperlink = YES;
                     }     
                     
@@ -905,7 +905,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
                 word = [word substringToIndex:linkMarkRange.location];
                 
                 EucBookTextStyle *hyperlinkedStyle = [[attributes objectAtIndex:wordIndex] copy];
-                hyperlinkedStyle.hyperlink = link;
+                [hyperlinkedStyle setAttribute:@"href" to:link];
                 [attributes replaceObjectAtIndex:wordIndex withObject:hyperlinkedStyle];
                 [hyperlinkedStyle release];
                 if(!mutableWords) {
@@ -1039,13 +1039,18 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             THPair *potentialStringWithAttibutes = _stringsWithAttributes[i];
             if([potentialStringWithAttibutes isKindOfClass:THPairClass]) {
                 EucBookTextStyle *attribute = potentialStringWithAttibutes.second;
-                if(attribute.hyperlink) {
+                if([attribute.attributes objectForKey:@"href"]) {
                     CGRect hotArea;
                     hotArea.origin.x = _stringPositions[i].x - _spaceWidth / 2;
                     hotArea.origin.y = _stringPositions[i].y + _pageYOffset;
-                    hotArea.size.width = [[attribute stringRenderer] roundedWidthOfString:potentialStringWithAttibutes.first 
-                                                                         pointSize:[attribute fontPointSizeForPointSize:_pointSize] + _spaceWidth];
-                    hotArea.size.height = _lineHeight;
+                    if(attribute.image) {
+                        hotArea.size.width = [attribute imageWidthForPointSize:_pointSize];
+                    } else {
+                        hotArea.size.width = [[attribute stringRenderer] roundedWidthOfString:potentialStringWithAttibutes.first 
+                                                                                    pointSize:[attribute fontPointSizeForPointSize:_pointSize]];
+                    }
+                    hotArea.size.width += _spaceWidth;
+                    hotArea.size.height = [attribute lineHeightForPointSize:_pointSize];
                     
                     if(CGRectContainsPoint(hotArea, location)) {
                         _trackingRect = CGRectInset(hotArea, -10, -10);;
@@ -1074,10 +1079,10 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
         _touch = nil;
         if(_trackingWord) {
             if(CGRectContainsPoint(_trackingRect, location)) {
-                id linkObject = ((EucBookTextStyle *)((THPair *)_stringsWithAttributes[_trackingWordIndex]).second).hyperlink;
-                THLog(@"Tapped %@", linkObject);
-                if(_delegate && [_delegate respondsToSelector:@selector(bookTextView:didReceiveTapOnHyperlink:)]) {
-                    [_delegate bookTextView:self didReceiveTapOnHyperlink:linkObject];
+                NSDictionary *linkAttributes = ((EucBookTextStyle *)((THPair *)_stringsWithAttributes[_trackingWordIndex]).second).attributes;
+                THLog(@"Tapped hyperlink with attributes: %@", linkAttributes);
+                if(_delegate && [_delegate respondsToSelector:@selector(bookTextView:didReceiveTapOnHyperlinkWithAttributes:)]) {
+                    [_delegate bookTextView:self didReceiveTapOnHyperlinkWithAttributes:linkAttributes];
                 }
             }
         } else {

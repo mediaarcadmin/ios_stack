@@ -102,7 +102,7 @@ typedef struct {
 @protocol EucBookTextViewDelegate <NSObject>
 
 @optional
-- (void)bookTextView:(EucBookTextView *)bookTextView didReceiveTapOnHyperlink:(id)linkObject;
+- (void)bookTextView:(EucBookTextView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes;
 - (void)bookTextViewDidReceiveTapOnPage:(EucBookTextView *)bookTextView;
 
 @end

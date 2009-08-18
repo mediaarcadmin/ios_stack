@@ -2,7 +2,7 @@
 //  THRegex.h
 //
 //  Created by James Montgomerie on 22/05/2008.
-//  Copyright 2008 James Montgomerie. All rights reserved.
+//  Copyright 2008-2009 James Montgomerie. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -28,7 +28,6 @@
 - (BOOL)matchString:(NSString *)string;
 
 - (NSString *)match:(NSInteger)index;
-//- (NSRange)rangeOfMatch:(NSInteger)index;
 
 @end
 

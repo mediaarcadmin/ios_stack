@@ -33,7 +33,7 @@ typedef enum {
     CGFloat _fontSizePercentage;
     
     NSMutableDictionary *_cssStyles;
-    NSString *_hyperlink;
+    NSMutableDictionary *_attributes;
     UIImage *_image;
     
     THStringRenderer *_cachedRenderer;
@@ -77,12 +77,13 @@ typedef enum  {
 } EucBookTextStyleFontWeight;
 
 @property (readonly) BOOL isNonDefault;
-@property (nonatomic, retain) NSString *hyperlink;
 @property (nonatomic, retain) UIImage *image;
+@property (nonatomic, readonly) NSDictionary *attributes;
 
 - (THStringRenderer *)stringRenderer;
 
 - (void)setStyle:(NSString *)cssStyleName to:(NSString *)value;
+- (void)setAttribute:(NSString *)attribute to:(NSString *)value;
 
 @property (nonatomic, readonly) EucBookTextStyleFontStyle fontStyle;
 @property (nonatomic, readonly) EucBookTextStyleFontStyle fontWeight;

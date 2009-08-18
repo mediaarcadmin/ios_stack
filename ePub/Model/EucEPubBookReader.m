@@ -17,7 +17,7 @@
 
 #define kMaxCachedFiles 3
 
-@interface _CachedXHTMLFile : NSObject {
+@interface _CachedXHTMLFileInformation : NSObject {
     NSData *xhtmlData;
     NSURL *baseURL;
     NSString *packageRelativePath;
@@ -31,7 +31,7 @@
 @property (nonatomic, retain) EucEPubStyleStore *styleStore;
 @end
 
-@implementation _CachedXHTMLFile
+@implementation _CachedXHTMLFileInformation
 @synthesize xhtmlData;
 @synthesize baseURL;
 @synthesize packageRelativePath;
@@ -79,7 +79,7 @@ NSDictionary *sXHTMLEntityMap = nil;
     if((self == [super init])) {
         _book = [book retain];
         _whitespaceAndNewlineCharacterSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] retain];
-        _paragraphBuildingStyleStack = [[NSMutableArray alloc] init];
+
         _parser = XML_ParserCreate("UTF-8");
         
         _xHTMLfileCache = [[NSMutableArray alloc] initWithCapacity:kMaxCachedFiles];
@@ -111,7 +111,6 @@ NSDictionary *sXHTMLEntityMap = nil;
     [_baseURL release];
     [_packageRelativePath release];
     [_styleStore release];
-    [_paragraphBuildingStyleStack release];
     [_paragraphBuildingWords release];
     [_paragraphBuildingAttributes release];
     [_whitespaceAndNewlineCharacterSet release];
@@ -283,6 +282,9 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
             self->_paragraphBuildingCharactersEndedInWhitespace = YES;
         }
     } else if(strcmp("a", name) == 0) {
+        EucBookTextStyle *style = [self->_paragraphBuildingStyleStack lastObject];
+        style = [style copy];
+
         NSMutableDictionary *anchorIDStore = self->_anchorIDStore;
         for(int i = 0; atts[i]; i+=2) {
             if(anchorIDStore && strcmp("id", atts[i]) == 0) {
@@ -290,8 +292,7 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
                 NSString *path = [self->_packageRelativePath stringByAppendingFormat:@"#%@", [NSString stringWithUTF8String:atts[i+1]]];
                 [anchorIDStore setObject:[NSNumber numberWithInteger:offset]
                                   forKey:path];
-            }
-            if(strcmp("href", atts[i]) == 0) {
+            } else if(strcmp("href", atts[i]) == 0) {
                 // Build an "internal:" link that points towards the book-
                 // relative path that this anchor links to.
                 NSString *hyperlink = nil;
@@ -303,18 +304,24 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
                     if(fragment.length) {
                         bookHref = [bookHref stringByAppendingFormat:@"#%@", fragment]; 
                     }
-                    hyperlink = [@"internal:" stringByAppendingString:bookHref];
-                } else {
+                    if([self->_book sectionWithUuid:bookHref]) {
+                        // If this is an internal link, replace it with an 
+                        // "internal" href.
+                        hyperlink = [@"internal:" stringByAppendingString:bookHref];
+                    }
+                } 
+                if(!hyperlink) {
                     hyperlink = [hrefUrl absoluteString];
                 }
-                EucBookTextStyle *style = [self->_paragraphBuildingStyleStack lastObject];
-                style = [style copy];
-                [style setHyperlink:hyperlink];
-                [self->_paragraphBuildingStyleStack removeLastObject];
-                [self->_paragraphBuildingStyleStack addObject:style];
-                [style release];                    
+                [style setAttribute:@"href" to:hyperlink];
+            } else {
+                [style setAttribute:[NSString stringWithUTF8String:atts[i]] to:[NSString stringWithUTF8String:atts[i+1]]];
             }
         }
+        
+        [self->_paragraphBuildingStyleStack removeLastObject];
+        [self->_paragraphBuildingStyleStack addObject:style];
+        [style release];                            
     }
 }    
 
@@ -344,6 +351,7 @@ static void paragraphBuildingCharactersHandler(void *ctx, const XML_Char *chars,
     
     EucBookTextStyle *style = [self->_paragraphBuildingStyleStack lastObject];
 
+    // Break up the text into individual words, and store.
     const XML_Char *cursor = chars;
     const XML_Char *limit = chars + len;
     const XML_Char *wordStartsAt = NULL;
@@ -431,28 +439,40 @@ void paragraphBuildingSkippedEntityHandler(void *ctx, const XML_Char *entityName
     NSString *path = [_book.spineFiles objectAtIndex:index];
     NSURL *baseURL = [NSURL fileURLWithPath:path isDirectory:NO];
     
-    _CachedXHTMLFile *file = nil;
-    for(_CachedXHTMLFile *potentialCachedFile in _xHTMLfileCache) {
-        if([potentialCachedFile.baseURL isEqual:baseURL]) {
-            file = [potentialCachedFile retain];
+    // Opening a file and parsing the header is quite expensive, slowing
+    // down page resize and turning delays unacceptably, especially on a
+    // 1st gen iPhone.  To combat this, we cache the last few files opened,
+    // and the information gleaned from parsing the headers.
+    
+    // Look to see if we already have this file's information cached.
+    _CachedXHTMLFileInformation *cachedFileInfo = nil;
+    for(_CachedXHTMLFileInformation *potentialCachedFileInfo in _xHTMLfileCache) {
+        if([potentialCachedFileInfo.baseURL isEqual:baseURL]) {
+            cachedFileInfo = [potentialCachedFileInfo retain];
             break;
         }
     }
     
-    if(file) {
-        [file retain];
-        [_xHTMLfileCache removeObject:file]; // We'll re-add it in the 'most recent' position later.
+    
+    if(cachedFileInfo) {
+        // Re-use the information from the cache.
+        [cachedFileInfo retain];
+        
+        // Remove the file info from the cache - we'll re store it in the
+        // 'most recent' position after this 'if', before we return.
+        [_xHTMLfileCache removeObject:cachedFileInfo]; 
         
         [_baseURL release];
-        _baseURL = [file.baseURL retain];
+        _baseURL = [cachedFileInfo.baseURL retain];
         [_xhtmlData release];
-        _xhtmlData = [file.xhtmlData retain];
+        _xhtmlData = [cachedFileInfo.xhtmlData retain];
         [_packageRelativePath release];
-        _packageRelativePath = [file.packageRelativePath retain];
-        _startOffset = file.startOffset;
+        _packageRelativePath = [cachedFileInfo.packageRelativePath retain];
+        _startOffset = cachedFileInfo.startOffset;
         [_styleStore release];
-        _styleStore = [file.styleStore retain];            
+        _styleStore = [cachedFileInfo.styleStore retain];            
     } else {
+        // Open and parse the header of this file.
         [_baseURL release];
         _baseURL = [baseURL retain];
         
@@ -468,21 +488,28 @@ void paragraphBuildingSkippedEntityHandler(void *ctx, const XML_Char *entityName
         
         _startOffset = [self _parseHeader]; 
         
-        file = [[_CachedXHTMLFile alloc] init];
-        file.baseURL = _baseURL;
-        file.xhtmlData = _xhtmlData;
-        file.packageRelativePath = _packageRelativePath;
-        file.startOffset = _startOffset;
-        file.styleStore = _styleStore;
+        // Make the object representing this file and the info we've parsed to
+        // store in the cache.
+        cachedFileInfo = [[_CachedXHTMLFileInformation alloc] init];
+        cachedFileInfo.baseURL = _baseURL;
+        cachedFileInfo.xhtmlData = _xhtmlData;
+        cachedFileInfo.packageRelativePath = _packageRelativePath;
+        cachedFileInfo.startOffset = _startOffset;
+        cachedFileInfo.styleStore = _styleStore;
     }
     
     
+    // Remove the least recently used cache item if the cache is getting too
+    // large, and cache this file's info.
     if(_xHTMLfileCache.count > kMaxCachedFiles) {
         [_xHTMLfileCache removeObjectAtIndex:0];
     }
-    [_xHTMLfileCache addObject:file];
-    [file release];
+    [_xHTMLfileCache addObject:cachedFileInfo];
     
+    [cachedFileInfo release];
+    
+    
+    // Update our state.
     _currentFileIndex = index;
     
     if(_anchorIDStore) {
@@ -509,18 +536,23 @@ void paragraphBuildingSkippedEntityHandler(void *ctx, const XML_Char *entityName
         }
     }
     
-    if(YES || offset < maxOffset) {
-        [self _resetParserForParagraphParsing];
-        
-        _paragraphBuildingWords = [[NSMutableArray alloc] init];
-        _paragraphBuildingAttributes = [[NSMutableArray alloc] init];
-        self->_paragraphBuildingCharactersEndedInWhitespace = YES;
-
+    if(offset == -1 || offset < maxOffset) {
         size_t inFileOffset = offset - _fileStartOffsetMap[_currentFileIndex];
         if(inFileOffset < _startOffset) {
             inFileOffset = _startOffset;
             offset = inFileOffset + _fileStartOffsetMap[_currentFileIndex];
         }
+        
+        [self _resetParserForParagraphParsing];
+        
+        // If this get's any mre complex, might be nice to build a paragraph
+        // parsing class, or even just a struct to store these in, and not have
+        // the paragraph parser access these ivars directly.
+        _paragraphBuildingWords = [[NSMutableArray alloc] init];
+        _paragraphBuildingAttributes = [[NSMutableArray alloc] init];
+        _paragraphBuildingStyleStack = [[NSMutableArray alloc] init];
+        self->_paragraphBuildingCharactersEndedInWhitespace = YES;
+        
         _paragraphBuildingStartOffset = offset;
         XML_Parse(_parser, [_xhtmlData bytes] + inFileOffset, [_xhtmlData length] - inFileOffset, XML_FALSE);
 
@@ -537,8 +569,8 @@ void paragraphBuildingSkippedEntityHandler(void *ctx, const XML_Char *entityName
         _paragraphBuildingWords = nil;
         [_paragraphBuildingAttributes release];
         _paragraphBuildingAttributes = nil;
-
-        [_paragraphBuildingStyleStack removeAllObjects];
+        [_paragraphBuildingStyleStack release];
+        _paragraphBuildingStyleStack = nil;
 
         if(!ret && _currentFileIndex < _fileStartOffsetMapCount - 1) {
             return [self paragraphAtOffset:_fileStartOffsetMap[fileContainingOffset+1] maxOffset:maxOffset];
@@ -565,7 +597,6 @@ void paragraphBuildingSkippedEntityHandler(void *ctx, const XML_Char *entityName
 
 - (void)savePaginationDataToDirectoryAt:(NSString *)path
 {
-    NSLog(@"ANCHOR STORE: %@", _anchorIDStore);
     [_anchorIDStore writeToFile:[path stringByAppendingPathComponent:@"chapterOffsets.plist"] atomically:YES];
 }
 
