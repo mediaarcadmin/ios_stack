@@ -1162,11 +1162,7 @@
             
             // Work around a problem where the navigation controller doesn't
             // resize itsself when the status bar shows.
-            /*UIView *view = [[self navigationController] view];
-            UIView *superview = [view superview];
-            [view removeFromSuperview];
-            [superview addSubview:view];
-            */
+            [[self navigationController] view].frame = [[UIScreen mainScreen] applicationFrame];
             
             self.navigationController.navigationBar.alpha = 1;
         } else {
