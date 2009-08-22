@@ -77,6 +77,7 @@ typedef enum  {
 } EucBookTextStyleFontWeight;
 
 @property (readonly) BOOL isNonDefault;
+@property (readonly) BOOL wantsFullBleed;
 @property (nonatomic, retain) UIImage *image;
 @property (nonatomic, readonly) NSDictionary *attributes;
 
@@ -101,6 +102,5 @@ typedef enum  {
 - (CGFloat)marginRightForPointSize:(CGFloat)pointSize inWidth:(CGFloat)width;
 
 - (CGFloat)textIndentForPointSize:(CGFloat)pointSize inWidth:(CGFloat)width;
-
 
 @end

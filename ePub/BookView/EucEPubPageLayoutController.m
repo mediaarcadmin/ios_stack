@@ -57,7 +57,6 @@ static void readRightRaggedJustificationDefault()
         [self setFontPointSize:pointSize];
         _bookReader = [[_book reader] retain];
         
-        _paperImage = [[UIImage imageNamed:@"BookPaperWhite.png"] retain];
     }
     return self;
 }
@@ -71,7 +70,6 @@ static void readRightRaggedJustificationDefault()
     [_bookIndexes release];
     [_availablePointSizes release];
     
-    [_paperImage release];
     [super dealloc];
 }
 
@@ -176,26 +174,16 @@ static void readRightRaggedJustificationDefault()
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber
 {
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
-        UIView *view = nil;
         EucBookPageIndexPoint *indexPoint = [_bookIndex indexPointForPage:pageNumber];
-        EucPageView *pageView = [[EucPageView alloc] initWithPointSize:_bookIndex.pointSize 
-                                                       titleFont:@"Helvetica-Oblique" 
-                                                  pageNumberFont:@"Helvetica"
-                                                  titlePointSize:_bookIndex.pointSize * 0.75
-                                                      paperImage:_paperImage];
+        EucPageView *pageView = [[self class] blankPageViewForPointSize:_bookIndex.pointSize];
         pageView.titleLinePosition = EucPageViewTitleLinePositionBottom;
         pageView.titleLineContents = EucPageViewTitleLineContentsCenteredPageNumber;
         [[self class] layoutPageFromBookReader:_bookReader 
                                startingAtPoint:indexPoint 
-                                      intoView:pageView.bookTextView];
+                                  intoPageView:pageView];
         pageView.pageNumber = [self displayPageNumberForPageNumber:pageNumber];
         pageView.title = _book.title;
-        if(pageNumber == 1) {
-            pageView.fullBleed = YES;
-            pageView.bookTextView.allowScaledImageDistortion = YES;
-        }        
-        view = [pageView autorelease];            
-        return  [THPair pairWithFirst:view second:indexPoint];
+        return  [THPair pairWithFirst:pageView second:indexPoint];
     } else {
         return nil;
     }
@@ -210,14 +198,28 @@ static void readRightRaggedJustificationDefault()
     return ret;
 }
 
++ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize;
+{
+    static UIImage *sPaperImage = nil;
+    if(!sPaperImage) {
+        sPaperImage = [[UIImage imageNamed:@"BookPaperWhite.png"] retain];
+    }
+
+    return [[[EucPageView alloc] initWithPointSize:pointSize 
+                                         titleFont:@"Helvetica-Oblique" 
+                                    pageNumberFont:@"Helvetica"
+                                    titlePointSize:pointSize * 0.75
+                                        paperImage:sPaperImage] autorelease];
+}
 
 + (EucBookPageIndexPoint *)layoutPageFromBookReader:(id <EucBookReader>)reader
                                     startingAtPoint:(EucBookPageIndexPoint *)indexPoint
-                                           intoView:(EucBookTextView *)bookTextView
+                                       intoPageView:(EucPageView *)pageView
 {
     NSParameterAssert([reader isKindOfClass:[EucEPubBookReader class]]);
     EucEPubBookReader *bookReader = (EucEPubBookReader *)reader;
-    
+    EucBookTextView *bookTextView = pageView.bookTextView;
+
     EucBookPageIndexPoint *ret = nil;
     
     size_t nextParagraphOffset = indexPoint.startOfParagraphByteOffset;
@@ -226,13 +228,24 @@ static void readRightRaggedJustificationDefault()
     NSUInteger paragraphCount = 0;
     NSUInteger paragraphsWithContentCount = 0;
     CGFloat lastBottomMargin = 0;
-    
+        
     while(!ret) {
         size_t thisParagraphOffset = nextParagraphOffset;
         EucEPubBookParagraph *paragraph = [bookReader paragraphAtOffset:thisParagraphOffset
                                                               maxOffset:-1];
         if(paragraph) {            
             EucBookTextStyle *globalStyle = paragraph.globalStyle;
+            
+            if(paragraphCount == 0) {
+                if(globalStyle.wantsFullBleed) {
+                    pageView.fullBleed = YES;
+                    bookTextView.allowScaledImageDistortion = YES;
+                } else {
+                    pageView.fullBleed = NO;
+                    bookTextView.allowScaledImageDistortion = NO;
+                }
+            }
+            
             if(paragraphCount != 0 && globalStyle.shouldPageBreakBefore && !wordOffset && !hyphenOffset) {
                 ret = [[EucBookPageIndexPoint alloc] init];
                 ret.startOfParagraphByteOffset = thisParagraphOffset; 
@@ -255,8 +268,8 @@ static void readRightRaggedJustificationDefault()
                 CGFloat topMargin = [globalStyle marginTopForPointSize:bookTextView.pointSize inWidth:containingWidth];
                 topMargin = MAX(lastBottomMargin, topMargin);
                 [bookTextView addVerticalSpace:topMargin];
-                lastBottomMargin = [globalStyle marginBottomForPointSize:bookTextView.pointSize inWidth:containingWidth];
             }
+            lastBottomMargin = [globalStyle marginBottomForPointSize:bookTextView.pointSize inWidth:containingWidth];
             
             nextParagraphOffset = paragraph.nextParagraphByteOffset;
             NSArray *words = paragraph.words;
@@ -301,13 +314,7 @@ static void readRightRaggedJustificationDefault()
                     endPosition.removalCookie = 0;
                 }     
                 
-                if(endPosition.completeWordCount == wordCount) {
-                    /*if(nextParagraphOffset >= maxFileOffset) {
-                     // This paragraph ended at the end of the section.
-                     ret = [[BookPageIndexPoint alloc] init];
-                     ret.startOfParagraphByteOffset = maxFileOffset;
-                     }*/
-                } else {
+                if(endPosition.completeWordCount != wordCount) {
                     // If we didn't get to the end of the words
                     // Return the next-word position.
                     ret = [[EucBookPageIndexPoint alloc] init];

@@ -8,7 +8,7 @@
  */
 #import <UIKit/UIKit.h>
 
-@class EucGutenbergBook, EucBookTextView, EucBookPageIndex, EucBookPageIndexPoint, THPair;
+@class EucGutenbergBook, EucBookPageIndex, EucBookPageIndexPoint, EucPageView, THPair;
 @protocol EucBook, EucBookReader;
 
 @protocol EucPageLayoutController <NSObject>
@@ -39,9 +39,11 @@
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
++ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize;
+
 + (EucBookPageIndexPoint *)layoutPageFromBookReader:(id <EucBookReader>)reader
-                                 startingAtPoint:(EucBookPageIndexPoint *)indexPoint
-                                        intoView:(EucBookTextView *)view;
+                                    startingAtPoint:(EucBookPageIndexPoint *)indexPoint
+                                       intoPageView:(EucPageView *)view;
 
 - (BOOL)viewShouldBeRigid:(UIView *)view;
 

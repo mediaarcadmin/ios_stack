@@ -178,6 +178,8 @@
 		7D5174041028BA14005F3C46 /* xmltok_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173B21028BA14005F3C46 /* xmltok_impl.h */; };
 		7D5174051028BA14005F3C46 /* xmltok_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173B31028BA14005F3C46 /* xmltok_ns.c */; };
 		7D51741D1028BA14005F3C46 /* expat_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173DE1028BA14005F3C46 /* expat_config.h */; };
+		7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D658C6D103DEAD900EB5003 /* THImageFactory.h */; };
+		7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D658C6E103DEAD900EB5003 /* THImageFactory.m */; };
 		7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAC841028DEAD006289E6 /* THScalableSlider.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAC851028DEAD006289E6 /* THScalableSlider.m */; };
 		7D6AAD561028E75C006289E6 /* EucBookTextView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD541028E75C006289E6 /* EucBookTextView.mm */; };
@@ -193,6 +195,8 @@
 		7D6AAD6A1028E7BD006289E6 /* EucLocalBookReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */; };
 		7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */; };
 		AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */; settings = {ATTRIBUTES = (); }; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -464,6 +468,8 @@
 		7D5173B51028BA14005F3C46 /* MANIFEST */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MANIFEST; sourceTree = "<group>"; };
 		7D5173B61028BA14005F3C46 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		7D5173DE1028BA14005F3C46 /* expat_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expat_config.h; sourceTree = "<group>"; };
+		7D658C6D103DEAD900EB5003 /* THImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THImageFactory.h; sourceTree = "<group>"; };
+		7D658C6E103DEAD900EB5003 /* THImageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THImageFactory.m; sourceTree = "<group>"; };
 		7D6AAC841028DEAD006289E6 /* THScalableSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THScalableSlider.h; sourceTree = "<group>"; };
 		7D6AAC851028DEAD006289E6 /* THScalableSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THScalableSlider.m; sourceTree = "<group>"; };
 		7D6AAD541028E75C006289E6 /* EucBookTextView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucBookTextView.mm; sourceTree = "<group>"; };
@@ -479,6 +485,8 @@
 		7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLocalBookReference.h; sourceTree = "<group>"; };
 		7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSFileManagerAdditions.m; sourceTree = "<group>"; };
 		7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSFileManagerAdditions.h; sourceTree = "<group>"; };
+		7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTextFittingLabel.h; sourceTree = "<group>"; };
+		7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTextFittingLabel.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libEucalyptus_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libEucalyptus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptus.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -625,6 +633,8 @@
 		7D516E39102873B0005F3C46 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				7D658C6D103DEAD900EB5003 /* THImageFactory.h */,
+				7D658C6E103DEAD900EB5003 /* THImageFactory.m */,
 				7D6AAC841028DEAD006289E6 /* THScalableSlider.h */,
 				7D6AAC851028DEAD006289E6 /* THScalableSlider.m */,
 				7D51703D102884F1005F3C46 /* THStringRenderer.h */,
@@ -645,6 +655,8 @@
 				7D516FF510287905005F3C46 /* THRoundRects.c */,
 				7D517019102879C7005F3C46 /* THGeometryUtils.h */,
 				7D51701A102879C7005F3C46 /* THGeometryUtils.c */,
+				7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */,
+				7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1086,6 +1098,8 @@
 				7D6AAD661028E7A9006289E6 /* EucBookReference.h in Headers */,
 				7D6AAD6A1028E7BD006289E6 /* EucLocalBookReference.h in Headers */,
 				7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */,
+				7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */,
+				7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1316,6 +1330,8 @@
 				7D6AAD651028E7A9006289E6 /* EucBookReference.m in Sources */,
 				7D6AAD691028E7BD006289E6 /* EucLocalBookReference.m in Sources */,
 				7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */,
+				7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */,
+				7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

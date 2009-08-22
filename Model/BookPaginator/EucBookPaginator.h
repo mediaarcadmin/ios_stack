@@ -22,6 +22,8 @@ extern NSString * const BookPaginationBytesPaginatedKey;
     id<EucBook> _book;
     NSString *_fontFamilyName;
     
+    NSString *_saveImagesTo;
+    
     pthread_t _paginationThread;
     NSConditionLock *_paginationStartedLock;
     BOOL _continueParsing;
@@ -32,7 +34,7 @@ extern NSString * const BookPaginationBytesPaginatedKey;
 @property (nonatomic, readonly) size_t bytesProcessed;
 @property (nonatomic, readonly) BOOL isPaginating;
 
-- (void)paginateBookInBackground:(id<EucBook>)book forForFontFamily:(NSString *)fontFamilyName;
+- (void)paginateBookInBackground:(id<EucBook>)book forForFontFamily:(NSString *)fontFamilyName saveImagesTo:(NSString *)path;
 - (void)stop;
 
 - (void)testPaginateBook:(id<EucBook>)book forForFontFamily:(NSString *)fontFamilyName;

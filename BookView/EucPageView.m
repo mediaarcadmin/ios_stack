@@ -167,7 +167,7 @@
         THStringRenderer *pageNumberRenderer = _pageNumberRenderer;
         
 
-        NSString *pageNumberString = _pageNumber;
+        NSString *pageNumberString = _pageNumber ? _pageNumber : @"";
         NSString *titleString = self.title;
         CGFloat pageNumberWidth = [pageNumberRenderer widthOfString:pageNumberString pointSize:_titlePointSize];;
         CGFloat spaceWidth = [pageNumberRenderer widthOfString:@" " pointSize:_titlePointSize];        

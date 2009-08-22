@@ -74,6 +74,7 @@ typedef enum {
 @property (nonatomic, retain) TransitionView *transitionView;
 @property (nonatomic, retain) EucBookReference<EucBook> * book;
 @property (nonatomic) NSInteger pageNumber;
+@property (nonatomic, readonly) NSString *currentSectionUuid;
 @property (nonatomic, readonly) UIImage *currentPageImage;
 @property (nonatomic, assign) CGFloat dimQuotient;
 @property (nonatomic, assign) BOOL undimAfterAppearance;

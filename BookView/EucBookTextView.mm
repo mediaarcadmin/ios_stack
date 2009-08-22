@@ -80,7 +80,9 @@ using namespace Hyphenate;
     CGPoint previousStringPoint = CGPointZero;
     CGFloat previousStringWidth = 0;
 
-    THStringRenderer *defaultRenderer = [[[EucBookTextStyle alloc] init] stringRenderer];
+    EucBookTextStyle *defaultAttribute = [[EucBookTextStyle alloc] init];
+    THStringRenderer *defaultRenderer = [defaultAttribute stringRenderer];
+    EucBookTextStyle *previousAttribute = defaultAttribute;
     
     for(NSUInteger i = 0; i < _stringsCount; ++i) {
         CGPoint point = _stringPositions[i];
@@ -89,6 +91,7 @@ using namespace Hyphenate;
         id stringWithAttribute = _stringsWithAttributes[i];
         if([stringWithAttribute isKindOfClass:NSStringClass]) {
             [defaultRenderer drawString:(NSString *)stringWithAttribute inContext:cgContext atPoint:point pointSize:_pointSize];
+            previousAttribute = defaultAttribute;
         } else {
             EucBookTextStyle *attribute = ((THPair *)stringWithAttribute).second;
             id stringOrImage = ((THPair *)stringWithAttribute).first;
@@ -102,7 +105,7 @@ using namespace Hyphenate;
                 
                 if(inHyperlink && (!wordHyperlink || ![hyperlinkObject isEqual:wordHyperlink])) {
                     // Draw link up to previous word.
-                    CGFloat lineY = floorf(hyperlinkStartPoint.y + [defaultRenderer ascenderForPointSize:_pointSize] + 2) - 0.5;
+                    CGFloat lineY = floorf(hyperlinkStartPoint.y + [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]] + 2) - 0.5;
                     CGPoint lineEnds[2];
                     lineEnds[0] = CGPointMake(hyperlinkStartPoint.x, lineY);
                     lineEnds[1] = CGPointMake(previousStringPoint.x + previousStringWidth, lineY);
@@ -116,7 +119,7 @@ using namespace Hyphenate;
                     if(inHyperlink) {
                         if(point.y != hyperlinkStartPoint.y) {                        
                             // Draw link to end of line.
-                            CGFloat lineY = floorf(hyperlinkStartPoint.y + [defaultRenderer ascenderForPointSize:_pointSize] + 2) - 0.5;
+                            CGFloat lineY = floorf(hyperlinkStartPoint.y + [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]] + 2) - 0.5;
                             CGPoint lineEnds[2];
                             lineEnds[0] = CGPointMake(hyperlinkStartPoint.x, lineY);
                             lineEnds[1] = CGPointMake(previousStringPoint.x + previousStringWidth, lineY);
@@ -135,6 +138,18 @@ using namespace Hyphenate;
                     previousStringPoint = point;
                 }
             } else {
+                if(inHyperlink) {
+                    // Draw link up to previous word.
+                    CGFloat lineY = floorf(hyperlinkStartPoint.y + [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]] + 2) - 0.5;
+                    CGPoint lineEnds[2];
+                    lineEnds[0] = CGPointMake(hyperlinkStartPoint.x, lineY);
+                    lineEnds[1] = CGPointMake(previousStringPoint.x + previousStringWidth, lineY);
+                    CGContextStrokeLineSegments(cgContext, lineEnds, 2);
+                    
+                    // We'll take care of starting the new link below, if necessary.
+                    inHyperlink = NO;         
+                }                
+                
                 CGRect bounds = [self bounds];
                 CGImageRef image = [(UIImage *)stringOrImage CGImage];
                 CGContextSaveGState(cgContext);
@@ -168,18 +183,21 @@ using namespace Hyphenate;
                 CGContextDrawImage(cgContext, CGRectMake(0, 0, width, height), image);
                 CGContextRestoreGState(cgContext);
             }
+            previousAttribute = attribute;
         }
     }
     
     if(inHyperlink) {
         // Draw link up to previous word.
-        CGFloat lineY = floorf(hyperlinkStartPoint.y + [defaultRenderer ascenderForPointSize:_pointSize] - [defaultRenderer descenderForPointSize:_pointSize]) - 0.5;
+        CGFloat lineY = floorf(hyperlinkStartPoint.y + [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]] - 
+                               [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]]) - 0.5;
         CGPoint lineEnds[2];
         lineEnds[0] = CGPointMake(hyperlinkStartPoint.x, lineY);
         lineEnds[1] = CGPointMake(previousStringPoint.x + previousStringWidth, lineY);
         CGContextStrokeLineSegments(cgContext, lineEnds, 2);        
     }                
     
+    [defaultAttribute release];
     CGContextRestoreGState(cgContext);
 }
 

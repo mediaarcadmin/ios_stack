@@ -16,6 +16,7 @@
 #import "THUIViewAdditions.h"
 #import "THUIImageAdditions.h"
 #import "THPair.h"
+#import "THRegex.h"
 #import "THAlertViewWithUserInfo.h"
 #import "TransitionView.h"
 #import "THScalableSlider.h"
@@ -53,6 +54,11 @@
 - (UIImage *)currentPageImage
 {
     return [_pageTurningView screenshot];
+}
+
+- (NSString *)currentSectionUuid
+{
+    return [_pageLayoutController sectionUuidForPageNumber:_pageNumber];
 }
 
 - (CGFloat)dimQuotient
@@ -201,17 +207,26 @@
                     if(![_delegate respondsToSelector:@selector(bookViewController:shouldHandleTapOnHyperlink:withAttributes:)] ||
                        [_delegate bookViewController:self shouldHandleTapOnHyperlink:url withAttributes:attributes]) {
                         if([scheme caseInsensitiveCompare:@"http"] == NSOrderedSame) {
-                            message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to a page at “%@”, on the Internet.\n\nDo you want to switch to Safari to view it now?", @"Message for sheet in book view askng if the user want's to open a clicked URL hyperlink in Safari"), url.host];
+                            NSString *absolute = url.absoluteString;
+                            if([absolute matchPOSIXRegex:@"(itunes|phobos).*\\.com" flags:REG_EXTENDED | REG_ICASE]) {
+                                if([absolute matchPOSIXRegex:@"(viewsoftware|[/]app[/])" flags:REG_EXTENDED | REG_ICASE]) {
+                                    message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to an app in the App Store.\n\nDo you want to switch to the App Store to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked app hyperlink in the App Store"), url.host];
+                                } else {
+                                    message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped will open iTunes.\n\nDo you want to switch to iTunes now?", @"Message for sheet in book view asking if the user wants to open a clicked URL hyperlink in iTunes"), url.host];
+                                }
+                            } else {
+                                message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to a page at “%@”, on the Internet.\n\nDo you want to switch to Safari to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked URL hyperlink in Safari"), url.host];
+                            }
                         } else if([scheme caseInsensitiveCompare:@"mailto"] == NSOrderedSame) {
-                            message = [NSString stringWithFormat:NSLocalizedString(@"Do you want to switch to the Mail application to write an email to “%@” now?", @"Message for sheet in book view askng if the user want's to open a clicked mailto hyperlink in Mail"), url.resourceSpecifier];
+                            message = [NSString stringWithFormat:NSLocalizedString(@"Do you want to switch to the Mail application to write an email to “%@” now?", @"Message for sheet in book view askng if the user wants to open a clicked mailto hyperlink in Mail"), url.resourceSpecifier];
                         } 
                         
                         if(message) {
                             THAlertViewWithUserInfo *alertView = [[THAlertViewWithUserInfo alloc] initWithTitle:nil
                                                                                                         message:message
                                                                                                        delegate:self
-                                                                                      cancelButtonTitle:NSLocalizedString(@"Don’t Switch", @"Button to cancel opening of a clicked hyperlink") 
-                                                                                      otherButtonTitles:NSLocalizedString(@"Switch", @"Button to confirm opening of a clicked hyperlink"), nil];
+                                                                                              cancelButtonTitle:NSLocalizedString(@"Don’t Switch", @"Button to cancel opening of a clicked hyperlink") 
+                                                                                              otherButtonTitles:NSLocalizedString(@"Switch", @"Button to confirm opening of a clicked hyperlink"), nil];
                             alertView.userInfo = url;
                             [alertView show];
                             [alertView release];
@@ -421,7 +436,7 @@
         
         _contentsSheet.currentSectionUuid = currentSectionUuid;*/
         
-        _contentsSheet.currentSectionUuid = [_pageLayoutController sectionUuidForPageNumber:_pageNumber];
+        _contentsSheet.currentSectionUuid = self.currentSectionUuid;
         
         
         UIView *sheetView = _contentsSheet.view;
@@ -1155,8 +1170,8 @@
         [UIView beginAnimations:@"ToolbarsFade" context:nil];
         
         if(_fadeState == BookViewControlleUIFadeStateFadingIn) {
+            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
-            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO];             
             [UIView setAnimationDuration:0.0];
             _toolbar.alpha = 1;          
             

@@ -23,8 +23,6 @@
     NSArray *_availablePointSizes;
     
     NSUInteger _globalPageCount;   
-    
-    UIImage *_paperImage;
 }
 
 @end

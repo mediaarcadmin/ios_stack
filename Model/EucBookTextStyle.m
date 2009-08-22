@@ -278,22 +278,32 @@
 
 - (CGFloat)lineHeightForPointSize:(CGFloat)pointSize
 {
+    CGFloat lineHeight;
     if(_image) {
         // Don't just use font_size_percentage, because that also takes into 
         // font-size, which shouldn't be used for images.
-        return [_image size].height * (pointSize / DEFAULT_FONT_SIZE);
+        lineHeight = [_image size].height;
+        if((![_cssStyles objectForKey:@"-eucalyptus-no-zoom"])) {
+            lineHeight = roundf(lineHeight * (pointSize / DEFAULT_FONT_SIZE));
+        }
+    } else {
+        lineHeight = ceilf([self.stringRenderer lineSpacingForPointSize:pointSize * _fontSizePercentage]);
     }
-    return ceilf([self.stringRenderer lineSpacingForPointSize:pointSize * _fontSizePercentage]);
+    return lineHeight;
 }
 
 - (CGFloat)imageWidthForPointSize:(CGFloat)pointSize
 {
+    CGFloat imageWidth = 0;
     if(_image) {
-        // Don't just use font_size_percentage, because that also takes into 
-        // font-size, which shouldn't be used for images.
-        return [_image size].width * (pointSize / DEFAULT_FONT_SIZE);
+        imageWidth = [_image size].width;
+        if(![_cssStyles objectForKey:@"-eucalyptus-no-zoom"]) {
+            // Don't just use font_size_percentage, because that also takes into 
+            // font-size, which shouldn't be used for images.
+            imageWidth = roundf(imageWidth * (pointSize / DEFAULT_FONT_SIZE));
+        }
     }
-    return 0;
+    return imageWidth;
 }
 
 
@@ -366,6 +376,11 @@
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"flags: %lx, fontSizePercentage: %f, attributes: %@, %@", (long)_flags, _fontSizePercentage, _attributes, _cssStyles];
+}
+
+- (BOOL)wantsFullBleed
+{
+    return [_cssStyles objectForKey:@"-eucalyptus-full-bleed"] != nil;
 }
 
 @end
