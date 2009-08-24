@@ -189,8 +189,7 @@ using namespace Hyphenate;
     
     if(inHyperlink) {
         // Draw link up to previous word.
-        CGFloat lineY = floorf(hyperlinkStartPoint.y + [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]] - 
-                               [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]]) - 0.5;
+        CGFloat lineY = floorf(hyperlinkStartPoint.y + [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]] + 2) - 0.5;
         CGPoint lineEnds[2];
         lineEnds[0] = CGPointMake(hyperlinkStartPoint.x, lineY);
         lineEnds[1] = CGPointMake(previousStringPoint.x + previousStringWidth, lineY);
