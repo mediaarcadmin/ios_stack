@@ -87,9 +87,9 @@
 		7D51711D1028AF94005F3C46 /* EucBookReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51711C1028AF94005F3C46 /* EucBookReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51718B1028B53C005F3C46 /* EucEPubPageLayoutController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171891028B53C005F3C46 /* EucEPubPageLayoutController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51718C1028B53C005F3C46 /* EucEPubPageLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51718A1028B53C005F3C46 /* EucEPubPageLayoutController.m */; };
-		7D51719E1028B554005F3C46 /* css21Lexer.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171901028B554005F3C46 /* css21Lexer.c */; settings = {COMPILER_FLAGS = "-Wno-unused $(ARM_NOT_THUMB)"; }; };
+		7D51719E1028B554005F3C46 /* css21Lexer.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171901028B554005F3C46 /* css21Lexer.c */; settings = {COMPILER_FLAGS = "-Wno-unused "; }; };
 		7D51719F1028B554005F3C46 /* css21Lexer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171911028B554005F3C46 /* css21Lexer.h */; };
-		7D5171A01028B554005F3C46 /* css21Parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171921028B554005F3C46 /* css21Parser.c */; settings = {COMPILER_FLAGS = "-Wno-unused $(ARM_NOT_THUMB)"; }; };
+		7D5171A01028B554005F3C46 /* css21Parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171921028B554005F3C46 /* css21Parser.c */; settings = {COMPILER_FLAGS = "-Wno-unused"; }; };
 		7D5171A11028B554005F3C46 /* css21Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171931028B554005F3C46 /* css21Parser.h */; };
 		7D5171A21028B554005F3C46 /* EucEPubStyleStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171941028B554005F3C46 /* EucEPubStyleStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D5171A31028B554005F3C46 /* EucEPubStyleStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171951028B554005F3C46 /* EucEPubStyleStore.m */; };
@@ -214,7 +214,7 @@
 				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Lexer.h",
 				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Lexer.c",
 			);
-			script = "java -classpath \"${SRCROOT}/ThirdParty/antlr-3.1.3.jar\" org.antlr.Tool \"${INPUT_FILE_PATH}\" -o \"${INPUT_FILE_DIR}\"";
+			script = "java -classpath \"${SRCROOT}/ThirdParty/antlr-3.1.3.jar\" org.antlr.Tool \"${INPUT_FILE_PATH}\" -o \"${INPUT_FILE_DIR}\" -Xmaxinlinedfastates 1000000";
 		};
 /* End PBXBuildRule section */
 

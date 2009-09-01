@@ -421,7 +421,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     NSMutableArray *files = [[NSMutableArray alloc] init];
     for(NSString *id in _spine) {
         NSString *relativePath = [_manifest objectForKey:id];
-        NSURL *fileUrl = [[NSURL URLWithString:relativePath relativeToURL:self->_contentURL] retain];
+        NSURL *fileUrl = [NSURL URLWithString:relativePath relativeToURL:self->_contentURL];
         if([fileUrl isFileURL]) {
             NSString *path = [fileUrl path];
             if(path) {

@@ -9,6 +9,7 @@
 #import "THStringRenderer.h"
 #import "THLog.h"
 #import "THPair.h"
+#import "THTimer.h"
 #import "thjust.h"
 
 #import <pthread.h>
@@ -50,6 +51,8 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
             mapAndFont = [sFontNamesToMapsAndFonts objectForKey:fontName];
             
             if(!mapAndFont) {
+				THTimer *timer = [THTimer timerWithName:[NSString stringWithFormat:@"Create %@ renderer", fontName]];
+				
                 // Look up the font in the bundle, and cache it.
                 NSString *bundleFontPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"thfont"];
                 if(bundleFontPath) {
@@ -91,8 +94,25 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                 }
                 
                 if(!mapAndFont) {
-                    // See if we can use a system font.
-                    CGFontRef font = CGFontCreateWithFontName((CFStringRef)fontName);
+					CGFontRef font = nil;
+					NSString *bundleFontPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"otf"];
+					if(!bundleFontPath) {
+						bundleFontPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"ttf"];
+					}
+					if(bundleFontPath) {
+						NSData *fontData = [[NSData alloc] initWithContentsOfMappedFile:bundleFontPath];
+						CGDataProviderRef fontDataProvider = CGDataProviderCreateWithData([fontData retain],
+                                                                                          [fontData bytes], 
+                                                                                          [fontData length], 
+                                                                                          _NSDataReleaseCallback);
+						font = CGFontCreateWithDataProvider(fontDataProvider);
+						CGDataProviderRelease(fontDataProvider);  
+						[fontData release];
+					}
+					if(!font) {
+						// See if we can use a system font.
+						font = CGFontCreateWithFontName((CFStringRef)fontName);
+					}
                     if(font) {
                         NSData *fontTable = (NSData *)CGFontCopyTableForTag(font, 'cmap');
                         if(fontTable) {
@@ -174,6 +194,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                         CGFontRelease(font);
                     }
                 }
+				[timer report];
             }
         }
         pthread_mutex_unlock(&sFontCacheMutex);
