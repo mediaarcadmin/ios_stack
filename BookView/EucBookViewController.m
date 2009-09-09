@@ -654,6 +654,8 @@
     behindSlider.center = pageSliderCenter;
         
     [toolbar addSubview:behindSlider];
+    [behindSlider release];
+    
     [toolbar addSubview:_pageSlider];
         
     [mainSuperview addSubview:toolbar];
@@ -1365,10 +1367,11 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     CGFloat startLinePercentage = startLineLength / startLineMaxLength;
     CGFloat nowLinePercentage = nowLineLength / nowLineMaxLength;
 
-    CGFloat scaledPointSize = _scaleCurrentPointSize;
     NSArray *availablePointSizes = _pageLayoutController.availablePointSizes;
     CGFloat minPointSize = [[availablePointSizes objectAtIndex:0] doubleValue];
     CGFloat maxPointSize = [[availablePointSizes lastObject] doubleValue];
+    
+    CGFloat scaledPointSize;
     if(nowLinePercentage < startLinePercentage) {
         minPointSize -= (maxPointSize - minPointSize) / availablePointSizes.count; 
         //NSLog(@"min: %f", minPointSize);

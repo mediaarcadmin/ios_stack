@@ -298,8 +298,8 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
                 NSString *hyperlink = nil;
                 NSURL *hrefUrl = [NSURL URLWithString:[NSString stringWithUTF8String:atts[i+1]] relativeToURL:self->_baseURL];
                 if([hrefUrl isFileURL]) {
-                    NSString *bookHref = [[[hrefUrl path] stringByReplacingOccurrencesOfString:self->_book.path
-                                                                                    withString:@""] retain];
+                    NSString *bookHref = [[hrefUrl path] stringByReplacingOccurrencesOfString:self->_book.path
+                                                                                    withString:@""];
                     NSString *fragment = [hrefUrl fragment];
                     if(fragment.length) {
                         bookHref = [bookHref stringByAppendingFormat:@"#%@", fragment]; 

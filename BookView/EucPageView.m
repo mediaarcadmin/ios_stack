@@ -212,7 +212,7 @@
                         }
                         NSRange range = [titleString rangeOfCharacterFromSet:colonCharacters];
                         if(range.location != NSNotFound) {
-                            titleString = [[titleString substringToIndex:range.location] retain];
+                            titleString = [titleString substringToIndex:range.location];
                             continue;
                         } else {
                             triedRemovingToColon = YES;

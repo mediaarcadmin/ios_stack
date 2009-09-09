@@ -113,25 +113,24 @@ static void printTree(pANTLR3_BASE_TREE tree, int indent)
     } 
     if(![selectors count]) {
         THWarn(@"No selectors in CSS ruleset");
-        return;
-    }
-    
-    while(childCursor < childCount) {
-        node = tree->getChild(tree, childCursor);
-        if(node->getType(node) != DECLARATIONLIST) {
-            THWarn(@"Unexpected node of tyle %ld encountered in ruleset", (long)node->getType(node));
-        } else {
-            for(NSString *selector in selectors) {
-                EucBookTextStyle *style = [_selectorToStyle objectForKey:selector];
-                if(!style) {
-                    style = [[EucBookTextStyle alloc] init];
-                    [_selectorToStyle setObject:style forKey:selector];
-                    [style release];
+    } else {
+        while(childCursor < childCount) {
+            node = tree->getChild(tree, childCursor);
+            if(node->getType(node) != DECLARATIONLIST) {
+                THWarn(@"Unexpected node of tyle %ld encountered in ruleset", (long)node->getType(node));
+            } else {
+                for(NSString *selector in selectors) {
+                    EucBookTextStyle *style = [_selectorToStyle objectForKey:selector];
+                    if(!style) {
+                        style = [[EucBookTextStyle alloc] init];
+                        [_selectorToStyle setObject:style forKey:selector];
+                        [style release];
+                    }
+                    [self _addStylesForDeclarationList:node toStyle:style];
                 }
-                [self _addStylesForDeclarationList:node toStyle:style];
             }
+            ++childCursor;
         }
-        ++childCursor;
     }
     
     [selectors release];

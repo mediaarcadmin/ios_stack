@@ -159,137 +159,134 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glCompressedTexImage2D(GL_TEXTURE_2D, level, format, length, length, 0, size, pvrtcData);
 }
 
-- (id)_pageTurningViewInternalInit
+- (void)_pageTurningViewInternalInit
 {
-    {        
-        [EAGLContext setCurrentContext:context];
+    [EAGLContext setCurrentContext:context];
 
-        CGSize boundsSize = self.bounds.size;
-        _powerOf2Bounds.width = (CGFloat)nextPowerOfTwo((uint32_t)boundsSize.width);
-        _powerOf2Bounds.height = (CGFloat)nextPowerOfTwo((uint32_t)boundsSize.height);
-        
-        CGFloat po2WidthScale = _powerOf2Bounds.width / boundsSize.width;
-        CGFloat po2HeightScale = _powerOf2Bounds.height / boundsSize.height;
-        
-        GLfloat yCoord = 0;
-        
-        GLfloat xStep = ((GLfloat)PAGE_WIDTH * 2) / (2 * X_VERTEX_COUNT - 3);
-        GLfloat yStep = ((GLfloat)PAGE_HEIGHT / (Y_VERTEX_COUNT - 1));
-        
-        // Construct a hex-mesh of triangles;
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            GLfloat xCoord = 0;
-            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                _stablePageVertices[row][column].x = MIN(xCoord, (GLfloat)PAGE_WIDTH);
-                _stablePageVertices[row][column].y = MIN(yCoord, (GLfloat)PAGE_HEIGHT);
-                // z is already 0.
-                
-                if(xCoord == 0 && row % 2 == 1) {
-                    xCoord = xStep / 2;
-                } else {
-                    xCoord += xStep;
-                }
-            }
-            yCoord += yStep;
-        }
-        
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                // x and y are already 0.
-                _stablePageVertexNormals[row][column].z = -1;
-            }
-        }
-        
-        memcpy(_pageVertices, _stablePageVertices, sizeof(_oldPageVertices));
-        memcpy(_oldPageVertices, _stablePageVertices, sizeof(_oldPageVertices));
-        
-        int triangleStripIndex = 0;
-        for(int row = 0; row < Y_VERTEX_COUNT - 1; ++row) {
-            if(row % 2 == 0) {
-                int i = 0;
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
-                for(; i < X_VERTEX_COUNT; ++i) {
-                    _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row+1);
-                    _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
-                }
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(X_VERTEX_COUNT - 1, row+1);
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(X_VERTEX_COUNT - 1, row+1);
+    CGSize boundsSize = self.bounds.size;
+    _powerOf2Bounds.width = (CGFloat)nextPowerOfTwo((uint32_t)boundsSize.width);
+    _powerOf2Bounds.height = (CGFloat)nextPowerOfTwo((uint32_t)boundsSize.height);
+    
+    CGFloat po2WidthScale = _powerOf2Bounds.width / boundsSize.width;
+    CGFloat po2HeightScale = _powerOf2Bounds.height / boundsSize.height;
+    
+    GLfloat yCoord = 0;
+    
+    GLfloat xStep = ((GLfloat)PAGE_WIDTH * 2) / (2 * X_VERTEX_COUNT - 3);
+    GLfloat yStep = ((GLfloat)PAGE_HEIGHT / (Y_VERTEX_COUNT - 1));
+    
+    // Construct a hex-mesh of triangles;
+    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+        GLfloat xCoord = 0;
+        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+            _stablePageVertices[row][column].x = MIN(xCoord, (GLfloat)PAGE_WIDTH);
+            _stablePageVertices[row][column].y = MIN(yCoord, (GLfloat)PAGE_HEIGHT);
+            // z is already 0.
+            
+            if(xCoord == 0 && row % 2 == 1) {
+                xCoord = xStep / 2;
             } else {
-                int i = X_VERTEX_COUNT - 1;
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
-                for(; i >= 0; --i) {
-                    _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row+1);
-                    _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
-                } 
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(0, row+1);
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(0, row+1);
+                xCoord += xStep;
             }
         }
-        
-        [self _setupConstraints];
-        
-        NSParameterAssert(triangleStripIndex == TRIANGLE_STRIP_COUNT);
-        
-        glEnable(GL_TEXTURE_2D);
-        
-        GLfloat yAddition = (_powerOf2Bounds.height - boundsSize.height) / _powerOf2Bounds.height;
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                _pageTextureCoordinates[row][column].x = _pageVertices[row][column].x / PAGE_WIDTH / po2WidthScale;
-                _pageTextureCoordinates[row][column].y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) / po2HeightScale + yAddition; 
-            }
-        } 
-        
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"Square256X256BookPaper" ofType:@"pvrtc"];
-        NSData *squareBookPaper = [[NSData alloc] initWithContentsOfMappedFile:path];
-        glGenTextures(1, &_blankPageTexture);
-        glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
-        texImage2DPVRTC(0, 2, 0, 256, [squareBookPaper bytes]);
-        [squareBookPaper release];
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                _blankPageTextureCoordinates[row][column].x = _pageVertices[row][column].x / PAGE_WIDTH;
-                _blankPageTextureCoordinates[row][column].y = _pageVertices[row][column].y / PAGE_HEIGHT;
-            }
-        }         
-        
-        path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
-        NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
-        glGenTextures(1, &_bookEdgeTexture);
-        glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
-        texImage2DPVRTC(0, 4, 0, 512, [bookEdge bytes]);
-        [bookEdge release];
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        
-        _textureUploadContext = [[EAGLContext alloc] initWithAPI:[context API] sharegroup:[context sharegroup]];
-        
-        _animatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"animatedBookTurnVertices" ofType:@"vertexData"]];
-        _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
-        
-        _reverseAnimatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"reverseAnimatedBookTurnVertices" ofType:@"vertexData"]];
-        _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
-
-        
-        self.multipleTouchEnabled = YES;
-        self.exclusiveTouch = YES;
-        //tempFile = fopen("/tmp/vertexdata", "w");
+        yCoord += yStep;
     }
-    return self;
+    
+    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+            // x and y are already 0.
+            _stablePageVertexNormals[row][column].z = -1;
+        }
+    }
+    
+    memcpy(_pageVertices, _stablePageVertices, sizeof(_oldPageVertices));
+    memcpy(_oldPageVertices, _stablePageVertices, sizeof(_oldPageVertices));
+    
+    int triangleStripIndex = 0;
+    for(int row = 0; row < Y_VERTEX_COUNT - 1; ++row) {
+        if(row % 2 == 0) {
+            int i = 0;
+            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
+            for(; i < X_VERTEX_COUNT; ++i) {
+                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row+1);
+                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
+            }
+            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(X_VERTEX_COUNT - 1, row+1);
+            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(X_VERTEX_COUNT - 1, row+1);
+        } else {
+            int i = X_VERTEX_COUNT - 1;
+            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
+            for(; i >= 0; --i) {
+                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row+1);
+                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
+            } 
+            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(0, row+1);
+            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(0, row+1);
+        }
+    }
+    
+    [self _setupConstraints];
+    
+    NSParameterAssert(triangleStripIndex == TRIANGLE_STRIP_COUNT);
+    
+    glEnable(GL_TEXTURE_2D);
+    
+    GLfloat yAddition = (_powerOf2Bounds.height - boundsSize.height) / _powerOf2Bounds.height;
+    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+            _pageTextureCoordinates[row][column].x = _pageVertices[row][column].x / PAGE_WIDTH / po2WidthScale;
+            _pageTextureCoordinates[row][column].y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) / po2HeightScale + yAddition; 
+        }
+    } 
+    
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Square256X256BookPaper" ofType:@"pvrtc"];
+    NSData *squareBookPaper = [[NSData alloc] initWithContentsOfMappedFile:path];
+    glGenTextures(1, &_blankPageTexture);
+    glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
+    texImage2DPVRTC(0, 2, 0, 256, [squareBookPaper bytes]);
+    [squareBookPaper release];
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+            _blankPageTextureCoordinates[row][column].x = _pageVertices[row][column].x / PAGE_WIDTH;
+            _blankPageTextureCoordinates[row][column].y = _pageVertices[row][column].y / PAGE_HEIGHT;
+        }
+    }         
+    
+    path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
+    NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
+    glGenTextures(1, &_bookEdgeTexture);
+    glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
+    texImage2DPVRTC(0, 4, 0, 512, [bookEdge bytes]);
+    [bookEdge release];
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    
+    _textureUploadContext = [[EAGLContext alloc] initWithAPI:[context API] sharegroup:[context sharegroup]];
+    
+    _animatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"animatedBookTurnVertices" ofType:@"vertexData"]];
+    _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
+    
+    _reverseAnimatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"reverseAnimatedBookTurnVertices" ofType:@"vertexData"]];
+    _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
+
+    
+    self.multipleTouchEnabled = YES;
+    self.exclusiveTouch = YES;
+    //tempFile = fopen("/tmp/vertexdata", "w");
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
     if((self = [super initWithFrame:frame])) {
-        self = [self _pageTurningViewInternalInit];
+        [self _pageTurningViewInternalInit];
     }
     return self;
 }
@@ -297,7 +294,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (id)initWithCoder:(NSCoder*)coder 
 {
     if((self = [super initWithCoder:coder])) {
-        self = [self _pageTurningViewInternalInit];
+        [self _pageTurningViewInternalInit];
     }
     return self;
 }

@@ -40,7 +40,7 @@
 }
 
 
-- (id)_eaglViewInternalInit
+- (BOOL)_eaglViewInternalInit
 {
     // Get the layer
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
@@ -52,25 +52,31 @@
     context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
     
     if (!context || ![EAGLContext setCurrentContext:context]) {
-        [self release];
-        return nil;
+        return NO;
     }
     
     animationInterval = 1.0 / 30.0;
-    return self;
+    
+    return YES;
 }
 
 //The GL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
 - (id)initWithCoder:(NSCoder*)coder {    
     if ((self = [super initWithCoder:coder])) {
-        self = [self _eaglViewInternalInit];
+        if(![self _eaglViewInternalInit]) {
+            [self release];
+            self = nil;
+        }
     }
     return self;
 }
 
 - (id)initWithFrame:(CGRect)frame {    
     if ((self = [super initWithFrame:frame])) {
-        self = [self _eaglViewInternalInit];
+        if(![self _eaglViewInternalInit]) {
+            [self release];
+            self = nil;
+        }
     }
     return self;
 }

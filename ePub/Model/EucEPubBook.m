@@ -91,9 +91,9 @@ static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const
             NSString *href = nil;
             for(int i = 0; atts[i]; i+=2) {
                 if(strcmp("id", atts[i]) == 0) {
-                    id = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                    id = [[[NSString alloc] initWithUTF8String:atts[i+1]] autorelease];
                 } else if(strcmp("href", atts[i]) == 0) {
-                    href = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                    href = [[[NSString alloc] initWithUTF8String:atts[i+1]] autorelease];
                 }
             }
             if(id && href) {
@@ -107,7 +107,9 @@ static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const
         if(strcmp("itemref", name) == 0) {
             for(int i = 0; atts[i]; i+=2) {
                 if(strcmp("idref", atts[i]) == 0) {
-                    [context->buildSpine addObject:[[NSString alloc] initWithUTF8String:atts[i+1]]];
+                    NSString *idref = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                    [context->buildSpine addObject:idref];
+                    [idref release];
                 }   
             }
         }
@@ -345,8 +347,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             NSString *src = navPoint.second;
 
             NSURL *srcUrl = [NSURL URLWithString:src relativeToURL:baseUrl];
-            src = [[[srcUrl path] stringByReplacingOccurrencesOfString:_path
-                                                            withString:@""] retain];
+            src = [[srcUrl path] stringByReplacingOccurrencesOfString:_path
+                                                           withString:@""];
             NSString *fragment = [srcUrl fragment];
             if(fragment.length) {
                 src = [src stringByAppendingFormat:@"#%@", fragment]; 
@@ -429,7 +431,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             }
         }
     }
-    return files;
+    return [files autorelease];
 }
 
 - (id<EucBookReader>)reader
@@ -502,7 +504,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (EucBookSection *)sectionWithUuid:(NSString *)uuid
 {
-    for(EucBookSection *section in _sections) {
+    for(EucBookSection *section in self.sections) {
         if([section.uuid isEqualToString:uuid]) {
             return section;
         }
@@ -517,8 +519,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (EucBookSection *)topLevelSectionForByteOffset:(NSUInteger)byteOffset
 {
-    EucBookSection *section = [_sections objectAtIndex:0];
-    for(EucBookSection *potentialSection in _sections) {
+    EucBookSection *section = [self.sections objectAtIndex:0];
+    for(EucBookSection *potentialSection in self.sections) {
         if(potentialSection.startOffset <= byteOffset) {
             section = potentialSection;
         } else {
@@ -530,7 +532,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (EucBookSection *)previousTopLevelSectionForByteOffset:(NSUInteger)byteOffset
 {
-    for(EucBookSection *section in [_sections reverseObjectEnumerator]) {
+    for(EucBookSection *section in [self.sections reverseObjectEnumerator]) {
         if(section.startOffset < byteOffset) {
             return section;
         }
@@ -540,7 +542,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (EucBookSection *)nextTopLevelSectionForByteOffset:(NSUInteger)byteOffset
 {
-    for(EucBookSection *section in _sections) {
+    for(EucBookSection *section in self.sections) {
         if(section.startOffset > byteOffset) {
             return section;
         }

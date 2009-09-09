@@ -88,7 +88,6 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                             [sFontNamesToMapsAndFonts setObject:mapAndFont forKey:fontName];
                             CGFontRelease(font);
                         }
-
                         [fontData release];
                     }
                 }
@@ -101,10 +100,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 					}
 					if(bundleFontPath) {
 						NSData *fontData = [[NSData alloc] initWithContentsOfMappedFile:bundleFontPath];
-						CGDataProviderRef fontDataProvider = CGDataProviderCreateWithData([fontData retain],
-                                                                                          [fontData bytes], 
-                                                                                          [fontData length], 
-                                                                                          _NSDataReleaseCallback);
+						CGDataProviderRef fontDataProvider = CGDataProviderCreateWithCFData((CFDataRef)fontData);
 						font = CGFontCreateWithDataProvider(fontDataProvider);
 						CGDataProviderRelease(fontDataProvider);  
 						[fontData release];
@@ -149,43 +145,47 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                                 if(format == 4) {
                                     // UCS-2 Unicode!
                                     NSMutableData *glyphMapData = [[NSMutableData alloc] initWithCapacity:glyphMapLength];
-                                    [glyphMapData setLength:glyphMapLength]; 
-                                    uint16_t *glyphMapBytes = (uint16_t *)[glyphMapData bytes];                                                        
-                                    
-                                    //uint16_t length = CFSwapInt16BigToHost(*((uint16_t *)(mapping + 2)));
-                                    
-                                    uint16_t segCountX2 =  CFSwapInt16BigToHost(*((uint16_t *)(mapping + 6)));
-                                    
-                                    const uint16_t *endCodes = (mapping + 14);
-                                    const uint16_t *startCodes = (mapping + 14 + segCountX2 + 2);
-                                    const uint16_t *idDeltas = (mapping + 14 + segCountX2 * 2 + 2);
-                                    const uint16_t *idRangeOffsets = (mapping + 14 + segCountX2 * 3 + 2);
-                                    //const uint16_t *glyphIdArray = (mapping + 14 + segCountX2 * 4 + 2);
-                                    
-                                    uint16_t segCount = segCountX2 / 2;
-                                    for(uint16_t i = 0; i < segCount; ++i) {
-                                        uint16_t startCode = CFSwapInt16BigToHost(startCodes[i]);
-                                        uint16_t endCode = CFSwapInt16BigToHost(endCodes[i]);
-                                        uint16_t idDelta = CFSwapInt16BigToHost(idDeltas[i]);
-                                        uint16_t idRangeOffset = CFSwapInt16BigToHost(idRangeOffsets[i]);
+                                    if(glyphMapData) {
+                                        [glyphMapData setLength:glyphMapLength]; 
+                                        uint16_t *glyphMapBytes = (uint16_t *)[glyphMapData mutableBytes];                                                        
                                         
-                                        // Strange loop below is because :                          
-                                        //   for(uint16_t code = startCode; code <= endCode; ++code) {
-                                        // would fail if endCode == 0xFFFF.
+                                        //uint16_t length = CFSwapInt16BigToHost(*((uint16_t *)(mapping + 2)));
                                         
-                                        uint16_t code = startCode - 1;
-                                        do {
-                                            ++code;
-                                            if(idRangeOffset == 0) {
-                                                glyphMapBytes[code] = CFSwapInt32HostToLittle(code + idDelta);
-                                            } else {
-                                                glyphMapBytes[code] = CFSwapInt16(*( &idRangeOffsets[i] + idRangeOffset / 2 + (code - startCode) ));
-                                            }
-                                        }  while(code != endCode);
+                                        uint16_t segCountX2 =  CFSwapInt16BigToHost(*((uint16_t *)(mapping + 6)));
+                                        
+                                        const uint16_t *endCodes = (mapping + 14);
+                                        const uint16_t *startCodes = (mapping + 14 + segCountX2 + 2);
+                                        const uint16_t *idDeltas = (mapping + 14 + segCountX2 * 2 + 2);
+                                        const uint16_t *idRangeOffsets = (mapping + 14 + segCountX2 * 3 + 2);
+                                        //const uint16_t *glyphIdArray = (mapping + 14 + segCountX2 * 4 + 2);
+                                        
+                                        uint16_t segCount = segCountX2 / 2;
+                                        for(uint16_t i = 0; i < segCount; ++i) {
+                                            uint16_t startCode = CFSwapInt16BigToHost(startCodes[i]);
+                                            uint16_t endCode = CFSwapInt16BigToHost(endCodes[i]);
+                                            uint16_t idDelta = CFSwapInt16BigToHost(idDeltas[i]);
+                                            uint16_t idRangeOffset = CFSwapInt16BigToHost(idRangeOffsets[i]);
+                                            
+                                            // Strange loop below is because :                          
+                                            //   for(uint16_t code = startCode; code <= endCode; ++code) {
+                                            // would fail if endCode == 0xFFFF.
+                                            
+                                            uint16_t code = startCode - 1;
+                                            do {
+                                                ++code;
+                                                if(idRangeOffset == 0) {
+                                                    glyphMapBytes[code] = CFSwapInt32HostToLittle(code + idDelta);
+                                                } else {
+                                                    glyphMapBytes[code] = CFSwapInt16(*( &idRangeOffsets[i] + idRangeOffset / 2 + (code - startCode) ));
+                                                }
+                                            }  while(code != endCode);
+                                        }
+                                        
+                                        mapAndFont = [THPair pairWithFirst:glyphMapData second:(id)font];
+                                        [sFontNamesToMapsAndFonts setObject:mapAndFont forKey:fontName];
+                                            
                                     }
-                                    
-                                    mapAndFont = [THPair pairWithFirst:glyphMapData second:(id)font];
-                                    [sFontNamesToMapsAndFonts setObject:mapAndFont forKey:fontName];
+                                    [glyphMapData release];
                                 }
                             }
                         }

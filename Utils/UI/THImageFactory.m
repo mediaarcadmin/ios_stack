@@ -49,7 +49,7 @@
     [super dealloc];
 }
 
-- (CGImageRef)_createSnapshotCGImage
+- (CGImageRef)_newSnapshotCGImage
 {
     CGContextFlush(_CGContext);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)_backingData);
@@ -63,7 +63,7 @@
 
 - (UIImage *)snapshotUIImage
 {
-    CGImageRef image = [self _createSnapshotCGImage];
+    CGImageRef image = [self _newSnapshotCGImage];
     UIImage *ret = [UIImage imageWithCGImage:image];
     CGImageRelease(image);
     return ret;
@@ -71,7 +71,7 @@
 
 - (CGImageRef)snapshotCGImage
 {
-    return (CGImageRef)[(id)[self _createSnapshotCGImage] autorelease];
+    return (CGImageRef)[(id)[self _newSnapshotCGImage] autorelease];
 }
 
 @end
