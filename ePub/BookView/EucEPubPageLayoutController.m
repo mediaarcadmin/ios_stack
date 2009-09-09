@@ -45,7 +45,7 @@ static void readRightRaggedJustificationDefault()
         NSString *familyName = [EucBookTextStyle defaultFontFamilyName];
         
         _book = [book retain];   
-        _bookIndexes = [[EucBookPageIndex bookPageIndexesForBook:_book forFontFamily:familyName] retain];
+        _bookIndexes = [[_book  bookPageIndexesForFontFamily:familyName] retain];
         
         NSMutableArray *buildAvailablePointSizes = [[NSMutableArray alloc] initWithCapacity:_bookIndexes.count];
         for(EucBookPageIndex *index in _bookIndexes) {

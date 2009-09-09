@@ -20,12 +20,15 @@
     NSDictionary *_anchorPoints;
     
     NSArray *_sections;
-
+    NSArray *_filteredSections;
+    uint32_t _filteredEndOfBookByteOffset;
+    
     int _currentPageIndexPointFD;
 }
 
 @property (nonatomic, readonly) NSArray *spineFiles;
 
 - (id)initWithPath:(NSString *)path;
+- (void)hideSectionsAfterSectionWithUUID:(NSString *)uuid;
 
 @end

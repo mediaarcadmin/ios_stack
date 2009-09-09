@@ -68,9 +68,19 @@
 @synthesize fontFamily = _fontFamily;
 @synthesize pointSize = _pointSize;
 
-@synthesize lastPageNumber = _lastPageNumber;
 @synthesize isFinal = _isFinal;
 @synthesize lastOffset = _lastOffset;
+
+- (NSUInteger)lastPageNumber
+{
+    return _filteredLastPageNumber ? _filteredLastPageNumber : _lastPageNumber;
+}
+
+- (void)hidePagesAfterPageNumber:(NSUInteger)pageNumber
+{
+    _filteredLastPageNumber = pageNumber;
+    _lastOffset = [self indexPointForPage:self.lastPageNumber].startOfParagraphByteOffset;
+}
 
 - (id)_initForIndexInBook:(id<EucBook>)book forFontFamily:(NSString *)fontFamily pointSize:(NSUInteger)pointSize
 {
@@ -109,7 +119,7 @@
        // if(_isFinal) {
        //     _lastOffset = _book.bookFileSize;
        // } else {
-            _lastOffset = [self indexPointForPage:_lastPageNumber].startOfParagraphByteOffset;
+            _lastOffset = [self indexPointForPage:self.lastPageNumber].startOfParagraphByteOffset;
        /*     [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(_bookPaginationProgress:)
                                                          name:BookPaginationProgressNotification
@@ -226,14 +236,15 @@
 {       
     EucBookPageIndexPoint *ret = nil;
 
-    if(pageNumber <= _lastPageNumber) {
+    NSUInteger lastPageNumber = self.lastPageNumber;
+    if(pageNumber <= lastPageNumber) {
         off_t seekTo = (pageNumber - 1) * 3 * sizeof(uint32_t);
         if(lseek(_fd, seekTo, SEEK_SET) == seekTo) {
             return [EucBookPageIndexPoint bookPageIndexPointFromOpenFD:_fd];
         } else {
             THWarn(@"Could not seek to index point for page %lu, error %d [\"%s\"]", (unsigned long)pageNumber, errno, strerror(errno));
         }
-    } else if(_lastPageNumber == 0) {
+    } else if(lastPageNumber == 0) {
         // Book is completly unpaginated.  Fake out the first page.
         ret = [[[EucBookPageIndexPoint alloc] init] autorelease];
         ret.startOfParagraphByteOffset = _book.startOffset;
@@ -256,7 +267,7 @@
     uint32_t candidateStartOfParagraphWordHyphenOffset;
     
     NSUInteger lowerBound = 0;
-    NSUInteger upperBound = _lastPageNumber;
+    NSUInteger upperBound = self.lastPageNumber;
     NSUInteger candidatePage;
     do {
         candidatePage = lowerBound + (upperBound - lowerBound) / 2;

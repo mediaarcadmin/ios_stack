@@ -32,6 +32,7 @@
 
 // Some UUIDs (like HTML anchors) don't correspond to sections. 
 - (NSUInteger)byteOffsetForUuid:(NSString *)uuid;
+- (NSArray *)bookPageIndexesForFontFamily:(NSString *)fontFamily;
 
 /*
 @property (nonatomic, readonly) BookSection *firstSection;

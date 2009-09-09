@@ -8,6 +8,7 @@
 
 #import "THLog.h"
 #import "EucEPubBook.h"
+#import "EucBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
 #import "EucEPubBookReader.h"
 #import "EucBookSection.h"
@@ -362,6 +363,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 [newSection setUuid:src];
                 [newSection setProperty:name forKey:kBookSectionPropertyTitle];
                 [sectionsBuild addObject:newSection];
+                [newSection release];
             }
             [sectionsBuild sortUsingSelector:@selector(compare:)];
         }
@@ -416,6 +418,47 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [_manifest release];
     
     [super dealloc];
+}
+
+- (void)hideSectionsAfterSectionWithUUID:(NSString *)uuid
+{    
+    [_filteredSections release];
+    _filteredSections = nil;
+    
+    if(uuid) {
+        NSMutableArray *filteredSectionsBuild = [NSMutableArray arrayWithCapacity:[self.sections count]];
+        NSEnumerator *sectionEnumerator = [_sections objectEnumerator];
+        EucBookSection *section;
+        while((section = [sectionEnumerator nextObject])) {
+            [filteredSectionsBuild addObject:section];
+            if([section.uuid isEqual:uuid]) {
+                break;
+            }
+        }
+        _filteredSections = [filteredSectionsBuild retain];
+        
+        if((section = [sectionEnumerator nextObject])) {
+            _filteredEndOfBookByteOffset = section.startOffset;
+        }
+    } else {
+        _filteredEndOfBookByteOffset = 0;
+    }
+}
+
+- (NSArray *)sections
+{
+    return _filteredSections ? _filteredSections : _sections;
+}
+
+- (NSArray *)bookPageIndexesForFontFamily:(NSString *)fontFamily
+{
+    NSArray *indexes = [[EucBookPageIndex bookPageIndexesForBook:self forFontFamily:fontFamily] retain];
+    if(_filteredEndOfBookByteOffset) {
+        for(EucBookPageIndex *index in indexes) {
+            [index hidePagesAfterPageNumber:[index pageForByteOffset:_filteredEndOfBookByteOffset] - 1];
+        }
+    }
+    return indexes;
 }
 
 - (NSArray *)spineFiles
