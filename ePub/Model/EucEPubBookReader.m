@@ -273,7 +273,7 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
             
             NSURL *pathUrl = [NSURL URLWithString:srcRelativePath relativeToURL:self->_baseURL];
             if([pathUrl isFileURL]) {
-                UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:[pathUrl path]]];
+                UIImage *image = [UIImage imageWithData:[self->_book dataForFileAtURL:pathUrl]];
                 if(image) {
                     style.image = image;
                 }

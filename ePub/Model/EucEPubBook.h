@@ -15,7 +15,8 @@
     NSURL *_contentURL;
     NSString *_tocNcxId;
     
-    NSString *_coverPath;
+    NSDictionary *_manifestOverrides;
+    NSDictionary *_manifestUrlsToOverriddenUrls;
     
     NSDictionary *_meta;
     NSDictionary *_manifest;
@@ -29,9 +30,11 @@
 }
 
 @property (nonatomic, readonly) NSArray *spineFiles;
-@property (nonatomic, readonly) NSString *coverPath;
+@property (nonatomic, retain) NSString *coverPath;
 
 - (id)initWithPath:(NSString *)path;
 - (void)whitelistSectionsWithUUIDs:(NSSet *)uuids;
+
+- (NSData *)dataForFileAtURL:(NSURL *)url;
 
 @end
