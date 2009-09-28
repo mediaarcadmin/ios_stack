@@ -12,6 +12,7 @@
 #import "EucBookSection.h"
 #import "EucEPubBookParagraph.h"
 #import "EucBookPageIndex.h"
+#import "EucFilteredBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
 #import "EucBookTextView.h"
 #import "EucEPubBookReader.h"
@@ -76,8 +77,8 @@ static void readRightRaggedJustificationDefault()
 - (void)setFontPointSize:(CGFloat)pointSize
 {
     CGFloat difference = CGFLOAT_MAX;
-    EucBookPageIndex *foundIndex = nil;
-    for(EucBookPageIndex *index in _bookIndexes) {
+    EucFilteredBookPageIndex *foundIndex = nil;
+    for(EucFilteredBookPageIndex *index in _bookIndexes) {
         CGFloat thisDifference = fabsf(index.pointSize - pointSize);
         if(thisDifference < difference) {
             difference = thisDifference;
@@ -88,7 +89,7 @@ static void readRightRaggedJustificationDefault()
         [_bookIndex release];
         _bookIndex = [foundIndex retain];
         _fontPointSize = _bookIndex.pointSize;  
-        _globalPageCount = _bookIndex.lastPageNumber;
+        _globalPageCount = _bookIndex.filteredLastPageNumber;
     }
 }
 
@@ -116,54 +117,46 @@ static void readRightRaggedJustificationDefault()
     return text;
 }
 
-- (NSString *)contentsPageNumberForPageNumber:(NSUInteger)pageNumber
-{
-    NSString *text = nil;
-    text = [NSString stringWithFormat:@"%ld", pageNumber];
-    return text;
-}
-
 - (NSString *)sectionUuidForPageNumber:(NSUInteger)pageNumber
 {
     // In ePub, sections can start anywhere on a page, so we fake out that we're
-    EucBookSection *section = [_book topLevelSectionForByteOffset:[_bookIndex indexPointForPage:pageNumber+1].startOfParagraphByteOffset-1];
+    EucBookSection *section = [_book topLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber+1].startOfParagraphByteOffset-1];
     return section.uuid;
 }
-
 
 - (NSString *)sectionNameForPageNumber:(NSUInteger)pageNumber
 {
     // In ePub, sections can start anywhere on a page, so we fake out that we're
-    EucBookSection *section = [_book topLevelSectionForByteOffset:[_bookIndex indexPointForPage:pageNumber+1].startOfParagraphByteOffset-1];
+    EucBookSection *section = [_book topLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber+1].startOfParagraphByteOffset-1];
     NSString *name = [[section properties] objectForKey:kBookSectionPropertyTitle];
     return name;
 }
 
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber
 {
-    EucBookSection *section = [_book nextTopLevelSectionForByteOffset:[_bookIndex indexPointForPage:pageNumber].startOfParagraphByteOffset];
-    NSUInteger nextPageNumber = [_bookIndex pageForByteOffset:section.startOffset];
+    EucBookSection *section = [_book nextTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber].startOfParagraphByteOffset];
+    NSUInteger nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
     if(nextPageNumber == pageNumber && pageNumber < _globalPageCount) {
-        section = [_book nextTopLevelSectionForByteOffset:[_bookIndex indexPointForPage:pageNumber+1].startOfParagraphByteOffset];
-        nextPageNumber = [_bookIndex pageForByteOffset:section.startOffset];
+        section = [_book nextTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber+1].startOfParagraphByteOffset];
+        nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
     }
     return nextPageNumber;
 }
 
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber
 {
-    EucBookSection *section = [_book previousTopLevelSectionForByteOffset:[_bookIndex indexPointForPage:pageNumber].startOfParagraphByteOffset];
-    NSUInteger nextPageNumber = [_bookIndex pageForByteOffset:section.startOffset];
+    EucBookSection *section = [_book previousTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber].startOfParagraphByteOffset];
+    NSUInteger nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
     if(nextPageNumber == pageNumber && pageNumber > 1) {
-        section = [_book previousTopLevelSectionForByteOffset:[_bookIndex indexPointForPage:pageNumber-1].startOfParagraphByteOffset];
-        nextPageNumber = [_bookIndex pageForByteOffset:section.startOffset];
+        section = [_book previousTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber-1].startOfParagraphByteOffset];
+        nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
     }
     return nextPageNumber;
 }
 
 - (NSUInteger)pageNumberForUuid:(NSString *)uuid
 {
-    return [_bookIndex pageForByteOffset:[_book byteOffsetForUuid:uuid]];
+    return [_bookIndex filteredPageForByteOffset:[_book byteOffsetForUuid:uuid]];
 }
 
 - (NSArray *)sections
@@ -174,7 +167,7 @@ static void readRightRaggedJustificationDefault()
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber
 {
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
-        EucBookPageIndexPoint *indexPoint = [_bookIndex indexPointForPage:pageNumber];
+        EucBookPageIndexPoint *indexPoint = [_bookIndex filteredIndexPointForPage:pageNumber];
         EucPageView *pageView = [[self class] blankPageViewForPointSize:_bookIndex.pointSize];
         pageView.titleLinePosition = EucPageViewTitleLinePositionBottom;
         pageView.titleLineContents = EucPageViewTitleLineContentsCenteredPageNumber;
@@ -191,7 +184,7 @@ static void readRightRaggedJustificationDefault()
 
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    NSUInteger ret = [_bookIndex pageForIndexPoint:indexPoint];
+    NSUInteger ret = [_bookIndex filteredPageForIndexPoint:indexPoint];
     if(ret == 0) {
         return 1;
     }

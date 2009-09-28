@@ -20,7 +20,6 @@
     BOOL _isFinal;
     
     NSUInteger _lastPageNumber;
-    NSUInteger _filteredLastPageNumber;
     off_t _lastOffset;
 }
 
@@ -45,7 +44,5 @@
 - (void)closeIndex;
 
 - (NSComparisonResult)compare:(EucBookPageIndex *)rhs;
-
-- (void)hidePagesAfterPageNumber:(NSUInteger)pageNumber;
 
 @end

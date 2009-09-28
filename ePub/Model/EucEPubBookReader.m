@@ -453,7 +453,6 @@ void paragraphBuildingSkippedEntityHandler(void *ctx, const XML_Char *entityName
         }
     }
     
-    
     if(cachedFileInfo) {
         // Re-use the information from the cache.
         [cachedFileInfo retain];

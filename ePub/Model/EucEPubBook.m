@@ -9,6 +9,7 @@
 #import "THLog.h"
 #import "EucEPubBook.h"
 #import "EucBookPageIndex.h"
+#import "EucFilteredBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
 #import "EucEPubBookReader.h"
 #import "EucBookSection.h"
@@ -64,9 +65,11 @@ struct contentOpfParsingContext
     BOOL inCreator;
     BOOL inTitle;
     BOOL inIdentifier;
+    BOOL inMeta;
     BOOL inSpine;
     
     BOOL inManifest;
+    NSMutableDictionary *buildMeta;
     NSMutableDictionary *buildManifest;
     NSMutableArray *buildSpine;
 };
@@ -82,6 +85,19 @@ static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const
             context->inCreator = YES;
         } else if(strcmp("dc:identifier", name) == 0) {
             context->inIdentifier = YES;
+        } if(strcmp("meta", name) == 0) {
+            NSString *name = nil;
+            NSString *content = nil;
+            for(int i = 0; atts[i]; i+=2) {
+                if(strcmp("name", atts[i]) == 0) {
+                    name = [[[NSString alloc] initWithUTF8String:atts[i+1]] autorelease];
+                } else if(strcmp("content", atts[i]) == 0) {
+                    content = [[[NSString alloc] initWithUTF8String:atts[i+1]] autorelease];
+                }
+            }
+            if(name && content) {
+                [context->buildMeta setObject:content forKey:name];
+            }
         }
         return;
     }    
@@ -204,6 +220,7 @@ static void contentOpfCharacterDataHandler(void *ctx, const XML_Char *chars, int
     struct contentOpfParsingContext context = {0};
     context.parser = parser;
     context.self = self;
+    context.buildMeta = [[NSMutableDictionary alloc] init];
     context.buildManifest = [[NSMutableDictionary alloc] init];
     context.buildSpine = [[NSMutableArray alloc] init];
     
@@ -214,6 +231,8 @@ static void contentOpfCharacterDataHandler(void *ctx, const XML_Char *chars, int
     XML_Parse(parser, [data bytes], [data length], XML_TRUE);
     XML_ParserFree(parser);
     
+    [_meta release];
+    _meta = context.buildMeta;
     [_manifest release];
     _manifest = context.buildManifest;
     [_spine release];
@@ -367,6 +386,16 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             }
             [sectionsBuild sortUsingSelector:@selector(compare:)];
         }
+        
+        EucBookSection *lastSection = nil;
+        for(EucBookSection *section in sectionsBuild) {
+            lastSection.endOffset = section.startOffset;
+            [lastSection release];
+            lastSection = [section retain];
+        }
+        lastSection.endOffset = UINT32_MAX;
+        [lastSection release];
+        
         _sections = sectionsBuild;
         [context.buildNavMap release];
     }
@@ -420,28 +449,35 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [super dealloc];
 }
 
-- (void)hideSectionsAfterSectionWithUUID:(NSString *)uuid
+- (NSString *)coverPath
+{
+    NSString *ret = nil;
+    NSString *manifestKey = [_meta objectForKey:@"cover"];
+    if(manifestKey) {
+        NSString *relativePath = [_manifest objectForKey:manifestKey];
+        if(relativePath) {
+            NSURL *fileUrl = [NSURL URLWithString:relativePath relativeToURL:self->_contentURL];
+            if([fileUrl isFileURL]) {
+                ret = [fileUrl path];
+            }
+        }
+    }
+    return ret;
+}
+
+- (void)whitelistSectionsWithUUIDs:(NSSet *)uuids
 {    
     [_filteredSections release];
     _filteredSections = nil;
     
-    if(uuid) {
+    if(uuids.count) {
         NSMutableArray *filteredSectionsBuild = [NSMutableArray arrayWithCapacity:[self.sections count]];
-        NSEnumerator *sectionEnumerator = [_sections objectEnumerator];
-        EucBookSection *section;
-        while((section = [sectionEnumerator nextObject])) {
-            [filteredSectionsBuild addObject:section];
-            if([section.uuid isEqual:uuid]) {
-                break;
+        for(EucBookSection *section in _sections) {
+            if([uuids containsObject:section.uuid]) {
+                [filteredSectionsBuild addObject:section];
             }
         }
         _filteredSections = [filteredSectionsBuild retain];
-        
-        if((section = [sectionEnumerator nextObject])) {
-            _filteredEndOfBookByteOffset = section.startOffset;
-        }
-    } else {
-        _filteredEndOfBookByteOffset = 0;
     }
 }
 
@@ -452,11 +488,29 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (NSArray *)bookPageIndexesForFontFamily:(NSString *)fontFamily
 {
-    NSArray *indexes = [[EucBookPageIndex bookPageIndexesForBook:self forFontFamily:fontFamily] retain];
-    if(_filteredEndOfBookByteOffset) {
-        for(EucBookPageIndex *index in indexes) {
-            [index hidePagesAfterPageNumber:[index pageForByteOffset:_filteredEndOfBookByteOffset] - 1];
+    NSArray *indexes = [EucFilteredBookPageIndex bookPageIndexesForBook:self forFontFamily:fontFamily];
+    if(_filteredSections) {
+        NSMutableArray *ranges = [NSMutableArray arrayWithCapacity:_filteredSections.count];
+        EucBookSection *lastSection = nil;
+        for(EucBookSection *section in _filteredSections) {
+            NSRange range;
+            range.location = lastSection.endOffset;
+            range.length = section.startOffset - range.location;
+            if(range.length) {
+                [ranges addObject:[NSValue valueWithRange:range]];
+            }
+            [lastSection release];
+            lastSection = [section retain];
         }
+        
+        for(EucFilteredBookPageIndex *index in indexes) {
+            NSRange range;
+            range.location = lastSection.endOffset;
+            range.length = index.lastOffset + 1 - range.location;
+            [index setFilteredByteRanges:[ranges arrayByAddingObject:[NSValue valueWithRange:range]]];
+        }
+        
+        [lastSection release];
     }
     return indexes;
 }

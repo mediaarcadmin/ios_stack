@@ -50,6 +50,7 @@
 @synthesize delegate = _delegate;
 @synthesize transitionView = _transitionView;
 @synthesize undimAfterAppearance = _undimAfterAppearance;
+@synthesize appearAtCoverThenOpen = _appearAtCoverThenOpen;
 
 - (UIImage *)currentPageImage
 {
@@ -723,7 +724,12 @@
             _pageTurningView.delegate = self;
         }
         
-        EucBookPageIndexPoint *indexPoint = [_book currentPageIndexPoint];
+        EucBookPageIndexPoint *indexPoint;
+        if(_appearAtCoverThenOpen) {
+            indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
+        } else {
+            indexPoint = [_book currentPageIndexPoint];
+        }
         NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
         THPair *currentPageViewAndIndexPoint = [self _pageViewAndIndexPointForBookPageNumber:pageNumber];
         
@@ -764,6 +770,11 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    if(_appearAtCoverThenOpen) {
+        EucBookPageIndexPoint *indexPoint = [_book currentPageIndexPoint];
+        [self _setPageNumber:[_pageLayoutController pageNumberForIndexPoint:indexPoint] animated:YES];
+        _appearAtCoverThenOpen = NO;
+    } 
     if(_undimAfterAppearance) {
         _undimAfterAppearance = NO;
         NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];

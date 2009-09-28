@@ -195,6 +195,8 @@
 		7D6AAD6A1028E7BD006289E6 /* EucLocalBookReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */; };
 		7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DE587701070D08600441B2E /* EucFilteredBookPageIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */; };
+		7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */; };
 		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */; };
 		AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */; settings = {ATTRIBUTES = (); }; };
@@ -485,6 +487,8 @@
 		7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLocalBookReference.h; sourceTree = "<group>"; };
 		7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSFileManagerAdditions.m; sourceTree = "<group>"; };
 		7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSFileManagerAdditions.h; sourceTree = "<group>"; };
+		7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucFilteredBookPageIndex.h; sourceTree = "<group>"; };
+		7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucFilteredBookPageIndex.m; sourceTree = "<group>"; };
 		7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTextFittingLabel.h; sourceTree = "<group>"; };
 		7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTextFittingLabel.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libEucalyptus_Prefix.pch; sourceTree = SOURCE_ROOT; };
@@ -680,6 +684,8 @@
 				7D516E9210287585005F3C46 /* EucBookPageIndexPoint.m */,
 				7D516E8F10287585005F3C46 /* EucBookPageIndex.h */,
 				7D516E9010287585005F3C46 /* EucBookPageIndex.m */,
+				7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */,
+				7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1100,6 +1106,7 @@
 				7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */,
 				7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */,
 				7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */,
+				7DE587701070D08600441B2E /* EucFilteredBookPageIndex.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1332,6 +1339,7 @@
 				7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */,
 				7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */,
 				7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */,
+				7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

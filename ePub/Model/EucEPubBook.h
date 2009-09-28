@@ -15,20 +15,23 @@
     NSURL *_contentURL;
     NSString *_tocNcxId;
     
+    NSString *_coverPath;
+    
+    NSDictionary *_meta;
     NSDictionary *_manifest;
     NSArray *_spine;
     NSDictionary *_anchorPoints;
     
     NSArray *_sections;
     NSArray *_filteredSections;
-    uint32_t _filteredEndOfBookByteOffset;
     
     int _currentPageIndexPointFD;
 }
 
 @property (nonatomic, readonly) NSArray *spineFiles;
+@property (nonatomic, readonly) NSString *coverPath;
 
 - (id)initWithPath:(NSString *)path;
-- (void)hideSectionsAfterSectionWithUUID:(NSString *)uuid;
+- (void)whitelistSectionsWithUUIDs:(NSSet *)uuids;
 
 @end

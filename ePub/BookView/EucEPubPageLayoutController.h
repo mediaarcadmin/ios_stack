@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "EucPageLayoutController.h"
 
-@class EucEPubBook, EucBookPageIndex;
+@class EucEPubBook, EucFilteredBookPageIndex;
 @protocol EucBookReader;
 
 @interface EucEPubPageLayoutController : NSObject <EucPageLayoutController> {
     CGFloat _fontPointSize;
     
     EucEPubBook *_book;
-    EucBookPageIndex *_bookIndex;
+    EucFilteredBookPageIndex *_bookIndex;
     id<EucBookReader> _bookReader;
     
     NSArray *_bookIndexes;

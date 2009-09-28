@@ -21,6 +21,8 @@
 
 @implementation EucBookPageIndex
 
+@synthesize lastPageNumber = _lastPageNumber;
+
 + (NSUInteger)indexVersion
 {
     return 19;
@@ -70,17 +72,6 @@
 
 @synthesize isFinal = _isFinal;
 @synthesize lastOffset = _lastOffset;
-
-- (NSUInteger)lastPageNumber
-{
-    return _filteredLastPageNumber ? _filteredLastPageNumber : _lastPageNumber;
-}
-
-- (void)hidePagesAfterPageNumber:(NSUInteger)pageNumber
-{
-    _filteredLastPageNumber = pageNumber;
-    _lastOffset = [self indexPointForPage:self.lastPageNumber].startOfParagraphByteOffset;
-}
 
 - (id)_initForIndexInBook:(id<EucBook>)book forFontFamily:(NSString *)fontFamily pointSize:(NSUInteger)pointSize
 {

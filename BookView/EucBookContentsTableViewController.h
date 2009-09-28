@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class EucBookReference, EucBookPageIndex, THRegex;
+@class EucBookReference;
 @protocol BookContentsTableViewControllerDelegate, EucBook, EucPageLayoutController;
 
 @interface EucBookContentsTableViewController : UITableViewController {

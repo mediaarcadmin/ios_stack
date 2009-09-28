@@ -11,7 +11,7 @@
 #import "EucBookContentsTableViewController.h"
 #import "EucPageView.h"
 
-@class TransitionView, EucBookPageIndex, EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
+@class TransitionView, EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
 @protocol EucBook, EucBookViewControllerDelegate;
 
 typedef enum {
@@ -52,6 +52,7 @@ typedef enum {
     
     CGFloat _dimQuotient;
     BOOL _undimAfterAppearance;
+    BOOL _appearAtCoverThenOpen;
     
     NSInteger _directionalJumpCount;
     NSInteger _savedJumpPage;
@@ -78,6 +79,7 @@ typedef enum {
 @property (nonatomic, readonly) UIImage *currentPageImage;
 @property (nonatomic, assign) CGFloat dimQuotient;
 @property (nonatomic, assign) BOOL undimAfterAppearance;
+@property (nonatomic, assign) BOOL appearAtCoverThenOpen;
 
 - (id)initWithTransitionViewForBookContent:(TransitionView *)transitionView withToolbars:(BOOL)withToolbars;
 
