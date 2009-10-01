@@ -231,6 +231,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     glEnable(GL_TEXTURE_2D);
     
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
     GLfloat yAddition = (_powerOf2Bounds.height - boundsSize.height) / _powerOf2Bounds.height;
     for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
         for(int column = 0; column < X_VERTEX_COUNT; ++column) {
@@ -249,6 +255,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
         for(int column = 0; column < X_VERTEX_COUNT; ++column) {
             _blankPageTextureCoordinates[row][column].x = _pageVertices[row][column].x / PAGE_WIDTH;
@@ -262,9 +271,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
     texImage2DPVRTC(0, 4, 0, 512, [bookEdge bytes]);
     [bookEdge release];
-    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -363,14 +375,16 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     width = _powerOf2Bounds.height;
     height = _powerOf2Bounds.width;
     
-    
-    GLubyte *textureData = (GLubyte *) malloc(width * height * 4);
+    size_t byteLength = width * height * 4;
+    GLubyte *textureData = (GLubyte *)malloc(byteLength);
+    memset(textureData, -1, byteLength);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef textureContext = CGBitmapContextCreate(textureData, width, height, 8, width * 4, 
                                                         colorSpace, kCGImageAlphaPremultipliedLast);
     if([newCurrentView respondsToSelector:@selector(drawRect:inContext:)]) {
         CGContextSetFillColorSpace(textureContext, colorSpace);
-        CGContextSetStrokeColorSpace(textureContext, colorSpace);   
+        CGContextSetStrokeColorSpace(textureContext, colorSpace); 
+        
         [(UIView<THUIViewThreadSafeDrawing> *)newCurrentView drawRect:bounds inContext:textureContext];
     } else {
         [newCurrentView.layer renderInContext:textureContext];
@@ -383,12 +397,16 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         glGenTextures(1, textureRef);
     }
     glBindTexture(GL_TEXTURE_2D, *textureRef); 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
-    
-    free(textureData);
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+    
+    free(textureData);
 }
 
 - (void)_setView:(UIView *)view forPage:(int)page
@@ -671,7 +689,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, constantAttenuation);
     glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05f);
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0f);
-    
+
     glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     
@@ -797,7 +815,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 }
                 
                 glClear(GL_DEPTH_BUFFER_BIT);
-                glColor4f(1, 0, 0, 1);
             
                 glVertexPointer(3, GL_FLOAT, 0, pageEdge);
                 glEnableClientState(GL_VERTEX_ARRAY);

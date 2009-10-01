@@ -924,8 +924,10 @@
     [_transitionView release];
     [_pageTurningView release];
     [_pageLayoutController release];
+    [_pageSlider release];
+    [_pageNumberLabel release];
     [_toolbar release];
-    
+
     [_book release];
     [_pageViewToIndexPoint release];
     [_pageViewToIndexPointCounts release];

@@ -15,14 +15,15 @@
     NSURL *_contentURL;
     NSString *_tocNcxId;
     
+    NSDictionary *_anchorPoints;    
+
+    NSDictionary *_meta;
+    NSArray *_spine;
+    NSDictionary *_manifest;
+
     NSDictionary *_manifestOverrides;
     NSDictionary *_manifestUrlsToOverriddenUrls;
-    
-    NSDictionary *_meta;
-    NSDictionary *_manifest;
-    NSArray *_spine;
-    NSDictionary *_anchorPoints;
-    
+        
     NSArray *_sections;
     NSArray *_filteredSections;
     

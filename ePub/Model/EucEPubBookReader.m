@@ -448,7 +448,7 @@ void paragraphBuildingSkippedEntityHandler(void *ctx, const XML_Char *entityName
     _CachedXHTMLFileInformation *cachedFileInfo = nil;
     for(_CachedXHTMLFileInformation *potentialCachedFileInfo in _xHTMLfileCache) {
         if([potentialCachedFileInfo.baseURL isEqual:baseURL]) {
-            cachedFileInfo = [potentialCachedFileInfo retain];
+            cachedFileInfo = potentialCachedFileInfo;
             break;
         }
     }

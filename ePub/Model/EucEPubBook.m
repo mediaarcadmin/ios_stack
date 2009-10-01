@@ -453,11 +453,19 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [_root release];
     [_contentURL release];
     [_tocNcxId release];
+    
     [_anchorPoints release];
+    
+    [_meta release];
+    [_spine release];
+
     [_manifest release];
     [_manifestOverrides release];
     [_manifestUrlsToOverriddenUrls release];
     
+    [_sections release];
+    [_filteredSections release];
+
     [super dealloc];
 }
 
@@ -489,16 +497,23 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 {
     NSString *manifestKey = [_meta objectForKey:@"cover"];
     if(manifestKey) {
-        NSString *documentsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByStandardizingPath];
-        coverPath = [coverPath stringByStandardizingPath];
-        NSString *documentsRelativeCoverPath = [coverPath stringByReplacingOccurrencesOfString:documentsPath withString:@""];
+        NSDictionary *manifestOverrides = nil;
+        if(coverPath) {
+            NSString *documentsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByStandardizingPath];
+            coverPath = [coverPath stringByStandardizingPath];
+            NSString *documentsRelativeCoverPath = [coverPath stringByReplacingOccurrencesOfString:documentsPath withString:@""];
+            
+            manifestOverrides = [NSDictionary dictionaryWithObject:documentsRelativeCoverPath forKey:manifestKey];
+        }
         
-        NSDictionary *manifestOverrides = [NSDictionary dictionaryWithObject:documentsRelativeCoverPath forKey:manifestKey];
         NSString *key = [NSString stringWithFormat:@"gs.ingsmadeoutofotherthin.th.Euclayptus.ePub.%@.manifestOverrides", self.etextNumber];
-        
-        [[NSUserDefaults standardUserDefaults] setObject:manifestOverrides forKey:key];  
-        
-        self.manifestOverrides = manifestOverrides;
+        if(manifestOverrides.count) {
+            [[NSUserDefaults standardUserDefaults] setObject:manifestOverrides forKey:key];  
+            self.manifestOverrides = manifestOverrides;
+        } else {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];  
+            self.manifestOverrides = nil;
+        }
     }
 }
 
