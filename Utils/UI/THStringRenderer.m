@@ -14,7 +14,7 @@
 
 #import <pthread.h>
 
-static NSMutableDictionary *sFontNamesToMapsAndFonts = nil;
+static NSMutableDictionary *sFontNamesAndFlagsToMapsAndFonts = nil;
 static pthread_mutex_t sFontCacheMutex = PTHREAD_MUTEX_INITIALIZER;
 
 @implementation THStringRenderer
@@ -36,25 +36,46 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     [(NSData *)info release];
 }
 
-- (id)initWithFontName:(NSString *)fontName lineSpacingScaling:(CGFloat)lineSpacing
+- (id)initWithFontName:(NSString *)fontName styleFlags:(THStringRendererFontStyleFlags)styleFlags lineSpacingScaling:(CGFloat)lineSpacing
 {
     if((self = [super init])) {   
         THPair *mapAndFont;
         
+        THPair *fontKey = [THPair pairWithFirst:fontName second:[NSNumber numberWithInteger:styleFlags]];
+        
         pthread_mutex_lock(&sFontCacheMutex);
         {
-            if(!sFontNamesToMapsAndFonts) {
-                sFontNamesToMapsAndFonts = [[NSMutableDictionary alloc] init];
+            if(!sFontNamesAndFlagsToMapsAndFonts) {
+                sFontNamesAndFlagsToMapsAndFonts = [[NSMutableDictionary alloc] init];
             }
             
             NSUInteger glyphMapLength = (UINT16_MAX + 1) * sizeof(uint16_t);
-            mapAndFont = [sFontNamesToMapsAndFonts objectForKey:fontName];
+            mapAndFont = [sFontNamesAndFlagsToMapsAndFonts objectForKey:fontKey];
             
             if(!mapAndFont) {
 				THTimer *timer = [THTimer timerWithName:[NSString stringWithFormat:@"Create %@ renderer", fontName]];
 				
                 // Look up the font in the bundle, and cache it.
-                NSString *bundleFontPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"thfont"];
+                NSString *fullBundleFontName;;
+                
+                if(styleFlags) {
+                    NSMutableString *mutableBundleFontName = [fontName mutableCopy];
+                    [mutableBundleFontName appendString:@"-"];
+                    if(styleFlags & THStringRendererFontStyleFlagBold) {
+                        [mutableBundleFontName appendString:@"Bold"];
+                    }
+                    if(styleFlags & THStringRendererFontStyleFlagItalic) {
+                        [mutableBundleFontName appendString:@"Italic"];
+                    }    
+                    fullBundleFontName = mutableBundleFontName;
+                } else {
+                    fullBundleFontName = fontName;
+                }
+                
+                NSString *bundleFontPath = [[NSBundle mainBundle] pathForResource:fullBundleFontName ofType:@"thfont"];
+                if(!bundleFontPath) {
+                    bundleFontPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"thfont"];
+                }
                 if(bundleFontPath) {
                     NSData *fontData = [[NSData alloc] initWithContentsOfMappedFile:bundleFontPath];
                     if(fontData) {
@@ -85,7 +106,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                             CFRelease(table);
                             */
                             mapAndFont = [THPair pairWithFirst:fontData second:(id)font];
-                            [sFontNamesToMapsAndFonts setObject:mapAndFont forKey:fontName];
+                            [sFontNamesAndFlagsToMapsAndFonts setObject:mapAndFont forKey:fontKey];
                             CGFontRelease(font);
                         }
                         [fontData release];
@@ -94,8 +115,14 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                 
                 if(!mapAndFont) {
 					CGFontRef font = nil;
-					NSString *bundleFontPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"otf"];
+					NSString *bundleFontPath = [[NSBundle mainBundle] pathForResource:fullBundleFontName ofType:@"otf"];
 					if(!bundleFontPath) {
+						bundleFontPath = [[NSBundle mainBundle] pathForResource:fullBundleFontName ofType:@"ttf"];
+					}
+                    if(!bundleFontPath) {
+						bundleFontPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"otf"];
+					}
+                    if(!bundleFontPath) {
 						bundleFontPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"ttf"];
 					}
 					if(bundleFontPath) {
@@ -106,8 +133,42 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 						[fontData release];
 					}
 					if(!font) {
-						// See if we can use a system font.
-						font = CGFontCreateWithFontName((CFStringRef)fontName);
+						// See if we can use a system font.                        
+                        NSArray *familyNames = [UIFont familyNames];
+                        if([familyNames containsObject:fontName]) {
+                            NSArray *specificFontNames = [UIFont fontNamesForFamilyName:fontName];
+                            NSInteger specificFontCount = specificFontNames.count;
+                            if(specificFontCount) {
+                                // The idea here is to rate the specific font names
+                                // with positive or negative points depending on 
+                                // for the attributed we can detect within them,
+                                // then choose the highest rated font name.
+                                NSInteger points[specificFontCount];
+                                memset(points, 0, specificFontCount * sizeof(NSUInteger));
+                                
+                                NSUInteger specificFontIndex = 0;
+                                for(NSString *specificFontName in specificFontNames) {
+                                    if([specificFontName rangeOfString:@"bold" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                                        points[specificFontIndex] += styleFlags & THStringRendererFontStyleFlagBold ? 1 : -1;
+                                    }
+                                    if([specificFontName rangeOfString:@"italic" options:NSCaseInsensitiveSearch].location != NSNotFound ||
+                                       [specificFontName rangeOfString:@"oblique" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                                        points[specificFontIndex] += styleFlags & THStringRendererFontStyleFlagItalic ? 1 : -1;
+                                    }
+                                    ++specificFontIndex;
+                                }
+                                
+                                NSUInteger bestFontIndex = 0;
+                                NSInteger bestFontPoints = NSIntegerMin;
+                                for(specificFontIndex = 0; specificFontIndex < specificFontCount; ++specificFontIndex) {
+                                    if(points[specificFontIndex] > bestFontPoints) {
+                                        bestFontPoints = points[specificFontIndex];
+                                        bestFontIndex = specificFontIndex;
+                                    }
+                                }
+                                font = CGFontCreateWithFontName((CFStringRef)[specificFontNames objectAtIndex:bestFontIndex]);
+                            }
+                        }
 					}
                     if(font) {
                         NSData *fontTable = (NSData *)CGFontCopyTableForTag(font, 'cmap');
@@ -182,7 +243,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                                         }
                                         
                                         mapAndFont = [THPair pairWithFirst:glyphMapData second:(id)font];
-                                        [sFontNamesToMapsAndFonts setObject:mapAndFont forKey:fontName];
+                                        [sFontNamesAndFlagsToMapsAndFonts setObject:mapAndFont forKey:fontKey];
                                             
                                     }
                                     [glyphMapData release];
@@ -241,6 +302,16 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     }
     
     return self;
+}
+
+- (id)initWithFontName:(NSString *)fontName styleFlags:(THStringRendererFontStyleFlags)styleFlags
+{
+    return [self initWithFontName:fontName styleFlags:styleFlags lineSpacingScaling:1.0f];
+}
+
+- (id)initWithFontName:(NSString *)fontName lineSpacingScaling:(CGFloat)lineSpacing 
+{
+    return [self initWithFontName:fontName styleFlags:THStringRendererFontStyleFlagRegular lineSpacingScaling:lineSpacing];
 }
 
 - (id)initWithFontName:(NSString *)fontName

@@ -183,13 +183,16 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
     EucBookTextStyle *existingStyle;
     if(self->_paragraphBuildingStyleStack.count) {
         existingStyle = [self->_paragraphBuildingStyleStack lastObject];
+        if(strcmp("p", name) == 0 || strcmp("div", name) == 0) {
+            THWarn(@"Nested <%s> tag encountered in %@ - not fully supported.", name, self->_baseURL, (long)(self->_paragraphBuildingStartOffset + XML_GetCurrentByteIndex(self->_parser))); 
+        }        
     } else {
         existingStyle = nil;
     }
     
     NSString *elementName = [NSString stringWithUTF8String:name];
     EucBookTextStyle *newStyle = [self->_styleStore styleForSelector:elementName fromStyle:existingStyle];
-
+    
     for(int i = 0; atts[i]; i+=2) {
         if(strcmp("class", atts[i]) == 0) {
             const XML_Char *value = atts[i + 1];
@@ -304,7 +307,7 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
                     if(fragment.length) {
                         bookHref = [bookHref stringByAppendingFormat:@"#%@", fragment]; 
                     }
-                    if([self->_book sectionWithUuid:bookHref]) {
+                    if([self->_book byteOffsetForUuid:bookHref]) {
                         // If this is an internal link, replace it with an 
                         // "internal" href.
                         hyperlink = [@"internal:" stringByAppendingString:bookHref];

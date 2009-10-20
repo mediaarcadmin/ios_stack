@@ -249,5 +249,6 @@
 <key>hearts</key>	<integer>9829</integer>	<!-- black heart suit = valentine -->
 <key>spades</key>	<integer>9824</integer>	<!-- black spade suit -->
 <key>loz</key>	<integer>9674</integer>	<!-- lozenge -->
+<key>pound</key>	<integer>163</integer> <!-- pound sterling -->
 </dict>
 </plist>

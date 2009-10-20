@@ -8,6 +8,7 @@
 
 #import "EucBookTextStyle.h"
 #import "THStringRenderer.h"
+#import "THLog.h"
 
 #define DEFAULT_FONT_SIZE 18.0f
 
@@ -130,62 +131,101 @@
     return _flags || _attributes || [_cssStyles count] || _fontSizePercentage != 1.0f || _image;
 }
 
+- (THStringRenderer *)bestRendererForFontWithFamily:(NSString *)family style:(EucBookTextStyleFontStyle)style weight:(EucBookTextStyleFontWeight)weight
+{
+    THStringRenderer *ret = nil;
+ 
+    CGFloat lineSpacingScaling = 1.0f;
+
+    if([@"sans-serif" isEqualToString:family]) {
+        family = @"Helvetica";
+        lineSpacingScaling = 1.2;
+    }
+    
+    if([@"Helvetica" isEqualToString:family] || 
+       [@"Arial" isEqualToString:family]) {
+        lineSpacingScaling = 1.2;
+    }
+    
+    THStringRendererFontStyleFlags styleFlags = THStringRendererFontStyleFlagRegular;
+    if(style == EucBookTextStyleFontStyleItalic) {
+        styleFlags |= THStringRendererFontStyleFlagItalic;
+    }
+    if(weight == EucBookTextStyleFontWeightBold) {
+        styleFlags |= THStringRendererFontStyleFlagBold;
+    }
+    ret = [[THStringRenderer alloc] initWithFontName:family styleFlags:styleFlags lineSpacingScaling:lineSpacingScaling];
+    
+    return [ret autorelease];
+}
+
 - (THStringRenderer *)stringRenderer
 {
-    if(!_cachedRenderer) {
-        CGFloat lineSpacingScaling = 1.0f;
-        
-        NSString *fontName = @"LinuxLibertine";
-        NSString *specifiedFace = [_cssStyles objectForKey:@"font-family"];
-        if([@"sans-serif" isEqualToString:specifiedFace]) {
-            fontName = @"Helvetica";
-            lineSpacingScaling = 1.2;
-        }
-        
-        if([self fontStyle] == EucBookTextStyleFontStyleItalic) {
-            if([self fontWeight] == EucBookTextStyleFontWeightBold) {
-                _cachedRenderer = [[THStringRenderer alloc] initWithFontName:[fontName stringByAppendingString:@"-BoldItalic"] lineSpacingScaling:lineSpacingScaling];
-                if(!_cachedRenderer) {
-                    _cachedRenderer = [[THStringRenderer alloc] initWithFontName:[fontName stringByAppendingString:@"-BoldOblique"] lineSpacingScaling:lineSpacingScaling];
-                }
-            } else {
-                _cachedRenderer = [[THStringRenderer alloc] initWithFontName:[fontName stringByAppendingString:@"-Italic"] lineSpacingScaling:lineSpacingScaling];
-                if(!_cachedRenderer) {
-                    _cachedRenderer = [[THStringRenderer alloc] initWithFontName:[fontName stringByAppendingString:@"-Oblique"] lineSpacingScaling:lineSpacingScaling];
+    if(!_cachedRenderer) {        
+        EucBookTextStyleFontStyle style = [self fontStyle];
+        EucBookTextStyleFontStyle weight = [self fontWeight]; 
+        NSString *families = [_cssStyles objectForKey:@"font-family"];
+        if(families) {
+            NSArray *familiesToTry = [families componentsSeparatedByString:@","];
+            
+            if(familiesToTry.count) {
+                for(NSString *family in familiesToTry) {
+                    if(family.length > 2) {
+                        // Strip any quotes.
+                        unichar firstChar = [family characterAtIndex:0];
+                        if((firstChar == '"' || firstChar == '\'') && [family characterAtIndex:family.length - 1] == firstChar) {
+                            family = [family substringWithRange:NSMakeRange(1, family.length - 2)];
+                        }
+                    }
+                    _cachedRenderer = [[self bestRendererForFontWithFamily:family style:style weight:weight] retain];
+                    if(_cachedRenderer) {
+                        break;
+                    }
                 }
             }
-        } else if([self fontWeight] == EucBookTextStyleFontWeightBold) {
-            _cachedRenderer = [[THStringRenderer alloc] initWithFontName:[fontName stringByAppendingString:@"-Bold"] lineSpacingScaling:lineSpacingScaling];
-        } else{
-            _cachedRenderer = [[THStringRenderer alloc] initWithFontName:fontName lineSpacingScaling:lineSpacingScaling];
+        }
+        if(!_cachedRenderer) {
+            _cachedRenderer = [[self bestRendererForFontWithFamily:@"LinuxLibertine" style:style weight:weight] retain];
         }
     }
     return _cachedRenderer;
 }
 
-- (void)setStyle:(NSString *)cssStyleName to:(NSString *)value
+- (void)setStyle:(NSString *)cssStyleName to:(NSString *)caseSpecificValue
 {        
     cssStyleName = [cssStyleName lowercaseString];
-    if(!value) {
+    if(!caseSpecificValue) {
         [_cssStyles removeObjectForKey:cssStyleName];
         return;
     }    
     
-    value = [value lowercaseString];
+    NSString *value = [caseSpecificValue lowercaseString];
     if([cssStyleName isEqualToString:@"font-size"]) {
         if(value) {
             NSInteger length = [value length];
             if(length) {
-                if([value characterAtIndex:length - 1] == '%') {
+                unichar endChar = [value characterAtIndex:length - 1];
+                if(endChar == '%') {
                     CGFloat ret = [[value substringToIndex:length-1] floatValue];
                     if(ret) {
                         _fontSizePercentage *= (ret / 100.0f); 
                     }
+                } else if(length > 2 && endChar == 'm' && [value characterAtIndex:length - 2] == 'e') {
+                    CGFloat ret = [[value substringToIndex:length-2] floatValue];
+                    if(ret) {
+                        _fontSizePercentage *= ret; 
+                    }
+                } else if(length > 2 && (endChar == 't' || endChar == 'x') && [value characterAtIndex:length - 2] == 'p') {
+                    CGFloat ret = [[value substringToIndex:length-2] floatValue];
+                    if(ret) {
+                        _fontSizePercentage = ret / DEFAULT_FONT_SIZE; 
+                    }                    
                 } else {
                     CGFloat ret = [value floatValue];
                     if(ret) {
                         _fontSizePercentage = ret / DEFAULT_FONT_SIZE;
                     }
+                    THWarn(@"Unrecognised font-size value in CSS.  Treating as %f px", ret);
                 }
             }
         } else {
@@ -200,7 +240,12 @@
         _cachedSpaceWidthIsForPointSize = 0;
     }
     
+    
     if(![value isEqualToString:@"inherit"]) {
+        if([cssStyleName hasPrefix:@"font-family"]) {
+            value = caseSpecificValue;
+        }
+        
         if(!_cssStyles) {
             _cssStyles = [[NSMutableDictionary alloc] init];
         }
@@ -249,7 +294,7 @@
 {
     if(_cssStyles) {
         NSString *cssValue = [_cssStyles objectForKey:@"font-weight"];
-        if(cssValue && [cssValue isEqualToString:@"bold"]) {
+        if(cssValue && [cssValue hasPrefix:@"bold"]) {  // 'bold' or 'bolder'
             return EucBookTextStyleFontWeightBold;
         } 
     }

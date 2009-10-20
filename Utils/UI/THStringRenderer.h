@@ -19,6 +19,12 @@ typedef enum THStringRendererFlags {
     THStringRendererFlagNoHinting              = 0x20,
 } THStringRendererFlags;
 
+typedef enum THStringRendererFontStyleFlags {
+    THStringRendererFontStyleFlagRegular = 0,
+    THStringRendererFontStyleFlagItalic  = 0x01,
+    THStringRendererFontStyleFlagBold    = 0x02,
+} THStringRendererFontStyleFlags;
+
 @interface THStringRenderer : NSObject {
     NSString *_fontName;
     CGFontRef _font;
@@ -52,8 +58,12 @@ typedef enum THStringRendererFlags {
 
 @property (nonatomic, assign) CGFloat fauxBoldStrokeWidth; // Default if 0.5f.
 
+
 - (id)initWithFontName:(NSString *)fontName;
 - (id)initWithFontName:(NSString *)fontName lineSpacingScaling:(CGFloat)lineSpacing;
+- (id)initWithFontName:(NSString *)fontName styleFlags:(THStringRendererFontStyleFlags)styleFlags;
+- (id)initWithFontName:(NSString *)fontName styleFlags:(THStringRendererFontStyleFlags)styleFlags lineSpacingScaling:(CGFloat)lineSpacing;
+
 
 - (CGFloat)lineSpacingForPointSize:(CGFloat)pointSize;
 - (CGFloat)ascenderForPointSize:(CGFloat)pointSize;
