@@ -255,6 +255,7 @@ struct tocNcxParsingContext
     BOOL inNavMap;
     BOOL inNavPoint;
     BOOL inNavLabel;
+    BOOL inNavLabelText;
     
     NSString *thisLabelText;
     NSString *thisLabelSrc;
@@ -291,6 +292,10 @@ static void tocNcxStartElementHandler(void *ctx, const XML_Char *name, const XML
                         }
                     }            
                 }
+            } else {
+                if(strcmp("text", name) == 0) {
+                    context->inNavLabelText = YES;
+                }
             }
         }
     }
@@ -301,7 +306,11 @@ static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)
     struct tocNcxParsingContext *context = (struct tocNcxParsingContext *)ctx;
     if(context->inNavMap) { 
         if(context->inNavPoint) {
-            if(context->inNavLabel) {
+            if(context->inNavLabelText) {
+                if(strcmp("text", name) == 0) {
+                    context->inNavLabelText = NO;
+                }                
+            } else if(context->inNavLabel) {
                 if(strcmp("navLabel", name) == 0) {
                     context->inNavLabel = NO;
                 }
@@ -329,7 +338,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 {
     struct tocNcxParsingContext *context = (struct tocNcxParsingContext *)ctx;
     
-    if(context->inNavLabel) {
+    if(context->inNavLabelText) {
         NSString *text = [[NSString alloc] initWithBytes:chars length:len encoding:NSUTF8StringEncoding];
         if(context->thisLabelText && text.length) {
             NSString *newText = [context->thisLabelText stringByAppendingString:text];
