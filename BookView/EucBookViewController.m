@@ -781,7 +781,10 @@
         [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
     }
     if(_firstAppearance && !_showToolbarsOnFirstAppearance) {
-        [[UIApplication sharedApplication] setStatusBarHidden:YES animated:animated];    
+        UIApplication *application = [UIApplication sharedApplication];
+        if(![application isStatusBarHidden]) {
+            [application setStatusBarHidden:YES animated:animated];   
+        }
     }
     _firstAppearance = NO;
 }
