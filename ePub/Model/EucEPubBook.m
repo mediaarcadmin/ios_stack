@@ -534,7 +534,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     if(uuids.count) {
         NSMutableArray *filteredSectionsBuild = [NSMutableArray arrayWithCapacity:[self.sections count]];
         for(EucBookSection *section in _sections) {
-            if([uuids containsObject:section.uuid]) {
+            if([uuids containsObject:section.uuid] && section.startOffset != section.endOffset ) {
                 [filteredSectionsBuild addObject:section];
             }
         }

@@ -32,11 +32,20 @@
         _filteredPageCount = 0;
         _filteredPageRanges = malloc(sizeof(NSRange) * filteredByteRanges.count);
 
+        off_t lastOffset = self.lastOffset;
         for(NSValue *value in filteredByteRanges) {
             NSRange byteRange = [value rangeValue];
             NSRange pageRange;
-            pageRange.location = [super pageForByteOffset:byteRange.location];
-            pageRange.length = [super pageForByteOffset:byteRange.location + byteRange.length - 1] - pageRange.location;
+            pageRange.location = [self pageForByteOffset:byteRange.location];
+            if(byteRange.location + byteRange.length > lastOffset) {
+                // Special case - we want to filter to after the last page.
+                // The +1 is because location + length gives the /next/ page,
+                // which is one-past-the-end (i.e. it does not exist).  If we
+                // don't add 1, we filter only /up to/ the last page.
+                pageRange.length = self.lastPageNumber - pageRange.location + 1; 
+            } else {
+                pageRange.length = [self pageForByteOffset:byteRange.location + byteRange.length - 1] - pageRange.location;
+            }
             if(pageRange.length > 0) {
                 _filteredPageCount += pageRange.length;
                 _filteredPageRanges[_filteredPageRangeCount++] = pageRange;
@@ -47,7 +56,7 @@
                         
 - (NSUInteger)filteredLastPageNumber
 {
-    return [super lastPageNumber] - _filteredPageCount;
+    return [self lastPageNumber] - _filteredPageCount;
 }
 
 - (NSUInteger)_pageToFilteredPage:(NSUInteger)pageNumber;
@@ -89,17 +98,17 @@
 
 - (EucBookPageIndexPoint *)filteredIndexPointForPage:(NSUInteger)pageNumber
 {
-    return [super indexPointForPage:[self _filteredPageToPage:pageNumber]];
+    return [self indexPointForPage:[self _filteredPageToPage:pageNumber]];
 }
 
 - (NSUInteger)filteredPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    return [self _pageToFilteredPage:[super pageForIndexPoint:indexPoint]];
+    return [self _pageToFilteredPage:[self pageForIndexPoint:indexPoint]];
 }
 
 - (NSUInteger)filteredPageForByteOffset:(NSUInteger)byteOffset
 {
-    return [self _pageToFilteredPage:[super pageForByteOffset:byteOffset]];
+    return [self _pageToFilteredPage:[self pageForByteOffset:byteOffset]];
 }
 
 @end
