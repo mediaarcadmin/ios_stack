@@ -212,7 +212,7 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
                 NSString *selector = [@"." stringByAppendingString:[NSString stringWithUTF8String:value]];
                 newStyle = [self->_styleStore styleForSelector:selector fromStyle:newStyle];
             }
-        } else if(strcmp("style", atts[i]) == 0) {
+        } else if(strcmp("style", atts[i]) == 0 && atts[i+1][0] != '\0') {
             if(!newStyle) {
                 newStyle = [[[EucBookTextStyle alloc] init] autorelease];
             }
