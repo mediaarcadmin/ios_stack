@@ -194,30 +194,40 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
     EucBookTextStyle *newStyle = [self->_styleStore styleForSelector:elementName fromStyle:existingStyle];
     
     for(int i = 0; atts[i]; i+=2) {
-        if(strcmp("class", atts[i]) == 0) {
+        if(strcmp("class", atts[i]) == 0 || strcmp("id", atts[i]) == 0) {
             const XML_Char *value = atts[i + 1];
             const XML_Char *endValue;
+            
+            NSString *prepend = (atts[i][0] == 'c' ? @"." : @"#");
+            
             while((endValue = strchr(value, ' '))) {
                 if(endValue > value) {
                     NSString *class = [[NSString alloc] initWithBytes:value 
                                                                length:endValue - value
                                                              encoding:NSUTF8StringEncoding];
-                    NSString *selector = [@"." stringByAppendingString:class];
+                    NSString *selector = [prepend stringByAppendingString:class];
                     newStyle = [self->_styleStore styleForSelector:selector fromStyle:newStyle];
                     [class release];
                 }
                 value = endValue + 1;
             }
             if(*value) {
-                NSString *selector = [@"." stringByAppendingString:[NSString stringWithUTF8String:value]];
+                NSString *selector = [prepend stringByAppendingString:[NSString stringWithUTF8String:value]];
                 newStyle = [self->_styleStore styleForSelector:selector fromStyle:newStyle];
+            }
+
+            if(self->_anchorIDStore && atts[i][0] == 'i') { // Store the offset of this tag with an id so that we can use links to it.
+                NSUInteger offset = self->_paragraphBuildingStartOffset + XML_GetCurrentByteIndex(self->_parser);
+                NSString *path = [self->_packageRelativePath stringByAppendingFormat:@"#%@", [NSString stringWithUTF8String:atts[i+1]]];
+                [self->_anchorIDStore setObject:[NSNumber numberWithInteger:offset]
+                                         forKey:path];
             }
         } else if(strcmp("style", atts[i]) == 0 && atts[i+1][0] != '\0') {
             if(!newStyle) {
                 newStyle = [[[EucBookTextStyle alloc] init] autorelease];
             }
             newStyle = [self->_styleStore styleWithInlineStyleDeclaration:(char *)atts[i+1] fromStyle:newStyle];
-        }        
+        }      
     }
     
     if(!newStyle) {
@@ -288,14 +298,8 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
         EucBookTextStyle *style = [self->_paragraphBuildingStyleStack lastObject];
         style = [style copy];
 
-        NSMutableDictionary *anchorIDStore = self->_anchorIDStore;
         for(int i = 0; atts[i]; i+=2) {
-            if(anchorIDStore && strcmp("id", atts[i]) == 0) {
-                NSUInteger offset = self->_paragraphBuildingStartOffset + XML_GetCurrentByteIndex(self->_parser);
-                NSString *path = [self->_packageRelativePath stringByAppendingFormat:@"#%@", [NSString stringWithUTF8String:atts[i+1]]];
-                [anchorIDStore setObject:[NSNumber numberWithInteger:offset]
-                                  forKey:path];
-            } else if(strcmp("href", atts[i]) == 0) {
+            if(strcmp("href", atts[i]) == 0) {
                 // Build an "internal:" link that points towards the book-
                 // relative path that this anchor links to.
                 NSString *hyperlink = nil;
@@ -307,7 +311,7 @@ static void paragraphBuildingStartElementHandler(void *ctx, const XML_Char *name
                     if(fragment.length) {
                         bookHref = [bookHref stringByAppendingFormat:@"#%@", fragment]; 
                     }
-                    if([self->_book byteOffsetForUuid:bookHref]) {
+                    if([self->_book hasByteOffsetForUuid:bookHref]) {
                         // If this is an internal link, replace it with an 
                         // "internal" href.
                         hyperlink = [@"internal:" stringByAppendingString:bookHref];

@@ -670,6 +670,11 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return nil;    
 }
 
+- (BOOL)hasByteOffsetForUuid:(NSString *)uuid
+{
+    return [_anchorPoints objectForKey:uuid] != nil;    
+}
+
 - (NSUInteger)byteOffsetForUuid:(NSString *)uuid
 {
     return [[_anchorPoints objectForKey:uuid] unsignedIntegerValue];    

@@ -31,6 +31,7 @@
 - (EucBookSection *)nextTopLevelSectionForByteOffset:(NSUInteger)byteOffset;
 
 // Some UUIDs (like HTML anchors) don't correspond to sections. 
+- (BOOL)hasByteOffsetForUuid:(NSString *)uuid;
 - (NSUInteger)byteOffsetForUuid:(NSString *)uuid;
 - (NSArray *)bookPageIndexesForFontFamily:(NSString *)fontFamily;
 
