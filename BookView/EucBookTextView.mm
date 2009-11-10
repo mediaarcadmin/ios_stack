@@ -725,7 +725,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
                 currentX += indentBrokenLinesBy;
             }
             if(center) {
-                currentX += ((xWidth - currentX) - (lineWordsPixelWidth + spacesMustTakeUpPixels) + 1) / 2;
+                currentX += (xWidth - (lineWordsPixelWidth + spacesMustTakeUpPixels)) / 2;
             }
             if(rightJustify) {
                 currentX += (xWidth - (lineWordsPixelWidth + spacesMustTakeUpPixels));
