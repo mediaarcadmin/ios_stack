@@ -240,6 +240,51 @@
         _cachedSpaceWidthIsForPointSize = 0;
     }
     
+    if([cssStyleName isEqualToString:@"margin"]) {
+        NSString *top, *right, *bottom, *left;
+
+        NSArray *properties = [value componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if(properties.count) {
+            NSMutableArray *validProperties = [NSMutableArray arrayWithCapacity:properties.count];
+            for(NSString *property in properties) {
+                if(property.length) {
+                    [validProperties addObject:property];
+                }
+            }
+            switch(validProperties.count) {
+                case 0:
+                    top = right = bottom = left = nil;
+                    break;
+                case 1:
+                    top = right = bottom = left = [validProperties objectAtIndex:0];
+                    break;
+                case 2:
+                    top = bottom = [validProperties objectAtIndex:0];
+                    right = left = [validProperties objectAtIndex:1];
+                    break;
+                case 3:
+                    top = [validProperties objectAtIndex:0];
+                    right = left = [validProperties objectAtIndex:1];
+                    bottom = [validProperties objectAtIndex:2];
+                    break;
+                case 4:
+                default:
+                    top = [validProperties objectAtIndex:0];
+                    right = [validProperties objectAtIndex:1];
+                    bottom = [validProperties objectAtIndex:2];
+                    left = [validProperties objectAtIndex:3];
+                    break;
+            }
+        } else {
+            top = right = bottom = left = value;
+        }
+        if(top) {
+            [self setStyle:@"margin-top" to:top];
+            [self setStyle:@"margin-right" to:right];
+            [self setStyle:@"margin-bottom" to:bottom];
+            [self setStyle:@"margin-left" to:left];
+        }
+    }
     
     if(![value isEqualToString:@"inherit"]) {
         if([cssStyleName hasPrefix:@"font-family"]) {
