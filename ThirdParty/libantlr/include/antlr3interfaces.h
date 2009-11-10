@@ -109,6 +109,11 @@ typedef struct ANTLR3_VECTOR_struct							*pANTLR3_VECTOR;
 ///
 typedef struct ANTLR3_STACK_struct							*pANTLR3_STACK;
 
+/// Pointer to an instantiation of 'class' #ANTLR3_TOPO
+/// \ingroup ANTLR3_TOPO
+///
+typedef struct ANTLR3_TOPO_struct                                               *pANTLR3_TOPO;
+
 /// Pointer to an instantiation of 'class' #ANTLR3_INPUT_STREAM					
 /// \ingroup ANTLR3_INPUT_STREAM					
 ///

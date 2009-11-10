@@ -968,27 +968,27 @@
 			Filter=".stg"
 			>
 			<File
-				RelativePath="..\..\src\org\antlr\codegen\templates\C\AST.stg"
+				RelativePath="..\..\tool\src\main\resources\org\antlr\codegen\templates\C\AST.stg"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\org\antlr\codegen\templates\C\ASTDbg.stg"
+				RelativePath="..\..\tool\src\main\resources\org\antlr\codegen\templates\C\ASTDbg.stg"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\org\antlr\codegen\templates\C\ASTParser.stg"
+				RelativePath="..\..\tool\src\main\resources\org\antlr\codegen\templates\C\ASTParser.stg"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\org\antlr\codegen\templates\C\ASTTreeParser.stg"
+				RelativePath="..\..\tool\src\main\resources\org\antlr\codegen\templates\C\ASTTreeParser.stg"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\org\antlr\codegen\templates\C\C.stg"
+				RelativePath="..\..\tool\src\main\resources\org\antlr\codegen\templates\C\C.stg"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\org\antlr\codegen\templates\C\Dbg.stg"
+				RelativePath="..\..\tool\src\main\resources\org\antlr\codegen\templates\C\Dbg.stg"
 				>
 			</File>
 			<Filter
@@ -996,7 +996,7 @@
 				Filter="*.sti"
 				>
 				<File
-					RelativePath="..\..\src\org\antlr\codegen\templates\ANTLRCore.sti"
+					RelativePath="..\..\tool\src\main\resources\org\antlr\codegen\templates\ANTLRCore.sti"
 					>
 				</File>
 			</Filter>
@@ -1006,7 +1006,7 @@
 			Filter="*.java"
 			>
 			<File
-				RelativePath="..\..\src\org\antlr\codegen\CTarget.java"
+				RelativePath="..\..\tool\src\main\java\org\antlr\codegen\CTarget.java"
 				>
 			</File>
 		</Filter>

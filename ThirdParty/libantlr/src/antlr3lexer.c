@@ -390,6 +390,10 @@ static void mTokens	    (pANTLR3_LEXER lexer)
 static void			
 reportError		    (pANTLR3_BASE_RECOGNIZER rec)
 {
+    // Indicate this recognizer had an error while processing.
+	//
+	rec->state->errorCount++;
+
     rec->displayRecognitionError(rec, rec->state->tokenNames);
 }
 

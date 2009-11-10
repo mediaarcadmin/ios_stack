@@ -522,6 +522,7 @@ ANTLR3_API pANTLR3_VECTOR					antlr3VectorNew						(ANTLR3_UINT32 sizeHint);
 ANTLR3_API pANTLR3_STACK					antlr3StackNew						(ANTLR3_UINT32 sizeHint);
 ANTLR3_API void                                         antlr3SetVectorApi  (pANTLR3_VECTOR vector, ANTLR3_UINT32 sizeHint);
 ANTLR3_API ANTLR3_UCHAR						antlr3c8toAntlrc					(ANTLR3_INT8 inc);
+ANTLR3_API pANTLR3_TOPO                         antlr3TopoNew();
 
 ANTLR3_API pANTLR3_EXCEPTION				antlr3ExceptionNew					(ANTLR3_UINT32 exception, void * name, void * message, ANTLR3_BOOLEAN freeMessage);
 

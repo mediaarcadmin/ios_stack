@@ -533,10 +533,13 @@ reuse                   (pANTLR3_BASE_TREE tree)
 
     if  (cTree->factory != NULL)
     {
+
         if  (cTree->baseTree.children != NULL)
         {
+            
             cTree->baseTree.children->clear(cTree->baseTree.children);
         }
-        cTree->factory->nilStack->push(cTree->factory->nilStack, tree, NULL);
+       cTree->factory->nilStack->push(cTree->factory->nilStack, tree, NULL);
+       
     }
 }

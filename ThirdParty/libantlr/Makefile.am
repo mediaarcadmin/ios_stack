@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = gnu
 AM_LIBTOOLFLAGS =
 ## --silent
-
+ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libantlr3c.la
 
 LIBSOURCES		=	src/antlr3baserecognizer.c			\
@@ -67,7 +67,7 @@ include_HEADERS =	include/antlr3.h						\
 
 libantlr3c_la_LDFLAGS = -avoid-version
 
-INCLUDES = -Iinclude -Iinclude
+INCLUDES = -Iinclude
 
 EXTRA_DIST = 	\
 				vsrulefiles/antlr3lexerandparser.rules		\
@@ -75,7 +75,7 @@ EXTRA_DIST = 	\
 				vsrulefiles/antlr3parser.rules				\
 				vsrulefiles/antlr3treeparser.rules			\
 			 	C.sln C.vcproj C.vcproj.vspscc				\
-				C.vssscc
+				C.vssscc doxyfile doxygen
 
 export OBJECT_MODE
 

@@ -79,6 +79,7 @@ typedef	struct ANTLR3_BASE_TREE_ADAPTOR_struct
     void					(*addChild)				(struct ANTLR3_BASE_TREE_ADAPTOR_struct * adaptor, void * t, void * child);
     void					(*addChildToken)		(struct ANTLR3_BASE_TREE_ADAPTOR_struct * adaptor, void * t, pANTLR3_COMMON_TOKEN child);
     void					(*setParent)			(struct ANTLR3_BASE_TREE_ADAPTOR_struct * adaptor, void * child, void * parent);
+    void *					(*getParent)			(struct ANTLR3_BASE_TREE_ADAPTOR_struct * adaptor, void * child);
 
 	void *					(*errorNode)			(struct ANTLR3_BASE_TREE_ADAPTOR_struct * adaptor, pANTLR3_TOKEN_STREAM tnstream, pANTLR3_COMMON_TOKEN startToken, pANTLR3_COMMON_TOKEN stopToken, pANTLR3_EXCEPTION e);
 	ANTLR3_BOOLEAN			(*isNilNode)			(struct ANTLR3_BASE_TREE_ADAPTOR_struct * adaptor, void * t);

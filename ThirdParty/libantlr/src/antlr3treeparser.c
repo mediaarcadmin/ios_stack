@@ -210,20 +210,28 @@ getMissingSymbol			(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_INT_STREAM	istre
 	pANTLR3_BASE_TREE				current;
 	pANTLR3_COMMON_TOKEN			token;
 	pANTLR3_STRING					text;
+    ANTLR3_INT32                   i;
 
 	// Dereference the standard pointers
 	//
     tns	    = (pANTLR3_TREE_NODE_STREAM)(istream->super);
     ctns    = tns->ctns;
-
+    
 	// Create a new empty node, by stealing the current one, or the previous one if the current one is EOF
 	//
 	current	= tns->_LT(tns, 1);
+    i       = -1;
 
 	if	(current == &ctns->EOF_NODE.baseTree)
 	{
 		current = tns->_LT(tns, -1);
+        i--;
 	}
+    while (((pANTLR3_COMMON_TREE)(current->super))->factory == NULL)
+	{
+		current = tns->_LT(tns, i--);
+    }
+
 	node	= current->dupNode(current);
 
 	// Find the newly dupicated token

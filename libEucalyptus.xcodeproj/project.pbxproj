@@ -360,7 +360,7 @@
 		7D51719B1028B554005F3C46 /* EucEPubLocalBookReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubLocalBookReference.m; sourceTree = "<group>"; };
 		7D51719C1028B554005F3C46 /* EucEPubBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubBook.h; sourceTree = "<group>"; };
 		7D51719D1028B554005F3C46 /* EucEPubBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubBook.m; sourceTree = "<group>"; };
-		7D5171AE1028B59C005F3C46 /* antlr-3.1.3.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = "antlr-3.1.3.jar"; sourceTree = "<group>"; };
+		7D5171AE1028B59C005F3C46 /* antlr-3.2.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = "antlr-3.2.jar"; sourceTree = "<group>"; };
 		7D5171CA1028B6AE005F3C46 /* libexpat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libexpat.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5171D91028B6B9005F3C46 /* libantlr.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libantlr.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5172A51028B771005F3C46 /* EucBookParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookParagraph.h; sourceTree = "<group>"; };
@@ -584,7 +584,7 @@
 		7D516E1710287300005F3C46 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				7D5171AE1028B59C005F3C46 /* antlr-3.1.3.jar */,
+				7D5171AE1028B59C005F3C46 /* antlr-3.2.jar */,
 				7D51700C10287987005F3C46 /* VCTitleCase */,
 				7D516E1810287300005F3C46 /* Apple */,
 				7D5170D11028ADD6005F3C46 /* libhyphenate */,

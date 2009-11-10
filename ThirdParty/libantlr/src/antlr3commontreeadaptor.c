@@ -58,6 +58,7 @@ static	void					setDebugEventListener	(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR
 static  void					setChildIndex			(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_BASE_TREE t, ANTLR3_INT32 i);
 static  ANTLR3_INT32			getChildIndex			(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_BASE_TREE t);
 static	void					setParent				(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_BASE_TREE child, pANTLR3_BASE_TREE parent);
+static	pANTLR3_BASE_TREE    	getParent				(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_BASE_TREE child);
 static  void					setChild				(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_BASE_TREE t, ANTLR3_UINT32 i, pANTLR3_BASE_TREE child);
 static	void					deleteChild				(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_BASE_TREE t, ANTLR3_UINT32 i);
 static	pANTLR3_BASE_TREE		errorNode				(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_TOKEN_STREAM ctnstream, pANTLR3_COMMON_TOKEN startToken, pANTLR3_COMMON_TOKEN stopToken, pANTLR3_EXCEPTION e);
@@ -97,7 +98,8 @@ ANTLR3_TREE_ADAPTORNew(pANTLR3_STRING_FACTORY strFactory)
 	//
 	antlr3BaseTreeAdaptorInit(&(cta->baseAdaptor), NULL);
 
-	// Install our interface overrides.
+	// Install our interface overrides. Strangeness is to allow generated code to treat them
+    // as returning void *
 	//
 	cta->baseAdaptor.dupNode				=  (void * (*) (pANTLR3_BASE_TREE_ADAPTOR, void *))
 													dupNode;
@@ -123,6 +125,8 @@ ANTLR3_TREE_ADAPTORNew(pANTLR3_STRING_FACTORY strFactory)
                                                     setChild;
 	cta->baseAdaptor.setParent				=  (void   (*) (pANTLR3_BASE_TREE_ADAPTOR, void *, void *))
                                                     setParent;
+    cta->baseAdaptor.getParent				=  (void * (*) (pANTLR3_BASE_TREE_ADAPTOR, void *))
+                                                    getParent;
 	cta->baseAdaptor.setChildIndex			=  (void   (*) (pANTLR3_BASE_TREE_ADAPTOR, void *, ANTLR3_UINT32))
                                                     setChildIndex;
 	cta->baseAdaptor.deleteChild			=  (void   (*) (pANTLR3_BASE_TREE_ADAPTOR, void *, ANTLR3_UINT32))
@@ -296,6 +300,7 @@ createToken		(pANTLR3_BASE_TREE_ADAPTOR adaptor, ANTLR3_UINT32 tokenType, pANTLR
 		newToken->tokText.chars = (pANTLR3_UCHAR)text;
 		newToken->setType(newToken, tokenType);
 		newToken->input				= adaptor->tokenFactory->input;
+        newToken->strFactory        = adaptor->strFactory;
     }
     return  newToken;
 }
@@ -483,4 +488,9 @@ static	void
 setParent				(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_BASE_TREE child, pANTLR3_BASE_TREE parent)
 {
 	child->setParent(child, parent);
+}
+static	pANTLR3_BASE_TREE
+getParent				(pANTLR3_BASE_TREE_ADAPTOR adaptor, pANTLR3_BASE_TREE child)
+{
+	return child->getParent(child);
 }

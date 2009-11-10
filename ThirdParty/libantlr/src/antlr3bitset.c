@@ -382,7 +382,7 @@ antlr3BitsetAdd(pANTLR3_BITSET bitset, ANTLR3_INT32 bit)
 
     word    = wordNumber(bit);
 
-    if	(word	> bitset->blist.length)
+    if	(word	>= bitset->blist.length)
     {
 		growToInclude(bitset, bit);
     }
@@ -399,8 +399,7 @@ grow(pANTLR3_BITSET bitset, ANTLR3_INT32 newSize)
     // Space for newly sized bitset - TODO: come back to this and use realloc?, it may
     // be more efficient...
     //
-    newBits = (pANTLR3_BITWORD) ANTLR3_MALLOC((size_t)(newSize * sizeof(ANTLR3_BITWORD)));
-
+    newBits = (pANTLR3_BITWORD) ANTLR3_CALLOC(1, (size_t)(newSize * sizeof(ANTLR3_BITWORD)));
     if	(bitset->blist.bits != NULL)
     {
 		// Copy existing bits
@@ -414,7 +413,8 @@ grow(pANTLR3_BITSET bitset, ANTLR3_INT32 newSize)
 
     // In with the new bits... keerrrang.
     //
-    bitset->blist.bits    = newBits;
+    bitset->blist.bits      = newBits;
+    bitset->blist.length    = newSize;
 }
 
 static void
@@ -425,6 +425,7 @@ growToInclude(pANTLR3_BITSET bitset, ANTLR3_INT32 bit)
 
 	bl = (bitset->blist.length << 1);
 	nw = numWordsToHold(bit);
+
 	if	(bl > nw)
 	{
 		bitset->grow(bitset, bl);

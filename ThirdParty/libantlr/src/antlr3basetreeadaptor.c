@@ -163,14 +163,14 @@ defineDotNodes(pANTLR3_BASE_TREE_ADAPTOR adaptor, void * t, pANTLR3_STRING dotSp
 	//
 	int	nCount;
 	int i;
+    pANTLR3_BASE_TREE child;
+	char	buff[64];
+	pANTLR3_STRING	text;
+	int		j;
 
-	if	(t == NULL)
-	{
-		// No tree, so create a blank spec
-		//
-		dotSpec->append8(dotSpec, "n0[label=\"EMPTY TREE\"]\n");
-		return;
-	}
+
+
+
 
 	// Count the nodes
 	//
@@ -189,10 +189,6 @@ defineDotNodes(pANTLR3_BASE_TREE_ADAPTOR adaptor, void * t, pANTLR3_STRING dotSp
 	//
 	for	(i = 0; i<nCount; i++)
 	{
-		pANTLR3_BASE_TREE child;
-		char	buff[64];
-		pANTLR3_STRING	text;
-		int		j;
 
 		// Pick up a pointer for the child
 		//
@@ -205,14 +201,28 @@ defineDotNodes(pANTLR3_BASE_TREE_ADAPTOR adaptor, void * t, pANTLR3_STRING dotSp
 		text = adaptor->getText(adaptor, child);
 		for (j = 0; j < (ANTLR3_INT32)(text->len); j++)
 		{
-			if	(text->charAt(text, j) == '"')
-			{
-				dotSpec->append8(dotSpec, "\\\"");
-			}
-			else
-			{
-				dotSpec->addc(dotSpec, text->charAt(text, j));
-			}
+            switch(text->charAt(text, j))
+            {
+                case '"':
+
+                    dotSpec->append8(dotSpec, "\\\"");
+                    break;
+
+                case '\n':
+
+                    dotSpec->append8(dotSpec, "\\n");
+                    break;
+
+                case '\r':
+
+                    dotSpec->append8(dotSpec, "\\r");
+                    break;
+
+                default:
+
+                    dotSpec->addc(dotSpec, text->charAt(text, j));
+                    break;
+            }
 		}
 		dotSpec->append8(dotSpec, "\"]\n");
 
@@ -260,6 +270,8 @@ defineDotEdges(pANTLR3_BASE_TREE_ADAPTOR adaptor, void * t, pANTLR3_STRING dotSp
 	{
 		pANTLR3_BASE_TREE child;
 		char	buff[128];
+        pANTLR3_STRING text;
+        int                 j;
 
 		// Next child
 		//
@@ -268,15 +280,69 @@ defineDotEdges(pANTLR3_BASE_TREE_ADAPTOR adaptor, void * t, pANTLR3_STRING dotSp
 		// Create the edge relation
 		//
 		sprintf(buff, "\t\tn%p -> n%p\t\t// ",  t, child);
+        
 		dotSpec->append8(dotSpec, buff);
 
 		// Document the relationship
 		//
-		dotSpec->appendS(dotSpec, adaptor->getText(adaptor, t));
-		dotSpec->append8(dotSpec, " -> ");
-		dotSpec->appendS(dotSpec, adaptor->getText(adaptor, child));
+        text = adaptor->getText(adaptor, t);
+		for (j = 0; j < (ANTLR3_INT32)(text->len); j++)
+        {
+                switch(text->charAt(text, j))
+                {
+                    case '"':
+
+                        dotSpec->append8(dotSpec, "\\\"");
+                        break;
+
+                    case '\n':
+
+                        dotSpec->append8(dotSpec, "\\n");
+                        break;
+
+                    case '\r':
+
+                        dotSpec->append8(dotSpec, "\\r");
+                        break;
+
+                    default:
+
+                        dotSpec->addc(dotSpec, text->charAt(text, j));
+                        break;
+                }
+        }
+
+        dotSpec->append8(dotSpec, " -> ");
+
+        text = adaptor->getText(adaptor, child);
+        for (j = 0; j < (ANTLR3_INT32)(text->len); j++)
+        {
+                switch(text->charAt(text, j))
+                {
+                    case '"':
+
+                        dotSpec->append8(dotSpec, "\\\"");
+                        break;
+
+                    case '\n':
+
+                        dotSpec->append8(dotSpec, "\\n");
+                        break;
+
+                    case '\r':
+
+                        dotSpec->append8(dotSpec, "\\r");
+                        break;
+
+                    default:
+
+                        dotSpec->addc(dotSpec, text->charAt(text, j));
+                        break;
+                }
+        }
 		dotSpec->append8(dotSpec, "\n");
 
+        
 		// Define edges for this child
 		//
 		defineDotEdges(adaptor, child, dotSpec);
@@ -295,8 +361,11 @@ makeDot	(pANTLR3_BASE_TREE_ADAPTOR adaptor, void * theTree)
 	// The string we are building up
 	//
 	pANTLR3_STRING		dotSpec;
+	char                buff[64];
+	pANTLR3_STRING      text;
+	int                 j;
 
-	dotSpec = adaptor->strFactory->newStr
+	dotSpec = adaptor->strFactory->newStr8
 		
 		(
 			adaptor->strFactory,
@@ -311,6 +380,44 @@ makeDot	(pANTLR3_BASE_TREE_ADAPTOR adaptor, void * theTree)
 			"\twidth=.25, height=.25, color=\"black\", fillcolor=\"white\", style=\"filled, solid, bold\"];\n\n"
 			"\tedge [arrowsize=.5, color=\"black\", style=\"bold\"]\n\n"
 		);
+
+    if	(theTree == NULL)
+	{
+		// No tree, so create a blank spec
+		//
+		dotSpec->append8(dotSpec, "n0[label=\"EMPTY TREE\"]\n");
+		return dotSpec;
+	}
+
+    sprintf(buff, "\tn%p[label=\"", theTree);
+	dotSpec->append8(dotSpec, buff);
+    text = adaptor->getText(adaptor, theTree);
+    for (j = 0; j < (ANTLR3_INT32)(text->len); j++)
+    {
+            switch(text->charAt(text, j))
+            {
+                case '"':
+
+                    dotSpec->append8(dotSpec, "\\\"");
+                    break;
+
+                case '\n':
+
+                    dotSpec->append8(dotSpec, "\\n");
+                    break;
+
+                case '\r':
+
+                    dotSpec->append8(dotSpec, "\\r");
+                    break;
+
+                default:
+
+                    dotSpec->addc(dotSpec, text->charAt(text, j));
+                    break;
+            }
+    }
+	dotSpec->append8(dotSpec, "\"]\n");
 
 	// First produce the node defintions
 	//

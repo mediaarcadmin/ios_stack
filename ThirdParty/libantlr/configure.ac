@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(libantlr3c, 3.1.3, jimi@idle.ws)
+AC_INIT(libantlr3c, 3.2, jimi@temporal-wave.com)
 AC_PREREQ(2.60)
 AC_COPYRIGHT([
  (The "BSD licence")
@@ -209,6 +209,8 @@ AC_C_INLINE
 
 # Checks for library functions.
 AC_CHECK_FUNCS([memmove memset strdup accept])
+
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_CONFIG_HEADERS(antlr3config.h)
 AC_CONFIG_FILES([Makefile])

@@ -37,6 +37,8 @@
 
 #include    <antlr3.h>
 
+#include "antlr3collections.h"
+
 // Interface functions for hash table
 //
 
@@ -93,10 +95,12 @@ static	void				antlr3VectorClear	(pANTLR3_VECTOR vector);
 static	ANTLR3_UINT32		antlr3VectorAdd		(pANTLR3_VECTOR vector, void * element, void (ANTLR3_CDECL *freeptr)(void *));
 static	ANTLR3_UINT32		antlr3VectorSet		(pANTLR3_VECTOR vector, ANTLR3_UINT32 entry, void * element, void (ANTLR3_CDECL *freeptr)(void *), ANTLR3_BOOLEAN freeExisting);
 static	ANTLR3_UINT32		antlr3VectorSize    (pANTLR3_VECTOR vector);
+static	ANTLR3_BOOLEAN      antlr3VectorSwap	(pANTLR3_VECTOR vector, ANTLR3_UINT32 entry1, ANTLR3_UINT32 entry2);
 
 static  void                newPool             (pANTLR3_VECTOR_FACTORY factory);
 static  void				closeVectorFactory  (pANTLR3_VECTOR_FACTORY factory);
 static	pANTLR3_VECTOR		newVector			(pANTLR3_VECTOR_FACTORY factory);
+static	void				returnVector		(pANTLR3_VECTOR_FACTORY factory, pANTLR3_VECTOR vector);
 
 
 // Interface functions for int TRIE
@@ -105,6 +109,14 @@ static	pANTLR3_TRIE_ENTRY	intTrieGet		(pANTLR3_INT_TRIE trie, ANTLR3_INTKEY key)
 static	ANTLR3_BOOLEAN		intTrieDel		(pANTLR3_INT_TRIE trie, ANTLR3_INTKEY key);
 static	ANTLR3_BOOLEAN		intTrieAdd		(pANTLR3_INT_TRIE trie, ANTLR3_INTKEY key, ANTLR3_UINT32 type, ANTLR3_INTKEY intType, void * data, void (ANTLR3_CDECL *freeptr)(void *));
 static	void				intTrieFree		(pANTLR3_INT_TRIE trie);
+
+
+// Interface functions for topological sorter
+//
+static  void            addEdge          (pANTLR3_TOPO topo, ANTLR3_UINT32 edge, ANTLR3_UINT32 dependency);
+static  pANTLR3_UINT32  sortToArray      (pANTLR3_TOPO topo);
+static  void            sortVector       (pANTLR3_TOPO topo, pANTLR3_VECTOR v);
+static  void            freeTopo         (pANTLR3_TOPO topo);
 
 // Local function to advance enumeration structure pointers
 //
@@ -1108,6 +1120,7 @@ antlr3SetVectorApi  (pANTLR3_VECTOR vector, ANTLR3_UINT32 sizeHint)
 	vector->remove  = antrl3VectorRemove;
 	vector->clear	= antlr3VectorClear;
 	vector->size    = antlr3VectorSize;
+    vector->swap    = antlr3VectorSwap;
 
 	// Assume that this is not a factory made vector
 	//
@@ -1372,11 +1385,49 @@ antlr3VectorSet	    (pANTLR3_VECTOR vector, ANTLR3_UINT32 entry, void * element,
 
 }
 
+/// Replace the element at the specified entry point with the supplied
+/// entry.
+///
+static	ANTLR3_BOOLEAN
+antlr3VectorSwap	    (pANTLR3_VECTOR vector, ANTLR3_UINT32 entry1, ANTLR3_UINT32 entry2)
+{
+
+    void               * tempEntry;
+    void (ANTLR3_CDECL *freeptr)(void *);
+
+	// If the vector is currently not big enough, then we do nothing
+	//
+	if (entry1 >= vector->elementsSize || entry2 >= vector->elementsSize)
+	{
+        return ANTLR3_FALSE;
+	}
+
+	// Valid request, swap them
+	//
+    tempEntry   = vector->elements[entry1].element;
+    freeptr     = vector->elements[entry1].freeptr;
+
+	// Install the new pointers
+	//
+    vector->elements[entry1].freeptr	= vector->elements[entry2].freeptr;
+	vector->elements[entry1].element	= vector->elements[entry2].element;
+
+	vector->elements[entry2].freeptr	= freeptr;
+	vector->elements[entry2].element	= tempEntry;
+
+	return  ANTLR3_TRUE;
+
+}
+
 static	ANTLR3_UINT32   antlr3VectorSize    (pANTLR3_VECTOR vector)
 {
     return  vector->count;
 }
 
+#ifdef ANTLR3_WINDOWS
+#pragma warning	(push)
+#pragma warning (disable : 4100)
+#endif
 /// Vector factory creation
 ///
 ANTLR3_API pANTLR3_VECTOR_FACTORY
@@ -1409,10 +1460,34 @@ antlr3VectorFactoryNew	    (ANTLR3_UINT32 sizeHint)
 
 	// Install the factory API
 	//
-	factory->close		= closeVectorFactory;
-	factory->newVector	= newVector;
+	factory->close			= closeVectorFactory;
+	factory->newVector		= newVector;
+	factory->returnVector	= returnVector;
 
+	// Create a stack to accumulate reusable vectors
+	//
+	factory->freeStack		= antlr3StackNew(16);
 	return  factory;
+}
+#ifdef ANTLR3_WINDOWS
+#pragma warning	(pop)
+#endif
+
+static	void				
+returnVector		(pANTLR3_VECTOR_FACTORY factory, pANTLR3_VECTOR vector)
+{
+	// First we need to clear out anything that is still in the vector
+	//
+	vector->clear(vector);
+
+	// We have a free stack available so we can add the vector we were
+	// given into the free chain. The vector has to have come from this
+	// factory, so we already know how to release its memory when it
+	// dies by virtue of the factory being closed.
+	//
+	factory->freeStack->push(factory->freeStack, vector, NULL);
+
+	// TODO: remove this line once happy printf("Returned vector %08X to the pool, stack size is %d\n", vector, factory->freeStack->size(factory->freeStack));
 }
 
 static void
@@ -1453,6 +1528,13 @@ closeVectorFactory  (pANTLR3_VECTOR_FACTORY factory)
     ANTLR3_UINT32       limit;
     ANTLR3_UINT32       vector;
     pANTLR3_VECTOR      check;
+
+	// First see if we have a free chain stack to release?
+	//
+	if	(factory->freeStack != NULL)
+	{
+		factory->freeStack->free(factory->freeStack);
+	}
 
     /* We iterate the vector pools one at a time
      */
@@ -1556,7 +1638,22 @@ newVector(pANTLR3_VECTOR_FACTORY factory)
 {
     pANTLR3_VECTOR vector;
 
-    // See if we need a new vector pool before allocating a new
+	// If we have anything on the re claim stack, reuse it
+	//
+	vector = factory->freeStack->peek(factory->freeStack);
+
+	if  (vector != NULL)
+	{
+		// Cool we got something we could reuse
+		//
+		factory->freeStack->pop(factory->freeStack);
+
+		// TODO: remove this line once happy printf("Reused vector %08X from stack, size is now %d\n", vector, factory->freeStack->size(factory->freeStack));
+		return vector;
+
+	}
+
+	// See if we need a new vector pool before allocating a new
     // one
     //
     if (factory->nextVector >= ANTLR3_FACTORY_VPOOL_SIZE)
@@ -1582,6 +1679,8 @@ newVector(pANTLR3_VECTOR_FACTORY factory)
     // to point to its own internal entry table and not the pre-made one.
     //
     vector->elements = vector->internal;
+
+		// TODO: remove this line once happy printf("Used a new vector at %08X from the pools as nothing on the reusue stack\n", vector);
 
     // And we are done
     //
@@ -2156,4 +2255,486 @@ intTrieFree	(pANTLR3_INT_TRIE trie)
      * for the structure itself
      */
     ANTLR3_FREE(trie);
+}
+
+
+/**
+ * Allocate and initialize a new ANTLR3 topological sorter, which can be
+ * used to define edges that identify numerical node indexes that depend on other
+ * numerical node indexes, which can then be sorted topologically such that
+ * any node is sorted after all its dependent nodes.
+ *
+ * Use:
+ *
+ * /verbatim
+
+  pANTLR3_TOPO topo;
+  topo = antlr3NewTopo();
+
+  if (topo == NULL) { out of memory }
+
+  topo->addEdge(topo, 3, 0); // Node 3 depends on node 0
+  topo->addEdge(topo, 0, 1); // Node - depends on node 1
+  topo->sortVector(topo, myVector); // Sort the vector in place (node numbers are the vector entry numbers)
+
+ * /verbatim
+ */
+ANTLR3_API pANTLR3_TOPO
+antlr3TopoNew()
+{
+    pANTLR3_TOPO topo = (pANTLR3_TOPO)ANTLR3_MALLOC(sizeof(ANTLR3_TOPO));
+
+    if  (topo == NULL)
+    {
+        return NULL;
+    }
+
+    // Initialize variables
+    //
+
+    topo->visited   = NULL;                 // Don't know how big it is yet
+    topo->limit     = 1;                    // No edges added yet
+    topo->edges     = NULL;                 // No edges added yet
+    topo->sorted    = NULL;                 // Nothing sorted at the start
+    topo->cycle     = NULL;                 // No cycles at the start
+    topo->cycleMark = 0;                    // No cycles at the start
+    topo->hasCycle  = ANTLR3_FALSE;         // No cycle at the start
+    
+    // API
+    //
+    topo->addEdge       = addEdge;
+    topo->sortToArray   = sortToArray;
+    topo->sortVector    = sortVector;
+    topo->free          = freeTopo;
+
+    return topo;
+}
+// Topological sorter
+//
+static  void
+addEdge          (pANTLR3_TOPO topo, ANTLR3_UINT32 edge, ANTLR3_UINT32 dependency)
+{
+    ANTLR3_UINT32   i;
+    ANTLR3_UINT32   maxEdge;
+    pANTLR3_BITSET  edgeDeps;
+
+    if (edge>dependency)
+    {
+        maxEdge = edge;
+    }
+    else
+    {
+        maxEdge = dependency;
+    }
+    // We need to add an edge to says that the node indexed by 'edge' is
+    // dependent on the node indexed by 'dependency'
+    //
+
+    // First see if we have enough room in the edges array to add the edge?
+    //
+    if (topo->edges == NULL)
+    {
+        // We don't have any edges yet, so create an array to hold them
+        //
+        topo->edges = ANTLR3_CALLOC(sizeof(pANTLR3_BITSET) * (maxEdge + 1), 1);
+        if (topo->edges == NULL)
+        {
+            return;
+        }
+
+        // Set the limit to what we have now
+        //
+        topo->limit = maxEdge + 1;
+    }
+    else if (topo->limit <= maxEdge)
+    {
+        // WE have some edges but not enough
+        //
+        topo->edges = ANTLR3_REALLOC(topo->edges, sizeof(pANTLR3_BITSET) * (maxEdge + 1));
+        if (topo->edges == NULL)
+        {
+            return;
+        }
+
+        // Initialize the new bitmaps to ;indicate we have no edges defined yet
+        //
+        for (i = topo->limit; i <= maxEdge; i++)
+        {
+            *((topo->edges) + i) = NULL;
+        }
+
+        // Set the limit to what we have now
+        //
+        topo->limit = maxEdge + 1;
+    }
+
+    // If the edge was flagged as depending on itself, then we just
+    // do nothing as it means this routine was just called to add it
+    // in to the list of nodes.
+    //
+    if  (edge == dependency)
+    {
+        return;
+    }
+
+    // Pick up the bit map for the requested edge
+    //
+    edgeDeps = *((topo->edges) + edge);
+
+    if  (edgeDeps == NULL)
+    {
+        // No edges are defined yet for this node
+        //
+        edgeDeps                = antlr3BitsetNew(0);
+        *((topo->edges) + edge) = edgeDeps;
+        if (edgeDeps == NULL )
+        {
+            return;  // Out of memory
+        }
+    }
+
+    // Set the bit in the bitmap that corresponds to the requested
+    // dependency.
+    //
+    edgeDeps->add(edgeDeps, dependency);
+
+    // And we are all set
+    //
+    return;
+}
+
+
+/**
+ * Given a starting node, descend its dependent nodes (ones that it has edges
+ * to) until we find one without edges. Having found a node without edges, we have
+ * discovered the bottom of a depth first search, which we can then ascend, adding
+ * the nodes in order from the bottom, which gives us the dependency order.
+ */
+static void
+DFS(pANTLR3_TOPO topo, ANTLR3_UINT32 node)
+{
+    pANTLR3_BITSET edges;
+
+    // Guard against a revisit and check for cycles
+    //
+    if  (topo->hasCycle == ANTLR3_TRUE)
+    {
+        return; // We don't do anything else if we found a cycle
+    }
+
+    if  (topo->visited->isMember(topo->visited, node))
+    {
+        // Check to see if we found a cycle. To do this we search the
+        // current cycle stack and see if we find this node already in the stack.
+        //
+        ANTLR3_UINT32   i;
+
+        for (i=0; i<topo->cycleMark; i++)
+        {
+            if  (topo->cycle[i] == node)
+            {
+                // Stop! We found a cycle in the input, so rejig the cycle
+                // stack so that it only contains the cycle and set the cycle flag
+                // which will tell the caller what happened
+                //
+                ANTLR3_UINT32 l;
+
+                for (l = i; l < topo->cycleMark; l++)
+                {
+                    topo->cycle[l - i] = topo->cycle[l];    // Move to zero base in the cycle list
+                }
+
+                // Recalculate the limit
+                //
+                topo->cycleMark -= i;
+
+                // Signal disaster
+                //
+                topo->hasCycle = ANTLR3_TRUE;
+            }
+        }
+        return;
+    }
+
+    // So far, no cycles have been found and we have not visited this node yet,
+    // so this node needs to go into the cycle stack before we continue
+    // then we will take it out of the stack once we have descended all its
+    // dependencies.
+    //
+    topo->cycle[topo->cycleMark++] = node;
+
+    // First flag that we have visited this node
+    //
+    topo->visited->add(topo->visited, node);
+
+    // Now, if this node has edges, then we want to ensure we visit
+    // them all before we drop through and add this node into the sorted
+    // list.
+    //
+    edges = *((topo->edges) + node);
+    if  (edges != NULL)
+    {
+        // We have some edges, so visit each of the edge nodes
+        // that have not already been visited.
+        //
+        ANTLR3_UINT32   numBits;	    // How many bits are in the set
+        ANTLR3_UINT32   i;
+        ANTLR3_UINT32   range;
+
+        numBits = edges->numBits(edges);
+        range   = edges->size(edges);   // Number of set bits
+
+        // Stop if we exahust the bit list or have checked the
+        // number of edges that this node refers to (so we don't
+        // check bits at the end that cannot possibly be set).
+        //
+        for (i=0; i<= numBits && range > 0; i++)
+        {
+            if  (edges->isMember(edges, i))
+            {
+                range--;        // About to check another one
+
+                // Found an edge, make sure we visit and descend it
+                //
+                DFS(topo, i);
+            }
+        }
+    }
+
+    // At this point we will have visited all the dependencies
+    // of this node and they will be ordered (even if there are cycles)
+    // So we just add the node into the sorted list at the
+    // current index position.
+    //
+    topo->sorted[topo->limit++] = node;
+
+    // Remove this node from the cycle list if we have not detected a cycle
+    //
+    if  (topo->hasCycle == ANTLR3_FALSE)
+    {
+        topo->cycleMark--;
+    }
+
+    return;
+}
+
+static  pANTLR3_UINT32
+sortToArray      (pANTLR3_TOPO topo)
+{
+    ANTLR3_UINT32 v;
+    ANTLR3_UINT32 oldLimit;
+
+    // Guard against being called with no edges defined
+    //
+    if  (topo->edges == NULL)
+    {
+        return 0;
+    }
+    // First we need a vector to populate with enough
+    // entries to accomodate the sorted list and another to accomodate
+    // the maximum cycle we could detect which is all nodes such as 0->1->2->3->0
+    //
+    topo->sorted    = ANTLR3_MALLOC(topo->limit * sizeof(ANTLR3_UINT32));
+    topo->cycle     = ANTLR3_MALLOC(topo->limit * sizeof(ANTLR3_UINT32));
+
+    // Next we need an empty bitset to show whether we have visited a node
+    // or not. This is the bit that gives us linear time of course as we are essentially
+    // dropping through the nodes in depth first order and when we get to a node that
+    // has no edges, we pop back up the stack adding the nodes we traversed in reverse
+    // order.
+    //
+    topo->visited   = antlr3BitsetNew(0);
+
+    // Now traverse the nodes as if we were just going left to right, but
+    // then descend each node unless it has already been visited.
+    //
+    oldLimit    = topo->limit;     // Number of nodes to traverse linearly
+    topo->limit = 0;               // Next entry in the sorted table
+
+    for (v = 0; v < oldLimit; v++)
+    {
+        // If we did not already visit this node, then descend it until we
+        // get a node without edges or arrive at a node we have already visited.
+        //
+        if  (topo->visited->isMember(topo->visited, v) == ANTLR3_FALSE)
+        {
+            // We have not visited this one so descend it
+            //
+            DFS(topo, v);
+        }
+
+        // Break the loop if we detect a cycle as we have no need to go any
+        // further
+        //
+        if  (topo->hasCycle == ANTLR3_TRUE)
+        {
+            break;
+        }
+    }
+
+    // Reset the limit to the number we recorded as if we hit a
+    // cycle, then limit will have stopped at the node where we
+    // discovered the cycle, but in order to free the edge bitmaps
+    // we need to know how many we may have allocated and traverse them all.
+    //
+    topo->limit = oldLimit;
+
+    // Having traversed all the nodes we were given, we
+    // are guaranteed to have ordered all the nodes or detected a
+    // cycle.
+    //
+    return topo->sorted;
+}
+
+static  void
+sortVector       (pANTLR3_TOPO topo, pANTLR3_VECTOR v)
+{
+    // To sort a vector, we first perform the
+    // sort to an array, then use the results to reorder the vector
+    // we are given. This is just a convenience routine that allows you to
+    // sort the children of a tree node into topological order before or
+    // during an AST walk. This can be useful for optimizations that require
+    // dag reorders and also when the input stream defines thigns that are
+    // interdependent and you want to walk the list of the generated trees
+    // for those things in topological order so you can ignore the interdependencies
+    // at that point.
+    //
+    ANTLR3_UINT32 i;
+
+    // Used as a lookup index to find the current location in the vector of
+    // the vector entry that was originally at position [0], [1], [2] etc
+    //
+    pANTLR3_UINT32  vIndex;
+
+    // Sort into an array, then we can use the array that is
+    // stored in the topo
+    //
+    if  (topo->sortToArray(topo) == 0)
+    {
+        return;     // There were no edges
+    }
+
+    if  (topo->hasCycle == ANTLR3_TRUE)
+    {
+        return;  // Do nothing if we detected a cycle
+    }
+
+    // Ensure that the vector we are sorting is at least as big as the
+    // the input sequence we were adsked to sort. It does not matter if it is
+    // bigger as thaat probably just means that nodes numbered higher than the
+    // limit had no dependencies and so can be left alone.
+    //
+    if  (topo->limit > v->count)
+    {
+        // We can only sort the entries that we have dude! The caller is
+        // responsible for ensuring the vector is the correct one and is the
+        // correct size etc.
+        //
+        topo->limit = v->count;
+    }
+    // We need to know the locations of each of the entries
+    // in the vector as we don't want to duplicate them in a new vector. We
+    // just use an indirection table to get the vector entry for a particular sequence
+    // acording to where we moved it last. Then we can just swap vector entries until
+    // we are done :-)
+    //
+    vIndex = ANTLR3_MALLOC(topo->limit * sizeof(ANTLR3_UINT32));
+
+    // Start index, each vector entry is located where you think it is
+    //
+    for (i = 0; i < topo->limit; i++)
+    {
+        vIndex[i] = i;
+    }
+
+    // Now we traverse the sorted array and moved the entries of
+    // the vector around according to the sort order and the indirection
+    // table we just created. The index telsl us where in the vector the
+    // original element entry n is now located via vIndex[n].
+    //
+    for (i=0; i < topo->limit; i++)
+    {
+        ANTLR3_UINT32   ind;
+
+        // If the vector entry at i is already the one that it
+        // should be, then we skip moving it of course.
+        //
+        if  (vIndex[topo->sorted[i]] == i)
+        {
+            continue;
+        }
+
+        // The vector entry at i, should be replaced with the
+        // vector entry indicated by topo->sorted[i]. The vector entry
+        // at topo->sorted[i] may have already been swapped out though, so we
+        // find where it is now and move it from there to i.
+        //
+        ind     = vIndex[topo->sorted[i]];
+        v->swap(v, i, ind);
+
+        // Update our index. The element at i is now the one we wanted
+        // to be sorted here and the element we swapped out is now the
+        // element that was at i just before we swapped it. If you are lost now
+        // don't worry about it, we are just reindexing on the fly is all.
+        //
+        vIndex[topo->sorted[i]] = i;
+        vIndex[i] = ind;
+    }
+
+    // Having traversed all the entries, we have sorted the vector in place.
+    //
+    ANTLR3_FREE(vIndex);
+    return;
+}
+
+static  void
+freeTopo             (pANTLR3_TOPO topo)
+{
+    ANTLR3_UINT32   i;
+
+    // Free the result vector
+    //
+    if  (topo->sorted != NULL)
+    {
+        ANTLR3_FREE(topo->sorted);
+        topo->sorted = NULL;
+    }
+
+    // Free the visited map
+    //
+    if  (topo->visited != NULL)
+    {
+
+        topo->visited->free(topo->visited);
+        topo->visited = NULL;
+    }
+
+    // Free any edgemaps
+    //
+    if  (topo->edges != NULL)
+    {
+        pANTLR3_BITSET edgeList;
+
+        
+        for (i=0; i<topo->limit; i++)
+        {
+            edgeList = *((topo->edges) + i);
+            if  (edgeList != NULL)
+            {
+                edgeList->free(edgeList);
+            }
+        }
+
+        ANTLR3_FREE(topo->edges);
+    }
+    topo->edges = NULL;
+    
+    // Free any cycle map
+    //
+    if  (topo->cycle != NULL)
+    {
+        ANTLR3_FREE(topo->cycle);
+    }
+
+    ANTLR3_FREE(topo);
 }

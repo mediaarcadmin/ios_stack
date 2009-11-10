@@ -2207,6 +2207,7 @@ getMissingSymbol			(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_INT_STREAM	istre
     token->user2                    = current->user2;
     token->user3                    = current->user3;
     token->custom                   = current->custom;
+    token->lineStart                = current->lineStart;
     
 	// Create the token text that shows it has been inserted
 	//
