@@ -128,7 +128,7 @@ property
 ruleSet
 	: selector (COMMA selector)*
 		LBRACE
-			declarationList
+			declarationList?
 		RBRACE 
       -> ^(RULESET ^(SELECTOR selector)+ declarationList)
 	;
