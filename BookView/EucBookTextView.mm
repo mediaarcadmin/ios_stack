@@ -487,14 +487,18 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
         int usedBreakCount = th_just(breaks, breakIndex, (int)xWidth, 0/*11 * (int)paragraphSpaceWidth*/, usedBreakIndices);
                 
         if(!allowWidows) {
-            if(usedBreakCount == 3) {
+            if(usedBreakCount == 3 || _stringsCount == 0) {
                 // If we don't allow widows in three-line paragraph, what happens
                 // is that the second-last line gets puched onto the next page,
                 // then the first line is an orphan, and gets pushed there too.
                 // This leaves too much whitespace on the page, so we just give
                 // up if this is a three-line paragraph.
+                // If we haven't seen any strings yet, it's possible we could get
+                // a widow with really huge text or images - we can't avoid that 
+                // either (if we push the paragraph to the next page, we'll get
+                // into an endless loop.
                 allowWidows = YES;
-            }
+            } 
         }
         
         THLogVerbose(@"Used break count is %d", usedBreakCount);

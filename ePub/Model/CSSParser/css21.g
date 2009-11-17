@@ -17,8 +17,7 @@
 //
 grammar css21;
 
-options 
-{
+options {
 	language=C;
 	output=AST;
 }
@@ -32,6 +31,26 @@ tokens {
     PROPERTY;
     VALUE;
 } 
+
+
+// ANTLR produces a lot of unused variables and a couple of unused functions,
+// and we build with -Werror, so we disable the warnings for there here.
+
+@lexer::postinclude {
+    #pragma GCC diagnostic ignored "-Wunused-variable"
+}
+
+@parser::postinclude {
+    #pragma GCC diagnostic ignored "-Wunused-variable"
+
+    // This function is to make GCC stop complaining about unused functions
+    // when we compile in Xcode's build syste (which makes it impossible to have
+    // custom compiler flags for derived files, which would be necessary to 
+    // switch the warning off).
+    static pANTLR3_UINT8 *getTokenNames();
+    static void ANTLR3_CDECL freeScope(void * scope);
+    void ____ffffffffakeWarningFixingFunction() { freeScope(getTokenNames()); }
+}
 
 
 // -------------

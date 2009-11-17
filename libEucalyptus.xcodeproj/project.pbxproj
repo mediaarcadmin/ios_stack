@@ -87,10 +87,6 @@
 		7D51711D1028AF94005F3C46 /* EucBookReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51711C1028AF94005F3C46 /* EucBookReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51718B1028B53C005F3C46 /* EucEPubPageLayoutController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171891028B53C005F3C46 /* EucEPubPageLayoutController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51718C1028B53C005F3C46 /* EucEPubPageLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51718A1028B53C005F3C46 /* EucEPubPageLayoutController.m */; };
-		7D51719E1028B554005F3C46 /* css21Lexer.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171901028B554005F3C46 /* css21Lexer.c */; settings = {COMPILER_FLAGS = "-Wno-unused"; }; };
-		7D51719F1028B554005F3C46 /* css21Lexer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171911028B554005F3C46 /* css21Lexer.h */; };
-		7D5171A01028B554005F3C46 /* css21Parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171921028B554005F3C46 /* css21Parser.c */; settings = {COMPILER_FLAGS = "-Wno-unused"; }; };
-		7D5171A11028B554005F3C46 /* css21Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171931028B554005F3C46 /* css21Parser.h */; };
 		7D5171A21028B554005F3C46 /* EucEPubStyleStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171941028B554005F3C46 /* EucEPubStyleStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D5171A31028B554005F3C46 /* EucEPubStyleStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5171951028B554005F3C46 /* EucEPubStyleStore.m */; };
 		7D5171A41028B554005F3C46 /* EucEPubBookReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5171961028B554005F3C46 /* EucEPubBookReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -195,7 +191,7 @@
 		7D6AAD6A1028E7BD006289E6 /* EucLocalBookReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */; };
 		7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D6F767910AC612D0041482F /* css21.g in Sources */ = {isa = PBXBuildFile; fileRef = 7D51718E1028B553005F3C46 /* css21.g */; };
+		7D6F767910AC612D0041482F /* css21.g in Sources */ = {isa = PBXBuildFile; fileRef = 7D51718E1028B553005F3C46 /* css21.g */; settings = {COMPILER_FLAGS = "-Wno-unused"; }; };
 		7DE587701070D08600441B2E /* EucFilteredBookPageIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */; };
 		7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */; };
 		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -212,12 +208,12 @@
 			fileType = pattern.proxy;
 			isEditable = 1;
 			outputFiles = (
-				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Parser.h",
-				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Parser.c",
-				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Lexer.c",
-				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE)Lexer.h",
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE)Parser.h",
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE)Parser.c",
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE)Lexer.c",
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE)Lexer.h",
 			);
-			script = "ANTLR=\"`ls \"${SRCROOT}/ThirdParty/\"antlr*.jar`\"\necho \"Using ANTLR at ${ANTLR}\"\njava -classpath \"${ANTLR}\" org.antlr.Tool \"${INPUT_FILE_PATH}\" -o \"${INPUT_FILE_DIR}\"";
+			script = "ANTLR=\"`ls \"${SRCROOT}/ThirdParty/\"antlr*.jar`\"\necho \"Using ANTLR at ${ANTLR}\"\njava -classpath \"${ANTLR}\" org.antlr.Tool \"${INPUT_FILE_PATH}\" -o \"${DERIVED_FILE_DIR}\"";
 		};
 /* End PBXBuildRule section */
 
@@ -347,10 +343,6 @@
 		7D5171891028B53C005F3C46 /* EucEPubPageLayoutController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubPageLayoutController.h; sourceTree = "<group>"; };
 		7D51718A1028B53C005F3C46 /* EucEPubPageLayoutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubPageLayoutController.m; sourceTree = "<group>"; };
 		7D51718E1028B553005F3C46 /* css21.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = css21.g; sourceTree = "<group>"; };
-		7D5171901028B554005F3C46 /* css21Lexer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = css21Lexer.c; sourceTree = "<group>"; };
-		7D5171911028B554005F3C46 /* css21Lexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = css21Lexer.h; sourceTree = "<group>"; };
-		7D5171921028B554005F3C46 /* css21Parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = css21Parser.c; sourceTree = "<group>"; };
-		7D5171931028B554005F3C46 /* css21Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = css21Parser.h; sourceTree = "<group>"; };
 		7D5171941028B554005F3C46 /* EucEPubStyleStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubStyleStore.h; sourceTree = "<group>"; };
 		7D5171951028B554005F3C46 /* EucEPubStyleStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubStyleStore.m; sourceTree = "<group>"; };
 		7D5171961028B554005F3C46 /* EucEPubBookReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubBookReader.h; sourceTree = "<group>"; };
@@ -798,21 +790,9 @@
 		7D51718D1028B553005F3C46 /* CSSParser */ = {
 			isa = PBXGroup;
 			children = (
-				7D51718F1028B553005F3C46 /* Auto-Generated */,
 				7D51718E1028B553005F3C46 /* css21.g */,
 			);
 			path = CSSParser;
-			sourceTree = "<group>";
-		};
-		7D51718F1028B553005F3C46 /* Auto-Generated */ = {
-			isa = PBXGroup;
-			children = (
-				7D5171901028B554005F3C46 /* css21Lexer.c */,
-				7D5171911028B554005F3C46 /* css21Lexer.h */,
-				7D5171921028B554005F3C46 /* css21Parser.c */,
-				7D5171931028B554005F3C46 /* css21Parser.h */,
-			);
-			name = "Auto-Generated";
 			sourceTree = "<group>";
 		};
 		7D5172B91028B989005F3C46 /* libantlr */ = {
@@ -985,8 +965,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D51718B1028B53C005F3C46 /* EucEPubPageLayoutController.h in Headers */,
-				7D51719F1028B554005F3C46 /* css21Lexer.h in Headers */,
-				7D5171A11028B554005F3C46 /* css21Parser.h in Headers */,
 				7D5171A21028B554005F3C46 /* EucEPubStyleStore.h in Headers */,
 				7D5171A41028B554005F3C46 /* EucEPubBookReader.h in Headers */,
 				7D5171A61028B554005F3C46 /* EucEPubBookParagraph.h in Headers */,
@@ -1240,8 +1218,6 @@
 			files = (
 				7D6F767910AC612D0041482F /* css21.g in Sources */,
 				7D51718C1028B53C005F3C46 /* EucEPubPageLayoutController.m in Sources */,
-				7D51719E1028B554005F3C46 /* css21Lexer.c in Sources */,
-				7D5171A01028B554005F3C46 /* css21Parser.c in Sources */,
 				7D5171A31028B554005F3C46 /* EucEPubStyleStore.m in Sources */,
 				7D5171A51028B554005F3C46 /* EucEPubBookReader.m in Sources */,
 				7D5171A71028B554005F3C46 /* EucEPubBookParagraph.m in Sources */,
