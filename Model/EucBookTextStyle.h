@@ -48,7 +48,7 @@ typedef enum {
 + (CGFloat)defaultFontPointSize;
 
 - (id)initWithFlag:(EucBookTextStyleFlag)flags;
-+ (id)bookTextStyleWithFlag:(EucBookTextStyleFlag)flags;
++ (EucBookTextStyle *)bookTextStyleWithFlag:(EucBookTextStyleFlag)flags;
 
 - (EucBookTextStyle *)styleBySettingFlag:(EucBookTextStyleFlag)flag;
 - (EucBookTextStyle *)styleByUnsettingFlag:(EucBookTextStyleFlag)flag;

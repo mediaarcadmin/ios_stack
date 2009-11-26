@@ -79,9 +79,13 @@
 
 - (id)initWithPointSize:(CGFloat)pointSize
 {
+    static UIImage *sPaperImage = nil;
+    if(!sPaperImage) {
+        sPaperImage = [[UIImage imageNamed:@"BookPaper.png"] retain];
+    }
     NSString *pageNumberFont = [EucBookTextStyle defaultFontFamilyName];
     NSString *titleFont = [pageNumberFont stringByAppendingString:@"-Italic"];
-	return [self initWithPointSize:pointSize titleFont:titleFont pageNumberFont:pageNumberFont titlePointSize:pointSize paperImage:[UIImage imageNamed:@"BookPaper.png"]];
+	return [self initWithPointSize:pointSize titleFont:titleFont pageNumberFont:pageNumberFont titlePointSize:pointSize paperImage:sPaperImage];
 }
 
 - (id)initWithFrame:(CGRect)frame 

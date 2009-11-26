@@ -23,6 +23,7 @@
     off_t _lastOffset;
 }
 
++ (NSUInteger)indexVersion;
 + (NSString *)filenameForPageIndexForFontFamily:(NSString *)fontFamilyName pointSize:(NSUInteger)fontSize;
 + (NSString *)constructionFilenameForPageIndexForFontFamily:(NSString *)fontFamilyName pointSize:(NSUInteger)fontSize;
 + (void)markBookBundleAsIndexConstructed:(NSString *)bundlePath;

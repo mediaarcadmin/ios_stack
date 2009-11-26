@@ -254,35 +254,6 @@
     
     NSInteger currentPageNumber = self.pageNumber;
     NSInteger newPageNumber = [_pageLayoutController nextSectionPageNumberForPageNumber:currentPageNumber];
-
-    /*NSInteger newPageNumber = currentPageNumber;
-    BookPageIndexPoint *currentIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:_pageTurningView.currentPageView]];
-    switch(currentIndexPoint.source) {
-        case BookPageIndexPointSourceCoverPage: {
-            newPageNumber = 0;
-            break;
-        }
-        case BookPageIndexPointSourceCopyrightPage: {
-            newPageNumber = 1;
-            break;
-        }
-        case BookPageIndexPointSourceBook: {
-            BookSection *section = [_book nextTopLevelSectionForByteOffset:currentIndexPoint.startOfParagraphByteOffset];
-            if(section) {
-                newPageNumber = [_bookIndex pageForByteOffset:section.startOffset];
-            } else {
-                newPageNumber = _bookIndex.lastPageNumber + 1;
-            }
-            break;
-        }
-        case BookPageIndexPointSourceLicenceAppendix: {
-            newPageNumber = _bookIndex.lastPageNumber + _licenceAppendixIndex.lastPageNumber;
-            break;
-        }
-        default: {
-            break;
-        }
-    }*/
     
     if(newPageNumber != currentPageNumber) {
         [self _setPageNumber:newPageNumber animated:YES];
@@ -316,51 +287,7 @@
     NSInteger currentPageNumber = self.pageNumber;
     
     NSInteger newPageNumber = [_pageLayoutController previousSectionPageNumberForPageNumber:currentPageNumber];
-    
-    /*     NSInteger newPageNumber = currentPageNumber;
-     BookPageIndexPoint *currentIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:_pageTurningView.currentPageView]];
-    switch(currentIndexPoint.source) {
-        case BookPageIndexPointSourceCoverPage: {
-            break;
-        }
-        case BookPageIndexPointSourceCopyrightPage: {
-            newPageNumber = -1;
-            break;
-        }
-        case BookPageIndexPointSourceBook: {
-            BookSection *sectionCurrentlyIn = [_book sectionForByteOffset:currentIndexPoint.startOfParagraphByteOffset];
-            NSInteger startPageNumberOfSectionCurrentlyIn = [_bookIndex pageForByteOffset:sectionCurrentlyIn.startOffset];
-            if(currentPageNumber == startPageNumberOfSectionCurrentlyIn) {
-                BookSection *section = sectionCurrentlyIn;
-                NSInteger sectionStartPage = 0;
-                do { // Loop to skip 0-page sections.
-                    section = [_book previousTopLevelSectionForByteOffset:section.startOffset];
-                    sectionStartPage = [_bookIndex pageForByteOffset:section.startOffset];
-                } while(section && sectionStartPage == currentPageNumber);
-                
-                if(section) {
-                    newPageNumber = [_bookIndex pageForByteOffset:section.startOffset];
-                } else {
-                    newPageNumber = 0;
-                }
-            } else {
-                newPageNumber = startPageNumberOfSectionCurrentlyIn;
-            }
-            break;
-        }
-        case BookPageIndexPointSourceLicenceAppendix: {
-            if(currentPageNumber == _bookIndex.lastPageNumber + 1) {
-                newPageNumber = [_bookIndex pageForByteOffset:((BookSection *)_book.sections.lastObject).startOffset];
-            } else {
-                newPageNumber = _bookIndex.lastPageNumber + 1;
-            }
-            break;
-        }
-        default: {
-            break;
-        }
-    }*/
-       
+           
     if(newPageNumber != currentPageNumber) {
         [self _setPageNumber:newPageNumber animated:YES];
         // Save our previous position so that we can jump back to it if the user
@@ -1284,7 +1211,7 @@
     EucBookPageIndexPoint *pageIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
     NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
     
-    if(pageNumber > 0) {
+    if(pageNumber > 1) {
         THPair *newPageViewAndIndexPoint = [self _pageViewAndIndexPointForBookPageNumber:pageNumber - 1];
         if(newPageViewAndIndexPoint) {
             EucPageView *newPageView = newPageViewAndIndexPoint.first;

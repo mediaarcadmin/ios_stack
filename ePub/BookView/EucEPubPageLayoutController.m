@@ -109,9 +109,7 @@ static void readRightRaggedJustificationDefault()
 - (NSString *)displayPageNumberForPageNumber:(NSUInteger)pageNumber
 {
     NSString *text = nil;
-    if(pageNumber == 1) {
-        return nil;
-    } else {
+    if(pageNumber > 1) {
         text = [NSString stringWithFormat:@"%ld", (long)pageNumber-1];
     }
     return text;
