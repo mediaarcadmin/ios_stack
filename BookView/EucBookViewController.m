@@ -335,37 +335,8 @@
     
     if(!_contentsSheet) {
         _contentsSheet = [[EucBookContentsTableViewController alloc] initWithBook:_book pageLayoutController:_pageLayoutController];
-        _contentsSheet.delegate = self;
-        
-        /*BookPageIndexPoint *currentIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:_pageTurningView.currentPageView]];
-        NSString *currentSectionUuid = nil;
-        switch(currentIndexPoint.source) {
-            case BookPageIndexPointSourceCoverPage: {
-                currentSectionUuid = @"cover";
-                break;
-            }
-            case BookPageIndexPointSourceCopyrightPage: {
-                currentSectionUuid = @"copyright";
-                break;
-            }
-            case BookPageIndexPointSourceBook: {
-               // BookSection *section = [_book topLevelSectionForByteOffset:currentIndexPoint.startOfParagraphByteOffset];
-                //currentSectionUuid = section ? section.uuid : @"copyright";
-                break;
-            }
-            case BookPageIndexPointSourceLicenceAppendix: {
-                currentSectionUuid = @"licence";
-                break;
-            }
-            default: {
-                break;
-            }
-        }
-        
-        _contentsSheet.currentSectionUuid = currentSectionUuid;*/
-        
+        _contentsSheet.delegate = self;        
         _contentsSheet.currentSectionUuid = self.currentSectionUuid;
-        
         
         UIView *sheetView = _contentsSheet.view;
         
@@ -881,17 +852,6 @@
         }
         _pageNumberLabel.text = [_pageLayoutController pageDescriptionForPageNumber:pageNumber];
         
-        /*
-        if(pageNumber >= 1) {
-            if(pageNumber <= _bookIndex.lastPageNumber) {
-                _pageNumberLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%ld of %ld", @"Page number display below page slider"), pageNumber, (long)_bookIndex.lastPageNumber];
-            } else {
-                _pageNumberLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%ld of Licence", @"Page number display below page slider"), pageNumber - (long)_bookIndex.lastPageNumber];
-            }
-        } else {
-            _pageNumberLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%ld pages", @"Text to display below page slider for the cover page"), (long)_bookIndex.lastPageNumber];
-        }
-        */
         if(_pageSliderIsTracking) {
             // If the slider is tracking, we'll place a HUD view showing chapter
             // and page information about the drag point.
@@ -946,26 +906,11 @@
             }
             
             NSString *chapterTitle = [_pageLayoutController sectionNameForPageNumber:pageNumber];
-            /*if(pageNumber == -1) {
-                chapterTitle = NSLocalizedString(@"Cover", @"Title for front cover in Slider-dragging overlay.");
-            } else if(pageNumber == 0) {
-                chapterTitle = NSLocalizedString(@"Book Information", @"Title for book information page in Slider-dragging overlay.");
-            } else if(pageNumber <= _bookIndex.lastPageNumber) {
-                BookSection *section = [_book topLevelSectionForByteOffset:[_bookIndex indexPointForPage:pageNumber].startOfParagraphByteOffset];
-                chapterTitle = [section.properties objectForKey:kBookSectionPropertyTitle];
-                while(!chapterTitle && section) {
-                    section = [_book previousTopLevelSectionForByteOffset:section.startOffset];
-                    chapterTitle = [section.properties objectForKey:kBookSectionPropertyTitle];
-                }
-                chapterTitle = [chapterTitle mainChapterName];
-            } else {
-                chapterTitle = NSLocalizedString(@"Legal Information", @"Title for licence pages in Slider-dragging overlay.");
-            }*/
             
             pageSliderChapterLabel.text = chapterTitle;
             pageSliderNumberLabel.text = _pageNumberLabel.text;
 
-            // Nicely size the view to accomodate longter names;
+            // Nicely size the view to accomodate longer names;
             CGRect viewBounds = self.view.bounds;
             CGSize allowedSize = viewBounds.size;
             allowedSize.width -= 12 * margin;
