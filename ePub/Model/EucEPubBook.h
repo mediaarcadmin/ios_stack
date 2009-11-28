@@ -34,7 +34,7 @@
 @property (nonatomic, retain) NSString *coverPath;
 
 - (id)initWithPath:(NSString *)path;
-- (void)whitelistSectionsWithUUIDs:(NSSet *)uuids;
+- (void)whitelistSectionsWithUuids:(NSSet *)uuids;
 
 - (NSData *)dataForFileAtURL:(NSURL *)url;
 

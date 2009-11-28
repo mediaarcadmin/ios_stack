@@ -188,7 +188,7 @@
 
 - (void)jumpToUuid:(NSString *)uuid
 {
-    [self jumpToPage:[_pageLayoutController pageNumberForUuid:uuid]];
+    [self jumpToPage:[_pageLayoutController pageNumberForSectionUuid:uuid]];
 }
 
 - (void)_hyperlinkTapped:(NSDictionary *)attributes
@@ -334,7 +334,7 @@
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
     if(!_contentsSheet) {
-        _contentsSheet = [[EucBookContentsTableViewController alloc] initWithBook:_book pageLayoutController:_pageLayoutController];
+        _contentsSheet = [[EucBookContentsTableViewController alloc] initWithPageLayoutController:_pageLayoutController];
         _contentsSheet.delegate = self;        
         _contentsSheet.currentSectionUuid = self.currentSectionUuid;
         
@@ -905,7 +905,7 @@
                 pageSliderNumberLabel = (UILabel *)[_pageSliderTrackingInfoView viewWithTag:2];
             }
             
-            NSString *chapterTitle = [_pageLayoutController sectionNameForPageNumber:pageNumber];
+            NSString *chapterTitle = [_pageLayoutController presentationNameAndSubTitleForSectionUuid:[_pageLayoutController sectionUuidForPageNumber:pageNumber]].first;
             
             pageSliderChapterLabel.text = chapterTitle;
             pageSliderNumberLabel.text = _pageNumberLabel.text;

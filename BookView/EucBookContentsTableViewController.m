@@ -79,14 +79,18 @@
     }
 }
 */
-- (id)initWithBook:(EucBookReference<EucBook> *)book pageLayoutController:(id<EucPageLayoutController>)pageLayoutController;
+- (id)initWithPageLayoutController:(id<EucPageLayoutController>)pageLayoutController;
 {
     if((self = [super initWithStyle:UITableViewStyleGrouped])) {
-        _book = [book retain];
-        
         _paginationIsComplete = YES;
         _pageLayoutController = [pageLayoutController retain];
-        
+        _uuids = [_pageLayoutController sectionUuids];
+        if(_uuids.count && ![[_uuids objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+            _uuids = [[NSArray alloc] initWithObjects:&_uuids count:1];
+        } else{
+            [_uuids retain];
+        }
+
         /*_previousLastOffset = _index.lastOffset;
         if(index.isFinal) {
             _paginationIsComplete = YES;
@@ -109,8 +113,7 @@
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [_pageLayoutController release];
-    [_book release];
-    [_namesAndUuids release];
+    [_uuids release];
     [_currentSectionUuid release];
     [_selectedGradientColor release];
     [_selectedUuid release];
@@ -125,48 +128,15 @@
     [super viewDidLoad];
 }
 
-- (NSArray *)_namesAndUuids
-{
-    if(!_namesAndUuids) {
-       /* NSArray *section1 = [[NSArray alloc] initWithObjects:[THPair pairWithFirst:NSLocalizedString(@"Front Cover", @"Title for front cover in chapter list.")
-                                                                            second:@"cover"],
-                             [THPair pairWithFirst:NSLocalizedString(@"Book Information", @"Title for pre-book information in chapter list.")
-                                            second:@"copyright"],
-                             nil];
-        */
-        NSMutableArray *section2 = [[NSMutableArray alloc] init];
-        for(EucBookSection *section in [_book sections]) {
-            NSString *title = [[section.properties objectForKey:kBookSectionPropertyTitle] lowercaseString];
-            if(title) {
-                [section2 addPairWithFirst:title second:section.uuid];
-            } else if(section2.count == 0) {
-                [section2 addPairWithFirst:NSLocalizedString(@"Book Begins", @"Title for book text start in chapter list.")
-                                                      second:section.uuid];
-            }
-        }
-        
-   /*     NSArray *section3 = [[NSArray alloc] initWithObjects:[THPair pairWithFirst:NSLocalizedString(@"Legal Information", @"Title for front Gutenberg licence in chapter list.")
-                                                                            second:@"licence"],
-                             nil];
-   */     
-        _namesAndUuids = [[NSArray alloc] initWithObjects:/*section1, */section2,/* section3,*/ nil];
-        //[section1 release];
-        [section2 release];
-     //   [section3 release];
-    }
-    return _namesAndUuids;
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.tableView reloadData];
     
-    NSArray *namesAndUuids = self._namesAndUuids;
-    for(NSArray *array in namesAndUuids) {
-        for(THPair *nameAndUuid in array) {
-            if([nameAndUuid.second isEqualToString:_currentSectionUuid]) {
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[array indexOfObject:nameAndUuid]
-                                                                          inSection:[namesAndUuids indexOfObject:array]]
+    for(NSArray *array in _uuids) {
+        for(NSString *uuid in array) {
+            if([uuid isEqualToString:_currentSectionUuid]) {
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[array indexOfObject:uuid]
+                                                                          inSection:[_uuids indexOfObject:array]]
                                       atScrollPosition:UITableViewScrollPositionMiddle
                                               animated:NO];
                 break;
@@ -192,42 +162,14 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self._namesAndUuids.count;
+    return _uuids.count;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return ((NSArray *)[self._namesAndUuids objectAtIndex:section]).count;
+    return ((NSArray *)[_uuids objectAtIndex:section]).count;
 }
-
-- (THPair *)_splitNameForNameAndUuid:(THPair *)nameAndUuid returningPageNumber:(NSUInteger *)pageNumber pageNumberIsValid:(BOOL *)pageNumberIsValid;
-{
-    NSString *name = nameAndUuid.first;
-    NSString *uuid = nameAndUuid.second;
-    
-    EucBookSection *section = [_book sectionWithUuid:uuid];
-    
-    if(pageNumber) {
-        if(section) {
-            *pageNumber = [_pageLayoutController pageNumberForUuid:uuid];
-            //if(!_index.isFinal && section.startOffset > _index.lastOffset) {
-            //    *pageNumberIsValid = NO;
-            //} else {
-                *pageNumberIsValid = YES;
-            //}
-        } else if([uuid isEqualToString:@"licence"]) {
-       //     *pageNumber = _index.lastPageNumber + 1;
-       //     *pageNumberIsValid = _paginationIsComplete;
-        } else {
-            *pageNumber = 0;  
-            *pageNumberIsValid = YES;
-        }
-    }
-        
-    return [name splitAndFormattedChapterName];
-}
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {    
@@ -249,7 +191,7 @@
         [contentView release];
     }
         
-    NSArray *rows = [self._namesAndUuids objectAtIndex:indexPath.section];
+    NSArray *rows = [_uuids objectAtIndex:indexPath.section];
             
     EucBookContentsTableViewCellPosition backgroundViewPosition;
     
@@ -267,15 +209,14 @@
     
     ((EucBookContentsTableViewCellBackground *)cell.backgroundView).position = backgroundViewPosition;
     
-    THPair *nameAndUuid = [rows objectAtIndex:rowIndex];
-    
+    NSString *uuid = [rows objectAtIndex:rowIndex];
+
     EucNameAndPageNumberView *nameAndPageNumberView = (EucNameAndPageNumberView *)[cell.contentView viewWithTag:49];
     
-    
-    NSUInteger pageNumber = 0;
-    BOOL pageNumberIsValid = NO;
-    THPair *nameAndSubtitle = [self _splitNameForNameAndUuid:nameAndUuid returningPageNumber:&pageNumber pageNumberIsValid:&pageNumberIsValid];
-    
+    THPair *nameAndSubtitle = [_pageLayoutController presentationNameAndSubTitleForSectionUuid:uuid];
+    NSUInteger pageNumber = [_pageLayoutController pageNumberForSectionUuid:uuid];
+    BOOL pageNumberIsValid = YES;
+
     nameAndPageNumberView.name = nameAndSubtitle.first;
     nameAndPageNumberView.subTitle = nameAndSubtitle.second;
     if(pageNumberIsValid) {
@@ -287,7 +228,7 @@
     }
     
     UIColor *backgroundColor;
-    if([_currentSectionUuid isEqualToString:nameAndUuid.second]) {
+    if([_currentSectionUuid isEqualToString:uuid]) {
         if(!_selectedGradientColor) {
             CGFloat locationRefs[] = { 0.0f, 1.0f };
             /*CGFloat colorRefs[] = { 234.0f / 255.0f, 232.0f / 255.0f, 236.0 / 255.0f, 1.0f,
@@ -332,11 +273,11 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    THPair *nameAndUuid = [[self._namesAndUuids objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    NSUInteger pageNumber = 0;
-    BOOL pageNumberIsValid = NO;
-    THPair *nameAndSubtitle = [self _splitNameForNameAndUuid:nameAndUuid returningPageNumber:&pageNumber pageNumberIsValid:&pageNumberIsValid];
-    
+    NSString *uuid = [[_uuids objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    THPair *nameAndSubtitle = [_pageLayoutController presentationNameAndSubTitleForSectionUuid:uuid];
+    NSUInteger pageNumber = [_pageLayoutController pageNumberForSectionUuid:uuid];
+    BOOL pageNumberIsValid = YES;
+
     CGFloat ret = [EucNameAndPageNumberView heightForWidth:pageNumberIsValid ? TABLE_CONTENTS_CELL_WIDTH : TABLE_CONTENTS_CELL_WIDTH_WITH_ACCESSORY // Seems like very bad form to be hard-coding this... 
                                                   withName:nameAndSubtitle.first 
                                                   subTitle:nameAndSubtitle.second 
@@ -356,7 +297,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    _selectedUuid = [((THPair *)[((NSArray *)[self._namesAndUuids objectAtIndex:indexPath.section]) objectAtIndex:indexPath.row]).second retain];
+    [_selectedUuid release];
+    _selectedUuid = [[((NSArray *)[_uuids objectAtIndex:indexPath.section]) objectAtIndex:indexPath.row] retain];
     [_delegate bookContentsTableViewController:self didSelectSectionWithUuid:_selectedUuid];
 }
 

@@ -526,7 +526,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     }
 }
 
-- (void)whitelistSectionsWithUUIDs:(NSSet *)uuids
+- (void)whitelistSectionsWithUuids:(NSSet *)uuids
 {    
     [_filteredSections release];
     _filteredSections = nil;

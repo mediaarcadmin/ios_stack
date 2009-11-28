@@ -8,12 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class EucBookReference;
-@protocol BookContentsTableViewControllerDelegate, EucBook, EucPageLayoutController;
+@protocol BookContentsTableViewControllerDelegate, EucPageLayoutController;
 
 @interface EucBookContentsTableViewController : UITableViewController {
-    EucBookReference<EucBook> *_book;
-    NSArray *_namesAndUuids;
+    NSArray *_uuids;
     NSString *_currentSectionUuid;
     id<BookContentsTableViewControllerDelegate> _delegate;
     UIColor *_selectedGradientColor;
@@ -30,7 +28,7 @@
 @property (nonatomic, retain) NSString *currentSectionUuid;
 @property (nonatomic, readonly) NSString *selectedUuid;
 
-- (id)initWithBook:(EucBookReference<EucBook> *)book pageLayoutController:(id<EucPageLayoutController>)pageLayoutController;
+- (id)initWithPageLayoutController:(id<EucPageLayoutController>)pageLayoutController;
 
 @end
 

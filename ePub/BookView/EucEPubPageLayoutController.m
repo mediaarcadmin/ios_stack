@@ -130,6 +130,27 @@ static void readRightRaggedJustificationDefault()
     return name;
 }
 
+- (NSString *)nameForSectionUuid:(NSString *)uuid
+{
+    return [[_book sectionWithUuid:uuid].properties objectForKey:kBookSectionPropertyTitle];
+}
+
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)uuid
+{
+    return [THPair pairWithFirst:[self nameForSectionUuid:uuid] second:nil];
+}
+
+- (NSArray *)sectionUuids
+{
+    NSMutableArray *ret = [NSMutableArray array];
+    
+    for(EucBookSection *section in [_book sections]) {
+        [ret addObject:section.uuid];
+    }
+    
+    return ret;    
+}
+
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber
 {
     EucBookSection *section = [_book nextTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber].startOfParagraphByteOffset];
@@ -152,14 +173,9 @@ static void readRightRaggedJustificationDefault()
     return nextPageNumber;
 }
 
-- (NSUInteger)pageNumberForUuid:(NSString *)uuid
+- (NSUInteger)pageNumberForSectionUuid:(NSString *)uuid
 {
     return [_bookIndex filteredPageForByteOffset:[_book byteOffsetForUuid:uuid]];
-}
-
-- (NSArray *)sections
-{
-    return nil; 
 }
 
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber

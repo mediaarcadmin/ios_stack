@@ -6,6 +6,7 @@
  *  Copyright 2009 James Montgomerie. All rights reserved.
  *
  */
+
 #import <UIKit/UIKit.h>
 
 @class EucGutenbergBook, EucBookPageIndex, EucBookPageIndexPoint, EucPageView, THPair;
@@ -14,8 +15,12 @@
 @protocol EucPageLayoutController <NSObject>
 
 @property (nonatomic, readonly) id<EucBook> book;
-@property (nonatomic, assign) CGFloat fontPointSize;
+
 @property (nonatomic, readonly) NSArray *availablePointSizes;
+@property (nonatomic, assign) CGFloat fontPointSize;
+
+@property (nonatomic, readonly) NSArray *sectionUuids;
+
 @property (nonatomic, readonly) NSUInteger globalPageCount;
 
 - (id)initWithBook:(id<EucBook>)book fontPointSize:(CGFloat)pointSize;
@@ -28,13 +33,13 @@
 // Could also do things like convert to roman numerals when appropriate.
 - (NSString *)displayPageNumberForPageNumber:(NSUInteger)pageNumber;
 
-- (NSString *)sectionNameForPageNumber:(NSUInteger)logicalPageNumber;
 - (NSString *)sectionUuidForPageNumber:(NSUInteger)page;
-- (NSUInteger)pageNumberForUuid:(NSString *)sectionUuid;
+- (NSString *)nameForSectionUuid:(NSString *)sectionUuid;
+- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid;
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)uuid;
 
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
-- (NSArray *)sections;
 
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
