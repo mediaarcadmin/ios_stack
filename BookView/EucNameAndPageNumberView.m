@@ -59,7 +59,8 @@
         subTitleSize = [subTitle sizeWithFont:subTitleFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap]; 
     }
     
-    return ceilf(stringSize.height + subTitleSize.height);
+     // +1 to avoid descender clipping (seems like that it shouldn't be necessary...
+    return ceilf(stringSize.height + subTitleSize.height + 1);
 }
     
 
@@ -79,7 +80,15 @@
     
     UIFont *nameFont = [UIFont boldSystemFontOfSize:FONT_SIZE];
 
-    [_textColor ? _textColor : [UIColor blackColor] setFill];
+    // Bit of a hack here, but it's a lot easier than creating special
+    // subclasses to pass the state aroud properly.
+    UITableViewCell *cell = (UITableViewCell *)self.superview.superview;
+    if([cell isKindOfClass:[UITableViewCell class]] &&
+       (cell.isHighlighted || cell.isSelected)) {
+        [[UIColor whiteColor] setFill];
+    } else {
+        [_textColor ? _textColor : [UIColor blackColor] setFill];
+    }
     
     CGSize pageNumberSize = CGSizeZero;
     CGSize minimumDotsSize = CGSizeZero;
