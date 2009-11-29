@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EAGLView.h"
+#import "THAppleSampleEAGLView.h"
 
 @protocol EucPageTurningViewDelegate;
 
@@ -33,7 +33,7 @@ typedef struct {
     GLfloat lengthSquared;
 } VerletContstraint;
 
-@interface EucPageTurningView : EAGLView {
+@interface EucPageTurningView : THAppleSampleEAGLView {
     GLfloat _touchVelocity;
 
     CGSize _powerOf2Bounds;

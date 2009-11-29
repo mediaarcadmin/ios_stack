@@ -15,7 +15,7 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import <AudioToolbox/AudioToolbox.h>
 #include <tgmath.h>
-#import "EAGLView.h"
+#import "THAppleSampleEAGLView.h"
 
 #define FOV_ANGLE ((GLfloat)10.0f)
 

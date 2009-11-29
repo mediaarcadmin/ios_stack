@@ -1,22 +1,20 @@
 //
-//  EAGLView.m
+//  THAppleSampleEAGLView.m
 //  PageTurnTest
 //
 //  Created by James Montgomerie on 07/11/2008.
 //  Copyright James Montgomerie 2008. All rights reserved.
 //
 
-
-
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 
-#import "EAGLView.h"
+#import "THAppleSampleEAGLView.h"
 
 #define USE_DEPTH_BUFFER 1
 
 // A class extension to declare private methods
-@interface EAGLView ()
+@interface THAppleSampleEAGLView ()
 
 @property (nonatomic, retain) EAGLContext *context;
 @property (nonatomic, assign) NSTimer *animationTimer;
@@ -27,7 +25,7 @@
 @end
 
 
-@implementation EAGLView
+@implementation THAppleSampleEAGLView
 
 @synthesize context;
 @synthesize animationTimer;
