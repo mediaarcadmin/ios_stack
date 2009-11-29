@@ -18,7 +18,6 @@
 #import "THPair.h"
 #import "THRegex.h"
 #import "THAlertViewWithUserInfo.h"
-#import "TransitionView.h"
 #import "THScalableSlider.h"
 #import "EucBookTitleView.h"
 #import "EucBook.h"
@@ -48,7 +47,6 @@
 @implementation EucBookViewController
 
 @synthesize delegate = _delegate;
-@synthesize transitionView = _transitionView;
 @synthesize undimAfterAppearance = _undimAfterAppearance;
 @synthesize appearAtCoverThenOpen = _appearAtCoverThenOpen;
 
@@ -73,15 +71,14 @@
     _pageTurningView.dimQuotient = dimQuotient;  
 }
 
-- (id)initWithTransitionViewForBookContent:(TransitionView *)transitionView withToolbars:(BOOL)withToolbars
+- (id)initWithToolbars:(BOOL)withToolbars
 {
 	if ((self = [super initWithNibName:nil bundle:nil])) {
         _showToolbarsOnFirstAppearance = withToolbars;
         
+        self.wantsFullScreenLayout = NO;
         self.hidesBottomBarWhenPushed = YES;
 
-        self.transitionView = transitionView;
-        
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
         [backArrow addTarget:self
                       action:@selector(_backButtonTapped) 
@@ -324,8 +321,11 @@
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
-    if([[anim valueForKey:@"THName"] isEqualToString:@"ContentsSlideIn"]) {
+    NSString *name = [anim valueForKey:@"THName"];
+    if([name isEqualToString:@"ContentsSlideIn"]) {
         [self _contentsViewDidAppear];
+    } else if([name isEqualToString:@"PageTurningViewSlideOut"]) {
+        [(UIView *)[anim valueForKey:@"THView"] removeFromSuperview];   
     }
 }
 
@@ -615,9 +615,11 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if(!self.modalViewController) {        
+    if(!self.modalViewController) { 
+        UIWindow *window = self.navigationController.view.window;
+
         if(!_pageTurningView) {
-            _pageTurningView = [[EucPageTurningView alloc] initWithFrame:[_transitionView bounds]];
+            _pageTurningView = [[EucPageTurningView alloc] initWithFrame:window.bounds];
             _pageTurningView.opaque = NO;
             _pageTurningView.delegate = self;
         }
@@ -638,13 +640,18 @@
         _pageNumber = pageNumber;
         
         _pageTurningView.dimQuotient = _dimQuotient;
+                
+        [window addSubview:_pageTurningView];
+        [window sendSubviewToBack:_pageTurningView];
         
         if(animated) {
-            [_transitionView replaceSubview:nil withSubview:_pageTurningView transition:kCATransitionPush direction:kCATransitionFromRight duration:1.0/3.0];
-        } else {
-            [_transitionView addSubview:_pageTurningView];
+            CATransition *animation = [CATransition animation];
+            animation.type = kCATransitionPush;
+            animation.subtype = kCATransitionFromRight;
+            animation.duration = 1.0/3.0;
+            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            [[_pageTurningView layer] addAnimation:animation forKey:@"PageViewTransitionIn"];
         }
-        
         _pageSlider.scaledValue = [self _pageToSliderByte:pageNumber];
         [self _updatePageNumberLabel];
     }
@@ -784,11 +791,27 @@
         }
         if(_pageTurningView) {
             [_pageTurningView stopAnimation];
+
             if(animated) {
-                [_transitionView replaceSubview:_pageTurningView withSubview:nil transition:kCATransitionPush direction:kCATransitionFromLeft duration:1.0/3.0];
+                CATransition *animation = [CATransition animation];
+                animation.type = kCATransitionPush;
+                animation.subtype = kCATransitionFromLeft;
+                animation.duration = 1.0/3.0;
+                animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+                
+                // Set some state so that we can remove the pageview from its
+                // superview in the animationDidStop delegate.
+                [animation setValue:@"PageTurningViewSlideOut" forKey:@"THName"];
+                [animation setValue:_pageTurningView forKey:@"THView"];
+                animation.delegate = self;
+                
+                [[_pageTurningView layer] addAnimation:animation forKey:@"PageViewTransitionOut"];
             } else {
                 [_pageTurningView removeFromSuperview];
             }
+            
+            [_pageTurningView release];
+            _pageTurningView = nil;
         }
         [NSObject cancelPreviousPerformRequestsWithTarget:self];
         _dimQuotient = 1.0f;
@@ -822,7 +845,6 @@
 
 - (void)dealloc 
 {
-    [_transitionView release];
     [_pageTurningView release];
     [_pageLayoutController release];
     [_pageSlider release];

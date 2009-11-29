@@ -1,0 +1,443 @@
+/* Template CSS, (c) 2009 LibreDigital */
+
+
+/* -------------- General Styles -------------- */
+body {
+	margin: 20px;
+}
+p {
+	line-height: 1.2em;
+	margin-top: 0em;
+	margin-bottom: 0em;
+}
+
+.indent {text-indent: 2em;}
+.noindent {text-indent: 0;}
+.center {text-align: center;}
+.right {text-align: right;}
+.left {text-align: left;}
+.first {margin-top: 3em;}
+.spacer {margin-top: 2em;}
+.hang {
+	margin-left: 2em;
+	text-indent: -2em;
+}
+.tbmargins {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+blockquote {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+blockquote.quote {
+	margin-top: 3em;
+	margin-bottom: 3em;
+}
+img {
+	border: 0;
+}
+
+span.dropcap {
+	font-size: 3em;
+	font-weight: bold;
+}
+span.big {font-size: 1.2em;}
+span.small {font-size: 0.8em;}
+
+sup {
+	vertical-align: 4px;
+}
+
+sup.frac, sub.frac {
+	font-size: 0.7em;
+}
+
+.clear {clear: both}
+
+
+/* -------------- Headings -------------- */
+h1 {
+	text-align: center;
+}
+h2 {
+	text-align: center;
+	margin-top: 1em;
+}
+h3 {
+	text-align: center;
+	margin-top: 1em;
+}
+h4 {
+	text-align: left;
+	margin-top: 1em;
+}
+h5 {
+	text-align: left;
+	margin-top: 1em;
+}
+h6 {
+	text-align: left;
+	margin-top: 1em;
+}
+
+/* -------------- Cover page -------------- */
+#coverpage {
+	text-align: center;
+    -eucalyptus-full-bleed: "on";
+    -eucalyptus-no-zoom: "on";
+}
+
+
+/* -------------- Title Page -------------- */
+div#titlepage {
+
+}
+.booktitle {
+	margin-top: 3em;
+	margin-bottom: 3em;
+	text-align: center;
+}
+.subtitle {
+	margin-bottom: 3em;
+	text-align: center;
+}
+.byline {			/* by, translated by, edited by, etc. */
+	text-align: center;
+}
+.author {
+	text-align: center;
+}
+.othertext {		/* "a novel", "author of...", etc. */
+	text-align: center;
+}
+.publogo {
+	margin-top: 2em;
+	text-align: center;
+	font-size: 0.8em;
+}
+	
+
+
+/* -------------- Copyright -------------- */
+div#copyright {
+	font-size: 0.8em;
+}
+div#copyright p {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+div#copyright blockquote {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* -------------- Dedication -------------- */
+div#dedication {
+	padding-top: 30%;
+}
+
+
+/* -------------- TOC -------------- */
+div#TOC p {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+div#TOC blockquote {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* -------------- Front Matter (Preface, Forward, Introduction) -------------- */
+div.fbmatter .fbmtitle {
+	font-style: italic;
+	font-size: 23px;
+}
+
+
+
+/* -------------- Parts/Sections -------------- */
+.notextbelow {
+	margin-top: 30%;
+}
+part {
+	
+}
+
+hr {
+	border: 0;
+	color: black;
+	background-color: black;
+	height: 2px;
+	text-align: center;
+}
+
+
+/* -------------- Chapters -------------- */
+
+chapter h1 {
+	font-size: 23px;
+}
+div.chapter .first {
+	margin-top: 3em;
+}
+chapter {
+	
+}
+
+hr {
+	border: 0;
+	color: black;
+	background-color: black;
+	height: 2px;
+	text-align: center;
+}
+
+/* -------------- Extracts, Sidebars, Pull Quotes -------------- */
+.extract {
+	/*border: 1px solid black;
+	padding: 10px;
+	margin: 10px;*/
+	margin-left: 20px;
+	margin-right: 20px;
+	font-family: sans-serif;
+}
+
+div.sidebar-center {
+	border: 1px solid black;
+	padding: 10px;
+	margin: 10px;
+}
+div.sidebar-left {
+	float: left;
+	width: 30%;
+	border: 1px solid black;
+	padding: 10px;
+	margin: 10px 0 10px 10px;
+}
+div.sidebar-right {
+	float: right;
+	width: 30%;
+	border: 1px solid black;
+	padding: 10px;
+	margin: 10px 10px 10px 0;
+}
+
+
+
+/* -------------- Images -------------- */
+.image {
+	text-align: center;
+	margin: 10px 0;
+}
+.floatleft {
+	float: left;
+	margin: 10px 10px 10px 0;
+}
+.floatright {
+	float: right;
+	margin: 10px 0 10px 10px;
+}
+img.inline {
+	vertical-align: middle;
+}
+p.caption {
+	text-indent: 0;
+	margin: 0 2em 2em 2em;
+	font-family: sans-serif;
+	font-size: 0.8em;
+}
+p.title {
+	text-align: center;
+	font-family: sans-serif;
+	font-weight: bold;
+}
+
+
+/* -------------- Tables -------------- */
+div.table {
+	text-align: center;
+}
+table {
+	border-collapse: collapse;
+	margin: 1em 0;
+}
+td, th {
+	padding: 3px 5px;
+}
+
+table.grid {
+	border: 1px solid black;
+}
+table.grid td, table.grid th {
+	border: 1px solid black;
+}
+/* use p.title and p.caption from image section above */
+.bdrtop {
+	border-top: 1px solid black;
+}
+.bdrbottom {
+	border-bottom: 1px solid black;
+}
+.bdrleft {
+	border-left: 1px solid black;
+}
+.bdrright {
+	border-right: 1px solid black;
+}
+
+/* -------------- Lists -------------- */
+ul, ol {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+ol ol, ul ul, ul ol, ol ul {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+ul.disc {
+	list-style-type: disc;
+}
+ul.circle {
+	list-style-type: circle;
+}
+ul.square {
+	list-style-type: square;
+}
+ol.decimal {
+	list-style-type: decimal;
+}
+ol.upper-roman {
+	list-style-type: upper-roman;
+}
+ol.lower-roman {
+	list-style-type: lower-roman;
+}
+ol.upper-alpha {
+	list-style-type: upper-alpha;
+}
+ol.lower-alpha {
+	list-style-type: lower-alpha;
+}
+
+/* -------------- Index -------------- */
+
+div#index p {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+.index1 {
+	margin-left: 2em;
+	text-indent: -2em;
+}
+.index2 {
+	margin-left: 4em;
+	text-indent: -2em;
+}
+.index3 {
+	margin-left: 6em;
+	text-indent: -2em;
+}
+
+
+/* -------------- Footnotes -------------- */
+div#footnotes .note {
+	text-indent: 0;
+	margin-top: 2em;
+}
+
+/* ------------- About the Publisher --------- */
+div#atp p {
+	font-size: 0.9em;
+	text-align: left;
+	text-indent: 0em;
+}
+.atpimg {
+	margin-top: 1em;
+	margin-bottom: 2em;
+}
+.atptext {
+	margin-bottom: 0.9em;
+	text-indent: 0em;
+	font-size: 0.9em;
+}
+h2.atphead {
+	text-align: left;
+	font-size: 1.5em;
+	margin-bottom: 2em;
+}
+
+
+/* -------------- Added ---------------- */
+
+a.puburl {
+	color: #dc7ea8;
+	font-size: 0.8em;
+	margin-top: 1em;
+}
+/* ----------------- Mobi ----------------*/
+.noindentfirst {
+	text-indent: 0em;
+	margin-top: 2em;
+}
+.centerfirst {
+	text-align: center;
+	margin-top: 2em;
+}
+.indentfirst {
+	text-indent: 2em;
+	margin-top: 2em;
+}
+.rightfirst {
+	text-align: right;
+	margin-top: 2em;
+}
+.leftfirst {
+	text-align: left;
+	margin-top: 2em;
+}
+.hangfirst {
+	margin-top: 2em;
+	margin-left: 2em;
+	text-indent: -2em;
+}
+
+.breakhere {
+    page-break-before: always;
+}
+
+.blockquoteTop {
+	margin-top: 1em;
+}
+.blockquoteBottom {
+	margin-top: 1em;
+}
+.blockquoteQuoteTop {
+	margin-top: 1em;
+}
+.blockquoteQuoteBottom {
+	margin-top: 1em;
+}
+.blockquoteInner {
+	margin-left: 1.5em;
+	margin-right: 1.5em;
+}
+
+
+h2 {
+    page-break-before: always;
+}
+
+.characters { 
+    text-align: center; 
+    margin: 2em;
+}
+
+.imagebreak {
+    page-break-before: always;
+    -eucalyptus-full-bleed: "on";
+}
+.nozoom {
+    -eucalyptus-no-zoom: "on";
+}

@@ -11,7 +11,7 @@
 #import "EucBookContentsTableViewController.h"
 #import "EucPageView.h"
 
-@class TransitionView, EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
+@class EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
 @protocol EucBook, EucBookViewControllerDelegate;
 
 typedef enum {
@@ -26,7 +26,6 @@ typedef enum {
     BOOL _showToolbarsOnFirstAppearance;
     BOOL _firstAppearance;
     
-    TransitionView *_transitionView;
     EucPageTurningView *_pageTurningView;
     NSMutableDictionary *_pageViewToIndexPoint;
     NSCountedSet *_pageViewToIndexPointCounts;
@@ -72,7 +71,6 @@ typedef enum {
     BOOL _bookWasDeleted;
 }
 @property (nonatomic, assign) id<EucBookViewControllerDelegate> delegate;
-@property (nonatomic, retain) TransitionView *transitionView;
 @property (nonatomic, retain) EucBookReference<EucBook> * book;
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, readonly) NSString *currentSectionUuid;
@@ -81,7 +79,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL undimAfterAppearance;
 @property (nonatomic, assign) BOOL appearAtCoverThenOpen;
 
-- (id)initWithTransitionViewForBookContent:(TransitionView *)transitionView withToolbars:(BOOL)withToolbars;
+- (id)initWithToolbars:(BOOL)withToolbars;
 
 @end
 

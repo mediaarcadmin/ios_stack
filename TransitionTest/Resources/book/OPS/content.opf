@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="ISBN" version="2.0">
+
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:opf="http://www.idpf.org/2007/opf">
+	<dc:title>Terror in Cubicle Four</dc:title>
+	<dc:language xsi:type="dcterms:RFC3066">en</dc:language>
+	<dc:identifier id="ISBN" opf:scheme="9781405232333">9781405232333</dc:identifier>
+	<dc:subject>fiction</dc:subject>
+	<dc:description></dc:description>      
+	<dc:creator>B. Strange</dc:creator>
+	<dc:publisher>Egmont</dc:publisher>
+	<dc:rights>(c) 2007 Egmont UK Ltd</dc:rights>
+	<meta name="cover" content="image26" />
+</metadata>
+
+<manifest>
+	<item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
+	<item id="css" href="LD.css" media-type="text/css" />
+	<item id="file1" href="001-coverpage.html" media-type="application/xhtml+xml"></item>
+	<item id="file2" href="002-titlepage.html" media-type="application/xhtml+xml"></item>
+	<item id="file3" href="003-copyright.html" media-type="application/xhtml+xml"></item>
+	<item id="file4" href="004-excerpt.html" media-type="application/xhtml+xml"></item>
+	<item id="file5" href="005-castofcharacters.html" media-type="application/xhtml+xml"></item>
+	<item id="file6" href="006-map.html" media-type="application/xhtml+xml"></item>
+	<item id="file7" href="007-dearreader.html" media-type="application/xhtml+xml"></item>
+	<item id="file8" href="008-toc.html" media-type="application/xhtml+xml"></item>
+	<item id="file9" href="009-chapter1.html" media-type="application/xhtml+xml"></item>
+	<item id="file10" href="010-chapter2.html" media-type="application/xhtml+xml"></item>
+	<item id="file11" href="011-chapter3.html" media-type="application/xhtml+xml"></item>
+	<item id="file12" href="012-chapter4.html" media-type="application/xhtml+xml"></item>
+	<item id="file13" href="013-chapter5.html" media-type="application/xhtml+xml"></item>
+	<item id="file14" href="014-chapter6.html" media-type="application/xhtml+xml"></item>
+	<item id="file15" href="015-chapter7.html" media-type="application/xhtml+xml"></item>
+	<item id="file16" href="016-chapter8.html" media-type="application/xhtml+xml"></item>
+	<item id="file17" href="017-chapter9.html" media-type="application/xhtml+xml"></item>
+	<item id="file18" href="018-chapter10.html" media-type="application/xhtml+xml"></item>
+	<item id="file19" href="019-chapter11.html" media-type="application/xhtml+xml"></item>
+	<item id="file20" href="020-chapter12.html" media-type="application/xhtml+xml"></item>
+	<item id="file21" href="021-chapter13.html" media-type="application/xhtml+xml"></item>
+	<item id="file22" href="022-factfile.html" media-type="application/xhtml+xml"></item>
+	<item id="file23" href="024-acknowledgments.html" media-type="application/xhtml+xml"></item>
+	<item id="file24" href="025-abouttheauthor.html" media-type="application/xhtml+xml"></item>
+	<item id="file25" href="026-praise.html" media-type="application/xhtml+xml"></item>
+	<item id="image26" href="images/cover.jpg" media-type="image/jpeg"></item>
+	<item id="image27" href="images/image-02.jpg" media-type="image/jpeg"></item>
+	<item id="image28" href="images/image-03.jpg" media-type="image/jpeg"></item>
+	<item id="image29" href="images/image-04.jpg" media-type="image/jpeg"></item>
+	<item id="image30" href="images/image-05.jpg" media-type="image/jpeg"></item>
+	<item id="image31" href="images/image-06.jpg" media-type="image/jpeg"></item>
+	<item id="image32" href="images/image-07.jpg" media-type="image/jpeg"></item>
+	<item id="image33" href="images/image-08.jpg" media-type="image/jpeg"></item>
+	<item id="image34" href="images/image-09.jpg" media-type="image/jpeg"></item>
+	<item id="image35" href="images/image-10.jpg" media-type="image/jpeg"></item>
+	<item id="image36" href="images/image-11.jpg" media-type="image/jpeg"></item>
+	<item id="image37" href="images/image-12.jpg" media-type="image/jpeg"></item>
+	<item id="image38" href="images/image-13.jpg" media-type="image/jpeg"></item>
+	<item id="image39" href="images/image-14.jpg" media-type="image/jpeg"></item>
+	<item id="image40" href="images/image-15.jpg" media-type="image/jpeg"></item>
+	<item id="image41" href="images/image-16.jpg" media-type="image/jpeg"></item>
+	<item id="image42" href="images/image-17.jpg" media-type="image/jpeg"></item>
+	<item id="image43" href="images/image-18.jpg" media-type="image/jpeg"></item>
+	<item id="image44" href="images/image-19.jpg" media-type="image/jpeg"></item>
+	<item id="image45" href="images/image-20.jpg" media-type="image/jpeg"></item>
+	<item id="image46" href="images/image-21.jpg" media-type="image/jpeg"></item>
+	<item id="image47" href="images/image-22.jpg" media-type="image/jpeg"></item>
+	<item id="image48" href="images/image-23.jpg" media-type="image/jpeg"></item>
+	<item id="image49" href="images/image-24.jpg" media-type="image/jpeg"></item>
+	<item id="image50" href="images/image-25.jpg" media-type="image/jpeg"></item>
+	<item id="image51" href="images/image-26.jpg" media-type="image/jpeg"></item>
+	<item id="image52" href="images/image-27.jpg" media-type="image/jpeg"></item>
+	<item id="image53" href="images/image-28.jpg" media-type="image/jpeg"></item>
+	<item id="image54" href="images/image-29.jpg" media-type="image/jpeg"></item>
+	<item id="image55" href="images/image-30.jpg" media-type="image/jpeg"></item>
+	<item id="image56" href="images/image-31.jpg" media-type="image/jpeg"></item>
+	<item id="image57" href="images/image-32.jpg" media-type="image/jpeg"></item>
+	<item id="image58" href="images/image-33.jpg" media-type="image/jpeg"></item>
+	<item id="image59" href="images/image-34.jpg" media-type="image/jpeg"></item>
+	<item id="image60" href="images/image-35.jpg" media-type="image/jpeg"></item>
+	<item id="image61" href="images/image-36.jpg" media-type="image/jpeg"></item>
+	<item id="image62" href="images/image-37.jpg" media-type="image/jpeg"></item>
+	<item id="image63" href="images/image-38.jpg" media-type="image/jpeg"></item>
+	<item id="image64" href="images/logo.jpg" media-type="image/jpeg"></item>
+</manifest>
+
+<spine toc="ncx">
+	<itemref idref="file1"/>
+	<itemref idref="file2"/>
+	<itemref idref="file3"/>
+	<itemref idref="file4"/>
+	<itemref idref="file5"/>
+	<itemref idref="file6"/>
+	<itemref idref="file7"/>
+	<itemref idref="file8"/>
+	<itemref idref="file9"/>
+	<itemref idref="file10"/>
+	<itemref idref="file11"/>
+	<itemref idref="file12"/>
+	<itemref idref="file13"/>
+	<itemref idref="file14"/>
+	<itemref idref="file15"/>
+	<itemref idref="file16"/>
+	<itemref idref="file17"/>
+	<itemref idref="file18"/>
+	<itemref idref="file19"/>
+	<itemref idref="file20"/>
+	<itemref idref="file21"/>
+	<itemref idref="file22"/>
+	<itemref idref="file23"/>
+	<itemref idref="file24"/>
+	<itemref idref="file25"/>
+</spine>
+
+<guide>
+	<reference type="title-page" title="Title Page" href="002-titlepage.html" />
+	<reference type="toc" title="Table of Contents" href="008-toc.html" />
+	<reference type="copyright" title="Copyright" href="003-copyright.html" />
+</guide>
+
+
+</package>

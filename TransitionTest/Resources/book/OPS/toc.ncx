@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="en">
+
+	<head>
+		<meta name="dtb:uid" content="9781405232333"/>
+		<meta name="dtb:depth" content="1"/>
+		<meta name="dtb:totalPageCount" content="0"/>
+		<meta name="dtb:maxPageNumber" content="0"/>
+	</head>
+
+	<docTitle>
+		<text>Terror in Cubicle Four</text>
+	</docTitle>
+
+	<navMap>
+
+	<navPoint id="navPoint-1" playOrder="1">
+		<navLabel>
+			<text>Cover Page</text>
+		</navLabel>
+		<content src="001-coverpage.html"/>
+	</navPoint>
+	<navPoint id="navPoint-2" playOrder="2">
+		<navLabel>
+			<text>Title Page</text>
+		</navLabel>
+		<content src="002-titlepage.html"/>
+	</navPoint>
+	<navPoint id="navPoint-3" playOrder="3">
+		<navLabel>
+			<text>Copyright</text>
+		</navLabel>
+		<content src="003-copyright.html"/>
+	</navPoint>
+	<navPoint id="navPoint-4" playOrder="4">
+		<navLabel>
+			<text>Excerpt</text>
+		</navLabel>
+		<content src="004-excerpt.html"/>
+	</navPoint>
+	<navPoint id="navPoint-5" playOrder="5">
+		<navLabel>
+			<text>Cast of Characters</text>
+		</navLabel>
+		<content src="005-castofcharacters.html"/>
+	</navPoint>
+	<navPoint id="navPoint-6" playOrder="6">
+		<navLabel>
+			<text>Map</text>
+		</navLabel>
+		<content src="006-map.html"/>
+	</navPoint>
+	<navPoint id="navPoint-7" playOrder="7">
+		<navLabel>
+			<text>Dear Reader</text>
+		</navLabel>
+		<content src="007-dearreader.html"/>
+	</navPoint>
+	<navPoint id="navPoint-8" playOrder="8">
+		<navLabel>
+			<text>Table of Contents</text>
+		</navLabel>
+		<content src="008-toc.html"/>
+	</navPoint>
+	<navPoint id="navPoint-9" playOrder="9">
+		<navLabel>
+			<text>Chapter 1: Feeling flushed</text>
+		</navLabel>
+		<content src="009-chapter1.html"/>
+	</navPoint>
+	<navPoint id="navPoint-10" playOrder="10">
+		<navLabel>
+			<text>Chapter 2: A big hand</text>
+		</navLabel>
+		<content src="010-chapter2.html"/>
+	</navPoint>
+	<navPoint id="navPoint-11" playOrder="11">
+		<navLabel>
+			<text>Chapter 3: Going underground</text>
+		</navLabel>
+		<content src="011-chapter3.html"/>
+	</navPoint>
+	<navPoint id="navPoint-12" playOrder="12">
+		<navLabel>
+			<text>Chapter 4: Ghoul's out</text>
+		</navLabel>
+		<content src="012-chapter4.html"/>
+	</navPoint>
+	<navPoint id="navPoint-13" playOrder="13">
+		<navLabel>
+			<text>Chapter 5: Best cellar</text>
+		</navLabel>
+		<content src="013-chapter5.html"/>
+	</navPoint>
+	<navPoint id="navPoint-14" playOrder="14">
+		<navLabel>
+			<text>Chapter 6: The blueprint</text>
+		</navLabel>
+		<content src="014-chapter6.html"/>
+	</navPoint>
+	<navPoint id="navPoint-15" playOrder="15">
+		<navLabel>
+			<text>Chapter 7: The whole truth?</text>
+		</navLabel>
+		<content src="015-chapter7.html"/>
+	</navPoint>
+	<navPoint id="navPoint-16" playOrder="16">
+		<navLabel>
+			<text>Chapter 8: Rat fans</text>
+		</navLabel>
+		<content src="016-chapter8.html"/>
+	</navPoint>
+	<navPoint id="navPoint-17" playOrder="17">
+		<navLabel>
+			<text>Chapter 9: Wharpley on the warpath</text>
+		</navLabel>
+		<content src="017-chapter9.html"/>
+	</navPoint>
+	<navPoint id="navPoint-18" playOrder="18">
+		<navLabel>
+			<text>Chapter 10: Worse</text>
+		</navLabel>
+		<content src="018-chapter10.html"/>
+	</navPoint>
+	<navPoint id="navPoint-19" playOrder="19">
+		<navLabel>
+			<text>Chapter 11: A tents situation</text>
+		</navLabel>
+		<content src="019-chapter11.html"/>
+	</navPoint>
+	<navPoint id="navPoint-20" playOrder="20">
+		<navLabel>
+			<text>Chapter 12: Bully baiting</text>
+		</navLabel>
+		<content src="020-chapter12.html"/>
+	</navPoint>
+	<navPoint id="navPoint-21" playOrder="21">
+		<navLabel>
+			<text>Chapter 13: Sky high</text>
+		</navLabel>
+		<content src="021-chapter13.html"/>
+	</navPoint>
+	<navPoint id="navPoint-22" playOrder="22">
+		<navLabel>
+			<text>Fact file</text>
+		</navLabel>
+		<content src="022-factfile.html"/>
+	</navPoint>
+	<navPoint id="navPoint-23" playOrder="23">
+		<navLabel>
+			<text>Acknowledgments</text>
+		</navLabel>
+		<content src="024-acknowledgments.html"/>
+	</navPoint>
+	<navPoint id="navPoint-24" playOrder="24">
+		<navLabel>
+			<text>About the Black Death</text>
+		</navLabel>
+		<content src="025-abouttheauthor.html"/>
+	</navPoint>
+	<navPoint id="navPoint-25" playOrder="25">
+		<navLabel>
+			<text>Praise</text>
+		</navLabel>
+		<content src="026-praise.html"/>
+	</navPoint>
+	</navMap>
+
+</ncx>

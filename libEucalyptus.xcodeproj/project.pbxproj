@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D034F9B10C2CD820085778B /* TransitionTestRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9310C2CD820085778B /* TransitionTestRootViewController.m */; };
+		7D034F9C10C2CD820085778B /* TransitionTestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9510C2CD820085778B /* TransitionTestAppDelegate.m */; };
+		7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9710C2CD820085778B /* TransitionTestMain.m */; };
+		7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */; };
+		7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */; };
 		7D516E02102872AC005F3C46 /* EucBookViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E00102872AC005F3C46 /* EucBookViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E03102872AC005F3C46 /* EucBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E01102872AC005F3C46 /* EucBookViewController.m */; };
 		7D516E0D102872DB005F3C46 /* EucPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E05102872DB005F3C46 /* EucPageView.m */; };
@@ -19,8 +24,6 @@
 		7D516E14102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E0C102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m */; };
 		7D516E1D10287311005F3C46 /* EAGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E1910287311005F3C46 /* EAGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E1E10287311005F3C46 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E1A10287311005F3C46 /* EAGLView.m */; };
-		7D516E1F10287311005F3C46 /* TransitionView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E1B10287311005F3C46 /* TransitionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D516E2010287311005F3C46 /* TransitionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E1C10287311005F3C46 /* TransitionView.m */; };
 		7D516E251028735A005F3C46 /* THLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E231028735A005F3C46 /* THLog.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E261028735A005F3C46 /* THLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E241028735A005F3C46 /* THLog.m */; };
 		7D516E3C102873BE005F3C46 /* THUIViewThreadSafeDrawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -174,6 +177,11 @@
 		7D5174041028BA14005F3C46 /* xmltok_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173B21028BA14005F3C46 /* xmltok_impl.h */; };
 		7D5174051028BA14005F3C46 /* xmltok_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173B31028BA14005F3C46 /* xmltok_ns.c */; };
 		7D51741D1028BA14005F3C46 /* expat_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173DE1028BA14005F3C46 /* expat_config.h */; };
+		7D5D69C410C2D33200BBF826 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libEucalyptus.a */; };
+		7D5D69C510C2D33200BBF826 /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171881028B4A4005F3C46 /* libEucalyptusEPub.a */; };
+		7D5D69C610C2D33200BBF826 /* libantlr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171D91028B6B9005F3C46 /* libantlr.a */; };
+		7D5D69C710C2D33200BBF826 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
+		7D5D69C810C2D33200BBF826 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
 		7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D658C6D103DEAD900EB5003 /* THImageFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D658C6E103DEAD900EB5003 /* THImageFactory.m */; };
 		7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAC841028DEAD006289E6 /* THScalableSlider.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -192,6 +200,40 @@
 		7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */; };
 		7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6F767910AC612D0041482F /* css21.g in Sources */ = {isa = PBXBuildFile; fileRef = 7D51718E1028B553005F3C46 /* css21.g */; settings = {COMPILER_FLAGS = "-Wno-unused"; }; };
+		7DD48DEF10C2E1320001203D /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48D9C10C2E1320001203D /* book */; };
+		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
+		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
+		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
+		7DD48E6110C2E46C0001203D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E6010C2E46C0001203D /* QuartzCore.framework */; };
+		7DD48E7C10C2E5780001203D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E7B10C2E5780001203D /* AudioToolbox.framework */; };
+		7DD48ED310C2E61E0001203D /* animatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */; };
+		7DD48ED410C2E61E0001203D /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EB910C2E61E0001203D /* iPodLikeSliderBlueLeftCap.png */; };
+		7DD48ED510C2E61E0001203D /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EBA10C2E61E0001203D /* iPodLikeSliderKnob-Small.png */; };
+		7DD48ED610C2E61E0001203D /* iPodLikeSliderKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EBB10C2E61E0001203D /* iPodLikeSliderKnob.png */; };
+		7DD48ED710C2E61E0001203D /* iPodLikeSliderWhiteRightCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EBC10C2E61E0001203D /* iPodLikeSliderWhiteRightCap.png */; };
+		7DD48ED810C2E61E0001203D /* PurchaseButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EBD10C2E61E0001203D /* PurchaseButton.png */; };
+		7DD48ED910C2E61E0001203D /* PurchaseButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EBE10C2E61E0001203D /* PurchaseButtonPressed.png */; };
+		7DD48EDA10C2E61E0001203D /* PurchaseConfirmButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EBF10C2E61E0001203D /* PurchaseConfirmButton.png */; };
+		7DD48EDB10C2E61E0001203D /* PurchaseConfirmButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC010C2E61E0001203D /* PurchaseConfirmButtonPressed.png */; };
+		7DD48EDC10C2E61E0001203D /* rightButtonBlackOpaque.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC110C2E61E0001203D /* rightButtonBlackOpaque.png */; };
+		7DD48EDD10C2E61E0001203D /* rightButtonBlackTranslucent.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC210C2E61E0001203D /* rightButtonBlackTranslucent.png */; };
+		7DD48EDE10C2E61E0001203D /* rightButtonBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC310C2E61E0001203D /* rightButtonBlue.png */; };
+		7DD48EDF10C2E61E0001203D /* BookButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC410C2E61E0001203D /* BookButton.png */; };
+		7DD48EE010C2E61E0001203D /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC510C2E61E0001203D /* BookEdge.pvrtc */; };
+		7DD48EE110C2E61E0001203D /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC610C2E61E0001203D /* BookPaper.png */; };
+		7DD48EE210C2E61E0001203D /* BookPaperWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC710C2E61E0001203D /* BookPaperWhite.png */; };
+		7DD48EE310C2E61E0001203D /* ContentsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC810C2E61E0001203D /* ContentsButton.png */; };
+		7DD48EE410C2E61E0001203D /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC910C2E61E0001203D /* EPubDefault.css */; };
+		7DD48EE510C2E61E0001203D /* en in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECB10C2E61E0001203D /* en */; };
+		7DD48EE610C2E61E0001203D /* LinuxLibertine-Bold.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */; };
+		7DD48EE710C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */; };
+		7DD48EE810C2E61E0001203D /* LinuxLibertine-Italic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */; };
+		7DD48EE910C2E61E0001203D /* LinuxLibertine.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECF10C2E61E0001203D /* LinuxLibertine.thfont */; };
+		7DD48EEA10C2E61E0001203D /* UIBarButtonSystemItemFastForward.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */; };
+		7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */; };
+		7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */; };
+		7DD48EFD10C2E69E0001203D /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
+		7DD48EFE10C2E6A50001203D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		7DE587701070D08600441B2E /* EucFilteredBookPageIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */; };
 		7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */; };
 		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -246,9 +288,25 @@
 			remoteGlobalIDString = 7D5171CB1028B6B9005F3C46;
 			remoteInfo = libantlr;
 		};
+		7D5D69B210C2D21C00BBF826 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D;
+			remoteInfo = libEucalyptus;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D034F8910C2CCBE0085778B /* TransitionTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TransitionTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D034F8B10C2CCBF0085778B /* TransitionTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TransitionTest-Info.plist"; sourceTree = "<group>"; };
+		7D034F9210C2CD820085778B /* TransitionTestRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransitionTestRootViewController.h; sourceTree = "<group>"; };
+		7D034F9310C2CD820085778B /* TransitionTestRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionTestRootViewController.m; sourceTree = "<group>"; };
+		7D034F9410C2CD820085778B /* TransitionTestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransitionTestAppDelegate.h; sourceTree = "<group>"; };
+		7D034F9510C2CD820085778B /* TransitionTestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionTestAppDelegate.m; sourceTree = "<group>"; };
+		7D034F9710C2CD820085778B /* TransitionTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionTestMain.m; sourceTree = "<group>"; };
+		7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestMainWindow.xib; sourceTree = "<group>"; };
+		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
 		7D516E00102872AC005F3C46 /* EucBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookViewController.h; sourceTree = "<group>"; };
 		7D516E01102872AC005F3C46 /* EucBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookViewController.m; sourceTree = "<group>"; };
 		7D516E05102872DB005F3C46 /* EucPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageView.m; sourceTree = "<group>"; };
@@ -261,8 +319,6 @@
 		7D516E0C102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookContentsTableViewCellBackground.m; sourceTree = "<group>"; };
 		7D516E1910287311005F3C46 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
 		7D516E1A10287311005F3C46 /* EAGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EAGLView.m; sourceTree = "<group>"; };
-		7D516E1B10287311005F3C46 /* TransitionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransitionView.h; sourceTree = "<group>"; };
-		7D516E1C10287311005F3C46 /* TransitionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionView.m; sourceTree = "<group>"; };
 		7D516E231028735A005F3C46 /* THLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLog.h; sourceTree = "<group>"; };
 		7D516E241028735A005F3C46 /* THLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLog.m; sourceTree = "<group>"; };
 		7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THUIViewThreadSafeDrawing.h; sourceTree = "<group>"; };
@@ -480,6 +536,39 @@
 		7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLocalBookReference.h; sourceTree = "<group>"; };
 		7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSFileManagerAdditions.m; sourceTree = "<group>"; };
 		7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSFileManagerAdditions.h; sourceTree = "<group>"; };
+		7DD48D9C10C2E1320001203D /* book */ = {isa = PBXFileReference; lastKnownFileType = folder; path = book; sourceTree = "<group>"; };
+		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		7DD48E5410C2E42C0001203D /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin9/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
+		7DD48E5810C2E44F0001203D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		7DD48E6010C2E46C0001203D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		7DD48E7B10C2E5780001203D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = animatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
+		7DD48EB910C2E61E0001203D /* iPodLikeSliderBlueLeftCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderBlueLeftCap.png; sourceTree = "<group>"; };
+		7DD48EBA10C2E61E0001203D /* iPodLikeSliderKnob-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small.png"; sourceTree = "<group>"; };
+		7DD48EBB10C2E61E0001203D /* iPodLikeSliderKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderKnob.png; sourceTree = "<group>"; };
+		7DD48EBC10C2E61E0001203D /* iPodLikeSliderWhiteRightCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderWhiteRightCap.png; sourceTree = "<group>"; };
+		7DD48EBD10C2E61E0001203D /* PurchaseButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseButton.png; sourceTree = "<group>"; };
+		7DD48EBE10C2E61E0001203D /* PurchaseButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseButtonPressed.png; sourceTree = "<group>"; };
+		7DD48EBF10C2E61E0001203D /* PurchaseConfirmButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseConfirmButton.png; sourceTree = "<group>"; };
+		7DD48EC010C2E61E0001203D /* PurchaseConfirmButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseConfirmButtonPressed.png; sourceTree = "<group>"; };
+		7DD48EC110C2E61E0001203D /* rightButtonBlackOpaque.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlackOpaque.png; sourceTree = "<group>"; };
+		7DD48EC210C2E61E0001203D /* rightButtonBlackTranslucent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlackTranslucent.png; sourceTree = "<group>"; };
+		7DD48EC310C2E61E0001203D /* rightButtonBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlue.png; sourceTree = "<group>"; };
+		7DD48EC410C2E61E0001203D /* BookButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookButton.png; sourceTree = "<group>"; };
+		7DD48EC510C2E61E0001203D /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
+		7DD48EC610C2E61E0001203D /* BookPaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaper.png; sourceTree = "<group>"; };
+		7DD48EC710C2E61E0001203D /* BookPaperWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaperWhite.png; sourceTree = "<group>"; };
+		7DD48EC810C2E61E0001203D /* ContentsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ContentsButton.png; sourceTree = "<group>"; };
+		7DD48EC910C2E61E0001203D /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
+		7DD48ECB10C2E61E0001203D /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = en; sourceTree = "<group>"; };
+		7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.thfont"; sourceTree = "<group>"; };
+		7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.thfont"; sourceTree = "<group>"; };
+		7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.thfont"; sourceTree = "<group>"; };
+		7DD48ECF10C2E61E0001203D /* LinuxLibertine.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.thfont; sourceTree = "<group>"; };
+		7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemFastForward.png; sourceTree = "<group>"; };
+		7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
+		7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
 		7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucFilteredBookPageIndex.h; sourceTree = "<group>"; };
 		7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucFilteredBookPageIndex.m; sourceTree = "<group>"; };
 		7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTextFittingLabel.h; sourceTree = "<group>"; };
@@ -490,6 +579,25 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7D034F8710C2CCBE0085778B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7DD48EFE10C2E6A50001203D /* Foundation.framework in Frameworks */,
+				7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */,
+				7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */,
+				7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */,
+				7DD48E6110C2E46C0001203D /* QuartzCore.framework in Frameworks */,
+				7DD48E7C10C2E5780001203D /* AudioToolbox.framework in Frameworks */,
+				7DD48EFD10C2E69E0001203D /* libstdc++.dylib in Frameworks */,
+				7D5D69C410C2D33200BBF826 /* libEucalyptus.a in Frameworks */,
+				7D5D69C510C2D33200BBF826 /* libEucalyptusEPub.a in Frameworks */,
+				7D5D69C610C2D33200BBF826 /* libantlr.a in Frameworks */,
+				7D5D69C710C2D33200BBF826 /* libexpat.a in Frameworks */,
+				7D5D69C810C2D33200BBF826 /* libhyphenate.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC07C0554694100DB518D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -509,6 +617,7 @@
 				7D5171881028B4A4005F3C46 /* libEucalyptusEPub.a */,
 				7D5171CA1028B6AE005F3C46 /* libexpat.a */,
 				7D5171D91028B6B9005F3C46 /* libantlr.a */,
+				7D034F8910C2CCBE0085778B /* TransitionTest.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -522,6 +631,8 @@
 				7D5171751028B470005F3C46 /* ePub */,
 				7D516E1710287300005F3C46 /* ThirdParty */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
+				7D53F30910C2CBD70042215C /* TransitionTest */,
+				7DD48EB610C2E61E0001203D /* Resources */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
 			);
@@ -532,6 +643,12 @@
 			isa = PBXGroup;
 			children = (
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+				7DD48E5010C2E41C0001203D /* UIKit.framework */,
+				7DD48E5810C2E44F0001203D /* OpenGLES.framework */,
+				7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */,
+				7DD48E6010C2E46C0001203D /* QuartzCore.framework */,
+				7DD48E7B10C2E5780001203D /* AudioToolbox.framework */,
+				7DD48E5410C2E42C0001203D /* libstdc++.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -542,6 +659,35 @@
 				AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */,
 			);
 			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		7D034F9110C2CD820085778B /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				7D034F9210C2CD820085778B /* TransitionTestRootViewController.h */,
+				7D034F9310C2CD820085778B /* TransitionTestRootViewController.m */,
+				7D034F9410C2CD820085778B /* TransitionTestAppDelegate.h */,
+				7D034F9510C2CD820085778B /* TransitionTestAppDelegate.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		7D034F9610C2CD820085778B /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				7D034F9710C2CD820085778B /* TransitionTestMain.m */,
+			);
+			path = "Other Sources";
+			sourceTree = "<group>";
+		};
+		7D034F9810C2CD820085778B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7DD48D9C10C2E1320001203D /* book */,
+				7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */,
+				7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		7D516DFF102872A5005F3C46 /* BookView */ = {
@@ -593,8 +739,6 @@
 			children = (
 				7D516E1910287311005F3C46 /* EAGLView.h */,
 				7D516E1A10287311005F3C46 /* EAGLView.m */,
-				7D516E1B10287311005F3C46 /* TransitionView.h */,
-				7D516E1C10287311005F3C46 /* TransitionView.m */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -946,6 +1090,66 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
+		7D53F30910C2CBD70042215C /* TransitionTest */ = {
+			isa = PBXGroup;
+			children = (
+				7D034F9110C2CD820085778B /* Classes */,
+				7D034F9610C2CD820085778B /* Other Sources */,
+				7D034F9810C2CD820085778B /* Resources */,
+				7D034F8B10C2CCBF0085778B /* TransitionTest-Info.plist */,
+			);
+			path = TransitionTest;
+			sourceTree = "<group>";
+		};
+		7DD48EB610C2E61E0001203D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */,
+				7DD48EB810C2E61E0001203D /* Apple */,
+				7DD48EC410C2E61E0001203D /* BookButton.png */,
+				7DD48EC510C2E61E0001203D /* BookEdge.pvrtc */,
+				7DD48EC610C2E61E0001203D /* BookPaper.png */,
+				7DD48EC710C2E61E0001203D /* BookPaperWhite.png */,
+				7DD48EC810C2E61E0001203D /* ContentsButton.png */,
+				7DD48EC910C2E61E0001203D /* EPubDefault.css */,
+				7DD48ECA10C2E61E0001203D /* HyphenationPatterns */,
+				7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */,
+				7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */,
+				7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */,
+				7DD48ECF10C2E61E0001203D /* LinuxLibertine.thfont */,
+				7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */,
+				7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */,
+				7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7DD48EB810C2E61E0001203D /* Apple */ = {
+			isa = PBXGroup;
+			children = (
+				7DD48EB910C2E61E0001203D /* iPodLikeSliderBlueLeftCap.png */,
+				7DD48EBA10C2E61E0001203D /* iPodLikeSliderKnob-Small.png */,
+				7DD48EBB10C2E61E0001203D /* iPodLikeSliderKnob.png */,
+				7DD48EBC10C2E61E0001203D /* iPodLikeSliderWhiteRightCap.png */,
+				7DD48EBD10C2E61E0001203D /* PurchaseButton.png */,
+				7DD48EBE10C2E61E0001203D /* PurchaseButtonPressed.png */,
+				7DD48EBF10C2E61E0001203D /* PurchaseConfirmButton.png */,
+				7DD48EC010C2E61E0001203D /* PurchaseConfirmButtonPressed.png */,
+				7DD48EC110C2E61E0001203D /* rightButtonBlackOpaque.png */,
+				7DD48EC210C2E61E0001203D /* rightButtonBlackTranslucent.png */,
+				7DD48EC310C2E61E0001203D /* rightButtonBlue.png */,
+			);
+			path = Apple;
+			sourceTree = "<group>";
+		};
+		7DD48ECA10C2E61E0001203D /* HyphenationPatterns */ = {
+			isa = PBXGroup;
+			children = (
+				7DD48ECB10C2E61E0001203D /* en */,
+			);
+			path = HyphenationPatterns;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1044,7 +1248,6 @@
 				7D516E11102872DB005F3C46 /* EucBookContentsTableViewController.h in Headers */,
 				7D516E13102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h in Headers */,
 				7D516E1D10287311005F3C46 /* EAGLView.h in Headers */,
-				7D516E1F10287311005F3C46 /* TransitionView.h in Headers */,
 				7D516E251028735A005F3C46 /* THLog.h in Headers */,
 				7D516E3C102873BE005F3C46 /* THUIViewThreadSafeDrawing.h in Headers */,
 				7D516E4510287405005F3C46 /* EucBookTextStyle.h in Headers */,
@@ -1092,6 +1295,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		7D034F8810C2CCBE0085778B /* TransitionTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D034F9010C2CCBF0085778B /* Build configuration list for PBXNativeTarget "TransitionTest" */;
+			buildPhases = (
+				7D034F8510C2CCBE0085778B /* Resources */,
+				7D034F8610C2CCBE0085778B /* Sources */,
+				7D034F8710C2CCBE0085778B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7D5D69B310C2D21C00BBF826 /* PBXTargetDependency */,
+			);
+			name = TransitionTest;
+			productName = TransitionTest;
+			productReference = 7D034F8910C2CCBE0085778B /* TransitionTest.app */;
+			productType = "com.apple.product-type.application";
+		};
 		7D5170771028AD1B005F3C46 /* libhyphenate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7D5170CB1028AD1B005F3C46 /* Build configuration list for PBXNativeTarget "libhyphenate" */;
@@ -1196,11 +1417,61 @@
 				7D51717A1028B4A4005F3C46 /* libEucalyptusEPub */,
 				7D5171BC1028B6AE005F3C46 /* libexpat */,
 				7D5171CB1028B6B9005F3C46 /* libantlr */,
+				7D034F8810C2CCBE0085778B /* TransitionTest */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		7D034F8510C2CCBE0085778B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */,
+				7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */,
+				7DD48DEF10C2E1320001203D /* book in Resources */,
+				7DD48ED310C2E61E0001203D /* animatedBookTurnVertices.vertexData in Resources */,
+				7DD48ED410C2E61E0001203D /* iPodLikeSliderBlueLeftCap.png in Resources */,
+				7DD48ED510C2E61E0001203D /* iPodLikeSliderKnob-Small.png in Resources */,
+				7DD48ED610C2E61E0001203D /* iPodLikeSliderKnob.png in Resources */,
+				7DD48ED710C2E61E0001203D /* iPodLikeSliderWhiteRightCap.png in Resources */,
+				7DD48ED810C2E61E0001203D /* PurchaseButton.png in Resources */,
+				7DD48ED910C2E61E0001203D /* PurchaseButtonPressed.png in Resources */,
+				7DD48EDA10C2E61E0001203D /* PurchaseConfirmButton.png in Resources */,
+				7DD48EDB10C2E61E0001203D /* PurchaseConfirmButtonPressed.png in Resources */,
+				7DD48EDC10C2E61E0001203D /* rightButtonBlackOpaque.png in Resources */,
+				7DD48EDD10C2E61E0001203D /* rightButtonBlackTranslucent.png in Resources */,
+				7DD48EDE10C2E61E0001203D /* rightButtonBlue.png in Resources */,
+				7DD48EDF10C2E61E0001203D /* BookButton.png in Resources */,
+				7DD48EE010C2E61E0001203D /* BookEdge.pvrtc in Resources */,
+				7DD48EE110C2E61E0001203D /* BookPaper.png in Resources */,
+				7DD48EE210C2E61E0001203D /* BookPaperWhite.png in Resources */,
+				7DD48EE310C2E61E0001203D /* ContentsButton.png in Resources */,
+				7DD48EE410C2E61E0001203D /* EPubDefault.css in Resources */,
+				7DD48EE510C2E61E0001203D /* en in Resources */,
+				7DD48EE610C2E61E0001203D /* LinuxLibertine-Bold.thfont in Resources */,
+				7DD48EE710C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont in Resources */,
+				7DD48EE810C2E61E0001203D /* LinuxLibertine-Italic.thfont in Resources */,
+				7DD48EE910C2E61E0001203D /* LinuxLibertine.thfont in Resources */,
+				7DD48EEA10C2E61E0001203D /* UIBarButtonSystemItemFastForward.png in Resources */,
+				7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */,
+				7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		7D034F8610C2CCBE0085778B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D034F9B10C2CD820085778B /* TransitionTestRootViewController.m in Sources */,
+				7D034F9C10C2CD820085778B /* TransitionTestAppDelegate.m in Sources */,
+				7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7D5170A21028AD1B005F3C46 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1280,7 +1551,6 @@
 				7D516E12102872DB005F3C46 /* EucBookContentsTableViewController.m in Sources */,
 				7D516E14102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m in Sources */,
 				7D516E1E10287311005F3C46 /* EAGLView.m in Sources */,
-				7D516E2010287311005F3C46 /* TransitionView.m in Sources */,
 				7D516E261028735A005F3C46 /* THLog.m in Sources */,
 				7D516E3D102873BE005F3C46 /* THUIViewThreadSafeDrawing.m in Sources */,
 				7D516E4610287405005F3C46 /* EucBookTextStyle.m in Sources */,
@@ -1343,6 +1613,11 @@
 			isa = PBXTargetDependency;
 			target = 7D5171CB1028B6B9005F3C46 /* libantlr */;
 			targetProxy = 7D5171DF1028B6FD005F3C46 /* PBXContainerItemProxy */;
+		};
+		7D5D69B310C2D21C00BBF826 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC07D0554694100DB518D /* libEucalyptus */;
+			targetProxy = 7D5D69B210C2D21C00BBF826 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1412,6 +1687,109 @@
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Release;
+		};
+		7D034F8C10C2CCBF0085778B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
+				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin9/4.2.1\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = TransitionTest;
+				SDKROOT = iphoneos3.1.2;
+			};
+			name = Debug;
+		};
+		7D034F8D10C2CCBF0085778B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
+				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin9/4.2.1\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = TransitionTest;
+				SDKROOT = iphoneos3.1.2;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		7D034F8E10C2CCBF0085778B /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
+				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin9/4.2.1\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = TransitionTest;
+				SDKROOT = iphoneos3.1.2;
+			};
+			name = Beta;
+		};
+		7D034F8F10C2CCBF0085778B /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
+				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin9/4.2.1\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = TransitionTest;
+				SDKROOT = iphoneos3.1.2;
+			};
+			name = AppStore;
 		};
 		7D5170CC1028AD1B005F3C46 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1772,6 +2150,17 @@
 				1DEB922408733DC00010E9CD /* Release */,
 				7DA921F410C1861700F18134 /* Beta */,
 				7DA921FA10C1861800F18134 /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D034F9010C2CCBF0085778B /* Build configuration list for PBXNativeTarget "TransitionTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D034F8C10C2CCBF0085778B /* Debug */,
+				7D034F8D10C2CCBF0085778B /* Release */,
+				7D034F8E10C2CCBF0085778B /* Beta */,
+				7D034F8F10C2CCBF0085778B /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
