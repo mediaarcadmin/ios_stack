@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'LibCSSTest' target in the 'LibCSSTest' project.
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
