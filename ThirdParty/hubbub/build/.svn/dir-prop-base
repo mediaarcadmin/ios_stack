@@ -1,0 +1,12 @@
+K 13
+svn:externals
+V 148
+makefiles svn://svn.netsurf-browser.org/trunk/tools/buildsystem/makefiles
+testtools svn://svn.netsurf-browser.org/trunk/tools/buildsystem/testtools
+
+K 10
+svn:ignore
+V 1
+
+
+END
