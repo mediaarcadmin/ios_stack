@@ -62,7 +62,7 @@
 				32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* LibCSSTest.m */,
 			);
-			name = Source;
+			path = Source;
 			sourceTree = "<group>";
 		};
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
@@ -86,7 +86,7 @@
 			children = (
 				C6859EA3029092ED04C91782 /* LibCSSTest.1 */,
 			);
-			name = Documentation;
+			path = Documentation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
