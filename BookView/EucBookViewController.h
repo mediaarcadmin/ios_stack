@@ -22,8 +22,8 @@ typedef enum {
 
 @interface EucBookViewController : UIViewController <EucPageTurningViewDelegate, EucPageViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, BookContentsTableViewControllerDelegate> {
     id<EucBookViewControllerDelegate> _delegate;
-    
-    BOOL _showToolbarsOnFirstAppearance;
+    id<EucBook> _book;
+
     BOOL _firstAppearance;
     
     EucPageTurningView *_pageTurningView;
@@ -40,7 +40,6 @@ typedef enum {
     
     UIView *_pageSliderTrackingInfoView;
     
-    id<EucBook> _book;
     
     id<EucPageLayoutController> _pageLayoutController;
         
@@ -52,6 +51,7 @@ typedef enum {
     CGFloat _dimQuotient;
     BOOL _undimAfterAppearance;
     BOOL _appearAtCoverThenOpen;
+    BOOL _toolbarsVisibleAfterAppearance;
     
     NSInteger _directionalJumpCount;
     NSInteger _savedJumpPage;
@@ -69,17 +69,39 @@ typedef enum {
     CGFloat _scaleCurrentPointSize;
     
     BOOL _bookWasDeleted;
+    
+    UIBarStyle _returnToNavigationBarStyle;
+    UIStatusBarStyle _returnToStatusBarStyle;
+    BOOL _returnToNavigationBarHidden;
+    BOOL _returnToStatusBarHidden;
+    
+    BOOL _overrideReturnToNavigationBarStyle;
+    BOOL _overrideReturnToStatusBarStyle;
+    BOOL _overrideReturnToNavigationBarHidden;
+    BOOL _overrideReturnToStatusBarHidden;
 }
-@property (nonatomic, assign) id<EucBookViewControllerDelegate> delegate;
+
+// A simple 'init' is the designated initializer.
+- (id)init;
+
 @property (nonatomic, retain) EucBookReference<EucBook> * book;
+
+@property (nonatomic, assign) BOOL toolbarsVisibleAfterAppearance;
+@property (nonatomic, assign) BOOL appearAtCoverThenOpen;
+
+@property (nonatomic, assign) CGFloat dimQuotient;
+@property (nonatomic, assign) BOOL undimAfterAppearance;
+
+@property (nonatomic, assign) id<EucBookViewControllerDelegate> delegate;
+
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, readonly) NSString *currentSectionUuid;
 @property (nonatomic, readonly) UIImage *currentPageImage;
-@property (nonatomic, assign) CGFloat dimQuotient;
-@property (nonatomic, assign) BOOL undimAfterAppearance;
-@property (nonatomic, assign) BOOL appearAtCoverThenOpen;
 
-- (id)initWithToolbars:(BOOL)withToolbars;
+@property (nonatomic, assign) UIBarStyle returnToNavigationBarStyle;
+@property (nonatomic, assign) UIStatusBarStyle returnToStatusBarStyle;
+@property (nonatomic, assign) BOOL returnToNavigationBarHidden;
+@property (nonatomic, assign) BOOL returnToStatusBarHidden;
 
 @end
 

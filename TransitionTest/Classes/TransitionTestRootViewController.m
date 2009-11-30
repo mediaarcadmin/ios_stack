@@ -72,7 +72,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    return 3;
 }
 
 
@@ -86,9 +86,23 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
-	// Configure the cell.
-    cell.textLabel.text = @"Book!";
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    NSUInteger row = indexPath.row;
+    switch(row) {
+        case 0:
+            cell.textLabel.text = @"Book with nav bar";
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;
+        case 1:	
+            cell.textLabel.text = @"Book no nav bar";
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;
+        case 2:
+            cell.textLabel.text = @"Toggle nav bar";
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;            
+        default:
+            break;
+    }
     
     return cell;
 }
@@ -98,13 +112,21 @@
 
 // Override to support row selection in the table view.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[[NSBundle mainBundle] pathForResource:@"book" ofType:nil]];
-    EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithToolbars:YES];
-    bookViewController.book = book;
-    [book release];
-    
-    [self.navigationController pushViewController:bookViewController animated:YES];
-    [bookViewController release];
+    NSUInteger row = indexPath.row;
+    if(row < 2) {
+        EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[[NSBundle mainBundle] pathForResource:@"book" ofType:nil]];
+        EucBookViewController *bookViewController = [[EucBookViewController alloc] init];
+        bookViewController.book = book;
+        [book release];
+        
+        bookViewController.toolbarsVisibleAfterAppearance = (row == 0);
+        
+        [self.navigationController pushViewController:bookViewController animated:YES];
+        [bookViewController release];
+    } else {
+        [self.navigationController setNavigationBarHidden:!self.navigationController.isNavigationBarHidden
+                                                 animated:YES];
+    }
 }
 
 

@@ -234,6 +234,7 @@
 		7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */; };
 		7DD48EFD10C2E69E0001203D /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DD48EFE10C2E6A50001203D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */; };
 		7DE587701070D08600441B2E /* EucFilteredBookPageIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */; };
 		7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */; };
 		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -569,6 +570,7 @@
 		7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemFastForward.png; sourceTree = "<group>"; };
 		7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
 		7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
+		7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = reverseAnimatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
 		7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucFilteredBookPageIndex.h; sourceTree = "<group>"; };
 		7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucFilteredBookPageIndex.m; sourceTree = "<group>"; };
 		7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTextFittingLabel.h; sourceTree = "<group>"; };
@@ -724,8 +726,8 @@
 			isa = PBXGroup;
 			children = (
 				7D5171AE1028B59C005F3C46 /* antlr-3.2.jar */,
-				7D51700C10287987005F3C46 /* VCTitleCase */,
 				7D516E1810287300005F3C46 /* Apple */,
+				7D51700C10287987005F3C46 /* VCTitleCase */,
 				7D5170D11028ADD6005F3C46 /* libhyphenate */,
 				7D51734D1028BA13005F3C46 /* expat */,
 				7D5173DE1028BA14005F3C46 /* expat_config.h */,
@@ -1105,6 +1107,7 @@
 			isa = PBXGroup;
 			children = (
 				7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */,
+				7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */,
 				7DD48EB810C2E61E0001203D /* Apple */,
 				7DD48EC410C2E61E0001203D /* BookButton.png */,
 				7DD48EC510C2E61E0001203D /* BookEdge.pvrtc */,
@@ -1456,6 +1459,7 @@
 				7DD48EEA10C2E61E0001203D /* UIBarButtonSystemItemFastForward.png in Resources */,
 				7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */,
 				7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */,
+				7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

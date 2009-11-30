@@ -48,7 +48,37 @@
 
 @synthesize delegate = _delegate;
 @synthesize undimAfterAppearance = _undimAfterAppearance;
+@synthesize toolbarsVisibleAfterAppearance = _toolbarsVisibleAfterAppearance;
 @synthesize appearAtCoverThenOpen = _appearAtCoverThenOpen;
+
+@synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
+@synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
+@synthesize returnToNavigationBarHidden = _returnToNavigationBarHidden;
+@synthesize returnToStatusBarHidden = _returnToStatusBarHidden;
+
+- (void)setReturnToNavigationBarStyle:(UIBarStyle)barStyle
+{
+    _returnToNavigationBarStyle = barStyle;
+    _overrideReturnToNavigationBarStyle = YES;
+}
+
+- (void)setReturnToStatusBarStyle:(UIStatusBarStyle)barStyle
+{
+    _returnToStatusBarStyle = barStyle;
+    _overrideReturnToStatusBarStyle = YES;
+}
+
+- (void)setReturnToNavigationBarHidden:(BOOL)barHidden
+{
+    _returnToNavigationBarHidden = barHidden;
+    _overrideReturnToNavigationBarHidden = YES;
+}
+
+- (void)setReturnToStatusBarHidden:(BOOL)barHidden
+{
+    _returnToStatusBarHidden = barHidden;
+    _overrideReturnToStatusBarHidden = YES;
+}
 
 - (UIImage *)currentPageImage
 {
@@ -71,11 +101,14 @@
     _pageTurningView.dimQuotient = dimQuotient;  
 }
 
-- (id)initWithToolbars:(BOOL)withToolbars
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
+
+- (id)init
 {
 	if ((self = [super initWithNibName:nil bundle:nil])) {
-        _showToolbarsOnFirstAppearance = withToolbars;
-        
         self.wantsFullScreenLayout = NO;
         self.hidesBottomBarWhenPushed = YES;
 
@@ -566,9 +599,8 @@
     self.view = mainSuperview;
     [mainSuperview release];
         
-    if(!_showToolbarsOnFirstAppearance) {
+    if(!self.toolbarsVisibleAfterAppearance) {
         _toolbar.hidden = YES;
-        self.navigationController.navigationBar.hidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     }
     
@@ -615,7 +647,50 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if(!self.modalViewController) { 
+    if(!self.modalViewController) {
+        UIApplication *application = [UIApplication sharedApplication];
+        
+        // Store the hidden/visible state and style of the status and navigation
+        // bars so that we can restore them when popped.
+        UIBarStyle navigationBarStyle = self.navigationController.navigationBar.barStyle;
+        UIStatusBarStyle statusBarStyle = application.statusBarStyle;
+        BOOL navigationBarHidden = self.navigationController.isNavigationBarHidden;
+        BOOL statusBarHidden = application.isStatusBarHidden;
+        
+        if(!_overrideReturnToNavigationBarStyle) {
+            _returnToNavigationBarStyle = navigationBarStyle;
+        }
+        if(!_overrideReturnToStatusBarStyle) {
+            _returnToStatusBarStyle = statusBarStyle;
+        }
+        if(!_overrideReturnToNavigationBarHidden) {
+            _returnToNavigationBarHidden = navigationBarHidden;
+        }
+        if(!_overrideReturnToStatusBarHidden) {
+            _returnToStatusBarHidden = statusBarHidden;
+        }
+        
+        // Set the status bar and navigation bar styles.
+        if(navigationBarStyle != UIBarStyleBlackTranslucent && self.toolbarsVisibleAfterAppearance) {
+            [self.navigationController.navigationBar setBarStyle:UIBarStyleBlackTranslucent];  
+        }
+        if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
+            [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+        }
+        // Hide the navigation bar if appropriate.
+        // We'll take care of the status bar in -viewDidAppear: (if we do it
+        // here, we can see white below on the left as the navigation transition
+        // takes place).
+        if(self.toolbarsVisibleAfterAppearance) {
+            if(navigationBarHidden) {
+                [self.navigationController setNavigationBarHidden:NO animated:YES];
+            }
+        } else {
+            if(!navigationBarHidden) {
+                [self.navigationController setNavigationBarHidden:YES animated:YES];
+            }
+        }
+        
         UIWindow *window = self.navigationController.view.window;
 
         if(!_pageTurningView) {
@@ -652,6 +727,7 @@
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
             [[_pageTurningView layer] addAnimation:animation forKey:@"PageViewTransitionIn"];
         }
+        
         _pageSlider.scaledValue = [self _pageToSliderByte:pageNumber];
         [self _updatePageNumberLabel];
     }
@@ -685,10 +761,19 @@
         NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];
         [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
     }
-    if(_firstAppearance && !_showToolbarsOnFirstAppearance) {
+    if(_firstAppearance) {
         UIApplication *application = [UIApplication sharedApplication];
-        if(![application isStatusBarHidden]) {
-            [application setStatusBarHidden:YES animated:animated];   
+        if(self.toolbarsVisibleAfterAppearance) {
+            if([application isStatusBarHidden]) {
+                [application setStatusBarHidden:NO animated:YES];
+                [self.navigationController setNavigationBarHidden:YES animated:YES];
+                [self.navigationController setNavigationBarHidden:NO animated:NO];
+            }            
+        } else {
+            [self.navigationController.navigationBar setBarStyle:UIBarStyleBlackTranslucent];  
+            if(![application isStatusBarHidden]) {
+                [application setStatusBarHidden:YES animated:YES];
+            }            
         }
     }
     _firstAppearance = NO;
@@ -809,9 +894,30 @@
             } else {
                 [_pageTurningView removeFromSuperview];
             }
-            
-            [_pageTurningView release];
-            _pageTurningView = nil;
+                        
+            // Restore the hiden/visible state of the status bar and 
+            // navigation bar.
+            // The combination of animation and order below has been found
+            // by trial-and-error to give the 'smoothest' looking transition
+            // back.
+            UIApplication *application = [UIApplication sharedApplication];
+            [UIView beginAnimations:@"TransitionBackBarAnimations" context:NULL];
+            if(_returnToStatusBarStyle != application.statusBarStyle) {
+                [application setStatusBarStyle:_returnToStatusBarStyle
+                                      animated:YES];
+            }                        
+            if(_returnToStatusBarHidden != application.isStatusBarHidden){
+                [application setStatusBarHidden:_returnToStatusBarHidden 
+                                       animated:YES];
+            }           
+            [self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
+            [self.navigationController.navigationBar setBarStyle:_returnToNavigationBarStyle];
+            [UIView commitAnimations];
+
+            if(_returnToNavigationBarHidden != self.navigationController.isNavigationBarHidden) {
+                [self.navigationController setNavigationBarHidden:_returnToNavigationBarHidden 
+                                                         animated:NO];
+            }     
         }
         [NSObject cancelPreviousPerformRequestsWithTarget:self];
         _dimQuotient = 1.0f;
@@ -1069,6 +1175,9 @@
 {
     if(_fadeState == BookViewControlleUIFadeStateNone) {
         if(_toolbar.hidden == YES) {
+            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+            self.navigationController.navigationBarHidden = NO;
             self.navigationController.navigationBar.hidden = NO;
             _toolbar.hidden = NO;
             _toolbar.alpha = 0;
@@ -1082,15 +1191,9 @@
         [UIView beginAnimations:@"ToolbarsFade" context:nil];
         
         if(_fadeState == BookViewControlleUIFadeStateFadingIn) {
-            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             [UIView setAnimationDuration:0.0];
             _toolbar.alpha = 1;          
-            
-            // Work around a problem where the navigation controller doesn't
-            // resize itsself when the status bar shows.
-            [[self navigationController] view].frame = [[UIScreen mainScreen] applicationFrame];
-            
+                        
             self.navigationController.navigationBar.alpha = 1;
         } else {
             [UIView setAnimationDuration:1.0/3.0];
