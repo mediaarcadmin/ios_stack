@@ -96,6 +96,37 @@
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		7D43A5A110C705810031693D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7DC26D5C10C4241A00248A49 /* libwapcaplet */;
+			remoteInfo = libwapcaplet;
+		};
+		7D43A5A310C705840031693D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7DC26D8610C4260E00248A49 /* libparserutils */;
+			remoteInfo = libparserutils;
+		};
+		7D43A5A510C705860031693D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7DC26DE310C427D900248A49 /* libcss */;
+			remoteInfo = libcss;
+		};
+		7D43A5A710C705870031693D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D6A856810C42D4A0024B8D6 /* hubbub */;
+			remoteInfo = hubbub;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		8DD76F9E0486AA7600D96B5E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -1811,6 +1842,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				7D43A5A210C705810031693D /* PBXTargetDependency */,
+				7D43A5A410C705840031693D /* PBXTargetDependency */,
+				7D43A5A610C705860031693D /* PBXTargetDependency */,
+				7D43A5A810C705870031693D /* PBXTargetDependency */,
 			);
 			name = LibCSSTest;
 			productInstallPath = "$(HOME)/bin";
@@ -1958,6 +1993,29 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		7D43A5A210C705810031693D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7DC26D5C10C4241A00248A49 /* libwapcaplet */;
+			targetProxy = 7D43A5A110C705810031693D /* PBXContainerItemProxy */;
+		};
+		7D43A5A410C705840031693D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7DC26D8610C4260E00248A49 /* libparserutils */;
+			targetProxy = 7D43A5A310C705840031693D /* PBXContainerItemProxy */;
+		};
+		7D43A5A610C705860031693D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7DC26DE310C427D900248A49 /* libcss */;
+			targetProxy = 7D43A5A510C705860031693D /* PBXContainerItemProxy */;
+		};
+		7D43A5A810C705870031693D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D6A856810C42D4A0024B8D6 /* hubbub */;
+			targetProxy = 7D43A5A710C705870031693D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1DEB927508733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2037,6 +2095,7 @@
 					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
 					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
 				);
+				OTHER_CFLAGS = "-DNDEBUG";
 				PREBINDING = NO;
 				PRODUCT_NAME = hubbub;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/hubbub/src\"";
@@ -2055,6 +2114,7 @@
 					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
 					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
 				);
+				OTHER_CFLAGS = "-DNDEBUG";
 				PREBINDING = NO;
 				PRODUCT_NAME = hubbub;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/hubbub/src\"";
