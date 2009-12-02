@@ -42,6 +42,7 @@
 		7D6A85B810C42F400024B8D6 /* libhubbub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D6A856910C42D4A0024B8D6 /* libhubbub.a */; };
 		7D6A85B910C42F400024B8D6 /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DC26D8710C4260E00248A49 /* libparserutils.a */; };
 		7D6A85BA10C42F400024B8D6 /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DC26D5D10C4241A00248A49 /* libwapcaplet.a */; };
+		7D6A862410C44AEA0024B8D6 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D6A862310C44AEA0024B8D6 /* libiconv.dylib */; };
 		7DC26D6010C4242500248A49 /* libwapcaplet.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5BC710C41CEB00D8A42E /* libwapcaplet.c */; };
 		7DC26D8F10C4264D00248A49 /* aliases.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5B5610C41CEA00D8A42E /* aliases.c */; };
 		7DC26D9110C4264D00248A49 /* charset.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5B5810C41CEA00D8A42E /* charset.c */; };
@@ -93,7 +94,6 @@
 		7DC26E2010C427F000248A49 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5AE810C41CEA00D8A42E /* utils.c */; };
 		8DD76F9A0486AA7600D96B5E /* LibCSSTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* LibCSSTest.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
-		8DD76F9F0486AA7600D96B5E /* LibCSSTest.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* LibCSSTest.1 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -103,7 +103,6 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				8DD76F9F0486AA7600D96B5E /* LibCSSTest.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -203,7 +202,6 @@
 		7D6A5A4310C41CEA00D8A42E /* ccr.coriell.org.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ccr.coriell.org.html; sourceTree = "<group>"; };
 		7D6A5A4410C41CEA00D8A42E /* d11MXs.2WQ9.d.htm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = d11MXs.2WQ9.d.htm; sourceTree = "<group>"; };
 		7D6A5A4510C41CEA00D8A42E /* DocumentIndex.jsp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.other; path = DocumentIndex.jsp; sourceTree = "<group>"; };
-		7D6A5A4610C41CEA00D8A42E /* firmaer.phtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = firmaer.phtml; sourceTree = "<group>"; };
 		7D6A5A4710C41CEA00D8A42E /* INDEX */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = INDEX; sourceTree = "<group>"; };
 		7D6A5A4810C41CEA00D8A42E /* initial-close-tag.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "initial-close-tag.html"; sourceTree = "<group>"; };
 		7D6A5A4910C41CEA00D8A42E /* isindex.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = isindex.html; sourceTree = "<group>"; };
@@ -536,11 +534,18 @@
 		7D6A5BCD10C41CEB00D8A42E /* testmain.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = testmain.c; sourceTree = "<group>"; };
 		7D6A5BCE10C41CEB00D8A42E /* tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tests.h; sourceTree = "<group>"; };
 		7D6A856910C42D4A0024B8D6 /* libhubbub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhubbub.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D6A862310C44AEA0024B8D6 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		7D6A866110C44EC10024B8D6 /* 0.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = 0.html; sourceTree = "<group>"; };
+		7D6A866210C44EC10024B8D6 /* 1.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = 1.html; sourceTree = "<group>"; };
+		7D6A866310C44EC10024B8D6 /* 2.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = 2.html; sourceTree = "<group>"; };
+		7D6A866410C44EC10024B8D6 /* content.opf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = content.opf; sourceTree = "<group>"; };
+		7D6A866510C44EC10024B8D6 /* toc.ncx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = toc.ncx; sourceTree = "<group>"; };
+		7D6A866710C44EC10024B8D6 /* container.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = container.xml; sourceTree = "<group>"; };
+		7D6A866810C44EC10024B8D6 /* mimetype */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mimetype; sourceTree = "<group>"; };
 		7DC26D5D10C4241A00248A49 /* libwapcaplet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwapcaplet.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DC26D8710C4260E00248A49 /* libparserutils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libparserutils.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DC26DE410C427D900248A49 /* libcss.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcss.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DD76FA10486AA7600D96B5E /* LibCSSTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LibCSSTest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6859EA3029092ED04C91782 /* LibCSSTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = LibCSSTest.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -581,6 +586,7 @@
 				7D6A85B810C42F400024B8D6 /* libhubbub.a in Frameworks */,
 				7D6A85B910C42F400024B8D6 /* libparserutils.a in Frameworks */,
 				7D6A85BA10C42F400024B8D6 /* libwapcaplet.a in Frameworks */,
+				7D6A862410C44AEA0024B8D6 /* libiconv.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,8 +598,8 @@
 			children = (
 				08FB7795FE84155DC02AAC07 /* Source */,
 				7D6A59D810C41CEA00D8A42E /* ThirdParty */,
-				C6859EA2029092E104C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
+				7D6A865E10C44EC10024B8D6 /* Resources */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
 			name = LibCSSTest;
@@ -612,6 +618,7 @@
 			isa = PBXGroup;
 			children = (
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
+				7D6A862310C44AEA0024B8D6 /* libiconv.dylib */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -848,7 +855,6 @@
 				7D6A5A7C10C41CEA00D8A42E /* Makefile */,
 				7D6A5A7D10C41CEA00D8A42E /* parser.c */,
 				7D6A5A7E10C41CEA00D8A42E /* README */,
-				7D6A5A7F10C41CEA00D8A42E /* regression */,
 				7D6A5A8010C41CEA00D8A42E /* testutils.h */,
 				7D6A5A8110C41CEA00D8A42E /* tokeniser.c */,
 				7D6A5A8210C41CEA00D8A42E /* tokeniser2.c */,
@@ -894,7 +900,6 @@
 				7D6A5A4310C41CEA00D8A42E /* ccr.coriell.org.html */,
 				7D6A5A4410C41CEA00D8A42E /* d11MXs.2WQ9.d.htm */,
 				7D6A5A4510C41CEA00D8A42E /* DocumentIndex.jsp */,
-				7D6A5A4610C41CEA00D8A42E /* firmaer.phtml */,
 				7D6A5A4710C41CEA00D8A42E /* INDEX */,
 				7D6A5A4810C41CEA00D8A42E /* initial-close-tag.html */,
 				7D6A5A4910C41CEA00D8A42E /* isindex.html */,
@@ -964,13 +969,6 @@
 				7D6A5A7710C41CEA00D8A42E /* tests9.dat */,
 			);
 			path = "tree-construction";
-			sourceTree = "<group>";
-		};
-		7D6A5A7F10C41CEA00D8A42E /* regression */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = regression;
 			sourceTree = "<group>";
 		};
 		7D6A5A8710C41CEA00D8A42E /* libcss */ = {
@@ -1697,12 +1695,42 @@
 			path = test;
 			sourceTree = "<group>";
 		};
-		C6859EA2029092E104C91782 /* Documentation */ = {
+		7D6A865E10C44EC10024B8D6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C6859EA3029092ED04C91782 /* LibCSSTest.1 */,
+				7D6A865F10C44EC10024B8D6 /* pg103.epub */,
 			);
-			path = Documentation;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7D6A865F10C44EC10024B8D6 /* pg103.epub */ = {
+			isa = PBXGroup;
+			children = (
+				7D6A866010C44EC10024B8D6 /* 103 */,
+				7D6A866610C44EC10024B8D6 /* META-INF */,
+				7D6A866810C44EC10024B8D6 /* mimetype */,
+			);
+			path = pg103.epub;
+			sourceTree = "<group>";
+		};
+		7D6A866010C44EC10024B8D6 /* 103 */ = {
+			isa = PBXGroup;
+			children = (
+				7D6A866110C44EC10024B8D6 /* 0.html */,
+				7D6A866210C44EC10024B8D6 /* 1.html */,
+				7D6A866310C44EC10024B8D6 /* 2.html */,
+				7D6A866410C44EC10024B8D6 /* content.opf */,
+				7D6A866510C44EC10024B8D6 /* toc.ncx */,
+			);
+			path = 103;
+			sourceTree = "<group>";
+		};
+		7D6A866610C44EC10024B8D6 /* META-INF */ = {
+			isa = PBXGroup;
+			children = (
+				7D6A866710C44EC10024B8D6 /* container.xml */,
+			);
+			path = "META-INF";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
