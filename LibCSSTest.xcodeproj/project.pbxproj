@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7D53D97310CBBEF7004F4975 /* EucHTDB.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D53D97210CBBEF7004F4975 /* EucHTDB.c */; };
+		7D53D97310CBBEF7004F4975 /* EucHTMLDB.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D53D97210CBBEF7004F4975 /* EucHTMLDB.c */; };
 		7D6A856D10C42D9C0024B8D6 /* detect.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0410C41CEA00D8A42E /* detect.c */; };
 		7D6A856E10C42DB70024B8D6 /* hubbub.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0710C41CEA00D8A42E /* hubbub.c */; };
 		7D6A856F10C42DB70024B8D6 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0910C41CEA00D8A42E /* parser.c */; };
@@ -93,7 +93,7 @@
 		7DC26E1B10C427F000248A49 /* stylesheet.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5AE210C41CEA00D8A42E /* stylesheet.c */; };
 		7DC26E1D10C427F000248A49 /* errors.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5AE510C41CEA00D8A42E /* errors.c */; };
 		7DC26E2010C427F000248A49 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5AE810C41CEA00D8A42E /* utils.c */; };
-		7DDE870410C8045D00174FD1 /* EucHTDBCreation.c in Sources */ = {isa = PBXBuildFile; fileRef = 7DDE870310C8045D00174FD1 /* EucHTDBCreation.c */; };
+		7DDE870410C8045D00174FD1 /* EucHTMLDBCreation.c in Sources */ = {isa = PBXBuildFile; fileRef = 7DDE870310C8045D00174FD1 /* EucHTMLDBCreation.c */; };
 		8DD76F9A0486AA7600D96B5E /* LibCSSTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* LibCSSTest.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -145,8 +145,8 @@
 		08FB7796FE84155DC02AAC07 /* LibCSSTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibCSSTest.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibCSSTest_Prefix.pch; sourceTree = "<group>"; };
-		7D53D97110CBBEF7004F4975 /* EucHTDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTDB.h; sourceTree = "<group>"; };
-		7D53D97210CBBEF7004F4975 /* EucHTDB.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucHTDB.c; sourceTree = "<group>"; };
+		7D53D97110CBBEF7004F4975 /* EucHTMLDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDB.h; sourceTree = "<group>"; };
+		7D53D97210CBBEF7004F4975 /* EucHTMLDB.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucHTMLDB.c; sourceTree = "<group>"; };
 		7D6A59DB10C41CEA00D8A42E /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		7D6A59DD10C41CEA00D8A42E /* entities.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = entities.xslt; sourceTree = "<group>"; };
 		7D6A59DE10C41CEA00D8A42E /* get_entities */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = get_entities; sourceTree = "<group>"; };
@@ -580,8 +580,8 @@
 		7DC26D5D10C4241A00248A49 /* libwapcaplet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwapcaplet.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DC26D8710C4260E00248A49 /* libparserutils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libparserutils.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DC26DE410C427D900248A49 /* libcss.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcss.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DDE870210C8045D00174FD1 /* EucHTDBCreation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTDBCreation.h; sourceTree = "<group>"; };
-		7DDE870310C8045D00174FD1 /* EucHTDBCreation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucHTDBCreation.c; sourceTree = "<group>"; };
+		7DDE870210C8045D00174FD1 /* EucHTMLDBCreation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDBCreation.h; sourceTree = "<group>"; };
+		7DDE870310C8045D00174FD1 /* EucHTMLDBCreation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucHTMLDBCreation.c; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* LibCSSTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LibCSSTest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -647,10 +647,10 @@
 			children = (
 				32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* LibCSSTest.m */,
-				7DDE870210C8045D00174FD1 /* EucHTDBCreation.h */,
-				7DDE870310C8045D00174FD1 /* EucHTDBCreation.c */,
-				7D53D97110CBBEF7004F4975 /* EucHTDB.h */,
-				7D53D97210CBBEF7004F4975 /* EucHTDB.c */,
+				7DDE870210C8045D00174FD1 /* EucHTMLDBCreation.h */,
+				7DDE870310C8045D00174FD1 /* EucHTMLDBCreation.c */,
+				7D53D97110CBBEF7004F4975 /* EucHTMLDB.h */,
+				7D53D97210CBBEF7004F4975 /* EucHTMLDB.c */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -1998,8 +1998,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9A0486AA7600D96B5E /* LibCSSTest.m in Sources */,
-				7DDE870410C8045D00174FD1 /* EucHTDBCreation.c in Sources */,
-				7D53D97310CBBEF7004F4975 /* EucHTDB.c in Sources */,
+				7DDE870410C8045D00174FD1 /* EucHTMLDBCreation.c in Sources */,
+				7D53D97310CBBEF7004F4975 /* EucHTMLDB.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

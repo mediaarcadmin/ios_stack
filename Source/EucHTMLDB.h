@@ -1,5 +1,5 @@
 /*
- *  EucHTDB.h
+ *  EucHTMLDB.h
  *  LibCSSTest
  *
  *  Created by James Montgomerie on 06/12/2009.
@@ -18,7 +18,7 @@
 #include <hubbub/hubbub.h>
 #include <hubbub/parser.h>
 
-enum EucHTDBNodeKinds
+enum EucHTMLDBNodeKinds
 {
     nodeKindRoot = 0,
     nodeKindDoctype,
@@ -27,7 +27,7 @@ enum EucHTDBNodeKinds
     nodeKindText
 };
 
-enum EucHTDBNodeArrayPositions
+enum EucHTMLDBNodeArrayPositions
 {
     kindPosition = 0,
     refcountPosition,
@@ -56,33 +56,33 @@ enum EucHTDBNodeArrayPositions
 
 extern size_t sNodeElementCounts[];
 
-typedef struct EucHTDB
+typedef struct EucHTMLDB
 {
     DB *db;
     uint32_t nodeCount;
     uint32_t rootNodeKey;
-} EucHTDB;
+} EucHTMLDB;
 
 void *EucRealloc(void *ptr, size_t len, void *pw);
 
 // 'flags' are flags ass pased to open().
 // e.g. O_CREAT | O_RDWR | O_TRUNC to create a new HTDP to write into.
 //      O_RDONLY to read an existing tree.
-EucHTDB *EucHTDBOpen(char *path, int flags);
-void EucHTDBClose(EucHTDB *context);
+EucHTMLDB *EucHTMLDBOpen(char *path, int flags);
+void EucHTMLDBClose(EucHTMLDB *context);
 
-uint32_t EucHTDBPutUint32Array(EucHTDB *context, uint32_t key, const uint32_t *keyArray, uint32_t count);
-hubbub_error EucHTDBCopyUint32Array(EucHTDB *context, uint32_t key, uint32_t **keyArrayOut, uint32_t *countOut);
+uint32_t EucHTMLDBPutUint32Array(EucHTMLDB *context, uint32_t key, const uint32_t *keyArray, uint32_t count);
+hubbub_error EucHTMLDBCopyUint32Array(EucHTMLDB *context, uint32_t key, uint32_t **keyArrayOut, uint32_t *countOut);
 
-uint32_t EucHTDBPutUTF8(EucHTDB *context, uint32_t key, const uint8_t *string, size_t length);
-hubbub_error EucHTDBCopyUTF8(EucHTDB *context, uint32_t key, uint8_t **string, size_t *length);
+uint32_t EucHTMLDBPutUTF8(EucHTMLDB *context, uint32_t key, const uint8_t *string, size_t length);
+hubbub_error EucHTMLDBCopyUTF8(EucHTMLDB *context, uint32_t key, uint8_t **string, size_t *length);
 
-uint32_t EucHTDBPutNode(EucHTDB *context, uint32_t key, const uint32_t *node);
-hubbub_error EucHTDBCopyNode(EucHTDB *context, uint32_t key, uint32_t **node);
+uint32_t EucHTMLDBPutNode(EucHTMLDB *context, uint32_t key, const uint32_t *node);
+hubbub_error EucHTMLDBCopyNode(EucHTMLDB *context, uint32_t key, uint32_t **node);
 
-hubbub_error DBDeleteValueForKey(EucHTDB *context, uint32_t key);
+hubbub_error DBDeleteValueForKey(EucHTMLDB *context, uint32_t key);
 
-uint32_t EucHTDBPutAttribute(EucHTDB *context, uint32_t key, hubbub_ns ns, const hubbub_string* name, const hubbub_string* value);
-hubbub_error EucHTDBCopyAttribute(EucHTDB *context, uint32_t key, hubbub_ns *ns, hubbub_string* name, hubbub_string* value);
-hubbub_error DBRemoveAttribute(EucHTDB *context, uint32_t key);
+uint32_t EucHTMLDBPutAttribute(EucHTMLDB *context, uint32_t key, hubbub_ns ns, const hubbub_string* name, const hubbub_string* value);
+hubbub_error EucHTMLDBCopyAttribute(EucHTMLDB *context, uint32_t key, hubbub_ns *ns, hubbub_string* name, hubbub_string* value);
+hubbub_error DBRemoveAttribute(EucHTMLDB *context, uint32_t key);
 

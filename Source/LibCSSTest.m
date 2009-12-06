@@ -4,7 +4,7 @@
 #include <hubbub/parser.h>
 #include <libcss/libcss.h>
 
-#include "EucHTDBCreation.h"
+#include "EucHTMLDBCreation.h"
 
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -30,7 +30,7 @@ int main (int argc, const char * argv[]) {
         hubbubInitialised = YES;
     }
 
-    EucHTDB *context = EucHTDBOpen("/tmp/test.db", O_CREAT | O_RDWR | O_TRUNC);
+    EucHTMLDB *context = EucHTMLDBOpen("/tmp/test.db", O_CREAT | O_RDWR | O_TRUNC);
         
     FILE *fp = fopen(argv[2], "rb");
 	if (fp == NULL) {
@@ -48,7 +48,7 @@ int main (int argc, const char * argv[]) {
         goto bail;
     }
     
-    hubbub_tree_handler *treeHandler = EucHTDBHubbubTreeHandlerCreateWithContext(context);
+    hubbub_tree_handler *treeHandler = EucHTMLDBHubbubTreeHandlerCreateWithContext(context);
     
     hubbub_parser_optparams params;
 	params.tree_handler = treeHandler;
@@ -59,7 +59,7 @@ int main (int argc, const char * argv[]) {
     }
     
     void *rootNodeP;
-    EucHTDBCreateRoot(context, &rootNodeP);
+    EucHTMLDBCreateRoot(context, &rootNodeP);
     params.document_node = rootNodeP;
     err = hubbub_parser_setopt(parser, HUBBUB_PARSER_DOCUMENT_NODE, &params);
     if(err != HUBBUB_OK) {
@@ -99,7 +99,7 @@ bail:
     if(treeHandler) {
         free(treeHandler);
     }
-    EucHTDBClose(context);
+    EucHTMLDBClose(context);
     if(cssInitialised) {
         css_finalise(EucRealloc, NULL);
     }

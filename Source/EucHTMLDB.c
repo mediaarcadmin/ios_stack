@@ -1,5 +1,5 @@
 /*
- *  EucHTDB.c
+ *  EucHTMLDB.c
  *  LibCSSTest
  *
  *  Created by James Montgomerie on 06/12/2009.
@@ -7,7 +7,7 @@
  *
  */
 
-#include "EucHTDB.h"
+#include "EucHTMLDB.h"
 #include <CoreFoundation/CoreFoundation.h>
 
 size_t sNodeElementCounts[] = 
@@ -19,7 +19,7 @@ size_t sNodeElementCounts[] =
     textElementCount
 };
 
-static uint32_t EucHTDBPutBytes(EucHTDB *context, uint32_t key, const void *bytes, size_t length)
+static uint32_t EucHTMLDBPutBytes(EucHTMLDB *context, uint32_t key, const void *bytes, size_t length)
 {
     if(!key) {
         key = ++(context->nodeCount);
@@ -44,7 +44,7 @@ static uint32_t EucHTDBPutBytes(EucHTDB *context, uint32_t key, const void *byte
     }
 }
 
-static hubbub_error EucHTDBCopyBytes(EucHTDB *context, uint32_t key, void **bytesOut, size_t *lengthOut)
+static hubbub_error EucHTMLDBCopyBytes(EucHTMLDB *context, uint32_t key, void **bytesOut, size_t *lengthOut)
 {
     key = CFSwapInt32HostToLittle(key); // Should be a no-op on ARM.
     const DBT keyThang = 
@@ -66,7 +66,7 @@ static hubbub_error EucHTDBCopyBytes(EucHTDB *context, uint32_t key, void **byte
     }
 }
 
-uint32_t EucHTDBPutUint32Array(EucHTDB *context, uint32_t key, const uint32_t *keyArray, uint32_t count)
+uint32_t EucHTMLDBPutUint32Array(EucHTMLDB *context, uint32_t key, const uint32_t *keyArray, uint32_t count)
 {
     if(CFByteOrderGetCurrent() == CFByteOrderBigEndian) {
         uint32_t *swappedKeys = alloca(count);
@@ -75,10 +75,10 @@ uint32_t EucHTDBPutUint32Array(EucHTDB *context, uint32_t key, const uint32_t *k
         }
         keyArray = swappedKeys;
     }
-    return EucHTDBPutBytes(context, key, keyArray, count * sizeof(uint32_t));
+    return EucHTMLDBPutBytes(context, key, keyArray, count * sizeof(uint32_t));
 }
 
-hubbub_error EucHTDBCopyUint32Array(EucHTDB *context, uint32_t key, uint32_t **keyArrayOut, uint32_t *countOut)
+hubbub_error EucHTMLDBCopyUint32Array(EucHTMLDB *context, uint32_t key, uint32_t **keyArrayOut, uint32_t *countOut)
 {
     key = CFSwapInt32HostToLittle(key); // Should be a no-op on ARM.
     const DBT keyThang = 
@@ -108,32 +108,32 @@ hubbub_error EucHTDBCopyUint32Array(EucHTDB *context, uint32_t key, uint32_t **k
     }
 }
 
-uint32_t EucHTDBPutUTF8(EucHTDB *context, uint32_t key, const uint8_t *string, size_t length)
+uint32_t EucHTMLDBPutUTF8(EucHTMLDB *context, uint32_t key, const uint8_t *string, size_t length)
 {
-    return EucHTDBPutBytes(context, key, string, length);
+    return EucHTMLDBPutBytes(context, key, string, length);
 }
 
-hubbub_error EucHTDBCopyUTF8(EucHTDB *context, uint32_t key, uint8_t **string, size_t *length)
+hubbub_error EucHTMLDBCopyUTF8(EucHTMLDB *context, uint32_t key, uint8_t **string, size_t *length)
 {
-    return EucHTDBCopyBytes(context, key, (void **)string, length);
+    return EucHTMLDBCopyBytes(context, key, (void **)string, length);
 }
 
 
-uint32_t EucHTDBPutNode(EucHTDB *context, uint32_t key, const uint32_t *node)
+uint32_t EucHTMLDBPutNode(EucHTMLDB *context, uint32_t key, const uint32_t *node)
 {
     
-    return EucHTDBPutUint32Array(context, key, node, sNodeElementCounts[node[kindPosition]]);
+    return EucHTMLDBPutUint32Array(context, key, node, sNodeElementCounts[node[kindPosition]]);
 }
 
-hubbub_error EucHTDBCopyNode(EucHTDB *context, uint32_t key, uint32_t **node)
+hubbub_error EucHTMLDBCopyNode(EucHTMLDB *context, uint32_t key, uint32_t **node)
 {
     uint32_t count;
-    hubbub_error ret = EucHTDBCopyUint32Array(context, key, node, &count);
+    hubbub_error ret = EucHTMLDBCopyUint32Array(context, key, node, &count);
     assert(count == sNodeElementCounts[(*node)[kindPosition]]);
     return ret;
 }
 
-hubbub_error DBDeleteValueForKey(EucHTDB *context, uint32_t key)
+hubbub_error DBDeleteValueForKey(EucHTMLDB *context, uint32_t key)
 {
     key = CFSwapInt32HostToLittle(key); // Should be a no-op on ARM.
     const DBT keyThang = 
@@ -146,40 +146,40 @@ hubbub_error DBDeleteValueForKey(EucHTDB *context, uint32_t key)
     return db->del(db, &keyThang, 0) == 0 ? HUBBUB_OK : HUBBUB_UNKNOWN;
 }
 
-uint32_t EucHTDBPutAttribute(EucHTDB *context, uint32_t key, hubbub_ns ns, const hubbub_string* name, const hubbub_string* value)
+uint32_t EucHTMLDBPutAttribute(EucHTMLDB *context, uint32_t key, hubbub_ns ns, const hubbub_string* name, const hubbub_string* value)
 {
     uint32_t attributeArray[3];
     attributeArray[0] = ns;
-    if((attributeArray[1] = EucHTDBPutUTF8(context, 0, name->ptr, name->len)) &&
-       (attributeArray[2] = EucHTDBPutUTF8(context, 0, value->ptr, value->len))) {
-        return EucHTDBPutUint32Array(context, key, attributeArray, 3);
+    if((attributeArray[1] = EucHTMLDBPutUTF8(context, 0, name->ptr, name->len)) &&
+       (attributeArray[2] = EucHTMLDBPutUTF8(context, 0, value->ptr, value->len))) {
+        return EucHTMLDBPutUint32Array(context, key, attributeArray, 3);
     } else {
         return 0;
     }
 }
 
-hubbub_error EucHTDBCopyAttribute(EucHTDB *context, uint32_t key, hubbub_ns *ns, hubbub_string* name, hubbub_string* value)
+hubbub_error EucHTMLDBCopyAttribute(EucHTMLDB *context, uint32_t key, hubbub_ns *ns, hubbub_string* name, hubbub_string* value)
 {
     uint32_t *attributeArray;
     uint32_t count;
-    hubbub_error ret = EucHTDBCopyUint32Array(context, key, &attributeArray, &count);
+    hubbub_error ret = EucHTMLDBCopyUint32Array(context, key, &attributeArray, &count);
     if(ret == HUBBUB_OK) {
         assert(count == 3);
         *ns = attributeArray[0];
-        ret = EucHTDBCopyUTF8(context, attributeArray[1], (uint8_t **)&(name->ptr), &(name->len));
+        ret = EucHTMLDBCopyUTF8(context, attributeArray[1], (uint8_t **)&(name->ptr), &(name->len));
         if(ret == HUBBUB_OK) {
-            ret = EucHTDBCopyUTF8(context, attributeArray[2], (uint8_t **)&(value->ptr), &(value->len));
+            ret = EucHTMLDBCopyUTF8(context, attributeArray[2], (uint8_t **)&(value->ptr), &(value->len));
         }
         free(attributeArray);
     }
     return ret;
 }
 
-hubbub_error DBRemoveAttribute(EucHTDB *context, uint32_t key) 
+hubbub_error DBRemoveAttribute(EucHTMLDB *context, uint32_t key) 
 {
     uint32_t *attributeArray;
     uint32_t count;
-    hubbub_error ret = EucHTDBCopyUint32Array(context, key, &attributeArray, &count);
+    hubbub_error ret = EucHTMLDBCopyUint32Array(context, key, &attributeArray, &count);
     if(ret == HUBBUB_OK) {
         ret = DBDeleteValueForKey(context, attributeArray[1]);
         if(ret == HUBBUB_OK) {
@@ -199,9 +199,9 @@ void *EucRealloc(void *ptr, size_t len, void *pw)
 }
 
 
-EucHTDB *EucHTDBOpen(char *path, int flags) 
+EucHTMLDB *EucHTMLDBOpen(char *path, int flags) 
 {
-    EucHTDB *context = calloc(1, sizeof(EucHTDB));
+    EucHTMLDB *context = calloc(1, sizeof(EucHTMLDB));
     
     hubbub_error err = HUBBUB_OK;
     
@@ -227,7 +227,7 @@ EucHTDB *EucHTDBOpen(char *path, int flags)
     return context;
 }
 
-void EucHTDBClose(EucHTDB *context)
+void EucHTMLDBClose(EucHTMLDB *context)
 {
     context->db->close(context->db);
     free(context);
