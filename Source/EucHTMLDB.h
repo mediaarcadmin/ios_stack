@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include <libwapcaplet/libwapcaplet.h>
+
 #include <hubbub/hubbub.h>
 #include <hubbub/parser.h>
 
@@ -51,7 +53,7 @@ enum EucHTMLDBNodeArrayPositions
     elementElementCount,
     
     textTextPosition = rootElementCount,
-    textElementCount,
+    textElementCount
 };
 
 extern size_t sNodeElementCounts[];
@@ -76,6 +78,8 @@ hubbub_error EucHTMLDBCopyUint32Array(EucHTMLDB *context, uint32_t key, uint32_t
 
 uint32_t EucHTMLDBPutUTF8(EucHTMLDB *context, uint32_t key, const uint8_t *string, size_t length);
 hubbub_error EucHTMLDBCopyUTF8(EucHTMLDB *context, uint32_t key, uint8_t **string, size_t *length);
+
+hubbub_error EucHTMLDBCopyLWCString(EucHTMLDB *context, uint32_t key, lwc_context *lwcContext, lwc_string **string);
 
 uint32_t EucHTMLDBPutNode(EucHTMLDB *context, uint32_t key, const uint32_t *node);
 hubbub_error EucHTMLDBCopyNode(EucHTMLDB *context, uint32_t key, uint32_t **node);

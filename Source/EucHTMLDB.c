@@ -119,6 +119,31 @@ hubbub_error EucHTMLDBCopyUTF8(EucHTMLDB *context, uint32_t key, uint8_t **strin
 }
 
 
+hubbub_error EucHTMLDBCopyLWCString(EucHTMLDB *context, uint32_t key, lwc_context *lwcContext, lwc_string **string)
+{    
+    hubbub_error ret = HUBBUB_UNKNOWN;
+    
+    key = CFSwapInt32HostToLittle(key); // Should be a no-op on ARM.
+    const DBT keyThang = 
+    { 
+        &key, 
+        sizeof(uint32_t) 
+    };    
+    DBT valueThang = { 0 };
+    
+
+    DB *db = context->db;
+    if(db->get(db, &keyThang, &valueThang, 0) == 0) {
+        lwc_string *str;
+        if(lwc_context_intern(lwcContext, valueThang.data, valueThang.size, &str) == lwc_error_ok) {
+            ret = HUBBUB_OK;
+            *string = str;
+        }
+    }
+    
+    return ret;
+}
+
 uint32_t EucHTMLDBPutNode(EucHTMLDB *context, uint32_t key, const uint32_t *node)
 {
     

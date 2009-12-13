@@ -9,7 +9,6 @@
 
 #include "EucHTMLDB.h"
 
-hubbub_error EucHTMLDBCreateRoot(void *ctx, void **result);
-hubbub_tree_handler *EucHTMLDBHubbubTreeHandlerCreateWithContext(EucHTMLDB *context);
+EucHTMLDB *EucHTMLDBCreateWithHTMLAtPath(const char* htmlPath, const char* newDbPath);
 
 void Traverse(EucHTMLDB *context);

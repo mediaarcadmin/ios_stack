@@ -975,3 +975,79 @@ hubbub_tree_handler *EucHTMLDBHubbubTreeHandlerCreateWithContext(EucHTMLDB *cont
     return ret;
 }
 
+
+EucHTMLDB *EucHTMLDBCreateWithHTMLAtPath(const char* htmlPath, const char* dbPath)
+{
+    const ssize_t chunkSize = 4096;
+    uint8_t buffer[chunkSize];
+    hubbub_error err;
+    
+    EucHTMLDB *context = EucHTMLDBOpen("/tmp/test.db", O_CREAT | O_RDWR | O_TRUNC);
+    
+    FILE *fp = fopen(htmlPath, "rb");
+	if (fp == NULL) {
+		printf("Failed opening %s\n", htmlPath);
+		goto bail;
+	}
+    
+    hubbub_parser *parser;
+    err = hubbub_parser_create(NULL, true, EucRealloc, NULL, &parser);
+    if(err != HUBBUB_OK) {
+        fprintf(stderr, "Error \"%s\" creating parser\n", hubbub_error_to_string(err));
+        goto bail;
+    }
+    
+    hubbub_tree_handler *treeHandler = EucHTMLDBHubbubTreeHandlerCreateWithContext(context);
+    
+    hubbub_parser_optparams params;
+	params.tree_handler = treeHandler;
+	err = hubbub_parser_setopt(parser, HUBBUB_PARSER_TREE_HANDLER, &params);
+    if(err != HUBBUB_OK) {
+        fprintf(stderr, "Error \"%s\" setting HUBBUB_PARSER_TREE_HANDLER option on parser\n", hubbub_error_to_string(err));
+        goto bail;
+    }
+    
+    void *rootNodeP;
+    EucHTMLDBCreateRoot(context, &rootNodeP);
+    params.document_node = rootNodeP;
+    err = hubbub_parser_setopt(parser, HUBBUB_PARSER_DOCUMENT_NODE, &params);
+    if(err != HUBBUB_OK) {
+        fprintf(stderr, "Error \"%s\" setting HUBBUB_PARSER_DOCUMENT_NODE option on parser\n", hubbub_error_to_string(err));
+        goto bail;
+    }
+    
+    size_t bytesRead = 0;
+	for(;;) {
+        bytesRead = fread(buffer, 1, chunkSize, fp);
+        
+        if(bytesRead < 1) {
+            break;
+        }
+        
+		err = hubbub_parser_parse_chunk(parser, buffer, bytesRead);
+        if(err != HUBBUB_OK) {
+            fprintf(stderr, "Error \"%s\" during parse\n", hubbub_error_to_string(err));
+            goto bail;
+        }
+	}
+    
+    hubbub_charset_source cssource = 0;
+	const char *charset = hubbub_parser_read_charset(parser, &cssource);
+    
+	printf("Parsed!  Charset: %s (from %d)\n", charset, cssource);    
+
+bail:
+    if(fp) {
+        fclose(fp);
+    }
+    if(parser) {
+        hubbub_parser_destroy(parser);
+    }
+    if(treeHandler) {
+        free(treeHandler);
+    }
+    
+    return context;
+}
+
+
