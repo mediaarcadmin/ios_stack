@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <libcss/libcss.h>
 
 @class EucHTMLDBNode, EucHTMLDocument;
 
