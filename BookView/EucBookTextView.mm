@@ -38,7 +38,7 @@ using namespace Hyphenate;
         _stringsCapacity = 256;
         _stringsCount = 0;
         _stringsWithAttributes = (NSString **)malloc(_stringsCapacity * sizeof(id));
-        _stringPositions = (CGPoint *)malloc(_stringsCapacity * sizeof(CGPoint));
+        _stringRects = (CGRect *)malloc(_stringsCapacity * sizeof(CGRect));
 	
         _sharedHyphenator = (void *)SharedHyphenator::sharedHyphenator();
         
@@ -62,7 +62,7 @@ using namespace Hyphenate;
         [_stringsWithAttributes[i] release];
     }
     free(_stringsWithAttributes);
-    free(_stringPositions);
+    free(_stringRects);
         
 	[super dealloc];
 }
@@ -85,12 +85,12 @@ using namespace Hyphenate;
     EucBookTextStyle *previousAttribute = defaultAttribute;
     
     for(NSUInteger i = 0; i < _stringsCount; ++i) {
-        CGPoint point = _stringPositions[i];
-        point.y += _pageYOffset;
+        CGRect rect = _stringRects[i];
+        rect.origin.y += _pageYOffset;
         
         id stringWithAttribute = _stringsWithAttributes[i];
         if([stringWithAttribute isKindOfClass:NSStringClass]) {
-            [defaultRenderer drawString:(NSString *)stringWithAttribute inContext:cgContext atPoint:point pointSize:_pointSize];
+            [defaultRenderer drawString:(NSString *)stringWithAttribute inContext:cgContext atPoint:rect.origin pointSize:_pointSize];
             previousAttribute = defaultAttribute;
         } else {
             EucBookTextStyle *attribute = ((THPair *)stringWithAttribute).second;
@@ -98,8 +98,8 @@ using namespace Hyphenate;
             if([stringOrImage isKindOfClass:NSStringClass]) {
                 NSString *string = (NSString *)stringOrImage;
                             
-                CGPoint afterDrawingPoint = [[attribute stringRenderer] drawString:string inContext:cgContext atPoint:point pointSize:[attribute fontPointSizeForPointSize:_pointSize]];
-                CGFloat stringWidth = afterDrawingPoint.x - point.x;
+                CGPoint afterDrawingPoint = [[attribute stringRenderer] drawString:string inContext:cgContext atPoint:rect.origin pointSize:[attribute fontPointSizeForPointSize:_pointSize]];
+                CGFloat stringWidth = afterDrawingPoint.x - rect.origin.x;
                 
                 NSString *wordHyperlink = [attribute.attributes objectForKey:@"href"];
                 
@@ -117,7 +117,7 @@ using namespace Hyphenate;
                 
                 if(wordHyperlink) {
                     if(inHyperlink) {
-                        if(point.y != hyperlinkStartPoint.y) {                        
+                        if(rect.origin.y != hyperlinkStartPoint.y) {                        
                             // Draw link to end of line.
                             CGFloat lineY = floorf(hyperlinkStartPoint.y + [[previousAttribute stringRenderer] ascenderForPointSize:[previousAttribute fontPointSizeForPointSize:_pointSize]] + 2) - 0.5;
                             CGPoint lineEnds[2];
@@ -126,16 +126,16 @@ using namespace Hyphenate;
                             CGContextStrokeLineSegments(cgContext, lineEnds, 2);
                             
                             // Move the start point to the next line.
-                            hyperlinkStartPoint = point;
+                            hyperlinkStartPoint = rect.origin;
                         }
                     } else {                    
-                        hyperlinkStartPoint = point;
+                        hyperlinkStartPoint = rect.origin;
                         hyperlinkObject = [attribute.attributes objectForKey:@"href"];
                         inHyperlink = YES;
                     }     
                     
                     previousStringWidth = stringWidth;
-                    previousStringPoint = point;
+                    previousStringPoint = rect.origin;
                 }
             } else {
                 if(inHyperlink) {
@@ -153,34 +153,11 @@ using namespace Hyphenate;
                 CGRect bounds = [self bounds];
                 CGImageRef image = [(UIImage *)stringOrImage CGImage];
                 CGContextSaveGState(cgContext);
-                
-                CGFloat width = [attribute imageWidthForPointSize:_pointSize];
-                CGFloat height = [attribute lineHeightForPointSize:_pointSize];
-                
-                if(!_allowScaledImageDistortion) {
-                    if(width > bounds.size.width || height > bounds.size.height) {
-                        CGFloat widthMultiplier = bounds.size.width / width;
-                        CGFloat heightMultiplier = bounds.size.height / height;
-                        CGFloat multiplier = MIN(widthMultiplier, heightMultiplier);
-                        width *= multiplier;
-                        height *= multiplier;
-                    }
-                } else {
-                    width = MIN(width, bounds.size.width);
-                    height = MIN(height, bounds.size.height);
-                }
-                
-                CGFloat fitX = bounds.size.width - width;
-                CGFloat fitY = bounds.size.height - height;
-                CGFloat myX = MIN(fitX, point.x);
-                myX = MAX(0, myX);
-                CGFloat myY = MIN(fitY, point.y);
-                
                 CGContextScaleCTM(cgContext, 1.0f, -1.0f);
-                CGContextTranslateCTM(cgContext, myX, -(myY+height));
+                CGContextTranslateCTM(cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
                 CGContextSetBlendMode(cgContext, kCGBlendModeMultiply);
                 CGContextSetInterpolationQuality(cgContext, kCGInterpolationHigh);
-                CGContextDrawImage(cgContext, CGRectMake(0, 0, width, height), image);
+                CGContextDrawImage(cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), image);
                 CGContextRestoreGState(cgContext);
             }
             previousAttribute = attribute;
@@ -242,19 +219,19 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     return ret;
 }
 
-- (void)addWord:(NSString *)word atPoint:(CGPoint)point attributes:(EucBookTextStyle *)attributes
+- (void)addWord:(NSString *)word inRect:(CGRect)rect attributes:(EucBookTextStyle *)attributes
 {
     if(_stringsCount == _stringsCapacity) {
         _stringsCapacity *= 2;
         _stringsWithAttributes = (NSString **)realloc(_stringsWithAttributes, _stringsCapacity * sizeof(id));
-        _stringPositions = (CGPoint *)realloc(_stringPositions, _stringsCapacity * sizeof(CGPoint));
+        _stringRects = (CGRect *)realloc(_stringRects, _stringsCapacity * sizeof(CGRect));
     }
     if(attributes.isNonDefault) {
         _stringsWithAttributes[_stringsCount] = [[THPair alloc] initWithFirst:word second:attributes];
     } else {
         _stringsWithAttributes[_stringsCount] = [word retain];
     }
-    _stringPositions[_stringsCount] = point;
+    _stringRects[_stringsCount] = rect;
     ++_stringsCount;
 }
 
@@ -347,7 +324,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             
             int wordWidth;
             if(image) {
-                wordWidth = [attribute imageWidthForPointSize:_pointSize];
+                wordWidth = MIN([attribute imageWidthForPointSize:_pointSize], xWidth);
             } else {
                 wordWidth = [renderer roundedWidthOfString:word pointSize:[attribute fontPointSizeForPointSize:_pointSize]];
             }
@@ -544,16 +521,40 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
         // For each found break (and therefore, for each found line):
         for(; usedBreakIndexIndex <= lastUsedBreakIndexIndex; ++usedBreakIndexIndex) { 
             EucBookTextStyle *firstWordStyle = [attributes objectAtIndex:wordToAddIndex];
-            newLineHeight = [firstWordStyle lineHeightForPointSize:_pointSize];
-            if(firstWordStyle.image && newLineHeight >= maxY) {
-                newLineHeight = maxY;
-                if(currentY + newLineHeight > maxY) {
-                    break;
-                }                
-            } else {
-                if(currentY + newLineHeight >= maxY) {
-                    break;
+            
+            if(firstWordStyle.image) {
+                CGFloat width = [firstWordStyle imageWidthForPointSize:_pointSize];
+                CGFloat height = [firstWordStyle lineHeightForPointSize:_pointSize];
+                if(!_allowScaledImageDistortion) {
+                    if(width > xWidth || height > maxY) {
+                        CGFloat widthMultiplier = xWidth / width;
+                        CGFloat heightMultiplier = maxY / height;
+                        CGFloat multiplier = MIN(widthMultiplier, heightMultiplier);
+                        width *= multiplier;
+                        height *= multiplier;
+                    }
+                } else {
+                    width = MIN(width, xWidth);
+                    height = MIN(height, maxY);
                 }
+                newLineHeight = height;
+                
+                if(_stringsCount == 0) {
+                    // If this is the first element, and it's too large
+                    // to fit in the area from the top margin to the bottom
+                    // of the page, ignore the top margin and 
+                    // vertically center the image.
+                    CGFloat realMaxHeight = maxY - currentY;
+                    if(height > realMaxHeight) {
+                        currentY = (maxY - height) / 2;
+                    }
+                }
+            } else {
+                newLineHeight = [firstWordStyle lineHeightForPointSize:_pointSize];
+            }
+            
+            if(currentY + newLineHeight > maxY) {
+                break;
             }
             currentLineHeight = newLineHeight;
             CGFloat currentLineSpaceWidth = [firstWordStyle spaceWidthForPointSize:_pointSize];
@@ -760,7 +761,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
                 int wordWidth = [renderer roundedWidthOfString:trailingHyphenatedPart pointSize:[attribute fontPointSizeForPointSize:_pointSize]];
                 
                 [self addWord:trailingHyphenatedPart 
-                      atPoint:CGPointMake(currentX, currentY) 
+                       inRect:CGRectMake(currentX, currentY, wordWidth, currentLineHeight) 
                    attributes:attribute];
                 
                 if(spacesRemainingOnLine && 
@@ -787,11 +788,11 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
                 
                 if(stringAttribute.image) {
                     [self addWord:(NSString *)stringAttribute.image 
-                          atPoint:CGPointMake(currentX, currentY) 
+                           inRect:CGRectMake(currentX, currentY, wordWidth, currentLineHeight) 
                        attributes:stringAttribute];                                        
                 } else {
                     [self addWord:[words objectAtIndex:wordToAddIndex] 
-                          atPoint:CGPointMake(currentX, currentY) 
+                           inRect:CGRectMake(currentX, currentY, wordWidth, currentLineHeight) 
                        attributes:stringAttribute];                    
                 }
                 
@@ -810,7 +811,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             // ending this line, if any.
             if(lastWordOnLineBeforeHyphenPortion) {
                 [self addWord:lastWordOnLineBeforeHyphenPortion 
-                      atPoint:CGPointMake(currentX, currentY) 
+                       inRect:CGRectMake(currentX, currentY, wordWidths[wordToAddIndex], currentLineHeight)  
                    attributes:[attributes objectAtIndex:wordToAddIndex]];                
             }
 
@@ -1011,8 +1012,8 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
 - (void)pleasinglyDistributeContentVertically
 {
     if(_stringsCount) {
-        CGFloat minY = _stringPositions[0].y;
-        CGFloat maxY = _stringPositions[_stringsCount-1].y + _lineHeight;
+        CGFloat minY = _stringRects[0].origin.y;
+        CGFloat maxY = _stringRects[_stringsCount-1].origin.y + _lineHeight;
         CGFloat contentHeight = maxY - minY;
         CGFloat frameHeight = self.frame.size.height;
 
@@ -1061,17 +1062,10 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             if([potentialStringWithAttibutes isKindOfClass:THPairClass]) {
                 EucBookTextStyle *attribute = potentialStringWithAttibutes.second;
                 if([attribute.attributes objectForKey:@"href"]) {
-                    CGRect hotArea;
-                    hotArea.origin.x = _stringPositions[i].x - _spaceWidth / 2;
-                    hotArea.origin.y = _stringPositions[i].y + _pageYOffset;
-                    if(attribute.image) {
-                        hotArea.size.width = [attribute imageWidthForPointSize:_pointSize];
-                    } else {
-                        hotArea.size.width = [[attribute stringRenderer] roundedWidthOfString:potentialStringWithAttibutes.first 
-                                                                                    pointSize:[attribute fontPointSizeForPointSize:_pointSize]];
-                    }
+                    CGRect hotArea = _stringRects[i];
+                    hotArea.origin.x -= _spaceWidth / 2;
+                    hotArea.origin.y += _pageYOffset;
                     hotArea.size.width += _spaceWidth;
-                    hotArea.size.height = [attribute lineHeightForPointSize:_pointSize];
                     
                     if(CGRectContainsPoint(hotArea, location)) {
                         _trackingRect = CGRectInset(hotArea, -10, -10);;

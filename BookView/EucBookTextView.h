@@ -31,7 +31,7 @@
     NSUInteger _stringsCapacity;
     NSUInteger _stringsCount;
     id *_stringsWithAttributes;
-    CGPoint *_stringPositions;
+    CGRect *_stringRects;
         
     void *_sharedHyphenator;
     
