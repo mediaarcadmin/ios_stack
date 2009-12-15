@@ -200,7 +200,35 @@
 		7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */; };
 		7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6F767910AC612D0041482F /* css21.g in Sources */ = {isa = PBXBuildFile; fileRef = 7D51718E1028B553005F3C46 /* css21.g */; settings = {COMPILER_FLAGS = "-Wno-unused"; }; };
-		7DD48DEF10C2E1320001203D /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48D9C10C2E1320001203D /* book */; };
+		7D9A96E410D7E42A00C2E00A /* PaginateAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A96DD10D7E42A00C2E00A /* PaginateAppDelegate.m */; };
+		7D9A96E510D7E42A00C2E00A /* PaginateRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A96DF10D7E42A00C2E00A /* PaginateRootViewController.m */; };
+		7D9A96E710D7E42A00C2E00A /* PaginateMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A96E110D7E42A00C2E00A /* PaginateMain.m */; };
+		7D9A96E810D7E42A00C2E00A /* PaginateMainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A96E210D7E42A00C2E00A /* PaginateMainWindow.xib */; };
+		7D9A96E910D7E42A00C2E00A /* PaginateRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A96E310D7E42A00C2E00A /* PaginateRootViewController.xib */; };
+		7D9A96EC10D7E44200C2E00A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		7D9A96ED10D7E44200C2E00A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
+		7D9A96EE10D7E44200C2E00A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
+		7D9A96EF10D7E44200C2E00A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
+		7D9A96F010D7E44200C2E00A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E6010C2E46C0001203D /* QuartzCore.framework */; };
+		7D9A96F110D7E44200C2E00A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E7B10C2E5780001203D /* AudioToolbox.framework */; };
+		7D9A96F210D7E44200C2E00A /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
+		7D9A96F310D7E44200C2E00A /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libEucalyptus.a */; };
+		7D9A96F410D7E44200C2E00A /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171881028B4A4005F3C46 /* libEucalyptusEPub.a */; };
+		7D9A96F510D7E44200C2E00A /* libantlr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171D91028B6B9005F3C46 /* libantlr.a */; };
+		7D9A96F610D7E44200C2E00A /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
+		7D9A96F710D7E44200C2E00A /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
+		7D9A97E610D7E48E00C2E00A /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
+		7D9A981F10D7E67E00C2E00A /* LinuxLibertine-Bold.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */; };
+		7D9A982010D7E67E00C2E00A /* LinuxLibertine-BoldItalic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */; };
+		7D9A982110D7E67E00C2E00A /* LinuxLibertine-Italic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */; };
+		7D9A982210D7E67E00C2E00A /* LinuxLibertine.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECF10C2E61E0001203D /* LinuxLibertine.thfont */; };
+		7D9A982810D7E69500C2E00A /* BookPaperWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC710C2E61E0001203D /* BookPaperWhite.png */; };
+		7D9A986810D7E6F100C2E00A /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A986610D7E6F100C2E00A /* HyphenationPatterns */; };
+		7D9A986D10D7E70E00C2E00A /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */; };
+		7D9A987610D7E73800C2E00A /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC610C2E61E0001203D /* BookPaper.png */; };
+		7D9A98A210D7E85100C2E00A /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC910C2E61E0001203D /* EPubDefault.css */; };
+		7D9A98AC10D7E8F000C2E00A /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
+		7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A986610D7E6F100C2E00A /* HyphenationPatterns */; };
 		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
 		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
 		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
@@ -224,7 +252,6 @@
 		7DD48EE210C2E61E0001203D /* BookPaperWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC710C2E61E0001203D /* BookPaperWhite.png */; };
 		7DD48EE310C2E61E0001203D /* ContentsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC810C2E61E0001203D /* ContentsButton.png */; };
 		7DD48EE410C2E61E0001203D /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC910C2E61E0001203D /* EPubDefault.css */; };
-		7DD48EE510C2E61E0001203D /* en in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECB10C2E61E0001203D /* en */; };
 		7DD48EE610C2E61E0001203D /* LinuxLibertine-Bold.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */; };
 		7DD48EE710C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */; };
 		7DD48EE810C2E61E0001203D /* LinuxLibertine-Italic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */; };
@@ -294,6 +321,13 @@
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = D2AAC07D0554694100DB518D;
+			remoteInfo = libEucalyptus;
+		};
+		7D9A96EA10D7E43D00C2E00A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D /* libEucalyptus */;
 			remoteInfo = libEucalyptus;
 		};
 /* End PBXContainerItemProxy section */
@@ -537,7 +571,17 @@
 		7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLocalBookReference.h; sourceTree = "<group>"; };
 		7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSFileManagerAdditions.m; sourceTree = "<group>"; };
 		7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSFileManagerAdditions.h; sourceTree = "<group>"; };
-		7DD48D9C10C2E1320001203D /* book */ = {isa = PBXFileReference; lastKnownFileType = folder; path = book; sourceTree = "<group>"; };
+		7D9A96D210D7E41100C2E00A /* Paginate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paginate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D9A96DC10D7E42A00C2E00A /* PaginateAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaginateAppDelegate.h; sourceTree = "<group>"; };
+		7D9A96DD10D7E42A00C2E00A /* PaginateAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaginateAppDelegate.m; sourceTree = "<group>"; };
+		7D9A96DE10D7E42A00C2E00A /* PaginateRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaginateRootViewController.h; sourceTree = "<group>"; };
+		7D9A96DF10D7E42A00C2E00A /* PaginateRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaginateRootViewController.m; sourceTree = "<group>"; };
+		7D9A96E010D7E42A00C2E00A /* Paginate-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Paginate-Info.plist"; sourceTree = "<group>"; };
+		7D9A96E110D7E42A00C2E00A /* PaginateMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaginateMain.m; sourceTree = "<group>"; };
+		7D9A96E210D7E42A00C2E00A /* PaginateMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginateMainWindow.xib; sourceTree = "<group>"; };
+		7D9A96E310D7E42A00C2E00A /* PaginateRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginateRootViewController.xib; sourceTree = "<group>"; };
+		7D9A979210D7E48E00C2E00A /* book */ = {isa = PBXFileReference; lastKnownFileType = folder; path = book; sourceTree = "<group>"; };
+		7D9A986610D7E6F100C2E00A /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7DD48E5410C2E42C0001203D /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin9/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7DD48E5810C2E44F0001203D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -562,7 +606,6 @@
 		7DD48EC710C2E61E0001203D /* BookPaperWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaperWhite.png; sourceTree = "<group>"; };
 		7DD48EC810C2E61E0001203D /* ContentsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ContentsButton.png; sourceTree = "<group>"; };
 		7DD48EC910C2E61E0001203D /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
-		7DD48ECB10C2E61E0001203D /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = en; sourceTree = "<group>"; };
 		7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.thfont"; sourceTree = "<group>"; };
 		7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.thfont"; sourceTree = "<group>"; };
 		7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.thfont"; sourceTree = "<group>"; };
@@ -600,6 +643,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D9A96D010D7E41100C2E00A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D9A96EC10D7E44200C2E00A /* Foundation.framework in Frameworks */,
+				7D9A96ED10D7E44200C2E00A /* UIKit.framework in Frameworks */,
+				7D9A96EE10D7E44200C2E00A /* OpenGLES.framework in Frameworks */,
+				7D9A96EF10D7E44200C2E00A /* CoreGraphics.framework in Frameworks */,
+				7D9A96F010D7E44200C2E00A /* QuartzCore.framework in Frameworks */,
+				7D9A96F110D7E44200C2E00A /* AudioToolbox.framework in Frameworks */,
+				7D9A96F210D7E44200C2E00A /* libstdc++.dylib in Frameworks */,
+				7D9A96F310D7E44200C2E00A /* libEucalyptus.a in Frameworks */,
+				7D9A96F410D7E44200C2E00A /* libEucalyptusEPub.a in Frameworks */,
+				7D9A96F510D7E44200C2E00A /* libantlr.a in Frameworks */,
+				7D9A96F610D7E44200C2E00A /* libexpat.a in Frameworks */,
+				7D9A96F710D7E44200C2E00A /* libhyphenate.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC07C0554694100DB518D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -620,6 +682,7 @@
 				7D5171CA1028B6AE005F3C46 /* libexpat.a */,
 				7D5171D91028B6B9005F3C46 /* libantlr.a */,
 				7D034F8910C2CCBE0085778B /* TransitionTest.app */,
+				7D9A96D210D7E41100C2E00A /* Paginate.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -634,7 +697,9 @@
 				7D516E1710287300005F3C46 /* ThirdParty */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				7D53F30910C2CBD70042215C /* TransitionTest */,
+				7D9A96DA10D7E42A00C2E00A /* Paginate */,
 				7DD48EB610C2E61E0001203D /* Resources */,
+				7D9A96F810D7E48200C2E00A /* TestResources */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
 			);
@@ -685,7 +750,6 @@
 		7D034F9810C2CD820085778B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				7DD48D9C10C2E1320001203D /* book */,
 				7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */,
 				7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */,
 			);
@@ -1103,9 +1167,41 @@
 			path = TransitionTest;
 			sourceTree = "<group>";
 		};
+		7D9A96DA10D7E42A00C2E00A /* Paginate */ = {
+			isa = PBXGroup;
+			children = (
+				7D9A96DB10D7E42A00C2E00A /* Classes */,
+				7D9A96E010D7E42A00C2E00A /* Paginate-Info.plist */,
+				7D9A96E110D7E42A00C2E00A /* PaginateMain.m */,
+				7D9A96E210D7E42A00C2E00A /* PaginateMainWindow.xib */,
+				7D9A96E310D7E42A00C2E00A /* PaginateRootViewController.xib */,
+			);
+			path = Paginate;
+			sourceTree = "<group>";
+		};
+		7D9A96DB10D7E42A00C2E00A /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				7D9A96DC10D7E42A00C2E00A /* PaginateAppDelegate.h */,
+				7D9A96DD10D7E42A00C2E00A /* PaginateAppDelegate.m */,
+				7D9A96DE10D7E42A00C2E00A /* PaginateRootViewController.h */,
+				7D9A96DF10D7E42A00C2E00A /* PaginateRootViewController.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		7D9A96F810D7E48200C2E00A /* TestResources */ = {
+			isa = PBXGroup;
+			children = (
+				7D9A979210D7E48E00C2E00A /* book */,
+			);
+			path = TestResources;
+			sourceTree = "<group>";
+		};
 		7DD48EB610C2E61E0001203D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7D9A986610D7E6F100C2E00A /* HyphenationPatterns */,
 				7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */,
 				7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */,
 				7DD48EB810C2E61E0001203D /* Apple */,
@@ -1115,7 +1211,6 @@
 				7DD48EC710C2E61E0001203D /* BookPaperWhite.png */,
 				7DD48EC810C2E61E0001203D /* ContentsButton.png */,
 				7DD48EC910C2E61E0001203D /* EPubDefault.css */,
-				7DD48ECA10C2E61E0001203D /* HyphenationPatterns */,
 				7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */,
 				7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */,
 				7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */,
@@ -1143,14 +1238,6 @@
 				7DD48EC310C2E61E0001203D /* rightButtonBlue.png */,
 			);
 			path = Apple;
-			sourceTree = "<group>";
-		};
-		7DD48ECA10C2E61E0001203D /* HyphenationPatterns */ = {
-			isa = PBXGroup;
-			children = (
-				7DD48ECB10C2E61E0001203D /* en */,
-			);
-			path = HyphenationPatterns;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1383,6 +1470,24 @@
 			productReference = 7D5171D91028B6B9005F3C46 /* libantlr.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		7D9A96D110D7E41100C2E00A /* Paginate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D9A96D910D7E41100C2E00A /* Build configuration list for PBXNativeTarget "Paginate" */;
+			buildPhases = (
+				7D9A96CE10D7E41100C2E00A /* Resources */,
+				7D9A96CF10D7E41100C2E00A /* Sources */,
+				7D9A96D010D7E41100C2E00A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7D9A96EB10D7E43D00C2E00A /* PBXTargetDependency */,
+			);
+			name = Paginate;
+			productName = Paginate;
+			productReference = 7D9A96D210D7E41100C2E00A /* Paginate.app */;
+			productType = "com.apple.product-type.application";
+		};
 		D2AAC07D0554694100DB518D /* libEucalyptus */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB921E08733DC00010E9CD /* Build configuration list for PBXNativeTarget "libEucalyptus" */;
@@ -1421,6 +1526,7 @@
 				7D5171BC1028B6AE005F3C46 /* libexpat */,
 				7D5171CB1028B6B9005F3C46 /* libantlr */,
 				7D034F8810C2CCBE0085778B /* TransitionTest */,
+				7D9A96D110D7E41100C2E00A /* Paginate */,
 			);
 		};
 /* End PBXProject section */
@@ -1430,9 +1536,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D9A98AC10D7E8F000C2E00A /* book in Resources */,
+				7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */,
 				7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */,
 				7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */,
-				7DD48DEF10C2E1320001203D /* book in Resources */,
 				7DD48ED310C2E61E0001203D /* animatedBookTurnVertices.vertexData in Resources */,
 				7DD48ED410C2E61E0001203D /* iPodLikeSliderBlueLeftCap.png in Resources */,
 				7DD48ED510C2E61E0001203D /* iPodLikeSliderKnob-Small.png in Resources */,
@@ -1451,7 +1558,6 @@
 				7DD48EE210C2E61E0001203D /* BookPaperWhite.png in Resources */,
 				7DD48EE310C2E61E0001203D /* ContentsButton.png in Resources */,
 				7DD48EE410C2E61E0001203D /* EPubDefault.css in Resources */,
-				7DD48EE510C2E61E0001203D /* en in Resources */,
 				7DD48EE610C2E61E0001203D /* LinuxLibertine-Bold.thfont in Resources */,
 				7DD48EE710C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont in Resources */,
 				7DD48EE810C2E61E0001203D /* LinuxLibertine-Italic.thfont in Resources */,
@@ -1460,6 +1566,25 @@
 				7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */,
 				7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */,
 				7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D9A96CE10D7E41100C2E00A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D9A98A210D7E85100C2E00A /* EPubDefault.css in Resources */,
+				7D9A987610D7E73800C2E00A /* BookPaper.png in Resources */,
+				7D9A982810D7E69500C2E00A /* BookPaperWhite.png in Resources */,
+				7D9A986D10D7E70E00C2E00A /* XHTMLEntityMap.plist in Resources */,
+				7D9A981F10D7E67E00C2E00A /* LinuxLibertine-Bold.thfont in Resources */,
+				7D9A982010D7E67E00C2E00A /* LinuxLibertine-BoldItalic.thfont in Resources */,
+				7D9A982110D7E67E00C2E00A /* LinuxLibertine-Italic.thfont in Resources */,
+				7D9A982210D7E67E00C2E00A /* LinuxLibertine.thfont in Resources */,
+				7D9A96E810D7E42A00C2E00A /* PaginateMainWindow.xib in Resources */,
+				7D9A96E910D7E42A00C2E00A /* PaginateRootViewController.xib in Resources */,
+				7D9A986810D7E6F100C2E00A /* HyphenationPatterns in Resources */,
+				7D9A97E610D7E48E00C2E00A /* book in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1545,6 +1670,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D9A96CF10D7E41100C2E00A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D9A96E410D7E42A00C2E00A /* PaginateAppDelegate.m in Sources */,
+				7D9A96E510D7E42A00C2E00A /* PaginateRootViewController.m in Sources */,
+				7D9A96E710D7E42A00C2E00A /* PaginateMain.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC07B0554694100DB518D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1622,6 +1757,11 @@
 			isa = PBXTargetDependency;
 			target = D2AAC07D0554694100DB518D /* libEucalyptus */;
 			targetProxy = 7D5D69B210C2D21C00BBF826 /* PBXContainerItemProxy */;
+		};
+		7D9A96EB10D7E43D00C2E00A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC07D0554694100DB518D /* libEucalyptus */;
+			targetProxy = 7D9A96EA10D7E43D00C2E00A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1941,6 +2081,93 @@
 			};
 			name = Release;
 		};
+		7D9A96D510D7E41100C2E00A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Paginate;
+				SDKROOT = iphonesimulator3.0;
+			};
+			name = Debug;
+		};
+		7D9A96D610D7E41100C2E00A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Paginate;
+				SDKROOT = iphonesimulator3.0;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		7D9A96D710D7E41100C2E00A /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Paginate;
+				SDKROOT = iphonesimulator3.0;
+			};
+			name = Beta;
+		};
+		7D9A96D810D7E41100C2E00A /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Paginate;
+				SDKROOT = iphonesimulator3.0;
+			};
+			name = AppStore;
+		};
 		7DA921F410C1861700F18134 /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2209,6 +2436,17 @@
 				7D5171D81028B6B9005F3C46 /* Release */,
 				7DA921F910C1861700F18134 /* Beta */,
 				7DA921FF10C1861800F18134 /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D9A96D910D7E41100C2E00A /* Build configuration list for PBXNativeTarget "Paginate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D9A96D510D7E41100C2E00A /* Debug */,
+				7D9A96D610D7E41100C2E00A /* Release */,
+				7D9A96D710D7E41100C2E00A /* Beta */,
+				7D9A96D810D7E41100C2E00A /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

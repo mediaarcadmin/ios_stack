@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx
+  PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
+   <head>
+      <!--The following four metadata items are required for all
+            NCX documents, including those conforming to the relaxed
+            constraints of OPS 2.0-->
+      <meta name="dtb:uid" content="19c2b129-40b2-40f4-88e3-59d12871da25"/>
+      <meta name="epub-creator" content="epubBooks (www.epubbooks.com)"/>
+      <meta name="dtb:depth" content="1"/>
+      <meta name="dtb:totalPageCount" content="0"/>
+      <meta name="dtb:maxPageNumber" content="0"/>
+   </head>
+   <docTitle>
+      <text>Alice in Wonderland</text>
+   </docTitle>
+   <docAuthor>
+      <text>Lewis Carroll</text>
+   </docAuthor>
+   <navMap>
+      <navPoint id="navpoint-1" playOrder="1">
+         <navLabel>
+            <text>Title Page</text>
+         </navLabel>
+         <content src="title.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-2" playOrder="2">
+         <navLabel>
+            <text>epubBooks Information</text>
+         </navLabel>
+         <content src="epubbooksinfo.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-3" playOrder="3">
+         <navLabel>
+            <text>I—DOWN THE RABBIT–HOLE</text>
+         </navLabel>
+         <content src="chapter-001.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-4" playOrder="4">
+         <navLabel>
+            <text>II—THE POOL OF TEARS</text>
+         </navLabel>
+         <content src="chapter-002.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-5" playOrder="5">
+         <navLabel>
+            <text>III—A CAUCUS–RACE AND A LONG TALE</text>
+         </navLabel>
+         <content src="chapter-003.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-6" playOrder="6">
+         <navLabel>
+            <text>IV—THE RABBIT SENDS IN A LITTLE BILL</text>
+         </navLabel>
+         <content src="chapter-004.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-7" playOrder="7">
+         <navLabel>
+            <text>V—ADVICE FROM A CATERPILLAR</text>
+         </navLabel>
+         <content src="chapter-005.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-8" playOrder="8">
+         <navLabel>
+            <text>VI—PIG AND PEPPER</text>
+         </navLabel>
+         <content src="chapter-006.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-9" playOrder="9">
+         <navLabel>
+            <text>VII—A MAD TEA–PARTY</text>
+         </navLabel>
+         <content src="chapter-007.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-10" playOrder="10">
+         <navLabel>
+            <text>VIII—THE QUEEN'S CROQUET GROUND</text>
+         </navLabel>
+         <content src="chapter-008.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-11" playOrder="11">
+         <navLabel>
+            <text>IX—WHO STOLE THE TARTS?</text>
+         </navLabel>
+         <content src="chapter-009.xml"/>
+      </navPoint>
+      <navPoint id="navpoint-12" playOrder="12">
+         <navLabel>
+            <text>X—ALICE'S EVIDENCE</text>
+         </navLabel>
+         <content src="chapter-010.xml"/>
+      </navPoint>
+   </navMap>
+</ncx>

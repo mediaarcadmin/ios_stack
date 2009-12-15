@@ -18,5 +18,4 @@
 - (void)setTitle:(NSString *)title;
 - (void)setAuthor:(NSString *)author;
 
-
 @end

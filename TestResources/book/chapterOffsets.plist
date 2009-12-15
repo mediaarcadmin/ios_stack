@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>/OPS/chapter-001.xml</key>
+	<integer>2678</integer>
+	<key>/OPS/chapter-002.xml</key>
+	<integer>11306</integer>
+	<key>/OPS/chapter-003.xml</key>
+	<integer>19024</integer>
+	<key>/OPS/chapter-004.xml</key>
+	<integer>28352</integer>
+	<key>/OPS/chapter-005.xml</key>
+	<integer>37370</integer>
+	<key>/OPS/chapter-006.xml</key>
+	<integer>44912</integer>
+	<key>/OPS/chapter-007.xml</key>
+	<integer>51253</integer>
+	<key>/OPS/chapter-008.xml</key>
+	<integer>55749</integer>
+	<key>/OPS/chapter-009.xml</key>
+	<integer>63593</integer>
+	<key>/OPS/chapter-010.xml</key>
+	<integer>68141</integer>
+	<key>/OPS/epubbooksinfo.xml</key>
+	<integer>1177</integer>
+	<key>/OPS/epubbooksinfo.xml#epb-frontpage</key>
+	<integer>1741</integer>
+	<key>/OPS/epubbooksinfo.xml#epb-logo</key>
+	<integer>2159</integer>
+	<key>/OPS/title.xml</key>
+	<integer>0</integer>
+	<key>/OPS/title.xml#docDate</key>
+	<integer>979</integer>
+	<key>/OPS/title.xml#docImprint</key>
+	<integer>809</integer>
+	<key>/OPS/title.xml#frontmatter</key>
+	<integer>562</integer>
+	<key>/OPS/title.xml#titlepage</key>
+	<integer>603</integer>
+</dict>
+</plist>
