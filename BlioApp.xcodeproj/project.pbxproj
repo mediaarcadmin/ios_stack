@@ -487,10 +487,6 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/";
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/i686-apple-darwin9/4.0.1\"",
-				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -508,10 +504,6 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/";
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/i686-apple-darwin9/4.0.1\"",
-				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -530,6 +522,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = iphonesimulator3.0;
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Debug;
 		};
@@ -543,6 +536,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = iphonesimulator3.0;
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Release;
 		};
