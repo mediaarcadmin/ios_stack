@@ -1,9 +1,9 @@
 //
 //  THBackgroundProcessingMediator.m
-//  Eucalyptus
+//  libEucalyptus
 //
 //  Created by James Montgomerie on 05/12/2008.
-//  Copyright 2008 James Montgomerie. All rights reserved.
+//  Copyright 2008 Things Made Out Of Other Things Ltd. All rights reserved.
 //
 
 #import "THBackgroundProcessingMediator.h"

@@ -1,9 +1,9 @@
 //
 //  main.m
-//  HHGG
+//  Paginate
 //
 //  Created by James Montgomerie on 05/08/2009.
-//  Copyright James Montgomerie 2009. All rights reserved.
+//  Copyright 2009 Things Made Out Of Other Things Ltd. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

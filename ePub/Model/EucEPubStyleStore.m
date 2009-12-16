@@ -1,9 +1,9 @@
 //
 //  EucEPubStyleStore.m
-//  Eucalyptus
+//  libEucalyptus
 //
 //  Created by James Montgomerie on 25/07/2009.
-//  Copyright 2009 James Montgomerie. All rights reserved.
+//  Copyright 2009 Things Made Out Of Other Things Ltd. All rights reserved.
 //
 
 #import "EucEPubStyleStore.h"

@@ -3,7 +3,7 @@
 //  PageTurnTest
 //
 //  Created by James Montgomerie on 07/11/2008.
-//  Copyright James Montgomerie 2008. All rights reserved.
+//  Copyright 2008 Things Made Out Of Other Things Limited. All rights reserved.
 //
 
 #import <QuartzCore/QuartzCore.h>
