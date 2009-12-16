@@ -52,6 +52,7 @@
 @synthesize appearAtCoverThenOpen = _appearAtCoverThenOpen;
 
 @synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
+@synthesize returnToNavigationBarTranslucent = _returnToNavigationBarTranslucent;
 @synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
 @synthesize returnToNavigationBarHidden = _returnToNavigationBarHidden;
 @synthesize returnToStatusBarHidden = _returnToStatusBarHidden;
@@ -400,6 +401,7 @@
         [[navBar layer] addAnimation:animation forKey:@"NavBarFade"];
         
         navBar.barStyle = UIBarStyleDefault;
+        navBar.translucent = NO;
         ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleDefault;
         [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"BookButton.png"]
                                                                          forState:UIControlStateNormal];
@@ -434,7 +436,8 @@
             [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
             [[navBar layer] addAnimation:animation forKey:@"animation"];
             
-            self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+            navBar.barStyle = UIBarStyleBlack;
+            navBar.translucent = YES;
             ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleBlackTranslucent;
             [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"ContentsButton.png"]
                                                                              forState:UIControlStateNormal];
@@ -485,7 +488,9 @@
     mainSuperview.opaque = NO;
     
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectZero];
-    toolbar.barStyle = UIBarStyleBlackTranslucent;
+    toolbar.barStyle = UIBarStyleBlack;
+    toolbar.translucent = YES;
+    
     [toolbar sizeToFit];
     CGFloat toolbarMarginHeight = 12.0f;
     CGFloat toolbarNonMarginHeight = [toolbar frame].size.height - 2.0f * toolbarMarginHeight;
@@ -548,7 +553,7 @@
                     target:self
                     action:@selector(_trashButtonTapped)];
     */
-    
+        
     _pageSlider = [[THScalableSlider alloc] initWithFrame:toolbarBounds];
     _pageSlider.backgroundColor = [UIColor clearColor];	
     
@@ -650,15 +655,20 @@
     if(!self.modalViewController) {
         UIApplication *application = [UIApplication sharedApplication];
         
+        UINavigationBar *navigationBar = self.navigationController.navigationBar;
         // Store the hidden/visible state and style of the status and navigation
         // bars so that we can restore them when popped.
-        UIBarStyle navigationBarStyle = self.navigationController.navigationBar.barStyle;
+        UIBarStyle navigationBarStyle = navigationBar.barStyle;
+        BOOL navigationBarTranslucent = navigationBar.translucent;
         UIStatusBarStyle statusBarStyle = application.statusBarStyle;
         BOOL navigationBarHidden = self.navigationController.isNavigationBarHidden;
         BOOL statusBarHidden = application.isStatusBarHidden;
         
         if(!_overrideReturnToNavigationBarStyle) {
             _returnToNavigationBarStyle = navigationBarStyle;
+        }
+        if(!_overrideReturnToNavigationBarTranslucent) {
+            _returnToNavigationBarTranslucent = navigationBarTranslucent;
         }
         if(!_overrideReturnToStatusBarStyle) {
             _returnToStatusBarStyle = statusBarStyle;
@@ -671,8 +681,9 @@
         }
         
         // Set the status bar and navigation bar styles.
-        if(navigationBarStyle != UIBarStyleBlackTranslucent && self.toolbarsVisibleAfterAppearance) {
-            [self.navigationController.navigationBar setBarStyle:UIBarStyleBlackTranslucent];  
+        if(!(navigationBarStyle == UIBarStyleBlack && navigationBarTranslucent) && self.toolbarsVisibleAfterAppearance) {
+            navigationBar.barStyle = UIBarStyleBlack;
+            navigationBar.translucent = YES;
         }
         if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
             [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
@@ -770,7 +781,9 @@
                 [self.navigationController setNavigationBarHidden:NO animated:NO];
             }            
         } else {
-            [self.navigationController.navigationBar setBarStyle:UIBarStyleBlackTranslucent];  
+            UINavigationBar *navBar = self.navigationController.navigationBar;
+            navBar.barStyle = UIBarStyleBlack;  
+            navBar.translucent = YES;
             if(![application isStatusBarHidden]) {
                 [application setStatusBarHidden:YES animated:YES];
             }            
@@ -910,8 +923,10 @@
                 [application setStatusBarHidden:_returnToStatusBarHidden 
                                        animated:YES];
             }           
-            [self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
-            [self.navigationController.navigationBar setBarStyle:_returnToNavigationBarStyle];
+            UINavigationBar *navBar = self.navigationController.navigationBar;
+            navBar.barStyle = UIBarStyleDefault;
+            navBar.barStyle = _returnToNavigationBarStyle;
+            navBar.translucent = _returnToNavigationBarTranslucent;
             [UIView commitAnimations];
 
             if(_returnToNavigationBarHidden != self.navigationController.isNavigationBarHidden) {
