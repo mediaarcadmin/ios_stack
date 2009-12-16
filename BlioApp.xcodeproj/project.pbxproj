@@ -1,0 +1,573 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D3623260D0F684500981E51 /* BlioAppAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */; };
+		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
+		28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
+		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
+		28F335F11007B36200424DE2 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
+		7D381B5C10D92E86008D34E2 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
+		7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
+		7D381B5E10D92E86008D34E2 /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4F10D92E81008D34E2 /* libEucalyptusEPub.a */; };
+		7D381B5F10D92E86008D34E2 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
+		7D381B6010D92E86008D34E2 /* libantlr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5310D92E81008D34E2 /* libantlr.a */; };
+		7D381B9310D92F14008D34E2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9210D92F14008D34E2 /* AudioToolbox.framework */; };
+		7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
+		7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
+		7D381B9B10D92F2C008D34E2 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */; };
+		7D381CC410D93007008D34E2 /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CC310D93007008D34E2 /* book */; };
+		7D381CEA10D93023008D34E2 /* animatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CCD10D93023008D34E2 /* animatedBookTurnVertices.vertexData */; };
+		7D381CEB10D93023008D34E2 /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CCF10D93023008D34E2 /* iPodLikeSliderBlueLeftCap.png */; };
+		7D381CEC10D93023008D34E2 /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD010D93023008D34E2 /* iPodLikeSliderKnob-Small.png */; };
+		7D381CED10D93023008D34E2 /* iPodLikeSliderKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD110D93023008D34E2 /* iPodLikeSliderKnob.png */; };
+		7D381CEE10D93023008D34E2 /* iPodLikeSliderWhiteRightCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD210D93023008D34E2 /* iPodLikeSliderWhiteRightCap.png */; };
+		7D381CEF10D93023008D34E2 /* PurchaseButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD310D93023008D34E2 /* PurchaseButton.png */; };
+		7D381CF010D93023008D34E2 /* PurchaseButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD410D93023008D34E2 /* PurchaseButtonPressed.png */; };
+		7D381CF110D93023008D34E2 /* PurchaseConfirmButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD510D93023008D34E2 /* PurchaseConfirmButton.png */; };
+		7D381CF210D93023008D34E2 /* PurchaseConfirmButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD610D93023008D34E2 /* PurchaseConfirmButtonPressed.png */; };
+		7D381CF310D93023008D34E2 /* rightButtonBlackOpaque.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD710D93023008D34E2 /* rightButtonBlackOpaque.png */; };
+		7D381CF410D93023008D34E2 /* rightButtonBlackTranslucent.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD810D93023008D34E2 /* rightButtonBlackTranslucent.png */; };
+		7D381CF510D93023008D34E2 /* rightButtonBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD910D93023008D34E2 /* rightButtonBlue.png */; };
+		7D381CF610D93023008D34E2 /* BookButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDA10D93023008D34E2 /* BookButton.png */; };
+		7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
+		7D381CF810D93023008D34E2 /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDC10D93023008D34E2 /* BookPaper.png */; };
+		7D381CF910D93023008D34E2 /* BookPaperWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDD10D93023008D34E2 /* BookPaperWhite.png */; };
+		7D381CFA10D93023008D34E2 /* ContentsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDE10D93023008D34E2 /* ContentsButton.png */; };
+		7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
+		7D381CFD10D93023008D34E2 /* LinuxLibertine-Bold.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE210D93023008D34E2 /* LinuxLibertine-Bold.thfont */; };
+		7D381CFE10D93023008D34E2 /* LinuxLibertine-BoldItalic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE310D93023008D34E2 /* LinuxLibertine-BoldItalic.thfont */; };
+		7D381CFF10D93023008D34E2 /* LinuxLibertine-Italic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE410D93023008D34E2 /* LinuxLibertine-Italic.thfont */; };
+		7D381D0010D93023008D34E2 /* LinuxLibertine.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE510D93023008D34E2 /* LinuxLibertine.thfont */; };
+		7D381D0110D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */; };
+		7D381D0210D93023008D34E2 /* UIBarButtonSystemItemFastForward.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE710D93023008D34E2 /* UIBarButtonSystemItemFastForward.png */; };
+		7D381D0310D93023008D34E2 /* UIBarButtonSystemItemRewind.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE810D93023008D34E2 /* UIBarButtonSystemItemRewind.png */; };
+		7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
+		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7D381B4A10D92E81008D34E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D /* libEucalyptus.a */;
+			remoteInfo = libEucalyptus;
+		};
+		7D381B4C10D92E81008D34E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */;
+			remoteInfo = libhyphenate;
+		};
+		7D381B4E10D92E81008D34E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D5171881028B4A4005F3C46 /* libEucalyptusEPub.a */;
+			remoteInfo = libEucalyptusEPub;
+		};
+		7D381B5010D92E81008D34E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D5171CA1028B6AE005F3C46 /* libexpat.a */;
+			remoteInfo = libexpat;
+		};
+		7D381B5210D92E81008D34E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D5171D91028B6B9005F3C46 /* libantlr.a */;
+			remoteInfo = libantlr;
+		};
+		7D381B5410D92E81008D34E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D034F8910C2CCBE0085778B /* TransitionTest.app */;
+			remoteInfo = TransitionTest;
+		};
+		7D381B5610D92E81008D34E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D9A96D210D7E41100C2E00A /* Paginate.app */;
+			remoteInfo = Paginate;
+		};
+		7D381B6210D92E99008D34E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D /* libEucalyptus */;
+			remoteInfo = libEucalyptus;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppAppDelegate.h; sourceTree = "<group>"; };
+		1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAppAppDelegate.m; sourceTree = "<group>"; };
+		1D6058910D05DD3D006BFB54 /* Blio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		28A0AAE50D9B0CCF005BE974 /* BlioApp_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioApp_Prefix.pch; sourceTree = "<group>"; };
+		28AD735F0D9D9599002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		28C286DF0D94DF7D0034E888 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		28C286E00D94DF7D0034E888 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		28F335F01007B36200424DE2 /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libEucalyptus.xcodeproj; path = libEucalyptus/libEucalyptus.xcodeproj; sourceTree = "<group>"; };
+		7D381B9210D92F14008D34E2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		7D381B9410D92F14008D34E2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		7D381B9610D92F14008D34E2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "usr/lib/libstdc++.6.dylib"; sourceTree = SDKROOT; };
+		7D381CC310D93007008D34E2 /* book */ = {isa = PBXFileReference; lastKnownFileType = folder; name = book; path = libEucalyptus/TestResources/book; sourceTree = SOURCE_ROOT; };
+		7D381CCD10D93023008D34E2 /* animatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = animatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
+		7D381CCF10D93023008D34E2 /* iPodLikeSliderBlueLeftCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderBlueLeftCap.png; sourceTree = "<group>"; };
+		7D381CD010D93023008D34E2 /* iPodLikeSliderKnob-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small.png"; sourceTree = "<group>"; };
+		7D381CD110D93023008D34E2 /* iPodLikeSliderKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderKnob.png; sourceTree = "<group>"; };
+		7D381CD210D93023008D34E2 /* iPodLikeSliderWhiteRightCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderWhiteRightCap.png; sourceTree = "<group>"; };
+		7D381CD310D93023008D34E2 /* PurchaseButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseButton.png; sourceTree = "<group>"; };
+		7D381CD410D93023008D34E2 /* PurchaseButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseButtonPressed.png; sourceTree = "<group>"; };
+		7D381CD510D93023008D34E2 /* PurchaseConfirmButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseConfirmButton.png; sourceTree = "<group>"; };
+		7D381CD610D93023008D34E2 /* PurchaseConfirmButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseConfirmButtonPressed.png; sourceTree = "<group>"; };
+		7D381CD710D93023008D34E2 /* rightButtonBlackOpaque.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlackOpaque.png; sourceTree = "<group>"; };
+		7D381CD810D93023008D34E2 /* rightButtonBlackTranslucent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlackTranslucent.png; sourceTree = "<group>"; };
+		7D381CD910D93023008D34E2 /* rightButtonBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlue.png; sourceTree = "<group>"; };
+		7D381CDA10D93023008D34E2 /* BookButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookButton.png; sourceTree = "<group>"; };
+		7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
+		7D381CDC10D93023008D34E2 /* BookPaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaper.png; sourceTree = "<group>"; };
+		7D381CDD10D93023008D34E2 /* BookPaperWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaperWhite.png; sourceTree = "<group>"; };
+		7D381CDE10D93023008D34E2 /* ContentsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ContentsButton.png; sourceTree = "<group>"; };
+		7D381CDF10D93023008D34E2 /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
+		7D381CE210D93023008D34E2 /* LinuxLibertine-Bold.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.thfont"; sourceTree = "<group>"; };
+		7D381CE310D93023008D34E2 /* LinuxLibertine-BoldItalic.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.thfont"; sourceTree = "<group>"; };
+		7D381CE410D93023008D34E2 /* LinuxLibertine-Italic.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.thfont"; sourceTree = "<group>"; };
+		7D381CE510D93023008D34E2 /* LinuxLibertine.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.thfont; sourceTree = "<group>"; };
+		7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = reverseAnimatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
+		7D381CE710D93023008D34E2 /* UIBarButtonSystemItemFastForward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemFastForward.png; sourceTree = "<group>"; };
+		7D381CE810D93023008D34E2 /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
+		7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
+		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D381B5C10D92E86008D34E2 /* libEucalyptus.a in Frameworks */,
+				7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */,
+				7D381B5E10D92E86008D34E2 /* libEucalyptusEPub.a in Frameworks */,
+				7D381B5F10D92E86008D34E2 /* libexpat.a in Frameworks */,
+				7D381B6010D92E86008D34E2 /* libantlr.a in Frameworks */,
+				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
+				7D381B9310D92F14008D34E2 /* AudioToolbox.framework in Frameworks */,
+				7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */,
+				7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */,
+				7D381B9B10D92F2C008D34E2 /* libstdc++.6.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
+				28C286E00D94DF7D0034E888 /* RootViewController.m */,
+				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
+				1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */,
+			);
+			name = Classes;
+			path = Sources/Classes;
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D6058910D05DD3D006BFB54 /* Blio.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
+			isa = PBXGroup;
+			children = (
+				7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+				7D381B9210D92F14008D34E2 /* AudioToolbox.framework */,
+				7D381B9410D92F14008D34E2 /* OpenGLES.framework */,
+				7D381B9610D92F14008D34E2 /* QuartzCore.framework */,
+				7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */,
+			);
+			name = CustomTemplate;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				28A0AAE50D9B0CCF005BE974 /* BlioApp_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
+				7D381CC310D93007008D34E2 /* book */,
+				28F335F01007B36200424DE2 /* RootViewController.xib */,
+				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
+				8D1107310486CEB800E47090 /* BlioApp-Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
+				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7D381B4110D92E81008D34E2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7D381B4B10D92E81008D34E2 /* libEucalyptus.a */,
+				7D381B4D10D92E81008D34E2 /* libhyphenate.a */,
+				7D381B4F10D92E81008D34E2 /* libEucalyptusEPub.a */,
+				7D381B5110D92E81008D34E2 /* libexpat.a */,
+				7D381B5310D92E81008D34E2 /* libantlr.a */,
+				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
+				7D381B5710D92E81008D34E2 /* Paginate.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7D381CCC10D93023008D34E2 /* libEucalyptus Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7D381D0510D93039008D34E2 /* HyphenationPatterns */,
+				7D381CCE10D93023008D34E2 /* Apple */,
+				7D381CCD10D93023008D34E2 /* animatedBookTurnVertices.vertexData */,
+				7D381CDA10D93023008D34E2 /* BookButton.png */,
+				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
+				7D381CDC10D93023008D34E2 /* BookPaper.png */,
+				7D381CDD10D93023008D34E2 /* BookPaperWhite.png */,
+				7D381CDE10D93023008D34E2 /* ContentsButton.png */,
+				7D381CDF10D93023008D34E2 /* EPubDefault.css */,
+				7D381CE210D93023008D34E2 /* LinuxLibertine-Bold.thfont */,
+				7D381CE310D93023008D34E2 /* LinuxLibertine-BoldItalic.thfont */,
+				7D381CE410D93023008D34E2 /* LinuxLibertine-Italic.thfont */,
+				7D381CE510D93023008D34E2 /* LinuxLibertine.thfont */,
+				7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */,
+				7D381CE710D93023008D34E2 /* UIBarButtonSystemItemFastForward.png */,
+				7D381CE810D93023008D34E2 /* UIBarButtonSystemItemRewind.png */,
+				7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */,
+			);
+			name = "libEucalyptus Resources";
+			path = libEucalyptus/Resources;
+			sourceTree = SOURCE_ROOT;
+		};
+		7D381CCE10D93023008D34E2 /* Apple */ = {
+			isa = PBXGroup;
+			children = (
+				7D381CCF10D93023008D34E2 /* iPodLikeSliderBlueLeftCap.png */,
+				7D381CD010D93023008D34E2 /* iPodLikeSliderKnob-Small.png */,
+				7D381CD110D93023008D34E2 /* iPodLikeSliderKnob.png */,
+				7D381CD210D93023008D34E2 /* iPodLikeSliderWhiteRightCap.png */,
+				7D381CD310D93023008D34E2 /* PurchaseButton.png */,
+				7D381CD410D93023008D34E2 /* PurchaseButtonPressed.png */,
+				7D381CD510D93023008D34E2 /* PurchaseConfirmButton.png */,
+				7D381CD610D93023008D34E2 /* PurchaseConfirmButtonPressed.png */,
+				7D381CD710D93023008D34E2 /* rightButtonBlackOpaque.png */,
+				7D381CD810D93023008D34E2 /* rightButtonBlackTranslucent.png */,
+				7D381CD910D93023008D34E2 /* rightButtonBlue.png */,
+			);
+			path = Apple;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D6058900D05DD3D006BFB54 /* BlioApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "BlioApp" */;
+			buildPhases = (
+				1D60588D0D05DD3D006BFB54 /* Resources */,
+				1D60588E0D05DD3D006BFB54 /* Sources */,
+				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7D381B6310D92E99008D34E2 /* PBXTargetDependency */,
+			);
+			name = BlioApp;
+			productName = BlioApp;
+			productReference = 1D6058910D05DD3D006BFB54 /* Blio.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "BlioApp" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				en,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 7D381B4110D92E81008D34E2 /* Products */;
+					ProjectRef = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				1D6058900D05DD3D006BFB54 /* BlioApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		7D381B4B10D92E81008D34E2 /* libEucalyptus.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libEucalyptus.a;
+			remoteRef = 7D381B4A10D92E81008D34E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D381B4D10D92E81008D34E2 /* libhyphenate.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libhyphenate.a;
+			remoteRef = 7D381B4C10D92E81008D34E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D381B4F10D92E81008D34E2 /* libEucalyptusEPub.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libEucalyptusEPub.a;
+			remoteRef = 7D381B4E10D92E81008D34E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D381B5110D92E81008D34E2 /* libexpat.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libexpat.a;
+			remoteRef = 7D381B5010D92E81008D34E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D381B5310D92E81008D34E2 /* libantlr.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libantlr.a;
+			remoteRef = 7D381B5210D92E81008D34E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D381B5510D92E81008D34E2 /* TransitionTest.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TransitionTest.app;
+			remoteRef = 7D381B5410D92E81008D34E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D381B5710D92E81008D34E2 /* Paginate.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Paginate.app;
+			remoteRef = 7D381B5610D92E81008D34E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D60588D0D05DD3D006BFB54 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */,
+				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
+				7D381CC410D93007008D34E2 /* book in Resources */,
+				7D381CEA10D93023008D34E2 /* animatedBookTurnVertices.vertexData in Resources */,
+				7D381CEB10D93023008D34E2 /* iPodLikeSliderBlueLeftCap.png in Resources */,
+				7D381CEC10D93023008D34E2 /* iPodLikeSliderKnob-Small.png in Resources */,
+				7D381CED10D93023008D34E2 /* iPodLikeSliderKnob.png in Resources */,
+				7D381CEE10D93023008D34E2 /* iPodLikeSliderWhiteRightCap.png in Resources */,
+				7D381CEF10D93023008D34E2 /* PurchaseButton.png in Resources */,
+				7D381CF010D93023008D34E2 /* PurchaseButtonPressed.png in Resources */,
+				7D381CF110D93023008D34E2 /* PurchaseConfirmButton.png in Resources */,
+				7D381CF210D93023008D34E2 /* PurchaseConfirmButtonPressed.png in Resources */,
+				7D381CF310D93023008D34E2 /* rightButtonBlackOpaque.png in Resources */,
+				7D381CF410D93023008D34E2 /* rightButtonBlackTranslucent.png in Resources */,
+				7D381CF510D93023008D34E2 /* rightButtonBlue.png in Resources */,
+				7D381CF610D93023008D34E2 /* BookButton.png in Resources */,
+				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
+				7D381CF810D93023008D34E2 /* BookPaper.png in Resources */,
+				7D381CF910D93023008D34E2 /* BookPaperWhite.png in Resources */,
+				7D381CFA10D93023008D34E2 /* ContentsButton.png in Resources */,
+				7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */,
+				7D381CFD10D93023008D34E2 /* LinuxLibertine-Bold.thfont in Resources */,
+				7D381CFE10D93023008D34E2 /* LinuxLibertine-BoldItalic.thfont in Resources */,
+				7D381CFF10D93023008D34E2 /* LinuxLibertine-Italic.thfont in Resources */,
+				7D381D0010D93023008D34E2 /* LinuxLibertine.thfont in Resources */,
+				7D381D0110D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData in Resources */,
+				7D381D0210D93023008D34E2 /* UIBarButtonSystemItemFastForward.png in Resources */,
+				7D381D0310D93023008D34E2 /* UIBarButtonSystemItemRewind.png in Resources */,
+				7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */,
+				7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D60588E0D05DD3D006BFB54 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
+				1D3623260D0F684500981E51 /* BlioAppAppDelegate.m in Sources */,
+				28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7D381B6310D92E99008D34E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libEucalyptus;
+			targetProxy = 7D381B6210D92E99008D34E2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1D6058940D05DD3E006BFB54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/";
+				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/gcc/i686-apple-darwin9/4.0.1\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PRODUCT_NAME = Blio;
+			};
+			name = Debug;
+		};
+		1D6058950D05DD3E006BFB54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/";
+				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/gcc/i686-apple-darwin9/4.0.1\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PRODUCT_NAME = Blio;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = iphonesimulator3.0;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = iphonesimulator3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "BlioApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D6058940D05DD3E006BFB54 /* Debug */,
+				1D6058950D05DD3E006BFB54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "BlioApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
