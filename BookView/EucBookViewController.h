@@ -71,11 +71,13 @@ typedef enum {
     BOOL _bookWasDeleted;
     
     UIBarStyle _returnToNavigationBarStyle;
+    BOOL _returnToNavigationBarTranslucent;
     UIStatusBarStyle _returnToStatusBarStyle;
     BOOL _returnToNavigationBarHidden;
     BOOL _returnToStatusBarHidden;
     
     BOOL _overrideReturnToNavigationBarStyle;
+    BOOL _overrideReturnToNavigationBarTranslucent;
     BOOL _overrideReturnToStatusBarStyle;
     BOOL _overrideReturnToNavigationBarHidden;
     BOOL _overrideReturnToStatusBarHidden;
@@ -99,6 +101,7 @@ typedef enum {
 @property (nonatomic, readonly) UIImage *currentPageImage;
 
 @property (nonatomic, assign) UIBarStyle returnToNavigationBarStyle;
+@property (nonatomic, assign) BOOL returnToNavigationBarTranslucent;
 @property (nonatomic, assign) UIStatusBarStyle returnToStatusBarStyle;
 @property (nonatomic, assign) BOOL returnToNavigationBarHidden;
 @property (nonatomic, assign) BOOL returnToStatusBarHidden;
