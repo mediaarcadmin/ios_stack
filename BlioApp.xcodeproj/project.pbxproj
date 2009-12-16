@@ -59,56 +59,56 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D /* libEucalyptus.a */;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D;
 			remoteInfo = libEucalyptus;
 		};
 		7D381B4C10D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */;
+			remoteGlobalIDString = 7D5170CE1028AD1B005F3C46;
 			remoteInfo = libhyphenate;
 		};
 		7D381B4E10D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 7D5171881028B4A4005F3C46 /* libEucalyptusEPub.a */;
+			remoteGlobalIDString = 7D5171881028B4A4005F3C46;
 			remoteInfo = libEucalyptusEPub;
 		};
 		7D381B5010D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 7D5171CA1028B6AE005F3C46 /* libexpat.a */;
+			remoteGlobalIDString = 7D5171CA1028B6AE005F3C46;
 			remoteInfo = libexpat;
 		};
 		7D381B5210D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 7D5171D91028B6B9005F3C46 /* libantlr.a */;
+			remoteGlobalIDString = 7D5171D91028B6B9005F3C46;
 			remoteInfo = libantlr;
 		};
 		7D381B5410D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 7D034F8910C2CCBE0085778B /* TransitionTest.app */;
+			remoteGlobalIDString = 7D034F8910C2CCBE0085778B;
 			remoteInfo = TransitionTest;
 		};
 		7D381B5610D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 7D9A96D210D7E41100C2E00A /* Paginate.app */;
+			remoteGlobalIDString = 7D9A96D210D7E41100C2E00A;
 			remoteInfo = Paginate;
 		};
 		7D381B6210D92E99008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D /* libEucalyptus */;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D;
 			remoteInfo = libEucalyptus;
 		};
 /* End PBXContainerItemProxy section */
@@ -214,10 +214,6 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				7D381B9210D92F14008D34E2 /* AudioToolbox.framework */,
-				7D381B9410D92F14008D34E2 /* OpenGLES.framework */,
-				7D381B9610D92F14008D34E2 /* QuartzCore.framework */,
-				7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -250,6 +246,10 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
+				7D381B9610D92F14008D34E2 /* QuartzCore.framework */,
+				7D381B9410D92F14008D34E2 /* OpenGLES.framework */,
+				7D381B9210D92F14008D34E2 /* AudioToolbox.framework */,
+				7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
