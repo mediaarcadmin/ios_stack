@@ -14,7 +14,7 @@
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
-#import "EucBookTextView.h"
+#import "EucPageTextView.h"
 #import "EucEPubBookReader.h"
 #import "EucBookTextStyle.h"
 #import "THPair.h"
@@ -225,7 +225,7 @@ static void readRightRaggedJustificationDefault()
 {
     NSParameterAssert([reader isKindOfClass:[EucEPubBookReader class]]);
     EucEPubBookReader *bookReader = (EucEPubBookReader *)reader;
-    EucBookTextView *bookTextView = pageView.bookTextView;
+    EucPageTextView *bookTextView = pageView.bookTextView;
 
     EucBookPageIndexPoint *ret = nil;
     
@@ -298,7 +298,7 @@ static void readRightRaggedJustificationDefault()
                 BOOL shouldFairlyJustifyLastLine = shouldCenter;
                 BOOL shouldHyphenate = !shouldCenter;
                 
-                EucBookTextViewEndPosition endPosition;
+                EucPageTextViewEndPosition endPosition;
                 endPosition = [bookTextView addParagraphWithWords:words 
                                                        attributes:wordFormattingAttributes 
                                hyphenationPointsPassedInFirstWord:hyphenOffset

@@ -21,7 +21,7 @@
 #import "THScalableSlider.h"
 #import "EucBookTitleView.h"
 #import "EucBook.h"
-#import "EucBookTextView.h"
+#import "EucPageTextView.h"
 #import "EucBookPageIndexPoint.h"
 #import "EucPageView.h"
 #import "EucBookContentsTableViewController.h"

@@ -1,12 +1,12 @@
 //
-//  EucBookTextView.m
+//  EucPageTextView.m
 //  libEucalyptus
 //
 //  Created by James Montgomerie on 27/06/2008.
 //  Copyright 2008 Things Made Out Of Other Things Ltd. All rights reserved.
 //
 
-#import "EucBookTextView.h"
+#import "EucPageTextView.h"
 #import "THLog.h"
 #import "THPair.h"
 #import "EucSharedHyphenator.h"
@@ -18,7 +18,7 @@
 using namespace std;
 using namespace Hyphenate;
 
-@implementation EucBookTextView
+@implementation EucPageTextView
 
 @synthesize delegate = _delegate;
 @synthesize pointSize = _pointSize;
@@ -235,7 +235,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     ++_stringsCount;
 }
 
-- (EucBookTextViewEndPosition)addParagraphWithWords:(NSArray *)words 
+- (EucPageTextViewEndPosition)addParagraphWithWords:(NSArray *)words 
                                       attributes:(NSArray *)attributes 
               hyphenationPointsPassedInFirstWord:(NSUInteger)hyphensAlreadyPassed
                              indentBrokenLinesBy:(CGFloat)indentBrokenLinesBy
@@ -249,7 +249,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     BOOL allowWidows = NO;
     BOOL widowsImpossible = NO;
     
-    EucBookTextViewEndPosition ret = {0, 0, 0, _stringsCount};
+    EucPageTextViewEndPosition ret = {0, 0, 0, _stringsCount};
     THLogVerbose(@"Adding words: %@", words);
 
     CGFloat startingY;
@@ -882,7 +882,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
            italic:(BOOL)italic
 {
     BOOL ret = YES;
-    EucBookTextViewEndPosition endPosition;
+    EucPageTextViewEndPosition endPosition;
     NSArray *lines = [string componentsSeparatedByString:@"\n"];
     id italicAttribute = nil;
     id nullAttribute = nil;

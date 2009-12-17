@@ -1,5 +1,5 @@
 //
-//  EucBookTextView.h
+//  EucPageTextView.h
 //  libEucalyptus
 //
 //  Created by James Montgomerie on 27/06/2008.
@@ -10,11 +10,11 @@
 #import "EucBookTextStyle.h"
 #import "THUIViewThreadSafeDrawing.h"
 
-@protocol EucBookTextViewDelegate;
+@protocol EucPageTextViewDelegate;
 @class THStringRenderer, IntegerCache;
 
-@interface EucBookTextView : UIView <THUIViewThreadSafeDrawing> {
-    id<EucBookTextViewDelegate> _delegate;
+@interface EucPageTextView : UIView <THUIViewThreadSafeDrawing> {
+    id<EucPageTextViewDelegate> _delegate;
         
     CGFloat _pointSize;
     
@@ -43,7 +43,7 @@
     BOOL _allowScaledImageDistortion;
 }
 
-@property (nonatomic, assign) id<EucBookTextViewDelegate> delegate;
+@property (nonatomic, assign) id<EucPageTextViewDelegate> delegate;
 @property (nonatomic, assign) CGFloat pointSize;
 @property (nonatomic, assign) CGFloat leftMargin;
 @property (nonatomic, assign) CGFloat rightMargin;
@@ -65,10 +65,10 @@ typedef struct {
     NSUInteger completeWordCount;
     NSUInteger hyphenationPointsPassedInNextWord;
     NSUInteger removalCookie;
-} EucBookTextViewEndPosition;
+} EucPageTextViewEndPosition;
 
 // Shold change this to take a "flags" argument instead of this crazy bunch of BOOLs...
-- (EucBookTextViewEndPosition)addParagraphWithWords:(NSArray *)words 
+- (EucPageTextViewEndPosition)addParagraphWithWords:(NSArray *)words 
                                       attributes:(NSArray *)attributes 
               hyphenationPointsPassedInFirstWord:(NSUInteger)hyphensAlreadyPassed 
                              indentBrokenLinesBy:(CGFloat)indentBrokenLines
@@ -99,10 +99,10 @@ typedef struct {
 
 @end
 
-@protocol EucBookTextViewDelegate <NSObject>
+@protocol EucPageTextViewDelegate <NSObject>
 
 @optional
-- (void)bookTextView:(EucBookTextView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes;
-- (void)bookTextViewDidReceiveTapOnPage:(EucBookTextView *)bookTextView;
+- (void)bookTextView:(EucPageTextView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes;
+- (void)bookTextViewDidReceiveTapOnPage:(EucPageTextView *)bookTextView;
 
 @end

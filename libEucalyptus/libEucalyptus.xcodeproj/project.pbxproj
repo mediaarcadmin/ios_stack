@@ -186,8 +186,8 @@
 		7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D658C6E103DEAD900EB5003 /* THImageFactory.m */; };
 		7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAC841028DEAD006289E6 /* THScalableSlider.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAC851028DEAD006289E6 /* THScalableSlider.m */; };
-		7D6AAD561028E75C006289E6 /* EucBookTextView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD541028E75C006289E6 /* EucBookTextView.mm */; };
-		7D6AAD571028E75C006289E6 /* EucBookTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD551028E75C006289E6 /* EucBookTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D6AAD561028E75C006289E6 /* EucPageTextView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD541028E75C006289E6 /* EucPageTextView.mm */; };
+		7D6AAD571028E75C006289E6 /* EucPageTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD551028E75C006289E6 /* EucPageTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAD5C1028E774006289E6 /* thjust.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD581028E774006289E6 /* thjust.h */; settings = {ATTRIBUTES = (); }; };
 		7D6AAD5D1028E774006289E6 /* EucSharedHyphenator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD591028E774006289E6 /* EucSharedHyphenator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAD5E1028E774006289E6 /* EucSharedHyphenator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD5A1028E774006289E6 /* EucSharedHyphenator.mm */; };
@@ -217,7 +217,6 @@
 		7D9A96F510D7E44200C2E00A /* libantlr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171D91028B6B9005F3C46 /* libantlr.a */; };
 		7D9A96F610D7E44200C2E00A /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D9A96F710D7E44200C2E00A /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
-		7D9A97E610D7E48E00C2E00A /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
 		7D9A981F10D7E67E00C2E00A /* LinuxLibertine-Bold.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */; };
 		7D9A982010D7E67E00C2E00A /* LinuxLibertine-BoldItalic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */; };
 		7D9A982110D7E67E00C2E00A /* LinuxLibertine-Italic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */; };
@@ -227,7 +226,6 @@
 		7D9A986D10D7E70E00C2E00A /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */; };
 		7D9A987610D7E73800C2E00A /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC610C2E61E0001203D /* BookPaper.png */; };
 		7D9A98A210D7E85100C2E00A /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC910C2E61E0001203D /* EPubDefault.css */; };
-		7D9A98AC10D7E8F000C2E00A /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
 		7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A986610D7E6F100C2E00A /* HyphenationPatterns */; };
 		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
 		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
@@ -266,6 +264,9 @@
 		7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */; };
 		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */; };
+		7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF58B5D10DA9005004E3DBB /* EucBookView.h */; };
+		7DF58B6010DA9005004E3DBB /* EucBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF58B5E10DA9005004E3DBB /* EucBookView.m */; };
+		7DF58D7210DAA02F004E3DBB /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
 		AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */; settings = {ATTRIBUTES = (); }; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -558,8 +559,8 @@
 		7D658C6E103DEAD900EB5003 /* THImageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THImageFactory.m; sourceTree = "<group>"; };
 		7D6AAC841028DEAD006289E6 /* THScalableSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THScalableSlider.h; sourceTree = "<group>"; };
 		7D6AAC851028DEAD006289E6 /* THScalableSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THScalableSlider.m; sourceTree = "<group>"; };
-		7D6AAD541028E75C006289E6 /* EucBookTextView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucBookTextView.mm; sourceTree = "<group>"; };
-		7D6AAD551028E75C006289E6 /* EucBookTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookTextView.h; sourceTree = "<group>"; };
+		7D6AAD541028E75C006289E6 /* EucPageTextView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucPageTextView.mm; sourceTree = "<group>"; };
+		7D6AAD551028E75C006289E6 /* EucPageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageTextView.h; sourceTree = "<group>"; };
 		7D6AAD581028E774006289E6 /* thjust.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thjust.h; sourceTree = "<group>"; };
 		7D6AAD591028E774006289E6 /* EucSharedHyphenator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSharedHyphenator.h; sourceTree = "<group>"; };
 		7D6AAD5A1028E774006289E6 /* EucSharedHyphenator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucSharedHyphenator.mm; sourceTree = "<group>"; };
@@ -618,6 +619,8 @@
 		7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucFilteredBookPageIndex.m; sourceTree = "<group>"; };
 		7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTextFittingLabel.h; sourceTree = "<group>"; };
 		7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTextFittingLabel.m; sourceTree = "<group>"; };
+		7DF58B5D10DA9005004E3DBB /* EucBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookView.h; sourceTree = "<group>"; };
+		7DF58B5E10DA9005004E3DBB /* EucBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookView.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libEucalyptus_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libEucalyptus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptus.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -761,12 +764,14 @@
 			children = (
 				7D516E00102872AC005F3C46 /* EucBookViewController.h */,
 				7D516E01102872AC005F3C46 /* EucBookViewController.m */,
+				7DF58B5D10DA9005004E3DBB /* EucBookView.h */,
+				7DF58B5E10DA9005004E3DBB /* EucBookView.m */,
 				7D516E07102872DB005F3C46 /* EucPageTurningView.h */,
 				7D516E08102872DB005F3C46 /* EucPageTurningView.m */,
 				7D516E06102872DB005F3C46 /* EucPageView.h */,
 				7D516E05102872DB005F3C46 /* EucPageView.m */,
-				7D6AAD541028E75C006289E6 /* EucBookTextView.mm */,
-				7D6AAD551028E75C006289E6 /* EucBookTextView.h */,
+				7D6AAD551028E75C006289E6 /* EucPageTextView.h */,
+				7D6AAD541028E75C006289E6 /* EucPageTextView.mm */,
 				7D516E09102872DB005F3C46 /* EucBookContentsTableViewController.h */,
 				7D516E0A102872DB005F3C46 /* EucBookContentsTableViewController.m */,
 				7D516E0B102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h */,
@@ -1369,7 +1374,7 @@
 				7D51711D1028AF94005F3C46 /* EucBookReader.h in Headers */,
 				7D5172A61028B771005F3C46 /* EucBookParagraph.h in Headers */,
 				7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */,
-				7D6AAD571028E75C006289E6 /* EucBookTextView.h in Headers */,
+				7D6AAD571028E75C006289E6 /* EucPageTextView.h in Headers */,
 				7D6AAD5C1028E774006289E6 /* thjust.h in Headers */,
 				7D6AAD5D1028E774006289E6 /* EucSharedHyphenator.h in Headers */,
 				7D6AAD621028E78E006289E6 /* EucBook.h in Headers */,
@@ -1379,6 +1384,7 @@
 				7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */,
 				7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */,
 				7DE587701070D08600441B2E /* EucFilteredBookPageIndex.h in Headers */,
+				7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1536,7 +1542,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D9A98AC10D7E8F000C2E00A /* book in Resources */,
 				7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */,
 				7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */,
 				7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */,
@@ -1566,6 +1571,7 @@
 				7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */,
 				7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */,
 				7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */,
+				7DF58D7210DAA02F004E3DBB /* book in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1584,7 +1590,6 @@
 				7D9A96E810D7E42A00C2E00A /* PaginateMainWindow.xib in Resources */,
 				7D9A96E910D7E42A00C2E00A /* PaginateRootViewController.xib in Resources */,
 				7D9A986810D7E6F100C2E00A /* HyphenationPatterns in Resources */,
-				7D9A97E610D7E48E00C2E00A /* book in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1718,7 +1723,7 @@
 				7D51706B1028876D005F3C46 /* THLowMemoryDictionaryEmptier.m in Sources */,
 				7D51710F1028AF47005F3C46 /* EucBookPaginator.m in Sources */,
 				7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */,
-				7D6AAD561028E75C006289E6 /* EucBookTextView.mm in Sources */,
+				7D6AAD561028E75C006289E6 /* EucPageTextView.mm in Sources */,
 				7D6AAD5E1028E774006289E6 /* EucSharedHyphenator.mm in Sources */,
 				7D6AAD5F1028E774006289E6 /* thjust.c in Sources */,
 				7D6AAD651028E7A9006289E6 /* EucBookReference.m in Sources */,
@@ -1727,6 +1732,7 @@
 				7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */,
 				7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */,
 				7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */,
+				7DF58B6010DA9005004E3DBB /* EucBookView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
