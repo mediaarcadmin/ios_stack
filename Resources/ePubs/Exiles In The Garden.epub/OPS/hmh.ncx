@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" xml:lang="en" version="2005-1">
+<head>
+<meta name="dtb:uid" content="9780547195582"/>
+<meta name="dtb:depth" content="1"/>
+<meta name="dtb:totalPageCount" content="0"/>
+<meta name="dtb:maxPageNumber" content="0"/>
+</head>
+<docTitle>
+<text>Exiles in the Garden</text>
+</docTitle>
+<docAuthor>
+<text>Ward Just</text>
+</docAuthor>
+<navMap>
+<navPoint class="titlepage" id="level1-titlepage" playOrder="1">
+<navLabel>
+<text>Title Page</text>
+</navLabel>
+<content src="titlepage.xml"/>
+</navPoint>
+<navPoint class="front" id="level1-front" playOrder="2">
+<navLabel>
+<text>Front</text>
+</navLabel>
+<content src="front.xml"/>
+</navPoint>
+<navPoint class="c000" id="level1-c000" playOrder="3">
+<navLabel>
+<text>PART I</text>
+</navLabel>
+<content src="c000.xml"/>
+</navPoint>
+<navPoint class="c01" id="level1-c01" playOrder="4">
+<navLabel>
+<text>THE PHOTOGRAPHER</text>
+</navLabel>
+<content src="c01.xml"/>
+</navPoint>
+<navPoint class="c02" id="level1-c02" playOrder="5">
+<navLabel>
+<text>LUCIA</text>
+</navLabel>
+<content src="c02.xml"/>
+</navPoint>
+<navPoint class="c03" id="level1-c03" playOrder="6">
+<navLabel>
+<text>ALEC</text>
+</navLabel>
+<content src="c03.xml"/>
+</navPoint>
+<navPoint class="c04" id="level1-c04" playOrder="7">
+<navLabel>
+<text>DAMASCUS</text>
+</navLabel>
+<content src="c04.xml"/>
+</navPoint>
+<navPoint class="c05" id="level1-c05" playOrder="8">
+<navLabel>
+<text>THE RED THREAD</text>
+</navLabel>
+<content src="c05.xml"/>
+</navPoint>
+<navPoint class="c001" id="level1-c001" playOrder="9">
+<navLabel>
+<text>PART II</text>
+</navLabel>
+<content src="c001.xml"/>
+</navPoint>
+<navPoint class="c06" id="level1-c06" playOrder="10">
+<navLabel>
+<text>ANNALISE</text>
+</navLabel>
+<content src="c06.xml"/>
+</navPoint>
+<navPoint class="c07" id="level1-c07" playOrder="11">
+<navLabel>
+<text>ANDRE</text>
+</navLabel>
+<content src="c07.xml"/>
+</navPoint>
+<navPoint class="c08" id="level1-c08" playOrder="12">
+<navLabel>
+<text>THE THICK OF IT</text>
+</navLabel>
+<content src="c08.xml"/>
+</navPoint>
+<navPoint class="c09" id="level1-c09" playOrder="13">
+<navLabel>
+<text>MAINE</text>
+</navLabel>
+<content src="c09.xml"/>
+</navPoint>
+<navPoint class="c10" id="level1-c10" playOrder="14">
+<navLabel>
+<text>END OF STORY</text>
+</navLabel>
+<content src="c10.xml"/>
+</navPoint>
+</navMap>
+</ncx>

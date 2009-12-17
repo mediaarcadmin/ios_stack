@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" xml:lang="en" version="2005-1">
+<head>
+<meta name="dtb:uid" content="9780152062163"/>
+<meta name="dtb:depth" content="1"/>
+<meta name="dtb:totalPageCount" content="0"/>
+<meta name="dtb:maxPageNumber" content="0"/>
+</head>
+<docTitle>
+<text>Dead Is So Last Year</text>
+</docTitle>
+<docAuthor>
+<text>Marlene Perez</text>
+</docAuthor>
+<navMap>
+<navPoint class="titlepage" id="level1-titlepage" playOrder="1">
+<navLabel>
+<text>Title Page</text>
+</navLabel>
+<content src="titlepage.xml"/>
+</navPoint>
+<navPoint class="front" id="level1-front" playOrder="2">
+<navLabel>
+<text>Front</text>
+</navLabel>
+<content src="front.xml"/>
+</navPoint>
+<navPoint class="c01" id="level1-c01" playOrder="3">
+<navLabel>
+<text>CHAPTER ONE</text>
+</navLabel>
+<content src="c01.xml"/>
+</navPoint>
+<navPoint class="c02" id="level1-c02" playOrder="4">
+<navLabel>
+<text>CHAPTER TWO</text>
+</navLabel>
+<content src="c02.xml"/>
+</navPoint>
+<navPoint class="c03" id="level1-c03" playOrder="5">
+<navLabel>
+<text>CHAPTER THREE</text>
+</navLabel>
+<content src="c03.xml"/>
+</navPoint>
+<navPoint class="c04" id="level1-c04" playOrder="6">
+<navLabel>
+<text>CHAPTER FOUR</text>
+</navLabel>
+<content src="c04.xml"/>
+</navPoint>
+<navPoint class="c05" id="level1-c05" playOrder="7">
+<navLabel>
+<text>CHAPTER FIVE</text>
+</navLabel>
+<content src="c05.xml"/>
+</navPoint>
+<navPoint class="c06" id="level1-c06" playOrder="8">
+<navLabel>
+<text>CHAPTER SIX</text>
+</navLabel>
+<content src="c06.xml"/>
+</navPoint>
+<navPoint class="c07" id="level1-c07" playOrder="9">
+<navLabel>
+<text>CHAPTER SEVEN</text>
+</navLabel>
+<content src="c07.xml"/>
+</navPoint>
+<navPoint class="c08" id="level1-c08" playOrder="10">
+<navLabel>
+<text>CHAPTER EIGHT</text>
+</navLabel>
+<content src="c08.xml"/>
+</navPoint>
+<navPoint class="c09" id="level1-c09" playOrder="11">
+<navLabel>
+<text>CHAPTER NINE</text>
+</navLabel>
+<content src="c09.xml"/>
+</navPoint>
+<navPoint class="c10" id="level1-c10" playOrder="12">
+<navLabel>
+<text>CHAPTER TEN</text>
+</navLabel>
+<content src="c10.xml"/>
+</navPoint>
+<navPoint class="c11" id="level1-c11" playOrder="13">
+<navLabel>
+<text>CHAPTER ELEVEN</text>
+</navLabel>
+<content src="c11.xml"/>
+</navPoint>
+<navPoint class="c12" id="level1-c12" playOrder="14">
+<navLabel>
+<text>CHAPTER TWELVE</text>
+</navLabel>
+<content src="c12.xml"/>
+</navPoint>
+<navPoint class="c13" id="level1-c13" playOrder="15">
+<navLabel>
+<text>CHAPTER THIRTEEN</text>
+</navLabel>
+<content src="c13.xml"/>
+</navPoint>
+<navPoint class="c14" id="level1-c14" playOrder="16">
+<navLabel>
+<text>CHAPTER FOURTEEN</text>
+</navLabel>
+<content src="c14.xml"/>
+</navPoint>
+<navPoint class="c15" id="level1-c15" playOrder="17">
+<navLabel>
+<text>CHAPTER FIFTEEN</text>
+</navLabel>
+<content src="c15.xml"/>
+</navPoint>
+<navPoint class="c16" id="level1-c16" playOrder="18">
+<navLabel>
+<text>CHAPTER SIXTEEN</text>
+</navLabel>
+<content src="c16.xml"/>
+</navPoint>
+<navPoint class="c17" id="level1-c17" playOrder="19">
+<navLabel>
+<text>CHAPTER SEVENTEEN</text>
+</navLabel>
+<content src="c17.xml"/>
+</navPoint>
+<navPoint class="c18" id="level1-c18" playOrder="20">
+<navLabel>
+<text>CHAPTER EIGHTEEN</text>
+</navLabel>
+<content src="c18.xml"/>
+</navPoint>
+<navPoint class="c19" id="level1-c19" playOrder="21">
+<navLabel>
+<text>CHAPTER NINETEEN</text>
+</navLabel>
+<content src="c19.xml"/>
+</navPoint>
+<navPoint class="c20" id="level1-c20" playOrder="22">
+<navLabel>
+<text>CHAPTER TWENTY</text>
+</navLabel>
+<content src="c20.xml"/>
+</navPoint>
+<navPoint class="c21" id="level1-c21" playOrder="23">
+<navLabel>
+<text>CHAPTER TWENTY-ONE</text>
+</navLabel>
+<content src="c21.xml"/>
+</navPoint>
+<navPoint class="c22" id="level1-c22" playOrder="24">
+<navLabel>
+<text>CHAPTER TWENTY-TWO</text>
+</navLabel>
+<content src="c22.xml"/>
+</navPoint>
+<navPoint class="c23" id="level1-c23" playOrder="25">
+<navLabel>
+<text>CHAPTER TWENTY-THREE</text>
+</navLabel>
+<content src="c23.xml"/>
+</navPoint>
+<navPoint class="c24" id="level1-c24" playOrder="26">
+<navLabel>
+<text>CHAPTER TWENTY-FOUR</text>
+</navLabel>
+<content src="c24.xml"/>
+</navPoint>
+<navPoint class="back" id="level1-back" playOrder="27">
+<navLabel>
+<text>Back</text>
+</navLabel>
+<content src="back.xml"/>
+</navPoint>
+</navMap>
+</ncx>

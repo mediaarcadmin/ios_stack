@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="PrimaryID">
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+<dc:title>Dead Is So Last Year</dc:title>
+<dc:identifier id="PrimaryID" opf:scheme="URN">urn:uuid:</dc:identifier>
+<dc:language>en</dc:language>
+<dc:creator opf:role="aut" opf:file-as="Perez, Marlene">Marlene Perez</dc:creator>
+<dc:publisher>Houghton Mifflin Harcourt (www.hmhco.com)</dc:publisher>
+<dc:description/>
+<dc:coverage/>
+<dc:source>http://www.hmhco.com/</dc:source>
+<dc:date opf:event="original-publication"/>
+<dc:date opf:event="ops-publication"/>
+<dc:rights>Please read the legal notice included in this e-book and/or check the copyright status in your country.</dc:rights>
+<dc:subject/>
+</metadata>
+<manifest>
+<item id="titlepage" href="titlepage.xml" media-type="application/xhtml+xml"/>
+<item id="front" href="front.xml" media-type="application/xhtml+xml"/>
+<item id="c01" href="c01.xml" media-type="application/xhtml+xml"/>
+<item id="c02" href="c02.xml" media-type="application/xhtml+xml"/>
+<item id="c03" href="c03.xml" media-type="application/xhtml+xml"/>
+<item id="c04" href="c04.xml" media-type="application/xhtml+xml"/>
+<item id="c05" href="c05.xml" media-type="application/xhtml+xml"/>
+<item id="c06" href="c06.xml" media-type="application/xhtml+xml"/>
+<item id="c07" href="c07.xml" media-type="application/xhtml+xml"/>
+<item id="c08" href="c08.xml" media-type="application/xhtml+xml"/>
+<item id="c09" href="c09.xml" media-type="application/xhtml+xml"/>
+<item id="c10" href="c10.xml" media-type="application/xhtml+xml"/>
+<item id="c11" href="c11.xml" media-type="application/xhtml+xml"/>
+<item id="c12" href="c12.xml" media-type="application/xhtml+xml"/>
+<item id="c13" href="c13.xml" media-type="application/xhtml+xml"/>
+<item id="c14" href="c14.xml" media-type="application/xhtml+xml"/>
+<item id="c15" href="c15.xml" media-type="application/xhtml+xml"/>
+<item id="c16" href="c16.xml" media-type="application/xhtml+xml"/>
+<item id="c17" href="c17.xml" media-type="application/xhtml+xml"/>
+<item id="c18" href="c18.xml" media-type="application/xhtml+xml"/>
+<item id="c19" href="c19.xml" media-type="application/xhtml+xml"/>
+<item id="c20" href="c20.xml" media-type="application/xhtml+xml"/>
+<item id="c21" href="c21.xml" media-type="application/xhtml+xml"/>
+<item id="c22" href="c22.xml" media-type="application/xhtml+xml"/>
+<item id="c23" href="c23.xml" media-type="application/xhtml+xml"/>
+<item id="c24" href="c24.xml" media-type="application/xhtml+xml"/>
+<item id="back" href="back.xml" media-type="application/xhtml+xml"/>
+<item id="dead-css" href="css/hmh.css" media-type="text/css"/>
+<item id="ncx" href="hmh.ncx" media-type="application/x-dtbncx+xml"/>
+</manifest>
+<spine toc="ncx">
+<itemref idref="titlepage" linear="yes"/>
+<itemref idref="front" linear="yes"/>
+<itemref idref="c01" linear="yes"/>
+<itemref idref="c02" linear="yes"/>
+<itemref idref="c03" linear="yes"/>
+<itemref idref="c04" linear="yes"/>
+<itemref idref="c05" linear="yes"/>
+<itemref idref="c06" linear="yes"/>
+<itemref idref="c07" linear="yes"/>
+<itemref idref="c08" linear="yes"/>
+<itemref idref="c09" linear="yes"/>
+<itemref idref="c10" linear="yes"/>
+<itemref idref="c11" linear="yes"/>
+<itemref idref="c12" linear="yes"/>
+<itemref idref="c13" linear="yes"/>
+<itemref idref="c14" linear="yes"/>
+<itemref idref="c15" linear="yes"/>
+<itemref idref="c16" linear="yes"/>
+<itemref idref="c17" linear="yes"/>
+<itemref idref="c18" linear="yes"/>
+<itemref idref="c19" linear="yes"/>
+<itemref idref="c20" linear="yes"/>
+<itemref idref="c21" linear="yes"/>
+<itemref idref="c22" linear="yes"/>
+<itemref idref="c23" linear="yes"/>
+<itemref idref="c24" linear="yes"/>
+<itemref idref="back" linear="yes"/>
+</spine>
+<guide>
+<reference type="title-page" title="Title Page" href="titlepage.xml"/>
+<reference type="text" title="CHAPTER ONE" href="c01.xml"/>
+</guide>
+</package>
