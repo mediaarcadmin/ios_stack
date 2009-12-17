@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EucBookTextView.h"
+#import "EucPageTextView.h"
 
 @protocol EucPageViewDelegate;
 
-@class EucBookTextView, THStringRenderer;
+@class EucPageTextView, THStringRenderer;
 
 typedef enum EucPageViewTitleLinePosition
 {
@@ -26,7 +26,7 @@ typedef enum EucPageViewTitleLineContents
     EucPageViewTitleLineContentsCenteredPageNumber,
 } EucPageViewTitleLineContents;
 
-@interface EucPageView : UIView <EucBookTextViewDelegate, THUIViewThreadSafeDrawing> {
+@interface EucPageView : UIView <EucPageTextViewDelegate, THUIViewThreadSafeDrawing> {
     CGImageRef _pageImage;
 
     id<EucPageViewDelegate> _delegate;
@@ -40,7 +40,7 @@ typedef enum EucPageViewTitleLineContents
 
     CGSize _margins;
     
-    EucBookTextView *_bookTextView;
+    EucPageTextView *_bookTextView;
     EucPageViewTitleLinePosition _titleLinePosition;
     EucPageViewTitleLineContents _titleLineContents;
     BOOL _fullBleed;
@@ -51,7 +51,7 @@ typedef enum EucPageViewTitleLineContents
 @property (nonatomic, assign) id<EucPageViewDelegate> delegate;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *pageNumber;
-@property (nonatomic, readonly) EucBookTextView *bookTextView;
+@property (nonatomic, readonly) EucPageTextView *bookTextView;
 @property (nonatomic, assign) EucPageViewTitleLinePosition titleLinePosition;
 @property (nonatomic, assign) EucPageViewTitleLineContents titleLineContents;
 @property (nonatomic, assign) BOOL fullBleed;

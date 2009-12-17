@@ -8,7 +8,7 @@
 
 #import "THLog.h"
 #import "EucPageView.h"
-#import "EucBookTextView.h"
+#import "EucPageTextView.h"
 #import "THStringRenderer.h"
 
 @implementation EucPageView
@@ -61,7 +61,7 @@
         _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont];
         _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont];
 
-        _bookTextView = [[EucBookTextView alloc] initWithFrame:[[self class] bookTextViewFrameForPointSize:_titlePointSize] 
+        _bookTextView = [[EucPageTextView alloc] initWithFrame:[[self class] bookTextViewFrameForPointSize:_titlePointSize] 
                                                   pointSize:pointSize];
 
         _bookTextView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -355,7 +355,7 @@
     }
 }
 
-- (void)bookTextView:(EucBookTextView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
+- (void)bookTextView:(EucPageTextView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
 {
     if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapOnHyperlinkWithAttributes:)]) {
         [_delegate pageView:self didReceiveTapOnHyperlinkWithAttributes:attributes];

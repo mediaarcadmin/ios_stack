@@ -11,7 +11,7 @@
 #import "EucPageLayoutController.h"
 #import "EucPageView.h"
 #import "EucBookSection.h"
-#import "EucBookTextView.h"
+#import "EucPageTextView.h"
 #import "EucBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
 #import "THLog.h"
