@@ -14,6 +14,12 @@
 <text>Marlene Perez</text>
 </docAuthor>
 <navMap>
+<navPoint id="cover" playOrder="0">
+<navLabel>
+<text>Front Cover</text>
+</navLabel>
+<content src="cover.xml"/>
+</navPoint>
 <navPoint class="titlepage" id="level1-titlepage" playOrder="1">
 <navLabel>
 <text>Title Page</text>

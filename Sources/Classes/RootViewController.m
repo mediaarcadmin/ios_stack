@@ -72,7 +72,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    return 2;
 }
 
 
@@ -87,7 +87,11 @@
     }
     
 	// Configure the cell.
-    cell.textLabel.text = @"Book";
+    if(indexPath.row == 0) {
+        cell.textLabel.text = @"Dead Is So Last Year";
+    } else {
+        cell.textLabel.text = @"Exiles In The Garden";
+    }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
@@ -96,9 +100,16 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[[NSBundle mainBundle] pathForResource:@"book" ofType:nil]];
+    NSString *path;
+    if(indexPath.row == 0) {
+        path = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"];
+    } else {
+        path = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
+    }
+    EucEPubBook *book = [[EucEPubBook alloc] initWithPath:path];
     EucBookViewController *bookViewController = [[EucBookViewController alloc] init];
     bookViewController.book = book;
+    bookViewController.toolbarsVisibleAfterAppearance = YES;
     [book release];
     [self.navigationController pushViewController:bookViewController animated:YES];
     [bookViewController release];
