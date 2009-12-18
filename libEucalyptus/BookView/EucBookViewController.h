@@ -27,7 +27,7 @@ typedef enum {
     
     BOOL _firstAppearance;
     
-    EucBookView *_bookView;
+    UIView *_bookView;
     
     UIToolbar *_overriddenToolbar;
     UIToolbar *_toolbar;
