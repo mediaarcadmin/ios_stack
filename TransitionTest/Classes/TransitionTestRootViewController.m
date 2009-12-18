@@ -115,8 +115,7 @@
     NSUInteger row = indexPath.row;
     if(row < 2) {
         EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[[NSBundle mainBundle] pathForResource:@"book" ofType:nil]];
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] init];
-        bookViewController.book = book;
+        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
         [book release];
         
         bookViewController.toolbarsVisibleAfterAppearance = (row == 0);

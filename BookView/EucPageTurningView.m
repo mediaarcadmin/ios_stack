@@ -289,9 +289,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _reverseAnimatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"reverseAnimatedBookTurnVertices" ofType:@"vertexData"]];
     _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
 
-    
     self.multipleTouchEnabled = YES;
     self.exclusiveTouch = YES;
+    self.opaque = YES;
+    self.userInteractionEnabled = YES;
     //tempFile = fopen("/tmp/vertexdata", "w");
 }
 
