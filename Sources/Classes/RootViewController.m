@@ -107,8 +107,7 @@
         path = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
     }
     EucEPubBook *book = [[EucEPubBook alloc] initWithPath:path];
-    EucBookViewController *bookViewController = [[EucBookViewController alloc] init];
-    bookViewController.book = book;
+    EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
     bookViewController.toolbarsVisibleAfterAppearance = YES;
     [book release];
     [self.navigationController pushViewController:bookViewController animated:YES];
