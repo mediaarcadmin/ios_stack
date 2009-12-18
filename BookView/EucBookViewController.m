@@ -152,6 +152,31 @@
     return self;
 }
 
+
+- (void)setBookView:(UIView *)bookView
+{
+    if(_bookView != bookView) {
+        THEventCapturingWindow *window = (THEventCapturingWindow *)[_bookView superview];
+        [window removeTouchObserver:self forView:_bookView];
+        
+        [_bookView removeFromSuperview];
+        [_bookView release];
+        _bookView = [bookView retain];
+        
+        [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
+        
+        if([_bookView isKindOfClass:[EucBookView class]]) {
+            EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
+            // Casts below shouldn't be necessary - the property is of type 'EucBookReference<EucBook> *'...
+            [titleView setTitle:((EucBookReference *)((EucBookView *)_bookView).book).humanReadableTitle];
+            [titleView setAuthor:[((EucBookReference *)((EucBookView *)_bookView).book).author humanReadableNameFromLibraryFormattedName]];                
+        }
+        
+        [window addSubview:_bookView];
+        [window sendSubviewToBack:_bookView];
+    }
+}
+
 - (void)_backButtonTapped
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -192,7 +217,7 @@
         //}
     }
 }
-
+/*
 - (void)_trashButtonTapped
 {
     NSString *warning = nil;
@@ -207,7 +232,7 @@
     [actionSheet showFromToolbar:_toolbar];
     [actionSheet release];
 }
-
+*/
 
 - (void)_contentsViewDidAppear
 {
@@ -225,8 +250,7 @@
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(newSectionUuid) {
-        [_bookView
-         jumpToUuid:newSectionUuid];
+        [((EucBookView *)_bookView) jumpToUuid:newSectionUuid];
         [newSectionUuid release];
     }
 }
@@ -245,10 +269,10 @@
 {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
-    if(!_contentsSheet) {
-        _contentsSheet = [[EucBookContentsTableViewController alloc] initWithPageLayoutController:_bookView.pageLayoutController];
+    if(!_contentsSheet && [_bookView isKindOfClass:[EucBookView class]]) {
+        _contentsSheet = [[EucBookContentsTableViewController alloc] initWithPageLayoutController:((EucBookView *)_bookView).pageLayoutController];
         _contentsSheet.delegate = self;        
-        _contentsSheet.currentSectionUuid = [_bookView.pageLayoutController sectionUuidForPageNumber:_bookView.pageNumber];
+        _contentsSheet.currentSectionUuid = [((EucBookView *)_bookView).pageLayoutController sectionUuidForPageNumber:((EucBookView *)_bookView).pageNumber];
         
         UIView *sheetView = _contentsSheet.view;
         
@@ -327,6 +351,7 @@
     }
 }
 
+
 - (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid
 {
     [self _contentsButtonTapped];
@@ -350,7 +375,6 @@
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     }    
 }
-
 
 
 - (void)_setupContentsButton
@@ -446,10 +470,12 @@
                 
         _toolbar.hidden = !self.toolbarsVisibleAfterAppearance;
 
-        EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
-        // Casts below shouldn't be necessary - the property is of type 'EucBookReference<EucBook> *'...
-        //[titleView setTitle:((EucBookReference *)_bookView.book).humanReadableTitle];
-        //[titleView setAuthor:[((EucBookReference *)_bookView.book).author humanReadableNameFromLibraryFormattedName]];                
+        if([_bookView isKindOfClass:[EucBookView class]]) {
+            EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
+            // Casts below shouldn't be necessary - the property is of type 'EucBookReference<EucBook> *'...
+            [titleView setTitle:((EucBookReference *)((EucBookView *)_bookView).book).humanReadableTitle];
+            [titleView setAuthor:[((EucBookReference *)((EucBookView *)_bookView).book).author humanReadableNameFromLibraryFormattedName]];                
+        }
         
         [window addSubview:_bookView];
         [window sendSubviewToBack:_bookView];
