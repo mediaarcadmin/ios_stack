@@ -52,6 +52,8 @@
 		7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
+		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
+		C94D27B910DBCF4C00F30AFE /* PDFs in Resources */ = {isa = PBXBuildFile; fileRef = C94D27B510DBCF4C00F30AFE /* PDFs */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -160,6 +162,9 @@
 		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutView.h; sourceTree = "<group>"; };
+		C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutView.m; sourceTree = "<group>"; };
+		C94D27B510DBCF4C00F30AFE /* PDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PDFs; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,6 +197,8 @@
 				28C286E00D94DF7D0034E888 /* RootViewController.m */,
 				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
 				1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */,
+				C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */,
+				C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -231,6 +238,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C94D27B510DBCF4C00F30AFE /* PDFs */,
 				7DF58BA210DA9A86004E3DBB /* ePubs */,
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
@@ -449,6 +457,7 @@
 				7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */,
 				7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */,
 				7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */,
+				C94D27B910DBCF4C00F30AFE /* PDFs in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +471,7 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* BlioAppAppDelegate.m in Sources */,
 				28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */,
+				C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

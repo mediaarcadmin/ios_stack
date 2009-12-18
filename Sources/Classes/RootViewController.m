@@ -9,6 +9,7 @@
 #import "RootViewController.h"
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookViewController.h>
+#import "BlioLayoutView.h"
 
 @implementation RootViewController
 
@@ -21,11 +22,14 @@
 }
 */
 
-/*
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+  self.navigationItem.title = @"Books";
+  self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -72,7 +76,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 2;
+    return 4;
 }
 
 
@@ -87,11 +91,22 @@
     }
     
 	// Configure the cell.
-    if(indexPath.row == 0) {
-        cell.textLabel.text = @"Dead Is So Last Year";
-    } else {
-        cell.textLabel.text = @"Exiles In The Garden";
-    }
+  switch (indexPath.row) {
+    case 0:
+      cell.textLabel.text = @"Dead Is So Last Year ePUB";
+      break;
+    case 1:
+      cell.textLabel.text = @"Exiles In The Garden ePUB";
+      break;
+    case 2:
+      cell.textLabel.text = @"Dead Is So Last Year PDF";
+      break;
+    case 3:
+      cell.textLabel.text = @"Exiles In The Garden PDF";
+      break;
+    default:
+      break;
+  }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
@@ -101,21 +116,46 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *path;
-    if(indexPath.row == 0) {
-        path = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"];
+  
+  switch (indexPath.row) {
+    case 0:
+      path = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"];
+      break;
+    case 1:
+      path = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
+      break;
+    case 2:
+      path = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"];
+      break;
+    case 3:
+      path = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"];
+      break;
+    default:
+      break;
+  }
+  
+    if(indexPath.row < 2) {
+      EucEPubBook *book = [[EucEPubBook alloc] initWithPath:path];
+      EucBookViewController *bookViewController = [[EucBookViewController alloc] init];
+      bookViewController.book = book;
+      bookViewController.toolbarsVisibleAfterAppearance = YES;
+      [book release];
+      [self.navigationController pushViewController:bookViewController animated:YES];
+      [bookViewController release];
     } else {
-        path = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
+      BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:path];
+      layoutView.navigationController = self.navigationController;
+      [[self.navigationController navigationBar] setBarStyle:UIBarStyleBlackTranslucent];
+      [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+      UIViewController *viewController = [[UIViewController alloc] init];
+      viewController.view = layoutView;
+      viewController.wantsFullScreenLayout = YES;
+      [layoutView release];
+      [self.navigationController pushViewController:viewController animated:YES];
+      [viewController release];
     }
-    EucEPubBook *book = [[EucEPubBook alloc] initWithPath:path];
-    EucBookViewController *bookViewController = [[EucBookViewController alloc] init];
-    bookViewController.book = book;
-    bookViewController.toolbarsVisibleAfterAppearance = YES;
-    [book release];
-    [self.navigationController pushViewController:bookViewController animated:YES];
-    [bookViewController release];
+    
 }
-
-
 
 /*
 // Override to support conditional editing of the table view.
