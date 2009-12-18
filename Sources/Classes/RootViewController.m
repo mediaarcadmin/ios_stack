@@ -143,15 +143,16 @@
       [bookViewController release];
     } else {
       BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:path];
-      layoutView.navigationController = self.navigationController;
-      [[self.navigationController navigationBar] setBarStyle:UIBarStyleBlackTranslucent];
-      [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
-      UIViewController *viewController = [[UIViewController alloc] init];
-      viewController.view = layoutView;
-      viewController.wantsFullScreenLayout = YES;
+        UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+        emptyToolbar.barStyle = UIBarStyleBlack;
+        emptyToolbar.translucent = YES;
+        [emptyToolbar sizeToFit];
+        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
+        bookViewController.overriddenToolbar = emptyToolbar;
+        bookViewController.toolbarsVisibleAfterAppearance = YES;
       [layoutView release];
-      [self.navigationController pushViewController:viewController animated:YES];
-      [viewController release];
+      [self.navigationController pushViewController:bookViewController animated:YES];
+      [bookViewController release];
     }
 }
 

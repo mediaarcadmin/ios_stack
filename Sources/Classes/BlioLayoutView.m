@@ -76,14 +76,6 @@
     return self;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-  [UIView beginAnimations:@"fadeBar" context:nil];
-  [UIView setAnimationDuration:0.3f];
-  BOOL alpha = [[self.navigationController navigationBar] alpha];
-  [[self.navigationController navigationBar] setAlpha:!alpha];
-  [[UIApplication sharedApplication] setStatusBarHidden:alpha animated:YES];
-  [UIView commitAnimations];
-}
 
 - (void)loadPage:(int)pageIndex {
   if (pageIndex < 0) return;

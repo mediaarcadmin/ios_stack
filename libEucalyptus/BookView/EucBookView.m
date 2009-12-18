@@ -357,24 +357,6 @@
 }
 
 
-// Can't work out why this is not happening automatically...
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [_pageTurningView touchesBegan:touches withEvent:event];
-}
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [_pageTurningView touchesMoved:touches withEvent:event];
-}
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [_pageTurningView touchesEnded:touches withEvent:event];
-}
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [_pageTurningView touchesCancelled:touches withEvent:event];
-}
-
 - (void)pageView:(EucPageView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
 {
    /* if(_touch) {

@@ -35,6 +35,33 @@
 
 #define NON_TEXT_PAGE_FAKE_BYTE_COUNT (30 * 20)
 
+
+
+@interface _TransparentView : UIView {
+    EucBookViewController *controller;
+}
+
+@property (nonatomic, assign) EucBookViewController *controller;
+@end
+
+@implementation _TransparentView
+
+@synthesize controller;
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *ret = [super hitTest:point withEvent:event];
+    if(ret == self) {
+        UIView *view = controller.bookView;
+        CGPoint insidePoint = [self convertPoint:point toView:view];
+        ret = [view hitTest:insidePoint withEvent:event];
+    }
+    return ret;
+}
+
+@end
+
+
 @interface EucBookViewController (PRIVATE)
 - (void)_toggleToolbars;
 - (void)_setupContentsButton;
@@ -45,6 +72,7 @@
 @synthesize delegate = _delegate;
 @synthesize toolbarsVisibleAfterAppearance = _toolbarsVisibleAfterAppearance;
 @synthesize overriddenToolbar = _overriddenToolbar;
+@synthesize bookView = _bookView;
 
 @synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
 @synthesize returnToNavigationBarTranslucent = _returnToNavigationBarTranslucent;
@@ -308,13 +336,12 @@
 - (void)loadView 
 {
     CGRect mainScreenBounds = [[UIScreen mainScreen] applicationFrame];
-    UIView *mainSuperview = [[UIView alloc] initWithFrame:mainScreenBounds];
-    [mainSuperview setAutoresizingMask:UIViewAutoresizingNone];
+    _TransparentView *mainSuperview = [[_TransparentView alloc] initWithFrame:mainScreenBounds];
+    mainSuperview.controller = self;
     [mainSuperview setBackgroundColor:[UIColor clearColor]];
     [mainSuperview setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
     mainSuperview.opaque = NO;
     mainSuperview.multipleTouchEnabled = YES;
-
     self.view = mainSuperview;
     [mainSuperview release];
         
@@ -324,10 +351,7 @@
     }    
 }
 
-- (UIResponder *)nextResponder
-{
-    return _bookView;
-}
+
 
 - (void)_setupContentsButton
 {
@@ -399,7 +423,7 @@
         }
 
         UIWindow *window = self.navigationController.view.window;
-        [(THEventCapturingWindow *)window addTouchObserver:self forView:self.view];
+        [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
         
         if(!_toolbar && !_overriddenToolbar) {
             if([_bookView respondsToSelector:@selector(bookNavigationToolbar)]) {
@@ -410,7 +434,7 @@
         }
         
         _toolbar.exclusiveTouch = YES;
-        
+        _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         CGRect viewBounds = self.view.bounds;
         CGFloat toolbarFrameHeight = _toolbar.frame.size.height;
         [_toolbar setFrame:CGRectMake(viewBounds.origin.x,
@@ -424,8 +448,8 @@
 
         EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
         // Casts below shouldn't be necessary - the property is of type 'EucBookReference<EucBook> *'...
-        [titleView setTitle:((EucBookReference *)_bookView.book).humanReadableTitle];
-        [titleView setAuthor:[((EucBookReference *)_bookView.book).author humanReadableNameFromLibraryFormattedName]];                
+        //[titleView setTitle:((EucBookReference *)_bookView.book).humanReadableTitle];
+        //[titleView setAuthor:[((EucBookReference *)_bookView.book).author humanReadableNameFromLibraryFormattedName]];                
         
         [window addSubview:_bookView];
         [window sendSubviewToBack:_bookView];
@@ -472,9 +496,11 @@
             [self _contentsButtonTapped];
         }
         if(_bookView) {
-            [(THEventCapturingWindow *)self.view.window removeTouchObserver:self forView:self.view];
+            [(THEventCapturingWindow *)self.view.window removeTouchObserver:self forView:_bookView];
 
-            [_bookView stopAnimation];
+            if([_bookView respondsToSelector:@selector(stopAnimation)]) {
+                [_bookView performSelector:@selector(stopAnimation)];
+            }
 
             if(animated) {
                 CATransition *animation = [CATransition animation];
@@ -622,8 +648,10 @@
 - (void)observeTouch:(UITouch *)touch
 {
     UITouchPhase phase = touch.phase;
-    
-    if(!_touch) {
+        
+    if(touch != _touch) {
+        [_touch release];
+        _touch = nil;
         if(phase == UITouchPhaseBegan) {
             _touch = [touch retain];
             _touchMoved = NO;
