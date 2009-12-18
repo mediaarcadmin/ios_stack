@@ -18,10 +18,12 @@
     
     if(_eventCaptureViewsToObserve) {
         for(UITouch *touch in [event allTouches]) {
+            NSLog(@"%@", touch);
+
             NSUInteger count = [_eventCaptureViewsToObserve count];
             for(NSUInteger i = 0; i < count; ++i) {
                 UIView *viewToObserve = ((NSValue *)[_eventCaptureViewsToObserve objectAtIndex:i]).nonretainedObjectValue;
-                if(touch.view == viewToObserve) {
+                if([touch.view isDescendantOfView:viewToObserve]) {
                     [((NSValue *)[_eventCaptureObservers objectAtIndex:i]).nonretainedObjectValue observeTouch:touch];
                 }
             }
