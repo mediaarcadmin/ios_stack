@@ -7,6 +7,11 @@
 //
 
 @interface RootViewController : UITableViewController {
+    NSString *_currentBookPath;
+    NSString *_currentPdfPath;
 }
+
+@property (nonatomic, retain) NSString *currentBookPath;
+@property (nonatomic, retain) NSString *currentPdfPath;
 
 @end

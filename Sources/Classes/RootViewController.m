@@ -13,6 +13,9 @@
 
 @implementation RootViewController
 
+@synthesize currentBookPath = _currentBookPath;
+@synthesize currentPdfPath = _currentPdfPath;
+
 /*
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -112,47 +115,67 @@
     return cell;
 }
 
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *path;
-  
-  switch (indexPath.row) {
-    case 0:
-      path = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"];
-      break;
-    case 1:
-      path = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
-      break;
-    case 2:
-      path = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"];
-      break;
-    case 3:
-      path = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"];
-      break;
-    default:
-      break;
-  }
-  
-    if(indexPath.row < 2) {
-      EucEPubBook *book = [[EucEPubBook alloc] initWithPath:path];
-      EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
-      bookViewController.toolbarsVisibleAfterAppearance = YES;
-      [book release];
-      [self.navigationController pushViewController:bookViewController animated:YES];
-      [bookViewController release];
+- (void)toggleBookView
+{
+    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+    if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]]) {
+        EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
+        EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
+                                                              book:book];
+        bookViewController.bookView = bookView;
+        [bookView release];
+        [book release];
     } else {
-      BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:path];
+        BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+        bookViewController.bookView = layoutView;
+        [layoutView release];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
+    switch (indexPath.row) {
+        case 0:
+        case 2:
+            self.currentBookPath = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"];
+            self.currentPdfPath = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"];
+            break;
+        case 1:
+        case 3:
+            self.currentBookPath = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
+            self.currentPdfPath = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"];
+            break;
+        default:
+            break;
+    }
+    
+    if(indexPath.row < 2) {
+        EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
+        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
+        bookViewController.toolbarsVisibleAfterAppearance = YES;
+        [book release];
+        [self.navigationController pushViewController:bookViewController animated:YES];
+        [bookViewController release];
+    } else {
+        BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
+
         UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
         emptyToolbar.barStyle = UIBarStyleBlack;
         emptyToolbar.translucent = YES;
+        
+        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                              target:self 
+                                                                              action:@selector(toggleBookView)];
+        emptyToolbar.items = [NSArray arrayWithObject:item];
+        [item release];
         [emptyToolbar sizeToFit];
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
+        
         bookViewController.overriddenToolbar = emptyToolbar;
+        [emptyToolbar release];
         bookViewController.toolbarsVisibleAfterAppearance = YES;
-      [layoutView release];
-      [self.navigationController pushViewController:bookViewController animated:YES];
-      [bookViewController release];
+        [layoutView release];
+        [self.navigationController pushViewController:bookViewController animated:YES];
+        [bookViewController release];
     }
 }
 
