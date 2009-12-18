@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>/OPS/c000.xml</key>
+	<integer>5356</integer>
+	<key>/OPS/c001.xml</key>
+	<integer>310372</integer>
+	<key>/OPS/c01.xml</key>
+	<integer>5681</integer>
+	<key>/OPS/c02.xml</key>
+	<integer>63437</integer>
+	<key>/OPS/c03.xml</key>
+	<integer>137428</integer>
+	<key>/OPS/c04.xml</key>
+	<integer>206039</integer>
+	<key>/OPS/c05.xml</key>
+	<integer>271250</integer>
+	<key>/OPS/c06.xml</key>
+	<integer>310698</integer>
+	<key>/OPS/c07.xml</key>
+	<integer>367772</integer>
+	<key>/OPS/c08.xml</key>
+	<integer>457713</integer>
+	<key>/OPS/c09.xml</key>
+	<integer>496013</integer>
+	<key>/OPS/c10.xml</key>
+	<integer>525012</integer>
+	<key>/OPS/cover.xml</key>
+	<integer>0</integer>
+	<key>/OPS/cover.xml#coverimage</key>
+	<integer>341</integer>
+	<key>/OPS/front.xml</key>
+	<integer>898</integer>
+	<key>/OPS/titlepage.xml</key>
+	<integer>526</integer>
+</dict>
+</plist>

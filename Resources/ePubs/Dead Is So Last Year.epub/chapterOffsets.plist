@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>/OPS/back.xml</key>
+	<integer>280839</integer>
+	<key>/OPS/c01.xml</key>
+	<integer>4975</integer>
+	<key>/OPS/c02.xml</key>
+	<integer>19274</integer>
+	<key>/OPS/c03.xml</key>
+	<integer>31198</integer>
+	<key>/OPS/c04.xml</key>
+	<integer>48375</integer>
+	<key>/OPS/c05.xml</key>
+	<integer>64039</integer>
+	<key>/OPS/c06.xml</key>
+	<integer>72631</integer>
+	<key>/OPS/c07.xml</key>
+	<integer>81651</integer>
+	<key>/OPS/c08.xml</key>
+	<integer>90475</integer>
+	<key>/OPS/c09.xml</key>
+	<integer>100791</integer>
+	<key>/OPS/c10.xml</key>
+	<integer>109037</integer>
+	<key>/OPS/c11.xml</key>
+	<integer>116521</integer>
+	<key>/OPS/c12.xml</key>
+	<integer>126738</integer>
+	<key>/OPS/c13.xml</key>
+	<integer>144385</integer>
+	<key>/OPS/c14.xml</key>
+	<integer>156789</integer>
+	<key>/OPS/c15.xml</key>
+	<integer>178350</integer>
+	<key>/OPS/c16.xml</key>
+	<integer>191705</integer>
+	<key>/OPS/c17.xml</key>
+	<integer>199154</integer>
+	<key>/OPS/c18.xml</key>
+	<integer>205750</integer>
+	<key>/OPS/c19.xml</key>
+	<integer>218574</integer>
+	<key>/OPS/c20.xml</key>
+	<integer>224560</integer>
+	<key>/OPS/c21.xml</key>
+	<integer>233367</integer>
+	<key>/OPS/c22.xml</key>
+	<integer>246154</integer>
+	<key>/OPS/c23.xml</key>
+	<integer>263683</integer>
+	<key>/OPS/c24.xml</key>
+	<integer>272410</integer>
+	<key>/OPS/cover.xml</key>
+	<integer>0</integer>
+	<key>/OPS/cover.xml#coverimage</key>
+	<integer>341</integer>
+	<key>/OPS/front.xml</key>
+	<integer>905</integer>
+	<key>/OPS/titlepage.xml</key>
+	<integer>526</integer>
+</dict>
+</plist>
