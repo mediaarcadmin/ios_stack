@@ -156,7 +156,25 @@
         [self.navigationController pushViewController:bookViewController animated:YES];
         [bookViewController release];
     } else {
-        BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+//        BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+//        UIViewController *vC = [[UIViewController alloc] init];
+//        vC.view = layoutView;
+//        [layoutView release];
+//        [self.navigationController pushViewController:vC animated:YES];
+//        [vC release];
+      
+      BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+      layoutView.navigationController = self.navigationController;
+      [[self.navigationController navigationBar] setBarStyle:UIBarStyleBlackTranslucent];
+      [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+      UIViewController *viewController = [[UIViewController alloc] init];
+      viewController.view = layoutView;
+      viewController.wantsFullScreenLayout = YES;
+      [layoutView release];
+      [self.navigationController pushViewController:viewController animated:YES];
+      [viewController release];
+      
+      /*
         EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
 
         UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
@@ -176,6 +194,7 @@
         [layoutView release];
         [self.navigationController pushViewController:bookViewController animated:YES];
         [bookViewController release];
+       */
     }
 }
 
