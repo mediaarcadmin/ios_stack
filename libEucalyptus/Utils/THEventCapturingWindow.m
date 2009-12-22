@@ -11,15 +11,12 @@
 
 @implementation THEventCapturingWindow
 
-
 - (void)sendEvent:(UIEvent *)event 
 {
     [super sendEvent:event];
     
     if(_eventCaptureViewsToObserve) {
         for(UITouch *touch in [event allTouches]) {
-            NSLog(@"%@", touch);
-
             NSUInteger count = [_eventCaptureViewsToObserve count];
             for(NSUInteger i = 0; i < count; ++i) {
                 UIView *viewToObserve = ((NSValue *)[_eventCaptureViewsToObserve objectAtIndex:i]).nonretainedObjectValue;
