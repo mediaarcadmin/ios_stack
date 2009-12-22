@@ -5,7 +5,7 @@
 //  Created by James Montgomerie on 16/12/2009.
 //  Copyright Things Made Out Of Other Things 2009. All rights reserved.
 //
-
+#import <QuartzCore/QuartzCore.h>
 #import "BlioLibraryViewController.h"
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookViewController.h>
@@ -15,6 +15,7 @@
 static const CGFloat kBlioLibraryListRowHeight = 76;
 static const CGFloat kBlioLibraryListBookHeight = 76;
 static const CGFloat kBlioLibraryListBookWidth = 53;
+static const CGFloat kBlioLibraryListContentWidth = 220;
 
 static const CGFloat kBlioLibraryGridRowHeight = 140;
 static const CGFloat kBlioLibraryGridBookHeight = 140;
@@ -136,6 +137,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"ePubs/Dead Is So Last Year.epub/OPS/cover.png"]];
   [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"]];
   [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"]];
+  [aBook setProgress:0.8f];
+  [aBook setProportionateSize:0.3f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -145,6 +148,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"ePubs/Exiles In The Garden.epub/OPS/cover.png"]];
   [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"]];
   [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"]];
+  [aBook setProgress:0.3f];
+  [aBook setProportionateSize:0.6f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -152,6 +157,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"The Oz Principle"];
   [aBook setAuthor:@"Roger Conners"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/RogerConnors.png"]];
+  [aBook setProgress:0.0f];
+  [aBook setProportionateSize:0.7f];
   [aArray addObject:aBook];
   [aBook release];
    
@@ -160,6 +167,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"How To Be A Movie Star"];
   [aBook setAuthor:@"William Mann"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/WilliamMann.png"]];
+  [aBook setProgress:0.0f];
+  [aBook setProportionateSize:0.45f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -167,6 +176,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"Her Fearful Symmetry"];
   [aBook setAuthor:@"Audrey Niffenegger"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/AudreyNiffenegger.png"]];
+  [aBook setProgress:0.0f];
+  [aBook setProportionateSize:0.62f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -174,6 +185,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"The Lost Symbol"];
   [aBook setAuthor:@"Dan Brown"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/DanBrown.png"]];
+  [aBook setProgress:1.0f];
+  [aBook setProportionateSize:0.53f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -181,6 +194,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"Hostage"];
   [aBook setAuthor:@"Don Brown"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/DonBrown.png"]];
+  [aBook setProgress:0.0f];
+  [aBook setProportionateSize:0.41f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -188,6 +203,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"I, Alex Cross"];
   [aBook setAuthor:@"James Patterson"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/JamesPatterson.png"]];
+  [aBook setProgress:0.65f];
+  [aBook setProportionateSize:0.67f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -195,6 +212,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"Diary of a Wimpy Kid, Dog Days"];
   [aBook setAuthor:@"Jeff Kinney"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/JeffKinney.png"]];
+  [aBook setProgress:0.0f];
+  [aBook setProportionateSize:0.45f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -202,6 +221,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"Pirate Latitudes"];
   [aBook setAuthor:@"Michael Crichton"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/MichaelCrichton.png"]];
+  [aBook setProgress:0.0f];
+  [aBook setProportionateSize:0.54f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -209,6 +230,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"The Girl With The Dragon Tatoo"];
   [aBook setAuthor:@"Stieg Larsson"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/StiegLarsson.png"]];
+  [aBook setProgress:1.0f];
+  [aBook setProportionateSize:0.62f];
   [aArray addObject:aBook];
   [aBook release];
   
@@ -340,69 +363,28 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
-  switch (indexPath.row) {
-    case 0:
-    case 2:
-      self.currentBookPath = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"];
-      self.currentPdfPath = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"];
-      break;
-    case 1:
-    case 3:
-      self.currentBookPath = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
-      self.currentPdfPath = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"];
-      break;
-    default:
-      break;
-  }
+  BlioMockBook *selectedBook = [self.books objectAtIndex:[indexPath row]];
+  self.currentBookPath = [selectedBook bookPath];
+  self.currentPdfPath = [selectedBook pdfPath];
   
-  if(indexPath.row < 2) {
+  if (nil != self.currentBookPath) {
     EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
     EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
     bookViewController.toolbarsVisibleAfterAppearance = YES;
     [book release];
     [self.navigationController pushViewController:bookViewController animated:YES];
     [bookViewController release];
-  } else {
-    //        BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
-    //        UIViewController *vC = [[UIViewController alloc] init];
-    //        vC.view = layoutView;
-    //        [layoutView release];
-    //        [self.navigationController pushViewController:vC animated:YES];
-    //        [vC release];
-    
-    BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
-    layoutView.navigationController = self.navigationController;
-    [[self.navigationController navigationBar] setBarStyle:UIBarStyleBlackTranslucent];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
-    UIViewController *viewController = [[UIViewController alloc] init];
-    viewController.view = layoutView;
-    viewController.wantsFullScreenLayout = YES;
+  } else if (nil != self.currentPdfPath) {
+    BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];    
+    EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
     [layoutView release];
-    [self.navigationController pushViewController:viewController animated:YES];
-    [viewController release];
-    
-    /*
-     EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
-     
-     UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-     emptyToolbar.barStyle = UIBarStyleBlack;
-     emptyToolbar.translucent = YES;
-     
-     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-     target:self 
-     action:@selector(toggleBookView)];
-     emptyToolbar.items = [NSArray arrayWithObject:item];
-     [item release];
-     [emptyToolbar sizeToFit];
-     
-     bookViewController.overriddenToolbar = emptyToolbar;
-     [emptyToolbar release];
-     bookViewController.toolbarsVisibleAfterAppearance = YES;
-     [layoutView release];
-     [self.navigationController pushViewController:bookViewController animated:YES];
-     [bookViewController release];
-     */
+    bookViewController.toolbarsVisibleAfterAppearance = YES;
+    [self.navigationController pushViewController:bookViewController animated:YES];
+    [bookViewController release];
   }
+  
+  [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -584,6 +566,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
       
       EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
       EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
+      // DOESN'T SEEM TO WORK [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
+      
       UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
       emptyToolbar.barStyle = UIBarStyleBlack;
       emptyToolbar.translucent = YES;
@@ -838,14 +822,14 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     self.bookView = aBookView;
     [aBookView release];
     
-    UILabel *aTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 12, 220, 20)];
+    UILabel *aTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 12, kBlioLibraryListContentWidth, 20)];
     aTitleLabel.font = [UIFont boldSystemFontOfSize:17.0f];
     aTitleLabel.backgroundColor = [UIColor clearColor];
     [self.contentView addSubview:aTitleLabel];
     self.titleLabel = aTitleLabel;
     [aTitleLabel release];
     
-    UILabel *aAuthorLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 28, 220, 20)];
+    UILabel *aAuthorLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 28, kBlioLibraryListContentWidth, 20)];
     aAuthorLabel.font = [UIFont boldSystemFontOfSize:13.0f];
     aAuthorLabel.textColor = [UIColor colorWithRed:0.424f green:0.424f blue:0.443f alpha:1.0f];
     aAuthorLabel.backgroundColor = [UIColor clearColor];
@@ -853,12 +837,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     self.authorLabel = aAuthorLabel;
     [aAuthorLabel release];
     
-    UISlider *aSlider = [[UISlider alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 45, 220, 10)];
-    UIImage *minProgressImage = [[UIImage imageNamed:@"minimum-progress.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0];
-    [aSlider setMinimumTrackImage:minProgressImage forState:UIControlStateNormal];
-    UIImage *maxProgressImage = [[UIImage imageNamed:@"maximum-progress.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
-    [aSlider setMaximumTrackImage:maxProgressImage forState:UIControlStateNormal];
-    aSlider.value = 0.5f;
+    UISlider *aSlider = [[UISlider alloc] init];
+    UIImage *minImage = [[UIImage imageNamed:@"minimum-progress.png"] stretchableImageWithLeftCapWidth:2 topCapHeight:0];
+//    UIImage *maxImage = [[UIImage imageNamed:@"maximum-progress.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
+    [aSlider setMinimumTrackImage:minImage forState:UIControlStateNormal];
+    [aSlider setMaximumTrackImage:[UIImage imageNamed:@"maximum-progress.png"] forState:UIControlStateNormal];
+    aSlider.userInteractionEnabled = NO;
+    aSlider.value = 0.0f;
+    [aSlider.layer setBorderColor:[UIColor colorWithRed:0.424f green:0.424f blue:0.443f alpha:0.25f].CGColor];
+    [aSlider.layer setBorderWidth:2.0f];
+    [aSlider setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 54, kBlioLibraryListContentWidth, 9)];
     [self.contentView addSubview:aSlider];
     self.progressSlider = aSlider;
     [aSlider release];
@@ -874,6 +862,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [(BlioLibraryBookView *)self.bookView setBook:newBook];
   self.titleLabel.text = [newBook title];
   self.authorLabel.text = [[newBook author] uppercaseString];
+  self.progressSlider.value = [newBook progress];
+  CGRect progressFrame = self.progressSlider.frame;
+  self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [newBook proportionateSize] * kBlioLibraryListContentWidth, progressFrame.size.height);
   [self setNeedsDisplay];
 }
 

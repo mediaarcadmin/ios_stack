@@ -15,6 +15,8 @@
 @synthesize coverPath;
 @synthesize bookPath;
 @synthesize pdfPath;
+@synthesize progress;
+@synthesize proportionateSize;
 
 - (void)dealloc {
   self.title = nil;
