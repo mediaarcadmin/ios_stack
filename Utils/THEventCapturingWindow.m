@@ -11,7 +11,6 @@
 
 @implementation THEventCapturingWindow
 
-/*
 - (void)sendEvent:(UIEvent *)event 
 {
     [super sendEvent:event];
@@ -27,7 +26,7 @@
             }
         }
     }
-}*/
+}
 
 - (void)addTouchObserver:(id <THEventCaptureObserver>)observer forView:(UIView *)view
 {
