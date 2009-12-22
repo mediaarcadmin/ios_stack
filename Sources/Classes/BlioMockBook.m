@@ -15,6 +15,8 @@
 @synthesize coverPath;
 @synthesize bookPath;
 @synthesize pdfPath;
+@synthesize progress;
+@synthesize proportionateSize;
 
 - (void)dealloc {
   self.title = nil;
@@ -26,7 +28,8 @@
 }
 
 - (UIImage *)coverImage {
-  return [UIImage imageWithContentsOfFile:self.coverPath];
+  NSData *imageData = [NSData dataWithContentsOfMappedFile:self.coverPath];
+  return [UIImage imageWithData:imageData];
 }
 
 @end
