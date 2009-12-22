@@ -154,6 +154,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook release];
   
   aBook = [[BlioMockBook alloc] init];
+  [aBook setTitle:@"Essentials Of Discrete Mathematics"];
+  [aBook setAuthor:@"David J. Hunter"];
+  [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/Essentials_of_Discrete_Mathematics.png"]];
+  [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]];
+  [aBook setProgress:0.0f];
+  [aBook setProportionateSize:0.2f];
+  [aArray addObject:aBook];
+  [aBook release];
+  
+  aBook = [[BlioMockBook alloc] init];
   [aBook setTitle:@"The Oz Principle"];
   [aBook setAuthor:@"Roger Conners"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/RogerConnors.png"]];
@@ -370,6 +380,20 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   if (nil != self.currentBookPath) {
     EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
     EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
+    [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
+    
+    UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+    emptyToolbar.barStyle = UIBarStyleBlack;
+    emptyToolbar.translucent = YES;
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                          target:self 
+                                                                          action:@selector(toggleBookView)];
+    emptyToolbar.items = [NSArray arrayWithObject:item];
+    [item release];
+    [emptyToolbar sizeToFit];
+    bookViewController.overriddenToolbar = emptyToolbar;
+    [emptyToolbar release];      
+    
     bookViewController.toolbarsVisibleAfterAppearance = YES;
     [book release];
     [self.navigationController pushViewController:bookViewController animated:YES];
@@ -378,6 +402,19 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];    
     EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
     [layoutView release];
+    
+    UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+    emptyToolbar.barStyle = UIBarStyleBlack;
+    emptyToolbar.translucent = YES;
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                          target:self 
+                                                                          action:@selector(toggleBookView)];
+    emptyToolbar.items = [NSArray arrayWithObject:item];
+    [item release];
+    [emptyToolbar sizeToFit];
+    bookViewController.overriddenToolbar = emptyToolbar;
+    [emptyToolbar release];      
+    
     bookViewController.toolbarsVisibleAfterAppearance = YES;
     [self.navigationController pushViewController:bookViewController animated:YES];
     [bookViewController release];
@@ -464,16 +501,20 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 {
   EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
   if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]]) {
-    EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-    EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
-                                                          book:book];
-    bookViewController.bookView = bookView;
-    [bookView release];
-    [book release];
+    if (self.currentBookPath) {
+      EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
+      EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
+                                                            book:book];
+      bookViewController.bookView = bookView;
+      [bookView release];
+      [book release];
+    }
   } else {
-    BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
-    bookViewController.bookView = layoutView;
-    [layoutView release];
+    if (self.currentPdfPath) {
+      BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+      bookViewController.bookView = layoutView;
+      [layoutView release];
+    }
   }
 }
 
@@ -566,7 +607,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
       
       EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
       EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
-      // DOESN'T SEEM TO WORK [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
+      [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
       
       UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
       emptyToolbar.barStyle = UIBarStyleBlack;
