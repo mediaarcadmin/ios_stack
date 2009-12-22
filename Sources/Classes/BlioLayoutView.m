@@ -79,6 +79,7 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   
     if ((self = [super initWithFrame:CGRectMake(0,0,320,480)])) {
       // Initialization code
+      self.clearsContextBeforeDrawing = NO; // Performance optimisation;
       NSInteger pageCount = CGPDFDocumentGetNumberOfPages(pdf);
       
       UIScrollView *aScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
@@ -405,11 +406,6 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   CGContextDrawPDFPage(ctx, self.page);
 }
 
-- (void)dealloc {
-  NSLog(@"BlioPDFTiledLayerDelegate dealloc");
-	[super dealloc];
-}
-
 @end
 
 @implementation BlioPDFBackgroundLayerDelegate
@@ -424,11 +420,6 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
   CGContextFillRect(ctx, cropRect);
   CGContextEndTransparencyLayer(ctx);
-}
-
-- (void)dealloc {
-  NSLog(@"BlioPDFBackgroundLayerDelegate dealloc");
-	[super dealloc];
 }
 
 @end
