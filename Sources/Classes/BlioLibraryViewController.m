@@ -12,12 +12,18 @@
 #import "BlioLayoutView.h"
 #import "BlioMockBook.h"
 
-static const CGFloat kLibraryRowHeight = 140;
-static const CGFloat kBookHeight = 140;
-static const CGFloat kBookWidth = 102;
-static const CGFloat kBookSpacing = 0;
-static const CGFloat kBlioShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
-static const CGFloat kBlioShadowYInset = 0.07737f;
+static const CGFloat kBlioLibraryListRowHeight = 76;
+static const CGFloat kBlioLibraryListBookHeight = 76;
+static const CGFloat kBlioLibraryListBookWidth = 53;
+
+static const CGFloat kBlioLibraryGridRowHeight = 140;
+static const CGFloat kBlioLibraryGridBookHeight = 140;
+static const CGFloat kBlioLibraryGridBookWidth = 102;
+static const CGFloat kBlioLibraryGridBookSpacing = 0;
+
+static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
+static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
+static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 @interface BlioLibraryTableView : UITableView
 
@@ -38,7 +44,7 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
 
 @end
 
-@interface BlioLibraryCell : UITableViewCell {
+@interface BlioLibraryGridCell : UITableViewCell {
   NSArray *books;
   NSMutableArray* bookViews;
   NSUInteger rowIndex;
@@ -58,12 +64,30 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
 
 @end
 
+@interface BlioLibraryListCell : UITableViewCell {
+  BlioLibraryBookView *bookView;
+  UILabel *titleLabel;
+  UILabel *authorLabel;
+  UISlider *progressSlider;
+  id delegate;
+}
+
+@property (nonatomic, retain) BlioLibraryBookView *bookView;
+@property (nonatomic, retain) UILabel *titleLabel;
+@property (nonatomic, retain) UILabel *authorLabel;
+@property (nonatomic, retain) UISlider *progressSlider;
+@property (nonatomic, assign) BlioMockBook *book;
+@property (nonatomic, assign) id delegate;
+
+@end
+
 @implementation BlioLibraryViewController
 
 @synthesize currentBookView = _currentBookView;
 @synthesize currentBookPath = _currentBookPath;
 @synthesize currentPdfPath = _currentPdfPath;
 @synthesize books = _books;
+@synthesize libraryLayout = _libraryLayout;
 
 - (void)dealloc {
   self.currentBookView = nil;
@@ -83,8 +107,23 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-  // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+  self.libraryLayout = kBlioLibraryLayoutGrid;
+  
+  self.navigationItem.rightBarButtonItem = self.editButtonItem;
+  
+  NSArray *segmentImages = [NSArray arrayWithObjects:
+                            [UIImage imageNamed:@"button-grid.png"],
+                            [UIImage imageNamed:@"button-list.png"],
+                            nil];
+  UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentImages];
+  segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+  segmentedControl.frame = CGRectMake(0,0, kBlioLibraryLayoutButtonWidth, segmentedControl.frame.size.height);
+  [segmentedControl addTarget:self action:@selector(changeLibraryLayout:) forControlEvents:UIControlEventValueChanged];
+  [segmentedControl setSelectedSegmentIndex:self.libraryLayout];
+  
+  UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
+  self.navigationItem.leftBarButtonItem = libraryLayoutButton;
+  [libraryLayoutButton release];
   
   NSMutableArray *aArray = [NSMutableArray array];
   BlioMockBook *aBook = nil;
@@ -174,8 +213,6 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
   [aBook release];
   
   self.books = [NSArray arrayWithArray:aArray];
-  [self.tableView setRowHeight:180];
-  self.tableView.rowHeight = kLibraryRowHeight;
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.backgroundColor = [UIColor clearColor];
@@ -206,7 +243,7 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
     bounds.size.width = bounds.size.height;
     bounds.size.height = width;
   }
-  return round((bounds.size.width - kBookSpacing*2) / (kBookWidth+kBookSpacing));
+  return round((bounds.size.width - kBlioLibraryGridBookSpacing*2) / (kBlioLibraryGridBookWidth+kBlioLibraryGridBookSpacing));
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -218,8 +255,228 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
   [self.tableView reloadData];
 }
 
+#pragma mark Table view methods
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+  return 1;
+}
+
+// Customize the number of rows in the table view.
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+  switch (self.libraryLayout) {
+    case kBlioLibraryLayoutGrid: {
+      NSInteger bookCount = [self.books count];
+      NSInteger columnCount = self.columnCount;
+      NSInteger rowCount = bookCount / columnCount;
+      if (bookCount % columnCount) rowCount++;
+      return rowCount;
+    } break;
+    default:
+      return [self.books count];
+      break;
+  }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+  switch (self.libraryLayout) {
+    case kBlioLibraryLayoutGrid:
+        return kBlioLibraryGridRowHeight;
+      break;
+    default:
+      return kBlioLibraryListRowHeight;
+      break;
+  }
+}
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+  
+  switch (self.libraryLayout) {
+    case kBlioLibraryLayoutGrid: {
+      static NSString *GridCellIdentifier = @"BlioLibraryGridCell";
+      
+      BlioLibraryGridCell *cell = (BlioLibraryGridCell *)[tableView dequeueReusableCellWithIdentifier:GridCellIdentifier];
+      if (cell == nil) {
+        cell = [[[BlioLibraryGridCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:GridCellIdentifier] autorelease];
+      }  
+      
+      cell.books = self.books;
+      cell.rowIndex = [indexPath row]; // N.B. currently these need to be set before the column count
+      cell.delegate = self; // N.B. currently these need to be set before the column count
+      cell.columnCount = self.columnCount;
+      
+      return cell;
+    } break;
+    default: {
+      static NSString *ListCellOddIdentifier = @"BlioLibraryListCellOdd";
+      static NSString *ListCellEvenIdentifier = @"BlioLibraryListCellEven";
+      BlioLibraryListCell *cell;
+      
+      if ([indexPath row] % 2) {
+        cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellEvenIdentifier];
+        if (cell == nil) {
+          cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellEvenIdentifier] autorelease];
+        } 
+        cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
+      } else {   
+        cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellOddIdentifier];
+        if (cell == nil) {
+          cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellOddIdentifier] autorelease];
+        } 
+        cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
+      }
+      
+      cell.book = [self.books objectAtIndex:[indexPath row]];
+      cell.delegate = self;
+      
+      if ([indexPath row] % 2)
+        cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
+      else                         
+        cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
+                               
+      return cell;
+    } break;
+  }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
+  switch (indexPath.row) {
+    case 0:
+    case 2:
+      self.currentBookPath = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"];
+      self.currentPdfPath = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"];
+      break;
+    case 1:
+    case 3:
+      self.currentBookPath = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
+      self.currentPdfPath = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"];
+      break;
+    default:
+      break;
+  }
+  
+  if(indexPath.row < 2) {
+    EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
+    EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
+    bookViewController.toolbarsVisibleAfterAppearance = YES;
+    [book release];
+    [self.navigationController pushViewController:bookViewController animated:YES];
+    [bookViewController release];
+  } else {
+    //        BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+    //        UIViewController *vC = [[UIViewController alloc] init];
+    //        vC.view = layoutView;
+    //        [layoutView release];
+    //        [self.navigationController pushViewController:vC animated:YES];
+    //        [vC release];
+    
+    BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+    layoutView.navigationController = self.navigationController;
+    [[self.navigationController navigationBar] setBarStyle:UIBarStyleBlackTranslucent];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+    UIViewController *viewController = [[UIViewController alloc] init];
+    viewController.view = layoutView;
+    viewController.wantsFullScreenLayout = YES;
+    [layoutView release];
+    [self.navigationController pushViewController:viewController animated:YES];
+    [viewController release];
+    
+    /*
+     EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
+     
+     UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+     emptyToolbar.barStyle = UIBarStyleBlack;
+     emptyToolbar.translucent = YES;
+     
+     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+     target:self 
+     action:@selector(toggleBookView)];
+     emptyToolbar.items = [NSArray arrayWithObject:item];
+     [item release];
+     [emptyToolbar sizeToFit];
+     
+     bookViewController.overriddenToolbar = emptyToolbar;
+     [emptyToolbar release];
+     bookViewController.toolbarsVisibleAfterAppearance = YES;
+     [layoutView release];
+     [self.navigationController pushViewController:bookViewController animated:YES];
+     [bookViewController release];
+     */
+  }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+  if (self.libraryLayout == kBlioLibraryLayoutList)
+    return YES;
+  else
+    return NO;
+}
+
+/*
+ // Override to support conditional editing of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+ // Return NO if you do not want the specified item to be editable.
+ return YES;
+ }
+ 
+*/
+
+/*
+ // Override to support editing the table view.
+ - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+ 
+ if (editingStyle == UITableViewCellEditingStyleDelete) {
+ // Delete the row from the data source.
+ [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+ }   
+ else if (editingStyle == UITableViewCellEditingStyleInsert) {
+ // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+ }   
+ }
+ */
+
+
+/*
+ // Override to support rearranging the table view.
+ - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+ }
+ */
+
+
+/*
+ // Override to support conditional rearranging of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+ // Return NO if you do not want the item to be re-orderable.
+ return YES;
+ }
+ */
+
 #pragma mark -
 #pragma mark Action Callbacks
+
+- (void)changeLibraryLayout:(id)sender {
+  
+  BlioLibraryLayout newLayout = (BlioLibraryLayout)[sender selectedSegmentIndex];
+  
+  if (self.libraryLayout != newLayout) {
+    self.libraryLayout = newLayout;
+    
+    switch (newLayout) {
+      case kBlioLibraryLayoutGrid:
+        [self.tableView setBackgroundColor:[UIColor clearColor]];
+        break;
+      default:
+        if ([self.books count] % 2)
+          [self.tableView setBackgroundColor:[UIColor whiteColor]];
+        else
+          [self.tableView setBackgroundColor:[UIColor colorWithRed:0.882f green:0.882f blue:0.906f alpha:1.0f]];
+        break;
+    }
+    
+    [self.tableView reloadData];
+  }
+
+} 
 
 - (void)toggleBookView
 {
@@ -246,8 +503,8 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
   poppedImageView.backgroundColor = [UIColor clearColor];
   UIImage *bookImage = [bookView image];
   
-  CGFloat xInset = poppedImageView.bounds.size.width * kBlioShadowXInset;
-  CGFloat yInset = poppedImageView.bounds.size.height * kBlioShadowYInset;
+  CGFloat xInset = poppedImageView.bounds.size.width * kBlioLibraryShadowXInset;
+  CGFloat yInset = poppedImageView.bounds.size.height * kBlioLibraryShadowYInset;
   CGRect insetFrame = CGRectInset(poppedImageView.bounds, xInset, yInset);
   UIImageView *aImageView = [[UIImageView alloc] initWithFrame:insetFrame];
   aImageView.contentMode = UIViewContentModeScaleToFill;
@@ -351,154 +608,15 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
   [(UIView *)context removeFromSuperview];
 }
 
-#pragma mark Table view methods
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-// Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  NSInteger bookCount = [self.books count];
-  NSInteger columnCount = self.columnCount;
-  NSInteger rowCount = bookCount / columnCount;
-  if (bookCount % columnCount) rowCount++;
-  return rowCount;
-}
-
-
-// Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  
-  static NSString *CellIdentifier = @"BlioLibraryCell";
-  
-  BlioLibraryCell *cell = (BlioLibraryCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	if (cell == nil) {
-		cell = [[[BlioLibraryCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-	}  
-  
-  cell.books = self.books;
-  cell.rowIndex = [indexPath row]; // N.B. currently these need to be set before the column count
-  cell.delegate = self; // N.B. currently these need to be set before the column count
-  cell.columnCount = self.columnCount;
-
-  
-  return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
-    switch (indexPath.row) {
-        case 0:
-        case 2:
-            self.currentBookPath = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"];
-            self.currentPdfPath = [[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"];
-            break;
-        case 1:
-        case 3:
-            self.currentBookPath = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"];
-            self.currentPdfPath = [[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"];
-            break;
-        default:
-            break;
-    }
-    
-    if(indexPath.row < 2) {
-        EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
-        bookViewController.toolbarsVisibleAfterAppearance = YES;
-        [book release];
-        [self.navigationController pushViewController:bookViewController animated:YES];
-        [bookViewController release];
-    } else {
-//        BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
-//        UIViewController *vC = [[UIViewController alloc] init];
-//        vC.view = layoutView;
-//        [layoutView release];
-//        [self.navigationController pushViewController:vC animated:YES];
-//        [vC release];
-      
-      BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
-      layoutView.navigationController = self.navigationController;
-      [[self.navigationController navigationBar] setBarStyle:UIBarStyleBlackTranslucent];
-      [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
-      UIViewController *viewController = [[UIViewController alloc] init];
-      viewController.view = layoutView;
-      viewController.wantsFullScreenLayout = YES;
-      [layoutView release];
-      [self.navigationController pushViewController:viewController animated:YES];
-      [viewController release];
-      
-      /*
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
-
-        UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-        emptyToolbar.barStyle = UIBarStyleBlack;
-        emptyToolbar.translucent = YES;
-        
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                              target:self 
-                                                                              action:@selector(toggleBookView)];
-        emptyToolbar.items = [NSArray arrayWithObject:item];
-        [item release];
-        [emptyToolbar sizeToFit];
-        
-        bookViewController.overriddenToolbar = emptyToolbar;
-        [emptyToolbar release];
-        bookViewController.toolbarsVisibleAfterAppearance = YES;
-        [layoutView release];
-        [self.navigationController pushViewController:bookViewController animated:YES];
-        [bookViewController release];
-       */
-    }
-}
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source.
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-    }   
-}
-*/
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-
 @end
 
 @implementation BlioLibraryTableView
 
 - (void)drawRect:(CGRect)rect {
-  UIImage *image = [UIImage imageNamed: @"librarybackground.png"];
-	[image drawInRect:rect];
+  if ([self.backgroundColor isEqual:[UIColor clearColor]]) {
+    UIImage *image = [UIImage imageNamed: @"librarybackground.png"];
+	  [image drawInRect:rect];
+  }
 }
 
 
@@ -524,8 +642,8 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
     self.textureView = aTextureView;
     [aTextureView release];
     
-    CGFloat xInset = self.bounds.size.width * kBlioShadowXInset;
-    CGFloat yInset = self.bounds.size.height * kBlioShadowYInset;
+    CGFloat xInset = self.bounds.size.width * kBlioLibraryShadowXInset;
+    CGFloat yInset = self.bounds.size.height * kBlioLibraryShadowYInset;
     CGRect insetFrame = CGRectInset(self.bounds, xInset, yInset);
     UIImageView *aImageView = [[UIImageView alloc] initWithFrame:insetFrame];
     aImageView.contentMode = UIViewContentModeScaleToFill;
@@ -557,8 +675,8 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
 - (void)setFrame:(CGRect)newFrame {
   [super setFrame:newFrame];
   [self.textureView setFrame:CGRectMake(0, 0, newFrame.size.width, newFrame.size.height)];
-  CGFloat xInset = self.textureView.bounds.size.width * kBlioShadowXInset;
-  CGFloat yInset = self.textureView.bounds.size.height * kBlioShadowYInset;
+  CGFloat xInset = self.textureView.bounds.size.width * kBlioLibraryShadowXInset;
+  CGFloat yInset = self.textureView.bounds.size.height * kBlioLibraryShadowYInset;
   CGRect insetFrame = CGRectInset(self.textureView.bounds, xInset, yInset);
   [self.imageView setFrame:insetFrame];
   [self.highlightView setFrame:insetFrame];
@@ -593,7 +711,7 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
 
 @end
 
-@implementation BlioLibraryCell
+@implementation BlioLibraryGridCell
 
 @synthesize rowIndex;
 @synthesize books;
@@ -614,8 +732,8 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
   if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
     // Initialization code
     self.bookViews = [NSMutableArray array];
-    self.bookSize = CGSizeMake(kBookWidth, kBookHeight);
-    self.bookOrigin = CGPointMake(kBookSpacing, kBookSpacing);
+    self.bookSize = CGSizeMake(kBlioLibraryGridBookWidth, kBlioLibraryGridBookHeight);
+    self.bookOrigin = CGPointMake(kBlioLibraryGridBookSpacing, kBlioLibraryGridBookSpacing);
     self.columnCount = 0;
     self.rowIndex = 0;
     self.delegate = nil;
@@ -632,7 +750,8 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
   
   for (UIView* bookView in self.bookViews) {
     bookView.frame = bookFrame;
-    bookFrame.origin.x += kBookSpacing + self.bookSize.width;
+    bookFrame.origin.x += kBlioLibraryGridBookSpacing + self.bookSize.width;
+    [bookView setNeedsDisplay];
   }
 }
 
@@ -677,18 +796,94 @@ static const CGFloat kBlioShadowYInset = 0.07737f;
     }
   }
   
-  CGFloat xOrigin = (self.bounds.size.width - (columnCount * (kBookSpacing + self.bookSize.width)))/2.0f;
+  CGFloat xOrigin = (self.bounds.size.width - (columnCount * (kBlioLibraryGridBookSpacing + self.bookSize.width)))/2.0f;
   
   if (xOrigin < 0) {
-    CGFloat maxWidth = (self.bounds.size.width - (columnCount * kBookSpacing))/columnCount;
+    CGFloat maxWidth = (self.bounds.size.width - (columnCount * kBlioLibraryGridBookSpacing))/columnCount;
     CGFloat ratio = maxWidth / self.bookSize.width;
     self.bookSize = CGSizeMake(self.bookSize.width * ratio, self.bookSize.height * ratio);
-    xOrigin = (self.bounds.size.width - (columnCount * (kBookSpacing + self.bookSize.width)))/2.0f;
+    xOrigin = (self.bounds.size.width - (columnCount * (kBlioLibraryGridBookSpacing + self.bookSize.width)))/2.0f;
   }
   
-  CGFloat yOrigin = kBookSpacing;
+  CGFloat yOrigin = kBlioLibraryGridBookSpacing;
   self.bookOrigin = CGPointMake(xOrigin, yOrigin);
   [self setNeedsLayout];  
+}
+
+@end
+
+@implementation BlioLibraryListCell
+
+@synthesize bookView, titleLabel, authorLabel, progressSlider, delegate;
+
+- (void)dealloc {
+  self.bookView = nil;
+  self.titleLabel = nil;
+  self.authorLabel = nil;
+  self.progressSlider = nil;
+  self.delegate = nil;
+  [super dealloc];
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+  if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+    // Initialization code
+    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.selectionStyle = UITableViewCellSelectionStyleGray;
+    
+    BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(8,0, kBlioLibraryListBookWidth, kBlioLibraryListBookHeight)];
+    [aBookView addTarget:self.delegate action:@selector(bookTouched:)
+       forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:aBookView];
+    self.bookView = aBookView;
+    [aBookView release];
+    
+    UILabel *aTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 12, 220, 20)];
+    aTitleLabel.font = [UIFont boldSystemFontOfSize:17.0f];
+    aTitleLabel.backgroundColor = [UIColor clearColor];
+    [self.contentView addSubview:aTitleLabel];
+    self.titleLabel = aTitleLabel;
+    [aTitleLabel release];
+    
+    UILabel *aAuthorLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 28, 220, 20)];
+    aAuthorLabel.font = [UIFont boldSystemFontOfSize:13.0f];
+    aAuthorLabel.textColor = [UIColor colorWithRed:0.424f green:0.424f blue:0.443f alpha:1.0f];
+    aAuthorLabel.backgroundColor = [UIColor clearColor];
+    [self.contentView addSubview:aAuthorLabel];
+    self.authorLabel = aAuthorLabel;
+    [aAuthorLabel release];
+    
+    UISlider *aSlider = [[UISlider alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 45, 220, 10)];
+    UIImage *minProgressImage = [[UIImage imageNamed:@"minimum-progress.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0];
+    [aSlider setMinimumTrackImage:minProgressImage forState:UIControlStateNormal];
+    UIImage *maxProgressImage = [[UIImage imageNamed:@"maximum-progress.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
+    [aSlider setMaximumTrackImage:maxProgressImage forState:UIControlStateNormal];
+    aSlider.value = 0.5f;
+    [self.contentView addSubview:aSlider];
+    self.progressSlider = aSlider;
+    [aSlider release];
+  }
+  return self;
+}
+
+- (BlioMockBook *)book {
+  return [(BlioLibraryBookView *)self.bookView book];
+}
+
+- (void)setBook:(BlioMockBook *)newBook {
+  [(BlioLibraryBookView *)self.bookView setBook:newBook];
+  self.titleLabel.text = [newBook title];
+  self.authorLabel.text = [[newBook author] uppercaseString];
+  [self setNeedsDisplay];
+}
+
+- (void)setDelegate:(id)newDelegate {
+  [self.bookView removeTarget:delegate action:@selector(bookTouched:)
+      forControlEvents:UIControlEventTouchUpInside];
+  
+  delegate = newDelegate;
+  [self.bookView addTarget:delegate action:@selector(bookTouched:)
+      forControlEvents:UIControlEventTouchUpInside];
 }
 
 @end
