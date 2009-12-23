@@ -18,6 +18,7 @@
   NSString *pdfPath;
   CGFloat progress;
   CGFloat proportionateSize;
+  UIImage *coverThumb;
 }
 
 @property (nonatomic, retain) NSString *title;
@@ -29,5 +30,6 @@
 @property (nonatomic) CGFloat proportionateSize;
 
 - (UIImage *)coverImage;
+- (UIImage *)coverThumb;
 
 @end

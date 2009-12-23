@@ -686,7 +686,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   
   UIView *poppedImageView = [[UIView alloc] initWithFrame:[[bookView superview] convertRect:[bookView frame] toView:targetView]];
   poppedImageView.backgroundColor = [UIColor clearColor];
-  UIImage *bookImage = [bookView image];
+  UIImage *bookImage = [[bookView book] coverImage];
   
   CGFloat xInset = poppedImageView.bounds.size.width * kBlioLibraryShadowXInset;
   CGFloat yInset = poppedImageView.bounds.size.height * kBlioLibraryShadowYInset;
@@ -868,13 +868,15 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [book release];
   book = newBook;
   
-  UIImage *newImage = [newBook coverImage];
+  UIImage *newImage = [newBook coverThumb];
   [[self imageView] setImage:newImage];
   
   if (nil != newImage) 
     self.textureView.alpha = 1.0f;
   else
     self.textureView.alpha = 0.0f;
+  
+  [[self imageView] setNeedsDisplay];
 }
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -936,6 +938,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   if (index < [self.books count]) {
     BlioMockBook *book = [self.books objectAtIndex:index];
     [bookView setBook:book];
+  } else {
+    [bookView setBook:nil];
   }
 }
 
@@ -955,22 +959,28 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (void)setColumnCount:(NSInteger)newColumnCount {
-  for (UIView* bookView in self.bookViews) {
-    [bookView removeFromSuperview];
+  if (columnCount != newColumnCount) {
+    for (UIView* bookView in self.bookViews) {
+      [bookView removeFromSuperview];
+    }
+    [self.bookViews removeAllObjects];
+    
+    columnCount = newColumnCount;
+    
+    for (NSInteger i = [self.bookViews count]; i < columnCount; ++i) {
+      BlioLibraryBookView* bookView = [[[BlioLibraryBookView alloc] init] autorelease];
+      [bookView addTarget:self.delegate action:@selector(bookTouched:)
+         forControlEvents:UIControlEventTouchUpInside];
+      [self.contentView addSubview:bookView];
+      [self assignBookAtIndex:(self.rowIndex*columnCount)+i toView:bookView];
+      [self.bookViews addObject:bookView];
+    }
+  } else {
+    for (NSInteger i = 0; i < [self.bookViews count]; ++i) {
+      BlioLibraryBookView* bookView = [self.bookViews objectAtIndex:i];
+      [self assignBookAtIndex:(self.rowIndex*columnCount)+i toView:bookView];
+    }
   }
-  [self.bookViews removeAllObjects];
-  
-  columnCount = newColumnCount;
-  
-  for (NSInteger i = [self.bookViews count]; i < columnCount; ++i) {
-    BlioLibraryBookView* bookView = [[[BlioLibraryBookView alloc] init] autorelease];
-    [bookView addTarget:self.delegate action:@selector(bookTouched:)
-       forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:bookView];
-    [self assignBookAtIndex:(self.rowIndex*columnCount)+i toView:bookView];
-    [self.bookViews addObject:bookView];
-  }
-
   
   CGFloat xOrigin = (self.bounds.size.width - (columnCount * (kBlioLibraryGridBookSpacing + self.bookSize.width)))/2.0f;
   
@@ -1057,7 +1067,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   self.progressSlider.value = [newBook progress];
   CGRect progressFrame = self.progressSlider.frame;
   self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [newBook proportionateSize] * kBlioLibraryListContentWidth, progressFrame.size.height);
-  [self setNeedsDisplay];
+  [self setNeedsLayout];
 }
 
 - (void)setDelegate:(id)newDelegate {
