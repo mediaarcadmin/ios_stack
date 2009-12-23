@@ -955,23 +955,22 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (void)setColumnCount:(NSInteger)newColumnCount {
-  if (columnCount != newColumnCount) {
-    for (UIView* bookView in self.bookViews) {
-      [bookView removeFromSuperview];
-    }
-    [self.bookViews removeAllObjects];
-    
-    columnCount = newColumnCount;
-    
-    for (NSInteger i = [self.bookViews count]; i < columnCount; ++i) {
-      BlioLibraryBookView* bookView = [[[BlioLibraryBookView alloc] init] autorelease];
-      [bookView addTarget:self.delegate action:@selector(bookTouched:)
-         forControlEvents:UIControlEventTouchUpInside];
-      [self.contentView addSubview:bookView];
-      [self assignBookAtIndex:(self.rowIndex*columnCount)+i toView:bookView];
-      [self.bookViews addObject:bookView];
-    }
+  for (UIView* bookView in self.bookViews) {
+    [bookView removeFromSuperview];
   }
+  [self.bookViews removeAllObjects];
+  
+  columnCount = newColumnCount;
+  
+  for (NSInteger i = [self.bookViews count]; i < columnCount; ++i) {
+    BlioLibraryBookView* bookView = [[[BlioLibraryBookView alloc] init] autorelease];
+    [bookView addTarget:self.delegate action:@selector(bookTouched:)
+       forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:bookView];
+    [self assignBookAtIndex:(self.rowIndex*columnCount)+i toView:bookView];
+    [self.bookViews addObject:bookView];
+  }
+
   
   CGFloat xOrigin = (self.bounds.size.width - (columnCount * (kBlioLibraryGridBookSpacing + self.bookSize.width)))/2.0f;
   
