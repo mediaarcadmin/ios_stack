@@ -167,6 +167,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook release];
   
   aBook = [[BlioMockBook alloc] init];
+  [aBook setTitle:@"Three Little Pigs"];
+  [aBook setAuthor:@"Stella Blackstone"];
+  [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/Three_Little_Pigs.png"]];
+  [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]];
+  [aBook setProgress:1.0f];
+  [aBook setProportionateSize:0.05f];
+  [aArray addObject:aBook];
+  [aBook release];
+  
+  aBook = [[BlioMockBook alloc] init];
   [aBook setTitle:@"The Oz Principle"];
   [aBook setAuthor:@"Roger Conners"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/RogerConnors.png"]];
