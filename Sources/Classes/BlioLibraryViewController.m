@@ -10,6 +10,7 @@
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookViewController.h>
 #import "BlioLayoutView.h"
+#import "BlioViewSettingsController.h"
 #import "BlioMockBook.h"
 
 static const CGFloat kBlioLibraryListRowHeight = 76;
@@ -87,6 +88,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize currentBookView = _currentBookView;
 @synthesize currentBookPath = _currentBookPath;
 @synthesize currentPdfPath = _currentPdfPath;
+@synthesize audioPlaying = _audioPlaying;
 @synthesize books = _books;
 @synthesize libraryLayout = _libraryLayout;
 
@@ -108,6 +110,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 - (void)viewDidLoad {
   [super viewDidLoad];
   
+  self.audioPlaying = NO;
   self.libraryLayout = kBlioLibraryLayoutGrid;
   
   self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -288,7 +291,86 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [self.tableView reloadData];
 }
 
-#pragma mark Table view methods
+- (UIToolbar *)toolbarForReadingView {
+  UIToolbar *readingToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+  readingToolbar.barStyle = UIBarStyleBlack;
+  readingToolbar.translucent = YES;
+  
+  NSMutableArray *readingItems = [NSMutableArray array];
+  UIBarButtonItem *item;
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [readingItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
+                                          style:UIBarButtonItemStylePlain
+                                         target:self 
+                                         action:nil];
+  [readingItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [readingItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
+                                          style:UIBarButtonItemStylePlain
+                                         target:self 
+                                         action:nil];
+  [readingItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [readingItems addObject:item];
+  [item release];  
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
+                                          style:UIBarButtonItemStylePlain
+                                         target:self 
+                                         action:nil];
+  [readingItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [readingItems addObject:item];
+  [item release];  
+  
+  UIImage *audioImage = nil;
+  if (self.audioPlaying)
+    audioImage = [UIImage imageNamed:@"icon-pause.png"];
+  else 
+    audioImage = [UIImage imageNamed:@"icon-play.png"];
+    
+  item = [[UIBarButtonItem alloc] initWithImage:audioImage
+                                          style:UIBarButtonItemStylePlain
+                                         target:self 
+                                         action:@selector(toggleAudio:)];
+  [readingItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [readingItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-eye.png"]
+                                          style:UIBarButtonItemStylePlain
+                                         target:self 
+                                         action:@selector(showViewSettings:)];
+  [readingItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [readingItems addObject:item];
+  [item release];
+  
+  [readingToolbar setItems:[NSArray arrayWithArray:readingItems]];
+  [readingToolbar sizeToFit];
+  
+  return [readingToolbar autorelease];
+}
+
+#pragma mark Table View Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
   return 1;
@@ -382,17 +464,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
     [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
     
-    UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-    emptyToolbar.barStyle = UIBarStyleBlack;
-    emptyToolbar.translucent = YES;
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                          target:self 
-                                                                          action:@selector(toggleBookView)];
-    emptyToolbar.items = [NSArray arrayWithObject:item];
-    [item release];
-    [emptyToolbar sizeToFit];
-    bookViewController.overriddenToolbar = emptyToolbar;
-    [emptyToolbar release];      
+    bookViewController.overriddenToolbar = [self toolbarForReadingView];
     
     bookViewController.toolbarsVisibleAfterAppearance = YES;
     [book release];
@@ -403,18 +475,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
     [layoutView release];
     
-    UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-    emptyToolbar.barStyle = UIBarStyleBlack;
-    emptyToolbar.translucent = YES;
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                          target:self 
-                                                                          action:@selector(toggleBookView)];
-    emptyToolbar.items = [NSArray arrayWithObject:item];
-    [item release];
-    [emptyToolbar sizeToFit];
-    bookViewController.overriddenToolbar = emptyToolbar;
-    [emptyToolbar release];      
-    
+    bookViewController.overriddenToolbar = [self toolbarForReadingView];    
     bookViewController.toolbarsVisibleAfterAppearance = YES;
     [self.navigationController pushViewController:bookViewController animated:YES];
     [bookViewController release];
@@ -471,7 +532,119 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
  */
 
 #pragma mark -
-#pragma mark Action Callbacks
+#pragma mark BookController State Methods
+
+- (BlioPageLayout)currentPageLayout {
+  EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+  if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]])
+    return kBlioPageLayoutPageLayout;
+  else
+    return kBlioPageLayoutPlainText;
+}
+
+- (void)changePageLayout:(id)sender {
+  
+  BlioLibraryLayout newLayout = (BlioLibraryLayout)[sender selectedSegmentIndex];
+  
+  if([self currentPageLayout] != newLayout) {
+    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+    
+    if (newLayout == kBlioPageLayoutPlainText && self.currentBookPath) {
+      EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
+      EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
+                                                            book:book];
+      bookViewController.bookView = bookView;
+      [bookView release];
+      [book release];
+    } else if (newLayout == kBlioPageLayoutPageLayout && self.currentPdfPath) {
+      BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
+      bookViewController.bookView = layoutView;
+      [layoutView release];
+    }
+  }
+  
+}
+
+- (BOOL)shouldShowPageAttributeSettings {
+  if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
+    return NO;
+  else
+    return YES;
+}
+
+- (BlioFontSize)currentFontSize {
+  return kBlioFontSizeSmall;
+}
+
+- (void)changeFontSize:(id)sender {
+  BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
+  if([self currentFontSize] != newSize) {
+    NSLog(@"Attempting to change to BlioFontSize: %d", newSize);
+  }
+}
+
+- (BlioPageColor)currentPageColor {
+  return kBlioPageColorWhite;
+}
+
+- (void)changePageColor:(id)sender {
+  BlioPageColor newColor = (BlioPageColor)[sender selectedSegmentIndex];
+  if([self currentPageColor] != newColor) {
+    NSLog(@"Attempting to change to BlioPageColor: %d", newColor);
+  }
+}
+
+- (BlioRotationLock)currentLockRotation {
+  return kBlioRotationLockOff;
+}
+
+- (void)changeLockRotation:(id)sender {
+  // This is just a placeholder check. Obviously we shouldn't be checking against the string.
+  BlioRotationLock newLock = (BlioRotationLock)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Unlock Rotation"];
+  if([self currentLockRotation] != newLock) {
+    NSLog(@"Attempting to change to BlioRotationLock: %d", newLock);
+  }
+}
+
+- (BlioTapTurn)currentTapTurn {
+  return kBlioTapTurnOff;
+}
+
+- (void)changeTapTurn:(id)sender {
+  // This is just a placeholder check. Obviously we shouldn't be checking against the string.
+  BlioTapTurn newTapTurn = (BlioTapTurn)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Disable Tap Turn"];
+  if([self currentTapTurn] != newTapTurn) {
+    NSLog(@"Attempting to change to BlioTapTurn: %d", newTapTurn);
+  }
+}
+
+
+#pragma mark -
+#pragma mark Action Callback Methods
+
+- (void)showViewSettings:(id)sender {
+  BlioViewSettingsController *aBlioViewSettingsController = [[BlioViewSettingsController alloc] init];
+  aBlioViewSettingsController.delegate = self;
+  [self presentModalViewController:aBlioViewSettingsController animated:YES];
+  [aBlioViewSettingsController release];
+}
+
+- (void)dismissViewSettings:(id)sender {
+  [self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)toggleAudio:(id)sender {
+  UIBarButtonItem *item = (UIBarButtonItem *)sender;
+  self.audioPlaying = !self.audioPlaying;
+  
+  UIImage *audioImage = nil;
+  if (self.audioPlaying)
+    audioImage = [UIImage imageNamed:@"icon-pause.png"];
+  else 
+    audioImage = [UIImage imageNamed:@"icon-play.png"];
+    
+  [item setImage:audioImage];
+}
 
 - (void)changeLibraryLayout:(id)sender {
   
@@ -495,27 +668,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [self.tableView reloadData];
   }
 
-} 
-
-- (void)toggleBookView
-{
-  EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-  if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]]) {
-    if (self.currentBookPath) {
-      EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-      EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
-                                                            book:book];
-      bookViewController.bookView = bookView;
-      [bookView release];
-      [book release];
-    }
-  } else {
-    if (self.currentPdfPath) {
-      BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
-      bookViewController.bookView = layoutView;
-      [layoutView release];
-    }
-  }
 }
 
 - (void)bookTouched:(BlioLibraryBookView *)bookView {
@@ -609,17 +761,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
       EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
       [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
       
-      UIToolbar *emptyToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-      emptyToolbar.barStyle = UIBarStyleBlack;
-      emptyToolbar.translucent = YES;
-      UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                            target:self 
-                                                                            action:@selector(toggleBookView)];
-      emptyToolbar.items = [NSArray arrayWithObject:item];
-      [item release];
-      [emptyToolbar sizeToFit];
-      bookViewController.overriddenToolbar = emptyToolbar;
-      [emptyToolbar release];      
+      bookViewController.overriddenToolbar = [self toolbarForReadingView];
       bookViewController.toolbarsVisibleAfterAppearance = YES;
       [book release];
       [self.navigationController pushViewController:bookViewController animated:NO];
