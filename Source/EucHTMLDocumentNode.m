@@ -15,6 +15,8 @@
 
 @implementation EucHTMLDocumentNode
 
+@synthesize dbNode = _dbNode;
+
 - (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucHTMLDocument *)document;
 {
     if((self = [super init])) {
@@ -27,11 +29,13 @@
 - (void)dealloc
 {
     [_document notifyOfDealloc:self];
+ 
+    [_children release];
     
     if(_computedStyle) {
         css_computed_style_destroy(_computedStyle);
     }
-    
+        
     [_dbNode release];
     [_document release];
     
@@ -43,7 +47,7 @@
     return _dbNode.key;
 }
 
-- (css_computed_style *)_computedStyle
+- (css_computed_style *)computedStyle
 {
     if(!_computedStyle) {
         css_computed_style_create(EucRealloc, NULL, &_computedStyle);
@@ -59,7 +63,7 @@
         if(err != CSS_OK) {
             EucHTMLDocumentNode *parent = self.parent;
             if(parent) {
-                err = css_computed_style_compose([parent _computedStyle], 
+                err = css_computed_style_compose([parent computedStyle], 
                                                  _computedStyle,
                                                  selectHandler->compute_font_size,
                                                  _document.htmlDBNodeManager,
@@ -70,6 +74,11 @@
     return _computedStyle;
 }
 
+- (BOOL)hasText
+{
+    return _dbNode.kind == nodeKindText;
+}
+
 - (EucHTMLDocumentNode *)parent
 {
     return [_document nodeForKey:_dbNode.parentNode.key];
@@ -78,6 +87,26 @@
 - (EucHTMLDocumentNode *)next
 {
     return [_document nodeForKey:_dbNode.nextNode.key];
+}
+
+- (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under {
+    return [_document nodeForKey:[_dbNode nextNodeUnder:under.dbNode].key];
+}
+
+- (NSArray *)children
+{
+    if(!_children) {
+        uint32_t childrenCount = _dbNode.childrenKeysCount;
+        if(childrenCount) {
+            EucHTMLDocumentNode *children[childrenCount];
+            uint32_t *childrenKeys = _dbNode.childrenKeys;
+            for(uint32_t i = 0; i < childrenCount; ++i) {
+                children[i] = [_document nodeForKey:childrenKeys[i]];
+            }
+            _children = [[NSArray alloc] initWithObjects:children count:childrenCount];
+        }
+    }
+    return _children;
 }
 
 @end

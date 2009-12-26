@@ -15,13 +15,21 @@
     EucHTMLDBNode *_dbNode;
     EucHTMLDocument *_document;
     
+    NSArray *_children;
+    
     css_computed_style *_computedStyle;
 }
 
 @property (nonatomic, readonly) uint32_t key;
+@property (nonatomic, readonly) EucHTMLDBNode *dbNode;
+@property (nonatomic, readonly) css_computed_style *computedStyle;
+@property (nonatomic, readonly) BOOL hasText;
+
+@property (nonatomic, readonly) EucHTMLDocumentNode *parent;
+@property (nonatomic, readonly) NSArray *children;
+@property (nonatomic, readonly) EucHTMLDocumentNode *next;
+- (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under;
 
 - (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucHTMLDocument *)document;
-- (EucHTMLDocumentNode *)parent;
-- (EucHTMLDocumentNode *)next;
 
 @end
