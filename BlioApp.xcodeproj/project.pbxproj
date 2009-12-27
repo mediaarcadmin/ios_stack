@@ -54,6 +54,9 @@
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		C94D27B910DBCF4C00F30AFE /* PDFs in Resources */ = {isa = PBXBuildFile; fileRef = C94D27B510DBCF4C00F30AFE /* PDFs */; };
+		C94D864110E78E140094B9C5 /* button-getbooks.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863E10E78E140094B9C5 /* button-getbooks.png */; };
+		C94D864210E78E140094B9C5 /* button-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863F10E78E140094B9C5 /* button-settings.png */; };
+		C94D864310E78E140094B9C5 /* button-sync.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D864010E78E140094B9C5 /* button-sync.png */; };
 		C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
 		C9775C7110DFDBCF005E0E2B /* librarybackground.png in Resources */ = {isa = PBXBuildFile; fileRef = C9775C7010DFDBCF005E0E2B /* librarybackground.png */; };
 		C9775EA510DFE1C3005E0E2B /* MockCovers in Resources */ = {isa = PBXBuildFile; fileRef = C9775E9A10DFE1C3005E0E2B /* MockCovers */; };
@@ -187,6 +190,9 @@
 		C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutView.h; sourceTree = "<group>"; };
 		C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutView.m; sourceTree = "<group>"; };
 		C94D27B510DBCF4C00F30AFE /* PDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PDFs; sourceTree = "<group>"; };
+		C94D863E10E78E140094B9C5 /* button-getbooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-getbooks.png"; sourceTree = "<group>"; };
+		C94D863F10E78E140094B9C5 /* button-settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-settings.png"; sourceTree = "<group>"; };
+		C94D864010E78E140094B9C5 /* button-sync.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-sync.png"; sourceTree = "<group>"; };
 		C9775AF410DFD728005E0E2B /* BlioMockBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMockBook.h; sourceTree = "<group>"; };
 		C9775AF510DFD728005E0E2B /* BlioMockBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMockBook.m; sourceTree = "<group>"; };
 		C9775C7010DFDBCF005E0E2B /* librarybackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = librarybackground.png; sourceTree = "<group>"; };
@@ -288,6 +294,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C94D863E10E78E140094B9C5 /* button-getbooks.png */,
+				C94D863F10E78E140094B9C5 /* button-settings.png */,
+				C94D864010E78E140094B9C5 /* button-sync.png */,
 				C985477110E244FE002305A2 /* done-button-down.png */,
 				C985477210E244FE002305A2 /* done-button-up.png */,
 				C985466610E22BCC002305A2 /* icon-speedread.png */,
@@ -548,6 +557,9 @@
 				C985466B10E22BCD002305A2 /* icon-layout.png in Resources */,
 				C985477310E244FE002305A2 /* done-button-down.png in Resources */,
 				C985477410E244FE002305A2 /* done-button-up.png in Resources */,
+				C94D864110E78E140094B9C5 /* button-getbooks.png in Resources */,
+				C94D864210E78E140094B9C5 /* button-settings.png in Resources */,
+				C94D864310E78E140094B9C5 /* button-sync.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,8 @@
 #import "BlioViewSettingsController.h"
 #import "BlioMockBook.h"
 
+static const CGFloat kBlioLibraryToolbarHeight = 44;
+
 static const CGFloat kBlioLibraryListRowHeight = 76;
 static const CGFloat kBlioLibraryListBookHeight = 76;
 static const CGFloat kBlioLibraryListBookWidth = 53;
@@ -97,14 +99,58 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   self.currentBookPath = nil;
   self.currentPdfPath = nil;
   self.books = nil;
+  self.tableView = nil;
   [super dealloc];
 }
 
 - (void)loadView {
   // UITableView subclass so that custom background is only drawn here
-  BlioLibraryTableView *aTableView = [[BlioLibraryTableView alloc] initWithFrame:CGRectMake(0,0,320,480-20) style:UITableViewStylePlain];
+  BlioLibraryTableView *aTableView = [[BlioLibraryTableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStylePlain];
   self.tableView = aTableView;
   [aTableView release];
+  
+  NSMutableArray *libraryItems = [NSMutableArray array];
+  UIBarButtonItem *item;
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
+                                          style:UIBarButtonItemStyleBordered
+                                         target:self 
+                                         action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-getbooks.png"]
+                                          style:UIBarButtonItemStyleBordered
+                                         target:self 
+                                         action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [libraryItems addObject:item];
+  [item release];  
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-settings.png"]
+                                          style:UIBarButtonItemStyleBordered
+                                         target:self 
+                                         action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [libraryItems addObject:item];
+  [item release];  
+  
+  [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
+  [self.navigationController setToolbarHidden:NO];
 }
 
 - (void)viewDidLoad {
@@ -262,13 +308,14 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.backgroundColor = [UIColor clearColor];
+  
 }
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   self.navigationItem.title = @"Bookshelf";
   self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];  
 }
 
 - (void)didReceiveMemoryWarning {
@@ -327,7 +374,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
                                           style:UIBarButtonItemStylePlain
                                          target:self 
-                                         action:nil];
+                                         action:@selector(showAddMenu:)];
   [readingItems addObject:item];
   [item release];
   
@@ -632,10 +679,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark -
 #pragma mark Action Callback Methods
 
+- (void)showAddMenu:(id)sender {
+  UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
+  [aActionSheet showInView:self.navigationController.visibleViewController.view];
+  [aActionSheet release];
+}
+
 - (void)showViewSettings:(id)sender {
   BlioViewSettingsController *aBlioViewSettingsController = [[BlioViewSettingsController alloc] init];
   aBlioViewSettingsController.delegate = self;
-  [self presentModalViewController:aBlioViewSettingsController animated:YES];
+  [self.navigationController.visibleViewController presentModalViewController:aBlioViewSettingsController animated:YES];
   [aBlioViewSettingsController release];
 }
 
