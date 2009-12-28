@@ -3,36 +3,36 @@
 <plist version="1.0">
 <dict>
 	<key>/OPS/c000.xml</key>
-	<integer>5356</integer>
+	<integer>5357</integer>
 	<key>/OPS/c001.xml</key>
-	<integer>310372</integer>
+	<integer>310373</integer>
 	<key>/OPS/c01.xml</key>
-	<integer>5681</integer>
+	<integer>5682</integer>
 	<key>/OPS/c02.xml</key>
-	<integer>63437</integer>
+	<integer>63438</integer>
 	<key>/OPS/c03.xml</key>
-	<integer>137428</integer>
+	<integer>137429</integer>
 	<key>/OPS/c04.xml</key>
-	<integer>206039</integer>
+	<integer>206040</integer>
 	<key>/OPS/c05.xml</key>
-	<integer>271250</integer>
+	<integer>271251</integer>
 	<key>/OPS/c06.xml</key>
-	<integer>310698</integer>
+	<integer>310699</integer>
 	<key>/OPS/c07.xml</key>
-	<integer>367772</integer>
+	<integer>367773</integer>
 	<key>/OPS/c08.xml</key>
-	<integer>457713</integer>
+	<integer>457714</integer>
 	<key>/OPS/c09.xml</key>
-	<integer>496013</integer>
+	<integer>496014</integer>
 	<key>/OPS/c10.xml</key>
-	<integer>525012</integer>
+	<integer>525013</integer>
 	<key>/OPS/cover.xml</key>
 	<integer>0</integer>
 	<key>/OPS/cover.xml#coverimage</key>
 	<integer>341</integer>
 	<key>/OPS/front.xml</key>
-	<integer>898</integer>
+	<integer>899</integer>
 	<key>/OPS/titlepage.xml</key>
-	<integer>526</integer>
+	<integer>527</integer>
 </dict>
 </plist>

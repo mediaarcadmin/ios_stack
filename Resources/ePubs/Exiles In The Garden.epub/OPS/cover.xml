@@ -6,7 +6,7 @@
 </head>
 <body style="margin-top:0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;  text-align: center; background-color: black;">
   <div style='-eucalyptus-full-bleed: "on"' id='coverimage'>  
-    <img src='cover.png' alt='Book Cover Image' style='height: 100%; -eucalyptus-nozoom: "on"' />
+    <img src='cover.png' alt='Book Cover Image' style='height: 100%; -eucalyptus-no-zoom: "on"' />
   </div> 
 </body>
 </html>

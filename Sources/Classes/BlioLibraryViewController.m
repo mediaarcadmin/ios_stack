@@ -170,6 +170,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"Three Little Pigs"];
   [aBook setAuthor:@"Stella Blackstone"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/Three_Little_Pigs.png"]];
+  [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"epub" inDirectory:@"ePubs"]];
   [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]];
   [aBook setProgress:1.0f];
   [aBook setProportionateSize:0.05f];
