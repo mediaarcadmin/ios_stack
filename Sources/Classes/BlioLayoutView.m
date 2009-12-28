@@ -12,28 +12,33 @@
 @end
 
 static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
+static const CGFloat kBlioLayoutShadow = 16.0f;
 
 @interface BlioPDFTiledLayerDelegate : NSObject {
   CGPDFPageRef page;
+  CGAffineTransform fitTransform;
+  CGRect pageRect;
 }
 
 @property(nonatomic) CGPDFPageRef page;
+@property(nonatomic) CGAffineTransform fitTransform;
+@property(nonatomic, readonly) CGRect fittedPageRect;
 
 @end
 
 @interface BlioPDFShadowLayerDelegate : NSObject {
-  CGPDFPageRef page;
+  CGRect pageRect;
 }
 
-@property(nonatomic) CGPDFPageRef page;
+@property(nonatomic) CGRect pageRect;
 
 @end
 
 @interface BlioPDFBackgroundLayerDelegate : NSObject {
-  CGPDFPageRef page;
+  CGRect pageRect;
 }
 
-@property(nonatomic) CGPDFPageRef page;
+@property(nonatomic) CGRect pageRect;
 
 @end
 
@@ -208,14 +213,11 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 - (void)configureTiledLayer {
   currentZoom = 1.0f;
   tiledLayer = [BlioFastCATiledLayer layer];
-  BlioPDFTiledLayerDelegate *aDelegate = [[BlioPDFTiledLayerDelegate alloc] init];
-  [aDelegate setPage:page];
-  tiledLayer.delegate = aDelegate;
-  self.tiledLayerDelegate = aDelegate;
-  [aDelegate release];
   
   CGRect pageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-  CGFloat inset = -16;
+  CGFloat inset = -kBlioLayoutShadow;
+  CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+  
   int w = pageRect.size.width;
   int h = pageRect.size.height;
   
@@ -226,18 +228,22 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
     h = h >> 1;
   }
   
-  tiledLayer.levelsOfDetail = levels + 2;
+  tiledLayer.levelsOfDetail = levels;
   tiledLayer.levelsOfDetailBias = levels;
-  tiledLayer.tileSize = CGSizeMake(1024, 1024);
-  tiledLayer.bounds = pageRect;
-  
-  CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+  tiledLayer.tileSize = CGSizeMake(1024, 1024);  
+  tiledLayer.bounds = insetBounds;
+
   CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-  currentZoom = fitTransform.a;
-  zoomToFit = currentZoom;
-  tiledLayer.position = CGPointMake(self.layer.bounds.size.width/2.0f, self.layer.bounds.size.height/2.0f);
-  tiledLayer.transform = CATransform3DMakeScale(currentZoom, currentZoom, 1.0f);
   
+  BlioPDFTiledLayerDelegate *aDelegate = [[BlioPDFTiledLayerDelegate alloc] init];
+  [aDelegate setPage:page];
+  [aDelegate setFitTransform:fitTransform];
+  tiledLayer.delegate = aDelegate;
+  self.tiledLayerDelegate = aDelegate;
+  [aDelegate release];
+  
+  zoomToFit = 1.0f; // Not needed. Perhaps add zoom to fill?
+  tiledLayer.position = CGPointMake(self.layer.bounds.size.width/2.0f, self.layer.bounds.size.height/2.0f);  
   
   // transform the super layer so things draw 'right side up'
   CATransform3D superTransform = CATransform3DMakeTranslation(0.0f, self.bounds.size.height, 0.0f);
@@ -250,16 +256,14 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 - (void)configureShadowLayer {
   shadowLayer = [BlioFastCATiledLayer layer];
   BlioPDFShadowLayerDelegate *aDelegate = [[BlioPDFShadowLayerDelegate alloc] init];
-  [aDelegate setPage:page];
+  [aDelegate setPageRect:[self.tiledLayerDelegate fittedPageRect]];
   shadowLayer.delegate = aDelegate;
   shadowLayer.levelsOfDetail = 1;
   shadowLayer.tileSize = CGSizeMake(1024, 1024);
   self.shadowLayerDelegate = aDelegate;
   [aDelegate release];
   
-  CGFloat inset = -32; // Make this a constant
-  CGRect inRect = UIEdgeInsetsInsetRect(tiledLayer.bounds, UIEdgeInsetsMake(inset, inset, inset, inset));
-  shadowLayer.bounds = inRect;
+  shadowLayer.bounds = self.bounds;
   shadowLayer.position = tiledLayer.position;
   shadowLayer.transform = tiledLayer.transform;
   [self.layer insertSublayer:shadowLayer below:tiledLayer];
@@ -269,16 +273,13 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 - (void)configureBackgroundLayer {
   backgroundLayer = [CALayer layer];
   BlioPDFBackgroundLayerDelegate *aDelegate = [[BlioPDFBackgroundLayerDelegate alloc] init];
-  [aDelegate setPage:page];
+  [aDelegate setPageRect:[self.tiledLayerDelegate fittedPageRect]];
   backgroundLayer.delegate = aDelegate;
   self.backgroundLayerDelegate = aDelegate;
   [aDelegate release];
   
-  CGFloat inset = -32; // Make this a constant
-  CGRect inRect = UIEdgeInsetsInsetRect(tiledLayer.bounds, UIEdgeInsetsMake(inset, inset, inset, inset));
-  backgroundLayer.bounds = inRect;
+  backgroundLayer.bounds = tiledLayer.bounds;
   backgroundLayer.position = tiledLayer.position;
-  backgroundLayer.transform = tiledLayer.transform;
   [self.layer insertSublayer:backgroundLayer below:tiledLayer];
   [backgroundLayer setNeedsDisplay];
 }
@@ -311,7 +312,6 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   page = newPage;
   
   if (!CGRectEqualToRect(currentPageRect, newPageRect)) {
-    NSLog(@"Configuring layers");
     [tiledLayer setDelegate:nil];
     [backgroundLayer setDelegate:nil];
     [shadowLayer setDelegate:nil];
@@ -326,10 +326,10 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
     [self configureShadowLayer];
     [self configureBackgroundLayer];
   } else {
-    NSLog(@"Reusing layers");
     [[tiledLayer delegate] setPage:page];
-    [[shadowLayer delegate] setPage:page];
-    [[backgroundLayer delegate] setPage:page];
+    [[shadowLayer delegate] setPageRect:[[tiledLayer delegate] fittedPageRect]];
+    [[backgroundLayer delegate] setPageRect:[[tiledLayer delegate] fittedPageRect]];
+    //[[backgroundLayer delegate] setPage:page];
     //[tiledLayer setNeedsDisplay];
     //[backgroundLayer setNeedsDisplay];
   }
@@ -471,38 +471,52 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 
 @implementation BlioPDFTiledLayerDelegate
 
-@synthesize page;
+@synthesize page, fitTransform, fittedPageRect;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-  CGRect cropRect = CGPDFPageGetBoxRect (self.page, kCGPDFCropBox);
-  CGContextClipToRect(ctx, cropRect);
-  CGContextDrawPDFPage(ctx, self.page);
+  CGContextConcatCTM(ctx, fitTransform);
+  CGContextClipToRect(ctx, pageRect);
+  CGContextDrawPDFPage(ctx, page);
+  NSLog(@"pdf pageRect: %@", NSStringFromCGRect(pageRect));
+  NSLog(@"pdf bounds: %@", NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+}
+
+- (void)setPage:(CGPDFPageRef)newPage {
+  page = newPage;
+  pageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
+}
+
+- (CGRect)fittedPageRect {
+  return CGRectApplyAffineTransform(pageRect, fitTransform); 
 }
 
 @end
 
 @implementation BlioPDFBackgroundLayerDelegate
 
-@synthesize page;
+@synthesize pageRect;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-  CGRect cropRect = CGPDFPageGetBoxRect (self.page, kCGPDFCropBox);
   CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-  CGContextFillRect(ctx, cropRect);
+  CGContextFillRect(ctx, pageRect);
+  NSLog(@"background pageRect: %@", NSStringFromCGRect(pageRect));
+  NSLog(@"background bounds: %@", NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+
 }
 
 @end
 
 @implementation BlioPDFShadowLayerDelegate
 
-@synthesize page;
+@synthesize pageRect;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-  CGFloat shadow = 16 * CGContextGetCTM(ctx).a; // Shadow should be constant
-  CGContextSetShadowWithColor(ctx, CGSizeMake(0, (shadow/2.0f)), shadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
-  CGRect cropRect = CGPDFPageGetBoxRect (self.page, kCGPDFCropBox);
+  CGContextSetShadowWithColor(ctx, CGSizeMake(0, (kBlioLayoutShadow/2.0f)), kBlioLayoutShadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
   CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-  CGContextFillRect(ctx, cropRect);
+  CGContextFillRect(ctx, pageRect);
+  NSLog(@"shadowLayer pageRect: %@", NSStringFromCGRect(pageRect));
+  NSLog(@"shadowLayer bounds: %@", NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+
 }
 
 @end
