@@ -7,6 +7,7 @@
 //
 
 #import "BlioViewSettingsController.h"
+#import <libEucalyptus/THUIImageAdditions.h>
 
 @interface BlioViewSettingsControllerView : UIView
 
@@ -74,19 +75,31 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
   self.fontSizeLabel = aFontSizeLabel;
   [aFontSizeLabel release];
   
+  NSString *letter = @"A";
+  UIFont *defaultFont = [UIFont boldSystemFontOfSize:14.0f];
+  UIColor *white = [UIColor whiteColor];
+    
+  // Sizes and offsets for the font size buttons chosen to look 'right' visually
+  // rather than being completly accurate to the book view technically.
   NSArray *fontSizeTitles = [NSArray arrayWithObjects:
-                            @"A",
-                            @"A",
-                            @"A",
-                            @"A",
-                            @"A",
+                             [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 10.0f) color:white],
+                             [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 11.0f) color:white],
+                             [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 12.0f) color:white],
+                             [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 13.0f) color:white],
+                             [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 14.0f) color:white],
                             nil];
   
-  UISegmentedControl *aFontSizeSegmentedControl = [[UISegmentedControl alloc] initWithItems:fontSizeTitles];
+  UISegmentedControl *aFontSizeSegmentedControl = [[UISegmentedControl alloc] initWithItems:fontSizeTitles];    
   aFontSizeSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
   aFontSizeSegmentedControl.frame = CGRectMake(CGRectGetMaxX(aFontSizeLabel.frame), CGRectGetMinY(aFontSizeLabel.frame), settingsView.bounds.size.width - CGRectGetMaxX(aFontSizeLabel.frame) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight);
   aFontSizeSegmentedControl.tintColor = [UIColor colorWithRed:0.282f green:0.310f blue:0.345f alpha:1.0f];
   [aFontSizeSegmentedControl addTarget:self.delegate action:@selector(changeFontSize:) forControlEvents:UIControlEventValueChanged];
+  
+  [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 2) forSegmentAtIndex:0];
+  [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
+  [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 0) forSegmentAtIndex:2];
+  [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:3];
+    
   [settingsView addSubview:aFontSizeSegmentedControl];
   self.fontSizeSegment = aFontSizeSegmentedControl;
   [aFontSizeSegmentedControl release];

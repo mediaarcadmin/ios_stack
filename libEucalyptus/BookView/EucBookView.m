@@ -154,10 +154,10 @@
     }
 }
 
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
+- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated forced:(BOOL)forced
 {
     NSInteger oldPageNumber = self.pageNumber;
-    if(oldPageNumber != pageNumber) {
+    if(forced || oldPageNumber != pageNumber) {
         THPair *newPageViewAndIndexPoint = [self _pageViewAndIndexPointForBookPageNumber:pageNumber];
         
         UIView *newPageView = newPageViewAndIndexPoint.first;
@@ -184,6 +184,11 @@
         
         [self _updatePageNumberLabel];
     }
+}
+
+- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
+{
+    [self setPageNumber:pageNumber animated:animated forced:NO];
 }
 
 
@@ -531,7 +536,9 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     EucBookPageIndexPoint *pageIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
     NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
     
-    [_book setCurrentPageIndexPoint:pageIndexPoint];
+    if(!_dontSaveIndexPoints) {
+        [_book setCurrentPageIndexPoint:pageIndexPoint];
+    }
     if(!_jumpShouldBeSaved) {
         _directionalJumpCount = 0;
     } else {
@@ -549,7 +556,24 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _scaleCurrentPointSize = 0;
     
     [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
-    [_book setCurrentPageIndexPoint:[_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]]];
+    //[_book setCurrentPageIndexPoint:[_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]]];
+}
+
+- (CGFloat)fontPointSize
+{
+    return _pageLayoutController.fontPointSize;
+}
+
+- (void)setFontPointSize:(CGFloat)fontPointSize
+{
+    [_pageLayoutController setFontPointSize:fontPointSize];
+    [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
+
+    [_pageViewToIndexPoint removeAllObjects];
+    [_pageViewToIndexPointCounts removeAllObjects];
+    _dontSaveIndexPoints = YES;
+    [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO forced:YES];
+    _dontSaveIndexPoints = NO;
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view
@@ -829,7 +853,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         }
     }
 }
-
 
 
 - (void)_pageSliderSlid:(THScalableSlider *)sender
