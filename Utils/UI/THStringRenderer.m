@@ -133,10 +133,22 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 						[fontData release];
 					}
 					if(!font) {
-						// See if we can use a system font.                        
-                        NSArray *familyNames = [UIFont familyNames];
+						// See if we can use a system font.            CTFont            
+                        NSArray *familyNames;
+                        
+#if TARGET_OS_IPHONE
+                        familyNames = [UIFont familyNames];
+#else
+                        familyNames = [[NSFontManager sharedFontManager] availableFontFamilies];
+#endif
+                        
                         if([familyNames containsObject:fontName]) {
-                            NSArray *specificFontNames = [UIFont fontNamesForFamilyName:fontName];
+                            NSArray *specificFontNames;
+#if TARGET_OS_IPHONE
+                            specificFontNames = [UIFont fontNamesForFamilyName:fontName];
+#else
+                            specificFontNames = [[NSFontManager sharedFontManager] availableMembersOfFontFamily:fontName];
+#endif
                             NSInteger specificFontCount = specificFontNames.count;
                             if(specificFontCount) {
                                 // The idea here is to rate the specific font names
@@ -813,7 +825,11 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 
 - (CGSize)drawString:(NSString *)string atPoint:(CGPoint)originPoint pointSize:(CGFloat)pointSize maxWidth:(CGFloat)maxWidth flags:(THStringRendererFlags)flags
 {
+#if TARGET_OS_IPHONE
     return [self drawString:string inContext:UIGraphicsGetCurrentContext() atPoint:originPoint pointSize:pointSize maxWidth:maxWidth flags:flags];
+#else
+    return [self drawString:string inContext:[[NSGraphicsContext currentContext] graphicsPort] atPoint:originPoint pointSize:pointSize maxWidth:maxWidth flags:flags];
+#endif
 }
 
 @end
