@@ -6,7 +6,11 @@
 //  Copyright 2008 Things Made Out Of Other Things Ltd. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#if TARGET_OS_IPHONE
+    #import <UIKit/UIKit.h>
+#else
+    #import <Cocoa/Cocoa.h>
+#endif
 
 struct THBreak;
 

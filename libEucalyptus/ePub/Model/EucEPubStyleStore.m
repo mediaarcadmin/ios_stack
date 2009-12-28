@@ -138,29 +138,31 @@ static void printTree(pANTLR3_BASE_TREE tree, int indent)
 
 - (void)_addStyleSheet:(pANTLR3_BASE_TREE)tree
 {
-    ANTLR3_UINT32 childCount = tree->getChildCount(tree);
-    for(ANTLR3_UINT32 i = 0; i < childCount; ++i) {
-        pANTLR3_BASE_TREE node = tree->getChild(tree, i);
-        switch(node->getType(node)) {
-            case CHARSET:
-                THWarn(@"CSS @charset not (yet?) supported");
-                break;
-            case IMPORT:
-                THWarn(@"CSS @import not (yet?) supported");
-                break;
-            case RULESET:
-                [self _addRuleset:node];
-                break;
-            default:
-                THWarn(@"Unexpected token encountered in CSS");
-                break;
+    if(tree) {
+        ANTLR3_UINT32 childCount = tree->getChildCount(tree);
+        for(ANTLR3_UINT32 i = 0; i < childCount; ++i) {
+            pANTLR3_BASE_TREE node = tree->getChild(tree, i);
+            switch(node->getType(node)) {
+                case CHARSET:
+                    THWarn(@"CSS @charset not (yet?) supported");
+                    break;
+                case IMPORT:
+                    THWarn(@"CSS @import not (yet?) supported");
+                    break;
+                case RULESET:
+                    [self _addRuleset:node];
+                    break;
+                default:
+                    THWarn(@"Unexpected token encountered in CSS");
+                    break;
+            }
         }
-    }
 
-    //printTree(tree, 0);
-    //THLog(@"Parsed stylesheet %ld children", (long)childCount);
-    //THLog(@"%@", _selectorToStyle);
-    //fflush(stdout);
+        //printTree(tree, 0);
+        //THLog(@"Parsed stylesheet %ld children", (long)childCount);
+        //THLog(@"%@", _selectorToStyle);
+        //fflush(stdout);
+    }
 }
 
 - (void)addStylesFromCSSFile:(NSString *)path
@@ -176,7 +178,7 @@ static void printTree(pANTLR3_BASE_TREE tree, int indent)
                 pcss21Parser parser = css21ParserNew(tokenStream);
                 if(parser) {
                     css21Parser_styleSheet_return styleSheet = parser->styleSheet(parser);
-                    
+
                     [self _addStyleSheet:styleSheet.tree];
 
                     parser->free(parser);

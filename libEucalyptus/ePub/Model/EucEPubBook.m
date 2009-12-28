@@ -235,13 +235,26 @@ static void contentOpfCharacterDataHandler(void *ctx, const XML_Char *chars, int
     XML_SetUserData(parser, (void *)&context);    
     XML_Parse(parser, [data bytes], [data length], XML_TRUE);
     XML_ParserFree(parser);
-    
+        
     [_meta release];
     _meta = context.buildMeta;
     [_manifest release];
     _manifest = context.buildManifest;
     [_spine release];
     _spine = context.buildSpine;
+    
+    if(!self->_tocNcxId) {
+        // Some ePubs don't seem to specify the toc file as they should.
+        // Should probably match based on MIME type rather than extension
+        // [no doubt that's wrong sometimes too though...].
+        for(NSString *prospectiveTocKey in _manifest.keyEnumerator) {
+            if([[[_manifest objectForKey:prospectiveTocKey] pathExtension] caseInsensitiveCompare:@"ncx"] == NSOrderedSame) {
+                self->_tocNcxId = [prospectiveTocKey retain];
+                break;
+            }
+        }
+    }
+    
     [data release];
 }
 

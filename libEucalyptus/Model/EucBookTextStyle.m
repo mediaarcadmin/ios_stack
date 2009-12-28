@@ -220,12 +220,36 @@
                     if(ret) {
                         _fontSizePercentage = ret / DEFAULT_FONT_SIZE; 
                     }                    
+                } else if([value isEqualToString:@"smaller"]) {
+                    _fontSizePercentage /= 1.2f;
+                } else if([value isEqualToString:@"larger"]) {
+                    _fontSizePercentage *= 1.2f;
+                } else if([value isEqualToString:@"medium"]) {
+                    _fontSizePercentage = 1.0f;
+                } else if([value hasSuffix:@"small"]) {
+                    _fontSizePercentage = 1.0f / 1.2f;
+                    NSUInteger length = value.length;
+                    if(length > 5) {
+                        _fontSizePercentage = 1.0f;
+                        for(NSInteger i = 6; i < length; ++i) {
+                            _fontSizePercentage /= 1.2f;
+                        }
+                    }
+                } else if([value hasSuffix:@"large"]) {
+                    _fontSizePercentage = 1.2f;
+                    NSUInteger length = value.length;
+                    if(length > 5) {
+                        _fontSizePercentage = 1.0f;
+                        for(NSInteger i = 6; i < length; ++i) {
+                            _fontSizePercentage *= 1.2f;
+                        }
+                    }
                 } else {
                     CGFloat ret = [value floatValue];
                     if(ret) {
                         _fontSizePercentage = ret / DEFAULT_FONT_SIZE;
                     }
-                    THWarn(@"Unrecognised font-size value in CSS.  Treating as %f px", ret);
+                    THWarn(@"Unrecognised font-size value \"%@\" in CSS.  Treating as %f px", caseSpecificValue, ret);
                 }
             }
         } else {
