@@ -58,6 +58,24 @@
 		C9775C7110DFDBCF005E0E2B /* librarybackground.png in Resources */ = {isa = PBXBuildFile; fileRef = C9775C7010DFDBCF005E0E2B /* librarybackground.png */; };
 		C9775EA510DFE1C3005E0E2B /* MockCovers in Resources */ = {isa = PBXBuildFile; fileRef = C9775E9A10DFE1C3005E0E2B /* MockCovers */; };
 		C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
+		C977642110E0D268005E0E2B /* button-grid.png in Resources */ = {isa = PBXBuildFile; fileRef = C977641F10E0D268005E0E2B /* button-grid.png */; };
+		C977642210E0D268005E0E2B /* button-list.png in Resources */ = {isa = PBXBuildFile; fileRef = C977642010E0D268005E0E2B /* button-list.png */; };
+		C977649B10E0E413005E0E2B /* row-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649910E0E413005E0E2B /* row-dark.png */; };
+		C977649C10E0E413005E0E2B /* row-light.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649A10E0E413005E0E2B /* row-light.png */; };
+		C977659110E105C0005E0E2B /* minimum-progress.png in Resources */ = {isa = PBXBuildFile; fileRef = C977658F10E105C0005E0E2B /* minimum-progress.png */; };
+		C977659210E105C0005E0E2B /* maximum-progress.png in Resources */ = {isa = PBXBuildFile; fileRef = C977659010E105C0005E0E2B /* maximum-progress.png */; };
+		C98542AA10E13A99002305A2 /* icon-contents.png in Resources */ = {isa = PBXBuildFile; fileRef = C98542A410E13A99002305A2 /* icon-contents.png */; };
+		C98542AB10E13A99002305A2 /* icon-eye.png in Resources */ = {isa = PBXBuildFile; fileRef = C98542A510E13A99002305A2 /* icon-eye.png */; };
+		C98542AC10E13A99002305A2 /* icon-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C98542A610E13A99002305A2 /* icon-pause.png */; };
+		C98542AD10E13A99002305A2 /* icon-play.png in Resources */ = {isa = PBXBuildFile; fileRef = C98542A710E13A99002305A2 /* icon-play.png */; };
+		C98542AE10E13A99002305A2 /* icon-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = C98542A810E13A99002305A2 /* icon-plus.png */; };
+		C98542AF10E13A99002305A2 /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = C98542A910E13A99002305A2 /* icon-search.png */; };
+		C985446210E15E33002305A2 /* BlioViewSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = C985446110E15E33002305A2 /* BlioViewSettingsController.m */; };
+		C985466910E22BCD002305A2 /* icon-speedread.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466610E22BCC002305A2 /* icon-speedread.png */; };
+		C985466A10E22BCD002305A2 /* icon-page.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466710E22BCD002305A2 /* icon-page.png */; };
+		C985466B10E22BCD002305A2 /* icon-layout.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466810E22BCD002305A2 /* icon-layout.png */; };
+		C985477310E244FE002305A2 /* done-button-down.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477110E244FE002305A2 /* done-button-down.png */; };
+		C985477410E244FE002305A2 /* done-button-up.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477210E244FE002305A2 /* done-button-up.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -174,6 +192,25 @@
 		C9775C7010DFDBCF005E0E2B /* librarybackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = librarybackground.png; sourceTree = "<group>"; };
 		C9775E9A10DFE1C3005E0E2B /* MockCovers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MockCovers; sourceTree = "<group>"; };
 		C977636C10E056E2005E0E2B /* booktextureandshadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = booktextureandshadow.png; sourceTree = "<group>"; };
+		C977641F10E0D268005E0E2B /* button-grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-grid.png"; sourceTree = "<group>"; };
+		C977642010E0D268005E0E2B /* button-list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-list.png"; sourceTree = "<group>"; };
+		C977649910E0E413005E0E2B /* row-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "row-dark.png"; sourceTree = "<group>"; };
+		C977649A10E0E413005E0E2B /* row-light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "row-light.png"; sourceTree = "<group>"; };
+		C977658F10E105C0005E0E2B /* minimum-progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "minimum-progress.png"; sourceTree = "<group>"; };
+		C977659010E105C0005E0E2B /* maximum-progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "maximum-progress.png"; sourceTree = "<group>"; };
+		C98542A410E13A99002305A2 /* icon-contents.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-contents.png"; sourceTree = "<group>"; };
+		C98542A510E13A99002305A2 /* icon-eye.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-eye.png"; sourceTree = "<group>"; };
+		C98542A610E13A99002305A2 /* icon-pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-pause.png"; sourceTree = "<group>"; };
+		C98542A710E13A99002305A2 /* icon-play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-play.png"; sourceTree = "<group>"; };
+		C98542A810E13A99002305A2 /* icon-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-plus.png"; sourceTree = "<group>"; };
+		C98542A910E13A99002305A2 /* icon-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-search.png"; sourceTree = "<group>"; };
+		C985446010E15E33002305A2 /* BlioViewSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsController.h; sourceTree = "<group>"; };
+		C985446110E15E33002305A2 /* BlioViewSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsController.m; sourceTree = "<group>"; };
+		C985466610E22BCC002305A2 /* icon-speedread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-speedread.png"; sourceTree = "<group>"; };
+		C985466710E22BCD002305A2 /* icon-page.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-page.png"; sourceTree = "<group>"; };
+		C985466810E22BCD002305A2 /* icon-layout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-layout.png"; sourceTree = "<group>"; };
+		C985477110E244FE002305A2 /* done-button-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done-button-down.png"; sourceTree = "<group>"; };
+		C985477210E244FE002305A2 /* done-button-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done-button-up.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,6 +247,8 @@
 				C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */,
 				C9775AF410DFD728005E0E2B /* BlioMockBook.h */,
 				C9775AF510DFD728005E0E2B /* BlioMockBook.m */,
+				C985446010E15E33002305A2 /* BlioViewSettingsController.h */,
+				C985446110E15E33002305A2 /* BlioViewSettingsController.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -249,6 +288,23 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C985477110E244FE002305A2 /* done-button-down.png */,
+				C985477210E244FE002305A2 /* done-button-up.png */,
+				C985466610E22BCC002305A2 /* icon-speedread.png */,
+				C985466710E22BCD002305A2 /* icon-page.png */,
+				C985466810E22BCD002305A2 /* icon-layout.png */,
+				C98542A410E13A99002305A2 /* icon-contents.png */,
+				C98542A510E13A99002305A2 /* icon-eye.png */,
+				C98542A610E13A99002305A2 /* icon-pause.png */,
+				C98542A710E13A99002305A2 /* icon-play.png */,
+				C98542A810E13A99002305A2 /* icon-plus.png */,
+				C98542A910E13A99002305A2 /* icon-search.png */,
+				C977658F10E105C0005E0E2B /* minimum-progress.png */,
+				C977659010E105C0005E0E2B /* maximum-progress.png */,
+				C977649910E0E413005E0E2B /* row-dark.png */,
+				C977649A10E0E413005E0E2B /* row-light.png */,
+				C977641F10E0D268005E0E2B /* button-grid.png */,
+				C977642010E0D268005E0E2B /* button-list.png */,
 				C977636C10E056E2005E0E2B /* booktextureandshadow.png */,
 				C9775C7010DFDBCF005E0E2B /* librarybackground.png */,
 				C9775E9A10DFE1C3005E0E2B /* MockCovers */,
@@ -475,6 +531,23 @@
 				C9775C7110DFDBCF005E0E2B /* librarybackground.png in Resources */,
 				C9775EA510DFE1C3005E0E2B /* MockCovers in Resources */,
 				C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */,
+				C977642110E0D268005E0E2B /* button-grid.png in Resources */,
+				C977642210E0D268005E0E2B /* button-list.png in Resources */,
+				C977649B10E0E413005E0E2B /* row-dark.png in Resources */,
+				C977649C10E0E413005E0E2B /* row-light.png in Resources */,
+				C977659110E105C0005E0E2B /* minimum-progress.png in Resources */,
+				C977659210E105C0005E0E2B /* maximum-progress.png in Resources */,
+				C98542AA10E13A99002305A2 /* icon-contents.png in Resources */,
+				C98542AB10E13A99002305A2 /* icon-eye.png in Resources */,
+				C98542AC10E13A99002305A2 /* icon-pause.png in Resources */,
+				C98542AD10E13A99002305A2 /* icon-play.png in Resources */,
+				C98542AE10E13A99002305A2 /* icon-plus.png in Resources */,
+				C98542AF10E13A99002305A2 /* icon-search.png in Resources */,
+				C985466910E22BCD002305A2 /* icon-speedread.png in Resources */,
+				C985466A10E22BCD002305A2 /* icon-page.png in Resources */,
+				C985466B10E22BCD002305A2 /* icon-layout.png in Resources */,
+				C985477310E244FE002305A2 /* done-button-down.png in Resources */,
+				C985477410E244FE002305A2 /* done-button-up.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,6 +563,7 @@
 				28C286E10D94DF7D0034E888 /* BlioLibraryViewController.m in Sources */,
 				C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */,
 				C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */,
+				C985446210E15E33002305A2 /* BlioViewSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

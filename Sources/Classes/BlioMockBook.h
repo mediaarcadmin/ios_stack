@@ -16,6 +16,9 @@
   NSString *coverPath;
   NSString *bookPath;
   NSString *pdfPath;
+  CGFloat progress;
+  CGFloat proportionateSize;
+  UIImage *coverThumb;
 }
 
 @property (nonatomic, retain) NSString *title;
@@ -23,7 +26,10 @@
 @property (nonatomic, retain) NSString *coverPath;
 @property (nonatomic, retain) NSString *bookPath;
 @property (nonatomic, retain) NSString *pdfPath;
+@property (nonatomic) CGFloat progress;
+@property (nonatomic) CGFloat proportionateSize;
 
 - (UIImage *)coverImage;
+- (UIImage *)coverThumb;
 
 @end
