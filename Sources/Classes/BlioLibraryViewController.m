@@ -29,6 +29,8 @@ static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
 static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
+static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
+
 @interface BlioLibraryTableView : UITableView
 
 @end
@@ -631,12 +633,34 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (BlioFontSize)currentFontSize {
-  return kBlioFontSizeSmall;
+  BlioFontSize fontSize = kBlioFontSizeMedium;
+  if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+    EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+    
+    CGFloat actualFontSize = bookView.fontPointSize;
+    CGFloat bestDifference = CGFLOAT_MAX;
+    BlioFontSize bestFontSize;
+    for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
+      CGFloat thisDifference = fabsf(kBlioFontPointSizeArray[i] - actualFontSize);
+      if(thisDifference < bestDifference) {
+        bestDifference = thisDifference;
+        bestFontSize = i;
+      }
+    }
+    fontSize = bestFontSize;
+  } 
+  return fontSize;
 }
 
 - (void)changeFontSize:(id)sender {
   BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
   if([self currentFontSize] != newSize) {
+    if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+      EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+      EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+      bookView.fontPointSize = kBlioFontPointSizeArray[newSize];
+    }
     NSLog(@"Attempting to change to BlioFontSize: %d", newSize);
   }
 }
