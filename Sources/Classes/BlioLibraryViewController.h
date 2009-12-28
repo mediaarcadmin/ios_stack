@@ -43,7 +43,7 @@ typedef enum {
 
 @class BlioLibraryBookView;
 
-@interface BlioLibraryViewController : UITableViewController {
+@interface BlioLibraryViewController : UITableViewController <UIActionSheetDelegate> {
   BlioLibraryBookView *_currentBookView;
   NSString *_currentBookPath;
   NSString *_currentPdfPath;

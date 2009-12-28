@@ -8,9 +8,20 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutView.h"
 
+@interface BlioFastCATiledLayer : CATiledLayer
+@end
+
 static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 
 @interface BlioPDFTiledLayerDelegate : NSObject {
+  CGPDFPageRef page;
+}
+
+@property(nonatomic) CGPDFPageRef page;
+
+@end
+
+@interface BlioPDFShadowLayerDelegate : NSObject {
   CGPDFPageRef page;
 }
 
@@ -29,10 +40,12 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 @interface BlioPDFDrawingView : UIView {
   CGPDFPageRef page;
   id layoutView;
-  CATiledLayer *tiledLayer;
+  BlioFastCATiledLayer *tiledLayer;
   CALayer *backgroundLayer;
+  BlioFastCATiledLayer *shadowLayer;
   BlioPDFTiledLayerDelegate *tiledLayerDelegate;
   BlioPDFBackgroundLayerDelegate *backgroundLayerDelegate;
+  BlioPDFShadowLayerDelegate *shadowLayerDelegate;
   CGFloat currentZoom;
   CGPoint currentOffset;
   CGFloat zoomToFit;
@@ -45,8 +58,10 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 @property (nonatomic, assign) id layoutView;
 @property (nonatomic, retain) BlioPDFBackgroundLayerDelegate *backgroundLayerDelegate;
 @property (nonatomic, retain) BlioPDFTiledLayerDelegate *tiledLayerDelegate;
+@property (nonatomic, retain) BlioPDFShadowLayerDelegate *shadowLayerDelegate;
 
 - (id)initWithFrame:(CGRect)frame andPageRef:(CGPDFPageRef)newPage;
+- (void)setPage:(CGPDFPageRef)newPage;
 
 @end
 
@@ -133,13 +148,16 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 	
   // replace the placeholder if necessary
   BlioPDFDrawingView *pageView = [self.pageViews objectAtIndex:pageIndex];
+  CGPDFPageRef pdfPageRef = CGPDFDocumentGetPage(pdf, pageIndex + 1);
   
   if ((NSNull *)pageView == [NSNull null]) {
     
-    CGPDFPageRef pdfPageRef = CGPDFDocumentGetPage(pdf, pageIndex + 1);
+    
     pageView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.frame andPageRef:pdfPageRef];
     [self.pageViews replaceObjectAtIndex:pageIndex withObject:pageView];
     [pageView release];
+  } else {
+    [pageView setPage:pdfPageRef];
   }
   
   // add the controller's view to the scroll view
@@ -173,21 +191,23 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 
 @implementation BlioPDFDrawingView
 
-@synthesize layoutView, tiledLayerDelegate, backgroundLayerDelegate;
+@synthesize layoutView, tiledLayerDelegate, backgroundLayerDelegate, shadowLayerDelegate;
 
 - (void)dealloc {
   CGPDFPageRelease(page);
   self.layoutView = nil;
   [tiledLayer setDelegate:nil];
   [backgroundLayer setDelegate:nil];
+  [shadowLayer setDelegate:nil];
   self.tiledLayerDelegate = nil;
   self.backgroundLayerDelegate = nil;
+  self.shadowLayerDelegate = nil;
 	[super dealloc];
 }
 
 - (void)configureTiledLayer {
   currentZoom = 1.0f;
-  tiledLayer = [CATiledLayer layer];
+  tiledLayer = [BlioFastCATiledLayer layer];
   BlioPDFTiledLayerDelegate *aDelegate = [[BlioPDFTiledLayerDelegate alloc] init];
   [aDelegate setPage:page];
   tiledLayer.delegate = aDelegate;
@@ -208,6 +228,7 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   
   tiledLayer.levelsOfDetail = levels + 2;
   tiledLayer.levelsOfDetailBias = levels;
+  tiledLayer.tileSize = CGSizeMake(1024, 1024);
   tiledLayer.bounds = pageRect;
   
   CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
@@ -224,6 +245,25 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   [self.layer addSublayer:tiledLayer];
   
   [tiledLayer setNeedsDisplay];
+}
+
+- (void)configureShadowLayer {
+  shadowLayer = [BlioFastCATiledLayer layer];
+  BlioPDFShadowLayerDelegate *aDelegate = [[BlioPDFShadowLayerDelegate alloc] init];
+  [aDelegate setPage:page];
+  shadowLayer.delegate = aDelegate;
+  shadowLayer.levelsOfDetail = 1;
+  shadowLayer.tileSize = CGSizeMake(1024, 1024);
+  self.shadowLayerDelegate = aDelegate;
+  [aDelegate release];
+  
+  CGFloat inset = -32; // Make this a constant
+  CGRect inRect = UIEdgeInsetsInsetRect(tiledLayer.bounds, UIEdgeInsetsMake(inset, inset, inset, inset));
+  shadowLayer.bounds = inRect;
+  shadowLayer.position = tiledLayer.position;
+  shadowLayer.transform = tiledLayer.transform;
+  [self.layer insertSublayer:shadowLayer below:tiledLayer];
+  [shadowLayer setNeedsDisplay];
 }
 
 - (void)configureBackgroundLayer {
@@ -250,14 +290,49 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
     CGPDFPageRetain(page);
     
     self.multipleTouchEnabled = YES;
+    self.backgroundColor = [UIColor clearColor];
     
     moving = NO;
     pinchZoom = NO;
     
     [self configureTiledLayer];
     [self configureBackgroundLayer];
+    [self configureShadowLayer];
 	}
 	return self;
+}
+
+- (void)setPage:(CGPDFPageRef)newPage {
+  CGRect currentPageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
+  CGRect newPageRect = CGPDFPageGetBoxRect(newPage, kCGPDFCropBox);
+  
+  CGPDFPageRetain(newPage);
+  CGPDFPageRelease(page);
+  page = newPage;
+  
+  if (!CGRectEqualToRect(currentPageRect, newPageRect)) {
+    NSLog(@"Configuring layers");
+    [tiledLayer setDelegate:nil];
+    [backgroundLayer setDelegate:nil];
+    [shadowLayer setDelegate:nil];
+    [tiledLayer removeFromSuperlayer];
+    [backgroundLayer removeFromSuperlayer];
+    [shadowLayer removeFromSuperlayer];
+    self.tiledLayerDelegate = nil;
+    self.backgroundLayerDelegate = nil;
+    self.shadowLayerDelegate = nil;
+    
+    [self configureTiledLayer];
+    [self configureShadowLayer];
+    [self configureBackgroundLayer];
+  } else {
+    NSLog(@"Reusing layers");
+    [[tiledLayer delegate] setPage:page];
+    [[shadowLayer delegate] setPage:page];
+    [[backgroundLayer delegate] setPage:page];
+    //[tiledLayer setNeedsDisplay];
+    //[backgroundLayer setNeedsDisplay];
+  }
 }
 
 - (void)setZoom:(CGFloat)newZoom andOffset:(CGPoint)newOffset {
@@ -291,6 +366,7 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   CATransform3D newTransform = CATransform3DTranslate(CATransform3DMakeScale(currentZoom, currentZoom, 1.0f), currentOffset.x, currentOffset.y, 0);
   tiledLayer.transform = newTransform;
   backgroundLayer.transform = tiledLayer.transform;
+  shadowLayer.transform = tiledLayer.transform;
   
   if (currentZoom == zoomToFit) 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioLayoutZoomEnded" object:nil userInfo:nil];
@@ -315,9 +391,6 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   
 }
 
-//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//  [self.layoutView touchesBegan:touches withEvent:event];
-//}
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
   NSSet *allTouches = [event allTouches];
   
@@ -413,13 +486,29 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 @synthesize page;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-  CGFloat shadow = 16 * CGContextGetCTM(ctx).a; // Shadow should be constant
-  CGContextSetShadowWithColor(ctx, CGSizeMake(0, (shadow/2.0f)), shadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
-  CGContextBeginTransparencyLayer(ctx, NULL);
   CGRect cropRect = CGPDFPageGetBoxRect (self.page, kCGPDFCropBox);
   CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
   CGContextFillRect(ctx, cropRect);
-  CGContextEndTransparencyLayer(ctx);
 }
 
+@end
+
+@implementation BlioPDFShadowLayerDelegate
+
+@synthesize page;
+
+- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
+  CGFloat shadow = 16 * CGContextGetCTM(ctx).a; // Shadow should be constant
+  CGContextSetShadowWithColor(ctx, CGSizeMake(0, (shadow/2.0f)), shadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
+  CGRect cropRect = CGPDFPageGetBoxRect (self.page, kCGPDFCropBox);
+  CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+  CGContextFillRect(ctx, cropRect);
+}
+
+@end
+
+@implementation BlioFastCATiledLayer
++ (CFTimeInterval)fastDuration {
+  return 0.0;
+}
 @end
