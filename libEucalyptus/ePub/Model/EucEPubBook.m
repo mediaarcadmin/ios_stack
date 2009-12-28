@@ -387,31 +387,47 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         NSURL *baseUrl = [NSURL fileURLWithPath:path];
         
         NSMutableArray *sectionsBuild = [[NSMutableArray alloc] init];
-        NSArray *orderedKeys = [[context.buildNavMap allKeys] sortedArrayUsingSelector:@selector(compare:)];
-        for(id key in orderedKeys) {
-            THPair *navPoint = [context.buildNavMap objectForKey:key];
-            NSString *name = navPoint.first;
-            NSString *src = navPoint.second;
+        if([context.buildNavMap count]) {
+            NSArray *orderedKeys = [[context.buildNavMap allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            for(id key in orderedKeys) {
+                THPair *navPoint = [context.buildNavMap objectForKey:key];
+                NSString *name = navPoint.first;
+                NSString *src = navPoint.second;
 
+                NSURL *srcUrl = [NSURL URLWithString:src relativeToURL:baseUrl];
+                src = [[srcUrl path] stringByReplacingOccurrencesOfString:_path
+                                                               withString:@""];
+                NSString *fragment = [srcUrl fragment];
+                if(fragment.length) {
+                    src = [src stringByAppendingFormat:@"#%@", fragment]; 
+                }
+                //NSLog(@"%@, %@",  srcUrl, src);
+                NSNumber *location = [_anchorPoints objectForKey:src];
+                if(location) {
+                    EucBookSection *newSection = [[EucBookSection alloc] init];
+                    [newSection setStartOffset:[location unsignedIntegerValue]];
+                    [newSection setKind:kBookSectionNondescript];
+                    [newSection setUuid:src];
+                    [newSection setProperty:name forKey:kBookSectionPropertyTitle];
+                    [sectionsBuild addObject:newSection];
+                    [newSection release];
+                }
+                [sectionsBuild sortUsingSelector:@selector(compare:)];
+            }
+        } else {
+            NSString *src = [_manifest objectForKey:[_spine objectAtIndex:0]];
             NSURL *srcUrl = [NSURL URLWithString:src relativeToURL:baseUrl];
             src = [[srcUrl path] stringByReplacingOccurrencesOfString:_path
                                                            withString:@""];
-            NSString *fragment = [srcUrl fragment];
-            if(fragment.length) {
-                src = [src stringByAppendingFormat:@"#%@", fragment]; 
-            }
-            //NSLog(@"%@, %@",  srcUrl, src);
-            NSNumber *location = [_anchorPoints objectForKey:src];
-            if(location) {
-                EucBookSection *newSection = [[EucBookSection alloc] init];
-                [newSection setStartOffset:[location unsignedIntegerValue]];
-                [newSection setKind:kBookSectionNondescript];
-                [newSection setUuid:src];
-                [newSection setProperty:name forKey:kBookSectionPropertyTitle];
-                [sectionsBuild addObject:newSection];
-                [newSection release];
-            }
-            [sectionsBuild sortUsingSelector:@selector(compare:)];
+            
+            EucBookSection *newSection = [[EucBookSection alloc] init];
+            [newSection setStartOffset:0];
+            [newSection setKind:kBookSectionNondescript];
+            [newSection setUuid:[_manifest objectForKey:[_spine objectAtIndex:0]]];
+            [newSection setProperty:_title ? _title : NSLocalizedString(@"Start of Book", @"Contents section name for a book with no defined sections or titles")
+                             forKey:kBookSectionPropertyTitle];
+            [sectionsBuild addObject:newSection];
+            [newSection release];            
         }
         
         EucBookSection *lastSection = nil;
