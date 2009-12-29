@@ -729,20 +729,27 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     EucBookView *bookView = (EucBookView *)bookViewController.bookView;
     
     UIBarButtonItem *item = (UIBarButtonItem *)sender;
-    self.audioPlaying = !self.audioPlaying;
     
     UIImage *audioImage = nil;
     if (self.audioPlaying) {
       _testParagraphWords = [[BlioTestParagraphWords alloc] init];
-      [_testParagraphWords startParagraphGettingFromBook:(EucEPubBook*)bookView.book atParagraphWithId:1];
-      audioImage = [UIImage imageNamed:@"icon-pause.png"];
+	  [_testParagraphWords startParagraphGettingFromBook:(EucEPubBook*)bookView.book atParagraphWithId:1];
+	  [_acapelaTTS stopSpeaking];
+      audioImage = [UIImage imageNamed:@"icon-play.png"];
     } else { 
       [_testParagraphWords stopParagraphGetting];
       [_testParagraphWords release];
-      _testParagraphWords = nil;
-      audioImage = [UIImage imageNamed:@"icon-play.png"];
+		_testParagraphWords = nil;
+	  if (_acapelaTTS == nil) {
+		_acapelaTTS = [[AcapelaTTS alloc] init];
+		[_acapelaTTS initTTS];
+	  }
+	  [_acapelaTTS setRate:180];  // Will get from settings.
+	  [_acapelaTTS setVolume:70];  // Likewise.
+	  [_acapelaTTS startSpeaking:@"Hello my name is Laura.  I hope you like my voice because you're stuck with it."];
+      audioImage = [UIImage imageNamed:@"icon-pause.png"];
     }
-    
+    self.audioPlaying = !self.audioPlaying;
     [item setImage:audioImage];
   }
 }
