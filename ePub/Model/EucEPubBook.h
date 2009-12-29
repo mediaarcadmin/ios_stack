@@ -10,6 +10,9 @@
 #import "EucBook.h"
 #import "EucEPubLocalBookReference.h"
 
+@class EucEPubBookReader;
+@protocol EucBookParagraph;
+
 @interface EucEPubBook : EucEPubLocalBookReference <EucBook> {
     NSURL *_root;
     NSURL *_contentURL;
@@ -28,6 +31,9 @@
     NSArray *_filteredSections;
     
     int _currentPageIndexPointFD;
+    
+    EucEPubBookReader *_reader;
+    id<EucBookParagraph> _cachedParagraph;
 }
 
 @property (nonatomic, readonly) NSArray *spineFiles;
@@ -37,5 +43,8 @@
 - (void)whitelistSectionsWithUuids:(NSSet *)uuids;
 
 - (NSData *)dataForFileAtURL:(NSURL *)url;
+
+- (NSArray *)paragraphWordsForParagraphWithId:(uint32_t)paragraphId;
+- (uint32_t)paragraphIdForParagraphAfterParagraphWithId:(uint32_t)paragraphId;
 
 @end

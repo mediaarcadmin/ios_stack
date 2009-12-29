@@ -11,7 +11,9 @@
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
+#import "EucBookReader.h"
 #import "EucEPubBookReader.h"
+#import "EucBookParagraph.h"
 #import "EucBookSection.h"
 #import "THPair.h"
 #import "expat.h"
@@ -484,6 +486,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (void)dealloc 
 {    
+    [_cachedParagraph release];
+    [_reader release];
+    
     if(_currentPageIndexPointFD) {
         close(_currentPageIndexPointFD);
     }
@@ -623,7 +628,10 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (id<EucBookReader>)reader
 {
-    return [[[EucEPubBookReader alloc] initWithBook:self] autorelease];
+    if(!_reader) {
+        _reader = [[EucEPubBookReader alloc] initWithBook:self];
+    }
+    return _reader;
 }
 
 - (size_t)startOffset
@@ -767,7 +775,6 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 }
             }
             _manifestUrlsToOverriddenUrls = [manifestUrlsToOverriddenUrls retain];
-
         } else {
             _manifestOverrides = nil;
             _manifestUrlsToOverriddenUrls = nil;
@@ -787,6 +794,38 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         ret = [NSData dataWithContentsOfMappedFile:[url path]];
     }
     return ret;
+}
+
+- (NSArray *)paragraphWordsForParagraphWithId:(uint32_t)paragraphId
+{
+    if(_cachedParagraph && [_cachedParagraph byteOffset] == paragraphId) {
+        return [_cachedParagraph words];
+    }
+    id<EucBookReader> reader = self.reader;
+    id<EucBookParagraph> paragraph = [reader paragraphAtOffset:paragraphId maxOffset:-1];
+    
+    if(_cachedParagraph != paragraph) {
+        [_cachedParagraph release];
+        _cachedParagraph = [paragraph retain];  
+    }
+    
+    return paragraph.words;
+}
+
+- (uint32_t)paragraphIdForParagraphAfterParagraphWithId:(uint32_t)paragraphId
+{
+    if(_cachedParagraph && [_cachedParagraph byteOffset] == paragraphId) {
+        return [_cachedParagraph nextParagraphByteOffset];
+    }    
+    id<EucBookReader> reader = self.reader;
+    id<EucBookParagraph> paragraph = [reader paragraphAtOffset:paragraphId maxOffset:-1];
+    
+    if(_cachedParagraph != paragraph) {
+        [_cachedParagraph release];
+        _cachedParagraph = [paragraph retain];  
+    }
+    
+    return paragraph.nextParagraphByteOffset;
 }
 
 @end
