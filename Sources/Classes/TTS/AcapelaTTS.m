@@ -18,6 +18,7 @@
 	[self setTtsLicense:[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd]];
 	[self setSetupData:[[setupTTS alloc] initialize]]; 
 	[self setEngine:[[AcapelaSpeech alloc] initWithVoice:setupData.CurrentVoice license:ttsLicense]];
+	[engine setDelegate:self];
 }
 
 - (BOOL)startSpeaking:(NSString *)string {
@@ -29,14 +30,6 @@
 
 - (BOOL)isSpeaking {
 	return [engine isSpeaking];
-}
-
-- (id)delegate {
-	return [engine delegate];
-}
-
-- (void)setDelegate:(id)anObject {
-	[engine setDelegate:anObject];
 }
 
 - (float)rate {
@@ -55,6 +48,10 @@
 	[engine setVolume:volume];
 }
 
+- (id)objectForProperty:(NSString *)property error:(NSError **)outError {
+	return [engine objectForProperty:property error:outError];
+}
+
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
 	NSLog(@"Stopped speaking.");
@@ -65,5 +62,6 @@
 {
 	NSLog(@"About to speak a word.");
 }
+
 
 @end

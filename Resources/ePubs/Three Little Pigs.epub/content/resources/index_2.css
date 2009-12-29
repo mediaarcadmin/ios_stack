@@ -1,0 +1,23 @@
+body {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0
+    }
+body {
+    margin-left: 5pt;
+    margin-right: 5pt
+    }
+a {
+    color: inherit;
+    text-decoration: inherit;
+    cursor: default
+    }
+a[href] {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer
+    }
+body {
+    text-align: justify
+    }

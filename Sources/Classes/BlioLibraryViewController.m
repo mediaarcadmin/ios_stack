@@ -13,6 +13,8 @@
 #import "BlioViewSettingsController.h"
 #import "BlioMockBook.h"
 
+static const CGFloat kBlioLibraryToolbarHeight = 44;
+
 static const CGFloat kBlioLibraryListRowHeight = 76;
 static const CGFloat kBlioLibraryListBookHeight = 76;
 static const CGFloat kBlioLibraryListBookWidth = 53;
@@ -26,6 +28,8 @@ static const CGFloat kBlioLibraryGridBookSpacing = 0;
 static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
 static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
+
+static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
 
 @interface BlioLibraryTableView : UITableView
 
@@ -97,14 +101,58 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   self.currentBookPath = nil;
   self.currentPdfPath = nil;
   self.books = nil;
+  self.tableView = nil;
   [super dealloc];
 }
 
 - (void)loadView {
   // UITableView subclass so that custom background is only drawn here
-  BlioLibraryTableView *aTableView = [[BlioLibraryTableView alloc] initWithFrame:CGRectMake(0,0,320,480-20) style:UITableViewStylePlain];
+  BlioLibraryTableView *aTableView = [[BlioLibraryTableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStylePlain];
   self.tableView = aTableView;
   [aTableView release];
+  
+  NSMutableArray *libraryItems = [NSMutableArray array];
+  UIBarButtonItem *item;
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
+                                          style:UIBarButtonItemStyleBordered
+                                         target:self 
+                                         action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-getbooks.png"]
+                                          style:UIBarButtonItemStyleBordered
+                                         target:self 
+                                         action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [libraryItems addObject:item];
+  [item release];  
+  
+  item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-settings.png"]
+                                          style:UIBarButtonItemStyleBordered
+                                         target:self 
+                                         action:nil];
+  [libraryItems addObject:item];
+  [item release];
+  
+  item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+  [libraryItems addObject:item];
+  [item release];  
+  
+  [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
+  [self.navigationController setToolbarHidden:NO];
 }
 
 - (void)viewDidLoad {
@@ -170,6 +218,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   [aBook setTitle:@"Three Little Pigs"];
   [aBook setAuthor:@"Stella Blackstone"];
   [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/Three_Little_Pigs.png"]];
+  [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"epub" inDirectory:@"ePubs"]];
   [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]];
   [aBook setProgress:1.0f];
   [aBook setProportionateSize:0.05f];
@@ -262,13 +311,14 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.backgroundColor = [UIColor clearColor];
+  
 }
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   self.navigationItem.title = @"Bookshelf";
   self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];  
 }
 
 - (void)didReceiveMemoryWarning {
@@ -327,7 +377,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
   item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
                                           style:UIBarButtonItemStylePlain
                                          target:self 
-                                         action:nil];
+                                         action:@selector(showAddMenu:)];
   [readingItems addObject:item];
   [item release];
   
@@ -583,12 +633,34 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (BlioFontSize)currentFontSize {
-  return kBlioFontSizeSmall;
+  BlioFontSize fontSize = kBlioFontSizeMedium;
+  if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+    EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+    
+    CGFloat actualFontSize = bookView.fontPointSize;
+    CGFloat bestDifference = CGFLOAT_MAX;
+    BlioFontSize bestFontSize;
+    for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
+      CGFloat thisDifference = fabsf(kBlioFontPointSizeArray[i] - actualFontSize);
+      if(thisDifference < bestDifference) {
+        bestDifference = thisDifference;
+        bestFontSize = i;
+      }
+    }
+    fontSize = bestFontSize;
+  } 
+  return fontSize;
 }
 
 - (void)changeFontSize:(id)sender {
   BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
   if([self currentFontSize] != newSize) {
+    if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+      EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+      EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+      bookView.fontPointSize = kBlioFontPointSizeArray[newSize];
+    }
     NSLog(@"Attempting to change to BlioFontSize: %d", newSize);
   }
 }
@@ -632,10 +704,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark -
 #pragma mark Action Callback Methods
 
+- (void)showAddMenu:(id)sender {
+  UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
+  [aActionSheet showInView:self.navigationController.visibleViewController.view];
+  [aActionSheet release];
+}
+
 - (void)showViewSettings:(id)sender {
   BlioViewSettingsController *aBlioViewSettingsController = [[BlioViewSettingsController alloc] init];
   aBlioViewSettingsController.delegate = self;
-  [self presentModalViewController:aBlioViewSettingsController animated:YES];
+  [self.navigationController.visibleViewController presentModalViewController:aBlioViewSettingsController animated:YES];
   [aBlioViewSettingsController release];
 }
 

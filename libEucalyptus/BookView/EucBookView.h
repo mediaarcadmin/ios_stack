@@ -40,6 +40,7 @@
 
     double _scaleCount;
     CFAbsoluteTime _accumulatedScaleTime;
+    BOOL _dontSaveIndexPoints;
     
     // Toolbar:
     THScalableSlider *_pageSlider;
@@ -64,6 +65,8 @@
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, readonly) NSString *displayPageNumber;
 @property (nonatomic, readonly) NSString *pageDescription;
+
+@property (nonatomic, assign) CGFloat fontPointSize;
 
 /*
 @property (nonatomic, readonly) float percentRead;

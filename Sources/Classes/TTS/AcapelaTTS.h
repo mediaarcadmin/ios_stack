@@ -23,11 +23,11 @@
 // These look like they refer to properties, but no.
 // They're pass-through methods to the corresponding
 // AcapelaSpeech methods.
-- (id)delegate;		
-- (void)setDelegate:(id)anObject;
 - (float)rate;
 - (void)setRate:(float)rate;
 - (float)volume;
 - (void)setVolume:(float)volume;
+
+- (id)objectForProperty:(NSString *)property error:(NSError **)outError;
 
 @end

@@ -52,27 +52,17 @@
 		7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
-		A36C150810E3D7FE00BF4409 /* enu_laura_22k_ns.cvcu.411.ine in Resources */ = {isa = PBXBuildFile; fileRef = A36C14F810E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.ine */; };
-		A36C150910E3D7FE00BF4409 /* enu_laura_22k_ns.cvcu.411.inf in Resources */ = {isa = PBXBuildFile; fileRef = A36C14F910E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.inf */; };
-		A36C150A10E3D7FE00BF4409 /* enu_laura_22k_ns.cvcu.411.ini in Resources */ = {isa = PBXBuildFile; fileRef = A36C14FA10E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.ini */; };
-		A36C150B10E3D7FE00BF4409 /* Laura.txt in Resources */ = {isa = PBXBuildFile; fileRef = A36C14FB10E3D7FD00BF4409 /* Laura.txt */; };
-		A36C150C10E3D7FE00BF4409 /* laura_22k_ns.cvcu in Resources */ = {isa = PBXBuildFile; fileRef = A36C14FD10E3D7FD00BF4409 /* laura_22k_ns.cvcu */; };
-		A36C150D10E3D7FE00BF4409 /* laura_22k_ns.cvcu.nuul216vqfp in Resources */ = {isa = PBXBuildFile; fileRef = A36C14FE10E3D7FD00BF4409 /* laura_22k_ns.cvcu.nuul216vqfp */; };
-		A36C150E10E3D7FE00BF4409 /* enu.bnx in Resources */ = {isa = PBXBuildFile; fileRef = A36C150010E3D7FE00BF4409 /* enu.bnx */; };
-		A36C150F10E3D7FE00BF4409 /* enu.dca in Resources */ = {isa = PBXBuildFile; fileRef = A36C150110E3D7FE00BF4409 /* enu.dca */; };
-		A36C151010E3D7FE00BF4409 /* enu.ldi in Resources */ = {isa = PBXBuildFile; fileRef = A36C150210E3D7FE00BF4409 /* enu.ldi */; };
-		A36C151110E3D7FE00BF4409 /* enu.oso in Resources */ = {isa = PBXBuildFile; fileRef = A36C150310E3D7FE00BF4409 /* enu.oso */; };
-		A36C151210E3D7FE00BF4409 /* enu.pst in Resources */ = {isa = PBXBuildFile; fileRef = A36C150410E3D7FE00BF4409 /* enu.pst */; };
-		A36C151310E3D7FE00BF4409 /* enu.trr in Resources */ = {isa = PBXBuildFile; fileRef = A36C150510E3D7FE00BF4409 /* enu.trr */; };
-		A36C151410E3D7FE00BF4409 /* enu_iv.gra in Resources */ = {isa = PBXBuildFile; fileRef = A36C150610E3D7FE00BF4409 /* enu_iv.gra */; };
-		A36C151510E3D7FE00BF4409 /* enu_oov.gra in Resources */ = {isa = PBXBuildFile; fileRef = A36C150710E3D7FE00BF4409 /* enu_oov.gra */; };
-		A36C152510E3D83100BF4409 /* AcapelaTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A36C152110E3D83100BF4409 /* AcapelaTTS.m */; };
-		A36C152B10E3D85600BF4409 /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A36C152710E3D85600BF4409 /* force_cpp.cpp */; };
-		A36C152C10E3D85600BF4409 /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A36C152A10E3D85600BF4409 /* setupTTS.m */; };
-		A36C16D010E3D88800BF4409 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A36C15C010E3D88800BF4409 /* libBabTTSFat.a */; };
-		A36C16D110E3D88800BF4409 /* libMobilityStaticTFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A36C15C110E3D88800BF4409 /* libMobilityStaticTFat.a */; };
+		A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
+		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
+		A37FC33110EA781700F3DC5A /* libMobilityStaticTFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32F10EA781700F3DC5A /* libMobilityStaticTFat.a */; };
+		A37FC33610EA785F00F3DC5A /* AcapelaTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */; };
+		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
+		A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
 		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		C94D27B910DBCF4C00F30AFE /* PDFs in Resources */ = {isa = PBXBuildFile; fileRef = C94D27B510DBCF4C00F30AFE /* PDFs */; };
+		C94D864110E78E140094B9C5 /* button-getbooks.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863E10E78E140094B9C5 /* button-getbooks.png */; };
+		C94D864210E78E140094B9C5 /* button-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863F10E78E140094B9C5 /* button-settings.png */; };
+		C94D864310E78E140094B9C5 /* button-sync.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D864010E78E140094B9C5 /* button-sync.png */; };
 		C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
 		C9775C7110DFDBCF005E0E2B /* librarybackground.png in Resources */ = {isa = PBXBuildFile; fileRef = C9775C7010DFDBCF005E0E2B /* librarybackground.png */; };
 		C9775EA510DFE1C3005E0E2B /* MockCovers in Resources */ = {isa = PBXBuildFile; fileRef = C9775E9A10DFE1C3005E0E2B /* MockCovers */; };
@@ -203,33 +193,23 @@
 		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		A36C14F810E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.ine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = enu_laura_22k_ns.cvcu.411.ine; sourceTree = "<group>"; };
-		A36C14F910E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.inf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = enu_laura_22k_ns.cvcu.411.inf; sourceTree = "<group>"; };
-		A36C14FA10E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = enu_laura_22k_ns.cvcu.411.ini; sourceTree = "<group>"; };
-		A36C14FB10E3D7FD00BF4409 /* Laura.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Laura.txt; sourceTree = "<group>"; };
-		A36C14FD10E3D7FD00BF4409 /* laura_22k_ns.cvcu */ = {isa = PBXFileReference; lastKnownFileType = file; path = laura_22k_ns.cvcu; sourceTree = "<group>"; };
-		A36C14FE10E3D7FD00BF4409 /* laura_22k_ns.cvcu.nuul216vqfp */ = {isa = PBXFileReference; lastKnownFileType = file; path = laura_22k_ns.cvcu.nuul216vqfp; sourceTree = "<group>"; };
-		A36C150010E3D7FE00BF4409 /* enu.bnx */ = {isa = PBXFileReference; lastKnownFileType = file; path = enu.bnx; sourceTree = "<group>"; };
-		A36C150110E3D7FE00BF4409 /* enu.dca */ = {isa = PBXFileReference; lastKnownFileType = file; path = enu.dca; sourceTree = "<group>"; };
-		A36C150210E3D7FE00BF4409 /* enu.ldi */ = {isa = PBXFileReference; lastKnownFileType = file; path = enu.ldi; sourceTree = "<group>"; };
-		A36C150310E3D7FE00BF4409 /* enu.oso */ = {isa = PBXFileReference; lastKnownFileType = file; path = enu.oso; sourceTree = "<group>"; };
-		A36C150410E3D7FE00BF4409 /* enu.pst */ = {isa = PBXFileReference; lastKnownFileType = file; path = enu.pst; sourceTree = "<group>"; };
-		A36C150510E3D7FE00BF4409 /* enu.trr */ = {isa = PBXFileReference; lastKnownFileType = file; path = enu.trr; sourceTree = "<group>"; };
-		A36C150610E3D7FE00BF4409 /* enu_iv.gra */ = {isa = PBXFileReference; lastKnownFileType = file; path = enu_iv.gra; sourceTree = "<group>"; };
-		A36C150710E3D7FE00BF4409 /* enu_oov.gra */ = {isa = PBXFileReference; lastKnownFileType = file; path = enu_oov.gra; sourceTree = "<group>"; };
-		A36C152010E3D83100BF4409 /* AcapelaTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AcapelaTTS.h; sourceTree = "<group>"; };
-		A36C152110E3D83100BF4409 /* AcapelaTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AcapelaTTS.m; sourceTree = "<group>"; };
-		A36C152210E3D83100BF4409 /* TTSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSManager.h; sourceTree = "<group>"; };
-		A36C152610E3D85600BF4409 /* AcapelaSpeech.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AcapelaSpeech.h; path = Acapela/AcapelaSpeech.h; sourceTree = "<group>"; };
-		A36C152710E3D85600BF4409 /* force_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = force_cpp.cpp; path = Acapela/force_cpp.cpp; sourceTree = "<group>"; };
-		A36C152810E3D85600BF4409 /* force_cpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = force_cpp.h; path = Acapela/force_cpp.h; sourceTree = "<group>"; };
-		A36C152910E3D85600BF4409 /* setupTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setupTTS.h; path = Acapela/setupTTS.h; sourceTree = "<group>"; };
-		A36C152A10E3D85600BF4409 /* setupTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = setupTTS.m; path = Acapela/setupTTS.m; sourceTree = "<group>"; };
-		A36C15C010E3D88800BF4409 /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libBabTTSFat.a; sourceTree = "<group>"; };
-		A36C15C110E3D88800BF4409 /* libMobilityStaticTFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobilityStaticTFat.a; sourceTree = "<group>"; };
+		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
+		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
+		A37FC32F10EA781700F3DC5A /* libMobilityStaticTFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticTFat.a; path = Libraries/TTS/libMobilityStaticTFat.a; sourceTree = "<group>"; };
+		A37FC33310EA785F00F3DC5A /* AcapelaTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AcapelaTTS.h; path = TTS/AcapelaTTS.h; sourceTree = "<group>"; };
+		A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AcapelaTTS.m; path = TTS/AcapelaTTS.m; sourceTree = "<group>"; };
+		A37FC33510EA785F00F3DC5A /* TTSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTSManager.h; path = TTS/TTSManager.h; sourceTree = "<group>"; };
+		A37FC33710EA787D00F3DC5A /* AcapelaSpeech.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AcapelaSpeech.h; path = TTS/Acapela/AcapelaSpeech.h; sourceTree = "<group>"; };
+		A37FC33810EA787D00F3DC5A /* force_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = force_cpp.cpp; path = TTS/Acapela/force_cpp.cpp; sourceTree = "<group>"; };
+		A37FC33910EA787D00F3DC5A /* force_cpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = force_cpp.h; path = TTS/Acapela/force_cpp.h; sourceTree = "<group>"; };
+		A37FC33A10EA787D00F3DC5A /* setupTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setupTTS.h; path = TTS/Acapela/setupTTS.h; sourceTree = "<group>"; };
+		A37FC33B10EA787D00F3DC5A /* setupTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = setupTTS.m; path = TTS/Acapela/setupTTS.m; sourceTree = "<group>"; };
 		C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutView.h; sourceTree = "<group>"; };
 		C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutView.m; sourceTree = "<group>"; };
 		C94D27B510DBCF4C00F30AFE /* PDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PDFs; sourceTree = "<group>"; };
+		C94D863E10E78E140094B9C5 /* button-getbooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-getbooks.png"; sourceTree = "<group>"; };
+		C94D863F10E78E140094B9C5 /* button-settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-settings.png"; sourceTree = "<group>"; };
+		C94D864010E78E140094B9C5 /* button-sync.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-sync.png"; sourceTree = "<group>"; };
 		C9775AF410DFD728005E0E2B /* BlioMockBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMockBook.h; sourceTree = "<group>"; };
 		C9775AF510DFD728005E0E2B /* BlioMockBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMockBook.m; sourceTree = "<group>"; };
 		C9775C7010DFDBCF005E0E2B /* librarybackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = librarybackground.png; sourceTree = "<group>"; };
@@ -273,8 +253,8 @@
 				7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */,
 				7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */,
 				7D381B9B10D92F2C008D34E2 /* libstdc++.6.dylib in Frameworks */,
-				A36C16D010E3D88800BF4409 /* libBabTTSFat.a in Frameworks */,
-				A36C16D110E3D88800BF4409 /* libMobilityStaticTFat.a in Frameworks */,
+				A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */,
+				A37FC33110EA781700F3DC5A /* libMobilityStaticTFat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,7 +264,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				A36C151610E3D83100BF4409 /* TTS */,
+				A37FC33210EA783700F3DC5A /* TTS */,
 				28C286DF0D94DF7D0034E888 /* BlioLibraryViewController.h */,
 				28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */,
 				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
@@ -311,7 +291,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				A36C153610E3D88800BF4409 /* Libraries */,
+				A37FC20B10EA770500F3DC5A /* Libraries */,
 				7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -335,7 +315,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A36C14F610E3D7FD00BF4409 /* TTS */,
+				A37FC0D910EA76AD00F3DC5A /* TTS */,
+				C94D863E10E78E140094B9C5 /* button-getbooks.png */,
+				C94D863F10E78E140094B9C5 /* button-settings.png */,
+				C94D864010E78E140094B9C5 /* button-sync.png */,
 				C985477110E244FE002305A2 /* done-button-down.png */,
 				C985477210E244FE002305A2 /* done-button-up.png */,
 				C985466610E22BCC002305A2 /* icon-speedread.png */,
@@ -437,81 +420,36 @@
 			path = Apple;
 			sourceTree = "<group>";
 		};
-		A36C14F610E3D7FD00BF4409 /* TTS */ = {
+		A37FC20B10EA770500F3DC5A /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				A36C14F710E3D7FD00BF4409 /* Acapela For iPhone HQM USEnglish Laura */,
+				A37FC32D10EA780500F3DC5A /* TTS */,
 			);
-			path = TTS;
+			name = Libraries;
 			sourceTree = "<group>";
 		};
-		A36C14F710E3D7FD00BF4409 /* Acapela For iPhone HQM USEnglish Laura */ = {
+		A37FC32D10EA780500F3DC5A /* TTS */ = {
 			isa = PBXGroup;
 			children = (
-				A36C14F810E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.ine */,
-				A36C14F910E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.inf */,
-				A36C14FA10E3D7FD00BF4409 /* enu_laura_22k_ns.cvcu.411.ini */,
-				A36C14FB10E3D7FD00BF4409 /* Laura.txt */,
-				A36C14FC10E3D7FD00BF4409 /* LAURA212 */,
-				A36C14FF10E3D7FE00BF4409 /* NLP212 */,
+				A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */,
+				A37FC32F10EA781700F3DC5A /* libMobilityStaticTFat.a */,
 			);
-			path = "Acapela For iPhone HQM USEnglish Laura";
+			name = TTS;
 			sourceTree = "<group>";
 		};
-		A36C14FC10E3D7FD00BF4409 /* LAURA212 */ = {
+		A37FC33210EA783700F3DC5A /* TTS */ = {
 			isa = PBXGroup;
 			children = (
-				A36C14FD10E3D7FD00BF4409 /* laura_22k_ns.cvcu */,
-				A36C14FE10E3D7FD00BF4409 /* laura_22k_ns.cvcu.nuul216vqfp */,
+				A37FC33710EA787D00F3DC5A /* AcapelaSpeech.h */,
+				A37FC33810EA787D00F3DC5A /* force_cpp.cpp */,
+				A37FC33910EA787D00F3DC5A /* force_cpp.h */,
+				A37FC33A10EA787D00F3DC5A /* setupTTS.h */,
+				A37FC33B10EA787D00F3DC5A /* setupTTS.m */,
+				A37FC33310EA785F00F3DC5A /* AcapelaTTS.h */,
+				A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */,
+				A37FC33510EA785F00F3DC5A /* TTSManager.h */,
 			);
-			path = LAURA212;
-			sourceTree = "<group>";
-		};
-		A36C14FF10E3D7FE00BF4409 /* NLP212 */ = {
-			isa = PBXGroup;
-			children = (
-				A36C150010E3D7FE00BF4409 /* enu.bnx */,
-				A36C150110E3D7FE00BF4409 /* enu.dca */,
-				A36C150210E3D7FE00BF4409 /* enu.ldi */,
-				A36C150310E3D7FE00BF4409 /* enu.oso */,
-				A36C150410E3D7FE00BF4409 /* enu.pst */,
-				A36C150510E3D7FE00BF4409 /* enu.trr */,
-				A36C150610E3D7FE00BF4409 /* enu_iv.gra */,
-				A36C150710E3D7FE00BF4409 /* enu_oov.gra */,
-			);
-			path = NLP212;
-			sourceTree = "<group>";
-		};
-		A36C151610E3D83100BF4409 /* TTS */ = {
-			isa = PBXGroup;
-			children = (
-				A36C152610E3D85600BF4409 /* AcapelaSpeech.h */,
-				A36C152710E3D85600BF4409 /* force_cpp.cpp */,
-				A36C152810E3D85600BF4409 /* force_cpp.h */,
-				A36C152910E3D85600BF4409 /* setupTTS.h */,
-				A36C152A10E3D85600BF4409 /* setupTTS.m */,
-				A36C152010E3D83100BF4409 /* AcapelaTTS.h */,
-				A36C152110E3D83100BF4409 /* AcapelaTTS.m */,
-				A36C152210E3D83100BF4409 /* TTSManager.h */,
-			);
-			path = TTS;
-			sourceTree = "<group>";
-		};
-		A36C153610E3D88800BF4409 /* Libraries */ = {
-			isa = PBXGroup;
-			children = (
-				A36C153710E3D88800BF4409 /* TTS */,
-			);
-			path = Libraries;
-			sourceTree = "<group>";
-		};
-		A36C153710E3D88800BF4409 /* TTS */ = {
-			isa = PBXGroup;
-			children = (
-				A36C15C010E3D88800BF4409 /* libBabTTSFat.a */,
-				A36C15C110E3D88800BF4409 /* libMobilityStaticTFat.a */,
-			);
-			path = TTS;
+			name = TTS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -673,20 +611,10 @@
 				C985466B10E22BCD002305A2 /* icon-layout.png in Resources */,
 				C985477310E244FE002305A2 /* done-button-down.png in Resources */,
 				C985477410E244FE002305A2 /* done-button-up.png in Resources */,
-				A36C150810E3D7FE00BF4409 /* enu_laura_22k_ns.cvcu.411.ine in Resources */,
-				A36C150910E3D7FE00BF4409 /* enu_laura_22k_ns.cvcu.411.inf in Resources */,
-				A36C150A10E3D7FE00BF4409 /* enu_laura_22k_ns.cvcu.411.ini in Resources */,
-				A36C150B10E3D7FE00BF4409 /* Laura.txt in Resources */,
-				A36C150C10E3D7FE00BF4409 /* laura_22k_ns.cvcu in Resources */,
-				A36C150D10E3D7FE00BF4409 /* laura_22k_ns.cvcu.nuul216vqfp in Resources */,
-				A36C150E10E3D7FE00BF4409 /* enu.bnx in Resources */,
-				A36C150F10E3D7FE00BF4409 /* enu.dca in Resources */,
-				A36C151010E3D7FE00BF4409 /* enu.ldi in Resources */,
-				A36C151110E3D7FE00BF4409 /* enu.oso in Resources */,
-				A36C151210E3D7FE00BF4409 /* enu.pst in Resources */,
-				A36C151310E3D7FE00BF4409 /* enu.trr in Resources */,
-				A36C151410E3D7FE00BF4409 /* enu_iv.gra in Resources */,
-				A36C151510E3D7FE00BF4409 /* enu_oov.gra in Resources */,
+				C94D864110E78E140094B9C5 /* button-getbooks.png in Resources */,
+				C94D864210E78E140094B9C5 /* button-settings.png in Resources */,
+				C94D864310E78E140094B9C5 /* button-sync.png in Resources */,
+				A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,9 +631,9 @@
 				C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */,
 				C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */,
 				C985446210E15E33002305A2 /* BlioViewSettingsController.m in Sources */,
-				A36C152510E3D83100BF4409 /* AcapelaTTS.m in Sources */,
-				A36C152B10E3D85600BF4409 /* force_cpp.cpp in Sources */,
-				A36C152C10E3D85600BF4409 /* setupTTS.m in Sources */,
+				A37FC33610EA785F00F3DC5A /* AcapelaTTS.m in Sources */,
+				A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */,
+				A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -733,10 +661,6 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Libraries/TTS/Simulator\"",
-					"\"$(SYSTEM_APPS_DIR)/Acapela for iPhone/lib/iphonesimulator\"",
-					"\"$(SRCROOT)/../../AcapelaNew/SDK_Iphone/iPhone_Customer_1.0.6/iPhone_Customer_1.0.6/Libraries/iPhoneOS\"",
-					"\"$(SRCROOT)/Libraries/TTS/Device\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
 				OTHER_LDFLAGS = (
@@ -758,10 +682,6 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Libraries/TTS/Simulator\"",
-					"\"$(SYSTEM_APPS_DIR)/Acapela for iPhone/lib/iphonesimulator\"",
-					"\"$(SRCROOT)/../../AcapelaNew/SDK_Iphone/iPhone_Customer_1.0.6/iPhone_Customer_1.0.6/Libraries/iPhoneOS\"",
-					"\"$(SRCROOT)/Libraries/TTS/Device\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
 				OTHER_LDFLAGS = (
@@ -780,16 +700,8 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				KEEP_PRIVATE_EXTERNS = NO;
-				LIBRARY_SEARCH_PATHS = "";
-				LINK_WITH_STANDARD_LIBRARIES = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
-				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				SDKROOT = iphonesimulator3.0;
-				SEPARATE_SYMBOL_EDIT = NO;
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Debug;

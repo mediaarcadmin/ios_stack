@@ -143,6 +143,7 @@ static CGContextRef CreateGrayscaleBitmapContext (CGImageRef inImage)
 + (UIImage *)imageWithString:(NSString *)string // What we want an image of.
                         font:(UIFont *)font     // The font we'd like it in.
                         size:(CGSize)size       // Size of the desired image.
+                       color:(UIColor *)color
 {
     // Create a context to render into.
     UIGraphicsBeginImageContext(size);
@@ -256,6 +257,7 @@ static CGContextRef CreateGrayscaleBitmapContext (CGImageRef inImage)
                        CGRectMake(0, 0, size.width, size.height));
     
     // Draw the string again, in the right place, at the right size this time!
+    [color set];
     [string drawAtPoint:textOrigin withFont:font];
     
     // We're done!  Grab the image and return it! 
@@ -263,6 +265,13 @@ static CGContextRef CreateGrayscaleBitmapContext (CGImageRef inImage)
     UIImage *retImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return retImage;
+}
+
++ (UIImage *)imageWithString:(NSString *)string // What we want an image of.
+                        font:(UIFont *)font     // The font we'd like it in.
+                        size:(CGSize)size       // Size of the desired image.
+{
+    return [self imageWithString:string font:font size:size color:[UIColor blackColor]];
 }
 
 - (UIImage *)midpointStretchableImage

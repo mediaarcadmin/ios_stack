@@ -13,6 +13,7 @@
 
 //- (id)imageByMappingIntensityToAlpha;
 + (UIImage *)imageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size;
++ (UIImage *)imageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size color:(UIColor *)color;
 
 - (UIImage *)midpointStretchableImage;
 + (UIImage *)midpointStretchableImageNamed:(NSString *)name;

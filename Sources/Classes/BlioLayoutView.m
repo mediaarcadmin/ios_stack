@@ -8,45 +8,58 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutView.h"
 
+@interface BlioFastCATiledLayer : CATiledLayer
+@end
+
 static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
+static const CGFloat kBlioLayoutShadow = 16.0f;
 
 @interface BlioPDFTiledLayerDelegate : NSObject {
   CGPDFPageRef page;
+  CGAffineTransform fitTransform;
+  CGRect pageRect;
 }
 
 @property(nonatomic) CGPDFPageRef page;
+@property(nonatomic) CGAffineTransform fitTransform;
+@property(nonatomic, readonly) CGRect fittedPageRect;
+
+@end
+
+@interface BlioPDFShadowLayerDelegate : NSObject {
+  CGRect pageRect;
+}
+
+@property(nonatomic) CGRect pageRect;
 
 @end
 
 @interface BlioPDFBackgroundLayerDelegate : NSObject {
-  CGPDFPageRef page;
+  CGRect pageRect;
 }
 
-@property(nonatomic) CGPDFPageRef page;
+@property(nonatomic) CGRect pageRect;
 
 @end
 
 @interface BlioPDFDrawingView : UIView {
   CGPDFPageRef page;
   id layoutView;
-  CATiledLayer *tiledLayer;
+  BlioFastCATiledLayer *tiledLayer;
   CALayer *backgroundLayer;
+  BlioFastCATiledLayer *shadowLayer;
   BlioPDFTiledLayerDelegate *tiledLayerDelegate;
   BlioPDFBackgroundLayerDelegate *backgroundLayerDelegate;
-  CGFloat currentZoom;
-  CGPoint currentOffset;
-  CGFloat zoomToFit;
-  BOOL moving;
-  BOOL pinchZoom;
-  CGPoint previousPoint;
-  CGFloat previousDistance;
+  BlioPDFShadowLayerDelegate *shadowLayerDelegate;
 }
 
 @property (nonatomic, assign) id layoutView;
 @property (nonatomic, retain) BlioPDFBackgroundLayerDelegate *backgroundLayerDelegate;
 @property (nonatomic, retain) BlioPDFTiledLayerDelegate *tiledLayerDelegate;
+@property (nonatomic, retain) BlioPDFShadowLayerDelegate *shadowLayerDelegate;
 
 - (id)initWithFrame:(CGRect)frame andPageRef:(CGPDFPageRef)newPage;
+- (void)setPage:(CGPDFPageRef)newPage;
 
 @end
 
@@ -57,6 +70,15 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 
 @end
 
+@interface BlioPDFScrollView : UIScrollView <UIScrollViewDelegate> {
+  UIView *view;
+}
+
+@property (nonatomic, retain) UIView *view;
+
+- (id)initWithView:(UIView *)view;
+
+@end
 
 @implementation BlioLayoutView
 
@@ -132,14 +154,23 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   if (pageIndex >= CGPDFDocumentGetNumberOfPages (pdf)) return;
 	
   // replace the placeholder if necessary
-  BlioPDFDrawingView *pageView = [self.pageViews objectAtIndex:pageIndex];
+  //BlioPDFDrawingView *pageView = [self.pageViews objectAtIndex:pageIndex];
+  BlioPDFScrollView *pageView = [self.pageViews objectAtIndex:pageIndex];
+  CGPDFPageRef pdfPageRef = CGPDFDocumentGetPage(pdf, pageIndex + 1);
   
   if ((NSNull *)pageView == [NSNull null]) {
     
-    CGPDFPageRef pdfPageRef = CGPDFDocumentGetPage(pdf, pageIndex + 1);
-    pageView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.frame andPageRef:pdfPageRef];
+    
+    //pageView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.frame andPageRef:pdfPageRef];
+    
+    BlioPDFDrawingView *pdfView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.bounds andPageRef:pdfPageRef];
+    pageView = [[BlioPDFScrollView alloc] initWithView:pdfView];
+    [pdfView release];
+    
     [self.pageViews replaceObjectAtIndex:pageIndex withObject:pageView];
     [pageView release];
+  } else {
+    [(BlioPDFDrawingView *)[pageView view] setPage:pdfPageRef];
   }
   
   // add the controller's view to the scroll view
@@ -153,7 +184,7 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 }
 
 #pragma mark -
-#pragma mark UIScrollView Delegate
+#pragma mark Container UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
   // Switch the indicator when more than 50% of the previous/next page is visible
@@ -171,31 +202,107 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 
 @end
 
+@implementation BlioPDFScrollView
+
+@synthesize view;
+
+- (void)dealloc {
+  self.view = nil;
+  [super dealloc];
+}
+
+- (id)initWithView:(BlioPDFDrawingView *)newView {
+  if ((self = [super initWithFrame:newView.frame])) {
+    [self addSubview:newView];
+    [newView setFrame:newView.bounds];
+    self.view = newView;
+    self.multipleTouchEnabled = YES;
+    self.backgroundColor = [UIColor clearColor];
+    self.showsVerticalScrollIndicator = NO;
+    self.showsHorizontalScrollIndicator = NO;
+    self.bounces = NO;
+    self.directionalLockEnabled = NO;
+    self.decelerationRate = UIScrollViewDecelerationRateFast;
+    self.delegate = self;
+    self.minimumZoomScale = 1.0f;
+    self.maximumZoomScale = kBlioMaxZoom;
+    self.contentSize = newView.bounds.size;
+  }
+  return self;
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
+  if (scale == 1) {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioLayoutZoomEnded" object:nil userInfo:nil];
+    scrollView.scrollEnabled = NO;
+  } else {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioLayoutZoomInProgress" object:nil userInfo:nil];
+    scrollView.scrollEnabled = YES;
+  }
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+  return self.view;
+}
+
+
+- (BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view {
+  // get any touch
+  UITouch * t = [touches anyObject];
+  if( [t tapCount]>1 ) {
+    CGPoint point = [t locationInView:self];
+    [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(zoomAtPointAfterDelay:) userInfo:NSStringFromCGPoint(point) repeats:NO];
+    return NO;
+  }
+  return YES;
+}
+
+- (void)zoomAtPoint:(CGPoint)point {
+  if (self.zoomScale > 1.0f) {
+    [self setZoomScale:1.0f animated:YES];
+  } else {
+    CGFloat width  = self.contentSize.width  / 2.75f;
+    CGFloat height = self.contentSize.height / 2.75f;
+    CGFloat midX = (point.x / CGRectGetWidth(self.bounds)) * self.contentSize.width;
+    CGFloat midY = self.contentSize.height - ((point.y / CGRectGetHeight(self.bounds)) * self.contentSize.height);
+    CGRect targetRect = CGRectMake(midX - width/2.0f, midY - height/2.0f, width, height);
+    [self zoomToRect:targetRect animated:YES];
+  }
+}
+
+- (void)zoomAtPointAfterDelay:(NSTimer *)timer {
+  NSString *pointString = [timer userInfo];
+  CGPoint point = CGPointZero;
+  if (pointString) point = CGPointFromString(pointString);
+  [self zoomAtPoint:point];
+}
+
+@end
+
+
 @implementation BlioPDFDrawingView
 
-@synthesize layoutView, tiledLayerDelegate, backgroundLayerDelegate;
+@synthesize layoutView, tiledLayerDelegate, backgroundLayerDelegate, shadowLayerDelegate;
 
 - (void)dealloc {
   CGPDFPageRelease(page);
   self.layoutView = nil;
   [tiledLayer setDelegate:nil];
   [backgroundLayer setDelegate:nil];
+  [shadowLayer setDelegate:nil];
   self.tiledLayerDelegate = nil;
   self.backgroundLayerDelegate = nil;
+  self.shadowLayerDelegate = nil;
 	[super dealloc];
 }
 
 - (void)configureTiledLayer {
-  currentZoom = 1.0f;
-  tiledLayer = [CATiledLayer layer];
-  BlioPDFTiledLayerDelegate *aDelegate = [[BlioPDFTiledLayerDelegate alloc] init];
-  [aDelegate setPage:page];
-  tiledLayer.delegate = aDelegate;
-  self.tiledLayerDelegate = aDelegate;
-  [aDelegate release];
+  tiledLayer = [BlioFastCATiledLayer layer];
   
   CGRect pageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-  CGFloat inset = -16;
+  CGFloat inset = -kBlioLayoutShadow;
+  CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+  
   int w = pageRect.size.width;
   int h = pageRect.size.height;
   
@@ -206,17 +313,21 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
     h = h >> 1;
   }
   
-  tiledLayer.levelsOfDetail = levels + 2;
+  tiledLayer.levelsOfDetail = levels;
   tiledLayer.levelsOfDetailBias = levels;
-  tiledLayer.bounds = pageRect;
-  
-  CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+  tiledLayer.tileSize = CGSizeMake(1024, 1024);  
+  tiledLayer.bounds = insetBounds;
+
   CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-  currentZoom = fitTransform.a;
-  zoomToFit = currentZoom;
-  tiledLayer.position = CGPointMake(self.layer.bounds.size.width/2.0f, self.layer.bounds.size.height/2.0f);
-  tiledLayer.transform = CATransform3DMakeScale(currentZoom, currentZoom, 1.0f);
   
+  BlioPDFTiledLayerDelegate *aDelegate = [[BlioPDFTiledLayerDelegate alloc] init];
+  [aDelegate setPage:page];
+  [aDelegate setFitTransform:fitTransform];
+  tiledLayer.delegate = aDelegate;
+  self.tiledLayerDelegate = aDelegate;
+  [aDelegate release];
+  
+  tiledLayer.position = CGPointMake(self.layer.bounds.size.width/2.0f, self.layer.bounds.size.height/2.0f);  
   
   // transform the super layer so things draw 'right side up'
   CATransform3D superTransform = CATransform3DMakeTranslation(0.0f, self.bounds.size.height, 0.0f);
@@ -226,19 +337,33 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
   [tiledLayer setNeedsDisplay];
 }
 
+- (void)configureShadowLayer {
+  shadowLayer = [BlioFastCATiledLayer layer];
+  BlioPDFShadowLayerDelegate *aDelegate = [[BlioPDFShadowLayerDelegate alloc] init];
+  [aDelegate setPageRect:[self.tiledLayerDelegate fittedPageRect]];
+  shadowLayer.delegate = aDelegate;
+  shadowLayer.levelsOfDetail = 1;
+  shadowLayer.tileSize = CGSizeMake(1024, 1024);
+  self.shadowLayerDelegate = aDelegate;
+  [aDelegate release];
+  
+  shadowLayer.bounds = self.bounds;
+  shadowLayer.position = tiledLayer.position;
+  shadowLayer.transform = tiledLayer.transform;
+  [self.layer insertSublayer:shadowLayer below:tiledLayer];
+  [shadowLayer setNeedsDisplay];
+}
+
 - (void)configureBackgroundLayer {
   backgroundLayer = [CALayer layer];
   BlioPDFBackgroundLayerDelegate *aDelegate = [[BlioPDFBackgroundLayerDelegate alloc] init];
-  [aDelegate setPage:page];
+  [aDelegate setPageRect:[self.tiledLayerDelegate fittedPageRect]];
   backgroundLayer.delegate = aDelegate;
   self.backgroundLayerDelegate = aDelegate;
   [aDelegate release];
   
-  CGFloat inset = -32; // Make this a constant
-  CGRect inRect = UIEdgeInsetsInsetRect(tiledLayer.bounds, UIEdgeInsetsMake(inset, inset, inset, inset));
-  backgroundLayer.bounds = inRect;
+  backgroundLayer.bounds = tiledLayer.bounds;
   backgroundLayer.position = tiledLayer.position;
-  backgroundLayer.transform = tiledLayer.transform;
   [self.layer insertSublayer:backgroundLayer below:tiledLayer];
   [backgroundLayer setNeedsDisplay];
 }
@@ -249,148 +374,42 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
     page = newPage;
     CGPDFPageRetain(page);
     
-    self.multipleTouchEnabled = YES;
-    
-    moving = NO;
-    pinchZoom = NO;
+    self.backgroundColor = [UIColor clearColor];
     
     [self configureTiledLayer];
     [self configureBackgroundLayer];
+    [self configureShadowLayer];
 	}
 	return self;
 }
 
-- (void)setZoom:(CGFloat)newZoom andOffset:(CGPoint)newOffset {
-  // Boundary checks
-  if (newZoom < zoomToFit) {
-    newZoom = zoomToFit;
-    newOffset = CGPointZero;
-  } else if (newZoom > kBlioMaxZoom) {
-    newZoom = kBlioMaxZoom;
-  }
+- (void)setPage:(CGPDFPageRef)newPage {
+  CGRect currentPageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
+  CGRect newPageRect = CGPDFPageGetBoxRect(newPage, kCGPDFCropBox);
+  
+  CGPDFPageRetain(newPage);
+  CGPDFPageRelease(page);
+  page = newPage;
+  
+  if (!CGRectEqualToRect(currentPageRect, newPageRect)) {
+    [tiledLayer setDelegate:nil];
+    [backgroundLayer setDelegate:nil];
+    [shadowLayer setDelegate:nil];
+    [tiledLayer removeFromSuperlayer];
+    [backgroundLayer removeFromSuperlayer];
+    [shadowLayer removeFromSuperlayer];
+    self.tiledLayerDelegate = nil;
+    self.backgroundLayerDelegate = nil;
+    self.shadowLayerDelegate = nil;
     
-  // This isn't working properly
-  if (newOffset.x < -(self.bounds.size.width - self.bounds.size.width*zoomToFit)*newZoom) {
-    newOffset.x = -(self.bounds.size.width - self.bounds.size.width*zoomToFit)*newZoom;
-  } else if (newOffset.x > (self.bounds.size.width - self.bounds.size.width*zoomToFit)*newZoom) {
-    newOffset.x = (self.bounds.size.width - self.bounds.size.width*zoomToFit)*newZoom;
-  }
-  
-  if (newOffset.y < -(self.bounds.size.height - self.bounds.size.height*zoomToFit)*newZoom) {
-    newOffset.y = -(self.bounds.size.height - self.bounds.size.height*zoomToFit)*newZoom;
-  } else if (newOffset.y > (self.bounds.size.height - self.bounds.size.height*zoomToFit)*newZoom) {
-    newOffset.y = (self.bounds.size.height - self.bounds.size.height*zoomToFit)*newZoom;
-  }
-  
-  // Just a catchall to ensure we don't move the fitted view - shouldn't be required
-  if (newZoom == zoomToFit) newOffset = CGPointZero;
-  
-  currentZoom = newZoom;
-  currentOffset = newOffset;
-  
-  CATransform3D newTransform = CATransform3DTranslate(CATransform3DMakeScale(currentZoom, currentZoom, 1.0f), currentOffset.x, currentOffset.y, 0);
-  tiledLayer.transform = newTransform;
-  backgroundLayer.transform = tiledLayer.transform;
-  
-  if (currentZoom == zoomToFit) 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioLayoutZoomEnded" object:nil userInfo:nil];
-  else
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioLayoutZoomInProgress" object:nil userInfo:nil];
-}
-
-- (void)doubleTapZoomAtPoint:(CGPoint)point {
-  CGFloat xOffset = 0.0f;
-  CGFloat yOffset = 0.0f;
-  CGFloat newZoom = 1.0f;
-  
-  if (currentZoom == zoomToFit) {
-    newZoom = 2;
-    CGPoint centerPoint = CGPointMake(self.layer.bounds.size.width/2.0f, self.layer.bounds.size.height/2.0f);
-    xOffset = centerPoint.x - point.x;
-    yOffset = centerPoint.y - point.y;
+    [self configureTiledLayer];
+    [self configureShadowLayer];
+    [self configureBackgroundLayer];
   } else {
-    newZoom = zoomToFit;
+    [[tiledLayer delegate] setPage:page];
+    [[shadowLayer delegate] setPageRect:[[tiledLayer delegate] fittedPageRect]];
+    [[backgroundLayer delegate] setPageRect:[[tiledLayer delegate] fittedPageRect]];
   }
-  [self setZoom:newZoom andOffset:CGPointMake(xOffset, yOffset)];
-  
-}
-
-//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//  [self.layoutView touchesBegan:touches withEvent:event];
-//}
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-  NSSet *allTouches = [event allTouches];
-  
-  if([allTouches count] == 1) {
-    previousPoint = [[touches anyObject] locationInView:self];
-    previousDistance = -1;
-  } else if([allTouches count] == 2) {
-    pinchZoom = YES;
-    NSArray *touches = [event.allTouches allObjects];
-    CGPoint pointOne = [[touches objectAtIndex:0] locationInView:self];
-    CGPoint pointTwo = [[touches objectAtIndex:1] locationInView:self];
-    previousDistance = sqrt(pow(pointOne.x - pointTwo.x, 2.0f) + 
-                            pow(pointOne.y - pointTwo.y, 2.0f));
-  }
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-  NSSet *allTouches = [event allTouches]; // this gives us all the touches currently on the screen
-  
-  if ([allTouches count] == 1) {
-    CGPoint currentPoint = [[touches anyObject] locationInView:self];
-    
-    if (!pinchZoom) {
-      CGPoint movementDelta = CGPointMake(currentPoint.x - previousPoint.x, currentPoint.y - previousPoint.y);
-      CGPoint newOffset = CGPointMake(currentOffset.x + movementDelta.x/currentZoom, currentOffset.y + movementDelta.y/currentZoom);
-      [self setZoom:currentZoom andOffset:newOffset];
-      moving = YES;
-    }
-    
-    previousPoint = currentPoint;
-
-  } else if ([allTouches count] == 2) {
-    NSArray *touches = [event.allTouches allObjects];
-    CGPoint pointOne = [[touches objectAtIndex:0] locationInView:self];
-    CGPoint pointTwo = [[touches objectAtIndex:1] locationInView:self];
-    CGFloat currentDistance = sqrt(pow(pointOne.x - pointTwo.x, 2.0f) + 
-                                   pow(pointOne.y - pointTwo.y, 2.0f));
-    CGFloat newDistance = currentDistance - previousDistance;
-    if (newDistance !=0) {
-      CGFloat newZoom = fabs(currentZoom * currentDistance/previousDistance);
-      [self setZoom:newZoom andOffset:currentOffset];
-      previousDistance = currentDistance;
-    }
-  }
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-  previousDistance = -1;
-  
-  NSSet *allTouches = [event allTouches];
-  
-  if ([allTouches count] == 1) {
-    pinchZoom = NO;
-  }
-  
-  if(!moving) {
-    if (touches.count == 1) {
-      UITouch * t = [touches anyObject];
-      
-      if ([t tapCount] == 2) {
-        CGPoint point = [t locationInView:self];
-        [self doubleTapZoomAtPoint:point];
-      }
-    }
-  } else {
-    moving = NO;
-  }
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-  previousDistance = -1;
-  moving = NO;
-  pinchZoom = NO;
 }
 
 @end
@@ -398,28 +417,50 @@ static const CGFloat kBlioMaxZoom = 54.0f; // That's just showing off!
 
 @implementation BlioPDFTiledLayerDelegate
 
-@synthesize page;
+@synthesize page, fitTransform;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-  CGRect cropRect = CGPDFPageGetBoxRect (self.page, kCGPDFCropBox);
-  CGContextClipToRect(ctx, cropRect);
-  CGContextDrawPDFPage(ctx, self.page);
+  CGContextConcatCTM(ctx, fitTransform);
+  CGContextClipToRect(ctx, pageRect);
+  CGContextDrawPDFPage(ctx, page);
+}
+
+- (void)setPage:(CGPDFPageRef)newPage {
+  page = newPage;
+  pageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
+}
+
+- (CGRect)fittedPageRect {
+  return CGRectApplyAffineTransform(pageRect, fitTransform); 
 }
 
 @end
 
 @implementation BlioPDFBackgroundLayerDelegate
 
-@synthesize page;
+@synthesize pageRect;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-  CGFloat shadow = 16 * CGContextGetCTM(ctx).a; // Shadow should be constant
-  CGContextSetShadowWithColor(ctx, CGSizeMake(0, (shadow/2.0f)), shadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
-  CGContextBeginTransparencyLayer(ctx, NULL);
-  CGRect cropRect = CGPDFPageGetBoxRect (self.page, kCGPDFCropBox);
   CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-  CGContextFillRect(ctx, cropRect);
-  CGContextEndTransparencyLayer(ctx);
+  CGContextFillRect(ctx, pageRect);
 }
 
+@end
+
+@implementation BlioPDFShadowLayerDelegate
+
+@synthesize pageRect;
+
+- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
+  CGContextSetShadowWithColor(ctx, CGSizeMake(0, (kBlioLayoutShadow/2.0f)), kBlioLayoutShadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
+  CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+  CGContextFillRect(ctx, pageRect);
+}
+
+@end
+
+@implementation BlioFastCATiledLayer
++ (CFTimeInterval)fastDuration {
+  return 0.0;
+}
 @end
