@@ -6,6 +6,8 @@
 //  Copyright Things Made Out Of Other Things 2009. All rights reserved.
 //
 
+@class BlioTestParagraphWords;
+
 typedef enum {
   kBlioLibraryLayoutGrid = 0,
   kBlioLibraryLayoutList = 1,
@@ -50,6 +52,8 @@ typedef enum {
   NSArray *_books;
   BlioLibraryLayout _libraryLayout;
   BOOL _audioPlaying;
+  
+  BlioTestParagraphWords *_testParagraphWords;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *currentBookView;

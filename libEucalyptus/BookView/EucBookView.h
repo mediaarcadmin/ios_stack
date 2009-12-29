@@ -83,6 +83,10 @@
 
 - (void)stopAnimation;
 
+/*
+- (void)getStartOfPageParagraphId:(uint32_t *)paragraphId wordOffset:(uint32_t *)wordOffset;
+- (void)setStartOfPageParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+*/
 
 // TEMPORARY - esposed to allow contents view to be set up based on this
 // layout controller.  Nod decided how contents view will interface with

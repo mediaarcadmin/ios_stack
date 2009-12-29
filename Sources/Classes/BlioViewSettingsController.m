@@ -118,8 +118,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
   
   NSArray *pageColorTitles = [NSArray arrayWithObjects:
                              @"White",
-                             @"Black",
                              @"Neutral",
+                             @"Black",
                              nil];
   
   UISegmentedControl *aPageColorSegmentedControl = [[UISegmentedControl alloc] initWithItems:pageColorTitles];

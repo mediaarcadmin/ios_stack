@@ -13,12 +13,10 @@
 #import "EucBook.h"
 #import "EucBookSection.h"
 //#import "BookPaginator.h"
-#import "VCTitleCase.h"
 #import "THPair.h"
 #import "THNSStringAdditions.h"
 #import "THRegex.h"
 #import "THLog.h"
-#import "EucChapterNameFormatting.h"
 
 #define TABLE_CONTENTS_CELL_WIDTH 282
 #define TABLE_CONTENTS_CELL_WIDTH_WITH_ACCESSORY 249
@@ -117,7 +115,6 @@
     [_currentSectionUuid release];
     [_selectedGradientColor release];
     [_selectedUuid release];
-    //[_titleFormattingRegex release];
     [super dealloc];
 }
 

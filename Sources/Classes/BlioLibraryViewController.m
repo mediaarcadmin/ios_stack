@@ -13,6 +13,8 @@
 #import "BlioViewSettingsController.h"
 #import "BlioMockBook.h"
 
+#import "BlioTestParagraphWords.h"
+
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
 static const CGFloat kBlioLibraryListRowHeight = 76;
@@ -640,7 +642,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     
     CGFloat actualFontSize = bookView.fontPointSize;
     CGFloat bestDifference = CGFLOAT_MAX;
-    BlioFontSize bestFontSize;
+    BlioFontSize bestFontSize = kBlioFontSizeMedium;
     for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
       CGFloat thisDifference = fabsf(kBlioFontPointSizeArray[i] - actualFontSize);
       if(thisDifference < bestDifference) {
@@ -722,16 +724,27 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 }
 
 - (void)toggleAudio:(id)sender {
-  UIBarButtonItem *item = (UIBarButtonItem *)sender;
-  self.audioPlaying = !self.audioPlaying;
-  
-  UIImage *audioImage = nil;
-  if (self.audioPlaying)
-    audioImage = [UIImage imageNamed:@"icon-pause.png"];
-  else 
-    audioImage = [UIImage imageNamed:@"icon-play.png"];
+  if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+    EucBookView *bookView = (EucBookView *)bookViewController.bookView;
     
-  [item setImage:audioImage];
+    UIBarButtonItem *item = (UIBarButtonItem *)sender;
+    self.audioPlaying = !self.audioPlaying;
+    
+    UIImage *audioImage = nil;
+    if (self.audioPlaying) {
+      _testParagraphWords = [[BlioTestParagraphWords alloc] init];
+      [_testParagraphWords startParagraphGettingFromBook:(EucEPubBook*)bookView.book atParagraphWithId:1];
+      audioImage = [UIImage imageNamed:@"icon-pause.png"];
+    } else { 
+      [_testParagraphWords stopParagraphGetting];
+      [_testParagraphWords release];
+      _testParagraphWords = nil;
+      audioImage = [UIImage imageNamed:@"icon-play.png"];
+    }
+    
+    [item setImage:audioImage];
+  }
 }
 
 - (void)changeLibraryLayout:(id)sender {
