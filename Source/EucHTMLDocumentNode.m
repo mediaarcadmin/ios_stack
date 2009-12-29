@@ -35,6 +35,10 @@
     if(_computedStyle) {
         css_computed_style_destroy(_computedStyle);
     }
+    
+    if(_text) {
+        [_text release];
+    }
         
     [_dbNode release];
     [_document release];
@@ -74,23 +78,54 @@
     return _computedStyle;
 }
 
-- (BOOL)hasText
+- (BOOL)isTextNode
 {
     return _dbNode.kind == nodeKindText;
 }
 
+- (NSString *)text
+{
+    if(!_text) {
+        char *contents;
+        size_t length = 0;
+        if([_dbNode getCharacterContents:&contents length:&length]) {
+            _text = (NSString *)CFStringCreateWithBytes(kCFAllocatorDefault,
+                                                        (const UInt8 *)contents, 
+                                                        length, 
+                                                        kCFStringEncodingUTF8, 
+                                                        false);
+        }
+    }
+    return _text;
+}
+
 - (EucHTMLDocumentNode *)parent
 {
-    return [_document nodeForKey:_dbNode.parentNode.key];
+    EucHTMLDBNode *parentDBNode = _dbNode.parentNode;
+    if(parentDBNode) {
+        return [_document nodeForKey:parentDBNode.key];
+    } else {
+        return nil;
+    }    
 }
 
 - (EucHTMLDocumentNode *)next
 {
-    return [_document nodeForKey:_dbNode.nextNode.key];
+    EucHTMLDBNode *nextDBNode = _dbNode.nextNode;
+    if(nextDBNode) {
+        return [_document nodeForKey:nextDBNode.key];
+    } else {
+        return nil;
+    }    
 }
 
 - (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under {
-    return [_document nodeForKey:[_dbNode nextNodeUnder:under.dbNode].key];
+    EucHTMLDBNode *nextDBNode = [_dbNode nextNodeUnder:under.dbNode];
+    if(nextDBNode) {
+        return [_document nodeForKey:nextDBNode.key];
+    } else {
+        return nil;
+    }
 }
 
 - (NSArray *)children

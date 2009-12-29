@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D019EC410E7607900119926 /* thjust.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D019EC310E7607900119926 /* thjust.c */; };
+		7D019EC710E7608500119926 /* THStringRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D019EC610E7608500119926 /* THStringRenderer.m */; };
+		7D019F5810E7614E00119926 /* THLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D019F5510E7614E00119926 /* THLog.m */; };
+		7D019F5910E7614E00119926 /* THPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D019F5710E7614E00119926 /* THPair.m */; };
+		7D019FCB10E7617200119926 /* THTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D019FCA10E7617200119926 /* THTimer.m */; };
+		7D019FEA10E7646F00119926 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D019FE910E7646F00119926 /* ApplicationServices.framework */; };
+		7D019FEE10E7647C00119926 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D019FED10E7647C00119926 /* Cocoa.framework */; };
 		7D38C72210D4F49600E71AD8 /* EucHTMLDocumentRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D38C72110D4F49600E71AD8 /* EucHTMLDocumentRenderer.m */; };
 		7D50C74A10CE9AD500C0A8B0 /* EucHTMLDBNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D50C74910CE9AD500C0A8B0 /* EucHTMLDBNode.m */; };
 		7D50CA9A10CE9F4500C0A8B0 /* EucHTMLDBNodeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D50CA9910CE9F4500C0A8B0 /* EucHTMLDBNodeManager.m */; };
@@ -150,6 +157,19 @@
 		08FB7796FE84155DC02AAC07 /* LibCSSTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibCSSTest.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibCSSTest_Prefix.pch; sourceTree = "<group>"; };
+		7D019EC210E7607900119926 /* thjust.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thjust.h; sourceTree = "<group>"; };
+		7D019EC310E7607900119926 /* thjust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thjust.c; sourceTree = "<group>"; };
+		7D019EC510E7608500119926 /* THStringRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THStringRenderer.h; sourceTree = "<group>"; };
+		7D019EC610E7608500119926 /* THStringRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THStringRenderer.m; sourceTree = "<group>"; };
+		7D019F5410E7614E00119926 /* THLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLog.h; sourceTree = "<group>"; };
+		7D019F5510E7614E00119926 /* THLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLog.m; sourceTree = "<group>"; };
+		7D019F5610E7614E00119926 /* THPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THPair.h; sourceTree = "<group>"; };
+		7D019F5710E7614E00119926 /* THPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THPair.m; sourceTree = "<group>"; };
+		7D019FC910E7617200119926 /* THTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTimer.h; sourceTree = "<group>"; };
+		7D019FCA10E7617200119926 /* THTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTimer.m; sourceTree = "<group>"; };
+		7D019FE910E7646F00119926 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		7D019FED10E7647C00119926 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		7D01A08710E771B700119926 /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
 		7D38C72010D4F49600E71AD8 /* EucHTMLDocumentRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDocumentRenderer.h; sourceTree = "<group>"; };
 		7D38C72110D4F49600E71AD8 /* EucHTMLDocumentRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDocumentRenderer.m; sourceTree = "<group>"; };
 		7D50C74910CE9AD500C0A8B0 /* EucHTMLDBNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDBNode.m; sourceTree = "<group>"; };
@@ -640,6 +660,8 @@
 				7D6A85B910C42F400024B8D6 /* libparserutils.a in Frameworks */,
 				7D6A85BA10C42F400024B8D6 /* libwapcaplet.a in Frameworks */,
 				7D6A862410C44AEA0024B8D6 /* libiconv.dylib in Frameworks */,
+				7D019FEA10E7646F00119926 /* ApplicationServices.framework in Frameworks */,
+				7D019FEE10E7647C00119926 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,6 +683,16 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7D019F5410E7614E00119926 /* THLog.h */,
+				7D019F5510E7614E00119926 /* THLog.m */,
+				7D019FC910E7617200119926 /* THTimer.h */,
+				7D019FCA10E7617200119926 /* THTimer.m */,
+				7D019F5610E7614E00119926 /* THPair.h */,
+				7D019F5710E7614E00119926 /* THPair.m */,
+				7D019EC510E7608500119926 /* THStringRenderer.h */,
+				7D019EC610E7608500119926 /* THStringRenderer.m */,
+				7D019EC210E7607900119926 /* thjust.h */,
+				7D019EC310E7607900119926 /* thjust.c */,
 				32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* LibCSSTest.m */,
 				7D53D97110CBBEF7004F4975 /* EucHTMLDB.h */,
@@ -685,6 +717,8 @@
 			isa = PBXGroup;
 			children = (
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
+				7D019FED10E7647C00119926 /* Cocoa.framework */,
+				7D019FE910E7646F00119926 /* ApplicationServices.framework */,
 				7D6A862310C44AEA0024B8D6 /* libiconv.dylib */,
 			);
 			name = "Frameworks and Libraries";
@@ -1766,6 +1800,7 @@
 		7D6A865E10C44EC10024B8D6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7D01A08710E771B700119926 /* EPubDefault.css */,
 				7D6A865F10C44EC10024B8D6 /* pg103.epub */,
 			);
 			path = Resources;
@@ -2032,6 +2067,11 @@
 				7DFF7DD910D0116E0054D825 /* EucHTMLDocument.m in Sources */,
 				7DAFF01610D1113100D41F50 /* EucHTMLDocumentNode.m in Sources */,
 				7D38C72210D4F49600E71AD8 /* EucHTMLDocumentRenderer.m in Sources */,
+				7D019EC410E7607900119926 /* thjust.c in Sources */,
+				7D019EC710E7608500119926 /* THStringRenderer.m in Sources */,
+				7D019F5810E7614E00119926 /* THLog.m in Sources */,
+				7D019F5910E7614E00119926 /* THPair.m in Sources */,
+				7D019FCB10E7617200119926 /* THTimer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

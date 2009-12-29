@@ -18,12 +18,15 @@
     NSArray *_children;
     
     css_computed_style *_computedStyle;
+    NSString *_text;
 }
 
 @property (nonatomic, readonly) uint32_t key;
 @property (nonatomic, readonly) EucHTMLDBNode *dbNode;
+
 @property (nonatomic, readonly) css_computed_style *computedStyle;
-@property (nonatomic, readonly) BOOL hasText;
+@property (nonatomic, readonly) BOOL isTextNode;
+@property (nonatomic, readonly) NSString *text;
 
 @property (nonatomic, readonly) EucHTMLDocumentNode *parent;
 @property (nonatomic, readonly) NSArray *children;

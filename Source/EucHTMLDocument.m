@@ -34,23 +34,46 @@ static css_error resolve_url(void *pw, lwc_context *dict,
 }
 
 
-- (void)_setupStylesheets
+- (void)_setupStylesheets:(NSString *)basePath
 {
+    NSData *baseSheet = [NSData dataWithContentsOfMappedFile:basePath];
+    
+    css_stylesheet *stylesheet;
+    if(css_stylesheet_create(CSS_LEVEL_21, "UTF-8",
+                             "", "", CSS_ORIGIN_UA, 
+                             CSS_MEDIA_ALL, false,
+                             false, _lwcContext,
+                             EucRealloc, NULL,
+                             resolve_url, NULL,
+                             &stylesheet) == CSS_OK) {
+        css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)baseSheet.bytes, baseSheet.length);
+        if(err == CSS_NEEDDATA) {
+            err = css_stylesheet_data_done(stylesheet);
+        }
+        if (err == CSS_OK) {
+            ++_stylesheetsCount;
+            _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
+            _stylesheets[_stylesheetsCount-1] = stylesheet;
+            
+            css_select_ctx_append_sheet(_selectCtx, stylesheet);
+        } else {
+            css_stylesheet_destroy(stylesheet);
+            NSLog(@"Error %ld parsing stylesheet", (long)err);
+        }
+    }        
+    
     lwc_string *headString;
     lwc_context_intern(_lwcContext, "head", 4, &headString);
     lwc_string *styleString;
     lwc_context_intern(_lwcContext, "style", 5, &styleString);
     
-    EucHTMLDBNode *headNode = [_rootDBNode nextNodeWithName:headString];
-    NSLog(@"<%s>", lwc_string_data(headNode.name));
-    
+    EucHTMLDBNode *headNode = [_rootDBNode nextNodeWithName:headString];    
     EucHTMLDBNode *examiningNode = headNode;
     while((examiningNode = [examiningNode nextNodeUnder:headNode])) {        
         lwc_string *name = examiningNode.name;
         bool equal;
         if(name &&
            lwc_context_string_caseless_isequal(_lwcContext, name, styleString, &equal) == lwc_error_ok && equal) {
-            NSLog(@"\t%ld: <%s> ***", (long)examiningNode.key, lwc_string_data(examiningNode.name));
             char *styleChars;
             size_t styleLength;
             if([[examiningNode firstChild] getCharacterContents:&styleChars length:&styleLength]) {
@@ -85,8 +108,6 @@ static css_error resolve_url(void *pw, lwc_context *dict,
                     }
                 }
             }
-        } else if(name) {
-            NSLog(@"\t%ld: <%s>", (long)examiningNode.key, lwc_string_data(examiningNode.name));
         }
     }
     
@@ -115,7 +136,7 @@ static css_error resolve_url(void *pw, lwc_context *dict,
                         lwc_context_string_unref(_lwcContext, bodyString);
                         if(_bodyDBNode) {
                             if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
-                                [self _setupStylesheets];
+                                [self _setupStylesheets:@"/Users/jamie/Development/LibCSSTest/Resources/EPubDefault.css"];
                                 
                                 /*EucHTMLDBNode *current = _bodyDBNode;
                                 
