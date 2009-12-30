@@ -1859,10 +1859,7 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
 				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin9/4.2.1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -1886,10 +1883,7 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
 				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin9/4.2.1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -1911,10 +1905,7 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
 				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin9/4.2.1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -1935,10 +1926,7 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
 				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin9/4.2.1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
