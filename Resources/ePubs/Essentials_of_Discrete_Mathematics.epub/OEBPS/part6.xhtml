@@ -1,0 +1,1665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Unknown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="DC.Title" content="Unknown"/>
+    <style type="text/css">body { margin: 0%;padding: 0%;} .cover { text-align: center;margin-left: 0%;margin-right: 0%;} .coverpage { text-align: center;vertical-align: middle;text-shadow: #000 0px 1px 1px;margin-left: 0px;margin-right: 0px;margin-top: 0px;padding-top: 3em;margin-botton: 3em;font-size: 3.0em;background: #2F4F4F;} .coverimg { margin-top: 0%;margin-left: 0%;margin-right: 0%;width: 100%;} p { margin-left: 1em;margin-right: 1em;text-align: justify;} span { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} div { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} p { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} blockquote { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} h1 { text-align: center;} h2 { text-align: center;} h3 { text-align: center;} h4 { text-align: center;} h5 { text-align: center;} h6 { text-align: center;}</style>
+  </head>
+  <body>
+    <div>
+      <h1>Unknown</h1>
+    </div>
+    <div>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 137 — #77
+✐
+✐
+✐
+✐
+✐
+✐
+2.6 Graph Theory 137
+to all the vertices of depth 2, then 3, etc., until all the vertices (and hence
+all the edges) have been covered. Thus, every edge will point from a vertex of
+depth i to a vertex of depth i+1. This construction explains why it isn’t really
+necessary to draw the directions on the edges of a tree, as long as we designate
+a root. It also helps us prove the following fact.
+Theorem 2.10 Let T be a tree with n vertices. Then T has n−1 edges.
+Proof Suppose T is a tree with n vertices, and let r be the root of T. By the
+above construction, we can make T into a directed tree, if necessary, without
+changing the number of edges and vertices. Every edge must point to a nonroot
+vertex.Furthermore,everynonrootvertexhasasingleedgepointingtoit,since
+there is a unique path to each vertex from the root. So the number of edges
+equals the number of nonroot vertices: n−1. square
+Exercises 2.6
+1. See Deﬁnitions 2.12 and 2.13. Let G and H be isomorphic, undirected
+graphs with vertex bijection α and edge bijection β. Let x ∈ V
+G
+be a
+vertex in G. Prove that the degree of x equals the degree of α(x).
+2. Draw two nonisomorphic, undirected graphs, each having four vertices
+and four edges. Explain how you know they are not isomorphic.
+3. Findapair,G and H,ofisomorphicgraphsamongthefourgraphsbelow,
+and give the one-to-one correspondence α: V
+G
+−→ V
+H
+of vertices. (For
+each vertex of G, tell which vertex of H to which it corresponds.)
+bcd
+aeif
+ghp
+o
+j
+r u
+s
+t
+q
+nmlk
+4. Give a rigorous deﬁnition for the indegree and outdegree of a vertex in a
+directed graph. (Model your deﬁnition on Deﬁnition 2.13.)
+5. Let X be a ﬁnite set, and let P(X) be the power set of X. Let G be
+the graph whose vertices represent the elements of P(X), where A and</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 138 — #78
+✐
+✐
+✐
+✐
+✐
+✐
+138 Chapter 2 a73 Relational Thinking
+B are joined by an edge if A∩B =∅. Similarly, let H be the graph with
+a vertex for each element of P(X), but where A and B share an edge if
+A∪B = X. Prove that G is isomorphic to H.
+6. Let (X
+1
+,R
+1
+) and (X
+2
+,R
+2
+) be isomorphic partial orders. Let G
+1
+and G
+2
+be their respective associated graphs, as deﬁned in Deﬁnition 2.5. Prove
+that G
+1
+and G
+2
+are isomorphic graphs.
+7. Let R
+1
+and R
+2
+be relations on a set X. Give a reasonable deﬁnition for
+an isomorphism of relations.
+8. Between 1970 and 1975, the National Football League was divided into
+two conferences, with 13 teams in each conference. Each team played 14
+games in a season. Would it have been possible for each team to play 11
+games against teams from its own conference and 3 games against teams
+from the other conference? Use a graph model to answer this question
+(without drawing the graph).
+9. A league of 10 teams is playing a “round-robin” style tournament, where
+each team plays every other team exactly once. How many games total
+need to be played? Justify your answer using a graph model—say what
+theverticesandedgesofyourgraphrepresent,andwhat(ifany)theorems
+you use.
+10. The complete graph on n vertices (denoted K
+n
+) is the undirected graph
+with exactly one edge between every pair of distinct vertices. Use Theo-
+rem 2.6 to derive a formula for the number of edges in K
+n
+.
+11. A truncated icosidodecahedron (also known as a “great rhombicosidodec-
+ahedron” or “omnitruncated icosidodecahedron”) is a polyhedron with
+120 vertices. Each vertex looks the same: a square, a hexagon, and a
+decagon come together at each vertex. How many edges does a truncated
+icosidodecahedron have? Explain how you arrive at your answer. (Note:
+the picture in Figure 2.28 doesn’t show the vertices or edges on the back
+of the polyhedron.)
+Figure 2.28 A truncated icosidodecahedron. See Exercises 11 and 14.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 139 — #79
+✐
+✐
+✐
+✐
+✐
+✐
+2.6 Graph Theory 139
+12. Prove the following theorem of Euler.
+Theorem 2.11 If a connected graph has exactly two vertices v and w of
+odd degree, then there is an Euler path from v to w.
+Hint: Add an edge, and use Theorem 2.7.
+13. Prove the following theorem of Euler.
+Theorem 2.12 If a graph has more than two vertices of odd degree, it
+does not have an Euler path.
+Hint:Tryaproofbycontradiction,andmodelyourargumentontheproof
+of Theorem 2.8.
+14. Is there an Euler path on the graph formed by the vertices and edges of
+a truncated icosidodecahedron? Why or why not?
+15. Prove that K
+n
+, the complete graph on n vertices, has a Hamilton circuit
+for all n≥3.
+16. For what values of n does K
+n
+have an Euler circuit? Explain.
+17. Find a Hamilton circuit in the following graph.
+18. Explain why the following graph does not have a Hamilton circuit.
+abc
+de
+fgh
+19. FinishtheproofofTheorem2.9byprovingthat,ifagraphGhasacircuit
+with some edge e that diﬀers from all the other edges in the circuit, then
+G has a simple circuit. (Hint: Focus on the sequence of vertices in the
+given circuit.)
+20. Copy the three graphs from Figure 2.27 and label the vertices to show
+that the graphs are isomorphic.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 140 — #80
+✐
+✐
+✐
+✐
+✐
+✐
+140 Chapter 2 a73 Relational Thinking
+21. Let G be a graph with vertex set V
+G
+and edge set E
+G
+.Asubgraph of G
+is a graph with vertex set V
+H
+⊆V
+G
+and edge set E
+H
+⊆E
+G
+. Write down
+all the subgraphs of the following graph.
+22. Let G be a graph with vertex set V
+G
+and edge set E
+G
+. Let V ⊆V
+G
+and
+E ⊆ E
+G
+. Is there always a subgraph of G with vertex set V and edge
+set E? Explain.
+23. Let G be a connected, undirected graph. Prove that there is a subgraph
+T of G such that T contains all the vertices of G, and T is a tree. (Such a
+subgraphiscalledaspanning tree.)Giveaconstructiveproofthatexplains
+how to construct a spanning tree of a graph.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 141 — #1
+✐
+✐
+✐
+✐
+✐
+✐
+Chapter 3
+Recursive Thinking
+The branches of a blue spruce tree (Figure 3.1) follow an interesting pattern.
+The trunk of the tree is a large central stem, with branches coming oﬀ each side.
+These branches also have thinner stems coming oﬀ them, and so on, until you
+Figure 3.1 A recursive blue spruce.
+141</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 142 — #2
+✐
+✐
+✐
+✐
+✐
+✐
+142 Chapter 3 a73 Recursive Thinking
+reach the level of the needles. A branch looks like a smaller copy of the whole
+tree, and even a small twig looks like a miniature branch. This is a picture of
+recursion.
+The natural phenomenon of recursion pervadesmany areasof mathematics.
+In this chapter, you will learn how to work with recursive structures. You will
+develop the ability to see recursive patterns in mathematical objects. And you
+will study mathematical induction, a powerful tool for proving theorems about
+recursive structures.
+3.1 Recurrence Relations
+3.1.1 Deﬁnition and Examples
+The simplest and most concrete type of recursive object in mathematics is a
+recurrence relation. Suppose we wish to deﬁne a function
+P: N −→ Z
+that inputsa natural number and returnsan integer. The easiest way to do
+thisisto give an explicit formula:
+P(n)=
+n(n+1)
+2
+. (3.1.1)
+To evaluate P(n) for some given n, you just plug n into the formula.
+It isalwaysnice to have an explicit formula for a function, but sometimes
+these are hard to come by. Sometimesa function comesup in mathematicsthat
+isnatural to deﬁne recursively. Here isa second way of deﬁning our function
+P(n):
+P(n)=
+braceleftBigg
+1ifn=1
+n+P(n−1) if n>1.
+(3.1.2)
+Thisisa recursive deﬁnition because P isdeﬁned in termsof itself: P occurs
+in the formula that deﬁnes P. This may seem a little sneaky, but it is perfectly
+legal. For any n ∈ N, we can use the deﬁnition in Equation 3.1.2 to compute
+P(n).
+Example 3.1 Use Equation 3.1.2 to compute P(5).
+Solution: We’ll compute P(5) two diﬀerent ways. The ﬁrst approach is called
+‘‘bottom-up” because we start at the bottom with P(1) and work our way up
+to P(5). By the ﬁrst part of the deﬁnition, P(1) = 1. By the second part of
+the deﬁnition, with n= 2, we get P(2)=2+P(1) = 2 + 1 = 3. Again, by the
+second part with n =3,P(3) = 3 +P(2) = 3 + 3 = 6. Repeating this process,
+P(4) = 4 + 6 = 10, and ﬁnally, P(5) = 5 + 10 = 15.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 143 — #3
+✐
+✐
+✐
+✐
+✐
+✐
+3.1 Recurrence Relations 143
+Alternatively, we can do a ‘‘top-down” computation. Whenever n>1, we
+can apply the second part of the function deﬁnition to replace “P(n)” with
+“n+P(n−1).” This replacement justiﬁes the ﬁrst four uses of the = sign.
+P(5) = 5 +P(4)
+=5+4+P(3)
+=5+4+3+P(2)
+=5+4+3+2+P(1)
+=5+4+3+2+1
+=15.
+The second-to-last = sign is the result of applying the ﬁrst part of the deﬁnition
+to replace “P(1)” with “1.” ♦
+Note that the equation
+P(n)=n+P(n−1)
+by itself would not deﬁne a recurrence relation, because the bottom-up calcu-
+lation could never get started, and the top-down calculation would never stop.
+A well-deﬁned recurrence relation needsa nonrecursive base case that givesat
+least one value of the function explicitly.
+3.1.2 The Fibonacci Sequence
+One of the earliest examples of recursive thinking is the famous Fibonacci se-
+quence. In the early 13
+th
+century, the Italian mathematician Leonardo Pisano
+1
+Fibonacci proposed the following problem. [10]
+A certain man put a pair of rabbits in a place surrounded on all sides by
+a wall. How many pairsof rabbitscan be produced from that pair in a
+year if it is supposed that every month each pair begets a new pair which
+from the second month on becomes productive?
+LetF(n) represent the number of pairs of rabbits present on monthn. Assuming
+that it takestwo monthsfor the ﬁrst pair of rabbitsto become productive, we
+have
+F(1) =F(2) = 1
+as a base case, and the ﬁrst pair of oﬀspring show up on the third month, so
+F(3) = 2. Every month, the number of new pairsof rabbitsequalsthe number
+of rabbitspresent two monthsbefore. So we can deﬁne a recurrence relation as
+follows.
+1. “Pisano” means “of Pisa.” In fact, if you visit Pisa, Italy, you will ﬁnd a statue of Fibonacci
+in the Camposanto, near the famous leaningtower.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 144 — #4
+✐
+✐
+✐
+✐
+✐
+✐
+144 Chapter 3 a73 Recursive Thinking
+Deﬁnition 3.1 The Fibonacci numbers F(n) satisfy the following recurrence
+relation:
+F(n)=
+braceleftBigg
+1ifn=1orn=2
+F(n−1) +F(n−2) if n>2.
+The sequence F(1),F(2),F(3),... iscalled the Fibonacci sequence.
+The second part of this deﬁnition, F(n)=F(n−1)+F(n−2), isthe recursive
+part. The F(n− 1) term represents the number of rabbit pairs present the
+previousmonth. The F(n−2) term represents the number of new rabbit pairs—
+equal to the number of rabbit pairspresent two monthsago. Therefore the sum
+of these two termsisthe total number of rabbit pairspresent for month n, the
+current month. The ﬁrst few terms of the famous Fibonacci sequence are then
+1,1,2,3,5,8,13,21,34,....
+Despite its somewhat whimsical origins, the Fibonacci sequence has a re-
+markable number of applications. Thissequence of numbersisfound in a vari-
+ety of contexts, including plant growth, stock prices, architecture, music, and
+drainage patterns.
+Example 3.2 The pine cone in Figure 3.2 containsFibonacci numbers. No-
+tice the spiral patterns emanating out from the center, both in clockwise and
+counterclockwise directions. There are F(6) = 8 counterclockwise spirals and
+F(7) = 13 clockwise spirals. This isn’t merely coincidental; Fibonacci patterns
+are often found in nature where growth occurs in stages, with each successive
+stage dependent on previous stages. The recursive nature of plant growth is
+reﬂected in the presence of recursively deﬁned sequences. The study of leaf pat-
+ternsin plantsiscalled phyllotaxis, and the more general study of how shapes
+form in living thingsiscalled morphogenesis. These studies apply recursive
+ideas.
+3.1.3 Modeling with Recurrence Relations
+Fibonacci’srabbit example showshow to think recursively about a problem by
+describing it with a recurrence relation. Remember that any recurrence relation
+has two parts: a base case that describes some initial conditions, and a recursive
+case that describes a future value in terms of previous values. Armed with this
+way of thinking, we can model other problems using recurrence relations.
+Example 3.3 Ursula the Usurer lends money at outrageous rates of interest.
+She demandsto be paid 10% interest per week on a loan, compounded weekly.
+Suppose you borrow $500 from Ursula. If you wait four weeks to pay her back,
+how much will you owe?</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 145 — #5
+✐
+✐
+✐
+✐
+✐
+✐
+3.1 Recurrence Relations 145
+Figure 3.2 Fibonacci numbersappear in many diﬀerent kindsof plant
+growth, including this pine cone. Image courtesy of Pau Atela and Christophe
+Gol´e. [3]
+Solution: Let M(n) be how much money you owe Ursula on the nth week.
+Initially, you owe $500, so M(0) = 500. Each subsequent week, the amount you
+owe increases by 10%. Therefore, we have the following recurrence relation:
+M(n)=
+braceleftBigg
+500 if n=0
+1.10·M(n−1) if n>0.
+Then the amount you owe after four weeksis
+M(4) = 1.10·M(3)
+=1.10·1.10·M(2)
+=1.10·1.10·1.10·M(1)
+=1.10·1.10·1.10·1.10·M(0)
+=1.10·1.10·1.10·1.10·500
+= $732.05.
+♦
+Example 3.4 If you have ever tried making patternswith a collection of coins,
+you have probably noticed that you can make hexagonsin a natural way by
+packing circlesastightly aspossible. Figure 3.3 showshow 19 circlesﬁt into a
+hexagonal shape with 3 circles on each edge. Let H(n) be the number of circles
+you need to form a hexagon with n circleson each edge. From Figure 3.3, it is
+clear that H(2) = 7 and H(3) = 19. Find a recurrence relation for H(n).
+Solution: The base case of the recurrence relation could be H(2) = 7, or we
+could agree thatH(1) = 1, representing a “trivial” hexagon with just one circle.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 146 — #6
+✐
+✐
+✐
+✐
+✐
+✐
+146 Chapter 3 a73 Recursive Thinking
+Figure 3.3 Circlespacked to form a hexagon.
+For the recursive case, we need to describe how to make a hexagonal pattern
+of edge size n from a hexagonal pattern of edge size n− 1. We would need to
+add six edges, each made up of n circles, but each circle on a vertex of the new
+hexagon will be included in two edges. Thusthe number of circlesadded will be
+6n− 6; subtracting 6 accounts for double-counting the circles on the vertices.
+Thisgivesthe following recurrence relation:
+H(n)=
+braceleftBigg
+1ifn=1
+H(n−1)+6n−6ifn>1.
+If you don’t quite believe in this formula, try some calculations:H(2) =H(1)+
+6·2−6=7,H(3) =H(2)+6·3−6 = 19, etc. ♦
+To construct a recurrence relation, it often helps to see how successive
+casesof the problem are built on previousones, like the layersof an onion.
+The recurrence relation describeshow to count the next layer in termsof the
+previousone(s). If P(n) is the function we want to describe recursively, think
+of P(n) asthe general case of the problem, while P(n−1) represents the next
+simplest case. The recursive part of the recurrence relation is then an equation
+of the form
+P(n) = some function of P(n−1) and n
+that describes how to add a layer to your onion. The next few examples illus-
+trate thisparadigm.
+Example 3.5 LetX be a ﬁnite set withnelements. Find a recurrence relation
+C(n) for the number of elementsin the power set P(X).
+Solution: The base case is when n = 0 and X is the empty set, in which case
+P(X)={∅},soC(0) = 1. Now suppose |X| = n for some n>0. Choose
+some element x ∈ X and let X
+prime
+= X \{x}. Then X
+prime
+has n− 1 elements, so
+|P(X
+prime
+)| =C(n−1). Furthermore, every subset of X is either a subset of X
+prime
+,or</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 147 — #7
+✐
+✐
+✐
+✐
+✐
+✐
+3.1 Recurrence Relations 147
+a subset of the form U∪{x}, where U ⊆X
+prime
+, and these two cases are mutually
+exclusive. Therefore P(X) hastwice asmany elementsas P(X
+prime
+). So
+C(n)=
+braceleftBigg
+1ifn=0
+2·C(n−1) if n>0
+isa recurrence relation for |P(X)|. ♦
+Recall that the depth d(v) of a vertex v in a binary tree isthe number
+of edgesin the path from the root to v. The height of a binary tree isthe
+maximum value of d(v) over all the verticesin the tree.
+Example 3.6 Call a binary tree complete if every leaf hasdepth n and every
+nonleaf node hastwo children. For example,
+isa complete binary tree of height 3. Let T be a complete binary tree of height
+n. Find a recurrence relation V(n) for the number of nodesin T.
+Solution: Notice that a complete tree of height n hastwo complete treesof
+height n−1 inside of it.
+T
+1
+T
+2
+In addition to the nodesin T
+1
+and T
+2
+, there isone more node: the root. There-
+fore a complete binary tree of height n has
+V(n)=
+braceleftBigg
+1ifn=0
+2·V(n−1)+1 ifn>0
+nodes. ♦
+Example 3.7 Recall that the complete graph K
+n
+on n verticesisthe undi-
+rected graph that hasexactly one edge between every pair of vertices. Find a
+recurrence relation E(n) for the number of edgesin K
+n
+.
+Solution: Given a complete graph on n− 1 vertices, we can add a vertex and
+edgesto make a complete graph on n vertices. We need to add n− 1 new
+edges, because the new vertex needs to be connected to all of the vertices of</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 148 — #8
+✐
+✐
+✐
+✐
+✐
+✐
+148 Chapter 3 a73 Recursive Thinking
+the original given graph. For example, the following ﬁgure shows how to make
+K
+5
+from K
+4
+.
+v
+The new vertex islabeled v, and the four new edgesare dashed. A complete
+graph on one vertex has no edges, so we obtain the following recurrence relation:
+E(n)=
+braceleftBigg
+0ifn=1
+E(n−1) +n−1ifn>1.
+♦
+Look back at these last three examples, and see if you can recognize the
+recursive way of thinking. A power set contains all the elements of a smaller
+power set, and more. A complete binary tree has two smaller complete binary
+treesinside it. And a complete graph on n− 1 verticescan be augmented to
+form a complete graph on n vertices. The hard part of these problems was
+identifying the recursive structure in these objects; this structure made writing
+down the recurrence relation a fairly straightforward task.
+Exercises 3.1
+1. Refer to the recurrence relation for the Fibonacci sequence in Deﬁni-
+tion 3.1.
+(a) Answer Fibonacci’s question by calculating F(12).
+(b) Write F(1000) in termsof F(999) and F(998).
+(c) Write F(1000) in termsof F(998) and F(997).
+2. In Fibonacci’smodel, rabbitslive forever. The following modiﬁcation of
+Deﬁnition 3.1 accountsfor dying rabbits:
+G(n)=
+
+
+
+
+
+0ifn≤ 0
+1in=1orn=2
+G(n−1) +G(n−2)−G(n−8) if n>2.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 149 — #9
+✐
+✐
+✐
+✐
+✐
+✐
+3.1 Recurrence Relations 149
+(a) Compute G(n) for n=1,2,...,12.
+(b) In thismodiﬁed model, how long do rabbitslive?
+3. Consider the following recurrence relation:
+H(n)=
+
+
+
+
+
+0ifn≤ 0
+1in=1orn=2
+H(n−1) +H(n−2)−H(n−3) if n>2.
+(a) Compute H(n) for n=1,2,...,10.
+(b) Using the pattern from part (a), guess what H(100) is.
+4. The Lucas numbers L(n) have almost the same deﬁnition as the Fibonacci
+numbers:
+L(n)=
+
+
+
+
+
+1ifn=1
+3in=2
+L(n−1) +L(n−2) if n>2.
+(a) How isthe deﬁnition of L(n) diﬀerent from the deﬁnition of F(n)in
+Deﬁnition 3.1?
+(b) Compute the ﬁrst 12 Lucas numbers.
+5. Compute the ﬁrst seven terms of the following recurrence relations:
+(a) C(n) of Example 3.5.
+(b) V(n) of Example 3.6.
+(c) E(n) of Example 3.7.
+6. Consider the recurrence relation deﬁned in Example 3.3. Suppose that, as
+in the example, you borrow $500, but you pay her back $100 each week.
+Each week, Ursula charges you 10% interest on the amount you still owe,
+after your $100 payment istaken into account.
+(a) Write down a recurrence relation for M(n), the amount owed after
+n weeks.
+(b) How much will you owe after four weeks?
+7. Every year, Alice getsa raise of $3,000 plus5% of her previousyear’s
+salary. Her starting salary is $50,000. Give a recurrence relation for S(n),
+Alice’ssalary after n years, for n≥ 0.
+8. Suppose that today (year 0) your car is worth $10,000. Each year your car
+loses10% of itsvalue, but at the end of each year you add customizations
+to your car which increase its value by $50. Write a recurrence relation
+to model thissituation.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 150 — #10
+✐
+✐
+✐
+✐
+✐
+✐
+150 Chapter 3 a73 Recursive Thinking
+9. Refer to Example 3.4. Calculate H(7).
+10. Circlescan be packed into the shape of an equilateral triangle. Let T(n)
+be the number of circlesneeded to form a triangle with n circleson each
+edge. From Figure 3.3 (or by experimenting with coins), it is easy to see
+that T(2) = 3 and T(3) = 6. Write down a recurrence relation for T(n).
+11. Let H(n) be asin Example 3.4, and let T(n) be asin Exercise 10. Write
+H(n) in termsof T(n−1). Explain your reasoning. (Hint: use Figure 3.4.)
+Figure 3.4 Hint for Exercise 11.
+12. Recall that the factorial function isdeﬁned as
+n!=1·2·3·····(n−1)·n
+and, by convention, 0! = 1. Give a recurrence relation for n!.
+13. Let S(n)=1
+2
++2
+2
++ ···+n
+2
+be the sum of the ﬁrst n perfect squares.
+Find a recurrence relation for S(n).
+14. The ancient Indian game of Chaturanga—from which the modern game
+of chesswasapparently derived—wasplayed on a board with 64 squares.
+A certain folktale tells the story of a Raja who promised a reward of one
+grain of rice on the ﬁrst square of the board, two grains on the second
+square, four on the third, and so on, doubling the number of grains on
+each successive square.
+(a) Write a recurrence relation for R(n), the number of grainsof rice on
+the nth square.
+(b) ComputeR(64). Assuming a grain of rice weighs 25 milligrams, how
+many kilogramsof rice must be placed on the 64
+th
+square?
+15. Find recurrence relations that yield the following sequences:
+(a) 5,10,15,20,25,30,...
+(b) 5,11,18,26,35,45,...</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 151 — #11
+✐
+✐
+✐
+✐
+✐
+✐
+3.1 Recurrence Relations 151
+16. Let f: N −→ R be any function on the natural numbers. The sum of the
+ﬁrst n valuesof f(n) iswritten as
+n
+summationdisplay
+k=1
+f(k)=f(1) +f(2) +···+f(n)
+in sigma notation.
+(a) Write 1
+2
++2
+2
++···+n
+2
+in sigma notation.
+(b) Give a recurrence relation for
+n
+summationdisplay
+k=1
+f(k).
+17. Let f: N −→ R be any function on the natural numbers. The product of
+the ﬁrst n valuesof f(n) iswritten as
+n
+productdisplay
+k=1
+f(k)=f(1)·f(2)·····f(n)
+in product notation.
+(a) Write n! in product notation, for n>0.
+(b) Give a recurrence relation for
+n
+productdisplay
+k=1
+f(k).
+18. Calculus required. Use the reduction formula
+integraldisplay
+x
+n
+e
+x
+dx=x
+n
+e
+x
+−n
+integraldisplay
+x
+n−1
+e
+x
+dx
+to give a simple (noncalculus) recurrence relation for
+I(n)=
+integraldisplay
+1
+0
+x
+n
+e
+x
+dx
+where n≥ 0. Make sure that your recurrence relation has a base case.
+19. Suppose we model the spread of a virus in a certain population as follows.
+On day 1, one person is infected. On each subsequent day, each infected
+person gives the cold to two others.
+(a) Write down a recurrence relation for thismodel.
+(b) What are some of the limitationsof thismodel? How doesit fail to
+be realistic?
+20. Let X be a set with n elements. Let E ⊆P(X) be the set of all subsets
+of X with an even number of elements, and let O⊆P(X) be the subsets
+of X with an odd number of elements. Let E(n)=|E| and O(n)=|O|.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 152 — #12
+✐
+✐
+✐
+✐
+✐
+✐
+152 Chapter 3 a73 Recursive Thinking
+(a) Find a recurrence relation forE(n) in termsof O(n−1) andE(n−1).
+(b) Find a recurrence relation forO(n) in termsof O(n−1) andE(n−1).
+(c) Find the ﬁrst ﬁve values of E(n) and O(n).
+21. The complete bipartite graph K
+m,n
+isthe simple undirected graph with
+m+nvertices split into two setsV
+1
+andV
+2
+(|V
+1
+| =m, |V
+2
+| =n) such that
+vertices x,y share an edge if and only in x∈V
+1
+and y∈V
+2
+. For example,
+K
+3,4
+isthe following graph.
+(a) Find a recurrence relation for the number of edgesin K
+3,n
+.
+(b) Find a recurrence relation for the number of edgesin K
+n,n
+.
+3.2 Closed-Form Solutions and Induction
+Although recurrence relationshave a certain elegant quality, it can be tediousto
+compute with them. For example, armed only with Deﬁnition 3.1, it would take
+998 steps to compute the Fibonacci number F(1000). In thissection we will
+explore ways to ﬁnd a nonrecursive closed-form solution to a recurrence relation.
+Much more than appears here could be said about solving recurrence relations.
+The essential concept in this section is the idea of mathematical induction, the
+method by which we verify the correctness of a closed-form solution.
+3.2.1 Guessing a Closed-Form Solution
+Suppose thatP(n) isa function deﬁned by a recurrence relation. We would like
+to have an expression
+P(n) = a nonrecursive function of n
+because then we could just calculate P(n) by plugging n into the formula,
+rather than by using the recurrence relation over and over. A formula like this
+iscalled a closed-form solution to the recurrence relation. Recall Example 3.1:
+we found that the ﬁrst ﬁve values of the recurrence relation
+P(n)=
+braceleftBigg
+1ifn=1
+n+P(n−1) if n>1</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 153 — #13
+✐
+✐
+✐
+✐
+✐
+✐
+3.2 Closed-Form Solutions and Induction 153
+were 1,3,6,10, and 15. A closed-form solution to this recurrence relation is
+P(n)=
+n(n+1)
+2
+.
+We can check that the valuesof P(n) given by thisnonrecursive formula match
+the valuesgiven by the recurrence relation:
+n 1 2 3 4 5
+n(n+1)
+2
+1 3 6 10 15
+.
+Thistable of valuesispretty convincing evidence that we have found the right
+closed-form solution, but it is not a proof. Later in this section we will see how
+to verify that such a solution is correct, but ﬁrst we will consider the problem
+of ﬁnding closed-form solutions.
+Given a recurrence relation, the most general way of ﬁnding a closed-form
+solution is by guessing. Unfortunately, this is also the hardest technique to
+master.
+Example 3.8 Find a closed-form solution for the recurrence relation from Ex-
+ample 3.3:
+M(n)=
+braceleftBigg
+500 if n=0
+1.10·M(n−1) if n>0.
+(3.2.1)
+Solution: It almost alwayshelpsto write out the ﬁrst few valuesof M(n). In
+this case, it also helps to leave things unsimpliﬁed: the pattern is easier to see
+if you don’t multiply out the terms.
+M(0) = 500
+M(1) = 500·1.10 = 500(1.10)
+1
+M(2) = 500·1.10·1.10 = 500(1.10)
+2
+M(3) = 500·1.10·1.10·1.10 = 500(1.10)
+3
+M(4) = 500·1.10·1.10·1.10·1.10 = 500(1.10)
+4
+.
+The evident pattern in these calculations suggests that
+M(n) = 500(1.10)
+n
+(3.2.2)
+is a closed-form solution to the recurrence relation. ♦
+Please note: this only a guess. We haven’t proved that Equation 3.2.2 rep-
+resents the same function as Equation 3.2.1. There is still more work to do.
+Stay tuned.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 154 — #14
+✐
+✐
+✐
+✐
+✐
+✐
+154 Chapter 3 a73 Recursive Thinking
+3.2.2 Polynomial Sequences: Using Diﬀerences ‡
+Finding a closed-form solution forP(n) can be thought of as guessing a formula
+for the sequence P(0),P(1),P(2),.... If we knew that
+P(n) = a polynomial function of n
+then it would be easier to guess at a formula. One way to detect such a sequence
+is to look at the diﬀerences between terms. Given any sequence
+a
+0
+,a
+1
+,a
+2
+,a
+3
+,...,a
+n−1
+,a
+n
+the diﬀerences
+a
+1
+−a
+0
+,a
+2
+−a
+1
+,a
+3
+−a
+2
+,...,a
+n
+−a
+n−1
+form another sequence, called the sequence of diﬀerences. A linear sequence
+will have a constant sequence of diﬀerences (because a line has constant slope).
+From calculus, we know that a quadratic sequence will have a linear sequence of
+diﬀerences, a cubic sequence will have a quadratic sequence of diﬀerences, etc.
+Given a sequence, we can calculate its sequence of diﬀerences, then calculate
+the sequence of diﬀerences of that, and so on. If we eventually end up with a
+constant sequence, then we have reason to believe that the original sequence
+isgiven by a polynomial function. The degree of the conjectured polynomial is
+the number of times we had to calculate the sequence of diﬀerences. The next
+example illustratesthistechnique.
+Example 3.9 Find a closed-form solution for the recurrence relation from Ex-
+ample 3.4:
+H(n)=
+braceleftBigg
+1ifn=1
+H(n−1)+6n−6ifn>1.
+(3.2.3)
+Solution: Calculate the ﬁrst few terms, and then look at sequences of diﬀerences:
+1 7 19 37 61 91
+logicalortextlogicalortextlogicalortextlogicalortextlogicalortext
+612182430
+logicalortextlogicalortextlogicalortextlogicalortext
+6666
+The second sequence of diﬀerences is constant. This suggests that the sequence
+may have a formula of the form
+H(n)=An
+2
++Bn+C,</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 155 — #15
+✐
+✐
+✐
+✐
+✐
+✐
+3.2 Closed-Form Solutions and Induction 155
+so all we need to do is ﬁnd A, B, and C. Using H(1)=1,H(2) = 7, and
+H(3) = 19, we get a system of three equations in three variables:
+1=A+B+C
+7=4A+2B+C
+19 = 9A+3B+C.
+Solving this system is a simple—but somewhat lengthy—exercise in algebra.
+(Add/subtract equations to eliminate variables, etc. We’ll omit the details.)
+The solution is A=3,B = −3, and C =1,so
+H(n)=3n
+2
+−3n+ 1 (3.2.4)
+is a good candidate for a closed-form solution. ♦
+The technique of using sequences of diﬀerences is more of a “brute force”
+approach than pure guessing; there are certain mechanical procedures you go
+through in order to arrive at a formula. But the result of these procedures is
+still only a guess. To be sure that our guess is right, we need to prove that the
+formula matchesthe recurrence relation for all n.
+3.2.3 Inductively Verifying a Solution
+If we use Equation 3.2.4 to calculate the ﬁrst six values ofH(n), we get 1, 7, 19,
+37, 61, and 91. These numbers match the values given by the recurrence relation
+in Equation 3.2.3 perfectly. Thisispretty good evidence that Equation 3.2.4
+is the correct closed-form solution for the recurrence relation. But this is not
+a proof. For all we know, the 7
+th
+value won’t match, or the 8
+th
+, or the 739
+th
+.
+Without a proof, we can’t be sure.
+The general template for verifying a solution to a recurrence relation fol-
+lows. We have
+R(n) = some recurrence relation
+f(n) = hypothesized closed-form formula,
+and we would like to show thatR(n)=f(n) for all valuesof n. For the purposes
+of this discussion, let’s say that the ﬁrst value of n for which R(n) isdeﬁned is
+n = 1. As we have seen, recurrence relations usually start at n =1orn =0,
+but any starting value of n is possible.
+To prove that R(n)=f(n) for all n ≥ 1, we need to use the technique of
+mathematical induction. The idea of thiskind of proof isanalogousto climbing
+a staircase. Going up a staircase is a fairly repetitive task; if you know how
+to ascend one stairstep, you know how to ascend a staircase of any height. Of
+course, you need to start at the bottom of the staircase. In the proof, this is
+the base case.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 156 — #16
+✐
+✐
+✐
+✐
+✐
+✐
+156 Chapter 3 a73 Recursive Thinking
+Base Case: Verify that R(1) =f(1).
+Checking the base case is usually fairly easy. After all, you probably wouldn’t
+have chosen f(n) as a candidate solution if it didn’t at least match for the case
+n=1.
+Next, you must be able to take one step up the staircase. Note that it
+doesn’t matter where on the staircase you are; taking one step up requires the
+same amount of skill, whether you are at the bottom, top, or somewhere in the
+middle. So let’s suppose, for the sake of the argument, you are standing on the
+(k−1)th stair. This is the inductive hypothesis.
+Inductive Hypothesis: Let k>1 be some (unspeciﬁed) integer. Suppose as
+inductive hypothesis that R(k−1) =f(k−1).
+The inductive hypothesis will be a crucial part of our proof. Any valid proof
+by induction must use the inductive hypothesis somewhere in its argument.
+Finally, you need to be able to go up to the next stairstep. See Figure 3.5.
+Inductive Step: Prove that R(k)=f(k).
+To do this, use the recurrence relation to compute the kth value. When you
+need to plug in the (k − 1)th value, use the inductive hypothesis. Then use
+algebra to show that the answer matches the closed form solution.
+k
+k – 1
+1
+2
+3
+Figure 3.5 The inductive step shows that you can climb up one stairstep.
+Why doesthiswork? An induction argument provesthe following assertion:
+Let k>1. If the recurrence relation matches the closed-form solution for
+n = k− 1, then the recurrence relation matches the closed-form solution
+for n=k.
+In other words,
+R(k−1) =f(k−1) ⇒ R(k)=f(k).</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 157 — #17
+✐
+✐
+✐
+✐
+✐
+✐
+3.2 Closed-Form Solutions and Induction 157
+Since our proof supposed an arbitrary value of k, we are allowed to apply this
+assertion for any particular value of k>1. Using k = 2, we get the assertion
+If the recurrence relation matches the closed-form solution forn= 1, then
+the recurrence relation matches the closed-form solution for n=2.
+But we know that the recurrence relation matches the closed-form solution
+for n = 1; this was the base case. Therefore the above assertion (and modus
+ponens) tellsusthat they match for n= 2. Now apply the assertion again, with
+k =3:
+If the recurrence relation matches the closed-form solution forn= 2, then
+the recurrence relation matches the closed-form solution for n=3.
+So we know they match for n = 3. By repeating thisargument, we can verify
+the cases n =4,5,6,..., up to whatever number we wish. In other words, the
+recurrence relation matches the closed-form solution for any value of n. Thisis
+exactly what we needed to show. In the symbols of logic, an induction argument
+establishes the following chain of implications:
+R(1) =f(1) ⇒R(2) =f(2)
+⇒R(3) =f(3)
+⇒R(4) =f(4)
+⇒R(5) =f(5)
+⇒···.
+The base case gets this chain of implications started, and since the inductive
+step works for any value of k, we are allowed to continue the chain of implica-
+tionsindeﬁnitely to conclude that R(n)=f(n) for any n ≥ 1. The following
+example shows what a typical proof by induction should look like.
+Example 3.10 Let H(n) be deﬁned by the following recurrence relation:
+H(n)=
+braceleftBigg
+1ifn=1
+H(n−1)+6n−6ifn>1.
+Let f(n)=3n
+2
+−3n+ 1. Prove that H(n)=f(n) for all n≥ 1.
+Proof We use induction on n.
+Base Case: If n = 1, the recurrence relation says that H(1) = 1, and the
+formula says that f(1) = 3·1
+2
+−3·1 + 1, which is1, so they match.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 158 — #18
+✐
+✐
+✐
+✐
+✐
+✐
+158 Chapter 3 a73 Recursive Thinking
+Inductive Hypothesis: Suppose as inductive hypothesis that
+H(k−1) = 3(k−1)
+2
+−3(k−1)+1
+for some k>1.
+Inductive Step: Using the recurrence relation,
+H(k)=H(k−1) + 6k−6, by the second part of the recurrence relation
+=3(k−1)
+2
+−3(k−1)+1+6k−6, by inductive hypothesis
+=3k
+2
+−6k+3−3k+3+1+6k−6
+=3k
+2
+−3k+1.
+So, by induction, H(n)=f(n) for all n≥ 1. square
+The solution of Example 3.10 makes a good proof template for verifying a
+closed-form solution to a simple recurrence relation; such a proof almost always
+should look like this. The next example establishes a closed-form solution to
+the recurrence relation of Example 3.5 for the number of elementsin a power
+set. The proof is very similar to Example 3.10, but the induction starts atn=0
+instead of n=1.
+Example 3.11 Let C(n) be deﬁned by the following recurrence relation:
+C(n)=
+braceleftBigg
+1ifn=0
+2·C(n−1) if n>0.
+Prove that C(n)=2
+n
+for all n≥ 0.
+Proof We use induction on n. Let f(n)=2
+n
+.
+Base Case: If n = 0, the recurrence relation says that C(0) = 1, and the
+formula says that f(0) = 2
+0
+=1,soC(0) =f(0).
+Inductive Hypothesis: Let k>0. Suppose as inductive hypothesis that
+C(k−1) = 2
+k−1
+.
+Inductive Step: Using the recurrence relation,
+C(k)=2·C(k−1), by the second part of the recurrence relation
+=2·2
+k−1
+, by inductive hypothesis
+=2
+k
+.
+So, by induction, C(n)=2
+n
+for all n≥ 0. square</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 159 — #19
+✐
+✐
+✐
+✐
+✐
+✐
+3.2 Closed-Form Solutions and Induction 159
+Take a moment to compare the proofsin Examples3.10 and 3.11. In the
+exercises at the end of this section, you should mimic these examples when
+you are asked to prove that a given recurrence relation has a given closed-form
+solution. It is important to master this standard type of proof.
+Mathematical induction isa diﬃcult topic. In thissection we have taken
+a very narrow view of the subject: verifying a closed-form solution. There are
+many other uses of mathematical induction, and these proofs can be quite
+challenging to write. The methodsin thissection will provide a foundation for
+more complicated inductive proofs.
+We end thissection with an example that showswhy proofsare important.
+Example 3.12 Let P(n) be deﬁned by the following recurrence relation:
+P(n)=
+braceleftBigg
+1ifn=0
+3·P(n−1)−(n−1)
+2
+if n>0.
+Does P(n)=(n+2)·2
+n−1
+for all n≥ 0?
+Solution: In order to show that (∀n≥ 0)(P(n)=(n+2)·2
+n−1
+) isfalse, we need
+to show that its negation, (∃n≥ 0)(P(n) negationslash=(n+2)·2
+n−1
+), istrue. That is, we
+need to ﬁnd a value of n for which the closed-form formula does not match the
+recurrence relation. Using the recurrence relation,
+a
+0
+=1
+a
+1
+=3·1−(1−1)
+2
+=3
+a
+2
+=3·3−(2−1)
+2
+=8
+a
+3
+=3·8−(3−1)
+2
+=20
+and using the closed-form formula,
+(0+2)·2
+0−1
+=1
+(1+2)·2
+1−1
+=3
+(2+2)·2
+2−1
+=8
+(3+2)·2
+3−1
+=20,
+then the recurrence relation matches the closed-form solution for the ﬁrst four
+valuesof n. Remember that we have alwayssaid that, while thismay be good
+evidence that these two ways of calculating P(n) will alwaysagree, it isnot a
+proof. Indeed, if we persist in our calculations, we ﬁnd that
+a
+4
+=3·20−(4−1)
+2
+=51
+while
+(4+2)·2
+4−1
+=48,</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 160 — #20
+✐
+✐
+✐
+✐
+✐
+✐
+160 Chapter 3 a73 Recursive Thinking
+so the results do not match for n = 4. Therefore it isnot the case that
+P(n)=(n+2)·2
+n−1
+for all n≥ 0. ♦
+Once you have found a counterexample to a statement, you know that the
+statement is false in general. But failure to ﬁnd a counterexample to a statement
+doesnot mean that the statement istrue. In the previousexample, we had to
+calculate ﬁve valuesof each formula to ﬁnd a mismatch, but it could have taken
+50, or 500, or any number of valuesto ﬁnd our counterexample. Thisiswhy
+you will never know for sure that a closed-form formula matches a recurrence
+relation unless you prove it.
+Exercises 3.2
+1. Prove that the closed form solution in Equation 3.2.2 matches the recur-
+rence relation in Equation 3.2.1. (See Example 3.8.)
+2. Prove that the closed form solution in Equation 3.1.1 matches the recur-
+rence relation in Equation 3.1.2. (See page 142.)
+3. Consider the following recurrence relation:
+B(n)=
+braceleftBigg
+2ifn=1
+3·B(n−1)+2 ifn>1.
+Use induction to prove that B(n)=3
+n
+−1.
+4. Consider the following recurrence relation:
+P(n)=
+braceleftBigg
+0ifn=0
+5·P(n−1)+1 ifn>1.
+Prove by induction that P(n)=
+5
+n
+−1
+4
+for all n≥ 0.
+5. Consider the following recurrence relation:
+C(n)=
+braceleftBigg
+0ifn=0
+n+3·C(n−1) if n>0.
+Prove by induction that C(n)=
+3
+n+1
+−2n−3
+4
+for all n≥ 0.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 161 — #21
+✐
+✐
+✐
+✐
+✐
+✐
+3.2 Closed-Form Solutions and Induction 161
+6. Guess a closed-form solution for the following recurrence relation:
+K(n)=
+braceleftBigg
+1ifn=0
+2·K(n−1)−n+1 ifn>0.
+Prove that your guess is correct.
+7. Guess a closed-form solution for the following recurrence relation:
+P(n)=
+braceleftBigg
+5ifn=0
+P(n−1)+3 ifn>0.
+Prove that your guess is correct.
+8. Consider the following recurrence relation:
+P(n)=
+braceleftBigg
+1ifn=0
+P(n−1) +n
+2
+if n>0.
+(a) Compute the ﬁrst eight values of P(n).
+(b) Analyze the sequences of diﬀerences. What does this suggest about
+the closed-form solution?
+(c) Find a good candidate for a closed-form solution.
+(d) Prove that your candidate solution is the correct closed-form solu-
+tion.
+9. Consider the following recurrence relation:
+G(n)=
+braceleftBigg
+1ifn=0
+G(n−1)+2n−1ifn>0.
+(a) Calculate G(0), G(1), G(2), G(3), G(4), and G(5).
+(b) Use sequences of diﬀerences to guess at a closed-form solution for
+G(n).
+(c) Prove that your guess is correct.
+10. Find a polynomial function f(n) such that f(1),f(2),...,f(8) isthe
+following sequence:
+2,7,12,17,22,27,32,37.
+11. Find a polynomial function f(n) such that f(1),f(2),...,f(8) isthe
+following sequence:
+1,1,2,4,7,11,16,22.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 162 — #22
+✐
+✐
+✐
+✐
+✐
+✐
+162 Chapter 3 a73 Recursive Thinking
+12. Analyze the sequence
+1,6,15,100,501,1746,4771,11040,22665,42526,74391
+using sequences of diﬀerences. From what degree polynomial does this
+sequence appear to be drawn? (Don’t bother ﬁnding the coeﬃcients of
+the polynomial.)
+13. Refer to Example 3.6. Guess at a closed-form solution to the recurrence
+relation for the number of nodesin a complete binary tree of height n.
+Prove that your guess is correct.
+14. Refer to Example 3.7. Guess at a closed-form solution to the recurrence
+relation for the number of edgesin K
+n
+, the complete graph on n vertices.
+Prove that your guess is correct.
+15. Guess a closed-form solution for the following recurrence relation:
+P(n)=
+braceleftBigg
+1ifn=0
+P(n−1) + 2
+n
+if n>0.
+(Hint: Consider powersof 2.) Prove that your guessiscorrect.
+16. Recall that n!=1·2·3···(n−1)·n for n>0, and by deﬁnition, 0! = 1.
+Prove that F(n)=n! for all n≥ 0, where
+F(n)=
+braceleftBigg
+1ifn=0
+n·F(n−1) if n>0.
+17. Consider the following recurrence relation:
+H(n)=
+braceleftBigg
+0ifn=0
+n·H(n−1)+1 ifn>0.
+Prove that H(n)=n!(1/1!+1/2!+1/3! +···+1/n!) for all n≥ 1.
+18. Is1+
+17
+6
+n−2n
+2
++
+7
+6
+n
+3
+a closed-form solution for the following recurrence
+relation?
+P(n)=
+braceleftBigg
+1ifn=0
+4·P(n−1)−n
+2
+if n>0.
+Prove or disprove.
+19. Recall the Fibonacci numbersdeﬁned in Deﬁnition 3.1 on page 144. Recall
+also that ceilingleftxceilingright isthe least integer k such that k ≥ x, called the ceiling of
+x. Isit true that
+F(n)=
+ceilingleftBig
+e
+(
+n−2
+2
+)
+ceilingrightBig
+for all n≥ 1? Prove or disprove.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 163 — #23
+✐
+✐
+✐
+✐
+✐
+✐
+3.3 Recursive Deﬁnitions 163
+*20. Recall the deﬁnition of Fibonacci numbersin Deﬁnition 3.1.
+(a) Compute the sequence of diﬀerences of the ﬁrst nine Fibonacci num-
+bers. What seems to be true about this sequence?
+(b) Prove your assertion in part (a).
+(c) Explain why a closed-form formula for the Fibonacci numbers cannot
+be a polynomial function.
+*21. Suppose you are given a sequence of numbers a
+1
+,a
+2
+,a
+3
+,...,a
+k
+. Explain
+how to construct a polynomial p(x) such that p(n)=a
+n
+for all n =
+1,2,3,...,k. (Note that this fact, along with Exercise 20, shows that it
+is possible for a closed-form formula to match a recurrence relation for
+arbitrarily many terms, without being a valid closed-form solution.)
+3.3 Recursive Deﬁnitions
+The deﬁnition of a recurrence relation is self-referential—we state a rule for
+calculating the valuesof a function in termsof itself. Recurrence relationshave
+two parts: a base case that describes the simplest case of the function and a
+recursive step that describes the function in terms of a simpler version of itself.
+This is the essence of recursive thinking. In this section, we will apply this idea
+to an assortment of diﬀerent objects.
+3.3.1 Deﬁnition and Examples
+We will use the term object somewhat loosely—an object could be a number, a
+mathematical structure, a function, or almost anything else we want to describe.
+A recursive deﬁnition of a given object hasthe following parts:
+B. a base case, which usually deﬁnes the simplest possible such object, and
+R. a recursive case, which deﬁnes a more complicated object in terms of a
+simpler one.
+The best way to understand recursive deﬁnitions is to see some examples.
+Example 3.13 Any recurrence relation isa recursive deﬁnition of a function.
+For example, the recurrence relation
+H(n)=
+braceleftBigg
+1ifn=1
+H(n−1)+6n−6ifn>1</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 164 — #24
+✐
+✐
+✐
+✐
+✐
+✐
+164 Chapter 3 a73 Recursive Thinking
+for the hexagonal numbers(Example 3.4) can be written asa recursive deﬁni-
+tion with a base case and a recursive case:
+B. H(1)=1.
+R. For any n>1, H(n)=H(n−1)+6n−6.
+Example 3.14 Let X be a set of actors and actresses, deﬁned as follows.
+B. Kevin Bacon ∈X.
+R. Let x be an actor or actress. If, for some y ∈X, there hasbeen a movie
+in which both x and y appear, then x∈X.
+In other words, Kevin Bacon is in X, and anyone who hasbeen in some movie
+with someone in X isalso in X. For example, in order to show that Arnold
+Schwarzenegger ∈X, we note that Arnold Schwarzenegger appeared in Conan
+the Barbarian with JamesEarl Jones, who appeared in Clear and Present
+Danger with Harrison Ford, who appeared in The Fugitive with Tommy Lee
+Jones, who appeared in JFK with Kevin Bacon.
+Although this example might seem silly, it illustrates an important way
+to think about how things are connected. It is not hard to see how the same
+deﬁnition could describe the set of all computers exposed to a certain virus, or
+the collection of people who have heard about a tornado warning, etc. For more
+on the Kevin Bacon example and itsrelation to graph theory, see Hopkins[15].
+A sequence of symbols written together in some order is called a string.
+The next example gives a useful recursive deﬁnition. Note that there are two
+base cases in this example.
+Example 3.15 Given a list of symbolsa
+1
+,a
+2
+,...,a
+m
+,astring of these symbols
+is:
+B
+1
+. the empty string, denoted by λ,or
+B
+2
+. any symbol a
+i
+,or
+R. xy, the concatenation of x and y, where x and y are strings.
+Since λ represents the empty string, we do not write λ after it hasbeen con-
+catenated with another string. For example, cubsλ = cubs. It shouldn’t be
+hard to convince yourself that this deﬁnition describes any possible “word” in
+the given symbols.
+Example 3.16 A special kind of string called a palindrome can be deﬁned as
+follows.
+B
+1
+. λ isa palindrome.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 165 — #25
+✐
+✐
+✐
+✐
+✐
+✐
+3.3 Recursive Deﬁnitions 165
+B
+2
+. Any symbol a isa palindrome.
+R. If x and y are palindromes, then yxy isa palindrome.
+Note that any word that isthe same forward asbackward isa palindrome,
+such as racecar or HANNAH. We can build up the palindrome racecar from the
+deﬁnition asfollows.
+1. Since it isa symbol, e isa palindrome, by B
+2
+, the second part of the
+deﬁnition.
+2. Similarly, c isa palindrome.
+3. Using R, cec isa palindrome.
+4. By B
+2
+, a isa palindrome.
+5. By R, aceca isa palindrome.
+6. By B
+2
+, r isa palindrome.
+7. By R, racecar isa palindrome.
+Asan exercise, think about why we have to deﬁne λ asa palindrome.
+The next example has one base case and two recursive cases.
+Example 3.17 The set X of all binary strings (strings with only 0’s and 1’s)
+having the same number of 0’sand 1’sisdeﬁned asfollows.
+B. λ isin X.
+R
+1
+. If x isin X, so are 1x0 and 0x1.
+R
+2
+. If x and y are in X,soisxy.
+Notice that both recursive cases preserve the property of having the same num-
+ber of 1’s as 0’s. Both of these cases form new strings from old by adding 0’s
+and 1’s, and they always add the same amount of each.
+Strings can be useful in a number of contexts: text in word processing,
+genetic sequences in bioinformatics, etc. Thinking recursively can help us deﬁne
+operationsthat manipulate the symbolsin a string. For example, the next
+recursive deﬁnition describes how to reverse the order of a string.
+Example 3.18 If s isa string, deﬁne its reverse s
+R
+asfollows.
+B. λ
+R
+= λ.
+R. If s has one or more symbols, write s = ra where a isa symbol and r is
+a string (possibly empty). Then s
+R
+=(ra)
+R
+=ar
+R
+.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 166 — #26
+✐
+✐
+✐
+✐
+✐
+✐
+166 Chapter 3 a73 Recursive Thinking
+In other words, you reverse a string by moving the last symbol to the front and
+reversing the rest of the string. To see how this deﬁnition works, consider the
+string pit. Itsreverse, ( pit)
+R
+, iscalculated asfollows:
+(pit)
+R
+= t(pi)
+R
+by part R
+= ti(p)
+R
+by part R
+= ti(λp)
+R
+(insertion of empty string)
+= tipλ
+R
+by part R
+= tipλ by part B
+= tip (removal of empty string).
+Most of the work in reversing pit wasdevoted to showing that ( p)
+R
+= p. The
+deﬁnition doesn’t say that the reversal of a one-symbol string is the same one-
+symbol string, but this fact follows from the deﬁnition by the above argument.
+It isa good idea to state such factsastheorems.
+Theorem 3.1 If a is a symbol, then a
+R
+=a.
+Proof Asabove, a
+R
+=(λa)
+R
+=aλ
+R
+=aλ=a. square
+Example 3.19 Deﬁne a line map asfollows.
+B. A blank rectangle isa line map.
+R. A line map with a straight line drawn all the way across it is a new line
+map.
+The recursive deﬁnitions of strings and line maps are similar: the base case
+is a blank object, and the recursive case deﬁnes how to add a new piece to an
+object to make it more complex. Thisisa useful way to think about objects
+that are built from identiﬁable pieces.
+Figure 3.6 A line map.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 167 — #27
+✐
+✐
+✐
+✐
+✐
+✐
+3.3 Recursive Deﬁnitions 167
+3.3.2 Writing Recursive Deﬁnitions
+Just as some functions are easy to deﬁne using recurrence relations, some ob-
+jects have natural recursive deﬁnitions. The trick to writing a recursive deﬁni-
+tion is to see the desired object as being built out of levels. The recursive case
+of the deﬁnition must describe a level in terms of the next simplest level. The
+base case should describe the simplest possible such object. Some examples will
+make thisidea lessabstract.
+Example 3.20 Suppose you start browsing the Internet at some speciﬁed
+page p. Let X be the set of all pages you can reach by following links, starting
+at p. Give a recursive deﬁnition for the set X.
+Solution: Observe that if you can reach some page x, then you can reach any
+page to which x hasa link. Thisgivesthe recursive part of the deﬁnition:
+R. If x∈X and y is some page such that x linksto y, then y∈X.
+The base case is the page where you start:
+B. p∈X.
+Notice the similarity to Example 3.14. ♦
+The reasoning in this last example was “top-down.” We thought about the
+recursive part ﬁrst: what pages can you get to from any given page? The next
+example uses “bottom-up” thinking: start with the simplest case, and think
+about how to build up a slightly more complicated case.
+Example 3.21 Give a recursive deﬁnition for the set of all odd natural num-
+bers.
+Solution: To ﬁnd the base case, think about the simplest possible case of an
+odd natural number. A reasonable choice for the simplest odd number is 1. For
+the recursive case, think about how to get a new odd number from an old odd
+number. Observe that, if x isodd, then x+ 2 isodd also. So we can deﬁne the
+set X of odd numbersasfollows.
+B. 1isinX.
+R. If x isin X,soisx+2.
+♦
+At thispoint you should object: we already have a deﬁnition for odd num-
+bers(Deﬁnition 1.6). According to thisdeﬁnition, the set of odd natural num-
+bersshould be
+{n∈ N |n=2k+ 1 for some integer k}.</p>
+    </div>
+  </body>
+</html>

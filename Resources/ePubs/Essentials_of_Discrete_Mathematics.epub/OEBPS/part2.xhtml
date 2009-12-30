@@ -1,0 +1,1418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Unknown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="DC.Title" content="Unknown"/>
+    <style type="text/css">body { margin: 0%;padding: 0%;} .cover { text-align: center;margin-left: 0%;margin-right: 0%;} .coverpage { text-align: center;vertical-align: middle;text-shadow: #000 0px 1px 1px;margin-left: 0px;margin-right: 0px;margin-top: 0px;padding-top: 3em;margin-botton: 3em;font-size: 3.0em;background: #2F4F4F;} .coverimg { margin-top: 0%;margin-left: 0%;margin-right: 0%;width: 100%;} p { margin-left: 1em;margin-right: 1em;text-align: justify;} span { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} div { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} p { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} blockquote { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} h1 { text-align: center;} h2 { text-align: center;} h3 { text-align: center;} h4 { text-align: center;} h5 { text-align: center;} h6 { text-align: center;}</style>
+  </head>
+  <body>
+    <div>
+      <h1>Unknown</h1>
+    </div>
+    <div>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 21 — #21
+✐
+✐
+✐
+✐
+✐
+✐
+1.2 Propositional Logic 21
+Example 1.9 In Section 1.1, we used truth tables to show that a statement
+islogically equivalent to itscontrapositive. In thisexample we will construct a
+proof sequence for one direction of this logical equivalence:
+p→q ⇒¬q →¬p
+Solution: We apply the forward–backward approach. The only given statement
+is p → q, so we search our derivation rules for something that follows from
+thisstatement. The only candidate is ¬p∨q, by the implication rule, so we
+tentatively use this as the second step of the proof sequence. Now we consider
+the statement we are trying to prove, ¬q →¬p, and we look backward for a
+statement from which this statement follows. Since implication is an equivalence
+rule, we can also use it to move backward to the statement ¬(¬q)∨¬p, which
+we propose as the second-to-last statement of our proof. By moving forward
+one step from the given and backward one step from the goal, we have reduced
+the task of proving
+p→q ⇒¬q →¬p
+to the (hopefully) simpler task of proving
+¬p∨q ⇒¬(¬q)∨¬p.
+Now it is fairly easy to see how to ﬁnish the proof: we can switch the∨statement
+around using commutativity and simplify using double negation. We can now
+write down the proof sequence.
+Statements Reasons
+1. p→q given
+2. ¬p∨q implication
+3. q∨¬p commutativity
+4. ¬(¬q)∨¬p double negation
+5. ¬q →¬p implication
+We used the forward–backward approach to move forward from step 1 to step
+2, and again to move backward from step 5 to step 4. Then we connected step
+2 to step 4 with a simple proof sequence. ♦
+You may have noticed that in Section 1.1, we proved the stronger statement
+p→q ⇔¬q →¬p
+using truth tables; the above example only proves the “⇒” direction of this
+equivalence. To prove the other direction, we need another proof sequence.
+However, in this case, this other proof sequence is easy to write down, because
+all of the derivation rules we used were reversible. Implication, commutativity,</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 22 — #22
+✐
+✐
+✐
+✐
+✐
+✐
+22 Chapter 1 a73 Logical Thinking
+and double negation are all equivalence rules, so we could write down a new
+proof sequence with the order of the steps reversed, and we would have a valid
+proof of the “⇐” direction.
+Exercises 1.2
+1. Use truth tables to establish the modustollens tautology:
+¬q
+p→q
+bracerightBigg
+⇒¬p
+2. Fill in the reasons in the following proof sequence. Make sure you indicate
+which step(s) each derivation rule refers to.
+Statements Reasons
+1. p∧(q∨r) given
+2. ¬(p∧q) given
+3. ¬p∨¬q
+4. ¬q∨¬p
+5. q →¬p
+6. p
+7. ¬(¬p)
+8. ¬q
+9. q∨r
+10. r∨q
+11. ¬(¬r)∨q
+12. ¬r →q
+13. ¬(¬r)
+14. r
+15. p∧r
+3. Justify each conclusion with a derivation rule.
+(a) Someone who is artistic must also be creative. Joe is not creative.
+Therefore, Joe isnot artistic.
+(b) Lingli isboth athletic and intelligent. Therefore, Lingli isathletic.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 23 — #23
+✐
+✐
+✐
+✐
+✐
+✐
+1.2 Propositional Logic 23
+(c) If you are 18 yearsold, then you may vote. Monique is18 yearsold.
+Therefore, Monique may vote.
+(d) Marianne has never been north of Saskatoon or south of Santo
+Domingo. In other words, she has never been north of Saskatoon
+and she has never been south of Santo Domingo.
+4. Let x and y be integers. Given the statement
+x>yor x isodd.
+what statement follows by the implication rule?
+5. Let Q be a quadrilateral. Given the statements
+If Q isa rhombus, then Q isa parallelogram.
+Q isnot a parallelogram.
+what statement follows by modustollens?
+6. Let x and y be numbers. Simplify the following statement using De Mor-
+gan’slawsand double negation.
+It isnot the case that x isnot greater than 3 and y isnot found.
+7. Write a statement that follows from the statement
+It issunny and warm today.
+by the simpliﬁcation rule.
+8. Write a statement that follows from the statement
+This soup tastes funny.
+by the addition rule.
+9. Recall Exercise 1.1.27. Suppose that all of the following status reports are
+correct:
+• Processor B is not working and processor C isworking.
+• Processor A is working if and only if processor B isworking.
+• At least one of the two processors A, B isnot working.
+Let a =“A isworking,” b =“B isworking,” and c =“C isworking.”
+(a) If you haven’t already done so, write each status report in terms of
+a, b, and c, using the symbols of formal logic.
+(b) How would you justify the conclusion that B isnot working? (In
+other words, given the statements in part (a), which derivation rule
+allowsyou to conclude ¬b?)</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 24 — #24
+✐
+✐
+✐
+✐
+✐
+✐
+24 Chapter 1 a73 Logical Thinking
+(c) How would you justify the conclusion that C isworking?
+(d) Write a proof sequence to conclude that A isnot working. (In other
+words, given the statements in part (a), write a proof sequence to
+conclude ¬a.)
+10. Write a proof sequence for the following assertion. Justify each step.
+p→¬q
+r → (p∧q)
+bracerightBigg
+⇒¬r
+11. Write a proof sequence for the following assertion. Justify each step.
+p
+p→r
+q →¬r
+
+
+
+
+
+⇒¬q
+12. Write a proof sequence for the following assertion. Justify each step.
+p→q
+p∧r
+bracerightBigg
+⇒q∧r
+13. Write a proof sequence for the following assertion. Justify one of the steps
+in your proof using the result of Example 1.8.
+¬(a∧¬b)
+¬b
+bracerightBigg
+⇒¬a
+14. Write a proof sequence to establish that p⇔p∧p isa tautology.
+15. Write a proof sequence to establish that p ⇔ p∨p isa tautology. (Hint:
+Use De Morgan’slawsand Exercise 14.)
+16. Write a proof sequence for the following assertion. Justify each step.
+¬(¬p→q)∨(¬p∧¬q) ⇒¬p∧¬q
+17. Write a proof sequence for the following assertion. Justify each step.
+(p∨q)∨(p∨r) ⇒¬r → (p∨q)
+18. Consider the following assertion.
+¬(¬p∨q) ⇒ p∨q</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 25 — #25
+✐
+✐
+✐
+✐
+✐
+✐
+1.2 Propositional Logic 25
+(a) Find a statement that is one step forward from the given.
+(b) Find a statement that is one step backward from the goal. (Use the
+addition rule—in reverse—to ﬁnd a statement from which the goal
+will follow.)
+(c) Give a proof sequence for the assertion.
+(d) Isyour proof reversible? Why or why not?
+19. Use a truth table to show that
+p→q
+¬p
+bracerightBigg
+?
+⇒¬q
+is not a tautology. (This example shows that substitution isn’t valid for
+inference rules, in general. Substituting the weaker statement, q, for the
+stronger statement, p, in the expression “¬p” doesn’t work.)
+20. (a) Fill in the reasons in the following proof sequence. Make sure you
+indicate which step(s) each derivation rule refers to.
+Statements Reasons
+1. p→ (q →r) given
+2. ¬p∨(q →r)
+3. ¬p∨(¬q∨r)
+4. (¬p∨¬q)∨r
+5. ¬(p∧q)∨r
+6. (p∧q) →r
+(b) Explain why the proof in part (a) isreversible.
+(c) The proof in part (a) (along with its reverse) establishes the following
+tautology:
+p→ (q →r) ⇔ (p∧q) →r
+Therefore, to prove an assertion of the form A ⇒ B → C,itis
+suﬃcient to prove
+A
+B
+bracerightBigg
+⇒C
+instead. Use this fact to rewrite the tautology
+p∧(q →r) ⇒ q → (p∧r)
+asa tautology of the form
+A
+B
+bracerightBigg
+⇒C,</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 26 — #26
+✐
+✐
+✐
+✐
+✐
+✐
+26 Chapter 1 a73 Logical Thinking
+where C doesnot contain the → connective. (The process of rewrit-
+ing a tautology thisway iscalled the deductionmethod.)
+(d) Give a proof sequence for the rewritten tautology in part (c).
+21. Thisexercise will lead you through a proof of the distributiveproperty of
+∧ over ∨. We will prove:
+p∧(q∨r) ⇒ (p∧q)∨(p∧r).
+(a) The above assertion is the same as the following:
+p∧(q∨r) ⇒¬(p∧q) → (p∧r).
+Why?
+(b) Use the deduction method to rewrite the tautology from part (b).
+(c) Prove your rewritten tautology.
+22. Use a truth table to show that (a→b)∧(a∧¬b) isa contradiction.
+23. Is a→¬a a contradiction? Why or why not?
+1.3 PredicateLogic
+When we deﬁned statements, we said that a sentence of the form
+x iseven
+is not a statement, because its T/F value depends on x. Mathematical writing,
+however, almost alwaysdealswith sentencesof thistype; we often express
+mathematical ideasin termsof some unknown variable. Thissection explains
+how to extend our formal system of logic to deal with this situation.
+1.3.1 Predicates
+Deﬁnition 1.3 Apredicate is a declarative sentence whose T/F value depends
+on one or more variables. In other words, a predicate is a declarative sentence
+with variables, and after those variables have been given speciﬁc values, the
+sentence becomes a statement.
+We use function notation to denote predicates. For example,
+P(x)=“x iseven,” and
+Q(x,y)=“x isheavier than y”</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 27 — #27
+✐
+✐
+✐
+✐
+✐
+✐
+1.3 Predicate Logic 27
+are predicates. The statement P(8) istrue, while the statement
+Q(feather,brick)
+isfalse.
+Implicit in a predicate isthe domain (or universe) of valuesthat the vari-
+able(s) can take. For P(x), the domain could be the integers; for Q(x,y), the
+domain could be some collection of physical objects. We will usually state the
+domain along with the predicate, unless it is clear from the context.
+Equationsare predicates. For example, if E(x) stands for the equation
+x
+2
+−x−6=0,
+thenE(3) istrue and E(4) is false. We regard equations as declarative sentences,
+where the = sign plays the role of a verb.
+1.3.2 Quantiﬁers
+By themselves, predicates aren’t statements because they contain free variables.
+We can make them into statements by plugging in speciﬁc values of the domain,
+but often we would like to describe a range of valuesfor the variablesin a
+predicate. A quantiﬁer modiﬁes a predicate by describing whether some or all
+elements of the domain satisfy the predicate.
+We will need only two quantiﬁers: universal and existential. The universal
+quantiﬁer “for all” isdenoted by ∀. So the statement
+(∀x)P(x)
+says that P(x) istrue forall x in the domain. Theexistentialquantiﬁer “there
+exists” is denoted by ∃. The statement
+(∃x)P(x)
+says that thereexists an element x of the domain such that P(x) istrue; in
+other words, P(x) istrue forsome x in the domain.
+For example, if E(x) isthe real number equation x
+2
+−x−6 = 0, then the
+expression
+(∃x)E(x)
+says, “There is some real number x such that x
+2
+−x−6 = 0,” or more simply,
+“The equation x
+2
+−x− 6 = 0 hasa solution.” The variable x isno longer a
+free variable, since the ∃ quantiﬁer changesthe role it playsin the sentence.
+If Z(x) represents the real number equation x·0 = 0, the expression
+(∀x)Z(x)</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 28 — #28
+✐
+✐
+✐
+✐
+✐
+✐
+28 Chapter 1 a73 Logical Thinking
+means“For all real numbers x, x·0 = 0.” Again, thisisa sentence without free
+variables, since the range of possible values for x isclearly speciﬁed.
+When we put a quantiﬁer in front of a predicate, we form a quantiﬁed
+statement. Since the quantiﬁer restrictsthe range of valuesfor the variablesin
+the predicate, the quantiﬁed statement is either true or false (but not both). In
+the above examples, (∃x)E(x) and (∀x)Z(x) are both true, while the statement
+(∀x)E(x)
+is false, since there are some real numbers that do not satisfy the equation
+x
+2
+−x−6=0.
+The real power of predicate logic comesfrom combining quantiﬁers, predi-
+cates, and the symbols of propositional logic. For example, if we would like to
+claim that there isa negative number that satisﬁesthe equation x
+2
+−x−6=0,
+we could deﬁne a new predicate
+N(x)=“x isnegative.”
+Then the statement
+(∃x)(N(x)∧E(x))
+translatesas“There existssome real number x such that x isnegative and
+x
+2
+−x−6=0.”
+The scope of a quantiﬁer isthe part of the formula to which the quantiﬁer
+refers. In a complicated formula in predicate logic, it is important to use paren-
+theses to indicate the scope of each quantiﬁer. In general, the scope is what lies
+inside the set of parentheses right after the quantiﬁer:
+(∀x)(...scope of ∀...), (∃x)(...scope of ∃...).
+In the statement (∃x)(N(x)∧E(x)), the scope of the ∃ quantiﬁer isthe expres-
+sion N(x)∧E(x).
+1.3.3 Translation
+There are lotsof diﬀerent waysto write quantiﬁed statementsin English. Trans-
+lating back and forth between English statements and predicate logic is a skill
+that takespractice.
+Example 1.10 Using all carsasa domain, if
+P(x)=“x getsgood mileage.”
+Q(x)=“x islarge.”</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 29 — #29
+✐
+✐
+✐
+✐
+✐
+✐
+1.3 Predicate Logic 29
+then the statement (∀x)(Q(x) →¬P(x)) could be translated very literally as
+“For all cars x,ifx islarge, then x doesnot get good mileage.”
+However, a more natural translation of the same statement is
+“All large carsget bad mileage.”
+or
+“There aren’t any large carsthat get good mileage.”
+If we wanted to say the opposite, that is, that there are some large cars
+that get good mileage, we could write the following.
+(∃x)(P(x)∧Q(x))
+We’ll give a formal proof that thisnegation iscorrect in Example 1.13.
+The next example shows how a seemingly simple mathematical statement
+yieldsa rather complicated formula in predicate logic. The careful use of pred-
+icatescan help reveal the logical structure of a mathematical claim.
+Example 1.11 In the domain of all integers, let P(x)=“x iseven.” We can
+express the fact that the sum of an even number with an odd number is odd
+asfollows.
+(∀x)(∀y)[(P(x)∧¬P(y)) → (¬P(x+y))]
+Of course, the literal translation of this quantiﬁed statement is “For all integers
+x and for all integers y,ifx iseven and y isnot even, then x+y isnot even,”
+but we normally say something informal like “An even plus an odd is odd.”
+This last example used two universal quantiﬁers to express a fact about an
+arbitrary pair x,y of integers. The next example shows what can happen when
+you combine universal and existential quantiﬁers in the same statement.
+Example 1.12 In the domain of all real numbers, let G(x,y) be the predicate
+“x>y.” The statement
+(∀y)(∃x)G(x,y)
+says literally that “For all numbers y, there exists some number x such that
+x>y,” or more simply, “Given any number y, there issome number that is
+greater than y.” Thisstatement isclearly true: the number y + 1 isalways
+greater than y, for example. However, the statement
+(∃x)(∀y)G(x,y)
+translates literally as “There exists a number x such that, for all numbers y,
+x>y.” In simpler language, this statement says, “There is some number that is</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 30 — #30
+✐
+✐
+✐
+✐
+✐
+✐
+30 Chapter 1 a73 Logical Thinking
+greater than any other number.” This statement is clearly false, because there
+isno largest number.
+The order of the quantiﬁers matters. In both of these statements, a claim
+ismade that x isgreater than y. In the ﬁrst statement, you are ﬁrst given
+an arbitrary number y, then the claim is that it is possible to ﬁnd some x
+that is greater than it. However, the second statement claims there is some
+number x, such that, given any other y, x will be the greater number. In the
+second statement, you must decide on what x isbefore you pick y. In the ﬁrst
+statement, you pick y ﬁrst, then you can decide on x.
+1.3.4 Negation
+The most important thing you need to be able to do with predicate logic is to
+write down the negation of a quantiﬁed statement. As with propositional logic,
+there are some formal equivalences that describe how negation works. Table 1.5
+lists two important rules for forming the opposite of a quantiﬁed statement. It
+is easy to see the formal pattern of these two rules: to negate a quantiﬁed
+statement, bring the negation inside the quantiﬁer, and switch the quantiﬁer.
+Let’sinterpret the negation rulesin the context of an example. In the
+domain of all people, let L(x) stand for “x isa liar.” The universal negation
+rule says that the negation of “All people are liars” is “There exists a person
+who is not a liar.” In symbols,
+¬[(∀x)L(x)] ⇔ (∃x)(¬L(x)).
+Similarly, the existential negation rule says that the negation of “There exists
+a liar” is“There are no liars.”
+Example 1.13 In Example 1.10, we discussed what the negation of the state-
+ment
+“All large carsget bad mileage.”
+should be. We can answer this question by negating the formal statement
+(∀x)(Q(x) →¬P(x)) (1.3.1)
+Equivalence Name
+¬[(∀x)P(x)] ⇔ (∃x)(¬P(x)) universal negation
+¬[(∃x)P(x)] ⇔ (∀x)(¬P(x)) existential negation
+Table 1.5 Negation rulesfor predicate logic.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 31 — #31
+✐
+✐
+✐
+✐
+✐
+✐
+1.3 Predicate Logic 31
+using a proof sequence. We’ll suppose as given the negation of statement 1.3.1,
+and deduce an equivalent statement.
+Statements Reasons
+1. ¬[(∀x)(Q(x) →¬P(x))] given
+2. (∃x)¬(Q(x) →¬P(x)) universal negation
+3. (∃x)¬(¬Q(x)∨¬P(x)) implication
+4. (∃x)(¬(¬Q(x))∧¬(¬P(x))) De Morgan’slaw
+5. (∃x)(Q(x)∧P(x)) double negation
+6. (∃x)(P(x)∧Q(x)) commutativity
+Notice that the result of our formal argument agrees with the intuitive negation
+we did in Example 1.10: There exists some car that is both large and gets good
+mileage.
+Example 1.14 Let the domain be all facesof the following truncated icosa-
+hedron (also known as a soccer ball).
+Consider the following predicates.
+P(x)=“x isa pentagon.”
+H(x)=“x isa hexagon.”
+B(x,y)=“x borders y.”
+Here we say that two polygons border each other if they share an edge. Conﬁrm
+that the following observations are true for any truncated icosahedron.
+1. No two pentagonsborder each other.
+2. Every pentagon borderssome hexagon.
+3. Every hexagon bordersanother hexagon.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 32 — #32
+✐
+✐
+✐
+✐
+✐
+✐
+32 Chapter 1 a73 Logical Thinking
+Write these statements in predicate logic, and negate them. Simplify the negated
+statements so that no predicate lies withing the scope of a negation. Translate
+your negated statement back into English.
+Solution: The formalizations of these statements are as follows.
+1. (∀x)(∀y)((P(x)∧P(y)) →¬B(x,y))
+2. (∀x)(P(x) → (∃y)(H(y)∧B(x,y)))
+3. (∀x)(H(x) → (∃y)(H(y)∧B(x,y))
+We’ll negate (2), and leave the othersasexercises. See if you can ﬁgure out the
+reasons for each equivalence.
+¬[(∀x)(P(x) → (∃y)(H(y)∧B(x,y)))]
+⇔ (∃x)[¬(P(x) → (∃y)(H(y)∧B(x,y)))]
+⇔ (∃x)[¬(¬P(x)∨(∃y)(H(y)∧B(x,y)))]
+⇔ (∃x)[¬¬(P(x)∧¬(∃y)(H(y)∧B(x,y)))]
+⇔ (∃x)[¬¬(P(x)∧(∀y)¬(H(y)∧B(x,y)))]
+⇔ (∃x)(P(x)∧(∀y)¬(H(y)∧B(x,y)))
+⇔ (∃x)(P(x)∧(∀y)(¬H(y)∨¬B(x,y)))
+⇔ (∃x)(P(x)∧(∀y)(H(y) →¬B(x,y)))
+This last statement says that there exists an x such that x isa pentagon and,
+for any y,ify isa hexagon, then x doesnot border y. In other words, there is
+some pentagon that borders no hexagon. If you found a solid with this property,
+it couldn’t be a truncated icosahedron. ♦
+1.3.5 TwoCommonConstructions
+There are two expressions that come up often, and knowing the predicate logic
+for these expressions makes translation much easier. The ﬁrst is the statement
+All 〈blanks〉 are 〈something〉.
+For example, “All baseball players are rich,” or “All oysters taste funny.” In gen-
+eral, if P(x) and Q(x) are the predicates“x is 〈blank〉” and “x is 〈something〉”
+respectively, then the predicate logic expression
+(∀x)(P(x) →Q(x))
+translates as “For all x,ifx is 〈blank〉, then x is 〈something〉.” Put more
+simply, “All x’swith property 〈blank〉 must have property 〈something〉,” or</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 33 — #33
+✐
+✐
+✐
+✐
+✐
+✐
+1.3 Predicate Logic 33
+even simpler, “All 〈blanks〉 are 〈something〉.” In the domain of all people, if
+R(x) stands for “x isrich” and B(x) stands for “x isa baseball player,” then
+(∀x)(B(x) →R(x))
+is the statement “All baseball players are rich.”
+The second construction is of the form
+There isa 〈blank〉 that is 〈something〉.
+For example, “There isa rich baseball player,” or “There isa funny-tasting
+oyster.” This expression has the following form in predicate logic.
+(∃x)(P(x)∧Q(x))
+Note that thistranslatesliterally as“There issome x such that x is 〈blank〉 and
+x is 〈something〉,” which is what we want. In the domain of shellﬁsh, if O(x)is
+the predicate “x isan oyster” and F(x) isthe predicate “x tastes funny,” then
+(∃x)(F(x)∧O(x))
+would translate as “There is a funny-tasting oyster.” Note that you could also
+say “There is an oyster that tastes funny,” “Some oysters taste funny,” or,
+more awkwardly, “There is a funny-tasting shellﬁsh that is an oyster.” These
+statements all mean the same thing.
+Exercises 1.3
+1. In the domain of integers, let P(x,y) be the predicate “x·y = 12.” Tell
+whether each of the following statementsistrue or false.
+(a) P(3,4)
+(b) P(3,5)
+(c) P(2,6)∨P(3,7)
+(d) (∀x)(∀y)(P(x,y) →P(y,x))
+(e) (∀x)(∃y)P(x,y)
+2. In the domain of all penguins, let D(x) be the predicate “x isdanger-
+ous.” Translate the following quantiﬁed statements into simple, everyday
+English.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 34 — #34
+✐
+✐
+✐
+✐
+✐
+✐
+34 Chapter 1 a73 Logical Thinking
+(a) (∀x)D(x)
+(b) (∃x)D(x)
+(c) ¬(∃x)D(x)
+(d) (∃x)¬D(x)
+3. In the domain of all movies, let V(x) be the predicate “x isviolent.”
+Write the following statements in the symbols of predicate logic.
+(a) Some moviesare violent.
+(b) Some moviesare not violent.
+(c) No moviesare violent.
+(d) All moviesare violent.
+4. In the domain of all books, consider the following predicates.
+H(x)=“x isheavy.”
+C(x)=“x isconfusing.”
+Translate the following statements in predicate logic into ordinary En-
+glish.
+(a) (∀x)(H(x) →C(x))
+(b) (∃x)(C(x)∧H(x))
+(c) (∀x)(C(x)∨H(x))
+(d) (∃x)(H(x)∧¬C(x))
+5. The domain of the following predicatesisthe set of all plants.
+P(x)=“x is poisonous.”
+Q(x) = “Jeﬀ haseaten x.”
+Translate the following statements into predicate logic.
+(a) Some plants are poisonous.
+(b) Jeﬀ hasnever eaten a poisonousplant.
+(c) There are some nonpoisonous plants that Jeﬀ has never eaten.
+6. In the domain of nonzero integers, let I(x,y) be the predicate “x/y isan
+integer.” Determine whether the following statements are true or false,
+and explain why.
+(a) (∀y)(∃x)I(x,y)
+(b) (∃x)(∀y)I(x,y)</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 35 — #35
+✐
+✐
+✐
+✐
+✐
+✐
+1.3 Predicate Logic 35
+7. The domain of the following predicatesisthe set of all traderswho work
+at the Tokyo Stock Exchange.
+P(x,y)=“x makesmore money than y.”
+Q(x,y)=“xnegationslash= y”
+Translate the following predicate logic statements into ordinary,every-
+day English. (Don’t simply give a word-for-word translation; try to write
+sentences that make sense.)
+(a) (∀x)(∃y)P(x,y)
+(b) (∃y)(∀x)(Q(x,y) →P(x,y))
+(c) Which statement is impossible in this context? Why?
+8. Translate the following statements into predicate logic using the two com-
+mon constructions in Section 1.3.5. State what your predicates are, along
+with the domain of each.
+(a) All natural numbersare integers.
+(b) Some integersare natural numbers.
+(c) All the streets in Cozumel, Mexico are one-way.
+(d) Some streets in London don’t have modern curb cuts.
+9. Write the following statements in predicate logic. Deﬁne what your pred-
+icates are. Use the domain of all quadrilaterals.
+(a) All rhombuses are parallelograms.
+(b) Some parallelograms are not rhombuses.
+10. Let the following predicatesbe given. The domain isall people.
+R(x)=“x isrude.”
+¬R(x)=“x ispleasant.”
+C(x)=“x isa child.”
+(a) Write the following statement in predicate logic.
+There isat least one rude child.
+(b) Formally negate your statement from part (a).
+(c) Write the English translation of your negated statement.
+11. In the domain of all people, consider the following predicate.
+P(x,y)=“x needsto love y.”</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 36 — #36
+✐
+✐
+✐
+✐
+✐
+✐
+36 Chapter 1 a73 Logical Thinking
+(a) Write the statement “Everybody needs somebody to love” in predi-
+cate logic.
+(b) Formally negate your statement from part (a).
+(c) Write the English translation of your negated statement.
+12. The domain for this problem is some unspeciﬁed collection of numbers.
+Consider the predicate
+P(x,y)=“x isgreater than y.”
+(a) Translate the following statement into predicate logic.
+Every number hasa number that isgreater than it.
+(b) Negate your expression from part (a), and simplify it so that no
+quantiﬁer lieswithin the scope of a negation.
+(c) Translate your expression from part (b) into understandable English.
+Don’t use variables in your English translation.
+13. Any equation or inequality with variablesin it isa predicate in the domain
+of real numbers. For each of the following statements, tell whether the
+statement is true or false.
+(a) (∀x)(x
+2
+>x)
+(b) (∃x)(x
+2
+−2=1)
+(c) (∃x)(x
+2
++2=1)
+(d) (∀x)(∃y)(x
+2
++y =4)
+(e) (∃y)(∀x)(x
+2
++y =4)
+14. The domain of the following predicatesisall integersgreater than 1.
+P(x)=“x isprime.”
+Q(x,y)=“x divides y.”
+Consider the following statement.
+For every x that isnot prime, there issome prime y that divides
+it.
+(a) Write the statement in predicate logic.
+(b) Formally negate the statement.
+(c) Write the English translation of your negated statement.
+15. Write the following statement in predicate logic, and negate it. Say what
+your predicatesare, along with the domains.
+Let x and y be real numbers. If x isrational and y isirrational,
+then x+y isirrational.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 37 — #37
+✐
+✐
+✐
+✐
+✐
+✐
+1.3 Predicate Logic 37
+16. Refer to Example 1.14.
+(a) Give the reasons for each ⇔ step in the simpliﬁcation of the formal
+negation of statement (2).
+(b) Give the formal negation of statement (1). Simplify your answer so
+that no quantiﬁer lies within the scope of a negation. Translate your
+negated statement back into English.
+(c) Give the formal negation of statement (3). Simplify your answer.
+Translate your negated statement back into English.
+17. Let the following predicatesbe given in the domain of all triangles.
+R(x)=“x isa right triangle.”
+B(x)=“x hasan obtuse angle.”
+Consider the following statements.
+S
+1
+= ¬(∃x)(R(x)∧B(x))
+S
+2
+=(∀x)(R(x) →¬B(x))
+(a) Write a proof sequence to show that S
+1
+⇔S
+2
+.
+(b) Write S
+1
+in ordinary English.
+(c) Write S
+2
+in ordinary English.
+18. Let the following predicatesbe given. The domain isall computer science
+classes.
+I(x)=“x isinteresting.”
+U(x)=“x isuseful.”
+H(x,y)=“x isharder than y.”
+M(x,y)=“x hasmore studentsthan y.”
+(a) Write the following statements in predicate logic.
+i. All interesting CS classes are useful.
+ii. There are some useful CS classes that are not interesting.
+iii. Every interesting CS class has more students than any non-
+interesting CS class.
+(b) Write the following predicate logic statement in everyday English.
+Don’t just give a word-for-word translation; your sentence should
+make sense.
+(∃x)[I(x)∧(∀y)(H(x,y) →M(y,x))]</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 38 — #38
+✐
+✐
+✐
+✐
+✐
+✐
+38 Chapter 1 a73 Logical Thinking
+(c) Formally negate the statement from part (b). Simplify your negation
+so that no quantiﬁer lies within the scope of a negation. State which
+derivation rulesyou are using.
+(d) Give a translation of your negated statement in everyday English.
+19. Let the following predicatesbe given. The domain isall cars.
+F(x)=“x isfast.”
+S(x)=“x isa sportscar.”
+E(x)=“x isexpensive.”
+A(x,y)=“x issafer than y.”
+(a) Write the following statements in predicate logic.
+i. All sports cars are fast.
+ii. There are fast cars that aren’t sports cars.
+iii. Every fast sports car is expensive.
+(b) Write the following predicate logic statement in everyday English.
+Don’t just give a word-for-word translation; your sentence should
+make sense.
+(∀x)[S(x) → (∃y)(E(y)∧A(y,x))]
+(c) Formally negate the statement from part (b). Simplify your negation
+so that no quantiﬁer lies within the scope of a negation. State which
+derivation rulesyou are using.
+(d) Give a translation of your negated statement in everyday English.
+20. (a) Give an example of a pair of predicates P(x) and Q(x) in some
+domain to show that the ∃ quantiﬁer doesnot distribute over the ∧
+connective. That is, give an example to show that the statements
+(∃x)(P(x)∧Q(x)) and (∃x)P(x)∧(∃x)Q(x)
+are not logically equivalent.
+(b) It istrue, however, that ∃ distributes over ∨. That is,
+(∃x)(P(x)∨Q(x)) ⇔ (∃x)P(x)∨(∃x)Q(x)
+isan equivalence rule for predicate logic. Verify that your example
+from part (a) satisﬁes this equivalence.
+21. (a) Give an example to show that ∀ doesnot distribute over ∨.
+(b) It isa fact that ∀ distributes over ∧. Check that your example from
+part (a) satisﬁes this equivalence rule.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 39 — #39
+✐
+✐
+✐
+✐
+✐
+✐
+1.4 Logic in Mathematics 39
+1.4 LogicinMathematics
+There is much more that we could say about symbolic logic; we have only
+scratched the surface. But we have developed enough tools to help us think
+carefully about the typesof language mathematiciansuse. Thissection provides
+an overview of the basic mathematical “parts of speech.”
+Most mathematicstextbooks(including thisone) label important state-
+mentswith a heading, such as“Theorem,” “Deﬁnition,” or “Proof.” The name
+of each statement describes the role it plays in the logical development of the
+subject. Therefore it is important to understand the meanings of these diﬀerent
+statement labels.
+1.4.1 TheRoleofDeﬁnitionsinMathematics
+When we call a statement a “deﬁnition” in mathematics, we mean something
+diﬀerent from the usual everyday notion. Everyday deﬁnitions are descriptive.
+The thing being deﬁned already exists, and the purpose of the deﬁnition is to
+describe the thing. When a dictionary deﬁnes some term, it is characterizing
+the way the term iscommonly used. For example, if we looked up the deﬁnition
+of “mortadella” in the OxfordEnglishDictionary (OED), we would read the
+following.
+Any of several types of Italian (esp. Bolognese) sausage; (now) spec.
+a thick smooth-textured pork sausage containing pieces of fat and
+typically served in slices.
+The authors of the OED have done their best to describe what is meant by the
+term “mortadella.” A good dictionary deﬁnition isone that doesa good job
+describing something.
+In mathematics, by contrast, a deﬁnition is a statement that stipulates
+the meaning of a new term, symbol, or object. For example, a plane geometry
+textbook may deﬁne parallel linesasfollows.
+Deﬁnition 1.4 Two linesare parallel if they have no pointsin common.
+The job of this deﬁnition is not to describe parallel lines, but rather to specify
+exactly what we mean when we use the word “parallel.” Once parallel lines
+have been deﬁned in thisway, the statement “ l and m are parallel” means“l
+and m have no pointsin common.” We may have some intuitive idea of what l
+and m might look like (e.g., they must run in the same direction), but for the
+purposes of any future arguments, the only thing we really know about l and
+m isthat they don’t intersect each other.
+In a sense, a mathematical deﬁnition calls into being the object it deﬁnes.
+Without a deﬁnition of parallel lines, there can be no mathematical discussion
+of parallel lines. A dictionary deﬁnition, by contrast, doesn’t create anything</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 40 — #40
+✐
+✐
+✐
+✐
+✐
+✐
+40 Chapter 1 a73 Logical Thinking
+new; we don’t imagine that the writers of the OED are in the business of making
+sausage (and everything else, for that matter).
+Why isthisdistinction important? It meansthat the whole meaning of a
+mathematical statement dependson the deﬁnitionsof the termsinvolved. If you
+don’t understand a mathematical statement, start looking at the deﬁnitions
+of all the terms. These deﬁnitions stipulate the meanings of the terms. The
+statement won’t make sense without them.
+For example, suppose we want to state and prove some facts about even and
+odd numbers. We already know what even and odd numbers are; we all come
+to this task with a previously learnedconceptimage of “even” and “odd.” Our
+concept image iswhat we think of when we hear the term: an even number ends
+in an even digit, an odd number can’t be divided in half evenly, “2, 4, 6, 8; who
+do we appreciate,” etc. When writing mathematically, however, it isimportant
+not to rely too heavily on these concept images. Any mathematical statement
+about even and odd numbersderivesitsmeaning from from deﬁnitions. We
+specify these as follows.
+Deﬁnition 1.5 An integer n is even if n =2k for some integer k.
+Deﬁnition 1.6 An integer n is odd if n =2k + 1 for some integer k.
+Given these deﬁnitions, we can justify the statement “17 is odd” by noting that
+17=2·8+1. In fact, this equation is precisely the meaning of the statement that
+“17 isodd;” there issome integer k (in thiscase, k = 8) such that 17 = 2k+1.
+You already “knew” that 17 isodd, but in order to mathematically prove that
+17 isodd, you need to use the deﬁnition.
+Mathematical deﬁnitions must be extremely precise, and this can make
+them somewhat limited. Often our concept image contains much more infor-
+mation than the deﬁnition supplies. For example, we probably all agree that it
+is impossible for a number to be both even and odd, but this fact doesn’t follow
+immediately from Deﬁnitions 1.5 and 1.6. To say that some given number n
+iseven meansthat n =2k
+1
+for some integer k
+1
+, and to say that it is odd is
+to say that n =2k
+2
++ 1 for some integer k
+2
+. (Note that k
+1
+and k
+2
+may be
+diﬀerent.) Now, isthispossible? It would imply that 2 k
+1
+=2k
+2
++1, which says
+that 1 = 2(k
+1
+−k
+2
+), showing that 1 is even, by Deﬁnition 1.5. At this point we
+might object that 1 isodd, so it can’t be even, but thisreasoning iscircular: we
+were trying to show that a number cannot be both even and odd. We haven’t
+yet shown this fact, so we can’t use this fact in our argument. It turns out that
+Deﬁnitions1.5 and 1.6 alone are not enough to show that a number can’t be
+both even and odd; to do so requires more facts about integers, as we will see
+in Section 1.5.
+One reasonable objection to the above discussion is that our deﬁnition of
+odd integerswastoo limiting; why not deﬁne an odd integer to be an integer</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 41 — #41
+✐
+✐
+✐
+✐
+✐
+✐
+1.4 Logic in Mathematics 41
+that isn’t even? This is certainly permissible, but then it would be hard
+4
+to
+show that an odd integer n can be written as2k +1 for some integer k. And we
+can’t have two deﬁnitions for the same term. Stipulating a deﬁnition usually
+involvesa choice on the part of the author, but once thischoice ismade, we
+are stuck with it. We have chosen to deﬁne odd integers as in Deﬁnition 1.6, so
+thisiswhat we mean when we say “odd.”
+Since deﬁnitions are stipulative, they are logically “if and only if” state-
+ments. However, it iscommon to write deﬁnitionsin the form
+[Object] x is[deﬁned term] if [deﬁning property about x].
+The foregoing examplesall take thisform. In predicate logic, if
+D(x)=x is[deﬁned term]
+P(x) = [deﬁning property about x]
+then the above deﬁnition really meansthe following.
+(∀x)(P(x) ↔D(x))
+However, thisisnot what the deﬁnition saysat face value. Deﬁnitionslook like
+“if ...then” statements, but we interpret them as “if and only if” statements
+because they are deﬁnitions. For example, Deﬁnition 1.4 is stipulating the prop-
+erty that deﬁnes all parallel lines, not just a property some parallel lines might
+have. Strictly speaking, we really should use “if and only if” instead of “if” in
+our deﬁnitions. But the use of “if” is so widespread that most mathematicians
+would ﬁnd a deﬁnition like
+Two linesare parallel if and only if they have no pointsin common.
+awkward to read. Since thisstatement isa deﬁnition, it isredundant to say “if
+and only if.”
+1.4.2 OtherTypesofMathematicalStatements
+Deﬁnitionsare a crucial part of mathematics, but there are other kindsof
+statements that occur frequently in mathematical writing. Any mathematical
+system needs to start with some assumptions. Without any statements to build
+on, we would never be able to prove any new statements. Statements that
+are assumed without proof are called postulates or axioms. For example, the
+following is a standard axiom about the natural numbers.
+If n isa natural number, so is n+1.
+4. Actually, it would be impossible, without further information.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 42 — #42
+✐
+✐
+✐
+✐
+✐
+✐
+42 Chapter 1 a73 Logical Thinking
+Axiomsare typically very basic, fundamental statementsabout the objectsthey
+describe. Any theorem in mathematics is based on the assumption of some set
+of underlying axioms. So to say theorems are “true” is not to say they are true
+in any absolute sense, only that they are true, given that some speciﬁed set of
+axiomsistrue.
+Atheorem is a statement that follows logically from statements we have al-
+ready established or taken as given. Before a statement can be called a theorem,
+we must be able to prove it. Aproof is a valid argument, based on axioms, deﬁ-
+nitions, and proven theorems, that demonstrates the truth of a statement. The
+derivation sequences that we did in Section 1.2 were very basic mathematical
+proofs. We will see more interesting examples of proofs in the next section.
+We also use the termslemma,proposition, andcorollary to refer to speciﬁc
+kinds of theorems. Usually authors will label a result a lemma if they are using
+it to prove another result. Some authors make no distinction between a theorem
+and a proposition, but the latter often refers to a result that is perhaps not
+assigniﬁcant asa full-ﬂedged theorem. A corollary isa theorem that follows
+immediately from another result via a short argument.
+One last word on terminology: A statement that we intend to prove is
+called aclaim. A statement that we can’t yet prove but that we suspect is true
+iscalled a conjecture.
+1.4.3 Counterexamples
+Often mathematical statements are of the form
+(∀x)P(x). (1.4.1)
+We saw in the previous section that the negation of statement 1.4.1 is
+(∃x)¬P(x). (1.4.2)
+So either statement 1.4.1 is true, or statement 1.4.2 is true, but not both. If
+we can ﬁnd a single value for x that makes ¬P(x) true, then we know that
+statement 1.4.2 is true, and therefore we also know that statement 1.4.1 is
+false.
+For example, we might be tempted to make the following statement.
+Every prime number isodd. (1.4.3)
+But 2 isan example of a prime number that isnot odd, so statement 1.4.3 is
+false. A particular value that shows a statement to be false is called a coun-
+terexample to the statement.
+Another common logical form in mathematics is the universal if–then state-
+ment.
+(∀x)(P(x) →Q(x))</p>
+      <p><![CDATA[✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 43 — #43
+✐
+✐
+✐
+✐
+✐
+✐
+1.4 Logic in Mathematics 43
+To ﬁnd a counterexample to a statement of this form, we need to ﬁnd some x
+that satisﬁes the negation
+(∃x)¬(P(x) →Q(x)).
+This last statement is equivalent (using implication and De Morgan’s law) to
+(∃x)(P(x)∧¬Q(x)).
+So a counterexample is something that satisﬁes P and violates Q.
+Example 1.15 Find a counterexample to the following statement.
+For all sequences of numbers a
+1
+,a
+2
+,a
+3
+,...,ifa
+1
+<a
+2
+<a
+3
+< ···,
+then some a
+i
+must be positive.
+Solution: By the above discussion, we need an example of a sequence that
+satisﬁes the “if” part of the statement and violates the “then” part. In other
+words, we need to ﬁnd an increasing sequence that is always negative. Some-
+thing with a horizontal asymptote will work: a
+n
+= −1/n isone example. Note
+that −1 <−1/2 <−1/3 <···, but all the termsare lessthan zero. ♦
+1.4.4 AxiomaticSystems
+In rigorous, modern treatments of mathematics, any system (e.g., plane geom-
+etry, the real numbers) must be clearly and unambiguously deﬁned from the
+start. The deﬁnitions should leave nothing to intuition; they mean what they
+say and nothing more. It is important to be clear about the assumptions, or ax-
+ioms, for the system. Every theorem in the system must be proved with a valid
+argument, using only the deﬁnitions, axioms, and previously proved theorems
+of the system.
+This sounds good, but it is actually impossible. It is impossible because
+we can’t deﬁne everything; before we write the ﬁrst deﬁnition we have to have
+some words in our vocabulary. These starting words are calledundeﬁnedterms.
+An undeﬁned term hasno meaning—it isan abstraction—itsmeaning comes
+from the role it plays in the axioms of the system. A collection of undeﬁned
+termsand axiomsiscalled an axiomaticsystem.
+Axiomatic systems for familiar mathematics such as plane geometry and
+the real number system are actually quite complicated and beyond the scope
+of an introductory course. Here we will look at some very simple axiomatic
+systems to get a feel for how they work. This will also give us some experience
+with logic in mathematics.
+The ﬁrst example deﬁnes a “ﬁnite geometry,” that is, a system for geometry
+with a ﬁnite number of points. Although this system speaks of “points” and]]></p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 44 — #44
+✐
+✐
+✐
+✐
+✐
+✐
+44 Chapter 1 a73 Logical Thinking
+“lines,” these terms don’t mean the same thing they meant in high school
+geometry. In fact, these terms don’t mean anything at all, to begin with at
+least. The only thing we know about points and lines is that they satisfy the
+given axioms.
+Example 1.16 Axiomatic system for a four-point geometry.
+Undeﬁnedterms: point, line, ison
+Axioms:
+1. For every pair of distinct points x and y, there isa unique line
+such that x ison l and y ison l.
+2. Given a line l and a point x that isnot on l, there isa unique
+line m such that x ison m and no point on l isalso on m.
+3. There are exactly four points.
+4. It is impossible for three points to be on the same line.
+Notice that these axioms use terms from logic in addition to the undeﬁned
+terms. We are also using numbers (“four” and “three”), even though we haven’t
+deﬁned an axiomatic system for the natural numbers. In this case, our use of
+numbersismore a convenient shorthand than anything; we aren’t relying on
+any propertiesof the natural numberssuch asaddition, ordering, divisibility,
+etc.
+It is common to use an existing system to deﬁne a new axiomatic system.
+For example, some modern treatments of plane geometry use axioms that rely
+on the real number system. The axioms in Example 1.16 use constructions from
+predicate logic. In any event, these prerequisite systems can also be deﬁned
+axiomatically, so systems that use them are still fundamentally axiomatic.
+Deﬁnitions can help make an axiomatic system more user-friendly. In the
+four-point geometry of Example 1.16, we could make the following deﬁnitions.
+In these (and other) deﬁnitions, the word being deﬁned is in italics.
+Deﬁnition 1.7 A line lpassesthrough a point x if x ison l.
+Deﬁnition 1.7 givesusa convenient alternative to using the undeﬁned
+term “is on.” For example, in the ﬁrst axiom, it is a bit awkward to say
+“x ison l and y ison l,” but Deﬁnition 1.7 allowsusto rephrase thisas“ l
+passes through x and y.” The deﬁnition doesn’t add any new features to the
+system; it just helps us describe things more easily. This is basically what any
+deﬁnition in mathematics does. The following deﬁnition is a slight restatement
+of Deﬁnition 1.4, modiﬁed to ﬁt the terminology of this system.
+Deﬁnition 1.8 Two lines, l and m, are parallel if there isno point x, such
+that x ison l and x ison m.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 45 — #45
+✐
+✐
+✐
+✐
+✐
+✐
+1.4 Logic in Mathematics 45
+Now we could rephrase the second axiom of Example 1.16 as follows.
+2. Given a line l and a point x that isnot on l, there isa unique
+line m passing through x such that m isparallel to l.
+A simple theorem and proof would look like this.
+Theorem 1.1 IntheaxiomaticsystemofExample1.16,thereareatleasttwo
+distinctlines.
+Proof By Axiom 3, there are distinct points x, y, and z. By Axiom 1, there
+isa line l
+1
+through x and y, and a line l
+2
+through y and z. By Axiom 4, x, y,
+and z are not on the same line, so l
+1
+and l
+2
+must be distinct lines. square
+A model of an axiomatic system is an interpretation in some context in
+which all the undeﬁned termshave meaningsand all the axiomshold. Models
+are important because they show that it is possible for all the axioms to be
+true, at least in some context. And any theorem that follows from the axioms
+must also be true for any valid model.
+Let’s make a model for the system in Example 1.16. Let a “point” be a
+dot, and let a “line” be a simple closed loop. A point “is on” a line if the dot is
+inside the loop. Figure 1.3 showsthismodel. Check that all the axiomshold.
+Thismodel doesn’t really match our concept image of pointsand linesin
+ordinary geometry, but it’s still a valid model. In an axiomatic system, the
+propertiesof the objectsare determined by the axiomsand described by the
+theoremsand deﬁnitions. We may think we know what pointsand linesshould
+look like, but mathematically speaking we only know whatever we can prove
+about them. In the exercises you will construct a more intuitive model for this
+system.
+The mathematician David Hilbert (1862–1943) was largely responsible for
+developing the modern approach to axiomatics. Hilbert, reﬂecting on the
+Figure 1.3 A model for the axiomatic system in Example 1.16 using dots
+and loops.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 46 — #46
+✐
+✐
+✐
+✐
+✐
+✐
+46 Chapter 1 a73 Logical Thinking
+abstract nature of axiomatic systems, remarked, “Instead of points, lines, and
+planes, one must be able to say at all times tables, chairs, and beer mugs” [24].
+If we used a word processor to replace every occurrence of “point” with “table”
+and every occurrence of “line” with “chair” in the above axioms, deﬁnitions,
+theorem, and proof, the theorem would still hold, and the proof would still be
+valid.
+The next example is referred to in the exercises. The choice of undeﬁned
+terms emphasizes that these terms, by themselves, carry no meaning.
+Example 1.17 Badda-Bing axiomatic system.
+Undeﬁnedterms: badda, bing, hit
+Axioms:
+1. Every badda hitsexactly four bings.
+2. Every bing ishit by exactly two baddas.
+3. If x and y are distinct baddas, each hitting bing q, then there
+are no other bingshit by both x and y.
+4. There isat least one bing.
+One possible model for the Badda-Bing system is shown in Figure 1.4. The
+picture shows an inﬁnite collection of squares; the central square connects to
+Figure 1.4 A fractal model for the Badda-Bing geometry.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 47 — #47
+✐
+✐
+✐
+✐
+✐
+✐
+1.4 Logic in Mathematics 47
+four other squares whose sides are half as long. Each of these squares connects
+to three other smaller squares, and each of those connects to three others, and
+so on. Thisisan example of a fractal—a shape with some sort of inﬁnitely
+repetitive geometric structure. (We’ll say more about fractals in Chapter 3.)
+In thismodel, a “badda” isa square, and a “bing” isa corner, or vertex,
+of a square. A square “hits” a vertex if the vertex belongs to the square. Since
+every square has four vertices, Axiom 1 is satisﬁed. Axiom 2 holds because
+every vertex in the model belongs to exactly two squares. Axiom 3 is a little
+harder to see: if squares x and y share a vertex q, there isno way they can
+share another vertex. And Axiom 4 is obviously true—there are lots of bings.
+Exercises 1.4
+1. Look up the word “root” in a dictionary. It should have several diﬀerent
+deﬁnitions. Find a deﬁnition that is (a) descriptive and another deﬁnition
+that is(b) stipulative.
+2. Find another word in the English language that has both descriptive and
+stipulative deﬁnitions.
+3. Use Deﬁnition 1.5 to explain why 104 is an even integer.
+4. Let n be an integer. Use Deﬁnition 1.6 to explain why 2n+ 7 isan odd
+integer.
+5. Let n
+1
+and n
+2
+be even integers.
+(a) Use Deﬁnition 1.5 to write n
+1
+and n
+2
+in termsof integersk
+1
+and k
+2
+,
+respectively.
+(b) Write the product n
+1
+n
+2
+in termsof k
+1
+and k
+2
+. Simplify your answer.
+(c) Write the sum n
+1
++n
+2
+in termsof k
+1
+and k
+2
+. Simplify your answer.
+6. There are several diﬀerent modelsfor geometriesin which the pointsare
+ordered pairs( x,y) of real numbers; we plot these points in the usual
+way in the xy-plane. In such a geometry, there can be a formula for
+the distance between two points(x
+1
+,y
+1
+) and (x
+2
+,y
+2
+). For example, in
+Euclidean geometry, distance is given by the usual Euclidean distance
+formula:
+Distance =
+radicalbig
+(x
+2
+−x
+1
+)
+2
++(y
+2
+−y
+1
+)
+2
+In any geometry with a distance formula, we can deﬁne acircle asfollows.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 48 — #48
+✐
+✐
+✐
+✐
+✐
+✐
+48 Chapter 1 a73 Logical Thinking
+Deﬁnition 1.9 A circle centered at (a,b) with radius r isthe collection
+of all points( x,y) whose distance from (a,b)isr.
+(a) Use Deﬁnition 1.9 to give an equation for the circle with radius 5
+centered at (0,0) in the Euclidean plane.
+(b) Plot the circle from part (a) in the xy-plane.
+(c) In the Taxicabgeometry, the distance between two points (x
+1
+,y
+1
+)
+and (x
+2
+,y
+2
+) isgiven by the following formula.
+Distance = |x
+2
+−x
+1
+|+|y
+2
+−y
+1
+|
+(This is called “taxicab” distance because it models the distance you
+would have to travel if you were restricted to driving on a rectangular
+city grid.) In thismodel, use Deﬁnition 1.9 to plot the “circle” with
+radius5 centered at (0 ,0).
+(d) Which type of circle (Euclidean or taxicab) agreeswith your concept
+image of circle?
+7. Consider the domain of all quadrilaterals. Let
+A(x)=“x hasfour right angles.”
+R(x)=“x isa rectangle.”
+Write the meaning of each mathematical statement in predicate logic,
+keeping in mind the logical distinction between deﬁnitions and theorems.
+(a) Deﬁnition. A quadrilateral isa rectangle if it hasfour right angles.
+(b) Theorem. A quadrilateral isa rectangle if it hasfour right angles.
+8. Write Deﬁnition 1.5 in predicate logic. Use the predicate E(x)=“x is
+even” in the domain of integers.
+9. Let the following statements be given.
+Deﬁnition. A triangle isscalene if all of itssideshave diﬀerent
+lengths.
+Theorem. A triangle isscalene if it isa right triangle that is
+not isosceles.
+Suppose triangleABC is a scalene triangle. Which of the following conclusions
+are valid? Why or why not?
+(a) All of the sides of triangleABC have diﬀerent lengths.
+(b) triangleABC is a right triangle that is not isosceles.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 49 — #49
+✐
+✐
+✐
+✐
+✐
+✐
+1.4 Logic in Mathematics 49
+10. What isthe diﬀerence between an axiom and a theorem?
+11. Let P(n,x,y,z) be the predicate “x
+n
++y
+n
+= z
+n
+.”
+(a) Write the following statement in predicate logic, using positive inte-
+gersasthe domain.
+For every positive integer n, there exist positive integers x,
+y, and z such that x
+n
++y
+n
+= z
+n
+.
+(b) Formally negate your predicate logic statement from part (a). Sim-
+plify so that no quantiﬁer lies within the scope of a negation.
+(c) In order to produce a counterexample to the statement in part (a),
+what, speciﬁcally, would you have to ﬁnd?
+12. Find a counterexample for each statement.
+(a) If n isprime, then 2
+n
+−1 isprime.
+(b) Every triangle has at least one obtuse angle.
+5
+(c) For all real numbers x, x
+2
+≥x.
+(d) For every positive nonprime integer n, if some prime p divides n,
+then some other prime q (with q negationslash= p) also divides n.
+(e) If all the sides of a quadrilateral are equal, then the diagonals of the
+quadrilateral are equal.
+(f) For every real number N>0, there issome real number x such that
+Nx>x.
+(g) Let l, m, and n be linesin the plane. If l ⊥m and n intersect l, then
+n intersects m.
+(h) If p isprime, then p
+2
++ 4 isprime.
+13. Which of the statementsin the previousproblem can be proved astheo-
+rems?
+14. Consider the following theorem.
+Theorem. Let x be a wamel. If x hasbeen schlumpfed, then
+x isa borﬁn.
+Answer the following questions.
+(a) Give the converse of this theorem.
+(b) Give the contrapositive of this theorem.
+(c) Which statement, (a) or (b), is logically equivalent to the Theorem?
+5. An angle is obtuse if it has measure greater than 90
+◦
+.</p>
+    </div>
+  </body>
+</html>

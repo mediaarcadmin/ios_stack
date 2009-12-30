@@ -1,0 +1,1440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Unknown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="DC.Title" content="Unknown"/>
+    <style type="text/css">body { margin: 0%;padding: 0%;} .cover { text-align: center;margin-left: 0%;margin-right: 0%;} .coverpage { text-align: center;vertical-align: middle;text-shadow: #000 0px 1px 1px;margin-left: 0px;margin-right: 0px;margin-top: 0px;padding-top: 3em;margin-botton: 3em;font-size: 3.0em;background: #2F4F4F;} .coverimg { margin-top: 0%;margin-left: 0%;margin-right: 0%;width: 100%;} p { margin-left: 1em;margin-right: 1em;text-align: justify;} span { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} div { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} p { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} blockquote { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} h1 { text-align: center;} h2 { text-align: center;} h3 { text-align: center;} h4 { text-align: center;} h5 { text-align: center;} h6 { text-align: center;}</style>
+  </head>
+  <body>
+    <div>
+      <h1>Unknown</h1>
+    </div>
+    <div>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 50 — #50
+✐
+✐
+✐
+✐
+✐
+✐
+50 Chapter 1 a73 Logical Thinking
+15. Draw a model for the axiomatic system of four-point geometry (Exam-
+ple 1.16), where a “line” isa line segment, a “point” isan endpoint of a
+line segment, and a point “ison” a line if it isone of itsendpoints.
+16. In four-point geometry, use the axioms to explain why every point is on
+three diﬀerent lines.
+17. In four-point geometry, is it possible for two diﬀerent lines to both pass
+through two given distinct points? Explain why or why not using the
+axioms.
+18. In four-point geometry, do triangles exist? In other words, is it possible
+to have three distinct points, not on the same line, such that a line passes
+through each pair of points? Why or why not?
+19. In four-point geometry, state a good deﬁnition to stipulate what it means
+for two linesto intersect.
+20. Consider the following model for four-point geometry.
+Points:1,2,3,4
+Lines: 12, 13, 14, 23, 24, 34
+A point “ison” a line if the line’sbox containsthe point.
+(a) Give a pair of parallel linesin thismodel. (Refer to Deﬁnition 1.8.)
+(b) Give a pair of intersecting linesin thismodel. (Use your deﬁnition
+from Exercise 19.)
+21. Explain why, in the axiomatic system of Example 1.17, there must be at
+least seven distinct bings.
+22. Consider the following deﬁnition in the system of Example 1.17.
+Deﬁnition. Let x and y be distinct baddas. We say that a bing
+q isa boom of x and y,ifx hits q and y hits q.
+Rewrite Axiom 3 using this deﬁnition.
+23. In the context of Example 1.17, consider the following predicates.
+N(x,y)=“xnegationslash= y.”
+D(x)=“x isa badda.”
+G(x)=“x isa bing.”
+H(x,y)=“x hits y.”
+Use these predicates to write Axiom 3 in predicate logic.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 51 — #51
+✐
+✐
+✐
+✐
+✐
+✐
+1.5 Methodsof Proof 51
+24. Refer to Example 1.17 and Figure 1.4. Describe a diﬀerent model, using
+squares and vertices, where all the squares are the same size.
+25. In the axiomatic system of Example 1.17, let a “badda” be a line segment,
+let a “bing” be a point, and say that a line segment “hits” a point if it
+passes through it. In the diagram below, there are 4 baddas and 12 bings.
+Isthisa model for the system? Which of the axiomsdoesthismodel
+satisfy? Explain.
+26. Describe a model for Example 1.17 with 10 bings, where a “badda” is a
+line segment and a “bing” is a point.
+1.5 MethodsofProof
+The typesof proofswe did in Section 1.2 were fairly mechanical. We started
+with the given and constructed a sequence of conclusions, each justiﬁed by a
+deduction rule. We were able to write proofsthisway because our mathematical
+system, propositional logic, was fairly small. Most mathematical contexts are
+much more complicated; there are more deﬁnitions, more axioms, and more
+complex statements to analyze. These more complicated situations do not easily
+lend themselves to the kind of structured proof sequences of Section 1.2. In this
+section we will look at some of the ways proofs are done in mathematics.
+1.5.1 DirectProofs
+The structure of a proof sequence in propositional logic is straightforward: in
+order to prove A⇒C, we prove a sequence of results.
+A⇒B
+1
+⇒B
+2
+⇒···⇒B
+n
+⇒C
+A directproof in mathematicshasthe same logic, but we don’t usually write
+such proofs as lists of statement and reasons. Instead, this linear chain of im-
+plicationsiscouched in mathematical prose and written in paragraph form.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 52 — #52
+✐
+✐
+✐
+✐
+✐
+✐
+52 Chapter 1 a73 Logical Thinking
+Example 1.18 The proof of Theorem 1.1 on page 45 isa direct proof. Al-
+though thisproof takesthe form of a paragraph, the logical sequence of impli-
+cationsiseasy to see.
+There are distinct points x, y, and z.
+⇒ There isa line l
+1
+through x and y, and a line l
+2
+through y and z.
+⇒x, y, and z are not on the same line, so l
+1
+negationslash= l
+2
+.
+These three statements are justiﬁed by Axioms 3, 1, and 4, respectively.
+Example 1.19 Prove the following statement.
+For all real numbers x,ifx>1, then x
+2
+> 1.
+Proof Let x be a real number, and suppose x>1. Multiplying both sides of
+this inequality by a positive number preserves the inequality, so we can multiply
+both sides by x to obtain x
+2
+>x. Since x>1, we have x
+2
+>x>1, or x
+2
+> 1,
+asrequired. square
+It isworth looking back at thisproof. The chain of implicationsisasfollows.
+x>1 ⇒ x
+2
+>x ⇒ x
+2
+> 1 (1.5.1)
+Each conclusion is justiﬁed by an elementary fact from high school algebra, and
+the results are packaged in paragraph form. More precisely, the statement we
+were proving wasactually a quantiﬁed statement of the form
+(∀x)(P(x) →Q(x))
+where P(x) means“ x>1” and Q(x) means“ x
+2
+> 1.” We see that the sequence
+of implicationsin Equation (1.5.1) istrue no matter what value we initially
+choose for x. Thisisthe meaning of the introductory phrase “Let x be a real
+number.” We assume nothing about x other than that it isa real number; it
+isarbitrary in every other respect. We then treat P(x) asgiven, and try to
+conclude Q(x). Since x could have been any real number to start with, we have
+proved the implication for all x.
+We state this type of proof as our ﬁrst “Rule of Thumb” for proving theo-
+rems.
+Rule of Thumb 1.1 To prove a statement of the form (∀x)(P(x) → Q(x)),
+begin your proof with a sentence of the form
+Let x be [an element of the domain], and suppose P(x).
+A direct proof is then a sequence of justiﬁed conclusions culminating in Q(x).</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 53 — #53
+✐
+✐
+✐
+✐
+✐
+✐
+1.5 Methodsof Proof 53
+Before we look at another example of direct proof, we will need some tools
+for dealing with integers. We’ll start with a deﬁnition for what it means for an
+integer x to divide another integer y.
+Deﬁnition 1.10 An integer x divides an integer y if there issome integer k
+such that y = kx.
+We write x | y to denote that x divides y. An identical deﬁnition holdsfor
+natural numbers (i.e., positive integers). Just replace the three occurrences of
+“integer” in Deﬁnition 1.10 with “natural number.”
+We are not going to develop a rigorousaxiomatic approach to the integers;
+such a treatment is beyond the scope of this course. When you deal with inte-
+ger equations, feel free to use elementary facts from high school algebra. You
+can add something to both sides of an equation, use the distributive property,
+combine terms, and so on. However, there are certain facts about the integers
+that we will state as axioms, because they justify important steps in the proofs
+that follow.
+Axiom 1.1 If a and b are integers, so are a+b and a·b.
+Axiom 1.1 describes theclosure property of the integersunder addition and
+multiplication. Most number systems are closed under these two operations; you
+can’t get a new kind of number by adding or multiplying. On the other hand,
+the integers are not closed under division: 2/3 isnot an integer, even though 2
+and 3 are.
+Example 1.20 Prove the following.
+For all integers a, b, and c,ifa|b and a|c, then a| (b+c).
+Proof Let integers a, b, and c be given, and suppose a|b and a|c. Then, by
+Deﬁnition 1.10, there issome integer k
+1
+such that b = k
+1
+a and there issome
+integer k
+2
+such that c = k
+2
+a. Therefore,
+b+c = k
+1
+a+k
+2
+a =(k
+1
++k
+2
+)a.
+By Axiom 1.1, k
+1
++k
+2
+isan integer, so a| (b+c), again by Deﬁnition 1.10. square
+Notice that thisproof illustrateshow deﬁnitionsare used in mathematics.
+We used the deﬁnition of “divides” in order to translate the given statement
+into an equation, we did some simple algebra on this equation to obtain a new
+equation, and we used the deﬁnition again to translate the new equation into
+the statement we were trying to prove. Figure 1.5 shows a “ﬂow chart” for this
+proof technique.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 54 — #54
+✐
+✐
+✐
+✐
+✐
+✐
+54 Chapter 1 a73 Logical Thinking
+Given statement
+Algebraic formula
+definition
+definition
+Statement to prove
+New algebraic formula
+algebra
+Figure 1.5 The structure of an algebraic proof.
+1.5.2 ProofbyContraposition
+Sometimes it is hard to see how to get a direct proof started. If you get stuck
+(and you will), try proving the contrapositive. Thisiscertainly permitted, since
+the contrapositive of a statement is its logical equivalent. We can state this as
+another rule of thumb.
+Rule of Thumb 1.2 To prove a statement of the form (∀x)(P(x) → Q(x)),
+begin your proof with a sentence of the form
+Let x be [an element of the domain], and suppose ¬Q(x).
+A proof by contraposition is then a sequence of justiﬁed conclusions culminating
+in ¬P(x).
+Example 1.21 Suppose x and y are positive real numbers such that the geo-
+metric mean
+√
+xy isdiﬀerent from the arithmetic mean
+x+y
+2
+. Then xnegationslash= y.
+Proof (By contraposition.) Let x and y be positive real numbers, and suppose
+x = y. Then
+√
+xy =
+√
+x
+2
+since x = y
+= x since x ispositive
+=
+x+x
+2
+using arithmetic
+=
+x+y
+2
+since x = y
+square
+Contraposition isn’t a radically new proof technique; a proof of a statement
+by contraposition is just a direct proof of the statement’s contrapositive. In
+Example 1.21, the form of the statement to prove gave a clue that a proof</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 55 — #55
+✐
+✐
+✐
+✐
+✐
+✐
+1.5 Methodsof Proof 55
+by contraposition would work. If A isthe statement “
+√
+xy =
+x+y
+2
+” and B is
+the statement “x = y,” then the statement to prove has the form ¬A →¬B.
+The contrapositive of this statement is B → A, so our proof started with the
+assumption that x = y and concluded that
+√
+xy =
+x+y
+2
+.
+For the next example we need some facts from the system of plane geometry
+that you studied in high school. Henceforth, we’ll refer to this type of geometry
+asEuclidean geometry. The following theorem, which we will not prove, istrue
+in Euclidean geometry.
+Theorem 1.2 Thesumofthemeasuresoftheanglesofanytriangleequals
+180
+◦
+.
+The deﬁnition of parallel that we used in four-point geometry also works in
+Euclidean geometry. Although the wording of the following deﬁnition isa little
+diﬀerent, the content isfundamentally the same.
+Deﬁnition 1.11 Two linesare parallel if they do not intersect.
+We’ll use these two statements in the next example.
+Example 1.22 Prove:
+If two lines are cut by a transversal such that a pair of interior
+anglesare supplementary, then the linesare parallel.
+A
+BC
+D
+Proof (By contraposition.) Suppose we are given two lines cut by a transversal
+as shown above, and suppose the lines are not parallel. Then, by the deﬁnition
+of parallel lines, the lines intersect. Without loss of generality, suppose they in-
+tersect on the right at point X. (If they intersect on the left, the same argument
+will work.)
+A
+B
+X
+By Theorem 1.2, the sum of the angles oftriangleXABis180
+◦
+. Since∠X hasmeasure
+greater than 0, the sum of the measures of ∠A and ∠B must be less than 180
+◦
+,
+so ∠A and ∠B can’t be supplementary. square</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 56 — #56
+✐
+✐
+✐
+✐
+✐
+✐
+56 Chapter 1 a73 Logical Thinking
+1.5.3 ProofbyContradiction
+Sometimes even a simple-looking statement can be hard to prove directly, with
+or without contraposition. In this case, it sometimes helps to try a proof by
+contradiction. The idea isa little counterintuitive. To prove statement A, sup-
+pose its negation ¬A istrue. Then argue, asin a direct proof, until you reach
+a statement that you know to be false. You will have established the sequence
+¬A⇒B
+1
+⇒B
+2
+⇒···⇒B
+n
+⇒ F
+where F represents a statement that is always false, that is, a contradiction.
+Taking contrapositivesof thischain givesusa sequence
+A⇐¬B
+1
+⇐¬B
+2
+⇐···⇐¬B
+n
+⇐ T
+and since T isalwaystrue (i.e., a tautology) it followsthat A istrue also. To
+sum up:
+Rule of Thumb 1.3 To prove a statement A by contradiction, begin your
+proof with the following sentence:
+Suppose, to the contrary, that ¬A.
+Then argue, asin a direct proof, until you reach a contradiction.
+Thisnext example issimilar to Example 1.22. In fact, it isa weaker state-
+ment, so the proof given in Example 1.22 could also be used to prove it. But it
+makesa nice example of the contradiction method.
+Example 1.23 In Euclidean geometry, prove:
+If two linesshare a common perpendicular, then the linesare par-
+allel.
+Before stating the proof, notice that thistheorem isof the following form.
+(∀x)(∀y)(C(x,y) →P(x,y))
+Here C(x,y) means“ x and y share a common perpendicular,” and P(x,y)
+means“ xbardbly.” You can check that the formal negation of thisstatement isthe
+following.
+(∃x)(∃y)(C(x,y)∧¬P(x,y))
+The translation of this last statement is “There exist lines who share a common
+perpendicular but are not parallel.” So we use this statement to start our proof
+by contradiction.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 57 — #57
+✐
+✐
+✐
+✐
+✐
+✐
+1.5 Methodsof Proof 57
+Proof (By contradiction.) Suppose, to the contrary, that line AB isa com-
+mon perpendicular to lines AC and BD, and also that AC and BD are not
+parallel. Then, by Deﬁnition 1.11, AC and BD intersect in some point X.
+But then triangleABX hastwo right angles(and a third angle of nonzero measure),
+contradicting Theorem 1.2. square
+The next results rely on properties of even and odd numbers, so we need
+to use these deﬁnitions in our arguments. Recall:
+Deﬁnition 1.5. An integer n iseven if n =2k for some integer k.
+Deﬁnition 1.6. An integer n isodd if n =2k+1 for some integer k.
+As we discussed in Section 1.4.1, these deﬁnitions alone don’t imply that
+every integer iseither even or odd. We’ll state thisfact asan axiom.
+6
+Axiom 1.2 For all integers n, ¬(n iseven) ⇔ (n isodd).
+In other words, any integer is either even or odd, but never both. This
+axiom isthe key to proving the following lemma.
+Lemma 1.1 Let n be an integer. If n
+2
+iseven, then n iseven.
+Proof (By contraposition.) Let n be an integer, and suppose n isnot even.
+Then n isodd, by Axiom 1.2. So there issome integer k such that n =2k+1.
+Then
+n
+2
+=(2k +1)
+2
+=4k
+2
++4k + 1 = 2(2k
+2
++2k)+1
+and since (2k
+2
++2k) isan integer (by Axiom 1.1), we have shown that n
+2
+is
+odd. By Axiom 1.2, n
+2
+isnot even, asrequired. square
+Our ﬁnal example is a classic proof by contradiction. Recall that arational
+number isa number that can be written as a/b, where a and b are integerswith
+bnegationslash=0.
+Example 1.24 Prove that
+√
+2 isirrational.
+Proof (By contradiction.) Suppose, to the contrary, that
+√
+2 isrational, so
+there are integers a and b such that a/b =
+√
+2, and a and b can be chosen so that
+6. Inamorerigoroustreatmentofnumbertheory,thisfactcouldbeprovedusingthedivision
+algorithm, which would follow from the well-ordering principle.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 58 — #58
+✐
+✐
+✐
+✐
+✐
+✐
+58 Chapter 1 a73 Logical Thinking
+the fraction a/b is in lowest terms. Then a
+2
+/b
+2
+=2,soa
+2
+=2b
+2
+, that is, a
+2
+iseven. By Lemma 1.1, a iseven. Therefore a =2k for some integer k,so
+a
+2
+=4k
+2
+. But now we have b
+2
+= a
+2
+/2=2k
+2
+,sob
+2
+iseven, and therefore, by
+the lemma again, b iseven aswell. We have shown that a and b are both even,
+which contradicts the assumption that a/b is in lowest terms. square
+Exercises 1.5
+1. Consider the following statement.
+For all integers x,if4|x, then x iseven.
+(a) Write this statement in predicate logic in the domain of integers.
+Say what your predicatesare.
+(b) Apply Rule of Thumb 1.1 to write down the ﬁrst sentence of a direct
+proof of thisstatement.
+(c) Use Deﬁnition 1.10 to translate your supposition in part (b) into
+algebra.
+(d) Finish the proof of the statement.
+2. Give a direct proof:
+Let a, b, and c be integers. If a|b and a|c, then a| (b·c).
+Remember that you must use the deﬁnition of | in your proof.
+3. Prove: Let a, b, and c be integers. If (a·b) |c, then a|c.
+4. Give a direct proof.
+Let a, b, and c be integers. If a|b and b|c, then a|c.
+5. Give a direct proof of the following statement in Euclidean geometry. Cite
+any theoremsyou use.
+The sum of the measures of the angles of a parallelogram is 360
+◦
+.
+6. Prove:
+For all integers n,ifn
+2
+isodd, then n isodd.
+Use a proof by contraposition, as in Lemma 1.1.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 59 — #59
+✐
+✐
+✐
+✐
+✐
+✐
+1.5 Methodsof Proof 59
+7. Prove the following statement by contraposition.
+Let x be an integer. If x
+2
++x+ 1 iseven, then x isodd.
+Make sure that your proof makes appropriate use of Deﬁnitions 1.5 and 1.6.
+8. Prove that the sum of two even integersiseven.
+9. Prove that the sum of an even integer and an odd integer is odd.
+10. Prove that the sum of two odd integers is even.
+11. Write a proof by contradiction of the following.
+Let x and y be integers. If x and y satisfy the equation
+3x+5y = 153
+then at least one of x and y isodd.
+12. Prove the following statement in Euclidean geometry. Use a proof by
+contradiction.
+A triangle cannot have more than one obtuse angle.
+13. Let “x notbar y” denote “x doesnot divide y.” Prove by any method.
+Let a and b be integers. If 5 notbar ab, then 5 notbar a and 5 notbar b.
+14. Consider the following deﬁnition.
+Deﬁnition. An integer n is sane if 3 | (n
+2
++2n).
+(a) Give a counterexample to the following: All odd integersare sane.
+(b) Give a direct proof of the following: If 3 |n, then n issane.
+(c) Prove by contradiction: If n =3j + 2 for some integer j, then n is
+not sane.
+15. Prove that the rational numbersare closed under multiplication. That
+is, prove that, if a and b are rational numbers, then a · b isa rational
+number.
+16. Prove that the rational numbersare closed under addition.
+17. Prove: Let x and y be real numbers. If x isrational and y isirrational,
+then x·y isirrational.
+18. Prove: Let x and y be real numbers. If x isrational and y isirrational,
+then x+y isirrational.</p>
+      <p>✐
+✐
+“48927˙CH01˙Hunter” — 2008/10/15 — 5:01 — page 60 — #60
+✐
+✐
+✐
+✐
+✐
+✐
+60 Chapter 1 a73 Logical Thinking
+19. Consider the following deﬁnition.
+Deﬁnition. A integer n is frumpable if n
+2
++2n isodd.
+Prove: All frumpable numbersare odd.
+20. Recall the Badda-Bing axiomatic system of Example 1.17. Prove:
+If q and r are distinct bings, both of which are hit by baddas
+x and y, then x = y.
+21. Two common axiomsfor geometry are asfollows. The undeﬁned terms
+are “point,” “line,” and “ison.”
+1. For every pair of points x and y, there isa unique line such that x
+ison l and y ison l.
+2. Given a line l and a point x that isnot on l, there isa unique line
+m such that x ison m and no point on l isalso on m.
+Recall that two lines l and m are parallel if there isno point on both l
+and m. In thiscase we write l bardbl m. Use this deﬁnition along with the
+above two axiomsto prove the following.
+Let l, m, and n be distinct lines. If l bardblm and mbardbln, then l bardbln.
+22. The following axiomscharacterize projective geometry. The undeﬁned
+termsare “point,” “line,” and “ison.”
+1. For every pair of points x and y, there isa unique line such that x
+ison l and y ison l.
+2. For every pair of lines l and m, there isa point x on both l and m.
+3. There are (at least) four distinct points, no three of which are on
+the same line.
+Prove the following statements in projective geometry.
+(a) There are no parallel lines.
+(b) For every pair of lines l and m, there isexactly one point x on both
+l and m.
+(c) There are (at least) four distinct lines such that no point is on three
+of them.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 61 — #1
+✐
+✐
+✐
+✐
+✐
+✐
+Chapter 2
+Relational Thinking
+Most quantitative problems involve several diﬀerent interrelated objects: mar-
+ket forces determine the price of a commodity, steps in a manufacturing process
+depend on other steps, virus-infected computers can slow network traﬃc. In or-
+dertoanalyzetheserelationships,ithelpstothinkmathematicallyaboutthem.
+In this chapter we will explore diﬀerent ways that the elements of a set can
+be related to each other or to the elements of another set. These relationships
+can be described by mathematical objects such as functions, relations, and
+graphs. Our goal is to develop the ability to see mathematical relationships
+between objects, which in turn will enable us to apply tools from discrete
+mathematics.
+Figure 2.1 A computer’s circuit board contains an intricate system of math-
+ematical relationships. Concepts such as connectivity, interdependence, and
+modularity can be expressed in the language of mathematics.
+61</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 62 — #2
+✐
+✐
+✐
+✐
+✐
+✐
+62 Chapter 2 a73 Relational Thinking
+2.1 Graphs
+When faced with a diﬃcult problem in mathematics, it often helps to draw a
+picture. If the problem involves a discrete collection of interrelated objects, it
+is natural to sketch the objects and draw lines between them to indicate the
+relationships. A graph is the mathematical version of such a sketch. In this
+section we will study a few basic deﬁnitions about graphs, and then explore
+some ways to use graphs to model mathematical relationships. Our approach
+here will be informal; later in the chapter we will look at graphs from a more
+rigorous point of view.
+2.1.1 Edges and Vertices
+In Section 2.6, we will give a mathematical deﬁnition of a graph, and we will
+prove several theorems about graphs. For now, however, just think of a graph
+informally as a diagram of dots, called vertices, connected by lines or curves,
+called edges. The edges of a graph may have arrows on them; in this case, the
+graph is called a directed graph. A graph without arrows on the edges is called
+an undirected graph.
+When we draw a graph, it doesn’t really matter where we put the vertices
+or whether we draw the edges as curved or straight—the thing that matters is
+whether or not two given vertices are connected by an edge (or edges).
+Example 2.1 The Pregel River divided the Prussian city of K¨onigsberg (now
+Kaliningrad, Russia) into four sections, as shown in Figure 2.2. These sections
+were connected by seven bridges. If we draw a vertex for each land mass and
+an edge for each bridge, we can represent the city as the following graph.
+C
+B D
+A
+Notice that there are some double edges; these reﬂect the presence of two
+bridges connecting the same pair of land masses.
+The bridges of K¨onigsberg inspired the great eighteenth-century mathe-
+matician Leonhard Euler to think about the kinds of relationships that graphs
+express. In March of 1736, Euler wrote the following to a colleague:
+AproblemwasposedtomeaboutanislandinthecityofK¨onigsberg,
+surrounded by a river spanned by seven bridges, and I was asked
+whether someone could traverse the separate bridges in a connected</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 63 — #3
+✐
+✐
+✐
+✐
+✐
+✐
+2.1 Graphs 63
+C B
+A
+D
+...
+Figure 2.2 The bridges of K¨onigsberg.
+walk in such a way that each bridge is crossed only once. I was in-
+formed that hitherto no one had demonstrated the possibility of
+doing this, or shown that it is impossible. This question is so banal,
+butseemedtomeworthyofattentioninthatgeometry,noralgebra,
+nor even the art of counting was suﬃcient to solve it. [10]
+Although Euler did not use modern notation and terminology, his paper
+on the K¨onigsberg bridges is widely regarded as the start of modern graph
+theory. [16]
+2.1.2 Terminology
+In order to work with graphs, it helps to deﬁne some terms. The degree of a
+vertex is the number of times an edge touches it. This is diﬀerent than the
+number of edges touching it, because an edge may form a loop, as in Figure 2.3.
+In graph H, vertex x has degree 5. In a directed graph, we can speak of the
+indegree (the number of edges coming in to the vertex) and the outdegree (the
+number of edges going out). In Figure 2.3, vertex a of graph G has indegree 1
+and outdegree 2.
+A path in a graph is a sequence
+v
+0
+,e
+1
+,v
+1
+,e
+2
+,v
+2
+,...,v
+n−1
+,e
+n
+,v
+n
+of vertices v
+i
+and edges e
+j
+such that edge e
+i
+connects vertices v
+i−1
+and v
+i
+. Here
+n≥1. A circuit is a path that ends where it begins, so v
+0
+= v
+n
+. An undirected
+graph is connected if there is a path connecting any two pairs of vertices. A
+directed graph is connected if the underlying undirected graph is.
+In Figure 2.3, graph H is connected, and therefore so is graph G. There
+is a circuit in graph H going around the large quadrilateral: start at vertex v,
+follow the edges clockwise through vertices w, x, and z, and return to vertex v.
+However, the corresponding sequence is not a circuit in graph G because the
+edge from a to e goes the wrong direction.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 64 — #4
+✐
+✐
+✐
+✐
+✐
+✐
+64 Chapter 2 a73 Relational Thinking
+GH
+b
+d
+ae
+c x
+w
+y
+vz
+Figure 2.3 Graph H is the underlying undirected graph of the directed
+graph G.
+Why do we need all these terms? One reason is that terminology makes
+it easier to make precise descriptions of the relationships that graphs deﬁne.
+Let’s take another look at the bridges of K¨onigsberg. In his 1736 paper, Euler
+made the following observations (quoted in [16]).
+1. The number of bridges written next to the letters A, B, C, etc. together
+add up to twice the total number of bridges. The reason for this is that,
+in the calculation where every bridge leading to a given area is counted,
+each bridge is counted twice, once for each of the two areas which it joins.
+2. If there are more than two areas to which an odd number of bridges lead,
+then such a journey is impossible.
+3. If, however, the number of bridges is odd for exactly two areas, then the
+journey is possible if it starts in either of these two areas.
+4. If, ﬁnally, there are no areas to which an odd number of bridges lead,
+then the required journey can be accomplished starting from any area.
+We can use modern terminology to restate these observations. Let’s deﬁne
+an Euler path (resp. circuit) as a path (resp. circuit) that uses every edge of
+the graph exactly once.
+1. In any graph, the sum of the degrees of the vertices equals twice the
+number of edges.
+2. If a graph has more than two vertices of odd degree, it does not have an
+Euler path.
+3. If a connected graph has exactly two vertices, v and w, of odd degree,
+then there is an Euler path from v to w.
+4. If all the vertices of a connected graph have even degree, then the graph
+has an Euler circuit.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 65 — #5
+✐
+✐
+✐
+✐
+✐
+✐
+2.1 Graphs 65
+The vertices A, B, C, and D of the graph of Example 2.1 have degrees
+3, 5, 3, and 3, respectively. Therefore, (if we trust Euler), this graph does not
+have an Euler path. Note that we haven’t yet given rigorous proofs for any of
+Euler’s observations, but we have managed to state them a little more clearly
+and concisely.
+2.1.3 Modeling Relationships with Graphs
+In addition to the “banal” problem of walking over bridges, there are many
+other applications of graphs for problems involving relationships.
+Example 2.2 Acollegeregistrarwouldliketoschedulethefollowingcoursesin
+as few time slots as possible: Physics, Computer Science, Chemistry, Calculus,
+Discrete Math, Biology, and Psychology. However, from previous experience,
+the following pairs of classes always have students in common, so they can’t be
+scheduled in the same time slot:
+Physics and Computer Science
+Physics and Chemistry
+Calculus and Chemistry
+Calculus and Physics
+Calculus and Computer Science
+Calculus and Discrete Math
+Calculus and Biology
+Discrete Math and Computer Science
+Discrete Math and Biology
+Psychology and Biology
+Psychology and Chemistry
+What is the fewest number of time slots needed to schedule all these classes
+without conﬂicts?
+Solution: The natural way to model this problem with a graph is to make each
+course into a vertex and connect any two vertices that represent courses that
+cannot be scheduled in the same time slot. Figure 2.4 shows this graph.
+Physics
+Chem
+Psych
+Calc
+Bio
+DM
+CS
+Figure 2.4 Graph for Example 2.2.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 66 — #6
+✐
+✐
+✐
+✐
+✐
+✐
+66 Chapter 2 a73 Relational Thinking
+Let’s start with Calculus: call its time slot A. None of the courses that
+share an edge with Calculus can be in time slot A, so pick one, say, Computer
+Science, and call its time slot B. Now Physics shares edges with both Calculus
+and Computer Science, so this forces us to use a third time slot, C, for Physics.
+Weshouldnoteatthispointthatallofourchoiceshavebeenforcedsofar—
+we are going to need at least three time slots. The question remains whether
+we need more than three slots. Notice that we can assign Chemistry to slot
+B (since it doesn’t share an edge with Computer Science) and we can assign
+Discrete Math to slot C (since it doesn’t conﬂict with Physics). This allows us
+to use B for Biology and either A or C for Psychology, showing that three time
+slots are suﬃcient. ♦
+This scheduling problem is an example of graph coloring. A coloring for a
+graph is an assignment of diﬀerent values (colors) to each vertex such that no
+two vertices of the same color share an edge. In Example 2.2, the “colors” were
+the time slots A, B, and C.
+We call a graph planar if it can be written down (on a “planar” sheet of
+paper) without any edges crossing each other. The graph in Figure 2.4 is an
+example of a planar graph. The famous Four Color Theorem states that any
+planar graph can be colored with, at most, four colors.
+1
+A consequence of the
+Four Color Theorem is that cartographers need only four colors of ink: it is
+always possible to color the regions of a planar map (e.g., the states in a map
+of the United States) with, at most, four colors, so that no two adjacent regions
+have the same color.
+Example 2.3 Several departments around campus have wireless access points
+(WAPs), but problems arise if two WAPs within 200 feet of each other are
+operating on the same frequency. Suppose the departments with WAPs are
+situated as follows.
+Department: Is within 200 feet of departments:
+Math Physics, Psychology, Chemistry, Sociology
+Sociology History, English, Economics, Math, Chemistry, Psychology
+Physics Math, Chemistry
+Psychology Math, Chemistry, Sociology, Economics
+History Sociology, English
+English Economics, Sociology, History
+Economics English, Sociology, Psychology
+Chemistry Math, Psychology, Sociology, Physics
+1.Althoughthisresultisverysimpletostate,theonlyknownproofstodateareextremely
+complicated.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 67 — #7
+✐
+✐
+✐
+✐
+✐
+✐
+2.1 Graphs 67
+Physics (1)
+Math (2) Chem (3)
+Soc (4) Psych (1)
+Econ (2)Hist (1)
+Eng (3)
+Figure 2.5 Graph for Example 2.3. Colors/frequencies: 1, 2, 3, 4.
+What is the fewest number of frequencies needed? How could these frequencies
+be assigned to departments?
+Solution: Figure 2.5 shows a graph model for this situation, along with a pos-
+sible coloring. We leave it as an exercise to check that four colors (frequencies)
+are needed. ♦
+In Example 2.3, we modeled the positions of the departments by draw-
+ing an edge between any two departments that were “close,” i.e., within 200
+yards of each other. If we had more speciﬁc data, we could make our model say
+how close each department is to the others by putting numbers on each edge
+indicating the distance between two departments. A graph with numerical val-
+ues, or weights, on its edges is called a network. Networks can be directed or
+undirected, depending on what they are intended to model.
+Example 2.4 The following table lists some pairwise driving distances (in
+miles) on selected routes between some California cities.
+B E F L N S
+Barstow
+Eureka
+Fresno 245 450
+Los Angeles 115 645 220
+Needles 145 385 260
+San Diego 175 125 320
+Figure 2.6 shows the graph for this network. Writing the distance data in this
+formatmakesiteasiertoanswercertainquestions.HowfarisitfromSanDiego
+to Fresno (using these routes)? If we travel from Needles to Fresno via Barstow,
+how much longer will it take?
+The above examples show how versatile graph models are; often it helps to
+add extra structure to a graph (for example, colors or weights) to suit a partic-</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 68 — #8
+✐
+✐
+✐
+✐
+✐
+✐
+68 Chapter 2 a73 Relational Thinking
+E
+L
+F
+N
+S
+B
+450
+645
+220
+245
+385
+145
+115
+175125
+320
+260
+Figure 2.6 A network showing mileage between cities.
+ular application. The next example illustrates another way to add information
+to a graph model by specifying how the graph is drawn.
+Example 2.5 The custom dictionary in a spell-checker keeps track of words
+that you don’t want ﬂagged as misspellings but aren’t in the standard dictio-
+nary. These words get added one at a time, in no particular order, but it is
+necessary to keep them organized so that searching the list is easy. Suppose
+your custom dictionary contains the following words:
+macchiato, poset, phat, complexify, jazzed, sheaﬁfy, clueless
+What is an eﬃcient way to organize this data?
+One possible organizational structure is a graph model called a binary
+search tree. The rules for constructing a binary search tree are simple. Start
+with an item (chosen arbitrarily) at the top of the tree. This is the root node
+of the tree. The root has (at most) two edges touching it, one going down to
+the right, and one going down to the left. These are the children of the root
+node. In fact, every node in a binary search tree can have up to two children,
+one on the right, and one on the left. The only condition is that the right child
+(along with its “descendants”) must come after its parent in alphabetical (or
+numerical) order, and the left child and its descendants must come before its
+parent. For example, in the following tree, x has right child r and left child l,
+so this data must have the order l,x,r.
+x
+lr</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 69 — #9
+✐
+✐
+✐
+✐
+✐
+✐
+2.1 Graphs 69
+Let’s place the data from Example 2.5 into a binary search tree. Start with
+“macchiato” at the root of the tree. The next word, “poset,” comes after “mac-
+chiato” in alphabetical order, so “poset” becomes the right child of “macchi-
+ato.” We would then place the next word, “phat,” to the right of “macchiato,”
+but since that spot is taken, and since “phat” precedes “poset” in alphabetical
+order, we make “phat” the left child of “poset.” We continue in this manner,
+ﬁnding the new position for each new word by moving down the tree. At each
+branch we move right or left, depending on where the new word falls in the
+alphabet. Figure 2.7 shows the ﬁrst few steps of this process, along with the
+ﬁnal result.
+The reason this graph is called a “search” tree is that it makes ﬁnding an
+element in the tree easy. If you are looking for a word in a binary search tree,
+you go through the same procedure as if you were adding the word to the tree;
+if you don’t come across the word, it isn’t there.
+For large data sets, this process goes very quickly, since you don’t need to
+look at every element. For example, to ﬁnd “poset” in the tree in Figure 2.7, we
+only have to look at two words. To establish that “iPod” is not in the tree, we
+only need to check three. Each comparison moves the search one level down the
+tree, and each level contains twice the number of elements as the level before.
+jazzed phat sheafify
+poset
+poset poset
+poset
+complexify
+complexify
+clueless
+phat
+phat
+macchiato
+macchiato
+macchiato
+macchiatomacchiato
+. . .
+Figure 2.7 Constructing the binary search tree for Example 2.5.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 70 — #10
+✐
+✐
+✐
+✐
+✐
+✐
+70 Chapter 2 a73 Relational Thinking
+Figure 2.8 A balanced binary search tree with 255 nodes requires, at most,
+eight comparisons to search it completely.
+So, for example, a balanced binary search tree with
+255=1+2+4+8+16+32+64+128
+elements requires, at most, eight comparisons to search it completely. See Fig-
+ure 2.8.
+Note that a binary search tree contains more information than its graph
+structureconveys.Thebranchesofthetreealwaysgodownward,anditmatters
+whether they go to the left or to the right. Technically, a binary search tree is
+a directed graph, with all the edges pointing downward, away from the root.
+But most books (including this one) omit the arrows.
+Exercises 2.1
+1. Consider the following undirected graph.
+a
+e
+d
+c
+b</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 71 — #11
+✐
+✐
+✐
+✐
+✐
+✐
+2.1 Graphs 71
+(a) How many edges are there in this graph?
+(b) Give the degree of each vertex.
+(c) Do these numbers agree with Euler’s ﬁrst observation?
+2. Consider the following directed graph.
+a
+e d
+c
+b
+(a) Give the indegree of each vertex.
+(b) Give the outdegree of each vertex.
+(c) Compute sum of the indegrees and the sum of the outdegrees. What
+do you notice?
+3. Draw a connected, undirected graph with seven vertices and no circuits.
+How many edges does it have?
+4. Draw an undirected graph with six vertices, each of degree 3, such that
+the graph is ...
+(a) connected.
+(b) not connected.
+5. A graph is called simple if it has no multiple edges or loops. (The graphs
+in Figures 2.4, 2.5, and 2.6 are simple, but the graphs in Example 2.1
+and Figure 2.3 are not simple.) Draw ﬁve diﬀerent connected, simple,
+undirected graphs with four vertices.
+6. Anundirectedgraphiscalledcomplete ifeveryvertexsharesanedgewith
+every other vertex. Draw a complete graph on ﬁve vertices. How many
+edges does it have?
+7. Figure 2.9 shows the bridge conﬁguration of modern day Kaliningrad.
+Represent the four land masses and seven bridges as an undirected graph.
+Is this graph the same as the one in Example 2.1? Why or why not? Is it
+possible to travel an Euler circuit on this graph?</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 72 — #12
+✐
+✐
+✐
+✐
+✐
+✐
+72 Chapter 2 a73 Relational Thinking
+Figure 2.9 Kaliningrad, Russia.
+8. Does the following graph have an Euler path? Why or why not?
+9. Think of the Internet as one big graph, where each web page is a vertex
+and each link is an edge.
+(a) Is this a directed graph? Why or why not?
+(b) Is this graph connected? Why or why not?
+(c) Is this graph complete? Why or why not?
+(d) Is this graph simple? Why or why not?
+(e) For a given web page p, what does the outdegree of p represent?
+(f) For a given web page p, what does the indegree of p represent?
+10. Find a map of the United States. Draw a graph whose vertices represent
+the states of Illinois, Missouri, Tennessee, Virginia, West Virginia, Ohio,
+Indiana, and Kentucky. Draw an edge between any two vertices whose
+states share a common border. Explain why it takes four colors to color
+this graph (and hence also to distinguish these states on a map).
+11. As in Exercise 10, draw a graph representing the border relationships for
+the states of Washington, Oregon, Idaho, California, Nevada, and Utah.
+What is the fewest number of colors needed to color this graph? Justify
+your answer.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 73 — #13
+✐
+✐
+✐
+✐
+✐
+✐
+2.1 Graphs 73
+12. Representthe13regionsinSouthAmerica(12countriesplustheterritory
+ofFrenchGuiana)asagraph.Whatisthefewestnumberofcolorsneeded
+to color this graph?
+13. Using as few groups as possible, put the words fish, sit, stay, play,
+diet, tree, duck, dog, and hen into groups such that none of the words
+in a group have any letters in common. Use a graph model and graph
+coloring. Justify your answer: explain why your grouping uses the fewest
+groups possible.
+14. Give an example of a graph that requires ﬁve colors to make a valid
+coloring. (Note that, by the Four Color Theorem, your example cannot
+be planar.)
+15. Compute the minimal number of colors needed to color the following
+graph. Show that your answer is big enough (by describing a coloring),
+and explain why the graph cannot be colored in fewer colors.
+16. Color the vertices of the following graph so that no vertices of the same
+color share an edge. Use as few colors as possible. Explain why the graph
+cannot be colored using fewer colors. Be speciﬁc.
+17. Around-robintournamentamongfourteams—Canadiens,Canucks,Flames,
+andOilers—hasthefollowingresults:CanucksdefeatCanadiens;Canucks
+defeat Flames; Canucks defeat Oilers; Canadiens defeat Oilers; Flames
+defeat Canadiens; Oilers defeat Flames.
+(a) Model these results with a directed graph, where each vertex rep-
+resents a team and each edge represents a game, pointing from the
+winner to the loser.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 74 — #14
+✐
+✐
+✐
+✐
+✐
+✐
+74 Chapter 2 a73 Relational Thinking
+(b) Find a circuit in this graph.
+(c) Explain why the existence of a circuit in such a graph makes it hard
+to rank the teams from best to worst.
+18. Consider the network in Example 2.4. Plan a round trip starting and
+ending at San Diego that visits all the other cities in as few miles as
+possible. In other words, ﬁnd a circuit that contains every vertex and has
+minimal weight.
+19. Construct a directed network whose vertices represent the numbers
+11,12,13,15,17
+and whose weights tell how much you must add to get from one vertex
+to another. Include only edges of positive weight.
+20. AcarrentalcompanyhasthreelocationsinMexicoCity:theInternational
+Airport, Oﬁcina Vallejo, and Downtown. Customers can drop oﬀ their
+vehiclesatanyoftheselocations.Basedonpriorexperience,thecompany
+expects that, at the end of each day, 40% of the cars that begin the day
+at the Airport will end up Downtown, 50% will return to the Airport,
+and 10% will be at Oﬁcina Vallejo. Similarly, 60% of the Oﬁcina Vallejo
+cars will end up Downtown, with 30% returning to Oﬁcina Vallejo and
+10% to the Airport. Finally, 30% of the Downtown cars will end up at
+each of the other locations, with 40% staying at the Downtown location.
+Model this situation with a directed network. If the company starts with
+all of its cars at the Airport, how will the cars be distributed after two
+days of rentals?
+21. Consider the following list of numbers.
+123,684,121,511,602,50,43
+(a) Place the numbers, in the order given, into a binary search tree.
+(b) The height of a binary search tree is the maximum number of edges
+you have to go through to reach the bottom of the tree, starting at
+the root. What is the height of the tree in part (a)?
+(c) Reorder the numbers so that when they are put into a binary search
+tree,theheightoftheresultingtreeislessthantheheightofthetree
+in part (a). Give both your new list and the search tree it produces.
+22. Put the words
+Cheddar Swiss Brie Panela Stilton Mozzarella Gouda
+into a binary search tree with the smallest height possible.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 75 — #15
+✐
+✐
+✐
+✐
+✐
+✐
+2.2 Sets 75
+23. Put the following words into a binary search tree. Add them to the tree
+in the order given.
+i will not eat them with a fox
+24. Sociologists use graphs to model social relationships. A social network
+(not to be confused with a network) is a graph where the nodes represent
+“actors” (e.g., people, companies) and the edges represent relationships,
+or “ties,” between actors (e.g., friendships, business partnerships). Con-
+sider the social network in Figure 2.10.
+A
+BC
+D
+E
+I
+G
+FH
+Figure 2.10 Social network for Exercise 24.
+(a) A clique in a social network is a group of actors who all have ties
+to each other. What is the largest clique in the social network in
+Figure 2.10?
+(b) If you had to choose the most important actor in this social network,
+who would you pick? Why?
+(c) Suppose the actors represent people and the ties represent acquain-
+tances.Ifthepeopleinthissocialnetworkcontinuetointeract,which
+two (currently unacquainted) actors would you most expect to be-
+come acquainted? Which two actors are the least likely to become
+acquainted? Why?
+2.2 Sets
+The applications from the previous section should convince you that graphs are
+a powerful mathematical tool. However, our viewpoint wasn’t very rigorous; in
+order to prove useful theorems about graphs, we need to consider some more
+mathematical structures that describe relationships.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 76 — #16
+✐
+✐
+✐
+✐
+✐
+✐
+76 Chapter 2 a73 Relational Thinking
+Thesimplestwaytodescribeacollectionofrelatedobjectsisasaset.Think
+of the set S as a container where an object x is something that S contains.
+S
+x
+We write x ∈ S to denote that x is contained in S. We also say that “x is a
+member of S,” “x is an element of S,” or more simply, “x is in S.”
+2.2.1 Membership and Containment
+We can describe examples of sets by listing the elements in the set or by de-
+scribing the properties that an element in the set has. To say that set S consists
+of the elements x
+1
+,x
+2
+,...,x
+n
+, we write
+S ={x
+1
+,x
+2
+,...,x
+n
+}.
+Suppose there is some property p that some of the elements of a set S have.
+We can describe the set of all elements of S that have property p as
+{x∈S |x has property p}.
+This is sometimes called “set builder” notation, because it explains how to
+build a list of all the elements of a set.
+Example 2.6 Let A ={1,2,3,4,5,6,7,8}. Then 2∈A and 9negationslash∈A.If
+B ={x∈A|x is odd},
+then the elements of B are 1,3,5,7.
+Example 2.7 There are some common sets that have speciﬁc names. The set
+of integers is denoted by Z, and the set of positive integers, or natural numbers
+is written as N. Note that 0 ∈ Z, but 0 negationslash∈ N. We use R for the set of real
+numbers, and Q for the set of rational numbers.
+2
+Example 2.8 Let P be the set of all polygons. So P contains all triangles,
+squares, pentagons, etc. If c is a circle, then cnegationslash∈P. We could describe the set
+H of all hexagons in set builder notation as
+H ={x∈P |x has six sides}.
+2.Recallthatarationalnumberisanumberthatcanbewrittenasafraction a/b,where a
+and b areintegers.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 77 — #17
+✐
+✐
+✐
+✐
+✐
+✐
+2.2 Sets 77
+The language of sets is convenient for describing groups of objects that are
+related by some common property. Often some property implies another; for
+example, all integers are real numbers. In terms of sets, this means that the set
+Z is contained in the set R. In general, the predicate logic statement that
+(∀x)(x∈A→x∈B) (2.2.1)
+is written as A ⊆ B, and we say “A is contained in B,” or “A is a subset of
+B,” or “B contains A.” We can express this relationship pictorially using the
+following Venn diagram.
+B
+A
+Example 2.9 In Example 2.6, B ⊆A. We have noted that Z⊆R in Exam-
+ple 2.7, and we could also say that N⊆Z, Z⊆Q, and Q⊆R. This chain of
+relationships could also be written as
+N⊆Z⊆Q⊆R.
+Example 2.10 In Example 2.8, H ⊆P, but P negationslash⊆H, because not every poly-
+gon is a hexagon.
+Example 2.11 Theempty set∅isthesetthatcontainsnoelements.Therefore,
+the empty set is a subset of any set, that is, ∅⊆X for all X. This is because
+the statement x∈∅is false for any x, so the implication
+(∀x)(x∈∅→x∈X)
+must be true. (See the truth table for the “→” connective on page 6.)
+2.2.2 New Sets from Old
+Sets describe relationships, but the language of sets can also describe the logic
+of how things are related. We have seen one example of this already: state-
+ment 2.2.1 shows how to interpret the ⊆ symbol in terms of a predicate logic
+statementcontainingthe→connective;therelationshipofcontainmenthasthe
+logic of an implication. The connectives∨,∧,¬, and↔also have set-theoretic
+counterparts.
+The union A∪B of two sets A and B is the set containing all the elements
+of both A and B put together. An element is in the union of two sets A and B
+if the element is A,orB, or both. In set builder notation,
+A∪B ={x|(x∈A)∨(x∈B)}.</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 78 — #18
+✐
+✐
+✐
+✐
+✐
+✐
+78 Chapter 2 a73 Relational Thinking
+This translates to the following equivalence rule in predicate logic.
+(∀x)[x∈A∪B ⇔(x∈A)∨(x∈B)]
+The statement x ∈ A∪B is logically equivalent to the statement (x ∈ A)∨
+(x ∈ B). This fact is important when writing proofs; one of these statements
+can always be replaced by the other.
+Think of “union” as the set-theoretic counterpart of the logical “or.” In the
+following Venn diagram, A∪B is the shaded area:
+BA
+The intersection A∩B is the set containing all the elements that A and B
+have in common. In order for an element to be in the intersection of A and B,
+the element must be in both sets. Therefore we write the intersection as
+A∩B ={x|(x∈A)∧(x∈B)}
+in set builder notation. This implies the following logical equivalence for all x.
+x∈A∩B ⇔(x∈A)∧(x∈B)
+In the following Venn diagram, the shaded area represents A∩B:
+BA
+Implicit in the above predicate logic statements is a domain, or universal
+set U, of which every set is a subset. If we know what the domain U is, we can
+speak of the complement A
+prime
+of A, which is the set
+A
+prime
+={x∈U |xnegationslash∈A}.
+We usually draw U as a big rectangle, so the shaded area below represents A
+prime
+.
+U
+A</p>
+      <p>✐
+✐
+“48927˙CH02˙Hunter” — 2008/10/15 — 5:03 — page 79 — #19
+✐
+✐
+✐
+✐
+✐
+✐
+2.2 Sets 79
+Note that we could also write A
+prime
+={x∈U |¬(x∈A)} to make the use of the
+¬ connective explicit.
+We say that two sets are equal if they have the same elements. So the
+statement “A = B” translates to the following statement in predicate logic:
+(∀x)(x∈A↔x∈B).
+This translation is important when it comes to proving that two sets are equal.
+A proof that A = B usually consists of two direct proofs: given x ∈ A, prove
+that x ∈ B, and conversely, given x ∈ B, prove that x ∈ A. In other words,
+showing A = B amounts to showing that A⊆B and B ⊆A.
+Example 2.12 Let the following sets be given.
+X ={n∈Z|n =2k for some odd integer k}
+F ={n∈Z|n =4k for some integer k}
+E ={n∈Z|n is even}
+1. Prove that F ⊆E.
+2. Prove that X = E∩F
+prime
+.
+Proof of 1 Let x∈F. By the deﬁnition of F, x =4k for some integer k.We
+can write this equation as x = 2(2k), so x is even by Deﬁnition 1.5. Therefore
+x∈E. square
+Proof of 2 (We ﬁrst show that X ⊆ E∩F
+prime
+.) Let x ∈ X. Then x =2k for
+some odd integer k,sox is even. Therefore x ∈ E. Suppose, to the contrary,
+that x ∈ F. Then x =4j for some integer j. This implies that 2k =4j,or
+k =2j, which contradicts that k is odd. Therefore x ∈ F
+prime
+. Since x ∈ E and
+x∈F
+prime
+, we have shown that x∈E∩F
+prime
+.
+(We now show that E∩F
+prime
+⊆X.) Suppose x∈E∩F
+prime
+,sox∈E and x∈F
+prime
+.
+Since x ∈ E, x =2k for some integer k. Suppose, to the contrary, that k is
+even. Then k =2l for some integer l,sox = 2(2l)=4l. But this contradicts
+that x∈F
+prime
+. Therefore k must be odd. This establishes that x∈X. square
+These proofs illustrate how to translate back and forth between the lan-
+guageofsetsandthelanguageoflogic.Forexample,thestatement“x∈E∩F
+prime
+”
+was translated as “x∈E and x∈F
+prime
+.” In general, any statement involving sets
+and the symbols ∩, ∪, ⊆,=,and
+prime
+translates into a logical statement using
+the connectives ∧, ∨, →, ↔, and ¬, respectively. So all the work we did in
+propositional and predicate logic (Sections 1.2 and 1.3) will now pay oﬀ when
+dealing with sets.</p>
+    </div>
+  </body>
+</html>
