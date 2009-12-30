@@ -76,6 +76,14 @@
         
         _pageLayoutController = [[[_book pageLayoutControllerClass] alloc] initWithBook:_book fontPointSize:desiredPointSize];  
         
+        self.opaque = YES;
+    }
+    return self;
+}
+
+- (void)willMoveToWindow:(UIWindow *)newWindow
+{
+    if(!self.window) {
         _pageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
         _pageTurningView.delegate = self;
         [self addSubview:_pageTurningView];
@@ -95,27 +103,30 @@
         _pageTurningView.currentPageView = currentPageViewAndIndexPoint.first;
         _pageNumber = pageNumber;
         [self _updatePageNumberLabel];
-
-        _pageTurningView.dimQuotient = _dimQuotient;
         
-        self.opaque = YES;
+        _pageTurningView.dimQuotient = _dimQuotient;
     }
-    return self;
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)didMoveToWindow
 {
-    if(self.appearAtCoverThenOpen) {
-        EucBookPageIndexPoint *indexPoint = [_book currentPageIndexPoint];
-        [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:indexPoint] animated:YES];
-        self.appearAtCoverThenOpen = NO;
-    } 
-    if(self.undimAfterAppearance) {
-        self.undimAfterAppearance = NO;
-        NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];
-        [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
+    if(self.window) {
+        if(self.appearAtCoverThenOpen) {
+            EucBookPageIndexPoint *indexPoint = [_book currentPageIndexPoint];
+            [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:indexPoint] animated:YES];
+            self.appearAtCoverThenOpen = NO;
+        } 
+        if(self.undimAfterAppearance) {
+            self.undimAfterAppearance = NO;
+            NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];
+            [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
+        }  
+    } else {
+        [_pageTurningView removeFromSuperview];
+        [_pageTurningView release];
+        _pageTurningView = nil;
     }
-}    
+}
 
 - (void)stopAnimation
 {
