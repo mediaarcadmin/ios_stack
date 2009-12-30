@@ -68,14 +68,15 @@ typedef struct {
 } EucPageTextViewEndPosition;
 
 // Shold change this to take a "flags" argument instead of this crazy bunch of BOOLs...
-- (EucPageTextViewEndPosition)addParagraphWithWords:(NSArray *)words 
-                                      attributes:(NSArray *)attributes 
-              hyphenationPointsPassedInFirstWord:(NSUInteger)hyphensAlreadyPassed 
-                             indentBrokenLinesBy:(CGFloat)indentBrokenLines
-                                          center:(BOOL)center 
-                                         justify:(BOOL)justify
-                                 justifyLastLine:(BOOL)justifyLastLine
-                                       hyphenate:(BOOL)hyphenate;
+- (EucPageTextViewEndPosition)addParagraphWithWords:(NSArray *)words
+                                         attributes:(NSArray *)attributes 
+                                         wordOffset:(NSUInteger)wordOffset
+                                       hyphenOffset:(NSUInteger)hyphenOffset 
+                                indentBrokenLinesBy:(CGFloat)indentBrokenLinesBy
+                                             center:(BOOL)center 
+                                            justify:(BOOL)justify
+                                    justifyLastLine:(BOOL)justifyLastLine
+                                          hyphenate:(BOOL)hyphenate;
 - (BOOL)addString:(NSString *)string 
            center:(BOOL)center 
           justify:(BOOL)justify

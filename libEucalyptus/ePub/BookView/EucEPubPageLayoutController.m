@@ -284,14 +284,6 @@ static void readRightRaggedJustificationDefault()
             if(wordCount) {
                 NSArray *wordFormattingAttributes = paragraph.wordFormattingAttributes;
                 
-                if(wordOffset && wordOffset <= wordCount) {
-                    wordCount -= wordOffset;
-                    NSRange rangeOnPage = NSMakeRange(wordOffset, wordCount);
-                    words = [words subarrayWithRange:rangeOnPage];
-                    wordFormattingAttributes = [wordFormattingAttributes subarrayWithRange:rangeOnPage];
-                    bookTextView.textIndent = 0;
-                }            
-                
                 EucBookTextStyleTextAlign alignment = globalStyle.textAlign;
                 BOOL shouldCenter = alignment == EucBookTextStyleTextAlignCenter;
                 BOOL shouldJustify = !sRightRaggedJustificationDefault;
@@ -301,7 +293,8 @@ static void readRightRaggedJustificationDefault()
                 EucPageTextViewEndPosition endPosition;
                 endPosition = [bookTextView addParagraphWithWords:words 
                                                        attributes:wordFormattingAttributes 
-                               hyphenationPointsPassedInFirstWord:hyphenOffset
+                                                       wordOffset:wordOffset
+                                                     hyphenOffset:hyphenOffset
                                               indentBrokenLinesBy:0
                                                            center:shouldCenter
                                                           justify:shouldJustify
@@ -326,7 +319,7 @@ static void readRightRaggedJustificationDefault()
                     // Return the next-word position.
                     ret = [[EucBookPageIndexPoint alloc] init];
                     ret.startOfParagraphByteOffset = thisParagraphOffset; 
-                    ret.startOfPageParagraphWordOffset = wordOffset + endPosition.completeWordCount;
+                    ret.startOfPageParagraphWordOffset = endPosition.completeWordCount;
                     ret.startOfPageWordHyphenOffset = endPosition.hyphenationPointsPassedInNextWord;                    
                 }        
                 
