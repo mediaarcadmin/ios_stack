@@ -47,4 +47,6 @@
 - (NSArray *)paragraphWordsForParagraphWithId:(uint32_t)paragraphId;
 - (uint32_t)paragraphIdForParagraphAfterParagraphWithId:(uint32_t)paragraphId;
 
+- (void)getCurrentParagraphId:(uint32_t *)id wordOffset:(uint32_t *)wordOffset;
+
 @end

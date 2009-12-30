@@ -828,4 +828,15 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return paragraph.nextParagraphByteOffset;
 }
 
+- (void)getCurrentParagraphId:(uint32_t *)id wordOffset:(uint32_t *)offset
+{
+    EucBookPageIndexPoint *currentPageIndexPoint = self.currentPageIndexPoint;
+    if(id) {
+        *id = currentPageIndexPoint.startOfParagraphByteOffset;
+    }
+    if(offset) {
+        *offset = currentPageIndexPoint.startOfPageParagraphWordOffset;
+    }
+}
+
 @end
