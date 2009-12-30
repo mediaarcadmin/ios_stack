@@ -53,7 +53,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
             mapAndFont = [sFontNamesAndFlagsToMapsAndFonts objectForKey:fontKey];
             
             if(!mapAndFont) {
-				THTimer *timer = [THTimer timerWithName:[NSString stringWithFormat:@"Create %@ renderer", fontName]];
+				//THTimer *timer = [THTimer timerWithName:[NSString stringWithFormat:@"Create %@ renderer", fontName]];
 				
                 // Look up the font in the bundle, and cache it.
                 NSString *fullBundleFontName;;
@@ -267,7 +267,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                         CGFontRelease(font);
                     }
                 }
-				[timer report];
+				//[timer report];
             }
         }
         pthread_mutex_unlock(&sFontCacheMutex);
