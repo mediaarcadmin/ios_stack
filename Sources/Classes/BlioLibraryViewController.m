@@ -319,8 +319,6 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   self.navigationItem.title = @"Bookshelf";
-  self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];  
 }
 
 - (void)didReceiveMemoryWarning {
@@ -845,47 +843,42 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 }
 
 - (void)popBookWillStart:(NSString *)animationID context:(void *)context {
-  [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
+  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
   [self.tableView setUserInteractionEnabled:NO];
 }
 
 - (void)popBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
   if (finished) {
-    [UIView beginAnimations:@"fadeBook" context:context];
-    [UIView setAnimationDuration:0.5f];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(fadeBookDidStop:finished:context:)];
-    [(UIView *)context setAlpha:0.0f];
-    [UIView commitAnimations];
-    
+    [(UIView *)context removeFromSuperview];
+      
     [self.currentBookView setAlpha:1.0f];
     [self.tableView setUserInteractionEnabled:YES];
     [self.tableView setAlpha:1.0f];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
 
     BlioMockBook *currentBook = [self.currentBookView book];
     self.currentBookPath = [currentBook bookPath];
     self.currentPdfPath = [currentBook pdfPath];
     
     if (nil != self.currentBookPath) {
-      [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
+      self.navigationController.navigationBarHidden = YES; // We already animated the cover over it.
       
       EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-      EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
-      [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
-      
-      bookViewController.overriddenToolbar = [self toolbarForReadingView];
+      EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:book];
+      bookView.appearAtCoverThenOpen = YES;
+        
+      EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:bookView];
       bookViewController.toolbarsVisibleAfterAppearance = YES;
+      bookViewController.returnToNavigationBarHidden = NO;
+      bookViewController.returnToStatusBarStyle = UIStatusBarStyleDefault;
+        
+      bookViewController.overriddenToolbar = [self toolbarForReadingView];
       [book release];
+      [bookView release];
       [self.navigationController pushViewController:bookViewController animated:NO];
       [bookViewController release];
     }
 
   }
-}
-
-- (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-  [(UIView *)context removeFromSuperview];
 }
 
 @end

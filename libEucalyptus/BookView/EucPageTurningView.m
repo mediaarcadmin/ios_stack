@@ -988,6 +988,9 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     if([touches containsObject:_touch]) {
         // If first movement
         if(!_animating) {
+            // usleep(180000); Test to see if it would be acceptable to re-cache
+            // the view here (it would not).
+            
             // Store touch, note direction.
             BOOL shouldAnimate = YES;
             CGPoint location = [_touch locationInView:self];
