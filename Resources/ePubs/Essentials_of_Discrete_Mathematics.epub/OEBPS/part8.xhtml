@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Unknown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="DC.Title" content="Unknown"/>
+    <style type="text/css">body { margin: 0%;padding: 0%;} .cover { text-align: center;margin-left: 0%;margin-right: 0%;} .coverpage { text-align: center;vertical-align: middle;text-shadow: #000 0px 1px 1px;margin-left: 0px;margin-right: 0px;margin-top: 0px;padding-top: 3em;margin-botton: 3em;font-size: 3.0em;background: #2F4F4F;} .coverimg { margin-top: 0%;margin-left: 0%;margin-right: 0%;width: 100%;} p { margin-left: 1em;margin-right: 1em;text-align: justify;} span { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} div { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} p { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} blockquote { margin-top: 0%;margin-bottom: 0%;margin-left: 1em;margin-right: 1em;text-align: justify;text-indent: 1.5em;} h1 { text-align: center;} h2 { text-align: center;} h3 { text-align: center;} h4 { text-align: center;} h5 { text-align: center;} h6 { text-align: center;}</style>
+  </head>
+  <body>
+    <div>
+      <h1>Unknown</h1>
+    </div>
+    <div>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 197 — #57
+✐
+✐
+✐
+✐
+✐
+✐
+3.5 Recursive Data Structures 197
+T
+1
+T
+2
+r
+2
+r
+1
+r
+isa binary search tree with root r.
+You should convince yourself that the procedure outlined in Example 2.5
+always produces a binary search tree. The key observation is that part R of
+the recursive deﬁnition is satisﬁed.
+Given a binary search tree, we would like to be able to produce a listing
+of its nodes in order. We can deﬁne such a listing, separated by commas, as a
+recursive function.
+Deﬁnition 3.9 Deﬁne a function InOrder(T), whereT isa binary search tree,
+3
+asfollows.
+B
+1
+. If T isthe empty tree, InOrder( T) = “” (the empty listing).
+B
+2
+. If T isa single node r, then InOrder(T)=“r”.
+R. If T hasroot r and subtrees T
+1
+and T
+2
+, then
+InOrder(T) = “InOrder(T
+1
+),r,InOrder(T
+2
+)”
+where the commas are part of the listing unless T
+1
+or T
+2
+isempty.
+Let’sstep through thisdeﬁnition for the binary search tree in Figure 2.7
+on page 69. Let T represent the whole tree, let L represent the subtree on the
+left containing complexify, clueless, and jazzed, and letR be the subtree on the
+right containing poset, phat, and sheaﬁfy. Then
+InOrder(T) = InOrder(L),macchiato,InOrder(R)
+= InOrder(clueless),complexify,InOrder(jazzed),
+macchiato,
+InOrder(phat),poset,InOrder(sheaﬁfy)
+= clueless, complexify, jazzed, macchiato, phat, poset, sheaﬁfy.
+So InOrder produces a listing of the words in alphabetical order. To see that
+InOrder alwaysdoesthis, observe that part R of Deﬁnition 3.9 alwaysproduces
+wordsthat are in order, provided part R of Deﬁnition 3.8 holds.
+3. Observethatthisdeﬁnitionappliestoagenericbinarytree.Wewilldiscussthisandsimilar
+deﬁnitions further in Chapter 5.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 198 — #58
+✐
+✐
+✐
+✐
+✐
+✐
+198 Chapter 3 a73 Recursive Thinking
+Exercises 3.5
+1. Let L be a list, as in Deﬁnition 3.3. Deﬁne a numerical function f as
+follows.
+B. If L=x, a single element, then f(L)=1.
+R. If L=L
+prime
+,xfor some list L
+prime
+, then f(L)=f(L
+prime
+)+1.
+(a) Show the stepsof a “top-down” computation, asin Example 3.28,
+to ﬁnd the value of f(veni,vidi,vici).
+(b) What doesthe value of f(L) tell you about the list L, in general?
+(c) Prove your assertion in part (b), using induction.
+2. Consider the following function p, where L isa list.
+B. If L=x, a single element, then p(L)=“x”.
+R. If L=L
+prime
+,xfor some list L
+prime
+, then p(L)=“x,p(L
+prime
+)”.
+(a) If L= john,paul,george,ringo, what is p(L)?
+(b) What doesthe function p do, in general?
+(c) Prove your assertion in part (b), using induction.
+3. Deﬁne a function max: R×R −→ R by
+max(a,b)=
+braceleftBigg
+a if a>b
+b if b≥a.
+(a) Use this function to write a recursive function LMax(L) that returns
+the greatest value in L, where L is a list of numbers.
+(b) Prove that your LMax function works. In other words, prove that
+LMax(L) returns the greatest value in the list L.
+4. Prove that the number of elementsin any SList of depth p is2
+p
+. (Use
+induction on p.)
+5. Prove that the elements of an SList are in strictly increasing order from
+left to right. That is, if x
+1
+,x
+2
+,x
+3
+,...,x
+2
+p are the elementsof the list,
+show that
+x
+1
+&lt;x
+2
+&lt;x
+3
+&lt;···&lt;x
+2
+p.
+(Use induction on p.)</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 199 — #59
+✐
+✐
+✐
+✐
+✐
+✐
+3.5 Recursive Data Structures 199
+6. Prove that the BSearch function (Deﬁnition 3.7) works. In other words,
+prove that
+BSearch(t,L) ⇐⇒ t isin L.
+7. Prove that the Sum function of Example 3.29 works. In other words,
+prove, for any p ≥ 0, that if a
+1
+,a
+2
+,...,a
+2
+p are the elementsof L, then
+Sum(L)=a
+1
++a
+2
++···+a
+2
+p.
+8. Suppose L isan SList of depth p. Find a recurrence relation for A(p), the
+number of timestwo numbersare added when evaluating Sum( L).
+9. Write a recursive function d(L) that returnsthe depth of an SList L.
+10. Write a recursive function a(L) that computesthe average of an SList L.
+Use the fact that the average of a list is the average of the averages of
+each half.
+11. Let L= ((10,20),(30,40)) be an SList.
+(a) Compute Search(15,L), showing all steps.
+(b) Compute BSearch(15,L), showing all steps.
+12. Let L= (((15,25),(35,45)),((50,60),(70,80))) be an SList.
+(a) Compute Search(15,L), showing all steps.
+(b) Compute BSearch(15,L), showing all steps.
+13. Modify the InOrder function (Deﬁnition 3.9) so that it lists the items in
+a binary search tree in reverse order.
+*14. Write a recursive search function for ﬁnding an element in a binary search
+tree. You should use the notion of a left or right subtree of a node in your
+deﬁnition. (In Deﬁnition 3.8, the left and right subtrees are T
+1
+and T
+2
+,
+respectively.) Make sure you account for empty nodes.
+15. Deﬁne a UList asfollows. A UList is
+B. a number x,or
+R. a pair (X,Y), where X and Y are ULists.
+(a) Use induction to prove that, for any n ≥ 1, a UList containing n
+numberscan be constructed.
+(b) Write a deﬁnition of a recursive function Product(L) that inputsa
+UList and returnsthe product of all the numbersin the UList.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 200 — #60
+✐
+✐
+✐
+✐
+✐
+✐
+200 Chapter 3 a73 Recursive Thinking
+(c) Deﬁne a USearch function that tellswhether a given number isin
+the list.
+(d) Prove that your USearch function works.
+16. Deﬁne a NumberSquare as
+B. A single number x.
+R. A diagram
+bracketleftBigg
+S
+1
+S
+2
+S
+3
+S
+4
+bracketrightBigg
+where S
+1
+,S
+2
+,S
+3
+,S
+4
+are NumberSquareseach containing the same
+amount of numbers.
+Here are three examplesof NumberSquares:
+4,
+bracketleftBigg
+417
+13 1
+bracketrightBigg
+,
+
+
+
+
+
+
+bracketleftBigg
+312
+11 7
+bracketrightBiggbracketleftBigg
+51
+24
+bracketrightBigg
+bracketleftBigg
+610
+73
+bracketrightBiggbracketleftBigg
+417
+13 1
+bracketrightBigg
+
+
+
+
+
+
+.
+Deﬁne a recursive function Trace(S) that returnsthe sum of the upper-
+left/lower-right diagonal of the NumberSquareS. (For the examplesabove,
+the Trace function should return 4, 5, and 15, respectively.)
+17. Refer to the deﬁnition of NumberSquare in Exercise 16. The depth of a
+NumberSquare isthe number of pairsof bracketsneeded to write the
+square. (So the given examples have depth 0, 1, and 2, respectively.)
+Prove, using induction on p, that a NumberSquare of depth p has4
+p
+numbersin it.
+18. Deﬁne a TGraph asfollows.
+B. Thisisa TGraph:
+R. If G isa TGraph and v isa vertex of G, then thisisalso a TGraph:
+G
+v
+Draw an example of a TGraph with seven vertices.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 201 — #61
+✐
+✐
+✐
+✐
+✐
+✐
+3.5 Recursive Data Structures 201
+19. Refer to Exercise 18. Prove, by induction, that every vertex in a TGraph
+haseven degree.
+20. Refer to Exercise 18. Prove, by induction, that any TGraph can be three-
+colored.</p>
+      <p>✐
+✐
+“48927˙CH03˙Hunter” — 2008/10/20 — 15:18 — page 202 — #62
+✐
+✐
+✐
+✐
+✐
+✐</p>
+    </div>
+  </body>
+</html>

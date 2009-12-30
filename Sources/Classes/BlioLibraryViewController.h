@@ -6,6 +6,10 @@
 //  Copyright Things Made Out Of Other Things 2009. All rights reserved.
 //
 
+#import "AcapelaTTS.h"
+
+@class BlioTestParagraphWords;
+
 typedef enum {
   kBlioLibraryLayoutGrid = 0,
   kBlioLibraryLayoutList = 1,
@@ -49,8 +53,10 @@ typedef enum {
   NSString *_currentPdfPath;
   NSArray *_books;
   BlioLibraryLayout _libraryLayout;
+  AcapelaTTS* _acapelaTTS;
   BOOL _audioPlaying;
-  UIToolbar *theToolbar;
+  
+  BlioTestParagraphWords *_testParagraphWords;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *currentBookView;

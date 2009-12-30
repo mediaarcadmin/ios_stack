@@ -13,6 +13,8 @@
 #import "BlioViewSettingsSheet.h"
 #import "BlioMockBook.h"
 
+#import "BlioTestParagraphWords.h"
+
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
 static const CGFloat kBlioLibraryListRowHeight = 76;
@@ -639,7 +641,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     
     CGFloat actualFontSize = bookView.fontPointSize;
     CGFloat bestDifference = CGFLOAT_MAX;
-    BlioFontSize bestFontSize;
+    BlioFontSize bestFontSize = kBlioFontSizeMedium;
     for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
       CGFloat thisDifference = fabsf(kBlioFontPointSizeArray[i] - actualFontSize);
       if(thisDifference < bestDifference) {
@@ -724,16 +726,39 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 }
 
 - (void)toggleAudio:(id)sender {
-  UIBarButtonItem *item = (UIBarButtonItem *)sender;
-  self.audioPlaying = !self.audioPlaying;
-  
-  UIImage *audioImage = nil;
-  if (self.audioPlaying)
-    audioImage = [UIImage imageNamed:@"icon-pause.png"];
-  else 
-    audioImage = [UIImage imageNamed:@"icon-play.png"];
+  if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+    EucBookView *bookView = (EucBookView *)bookViewController.bookView;
     
-  [item setImage:audioImage];
+    UIBarButtonItem *item = (UIBarButtonItem *)sender;
+    
+    UIImage *audioImage = nil;
+    if (self.audioPlaying) {
+      [_testParagraphWords stopParagraphGetting];
+      [_testParagraphWords release];
+      _testParagraphWords = nil;
+      
+      [_acapelaTTS stopSpeaking];
+      audioImage = [UIImage imageNamed:@"icon-play.png"];
+    } else { 
+      EucEPubBook *book = (EucEPubBook*)bookView.book;
+      uint32_t paragraphId, wordOffset;
+      [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+      _testParagraphWords = [[BlioTestParagraphWords alloc] init];
+      [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
+      
+      if (_acapelaTTS == nil) {
+        _acapelaTTS = [[AcapelaTTS alloc] init];
+        [_acapelaTTS initTTS];
+      }
+      [_acapelaTTS setRate:180];  // Will get from settings.
+      [_acapelaTTS setVolume:70];  // Likewise.
+      [_acapelaTTS startSpeaking:@"Hello my name is Laura.  I hope you like my voice because you're stuck with it."];
+      audioImage = [UIImage imageNamed:@"icon-pause.png"];
+    }
+    self.audioPlaying = !self.audioPlaying;
+    [item setImage:audioImage];
+  }
 }
 
 - (void)changeLibraryLayout:(id)sender {
