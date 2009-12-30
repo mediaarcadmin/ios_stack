@@ -235,14 +235,15 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     ++_stringsCount;
 }
 
-- (EucPageTextViewEndPosition)addParagraphWithWords:(NSArray *)words 
-                                      attributes:(NSArray *)attributes 
-              hyphenationPointsPassedInFirstWord:(NSUInteger)hyphensAlreadyPassed
-                             indentBrokenLinesBy:(CGFloat)indentBrokenLinesBy
-                                          center:(BOOL)center
-                                         justify:(BOOL)justify
-                                 justifyLastLine:(BOOL)justifyLastLine
-                                       hyphenate:(BOOL)hyphenate
+- (EucPageTextViewEndPosition)addParagraphWithWords:(NSArray *)words
+                                         attributes:(NSArray *)attributes 
+                                         wordOffset:(NSUInteger)wordOffset
+                                       hyphenOffset:(NSUInteger)hyphenOffset 
+                                indentBrokenLinesBy:(CGFloat)indentBrokenLinesBy
+                                             center:(BOOL)center 
+                                            justify:(BOOL)justify
+                                    justifyLastLine:(BOOL)justifyLastLine
+                                          hyphenate:(BOOL)hyphenate;
 {
     pthread_mutex_lock(&sHyphenationPointCacheMutex);
     
@@ -258,9 +259,9 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     // line (otherwise, start at the top of the page).
     startingY = _nextLineY;
         
-    if(hyphensAlreadyPassed) {
+    if(hyphenOffset) {
         NSMutableArray *mutableWords = [[words mutableCopy] autorelease];
-        NSString *firstWord = [words objectAtIndex:0];
+        NSString *firstWord = [words objectAtIndex:wordOffset];
 
         NSUInteger rulesPassed = 0;
         vector<const HyphenationRule*> *hyphenationPoints = [self _hyphenationPointsForWord:firstWord];
@@ -272,17 +273,17 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             const HyphenationRule *rule = *it;
             if(rule != NULL) {
                 ++rulesPassed;
-                if(rulesPassed == hyphensAlreadyPassed) {
+                if(rulesPassed == hyphenOffset) {
                     std::pair<CFStringRef, int> applied = rule->create_applied_string_second(NULL);
                     NSUInteger skip = applied.second;                    
 
                     if(applied.first) {
                         NSString *afterBreak = (NSString *)applied.first;
-                        [mutableWords replaceObjectAtIndex:0 withObject:
+                        [mutableWords replaceObjectAtIndex:wordOffset withObject:
                           [afterBreak stringByAppendingString:[firstWord substringFromIndex:strPos + skip]]];
                         [afterBreak release];
                     } else {
-                        [mutableWords replaceObjectAtIndex:0 withObject:[firstWord substringFromIndex:strPos + skip]];
+                        [mutableWords replaceObjectAtIndex:wordOffset withObject:[firstWord substringFromIndex:strPos + skip]];
                     }
                     break;
                 }
@@ -296,13 +297,18 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     CGRect frame = self.frame;
     CGFloat maxY = frame.size.height;
     if(startingY <= maxY) {     
-        NSInteger wordCount = [words count];
-        NSInteger breaksCapacity = wordCount * 2;
-        THBreak *breaks = (THBreak *)malloc(breaksCapacity * sizeof(THBreak));
+        NSUInteger wordCount = [words count];
         int *wordWidths = (int *)malloc(wordCount * sizeof(int));
+        NSUInteger visibleWordCount = wordCount - wordOffset;
+        int breaksCapacity = visibleWordCount * 4;
+        THBreak *breaks = (THBreak *)malloc(breaksCapacity * sizeof(THBreak));
         // We'll cache the hyphenation points for each word in here for use
         // during layout.
         vector<const HyphenationRule*> * *hyphenationPointsForWords = (vector<const HyphenationRule*> * *)malloc(sizeof(vector<const HyphenationRule*> *) * wordCount);
+        
+        // Note that if there's an offset passed in, the widths and
+        // hyphenation points for words before the offset will be undefined
+        // in the arrays allocated above.
         
         // The justifier takes input as if we have one long logical line.
         // As an optimisation, we calculate the maximum length of all the lines
@@ -314,10 +320,11 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
         
         // Calculate the possible break points.
         int breakIndex = 0;
-        int lineSoFarWidth = _textIndent;
+        int lineSoFarWidth = wordOffset ?  0 : _textIndent;
         NSUInteger laidOutWordsCount = 0;
-        for(NSString *word in words) {
-            EucBookTextStyle *attribute = [attributes objectAtIndex:laidOutWordsCount];
+        for(NSUInteger i = wordOffset; i < wordCount; ++i) {
+            NSString *word = [words objectAtIndex:i];
+            EucBookTextStyle *attribute = [attributes objectAtIndex:i];
             EucBookTextStyleFlag attributeFlags = attribute.flags;
             THStringRenderer *renderer = [attribute stringRenderer];
             UIImage *image = attribute.image;
@@ -331,7 +338,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             
             if(!hyphenate || [word length] < 5 || indentBrokenLinesBy || (attributeFlags & EucBookTextStyleFlagDontHyphenate) != 0 || image) {
                 // No use hyphenating words this small.
-                hyphenationPointsForWords[laidOutWordsCount] = NULL;
+                hyphenationPointsForWords[i] = NULL;
             } else {
                 // Calculate the hyphenation points.
                 // An auto_ptr is returned.  We release() its ownership, and store
@@ -339,7 +346,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
                 // later use.  The vecors are deleted at the end of this method
                 // before the array is freed.
                 vector<const HyphenationRule*> *hyphenationPoints = [self _hyphenationPointsForWord:word];
-                hyphenationPointsForWords[laidOutWordsCount] = hyphenationPoints;
+                hyphenationPointsForWords[i] = hyphenationPoints;
                 
                 // For each found hyphenation point, there will be a rule for
                 // the hyphenation at that point in the returned hyphenationPoints 
@@ -399,7 +406,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
                         // Resize the breaks array if we've reached the end 
                         // (probably will not happen).
                         if(breakIndex >= breaksCapacity) {
-                            breaksCapacity += wordCount;
+                            breaksCapacity += visibleWordCount;
                             breaks = (THBreak *)realloc(breaks, breaksCapacity * sizeof(THBreak));
                         }
                     }
@@ -433,7 +440,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             }
             ++breakIndex;
 
-            wordWidths[laidOutWordsCount] = wordWidth;
+            wordWidths[i] = wordWidth;
             ++laidOutWordsCount;
             
             // No use in continuing if we couldn't fit more on the page.
@@ -507,8 +514,8 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
         int hyphenCountAtEndOfLastLine = 0;              
                 
         // The index of the next word to add.
-        int wordToAddIndex = 0;
-        int beforeLineWordToAddIndex = 0;
+        int wordToAddIndex = wordOffset;
+        int beforeLineWordToAddIndex = wordOffset;
         NSUInteger beforeLineStringsCount = 0;
         int beforeLineHyphenCountAtEndOfLastLine = 0;              
         int usedBreakIndexIndex = 0;
@@ -862,11 +869,11 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
         ret.completeWordCount = wordToAddIndex;
         ret.hyphenationPointsPassedInNextWord = hyphenCountAtEndOfLastLine;
     } else { 
-        ret.hyphenationPointsPassedInNextWord = hyphensAlreadyPassed;
+        ret.hyphenationPointsPassedInNextWord = hyphenOffset;
     }
     
-    if(hyphensAlreadyPassed && [words count] == 1) {
-        ret.hyphenationPointsPassedInNextWord += hyphensAlreadyPassed;
+    if(hyphenOffset && (words.count - wordOffset) == 1) {
+        ret.hyphenationPointsPassedInNextWord += hyphenOffset;
     }
     
     ret.completeLineCount = linesAdded;
@@ -955,7 +962,8 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
         
         endPosition = [self addParagraphWithWords:words
                                        attributes:attributes
-               hyphenationPointsPassedInFirstWord:0
+                                       wordOffset:0
+                                     hyphenOffset:0
                               indentBrokenLinesBy:0
                                            center:center
                                           justify:justify
