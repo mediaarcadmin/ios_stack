@@ -417,11 +417,6 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 [sectionsBuild sortUsingSelector:@selector(compare:)];
             }
         } else {
-            NSString *src = [_manifest objectForKey:[_spine objectAtIndex:0]];
-            NSURL *srcUrl = [NSURL URLWithString:src relativeToURL:baseUrl];
-            src = [[srcUrl path] stringByReplacingOccurrencesOfString:_path
-                                                           withString:@""];
-            
             EucBookSection *newSection = [[EucBookSection alloc] init];
             [newSection setStartOffset:0];
             [newSection setKind:kBookSectionNondescript];
