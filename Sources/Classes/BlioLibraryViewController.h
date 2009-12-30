@@ -50,6 +50,7 @@ typedef enum {
   NSArray *_books;
   BlioLibraryLayout _libraryLayout;
   BOOL _audioPlaying;
+  UIToolbar *theToolbar;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *currentBookView;

@@ -10,7 +10,7 @@
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookViewController.h>
 #import "BlioLayoutView.h"
-#import "BlioViewSettingsController.h"
+#import "BlioViewSettingsSheet.h"
 #import "BlioMockBook.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
@@ -353,8 +353,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 
 - (UIToolbar *)toolbarForReadingView {
   UIToolbar *readingToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-  readingToolbar.barStyle = UIBarStyleBlack;
-  readingToolbar.translucent = YES;
+  readingToolbar.barStyle = UIBarStyleBlackTranslucent;
   
   NSMutableArray *readingItems = [NSMutableArray array];
   UIBarButtonItem *item;
@@ -706,15 +705,18 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 
 - (void)showAddMenu:(id)sender {
   UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
-  [aActionSheet showInView:self.navigationController.visibleViewController.view];
+  aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+  aActionSheet.delegate = self;
+  UIToolbar *toolbar = (UIToolbar *)[(EucBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
+  [aActionSheet showFromToolbar:toolbar];
   [aActionSheet release];
 }
 
 - (void)showViewSettings:(id)sender {
-  BlioViewSettingsController *aBlioViewSettingsController = [[BlioViewSettingsController alloc] init];
-  aBlioViewSettingsController.delegate = self;
-  [self.navigationController.visibleViewController presentModalViewController:aBlioViewSettingsController animated:YES];
-  [aBlioViewSettingsController release];
+  BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
+  UIToolbar *toolbar = (UIToolbar *)[(EucBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
+  [aSettingsSheet showFromToolbar:toolbar];
+  [aSettingsSheet release];
 }
 
 - (void)dismissViewSettings:(id)sender {
