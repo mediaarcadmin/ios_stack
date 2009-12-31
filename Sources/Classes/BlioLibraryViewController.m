@@ -937,8 +937,11 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
-	NSLog(@"About to speak a word.");
-	[_acapelaTTS setCurrentWord:[_acapelaTTS currentWord]+1];
+    NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
+    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+    EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+    [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWord];
+    [_acapelaTTS setCurrentWord:[_acapelaTTS currentWord]+1];
 }
 
 #pragma mark -
