@@ -50,6 +50,10 @@
     BOOL _paginationIsComplete;
     
     UIView *_pageSliderTrackingInfoView;    
+    
+    NSMutableArray *_highlightLayers;
+    uint32_t _highlightParagraphAfterTurn;
+    uint32_t _highlightWordOffsetAfterTurn;
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;

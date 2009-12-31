@@ -39,7 +39,8 @@ using namespace Hyphenate;
         _stringsCount = 0;
         _stringsWithAttributes = (NSString **)malloc(_stringsCapacity * sizeof(id));
         _stringRects = (CGRect *)malloc(_stringsCapacity * sizeof(CGRect));
-	
+        _stringParagraphAndWordOffsets = (uint64_t *)malloc(_stringsCapacity * sizeof(uint64_t));
+        
         _sharedHyphenator = (void *)SharedHyphenator::sharedHyphenator();
         
         EucBookTextStyle *style = [[EucBookTextStyle alloc] init];
@@ -63,6 +64,7 @@ using namespace Hyphenate;
     }
     free(_stringsWithAttributes);
     free(_stringRects);
+    free(_stringParagraphAndWordOffsets);
         
 	[super dealloc];
 }
@@ -219,12 +221,14 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     return ret;
 }
 
-- (void)addWord:(NSString *)word inRect:(CGRect)rect attributes:(EucBookTextStyle *)attributes
+- (void)addWord:(NSString *)word inRect:(CGRect)rect attributes:(EucBookTextStyle *)attributes 
+    paragraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 {
     if(_stringsCount == _stringsCapacity) {
         _stringsCapacity *= 2;
         _stringsWithAttributes = (NSString **)realloc(_stringsWithAttributes, _stringsCapacity * sizeof(id));
         _stringRects = (CGRect *)realloc(_stringRects, _stringsCapacity * sizeof(CGRect));
+        _stringParagraphAndWordOffsets = (uint64_t *)realloc(_stringParagraphAndWordOffsets, _stringsCapacity * sizeof(uint64_t));
     }
     if(attributes.isNonDefault) {
         _stringsWithAttributes[_stringsCount] = [[THPair alloc] initWithFirst:word second:attributes];
@@ -232,18 +236,20 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
         _stringsWithAttributes[_stringsCount] = [word retain];
     }
     _stringRects[_stringsCount] = rect;
+    _stringParagraphAndWordOffsets[_stringsCount] = (((uint64_t)paragraphId)<<32) | wordOffset;
     ++_stringsCount;
 }
 
-- (EucPageTextViewEndPosition)addParagraphWithWords:(NSArray *)words
-                                         attributes:(NSArray *)attributes 
-                                         wordOffset:(NSUInteger)wordOffset
-                                       hyphenOffset:(NSUInteger)hyphenOffset 
-                                indentBrokenLinesBy:(CGFloat)indentBrokenLinesBy
-                                             center:(BOOL)center 
-                                            justify:(BOOL)justify
-                                    justifyLastLine:(BOOL)justifyLastLine
-                                          hyphenate:(BOOL)hyphenate;
+- (EucPageTextViewEndPosition)addParagraphWithId:(uint32_t)paragraphId
+                                           words:(NSArray *)words
+                                      attributes:(NSArray *)attributes 
+                                      wordOffset:(NSUInteger)wordOffset
+                                    hyphenOffset:(NSUInteger)hyphenOffset 
+                             indentBrokenLinesBy:(CGFloat)indentBrokenLinesBy
+                                          center:(BOOL)center 
+                                         justify:(BOOL)justify
+                                 justifyLastLine:(BOOL)justifyLastLine
+                                       hyphenate:(BOOL)hyphenate;
 {
     pthread_mutex_lock(&sHyphenationPointCacheMutex);
     
@@ -769,7 +775,9 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
                 
                 [self addWord:trailingHyphenatedPart 
                        inRect:CGRectMake(currentX, currentY, wordWidth, currentLineHeight) 
-                   attributes:attribute];
+                   attributes:attribute
+                  paragraphId:paragraphId
+                   wordOffset:wordToAddIndex];
                 
                 if(spacesRemainingOnLine && 
                    (attribute.flags & EucBookTextStyleFlagZeroSpace) == 0) {
@@ -796,11 +804,17 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
                 if(stringAttribute.image) {
                     [self addWord:(NSString *)stringAttribute.image 
                            inRect:CGRectMake(currentX, currentY, wordWidth, currentLineHeight) 
-                       attributes:stringAttribute];                                        
+                       attributes:stringAttribute
+                      paragraphId:paragraphId
+                       wordOffset:wordToAddIndex];
+
                 } else {
                     [self addWord:[words objectAtIndex:wordToAddIndex] 
                            inRect:CGRectMake(currentX, currentY, wordWidth, currentLineHeight) 
-                       attributes:stringAttribute];                    
+                       attributes:stringAttribute
+                      paragraphId:paragraphId
+                       wordOffset:wordToAddIndex];
+
                 }
                 
                 if(spacesRemainingOnLine && 
@@ -817,9 +831,13 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             // Lay out the before-line-break portion of the hyphenated word 
             // ending this line, if any.
             if(lastWordOnLineBeforeHyphenPortion) {
+                EucBookTextStyle *stringAttribute = [attributes objectAtIndex:wordToAddIndex];
+                int wordWidth = [[stringAttribute stringRenderer] roundedWidthOfString:lastWordOnLineBeforeHyphenPortion pointSize:[stringAttribute fontPointSizeForPointSize:_pointSize]];
                 [self addWord:lastWordOnLineBeforeHyphenPortion 
-                       inRect:CGRectMake(currentX, currentY, wordWidths[wordToAddIndex], currentLineHeight)  
-                   attributes:[attributes objectAtIndex:wordToAddIndex]];                
+                       inRect:CGRectMake(currentX, currentY, wordWidth, currentLineHeight)  
+                   attributes:stringAttribute
+                  paragraphId:paragraphId
+                   wordOffset:wordToAddIndex];
             }
 
             // Get ready for the next iteration
@@ -960,22 +978,41 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
             }            
         }
         
-        endPosition = [self addParagraphWithWords:words
-                                       attributes:attributes
-                                       wordOffset:0
-                                     hyphenOffset:0
-                              indentBrokenLinesBy:0
-                                           center:center
-                                          justify:justify
-                                  justifyLastLine:NO
-                                        hyphenate:NO];
-            
+        endPosition = [self addParagraphWithId:0
+                                         words:words
+                                    attributes:attributes
+                                    wordOffset:0
+                                  hyphenOffset:0
+                           indentBrokenLinesBy:0
+                                        center:center
+                                       justify:justify
+                               justifyLastLine:NO
+                                     hyphenate:NO];
+        
         if(endPosition.completeWordCount != words.count) {
             [self removeFromCookie:endPosition.removalCookie];
             ret = NO;
         }
     }
     return ret;
+}
+
+- (NSArray *)rectsForWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset
+{
+    NSMutableArray *ret = [[NSMutableArray alloc] initWithCapacity:2];
+    
+    uint64_t key = (((uint64_t)paragraphId) << 32) | wordOffset;
+    for(NSUInteger i = 0; i < _stringsCount; ++i) {
+        if(_stringParagraphAndWordOffsets[i] == key) {
+            [ret addObject:[NSValue valueWithCGRect:_stringRects[i]]];
+            NSLog(@"%@", _stringsWithAttributes[i]);
+        }
+    }
+    if(!ret.count) {
+        [ret release];
+        ret = nil;
+    }
+    return [ret autorelease];
 }
 
 - (void)addBlankLines:(CGFloat)blankLineCount
