@@ -4,25 +4,23 @@
 <dict>
 	<key>/content/index.xhtml</key>
 	<integer>0</integer>
-	<key>/content/index.xhtml#1</key>
-	<integer>485</integer>
 	<key>/content/index.xhtml#10</key>
-	<integer>9200</integer>
-	<key>/content/index.xhtml#2</key>
-	<integer>684</integer>
+	<integer>9105</integer>
 	<key>/content/index.xhtml#3</key>
-	<integer>2216</integer>
+	<integer>2121</integer>
 	<key>/content/index.xhtml#4</key>
-	<integer>2812</integer>
+	<integer>2717</integer>
 	<key>/content/index.xhtml#5</key>
-	<integer>4121</integer>
+	<integer>4026</integer>
 	<key>/content/index.xhtml#6</key>
-	<integer>5433</integer>
+	<integer>5338</integer>
 	<key>/content/index.xhtml#7</key>
-	<integer>6577</integer>
+	<integer>6482</integer>
 	<key>/content/index.xhtml#8</key>
-	<integer>7611</integer>
+	<integer>7516</integer>
 	<key>/content/index.xhtml#9</key>
-	<integer>8241</integer>
+	<integer>8146</integer>
+	<key>/content/index.xhtml#coverimage</key>
+	<integer>485</integer>
 </dict>
 </plist>
