@@ -11,14 +11,14 @@
 
 
 @interface BlioMockBook : NSObject {
-  NSString *title;
-  NSString *author;
-  NSString *coverPath;
-  NSString *bookPath;
-  NSString *pdfPath;
-  CGFloat progress;
-  CGFloat proportionateSize;
-  UIImage *coverThumb;
+    NSString *title;
+    NSString *author;
+    NSString *coverPath;
+    NSString *bookPath;
+    NSString *pdfPath;
+    CGFloat progress;
+    CGFloat proportionateSize;
+    UIImage *coverThumb;
 }
 
 @property (nonatomic, retain) NSString *title;

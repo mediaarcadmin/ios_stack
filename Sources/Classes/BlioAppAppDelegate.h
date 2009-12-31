@@ -7,7 +7,6 @@
 //
 
 @interface BlioAppAppDelegate : NSObject <UIApplicationDelegate> {
-    
     UIWindow *window;
     UINavigationController *navigationController;
 }
