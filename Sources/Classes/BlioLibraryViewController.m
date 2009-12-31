@@ -943,6 +943,13 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 	[_acapelaTTS setCurrentWord:[_acapelaTTS currentWord]+1];
 }
 
+#pragma mark -
+#pragma mark ActionSheet Delegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSLog(@"Action sheet clicked button at index: %d", buttonIndex);
+}
+
 @end
 
 @implementation BlioLibraryTableView
