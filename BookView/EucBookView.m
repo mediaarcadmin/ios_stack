@@ -213,6 +213,18 @@
     return _pageNumber;
 }
 
+- (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+{
+    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+    indexPoint.startOfParagraphByteOffset = paragraphId;
+    indexPoint.startOfPageParagraphWordOffset = wordOffset;
+    NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
+    if(newPageNumber != _pageNumber) {
+        [self setPageNumber:newPageNumber animated:YES];
+    }
+}
+
+
 - (NSString *)displayPageNumber
 {
     return [_pageLayoutController displayPageNumberForPageNumber:self.pageNumber];

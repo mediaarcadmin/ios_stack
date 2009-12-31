@@ -81,12 +81,9 @@
 - (void)jumpToUuid:(NSString *)uuid;
 - (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 
-- (void)stopAnimation;
+- (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 
-/*
-- (void)getStartOfPageParagraphId:(uint32_t *)paragraphId wordOffset:(uint32_t *)wordOffset;
-- (void)setStartOfPageParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
-*/
+- (void)stopAnimation;
 
 // TEMPORARY - esposed to allow contents view to be set up based on this
 // layout controller.  Nod decided how contents view will interface with
