@@ -12,7 +12,7 @@
 
 @implementation AcapelaTTS
 
-@synthesize setupData, engine, ttsLicense, currentWord, currentParagraph, paragraphWords;
+@synthesize setupData, engine, ttsLicense, currentWordOffset, currentParagraph, currentWord, paragraphWords;
 
 - (void)initTTS {
 	[self setTtsLicense:[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd]];

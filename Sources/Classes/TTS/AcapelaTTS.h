@@ -15,7 +15,8 @@
 	AcapelaSpeech* engine;
 	AcapelaLicense* ttsLicense;
 	uint32_t currentParagraph;
-	uint32_t currentWord;
+	uint32_t currentWordOffset;
+	NSString* currentWord;
 	NSArray* paragraphWords;
 }
 
@@ -23,8 +24,9 @@
 @property (nonatomic, retain) setupTTS* setupData;
 @property (nonatomic, retain) AcapelaSpeech* engine;
 @property (nonatomic, retain) NSArray* paragraphWords;
+@property (nonatomic, retain) NSString* currentWord;
 @property (nonatomic) uint32_t currentParagraph;
-@property (nonatomic) uint32_t currentWord;
+@property (nonatomic) uint32_t currentWordOffset;
 
 // These look like they refer to properties, but no.
 // They're pass-through methods to the corresponding

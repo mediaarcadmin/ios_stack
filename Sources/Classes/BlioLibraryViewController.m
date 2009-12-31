@@ -744,28 +744,27 @@ typedef enum {
 		paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
 		wordOffset = 0;
 		//[_acapelaTTS.paragraphWords release];
-		[_acapelaTTS setCurrentWord:wordOffset];
+		[_acapelaTTS setCurrentWordOffset:wordOffset];
 		[_acapelaTTS setCurrentParagraph:paragraphId];
 		[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
 	}
 	else {
 		// Play button has just been pushed.
-		if ( [_acapelaTTS currentWord] == -1 ) { // need condition for whether page changed 
+		if ( [_acapelaTTS currentWordOffset] == -1 ) { // need condition for whether page changed 
             // or set currentWord to -1 in that case
 			// Starting speech for the first time, or for the first time since changing the page
 			// after stopping speech the last time (whew).
 			[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
-			[_acapelaTTS setCurrentWord:wordOffset];
+			[_acapelaTTS setCurrentWordOffset:wordOffset];
 			[_acapelaTTS setCurrentParagraph:paragraphId];
 			[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
 		}
 		// else use the current word and paragraph, which is where we last stopped.
 		// edge case:  what if you stopped speech right after the end of the paragraph?
-		// problem: currentWord is a little off, maybe because of hyphenations?
 	}
 	NSRange pageRange;
-	pageRange.location = [_acapelaTTS currentWord];
-	pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWord];
+	pageRange.location = [_acapelaTTS currentWordOffset];
+	pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset];
 	[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
 }
 
@@ -782,7 +781,7 @@ typedef enum {
 			[_acapelaTTS stopSpeaking];
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
 		} else { 
-			/* For testing
+			/* For testing.  If this is uncommented, comment out the call to startSpeakingParagraph below.
 			 EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
 			 EucBookView *bookView = (EucBookView *)bookViewController.bookView;
 			 EucEPubBook *book = (EucEPubBook*)bookView.book;
@@ -798,7 +797,7 @@ typedef enum {
 				[_acapelaTTS setDelegate:self];
 				[_acapelaTTS setRate:180];   // Will get from settings.
 				[_acapelaTTS setVolume:70];  // Likewise.
-				[_acapelaTTS setCurrentWord:-1];
+				[_acapelaTTS setCurrentWordOffset:-1];
 			}
 			[self startSpeakingParagraph:NO];
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
@@ -936,6 +935,28 @@ typedef enum {
     [(UIView *)context removeFromSuperview];
 }
 
+- (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
+	// For testing
+	NSString* thisWord = [string substringWithRange:characterRange];
+	NSLog(thisWord);
+	
+	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
+									options:0 
+									  range:characterRange].location != NSNotFound);
+	// A hack to get around an apparent Acapela bug.
+	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame);
+	
+	/* Acapela does assemble hyphenated words, so I'm keeping this condition around
+	   just in case it turns out they slip up sometimes.
+	// possible problem:  hyphen as a pause ("He waited- and then spoke.")
+	NSRange lastCharacter;
+	lastCharacter.length = 1;
+	lastCharacter.location = characterRange.location + characterRange.length -1;
+	BOOL wordIsNotHyphenated = ([[string substringWithRange:lastCharacter] compare:@"-"] != NSOrderedSame);
+	 */
+	return wordIsNotPunctuation && wordIsNotRepeated;
+}
+
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
 	if (finishedSpeaking) 
@@ -947,16 +968,14 @@ typedef enum {
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
-    //NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
-    if(characterRange.location + characterRange.length < string.length) {
-        if([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
-                                   options:0 
-                                     range:characterRange].location != NSNotFound) {
-            NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
+   if(characterRange.location + characterRange.length < string.length) {
+		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
+			//NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
             EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
             EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-            [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWord];
-            [_acapelaTTS setCurrentWord:[_acapelaTTS currentWord]+1];
+            [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
+            [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
+			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];
         }
     }
 }
