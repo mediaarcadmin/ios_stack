@@ -10,7 +10,7 @@
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookViewController.h>
 #import "BlioLayoutView.h"
-#import "BlioViewSettingsController.h"
+#import "BlioViewSettingsSheet.h"
 #import "BlioMockBook.h"
 
 #import "BlioTestParagraphWords.h"
@@ -353,8 +353,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 
 - (UIToolbar *)toolbarForReadingView {
   UIToolbar *readingToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-  readingToolbar.barStyle = UIBarStyleBlack;
-  readingToolbar.translucent = YES;
+  readingToolbar.barStyle = UIBarStyleBlackTranslucent;
   
   NSMutableArray *readingItems = [NSMutableArray array];
   UIBarButtonItem *item;
@@ -706,55 +705,96 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 
 - (void)showAddMenu:(id)sender {
   UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
-  [aActionSheet showInView:self.navigationController.visibleViewController.view];
+  aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+  aActionSheet.delegate = self;
+  UIToolbar *toolbar = (UIToolbar *)[(EucBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
+  [aActionSheet showFromToolbar:toolbar];
   [aActionSheet release];
 }
 
 - (void)showViewSettings:(id)sender {
-  BlioViewSettingsController *aBlioViewSettingsController = [[BlioViewSettingsController alloc] init];
-  aBlioViewSettingsController.delegate = self;
-  [self.navigationController.visibleViewController presentModalViewController:aBlioViewSettingsController animated:YES];
-  [aBlioViewSettingsController release];
+  BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
+  UIToolbar *toolbar = (UIToolbar *)[(EucBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
+  [aSettingsSheet showFromToolbar:toolbar];
+  [aSettingsSheet release];
 }
 
 - (void)dismissViewSettings:(id)sender {
   [self dismissModalViewControllerAnimated:YES];
 }
 
+- (void) startSpeakingParagraph:(BOOL)continuingSpeech {
+	EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+	EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+	EucEPubBook *book = (EucEPubBook*)bookView.book;
+	uint32_t paragraphId, wordOffset;
+	if ( continuingSpeech ) {
+		// Continuing to speak, we just need more text.
+		paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
+		wordOffset = 0;
+		//[_acapelaTTS.paragraphWords release];
+		[_acapelaTTS setCurrentWord:wordOffset];
+		[_acapelaTTS setCurrentParagraph:paragraphId];
+		[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+	}
+	else {
+		// Play button has just been pushed.
+		if ( [_acapelaTTS currentWord] == -1 ) { // need condition for whether page changed 
+												// or set currentWord to -1 in that case
+			// Starting speech for the first time, or for the first time since changing the page
+			// after stopping speech the last time (whew).
+			[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+			[_acapelaTTS setCurrentWord:wordOffset];
+			[_acapelaTTS setCurrentParagraph:paragraphId];
+			[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+		}
+		// else use the current word and paragraph, which is where we last stopped.
+		// edge case:  what if you stopped speech right after the end of the paragraph?
+		// problem: currentWord is a little off, maybe because of hyphenations?
+	}
+	NSRange pageRange;
+	pageRange.location = [_acapelaTTS currentWord];
+	pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWord];
+	[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
+}
+
 - (void)toggleAudio:(id)sender {
-  if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-    EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-    
-    UIBarButtonItem *item = (UIBarButtonItem *)sender;
-    
-    UIImage *audioImage = nil;
-    if (self.audioPlaying) {
-      [_testParagraphWords stopParagraphGetting];
-      [_testParagraphWords release];
-      _testParagraphWords = nil;
-      
-      [_acapelaTTS stopSpeaking];
-      audioImage = [UIImage imageNamed:@"icon-play.png"];
-    } else { 
-      EucEPubBook *book = (EucEPubBook*)bookView.book;
-      uint32_t paragraphId, wordOffset;
-      [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
-      _testParagraphWords = [[BlioTestParagraphWords alloc] init];
-      [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
-      
-      if (_acapelaTTS == nil) {
-        _acapelaTTS = [[AcapelaTTS alloc] init];
-        [_acapelaTTS initTTS];
-      }
-      [_acapelaTTS setRate:180];  // Will get from settings.
-      [_acapelaTTS setVolume:70];  // Likewise.
-      [_acapelaTTS startSpeaking:@"Hello my name is Laura.  I hope you like my voice because you're stuck with it."];
-      audioImage = [UIImage imageNamed:@"icon-pause.png"];
-    }
-    self.audioPlaying = !self.audioPlaying;
-    [item setImage:audioImage];
-  }
+	if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+		UIBarButtonItem *item = (UIBarButtonItem *)sender;
+		
+		UIImage *audioImage = nil;
+		if (self.audioPlaying) {
+			[_testParagraphWords stopParagraphGetting];
+			[_testParagraphWords release];
+			_testParagraphWords = nil;
+			
+			[_acapelaTTS stopSpeaking];
+			audioImage = [UIImage imageNamed:@"icon-play.png"];
+		} else { 
+			/* For testing
+			 EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+			 EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+			 EucEPubBook *book = (EucEPubBook*)bookView.book;
+			 uint32_t paragraphId, wordOffset;
+			 [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+			 _testParagraphWords = [[BlioTestParagraphWords alloc] init];
+			 [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
+			 */
+			
+			if (_acapelaTTS == nil) {
+				_acapelaTTS = [[AcapelaTTS alloc] init];
+				[_acapelaTTS initTTS];
+				[_acapelaTTS setDelegate:self];
+				[_acapelaTTS setRate:180];   // Will get from settings.
+				[_acapelaTTS setVolume:70];  // Likewise.
+				[_acapelaTTS setCurrentWord:-1];
+			}
+			[self startSpeakingParagraph:NO];
+			audioImage = [UIImage imageNamed:@"icon-pause.png"];
+		}
+		self.audioPlaying = !self.audioPlaying;  
+		[item setImage:audioImage];
+	}
 }
 
 - (void)changeLibraryLayout:(id)sender {
@@ -879,6 +919,25 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     }
 
   }
+}
+
+- (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+  [(UIView *)context removeFromSuperview];
+}
+
+- (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
+{
+	if (finishedSpeaking) 
+		// Reached end of paragraph.  Start on the next.
+		[self startSpeakingParagraph:YES];
+	//else stop button pushed before end of paragraph.
+}
+
+- (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
+				 ofString:(NSString*)string 
+{
+	NSLog(@"About to speak a word.");
+	[_acapelaTTS setCurrentWord:[_acapelaTTS currentWord]+1];
 }
 
 @end

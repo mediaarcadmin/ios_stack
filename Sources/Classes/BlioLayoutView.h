@@ -10,12 +10,12 @@
 
 
 @interface BlioLayoutView : UIView <UIScrollViewDelegate> {
-  CGPDFDocumentRef pdf;
-  UIScrollView *scrollView;
-  NSMutableArray *pageViews;
-  id navigationController;
+    CGPDFDocumentRef pdf;
+    UIScrollView *scrollView;
+    NSMutableArray *pageViews;
+    id navigationController;
 }
-  
+
 @property (nonatomic, retain) UIScrollView *scrollView;
 @property (nonatomic, retain) NSMutableArray *pageViews;
 @property (nonatomic, assign) id navigationController;
