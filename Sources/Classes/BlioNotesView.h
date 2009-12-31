@@ -13,4 +13,7 @@
 
 }
 
+- (id)initWithPage:(NSInteger)pageNumber;
+- (void)showInView:(UIView *)view;
+
 @end

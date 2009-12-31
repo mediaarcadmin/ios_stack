@@ -12,6 +12,7 @@
 #import <libEucalyptus/EucBookViewController.h>
 #import "BlioLayoutView.h"
 #import "BlioViewSettingsSheet.h"
+#import "BlioNotesView.h"
 #import "BlioMockBook.h"
 
 #import "BlioTestParagraphWords.h"
@@ -33,6 +34,11 @@ static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work 
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
+
+typedef enum {
+    kBlioLibraryAddBookmarkAction = 0,
+    kBlioLibraryAddNoteAction = 1,
+} BlioLibraryAddActions;
 
 @interface BlioLibraryTableView : UITableView
 
@@ -594,6 +600,10 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 #pragma mark -
 #pragma mark BookController State Methods
 
+- (NSInteger)currentPageNumber {
+    return 44;   
+}
+
 - (BlioPageLayout)currentPageLayout {
     EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
     if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]])
@@ -942,10 +952,16 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 }
 
 #pragma mark -
-#pragma mark ActionSheet Delegate Methods
+#pragma mark Add ActionSheet Methods
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSLog(@"Action sheet clicked button at index: %d", buttonIndex);
+    if (buttonIndex == kBlioLibraryAddNoteAction) {
+        UIView *container = self.navigationController.visibleViewController.view;
+        NSInteger pageNumber = [self currentPageNumber];
+        BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber];
+        [aNotesView showInView:container];
+        [aNotesView release];
+    }
 }
 
 @end
