@@ -32,7 +32,8 @@
     NSUInteger _stringsCount;
     id *_stringsWithAttributes;
     CGRect *_stringRects;
-        
+    uint64_t *_stringParagraphAndWordOffsets;
+    
     void *_sharedHyphenator;
     
     UITouch *_touch;
@@ -68,19 +69,22 @@ typedef struct {
 } EucPageTextViewEndPosition;
 
 // Shold change this to take a "flags" argument instead of this crazy bunch of BOOLs...
-- (EucPageTextViewEndPosition)addParagraphWithWords:(NSArray *)words
-                                         attributes:(NSArray *)attributes 
-                                         wordOffset:(NSUInteger)wordOffset
-                                       hyphenOffset:(NSUInteger)hyphenOffset 
-                                indentBrokenLinesBy:(CGFloat)indentBrokenLinesBy
-                                             center:(BOOL)center 
-                                            justify:(BOOL)justify
-                                    justifyLastLine:(BOOL)justifyLastLine
-                                          hyphenate:(BOOL)hyphenate;
+- (EucPageTextViewEndPosition)addParagraphWithId:(uint32_t)paragraphId
+                                           words:(NSArray *)words
+                                      attributes:(NSArray *)attributes 
+                                      wordOffset:(NSUInteger)wordOffset
+                                    hyphenOffset:(NSUInteger)hyphenOffset 
+                             indentBrokenLinesBy:(CGFloat)indentBrokenLinesBy
+                                          center:(BOOL)center 
+                                         justify:(BOOL)justify
+                                 justifyLastLine:(BOOL)justifyLastLine
+                                       hyphenate:(BOOL)hyphenate;
 - (BOOL)addString:(NSString *)string 
            center:(BOOL)center 
           justify:(BOOL)justify
            italic:(BOOL)italic;
+
+- (NSArray *)rectsForWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 
 - (void)addBlankLines:(CGFloat)blankLineCount;
 - (void)addVerticalSpace:(CGFloat)verticalSpace;

@@ -291,15 +291,16 @@ static void readRightRaggedJustificationDefault()
                 BOOL shouldHyphenate = !shouldCenter;
                 
                 EucPageTextViewEndPosition endPosition;
-                endPosition = [bookTextView addParagraphWithWords:words 
-                                                       attributes:wordFormattingAttributes 
-                                                       wordOffset:wordOffset
-                                                     hyphenOffset:hyphenOffset
-                                              indentBrokenLinesBy:0
-                                                           center:shouldCenter
-                                                          justify:shouldJustify
-                                                  justifyLastLine:shouldFairlyJustifyLastLine
-                                                        hyphenate:shouldHyphenate];   
+                endPosition = [bookTextView addParagraphWithId:thisParagraphOffset
+                                                         words:words 
+                                                    attributes:wordFormattingAttributes 
+                                                    wordOffset:wordOffset
+                                                  hyphenOffset:hyphenOffset
+                                           indentBrokenLinesBy:0
+                                                        center:shouldCenter
+                                                       justify:shouldJustify
+                                               justifyLastLine:shouldFairlyJustifyLastLine
+                                                     hyphenate:shouldHyphenate];   
                 
                 // Don't allow orphans.
                 if(endPosition.completeLineCount == 1 && endPosition.completeWordCount != wordCount && paragraphsWithContentCount > 0) {

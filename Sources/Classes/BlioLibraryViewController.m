@@ -947,8 +947,18 @@ typedef enum {
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
-	NSLog(@"About to speak a word.");
-	[_acapelaTTS setCurrentWord:[_acapelaTTS currentWord]+1];
+    //NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
+    if(characterRange.location + characterRange.length < string.length) {
+        if([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
+                                   options:0 
+                                     range:characterRange].location != NSNotFound) {
+            NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
+            EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+            EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+            [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWord];
+            [_acapelaTTS setCurrentWord:[_acapelaTTS currentWord]+1];
+        }
+    }
 }
 
 #pragma mark -
