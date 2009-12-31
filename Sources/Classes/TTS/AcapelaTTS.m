@@ -12,13 +12,12 @@
 
 @implementation AcapelaTTS
 
-@synthesize setupData, engine, ttsLicense;
+@synthesize setupData, engine, ttsLicense, currentWord, currentParagraph, paragraphWords;
 
 - (void)initTTS {
 	[self setTtsLicense:[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd]];
 	[self setSetupData:[[setupTTS alloc] initialize]]; 
 	[self setEngine:[[AcapelaSpeech alloc] initWithVoice:setupData.CurrentVoice license:ttsLicense]];
-	[engine setDelegate:self];
 }
 
 - (BOOL)startSpeaking:(NSString *)string {
@@ -48,20 +47,16 @@
 	[engine setVolume:volume];
 }
 
+- (id)delegate {
+	return [engine delegate];
+}
+
+- (void)setDelegate:(id)delegate {
+	[engine setDelegate:delegate];
+}
+
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError {
 	return [engine objectForProperty:property error:outError];
 }
-
-- (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
-{
-	NSLog(@"Stopped speaking.");
-}
-
-- (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
-				 ofString:(NSString*)string 
-{
-	NSLog(@"About to speak a word.");
-}
-
 
 @end
