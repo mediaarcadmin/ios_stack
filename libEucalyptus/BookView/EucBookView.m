@@ -14,6 +14,7 @@
 #import "EucBookReference.h"
 #import "EucBookPageIndexPoint.h"
 #import "EucBookTitleView.h"
+#import "EucPageTextView.h"
 
 #import "THUIViewAdditions.h"
 #import "THRoundRectView.h"
@@ -24,6 +25,9 @@
 #import "THPair.h"
 #import "THRegex.h"
 #import "THLog.h"
+
+#import <QuartzCore/QuartzCore.h>
+
 
 #define kBookFontPointSizeDefaultsKey @"EucBookFontPointSize"
 
@@ -213,6 +217,72 @@
     return _pageNumber;
 }
 
+- (void)_removeHighlights
+{
+    for(CALayer *oldLayer in _highlightLayers) {
+        [oldLayer removeFromSuperlayer];
+    }
+    [_highlightLayers release];
+}
+
+- (void)_hideHighlights
+{
+    for(CALayer *oldLayer in _highlightLayers) {
+        [oldLayer setHidden:YES];
+    }
+    [_highlightLayers release];
+}
+
+- (void)_showHighlights
+{
+    for(CALayer *oldLayer in _highlightLayers) {
+        [oldLayer setHidden:NO];
+    }
+    [_highlightLayers release];
+}
+
+- (void)_moveHighlightToWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset {
+    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+    EucPageTextView *pageTextView = pageView.bookTextView;
+    
+    NSArray *rects = [pageTextView rectsForWordAtParagraphId:paragraphId wordOffset:wordOffset];
+    
+    NSMutableArray *newHighlightLayers = [[NSMutableArray alloc] initWithCapacity:2];
+    for(NSValue *rectValue in rects) {
+        CGRect rect = [pageView convertRect:[rectValue CGRectValue] fromView:pageTextView];
+        
+        CGPoint newCenter = CGPointMake(rect.origin.x + (rect.size.width / 2.0f), rect.origin.y + (rect.size.height / 2.0f));
+        CALayer *layer;
+        if(_highlightLayers.count) {
+            CGFloat bestDistance = CGFLOAT_MAX;
+            for(CALayer *prospectiveLayer in _highlightLayers) {
+                CGFloat thisDistance = CGPointDistance(prospectiveLayer.position, newCenter);
+                if(thisDistance < bestDistance) {
+                    bestDistance = thisDistance;
+                    layer = [prospectiveLayer retain];
+                }
+            }
+            [_highlightLayers removeObject:layer];
+        } else {
+            layer = [[CALayer alloc] init];
+            layer.cornerRadius = 4;
+            layer.backgroundColor = [[[UIColor blueColor] colorWithAlphaComponent:0.25f] CGColor];            
+        }
+        layer.position = newCenter;
+        layer.bounds = CGRectMake(0, 0, rect.size.width + 4, rect.size.height + 4);
+        [_pageTurningView.layer addSublayer:layer];
+        [newHighlightLayers addObject:layer];
+        [layer release];
+    }
+    for(CALayer *oldLayer in _highlightLayers) {
+        [oldLayer removeFromSuperlayer];
+    }
+    [_highlightLayers release];
+    _highlightLayers = [newHighlightLayers retain];
+        
+    NSLog(@"%@", rects);
+}
+
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 {
     EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
@@ -220,7 +290,12 @@
     indexPoint.startOfPageParagraphWordOffset = wordOffset;
     NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
     if(newPageNumber != _pageNumber) {
+        [self _removeHighlights];
+        _highlightParagraphAfterTurn = paragraphId;
+        _highlightWordOffsetAfterTurn = wordOffset;
         [self setPageNumber:newPageNumber animated:YES];
+    } else {
+        [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
     }
 }
 
@@ -469,6 +544,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
                  pinchNowAt:(CGPoint[])pinchNowAt 
           currentScaledView:(UIView *)currentScaledView
 {
+    [self _removeHighlights];
+    
     CFAbsoluteTime start = 0;
     if(THWillLog()) {
         start = CFAbsoluteTimeGetCurrent();   
@@ -570,6 +647,12 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _pageSlider.scaledValue = [self _pageToSliderByte:pageNumber];
     _pageNumber = pageNumber;   
     [self _updatePageNumberLabel];
+    
+    if(_highlightParagraphAfterTurn) {
+        [self _moveHighlightToWordAtParagraphId:_highlightParagraphAfterTurn wordOffset:_highlightWordOffsetAfterTurn];
+        _highlightParagraphAfterTurn = 0;
+        _highlightWordOffsetAfterTurn = 0;
+    }
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view
