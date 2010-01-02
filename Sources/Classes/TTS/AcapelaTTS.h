@@ -16,6 +16,7 @@
 	AcapelaLicense* ttsLicense;
 	uint32_t currentParagraph;
 	uint32_t currentWordOffset;
+	uint32_t currentPage;
 	NSString* currentWord;
 	NSArray* paragraphWords;
 }
@@ -27,6 +28,7 @@
 @property (nonatomic, retain) NSString* currentWord;
 @property (nonatomic) uint32_t currentParagraph;
 @property (nonatomic) uint32_t currentWordOffset;
+@property (nonatomic) uint32_t currentPage;
 
 // These look like they refer to properties, but no.
 // They're pass-through methods to the corresponding

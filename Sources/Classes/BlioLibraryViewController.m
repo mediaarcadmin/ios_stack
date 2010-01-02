@@ -743,20 +743,25 @@ typedef enum {
 		// Continuing to speak, we just need more text.
 		paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
 		wordOffset = 0;
-		//[_acapelaTTS.paragraphWords release];
 		[_acapelaTTS setCurrentWordOffset:wordOffset];
 		[_acapelaTTS setCurrentParagraph:paragraphId];
+		[_acapelaTTS.paragraphWords release];
+		[_acapelaTTS setParagraphWords:nil];
 		[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
 	}
 	else {
+		[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
 		// Play button has just been pushed.
-		if ( [_acapelaTTS currentWordOffset] == -1 ) { // need condition for whether page changed 
-            // or set currentWord to -1 in that case
-			// Starting speech for the first time, or for the first time since changing the page
-			// after stopping speech the last time (whew).
-			[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+		if ( (paragraphId + wordOffset)!=[_acapelaTTS currentPage] ) {
+			// Starting speech for the first time, or for the first time since changing the 
+			// page or book after stopping speech the last time (whew).
+			[_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
 			[_acapelaTTS setCurrentWordOffset:wordOffset];
 			[_acapelaTTS setCurrentParagraph:paragraphId];
+			if ( _acapelaTTS.paragraphWords != nil ) {
+				[_acapelaTTS.paragraphWords release];
+				[_acapelaTTS setParagraphWords:nil];
+			}
 			[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
 		}
 		// else use the current word and paragraph, which is where we last stopped.
@@ -764,7 +769,7 @@ typedef enum {
 	}
 	NSRange pageRange;
 	pageRange.location = [_acapelaTTS currentWordOffset];
-	pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset];
+	pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset]; 
 	[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
 }
 
@@ -774,10 +779,11 @@ typedef enum {
 		
 		UIImage *audioImage = nil;
 		if (self.audioPlaying) {
+			/* For testing
 			[_testParagraphWords stopParagraphGetting];
 			[_testParagraphWords release];
 			_testParagraphWords = nil;
-			
+			*/
 			[_acapelaTTS stopSpeaking];
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
 		} else { 
@@ -797,7 +803,6 @@ typedef enum {
 				[_acapelaTTS setDelegate:self];
 				[_acapelaTTS setRate:180];   // Will get from settings.
 				[_acapelaTTS setVolume:70];  // Likewise.
-				[_acapelaTTS setCurrentWordOffset:-1];
 			}
 			[self startSpeakingParagraph:NO];
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
@@ -937,14 +942,15 @@ typedef enum {
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
 	// For testing
-	NSString* thisWord = [string substringWithRange:characterRange];
-	NSLog(thisWord);
+	//NSString* thisWord = [string substringWithRange:characterRange];
+	//NSLog(thisWord);
 	
 	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
 									options:0 
 									  range:characterRange].location != NSNotFound);
 	// A hack to get around an apparent Acapela bug.
-	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame);
+	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
+							&& ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame);  // E.g. "I and I (a case I've seen)
 	
 	/* Acapela does assemble hyphenated words, so I'm keeping this condition around
 	   just in case it turns out they slip up sometimes.
@@ -954,6 +960,7 @@ typedef enum {
 	lastCharacter.location = characterRange.location + characterRange.length -1;
 	BOOL wordIsNotHyphenated = ([[string substringWithRange:lastCharacter] compare:@"-"] != NSOrderedSame);
 	 */
+	
 	return wordIsNotPunctuation && wordIsNotRepeated;
 }
 
@@ -968,16 +975,24 @@ typedef enum {
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
-   if(characterRange.location + characterRange.length < string.length) {
+	// Sometimes the string that comes in here is "invalid" according to the debugger.
+	// When that happens, the characterRange of subsequent calls seems always to be invalid
+	// (the condition below fails).  I hope this is because it's an evaluation license.
+	// Another issue (or maybe the same): first word of new paragraph comes in with 
+	// invalid range: location not zero but a high number.
+	// For testing
+	//NSString* thisWord = [string substringWithRange:characterRange];
+	//NSLog(thisWord);
+    if(characterRange.location + characterRange.length < string.length) {
 		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
-			//NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
+			NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
             EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
             EucBookView *bookView = (EucBookView *)bookViewController.bookView;
             [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
             [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
-			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];
+			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
         }
-    }
+   }
 }
 
 #pragma mark -
