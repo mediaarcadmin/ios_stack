@@ -12,6 +12,7 @@
 #import <libEucalyptus/EucBookViewController.h>
 #import "BlioLayoutView.h"
 #import "BlioViewSettingsSheet.h"
+#import "BlioNotesView.h"
 #import "BlioMockBook.h"
 
 #import "BlioTestParagraphWords.h"
@@ -33,6 +34,11 @@ static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work 
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
+
+typedef enum {
+    kBlioLibraryAddBookmarkAction = 0,
+    kBlioLibraryAddNoteAction = 1,
+} BlioLibraryAddActions;
 
 @interface BlioLibraryTableView : UITableView
 
@@ -594,6 +600,10 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 #pragma mark -
 #pragma mark BookController State Methods
 
+- (NSInteger)currentPageNumber {
+    return 44;   
+}
+
 - (BlioPageLayout)currentPageLayout {
     EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
     if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]])
@@ -733,29 +743,33 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 		// Continuing to speak, we just need more text.
 		paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
 		wordOffset = 0;
-		//[_acapelaTTS.paragraphWords release];
-		[_acapelaTTS setCurrentWord:wordOffset];
+		[_acapelaTTS setCurrentWordOffset:wordOffset];
 		[_acapelaTTS setCurrentParagraph:paragraphId];
+		[_acapelaTTS.paragraphWords release];
+		[_acapelaTTS setParagraphWords:nil];
 		[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
 	}
 	else {
+		[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
 		// Play button has just been pushed.
-		if ( [_acapelaTTS currentWord] == -1 ) { // need condition for whether page changed 
-            // or set currentWord to -1 in that case
-			// Starting speech for the first time, or for the first time since changing the page
-			// after stopping speech the last time (whew).
-			[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
-			[_acapelaTTS setCurrentWord:wordOffset];
+		if ( (paragraphId + wordOffset)!=[_acapelaTTS currentPage] ) {
+			// Starting speech for the first time, or for the first time since changing the 
+			// page or book after stopping speech the last time (whew).
+			[_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
+			[_acapelaTTS setCurrentWordOffset:wordOffset];
 			[_acapelaTTS setCurrentParagraph:paragraphId];
+			if ( _acapelaTTS.paragraphWords != nil ) {
+				[_acapelaTTS.paragraphWords release];
+				[_acapelaTTS setParagraphWords:nil];
+			}
 			[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
 		}
 		// else use the current word and paragraph, which is where we last stopped.
 		// edge case:  what if you stopped speech right after the end of the paragraph?
-		// problem: currentWord is a little off, maybe because of hyphenations?
 	}
 	NSRange pageRange;
-	pageRange.location = [_acapelaTTS currentWord];
-	pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWord];
+	pageRange.location = [_acapelaTTS currentWordOffset];
+	pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset]; 
 	[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
 }
 
@@ -765,14 +779,15 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 		
 		UIImage *audioImage = nil;
 		if (self.audioPlaying) {
+			/* For testing
 			[_testParagraphWords stopParagraphGetting];
 			[_testParagraphWords release];
 			_testParagraphWords = nil;
-			
+			*/
 			[_acapelaTTS stopSpeaking];
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
 		} else { 
-			/* For testing
+			/* For testing.  If this is uncommented, comment out the call to startSpeakingParagraph below.
 			 EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
 			 EucBookView *bookView = (EucBookView *)bookViewController.bookView;
 			 EucEPubBook *book = (EucEPubBook*)bookView.book;
@@ -788,7 +803,6 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 				[_acapelaTTS setDelegate:self];
 				[_acapelaTTS setRate:180];   // Will get from settings.
 				[_acapelaTTS setVolume:70];  // Likewise.
-				[_acapelaTTS setCurrentWord:-1];
 			}
 			[self startSpeakingParagraph:NO];
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
@@ -926,6 +940,30 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     [(UIView *)context removeFromSuperview];
 }
 
+- (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
+	// For testing
+	//NSString* thisWord = [string substringWithRange:characterRange];
+	//NSLog(thisWord);
+	
+	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
+									options:0 
+									  range:characterRange].location != NSNotFound);
+	// A hack to get around an apparent Acapela bug.
+	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
+							&& ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame);  // E.g. "I and I (a case I've seen)
+	
+	/* Acapela does assemble hyphenated words, so I'm keeping this condition around
+	   just in case it turns out they slip up sometimes.
+	// possible problem:  hyphen as a pause ("He waited- and then spoke.")
+	NSRange lastCharacter;
+	lastCharacter.length = 1;
+	lastCharacter.location = characterRange.location + characterRange.length -1;
+	BOOL wordIsNotHyphenated = ([[string substringWithRange:lastCharacter] compare:@"-"] != NSOrderedSame);
+	 */
+	
+	return wordIsNotPunctuation && wordIsNotRepeated;
+}
+
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
 	if (finishedSpeaking) 
@@ -937,25 +975,37 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
-    //NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
+	// Sometimes the string that comes in here is "invalid" according to the debugger.
+	// When that happens, the characterRange of subsequent calls seems always to be invalid
+	// (the condition below fails).  I hope this is because it's an evaluation license.
+	// Another issue (or maybe the same): first word of new paragraph comes in with 
+	// invalid range: location not zero but a high number.
+	// For testing
+	//NSString* thisWord = [string substringWithRange:characterRange];
+	//NSLog(thisWord);
     if(characterRange.location + characterRange.length < string.length) {
-        if([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
-                                   options:0 
-                                     range:characterRange].location != NSNotFound) {
-            NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
+		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
+			NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
             EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
             EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-            [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWord];
-            [_acapelaTTS setCurrentWord:[_acapelaTTS currentWord]+1];
+            [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
+            [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
+			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
         }
-    }
+   }
 }
 
 #pragma mark -
-#pragma mark ActionSheet Delegate Methods
+#pragma mark Add ActionSheet Methods
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSLog(@"Action sheet clicked button at index: %d", buttonIndex);
+    if (buttonIndex == kBlioLibraryAddNoteAction) {
+        UIView *container = self.navigationController.visibleViewController.view;
+        NSInteger pageNumber = [self currentPageNumber];
+        BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber];
+        [aNotesView showInView:container];
+        [aNotesView release];
+    }
 }
 
 @end

@@ -12,12 +12,14 @@
 
 @implementation AcapelaTTS
 
-@synthesize setupData, engine, ttsLicense, currentWord, currentParagraph, paragraphWords;
+@synthesize setupData, engine, ttsLicense, currentWordOffset, currentParagraph, currentWord, currentPage, paragraphWords;
 
 - (void)initTTS {
 	[self setTtsLicense:[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd]];
 	[self setSetupData:[[setupTTS alloc] initialize]]; 
 	[self setEngine:[[AcapelaSpeech alloc] initWithVoice:setupData.CurrentVoice license:ttsLicense]];
+	[self setCurrentPage:-1];
+	[self setParagraphWords:nil];
 }
 
 - (BOOL)startSpeaking:(NSString *)string {

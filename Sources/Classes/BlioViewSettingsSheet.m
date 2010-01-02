@@ -183,10 +183,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [aDoneButton addTarget:self action:@selector(dismissSheet:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:aDoneButton];
         self.doneButton = aDoneButton;
-        
-        
-        //if ([self.delegate respondsToSelector:@selector(currentPageLayout)])
-        //[aLayoutSegmentedControl setSelectedSegmentIndex:(NSInteger)[self.delegate performSelector:@selector(currentPageLayout)]];
 	}
 	return self;
 }
