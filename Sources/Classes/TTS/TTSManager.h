@@ -13,5 +13,6 @@
 - (BOOL)startSpeaking:(NSString *)string;
 - (void)stopSpeaking;
 @optional
+- (void)stopSpeakingAtBoundary:(NSInteger)boundary;
 - (BOOL)isSpeaking;
 @end
