@@ -271,9 +271,9 @@
     
     if(!_contentsSheet && [_bookView isKindOfClass:[EucBookView class]]) {
         _contentsSheet = [[EucBookContentsTableViewController alloc] init];
-        _contentsSheet.dataSource = ((EucBookView *)_bookView).pageLayoutController;
+        _contentsSheet.dataSource = ((EucBookView *)_bookView).contentsDataSource;
         _contentsSheet.delegate = self;        
-        _contentsSheet.currentSectionUuid = [((EucBookView *)_bookView).pageLayoutController sectionUuidForPageNumber:((EucBookView *)_bookView).pageNumber];
+        _contentsSheet.currentSectionUuid = [((EucBookView *)_bookView).contentsDataSource sectionUuidForPageNumber:((EucBookView *)_bookView).pageNumber];
         
         UIView *sheetView = _contentsSheet.view;
         

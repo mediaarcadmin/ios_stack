@@ -48,7 +48,7 @@
 @synthesize undimAfterAppearance = _undimAfterAppearance;
 @synthesize appearAtCoverThenOpen = _appearAtCoverThenOpen;
 
-@synthesize pageLayoutController = _pageLayoutController;
+@synthesize contentsDataSource = _pageLayoutController;
 
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book 

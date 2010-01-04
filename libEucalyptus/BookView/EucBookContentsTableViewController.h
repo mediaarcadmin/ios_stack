@@ -47,8 +47,9 @@
 
 @required
 - (NSArray *)sectionUuids;
+- (NSString *)sectionUuidForPageNumber:(NSUInteger)pageNumber;
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid;
-- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid;
-- (NSString *)displayPageNumberForPageNumber:(NSUInteger)pageNumber;
+- (NSInteger)pageNumberForSectionUuid:(NSString *)sectionUuid;
+- (NSString *)displayPageNumberForPageNumber:(NSInteger)pageNumber;
 
 @end

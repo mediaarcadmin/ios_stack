@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+#import "EucBookContentsTableViewController.h"
 #import "EucPageTurningView.h"
 #import "EucPageView.h"
 
@@ -71,6 +72,7 @@
 @property (nonatomic, readonly) NSString *pageDescription;
 
 @property (nonatomic, assign) CGFloat fontPointSize;
+@property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 
 /*
 @property (nonatomic, readonly) float percentRead;
@@ -88,11 +90,6 @@
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 
 - (void)stopAnimation;
-
-// TEMPORARY - esposed to allow contents view to be set up based on this
-// layout controller.  Nod decided how contents view will interface with
-// differing views in the book view yet.
-@property (nonatomic, readonly) id<EucPageLayoutController> pageLayoutController;
 
 @end
 
