@@ -980,7 +980,9 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 			 _testParagraphWords = [[BlioTestParagraphWords alloc] init];
 			 [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
 			 */
-			
+			if (!self.navigationController.toolbarHidden) {
+                [self _toggleToolbars];
+            }
 			if (_acapelaTTS == nil) {
 				_acapelaTTS = [[AcapelaTTS alloc] init];
 				[_acapelaTTS initTTS];
