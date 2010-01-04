@@ -31,11 +31,22 @@
 @synthesize sections = _sections;
 @synthesize manifestOverrides = _manifestOverrides;
 
+static inline const XML_Char* unqualifiedName(const XML_Char *name) {
+    const XML_Char *offset = strrchr(name, ':');
+    if(offset) {
+        return offset + 1;
+    } else {
+        return name;
+    }
+}
+
 #pragma mark -
 #pragma mark container.xml parsing
 
 static void containerXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) 
 {
+    name = unqualifiedName(name);
+
     EucEPubBook *self = (EucEPubBook *)ctx;
     
     if(strcmp("rootfile", name) == 0) {
@@ -83,14 +94,16 @@ struct contentOpfParsingContext
 
 static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) 
 {
+    name = unqualifiedName(name);
+
     struct contentOpfParsingContext *context = (struct contentOpfParsingContext*)ctx;
     
     if(context->inMetadata) {
-        if(strcmp("dc:title", name) == 0) {
+        if(strcmp("title", name) == 0) {
             context->inTitle = YES;
-        } else if(strcmp("dc:creator", name) == 0) {
+        } else if(strcmp("creator", name) == 0) {
             context->inCreator = YES;
-        } else if(strcmp("dc:identifier", name) == 0) {
+        } else if(strcmp("identifier", name) == 0) {
             context->inIdentifier = YES;
         } if(strcmp("meta", name) == 0) {
             NSString *name = nil;
@@ -156,13 +169,15 @@ static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const
 
 static void contentOpfEndElementHandler(void *ctx, const XML_Char *name) 
 {
+    name = unqualifiedName(name);
+
     struct contentOpfParsingContext *context = (struct contentOpfParsingContext*)ctx;
     if(context->inMetadata) {
-        if(context->inTitle && strcmp("dc:title", name) == 0) {
+        if(context->inTitle && strcmp("title", name) == 0) {
             context->inTitle = NO;
-        } else if(context->inCreator && strcmp("dc:creator", name) == 0) {
+        } else if(context->inCreator && strcmp("creator", name) == 0) {
             context->inCreator = NO;
-        } else if(context->inIdentifier && strcmp("dc:identifier", name) == 0) {
+        } else if(context->inIdentifier && strcmp("identifier", name) == 0) {
             context->inIdentifier = NO;
         }
         if(strcmp("metadata", name) == 0) {
@@ -281,6 +296,8 @@ struct tocNcxParsingContext
 
 static void tocNcxStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)
 {
+    name = unqualifiedName(name);
+    
     struct tocNcxParsingContext *context = (struct tocNcxParsingContext *)ctx;
     if(!context->inNavMap) {
         if(strcmp("navMap", name) == 0) {
@@ -318,6 +335,8 @@ static void tocNcxStartElementHandler(void *ctx, const XML_Char *name, const XML
 
 static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)                     
 {
+    name = unqualifiedName(name);
+    
     struct tocNcxParsingContext *context = (struct tocNcxParsingContext *)ctx;
     if(context->inNavMap) { 
         if(context->inNavPoint) {
@@ -369,13 +388,14 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (void)_parseTocNcx:(NSString *)path
 {
-    if(_anchorPoints) {
+    NSMutableDictionary *buildNavMap = [[NSMutableDictionary alloc] init];
+    if(_anchorPoints && path) {
         NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
         XML_Parser parser = XML_ParserCreate("UTF-8");
         
         struct tocNcxParsingContext context = {0};
         context.parser = parser;
-        context.buildNavMap = [[NSMutableDictionary alloc] init];
+        context.buildNavMap = buildNavMap;
         
         XML_SetStartElementHandler(parser, tocNcxStartElementHandler);
         XML_SetEndElementHandler(parser, tocNcxEndElementHandler);
@@ -386,59 +406,60 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
         [data release];
         
-        NSURL *baseUrl = [NSURL fileURLWithPath:path];
-        
-        NSMutableArray *sectionsBuild = [[NSMutableArray alloc] init];
-        if([context.buildNavMap count]) {
-            NSArray *orderedKeys = [[context.buildNavMap allKeys] sortedArrayUsingSelector:@selector(compare:)];
-            for(id key in orderedKeys) {
-                THPair *navPoint = [context.buildNavMap objectForKey:key];
-                NSString *name = navPoint.first;
-                NSString *src = navPoint.second;
-
-                NSURL *srcUrl = [NSURL URLWithString:src relativeToURL:baseUrl];
-                src = [[srcUrl path] stringByReplacingOccurrencesOfString:_path
-                                                               withString:@""];
-                NSString *fragment = [srcUrl fragment];
-                if(fragment.length) {
-                    src = [src stringByAppendingFormat:@"#%@", fragment]; 
-                }
-                //NSLog(@"%@, %@",  srcUrl, src);
-                NSNumber *location = [_anchorPoints objectForKey:src];
-                if(location) {
-                    EucBookSection *newSection = [[EucBookSection alloc] init];
-                    [newSection setStartOffset:[location unsignedIntegerValue]];
-                    [newSection setKind:kBookSectionNondescript];
-                    [newSection setUuid:src];
-                    [newSection setProperty:name forKey:kBookSectionPropertyTitle];
-                    [sectionsBuild addObject:newSection];
-                    [newSection release];
-                }
-                [sectionsBuild sortUsingSelector:@selector(compare:)];
-            }
-        } else {
-            EucBookSection *newSection = [[EucBookSection alloc] init];
-            [newSection setStartOffset:0];
-            [newSection setKind:kBookSectionNondescript];
-            [newSection setUuid:[_manifest objectForKey:[_spine objectAtIndex:0]]];
-            [newSection setProperty:_title ? _title : NSLocalizedString(@"Start of Book", @"Contents section name for a book with no defined sections or titles")
-                             forKey:kBookSectionPropertyTitle];
-            [sectionsBuild addObject:newSection];
-            [newSection release];            
-        }
-        
-        EucBookSection *lastSection = nil;
-        for(EucBookSection *section in sectionsBuild) {
-            lastSection.endOffset = section.startOffset;
-            [lastSection release];
-            lastSection = [section retain];
-        }
-        lastSection.endOffset = UINT32_MAX;
-        [lastSection release];
-        
-        _sections = sectionsBuild;
-        [context.buildNavMap release];
     }
+    
+    NSURL *baseUrl = [NSURL fileURLWithPath:path];
+    
+    NSMutableArray *sectionsBuild = [[NSMutableArray alloc] init];
+    if(buildNavMap.count) {
+        NSArray *orderedKeys = [[buildNavMap allKeys] sortedArrayUsingSelector:@selector(compare:)];
+        for(id key in orderedKeys) {
+            THPair *navPoint = [buildNavMap objectForKey:key];
+            NSString *name = navPoint.first;
+            NSString *src = navPoint.second;
+
+            NSURL *srcUrl = [NSURL URLWithString:src relativeToURL:baseUrl];
+            src = [[srcUrl path] stringByReplacingOccurrencesOfString:_path
+                                                           withString:@""];
+            NSString *fragment = [srcUrl fragment];
+            if(fragment.length) {
+                src = [src stringByAppendingFormat:@"#%@", fragment]; 
+            }
+            //NSLog(@"%@, %@",  srcUrl, src);
+            NSNumber *location = [_anchorPoints objectForKey:src];
+            if(location) {
+                EucBookSection *newSection = [[EucBookSection alloc] init];
+                [newSection setStartOffset:[location unsignedIntegerValue]];
+                [newSection setKind:kBookSectionNondescript];
+                [newSection setUuid:src];
+                [newSection setProperty:name forKey:kBookSectionPropertyTitle];
+                [sectionsBuild addObject:newSection];
+                [newSection release];
+            }
+            [sectionsBuild sortUsingSelector:@selector(compare:)];
+        }
+    } else {
+        EucBookSection *newSection = [[EucBookSection alloc] init];
+        [newSection setStartOffset:0];
+        [newSection setKind:kBookSectionNondescript];
+        [newSection setUuid:[_manifest objectForKey:[_spine objectAtIndex:0]]];
+        [newSection setProperty:_title ? _title : NSLocalizedString(@"Start of Book", @"Contents section name for a book with no defined sections or titles")
+                         forKey:kBookSectionPropertyTitle];
+        [sectionsBuild addObject:newSection];
+        [newSection release];            
+    }
+    
+    EucBookSection *lastSection = nil;
+    for(EucBookSection *section in sectionsBuild) {
+        lastSection.endOffset = section.startOffset;
+        [lastSection release];
+        lastSection = [section retain];
+    }
+    lastSection.endOffset = UINT32_MAX;
+    [lastSection release];
+    
+    _sections = sectionsBuild;
+    [buildNavMap release];
 }
 
 #pragma mark -
@@ -461,14 +482,21 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         
         [self _parseContentOpf:[_contentURL path]];
         
-        if(!_etextNumber.length|| !_spine.count || !_manifest.count || !_tocNcxId || ![_manifest objectForKey:_tocNcxId]) {
+        if(!_etextNumber.length|| !_spine.count || !_manifest.count) {
             THWarn(@"Couldn't find toc.ncx location for %@", path);
             [self release];
             return nil;
         } 
         
-        NSString *tocPath = [[NSURL URLWithString:[_manifest objectForKey:_tocNcxId] relativeToURL:_contentURL] path];
+        NSString *tocPath = nil;
+        if(_tocNcxId) {
+            NSString *relativeTocPath = [_manifest objectForKey:_tocNcxId];
+            if(relativeTocPath) {
+                tocPath = [[NSURL URLWithString:[_manifest objectForKey:_tocNcxId] relativeToURL:_contentURL] path];
+            }
+        }
         [self _parseTocNcx:tocPath];
+    
         
         NSString *manifestKey = [_meta objectForKey:@"cover"];
         if(manifestKey) {
