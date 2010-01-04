@@ -601,7 +601,11 @@ typedef enum {
 #pragma mark BookController State Methods
 
 - (NSInteger)currentPageNumber {
-    return 44;   
+    UIView *bookView = [(EucBookViewController *)self.navigationController.topViewController bookView];
+    if ([bookView respondsToSelector:@selector(currentPageNumber)])
+        return (NSInteger)[bookView performSelector:@selector(currentPageNumber)];
+    else
+        return -1;
 }
 
 - (BlioPageLayout)currentPageLayout {
