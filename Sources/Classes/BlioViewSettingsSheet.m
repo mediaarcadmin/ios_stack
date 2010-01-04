@@ -75,7 +75,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         UISegmentedControl *aLayoutSegmentedControl = [[UISegmentedControl alloc] initWithItems:segmentImages];
         aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aLayoutSegmentedControl.tintColor = [UIColor darkGrayColor];
-        [aLayoutSegmentedControl addTarget:self action:@selector(changePageLayout:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:aLayoutSegmentedControl];
         self.pageLayoutSegment = aLayoutSegmentedControl;
         [aLayoutSegmentedControl release];
@@ -83,6 +82,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         if ([newDelegate respondsToSelector:@selector(currentPageLayout)])
             [aLayoutSegmentedControl setSelectedSegmentIndex:(NSInteger)[newDelegate performSelector:@selector(currentPageLayout)]];
         
+        [self.pageLayoutSegment addTarget:self action:@selector(changePageLayout:) forControlEvents:UIControlEventValueChanged];
+
         UILabel *aFontSizeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aFontSizeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         aFontSizeLabel.textColor = [UIColor whiteColor];
@@ -107,7 +108,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         UISegmentedControl *aFontSizeSegmentedControl = [[UISegmentedControl alloc] initWithItems:fontSizeTitles];    
         aFontSizeSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aFontSizeSegmentedControl.tintColor = [UIColor darkGrayColor];
-        [aFontSizeSegmentedControl addTarget:newDelegate action:@selector(changeFontSize:) forControlEvents:UIControlEventValueChanged];
         
         [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 2) forSegmentAtIndex:0];
         [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
@@ -121,6 +121,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         if ([newDelegate respondsToSelector:@selector(currentFontSize)])
             [aFontSizeSegmentedControl setSelectedSegmentIndex:(NSInteger)[newDelegate performSelector:@selector(currentFontSize)]];
         
+        [self.fontSizeSegment addTarget:newDelegate action:@selector(changeFontSize:) forControlEvents:UIControlEventValueChanged];
+
         UILabel *aPageColorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aPageColorLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         aPageColorLabel.textColor = [UIColor whiteColor];
@@ -139,7 +141,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         UISegmentedControl *aPageColorSegmentedControl = [[UISegmentedControl alloc] initWithItems:pageColorTitles];
         aPageColorSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aPageColorSegmentedControl.tintColor = [UIColor darkGrayColor];
-        [aPageColorSegmentedControl addTarget:newDelegate action:@selector(changePageColor:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:aPageColorSegmentedControl];
         self.pageColorSegment = aPageColorSegmentedControl;
         [aPageColorSegmentedControl release];
@@ -147,6 +148,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         if ([newDelegate respondsToSelector:@selector(currentPageColor)])
             [aPageColorSegmentedControl setSelectedSegmentIndex:(NSInteger)[newDelegate performSelector:@selector(currentPageColor)]];
         
+        [self.pageColorSegment addTarget:newDelegate action:@selector(changePageColor:) forControlEvents:UIControlEventValueChanged];
+
         NSArray *lockButtonTitles = [NSArray arrayWithObjects:
                                      @"",
                                      nil];
@@ -155,7 +158,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         aLockButtonSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aLockButtonSegmentedControl.tintColor = [UIColor darkGrayColor];
         aLockButtonSegmentedControl.momentary = YES;
-        [aLockButtonSegmentedControl addTarget:self action:@selector(changeLockRotation:) forControlEvents:UIControlEventValueChanged];  
         [self addSubview:aLockButtonSegmentedControl];
         self.lockButtonSegment = aLockButtonSegmentedControl;
         [aLockButtonSegmentedControl release];
@@ -171,6 +173,9 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
                 [aLockButtonSegmentedControl setImage:self.lockRotationImage forSegmentAtIndex:0];
         }
         
+        [self.lockButtonSegment addTarget:self action:@selector(changeLockRotation:) forControlEvents:UIControlEventValueChanged];  
+
+        
         NSArray *tapTurnTitles = [NSArray arrayWithObjects:
                                   @"",
                                   nil];
@@ -179,7 +184,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         aTapTurnButtonSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aTapTurnButtonSegmentedControl.tintColor = [UIColor darkGrayColor];
         aTapTurnButtonSegmentedControl.momentary = YES;
-        [aTapTurnButtonSegmentedControl addTarget:self action:@selector(changeTapTurn:) forControlEvents:UIControlEventValueChanged];  
         [self addSubview:aTapTurnButtonSegmentedControl];
         self.tapTurnButtonSegment = aTapTurnButtonSegmentedControl;
         [aTapTurnButtonSegmentedControl release];
@@ -194,6 +198,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         else
             [aTapTurnButtonSegmentedControl setImage:self.disableTapTurnImage forSegmentAtIndex:0];
         }
+        [self.tapTurnButtonSegment addTarget:self action:@selector(changeTapTurn:) forControlEvents:UIControlEventValueChanged];  
+
         
         UIButton *aDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
         aDoneButton.showsTouchWhenHighlighted = NO;

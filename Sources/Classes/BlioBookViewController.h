@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
+#import "AcapelaTTS.h"
+#import "BlioMockBook.h"
 
 @class EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
 @protocol EucBook, BlioBookView;
@@ -19,7 +21,7 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-@interface BlioBookViewController : UIViewController <THEventCaptureObserver,EucBookContentsTableViewControllerDelegate> {
+@interface BlioBookViewController : UIViewController <THEventCaptureObserver,EucBookContentsTableViewControllerDelegate,UIActionSheetDelegate> {
     BOOL _firstAppearance;
     
     UIView<BlioBookView> *_bookView;
@@ -44,11 +46,19 @@ typedef enum {
     BOOL _overrideReturnToStatusBarStyle;
     BOOL _overrideReturnToNavigationBarHidden;
     BOOL _overrideReturnToStatusBarHidden;
+    BOOL _audioPlaying;
+    
+    AcapelaTTS* _acapelaTTS;
+    
+    BlioMockBook *_book;
+
 }
 
 // Designated initializers.
+- (id)initWithBook:(BlioMockBook *)newBook;
 - (id)initWithBookView:(UIView<BlioBookView> *)view;
 
+@property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, assign) BOOL toolbarsVisibleAfterAppearance;
 
 @property (nonatomic, assign) UIBarStyle returnToNavigationBarStyle;
@@ -57,6 +67,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL returnToStatusBarHidden;
 
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
+@property (nonatomic) BOOL audioPlaying;
 
 @end
 
@@ -64,6 +75,7 @@ typedef enum {
 
 @required
 - (void)jumpToUuid:(NSString *)uuid;
+- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;

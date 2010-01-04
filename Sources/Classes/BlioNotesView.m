@@ -21,15 +21,17 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 
 @implementation BlioNotesView
 
+@synthesize page;
+
 - (id)initWithFrame:(CGRect)frame {
-    return [self initWithPage:-1];
+    return [self initWithPage:nil];
 }
 
-- (id)initWithPage:(NSInteger)pageNumber {
+- (id)initWithPage:(NSString *)pageNumber {
     if ((self = [super initWithFrame:CGRectZero])) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        page = pageNumber;
+        self.page = pageNumber;
         
     }
     return self;
@@ -75,7 +77,10 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     [dateFormat setDateStyle:NSDateFormatterShortStyle];
     NSString *dateString = [dateFormat stringFromDate:date];  
     [dateFormat release];
-    toolbarLabel.text = [NSString stringWithFormat:@"Page %d, %@", page, dateString];
+    if (nil != self.page)
+        toolbarLabel.text = [NSString stringWithFormat:@"Page %@, %@", self.page, dateString];
+    else
+        toolbarLabel.text = [NSString stringWithFormat:@"%@", self.page, dateString];
     toolbarLabel.adjustsFontSizeToFitWidth = YES;
     toolbarLabel.font = [UIFont boldSystemFontOfSize:14.0f];
     toolbarLabel.backgroundColor = [UIColor clearColor];
@@ -154,6 +159,7 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 }                                                  
 
 - (void)dealloc {
+    self.page = nil;
     [super dealloc];
 }
 
