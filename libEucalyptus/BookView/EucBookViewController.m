@@ -270,7 +270,8 @@
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
     if(!_contentsSheet && [_bookView isKindOfClass:[EucBookView class]]) {
-        _contentsSheet = [[EucBookContentsTableViewController alloc] initWithPageLayoutController:((EucBookView *)_bookView).pageLayoutController];
+        _contentsSheet = [[EucBookContentsTableViewController alloc] init];
+        _contentsSheet.dataSource = ((EucBookView *)_bookView).pageLayoutController;
         _contentsSheet.delegate = self;        
         _contentsSheet.currentSectionUuid = [((EucBookView *)_bookView).pageLayoutController sectionUuidForPageNumber:((EucBookView *)_bookView).pageNumber];
         

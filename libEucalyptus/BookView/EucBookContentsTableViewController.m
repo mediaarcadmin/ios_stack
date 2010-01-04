@@ -24,8 +24,10 @@
 @implementation EucBookContentsTableViewController
 
 @synthesize delegate = _delegate;
+@synthesize dataSource = _dataSource;
 @synthesize currentSectionUuid = _currentSectionUuid;
 @synthesize selectedUuid = _selectedUuid;
+
 /*
 - (void)_bookPaginationProgress:(NSNotification *)notification
 {
@@ -77,17 +79,10 @@
     }
 }
 */
-- (id)initWithPageLayoutController:(id<EucPageLayoutController>)pageLayoutController;
+- (id)init;
 {
     if((self = [super initWithStyle:UITableViewStyleGrouped])) {
         _paginationIsComplete = YES;
-        _pageLayoutController = [pageLayoutController retain];
-        _uuids = [_pageLayoutController sectionUuids];
-        if(_uuids.count && ![[_uuids objectAtIndex:0] isKindOfClass:[NSArray class]]) {
-            _uuids = [[NSArray alloc] initWithObjects:&_uuids count:1];
-        } else{
-            [_uuids retain];
-        }
 
         /*_previousLastOffset = _index.lastOffset;
         if(index.isFinal) {
@@ -106,11 +101,21 @@
     return self;
 }
 
+- (void)setDataSource:(id <EucBookContentsTableViewControllerDataSource>)dataSource
+{
+    _dataSource = dataSource;
+    _uuids = [_dataSource sectionUuids];
+    if(_uuids.count && ![[_uuids objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+        _uuids = [[NSArray alloc] initWithObjects:&_uuids count:1];
+    } else{
+        [_uuids retain];
+    }
+}
+
 
 - (void)dealloc
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    [_pageLayoutController release];
     [_uuids release];
     [_currentSectionUuid release];
     [_selectedGradientColor release];
@@ -210,14 +215,14 @@
 
     EucNameAndPageNumberView *nameAndPageNumberView = (EucNameAndPageNumberView *)[cell.contentView viewWithTag:49];
     
-    THPair *nameAndSubtitle = [_pageLayoutController presentationNameAndSubTitleForSectionUuid:uuid];
-    NSUInteger pageNumber = [_pageLayoutController pageNumberForSectionUuid:uuid];
+    THPair *nameAndSubtitle = [_dataSource presentationNameAndSubTitleForSectionUuid:uuid];
+    NSUInteger pageNumber = [_dataSource pageNumberForSectionUuid:uuid];
     BOOL pageNumberIsValid = YES;
 
     nameAndPageNumberView.name = nameAndSubtitle.first;
     nameAndPageNumberView.subTitle = nameAndSubtitle.second;
     if(pageNumberIsValid) {
-        nameAndPageNumberView.pageNumber = [_pageLayoutController displayPageNumberForPageNumber:pageNumber];
+        nameAndPageNumberView.pageNumber = [_dataSource displayPageNumberForPageNumber:pageNumber];
         nameAndPageNumberView.textColor = [UIColor blackColor]; 
     } else {
         nameAndPageNumberView.pageNumber = nil;
@@ -271,14 +276,14 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *uuid = [[_uuids objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    THPair *nameAndSubtitle = [_pageLayoutController presentationNameAndSubTitleForSectionUuid:uuid];
-    NSUInteger pageNumber = [_pageLayoutController pageNumberForSectionUuid:uuid];
+    THPair *nameAndSubtitle = [_dataSource presentationNameAndSubTitleForSectionUuid:uuid];
+    NSUInteger pageNumber = [_dataSource pageNumberForSectionUuid:uuid];
     BOOL pageNumberIsValid = YES;
 
     CGFloat ret = [EucNameAndPageNumberView heightForWidth:pageNumberIsValid ? TABLE_CONTENTS_CELL_WIDTH : TABLE_CONTENTS_CELL_WIDTH_WITH_ACCESSORY // Seems like very bad form to be hard-coding this... 
                                                   withName:nameAndSubtitle.first 
                                                   subTitle:nameAndSubtitle.second 
-                                                pageNumber:pageNumberIsValid ? [_pageLayoutController displayPageNumberForPageNumber:pageNumber] : nil] + 18;
+                                                pageNumber:pageNumberIsValid ? [_dataSource displayPageNumberForPageNumber:pageNumber] : nil] + 18;
     
     return ret;
 }
