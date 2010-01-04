@@ -57,6 +57,8 @@ typedef enum {
 @property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, readonly) UIImage *image;
 
+- (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout;
+
 @end
 
 @interface BlioLibraryGridCell : UITableViewCell {
@@ -1096,11 +1098,20 @@ typedef enum {
 }
 
 - (void)setBook:(BlioMockBook *)newBook {
+    [self setBook:newBook forLayout:kBlioLibraryLayoutGrid];
+}
+
+- (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout {
     [newBook retain];
     [book release];
     book = newBook;
     
-    UIImage *newImage = [newBook coverThumb];
+    UIImage *newImage;
+    if (layout == kBlioLibraryLayoutList)
+        newImage = [newBook coverThumbForList];
+    else
+        newImage = [newBook coverThumbForGrid];
+    
     [[self imageView] setImage:newImage];
     
     if (nil != newImage) 
@@ -1169,9 +1180,9 @@ typedef enum {
 - (void)assignBookAtIndex:(NSUInteger)index toView:(BlioLibraryBookView *)bookView {
     if (index < [self.books count]) {
         BlioMockBook *book = [self.books objectAtIndex:index];
-        [bookView setBook:book];
+        [bookView setBook:book forLayout:kBlioLibraryLayoutGrid];
     } else {
-        [bookView setBook:nil];
+        [bookView setBook:nil forLayout:kBlioLibraryLayoutGrid];
     }
 }
 
@@ -1293,7 +1304,7 @@ typedef enum {
 }
 
 - (void)setBook:(BlioMockBook *)newBook {
-    [(BlioLibraryBookView *)self.bookView setBook:newBook];
+    [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
     self.progressSlider.value = [newBook progress];
