@@ -221,6 +221,7 @@ typedef enum {
     [aBook setTitle:@"Essentials Of Discrete Mathematics"];
     [aBook setAuthor:@"David J. Hunter"];
     [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/Essentials_of_Discrete_Mathematics.png"]];
+    [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"epub" inDirectory:@"ePubs"]];
     [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]];
     [aBook setProgress:0.0f];
     [aBook setProportionateSize:0.2f];
