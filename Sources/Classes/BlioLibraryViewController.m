@@ -568,7 +568,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     
     UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:poppedImageView.bounds];
     aTextureView.contentMode = UIViewContentModeScaleToFill;
-    aTextureView.image = [UIImage imageNamed:@"booktextureandshadow.png"];
+    aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
     aTextureView.backgroundColor = [UIColor clearColor];
     aTextureView.autoresizesSubviews = YES;
     aTextureView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -660,7 +660,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         
         UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:self.bounds];
         aTextureView.contentMode = UIViewContentModeScaleToFill;
-        aTextureView.image = [UIImage imageNamed:@"booktextureandshadow.png"];
+        aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
         aTextureView.backgroundColor = [UIColor clearColor];
         aTextureView.alpha = 0.0f;
         aTextureView.userInteractionEnabled = NO;
