@@ -285,17 +285,21 @@
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 {
-    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-    indexPoint.startOfParagraphByteOffset = paragraphId;
-    indexPoint.startOfPageParagraphWordOffset = wordOffset;
-    NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
-    if(newPageNumber != _pageNumber) {
+    if(paragraphId == 0) {
         [self _removeHighlights];
-        _highlightParagraphAfterTurn = paragraphId;
-        _highlightWordOffsetAfterTurn = wordOffset;
-        [self setPageNumber:newPageNumber animated:YES];
     } else {
-        [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
+        EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+        indexPoint.startOfParagraphByteOffset = paragraphId;
+        indexPoint.startOfPageParagraphWordOffset = wordOffset;
+        NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
+        if(newPageNumber != _pageNumber) {
+            [self _removeHighlights];
+            _highlightParagraphAfterTurn = paragraphId;
+            _highlightWordOffsetAfterTurn = wordOffset;
+            [self setPageNumber:newPageNumber animated:YES];
+        } else {
+            [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
+        }
     }
 }
 
