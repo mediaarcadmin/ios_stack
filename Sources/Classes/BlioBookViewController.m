@@ -82,7 +82,6 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 
 @interface BlioBookViewController (PRIVATE)
 - (void)_toggleToolbars;
-- (void)_setupContentsButton;
 - (NSArray *)_toolbarItemsForReadingView;
 @end
 
@@ -169,9 +168,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
         UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
         self.navigationItem.leftBarButtonItem = backItem;
         [backItem release];
-        
-        [self _setupContentsButton];
-        
+                
         EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
         CGRect frame = titleView.frame;
         frame.size.width = [[UIScreen mainScreen] bounds].size.width;
@@ -202,7 +199,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:nil];
+                                           action:@selector(showContents:)];
     [readingItems addObject:item];
     [item release];
     
@@ -275,12 +272,9 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
         
         [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
         
-        /*if([_bookView isKindOfClass:[BlioEPubView class]]) {
-            EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
-            // Casts below shouldn't be necessary - the property is of type 'EucBookReference<EucBook> *'...
-            [titleView setTitle:((EucBookReference *)((BlioEPubView *)_bookView).book).humanReadableTitle];
-            [titleView setAuthor:[((EucBookReference *)((BlioEPubView *)_bookView).book).author humanReadableNameFromLibraryFormattedName]];                
-        }*/
+        EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
+        [titleView setTitle:[self.book title]];
+        [titleView setAuthor:[self.book author]];  
         
         [window addSubview:_bookView];
         [window sendSubviewToBack:_bookView];
@@ -323,95 +317,9 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     }
 }
 
-- (void)_contentsButtonTapped
-{
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    
-    if(!_contentsSheet) {
-        _contentsSheet = [[EucBookContentsTableViewController alloc] init];
-        _contentsSheet.dataSource = _bookView.contentsDataSource;
-        _contentsSheet.delegate = self;        
-        _contentsSheet.currentSectionUuid = [_bookView.contentsDataSource sectionUuidForPageNumber:_bookView.pageNumber];
-        
-        UIView *sheetView = _contentsSheet.view;
-        
-        UIView *window = self.view.window;    
-        CGRect windowFrame = window.frame;
-        UINavigationBar *navBar = self.navigationController.navigationBar;
-        CGRect navBarRect = [navBar.superview convertRect:navBar.frame toView:window];
-        
-        sheetView.frame = CGRectMake(0, (navBarRect.origin.y + navBarRect.size.height), windowFrame.size.width, windowFrame.size.height - (navBarRect.origin.y + navBarRect.size.height)); 
-                
-        // Push in the contents sheet.
-        CATransition *animation = [CATransition animation];
-        [animation setType:kCATransitionMoveIn];
-        [animation setSubtype:kCATransitionFromTop];
-        [animation setDuration:0.3f];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        [animation setValue:@"ContentsSlideIn" forKey:@"THName"];
-        [animation setDelegate:self];
-        [[sheetView layer] addAnimation:animation forKey:@"ContentSlide"];
-        
-        [window addSubview:sheetView];
-        
-        // Fade the nav bar and its contents to blue
-        animation = [CATransition animation];
-        [animation setType:kCATransitionFade];
-        [animation setDuration:0.3f];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        [[navBar layer] addAnimation:animation forKey:@"NavBarFade"];
-        
-        navBar.barStyle = UIBarStyleDefault;
-        ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleDefault;
-        [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"BookButton.png"]
-                                                                         forState:UIControlStateNormal];
-        [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:0.0f];
-
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-    } else {
-        UIView *sheetView = _contentsSheet.view;
-        CGRect contentsViewFinalRect = sheetView.frame;
-        contentsViewFinalRect.origin.y = contentsViewFinalRect.origin.y + contentsViewFinalRect.size.height;
-        
-        // Push out the contents sheet.
-        [UIView beginAnimations:@"contentsSheetDisappear" context:NULL];
-        [UIView setAnimationDidStopSelector:@selector(_contentsViewDidDisappear)];
-        [UIView setAnimationDelegate:self];
-        [UIView setAnimationDuration:0.3f];
-        
-        sheetView.frame = contentsViewFinalRect;
-        
-        
-        if(!_viewIsDisappearing) {
-            if(_contentsSheet.selectedUuid != nil && self.navigationController.toolbarHidden) {
-                [self _toggleToolbars];
-            }        
-            
-            // Turn the nav bar and its contents back to translucent.
-            UINavigationBar *navBar = self.navigationController.navigationBar;
-
-            CATransition *animation = [CATransition animation];
-            [animation setType:kCATransitionFade];
-            [animation setDuration:0.3f];
-            [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-            [[navBar layer] addAnimation:animation forKey:@"animation"];
-            
-            navBar.barStyle = UIBarStyleBlackTranslucent;
-            ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleBlackTranslucent;
-            [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"ContentsButton.png"]
-                                                                             forState:UIControlStateNormal];
-            [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:1.0f];
-
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES]; 
-        }
-        [UIView commitAnimations];
-    }
-}
-
-
 - (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid
 {
-    [self _contentsButtonTapped];
+    [self performSelector:@selector(dismissContents)];
 }
 
 
@@ -431,24 +339,6 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     }    
 }
-
-
-- (void)_setupContentsButton
-{
-    UIImage *contentsImage = [UIImage imageNamed:@"ContentsButton.png"];
-    UIButton *contentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [contentsButton setImage:contentsImage forState:UIControlStateNormal];
-    contentsButton.adjustsImageWhenHighlighted = YES;
-    contentsButton.showsTouchWhenHighlighted = NO;
-    [contentsButton sizeToFit];
-    [contentsButton setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
-    [contentsButton addTarget:self action:@selector(_contentsButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:contentsButton];
-    self.navigationItem.rightBarButtonItem = rightItem;
-    [rightItem release];
-}
-    
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -501,12 +391,9 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
         UIWindow *window = self.navigationController.view.window;
         [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
                         
-        /*if([_bookView isKindOfClass:[BlioEPubView class]]) {
-            EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
-            // Casts below shouldn't be necessary - the property is of type 'EucBookReference<EucBook> *'...
-            [titleView setTitle:((EucBookReference *)((BlioEPubView *)_bookView).book).humanReadableTitle];
-            [titleView setAuthor:[((EucBookReference *)((BlioEPubView *)_bookView).book).author humanReadableNameFromLibraryFormattedName]];                
-        }*/
+        EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
+        [titleView setTitle:[self.book title]];
+        [titleView setAuthor:[self.book author]];                
         
         [window addSubview:_bookView];
         [window sendSubviewToBack:_bookView];
@@ -558,7 +445,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     if(!self.modalViewController) {
         _viewIsDisappearing = YES;
         if(_contentsSheet) {
-            [self _contentsButtonTapped];
+            [self performSelector:@selector(dismissContents)];
         }
         if(_bookView) {
             [(THEventCapturingWindow *)self.view.window removeTouchObserver:self forView:_bookView];
@@ -861,6 +748,97 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 
 #pragma mark -
 #pragma mark Action Callback Methods
+
+- (void)showContents:(id)sender {
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissContents)];
+    [self.navigationItem setRightBarButtonItem:rightItem animated:YES];
+    [rightItem release];
+    
+    _contentsSheet = [[EucBookContentsTableViewController alloc] init];
+    _contentsSheet.dataSource = _bookView.contentsDataSource;
+    _contentsSheet.delegate = self;        
+    _contentsSheet.currentSectionUuid = [_bookView.contentsDataSource sectionUuidForPageNumber:_bookView.pageNumber];
+    
+    UIView *sheetView = _contentsSheet.view;
+    
+    UIView *window = self.view.window;    
+    CGRect windowFrame = window.frame;
+    UINavigationBar *navBar = self.navigationController.navigationBar;
+    CGRect navBarRect = [navBar.superview convertRect:navBar.frame toView:window];
+    
+    sheetView.frame = CGRectMake(0, (navBarRect.origin.y + navBarRect.size.height), windowFrame.size.width, windowFrame.size.height - (navBarRect.origin.y + navBarRect.size.height)); 
+    
+    // Push in the contents sheet.
+    CATransition *animation = [CATransition animation];
+    [animation setType:kCATransitionMoveIn];
+    [animation setSubtype:kCATransitionFromTop];
+    [animation setDuration:0.3f];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [animation setValue:@"ContentsSlideIn" forKey:@"THName"];
+    [animation setDelegate:self];
+    [[sheetView layer] addAnimation:animation forKey:@"ContentSlide"];
+    
+    [window addSubview:sheetView];
+    
+    // Fade the nav bar and its contents to blue
+    animation = [CATransition animation];
+    [animation setType:kCATransitionFade];
+    [animation setDuration:0.3f];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [[navBar layer] addAnimation:animation forKey:@"NavBarFade"];
+    
+    navBar.barStyle = UIBarStyleDefault;
+    ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleDefault;
+    [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"BookButton.png"]
+                                                                     forState:UIControlStateNormal];
+    [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:0.0f];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    
+}
+
+- (void)dismissContents {
+    
+    UIView *sheetView = _contentsSheet.view;
+    CGRect contentsViewFinalRect = sheetView.frame;
+    contentsViewFinalRect.origin.y = contentsViewFinalRect.origin.y + contentsViewFinalRect.size.height;
+    
+    // Push out the contents sheet.
+    [UIView beginAnimations:@"contentsSheetDisappear" context:NULL];
+    [UIView setAnimationDidStopSelector:@selector(_contentsViewDidDisappear)];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDuration:0.3f];
+    
+    sheetView.frame = contentsViewFinalRect;
+    [self.navigationItem setRightBarButtonItem:nil animated:NO];
+    
+    if(!_viewIsDisappearing) {
+        if(_contentsSheet.selectedUuid != nil && self.navigationController.toolbarHidden) {
+            [self _toggleToolbars];
+        }        
+        
+        // Turn the nav bar and its contents back to translucent.
+        UINavigationBar *navBar = self.navigationController.navigationBar;
+        
+        CATransition *animation = [CATransition animation];
+        [animation setType:kCATransitionFade];
+        [animation setDuration:0.3f];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [[navBar layer] addAnimation:animation forKey:@"animation"];
+        
+        navBar.barStyle = UIBarStyleBlackTranslucent;
+        ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleBlackTranslucent;
+        [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"ContentsButton.png"]
+                                                                         forState:UIControlStateNormal];
+        [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:1.0f];
+        
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES]; 
+    }
+    [UIView commitAnimations];
+}
+
 
 - (void)showAddMenu:(id)sender {
     UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
