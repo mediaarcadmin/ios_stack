@@ -12,7 +12,7 @@
 
 @implementation AcapelaTTS
 
-@synthesize setupData, engine, ttsLicense, currentWordOffset, currentParagraph, currentWord, currentPage, paragraphWords;
+@synthesize setupData, engine, ttsLicense, currentWordOffset, currentParagraph, currentWord, currentPage, paragraphWords, textToSpeakChanged, speakingTimer;
 
 - (void)initTTS {
 	[self setTtsLicense:[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd]];
@@ -20,6 +20,7 @@
 	[self setEngine:[[AcapelaSpeech alloc] initWithVoice:setupData.CurrentVoice license:ttsLicense]];
 	[self setCurrentPage:-1];
 	[self setParagraphWords:nil];
+	[self setTextToSpeakChanged:NO];
 }
 
 - (BOOL)startSpeaking:(NSString *)string {
@@ -27,6 +28,11 @@
 }
 - (void)stopSpeaking {
 	[engine stopSpeaking];
+}
+
+// Shouldn't really be in the protocol because boundary is actually an Acapela enum val.
+- (void)stopSpeakingAtBoundary:(NSInteger)boundary {
+	[engine stopSpeakingAtBoundary:boundary];
 }
 
 - (BOOL)isSpeaking {

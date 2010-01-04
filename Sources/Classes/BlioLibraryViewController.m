@@ -601,7 +601,11 @@ typedef enum {
 #pragma mark BookController State Methods
 
 - (NSInteger)currentPageNumber {
-    return 44;   
+    UIView *bookView = [(EucBookViewController *)self.navigationController.topViewController bookView];
+    if ([bookView respondsToSelector:@selector(currentPageNumber)])
+        return (NSInteger)[bookView performSelector:@selector(currentPageNumber)];
+    else
+        return -1;
 }
 
 - (BlioPageLayout)currentPageLayout {
@@ -734,7 +738,17 @@ typedef enum {
     [self dismissModalViewControllerAnimated:YES];
 }
 
-- (void) startSpeakingParagraph:(BOOL)continuingSpeech {
+- (void)speakNextPargraph:(NSTimer*)timer {
+	if ( _acapelaTTS.textToSpeakChanged ) {	
+		[_acapelaTTS setTextToSpeakChanged:NO];
+		NSRange pageRange;
+		pageRange.location = [_acapelaTTS currentWordOffset];
+		pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset]; 	
+		[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
+	}
+}
+
+- (void) prepareTextToSpeak:(BOOL)continuingSpeech {
 	EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
 	EucBookView *bookView = (EucBookView *)bookViewController.bookView;
 	EucEPubBook *book = (EucEPubBook*)bookView.book;
@@ -767,10 +781,7 @@ typedef enum {
 		// else use the current word and paragraph, which is where we last stopped.
 		// edge case:  what if you stopped speech right after the end of the paragraph?
 	}
-	NSRange pageRange;
-	pageRange.location = [_acapelaTTS currentWordOffset];
-	pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset]; 
-	[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
+	[_acapelaTTS setTextToSpeakChanged:YES];
 }
 
 - (void)toggleAudio:(id)sender {
@@ -784,7 +795,8 @@ typedef enum {
 			[_testParagraphWords release];
 			_testParagraphWords = nil;
 			*/
-			[_acapelaTTS stopSpeaking];
+			//[_acapelaTTS stopSpeaking];
+			[_acapelaTTS stopSpeakingAtBoundary:1];
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
 		} else { 
 			/* For testing.  If this is uncommented, comment out the call to startSpeakingParagraph below.
@@ -803,8 +815,9 @@ typedef enum {
 				[_acapelaTTS setDelegate:self];
 				[_acapelaTTS setRate:180];   // Will get from settings.
 				[_acapelaTTS setVolume:70];  // Likewise.
+				[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextPargraph:) userInfo:nil repeats:YES]];
 			}
-			[self startSpeakingParagraph:NO];
+			[self prepareTextToSpeak:NO];
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
 		}
 		self.audioPlaying = !self.audioPlaying;  
@@ -966,23 +979,18 @@ typedef enum {
 
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
-	if (finishedSpeaking) 
+	if (finishedSpeaking) {
 		// Reached end of paragraph.  Start on the next.
-		[self startSpeakingParagraph:YES];
+		[self prepareTextToSpeak:YES]; 
+	}
 	//else stop button pushed before end of paragraph.
 }
 
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
-	// Sometimes the string that comes in here is "invalid" according to the debugger.
-	// When that happens, the characterRange of subsequent calls seems always to be invalid
-	// (the condition below fails).  I hope this is because it's an evaluation license.
-	// Another issue (or maybe the same): first word of new paragraph comes in with 
-	// invalid range: location not zero but a high number.
-	// For testing
-	//NSString* thisWord = [string substringWithRange:characterRange];
-	//NSLog(thisWord);
+	// The first string that comes in here after speaking has resumed has invalid range: 
+	// location not zero but a high number.
     if(characterRange.location + characterRange.length < string.length) {
 		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
 			NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);

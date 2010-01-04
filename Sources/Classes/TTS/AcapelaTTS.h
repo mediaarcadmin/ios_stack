@@ -19,6 +19,8 @@
 	uint32_t currentPage;
 	NSString* currentWord;
 	NSArray* paragraphWords;
+	NSTimer* speakingTimer;
+	BOOL textToSpeakChanged;
 }
 
 @property (nonatomic, retain) AcapelaLicense* ttsLicense;
@@ -26,9 +28,11 @@
 @property (nonatomic, retain) AcapelaSpeech* engine;
 @property (nonatomic, retain) NSArray* paragraphWords;
 @property (nonatomic, retain) NSString* currentWord;
+@property (nonatomic, retain) NSTimer* speakingTimer;
 @property (nonatomic) uint32_t currentParagraph;
 @property (nonatomic) uint32_t currentWordOffset;
 @property (nonatomic) uint32_t currentPage;
+@property (nonatomic) BOOL textToSpeakChanged;
 
 // These look like they refer to properties, but no.
 // They're pass-through methods to the corresponding

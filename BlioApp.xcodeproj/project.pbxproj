@@ -92,6 +92,7 @@
 		C985466B10E22BCD002305A2 /* icon-layout.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466810E22BCD002305A2 /* icon-layout.png */; };
 		C985477310E244FE002305A2 /* done-button-down.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477110E244FE002305A2 /* done-button-down.png */; };
 		C985477410E244FE002305A2 /* done-button-up.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477210E244FE002305A2 /* done-button-up.png */; };
+		C9D8A37C10F2048000FD5F22 /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A37B10F2048000FD5F22 /* LibraryGridViewController.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -250,6 +251,7 @@
 		C985466810E22BCD002305A2 /* icon-layout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-layout.png"; sourceTree = "<group>"; };
 		C985477110E244FE002305A2 /* done-button-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done-button-down.png"; sourceTree = "<group>"; };
 		C985477210E244FE002305A2 /* done-button-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done-button-up.png"; sourceTree = "<group>"; };
+		C9D8A37B10F2048000FD5F22 /* LibraryGridViewController.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryGridViewController.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +336,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C9D8A37B10F2048000FD5F22 /* LibraryGridViewController.png */,
 				A3FFB6E610ED0B35008040AC /* Default.png */,
 				A3FFB6E710ED0B35008040AC /* Icon.png */,
 				7D81ED2310E90C220016D44A /* paper-black.png */,
@@ -645,6 +648,7 @@
 				A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */,
 				A3FFB6E810ED0B35008040AC /* Default.png in Resources */,
 				A3FFB6E910ED0B35008040AC /* Icon.png in Resources */,
+				C9D8A37C10F2048000FD5F22 /* LibraryGridViewController.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

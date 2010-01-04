@@ -21,5 +21,6 @@
 @property (nonatomic, assign) id navigationController;
 
 - (id)initWithPath:(NSString *)path;
+- (NSInteger)currentPageNumber;
 
 @end
