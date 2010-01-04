@@ -8,11 +8,12 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "EucBookContentsTableViewController.h"
 
 @class EucGutenbergBook, EucBookPageIndex, EucBookPageIndexPoint, EucPageView, THPair;
 @protocol EucBook, EucBookReader;
 
-@protocol EucPageLayoutController <NSObject>
+@protocol EucPageLayoutController <EucBookContentsTableViewControllerDataSource>
 
 @property (nonatomic, readonly) id<EucBook> book;
 
