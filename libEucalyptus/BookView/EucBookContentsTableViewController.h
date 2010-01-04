@@ -43,7 +43,7 @@
 
 @end
 
-@protocol EucBookContentsTableViewControllerDataSource
+@protocol EucBookContentsTableViewControllerDataSource <NSObject>
 
 @required
 - (NSArray *)sectionUuids;
