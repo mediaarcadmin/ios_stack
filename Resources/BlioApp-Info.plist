@@ -27,8 +27,8 @@
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
 	<key>UIPrerenderedIcon</key>
-	<true/>
+	<false/>
 	<key>UIStatusBarHidden</key>
-	<true/>
+	<false/>
 </dict>
 </plist>

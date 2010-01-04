@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioBookViewController.h"
+#import "MSTiltScroller.h"
 
 @class BlioPDFFontList;
 @class BlioPDFDebugView;
@@ -20,11 +21,14 @@
     NSInteger visiblePageIndex;
     BlioPDFFontList *fonts;
     BlioPDFDebugView *debugView;
+    
+    MSTiltScroller *tiltScroller;
 }
 
 @property (nonatomic, retain) UIScrollView *scrollView;
 @property (nonatomic, retain) NSMutableArray *pageViews;
 @property (nonatomic, assign) id navigationController;
+@property (nonatomic, assign) MSTiltScroller *tiltScroller;
 
 - (id)initWithPath:(NSString *)path;
 

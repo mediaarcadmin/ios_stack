@@ -191,7 +191,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @implementation BlioLayoutView
 
-@synthesize scrollView, pageViews, navigationController;
+@synthesize scrollView, pageViews, navigationController, tiltScroller;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -260,6 +260,15 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         
     }
     return self;
+}
+
+- (void)setTiltScroller:(MSTiltScroller*)ts {
+    tiltScroller = ts;
+    [tiltScroller setScrollView:[pageViews objectAtIndex:visiblePageIndex]];
+}
+
+- (id)getCurrentScrollView {
+    return [pageViews objectAtIndex:visiblePageIndex];
 }
 
 - (BlioPDFDebugView *)debugView {
@@ -429,6 +438,11 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         visiblePageIndex = currentPageIndex;
         
         //[self parsePage:currentPageIndex+1];
+        
+        if (tiltScroller) {
+            [tiltScroller setScrollView:[pageViews objectAtIndex:visiblePageIndex]];
+            
+        }
     }
 }
 
