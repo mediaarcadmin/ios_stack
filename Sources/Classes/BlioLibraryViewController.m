@@ -633,61 +633,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [(UIView *)context removeFromSuperview];
 }
 
-#if 0 
-
-- (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
-	// For testing
-	//NSString* thisWord = [string substringWithRange:characterRange];
-	//NSLog(thisWord);
-	
-	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
-									options:0 
-									  range:characterRange].location != NSNotFound);
-	// A hack to get around an apparent Acapela bug.
-	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
-							&& ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame);  // E.g. "I and I (a case I've seen)
-	
-	/* Acapela does assemble hyphenated words, so I'm keeping this condition around
-	   just in case it turns out they slip up sometimes.
-	// possible problem:  hyphen as a pause ("He waited- and then spoke.")
-	NSRange lastCharacter;
-	lastCharacter.length = 1;
-	lastCharacter.location = characterRange.location + characterRange.length -1;
-	BOOL wordIsNotHyphenated = ([[string substringWithRange:lastCharacter] compare:@"-"] != NSOrderedSame);
-	 */
-	
-	return wordIsNotPunctuation && wordIsNotRepeated;
-}
-
-- (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
-{
-	if (finishedSpeaking) {
-		// Reached end of paragraph.  Start on the next.
-		[self prepareTextToSpeak:YES]; 
-	}
-	//else stop button pushed before end of paragraph.
-}
-
-- (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
-				 ofString:(NSString*)string 
-{
-	// The first string that comes in here after speaking has resumed has invalid range: 
-	// location not zero but a high number.
-    if(characterRange.location + characterRange.length < string.length) {
-		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
-			NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
-            BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-            BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-            [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
-            [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
-			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
-        }
-   }
-}
-
-#endif
-
-
 @end
 
 @implementation BlioLibraryTableView
