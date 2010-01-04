@@ -172,9 +172,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 
 @interface BlioLayoutView(private)
-NSInteger visiblePageIndex;
-BlioPDFFontList *fonts;
-BlioPDFDebugView *debugView;
 
 - (void)loadPage:(int)pageIndex;
 - (BlioPDFDebugView *)debugView;

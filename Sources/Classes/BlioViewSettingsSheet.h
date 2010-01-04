@@ -18,6 +18,10 @@
     UISegmentedControl *lockButtonSegment;
     UISegmentedControl *tapTurnButtonSegment;
     UIButton *doneButton;
+    UIImage *enableTapTurnImage;
+    UIImage *disableTapTurnImage;
+    UIImage *lockRotationImage;
+    UIImage *unlockRotationImage;   
 }
 
 @property (nonatomic, retain) UILabel *fontSizeLabel;

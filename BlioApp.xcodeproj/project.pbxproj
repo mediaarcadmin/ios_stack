@@ -95,6 +95,9 @@
 		C985477310E244FE002305A2 /* done-button-down.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477110E244FE002305A2 /* done-button-down.png */; };
 		C985477410E244FE002305A2 /* done-button-up.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477210E244FE002305A2 /* done-button-up.png */; };
 		C9D8A37C10F2048000FD5F22 /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A37B10F2048000FD5F22 /* LibraryGridViewController.png */; };
+		C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */; };
+		C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57810F2289D00FD5F22 /* icon-lock.png */; };
+		C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57910F2289D00FD5F22 /* icon-finger.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -258,6 +261,10 @@
 		C985477110E244FE002305A2 /* done-button-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done-button-down.png"; sourceTree = "<group>"; };
 		C985477210E244FE002305A2 /* done-button-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done-button-up.png"; sourceTree = "<group>"; };
 		C9D8A37B10F2048000FD5F22 /* LibraryGridViewController.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryGridViewController.png; sourceTree = "<group>"; };
+		C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioUIImageAdditions.h; sourceTree = "<group>"; };
+		C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioUIImageAdditions.m; sourceTree = "<group>"; };
+		C9D8A57810F2289D00FD5F22 /* icon-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-lock.png"; sourceTree = "<group>"; };
+		C9D8A57910F2289D00FD5F22 /* icon-finger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-finger.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -307,6 +314,8 @@
 				7D03EB9710EA724C00430295 /* BlioTestParagraphWords.m */,
 				C932B03910ECBC6000B8286A /* BlioNotesView.h */,
 				C932B03A10ECBC6000B8286A /* BlioNotesView.m */,
+				C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */,
+				C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -358,6 +367,8 @@
 				C94D864010E78E140094B9C5 /* button-sync.png */,
 				C985477110E244FE002305A2 /* done-button-down.png */,
 				C985477210E244FE002305A2 /* done-button-up.png */,
+				C9D8A57810F2289D00FD5F22 /* icon-lock.png */,
+				C9D8A57910F2289D00FD5F22 /* icon-finger.png */,
 				C985466610E22BCC002305A2 /* icon-speedread.png */,
 				C985466710E22BCD002305A2 /* icon-page.png */,
 				C985466810E22BCD002305A2 /* icon-layout.png */,
@@ -659,6 +670,8 @@
 				A3FFB6E810ED0B35008040AC /* Default.png in Resources */,
 				A3FFB6E910ED0B35008040AC /* Icon.png in Resources */,
 				C9D8A37C10F2048000FD5F22 /* LibraryGridViewController.png in Resources */,
+				C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */,
+				C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -682,6 +695,7 @@
 				C932B03B10ECBC6000B8286A /* BlioNotesView.m in Sources */,
 				7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */,
 				7D79183610F2257C00C4D839 /* BlioEPubView.m in Sources */,
+				C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

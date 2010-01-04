@@ -9,11 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "BlioBookViewController.h"
 
-@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView> {
+@class BlioPDFFontList;
+@class BlioPDFDebugView;
+
+@interface BlioLayoutView : UIView <UIScrollViewDelegate , BlioBookView> {
     CGPDFDocumentRef pdf;
     UIScrollView *scrollView;
     NSMutableArray *pageViews;
     id navigationController;
+    NSInteger visiblePageIndex;
+    BlioPDFFontList *fonts;
+    BlioPDFDebugView *debugView;
 }
 
 @property (nonatomic, retain) UIScrollView *scrollView;

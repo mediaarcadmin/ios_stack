@@ -10,7 +10,8 @@
 
 
 @interface BlioNotesView : UIView {
-
+    UITextView *textView;
+    NSInteger page;
 }
 
 - (id)initWithPage:(NSInteger)pageNumber;

@@ -8,6 +8,7 @@
 
 #import "BlioViewSettingsSheet.h"
 #import <libEucalyptus/THUIImageAdditions.h>
+#import "BlioUIImageAdditions.h"
 
 static const CGFloat kBlioViewSettingsRowSpacing = 14;
 static const CGFloat kBlioViewSettingsYInset = 22;
@@ -15,6 +16,15 @@ static const CGFloat kBlioViewSettingsXInset = 20;
 static const CGFloat kBlioViewSettingsSegmentButtonHeight = 36;
 static const CGFloat kBlioViewSettingsLabelWidth = 93;
 static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
+
+@interface BlioViewSettingsSheet()
+
+@property (nonatomic, retain) UIImage *enableTapTurnImage;
+@property (nonatomic, retain) UIImage *disableTapTurnImage;
+@property (nonatomic, retain) UIImage *lockRotationImage;
+@property (nonatomic, retain) UIImage *unlockRotationImage;
+
+@end
 
 @implementation BlioViewSettingsSheet
 
@@ -26,6 +36,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 @synthesize lockButtonSegment;
 @synthesize tapTurnButtonSegment;
 @synthesize doneButton;
+@synthesize enableTapTurnImage, disableTapTurnImage, lockRotationImage, unlockRotationImage;
 
 - (void)dealloc {
     self.fontSizeLabel = nil;
@@ -36,6 +47,10 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     self.lockButtonSegment = nil;
     self.tapTurnButtonSegment = nil;
     self.doneButton = nil;
+    self.enableTapTurnImage = nil;
+    self.disableTapTurnImage = nil;
+    self.lockRotationImage = nil;
+    self.unlockRotationImage = nil;
     [super dealloc];
 }
 
@@ -44,13 +59,20 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     self = [super initWithTitle:nil delegate:newDelegate cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     
 	if (self) {
-        NSArray *segmentTitles = [NSArray arrayWithObjects:
-                                  @"Plain Text",
-                                  @"Page Layout",
-                                  @"Speed Read",
+        UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
+        UIColor *white = [UIColor whiteColor];
+        UIEdgeInsets inset = UIEdgeInsetsMake(0, 2, 2, 2);
+        UIImage *plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:white textInset:inset];
+        UIImage *layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:white textInset:inset];
+        UIImage *speedImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"SpeedRead" font:defaultFont color:white textInset:inset];
+        
+        NSArray *segmentImages = [NSArray arrayWithObjects:
+                                  plainImage,
+                                  layoutImage,
+                                  speedImage,
                                   nil];
         
-        UISegmentedControl *aLayoutSegmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTitles];
+        UISegmentedControl *aLayoutSegmentedControl = [[UISegmentedControl alloc] initWithItems:segmentImages];
         aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aLayoutSegmentedControl.tintColor = [UIColor darkGrayColor];
         [aLayoutSegmentedControl addTarget:self action:@selector(changePageLayout:) forControlEvents:UIControlEventValueChanged];
@@ -71,8 +93,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [aFontSizeLabel release];
         
         NSString *letter = @"A";
-        UIFont *defaultFont = [UIFont boldSystemFontOfSize:14.0f];
-        UIColor *white = [UIColor whiteColor];
         
         // Sizes and offsets for the font size buttons chosen to look 'right' visually
         // rather than being completly accurate to the book view technically.
@@ -140,12 +160,15 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.lockButtonSegment = aLockButtonSegmentedControl;
         [aLockButtonSegmentedControl release];
         
+        self.unlockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:@"Unlock Rotation" font:defaultFont color:white textInset:inset];
+        self.lockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:@"Lock Rotation" font:defaultFont color:white textInset:inset];
+
         if ([newDelegate respondsToSelector:@selector(currentLockRotation)]) {
             NSInteger currentLock = (NSInteger)[newDelegate performSelector:@selector(currentLockRotation)];
             if (currentLock)
-                [aLockButtonSegmentedControl setTitle:@"Unlock Rotation" forSegmentAtIndex:0];
+                [aLockButtonSegmentedControl setImage:self.unlockRotationImage forSegmentAtIndex:0];
             else
-                [aLockButtonSegmentedControl setTitle:@"Lock Rotation" forSegmentAtIndex:0];
+                [aLockButtonSegmentedControl setImage:self.lockRotationImage forSegmentAtIndex:0];
         }
         
         NSArray *tapTurnTitles = [NSArray arrayWithObjects:
@@ -161,12 +184,15 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.tapTurnButtonSegment = aTapTurnButtonSegmentedControl;
         [aTapTurnButtonSegmentedControl release];
         
+        self.enableTapTurnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Enable Tap Turn" font:defaultFont color:white textInset:inset];
+        self.disableTapTurnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Disable Tap Turn" font:defaultFont color:white textInset:inset];
+
         if ([newDelegate respondsToSelector:@selector(currentTapTurn)]) {
             NSInteger currentTapTurn = (NSInteger)[newDelegate performSelector:@selector(currentTapTurn)];
         if (currentTapTurn)
-            [aTapTurnButtonSegmentedControl setTitle:@"Enable Tap Turn" forSegmentAtIndex:0];
+            [aTapTurnButtonSegmentedControl setImage:self.enableTapTurnImage forSegmentAtIndex:0];
         else
-            [aTapTurnButtonSegmentedControl setTitle:@"Disable Tap Turn" forSegmentAtIndex:0];
+            [aTapTurnButtonSegmentedControl setImage:self.disableTapTurnImage forSegmentAtIndex:0];
         }
         
         UIButton *aDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -245,10 +271,10 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
      [sender setTitle:@"Lock Rotation" forSegmentAtIndex:0];
      }
      */
-    if ([[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Unlock Rotation"])
-        [sender setTitle:@"Lock Rotation" forSegmentAtIndex:0];
+    if ([[sender imageForSegmentAtIndex:[sender selectedSegmentIndex]] isEqual:self.lockRotationImage])
+        [sender setImage:self.unlockRotationImage forSegmentAtIndex:0];
     else
-        [sender setTitle:@"Unlock Rotation" forSegmentAtIndex:0];
+        [sender setImage:self.lockRotationImage forSegmentAtIndex:0];
 }
 
 - (void)changeTapTurn:(id)sender {
@@ -263,10 +289,10 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
      [sender setTitle:@"Tap Turn Off" forSegmentAtIndex:0];
      } 
      */
-    if ([[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Disable Tap Turn"])
-        [sender setTitle:@"Enable Tap Turn" forSegmentAtIndex:0];
+    if ([[sender imageForSegmentAtIndex:[sender selectedSegmentIndex]] isEqual:self.disableTapTurnImage])
+        [sender setImage:self.enableTapTurnImage forSegmentAtIndex:0];
     else
-        [sender setTitle:@"Disable Tap Turn" forSegmentAtIndex:0];
+        [sender setImage:self.disableTapTurnImage forSegmentAtIndex:0];
 }
 
 

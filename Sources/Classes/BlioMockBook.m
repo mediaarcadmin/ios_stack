@@ -8,8 +8,10 @@
 
 #import "BlioMockBook.h"
 
-static const int kBlioMockBookThumbWidth = 53;
-static const int kBlioMockBookThumbHeight = 76;
+static const CGFloat kBlioMockBookListThumbHeight = 76;
+static const CGFloat kBlioMockBookListThumbWidth = 53;
+static const CGFloat kBlioMockBookGridThumbHeight = 140;
+static const CGFloat kBlioMockBookGridThumbWidth = 102;
 
 @implementation BlioMockBook
 
@@ -80,10 +82,12 @@ static const int kBlioMockBookThumbHeight = 76;
     return transform;
 }
 
-- (UIImage *)coverThumb {
-    if (coverThumb == nil) {
+- (UIImage *)coverThumbForSize:(CGSize)size {
+    if (coverThumb == nil || !CGSizeEqualToSize(size, coverThumb.size)) {
+        coverThumb = nil;
+        
         // Attempt to retrieve from disk cache
-        NSString *encodedPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[self.coverPath stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+        NSString *encodedPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[self.coverPath stringByAppendingString:NSStringFromCGSize(size)] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
         if ([[NSFileManager defaultManager] fileExistsAtPath:encodedPath]) {
             NSData *coverThumbData = [NSData dataWithContentsOfMappedFile:encodedPath];
             coverThumb = [[UIImage alloc ]initWithData:coverThumbData];
@@ -93,10 +97,9 @@ static const int kBlioMockBookThumbHeight = 76;
         if (coverThumb == nil) { 
             UIImage *cover = [self coverImage];
             
-            CGSize newSize = CGSizeMake(kBlioMockBookThumbWidth, kBlioMockBookThumbHeight);
-            CGAffineTransform transform = [self transformForOrientation:newSize orientation:cover.imageOrientation];
+            CGAffineTransform transform = [self transformForOrientation:size orientation:cover.imageOrientation];
             
-            CGRect newRect = CGRectIntegral(CGRectMake(0, 0, newSize.width, newSize.height));
+            CGRect newRect = CGRectIntegral(CGRectMake(0, 0, size.width, size.height));
             CGImageRef imageRef = cover.CGImage;
             
             CGContextRef bitmap = CGBitmapContextCreate(NULL,
@@ -133,6 +136,14 @@ static const int kBlioMockBookThumbHeight = 76;
         }
     }
     return coverThumb;
+}
+
+- (UIImage *)coverThumbForGrid {
+    return [self coverThumbForSize:CGSizeMake(kBlioMockBookGridThumbWidth, kBlioMockBookGridThumbHeight)];
+}
+
+- (UIImage *)coverThumbForList {
+    return [self coverThumbForSize:CGSizeMake(kBlioMockBookListThumbWidth, kBlioMockBookListThumbHeight)];
 }
 
 @end
