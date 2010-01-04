@@ -6,6 +6,8 @@
 //  Copyright Things Made Out Of Other Things 2009. All rights reserved.
 //
 #import <QuartzCore/QuartzCore.h>
+#import <libEucalyptus/EucSharedHyphenator.h>
+#import <pthread.h>
 #import "BlioAppAppDelegate.h"
 #import "BlioLibraryViewController.h"
 
@@ -71,11 +73,47 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
      
 }
 
+static void *background_init_thread(void * arg) {
+    initialise_shared_hyphenator();
+    return NULL;
+}
+
+- (void)performBackgroundInitialisation {    
+    // Initialising the hyphenator is expensive, so we start it as early as possible
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    
+    struct sched_param param = {0};
+    int ret = pthread_attr_getschedparam(&attr, &param);
+    if(ret != 0) {
+        NSLog(@"pthread_attr_getschedparam returned %ld", (long)ret);
+    }
+    param.sched_priority = sched_get_priority_min(SCHED_RR);
+    ret = pthread_attr_setschedparam(&attr, &param);
+    if(ret != 0) {
+        NSLog(@"pthread_attr_setschedparam returned %ld", (long)ret);
+    }
+    
+    pthread_t hit;
+    ret = pthread_create(&hit, &attr, background_init_thread, NULL);
+    if(ret != 0) {
+        NSLog(@"pthread_create returned %ld", (long)ret);
+    }
+    
+    ret = pthread_attr_destroy(&attr);
+    if(ret != 0) {
+        NSLog(@"pthread_attr_destroy returned %ld", (long)ret);
+    }    
+}
+
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
     window.backgroundColor = [UIColor blackColor];
+    
+    [self performBackgroundInitialisation];
 }
+
 
 - (NSString *)dynamicDefaultPngPath {
     NSString *tmpDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];

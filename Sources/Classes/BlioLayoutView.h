@@ -8,12 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@class BlioPDFFontList;
+@class BlioPDFDebugView;
 
 @interface BlioLayoutView : UIView <UIScrollViewDelegate> {
     CGPDFDocumentRef pdf;
     UIScrollView *scrollView;
     NSMutableArray *pageViews;
     id navigationController;
+    NSInteger visiblePageIndex;
+    BlioPDFFontList *fonts;
+    BlioPDFDebugView *debugView;
 }
 
 @property (nonatomic, retain) UIScrollView *scrollView;

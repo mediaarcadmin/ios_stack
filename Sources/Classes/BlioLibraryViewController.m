@@ -14,7 +14,7 @@
 #import "BlioViewSettingsSheet.h"
 #import "BlioNotesView.h"
 #import "BlioMockBook.h"
-
+#import "BlioUIImageAdditions.h"
 #import "BlioTestParagraphWords.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
@@ -171,10 +171,11 @@ typedef enum {
     self.libraryLayout = kBlioLibraryLayoutGrid;
     
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    UIEdgeInsets inset = UIEdgeInsetsMake(3, 0, 0, 0);
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage imageNamed:@"button-grid.png"],
-                              [UIImage imageNamed:@"button-list.png"],
+                              [UIImage imageWithShadow:[UIImage imageNamed:@"button-grid.png"] inset:inset],
+                              [UIImage imageWithShadow:[UIImage imageNamed:@"button-list.png"] inset:inset],
                               nil];
     UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentImages];
     segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
