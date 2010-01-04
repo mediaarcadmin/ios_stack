@@ -173,7 +173,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @interface BlioLayoutView(private)
 
-- (void)loadPage:(int)pageIndex;
+- (void)loadPage:(int)pageIndex setCurrent:(BOOL)setCurrent;
 - (BlioPDFDebugView *)debugView;
 - (void)setDebugView:(BlioPDFDebugView *)newView;
 
@@ -181,9 +181,11 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @interface BlioPDFScrollView : UIScrollView <UIScrollViewDelegate> {
     UIView *view;
+    CGRect currentTextRect;
 }
 
 @property (nonatomic, retain) UIView *view;
+@property (nonatomic) CGRect currentTextRect;
 
 - (id)initWithView:(UIView *)view;
 
@@ -191,7 +193,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @implementation BlioLayoutView
 
-@synthesize scrollView, pageViews, navigationController;
+@synthesize scrollView, pageViews, navigationController, currentPageView;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -202,12 +204,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     self.pageViews = nil;
     self.navigationController = nil;
     self.debugView = nil;
+    self.currentPageView = nil;
     [super dealloc];
 }
 
 - (id)initWithPath:(NSString *)path {
     NSURL *pdfURL = [NSURL fileURLWithPath:path];
     pdf = CGPDFDocumentCreateWithURL((CFURLRef)pdfURL);
+    
     if (NULL == pdf) return nil;
     
     if ((self = [super initWithFrame:CGRectMake(0,0,320,480)])) {
@@ -232,13 +236,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         [pageViewArray release];
         
         visiblePageIndex = 0;
-        [self loadPage:0];
-        [self loadPage:1];
+        [self loadPage:0 setCurrent:YES];
+        [self loadPage:1 setCurrent:NO];
         
-        //fonts = [[BlioPDFFontList alloc] init];
-        //for (int k = 0; k < pageCount; k++)
-            //[fonts addFontsFromPage:CGPDFDocumentGetPage(pdf, k)];
-        
+        NSLog(@"Start fonts");
+        fonts = [[BlioPDFFontList alloc] init];
+        for (int k = 0; k < pageCount; k++)
+            [fonts addFontsFromPage:CGPDFDocumentGetPage(pdf, k)];
+        NSLog(@"End fonts");
         /*
         CGPDFDictionaryRef dict = CGPDFDocumentGetInfo(pdf);
         CGPDFDictionaryApplyFunction(dict, &logDictContents, @"documentDict");
@@ -303,14 +308,17 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 - (void)parsePage:(NSInteger)pageNumber {
+    NSLog(@"Start parse");
     CGPDFPageRef pageRef = CGPDFDocumentGetPage(pdf, pageNumber);
-    [self displayDebugRect:CGRectZero forPage:pageNumber];
+    //[self displayDebugRect:CGRectZero forPage:pageNumber];
     BlioPDFParsedPage *parsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:fonts];
-    NSLog(@"Page text: %@", [parsedPage textContent]);
+    //NSLog(@"Page text: %@", [parsedPage textContent]);
     NSLog(@"Text rect: %@", NSStringFromCGRect([parsedPage textRect]));
-    [self.debugView setInterestRect:[parsedPage textRect]];
-    [self.debugView setNeedsDisplay];
+    [self.currentPageView setCurrentTextRect:[parsedPage textRect]];
+    //[self.debugView setInterestRect:[parsedPage textRect]];
+    //[self.debugView setNeedsDisplay];
     [parsedPage release];
+    NSLog(@"End parse");
 }
 
 #pragma mark -
@@ -328,9 +336,9 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     NSInteger pageIndex = pageNumber - 1;
     
     if (pageIndex != visiblePageIndex) {
-        [self loadPage:pageIndex - 1];
-        [self loadPage:pageIndex];
-        [self loadPage:pageIndex + 1];
+        [self loadPage:pageIndex - 1 setCurrent:NO];
+        [self loadPage:pageIndex setCurrent:YES];
+        [self loadPage:pageIndex + 1 setCurrent:NO];
         
         visiblePageIndex = pageIndex;        
     }
@@ -360,7 +368,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 
-- (void)loadPage:(int)pageIndex {
+- (void)loadPage:(int)pageIndex setCurrent:(BOOL)setCurrent {
     if (pageIndex < 0) return;
     if (pageIndex >= CGPDFDocumentGetNumberOfPages (pdf)) return;
 	
@@ -409,7 +417,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         frame.origin.y = 0;
         [pageView setFrame:frame];
         [self.scrollView addSubview:pageView];
-        
+    }
+    if (setCurrent) {
+        self.currentPageView = pageView;
+        [pageView setCurrentTextRect:CGRectZero];
     }
 }
 
@@ -422,21 +433,24 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     NSInteger currentPageIndex = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
 	
     if (currentPageIndex != visiblePageIndex) {
-        [self loadPage:currentPageIndex - 1];
-        [self loadPage:currentPageIndex];
-        [self loadPage:currentPageIndex + 1];
+        [self loadPage:currentPageIndex - 1 setCurrent:NO];
+        [self loadPage:currentPageIndex setCurrent:YES];
+        [self loadPage:currentPageIndex + 1 setCurrent:NO];
         
         visiblePageIndex = currentPageIndex;
-        
         //[self parsePage:currentPageIndex+1];
     }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self parsePage:visiblePageIndex+1];
 }
 
 @end
 
 @implementation BlioPDFScrollView
 
-@synthesize view;
+@synthesize view, currentTextRect;
 
 - (void)dealloc {
     self.view = nil;
@@ -447,6 +461,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     NSAssert1(kBlioLayoutMaxViews >= 3, @"Error: kBlioLayoutMaxViews is %d. This must be 3 or greater.", kBlioLayoutMaxViews);
     
     if ((self = [super initWithFrame:newView.frame])) {
+        currentTextRect = CGRectZero;
+        
         [self addSubview:newView];
         [newView setFrame:newView.bounds];
         self.view = newView;
@@ -496,12 +512,16 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     if (self.zoomScale > 1.0f) {
         [self setZoomScale:1.0f animated:YES];
     } else {
-        CGFloat width  = self.contentSize.width  / 2.75f;
-        CGFloat height = self.contentSize.height / 2.75f;
-        CGFloat midX = (point.x / CGRectGetWidth(self.bounds)) * self.contentSize.width;
-        CGFloat midY = self.contentSize.height - ((point.y / CGRectGetHeight(self.bounds)) * self.contentSize.height);
-        CGRect targetRect = CGRectMake(midX - width/2.0f, midY - height/2.0f, width, height);
-        [self zoomToRect:targetRect animated:YES];
+        if (CGRectEqualToRect(self.currentTextRect, CGRectZero)) {
+            CGFloat width  = self.contentSize.width  / 2.75f;
+            CGFloat height = self.contentSize.height / 2.75f;
+            CGFloat midX = (point.x / CGRectGetWidth(self.bounds)) * self.contentSize.width;
+            CGFloat midY = self.contentSize.height - ((point.y / CGRectGetHeight(self.bounds)) * self.contentSize.height);
+            CGRect targetRect = CGRectMake(midX - width/2.0f, midY - height/2.0f, width, height);
+            [self zoomToRect:targetRect animated:YES];
+        } else {
+            NSLog(@"Text rect: %@", NSStringFromCGRect(self.currentTextRect));
+        }
     }
 }
 
@@ -877,7 +897,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
             NSLog(@"unichar not in widths: %C [%d]", glyph, glyph);
             width = 300;
         }
-        return CGSizeMake(280,width);
+        return CGSizeMake(width,300);
     } else {
         NSLog(@"unichar outside bounds: %C [%d]", glyph, glyph);
         return CGSizeMake(280,300);
@@ -1144,27 +1164,27 @@ static NSDictionary *blioStandardEncodingDict = nil;
 @implementation BlioPDFParsedPage
 
 static void op_MP (CGPDFScannerRef s, void *info) {
-    NSLog(@"op_MP");
+    //NSLog(@"op_MP");
 }
 
 static void op_DP (CGPDFScannerRef s, void *info) {
-    NSLog(@"op_DP");
+    //NSLog(@"op_DP");
 }
 
 static void op_BMC (CGPDFScannerRef s, void *info) {
-    NSLog(@"op_BMC");
+    //NSLog(@"op_BMC");
 }
 
 static void op_BDC (CGPDFScannerRef s, void *info) {
-    NSLog(@"op_BDC");
+    //NSLog(@"op_BDC");
 }
 
 static void op_EMC (CGPDFScannerRef s, void *info) {
-    NSLog(@"op_EMC");
+    //NSLog(@"op_EMC");
 }
 
 static void op_Tf (CGPDFScannerRef s, void *info) {
-    printf("(Tf)");
+    //printf("(Tf)");
     BlioPDFParsedPage *parsedPage = info;
     const char *name;
     CGPDFReal number;
@@ -1187,10 +1207,11 @@ static void op_Tf (CGPDFScannerRef s, void *info) {
         [parsedPage setCurrentFont:font];
     }
     
-    printf("[%s %f /%s]", [baseFont UTF8String], number, name);
+    //printf("[%s %f /%s]", [baseFont UTF8String], number, name);
 }
 
 static void op_TJ(CGPDFScannerRef inScanner, void *info) {
+    //printf("(TJ)");
     BlioPDFParsedPage *parsedPage = info;
     
     CGPDFArrayRef array;
@@ -1207,9 +1228,8 @@ static void op_TJ(CGPDFScannerRef inScanner, void *info) {
         if(success)
         {
             NSString *data = (NSString *)CGPDFStringCopyTextString(string);
-            //[[parsedPage textContent]  appendFormat:@"%@", data];
             [parsedPage addGlyphsWithString:data];
-            printf("%s", [data UTF8String]);
+            //printf("[%s]", [data UTF8String]);
             [data release];
         } else {
             CGPDFReal number;
@@ -1223,6 +1243,7 @@ static void op_TJ(CGPDFScannerRef inScanner, void *info) {
 }
 
 static void op_Tj(CGPDFScannerRef inScanner, void *info) {
+    //printf("(Tj)");
     BlioPDFParsedPage *parsedPage = info;
     
     CGPDFStringRef string;
@@ -1232,36 +1253,35 @@ static void op_Tj(CGPDFScannerRef inScanner, void *info) {
     if(success)
     {
         NSString *data = (NSString *)CGPDFStringCopyTextString(string);
-        //[[parsedPage textContent] appendFormat:@"%@", data];
         [parsedPage addGlyphsWithString:data];
-        printf("%s", [data UTF8String]);
+        //printf("[%s]", [data UTF8String]);
         [data release];
         [parsedPage setTj:0];
     }
 }
 
 static void op_Tc(CGPDFScannerRef inScanner, void *info) {
-    printf("(Tc)");
+    //printf("(Tc)");
     BlioPDFParsedPage *parsedPage = info;
     CGPDFReal number;
     
     bool success = CGPDFScannerPopNumber(inScanner, &number);
     if (success) [parsedPage setTc:number];
-    printf("[%f]", parsedPage.Tc);
+    //printf("[%f]", parsedPage.Tc);
 }
 
 static void op_TL(CGPDFScannerRef inScanner, void *info) {
-    printf("(TL)");
+    //printf("(TL)");
     BlioPDFParsedPage *parsedPage = info;
     CGPDFReal number;
     
     bool success = CGPDFScannerPopNumber(inScanner, &number);
     if (success) [parsedPage setTl:number];
-    printf("[%f]", parsedPage.Tl);
+    //printf("[%f]", parsedPage.Tl);
 }
 
 static void op_Tm(CGPDFScannerRef inScanner, void *info) {
-    printf("(Tm)");
+    //printf("(Tm)");
     BlioPDFParsedPage *parsedPage = info;
     
     CGPDFReal matrix[6];
@@ -1273,22 +1293,21 @@ static void op_Tm(CGPDFScannerRef inScanner, void *info) {
     if (success) {
         [parsedPage setTextLineMatrix:CGAffineTransformMake(matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5])];
         [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
-        //[[parsedPage textContent] appendString:@"\n"]; // Not necessarily a newline
-        printf("%s\n", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
+        //printf("%s\n", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
     }
 }
 
 static void op_Tr(CGPDFScannerRef inScanner, void *info) {
-    printf("(Tr)");
+    //printf("(Tr)");
     CGPDFInteger number;
     
     CGPDFScannerPopInteger(inScanner, &number);
-    printf("[%d]", (int)number);
+    //printf("[%d]", (int)number);
 
 }
 
 static void op_Ts(CGPDFScannerRef inScanner, void *info) {
-    printf("(Ts)");
+    //printf("(Ts)");
     BlioPDFParsedPage *parsedPage = info;
     CGPDFReal number;
     
@@ -1297,23 +1316,23 @@ static void op_Ts(CGPDFScannerRef inScanner, void *info) {
         [parsedPage setTs:number];
         [parsedPage updateTextStateMatrix];
     }
-    printf("[%f]", parsedPage.Ts);
+    //printf("[%f]", parsedPage.Ts);
 
 }
 
 static void op_Tw(CGPDFScannerRef inScanner, void *info) {
-    printf("(Tw)");
+    //printf("(Tw)");
     BlioPDFParsedPage *parsedPage = info;
     CGPDFReal number;
     
     bool success = CGPDFScannerPopNumber(inScanner, &number);
     if (success) [parsedPage setTw:number];
-    printf("[%f]", parsedPage.Tw);
+    //printf("[%f]", parsedPage.Tw);
 
 }
 
 static void op_Tz(CGPDFScannerRef inScanner, void *info) {
-    printf("(Tz)");
+    //printf("(Tz)");
     BlioPDFParsedPage *parsedPage = info;
     CGPDFReal number;
     
@@ -1322,12 +1341,12 @@ static void op_Tz(CGPDFScannerRef inScanner, void *info) {
         [parsedPage setTh:number];
         [parsedPage updateTextStateMatrix];
     }
-    printf("[%f]", parsedPage.Th);
+    //printf("[%f]", parsedPage.Th);
 
 }
 
 static void op_Td(CGPDFScannerRef inScanner, void *info) {
-    printf("(Td)");
+    //printf("(Td)");
     BlioPDFParsedPage *parsedPage = info;
     
     CGPDFReal matrix[2];
@@ -1336,19 +1355,17 @@ static void op_Td(CGPDFScannerRef inScanner, void *info) {
     for (int i = 0; i < 2; i++) {
         success = CGPDFScannerPopNumber(inScanner, &matrix[1-i]);
     }
-    if (success) {
-        CGAffineTransform Td = CGAffineTransformMakeTranslation(matrix[0], matrix[1]);
-        
-        [parsedPage setTextLineMatrix:CGAffineTransformConcat([parsedPage textLineMatrix], Td)];
+    if (success) {        
+        [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], matrix[0], matrix[1])];
         [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
         [[parsedPage textContent] appendString:@"\n"];
-        printf("%s", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
+        //printf("%s", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
     }
     
 }
 
 static void op_TD(CGPDFScannerRef inScanner, void *info) {
-    printf("(TD)");
+    //printf("(TD)");
     BlioPDFParsedPage *parsedPage = info;
     
     CGPDFReal matrix[2];
@@ -1359,37 +1376,34 @@ static void op_TD(CGPDFScannerRef inScanner, void *info) {
     }
     if (success) {
         [parsedPage setTl:-(matrix[1])];
-        printf("[%f]", parsedPage.Tl);
-        CGAffineTransform Td = CGAffineTransformMakeTranslation(matrix[0], matrix[1]);
+        //printf("[%f]", parsedPage.Tl);
     
-        [parsedPage setTextLineMatrix:CGAffineTransformConcat([parsedPage textLineMatrix], Td)];
+        [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], matrix[0], matrix[1])];
         [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
         [[parsedPage textContent] appendString:@"\n"];
-        printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
+        //printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
     }
     
 }
 
 static void op_TSTAR(CGPDFScannerRef inScanner, void *info) {
-    printf("(T*)");
+    //printf("(T*)");
     BlioPDFParsedPage *parsedPage = info;
-    CGAffineTransform Td = CGAffineTransformMakeTranslation(0, -([parsedPage Tl]));
     
-    [parsedPage setTextLineMatrix:CGAffineTransformConcat([parsedPage textLineMatrix], Td)];
+    [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
     [[parsedPage textContent] appendString:@"\n"];
-    printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
+    //printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
 }
 
 static void op_SINGLEQUOTE(CGPDFScannerRef inScanner, void *info) {
-    printf("(')");
+    //printf("(')");
     BlioPDFParsedPage *parsedPage = info;
-    CGAffineTransform Td = CGAffineTransformMakeTranslation(0, -([parsedPage Tl]));
     
-    [parsedPage setTextLineMatrix:CGAffineTransformConcat([parsedPage textLineMatrix], Td)];
+    [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
     [[parsedPage textContent] appendString:@"\n"];
-    printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
+    //printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
     
     CGPDFStringRef string;
     
@@ -1398,29 +1412,27 @@ static void op_SINGLEQUOTE(CGPDFScannerRef inScanner, void *info) {
     if(success)
     {
         NSString *data = (NSString *)CGPDFStringCopyTextString(string);
-        [[parsedPage textContent] appendFormat:@"%@", data];
-        printf("%s", [data UTF8String]);
+        [parsedPage addGlyphsWithString:data];
+        //printf("[%s]", [data UTF8String]);
         [data release];
         [parsedPage setTj:0];
     }
 }
 
 static void op_DOUBLEQUOTE(CGPDFScannerRef inScanner, void *info) {
-    printf("(\")");
+    //printf("(\")");
     BlioPDFParsedPage *parsedPage = info;
     CGPDFReal number;
     
     bool success = CGPDFScannerPopNumber(inScanner, &number);
-    if (success) [parsedPage setTw:number];
-    printf("[%f]", parsedPage.Tw);
+    if (success) [parsedPage setTc:number];
+    //printf("[%f]", parsedPage.Tc);
     
     success = CGPDFScannerPopNumber(inScanner, &number);
-    if (success) [parsedPage setTc:number];
-    printf("[%f]", parsedPage.Tc);
+    if (success) [parsedPage setTw:number];
+    //printf("[%f]", parsedPage.Tw);
     
-    CGAffineTransform Td = CGAffineTransformMakeTranslation(0, -([parsedPage Tl]));
-    
-    [parsedPage setTextLineMatrix:CGAffineTransformConcat([parsedPage textLineMatrix], Td)];
+    [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
     [[parsedPage textContent] appendString:@"\n"];
     printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
@@ -1432,8 +1444,8 @@ static void op_DOUBLEQUOTE(CGPDFScannerRef inScanner, void *info) {
     if(success)
     {
         NSString *data = (NSString *)CGPDFStringCopyTextString(string);
-        [[parsedPage textContent] appendFormat:@"%@", data];
-        printf("%s", [data UTF8String]);
+        [parsedPage addGlyphsWithString:data];
+        //printf("[%s]", [data UTF8String]);
         [data release];
         [parsedPage setTj:0];
     }
@@ -1444,11 +1456,11 @@ static void op_BT(CGPDFScannerRef inScanner, void *info) {
     [parsedPage setTextMatrix:CGAffineTransformIdentity];
     [parsedPage setTextLineMatrix:CGAffineTransformIdentity];
     [parsedPage setTj:0];
-    printf("BEGIN TEXT OBJECT\n");
+    //printf("BEGIN TEXT OBJECT\n");
 }
 
 static void op_ET(CGPDFScannerRef inScanner, void *info) {
-    printf("END TEXT OBJECT\n");
+    //printf("END TEXT OBJECT\n");
 }
 
 static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
@@ -1492,18 +1504,22 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
         unichar character = [currentFont characterForGlyph:glyph];
         CGSize glyphDisplacement = [currentFont displacementForGlyph:character];
         
-        CGFloat Tx;
-        if (character == ' ')
+        CGFloat Tx, Gx;
+        if (character == ' ') {
             Tx = ((glyphDisplacement.width/1000 - (Tj/1000)) * Tfs + Tc + Tw) * Th;
-        else
+            Gx = ((glyphDisplacement.width/1000) * Tfs + Tw) * Th;
+        } else {
             Tx = ((glyphDisplacement.width/1000 - (Tj/1000)) * Tfs + Tc) * Th;
+            Gx = ((glyphDisplacement.width/1000) * Tfs) * Th;
+        }
+        Tj = 0;
         CGAffineTransform offsetMatrix = CGAffineTransformMakeTranslation(Tx, 0);
         
-        CGRect glyphRect = CGRectMake(0,0,glyphDisplacement.width/1000, glyphDisplacement.height/1000);
+        CGRect glyphRect = CGRectMake(0,0,Gx, Tfs * userUnit);
         CGRect renderRect = CGRectApplyAffineTransform(glyphRect, textRenderingMatrix);
         if (CGRectContainsRect(cropRect, renderRect)) {
             textRect = CGRectEqualToRect(textRect, CGRectZero) ? renderRect : CGRectUnion(textRect, renderRect);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioPDFDrawRectOfInterest" object:NSStringFromCGRect(renderRect)];
+            //[[NSNotificationCenter defaultCenter] postNotificationName:@"BlioPDFDrawRectOfInterest" object:NSStringFromCGRect(renderRect)];
             [textContent appendFormat:@"%C", character];
         }
         
