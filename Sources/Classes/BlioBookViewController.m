@@ -12,6 +12,48 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
+#import <libEucalyptus/EucEPubBook.h>
+#import "BlioViewSettingsSheet.h"
+#import "BlioNotesView.h"
+#import "BlioEPubView.h"
+#import "BlioLayoutView.h"
+
+typedef enum {
+    kBlioLibraryAddBookmarkAction = 0,
+    kBlioLibraryAddNoteAction = 1,
+} BlioLibraryAddActions;
+
+typedef enum {
+    kBlioPageLayoutPlainText = 0,
+    kBlioPageLayoutPageLayout = 1,
+    kBlioPageLayoutSpeedRead = 2,
+} BlioPageLayout;
+
+typedef enum {
+    kBlioFontSizeVerySmall = 0,
+    kBlioFontSizeSmall = 1,
+    kBlioFontSizeMedium = 2,
+    kBlioFontSizeLarge = 3,
+    kBlioFontSizeVeryLarge = 4,
+} BlioFontSize;
+
+typedef enum {
+    kBlioPageColorWhite = 0,
+    kBlioPageColorBlack = 1,
+    kBlioPageColorNeutral = 2,
+} BlioPageColor;
+
+typedef enum {
+    kBlioRotationLockOff = 0,
+    kBlioRotationLockOn = 1,
+} BlioRotationLock;
+
+typedef enum {
+    kBlioTapTurnOff = 0,
+    kBlioTapTurnOn = 1,
+} BlioTapTurn;
+
+static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
 
 @interface _BlioBookViewControllerTransparentView : UIView {
     BlioBookViewController *controller;
@@ -41,16 +83,19 @@
 @interface BlioBookViewController (PRIVATE)
 - (void)_toggleToolbars;
 - (void)_setupContentsButton;
+- (NSArray *)_toolbarItemsForReadingView;
 @end
 
 @implementation BlioBookViewController
 
+@synthesize book = _book;
 @synthesize bookView = _bookView;
 
 @synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
 @synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
 @synthesize returnToNavigationBarHidden = _returnToNavigationBarHidden;
 @synthesize returnToStatusBarHidden = _returnToStatusBarHidden;
+@synthesize audioPlaying = _audioPlaying;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -91,9 +136,29 @@
     return [self init];
 }
 
+- (id)initWithBook:(BlioMockBook *)newBook {
+    if ([newBook bookPath]) {
+        EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
+        BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
+        aBookView.appearAtCoverThenOpen = YES;
+        if ((self = [self initWithBookView:aBookView])) {
+            self.bookView = aBookView;
+            self.book = newBook;
+        }
+        [aBookView release];
+        [aEPubBook release];
+    } else if ([newBook pdfPath]) {
+        //Do nowt
+    } else {
+        self = nil;
+    }
+    return self;
+}
+
 - (id)initWithBookView:(UIView<BlioBookView> *)view
 {
 	if ((self = [super initWithNibName:nil bundle:nil])) {
+        self.audioPlaying = NO;
         self.wantsFullScreenLayout = NO;
 
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
@@ -117,11 +182,85 @@
                 
         _firstAppearance = YES;
         
-        self.toolbarItems = [NSArray array];
+        self.toolbarItems = [self _toolbarItemsForReadingView];
+        
         
         _bookView = [view retain];        
     }
 	return self;
+}
+
+- (NSArray *)_toolbarItemsForReadingView {
+    
+    NSMutableArray *readingItems = [NSMutableArray array];
+    UIBarButtonItem *item;
+    
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
+                                            style:UIBarButtonItemStylePlain
+                                           target:self 
+                                           action:nil];
+    [readingItems addObject:item];
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
+                                            style:UIBarButtonItemStylePlain
+                                           target:self 
+                                           action:@selector(showAddMenu:)];
+    [readingItems addObject:item];
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];  
+    
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
+                                            style:UIBarButtonItemStylePlain
+                                           target:self 
+                                           action:nil];
+    [readingItems addObject:item];
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];  
+    
+    UIImage *audioImage = nil;
+    if (self.audioPlaying)
+        audioImage = [UIImage imageNamed:@"icon-pause.png"];
+    else 
+        audioImage = [UIImage imageNamed:@"icon-play.png"];
+    
+    item = [[UIBarButtonItem alloc] initWithImage:audioImage
+                                            style:UIBarButtonItemStylePlain
+                                           target:self 
+                                           action:@selector(toggleAudio:)];
+    [readingItems addObject:item];
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-eye.png"]
+                                            style:UIBarButtonItemStylePlain
+                                           target:self 
+                                           action:@selector(showViewSettings:)];
+    [readingItems addObject:item];
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
+    
+    return [NSArray arrayWithArray:readingItems];
 }
 
 - (void)setBookView:(UIView<BlioBookView> *)bookView
@@ -506,7 +645,7 @@
 - (void)dealloc 
 {
     [_bookView release];
-
+    self.book = nil;
 	[super dealloc];
 }
 
@@ -598,6 +737,248 @@
             [_touch release];
             _touch = nil;
         }
+    }
+}
+
+#pragma mark -
+#pragma mark BookController State Methods
+
+- (NSString *)currentPageNumber {
+    UIView<BlioBookView> *bookView = [(BlioBookViewController *)self.navigationController.topViewController bookView];
+    if ([bookView respondsToSelector:@selector(pageNumber)]) {
+        NSInteger currentPage = (NSInteger)[bookView performSelector:@selector(pageNumber)];
+        if ([[bookView contentsDataSource] respondsToSelector:@selector(displayPageNumberForPageNumber:)])
+            return [[bookView contentsDataSource] displayPageNumberForPageNumber:currentPage];
+    }
+    return nil;
+}
+
+- (BlioPageLayout)currentPageLayout {
+    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+    if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]])
+        return kBlioPageLayoutPageLayout;
+    else
+        return kBlioPageLayoutPlainText;
+}
+
+- (void)changePageLayout:(id)sender {
+    
+    BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
+    
+    if([self currentPageLayout] != newLayout) {
+        BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+        
+        if (newLayout == kBlioPageLayoutPlainText && [self.book bookPath]) {
+            EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[self.book bookPath]];
+            BlioEPubView *bookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
+                                                                    book:book];
+            bookViewController.bookView = bookView;
+            [bookView release];
+            [book release];
+        } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
+            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:[self.book pdfPath]];
+            bookViewController.bookView = layoutView;
+            [layoutView release];
+        }
+    }
+    
+}
+
+- (BOOL)shouldShowPageAttributeSettings {
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
+        return NO;
+    else
+        return YES;
+}
+
+- (BlioFontSize)currentFontSize {
+    BlioFontSize fontSize = kBlioFontSizeMedium;
+    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+    id<BlioBookView> bookView = bookViewController.bookView;
+    
+    if([bookView respondsToSelector:(@selector(fontPointSize))]) {
+        CGFloat actualFontSize = bookView.fontPointSize;
+        CGFloat bestDifference = CGFLOAT_MAX;
+        BlioFontSize bestFontSize = kBlioFontSizeMedium;
+        for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
+            CGFloat thisDifference = fabsf(kBlioFontPointSizeArray[i] - actualFontSize);
+            if(thisDifference < bestDifference) {
+                bestDifference = thisDifference;
+                bestFontSize = i;
+            }
+        }
+        fontSize = bestFontSize;
+    } 
+    return fontSize;
+}
+
+- (void)changeFontSize:(id)sender {
+    BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
+    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+    id<BlioBookView> bookView = bookViewController.bookView;
+    if([bookView respondsToSelector:(@selector(setFontPointSize:))]) {        
+        if([self currentFontSize] != newSize) {
+            bookView.fontPointSize = kBlioFontPointSizeArray[newSize];
+        }
+        NSLog(@"Attempting to change to BlioFontSize: %d", newSize);
+    }
+}
+
+- (BlioPageColor)currentPageColor {
+    return kBlioPageColorWhite;
+}
+
+- (void)changePageColor:(id)sender {
+    BlioPageColor newColor = (BlioPageColor)[sender selectedSegmentIndex];
+    if([self currentPageColor] != newColor) {
+        NSLog(@"Attempting to change to BlioPageColor: %d", newColor);
+    }
+}
+
+- (BlioRotationLock)currentLockRotation {
+    return kBlioRotationLockOff;
+}
+
+- (void)changeLockRotation:(id)sender {
+    // This is just a placeholder check. Obviously we shouldn't be checking against the string.
+    BlioRotationLock newLock = (BlioRotationLock)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Unlock Rotation"];
+    if([self currentLockRotation] != newLock) {
+        NSLog(@"Attempting to change to BlioRotationLock: %d", newLock);
+    }
+}
+
+- (BlioTapTurn)currentTapTurn {
+    return kBlioTapTurnOff;
+}
+
+- (void)changeTapTurn:(id)sender {
+    // This is just a placeholder check. Obviously we shouldn't be checking against the string.
+    BlioTapTurn newTapTurn = (BlioTapTurn)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Disable Tap Turn"];
+    if([self currentTapTurn] != newTapTurn) {
+        NSLog(@"Attempting to change to BlioTapTurn: %d", newTapTurn);
+    }
+}
+
+#pragma mark -
+#pragma mark Action Callback Methods
+
+- (void)showAddMenu:(id)sender {
+    UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
+    aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    aActionSheet.delegate = self;
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    [aActionSheet showFromToolbar:toolbar];
+    [aActionSheet release];
+}
+
+- (void)showViewSettings:(id)sender {
+    BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    [aSettingsSheet showFromToolbar:toolbar];
+    [aSettingsSheet release];
+}
+
+- (void)dismissViewSettings:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)speakNextPargraph:(NSTimer*)timer {
+	if ( _acapelaTTS.textToSpeakChanged ) {	
+		[_acapelaTTS setTextToSpeakChanged:NO];
+		NSRange pageRange;
+		pageRange.location = [_acapelaTTS currentWordOffset];
+		pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset]; 	
+		[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
+	}
+}
+
+- (void) prepareTextToSpeak:(BOOL)continuingSpeech {
+	BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+	BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
+	EucEPubBook *book = (EucEPubBook*)bookView.book;
+	uint32_t paragraphId, wordOffset;
+	if ( continuingSpeech ) {
+		// Continuing to speak, we just need more text.
+		paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
+		wordOffset = 0;
+		[_acapelaTTS setCurrentWordOffset:wordOffset];
+		[_acapelaTTS setCurrentParagraph:paragraphId];
+		[_acapelaTTS.paragraphWords release];
+		[_acapelaTTS setParagraphWords:nil];
+		[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+	}
+	else {
+		[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+		// Play button has just been pushed.
+		if ( (paragraphId + wordOffset)!=[_acapelaTTS currentPage] ) {
+			// Starting speech for the first time, or for the first time since changing the 
+			// page or book after stopping speech the last time (whew).
+			[_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
+			[_acapelaTTS setCurrentWordOffset:wordOffset];
+			[_acapelaTTS setCurrentParagraph:paragraphId];
+			if ( _acapelaTTS.paragraphWords != nil ) {
+				[_acapelaTTS.paragraphWords release];
+				[_acapelaTTS setParagraphWords:nil];
+			}
+			[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+		}
+		// else use the current word and paragraph, which is where we last stopped.
+		// edge case:  what if you stopped speech right after the end of the paragraph?
+	}
+	[_acapelaTTS setTextToSpeakChanged:YES];
+}
+
+- (void)toggleAudio:(id)sender {
+	if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+		UIBarButtonItem *item = (UIBarButtonItem *)sender;
+		
+		UIImage *audioImage = nil;
+		if (self.audioPlaying) {
+			/* For testing
+             [_testParagraphWords stopParagraphGetting];
+             [_testParagraphWords release];
+             _testParagraphWords = nil;
+             */
+			//[_acapelaTTS stopSpeaking];
+			[_acapelaTTS stopSpeakingAtBoundary:1];
+			audioImage = [UIImage imageNamed:@"icon-play.png"];
+		} else { 
+			/* For testing.  If this is uncommented, comment out the call to startSpeakingParagraph below.
+			 BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+			 BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
+			 EucEPubBook *book = (EucEPubBook*)bookView.book;
+			 uint32_t paragraphId, wordOffset;
+			 [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+			 _testParagraphWords = [[BlioTestParagraphWords alloc] init];
+			 [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
+			 */
+			
+			if (_acapelaTTS == nil) {
+				_acapelaTTS = [[AcapelaTTS alloc] init];
+				[_acapelaTTS initTTS];
+				[_acapelaTTS setDelegate:self];
+				[_acapelaTTS setRate:180];   // Will get from settings.
+				[_acapelaTTS setVolume:70];  // Likewise.
+				[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextPargraph:) userInfo:nil repeats:YES]];
+			}
+			[self prepareTextToSpeak:NO];
+			audioImage = [UIImage imageNamed:@"icon-pause.png"];
+		}
+		self.audioPlaying = !self.audioPlaying;  
+		[item setImage:audioImage];
+	}
+}
+
+#pragma mark -
+#pragma mark Add ActionSheet Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == kBlioLibraryAddNoteAction) {
+        UIView *container = self.navigationController.visibleViewController.view;
+        NSString *pageNumber = [self currentPageNumber];
+        BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber];
+        [aNotesView showInView:container];
+        [aNotesView release];
     }
 }
 

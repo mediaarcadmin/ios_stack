@@ -11,10 +11,12 @@
 
 @interface BlioNotesView : UIView {
     UITextView *textView;
-    NSInteger page;
+    NSString *page;
 }
 
-- (id)initWithPage:(NSInteger)pageNumber;
+@property (nonatomic, retain) NSString *page;
+
+- (id)initWithPage:(NSString *)pageNumber;
 - (void)showInView:(UIView *)view;
 
 @end

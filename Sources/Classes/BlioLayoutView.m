@@ -191,12 +191,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @implementation BlioLayoutView
 
-- (void)jumpToUuid:(NSString *)uuid {}
-- (NSInteger)pageNumber {return 0;}
-- (void)setPageNumber:(NSInteger)pageNumber {}
-- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {return nil;};
-
-
 @synthesize scrollView, pageViews, navigationController;
 
 - (void)dealloc {
@@ -241,9 +235,9 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         [self loadPage:0];
         [self loadPage:1];
         
-        fonts = [[BlioPDFFontList alloc] init];
-        for (int k = 0; k < pageCount; k++)
-            [fonts addFontsFromPage:CGPDFDocumentGetPage(pdf, k)];
+        //fonts = [[BlioPDFFontList alloc] init];
+        //for (int k = 0; k < pageCount; k++)
+            //[fonts addFontsFromPage:CGPDFDocumentGetPage(pdf, k)];
         
         /*
         CGPDFDictionaryRef dict = CGPDFDocumentGetInfo(pdf);
@@ -266,10 +260,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         
     }
     return self;
-}
-
-- (NSInteger)currentPageNumber {
-    return visiblePageIndex + 1;
 }
 
 - (BlioPDFDebugView *)debugView {
@@ -300,7 +290,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGRect insetBounds = UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
     CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(pageRef, kCGPDFCropBox, insetBounds, 0, true);
 
-    frame.origin.x = frame.size.width * ([self currentPageNumber] - 1);
+    frame.origin.x = frame.size.width * ([self pageNumber] - 1);
     frame.origin.y = 0;
     [self.debugView setFrame:frame];
     [self.debugView setFitTransform:fitTransform];
@@ -322,6 +312,41 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     [self.debugView setNeedsDisplay];
     [parsedPage release];
 }
+
+#pragma mark -
+#pragma mark BlioBookView Delegate Methods
+
+- (void)jumpToUuid:(NSString *)uuid {
+
+}
+
+- (NSInteger)pageNumber {
+    return visiblePageIndex + 1;
+}
+
+- (void)setPageNumber:(NSInteger)pageNumber {
+    NSInteger pageIndex = pageNumber - 1;
+    
+    if (pageIndex != visiblePageIndex) {
+        [self loadPage:pageIndex - 1];
+        [self loadPage:pageIndex];
+        [self loadPage:pageIndex + 1];
+        
+        visiblePageIndex = pageIndex;        
+    }
+}
+
+
+- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated {
+    if (animated)
+        [self setPageNumber:pageNumber];
+    else
+        [self setPageNumber:pageNumber];
+}
+
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
+    return nil;
+};
 
 #pragma mark -
 #pragma mark Notification Callbacks

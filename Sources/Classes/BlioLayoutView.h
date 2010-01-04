@@ -12,7 +12,7 @@
 @class BlioPDFFontList;
 @class BlioPDFDebugView;
 
-@interface BlioLayoutView : UIView <UIScrollViewDelegate , BlioBookView> {
+@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView> {
     CGPDFDocumentRef pdf;
     UIScrollView *scrollView;
     NSMutableArray *pageViews;
@@ -27,6 +27,5 @@
 @property (nonatomic, assign) id navigationController;
 
 - (id)initWithPath:(NSString *)path;
-- (NSInteger)currentPageNumber;
 
 @end
