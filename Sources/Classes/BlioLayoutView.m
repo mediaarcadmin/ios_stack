@@ -194,6 +194,12 @@ BlioPDFDebugView *debugView;
 
 @implementation BlioLayoutView
 
+- (void)jumpToUuid:(NSString *)uuid {}
+- (NSInteger)pageNumber {return 0;}
+- (void)setPageNumber:(NSInteger)pageNumber {}
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {return nil;};
+
+
 @synthesize scrollView, pageViews, navigationController;
 
 - (void)dealloc {

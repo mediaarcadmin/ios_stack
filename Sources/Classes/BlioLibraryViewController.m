@@ -9,7 +9,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLibraryViewController.h"
 #import <libEucalyptus/EucEPubBook.h>
-#import <libEucalyptus/EucBookViewController.h>
+#import "BlioBookViewController.h"
+#import "BlioEPubView.h"
 #import "BlioLayoutView.h"
 #import "BlioViewSettingsSheet.h"
 #import "BlioNotesView.h"
@@ -328,6 +329,11 @@ typedef enum {
     self.navigationItem.title = @"Bookshelf";
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    toolbar.barStyle = UIBarStyleDefault;
+}
+
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -521,14 +527,14 @@ typedef enum {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
-    BlioMockBook *selectedBook = [self.books objectAtIndex:[indexPath row]];
+ /*   BlioMockBook *selectedBook = [self.books objectAtIndex:[indexPath row]];
     self.currentBookPath = [selectedBook bookPath];
     self.currentPdfPath = [selectedBook pdfPath];
     
     if (nil != self.currentBookPath) {
         EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
-        [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
+        BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:book];
+        [(BlioEPubView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
         
         bookViewController.overriddenToolbar = [self toolbarForReadingView];
         
@@ -538,7 +544,7 @@ typedef enum {
         [bookViewController release];
     } else if (nil != self.currentPdfPath) {
         BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];    
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
+        BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBookView:layoutView];
         [layoutView release];
         
         bookViewController.overriddenToolbar = [self toolbarForReadingView];    
@@ -547,7 +553,7 @@ typedef enum {
         [bookViewController release];
     }
     
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];*/
     
 }
 
@@ -601,7 +607,7 @@ typedef enum {
 #pragma mark BookController State Methods
 
 - (NSInteger)currentPageNumber {
-    UIView *bookView = [(EucBookViewController *)self.navigationController.topViewController bookView];
+    UIView *bookView = [(BlioBookViewController *)self.navigationController.topViewController bookView];
     if ([bookView respondsToSelector:@selector(currentPageNumber)])
         return (NSInteger)[bookView performSelector:@selector(currentPageNumber)];
     else
@@ -609,7 +615,7 @@ typedef enum {
 }
 
 - (BlioPageLayout)currentPageLayout {
-    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
     if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]])
         return kBlioPageLayoutPageLayout;
     else
@@ -621,11 +627,11 @@ typedef enum {
     BlioLibraryLayout newLayout = (BlioLibraryLayout)[sender selectedSegmentIndex];
     
     if([self currentPageLayout] != newLayout) {
-        EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
+        BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
         
         if (newLayout == kBlioPageLayoutPlainText && self.currentBookPath) {
             EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-            EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
+            BlioEPubView *bookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
                                                                   book:book];
             bookViewController.bookView = bookView;
             [bookView release];
@@ -648,10 +654,10 @@ typedef enum {
 
 - (BlioFontSize)currentFontSize {
     BlioFontSize fontSize = kBlioFontSizeMedium;
-    if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-        EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-        EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-        
+    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+    id<BlioBookView> bookView = bookViewController.bookView;
+
+    if([bookView respondsToSelector:(@selector(fontPointSize))]) {
         CGFloat actualFontSize = bookView.fontPointSize;
         CGFloat bestDifference = CGFLOAT_MAX;
         BlioFontSize bestFontSize = kBlioFontSizeMedium;
@@ -669,10 +675,10 @@ typedef enum {
 
 - (void)changeFontSize:(id)sender {
     BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
-    if([self currentFontSize] != newSize) {
-        if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-            EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-            EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+    id<BlioBookView> bookView = bookViewController.bookView;
+    if([bookView respondsToSelector:(@selector(setFontPointSize:))]) {        
+        if([self currentFontSize] != newSize) {
             bookView.fontPointSize = kBlioFontPointSizeArray[newSize];
         }
         NSLog(@"Attempting to change to BlioFontSize: %d", newSize);
@@ -718,18 +724,20 @@ typedef enum {
 #pragma mark -
 #pragma mark Action Callback Methods
 
+#if 0
+
 - (void)showAddMenu:(id)sender {
     UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
     aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     aActionSheet.delegate = self;
-    UIToolbar *toolbar = (UIToolbar *)[(EucBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
+    UIToolbar *toolbar = (UIToolbar *)[(BlioBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
     [aActionSheet showFromToolbar:toolbar];
     [aActionSheet release];
 }
 
 - (void)showViewSettings:(id)sender {
     BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
-    UIToolbar *toolbar = (UIToolbar *)[(EucBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
+    UIToolbar *toolbar = (UIToolbar *)[(BlioBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
     [aSettingsSheet showFromToolbar:toolbar];
     [aSettingsSheet release];
 }
@@ -749,8 +757,8 @@ typedef enum {
 }
 
 - (void) prepareTextToSpeak:(BOOL)continuingSpeech {
-	EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-	EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+	BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+	BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
 	EucEPubBook *book = (EucEPubBook*)bookView.book;
 	uint32_t paragraphId, wordOffset;
 	if ( continuingSpeech ) {
@@ -800,8 +808,8 @@ typedef enum {
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
 		} else { 
 			/* For testing.  If this is uncommented, comment out the call to startSpeakingParagraph below.
-			 EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-			 EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+			 BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+			 BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
 			 EucEPubBook *book = (EucEPubBook*)bookView.book;
 			 uint32_t paragraphId, wordOffset;
 			 [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
@@ -824,6 +832,8 @@ typedef enum {
 		[item setImage:audioImage];
 	}
 }
+
+#endif
 
 - (void)changeLibraryLayout:(id)sender {
     
@@ -931,15 +941,15 @@ typedef enum {
             self.navigationController.navigationBarHidden = YES; // We already animated the cover over it.
             
             EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-            EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:book];
+            BlioEPubView *bookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:book];
             bookView.appearAtCoverThenOpen = YES;
             
-            EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:bookView];
+            BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBookView:bookView];
             bookViewController.toolbarsVisibleAfterAppearance = YES;
             bookViewController.returnToNavigationBarHidden = NO;
             bookViewController.returnToStatusBarStyle = UIStatusBarStyleDefault;
             
-            bookViewController.overriddenToolbar = [self toolbarForReadingView];
+           // bookViewController.overriddenToolbar = [self toolbarForReadingView];
             [book release];
             [bookView release];
             [self.navigationController pushViewController:bookViewController animated:NO];
@@ -952,6 +962,8 @@ typedef enum {
 - (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     [(UIView *)context removeFromSuperview];
 }
+
+#if 0 
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
 	// For testing
@@ -994,14 +1006,16 @@ typedef enum {
     if(characterRange.location + characterRange.length < string.length) {
 		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
 			NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
-            EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-            EucBookView *bookView = (EucBookView *)bookViewController.bookView;
+            BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+            BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
             [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
             [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
 			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
         }
    }
 }
+
+#endif
 
 #pragma mark -
 #pragma mark Add ActionSheet Methods

@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioBookViewController.h"
 
-
-@interface BlioLayoutView : UIView <UIScrollViewDelegate> {
+@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView> {
     CGPDFDocumentRef pdf;
     UIScrollView *scrollView;
     NSMutableArray *pageViews;
