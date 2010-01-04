@@ -78,7 +78,7 @@ NSInteger page;
     [dateFormat setDateStyle:NSDateFormatterShortStyle];
     NSString *dateString = [dateFormat stringFromDate:date];  
     [dateFormat release];
-    toolbarLabel.text = [NSString stringWithFormat:@"Page 44, %@", dateString];
+    toolbarLabel.text = [NSString stringWithFormat:@"Page %d, %@", page, dateString];
     toolbarLabel.adjustsFontSizeToFitWidth = YES;
     toolbarLabel.font = [UIFont boldSystemFontOfSize:14.0f];
     toolbarLabel.backgroundColor = [UIColor clearColor];

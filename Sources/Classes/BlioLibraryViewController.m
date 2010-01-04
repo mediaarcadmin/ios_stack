@@ -601,7 +601,11 @@ typedef enum {
 #pragma mark BookController State Methods
 
 - (NSInteger)currentPageNumber {
-    return 44;   
+    UIView *bookView = [(EucBookViewController *)self.navigationController.topViewController bookView];
+    if ([bookView respondsToSelector:@selector(currentPageNumber)])
+        return (NSInteger)[bookView performSelector:@selector(currentPageNumber)];
+    else
+        return -1;
 }
 
 - (BlioPageLayout)currentPageLayout {
@@ -937,8 +941,9 @@ typedef enum {
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
 	// For testing
-	NSString* thisWord = [string substringWithRange:characterRange];
-	NSLog(thisWord);
+    // MATT COMMENTED OUT BECASE WAS BREAKING SIMULATOR BUILD
+	//NSString* thisWord = [string substringWithRange:characterRange];
+	//NSLog(thisWord);
 	
 	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
 									options:0 
