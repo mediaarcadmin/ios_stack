@@ -96,6 +96,8 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 @synthesize returnToStatusBarHidden = _returnToStatusBarHidden;
 @synthesize audioPlaying = _audioPlaying;
 
+@synthesize tiltScroller, tapDetector, motionControlsEnabled;
+
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
     return !self.hidesBottomBarWhenPushed;
@@ -136,6 +138,13 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 }
 
 - (id)initWithBook:(BlioMockBook *)newBook {
+    tiltScroller = [[MSTiltScroller alloc] init];
+    tapDetector = [[MSTapDetector alloc] init];
+    motionControlsEnabled = kBlioTapTurnOff;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapToNextPage) name:@"TapToNextPage" object:nil];
+
+    
+    
     if ([newBook bookPath]) {
         EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
         BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
@@ -531,6 +540,12 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 
 - (void)dealloc 
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
+    [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
+    
+    [tapDetector release];
+    [tiltScroller release];
     [_bookView release];
     self.book = nil;
 	[super dealloc];
@@ -628,6 +643,37 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 }
 
 #pragma mark -
+#pragma mark AccelerometerControl Methods
+
+- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acc {
+    if (!motionControlsEnabled) return;
+
+    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+    if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]]) {
+        [tiltScroller accelerometer:accelerometer didAccelerate:acc];        
+    } else {
+        [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];   
+    }
+        
+/*    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+        [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];
+    } else if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+        [tiltScroller accelerometer:accelerometer didAccelerate:acc];
+    }
+ */
+
+    
+}
+
+- (void)tapToNextPage {
+    if ([self.bookView isKindOfClass:[BlioEPubView class]]) {
+        int currentPage = [self.bookView pageNumber];
+        [self.bookView setPageNumber:currentPage+1 animated:YES];
+
+    }
+}
+
+#pragma mark -
 #pragma mark BookController State Methods
 
 - (NSString *)currentPageNumber {
@@ -665,6 +711,8 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:[self.book pdfPath]];
             bookViewController.bookView = layoutView;
+            [layoutView setTiltScroller:tiltScroller];
+            
             [layoutView release];
         }
     }
@@ -735,15 +783,27 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 }
 
 - (BlioTapTurn)currentTapTurn {
-    return kBlioTapTurnOff;
+    return motionControlsEnabled;
+
 }
 
 - (void)changeTapTurn:(id)sender {
     // This is just a placeholder check. Obviously we shouldn't be checking against the string.
-    BlioTapTurn newTapTurn = (BlioTapTurn)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Disable Tap Turn"];
+    /*BlioTapTurn newTapTurn = (BlioTapTurn)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Disable Tap Turn"];
     if([self currentTapTurn] != newTapTurn) {
         NSLog(@"Attempting to change to BlioTapTurn: %d", newTapTurn);
+    }*/
+    if (motionControlsEnabled == kBlioTapTurnOff) {
+        motionControlsEnabled = kBlioTapTurnOn;
+        [[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / 40)];
+        [[UIAccelerometer sharedAccelerometer] setDelegate:self];   
+    } else {
+        
+        motionControlsEnabled = kBlioTapTurnOff;
+        [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
+        [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
     }
+
 }
 
 #pragma mark -
@@ -980,7 +1040,9 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 			 _testParagraphWords = [[BlioTestParagraphWords alloc] init];
 			 [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
 			 */
-			
+			if (!self.navigationController.toolbarHidden) {
+                [self _toggleToolbars];
+            }
 			if (_acapelaTTS == nil) {
 				_acapelaTTS = [[AcapelaTTS alloc] init];
 				[_acapelaTTS initTTS];

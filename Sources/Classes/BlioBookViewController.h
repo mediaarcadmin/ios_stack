@@ -11,6 +11,8 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import "AcapelaTTS.h"
 #import "BlioMockBook.h"
+#import "MSTiltScroller.h"
+#import "MSTapDetector.h"
 
 @class EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
 @protocol EucBook, BlioBookView;
@@ -21,7 +23,7 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-@interface BlioBookViewController : UIViewController <THEventCaptureObserver,EucBookContentsTableViewControllerDelegate,UIActionSheetDelegate> {
+@interface BlioBookViewController : UIViewController <THEventCaptureObserver,EucBookContentsTableViewControllerDelegate,UIActionSheetDelegate,UIAccelerometerDelegate> {
     BOOL _firstAppearance;
     
     UIView<BlioBookView> *_bookView;
@@ -52,6 +54,9 @@ typedef enum {
     
     BlioMockBook *_book;
 
+    MSTiltScroller *tiltScroller;
+    MSTapDetector *tapDetector;
+    BOOL motionControlsEnabled;
 }
 
 // Designated initializers.
@@ -68,6 +73,12 @@ typedef enum {
 
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic) BOOL audioPlaying;
+
+@property (nonatomic, retain) MSTiltScroller *tiltScroller;
+@property (nonatomic, retain) MSTapDetector *tapDetector;
+@property (nonatomic, assign) BOOL motionControlsEnabled;
+
+- (void)tapToNextPage;
 
 @end
 

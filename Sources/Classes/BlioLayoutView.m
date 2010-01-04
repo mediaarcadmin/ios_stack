@@ -182,18 +182,20 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @interface BlioPDFScrollView : UIScrollView <UIScrollViewDelegate> {
     UIView *view;
     CGRect currentTextRect;
+    CGPDFPageRef page;
 }
 
 @property (nonatomic, retain) UIView *view;
 @property (nonatomic) CGRect currentTextRect;
+@property (nonatomic) CGPDFPageRef page;
 
-- (id)initWithView:(UIView *)view;
+- (id)initWithView:(UIView *)view andPageRef:(CGPDFPageRef)newPage;
 
 @end
 
 @implementation BlioLayoutView
 
-@synthesize scrollView, pageViews, navigationController, currentPageView;
+@synthesize scrollView, pageViews, navigationController, currentPageView, tiltScroller;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -265,6 +267,15 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         
     }
     return self;
+}
+
+- (void)setTiltScroller:(MSTiltScroller*)ts {
+    tiltScroller = ts;
+    [tiltScroller setScrollView:[pageViews objectAtIndex:visiblePageIndex]];
+}
+
+- (id)getCurrentScrollView {
+    return [pageViews objectAtIndex:visiblePageIndex];
 }
 
 - (BlioPDFDebugView *)debugView {
@@ -400,11 +411,12 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     if(nil == pageView) {
         if (viewCacheCount < kBlioLayoutMaxViews) {
             BlioPDFDrawingView *pdfView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.bounds andPageRef:pdfPageRef];
-            pageView = [[BlioPDFScrollView alloc] initWithView:pdfView];
+            pageView = [[BlioPDFScrollView alloc] initWithView:pdfView andPageRef:pdfPageRef];
             [pdfView release];
             [self.pageViews addObject:pageView];
         } else {
             pageView = [self.pageViews objectAtIndex:furthestPageIndex];
+            [pageView setPage:pdfPageRef];
             [pageView retain];
             [self.pageViews removeObjectAtIndex:furthestPageIndex];
             [self.pageViews addObject:pageView];
@@ -428,7 +440,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 #pragma mark Container UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
-    
     CGFloat pageWidth = self.scrollView.frame.size.width;
     NSInteger currentPageIndex = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
 	
@@ -439,6 +450,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         
         visiblePageIndex = currentPageIndex;
         //[self parsePage:currentPageIndex+1];
+        
+        if (tiltScroller) {
+            [tiltScroller setScrollView:self.currentPageView];
+        }
     }
 }
 
@@ -450,17 +465,21 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @implementation BlioPDFScrollView
 
-@synthesize view, currentTextRect;
+@synthesize view, currentTextRect, page;        
 
 - (void)dealloc {
+    CGPDFPageRelease(page);
     self.view = nil;
     [super dealloc];
 }
 
-- (id)initWithView:(BlioPDFDrawingView *)newView {
+- (id)initWithView:(BlioPDFDrawingView *)newView andPageRef:(CGPDFPageRef)newPage {
     NSAssert1(kBlioLayoutMaxViews >= 3, @"Error: kBlioLayoutMaxViews is %d. This must be 3 or greater.", kBlioLayoutMaxViews);
-    
-    if ((self = [super initWithFrame:newView.frame])) {
+
+	self = [super initWithFrame:newView.frame];
+	if(self != nil) {
+        page = newPage;
+        CGPDFPageRetain(page);
         currentTextRect = CGRectZero;
         
         [self addSubview:newView];
@@ -480,6 +499,12 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         self.contentSize = newView.bounds.size;
     }
     return self;
+}
+
+- (void)setPage:(CGPDFPageRef)newPage {
+    CGPDFPageRetain(newPage);
+    CGPDFPageRelease(page);
+    page = newPage;
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
@@ -511,6 +536,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 - (void)zoomAtPoint:(CGPoint)point {
     if (self.zoomScale > 1.0f) {
         [self setZoomScale:1.0f animated:YES];
+        [self setDirectionalLockEnabled:NO];
     } else {
         if (CGRectEqualToRect(self.currentTextRect, CGRectZero)) {
             CGFloat width  = self.contentSize.width  / 2.75f;
@@ -519,8 +545,15 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
             CGFloat midY = self.contentSize.height - ((point.y / CGRectGetHeight(self.bounds)) * self.contentSize.height);
             CGRect targetRect = CGRectMake(midX - width/2.0f, midY - height/2.0f, width, height);
             [self zoomToRect:targetRect animated:YES];
+            [self setDirectionalLockEnabled:NO];
         } else {
-            NSLog(@"Text rect: %@", NSStringFromCGRect(self.currentTextRect));
+            CGFloat inset = -kBlioLayoutShadow;
+            CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+            CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(self.page, kCGPDFCropBox, insetBounds, 0, true);
+            CGRect paddedTextRect = UIEdgeInsetsInsetRect(self.currentTextRect, UIEdgeInsetsMake(-2, -2, -2, -1));
+            CGRect fitTextRect = CGRectApplyAffineTransform(paddedTextRect, fitTransform);
+            [self zoomToRect:fitTextRect animated:YES];
+            [self setDirectionalLockEnabled:YES];
         }
     }
 }
