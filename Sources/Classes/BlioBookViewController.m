@@ -696,16 +696,18 @@ typedef enum {
     [self.pageJumpView release];
     
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, screenSize.width, 40)];
+    [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, screenSize.width, 46)];
     _pageJumpView.hidden = YES;
     _pageJumpView.opaque = NO;
     _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
 
     CGRect labelFrame = _pageJumpView.bounds;
-    labelFrame.size.height = labelFrame.size.height * 0.5f;
+    labelFrame.size.height = 20;
     CGRect sliderFrame = _pageJumpView.bounds;
-    sliderFrame.origin.y = labelFrame.size.height;
-    sliderFrame.size.height = labelFrame.size.height;
+    sliderFrame.origin.y = 20;
+    sliderFrame.origin.x = 4;
+    sliderFrame.size.height = 24;
+    sliderFrame.size.width -= 8;
     
   // the slider
     UISlider* slider = [[UISlider alloc] initWithFrame: sliderFrame];
@@ -736,6 +738,10 @@ typedef enum {
     _pageJumpLabel.textAlignment = UITextAlignmentCenter;
     _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
     _pageJumpLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+    _pageJumpLabel.minimumFontSize = 8;
+    _pageJumpLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
+    _pageJumpLabel.shadowOffset = CGSizeMake(0, -1);
+        
     _pageJumpLabel.backgroundColor = [UIColor clearColor];
     _pageJumpLabel.textColor = [UIColor whiteColor];
     
