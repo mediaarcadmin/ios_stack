@@ -11,6 +11,7 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import "AcapelaTTS.h"
 #import "BlioMockBook.h"
+#import "BlioBookView.h"
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
 
@@ -79,19 +80,5 @@ typedef enum {
 @property (nonatomic, assign) BOOL motionControlsEnabled;
 
 - (void)tapToNextPage;
-
-@end
-
-@protocol BlioBookView <NSObject>
-
-@required
-- (void)jumpToUuid:(NSString *)uuid;
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
-
-@property (nonatomic, assign) NSInteger pageNumber;
-@property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
-
-@optional
-@property (nonatomic, assign) CGFloat fontPointSize;
 
 @end
