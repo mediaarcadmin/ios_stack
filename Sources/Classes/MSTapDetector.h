@@ -17,10 +17,11 @@
     NSTimeInterval timeOfLastPageTurn;    
     int numSpikes;
     int signOfFirstSpike;
+    float firstSpike;
     
     NSTimer *clearSpikeTimer;
 
-    
+    float rawInitialYValue;
     AccelerometerFilter *filter;
 }
 
@@ -30,6 +31,8 @@
 @property NSTimeInterval timeOfLastPageTurn;
 @property int numSpikes;
 @property int signOfFirstSpike;
+@property float firstSpike;
+@property float rawInitialYValue;
 
 - (void)clearSpikeHistory;
 - (void)updateFilterWithAcceleration:(UIAcceleration *)acceleration;

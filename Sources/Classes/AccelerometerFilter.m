@@ -137,6 +137,10 @@ double Clamp(double v, double min, double max)
 	return self;
 }
 
+-(float)zDifference {
+    return z - lastZ;
+}
+
 -(void)addAcceleration:(UIAcceleration*)accel
 {
 	double alpha = filterConstant;

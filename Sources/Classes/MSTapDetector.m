@@ -8,12 +8,9 @@
 
 #import "MSTapDetector.h"
 
-// Constant for maximum acceleration.
-#define kMaxAcceleration 3.0
-// Constant for the high-pass filter.
-#define kFilteringFactor 0.3
 
-#define kTapThreshold 0.10
+
+#define kTapThreshold 0.05
 
 
 #define kAccelerometerFrequency     40
@@ -39,10 +36,12 @@
 }
 
 - (void)clearSpikeHistory {
+
     [clearSpikeTimer invalidate];
     clearSpikeTimer = nil;
     numSpikes = 0;
     timeOfFirstSpike = 0;
+    firstSpike = 0;
     
 }
 
@@ -55,23 +54,27 @@
     float value = filter.z;
     
     if (numSpikes == 1) {
-        if (fabs(value) < .07 || !(value*signOfFirstSpike)) numSpikes++;
+
+        if (fabs(value) > 0.04 || !(value*signOfFirstSpike)) numSpikes++;
     }
     
     if (fabs(value) > kTapThreshold) {
         //we may have a tap!
+
         
         NSTimeInterval newSpikeTime = [NSDate timeIntervalSinceReferenceDate];
         if (newSpikeTime - timeOfLastPageTurn < 0.5) return;
         if (numSpikes == 0) {
             timeOfFirstSpike = [NSDate timeIntervalSinceReferenceDate];
+            rawInitialYValue = acc.y;
             numSpikes = 1;
+            firstSpike = value;
             signOfFirstSpike = value > 0 ? 1 : -1;
-            clearSpikeTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(clearSpikeHistory) userInfo:nil repeats:NO];
+            clearSpikeTimer = [NSTimer scheduledTimerWithTimeInterval:.35 target:self selector:@selector(clearSpikeHistory) userInfo:nil repeats:NO];
         } else {
             if (signOfFirstSpike * value > 0 && numSpikes == 2) {
-                //They tapped properly! Turn the page!
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"TapToNextPage" object:self userInfo:nil];
+
+                if (fabs(rawInitialYValue-acc.y)<.2) [[NSNotificationCenter defaultCenter] postNotificationName:@"TapToNextPage" object:self userInfo:nil];
                 
                 numSpikes = 0;
                 timeOfFirstSpike = 0;
@@ -84,6 +87,11 @@
             }
         }
     }
+}
+
+- (void)dealloc {
+    [filter release];
+    [super dealloc];
 }
 
 
