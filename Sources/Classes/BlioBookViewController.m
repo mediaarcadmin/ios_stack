@@ -834,11 +834,18 @@ typedef enum {
 #pragma mark -
 #pragma mark AccelerometerControl Methods
 
+- (void)setupTiltScrollerWithBookView {
+    if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
+        [(BlioLayoutView *)self.bookView setTiltScroller:tiltScroller];
+    }    
+}
+
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acc {    
     if (!motionControlsEnabled) return;
     
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
     if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]]) {
+        if (![(BlioLayoutView *)bookViewController.bookView tiltScroller]) [self setupTiltScrollerWithBookView];
         [tiltScroller accelerometer:accelerometer didAccelerate:acc];        
     } else {
         [tapDetector updateFilterWithAcceleration:acc];
@@ -900,7 +907,6 @@ typedef enum {
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:[self.book pdfPath]];
             bookViewController.bookView = layoutView;
-            [layoutView setTiltScroller:tiltScroller];
             
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
@@ -988,6 +994,9 @@ typedef enum {
 - (void)changeTapTurn:(id)sender {
     if (motionControlsEnabled == kBlioTapTurnOff) {
         motionControlsEnabled = kBlioTapTurnOn;
+        [tiltScroller resetAngle];
+        [self setupTiltScrollerWithBookView];
+        
         [[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / 40)];
         [[UIAccelerometer sharedAccelerometer] setDelegate:self];   
     } else {

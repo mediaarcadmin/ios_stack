@@ -6,17 +6,18 @@
 //  Copyright 2009 Kurzweil Technologies Inc.. All rights reserved.
 //
 
+
 #import "AcapelaTTS.h"
-#include "Acapela/babdevlopper.lic.h"
-#include "Acapela/babdevlopper.pw.h"
+#include "Acapela/babkurz.lic.h"
+#include "Acapela/babkurz.lic.01e560b3.password"
 
 @implementation AcapelaTTS
 
 @synthesize setupData, engine, ttsLicense, currentWordOffset, currentParagraph, currentWord, currentPage, paragraphWords, textToSpeakChanged, speakingTimer;
 
 - (void)initTTS {
-	[self setTtsLicense:[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd]];
 	[self setSetupData:[[setupTTS alloc] initialize]]; 
+	[self setTtsLicense:[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd]];
 	[self setEngine:[[AcapelaSpeech alloc] initWithVoice:setupData.CurrentVoice license:ttsLicense]];
 	[self setCurrentPage:-1];
 	[self setParagraphWords:nil];
