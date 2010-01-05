@@ -24,6 +24,12 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
+typedef enum {
+    kBlioPageColorWhite = 0,
+    kBlioPageColorBlack = 1,
+    kBlioPageColorNeutral = 2,
+} BlioPageColor;
+
 @interface BlioBookViewController : UIViewController <THEventCaptureObserver,EucBookContentsTableViewControllerDelegate,UIActionSheetDelegate,UIAccelerometerDelegate> {
     BOOL _firstAppearance;
     
@@ -58,6 +64,8 @@ typedef enum {
     MSTiltScroller *tiltScroller;
     MSTapDetector *tapDetector;
     BOOL motionControlsEnabled;
+    
+    BlioPageColor _currentPageColor;
 }
 
 // Designated initializers.
@@ -71,6 +79,8 @@ typedef enum {
 @property (nonatomic, assign) UIStatusBarStyle returnToStatusBarStyle;
 @property (nonatomic, assign) BOOL returnToNavigationBarHidden;
 @property (nonatomic, assign) BOOL returnToStatusBarHidden;
+
+@property (nonatomic, assign) BlioPageColor currentPageColor;
 
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic) BOOL audioPlaying;

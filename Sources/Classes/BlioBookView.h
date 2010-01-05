@@ -19,4 +19,11 @@
 @optional
 @property (nonatomic, assign) CGFloat fontPointSize;
 
+// Page texture-related properties are readony because
+// - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+// should be used to set them atomically.
+@property (nonatomic, retain, readonly) UIImage *pageTexture;
+@property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+
 @end
