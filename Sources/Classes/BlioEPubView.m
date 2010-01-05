@@ -11,7 +11,14 @@
 
 @implementation BlioEPubView
 
+// Supplied by the libEucalyptus superclass.
 @dynamic pageNumber;
+@dynamic pageCount;
 @dynamic contentsDataSource;
+
+- (CGRect)firstPageRect
+{
+    return [[UIScreen mainScreen] bounds];
+}
 
 @end
