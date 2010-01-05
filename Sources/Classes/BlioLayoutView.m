@@ -533,7 +533,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+- (void)updateAfterScroll {
     [self parsePage:visiblePageIndex+1];
     
     if (self.scrollToPageInProgress) {
@@ -545,6 +545,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         [self loadPage:currentPageIndex - 1 current:NO blank:NO forceReload:YES];
         [self loadPage:currentPageIndex + 1 current:NO blank:NO forceReload:YES];        
     }    
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    [self updateAfterScroll];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self updateAfterScroll];
 }
 
 @end
@@ -828,7 +836,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     // RENDER DEBUG NSLog(@"currentCTM: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     CGContextClipToRect(ctx, pageRect);
     CGContextDrawPDFPage(ctx, page);
-    if (self.cover) [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:self];
+    if (cover) [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:self];
 }
 
 - (void)setPage:(CGPDFPageRef)newPage {

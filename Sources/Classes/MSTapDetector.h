@@ -7,27 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
-
-#define kHistorySize 150
-
+#import "AccelerometerFilter.h"
 
 
 @interface MSTapDetector : NSObject
 {
-    NSUInteger nextIndex;
-    UIAccelerationValue acceleration[3];
-    
-    // Two dimensional array of acceleration data.
-    UIAccelerationValue history[kHistorySize][3];
-    
+   
     NSTimeInterval timeOfFirstSpike;
     NSTimeInterval timeOfLastPageTurn;    
     int numSpikes;
     int signOfFirstSpike;
     
     NSTimer *clearSpikeTimer;
+
     
-    UILabel *feedbackLabel;
+    AccelerometerFilter *filter;
 }
 
 
@@ -37,10 +31,7 @@
 @property int numSpikes;
 @property int signOfFirstSpike;
 
-@property (nonatomic, assign) UILabel *feedbackLabel;
-
-
-- (void)updateHistoryWithX:(float)x Y:(float)y Z:(float)z;
 - (void)clearSpikeHistory;
+- (void)updateFilterWithAcceleration:(UIAcceleration *)acceleration;
 
 @end
