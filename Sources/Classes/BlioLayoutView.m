@@ -115,10 +115,12 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGPDFPageRef page;
     CGAffineTransform fitTransform;
     CGRect pageRect;
+    BOOL cover;
 }
 
 @property(nonatomic) CGPDFPageRef page;
 @property(nonatomic) CGAffineTransform fitTransform;
+@property(nonatomic) BOOL cover;
 
 @end
 
@@ -197,6 +199,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 - (id)initWithView:(BlioPDFDrawingView *)view andPageRef:(CGPDFPageRef)newPage;
 - (void)setBlank:(BOOL)blank;
+- (void)setCover:(BOOL)cover;
 
 @end
 
@@ -478,6 +481,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     }
     
     [pageView setBlank:blank];
+    [pageView setCover:(pageIndex == 0)];
 }
 
 #pragma mark -
@@ -535,6 +539,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         [[self.view tiledLayer] setDelegate:[self.view tiledLayerDelegate]];
         [[self.view shadowLayer] setDelegate:[self.view shadowLayerDelegate]];
     }
+}
+
+- (void)setCover:(BOOL)cover {
+    [[self.view tiledLayerDelegate] setCover:cover];
 }
 
 - (id)initWithView:(BlioPDFDrawingView *)newView andPageRef:(CGPDFPageRef)newPage {
@@ -784,7 +792,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @implementation BlioPDFTiledLayerDelegate
 
-@synthesize page, fitTransform;
+@synthesize page, fitTransform, cover;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
     //NSLog(@"drawing page %d", CGPDFPageGetPageNumber(page));
@@ -792,6 +800,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     // RENDER DEBUG NSLog(@"currentCTM: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     CGContextClipToRect(ctx, pageRect);
     CGContextDrawPDFPage(ctx, page);
+    if (self.cover) [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:self];
 }
 
 - (void)setPage:(CGPDFPageRef)newPage {
@@ -809,9 +818,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     //NSLog(@"drawing page background");
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     CGContextFillRect(ctx, pageRect);
-    //NSLog(@"fittedPageRect is %@", NSStringFromCGRect(pageRect));
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"blioBookViewDidFinishRender" object:self];
+    //NSLog(@"fittedPageRect is %@", NSStringFromCGRect(pageRect));    
 }
 
 @end
@@ -1046,7 +1053,7 @@ static NSDictionary *blioStandardEncodingDict = nil;
     if (glyph < 256) {
         NSInteger width = widths[glyph];
         if (width == 0) {
-            NSLog(@"unichar not in widths: %C [%d]", glyph, glyph);
+            // RENDER DEBUG NSLog(@"unichar not in widths: %C [%d]", glyph, glyph);
             width = 300;
         }
         return CGSizeMake(width,300);
