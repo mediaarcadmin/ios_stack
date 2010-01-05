@@ -19,6 +19,8 @@
 #import "EucBookTextStyle.h"
 #import "THPair.h"
 #import "EucPageView.h"
+#import "VCTitleCase.h"
+#import "THNSStringAdditions.h"
 #import <pthread.h>
 
 
@@ -137,7 +139,7 @@ static void readRightRaggedJustificationDefault()
 
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)uuid
 {
-    return [THPair pairWithFirst:[self nameForSectionUuid:uuid] second:nil];
+    return [THPair pairWithFirst:[[[[self nameForSectionUuid:uuid] lowercaseString] titlecaseString] stringWithSmartQuotes] second:nil];
 }
 
 - (NSArray *)sectionUuids
