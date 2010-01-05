@@ -813,34 +813,41 @@ typedef enum {
   NSString* pageStr = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
   
   if (section && chapter.first) {
-    _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
+    if (pageStr) {
+      _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
+    } else {
+      _pageJumpLabel.text = [NSString stringWithFormat:@"%@", chapter.first];
+    }
   } else {
-    _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
-  }
+    if (pageStr) {
+      _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
+    } else {
+      _pageJumpLabel.text = self.book.title;
+    }
+  } // of no section name
 }
 
 #pragma mark -
 #pragma mark AccelerometerControl Methods
 
-- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acc {
+- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acc {    
     if (!motionControlsEnabled) return;
-
+    
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
     if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]]) {
         [tiltScroller accelerometer:accelerometer didAccelerate:acc];        
     } else {
-        [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];   
+        [tapDetector updateFilterWithAcceleration:acc];
     }
-        
-/*    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-        [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];
-    } else if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-        [tiltScroller accelerometer:accelerometer didAccelerate:acc];
-    }
- */
-
     
+    /*    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+     [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];
+     } else if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+     [tiltScroller accelerometer:accelerometer didAccelerate:acc];
+     }
+     */    
 }
+
 
 - (void)tapToNextPage {
     if ([self.bookView isKindOfClass:[BlioEPubView class]]) {

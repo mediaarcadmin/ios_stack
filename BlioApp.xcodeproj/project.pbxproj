@@ -15,10 +15,13 @@
 		28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
 		28C286E10D94DF7D0034E888 /* BlioLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */; };
 		28F335F11007B36200424DE2 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
+		555CAF2C10F3B943007B1885 /* booktextureandshadowsubtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */; };
+		555CAF2F10F3B950007B1885 /* AccelerometerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */; };
+		555CAF3D10F3B991007B1885 /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */; };
+		556D1D5B10F3BE580019315C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 556D1D5A10F3BE580019315C /* Icon.png */; };
 		55822E1A10F276E0008614FD /* MSTiltScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 55822E1710F276E0008614FD /* MSTiltScroller.m */; };
 		55822E1B10F276E0008614FD /* MSTapDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 55822E1910F276E0008614FD /* MSTapDetector.m */; };
 		55822EF210F2860F008614FD /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EEF10F2860F008614FD /* Default.png */; };
-		55822EF310F2860F008614FD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EF010F2860F008614FD /* Icon.png */; };
 		55822EF410F2860F008614FD /* librarybackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EF110F2860F008614FD /* librarybackground.png */; };
 		55822F0510F286BB008614FD /* button-list.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F0310F286BB008614FD /* button-list.png */; };
 		55822F0610F286BB008614FD /* button-grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F0410F286BB008614FD /* button-grid.png */; };
@@ -28,7 +31,6 @@
 		55822F2210F2891B008614FD /* icon-play.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1C10F2891B008614FD /* icon-play.png */; };
 		55822F2310F2891B008614FD /* icon-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1D10F2891B008614FD /* icon-plus.png */; };
 		55822F2410F2891B008614FD /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1E10F2891B008614FD /* icon-search.png */; };
-		55822F3510F289F0008614FD /* booktextureandshadowsubtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F3410F289F0008614FD /* booktextureandshadowsubtle.png */; };
 		7D03EB9810EA724C00430295 /* BlioTestParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D03EB9710EA724C00430295 /* BlioTestParagraphWords.m */; };
 		7D381B5C10D92E86008D34E2 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
 		7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
@@ -99,7 +101,6 @@
 		C985466B10E22BCD002305A2 /* icon-layout.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466810E22BCD002305A2 /* icon-layout.png */; };
 		C985477310E244FE002305A2 /* done-button-down.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477110E244FE002305A2 /* done-button-down.png */; };
 		C985477410E244FE002305A2 /* done-button-up.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477210E244FE002305A2 /* done-button-up.png */; };
-		C9D8A37C10F2048000FD5F22 /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A37B10F2048000FD5F22 /* LibraryGridViewController.png */; };
 		C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */; };
 		C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57810F2289D00FD5F22 /* icon-lock.png */; };
 		C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57910F2289D00FD5F22 /* icon-finger.png */; };
@@ -177,12 +178,16 @@
 		28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLibraryViewController.m; sourceTree = "<group>"; };
 		28F335F01007B36200424DE2 /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = booktextureandshadowsubtle.png; sourceTree = "<group>"; };
+		555CAF2D10F3B950007B1885 /* AccelerometerFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccelerometerFilter.h; sourceTree = "<group>"; };
+		555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccelerometerFilter.m; sourceTree = "<group>"; };
+		555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryGridViewController.png; sourceTree = "<group>"; };
+		556D1D5A10F3BE580019315C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		55822E1610F276E0008614FD /* MSTiltScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTiltScroller.h; sourceTree = "<group>"; };
 		55822E1710F276E0008614FD /* MSTiltScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTiltScroller.m; sourceTree = "<group>"; };
 		55822E1810F276E0008614FD /* MSTapDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTapDetector.h; sourceTree = "<group>"; };
 		55822E1910F276E0008614FD /* MSTapDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTapDetector.m; sourceTree = "<group>"; };
 		55822EEF10F2860F008614FD /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		55822EF010F2860F008614FD /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		55822EF110F2860F008614FD /* librarybackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = librarybackground.png; sourceTree = "<group>"; };
 		55822F0310F286BB008614FD /* button-list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-list.png"; sourceTree = "<group>"; };
 		55822F0410F286BB008614FD /* button-grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-grid.png"; sourceTree = "<group>"; };
@@ -192,7 +197,6 @@
 		55822F1C10F2891B008614FD /* icon-play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-play.png"; sourceTree = "<group>"; };
 		55822F1D10F2891B008614FD /* icon-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-plus.png"; sourceTree = "<group>"; };
 		55822F1E10F2891B008614FD /* icon-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-search.png"; sourceTree = "<group>"; };
-		55822F3410F289F0008614FD /* booktextureandshadowsubtle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = booktextureandshadowsubtle.png; sourceTree = "<group>"; };
 		7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libEucalyptus.xcodeproj; path = libEucalyptus/libEucalyptus.xcodeproj; sourceTree = "<group>"; };
 		7D03EB9610EA724C00430295 /* BlioTestParagraphWords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTestParagraphWords.h; sourceTree = "<group>"; };
 		7D03EB9710EA724C00430295 /* BlioTestParagraphWords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTestParagraphWords.m; sourceTree = "<group>"; };
@@ -273,7 +277,6 @@
 		C985466810E22BCD002305A2 /* icon-layout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-layout.png"; sourceTree = "<group>"; };
 		C985477110E244FE002305A2 /* done-button-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done-button-down.png"; sourceTree = "<group>"; };
 		C985477210E244FE002305A2 /* done-button-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done-button-up.png"; sourceTree = "<group>"; };
-		C9D8A37B10F2048000FD5F22 /* LibraryGridViewController.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryGridViewController.png; sourceTree = "<group>"; };
 		C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioUIImageAdditions.h; sourceTree = "<group>"; };
 		C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioUIImageAdditions.m; sourceTree = "<group>"; };
 		C9D8A57810F2289D00FD5F22 /* icon-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-lock.png"; sourceTree = "<group>"; };
@@ -334,6 +337,8 @@
 				55822E1710F276E0008614FD /* MSTiltScroller.m */,
 				55822E1810F276E0008614FD /* MSTapDetector.h */,
 				55822E1910F276E0008614FD /* MSTapDetector.m */,
+				555CAF2D10F3B950007B1885 /* AccelerometerFilter.h */,
+				555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -377,10 +382,10 @@
 				7DB9F93F10F39FF60010DF0B /* logo-bevel.png */,
 				55822F0310F286BB008614FD /* button-list.png */,
 				55822F0410F286BB008614FD /* button-grid.png */,
+				556D1D5A10F3BE580019315C /* Icon.png */,
 				55822EEF10F2860F008614FD /* Default.png */,
-				55822EF010F2860F008614FD /* Icon.png */,
+				555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */,
 				55822EF110F2860F008614FD /* librarybackground.png */,
-				C9D8A37B10F2048000FD5F22 /* LibraryGridViewController.png */,
 				7D81ED2310E90C220016D44A /* paper-black.png */,
 				7D81ED2410E90C220016D44A /* paper-neutral.png */,
 				7D81ED2510E90C220016D44A /* paper-white.png */,
@@ -399,8 +404,8 @@
 				C977659010E105C0005E0E2B /* maximum-progress.png */,
 				C977649910E0E413005E0E2B /* row-dark.png */,
 				C977649A10E0E413005E0E2B /* row-light.png */,
+				555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */,
 				C977636C10E056E2005E0E2B /* booktextureandshadow.png */,
-				55822F3410F289F0008614FD /* booktextureandshadowsubtle.png */,
 				55822F1910F2891B008614FD /* icon-contents.png */,
 				55822F1A10F2891B008614FD /* icon-eye.png */,
 				55822F1B10F2891B008614FD /* icon-pause.png */,
@@ -675,11 +680,9 @@
 				7D81ED2710E90C220016D44A /* paper-neutral.png in Resources */,
 				7D81ED2810E90C220016D44A /* paper-white.png in Resources */,
 				A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */,
-				C9D8A37C10F2048000FD5F22 /* LibraryGridViewController.png in Resources */,
 				C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */,
 				C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */,
 				55822EF210F2860F008614FD /* Default.png in Resources */,
-				55822EF310F2860F008614FD /* Icon.png in Resources */,
 				55822EF410F2860F008614FD /* librarybackground.png in Resources */,
 				55822F0510F286BB008614FD /* button-list.png in Resources */,
 				55822F0610F286BB008614FD /* button-grid.png in Resources */,
@@ -689,13 +692,15 @@
 				55822F2210F2891B008614FD /* icon-play.png in Resources */,
 				55822F2310F2891B008614FD /* icon-plus.png in Resources */,
 				55822F2410F2891B008614FD /* icon-search.png in Resources */,
-				55822F3510F289F0008614FD /* booktextureandshadowsubtle.png in Resources */,
 				7DB9F6FC10F364060010DF0B /* LinuxLibertine-Bold.otf in Resources */,
 				7DB9F6FD10F364060010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DB9F6FE10F364060010DF0B /* LinuxLibertine-Italic.otf in Resources */,
 				7DB9F6FF10F364060010DF0B /* LinuxLibertine.otf in Resources */,
 				7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */,
 				7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */,
+				555CAF2C10F3B943007B1885 /* booktextureandshadowsubtle.png in Resources */,
+				555CAF3D10F3B991007B1885 /* LibraryGridViewController.png in Resources */,
+				556D1D5B10F3BE580019315C /* Icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -722,6 +727,7 @@
 				C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */,
 				55822E1A10F276E0008614FD /* MSTiltScroller.m in Sources */,
 				55822E1B10F276E0008614FD /* MSTapDetector.m in Sources */,
+				555CAF2F10F3B950007B1885 /* AccelerometerFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -213,8 +213,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.tapTurnButtonSegment = aTapTurnButtonSegmentedControl;
         [aTapTurnButtonSegmentedControl release];
         
-        self.enableTapTurnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tap Advance Off" font:defaultFont color:white textInset:inset];
-        self.disableTapTurnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tap Advance On" font:defaultFont color:white textInset:inset];
+        self.enableTapTurnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tilt Advance Off" font:defaultFont color:white textInset:inset];
+        self.disableTapTurnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tilt Advance On" font:defaultFont color:white textInset:inset];
 
         if ([newDelegate respondsToSelector:@selector(currentTapTurn)]) {
             NSInteger currentTapTurn = (NSInteger)[newDelegate performSelector:@selector(currentTapTurn)];
