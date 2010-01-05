@@ -28,8 +28,8 @@ typedef enum {
     BOOL isEmbedded;
     NSInteger firstChar;
     NSInteger lastChar;
-    unichar lookup[256];
     NSInteger widths[256];
+    NSMutableDictionary *glyphs;
 }
 
 @property (nonatomic, retain) NSString *baseFont;
@@ -38,11 +38,13 @@ typedef enum {
 @property (nonatomic) BOOL isEmbedded;
 @property (nonatomic) NSInteger firstChar;
 @property (nonatomic) NSInteger lastChar;
+@property (nonatomic, retain) NSMutableDictionary *glyphs;
 
 - (id)initWithBaseFont:(NSString *)baseFontName type:(NSString *)fontType encoding:(NSString *)fontEncoding isEmbedded:(BOOL)isFontEmbedded;
 - (BOOL)isEqualToFont:(BlioPDFFont *)font;
 - (void)setWidths:(NSArray *)widthsArray;
 - (void)setGlyphLookup:(unichar)glyphCode atIndex:(NSUInteger)glyphIndex;
+- (void)setGlyphName:(NSString *)name atIndex:(NSUInteger)glyphIndex;
 - (CGSize)displacementForGlyph:(unichar)glyph;
 - (unichar)characterForGlyph:(unichar)glyph;
 + (unichar)characterForGlyphName:(NSString *)name encoding:(BlioPDFEncoding)pdfEncoding;
@@ -195,18 +197,18 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @implementation BlioLayoutView
 
-@synthesize scrollView, pageViews, navigationController, currentPageView, tiltScroller;
+@synthesize scrollView, pageViews, navigationController, currentPageView, tiltScroller, fonts;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    [fonts release];
     CGPDFDocumentRelease(pdf);
     self.scrollView = nil;
     self.pageViews = nil;
     self.navigationController = nil;
     self.debugView = nil;
     self.currentPageView = nil;
+    self.fonts = nil;
     [super dealloc];
 }
 
@@ -241,11 +243,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         [self loadPage:0 setCurrent:YES];
         [self loadPage:1 setCurrent:NO];
         
-        NSLog(@"Start fonts");
-        fonts = [[BlioPDFFontList alloc] init];
-        for (int k = 0; k < pageCount; k++)
-            [fonts addFontsFromPage:CGPDFDocumentGetPage(pdf, k)];
-        NSLog(@"End fonts");
+        [self performSelectorInBackground:@selector(parseFonts) withObject:nil];
         /*
         CGPDFDictionaryRef dict = CGPDFDocumentGetInfo(pdf);
         CGPDFDictionaryApplyFunction(dict, &logDictContents, @"documentDict");
@@ -267,6 +265,18 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         
     }
     return self;
+}
+
+- (void)parseFonts {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    BlioPDFFontList *aFontsList = [[BlioPDFFontList alloc] init];
+    self.fonts = aFontsList;
+    [aFontsList release];
+    
+    for (int k = 0; k < CGPDFDocumentGetNumberOfPages(pdf); k++)
+        [self.fonts addFontsFromPage:CGPDFDocumentGetPage(pdf, k)];
+    
+    [pool drain];
 }
 
 - (void)setTiltScroller:(MSTiltScroller*)ts {
@@ -305,11 +315,17 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGFloat inset = -kBlioLayoutShadow;
     CGRect insetBounds = UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
     CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(pageRef, kCGPDFCropBox, insetBounds, 0, true);
-
+    CGAffineTransform integralFitTransform = CGAffineTransformMake(fitTransform.a, 
+                                                                   fitTransform.b, 
+                                                                   fitTransform.c, 
+                                                                   fitTransform.d, 
+                                                                   round(fitTransform.tx), 
+                                                                   round(fitTransform.ty));
+    
     frame.origin.x = frame.size.width * ([self pageNumber] - 1);
     frame.origin.y = 0;
     [self.debugView setFrame:frame];
-    [self.debugView setFitTransform:fitTransform];
+    [self.debugView setFitTransform:integralFitTransform];
     [self.debugView setCropRect:cropRect];
     [self.debugView setMediaRect:mediaRect];
     [self.debugView clearAreasOfInterest];
@@ -319,17 +335,17 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 - (void)parsePage:(NSInteger)pageNumber {
-    NSLog(@"Start parse");
+    //NSLog(@"Start parse");
     CGPDFPageRef pageRef = CGPDFDocumentGetPage(pdf, pageNumber);
     //[self displayDebugRect:CGRectZero forPage:pageNumber];
-    BlioPDFParsedPage *parsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:fonts];
+    BlioPDFParsedPage *parsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:self.fonts];
     //NSLog(@"Page text: %@", [parsedPage textContent]);
-    NSLog(@"Text rect: %@", NSStringFromCGRect([parsedPage textRect]));
+    //NSLog(@"Text rect: %@", NSStringFromCGRect([parsedPage textRect]));
     [self.currentPageView setCurrentTextRect:[parsedPage textRect]];
     //[self.debugView setInterestRect:[parsedPage textRect]];
     //[self.debugView setNeedsDisplay];
     [parsedPage release];
-    NSLog(@"End parse");
+    //NSLog(@"End parse");
 }
 
 #pragma mark -
@@ -508,6 +524,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
+    // RENDER DEBUG NSLog(@"zoom level after: %f", scale);
     if (scale == 1) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioLayoutZoomEnded" object:nil userInfo:nil];
         scrollView.scrollEnabled = NO;
@@ -544,14 +561,26 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
             CGFloat midX = (point.x / CGRectGetWidth(self.bounds)) * self.contentSize.width;
             CGFloat midY = self.contentSize.height - ((point.y / CGRectGetHeight(self.bounds)) * self.contentSize.height);
             CGRect targetRect = CGRectMake(midX - width/2.0f, midY - height/2.0f, width, height);
-            [self zoomToRect:targetRect animated:YES];
+            [self zoomToRect:CGRectIntegral(targetRect) animated:YES];
             [self setDirectionalLockEnabled:NO];
         } else {
             CGFloat inset = -kBlioLayoutShadow;
             CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
             CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(self.page, kCGPDFCropBox, insetBounds, 0, true);
-            CGRect paddedTextRect = UIEdgeInsetsInsetRect(self.currentTextRect, UIEdgeInsetsMake(-2, -2, -2, -1));
-            CGRect fitTextRect = CGRectApplyAffineTransform(paddedTextRect, fitTransform);
+            CGAffineTransform integralFitTransform = CGAffineTransformMake(fitTransform.a, 
+                                                                           fitTransform.b, 
+                                                                           fitTransform.c, 
+                                                                           fitTransform.d, 
+                                                                           round(fitTransform.tx), 
+                                                                           round(fitTransform.ty));
+            
+            CGRect paddedTextRect = UIEdgeInsetsInsetRect(self.currentTextRect, UIEdgeInsetsMake(-6, -6, -6, -2));
+            CGRect fitTextRect = CGRectIntegral(CGRectApplyAffineTransform(paddedTextRect, integralFitTransform));
+            CGFloat widthFactor = self.bounds.size.width / fitTextRect.size.width;
+            CGFloat rounded = round(widthFactor * 10)/10.0f;
+            fitTextRect.size.width = self.bounds.size.width / rounded;
+            // RENDER DEBUG NSLog(@"widthFactor: %f", widthFactor);
+            //[self zoomToRect:CGRectIntegral(fitTextRect) animated:YES];
             [self zoomToRect:fitTextRect animated:YES];
             [self setDirectionalLockEnabled:YES];
         }
@@ -592,7 +621,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
     
     CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-    CGRect fittedPageRect = CGRectApplyAffineTransform(pageRect, fitTransform);     
+    CGAffineTransform integralFitTransform = CGAffineTransformMake(fitTransform.a, 
+                                                                   fitTransform.b, 
+                                                                   fitTransform.c, 
+                                                                   fitTransform.d, 
+                                                                   round(fitTransform.tx), 
+                                                                   round(fitTransform.ty));
+    
+    CGRect fittedPageRect = CGRectIntegral(CGRectApplyAffineTransform(pageRect, integralFitTransform));     
     
     int w = pageRect.size.width;
     int h = pageRect.size.height;
@@ -612,14 +648,20 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGRect newBounds = self.bounds;
     
     newBounds.size.width = origBounds.size.width*2;
-    insetBounds.origin.x += (newBounds.size.width - origBounds.size.width)/2.0f;
+    insetBounds.origin.x += floor((newBounds.size.width - origBounds.size.width)/2.0f);
     
     tiledLayer.bounds = newBounds;
     fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
+    integralFitTransform = CGAffineTransformMake(fitTransform.a, 
+                                                 fitTransform.b, 
+                                                 fitTransform.c, 
+                                                 fitTransform.d, 
+                                                 round(fitTransform.tx), 
+                                                 round(fitTransform.ty));
     
     BlioPDFTiledLayerDelegate *aTileDelegate = [[BlioPDFTiledLayerDelegate alloc] init];
     [aTileDelegate setPage:page];
-    [aTileDelegate setFitTransform:fitTransform];
+    [aTileDelegate setFitTransform:integralFitTransform];
     tiledLayer.delegate = aTileDelegate;
     self.tiledLayerDelegate = aTileDelegate;
     [aTileDelegate release];
@@ -713,6 +755,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
     CGContextConcatCTM(ctx, fitTransform);
+    // RENDER DEBUG NSLog(@"currentCTM: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     CGContextClipToRect(ctx, pageRect);
     CGContextDrawPDFPage(ctx, page);
 }
@@ -748,8 +791,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @end
 
 @implementation BlioFastCATiledLayer
+
 + (CFTimeInterval)fadeDuration {
     return 0.0;
+}
+
+- (void)setTransform:(CATransform3D)newTransform {
+    [super setTransform:newTransform];
+    NSLog(@"setting transform to :%@", NSStringFromCGAffineTransform(CATransform3DGetAffineTransform(newTransform)));
 }
 @end
 
@@ -794,6 +843,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
     if (CGPDFDictionaryGetDictionary(dict, "Encoding", &encodingDict)) {
         //CGPDFDictionaryApplyFunction(encodingDict, &logDictContents, @"encodingDict");
         CGPDFArrayRef diffArray;
+        //NSLog(@"Glyphs before: %@", [font.glyphs description]);
         if (CGPDFDictionaryGetArray(encodingDict, "Differences", &diffArray)) {
             int arraySize = CGPDFArrayGetCount(diffArray);
             int glyphIndex = 0;
@@ -804,8 +854,9 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
                 if (!CGPDFArrayGetInteger(diffArray, n, &startIndex)) {
                     if (CGPDFArrayGetName(diffArray, n, &name)) {
                         NSString *glyphName = [NSString stringWithCString:name encoding:NSASCIIStringEncoding];
-                        unichar glyphCode = [BlioPDFFont characterForGlyphName:glyphName encoding:kBlioPDFEncodingStandard];
-                        [font setGlyphLookup:glyphCode atIndex:glyphIndex];
+                        //unichar glyphCode = [BlioPDFFont characterForGlyphName:glyphName encoding:kBlioPDFEncodingStandard];
+                        //[font setGlyphLookup:glyphCode atIndex:glyphIndex];
+                        [font setGlyphName:glyphName atIndex:glyphIndex];
                         glyphIndex++;
                     }
                 } else {
@@ -815,6 +866,8 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
             
             
         }
+        //NSLog(@"Glyphs after: %@", [font.glyphs description]);
+        
     }
     
     
@@ -876,7 +929,9 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
 
 @implementation BlioPDFFont
 
-@synthesize baseFont, type, encoding, isEmbedded, firstChar, lastChar;
+static NSDictionary *blioStandardEncodingDict = nil;
+
+@synthesize baseFont, type, encoding, isEmbedded, firstChar, lastChar, glyphs;
 
 
 - (id)initWithBaseFont:(NSString *)baseFontName type:(NSString *)fontType
@@ -889,6 +944,10 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
         self.isEmbedded = isFontEmbedded;
         self.firstChar = 0;
         self.lastChar = 255;
+        
+        if (true) {// should check encoding or base encoding
+            self.glyphs = [NSMutableDictionary dictionaryWithDictionary:blioStandardEncodingDict];
+        }
     }
     
     return self;
@@ -898,6 +957,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
     self.baseFont = nil;
     self.type = nil;
     self.encoding = nil;
+    self.glyphs = nil;
     [super dealloc];
 }
 
@@ -915,11 +975,35 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
     }
 }
 
+- (void)setGlyphName:(NSString *)name atIndex:(NSUInteger)glyphIndex {    
+    [self.glyphs removeObjectForKey:name];
+    [self.glyphs setObject:[NSNumber numberWithInt:glyphIndex] forKey:name];
+}
+
+//- (void)makeGlyphArray {
+//    NSEnumerator *enumerator = [self.glyphs objectEnumerator];
+//    NSNumber *object;
+//    
+//    self.glyphLookup = [NSMutableDictionary dictionary];
+//    
+//    while ((object = [enumerator nextObject])) {
+//        [self.glyphLookup setObject:]
+//    }
+//    
+//    
+//    
+//    [self.glyphs arraySor
+//    while ((key = [enumerator nextObject])) {
+//        /* code that uses the returned key */
+//        NSSet 
+//    }
+//}
+
 - (void)setGlyphLookup:(unichar)glyphCode atIndex:(NSUInteger)glyphIndex {
     if (glyphIndex > 255) {
         NSLog(@"Unexpectedly high glyphIndex (%d) for %C", glyphIndex, glyphCode);
     } else {
-        lookup[glyphIndex] = glyphCode;
+        //lookup[glyphIndex] = glyphCode;
     }
 }
 
@@ -932,7 +1016,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
         }
         return CGSizeMake(width,300);
     } else {
-        NSLog(@"unichar outside bounds: %C [%d]", glyph, glyph);
+        //NSLog(@"unichar outside bounds: %C [%d]", glyph, glyph);
         return CGSizeMake(280,300);
     }
 }
@@ -940,8 +1024,6 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
 - (unichar)characterForGlyph:(unichar)glyph {
     return glyph;
 }
-
-static NSDictionary *blioStandardEncodingDict = nil;
 
 + (void)initialize {
 	if(self == [BlioPDFFont class]) {

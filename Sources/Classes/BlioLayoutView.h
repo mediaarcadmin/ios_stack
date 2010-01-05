@@ -32,6 +32,7 @@
 @property (nonatomic, assign) id navigationController;
 @property (nonatomic, retain) BlioPDFScrollView *currentPageView;
 @property (nonatomic, assign) MSTiltScroller *tiltScroller;
+@property (retain) BlioPDFFontList *fonts;
 
 - (id)initWithPath:(NSString *)path;
 
