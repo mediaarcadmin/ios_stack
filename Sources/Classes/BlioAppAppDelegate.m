@@ -50,6 +50,10 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     
     imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default.png"]];
     UIImageView *realDefaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:imageData]];
+    CGRect defaultFrame = realDefaultImageView.frame;
+    defaultFrame.origin.y = CGRectGetHeight(window.bounds) - CGRectGetHeight(defaultFrame);
+    [realDefaultImageView setFrame:defaultFrame];
+    
     [window addSubview:realDefaultImageView];
     
     [UIView beginAnimations:@"FadeOutRealDefault" context:nil];
