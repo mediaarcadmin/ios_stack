@@ -219,16 +219,20 @@
 		7D9A96F510D7E44200C2E00A /* libantlr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171D91028B6B9005F3C46 /* libantlr.a */; };
 		7D9A96F610D7E44200C2E00A /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D9A96F710D7E44200C2E00A /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
-		7D9A981F10D7E67E00C2E00A /* LinuxLibertine-Bold.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */; };
-		7D9A982010D7E67E00C2E00A /* LinuxLibertine-BoldItalic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */; };
-		7D9A982110D7E67E00C2E00A /* LinuxLibertine-Italic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */; };
-		7D9A982210D7E67E00C2E00A /* LinuxLibertine.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECF10C2E61E0001203D /* LinuxLibertine.thfont */; };
 		7D9A982810D7E69500C2E00A /* BookPaperWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC710C2E61E0001203D /* BookPaperWhite.png */; };
 		7D9A986810D7E6F100C2E00A /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A986610D7E6F100C2E00A /* HyphenationPatterns */; };
 		7D9A986D10D7E70E00C2E00A /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */; };
 		7D9A987610D7E73800C2E00A /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC610C2E61E0001203D /* BookPaper.png */; };
 		7D9A98A210D7E85100C2E00A /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC910C2E61E0001203D /* EPubDefault.css */; };
 		7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A986610D7E6F100C2E00A /* HyphenationPatterns */; };
+		7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
+		7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
+		7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
+		7DB9F85810F38ABD0010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
+		7DB9F8ED10F394930010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
+		7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
+		7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
+		7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
 		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
 		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
 		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
@@ -252,10 +256,6 @@
 		7DD48EE210C2E61E0001203D /* BookPaperWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC710C2E61E0001203D /* BookPaperWhite.png */; };
 		7DD48EE310C2E61E0001203D /* ContentsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC810C2E61E0001203D /* ContentsButton.png */; };
 		7DD48EE410C2E61E0001203D /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC910C2E61E0001203D /* EPubDefault.css */; };
-		7DD48EE610C2E61E0001203D /* LinuxLibertine-Bold.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */; };
-		7DD48EE710C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */; };
-		7DD48EE810C2E61E0001203D /* LinuxLibertine-Italic.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */; };
-		7DD48EE910C2E61E0001203D /* LinuxLibertine.thfont in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ECF10C2E61E0001203D /* LinuxLibertine.thfont */; };
 		7DD48EEA10C2E61E0001203D /* UIBarButtonSystemItemFastForward.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */; };
 		7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */; };
 		7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */; };
@@ -587,6 +587,10 @@
 		7D9A96E310D7E42A00C2E00A /* PaginateRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginateRootViewController.xib; sourceTree = "<group>"; };
 		7D9A979210D7E48E00C2E00A /* book */ = {isa = PBXFileReference; lastKnownFileType = folder; path = book; sourceTree = "<group>"; };
 		7D9A986610D7E6F100C2E00A /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
+		7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
+		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
+		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
+		7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7DD48E5410C2E42C0001203D /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin9/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7DD48E5810C2E44F0001203D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -611,10 +615,6 @@
 		7DD48EC710C2E61E0001203D /* BookPaperWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaperWhite.png; sourceTree = "<group>"; };
 		7DD48EC810C2E61E0001203D /* ContentsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ContentsButton.png; sourceTree = "<group>"; };
 		7DD48EC910C2E61E0001203D /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
-		7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.thfont"; sourceTree = "<group>"; };
-		7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.thfont"; sourceTree = "<group>"; };
-		7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.thfont"; sourceTree = "<group>"; };
-		7DD48ECF10C2E61E0001203D /* LinuxLibertine.thfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.thfont; sourceTree = "<group>"; };
 		7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemFastForward.png; sourceTree = "<group>"; };
 		7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
 		7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
@@ -1222,10 +1222,10 @@
 				7DD48EC710C2E61E0001203D /* BookPaperWhite.png */,
 				7DD48EC810C2E61E0001203D /* ContentsButton.png */,
 				7DD48EC910C2E61E0001203D /* EPubDefault.css */,
-				7DD48ECC10C2E61E0001203D /* LinuxLibertine-Bold.thfont */,
-				7DD48ECD10C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont */,
-				7DD48ECE10C2E61E0001203D /* LinuxLibertine-Italic.thfont */,
-				7DD48ECF10C2E61E0001203D /* LinuxLibertine.thfont */,
+				7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */,
+				7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */,
+				7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */,
+				7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */,
 				7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */,
 				7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */,
 				7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */,
@@ -1570,15 +1570,15 @@
 				7DD48EE210C2E61E0001203D /* BookPaperWhite.png in Resources */,
 				7DD48EE310C2E61E0001203D /* ContentsButton.png in Resources */,
 				7DD48EE410C2E61E0001203D /* EPubDefault.css in Resources */,
-				7DD48EE610C2E61E0001203D /* LinuxLibertine-Bold.thfont in Resources */,
-				7DD48EE710C2E61E0001203D /* LinuxLibertine-BoldItalic.thfont in Resources */,
-				7DD48EE810C2E61E0001203D /* LinuxLibertine-Italic.thfont in Resources */,
-				7DD48EE910C2E61E0001203D /* LinuxLibertine.thfont in Resources */,
 				7DD48EEA10C2E61E0001203D /* UIBarButtonSystemItemFastForward.png in Resources */,
 				7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */,
 				7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */,
 				7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */,
 				7DF58D7210DAA02F004E3DBB /* book in Resources */,
+				7DB9F8ED10F394930010DF0B /* LinuxLibertine-Bold.otf in Resources */,
+				7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
+				7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */,
+				7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1590,13 +1590,13 @@
 				7D9A987610D7E73800C2E00A /* BookPaper.png in Resources */,
 				7D9A982810D7E69500C2E00A /* BookPaperWhite.png in Resources */,
 				7D9A986D10D7E70E00C2E00A /* XHTMLEntityMap.plist in Resources */,
-				7D9A981F10D7E67E00C2E00A /* LinuxLibertine-Bold.thfont in Resources */,
-				7D9A982010D7E67E00C2E00A /* LinuxLibertine-BoldItalic.thfont in Resources */,
-				7D9A982110D7E67E00C2E00A /* LinuxLibertine-Italic.thfont in Resources */,
-				7D9A982210D7E67E00C2E00A /* LinuxLibertine.thfont in Resources */,
 				7D9A96E810D7E42A00C2E00A /* PaginateMainWindow.xib in Resources */,
 				7D9A96E910D7E42A00C2E00A /* PaginateRootViewController.xib in Resources */,
 				7D9A986810D7E6F100C2E00A /* HyphenationPatterns in Resources */,
+				7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */,
+				7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
+				7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */,
+				7DB9F85810F38ABD0010DF0B /* LinuxLibertine.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
