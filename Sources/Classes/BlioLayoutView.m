@@ -400,7 +400,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         return [[UIScreen mainScreen] bounds];
     }
 }
-
+ 
 #pragma mark -
 #pragma mark Notification Callbacks
 
@@ -810,7 +810,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     CGContextFillRect(ctx, pageRect);
     //NSLog(@"fittedPageRect is %@", NSStringFromCGRect(pageRect));
-
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"blioBookViewDidFinishRender" object:self];
 }
 
 @end

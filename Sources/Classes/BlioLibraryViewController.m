@@ -92,13 +92,17 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @implementation BlioLibraryViewController
 
 @synthesize currentBookView = _currentBookView;
+@synthesize currentPoppedBookCover = _currentPoppedBookCover;
 @synthesize books = _books;
 @synthesize libraryLayout = _libraryLayout;
+@synthesize bookCoverPopped = _bookCoverPopped;
+@synthesize firstPageRendered = _firstPageRendered;
 
 - (void)dealloc {
     self.currentBookView = nil;
     self.books = nil;
     self.tableView = nil;
+    self.currentPoppedBookCover = nil;
     [super dealloc];
 }
 
@@ -607,6 +611,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [poppedImageView release];
     
     self.currentBookView = bookView;
+    self.currentPoppedBookCover = aCoverImageView;
+    self.bookCoverPopped = NO;
+    self.firstPageRendered = NO;
 }
 
 - (void)popBookWillStart:(NSString *)animationID context:(void *)context {
@@ -641,23 +648,42 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         }
         
         if (!shrinkCover) {
+            self.bookCoverPopped = YES;
+            self.firstPageRendered = YES;
             [(UIView *)context removeFromSuperview];
         } else {            
-            UIImageView *coverImageView = [[(UIView *)context subviews] objectAtIndex:0];
             [UIView beginAnimations:@"shrinkBook" context:context];
             [UIView setAnimationDuration:0.35f];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationDelegate:self];
             [UIView setAnimationDidStopSelector:@selector(shrinkBookDidStop:finished:context:)];
-            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-            [coverImageView setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
+            [self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
             [UIView commitAnimations];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioBookViewDidFinishRender:) name:@"blioBookViewDidFinishRender" object:nil];
         }            
             
     }
 }
 
+- (void)blioBookViewDidFinishRender:(NSNotification *)notification {
+    self.firstPageRendered = YES;
+    
+    if (self.bookCoverPopped) {
+        if ([[self.currentPoppedBookCover superview] superview])
+            [[self.currentPoppedBookCover superview] removeFromSuperview];
+    
+        self.currentPoppedBookCover = nil;
+    }
+}
+
 - (void)shrinkBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    [(UIView *)context removeFromSuperview];
+    self.bookCoverPopped = YES;
+    
+    if (self.firstPageRendered) {
+        [(UIView *)context removeFromSuperview];        
+        self.currentPoppedBookCover = nil;
+    }
 }
 
 @end
@@ -887,6 +913,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize bookView, titleLabel, authorLabel, progressSlider, delegate;
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.bookView = nil;
     self.titleLabel = nil;
     self.authorLabel = nil;
