@@ -805,10 +805,18 @@ typedef enum {
   NSString* pageStr = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
   
   if (section && chapter.first) {
-    _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
+    if (pageStr) {
+      _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
+    } else {
+      _pageJumpLabel.text = [NSString stringWithFormat:@"%@", chapter.first];
+    }
   } else {
-    _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
-  }
+    if (pageStr) {
+      _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
+    } else {
+      _pageJumpLabel.text = self.book.title;
+    }
+  } // of no section name
 }
 
 #pragma mark -
