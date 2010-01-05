@@ -319,7 +319,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [super viewWillAppear:animated];
     self.navigationItem.title = @"Bookshelf";
     
-    UIImage *logoImage = [UIImage imageNamed:@"logo-bevel.png"];
+    UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white.png"]];
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:logoImage];
     self.navigationItem.titleView = logoImageView;
     [logoImageView release];
