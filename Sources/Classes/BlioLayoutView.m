@@ -381,7 +381,35 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
-    return nil;
+    return self;
+}
+
+#pragma mark -
+#pragma mark Contents Data Source protocol methods
+
+- (NSArray *)sectionUuids
+{
+  return [NSArray arrayWithObject:@"dummy-uuid"];
+}
+
+- (NSString *)sectionUuidForPageNumber:(NSUInteger)page
+{
+  return @"dummy-uuid";
+}
+
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
+{
+  return NULL;
+}
+
+- (NSInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
+{
+  return 1; // only one section, very easy
+}
+
+- (NSString *)displayPageNumberForPageNumber:(NSInteger)pageNumber
+{
+  return [NSString stringWithFormat:@"%d", pageNumber];
 }
 
 - (CGRect)firstPageRect

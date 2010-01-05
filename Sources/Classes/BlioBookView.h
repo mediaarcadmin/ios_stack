@@ -7,6 +7,8 @@
  *
  */
 
+@protocol EucBookContentsTableViewControllerDataSource;
+
 @protocol BlioBookView <NSObject>
 
 @required
