@@ -642,7 +642,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             [self.navigationController pushViewController:bookViewController animated:NO];
             
             [bookViewController release];
+        } else {
+            [(UIView *)context removeFromSuperview];
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+            return;
         }
+
         
         if (!shrinkCover) {
             self.bookCoverPopped = YES;
@@ -657,28 +662,42 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             [self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
             [UIView commitAnimations];
             
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioBookViewDidFinishRender:) name:@"blioBookViewDidFinishRender" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
         }            
             
     }
 }
 
-- (void)blioBookViewDidFinishRender:(NSNotification *)notification {
+- (void)blioCoverPageDidFinishRender:(NSNotification *)notification {
     self.firstPageRendered = YES;
     
     if (self.bookCoverPopped) {
-        if ([[self.currentPoppedBookCover superview] superview])
-            [[self.currentPoppedBookCover superview] removeFromSuperview];
+        [self performSelectorOnMainThread:@selector(removeShrinkBookAnimation:) withObject:[self.currentPoppedBookCover superview] waitUntilDone:YES];
     
         self.currentPoppedBookCover = nil;
     }
+}
+
+- (void)removeShrinkBookAnimation:(UIView *)viewToRemove {
+    [UIView beginAnimations:@"fadeCover" context:viewToRemove];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(fadeBookDidStop:finished:context:)];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    [UIView setAnimationDuration:0.5f];
+    [viewToRemove setAlpha:0.0f];
+    [UIView commitAnimations];
+}
+
+- (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    if ([(UIView *)context superview])
+        [(UIView *)context removeFromSuperview];
 }
 
 - (void)shrinkBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     self.bookCoverPopped = YES;
     
     if (self.firstPageRendered) {
-        [(UIView *)context removeFromSuperview];        
+        [self performSelector:@selector(removeShrinkBookAnimation:) withObject:(UIView *)context afterDelay:0.5f];
         self.currentPoppedBookCover = nil;
     }
 }
