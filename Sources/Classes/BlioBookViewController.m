@@ -230,7 +230,7 @@ typedef enum {
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:nil];
+                                           action:@selector(dummyJumpToPage)];
     [readingItems addObject:item];
     [item release];
     
@@ -267,6 +267,10 @@ typedef enum {
     [item release];
     
     return [NSArray arrayWithArray:readingItems];
+}
+
+- (void)dummyJumpToPage {
+    [self.bookView setPageNumber:100 animated:YES];
 }
 
 - (void)setBookView:(UIView<BlioBookView> *)bookView
