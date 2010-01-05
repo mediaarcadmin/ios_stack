@@ -350,7 +350,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 #pragma mark -
-#pragma mark BlioBookView Delegate Methods
+#pragma mark BlioBookView Protocol Methods
 
 - (void)jumpToUuid:(NSString *)uuid {
 
@@ -382,7 +382,17 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
     return nil;
-};
+}
+
+- (CGRect)firstPageRect
+{
+    return [[UIScreen mainScreen] bounds];
+}
+
+- (NSInteger)pageCount
+{
+    return 256;
+}
 
 #pragma mark -
 #pragma mark Notification Callbacks

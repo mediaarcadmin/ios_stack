@@ -13,8 +13,14 @@
 - (void)jumpToUuid:(NSString *)uuid;
 - (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 
+// Page numbers start at 1.
+// The EucBookContentsTableViewControllerDataSource protocol defines a way to 
+// map from page numbers to 'dispaly' page number strings.
 @property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, readonly) NSInteger pageCount;
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
+
+@property (nonatomic, readonly) CGRect firstPageRect;
 
 @optional
 @property (nonatomic, assign) CGFloat fontPointSize;
