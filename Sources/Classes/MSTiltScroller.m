@@ -242,7 +242,7 @@
 
 
 - (void)scrollScrollView:(int)distance {
-    
+    if ([scrollView isDragging] || [scrollView isZooming]) return;
 
     float newY = scrollView.contentOffset.y + distance;
     if (newY <= scrollView.contentSize.height-scrollView.frame.size.height && newY >= 0) [scrollView scrollRectToVisible:CGRectMake(scrollView.contentOffset.x, newY, scrollView.frame.size.width, scrollView.frame.size.height) animated:NO];

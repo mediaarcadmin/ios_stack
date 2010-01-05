@@ -814,25 +814,24 @@ typedef enum {
 #pragma mark -
 #pragma mark AccelerometerControl Methods
 
-- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acc {
+- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acc {    
     if (!motionControlsEnabled) return;
-
+    
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
     if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]]) {
         [tiltScroller accelerometer:accelerometer didAccelerate:acc];        
     } else {
-        [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];   
+        [tapDetector updateFilterWithAcceleration:acc];
     }
-        
-/*    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-        [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];
-    } else if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-        [tiltScroller accelerometer:accelerometer didAccelerate:acc];
-    }
- */
-
     
+    /*    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+     [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];
+     } else if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+     [tiltScroller accelerometer:accelerometer didAccelerate:acc];
+     }
+     */    
 }
+
 
 - (void)tapToNextPage {
     if ([self.bookView isKindOfClass:[BlioEPubView class]]) {
