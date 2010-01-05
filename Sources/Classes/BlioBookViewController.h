@@ -69,6 +69,10 @@ typedef enum {
     BOOL motionControlsEnabled;
     
     BlioPageColor _currentPageColor;
+    UIView* _pageJumpView;
+    UILabel* _pageJumpLabel;
+    UISlider* _pageJumpSlider;
+    BOOL _pageJumpSliderTracking;
 }
 
 // Designated initializers.
@@ -91,6 +95,8 @@ typedef enum {
 @property (nonatomic, retain) MSTiltScroller *tiltScroller;
 @property (nonatomic, retain) MSTapDetector *tapDetector;
 @property (nonatomic, assign) BOOL motionControlsEnabled;
+
+@property (nonatomic, retain) UIView *pageJumpView;
 
 - (void)tapToNextPage;
 

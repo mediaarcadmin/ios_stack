@@ -17,6 +17,10 @@ typedef enum {
 
 @interface BlioLibraryViewController : UITableViewController <UIActionSheetDelegate> {
     BlioLibraryBookView *_currentBookView;
+    UIImageView *_currentPoppedBookCover;
+    BOOL _bookCoverPopped;
+    BOOL _firstPageRendered;
+    
     NSArray *_books;
     BlioLibraryLayout _libraryLayout;
     
@@ -24,6 +28,9 @@ typedef enum {
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *currentBookView;
+@property (nonatomic, retain) UIImageView *currentPoppedBookCover;
+@property (nonatomic) BOOL bookCoverPopped;
+@property (nonatomic) BOOL firstPageRendered;
 @property (nonatomic, retain) NSArray *books;
 @property (nonatomic, readonly) NSInteger columnCount;
 @property (nonatomic) BlioLibraryLayout libraryLayout;

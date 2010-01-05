@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioBookViewController.h"
 #import <libEucalyptus/THNavigationButton.h>
+#import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
@@ -86,12 +87,15 @@ typedef enum {
 @interface BlioBookViewController (PRIVATE)
 - (void)_toggleToolbars;
 - (NSArray *)_toolbarItemsForReadingView;
+- (void) _updatePageJumpLabelForPage:(NSUInteger)page;
+
 @end
 
 @implementation BlioBookViewController
 
 @synthesize book = _book;
 @synthesize bookView = _bookView;
+@synthesize pageJumpView = _pageJumpView;
 
 @synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
 @synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
@@ -183,7 +187,7 @@ typedef enum {
 {
 	if ((self = [super initWithNibName:nil bundle:nil])) {
         self.audioPlaying = NO;
-        self.wantsFullScreenLayout = NO;
+        self.wantsFullScreenLayout = YES;
 
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
         [backArrow addTarget:self
@@ -206,7 +210,7 @@ typedef enum {
         
         self.toolbarItems = [self _toolbarItemsForReadingView];
         
-        
+        _pageJumpView = nil;
         _bookView = [view retain];        
     }
 	return self;
@@ -430,6 +434,11 @@ typedef enum {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];                
         
+        UIBarButtonItem* pageJumpButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward 
+          target:self action:@selector(togglePageJumpPanel)];
+        
+        [self.navigationItem setRightBarButtonItem:pageJumpButton];
+        
         [window addSubview:_bookView];
         [window sendSubviewToBack:_bookView];
         
@@ -580,6 +589,8 @@ typedef enum {
     [tiltScroller release];
     [_bookView release];
     self.book = nil;
+    self.pageJumpView = nil;
+    
 	[super dealloc];
 }
 
@@ -627,11 +638,12 @@ typedef enum {
         if(_fadeState == BookViewControlleUIFadeStateFadingIn) {
             [UIView setAnimationDuration:0.0];
             self.navigationController.toolbar.alpha = 1;          
-                        
+            self.pageJumpView.alpha = 1;
             self.navigationController.navigationBar.alpha = 1;
         } else {
             [UIView setAnimationDuration:1.0/3.0];
             self.navigationController.toolbar.alpha = 0;
+            self.pageJumpView.alpha = 0;
             self.navigationController.navigationBar.alpha = 0;
         }
         
@@ -672,6 +684,125 @@ typedef enum {
             _touch = nil;
         }
     }
+}
+
+- (void) togglePageJumpPanel
+{ 
+  CGPoint navBarBottomLeft = CGPointMake(0.0, self.navigationController.navigationBar.frame.size.height);
+  CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:self.navigationController.navigationBar];
+    
+  if(!_pageJumpView) {
+    self.pageJumpView = [[UIView alloc] init];
+    [self.pageJumpView release];
+    
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, screenSize.width, 40)];
+    _pageJumpView.hidden = YES;
+    _pageJumpView.opaque = NO;
+    _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+
+    CGRect labelFrame = _pageJumpView.bounds;
+    labelFrame.size.height = labelFrame.size.height * 0.5f;
+    CGRect sliderFrame = _pageJumpView.bounds;
+    sliderFrame.origin.y = labelFrame.size.height;
+    sliderFrame.size.height = labelFrame.size.height;
+    
+  // the slider
+    UISlider* slider = [[UISlider alloc] initWithFrame: sliderFrame];
+    _pageJumpSlider = slider;
+    
+    UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
+    leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
+    [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
+    
+    UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
+    rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
+    
+    UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-small.png"];
+    [slider setThumbImage:thumbImage forState:UIControlStateNormal];
+    [slider setThumbImage:thumbImage forState:UIControlStateHighlighted];            
+    
+    [slider addTarget:self action:@selector(_pageSliderSlid:) forControlEvents:UIControlEventValueChanged];
+    
+    slider.maximumValue = self.bookView.pageCount;
+    slider.minimumValue = 1;
+    [slider setValue:self.bookView.pageNumber];
+  
+    _pageJumpSliderTracking = NO;
+    
+  // feedback label
+    _pageJumpLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    _pageJumpLabel.textAlignment = UITextAlignmentCenter;
+    _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
+    _pageJumpLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+    _pageJumpLabel.backgroundColor = [UIColor clearColor];
+    _pageJumpLabel.textColor = [UIColor whiteColor];
+    
+    [_pageJumpView addSubview:_pageJumpLabel];
+    [_pageJumpView addSubview:slider];
+  
+    [self.view addSubview:_pageJumpView];
+  }
+  
+  CGSize sz = _pageJumpView.bounds.size;
+  BOOL hiding = !_pageJumpView.hidden;
+  
+  if (!hiding) {
+    _pageJumpView.alpha = 0.0;
+    _pageJumpView.hidden = NO;
+    [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
+    [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
+  }
+  
+  [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
+  [UIView setAnimationDidStopSelector:@selector(_pageJumpPanelDidAnimate)];
+  [UIView setAnimationDelegate:self];
+  [UIView setAnimationDuration:0.3f];
+
+  if (hiding) {
+    _pageJumpView.alpha = 0.0;
+    [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
+  } else {
+    _pageJumpView.alpha = 1.0;
+    [_pageJumpView setFrame:CGRectMake(0, xt.y, sz.width, sz.height)];
+  }
+  
+  [UIView commitAnimations];
+}
+
+- (void) _pageJumpPanelDidAnimate
+{
+  if (_pageJumpView.alpha == 0.0) {
+    _pageJumpView.hidden = YES;
+  }
+}
+
+- (void) _pageSliderSlid: (id) sender
+{
+  UISlider* slider = (UISlider*) sender;
+  NSUInteger page = (NSUInteger) slider.value;
+  [self _updatePageJumpLabelForPage:page];
+  
+  if (slider.isTracking) {
+    _pageJumpSliderTracking = YES;
+  } else if (_pageJumpSliderTracking) {
+    [self.bookView setPageNumber:page animated:YES];
+    _pageJumpSliderTracking = NO;
+  }
+}
+
+- (void) _updatePageJumpLabelForPage:(NSUInteger)page
+{
+  NSString* section = [self.bookView.contentsDataSource sectionUuidForPageNumber:page];
+  THPair* chapter = [self.bookView.contentsDataSource presentationNameAndSubTitleForSectionUuid:section];
+  NSString* pageStr = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
+  
+  if (section && chapter.first) {
+    _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
+  } else {
+    _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
+  }
 }
 
 #pragma mark -
