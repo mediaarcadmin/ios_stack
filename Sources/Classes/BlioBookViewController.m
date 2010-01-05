@@ -85,6 +85,7 @@ typedef enum {
 
 @synthesize book = _book;
 @synthesize bookView = _bookView;
+@synthesize pageJumpView = _pageJumpView;
 
 @synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
 @synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
@@ -167,7 +168,7 @@ typedef enum {
 {
 	if ((self = [super initWithNibName:nil bundle:nil])) {
         self.audioPlaying = NO;
-        self.wantsFullScreenLayout = NO;
+        self.wantsFullScreenLayout = YES;
 
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
         [backArrow addTarget:self
@@ -190,7 +191,7 @@ typedef enum {
         
         self.toolbarItems = [self _toolbarItemsForReadingView];
         
-        
+        _pageJumpView = nil;
         _bookView = [view retain];        
     }
 	return self;
@@ -408,6 +409,11 @@ typedef enum {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];                
         
+        UIBarButtonItem* pageJumpButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward 
+          target:self action:@selector(togglePageJumpPanel)];
+        
+        [self.navigationItem setRightBarButtonItem:pageJumpButton];
+        
         [window addSubview:_bookView];
         [window sendSubviewToBack:_bookView];
         
@@ -552,6 +558,8 @@ typedef enum {
     [tiltScroller release];
     [_bookView release];
     self.book = nil;
+    self.pageJumpView = nil;
+    
 	[super dealloc];
 }
 
@@ -644,6 +652,86 @@ typedef enum {
             _touch = nil;
         }
     }
+}
+
+- (void) togglePageJumpPanel
+{ 
+  CGPoint navBarBottomLeft = CGPointMake(0.0, self.navigationController.navigationBar.frame.size.height);
+  CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:self.navigationController.navigationBar];
+    
+  if(!_pageJumpView) {
+    self.pageJumpView = [[UIView alloc] init];
+    [self.pageJumpView release];
+    
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, screenSize.width, 40)];
+    _pageJumpView.hidden = YES;
+    _pageJumpView.opaque = NO;
+    _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+    
+    
+    UISlider* slider = [[UISlider alloc] initWithFrame: _pageJumpView.bounds];
+    
+    UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
+    leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
+    [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
+    
+    UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
+    rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
+    
+    UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-small.png"];
+    [slider setThumbImage:thumbImage forState:UIControlStateNormal];
+    [slider setThumbImage:thumbImage forState:UIControlStateHighlighted];            
+    
+    [slider addTarget:self action:@selector(_pageSliderSlid:) forControlEvents:UIControlEventValueChanged];
+    
+//    slider.maximumValue = [
+    [slider setValue:self.bookView.pageNumber];
+
+    [_pageJumpView addSubview:slider];
+  
+    [self.view addSubview:_pageJumpView];
+  }
+  
+  CGSize sz = _pageJumpView.bounds.size;
+  BOOL hiding = !_pageJumpView.hidden;
+  
+  if (!hiding) {
+    _pageJumpView.alpha = 0.0;
+    _pageJumpView.hidden = NO;
+    
+    [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
+  }
+  
+  [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
+  [UIView setAnimationDidStopSelector:@selector(_pageJumpPanelDidAnimate)];
+  [UIView setAnimationDelegate:self];
+  [UIView setAnimationDuration:0.3f];
+
+  if (hiding) {
+    _pageJumpView.alpha = 0.0;
+    [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
+  } else {
+    _pageJumpView.alpha = 1.0;
+    [_pageJumpView setFrame:CGRectMake(0, xt.y, sz.width, sz.height)];
+  }
+  
+  [UIView commitAnimations];
+}
+
+- (void) _pageJumpPanelDidAnimate
+{
+  if (_pageJumpView.alpha == 0.0) {
+    _pageJumpView.hidden = YES;
+  }
+}
+
+- (void) _pageSliderSlid: (id) sender
+{
+  UISlider* slider = (UISlider*) sender;
+  NSUInteger page = (NSUInteger) slider.value;
+  [self.bookView setPageNumber:page animated:YES];
 }
 
 #pragma mark -
