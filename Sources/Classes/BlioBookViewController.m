@@ -152,31 +152,39 @@ typedef enum {
     tapDetector = [[MSTapDetector alloc] init];
     motionControlsEnabled = kBlioTapTurnOff;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapToNextPage) name:@"TapToNextPage" object:nil];
-
+    
     BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
     switch (lastLayout) {
         case kBlioPageLayoutPageLayout: {
-            BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithPath:[newBook pdfPath]];
-            
-            if ((self = [self initWithBookView:aBookView])) {
-                self.bookView = aBookView;
-                self.book = newBook;
+            if ([newBook pdfPath]) {
+                BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithPath:[newBook pdfPath]];
+                
+                if ((self = [self initWithBookView:aBookView])) {
+                    self.bookView = aBookView;
+                    self.book = newBook;
+                }
+                [aBookView release];
+            } else {
+            return nil;
             }
-            [aBookView release];
         }
             break;
         default: {
-            EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
-            BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
-            aBookView.appearAtCoverThenOpen = YES;
-            if ((self = [self initWithBookView:aBookView])) {
-                self.bookView = aBookView;
-                self.book = newBook;
-                self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+            if ([newBook bookPath]) {
+                EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
+                BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
+                aBookView.appearAtCoverThenOpen = YES;
+                if ((self = [self initWithBookView:aBookView])) {
+                    self.bookView = aBookView;
+                    self.book = newBook;
+                    self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+                }
+                [aBookView release];
+                [aEPubBook release];
+            } else {
+                return nil;
             }
-            [aBookView release];
-            [aEPubBook release];
         } 
             break;
     }

@@ -650,7 +650,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             [self.navigationController pushViewController:bookViewController animated:NO];
             
             [bookViewController release];
+        } else {
+            [(UIView *)context removeFromSuperview];
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+            return;
         }
+
         
         if (!shrinkCover) {
             self.bookCoverPopped = YES;
