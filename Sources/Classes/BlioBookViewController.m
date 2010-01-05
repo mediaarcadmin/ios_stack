@@ -721,7 +721,7 @@ typedef enum {
     rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
     [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
     
-    UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-small.png"];
+    UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];
     [slider setThumbImage:thumbImage forState:UIControlStateNormal];
     [slider setThumbImage:thumbImage forState:UIControlStateHighlighted];            
     
