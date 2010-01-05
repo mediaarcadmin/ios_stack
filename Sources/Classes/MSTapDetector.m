@@ -10,7 +10,7 @@
 
 
 
-#define kTapThreshold 0.05
+#define kTapThreshold 0.065
 
 
 #define kAccelerometerFrequency     40
@@ -55,7 +55,7 @@
     
     if (numSpikes == 1) {
 
-        if (fabs(value) > 0.04 || !(value*signOfFirstSpike)) numSpikes++;
+        if (fabs(value) > 0.05 || !(value*signOfFirstSpike)) numSpikes++;
     }
     
     if (fabs(value) > kTapThreshold) {
