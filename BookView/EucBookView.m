@@ -540,7 +540,7 @@
 
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber
 {          
-    THPair *ret = [_pageLayoutController viewAndIndexPointForPageNumber:pageNumber withPageTexture:self.pageTexture];
+    THPair *ret = [_pageLayoutController viewAndIndexPointForPageNumber:pageNumber withPageTexture:self.pageTexture isDark:self.pageTextureIsDark];
     if([ret.first isKindOfClass:[EucPageView class]]) {
         // Hrm, this is a bit messy...
         ((EucPageView *)ret.first).delegate = self;
@@ -697,7 +697,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         EucBookPageIndexPoint *oldIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
         [_pageLayoutController setFontPointSize:foundSize];
         NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:oldIndexPoint];
-        THPair *viewAndIndexPoint = [_pageLayoutController viewAndIndexPointForPageNumber:newPageNumber withPageTexture:self.pageTexture];
+        THPair *viewAndIndexPoint = [_pageLayoutController viewAndIndexPointForPageNumber:newPageNumber withPageTexture:self.pageTexture isDark:self.pageTextureIsDark];
         
         ret = viewAndIndexPoint.first;
         

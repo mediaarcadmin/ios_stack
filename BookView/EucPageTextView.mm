@@ -26,6 +26,7 @@ using namespace Hyphenate;
 @synthesize rightMargin = _rightMargin;
 @synthesize textIndent = _textIndent;
 @synthesize allowScaledImageDistortion = _allowScaledImageDistortion;
+@synthesize backgroundIsDark = _backgroundIsDark;
 
 // We piggy-back some info on the justifier's flags.
 #define BOOKTEXTVIEW_JUST_FLAG_IS_ZERO_WIDTH (TH_JUST_FLAG_ISHARDBREAK << 1)
@@ -71,8 +72,19 @@ using namespace Hyphenate;
 
 - (void)drawRect:(CGRect)rect inContext:(CGContextRef)cgContext
 {
+    static const CGFloat white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    static const CGFloat black[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+
     CGContextSaveGState(cgContext);
     CGContextSetLineWidth(cgContext, 0.5);
+    
+    if(_backgroundIsDark) {
+        CGContextSetFillColor(cgContext, white);        
+        CGContextSetBlendMode(cgContext, kCGBlendModeDifference);
+    } else {
+        CGContextSetFillColor(cgContext, black);
+        CGContextSetBlendMode(cgContext, kCGBlendModeMultiply);
+    }
     
     Class NSStringClass = [NSString class];
     
@@ -157,8 +169,18 @@ using namespace Hyphenate;
                 CGContextSaveGState(cgContext);
                 CGContextScaleCTM(cgContext, 1.0f, -1.0f);
                 CGContextTranslateCTM(cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
-                CGContextSetBlendMode(cgContext, kCGBlendModeMultiply);
                 CGContextSetInterpolationQuality(cgContext, kCGInterpolationHigh);
+                CGRect imageRect = CGRectMake(0, 0, rect.size.width, rect.size.height);
+                
+                CGContextSetFillColor(cgContext, white);
+                if(_backgroundIsDark) {
+                    CGContextSetBlendMode(cgContext, kCGBlendModeDifference);
+                    CGContextFillRect(cgContext, imageRect);
+                }        
+                CGContextSetBlendMode(cgContext, kCGBlendModeColor);
+                CGContextFillRect(cgContext, imageRect);
+                
+                CGContextSetBlendMode(cgContext, kCGBlendModeMultiply);
                 CGContextDrawImage(cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), image);
                 CGContextRestoreGState(cgContext);
             }
