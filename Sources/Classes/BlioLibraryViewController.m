@@ -551,12 +551,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     CGFloat xInset = poppedImageView.bounds.size.width * kBlioLibraryShadowXInset;
     CGFloat yInset = poppedImageView.bounds.size.height * kBlioLibraryShadowYInset;
     CGRect insetFrame = CGRectInset(poppedImageView.bounds, xInset, yInset);
-    UIImageView *aImageView = [[UIImageView alloc] initWithFrame:insetFrame];
-    aImageView.contentMode = UIViewContentModeScaleToFill;
-    aImageView.image = bookImage;
-    aImageView.backgroundColor = [UIColor clearColor];
-    aImageView.autoresizesSubviews = YES;
-    aImageView.autoresizingMask = 
+    UIImageView *aCoverImageView = [[UIImageView alloc] initWithFrame:insetFrame];
+    aCoverImageView.contentMode = UIViewContentModeScaleToFill;
+    aCoverImageView.image = bookImage;
+    aCoverImageView.backgroundColor = [UIColor clearColor];
+    aCoverImageView.autoresizesSubviews = YES;
+    aCoverImageView.autoresizingMask = 
         UIViewAutoresizingFlexibleLeftMargin  |
         UIViewAutoresizingFlexibleWidth       |
         UIViewAutoresizingFlexibleRightMargin |
@@ -564,7 +564,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         UIViewAutoresizingFlexibleHeight      |
         UIViewAutoresizingFlexibleBottomMargin;
     
-    [poppedImageView addSubview:aImageView];
+    [poppedImageView addSubview:aCoverImageView];
     
     UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:poppedImageView.bounds];
     aTextureView.contentMode = UIViewContentModeScaleToFill;
@@ -577,18 +577,19 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [targetView addSubview:poppedImageView];
     
     [UIView beginAnimations:@"popBook" context:poppedImageView];
-    [aImageView release];
+    [aCoverImageView release];
     [UIView setAnimationDuration:0.65f];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(popBookDidStop:finished:context:)];
     [UIView setAnimationWillStartSelector:@selector(popBookWillStart:context:)];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     
-    CGFloat widthRatio = (targetView.frame.size.width)/aImageView.frame.size.width;
-    CGFloat heightRatio = (targetView.frame.size.height)/aImageView.frame.size.height;
+    CGFloat widthRatio = (targetView.frame.size.width)/aCoverImageView.frame.size.width;
+    CGFloat heightRatio = (targetView.frame.size.height)/aCoverImageView.frame.size.height;
     
     CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
     CGRect poppedRect = CGRectIntegral(CGRectMake((targetView.frame.size.width-poppedSize.width)/2.0f, (targetView.frame.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
+    
     [poppedImageView setFrame:poppedRect];
     [self.tableView setAlpha:0.0f];
     [aTextureView setAlpha:0.0f];
@@ -603,34 +604,52 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 - (void)popBookWillStart:(NSString *)animationID context:(void *)context {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
-    [self.tableView setUserInteractionEnabled:NO];
+    [self.tableView setUserInteractionEnabled:NO];    
 }
 
 - (void)popBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    if (finished) {
-        [(UIView *)context removeFromSuperview];
-        
-        [self.currentBookView setAlpha:1.0f];
+    if (finished) {        
+        // Reset table view and clicked book
+        [self.currentBookView setAlpha:1.0f]; // This is the current book in the grid or list which was hidden
         [self.tableView setUserInteractionEnabled:YES];
         [self.tableView setAlpha:1.0f];
         
         BlioMockBook *currentBook = [self.currentBookView book];
         BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:currentBook];
         
+        CGRect coverRect = [[UIScreen mainScreen] bounds];
+        BOOL shrinkCover = NO;
+        
         if (nil != bookViewController) {
             self.navigationController.navigationBarHidden = YES; // We already animated the cover over it.
-
-            bookViewController.toolbarsVisibleAfterAppearance = YES;
+            coverRect = [[bookViewController bookView] firstPageRect];
+            if (!CGRectEqualToRect([[UIScreen mainScreen] bounds], coverRect)) shrinkCover = YES;
+            
+            bookViewController.toolbarsVisibleAfterAppearance = !shrinkCover;
             bookViewController.returnToNavigationBarHidden = NO;
             bookViewController.returnToStatusBarStyle = UIStatusBarStyleDefault;
             [self.navigationController pushViewController:bookViewController animated:NO];
+            
             [bookViewController release];
         }
         
+        if (!shrinkCover) {
+            [(UIView *)context removeFromSuperview];
+        } else {            
+            UIImageView *coverImageView = [[(UIView *)context subviews] objectAtIndex:0];
+            [UIView beginAnimations:@"shrinkBook" context:context];
+            [UIView setAnimationDuration:0.35f];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(shrinkBookDidStop:finished:context:)];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [coverImageView setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
+            [UIView commitAnimations];
+        }            
+            
     }
 }
 
-- (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+- (void)shrinkBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     [(UIView *)context removeFromSuperview];
 }
 

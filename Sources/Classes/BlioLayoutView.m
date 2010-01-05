@@ -369,8 +369,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     NSInteger pageIndex = pageNumber - 1;
     
     if (pageIndex != visiblePageIndex) {
-        if (!animated) [self loadPage:pageIndex - 1 current:NO blank:NO];
         [self loadPage:pageIndex current:YES blank:NO];
+        if (!animated) [self loadPage:pageIndex - 1 current:NO blank:NO];
         if (!animated) [self loadPage:pageIndex + 1 current:NO blank:NO];
         
         visiblePageIndex = pageIndex;        
@@ -384,14 +384,21 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     return nil;
 }
 
-- (CGRect)firstPageRect
-{
-    return [[UIScreen mainScreen] bounds];
+- (NSInteger)pageCount {
+    return CGPDFDocumentGetNumberOfPages(pdf);
 }
 
-- (NSInteger)pageCount
-{
-    return 256;
+- (CGRect)firstPageRect {
+    if ([self pageCount] > 0) {
+        CGPDFPageRef firstPage = CGPDFDocumentGetPage(pdf, 1);
+        CGFloat inset = -kBlioLayoutShadow;
+        CGRect insetBounds = UIEdgeInsetsInsetRect([[UIScreen mainScreen] bounds], UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+        CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(firstPage, kCGPDFCropBox, insetBounds, 0, true);
+        CGRect coverRect = CGPDFPageGetBoxRect(firstPage, kCGPDFCropBox);
+        return CGRectApplyAffineTransform(coverRect, fitTransform);
+    } else {
+        return [[UIScreen mainScreen] bounds];
+    }
 }
 
 #pragma mark -
@@ -481,8 +488,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     NSInteger currentPageIndex = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     
     if (currentPageIndex != visiblePageIndex) {
-        if (!self.scrollToPageInProgress) [self loadPage:currentPageIndex - 1 current:NO blank:NO];
         [self loadPage:currentPageIndex current:YES blank:self.scrollToPageInProgress];
+        if (!self.scrollToPageInProgress) [self loadPage:currentPageIndex - 1 current:NO blank:NO];
         if (!self.scrollToPageInProgress) [self loadPage:currentPageIndex + 1 current:NO blank:NO];
         
         visiblePageIndex = currentPageIndex;
@@ -502,8 +509,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         CGFloat pageWidth = self.scrollView.frame.size.width;
         NSInteger currentPageIndex = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
         
-        [self loadPage:currentPageIndex - 1 current:NO blank:NO forceReload:YES];
         [self loadPage:currentPageIndex current:YES blank:NO forceReload:YES];
+        [self loadPage:currentPageIndex - 1 current:NO blank:NO forceReload:YES];
         [self loadPage:currentPageIndex + 1 current:NO blank:NO forceReload:YES];        
     }    
 }
@@ -780,7 +787,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @synthesize page, fitTransform;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    NSLog(@"drawing page %d", CGPDFPageGetPageNumber(page));
+    //NSLog(@"drawing page %d", CGPDFPageGetPageNumber(page));
     CGContextConcatCTM(ctx, fitTransform);
     // RENDER DEBUG NSLog(@"currentCTM: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     CGContextClipToRect(ctx, pageRect);
@@ -799,9 +806,11 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @synthesize pageRect;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    NSLog(@"drawing page background");
+    //NSLog(@"drawing page background");
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     CGContextFillRect(ctx, pageRect);
+    //NSLog(@"fittedPageRect is %@", NSStringFromCGRect(pageRect));
+
 }
 
 @end
@@ -811,7 +820,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @synthesize pageRect;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    NSLog(@"drawing page shadow");
+    //NSLog(@"drawing page shadow");
     CGContextSetShadowWithColor(ctx, CGSizeMake(0, (kBlioLayoutShadow/2.0f)), kBlioLayoutShadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     CGContextFillRect(ctx, pageRect);
