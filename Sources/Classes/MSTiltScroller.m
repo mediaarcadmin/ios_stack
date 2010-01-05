@@ -262,10 +262,15 @@
  
 }
 
+- (void)resetAngle {
 
+ 	initialAngleY = -100;
+	initialAngleZ = -100;   
+}
 
 // UIAccelerometerDelegate method, called when the device accelerates.
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
+
     if (!enabled) return;
 
 /*	if (!scrollbarUpdateTimer && lastSpeed != 0) {

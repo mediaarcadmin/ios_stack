@@ -59,5 +59,6 @@
 - (void)start:(bool)showBezel;
 - (bool)toggleScroller:(bool)showBezel;
 - (void)displayBezelImage:(NSString *)path;
+- (void)resetAngle;
 
 @end

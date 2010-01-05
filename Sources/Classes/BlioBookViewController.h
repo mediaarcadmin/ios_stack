@@ -100,6 +100,8 @@ typedef enum {
 
 @property (nonatomic, retain) UIView *pageJumpView;
 
+- (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;
+
 
 @end
