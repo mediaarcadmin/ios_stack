@@ -42,10 +42,10 @@
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 
-- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber;
+- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture;
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
-+ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize;
++ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture;
 
 + (EucBookPageIndexPoint *)layoutPageFromBookReader:(id <EucBookReader>)reader
                                     startingAtPoint:(EucBookPageIndexPoint *)indexPoint

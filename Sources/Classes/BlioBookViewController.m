@@ -36,12 +36,9 @@ typedef enum {
     kBlioFontSizeLarge = 3,
     kBlioFontSizeVeryLarge = 4,
 } BlioFontSize;
+static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
 
-typedef enum {
-    kBlioPageColorWhite = 0,
-    kBlioPageColorBlack = 1,
-    kBlioPageColorNeutral = 2,
-} BlioPageColor;
+static NSString *kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"paper-black.png", @"paper-neutral.png" };
 
 typedef enum {
     kBlioRotationLockOff = 0,
@@ -52,8 +49,6 @@ typedef enum {
     kBlioTapTurnOff = 0,
     kBlioTapTurnOn = 1,
 } BlioTapTurn;
-
-static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
 
 @interface _BlioBookViewControllerTransparentView : UIView {
     BlioBookViewController *controller;
@@ -94,6 +89,9 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
 @synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
 @synthesize returnToNavigationBarHidden = _returnToNavigationBarHidden;
 @synthesize returnToStatusBarHidden = _returnToStatusBarHidden;
+
+@synthesize currentPageColor = _currentPageColor;
+
 @synthesize audioPlaying = _audioPlaying;
 
 @synthesize tiltScroller, tapDetector, motionControlsEnabled;
@@ -152,6 +150,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
         if ((self = [self initWithBookView:aBookView])) {
             self.bookView = aBookView;
             self.book = newBook;
+            self.currentPageColor = kBlioPageColorWhite;
         }
         [aBookView release];
         [aEPubBook release];
@@ -763,15 +762,22 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     }
 }
 
-- (BlioPageColor)currentPageColor {
-    return kBlioPageColorWhite;
+- (void)setCurrentPageColor:(BlioPageColor)newColor
+{
+    if(newColor != self.currentPageColor) {
+        UIView<BlioBookView> *bookView = self.bookView;
+        if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
+            NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
+                                                                  ofType:@""];
+            UIImage *pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+            [bookView setPageTexture:pageTexture isDark:NO];
+        }  
+        _currentPageColor = newColor;
+    }
 }
 
 - (void)changePageColor:(id)sender {
-    BlioPageColor newColor = (BlioPageColor)[sender selectedSegmentIndex];
-    if([self currentPageColor] != newColor) {
-        NSLog(@"Attempting to change to BlioPageColor: %d", newColor);
-    }
+    self.currentPageColor = (BlioPageColor)[sender selectedSegmentIndex];
 }
 
 - (BlioRotationLock)currentLockRotation {

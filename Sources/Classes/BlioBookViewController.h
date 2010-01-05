@@ -11,6 +11,7 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import "AcapelaTTS.h"
 #import "BlioMockBook.h"
+#import "BlioBookView.h"
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
 
@@ -22,6 +23,12 @@ typedef enum {
     BookViewControlleUIFadeStateFadingOut,
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
+
+typedef enum {
+    kBlioPageColorWhite = 0,
+    kBlioPageColorBlack = 1,
+    kBlioPageColorNeutral = 2,
+} BlioPageColor;
 
 @interface BlioBookViewController : UIViewController <THEventCaptureObserver,EucBookContentsTableViewControllerDelegate,UIActionSheetDelegate,UIAccelerometerDelegate> {
     BOOL _firstAppearance;
@@ -57,6 +64,8 @@ typedef enum {
     MSTiltScroller *tiltScroller;
     MSTapDetector *tapDetector;
     BOOL motionControlsEnabled;
+    
+    BlioPageColor _currentPageColor;
 }
 
 // Designated initializers.
@@ -71,6 +80,8 @@ typedef enum {
 @property (nonatomic, assign) BOOL returnToNavigationBarHidden;
 @property (nonatomic, assign) BOOL returnToStatusBarHidden;
 
+@property (nonatomic, assign) BlioPageColor currentPageColor;
+
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic) BOOL audioPlaying;
 
@@ -79,19 +90,5 @@ typedef enum {
 @property (nonatomic, assign) BOOL motionControlsEnabled;
 
 - (void)tapToNextPage;
-
-@end
-
-@protocol BlioBookView <NSObject>
-
-@required
-- (void)jumpToUuid:(NSString *)uuid;
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
-
-@property (nonatomic, assign) NSInteger pageNumber;
-@property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
-
-@optional
-@property (nonatomic, assign) CGFloat fontPointSize;
 
 @end
