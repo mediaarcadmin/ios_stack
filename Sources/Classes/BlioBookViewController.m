@@ -796,13 +796,12 @@ typedef enum {
 {
   NSString* section = [self.bookView.contentsDataSource sectionUuidForPageNumber:page];
   THPair* chapter = [self.bookView.contentsDataSource presentationNameAndSubTitleForSectionUuid:section];
+  NSString* pageStr = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
   
   if (section && chapter.first) {
-    _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", 
-      [self.bookView.contentsDataSource displayPageNumberForPageNumber:page], 
-      chapter.first];
+    _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
   } else {
-    _pageJumpLabel.text = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
+    _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
   }
 }
 
