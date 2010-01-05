@@ -230,7 +230,7 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:nil];
+                                           action:@selector(dummyJumpToPage)];
     [readingItems addObject:item];
     [item release];
     
@@ -267,6 +267,10 @@ static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 2
     [item release];
     
     return [NSArray arrayWithArray:readingItems];
+}
+
+- (void)dummyJumpToPage {
+    [self.bookView setPageNumber:100 animated:YES];
 }
 
 - (void)setBookView:(UIView<BlioBookView> *)bookView

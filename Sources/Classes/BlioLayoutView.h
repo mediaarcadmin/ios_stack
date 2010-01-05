@@ -23,7 +23,7 @@
     BlioPDFFontList *fonts;
     BlioPDFDebugView *debugView;
     BlioPDFScrollView *currentPageView;
-    
+    BOOL scrollToPageInProgress;
     MSTiltScroller *tiltScroller;
 }
 
@@ -33,6 +33,7 @@
 @property (nonatomic, retain) BlioPDFScrollView *currentPageView;
 @property (nonatomic, assign) MSTiltScroller *tiltScroller;
 @property (retain) BlioPDFFontList *fonts;
+@property (nonatomic) BOOL scrollToPageInProgress;
 
 - (id)initWithPath:(NSString *)path;
 
