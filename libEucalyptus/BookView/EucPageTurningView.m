@@ -114,6 +114,9 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 {
     if(!_animating) {
         // Curtail background tasks to allow smooth animation.
+        if([_delegate respondsToSelector:@selector(pageTurningViewAnimationWillBegin:)]) {
+            [_delegate pageTurningViewAnimationWillBegin:self];   
+        }
         [THBackgroundProcessingMediator curtailBackgroundProcessing];
         _animating = YES;
         [super startAnimation];
@@ -127,6 +130,9 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
         [THBackgroundProcessingMediator allowBackgroundProcessing];
         _animating = NO;
         [super stopAnimation];
+        if([_delegate respondsToSelector:@selector(pageTurningViewAnimationDidEnd:)]) {
+            [_delegate pageTurningViewAnimationDidEnd:self];   
+        }        
     }
 }
 
@@ -632,6 +638,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
 - (void)drawView 
 {        
+    BOOL wasAnimating = _animating;
     if(_animating && !_isTurningAutomatically) {
         //[self _accumulateForces]; // Not used - see comments around implementation.
         [self _verlet];
@@ -892,6 +899,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
     if(_viewsNeedRecache) {
         [self _postAnimationViewAndTextureRecache];
+    }
+    if(wasAnimating && !_animating) {
+        if([_delegate respondsToSelector:@selector(pageTurningView:didTurnToView:)]) {
+            [_delegate pageTurningView:self didTurnToView:_pageViews[1]];
+        }                            
     }
 }
 
@@ -1418,9 +1430,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         [self _setView:[_delegate pageTurningView:self nextViewForView:_pageViews[1]] forPage:2];
         _recacheFlags[2] = NO;
     }
-    if([_delegate respondsToSelector:@selector(pageTurningView:didTurnToView:)]) {
-        [_delegate pageTurningView:self didTurnToView:_pageViews[1]];
-    }                    
     _viewsNeedRecache = NO;
 }
 
