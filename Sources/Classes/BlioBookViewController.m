@@ -442,8 +442,10 @@ typedef enum {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];                
         
-        _pageJumpButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward 
-          target:self action:@selector(togglePageJumpPanel)];
+        _pageJumpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scrubber-icon.png"]
+                                                           style:UIBarButtonItemStyleBordered 
+                                                          target:self 
+                                                          action:@selector(togglePageJumpPanel)];
         
         [self.navigationItem setRightBarButtonItem:_pageJumpButton];
         

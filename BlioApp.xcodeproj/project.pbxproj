@@ -75,6 +75,7 @@
 		7DB9F6FF10F364060010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6FB10F364060010DF0B /* LinuxLibertine.otf */; };
 		7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F93F10F39FF60010DF0B /* logo-bevel.png */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
+		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
 		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
@@ -241,6 +242,7 @@
 		7DB9F6FB10F364060010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DB9F93F10F39FF60010DF0B /* logo-bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-bevel.png"; sourceTree = "<group>"; };
 		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
+		7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scrubber-icon.png"; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
@@ -412,6 +414,7 @@
 				55822F1C10F2891B008614FD /* icon-play.png */,
 				55822F1D10F2891B008614FD /* icon-plus.png */,
 				55822F1E10F2891B008614FD /* icon-search.png */,
+				7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */,
 				C9775E9A10DFE1C3005E0E2B /* MockCovers */,
 				C94D27B510DBCF4C00F30AFE /* PDFs */,
 				7DF58BA210DA9A86004E3DBB /* ePubs */,
@@ -701,6 +704,7 @@
 				555CAF2C10F3B943007B1885 /* booktextureandshadowsubtle.png in Resources */,
 				555CAF3D10F3B991007B1885 /* LibraryGridViewController.png in Resources */,
 				556D1D5B10F3BE580019315C /* Icon.png in Resources */,
+				7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
