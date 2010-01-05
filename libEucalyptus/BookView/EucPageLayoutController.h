@@ -8,11 +8,12 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "EucBookContentsTableViewController.h"
 
 @class EucGutenbergBook, EucBookPageIndex, EucBookPageIndexPoint, EucPageView, THPair;
 @protocol EucBook, EucBookReader;
 
-@protocol EucPageLayoutController <NSObject>
+@protocol EucPageLayoutController <EucBookContentsTableViewControllerDataSource>
 
 @property (nonatomic, readonly) id<EucBook> book;
 
@@ -41,10 +42,10 @@
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 
-- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber;
+- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
-+ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize;
++ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture;
 
 + (EucBookPageIndexPoint *)layoutPageFromBookReader:(id <EucBookReader>)reader
                                     startingAtPoint:(EucBookPageIndexPoint *)indexPoint

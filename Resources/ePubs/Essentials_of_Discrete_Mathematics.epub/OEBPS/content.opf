@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<opf:package version="2.0" unique-identifier="dcid" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <opf:metadata>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="calibre_id">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:calibre="http://calibre.kovidgoyal.net/2009/metadata">
     <dc:identifier id="dcid" opf:scheme="UUID">urn:uuid:1f2b1d88-4f71-49a6-acc4-6de22afc6422</dc:identifier>
     <dc:title>Unknown</dc:title>
     <dc:creator>Unknown</dc:creator>
@@ -8,8 +8,8 @@
     <dc:date opf:event="modification">2009-09-15</dc:date>
     <dc:publisher>Acrobat Distiller 4.05 for Macintosh</dc:publisher>
     <dc:language>en</dc:language>
-  </opf:metadata>
-  <opf:manifest>
+  </metadata>
+  <manifest>
     <opf:item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
     <opf:item id="cover" href="images/cover.jpeg" media-type="image/jpeg"/>
     <opf:item id="title" href="title.xhtml" media-type="application/xhtml+xml"/>
@@ -21,16 +21,16 @@
     <opf:item id="part6" href="part6.xhtml" media-type="application/xhtml+xml"/>
     <opf:item id="part7" href="part7.xhtml" media-type="application/xhtml+xml"/>
     <opf:item id="part8" href="part8.xhtml" media-type="application/xhtml+xml"/>
-  </opf:manifest>
-  <opf:spine toc="ncx">
-    <opf:itemref idref="title"/>
-    <opf:itemref idref="part1"/>
-    <opf:itemref idref="part2"/>
-    <opf:itemref idref="part3"/>
-    <opf:itemref idref="part4"/>
-    <opf:itemref idref="part5"/>
-    <opf:itemref idref="part6"/>
-    <opf:itemref idref="part7"/>
-    <opf:itemref idref="part8"/>
-  </opf:spine>
-</opf:package>
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="title"/>
+    <itemref idref="part1"/>
+    <itemref idref="part2"/>
+    <itemref idref="part3"/>
+    <itemref idref="part4"/>
+    <itemref idref="part5"/>
+    <itemref idref="part6"/>
+    <itemref idref="part7"/>
+    <itemref idref="part8"/>
+  </spine>
+</package>

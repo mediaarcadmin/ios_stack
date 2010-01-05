@@ -37,6 +37,8 @@
 - (float)_pageToSliderByte:(NSInteger)page;
 - (void)_updateSliderByteToPageRatio;
 - (void)_updatePageNumberLabel;
+@property (nonatomic, retain) UIImage *pageTexture;
+@property (nonatomic, assign) BOOL pageTextureIsDark;
 @end
 
 
@@ -45,10 +47,13 @@
 @synthesize delegate = _delegate;
 @synthesize book = _book;
 
+@synthesize pageTexture = _pageTexture;
+@synthesize pageTextureIsDark = _pageTextureIsDark;
+
 @synthesize undimAfterAppearance = _undimAfterAppearance;
 @synthesize appearAtCoverThenOpen = _appearAtCoverThenOpen;
 
-@synthesize pageLayoutController = _pageLayoutController;
+@synthesize contentsDataSource = _pageLayoutController;
 
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book 
@@ -129,6 +134,8 @@
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
         _pageTurningView = nil;
+        [_pageViewToIndexPoint removeAllObjects];
+        [_pageViewToIndexPointCounts removeAllObjects];
     }
 }
 
@@ -212,9 +219,36 @@
     [self setPageNumber:pageNumber animated:NO];
 }
 
+
 - (NSInteger)pageNumber
 {
     return _pageNumber;
+}
+
+
+- (NSInteger)pageCount
+{
+    return _pageLayoutController.globalPageCount;
+}
+
+- (void)_redisplayCurrentPage
+{
+    if(_pageTurningView) {
+        [_pageViewToIndexPoint removeAllObjects];
+        [_pageViewToIndexPointCounts removeAllObjects];
+        _dontSaveIndexPoints = YES;
+        [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO forced:YES];
+        _dontSaveIndexPoints = NO;
+    }
+}    
+
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
+{
+    if(self.pageTexture != pageTexture || self.pageTextureIsDark != isDark) {
+        self.pageTexture = pageTexture;
+        self.pageTextureIsDark = isDark;
+        [self _redisplayCurrentPage];
+    }
 }
 
 - (void)_removeHighlights
@@ -223,25 +257,18 @@
         [oldLayer removeFromSuperlayer];
     }
     [_highlightLayers release];
+    _highlightLayers = nil;
 }
 
-- (void)_hideHighlights
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
-    for(CALayer *oldLayer in _highlightLayers) {
-        [oldLayer setHidden:YES];
+    if([[anim valueForKey:@"THName"] isEqual:@"EucBookViewEndOfLineHighlight"]) {
+        [[anim valueForKey:@"THLayer"] removeFromSuperlayer];
     }
-    [_highlightLayers release];
 }
 
-- (void)_showHighlights
+- (void)_moveHighlightToWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset 
 {
-    for(CALayer *oldLayer in _highlightLayers) {
-        [oldLayer setHidden:NO];
-    }
-    [_highlightLayers release];
-}
-
-- (void)_moveHighlightToWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
     EucPageTextView *pageTextView = pageView.bookTextView;
     
@@ -250,52 +277,115 @@
     NSMutableArray *newHighlightLayers = [[NSMutableArray alloc] initWithCapacity:2];
     for(NSValue *rectValue in rects) {
         CGRect rect = [pageView convertRect:[rectValue CGRectValue] fromView:pageTextView];
-        
+
         CGPoint newCenter = CGPointMake(rect.origin.x + (rect.size.width / 2.0f), rect.origin.y + (rect.size.height / 2.0f));
-        CALayer *layer;
+        CALayer *layer = nil;
         if(_highlightLayers.count) {
             CGFloat bestDistance = CGFLOAT_MAX;
             for(CALayer *prospectiveLayer in _highlightLayers) {
-                CGFloat thisDistance = CGPointDistance(prospectiveLayer.position, newCenter);
-                if(thisDistance < bestDistance) {
-                    bestDistance = thisDistance;
-                    layer = [prospectiveLayer retain];
+                CGPoint prospectiveCenter = prospectiveLayer.position;
+                if(prospectiveCenter.x < newCenter.x) {
+                    CGFloat thisDistance = CGPointDistance(prospectiveCenter, newCenter);
+                    if(thisDistance < bestDistance) {
+                        bestDistance = thisDistance;
+                        layer = [prospectiveLayer retain];
+                    }
                 }
             }
+        } 
+        rect.size.width += 4;
+        rect.size.height += 4;
+
+        if(layer) {
             [_highlightLayers removeObject:layer];
-        } else {
+        } else {                 
             layer = [[CALayer alloc] init];
             layer.cornerRadius = 4;
-            layer.backgroundColor = [[[UIColor blueColor] colorWithAlphaComponent:0.25f] CGColor];            
+            layer.backgroundColor = [[[UIColor blueColor] colorWithAlphaComponent:0.25f] CGColor];
+            layer.position = CGPointMake(newCenter.x - rect.size.width / 2.0f + 1.0f, newCenter.y);
+            layer.bounds = CGRectMake(0, 0, 1, rect.size.height);
+            [_pageTurningView.layer addSublayer:layer];              
         }
+        
+        CGRect newBounds = CGRectMake(0, 0, rect.size.width, rect.size.height);
+        
+        CABasicAnimation *move = [CABasicAnimation animation];
+        move.keyPath = @"position";
+        move.fromValue = [NSValue valueWithCGPoint:layer.position];
+        move.toValue = [NSValue valueWithCGPoint:newCenter];
+        CABasicAnimation *shape = [CABasicAnimation animation];
+        shape.keyPath = @"bounds";
+        shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
+        shape.toValue = [NSValue valueWithCGRect:newBounds];
+        
+        CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+        animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
+        animationGroup.duration = 0.2f;
+
+        [layer addAnimation:animationGroup forKey:nil];
+        
         layer.position = newCenter;
-        layer.bounds = CGRectMake(0, 0, rect.size.width + 4, rect.size.height + 4);
-        [_pageTurningView.layer addSublayer:layer];
+        layer.bounds = newBounds;
+        
         [newHighlightLayers addObject:layer];
         [layer release];
     }
-    for(CALayer *oldLayer in _highlightLayers) {
-        [oldLayer removeFromSuperlayer];
+    for(CALayer *layer in _highlightLayers) {
+        CGRect frame = layer.frame;
+        CGPoint newCenter = CGPointMake(frame.origin.x + frame.size.width - 1.0f, 
+                                        frame.origin.y + frame.size.height / 2.0f);
+        CGRect newBounds = CGRectMake(0, 0, 1, frame.size.height);
+        
+        CABasicAnimation *move = [CABasicAnimation animation];
+        move.keyPath = @"position";
+        move.fromValue = [NSValue valueWithCGPoint:layer.position];
+        move.toValue = [NSValue valueWithCGPoint:newCenter];
+        CABasicAnimation *shape = [CABasicAnimation animation];
+        shape.keyPath = @"bounds";
+        shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
+        shape.toValue = [NSValue valueWithCGRect:newBounds];
+        
+        CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+        animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
+        animationGroup.duration = 0.2f;
+        animationGroup.delegate = self;
+
+        [animationGroup setValue:@"EucBookViewEndOfLineHighlight" forKey:@"THName"];
+        [animationGroup setValue:layer forKey:@"THLayer"];
+        [layer addAnimation:animationGroup forKey:@"EucBookViewEndOfLineHighlight"]; 
+        
+        layer.position = newCenter;
+        layer.bounds = newBounds;
     }
     [_highlightLayers release];
     _highlightLayers = [newHighlightLayers retain];
-        
-    NSLog(@"%@", rects);
 }
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 {
-    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-    indexPoint.startOfParagraphByteOffset = paragraphId;
-    indexPoint.startOfPageParagraphWordOffset = wordOffset;
-    NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
-    if(newPageNumber != _pageNumber) {
+    if(paragraphId == 0) {
+        _highlightPage = 0;
+        _highlightParagraph = 0;
+        _highlightWordOffset = 0;        
         [self _removeHighlights];
-        _highlightParagraphAfterTurn = paragraphId;
-        _highlightWordOffsetAfterTurn = wordOffset;
-        [self setPageNumber:newPageNumber animated:YES];
     } else {
-        [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
+        EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+        indexPoint.startOfParagraphByteOffset = paragraphId;
+        indexPoint.startOfPageParagraphWordOffset = wordOffset;
+        NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
+        
+        _highlightPage = newPageNumber;
+        _highlightParagraph = paragraphId;
+        _highlightWordOffset = wordOffset;
+        
+        if(!_highlightingDisabled) {
+            if(newPageNumber != _pageNumber) {
+                [self _removeHighlights];
+                [self setPageNumber:newPageNumber animated:YES];
+            } else {
+                [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
+            }
+        }
     }
 }
 
@@ -450,7 +540,7 @@
 
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber
 {          
-    THPair *ret = [_pageLayoutController viewAndIndexPointForPageNumber:pageNumber];
+    THPair *ret = [_pageLayoutController viewAndIndexPointForPageNumber:pageNumber withPageTexture:self.pageTexture isDark:self.pageTextureIsDark];
     if([ret.first isKindOfClass:[EucPageView class]]) {
         // Hrm, this is a bit messy...
         ((EucPageView *)ret.first).delegate = self;
@@ -607,7 +697,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         EucBookPageIndexPoint *oldIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
         [_pageLayoutController setFontPointSize:foundSize];
         NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:oldIndexPoint];
-        THPair *viewAndIndexPoint = [_pageLayoutController viewAndIndexPointForPageNumber:newPageNumber];
+        THPair *viewAndIndexPoint = [_pageLayoutController viewAndIndexPointForPageNumber:newPageNumber withPageTexture:self.pageTexture isDark:self.pageTextureIsDark];
         
         ret = viewAndIndexPoint.first;
         
@@ -636,22 +726,21 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     EucBookPageIndexPoint *pageIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
     NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
     
-    if(!_dontSaveIndexPoints) {
-        [_book setCurrentPageIndexPoint:pageIndexPoint];
+    if(pageNumber != _pageNumber) {
+        if(!_dontSaveIndexPoints) {
+            [_book setCurrentPageIndexPoint:pageIndexPoint];
+        }
+        if(!_jumpShouldBeSaved) {
+            _directionalJumpCount = 0;
+        } else {
+            _jumpShouldBeSaved = NO;
+        }
+        _pageSlider.scaledValue = [self _pageToSliderByte:pageNumber];
+        _pageNumber = pageNumber;   
+        [self _updatePageNumberLabel];
     }
-    if(!_jumpShouldBeSaved) {
-        _directionalJumpCount = 0;
-    } else {
-        _jumpShouldBeSaved = NO;
-    }
-    _pageSlider.scaledValue = [self _pageToSliderByte:pageNumber];
-    _pageNumber = pageNumber;   
-    [self _updatePageNumberLabel];
-    
-    if(_highlightParagraphAfterTurn) {
-        [self _moveHighlightToWordAtParagraphId:_highlightParagraphAfterTurn wordOffset:_highlightWordOffsetAfterTurn];
-        _highlightParagraphAfterTurn = 0;
-        _highlightWordOffsetAfterTurn = 0;
+    if(_highlightPage == pageNumber) {
+        [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
     }
 }
 
@@ -665,6 +754,18 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     //[_book setCurrentPageIndexPoint:[_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]]];
 }
 
+
+- (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
+{
+    _highlightingDisabled = YES;
+    [self _removeHighlights];
+}
+
+- (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
+{
+    _highlightingDisabled = NO;
+}
+
 - (CGFloat)fontPointSize
 {
     return _pageLayoutController.fontPointSize;
@@ -674,12 +775,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 {
     [_pageLayoutController setFontPointSize:fontPointSize];
     [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
-
-    [_pageViewToIndexPoint removeAllObjects];
-    [_pageViewToIndexPointCounts removeAllObjects];
-    _dontSaveIndexPoints = YES;
-    [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO forced:YES];
-    _dontSaveIndexPoints = NO;
+    [self _redisplayCurrentPage];
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view

@@ -30,6 +30,7 @@
 @property (nonatomic) CGFloat proportionateSize;
 
 - (UIImage *)coverImage;
-- (UIImage *)coverThumb;
+- (UIImage *)coverThumbForGrid;
+- (UIImage *)coverThumbForList;
 
 @end

@@ -22,7 +22,7 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-@interface EucBookViewController : UIViewController <THEventCaptureObserver, EucBookViewDelegate, EucPageViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, BookContentsTableViewControllerDelegate> {
+@interface EucBookViewController : UIViewController <THEventCaptureObserver, EucBookViewDelegate, EucPageViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, EucBookContentsTableViewControllerDelegate> {
     id<EucBookViewControllerDelegate> _delegate;
     
     BOOL _firstAppearance;

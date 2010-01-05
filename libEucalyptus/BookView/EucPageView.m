@@ -42,14 +42,14 @@
               titleFont:(NSString *)titleFont 
          pageNumberFont:(NSString *)pageNumberFont 
          titlePointSize:(CGFloat)titlePointSize
-             paperImage:(UIImage *)paperImage
+             pageTexture:(UIImage *)pageTexture
 {
     CGRect frame = [[UIScreen mainScreen] bounds];
 	if((self = [super initWithFrame:frame])) {
         // Measured with Shark, this is at least as efficient as drawing the 
         // background image in  any other way (including using a clearColor
         // background and multitextureing over a paper texture).
-        _pageImage = CGImageRetain([paperImage CGImage]);
+        _pageTexture = CGImageRetain([pageTexture CGImage]);
         self.clearsContextBeforeDrawing = NO;
         self.opaque = NO;
         
@@ -77,7 +77,7 @@
 	return self;
 }
 
-- (id)initWithPointSize:(CGFloat)pointSize
+- (id)initWithPointSize:(CGFloat)pointSize pageTexture:(UIImage *)pageTexture
 {
     static UIImage *sPaperImage = nil;
     if(!sPaperImage) {
@@ -85,7 +85,7 @@
     }
     NSString *pageNumberFont = [EucBookTextStyle defaultFontFamilyName];
     NSString *titleFont = [pageNumberFont stringByAppendingString:@"-Italic"];
-	return [self initWithPointSize:pointSize titleFont:titleFont pageNumberFont:pageNumberFont titlePointSize:pointSize paperImage:sPaperImage];
+	return [self initWithPointSize:pointSize titleFont:titleFont pageNumberFont:pageNumberFont titlePointSize:pointSize pageTexture:sPaperImage];
 }
 
 - (id)initWithFrame:(CGRect)frame 
@@ -96,8 +96,8 @@
 
 - (void)dealloc
 {
-    if(_pageImage) {
-        CGImageRelease(_pageImage);
+    if(_pageTexture) {
+        CGImageRelease(_pageTexture);
     }
     
     [_touch release];
@@ -159,12 +159,24 @@
     CGContextSaveGState(currentContext);
 
     CGRect bounds = [self bounds];
-    CGContextDrawImage(currentContext, bounds, _pageImage);
+    CGContextDrawImage(currentContext, bounds, _pageTexture);
 
     CGPoint origin = _bookTextView.frame.origin;
     CGContextTranslateCTM(currentContext, origin.x, origin.y);
     [_bookTextView drawRect:rect inContext:currentContext];
     CGContextRestoreGState(currentContext);
+    
+    CGContextSaveGState(currentContext);
+    
+    static const CGFloat white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    static const CGFloat black[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    if(_bookTextView.backgroundIsDark) {
+        CGContextSetFillColor(currentContext, white);        
+        CGContextSetBlendMode(currentContext, kCGBlendModeDifference);
+    } else {
+        CGContextSetFillColor(currentContext, black);        
+        CGContextSetBlendMode(currentContext, kCGBlendModeMultiply);
+    }
     
     if(!_fullBleed && _titleLinePosition != EucPageViewTitleLinePositionNone) {
         THStringRenderer *titleRenderer = _titleRenderer;
@@ -304,6 +316,7 @@
                                atPoint:pageNumberPoint
                              pointSize:_titlePointSize];
     }
+    CGContextRestoreGState(currentContext);
 }
 
 - (void)drawRect:(CGRect)rect 

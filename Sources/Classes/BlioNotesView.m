@@ -7,7 +7,7 @@
 //
 
 #import "BlioNotesView.h"
-#import <libEucalyptus/THUIImageAdditions.h>
+#import "BlioUIImageAdditions.h"
 
 static const CGFloat kBlioNotesViewShadow = 16;
 static const CGFloat kBlioNotesViewNoteHeight = 200;
@@ -18,23 +18,20 @@ static const CGFloat kBlioNotesViewTextXInset = 8;
 static const CGFloat kBlioNotesViewTextTopInset = 8;
 static const CGFloat kBlioNotesViewTextBottomInset = 24;
 
-@interface BlioNotesView(private)
-UITextView *textView;
-NSInteger page;
-@end
-
 
 @implementation BlioNotesView
 
+@synthesize page;
+
 - (id)initWithFrame:(CGRect)frame {
-    return [self initWithPage:-1];
+    return [self initWithPage:nil];
 }
 
-- (id)initWithPage:(NSInteger)pageNumber {
+- (id)initWithPage:(NSString *)pageNumber {
     if ((self = [super initWithFrame:CGRectZero])) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        page = pageNumber;
+        self.page = pageNumber;
         
     }
     return self;
@@ -52,7 +49,8 @@ NSInteger page;
     UIFont *buttonFont = [UIFont boldSystemFontOfSize:12.0f];
     NSString *buttonText = @"Cancel";
     CGSize buttonSize = [buttonText sizeWithFont:buttonFont];
-    UIImage *buttonImage = [UIImage imageWithString:buttonText font:buttonFont size:buttonSize color:[UIColor blackColor]];
+    UIImage *buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
+
     UISegmentedControl *aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
     aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
     aButtonSegment.frame = CGRectMake(kBlioNotesViewShadow + kBlioNotesViewTextXInset, kBlioNotesViewShadow + ((kBlioNotesViewToolbarHeight - aButtonSegment.frame.size.height)/2.0f), aButtonSegment.frame.size.width + 4, aButtonSegment.frame.size.height);
@@ -63,7 +61,8 @@ NSInteger page;
     
     buttonText = @"Save";
     buttonSize = [buttonText sizeWithFont:buttonFont];
-    buttonImage = [UIImage imageWithString:buttonText font:buttonFont size:buttonSize color:[UIColor blackColor]];
+    buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
+
     aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
     aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
     aButtonSegment.frame = CGRectMake(newFrame.size.width - kBlioNotesViewShadow - kBlioNotesViewTextXInset - aButtonSegment.frame.size.width - 8, kBlioNotesViewShadow + ((kBlioNotesViewToolbarHeight - aButtonSegment.frame.size.height)/2.0f), aButtonSegment.frame.size.width + 8, aButtonSegment.frame.size.height);
@@ -78,7 +77,10 @@ NSInteger page;
     [dateFormat setDateStyle:NSDateFormatterShortStyle];
     NSString *dateString = [dateFormat stringFromDate:date];  
     [dateFormat release];
-    toolbarLabel.text = [NSString stringWithFormat:@"Page 44, %@", dateString];
+    if (nil != self.page)
+        toolbarLabel.text = [NSString stringWithFormat:@"Page %@, %@", self.page, dateString];
+    else
+        toolbarLabel.text = [NSString stringWithFormat:@"%@", self.page, dateString];
     toolbarLabel.adjustsFontSizeToFitWidth = YES;
     toolbarLabel.font = [UIFont boldSystemFontOfSize:14.0f];
     toolbarLabel.backgroundColor = [UIColor clearColor];
@@ -157,6 +159,7 @@ NSInteger page;
 }                                                  
 
 - (void)dealloc {
+    self.page = nil;
     [super dealloc];
 }
 

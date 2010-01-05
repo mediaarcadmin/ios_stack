@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+#import "EucBookContentsTableViewController.h"
 #import "EucPageTurningView.h"
 #import "EucPageView.h"
 
@@ -17,6 +18,9 @@
 @interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
+
+    UIImage *_pageTexture;
+    BOOL _pageTextureIsDark;
     
     EucPageTurningView *_pageTurningView;
     id<EucPageLayoutController> _pageLayoutController;
@@ -51,9 +55,12 @@
     
     UIView *_pageSliderTrackingInfoView;    
     
+    NSInteger _highlightPage;
+    uint32_t _highlightParagraph;
+    uint32_t _highlightWordOffset;
+
     NSMutableArray *_highlightLayers;
-    uint32_t _highlightParagraphAfterTurn;
-    uint32_t _highlightWordOffsetAfterTurn;
+    BOOL _highlightingDisabled;
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
@@ -67,10 +74,18 @@
 @property (nonatomic, assign) BOOL appearAtCoverThenOpen;
 
 @property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, readonly) NSInteger pageCount;
 @property (nonatomic, readonly) NSString *displayPageNumber;
 @property (nonatomic, readonly) NSString *pageDescription;
 
 @property (nonatomic, assign) CGFloat fontPointSize;
+@property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
+
+// - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+// should be used to set these atomically.
+@property (nonatomic, retain, readonly) UIImage *pageTexture;
+@property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
 /*
 @property (nonatomic, readonly) float percentRead;
@@ -85,14 +100,10 @@
 - (void)jumpToUuid:(NSString *)uuid;
 - (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 
+
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 
 - (void)stopAnimation;
-
-// TEMPORARY - esposed to allow contents view to be set up based on this
-// layout controller.  Nod decided how contents view will interface with
-// differing views in the book view yet.
-@property (nonatomic, readonly) id<EucPageLayoutController> pageLayoutController;
 
 @end
 

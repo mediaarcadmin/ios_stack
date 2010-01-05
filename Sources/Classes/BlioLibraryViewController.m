@@ -8,13 +8,11 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLibraryViewController.h"
-#import <libEucalyptus/EucEPubBook.h>
-#import <libEucalyptus/EucBookViewController.h>
+#import "BlioBookViewController.h"
+#import "BlioEPubView.h"
 #import "BlioLayoutView.h"
-#import "BlioViewSettingsSheet.h"
-#import "BlioNotesView.h"
 #import "BlioMockBook.h"
-
+#import "BlioUIImageAdditions.h"
 #import "BlioTestParagraphWords.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
@@ -33,13 +31,6 @@ static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
 static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
-static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
-
-typedef enum {
-    kBlioLibraryAddBookmarkAction = 0,
-    kBlioLibraryAddNoteAction = 1,
-} BlioLibraryAddActions;
-
 @interface BlioLibraryTableView : UITableView
 
 @end
@@ -56,6 +47,8 @@ typedef enum {
 @property (nonatomic, retain) UIView *highlightView;
 @property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, readonly) UIImage *image;
+
+- (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout;
 
 @end
 
@@ -99,18 +92,17 @@ typedef enum {
 @implementation BlioLibraryViewController
 
 @synthesize currentBookView = _currentBookView;
-@synthesize currentBookPath = _currentBookPath;
-@synthesize currentPdfPath = _currentPdfPath;
-@synthesize audioPlaying = _audioPlaying;
+@synthesize currentPoppedBookCover = _currentPoppedBookCover;
 @synthesize books = _books;
 @synthesize libraryLayout = _libraryLayout;
+@synthesize bookCoverPopped = _bookCoverPopped;
+@synthesize firstPageRendered = _firstPageRendered;
 
 - (void)dealloc {
     self.currentBookView = nil;
-    self.currentBookPath = nil;
-    self.currentPdfPath = nil;
     self.books = nil;
     self.tableView = nil;
+    self.currentPoppedBookCover = nil;
     [super dealloc];
 }
 
@@ -161,20 +153,19 @@ typedef enum {
     [item release];  
     
     [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
-    [self.navigationController setToolbarHidden:NO];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.audioPlaying = NO;
     self.libraryLayout = kBlioLibraryLayoutGrid;
     
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    UIEdgeInsets inset = UIEdgeInsetsMake(3, 0, 0, 0);
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage imageNamed:@"button-grid.png"],
-                              [UIImage imageNamed:@"button-list.png"],
+                              [UIImage imageWithShadow:[UIImage imageNamed:@"button-grid.png"] inset:inset],
+                              [UIImage imageWithShadow:[UIImage imageNamed:@"button-list.png"] inset:inset],
                               nil];
     UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentImages];
     segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
@@ -217,6 +208,7 @@ typedef enum {
     [aBook setTitle:@"Essentials Of Discrete Mathematics"];
     [aBook setAuthor:@"David J. Hunter"];
     [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/Essentials_of_Discrete_Mathematics.png"]];
+    [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"epub" inDirectory:@"ePubs"]];
     [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]];
     [aBook setProgress:0.0f];
     [aBook setProportionateSize:0.2f];
@@ -326,6 +318,16 @@ typedef enum {
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationItem.title = @"Bookshelf";
+    
+    UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white.png"]];
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:logoImage];
+    self.navigationItem.titleView = logoImageView;
+    [logoImageView release];
+    
+    [self.navigationController setToolbarHidden:NO];
+    UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
+    self.navigationController.toolbar.tintColor = tintColor;
+    self.navigationController.navigationBar.tintColor = tintColor;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -356,84 +358,6 @@ typedef enum {
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
-}
-
-- (UIToolbar *)toolbarForReadingView {
-    UIToolbar *readingToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-    readingToolbar.barStyle = UIBarStyleBlackTranslucent;
-    
-    NSMutableArray *readingItems = [NSMutableArray array];
-    UIBarButtonItem *item;
-    
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
-                                            style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:nil];
-    [readingItems addObject:item];
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
-                                            style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:@selector(showAddMenu:)];
-    [readingItems addObject:item];
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];  
-    
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
-                                            style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:nil];
-    [readingItems addObject:item];
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];  
-    
-    UIImage *audioImage = nil;
-    if (self.audioPlaying)
-        audioImage = [UIImage imageNamed:@"icon-pause.png"];
-    else 
-        audioImage = [UIImage imageNamed:@"icon-play.png"];
-    
-    item = [[UIBarButtonItem alloc] initWithImage:audioImage
-                                            style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:@selector(toggleAudio:)];
-    [readingItems addObject:item];
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-eye.png"]
-                                            style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:@selector(showViewSettings:)];
-    [readingItems addObject:item];
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];
-    
-    [readingToolbar setItems:[NSArray arrayWithArray:readingItems]];
-    [readingToolbar sizeToFit];
-    
-    return [readingToolbar autorelease];
 }
 
 #pragma mark Table View Methods
@@ -521,14 +445,14 @@ typedef enum {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
-    BlioMockBook *selectedBook = [self.books objectAtIndex:[indexPath row]];
+ /*   BlioMockBook *selectedBook = [self.books objectAtIndex:[indexPath row]];
     self.currentBookPath = [selectedBook bookPath];
     self.currentPdfPath = [selectedBook pdfPath];
     
     if (nil != self.currentBookPath) {
         EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
-        [(EucBookView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
+        BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:book];
+        [(BlioEPubView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
         
         bookViewController.overriddenToolbar = [self toolbarForReadingView];
         
@@ -538,7 +462,7 @@ typedef enum {
         [bookViewController release];
     } else if (nil != self.currentPdfPath) {
         BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];    
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:layoutView];
+        BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBookView:layoutView];
         [layoutView release];
         
         bookViewController.overriddenToolbar = [self toolbarForReadingView];    
@@ -546,7 +470,7 @@ typedef enum {
         [self.navigationController pushViewController:bookViewController animated:YES];
         [bookViewController release];
     }
-    
+    */
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     
 }
@@ -598,228 +522,7 @@ typedef enum {
  */
 
 #pragma mark -
-#pragma mark BookController State Methods
-
-- (NSInteger)currentPageNumber {
-    return 44;   
-}
-
-- (BlioPageLayout)currentPageLayout {
-    EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-    if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]])
-        return kBlioPageLayoutPageLayout;
-    else
-        return kBlioPageLayoutPlainText;
-}
-
-- (void)changePageLayout:(id)sender {
-    
-    BlioLibraryLayout newLayout = (BlioLibraryLayout)[sender selectedSegmentIndex];
-    
-    if([self currentPageLayout] != newLayout) {
-        EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-        
-        if (newLayout == kBlioPageLayoutPlainText && self.currentBookPath) {
-            EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-            EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
-                                                                  book:book];
-            bookViewController.bookView = bookView;
-            [bookView release];
-            [book release];
-        } else if (newLayout == kBlioPageLayoutPageLayout && self.currentPdfPath) {
-            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];
-            bookViewController.bookView = layoutView;
-            [layoutView release];
-        }
-    }
-    
-}
-
-- (BOOL)shouldShowPageAttributeSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
-        return NO;
-    else
-        return YES;
-}
-
-- (BlioFontSize)currentFontSize {
-    BlioFontSize fontSize = kBlioFontSizeMedium;
-    if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-        EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-        EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-        
-        CGFloat actualFontSize = bookView.fontPointSize;
-        CGFloat bestDifference = CGFLOAT_MAX;
-        BlioFontSize bestFontSize = kBlioFontSizeMedium;
-        for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
-            CGFloat thisDifference = fabsf(kBlioFontPointSizeArray[i] - actualFontSize);
-            if(thisDifference < bestDifference) {
-                bestDifference = thisDifference;
-                bestFontSize = i;
-            }
-        }
-        fontSize = bestFontSize;
-    } 
-    return fontSize;
-}
-
-- (void)changeFontSize:(id)sender {
-    BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
-    if([self currentFontSize] != newSize) {
-        if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-            EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-            EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-            bookView.fontPointSize = kBlioFontPointSizeArray[newSize];
-        }
-        NSLog(@"Attempting to change to BlioFontSize: %d", newSize);
-    }
-}
-
-- (BlioPageColor)currentPageColor {
-    return kBlioPageColorWhite;
-}
-
-- (void)changePageColor:(id)sender {
-    BlioPageColor newColor = (BlioPageColor)[sender selectedSegmentIndex];
-    if([self currentPageColor] != newColor) {
-        NSLog(@"Attempting to change to BlioPageColor: %d", newColor);
-    }
-}
-
-- (BlioRotationLock)currentLockRotation {
-    return kBlioRotationLockOff;
-}
-
-- (void)changeLockRotation:(id)sender {
-    // This is just a placeholder check. Obviously we shouldn't be checking against the string.
-    BlioRotationLock newLock = (BlioRotationLock)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Unlock Rotation"];
-    if([self currentLockRotation] != newLock) {
-        NSLog(@"Attempting to change to BlioRotationLock: %d", newLock);
-    }
-}
-
-- (BlioTapTurn)currentTapTurn {
-    return kBlioTapTurnOff;
-}
-
-- (void)changeTapTurn:(id)sender {
-    // This is just a placeholder check. Obviously we shouldn't be checking against the string.
-    BlioTapTurn newTapTurn = (BlioTapTurn)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Disable Tap Turn"];
-    if([self currentTapTurn] != newTapTurn) {
-        NSLog(@"Attempting to change to BlioTapTurn: %d", newTapTurn);
-    }
-}
-
-
-#pragma mark -
-#pragma mark Action Callback Methods
-
-- (void)showAddMenu:(id)sender {
-    UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
-    aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    aActionSheet.delegate = self;
-    UIToolbar *toolbar = (UIToolbar *)[(EucBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
-    [aActionSheet showFromToolbar:toolbar];
-    [aActionSheet release];
-}
-
-- (void)showViewSettings:(id)sender {
-    BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
-    UIToolbar *toolbar = (UIToolbar *)[(EucBookViewController *)self.navigationController.visibleViewController overriddenToolbar];
-    [aSettingsSheet showFromToolbar:toolbar];
-    [aSettingsSheet release];
-}
-
-- (void)dismissViewSettings:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
-}
-
-- (void)speakNextPargraph:(NSTimer*)timer {
-	if ( _acapelaTTS.textToSpeakChanged ) {	
-		[_acapelaTTS setTextToSpeakChanged:NO];
-		NSRange pageRange;
-		pageRange.location = [_acapelaTTS currentWordOffset];
-		pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset]; 	
-		[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
-	}
-}
-
-- (void) prepareTextToSpeak:(BOOL)continuingSpeech {
-	EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-	EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-	EucEPubBook *book = (EucEPubBook*)bookView.book;
-	uint32_t paragraphId, wordOffset;
-	if ( continuingSpeech ) {
-		// Continuing to speak, we just need more text.
-		paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
-		wordOffset = 0;
-		[_acapelaTTS setCurrentWordOffset:wordOffset];
-		[_acapelaTTS setCurrentParagraph:paragraphId];
-		[_acapelaTTS.paragraphWords release];
-		[_acapelaTTS setParagraphWords:nil];
-		[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
-	}
-	else {
-		[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
-		// Play button has just been pushed.
-		if ( (paragraphId + wordOffset)!=[_acapelaTTS currentPage] ) {
-			// Starting speech for the first time, or for the first time since changing the 
-			// page or book after stopping speech the last time (whew).
-			[_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
-			[_acapelaTTS setCurrentWordOffset:wordOffset];
-			[_acapelaTTS setCurrentParagraph:paragraphId];
-			if ( _acapelaTTS.paragraphWords != nil ) {
-				[_acapelaTTS.paragraphWords release];
-				[_acapelaTTS setParagraphWords:nil];
-			}
-			[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
-		}
-		// else use the current word and paragraph, which is where we last stopped.
-		// edge case:  what if you stopped speech right after the end of the paragraph?
-	}
-	[_acapelaTTS setTextToSpeakChanged:YES];
-}
-
-- (void)toggleAudio:(id)sender {
-	if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-		UIBarButtonItem *item = (UIBarButtonItem *)sender;
-		
-		UIImage *audioImage = nil;
-		if (self.audioPlaying) {
-			/* For testing
-			[_testParagraphWords stopParagraphGetting];
-			[_testParagraphWords release];
-			_testParagraphWords = nil;
-			*/
-			//[_acapelaTTS stopSpeaking];
-			[_acapelaTTS stopSpeakingAtBoundary:1];
-			audioImage = [UIImage imageNamed:@"icon-play.png"];
-		} else { 
-			/* For testing.  If this is uncommented, comment out the call to startSpeakingParagraph below.
-			 EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-			 EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-			 EucEPubBook *book = (EucEPubBook*)bookView.book;
-			 uint32_t paragraphId, wordOffset;
-			 [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
-			 _testParagraphWords = [[BlioTestParagraphWords alloc] init];
-			 [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
-			 */
-			
-			if (_acapelaTTS == nil) {
-				_acapelaTTS = [[AcapelaTTS alloc] init];
-				[_acapelaTTS initTTS];
-				[_acapelaTTS setDelegate:self];
-				[_acapelaTTS setRate:180];   // Will get from settings.
-				[_acapelaTTS setVolume:70];  // Likewise.
-				[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextPargraph:) userInfo:nil repeats:YES]];
-			}
-			[self prepareTextToSpeak:NO];
-			audioImage = [UIImage imageNamed:@"icon-pause.png"];
-		}
-		self.audioPlaying = !self.audioPlaying;  
-		[item setImage:audioImage];
-	}
-}
+#pragma mark Library Actions
 
 - (void)changeLibraryLayout:(id)sender {
     
@@ -856,12 +559,12 @@ typedef enum {
     CGFloat xInset = poppedImageView.bounds.size.width * kBlioLibraryShadowXInset;
     CGFloat yInset = poppedImageView.bounds.size.height * kBlioLibraryShadowYInset;
     CGRect insetFrame = CGRectInset(poppedImageView.bounds, xInset, yInset);
-    UIImageView *aImageView = [[UIImageView alloc] initWithFrame:insetFrame];
-    aImageView.contentMode = UIViewContentModeScaleToFill;
-    aImageView.image = bookImage;
-    aImageView.backgroundColor = [UIColor clearColor];
-    aImageView.autoresizesSubviews = YES;
-    aImageView.autoresizingMask = 
+    UIImageView *aCoverImageView = [[UIImageView alloc] initWithFrame:insetFrame];
+    aCoverImageView.contentMode = UIViewContentModeScaleToFill;
+    aCoverImageView.image = bookImage;
+    aCoverImageView.backgroundColor = [UIColor clearColor];
+    aCoverImageView.autoresizesSubviews = YES;
+    aCoverImageView.autoresizingMask = 
         UIViewAutoresizingFlexibleLeftMargin  |
         UIViewAutoresizingFlexibleWidth       |
         UIViewAutoresizingFlexibleRightMargin |
@@ -869,11 +572,11 @@ typedef enum {
         UIViewAutoresizingFlexibleHeight      |
         UIViewAutoresizingFlexibleBottomMargin;
     
-    [poppedImageView addSubview:aImageView];
+    [poppedImageView addSubview:aCoverImageView];
     
     UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:poppedImageView.bounds];
     aTextureView.contentMode = UIViewContentModeScaleToFill;
-    aTextureView.image = [UIImage imageNamed:@"booktextureandshadow.png"];
+    aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
     aTextureView.backgroundColor = [UIColor clearColor];
     aTextureView.autoresizesSubviews = YES;
     aTextureView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -882,18 +585,19 @@ typedef enum {
     [targetView addSubview:poppedImageView];
     
     [UIView beginAnimations:@"popBook" context:poppedImageView];
-    [aImageView release];
+    [aCoverImageView release];
     [UIView setAnimationDuration:0.65f];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(popBookDidStop:finished:context:)];
     [UIView setAnimationWillStartSelector:@selector(popBookWillStart:context:)];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     
-    CGFloat widthRatio = (targetView.frame.size.width)/aImageView.frame.size.width;
-    CGFloat heightRatio = (targetView.frame.size.height)/aImageView.frame.size.height;
+    CGFloat widthRatio = (targetView.frame.size.width)/aCoverImageView.frame.size.width;
+    CGFloat heightRatio = (targetView.frame.size.height)/aCoverImageView.frame.size.height;
     
     CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
     CGRect poppedRect = CGRectIntegral(CGRectMake((targetView.frame.size.width-poppedSize.width)/2.0f, (targetView.frame.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
+    
     [poppedImageView setFrame:poppedRect];
     [self.tableView setAlpha:0.0f];
     [aTextureView setAlpha:0.0f];
@@ -904,111 +608,97 @@ typedef enum {
     [poppedImageView release];
     
     self.currentBookView = bookView;
+    self.currentPoppedBookCover = aCoverImageView;
+    self.bookCoverPopped = NO;
+    self.firstPageRendered = NO;
 }
 
 - (void)popBookWillStart:(NSString *)animationID context:(void *)context {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
-    [self.tableView setUserInteractionEnabled:NO];
+    [self.tableView setUserInteractionEnabled:NO];    
 }
 
 - (void)popBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    if (finished) {
-        [(UIView *)context removeFromSuperview];
-        
-        [self.currentBookView setAlpha:1.0f];
+    if (finished) {        
+        // Reset table view and clicked book
+        [self.currentBookView setAlpha:1.0f]; // This is the current book in the grid or list which was hidden
         [self.tableView setUserInteractionEnabled:YES];
         [self.tableView setAlpha:1.0f];
         
         BlioMockBook *currentBook = [self.currentBookView book];
-        self.currentBookPath = [currentBook bookPath];
-        self.currentPdfPath = [currentBook pdfPath];
+        BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:currentBook];
         
-        if (nil != self.currentBookPath) {
+        CGRect coverRect = [[UIScreen mainScreen] bounds];
+        BOOL shrinkCover = NO;
+        
+        if (nil != bookViewController) {
             self.navigationController.navigationBarHidden = YES; // We already animated the cover over it.
+            coverRect = [[bookViewController bookView] firstPageRect];
+            if (!CGRectEqualToRect([[UIScreen mainScreen] bounds], coverRect)) shrinkCover = YES;
             
-            EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-            EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:book];
-            bookView.appearAtCoverThenOpen = YES;
-            
-            EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBookView:bookView];
-            bookViewController.toolbarsVisibleAfterAppearance = YES;
+            bookViewController.toolbarsVisibleAfterAppearance = !shrinkCover;
             bookViewController.returnToNavigationBarHidden = NO;
             bookViewController.returnToStatusBarStyle = UIStatusBarStyleDefault;
-            
-            bookViewController.overriddenToolbar = [self toolbarForReadingView];
-            [book release];
-            [bookView release];
             [self.navigationController pushViewController:bookViewController animated:NO];
+            
             [bookViewController release];
+        } else {
+            [(UIView *)context removeFromSuperview];
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+            return;
         }
+
         
+        if (!shrinkCover) {
+            self.bookCoverPopped = YES;
+            self.firstPageRendered = YES;
+            [(UIView *)context removeFromSuperview];
+        } else {            
+            [UIView beginAnimations:@"shrinkBook" context:context];
+            [UIView setAnimationDuration:0.35f];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(shrinkBookDidStop:finished:context:)];
+            [self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
+            [UIView commitAnimations];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
+        }            
+            
     }
 }
 
+- (void)blioCoverPageDidFinishRender:(NSNotification *)notification {
+    self.firstPageRendered = YES;
+    
+    if (self.bookCoverPopped) {
+        [self performSelectorOnMainThread:@selector(removeShrinkBookAnimation:) withObject:[self.currentPoppedBookCover superview] waitUntilDone:YES];
+    
+        self.currentPoppedBookCover = nil;
+    }
+}
+
+- (void)removeShrinkBookAnimation:(UIView *)viewToRemove {
+    [UIView beginAnimations:@"fadeCover" context:viewToRemove];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(fadeBookDidStop:finished:context:)];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    [UIView setAnimationDuration:0.5f];
+    [viewToRemove setAlpha:0.0f];
+    [UIView commitAnimations];
+}
+
 - (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    [(UIView *)context removeFromSuperview];
+    if ([(UIView *)context superview])
+        [(UIView *)context removeFromSuperview];
 }
 
-- (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
-	// For testing
-	//NSString* thisWord = [string substringWithRange:characterRange];
-	//NSLog(thisWord);
-	
-	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
-									options:0 
-									  range:characterRange].location != NSNotFound);
-	// A hack to get around an apparent Acapela bug.
-	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
-							&& ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame);  // E.g. "I and I (a case I've seen)
-	
-	/* Acapela does assemble hyphenated words, so I'm keeping this condition around
-	   just in case it turns out they slip up sometimes.
-	// possible problem:  hyphen as a pause ("He waited- and then spoke.")
-	NSRange lastCharacter;
-	lastCharacter.length = 1;
-	lastCharacter.location = characterRange.location + characterRange.length -1;
-	BOOL wordIsNotHyphenated = ([[string substringWithRange:lastCharacter] compare:@"-"] != NSOrderedSame);
-	 */
-	
-	return wordIsNotPunctuation && wordIsNotRepeated;
-}
-
-- (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
-{
-	if (finishedSpeaking) {
-		// Reached end of paragraph.  Start on the next.
-		[self prepareTextToSpeak:YES]; 
-	}
-	//else stop button pushed before end of paragraph.
-}
-
-- (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
-				 ofString:(NSString*)string 
-{
-	// The first string that comes in here after speaking has resumed has invalid range: 
-	// location not zero but a high number.
-    if(characterRange.location + characterRange.length < string.length) {
-		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
-			NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
-            EucBookViewController *bookViewController = (EucBookViewController *)self.navigationController.topViewController;
-            EucBookView *bookView = (EucBookView *)bookViewController.bookView;
-            [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
-            [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
-			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
-        }
-   }
-}
-
-#pragma mark -
-#pragma mark Add ActionSheet Methods
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == kBlioLibraryAddNoteAction) {
-        UIView *container = self.navigationController.visibleViewController.view;
-        NSInteger pageNumber = [self currentPageNumber];
-        BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber];
-        [aNotesView showInView:container];
-        [aNotesView release];
+- (void)shrinkBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    self.bookCoverPopped = YES;
+    
+    if (self.firstPageRendered) {
+        [self performSelector:@selector(removeShrinkBookAnimation:) withObject:(UIView *)context afterDelay:0.5f];
+        self.currentPoppedBookCover = nil;
     }
 }
 
@@ -1038,7 +728,7 @@ typedef enum {
         
         UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:self.bounds];
         aTextureView.contentMode = UIViewContentModeScaleToFill;
-        aTextureView.image = [UIImage imageNamed:@"booktextureandshadow.png"];
+        aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
         aTextureView.backgroundColor = [UIColor clearColor];
         aTextureView.alpha = 0.0f;
         aTextureView.userInteractionEnabled = NO;
@@ -1091,11 +781,20 @@ typedef enum {
 }
 
 - (void)setBook:(BlioMockBook *)newBook {
+    [self setBook:newBook forLayout:kBlioLibraryLayoutGrid];
+}
+
+- (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout {
     [newBook retain];
     [book release];
     book = newBook;
     
-    UIImage *newImage = [newBook coverThumb];
+    UIImage *newImage;
+    if (layout == kBlioLibraryLayoutList)
+        newImage = [newBook coverThumbForList];
+    else
+        newImage = [newBook coverThumbForGrid];
+    
     [[self imageView] setImage:newImage];
     
     if (nil != newImage) 
@@ -1164,9 +863,9 @@ typedef enum {
 - (void)assignBookAtIndex:(NSUInteger)index toView:(BlioLibraryBookView *)bookView {
     if (index < [self.books count]) {
         BlioMockBook *book = [self.books objectAtIndex:index];
-        [bookView setBook:book];
+        [bookView setBook:book forLayout:kBlioLibraryLayoutGrid];
     } else {
-        [bookView setBook:nil];
+        [bookView setBook:nil forLayout:kBlioLibraryLayoutGrid];
     }
 }
 
@@ -1230,6 +929,7 @@ typedef enum {
 @synthesize bookView, titleLabel, authorLabel, progressSlider, delegate;
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.bookView = nil;
     self.titleLabel = nil;
     self.authorLabel = nil;
@@ -1288,7 +988,7 @@ typedef enum {
 }
 
 - (void)setBook:(BlioMockBook *)newBook {
-    [(BlioLibraryBookView *)self.bookView setBook:newBook];
+    [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
     self.progressSlider.value = [newBook progress];
