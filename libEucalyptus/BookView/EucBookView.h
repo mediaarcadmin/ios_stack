@@ -55,9 +55,12 @@
     
     UIView *_pageSliderTrackingInfoView;    
     
+    NSInteger _highlightPage;
+    uint32_t _highlightParagraph;
+    uint32_t _highlightWordOffset;
+
     NSMutableArray *_highlightLayers;
-    uint32_t _highlightParagraphAfterTurn;
-    uint32_t _highlightWordOffsetAfterTurn;
+    BOOL _highlightingDisabled;
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
