@@ -47,8 +47,11 @@ typedef enum {
     BOOL _viewIsDisappearing;
         
     UIBarStyle _returnToNavigationBarStyle;
-    UIStatusBarStyle _returnToStatusBarStyle;
+    UIColor *_returnToNavigationBarTint;
     BOOL _returnToNavigationBarHidden;
+    UIBarStyle _returnToToolbarStyle;
+    UIColor *_returnToToolbarTint;
+    UIStatusBarStyle _returnToStatusBarStyle;
     BOOL _returnToStatusBarHidden;
     
     BOOL _overrideReturnToNavigationBarStyle;

@@ -370,12 +370,18 @@ typedef enum {
     if(!self.modalViewController) {        
         UIApplication *application = [UIApplication sharedApplication];
         
-        UINavigationBar *navigationBar = self.navigationController.navigationBar;
         // Store the hidden/visible state and style of the status and navigation
         // bars so that we can restore them when popped.
+        UINavigationBar *navigationBar = self.navigationController.navigationBar;
         UIBarStyle navigationBarStyle = navigationBar.barStyle;
-        UIStatusBarStyle statusBarStyle = application.statusBarStyle;
+        UIColor *navigationBarTint = [navigationBar.tintColor retain];
         BOOL navigationBarHidden = self.navigationController.isNavigationBarHidden;
+        
+        UIToolbar *toolbar = self.navigationController.toolbar;
+        UIBarStyle toolbarStyle = toolbar.barStyle;
+        UIColor *toolbarTint = [toolbar.tintColor retain];
+        
+        UIStatusBarStyle statusBarStyle = application.statusBarStyle;
         BOOL statusBarHidden = application.isStatusBarHidden;
         
         if(!_overrideReturnToNavigationBarStyle) {
@@ -390,11 +396,16 @@ typedef enum {
         if(!_overrideReturnToStatusBarHidden) {
             _returnToStatusBarHidden = statusBarHidden;
         }
+        _returnToToolbarTint = [toolbarTint retain];
+        _returnToNavigationBarTint = [navigationBarTint retain];
+        _returnToToolbarStyle = toolbarStyle;
         
         // Set the status bar and navigation bar styles.
         if(!(navigationBarStyle == UIBarStyleBlackTranslucent) && self.toolbarsVisibleAfterAppearance) {
+            navigationBar.tintColor = nil;
             navigationBar.barStyle = UIBarStyleBlackTranslucent;
-            self.navigationController.toolbar.barStyle = UIBarStyleBlackTranslucent;
+            toolbar.tintColor = nil;
+            toolbar.barStyle = UIBarStyleBlackTranslucent;
         }
         if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
             [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
@@ -482,7 +493,10 @@ typedef enum {
             [self.navigationController setToolbarHidden:YES animated:NO];
             [self.navigationController setToolbarHidden:NO animated:NO];
             UIToolbar *toolbar = self.navigationController.toolbar;
-            toolbar.barStyle = _returnToNavigationBarStyle;            
+            toolbar.barStyle = _returnToToolbarStyle;            
+            toolbar.tintColor = _returnToToolbarTint;
+            [_returnToToolbarTint release];
+            _returnToToolbarTint = nil;
             
             if(animated) {
                 CATransition *animation = [CATransition animation];
@@ -522,7 +536,10 @@ typedef enum {
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleDefault;
             navBar.barStyle = _returnToNavigationBarStyle;
-                                
+            navBar.tintColor = _returnToNavigationBarTint;
+            [_returnToNavigationBarTint release];
+            _returnToNavigationBarTint = nil;
+            
             [UIView commitAnimations];
             
 
@@ -870,13 +887,13 @@ typedef enum {
     [[navBar layer] addAnimation:animation forKey:@"NavBarFade"];
     
     navBar.barStyle = UIBarStyleDefault;
+    navBar.tintColor = _returnToNavigationBarTint;
     ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleDefault;
     [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"BookButton.png"]
                                                                      forState:UIControlStateNormal];
     [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:0.0f];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-    
 }
 
 - (void)dismissContents {
@@ -908,6 +925,7 @@ typedef enum {
         [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         [[navBar layer] addAnimation:animation forKey:@"animation"];
         
+        navBar.tintColor = nil;
         navBar.barStyle = UIBarStyleBlackTranslucent;
         ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleBlackTranslucent;
         [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"ContentsButton.png"]
