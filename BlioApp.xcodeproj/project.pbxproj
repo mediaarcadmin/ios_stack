@@ -18,10 +18,10 @@
 		555CAF2C10F3B943007B1885 /* booktextureandshadowsubtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */; };
 		555CAF2F10F3B950007B1885 /* AccelerometerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */; };
 		555CAF3D10F3B991007B1885 /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */; };
+		556D1D5B10F3BE580019315C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 556D1D5A10F3BE580019315C /* Icon.png */; };
 		55822E1A10F276E0008614FD /* MSTiltScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 55822E1710F276E0008614FD /* MSTiltScroller.m */; };
 		55822E1B10F276E0008614FD /* MSTapDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 55822E1910F276E0008614FD /* MSTapDetector.m */; };
 		55822EF210F2860F008614FD /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EEF10F2860F008614FD /* Default.png */; };
-		55822EF310F2860F008614FD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EF010F2860F008614FD /* Icon.png */; };
 		55822EF410F2860F008614FD /* librarybackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EF110F2860F008614FD /* librarybackground.png */; };
 		55822F0510F286BB008614FD /* button-list.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F0310F286BB008614FD /* button-list.png */; };
 		55822F0610F286BB008614FD /* button-grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F0410F286BB008614FD /* button-grid.png */; };
@@ -182,12 +182,12 @@
 		555CAF2D10F3B950007B1885 /* AccelerometerFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccelerometerFilter.h; sourceTree = "<group>"; };
 		555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccelerometerFilter.m; sourceTree = "<group>"; };
 		555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryGridViewController.png; sourceTree = "<group>"; };
+		556D1D5A10F3BE580019315C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		55822E1610F276E0008614FD /* MSTiltScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTiltScroller.h; sourceTree = "<group>"; };
 		55822E1710F276E0008614FD /* MSTiltScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTiltScroller.m; sourceTree = "<group>"; };
 		55822E1810F276E0008614FD /* MSTapDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTapDetector.h; sourceTree = "<group>"; };
 		55822E1910F276E0008614FD /* MSTapDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTapDetector.m; sourceTree = "<group>"; };
 		55822EEF10F2860F008614FD /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		55822EF010F2860F008614FD /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		55822EF110F2860F008614FD /* librarybackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = librarybackground.png; sourceTree = "<group>"; };
 		55822F0310F286BB008614FD /* button-list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-list.png"; sourceTree = "<group>"; };
 		55822F0410F286BB008614FD /* button-grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-grid.png"; sourceTree = "<group>"; };
@@ -382,8 +382,8 @@
 				7DB9F93F10F39FF60010DF0B /* logo-bevel.png */,
 				55822F0310F286BB008614FD /* button-list.png */,
 				55822F0410F286BB008614FD /* button-grid.png */,
+				556D1D5A10F3BE580019315C /* Icon.png */,
 				55822EEF10F2860F008614FD /* Default.png */,
-				55822EF010F2860F008614FD /* Icon.png */,
 				555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */,
 				55822EF110F2860F008614FD /* librarybackground.png */,
 				7D81ED2310E90C220016D44A /* paper-black.png */,
@@ -683,7 +683,6 @@
 				C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */,
 				C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */,
 				55822EF210F2860F008614FD /* Default.png in Resources */,
-				55822EF310F2860F008614FD /* Icon.png in Resources */,
 				55822EF410F2860F008614FD /* librarybackground.png in Resources */,
 				55822F0510F286BB008614FD /* button-list.png in Resources */,
 				55822F0610F286BB008614FD /* button-grid.png in Resources */,
@@ -701,6 +700,7 @@
 				7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */,
 				555CAF2C10F3B943007B1885 /* booktextureandshadowsubtle.png in Resources */,
 				555CAF3D10F3B991007B1885 /* LibraryGridViewController.png in Resources */,
+				556D1D5B10F3BE580019315C /* Icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
