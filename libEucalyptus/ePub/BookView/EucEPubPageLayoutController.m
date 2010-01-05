@@ -178,13 +178,14 @@ static void readRightRaggedJustificationDefault()
     return [_bookIndex filteredPageForByteOffset:[_book byteOffsetForUuid:uuid]];
 }
 
-- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture
+- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture isDark:(BOOL)dark
 {
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
         EucBookPageIndexPoint *indexPoint = [_bookIndex filteredIndexPointForPage:pageNumber];
         EucPageView *pageView = [[self class] blankPageViewForPointSize:_bookIndex.pointSize withPageTexture:pageTexture];
         pageView.titleLinePosition = EucPageViewTitleLinePositionBottom;
         pageView.titleLineContents = EucPageViewTitleLineContentsCenteredPageNumber;
+        pageView.bookTextView.backgroundIsDark = dark;
         [[self class] layoutPageFromBookReader:_bookReader 
                                startingAtPoint:indexPoint 
                                   intoPageView:pageView];

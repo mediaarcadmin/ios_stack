@@ -42,6 +42,7 @@
     NSInteger _trackingWordIndex;
     
     BOOL _allowScaledImageDistortion;
+    BOOL _backgroundIsDark;
 }
 
 @property (nonatomic, assign) id<EucPageTextViewDelegate> delegate;
@@ -53,6 +54,7 @@
 @property (nonatomic, readonly) CGFloat outerWidth;
 
 @property (nonatomic, assign) BOOL allowScaledImageDistortion;
+@property (nonatomic, assign) BOOL backgroundIsDark;
 
 - (id)initWithFrame:(CGRect)frame pointSize:(CGFloat)pointSize;
 
