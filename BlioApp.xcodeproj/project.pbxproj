@@ -71,6 +71,8 @@
 		7DB9F6FD10F364060010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6F910F364060010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F6FE10F364060010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6FA10F364060010DF0B /* LinuxLibertine-Italic.otf */; };
 		7DB9F6FF10F364060010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6FB10F364060010DF0B /* LinuxLibertine.otf */; };
+		7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F93F10F39FF60010DF0B /* logo-bevel.png */; };
+		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
 		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
@@ -233,6 +235,8 @@
 		7DB9F6F910F364060010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F6FA10F364060010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
 		7DB9F6FB10F364060010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
+		7DB9F93F10F39FF60010DF0B /* logo-bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-bevel.png"; sourceTree = "<group>"; };
+		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
@@ -369,6 +373,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7DB9F95210F3A08C0010DF0B /* logo-white.png */,
+				7DB9F93F10F39FF60010DF0B /* logo-bevel.png */,
 				55822F0310F286BB008614FD /* button-list.png */,
 				55822F0410F286BB008614FD /* button-grid.png */,
 				55822EEF10F2860F008614FD /* Default.png */,
@@ -688,6 +694,8 @@
 				7DB9F6FD10F364060010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DB9F6FE10F364060010DF0B /* LinuxLibertine-Italic.otf in Resources */,
 				7DB9F6FF10F364060010DF0B /* LinuxLibertine.otf in Resources */,
+				7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */,
+				7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
