@@ -434,10 +434,10 @@ typedef enum {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];                
         
-        UIBarButtonItem* pageJumpButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward 
+        _pageJumpButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward 
           target:self action:@selector(togglePageJumpPanel)];
         
-        [self.navigationItem setRightBarButtonItem:pageJumpButton];
+        [self.navigationItem setRightBarButtonItem:_pageJumpButton];
         
         [window addSubview:_bookView];
         [window sendSubviewToBack:_bookView];
@@ -1045,7 +1045,7 @@ typedef enum {
     [UIView setAnimationDuration:0.3f];
     
     sheetView.frame = contentsViewFinalRect;
-    [self.navigationItem setRightBarButtonItem:nil animated:NO];
+    [self.navigationItem setRightBarButtonItem:_pageJumpButton animated:NO];
     
     if(!_viewIsDisappearing) {
         if(_contentsSheet.selectedUuid != nil && self.navigationController.toolbarHidden) {
