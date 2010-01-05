@@ -27,7 +27,7 @@ typedef enum EucPageViewTitleLineContents
 } EucPageViewTitleLineContents;
 
 @interface EucPageView : UIView <EucPageTextViewDelegate, THUIViewThreadSafeDrawing> {
-    CGImageRef _pageImage;
+    CGImageRef _pageTexture;
 
     id<EucPageViewDelegate> _delegate;
     NSString *_title;
@@ -62,9 +62,9 @@ typedef enum EucPageViewTitleLineContents
               titleFont:(NSString *)titleFont
          pageNumberFont:(NSString *)pageNumberFont 
          titlePointSize:(CGFloat)titlePointSize 
-             paperImage:(UIImage*)paperImage;
+             pageTexture:(UIImage*)pageTexture;
 
-- (id)initWithPointSize:(CGFloat)pointSize;
+- (id)initWithPointSize:(CGFloat)pointSize pageTexture:(UIImage *)pageTexture;
 
 @end
 

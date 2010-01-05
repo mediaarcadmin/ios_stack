@@ -18,6 +18,9 @@
 @interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
+
+    UIImage *_pageTexture;
+    BOOL _pageTextureIsDark;
     
     EucPageTurningView *_pageTurningView;
     id<EucPageLayoutController> _pageLayoutController;
@@ -74,6 +77,12 @@
 @property (nonatomic, assign) CGFloat fontPointSize;
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 
+// - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+// should be used to set these atomically.
+@property (nonatomic, retain, readonly) UIImage *pageTexture;
+@property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+
 /*
 @property (nonatomic, readonly) float percentRead;
 @property (nonatomic, readonly) float percentPaginated;
@@ -86,6 +95,7 @@
 
 - (void)jumpToUuid:(NSString *)uuid;
 - (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 

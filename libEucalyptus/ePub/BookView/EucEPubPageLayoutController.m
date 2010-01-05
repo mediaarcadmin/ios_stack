@@ -178,11 +178,11 @@ static void readRightRaggedJustificationDefault()
     return [_bookIndex filteredPageForByteOffset:[_book byteOffsetForUuid:uuid]];
 }
 
-- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber
+- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture
 {
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
         EucBookPageIndexPoint *indexPoint = [_bookIndex filteredIndexPointForPage:pageNumber];
-        EucPageView *pageView = [[self class] blankPageViewForPointSize:_bookIndex.pointSize];
+        EucPageView *pageView = [[self class] blankPageViewForPointSize:_bookIndex.pointSize withPageTexture:pageTexture];
         pageView.titleLinePosition = EucPageViewTitleLinePositionBottom;
         pageView.titleLineContents = EucPageViewTitleLineContentsCenteredPageNumber;
         [[self class] layoutPageFromBookReader:_bookReader 
@@ -205,18 +205,21 @@ static void readRightRaggedJustificationDefault()
     return ret;
 }
 
-+ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize;
++ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture
 {
-    static UIImage *sPaperImage = nil;
-    if(!sPaperImage) {
-        sPaperImage = [[UIImage imageNamed:@"BookPaperWhite.png"] retain];
+    if(!pageTexture) {
+        static UIImage *sPaperImage = nil;
+        if(!sPaperImage) {
+            sPaperImage = [[UIImage imageNamed:@"BookPaperWhite.png"] retain];
+        }
+        pageTexture = sPaperImage;
     }
 
     return [[[EucPageView alloc] initWithPointSize:pointSize 
                                          titleFont:@"Helvetica-Oblique" 
                                     pageNumberFont:@"Helvetica"
                                     titlePointSize:pointSize * 0.75
-                                        paperImage:sPaperImage] autorelease];
+                                       pageTexture:pageTexture] autorelease];
 }
 
 + (EucBookPageIndexPoint *)layoutPageFromBookReader:(id <EucBookReader>)reader
