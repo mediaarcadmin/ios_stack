@@ -330,14 +330,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     self.navigationController.navigationBar.tintColor = tintColor;
 }
 
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    UIToolbar *toolbar = self.navigationController.toolbar;
-    toolbar.barStyle = UIBarStyleDefault;
-    toolbar.tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
-}
-*/
-
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];

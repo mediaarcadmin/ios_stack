@@ -69,6 +69,8 @@ typedef enum {
     BOOL motionControlsEnabled;
     
     BlioPageColor _currentPageColor;
+    
+    UIBarButtonItem* _pageJumpButton;
     UIView* _pageJumpView;
     UILabel* _pageJumpLabel;
     UISlider* _pageJumpSlider;
