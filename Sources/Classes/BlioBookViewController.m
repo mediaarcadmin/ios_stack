@@ -39,6 +39,7 @@ typedef enum {
 static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
 
 static NSString *kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"paper-black.png", @"paper-neutral.png" };
+static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 typedef enum {
     kBlioRotationLockOff = 0,
@@ -770,7 +771,7 @@ typedef enum {
             NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
                                                                   ofType:@""];
             UIImage *pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
-            [bookView setPageTexture:pageTexture isDark:NO];
+            [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
         }  
         _currentPageColor = newColor;
     }
