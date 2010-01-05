@@ -319,19 +319,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [super viewWillAppear:animated];
     self.navigationItem.title = @"Bookshelf";
     
+    UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white.png"]];
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:logoImage];
+    self.navigationItem.titleView = logoImageView;
+    [logoImageView release];
+    
     [self.navigationController setToolbarHidden:NO];
     UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
     self.navigationController.toolbar.tintColor = tintColor;
     self.navigationController.navigationBar.tintColor = tintColor;
 }
-
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    UIToolbar *toolbar = self.navigationController.toolbar;
-    toolbar.barStyle = UIBarStyleDefault;
-    toolbar.tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
-}
-*/
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.

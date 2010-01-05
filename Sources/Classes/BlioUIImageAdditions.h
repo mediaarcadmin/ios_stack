@@ -13,5 +13,6 @@
 + (UIImage *)imageWithString:(NSString *)string font:(UIFont *)font color:(UIColor *)color;
 + (UIImage *)imageWithIcon:(UIImage *)image string:(NSString *)string font:(UIFont *)font color:(UIColor *)color textInset:(UIEdgeInsets)inset;
 + (UIImage *)imageWithShadow:(UIImage *)image inset:(UIEdgeInsets)inset;
++ (UIImage *)appleLikeBeveledImage:(UIImage *)image;
 
 @end
