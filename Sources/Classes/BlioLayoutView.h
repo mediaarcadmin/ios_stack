@@ -7,14 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BlioBookViewController.h"
+#import "BlioBookView.h"
 #import "MSTiltScroller.h"
+#import <libEucalyptus/EucBookContentsTableViewController.h>
 
 @class BlioPDFFontList;
 @class BlioPDFDebugView;
 @class BlioPDFScrollView;
 
-@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView> {
+@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource> {
     CGPDFDocumentRef pdf;
     UIScrollView *scrollView;
     NSMutableArray *pageViews;

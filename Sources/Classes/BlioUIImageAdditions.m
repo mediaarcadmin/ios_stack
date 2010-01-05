@@ -62,5 +62,27 @@
     return retImage;
 }
 
++ (UIImage *)appleLikeBeveledImage:(UIImage *)image
+{
+    CGSize originalSize = image.size;
+    CGSize newSize = originalSize;
+    newSize.height++;
+    UIGraphicsBeginImageContext(newSize);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSaveGState(context);
+    [[UIColor blackColor] set];
+    CGContextFillRect(context, CGRectMake(0, 0, originalSize.width, originalSize.height));
+    CGContextRestoreGState(context);    
+    
+    [image drawAtPoint:CGPointMake(0, 0) blendMode:kCGBlendModeDestinationIn alpha:0.5f];
+
+    [image drawAtPoint:CGPointMake(0, 1)];
+        
+    UIImage *retImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return retImage;
+}
+
 
 @end
