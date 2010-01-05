@@ -71,6 +71,7 @@
 @property (nonatomic, assign) BOOL appearAtCoverThenOpen;
 
 @property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, readonly) NSInteger pageCount;
 @property (nonatomic, readonly) NSString *displayPageNumber;
 @property (nonatomic, readonly) NSString *pageDescription;
 

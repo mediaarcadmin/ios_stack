@@ -219,9 +219,16 @@
     [self setPageNumber:pageNumber animated:NO];
 }
 
+
 - (NSInteger)pageNumber
 {
     return _pageNumber;
+}
+
+
+- (NSInteger)pageCount
+{
+    return _pageLayoutController.globalPageCount;
 }
 
 - (void)_redisplayCurrentPage
