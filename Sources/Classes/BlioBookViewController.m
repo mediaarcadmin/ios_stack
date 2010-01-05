@@ -85,7 +85,6 @@ typedef enum {
 
 
 @interface BlioBookViewController (PRIVATE)
-- (void)_toggleToolbars;
 - (NSArray *)_toolbarItemsForReadingView;
 - (void) _updatePageJumpLabelForPage:(NSUInteger)page;
 
@@ -433,6 +432,9 @@ typedef enum {
             if(!navigationBarHidden) {
                 [self.navigationController setNavigationBarHidden:YES animated:YES];
             }
+            if(!self.navigationController.toolbarHidden) {
+                [self.navigationController setToolbarHidden:YES];
+            }
         }
 
         UIWindow *window = self.navigationController.view.window;
@@ -626,7 +628,7 @@ typedef enum {
 }
 
 
-- (void)_toggleToolbars
+- (void)toggleToolbars
 {
     if(_fadeState == BookViewControlleUIFadeStateNone) {
         if(self.navigationController.toolbarHidden == YES) {
@@ -681,11 +683,11 @@ typedef enum {
         if(phase == UITouchPhaseMoved) { 
             _touchMoved = YES;
             if(!self.navigationController.toolbarHidden) {
-                [self _toggleToolbars];
+                [self toggleToolbars];
             }
         } else if(phase == UITouchPhaseEnded) {
             if(!_touchMoved) {
-                [self _toggleToolbars];
+                [self toggleToolbars];
             }
             [_touch release];
             _touch = nil;
@@ -1066,7 +1068,7 @@ typedef enum {
     
     if(!_viewIsDisappearing) {
         if(_contentsSheet.selectedUuid != nil && self.navigationController.toolbarHidden) {
-            [self _toggleToolbars];
+            [self toggleToolbars];
         }        
         
         // Turn the nav bar and its contents back to translucent.
@@ -1232,7 +1234,7 @@ typedef enum {
 			 [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
 			 */
 			if (!self.navigationController.toolbarHidden) {
-                [self _toggleToolbars];
+                [self toggleToolbars];
             }
 			if (_acapelaTTS == nil) {
 				_acapelaTTS = [[AcapelaTTS alloc] init];

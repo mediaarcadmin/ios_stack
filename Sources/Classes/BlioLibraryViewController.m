@@ -549,6 +549,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (void)bookTouched:(BlioLibraryBookView *)bookView {
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    
     bookView.alpha = 0.0f;
     UIView *targetView = self.navigationController.view;
     
@@ -645,6 +647,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         } else {
             [(UIView *)context removeFromSuperview];
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
             return;
         }
 
@@ -653,6 +656,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             self.bookCoverPopped = YES;
             self.firstPageRendered = YES;
             [(UIView *)context removeFromSuperview];
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         } else {            
             [UIView beginAnimations:@"shrinkBook" context:context];
             [UIView setAnimationDuration:0.35f];
@@ -662,20 +666,17 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             [self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
             [UIView commitAnimations];
             
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                     selector:@selector(blioCoverPageDidFinishRender:) 
+                                                         name:@"blioCoverPageDidFinishRender" object:nil];
         }            
             
     }
 }
 
-- (void)blioCoverPageDidFinishRender:(NSNotification *)notification {
-    self.firstPageRendered = YES;
-    
-    if (self.bookCoverPopped) {
-        [self performSelectorOnMainThread:@selector(removeShrinkBookAnimation:) withObject:[self.currentPoppedBookCover superview] waitUntilDone:YES];
-    
-        self.currentPoppedBookCover = nil;
-    }
+- (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    if ([(UIView *)context superview])
+        [(UIView *)context removeFromSuperview];
 }
 
 - (void)removeShrinkBookAnimation:(UIView *)viewToRemove {
@@ -688,17 +689,40 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [UIView commitAnimations];
 }
 
-- (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    if ([(UIView *)context superview])
-        [(UIView *)context removeFromSuperview];
+- (void)blioCoverPageDidFinishRenderAfterDelay:(NSNotification *)notification {
+    self.firstPageRendered = YES;
+    
+    if (self.bookCoverPopped) {
+        [self removeShrinkBookAnimation:[self.currentPoppedBookCover superview]];
+        [(BlioBookViewController *)self.navigationController.topViewController toggleToolbars];
+        
+        self.currentPoppedBookCover = nil;
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    }    
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:@"blioCoverPageDidFinishRender" 
+                                                  object:nil];
+
+}
+
+- (void)blioCoverPageDidFinishRenderOnMainThread:(NSNotification *)notification {
+    // To allow the tiled view to do its fading in.
+    [self performSelector:@selector(blioCoverPageDidFinishRenderAfterDelay:) withObject:notification afterDelay:0.25];
+}
+
+- (void)blioCoverPageDidFinishRender:(NSNotification *)notification  {
+    [self performSelectorOnMainThread:@selector(blioCoverPageDidFinishRenderOnMainThread:) withObject:notification waitUntilDone:YES];
 }
 
 - (void)shrinkBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     self.bookCoverPopped = YES;
     
     if (self.firstPageRendered) {
-        [self performSelector:@selector(removeShrinkBookAnimation:) withObject:(UIView *)context afterDelay:0.5f];
+        [self removeShrinkBookAnimation:[self.currentPoppedBookCover superview]];
+        [(BlioBookViewController *)self.navigationController.topViewController toggleToolbars];
+
         self.currentPoppedBookCover = nil;
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     }
 }
 

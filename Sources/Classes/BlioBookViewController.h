@@ -102,4 +102,6 @@ typedef enum {
 
 - (void)tapToNextPage;
 
+- (void)toggleToolbars;
+
 @end

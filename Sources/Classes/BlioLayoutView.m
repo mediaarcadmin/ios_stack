@@ -530,7 +530,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
             [tiltScroller setScrollView:self.currentPageView];
         }
     }
-    
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
