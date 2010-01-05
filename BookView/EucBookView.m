@@ -257,22 +257,7 @@
         [oldLayer removeFromSuperlayer];
     }
     [_highlightLayers release];
-}
-
-- (void)_hideHighlights
-{
-    for(CALayer *oldLayer in _highlightLayers) {
-        [oldLayer setHidden:YES];
-    }
-    [_highlightLayers release];
-}
-
-- (void)_showHighlights
-{
-    for(CALayer *oldLayer in _highlightLayers) {
-        [oldLayer setHidden:NO];
-    }
-    [_highlightLayers release];
+    _highlightLayers = nil;
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
@@ -379,19 +364,27 @@
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 {
     if(paragraphId == 0) {
+        _highlightPage = 0;
+        _highlightParagraph = 0;
+        _highlightWordOffset = 0;        
         [self _removeHighlights];
     } else {
         EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
         indexPoint.startOfParagraphByteOffset = paragraphId;
         indexPoint.startOfPageParagraphWordOffset = wordOffset;
         NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
-        if(newPageNumber != _pageNumber) {
-            [self _removeHighlights];
-            _highlightParagraphAfterTurn = paragraphId;
-            _highlightWordOffsetAfterTurn = wordOffset;
-            [self setPageNumber:newPageNumber animated:YES];
-        } else {
-            [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
+        
+        _highlightPage = newPageNumber;
+        _highlightParagraph = paragraphId;
+        _highlightWordOffset = wordOffset;
+        
+        if(!_highlightingDisabled) {
+            if(newPageNumber != _pageNumber) {
+                [self _removeHighlights];
+                [self setPageNumber:newPageNumber animated:YES];
+            } else {
+                [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
+            }
         }
     }
 }
@@ -733,22 +726,21 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     EucBookPageIndexPoint *pageIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
     NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
     
-    if(!_dontSaveIndexPoints) {
-        [_book setCurrentPageIndexPoint:pageIndexPoint];
+    if(pageNumber != _pageNumber) {
+        if(!_dontSaveIndexPoints) {
+            [_book setCurrentPageIndexPoint:pageIndexPoint];
+        }
+        if(!_jumpShouldBeSaved) {
+            _directionalJumpCount = 0;
+        } else {
+            _jumpShouldBeSaved = NO;
+        }
+        _pageSlider.scaledValue = [self _pageToSliderByte:pageNumber];
+        _pageNumber = pageNumber;   
+        [self _updatePageNumberLabel];
     }
-    if(!_jumpShouldBeSaved) {
-        _directionalJumpCount = 0;
-    } else {
-        _jumpShouldBeSaved = NO;
-    }
-    _pageSlider.scaledValue = [self _pageToSliderByte:pageNumber];
-    _pageNumber = pageNumber;   
-    [self _updatePageNumberLabel];
-    
-    if(_highlightParagraphAfterTurn) {
-        [self _moveHighlightToWordAtParagraphId:_highlightParagraphAfterTurn wordOffset:_highlightWordOffsetAfterTurn];
-        _highlightParagraphAfterTurn = 0;
-        _highlightWordOffsetAfterTurn = 0;
+    if(_highlightPage == pageNumber) {
+        [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
     }
 }
 
@@ -760,6 +752,18 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     
     [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
     //[_book setCurrentPageIndexPoint:[_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]]];
+}
+
+
+- (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
+{
+    _highlightingDisabled = YES;
+    [self _removeHighlights];
+}
+
+- (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
+{
+    _highlightingDisabled = NO;
 }
 
 - (CGFloat)fontPointSize

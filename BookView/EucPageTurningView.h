@@ -119,6 +119,9 @@ typedef struct {
 @optional
 - (UIView *)pageTurningView:(EucPageTurningView *)pageTurningView scaledViewForView:(UIView *)view pinchStartedAt:(CGPoint[])startPinch pinchNowAt:(CGPoint[])currentPinch currentScaledView:(UIView *)currentScaledView;
 
+- (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView;
+- (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView;
+
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didTurnToView:(UIView *)view;
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view;
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view;
