@@ -37,6 +37,8 @@
 - (float)_pageToSliderByte:(NSInteger)page;
 - (void)_updateSliderByteToPageRatio;
 - (void)_updatePageNumberLabel;
+@property (nonatomic, retain) UIImage *pageTexture;
+@property (nonatomic, assign) BOOL pageTextureIsDark;
 @end
 
 
@@ -44,6 +46,9 @@
 
 @synthesize delegate = _delegate;
 @synthesize book = _book;
+
+@synthesize pageTexture = _pageTexture;
+@synthesize pageTextureIsDark = _pageTextureIsDark;
 
 @synthesize undimAfterAppearance = _undimAfterAppearance;
 @synthesize appearAtCoverThenOpen = _appearAtCoverThenOpen;
@@ -129,6 +134,8 @@
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
         _pageTurningView = nil;
+        [_pageViewToIndexPoint removeAllObjects];
+        [_pageViewToIndexPointCounts removeAllObjects];
     }
 }
 
@@ -215,6 +222,26 @@
 - (NSInteger)pageNumber
 {
     return _pageNumber;
+}
+
+- (void)_redisplayCurrentPage
+{
+    if(_pageTurningView) {
+        [_pageViewToIndexPoint removeAllObjects];
+        [_pageViewToIndexPointCounts removeAllObjects];
+        _dontSaveIndexPoints = YES;
+        [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO forced:YES];
+        _dontSaveIndexPoints = NO;
+    }
+}    
+
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
+{
+    if(self.pageTexture != pageTexture || self.pageTextureIsDark != isDark) {
+        self.pageTexture = pageTexture;
+        self.pageTextureIsDark = isDark;
+        [self _redisplayCurrentPage];
+    }
 }
 
 - (void)_removeHighlights
@@ -513,7 +540,7 @@
 
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber
 {          
-    THPair *ret = [_pageLayoutController viewAndIndexPointForPageNumber:pageNumber];
+    THPair *ret = [_pageLayoutController viewAndIndexPointForPageNumber:pageNumber withPageTexture:self.pageTexture];
     if([ret.first isKindOfClass:[EucPageView class]]) {
         // Hrm, this is a bit messy...
         ((EucPageView *)ret.first).delegate = self;
@@ -670,7 +697,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         EucBookPageIndexPoint *oldIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
         [_pageLayoutController setFontPointSize:foundSize];
         NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:oldIndexPoint];
-        THPair *viewAndIndexPoint = [_pageLayoutController viewAndIndexPointForPageNumber:newPageNumber];
+        THPair *viewAndIndexPoint = [_pageLayoutController viewAndIndexPointForPageNumber:newPageNumber withPageTexture:self.pageTexture];
         
         ret = viewAndIndexPoint.first;
         
@@ -737,12 +764,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 {
     [_pageLayoutController setFontPointSize:fontPointSize];
     [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
-
-    [_pageViewToIndexPoint removeAllObjects];
-    [_pageViewToIndexPointCounts removeAllObjects];
-    _dontSaveIndexPoints = YES;
-    [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO forced:YES];
-    _dontSaveIndexPoints = NO;
+    [self _redisplayCurrentPage];
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view

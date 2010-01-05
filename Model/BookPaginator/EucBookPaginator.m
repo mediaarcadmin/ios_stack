@@ -127,7 +127,7 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
     
     // Create the text views we'll use for layout.
     for(NSUInteger i = 0; i < sDesiredPointSizesCount; ++i) {
-        pageViews[i] = [[bookReader.book.pageLayoutControllerClass blankPageViewForPointSize:sDesiredPointSizes[i]] retain];
+        pageViews[i] = [[bookReader.book.pageLayoutControllerClass blankPageViewForPointSize:sDesiredPointSizes[i] withPageTexture:nil] retain];
         if(!pageViews[i]) {
             THWarn(@"Could not create book text view for point size %lu", (unsigned long)sDesiredPointSizes[i]);
             goto abandon;
