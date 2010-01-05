@@ -405,12 +405,11 @@ typedef enum {
         _returnToToolbarStyle = toolbarStyle;
         
         // Set the status bar and navigation bar styles.
-        if(!(navigationBarStyle == UIBarStyleBlackTranslucent) && self.toolbarsVisibleAfterAppearance) {
-            navigationBar.tintColor = nil;
-            navigationBar.barStyle = UIBarStyleBlackTranslucent;
-            toolbar.tintColor = nil;
-            toolbar.barStyle = UIBarStyleBlackTranslucent;
-        }
+        navigationBar.tintColor = nil;
+        navigationBar.barStyle = UIBarStyleBlackTranslucent;
+        toolbar.tintColor = nil;
+        toolbar.barStyle = UIBarStyleBlackTranslucent;
+        
         if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
             [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
         }
@@ -502,7 +501,7 @@ typedef enum {
             [self.navigationController setToolbarHidden:YES animated:NO];
             [self.navigationController setToolbarHidden:NO animated:NO];
             UIToolbar *toolbar = self.navigationController.toolbar;
-            toolbar.barStyle = _returnToToolbarStyle;            
+            toolbar.barStyle = _returnToToolbarStyle; 
             toolbar.tintColor = _returnToToolbarTint;
             [_returnToToolbarTint release];
             _returnToToolbarTint = nil;
