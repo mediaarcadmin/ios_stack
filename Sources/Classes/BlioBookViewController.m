@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioBookViewController.h"
 #import <libEucalyptus/THNavigationButton.h>
+#import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
@@ -86,6 +87,8 @@ typedef enum {
 @interface BlioBookViewController (PRIVATE)
 - (void)_toggleToolbars;
 - (NSArray *)_toolbarItemsForReadingView;
+- (void) _updatePageJumpLabelForPage:(NSUInteger)page;
+
 @end
 
 @implementation BlioBookViewController
@@ -636,11 +639,12 @@ typedef enum {
         if(_fadeState == BookViewControlleUIFadeStateFadingIn) {
             [UIView setAnimationDuration:0.0];
             self.navigationController.toolbar.alpha = 1;          
-                        
+            self.pageJumpView.alpha = 1;
             self.navigationController.navigationBar.alpha = 1;
         } else {
             [UIView setAnimationDuration:1.0/3.0];
             self.navigationController.toolbar.alpha = 0;
+            self.pageJumpView.alpha = 0;
             self.navigationController.navigationBar.alpha = 0;
         }
         
@@ -697,9 +701,16 @@ typedef enum {
     _pageJumpView.hidden = YES;
     _pageJumpView.opaque = NO;
     _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+
+    CGRect labelFrame = _pageJumpView.bounds;
+    labelFrame.size.height = labelFrame.size.height * 0.5f;
+    CGRect sliderFrame = _pageJumpView.bounds;
+    sliderFrame.origin.y = labelFrame.size.height;
+    sliderFrame.size.height = labelFrame.size.height;
     
-    
-    UISlider* slider = [[UISlider alloc] initWithFrame: _pageJumpView.bounds];
+  // the slider
+    UISlider* slider = [[UISlider alloc] initWithFrame: sliderFrame];
+    _pageJumpSlider = slider;
     
     UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
     leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
@@ -715,9 +726,21 @@ typedef enum {
     
     [slider addTarget:self action:@selector(_pageSliderSlid:) forControlEvents:UIControlEventValueChanged];
     
-//    slider.maximumValue = [
+    slider.maximumValue = self.bookView.pageCount;
+    slider.minimumValue = 1;
     [slider setValue:self.bookView.pageNumber];
-
+  
+    _pageJumpSliderTracking = NO;
+    
+  // feedback label
+    _pageJumpLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    _pageJumpLabel.textAlignment = UITextAlignmentCenter;
+    _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
+    _pageJumpLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+    _pageJumpLabel.backgroundColor = [UIColor clearColor];
+    _pageJumpLabel.textColor = [UIColor whiteColor];
+    
+    [_pageJumpView addSubview:_pageJumpLabel];
     [_pageJumpView addSubview:slider];
   
     [self.view addSubview:_pageJumpView];
@@ -729,7 +752,7 @@ typedef enum {
   if (!hiding) {
     _pageJumpView.alpha = 0.0;
     _pageJumpView.hidden = NO;
-    
+    [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
     [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
   }
   
@@ -760,7 +783,28 @@ typedef enum {
 {
   UISlider* slider = (UISlider*) sender;
   NSUInteger page = (NSUInteger) slider.value;
-  [self.bookView setPageNumber:page animated:YES];
+  [self _updatePageJumpLabelForPage:page];
+  
+  if (slider.isTracking) {
+    _pageJumpSliderTracking = YES;
+  } else if (_pageJumpSliderTracking) {
+    [self.bookView setPageNumber:page animated:YES];
+    _pageJumpSliderTracking = NO;
+  }
+}
+
+- (void) _updatePageJumpLabelForPage:(NSUInteger)page
+{
+  NSString* section = [self.bookView.contentsDataSource sectionUuidForPageNumber:page];
+  THPair* chapter = [self.bookView.contentsDataSource presentationNameAndSubTitleForSectionUuid:section];
+  
+  if (section && chapter.first) {
+    _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", 
+      [self.bookView.contentsDataSource displayPageNumberForPageNumber:page], 
+      chapter.first];
+  } else {
+    _pageJumpLabel.text = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
+  }
 }
 
 #pragma mark -

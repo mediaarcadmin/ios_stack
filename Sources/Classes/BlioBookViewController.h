@@ -70,6 +70,9 @@ typedef enum {
     
     BlioPageColor _currentPageColor;
     UIView* _pageJumpView;
+    UILabel* _pageJumpLabel;
+    UISlider* _pageJumpSlider;
+    BOOL _pageJumpSliderTracking;
 }
 
 // Designated initializers.
