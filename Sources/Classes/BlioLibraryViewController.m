@@ -462,8 +462,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [self.navigationController pushViewController:bookViewController animated:YES];
         [bookViewController release];
     }
-    
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];*/
+    */
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     
 }
 

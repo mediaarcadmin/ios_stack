@@ -54,6 +54,31 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     [super dealloc];
 }
 
+- (void)displayPageAttributes {
+    
+    BOOL showPageAttributes = NO;
+    
+    if ([self.delegate respondsToSelector:@selector(shouldShowPageAttributeSettings)])
+        showPageAttributes = (NSInteger)[self.delegate performSelector:@selector(shouldShowPageAttributeSettings)];
+    
+    if (showPageAttributes) {
+        self.fontSizeLabel.enabled = YES;
+        self.pageColorLabel.enabled = YES;
+        self.fontSizeSegment.enabled = YES;
+        self.pageColorSegment.enabled = YES;
+        self.fontSizeSegment.alpha = 1.0f;
+        self.pageColorSegment.alpha = 1.0f;
+    } else {
+        self.fontSizeLabel.enabled = NO;
+        self.pageColorLabel.enabled = NO;
+        self.fontSizeSegment.enabled = NO;
+        self.pageColorSegment.enabled = NO;
+        self.fontSizeSegment.alpha = 0.35f;
+        self.pageColorSegment.alpha = 0.35f;
+    }    
+    
+}
+
 - (id)initWithDelegate:(id)newDelegate {
     
     self = [super initWithTitle:nil delegate:newDelegate cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
@@ -215,6 +240,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [aDoneButton addTarget:self action:@selector(dismissSheet:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:aDoneButton];
         self.doneButton = aDoneButton;
+        
+        [self displayPageAttributes];
 	}
 	return self;
 }
@@ -240,29 +267,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 
 - (void)changePageLayout:(id)sender {
     
-    BOOL showPageAttributes = NO;
-    
     if ([self.delegate respondsToSelector:@selector(changePageLayout:)])
         [self.delegate performSelector:@selector(changePageLayout:) withObject:sender];
     
-    if ([self.delegate respondsToSelector:@selector(shouldShowPageAttributeSettings)])
-        showPageAttributes = (NSInteger)[self.delegate performSelector:@selector(shouldShowPageAttributeSettings)];
+    [self displayPageAttributes];
     
-    if (showPageAttributes) {
-        self.fontSizeLabel.enabled = YES;
-        self.pageColorLabel.enabled = YES;
-        self.fontSizeSegment.enabled = YES;
-        self.pageColorSegment.enabled = YES;
-        self.fontSizeSegment.alpha = 1.0f;
-        self.pageColorSegment.alpha = 1.0f;
-    } else {
-        self.fontSizeLabel.enabled = NO;
-        self.pageColorLabel.enabled = NO;
-        self.fontSizeSegment.enabled = NO;
-        self.pageColorSegment.enabled = NO;
-        self.fontSizeSegment.alpha = 0.35f;
-        self.pageColorSegment.alpha = 0.35f;
-    }  
 }
 
 - (void)changeLockRotation:(id)sender {

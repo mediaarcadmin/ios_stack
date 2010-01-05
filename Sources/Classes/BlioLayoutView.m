@@ -322,17 +322,11 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGFloat inset = -kBlioLayoutShadow;
     CGRect insetBounds = UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
     CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(pageRef, kCGPDFCropBox, insetBounds, 0, true);
-    CGAffineTransform integralFitTransform = CGAffineTransformMake(fitTransform.a, 
-                                                                   fitTransform.b, 
-                                                                   fitTransform.c, 
-                                                                   fitTransform.d, 
-                                                                   round(fitTransform.tx), 
-                                                                   round(fitTransform.ty));
     
     frame.origin.x = frame.size.width * ([self pageNumber] - 1);
     frame.origin.y = 0;
     [self.debugView setFrame:frame];
-    [self.debugView setFitTransform:integralFitTransform];
+    [self.debugView setFitTransform:fitTransform];
     [self.debugView setCropRect:cropRect];
     [self.debugView setMediaRect:mediaRect];
     [self.debugView clearAreasOfInterest];
@@ -604,15 +598,9 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
             CGFloat inset = -kBlioLayoutShadow;
             CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
             CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(self.page, kCGPDFCropBox, insetBounds, 0, true);
-            CGAffineTransform integralFitTransform = CGAffineTransformMake(fitTransform.a, 
-                                                                           fitTransform.b, 
-                                                                           fitTransform.c, 
-                                                                           fitTransform.d, 
-                                                                           round(fitTransform.tx), 
-                                                                           round(fitTransform.ty));
             
             CGRect paddedTextRect = UIEdgeInsetsInsetRect(self.currentTextRect, UIEdgeInsetsMake(-6, -6, -6, -2));
-            CGRect fitTextRect = CGRectIntegral(CGRectApplyAffineTransform(paddedTextRect, integralFitTransform));
+            CGRect fitTextRect = CGRectApplyAffineTransform(paddedTextRect, fitTransform);
             CGFloat widthFactor = self.bounds.size.width / fitTextRect.size.width;
             CGFloat rounded = round(widthFactor * 10)/10.0f;
             fitTextRect.size.width = self.bounds.size.width / rounded;
@@ -661,14 +649,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
     
     CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-    CGAffineTransform integralFitTransform = CGAffineTransformMake(fitTransform.a, 
-                                                                   fitTransform.b, 
-                                                                   fitTransform.c, 
-                                                                   fitTransform.d, 
-                                                                   round(fitTransform.tx), 
-                                                                   round(fitTransform.ty));
     
-    CGRect fittedPageRect = CGRectIntegral(CGRectApplyAffineTransform(pageRect, integralFitTransform));     
+    CGRect fittedPageRect = CGRectApplyAffineTransform(pageRect, fitTransform);     
     
     int w = pageRect.size.width;
     int h = pageRect.size.height;
@@ -692,16 +674,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     
     tiledLayer.bounds = newBounds;
     fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-    integralFitTransform = CGAffineTransformMake(fitTransform.a, 
-                                                 fitTransform.b, 
-                                                 fitTransform.c, 
-                                                 fitTransform.d, 
-                                                 round(fitTransform.tx), 
-                                                 round(fitTransform.ty));
     
     BlioPDFTiledLayerDelegate *aTileDelegate = [[BlioPDFTiledLayerDelegate alloc] init];
     [aTileDelegate setPage:page];
-    [aTileDelegate setFitTransform:integralFitTransform];
+    [aTileDelegate setFitTransform:fitTransform];
     tiledLayer.delegate = aTileDelegate;
     self.tiledLayerDelegate = aTileDelegate;
     [aTileDelegate release];

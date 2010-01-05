@@ -18,6 +18,13 @@
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
 
+static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
+static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
+static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
+static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
+static NSString * const kBlioLastTapAdvanceDefaultsKey = @"lastTapAdvance";
+static NSString * const kBlioLastTltScrollDefaultsKey = @"lastTiltScroll";
+
 typedef enum {
     kBlioLibraryAddBookmarkAction = 0,
     kBlioLibraryAddNoteAction = 1,
@@ -142,23 +149,32 @@ typedef enum {
     motionControlsEnabled = kBlioTapTurnOff;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapToNextPage) name:@"TapToNextPage" object:nil];
 
+    BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
-    
-    if ([newBook bookPath]) {
-        EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
-        BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
-        aBookView.appearAtCoverThenOpen = YES;
-        if ((self = [self initWithBookView:aBookView])) {
-            self.bookView = aBookView;
-            self.book = newBook;
-            self.currentPageColor = kBlioPageColorWhite;
+    switch (lastLayout) {
+        case kBlioPageLayoutPageLayout: {
+            BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithPath:[newBook pdfPath]];
+            
+            if ((self = [self initWithBookView:aBookView])) {
+                self.bookView = aBookView;
+                self.book = newBook;
+            }
+            [aBookView release];
         }
-        [aBookView release];
-        [aEPubBook release];
-    } else if ([newBook pdfPath]) {
-        //Do nowt
-    } else {
-        self = nil;
+            break;
+        default: {
+            EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
+            BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
+            aBookView.appearAtCoverThenOpen = YES;
+            if ((self = [self initWithBookView:aBookView])) {
+                self.bookView = aBookView;
+                self.book = newBook;
+                self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+            }
+            [aBookView release];
+            [aEPubBook release];
+        } 
+            break;
     }
     return self;
 }
@@ -230,7 +246,7 @@ typedef enum {
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:@selector(dummyJumpToPage)];
+                                           action:nil];
     [readingItems addObject:item];
     [item release];
     
@@ -267,10 +283,6 @@ typedef enum {
     [item release];
     
     return [NSArray arrayWithArray:readingItems];
-}
-
-- (void)dummyJumpToPage {
-    [self.bookView setPageNumber:100 animated:YES];
 }
 
 - (void)setBookView:(UIView<BlioBookView> *)bookView
@@ -712,12 +724,14 @@ typedef enum {
             bookViewController.bookView = bookView;
             [bookView release];
             [book release];
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:[self.book pdfPath]];
             bookViewController.bookView = layoutView;
             [layoutView setTiltScroller:tiltScroller];
             
             [layoutView release];
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         }
     }
     
@@ -758,8 +772,8 @@ typedef enum {
     if([bookView respondsToSelector:(@selector(setFontPointSize:))]) {        
         if([self currentFontSize] != newSize) {
             bookView.fontPointSize = kBlioFontPointSizeArray[newSize];
+            [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
         }
-        NSLog(@"Attempting to change to BlioFontSize: %d", newSize);
     }
 }
 
@@ -779,6 +793,7 @@ typedef enum {
 
 - (void)changePageColor:(id)sender {
     self.currentPageColor = (BlioPageColor)[sender selectedSegmentIndex];
+    [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
 
 - (BlioRotationLock)currentLockRotation {
@@ -789,7 +804,7 @@ typedef enum {
     // This is just a placeholder check. Obviously we shouldn't be checking against the string.
     BlioRotationLock newLock = (BlioRotationLock)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Unlock Rotation"];
     if([self currentLockRotation] != newLock) {
-        NSLog(@"Attempting to change to BlioRotationLock: %d", newLock);
+        [[NSUserDefaults standardUserDefaults] setInteger:newLock forKey:kBlioLastLockRotationDefaultsKey];
     }
 }
 
@@ -799,22 +814,16 @@ typedef enum {
 }
 
 - (void)changeTapTurn:(id)sender {
-    // This is just a placeholder check. Obviously we shouldn't be checking against the string.
-    /*BlioTapTurn newTapTurn = (BlioTapTurn)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Disable Tap Turn"];
-    if([self currentTapTurn] != newTapTurn) {
-        NSLog(@"Attempting to change to BlioTapTurn: %d", newTapTurn);
-    }*/
     if (motionControlsEnabled == kBlioTapTurnOff) {
         motionControlsEnabled = kBlioTapTurnOn;
         [[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / 40)];
         [[UIAccelerometer sharedAccelerometer] setDelegate:self];   
     } else {
-        
         motionControlsEnabled = kBlioTapTurnOff;
         [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
         [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
     }
-
+    [[NSUserDefaults standardUserDefaults] setInteger:motionControlsEnabled forKey:kBlioLastTapAdvanceDefaultsKey];
 }
 
 #pragma mark -
