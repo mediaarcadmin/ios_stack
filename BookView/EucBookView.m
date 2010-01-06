@@ -32,6 +32,7 @@
 #define kBookFontPointSizeDefaultsKey @"EucBookFontPointSize"
 
 @interface EucBookView ()
+- (void)_removeHighlights;
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber;
 - (NSInteger)_sliderByteToPage:(float)byte;
 - (float)_pageToSliderByte:(NSInteger)page;
@@ -88,6 +89,24 @@
         self.opaque = YES;
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self _removeHighlights];
+
+    [_pageTexture release];
+    [_pageTurningView release];
+    [_pageLayoutController release];
+    
+    [_pageViewToIndexPoint release];
+    [_pageViewToIndexPointCounts release];
+    
+    [_pageSlider release];
+    [_pageNumberLabel release];
+    [_pageSliderTrackingInfoView release];   
+    
+    [super dealloc];
 }
 
 - (void)willMoveToWindow:(UIWindow *)newWindow
