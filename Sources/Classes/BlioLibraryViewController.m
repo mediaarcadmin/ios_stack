@@ -176,6 +176,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
     self.navigationItem.leftBarButtonItem = libraryLayoutButton;
     [libraryLayoutButton release];
+    [segmentedControl release];
     
     NSMutableArray *aArray = [NSMutableArray array];
     BlioMockBook *aBook = nil;
