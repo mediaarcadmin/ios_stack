@@ -292,7 +292,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 - (void)setTiltScroller:(MSTiltScroller*)ts {
     tiltScroller = ts;
-    [tiltScroller setScrollView:[pageViews objectAtIndex:visiblePageIndex]];
+    [tiltScroller setScrollView:self.currentPageView];
 }
 
 - (id)getCurrentScrollView {
@@ -574,7 +574,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         [self loadPage:currentPageIndex current:YES blank:NO forceReload:YES];
         [self loadPage:currentPageIndex - 1 current:NO blank:NO forceReload:YES];
         [self loadPage:currentPageIndex + 1 current:NO blank:NO forceReload:YES];        
-    }    
+    }
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
