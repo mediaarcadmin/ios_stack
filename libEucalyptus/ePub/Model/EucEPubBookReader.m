@@ -13,6 +13,7 @@
 #import "EucBookTextStyle.h"
 #import "EucEPubBook.h"
 #import "THLog.h"
+#import "THNSStringAdditions.h"
 #import <sys/stat.h>
 
 #define kMaxCachedFiles 3
@@ -79,7 +80,7 @@ NSDictionary *sXHTMLEntityMap = nil;
     if((self == [super init])) {
         _book = [book retain];
         _whitespaceAndNewlineCharacterSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] retain];
-
+        
         _parser = XML_ParserCreate("UTF-8");
         
         _xHTMLfileCache = [[NSMutableArray alloc] initWithCapacity:kMaxCachedFiles];
@@ -362,16 +363,22 @@ static void paragraphBuildingCharactersHandler(void *ctx, const XML_Char *chars,
     const XML_Char *cursor = chars;
     const XML_Char *limit = chars + len;
     const XML_Char *wordStartsAt = NULL;
+    BOOL smartQuoteWord = NO;
     while(cursor < limit) {
+        XML_Char ch = *cursor;
+        if(ch == '"' || ch == '\'') {
+            smartQuoteWord = YES;
+        }
         if([self->_whitespaceAndNewlineCharacterSet characterIsMember:*cursor]) {
             if(wordStartsAt) {
                 NSString *string = [[NSString alloc] initWithBytes:wordStartsAt 
                                                             length:cursor - wordStartsAt
                                                           encoding:NSUTF8StringEncoding];
-                [self->_paragraphBuildingWords addObject:string];
+                [self->_paragraphBuildingWords addObject:smartQuoteWord ? [string stringWithSmartQuotes] : string];
                 [string release];
                 [self->_paragraphBuildingAttributes addObject:style];
                 wordStartsAt = NULL;
+                smartQuoteWord = NO;
             }
         } else {
             if(!wordStartsAt) {
@@ -384,10 +391,11 @@ static void paragraphBuildingCharactersHandler(void *ctx, const XML_Char *chars,
         NSString *string = [[NSString alloc] initWithBytes:wordStartsAt 
                                                     length:cursor - wordStartsAt
                                                   encoding:NSUTF8StringEncoding];
-        [self->_paragraphBuildingWords addObject:string];
+        [self->_paragraphBuildingWords addObject:smartQuoteWord ? [string stringWithSmartQuotes] : string];
         [string release];
         [self->_paragraphBuildingAttributes addObject:style];
         wordStartsAt = NULL;
+        smartQuoteWord = NO;
     }    
     
     self->_paragraphBuildingCharactersEndedInWhitespace = [self->_whitespaceAndNewlineCharacterSet characterIsMember:*(cursor - 1)];
