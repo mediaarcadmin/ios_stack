@@ -31,8 +31,8 @@
 @property NSTimeInterval timeOfLastPageTurn;
 @property int numSpikes;
 @property int signOfFirstSpike;
-@property float firstSpike;
-@property float rawInitialYValue;
+//@property float firstSpike;
+//@property float rawInitialYValue;
 
 - (void)clearSpikeHistory;
 - (void)updateFilterWithAcceleration:(UIAcceleration *)acceleration;
