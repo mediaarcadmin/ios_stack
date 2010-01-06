@@ -475,7 +475,7 @@ typedef enum {
                 [self.navigationController setNavigationBarHidden:YES animated:YES];
                 [self.navigationController setNavigationBarHidden:NO animated:NO];
             }
-            //if(animated) {
+            if(!animated) {
                 CGRect frame = self.navigationController.toolbar.frame;
                 frame.origin.y += frame.size.height;
                 self.navigationController.toolbar.frame = frame;
@@ -483,7 +483,7 @@ typedef enum {
                 frame.origin.y -= frame.size.height;
                 self.navigationController.toolbar.frame = frame;
                 [UIView commitAnimations];                
-            //}                    
+            }                    
         } else {
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleBlackTranslucent;  
