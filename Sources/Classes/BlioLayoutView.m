@@ -517,6 +517,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
             pageView = [[BlioPDFScrollView alloc] initWithView:pdfView andPageRef:pdfPageRef];
             [pdfView release];
             [self.pageViews addObject:pageView];
+            [pageView release];
         } else {
             pageView = [self.pageViews objectAtIndex:furthestPageIndex];
             [pageView setPage:pdfPageRef];
