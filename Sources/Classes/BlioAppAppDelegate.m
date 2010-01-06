@@ -49,32 +49,15 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     }
     
     imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default.png"]];
-    UIImageView *realDefaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:imageData]];
+    realDefaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:imageData]];
     CGRect defaultFrame = realDefaultImageView.frame;
     defaultFrame.origin.y = CGRectGetHeight(window.bounds) - CGRectGetHeight(defaultFrame);
     [realDefaultImageView setFrame:defaultFrame];
     
     [window addSubview:realDefaultImageView];
-    
-    [UIView beginAnimations:@"FadeOutRealDefault" context:nil];
-    [UIView setAnimationDuration:1.0/5.0];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-    realDefaultImageView.alpha = 0;
-    realDefaultImageView.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
-    [UIView commitAnimations];
-    
     [window makeKeyAndVisible];
-    
-    if([[NSUserDefaults standardUserDefaults] boolForKey:kBlioInBookViewDefaultsKey]) {
-        //_mainTabBarController = [[UITabBarController alloc] initWithNibName:nil bundle:nil];
-        [application setStatusBarHidden:YES animated:YES];
-    } else {
-        [application setStatusBarHidden:NO animated:YES];
-        [application setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-    }
-    
+        
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
-     
 }
 
 static void *background_init_thread(void * arg) {
@@ -110,12 +93,31 @@ static void *background_init_thread(void * arg) {
     }    
 }
 
+- (void)switchStatusBar
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+}
+
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
+    [self performBackgroundInitialisation];
+    
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
     window.backgroundColor = [UIColor blackColor];
     
-    [self performBackgroundInitialisation];
+    [UIView beginAnimations:@"FadeOutRealDefault" context:nil];
+    [UIView setAnimationDuration:1.0/5.0];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+    [UIView setAnimationDelegate:realDefaultImageView];
+    [UIView setAnimationDidStopSelector:@selector(removeFromSuperview)];
+    realDefaultImageView.alpha = 0;
+    realDefaultImageView.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
+    [UIView commitAnimations];    
+    
+    [realDefaultImageView release];
+    realDefaultImageView = nil;
+    
+    [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
 }
 
 
