@@ -444,33 +444,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     }
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
- /*   BlioMockBook *selectedBook = [self.books objectAtIndex:[indexPath row]];
-    self.currentBookPath = [selectedBook bookPath];
-    self.currentPdfPath = [selectedBook pdfPath];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    BlioMockBook *selectedBook = [self.books objectAtIndex:[indexPath row]];
+    BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook];
     
-    if (nil != self.currentBookPath) {
-        EucEPubBook *book = [[EucEPubBook alloc] initWithPath:self.currentBookPath];
-        BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:book];
-        [(BlioEPubView *)bookViewController.bookView setAppearAtCoverThenOpen:YES];
-        
-        bookViewController.overriddenToolbar = [self toolbarForReadingView];
-        
-        bookViewController.toolbarsVisibleAfterAppearance = YES;
-        [book release];
-        [self.navigationController pushViewController:bookViewController animated:YES];
-        [bookViewController release];
-    } else if (nil != self.currentPdfPath) {
-        BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:self.currentPdfPath];    
-        BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBookView:layoutView];
-        [layoutView release];
-        
-        bookViewController.overriddenToolbar = [self toolbarForReadingView];    
+    if (nil != bookViewController) {
         bookViewController.toolbarsVisibleAfterAppearance = YES;
         [self.navigationController pushViewController:bookViewController animated:YES];
         [bookViewController release];
     }
-    */
+    
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     
 }
