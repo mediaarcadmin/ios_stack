@@ -55,7 +55,8 @@
     
     if (numSpikes == 1) {
 
-        if (fabs(value) > 0.05 || !(value*signOfFirstSpike)) numSpikes++;
+        if (fabs(value) > 0.05
+            || !(value*signOfFirstSpike)) numSpikes++;
     }
     
     if (fabs(value) > kTapThreshold) {

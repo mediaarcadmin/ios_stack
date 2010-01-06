@@ -873,8 +873,10 @@ typedef enum {
 
 - (void)tapToNextPage {
     if ([self.bookView isKindOfClass:[BlioEPubView class]]) {
-        int currentPage = [self.bookView pageNumber];
-        [self.bookView setPageNumber:currentPage+1 animated:YES];
+        int currentPage = [self.bookView pageNumber] + 1;
+        if (currentPage >= [self.bookView pageCount]) currentPage = [self.bookView pageCount];
+
+        [self.bookView setPageNumber:currentPage animated:YES];
         [self updatePageJumpPanelAnimated:YES];
     }
 }
