@@ -965,6 +965,8 @@ typedef enum {
             [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
         }
     }
+    
+    [self updatePageJumpPanelAnimated:YES];
 }
 
 - (void)setCurrentPageColor:(BlioPageColor)newColor
