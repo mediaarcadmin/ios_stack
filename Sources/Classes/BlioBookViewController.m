@@ -698,6 +698,16 @@ typedef enum {
     }
 }
 
+- (void) updatePageJumpPanel
+{
+    if (_pageJumpSlider) {
+        _pageJumpSlider.maximumValue = self.bookView.pageCount;
+        _pageJumpSlider.minimumValue = 1;
+        [_pageJumpSlider setValue:self.bookView.pageNumber];
+        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
+    }
+}
+
 - (void) togglePageJumpPanel
 { 
   CGPoint navBarBottomLeft = CGPointMake(0.0, self.navigationController.navigationBar.frame.size.height);
@@ -913,6 +923,7 @@ typedef enum {
         }
     }
     
+    [self performSelector:@selector(updatePageJumpPanel)];
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
