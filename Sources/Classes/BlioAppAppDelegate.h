@@ -9,6 +9,8 @@
 @interface BlioAppAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
     UINavigationController *navigationController;
+    
+    UIImageView *realDefaultImageView;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
