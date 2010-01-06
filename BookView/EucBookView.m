@@ -95,6 +95,8 @@
 {
     [self _removeHighlights];
 
+    [_book release];
+    
     [_pageTexture release];
     [_pageTurningView release];
     [_pageLayoutController release];

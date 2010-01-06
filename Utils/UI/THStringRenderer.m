@@ -59,7 +59,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                 NSString *fullBundleFontName;;
                 
                 if(styleFlags) {
-                    NSMutableString *mutableBundleFontName = [fontName mutableCopy];
+                    NSMutableString *mutableBundleFontName = [[fontName mutableCopy] autorelease];
                     [mutableBundleFontName appendString:@"-"];
                     if(styleFlags & THStringRendererFontStyleFlagBold) {
                         [mutableBundleFontName appendString:@"Bold"];
