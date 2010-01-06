@@ -78,7 +78,7 @@ NSDictionary *sXHTMLEntityMap = nil;
     EucEPubBook *book = (EucEPubBook *)anyBook;
     
     if((self == [super init])) {
-        _book = [book retain];
+        _book = book;//[book retain];
         _whitespaceAndNewlineCharacterSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] retain];
         
         _parser = XML_ParserCreate("UTF-8");
@@ -119,7 +119,7 @@ NSDictionary *sXHTMLEntityMap = nil;
     if(_parser) {
         XML_ParserFree(_parser);
     }
-    [_book release];
+    //[_book release];
     free(_fileStartOffsetMap);
     [_xHTMLfileCache release];
     

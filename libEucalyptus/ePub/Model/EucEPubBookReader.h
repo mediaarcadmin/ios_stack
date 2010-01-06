@@ -13,7 +13,7 @@
 @class EucEPubStyleStore, EucEPubBookParagraph, EucEPubBook, EucBookPageIndexPoint;
 
 @interface EucEPubBookReader : NSObject <EucBookReader> {
-    EucEPubBook *_book;
+    EucEPubBook *_book; // Nonretained.
 
     size_t *_fileStartOffsetMap;
     NSUInteger _fileStartOffsetMapCount;
