@@ -200,6 +200,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 - (id)initWithView:(BlioPDFDrawingView *)view andPageRef:(CGPDFPageRef)newPage;
 - (void)setBlank:(BOOL)blank;
 - (void)setCover:(BOOL)cover;
+- (void)zoomToContents;
 
 @end
 
@@ -370,6 +371,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 - (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated {
     NSInteger pageIndex = pageNumber - 1;
+    CFTimeInterval delayScroll = 0.2f;
+    BOOL zoomIn = NO;
+    
+    if ([self.currentPageView zoomScale] > 1.0f) {
+        [self.currentPageView setZoomScale:1.0f animated:animated];
+        delayScroll = 0.3f;
+        zoomIn = YES;
+    }
     
     if (pageIndex != visiblePageIndex) {
         [self loadPage:pageIndex current:YES blank:NO];
@@ -380,7 +389,29 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     }
     
     //if (animated) self.scrollToPageInProgress = YES;
-    [self.scrollView scrollRectToVisible:self.currentPageView.frame animated:animated];
+    CGRect targetRect = self.currentPageView.frame;
+    BOOL willAnimate = animated;
+    NSMethodSignature * mySignature = [BlioLayoutView instanceMethodSignatureForSelector:@selector(delayedScrollRectToVisible:animated:zoom:)];
+    NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
+    [myInvocation setTarget:self];    
+    [myInvocation setSelector:@selector(delayedScrollRectToVisible:animated:zoom:)];
+    [myInvocation setArgument:&targetRect atIndex:2];  
+    [myInvocation setArgument:&willAnimate atIndex:3];
+    [myInvocation setArgument:&zoomIn atIndex:4];
+    [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:delayScroll];
+    //[self.scrollView scrollRectToVisible:self.currentPageView.frame animated:animated];
+}
+
+- (void)delayedScrollRectToVisible:(CGRect)rect animated:(BOOL)animated zoom:(BOOL)zoom {
+    self.currentPageView = nil;
+    [self.scrollView scrollRectToVisible:rect animated:animated];
+    if (zoom) [self performSelector:@selector(zoomCurrentViewToContents) withObject:nil afterDelay:0.5f];
+}
+
+- (void)zoomCurrentViewToContents {
+    if (nil != self.currentPageView)
+        if (!CGRectEqualToRect([self.currentPageView currentTextRect], CGRectZero))
+            [self.currentPageView zoomToContents];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
@@ -641,6 +672,22 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     return YES;
 }
 
+- (void)zoomToContents {
+    CGFloat inset = -kBlioLayoutShadow;
+    CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+    CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(self.page, kCGPDFCropBox, insetBounds, 0, true);
+    
+    CGRect paddedTextRect = UIEdgeInsetsInsetRect(self.currentTextRect, UIEdgeInsetsMake(-6, -6, -6, -2));
+    CGRect fitTextRect = CGRectApplyAffineTransform(paddedTextRect, fitTransform);
+    CGFloat widthFactor = self.bounds.size.width / fitTextRect.size.width;
+    CGFloat rounded = round(widthFactor * 10)/10.0f;
+    fitTextRect.size.width = self.bounds.size.width / rounded;
+    // RENDER DEBUG NSLog(@"widthFactor: %f", widthFactor);
+    //[self zoomToRect:CGRectIntegral(fitTextRect) animated:YES];
+    [self zoomToRect:fitTextRect animated:YES];
+    [self setDirectionalLockEnabled:YES];    
+}
+
 - (void)zoomAtPoint:(CGPoint)point {
     if (self.zoomScale > 1.0f) {
         [self setZoomScale:1.0f animated:YES];
@@ -655,19 +702,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
             [self zoomToRect:CGRectIntegral(targetRect) animated:YES];
             [self setDirectionalLockEnabled:NO];
         } else {
-            CGFloat inset = -kBlioLayoutShadow;
-            CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-            CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(self.page, kCGPDFCropBox, insetBounds, 0, true);
-            
-            CGRect paddedTextRect = UIEdgeInsetsInsetRect(self.currentTextRect, UIEdgeInsetsMake(-6, -6, -6, -2));
-            CGRect fitTextRect = CGRectApplyAffineTransform(paddedTextRect, fitTransform);
-            CGFloat widthFactor = self.bounds.size.width / fitTextRect.size.width;
-            CGFloat rounded = round(widthFactor * 10)/10.0f;
-            fitTextRect.size.width = self.bounds.size.width / rounded;
-            // RENDER DEBUG NSLog(@"widthFactor: %f", widthFactor);
-            //[self zoomToRect:CGRectIntegral(fitTextRect) animated:YES];
-            [self zoomToRect:fitTextRect animated:YES];
-            [self setDirectionalLockEnabled:YES];
+            [self zoomToContents];
         }
     }
 }
