@@ -396,6 +396,7 @@
         indexPoint.startOfParagraphByteOffset = paragraphId;
         indexPoint.startOfPageParagraphWordOffset = wordOffset;
         NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
+        [indexPoint release];
         
         _highlightPage = newPageNumber;
         _highlightParagraph = paragraphId;

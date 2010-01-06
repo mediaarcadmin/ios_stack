@@ -183,17 +183,6 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                         }
 					}
                     if(font) {
-                        CFDictionaryRef currentVariations = CGFontCopyVariations(font);
-                        if(currentVariations) {
-                            NSMutableDictionary *variations = [(NSDictionary *)currentVariations mutableCopy];
-                            CFRelease(currentVariations);
-                            
-                            NSLog(@"%@", variations);
-                            
-                            CGFontRef newFont = CGFontCreateCopyWithVariations(font, (CFDictionaryRef)variations);
-                            CFRelease(font);
-                            font = newFont;
-                        }                        
                         NSData *fontTable = (NSData *)CGFontCopyTableForTag(font, 'cmap');
                         if(fontTable) {
                             // We'll build a direct UCS-2 to glyph map (as
