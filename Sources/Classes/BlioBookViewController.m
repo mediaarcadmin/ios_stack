@@ -341,6 +341,7 @@ typedef enum {
         [_bookView jumpToUuid:newSectionUuid];
         [newSectionUuid release];
     }
+    [self performSelector:@selector(updatePageJumpPanel)];
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
@@ -698,6 +699,16 @@ typedef enum {
     }
 }
 
+- (void) updatePageJumpPanel
+{
+    if (_pageJumpSlider) {
+        _pageJumpSlider.maximumValue = self.bookView.pageCount;
+        _pageJumpSlider.minimumValue = 1;
+        [_pageJumpSlider setValue:self.bookView.pageNumber animated:YES];
+        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
+    }
+}
+
 - (void) togglePageJumpPanel
 { 
   CGPoint navBarBottomLeft = CGPointMake(0.0, self.navigationController.navigationBar.frame.size.height);
@@ -864,6 +875,7 @@ typedef enum {
     if ([self.bookView isKindOfClass:[BlioEPubView class]]) {
         int currentPage = [self.bookView pageNumber];
         [self.bookView setPageNumber:currentPage+1 animated:YES];
+        [self performSelector:@selector(updatePageJumpPanel)];
 
     }
 }
@@ -913,6 +925,7 @@ typedef enum {
         }
     }
     
+    [self performSelector:@selector(updatePageJumpPanel)];
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
@@ -1058,6 +1071,7 @@ typedef enum {
     [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:0.0f];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    if (_pageJumpView) [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -_pageJumpView.frame.origin.y)];
 }
 
 - (void)dismissContents {
@@ -1097,6 +1111,7 @@ typedef enum {
         [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:1.0f];
         
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES]; 
+        if (_pageJumpView) [_pageJumpView setTransform:CGAffineTransformIdentity];
     }
     [UIView commitAnimations];
 }
@@ -1266,6 +1281,7 @@ typedef enum {
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == kBlioLibraryAddNoteAction) {
+        if (_pageJumpView && !_pageJumpView.hidden) [self performSelector:@selector(togglePageJumpPanel)];
         UIView *container = self.navigationController.visibleViewController.view;
         NSString *pageNumber = [self currentPageNumber];
         BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber];

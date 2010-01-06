@@ -47,13 +47,17 @@
 }
 
 + (UIImage *)imageWithShadow:(UIImage *)image inset:(UIEdgeInsets)inset {
+    return [UIImage imageWithShadow:image inset:inset color:[UIColor colorWithWhite:0.0f alpha:0.5f]];
+}
+
++ (UIImage *)imageWithShadow:(UIImage *)image inset:(UIEdgeInsets)inset color:(UIColor *)color {
     CGRect imageRect = CGRectIntegral(CGRectMake(inset.left, inset.top, image.size.width + inset.right, image.size.height + (inset.top + inset.bottom)));
     UIGraphicsBeginImageContext(imageRect.size);
     imageRect.size.width -= (inset.right);
     imageRect.size.height -= (inset.top + inset.bottom);
     imageRect = CGRectIntegral(imageRect);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
+    CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5f), 0.0f, color.CGColor);
     CGContextBeginTransparencyLayer(ctx, NULL);
     [image drawAtPoint:imageRect.origin];
     CGContextEndTransparencyLayer(ctx);
