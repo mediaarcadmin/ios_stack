@@ -915,7 +915,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @end
 
 static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
-    NSAutoreleasePool *pool = [NSAutoreleasePool alloc];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     bool isEmbedded;
     const char *name;
     BlioPDFFont *font;
