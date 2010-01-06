@@ -84,6 +84,7 @@
 	UIAccelerationValue lastX, lastY, lastZ;
 }
 
+-(float)zDifference;
 -(id)initWithSampleRate:(double)rate cutoffFrequency:(double)freq;
 
 @end
