@@ -210,6 +210,8 @@
         [_pageViewToIndexPoint setObject:newPageIndexPoint forKey:nonRetainedPageView];
         [_pageViewToIndexPointCounts addObject:nonRetainedPageView];
         
+        [_book setCurrentPageIndexPoint:newPageIndexPoint];
+        
         if(animated) {
             NSInteger count = oldPageNumber - pageNumber;
             if(count < 0) {
