@@ -39,6 +39,7 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 
 - (void)showInView:(UIView *)view {
     [self removeFromSuperview];
+    
     CGRect newFrame = CGRectMake(0, 
                                  (view.bounds.size.height - (2 * kBlioNotesViewShadow + kBlioNotesViewNoteHeight))/2.0f + kBlioNotesViewNoteYInset,
                                  view.bounds.size.width,
@@ -82,7 +83,8 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     else
         toolbarLabel.text = [NSString stringWithFormat:@"%@", self.page, dateString];
     toolbarLabel.adjustsFontSizeToFitWidth = YES;
-    toolbarLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+    //toolbarLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+    toolbarLabel.font = [UIFont fontWithName:@"Marker Felt" size:18.0f];
     toolbarLabel.backgroundColor = [UIColor clearColor];
     toolbarLabel.textAlignment = UITextAlignmentCenter;
     [self addSubview:toolbarLabel];
@@ -93,7 +95,8 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
                                         kBlioNotesViewShadow + kBlioNotesViewToolbarHeight + kBlioNotesViewTextTopInset, 
                                         newFrame.size.width - 2*(kBlioNotesViewShadow + kBlioNotesViewTextXInset), 
                                         newFrame.size.height - 2*kBlioNotesViewShadow - kBlioNotesViewTextTopInset - kBlioNotesViewTextBottomInset - kBlioNotesViewToolbarHeight)];
-    aTextView.font = [UIFont boldSystemFontOfSize:14.0f];
+    //aTextView.font = [UIFont boldSystemFontOfSize:14.0f];
+    aTextView.font = [UIFont fontWithName:@"Marker Felt" size:18.0f];
     aTextView.backgroundColor = [UIColor clearColor];
     [aTextView becomeFirstResponder];
     [self addSubview:aTextView];

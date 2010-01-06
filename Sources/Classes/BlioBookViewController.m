@@ -1266,6 +1266,7 @@ typedef enum {
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == kBlioLibraryAddNoteAction) {
+        if (_pageJumpView && !_pageJumpView.hidden) [self performSelector:@selector(togglePageJumpPanel)];
         UIView *container = self.navigationController.visibleViewController.view;
         NSString *pageNumber = [self currentPageNumber];
         BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber];
