@@ -869,7 +869,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGContextConcatCTM(ctx, fitTransform);
     // RENDER DEBUG NSLog(@"currentCTM: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     CGContextClipToRect(ctx, pageRect);
-    CGContextDrawPDFPage(ctx, page);
+    if (page) CGContextDrawPDFPage(ctx, page);
     if (cover) [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:self];
 }
 
@@ -915,6 +915,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @end
 
 static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
+    NSAutoreleasePool *pool = [NSAutoreleasePool alloc];
     bool isEmbedded;
     const char *name;
     BlioPDFFont *font;
@@ -1007,6 +1008,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
     
     [[fonts dictionary] setObject:font forKey:baseFont];
     [font release];
+    [pool drain];
 }
 
 @implementation BlioPDFFontList
