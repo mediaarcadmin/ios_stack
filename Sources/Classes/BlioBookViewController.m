@@ -322,6 +322,16 @@ typedef enum {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void) updatePageJumpPanelAnimated:(BOOL)animated
+{
+    if (_pageJumpSlider) {
+        _pageJumpSlider.maximumValue = self.bookView.pageCount;
+        _pageJumpSlider.minimumValue = 1;
+        [_pageJumpSlider setValue:self.bookView.pageNumber animated:animated];
+        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
+    }
+}
+
 - (void)_contentsViewDidAppear
 {
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
@@ -341,7 +351,7 @@ typedef enum {
         [_bookView jumpToUuid:newSectionUuid];
         [newSectionUuid release];
     }
-    [self performSelector:@selector(updatePageJumpPanel)];
+    [self updatePageJumpPanelAnimated:YES];
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
@@ -628,11 +638,11 @@ typedef enum {
     } 
 }
 
-
 - (void)toggleToolbars
 {
     if(_fadeState == BookViewControlleUIFadeStateNone) {
         if(self.navigationController.toolbarHidden == YES) {
+            [self updatePageJumpPanelAnimated:NO];
             [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             self.navigationController.navigationBarHidden = NO;
@@ -696,16 +706,6 @@ typedef enum {
             [_touch release];
             _touch = nil;
         }
-    }
-}
-
-- (void) updatePageJumpPanel
-{
-    if (_pageJumpSlider) {
-        _pageJumpSlider.maximumValue = self.bookView.pageCount;
-        _pageJumpSlider.minimumValue = 1;
-        [_pageJumpSlider setValue:self.bookView.pageNumber animated:YES];
-        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
     }
 }
 
@@ -829,7 +829,7 @@ typedef enum {
   
   if (section && chapter.first) {
     if (pageStr) {
-      _pageJumpLabel.text = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
+      _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
     } else {
       _pageJumpLabel.text = [NSString stringWithFormat:@"%@", chapter.first];
     }
@@ -875,8 +875,7 @@ typedef enum {
     if ([self.bookView isKindOfClass:[BlioEPubView class]]) {
         int currentPage = [self.bookView pageNumber];
         [self.bookView setPageNumber:currentPage+1 animated:YES];
-        [self performSelector:@selector(updatePageJumpPanel)];
-
+        [self updatePageJumpPanelAnimated:YES];
     }
 }
 
@@ -925,7 +924,7 @@ typedef enum {
         }
     }
     
-    [self performSelector:@selector(updatePageJumpPanel)];
+    [self updatePageJumpPanelAnimated:YES];
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
