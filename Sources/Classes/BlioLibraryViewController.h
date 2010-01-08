@@ -6,6 +6,8 @@
 //  Copyright Things Made Out Of Other Things 2009. All rights reserved.
 //
 
+#import <CoreData/CoreData.h>
+
 @class BlioTestParagraphWords;
 
 typedef enum {
@@ -25,8 +27,10 @@ typedef enum {
     BlioLibraryLayout _libraryLayout;
     
     BlioTestParagraphWords *_testParagraphWords;
+    NSManagedObjectContext *_managedObjectContext;
 }
 
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) BlioLibraryBookView *currentBookView;
 @property (nonatomic, retain) UIImageView *currentPoppedBookCover;
 @property (nonatomic) BOOL bookCoverPopped;

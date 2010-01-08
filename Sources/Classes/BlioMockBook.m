@@ -15,26 +15,36 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 
 @implementation BlioMockBook
 
-@synthesize title;
-@synthesize author;
-@synthesize coverPath;
-@synthesize bookPath;
-@synthesize pdfPath;
-@synthesize progress;
-@synthesize proportionateSize;
+@dynamic title;
+@dynamic author;
+@dynamic coverFilename;
+@dynamic epubFilename;
+@dynamic pdfFilename;
+@dynamic progress;
+@dynamic proportionateSize;
+@dynamic position;
+@dynamic layoutPageNumber;
 
 - (void)dealloc {
-    self.title = nil;
-    self.author = nil;
-    self.coverPath = nil;
-    self.bookPath = nil;
-    self.pdfPath = nil;
     [coverThumb release];
     [super dealloc];
 }
 
+- (NSString *)coverPath {
+    return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[self valueForKey:@"coverFilename"]];
+}
+
+- (NSString *)bookPath {
+    return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"epubFilename"] ofType:@"epub" inDirectory:@"ePubs"];
+}
+
+- (NSString *)pdfPath {
+    return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"pdfFilename"] ofType:@"pdf" inDirectory:@"PDFs"];
+}
+
 - (UIImage *)coverImage {
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:self.coverPath];
+    NSString *path = [self coverPath];
+    NSData *imageData = [NSData dataWithContentsOfMappedFile:path];
     return [UIImage imageWithData:imageData];
 }
 
