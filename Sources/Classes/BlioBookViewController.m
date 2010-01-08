@@ -59,6 +59,218 @@ typedef enum {
     kBlioTapTurnOn = 1,
 } BlioTapTurn;
 
+@interface BlioBookViewControllerProgressPieButton : UIControl {
+    CGFloat progress;
+    UIColor *tintColor;
+    BOOL toggled;
+}
+
+@property (nonatomic) CGFloat progress;
+@property (nonatomic, retain) UIColor *tintColor;
+@property (nonatomic) BOOL toggled;
+
+@end
+
+@implementation BlioBookViewControllerProgressPieButton
+
+@synthesize progress, tintColor, toggled;
+
+- (id)initWithFrame:(CGRect)frame {
+    if ((self = [super initWithFrame:frame])) {
+        // Initialization code
+        self.progress = 0.0f;
+        self.toggled = NO;
+        self.backgroundColor = [UIColor clearColor];
+        self.tintColor = [UIColor blackColor];
+        
+        [self addTarget:self action:@selector(highlightOn) forControlEvents:UIControlEventTouchDown];
+        [self addTarget:self action:@selector(highlightOff) forControlEvents:UIControlEventTouchUpInside];
+        [self addTarget:self action:@selector(highlightOff) forControlEvents:UIControlEventTouchUpOutside];
+        [self addTarget:self action:@selector(highlightOff) forControlEvents:UIControlEventTouchCancel];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    self.tintColor = nil;
+    [super dealloc];
+}
+
+- (void)highlightOn {
+    [self setHighlighted:YES];
+    [self setNeedsDisplay];
+}
+
+- (void)highlightOff {
+    [self setHighlighted:NO];
+    [self setNeedsDisplay];
+}
+
+- (void)setProgress:(CGFloat)newFloat {
+    progress = newFloat;
+    [self setNeedsDisplay];
+}
+
+- (void)setToggled:(BOOL)newToggle {
+    toggled = newToggle;
+    [self setNeedsDisplay];
+}
+
+- (void)setTintColor:(UIColor *)newTint {
+    [newTint retain];
+    [tintColor release];
+    tintColor = newTint;
+    [self setNeedsDisplay];
+}
+
+void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
+    CGContextSaveGState(c);
+    
+    if (radius > rect.size.width/2.0)
+        radius = rect.size.width/2.0;
+    if (radius > rect.size.height/2.0)
+        radius = rect.size.height/2.0;    
+    
+    CGFloat minx = CGRectGetMinX(rect);
+    CGFloat midx = CGRectGetMidX(rect);
+    CGFloat maxx = CGRectGetMaxX(rect);
+    CGFloat miny = CGRectGetMinY(rect);
+    CGFloat midy = CGRectGetMidY(rect);
+    CGFloat maxy = CGRectGetMaxY(rect);
+    CGContextMoveToPoint(c, minx, midy);
+    CGContextAddArcToPoint(c, minx, miny, midx, miny, radius);
+    CGContextAddArcToPoint(c, maxx, miny, maxx, midy, radius);
+    CGContextAddArcToPoint(c, maxx, maxy, midx, maxy, radius);
+    CGContextAddArcToPoint(c, minx, maxy, minx, midy, radius);
+    
+    CGContextClosePath(c); 
+    CGContextRestoreGState(c); 
+}
+
+void drawGlossGradient(CGContextRef c, CGRect rect) {
+    CGGradientRef glossGradient;
+    CGColorSpaceRef rgbColorspace;
+    size_t num_locations = 2;
+    CGFloat locations[2] = { 0.0, 1.0 };
+    CGFloat components[8] = { 1.0, 1.0, 1.0, 0.380,  // Start color
+        1.0, 1.0, 1.0, 0.188 }; // End color
+    
+    rgbColorspace = CGColorSpaceCreateDeviceRGB();
+    glossGradient = CGGradientCreateWithColorComponents(rgbColorspace, components, locations, num_locations);
+    
+    CGPoint topCenter = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
+    CGPoint midCenter = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
+    CGContextDrawLinearGradient(c, glossGradient, topCenter, midCenter, 0);    
+    CGGradientRelease(glossGradient);
+    CGColorSpaceRelease(rgbColorspace);
+}
+
+void addOvalToPath(CGContextRef c, CGPoint center, float a, float b, 
+                   float start_angle, float arc_angle, int pie) { 
+    float CGstart_angle = 90.0 - start_angle; 
+    CGContextSaveGState(c); 
+    CGContextTranslateCTM(c, center.x, center.y); 
+    CGContextScaleCTM(c, a, b); 
+    if (pie) { 
+        CGContextMoveToPoint(c, 0, 0); 
+    } else { 
+        CGContextMoveToPoint(c, cos(CGstart_angle * M_PI / 180), 
+                             sin(CGstart_angle * M_PI / 180)); 
+    } 
+    CGContextAddArc(c, 0, 0, 1, 
+                    CGstart_angle * M_PI / 180, 
+                    (CGstart_angle - arc_angle) * M_PI / 180, 
+                    arc_angle>0 ? 1 : 0); 
+    if (pie) { 
+        CGContextClosePath(c); 
+    } 
+    CGContextRestoreGState(c); 
+} 
+
+void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) { 
+    float a, b; 
+    CGPoint center; 
+    CGContextBeginPath(c); 
+    center = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect)); 
+    a = CGRectGetWidth(rect) / 2; 
+    b = CGRectGetHeight(rect) / 2; 
+    addOvalToPath(c, center, a, b, start_angle, arc_angle, 1); 
+    CGContextClosePath(c); 
+    CGContextFillPath(c); 
+}
+
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
+    CGContextScaleCTM(ctx, 1.0, -1.0);
+    
+    CGFloat yButtonPadding = 5.0f;
+    CGFloat xButtonPadding = 5.0f;
+    CGFloat wedgePadding = 2.0f;
+    CGRect inRect = CGRectInset(rect, xButtonPadding, yButtonPadding);
+    CGFloat insetX, insetY;
+    CGFloat width = inRect.size.width;
+    CGFloat height = inRect.size.height;
+    
+    if (width > height) {
+        insetX = (width - height); // Right aligned
+        insetY = 0;
+        width = width - insetX;
+    } else {
+        insetX = 0;
+        insetY = (height - width)/2.0f;
+        height = height - 2 * insetY;
+    }
+    
+    CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY, width, height));
+    CGRect innerSquare = CGRectInset(outerSquare, wedgePadding, wedgePadding);
+    CGRect buttonSquare = CGRectInset(outerSquare, -xButtonPadding, -yButtonPadding);
+    CGRect backgroundSquare = UIEdgeInsetsInsetRect(buttonSquare, UIEdgeInsetsMake(1, 0, 0, 0));
+    
+    CGContextClipToRect(ctx, buttonSquare);
+    
+    if ([self isHighlighted] || toggled) {
+        CGContextSetShadowWithColor(ctx, CGSizeMake(0,-1), 0, [UIColor colorWithWhite:0.5f alpha:0.25f].CGColor);
+    } else {
+        CGContextSetShadowWithColor(ctx, CGSizeMake(0,-1), 0, [UIColor colorWithWhite:1.0f alpha:0.25f].CGColor);
+    }
+    
+    CGContextBeginTransparencyLayer(ctx, NULL);
+    addRoundedRectToPath(ctx, 6.0f, backgroundSquare);
+    CGContextClip(ctx);
+    
+    CGContextSetFillColorWithColor(ctx, tintColor.CGColor);
+    CGContextFillRect(ctx, backgroundSquare);
+    drawGlossGradient(ctx, backgroundSquare);
+    
+    CGContextSetShadowWithColor(ctx, CGSizeMake(0,-0.5f), 0.5f, [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
+    CGContextSetLineWidth(ctx, 1.0f);
+    addRoundedRectToPath(ctx, 6.0f, backgroundSquare);
+    CGContextStrokePath(ctx);
+    
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
+    CGContextSetLineWidth(ctx, 2.0f);
+    
+    CGContextStrokeEllipseInRect(ctx, outerSquare);
+
+    if (progress) {
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
+        fillOval(ctx, innerSquare, 0, progress*360);
+    }
+    
+    if ([self isHighlighted] || toggled) {
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.0f alpha:0.25f].CGColor);
+        CGContextFillRect(ctx, backgroundSquare);
+    }
+    
+    CGContextEndTransparencyLayer(ctx);
+}
+
+@end
+
+
 @interface _BlioBookViewControllerTransparentView : UIView {
     BlioBookViewController *controller;
 }
@@ -95,6 +307,7 @@ typedef enum {
 @synthesize book = _book;
 @synthesize bookView = _bookView;
 @synthesize pageJumpView = _pageJumpView;
+@synthesize pieButton = _pieButton;
 
 @synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
 @synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
@@ -329,6 +542,7 @@ typedef enum {
         _pageJumpSlider.minimumValue = 1;
         [_pageJumpSlider setValue:self.bookView.pageNumber animated:animated];
         [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
+        [self.pieButton setProgress:_pageJumpSlider.value/_pageJumpSlider.maximumValue];
     }
 }
 
@@ -455,10 +669,16 @@ typedef enum {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];                
         
-        _pageJumpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scrubber-icon.png"]
-                                                           style:UIBarButtonItemStyleBordered 
-                                                          target:self 
-                                                          action:@selector(togglePageJumpPanel)];
+        BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:CGRectMake(0,0, 50, 30)];
+        [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
+        _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
+        self.pieButton = aPieButton;
+        [aPieButton release];
+                           
+        //_pageJumpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scrubber-icon.png"]
+//                                                           style:UIBarButtonItemStyleBordered 
+//                                                          target:self 
+//                                                          action:@selector(togglePageJumpPanel)];
         
         [self.navigationItem setRightBarButtonItem:_pageJumpButton];
         
@@ -613,6 +833,7 @@ typedef enum {
     [_bookView release];
     self.book = nil;
     self.pageJumpView = nil;
+    self.pieButton = nil;
     
 	[super dealloc];
 }
@@ -776,6 +997,7 @@ typedef enum {
   
   CGSize sz = _pageJumpView.bounds.size;
   BOOL hiding = !_pageJumpView.hidden;
+  [self.pieButton setToggled:!hiding];
   
   if (!hiding) {
     _pageJumpView.alpha = 0.0;
@@ -809,16 +1031,17 @@ typedef enum {
 
 - (void) _pageSliderSlid: (id) sender
 {
-  UISlider* slider = (UISlider*) sender;
-  NSUInteger page = (NSUInteger) slider.value;
-  [self _updatePageJumpLabelForPage:page];
-  
-  if (slider.isTracking) {
-    _pageJumpSliderTracking = YES;
-  } else if (_pageJumpSliderTracking) {
-    [self.bookView setPageNumber:page animated:YES];
-    _pageJumpSliderTracking = NO;
-  }
+    UISlider* slider = (UISlider*) sender;
+    NSUInteger page = (NSUInteger) slider.value;
+    [self _updatePageJumpLabelForPage:page];
+    
+    if (slider.isTracking) {
+        _pageJumpSliderTracking = YES;
+    } else if (_pageJumpSliderTracking) {
+        [self.bookView setPageNumber:page animated:YES];
+        _pageJumpSliderTracking = NO;
+    }
+    [self.pieButton setProgress:_pageJumpSlider.value/_pageJumpSlider.maximumValue];
 }
 
 - (void) _updatePageJumpLabelForPage:(NSUInteger)page
@@ -1109,8 +1332,6 @@ typedef enum {
         navBar.tintColor = nil;
         navBar.barStyle = UIBarStyleBlackTranslucent;
         ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleBlackTranslucent;
-        [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"ContentsButton.png"]
-                                                                         forState:UIControlStateNormal];
         [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:1.0f];
         
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES]; 

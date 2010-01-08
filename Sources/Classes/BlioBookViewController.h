@@ -15,7 +15,7 @@
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
 
-@class EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
+@class EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference, BlioBookViewControllerProgressPieButton;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -75,6 +75,7 @@ typedef enum {
     UILabel* _pageJumpLabel;
     UISlider* _pageJumpSlider;
     BOOL _pageJumpSliderTracking;
+    BlioBookViewControllerProgressPieButton *_pieButton;
 }
 
 // Designated initializers.
@@ -99,6 +100,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL motionControlsEnabled;
 
 @property (nonatomic, retain) UIView *pageJumpView;
+@property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
 
 - (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;
