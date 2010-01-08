@@ -205,8 +205,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
     CGContextScaleCTM(ctx, 1.0, -1.0);
     
-    CGFloat yButtonPadding = 5.0f;
-    CGFloat xButtonPadding = 5.0f;
+    CGFloat yButtonPadding = 7.0f;
+    CGFloat xButtonPadding = 7.0f;
     CGFloat wedgePadding = 2.0f;
     CGRect inRect = CGRectInset(rect, xButtonPadding, yButtonPadding);
     CGFloat insetX, insetY;
@@ -253,7 +253,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
     CGContextSetLineWidth(ctx, 2.0f);
     
+    CGContextSaveGState(ctx);
+    CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1.0f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
     CGContextStrokeEllipseInRect(ctx, outerSquare);
+    CGContextRestoreGState(ctx);
 
     if (progress) {
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
@@ -674,11 +677,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
         self.pieButton = aPieButton;
         [aPieButton release];
-                           
-        //_pageJumpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scrubber-icon.png"]
-//                                                           style:UIBarButtonItemStyleBordered 
-//                                                          target:self 
-//                                                          action:@selector(togglePageJumpPanel)];
         
         [self.navigationItem setRightBarButtonItem:_pageJumpButton];
         
