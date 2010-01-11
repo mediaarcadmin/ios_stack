@@ -301,7 +301,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 @interface BlioBookViewController (PRIVATE)
 - (NSArray *)_toolbarItemsForReadingView;
-- (void) _updatePageJumpLabelForPage:(NSUInteger)page;
+- (void) _updatePageJumpLabelForPage:(NSInteger)page;
+
+- (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 
 @end
 
@@ -551,18 +553,28 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)updatePieButtonAnimated:(BOOL)animated {
-    [self.pieButton setProgress:self.bookView.pageNumber/(CGFloat)self.bookView.pageCount];
+- (void)updatePieButtonForPage:(NSInteger)pageNumber animated:(BOOL)animated {
+    [self.pieButton setProgress:pageNumber/(CGFloat)self.bookView.pageCount];
 }
 
-- (void) updatePageJumpPanelAnimated:(BOOL)animated
+
+- (void)updatePieButtonAnimated:(BOOL)animated {
+    [self updatePieButtonForPage:self.bookView.pageNumber animated:animated];
+}
+
+- (void)updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated
 {
     if (_pageJumpSlider) {
         _pageJumpSlider.maximumValue = self.bookView.pageCount;
         _pageJumpSlider.minimumValue = 1;
-        [_pageJumpSlider setValue:self.bookView.pageNumber animated:animated];
-        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
-    }
+        [_pageJumpSlider setValue:pageNumber animated:animated];
+        [self _updatePageJumpLabelForPage:pageNumber];
+    }    
+}
+
+- (void)updatePageJumpPanelAnimated:(BOOL)animated
+{
+    [self updatePageJumpPanelForPage:self.bookView.pageNumber animated:YES];
 }
 
 - (void)_contentsViewDidAppear
@@ -573,6 +585,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)_contentsViewDidDisappear
 {
     NSString *newSectionUuid = [_contentsSheet.selectedUuid retain];
+    NSInteger newPageNumber = [_contentsSheet.dataSource pageNumberForSectionUuid:newSectionUuid];
     
     [_contentsSheet.view removeFromSuperview];
     [_contentsSheet release];
@@ -581,11 +594,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(newSectionUuid) {
+        [self updatePageJumpPanelForPage:newPageNumber animated:YES];
+        [self updatePieButtonForPage:newPageNumber animated:YES];
         [_bookView goToUuid:newSectionUuid animated:YES];
         [newSectionUuid release];
     }
-    [self updatePageJumpPanelAnimated:YES];
-    [self updatePieButtonAnimated:YES];
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
@@ -881,8 +894,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 {
     if(_fadeState == BookViewControlleUIFadeStateNone) {
         if(self.navigationController.toolbarHidden == YES) {
-            [self updatePageJumpPanelAnimated:NO];
-            [self updatePieButtonAnimated:NO];
             [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             self.navigationController.navigationBarHidden = NO;
@@ -1052,7 +1063,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void) _pageSliderSlid: (id) sender
 {
     UISlider* slider = (UISlider*) sender;
-    NSUInteger page = (NSUInteger) slider.value;
+    NSInteger page = (NSInteger) slider.value;
     [self _updatePageJumpLabelForPage:page];
     
     if (slider.isTracking) {
@@ -1062,9 +1073,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         _pageJumpSliderTracking = NO;
     }
     [self.pieButton setProgress:_pageJumpSlider.value/_pageJumpSlider.maximumValue];
+    
+    // When we come to set this later, after the page turn,
+    // it's often a pixel out (due to rounding?), so set it here.
+    [_pageJumpSlider setValue:page animated:NO];
 }
 
-- (void) _updatePageJumpLabelForPage:(NSUInteger)page
+- (void) _updatePageJumpLabelForPage:(NSInteger)page
 {
   NSString* section = [self.bookView.contentsDataSource sectionUuidForPageNumber:page];
   THPair* chapter = [self.bookView.contentsDataSource presentationNameAndSubTitleForSectionUuid:section];
@@ -1119,8 +1134,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         if (currentPage >= [self.bookView pageCount]) currentPage = [self.bookView pageCount];
 
         [self.bookView goToPageNumber:currentPage animated:YES];
-        [self updatePageJumpPanelAnimated:YES];
-        [self updatePieButtonAnimated:YES];
     }
 }
 
@@ -1171,18 +1184,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         [self.bookView addObserver:self 
                         forKeyPath:@"pageNumber" 
-                            options:NSKeyValueObservingOptionNew 
+                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                             context:nil];
         
         [self.bookView addObserver:self 
                         forKeyPath:@"pageCount" 
-                           options:NSKeyValueObservingOptionNew 
+                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                            context:nil];
         
     }
-    
-    [self updatePageJumpPanelAnimated:YES];
-    [self updatePieButtonAnimated:YES];
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
@@ -1223,9 +1233,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
         }
     }
-    
-    [self updatePageJumpPanelAnimated:YES];
-    [self updatePieButtonAnimated:YES];
 }
 
 - (void)setCurrentPageColor:(BlioPageColor)newColor
