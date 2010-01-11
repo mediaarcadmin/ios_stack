@@ -26,6 +26,7 @@
     BlioPDFScrollView *currentPageView;
     BOOL scrollToPageInProgress;
     MSTiltScroller *tiltScroller;
+    NSInteger pageNumber;
 }
 
 @property (nonatomic, retain) UIScrollView *scrollView;
@@ -35,6 +36,7 @@
 @property (nonatomic, assign) MSTiltScroller *tiltScroller;
 @property (retain) BlioPDFFontList *fonts;
 @property (nonatomic) BOOL scrollToPageInProgress;
+@property (nonatomic) NSInteger pageNumber;
 
 - (id)initWithPath:(NSString *)path;
 
