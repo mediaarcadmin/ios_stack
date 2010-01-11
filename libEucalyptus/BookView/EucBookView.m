@@ -747,7 +747,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         _jumpShouldBeSaved = NO;
     }
     
-    self.pageNumber = pageNumber;   
+    self.pageNumber = pageNumber;  
+    self.pageCount = _pageLayoutController.globalPageCount;
     
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
     [self _updatePageNumberLabel];

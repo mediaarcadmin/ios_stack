@@ -409,6 +409,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                         forKeyPath:@"pageNumber" 
                            options:NSKeyValueObservingOptionNew 
                            context:nil];
+        
+        [self.bookView addObserver:self 
+                        forKeyPath:@"pageCount" 
+                           options:NSKeyValueObservingOptionNew 
+                           context:nil];
     }
     
     return self;
@@ -704,11 +709,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [[_bookView layer] addAnimation:animation forKey:@"PageViewTransitionIn"];
         }        
         
-        // TODO this should be handled differently
-//        if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
-//            [self.bookView goToPageNumber:[[self.book layoutPageNumber] integerValue] animated:NO];
-//            [self.pieButton setProgress:[[self.book layoutPageNumber] integerValue]/(CGFloat)self.bookView.pageCount];
-//        }
     }
 }
 
@@ -844,6 +844,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
     [self.bookView removeObserver:self forKeyPath:@"pageNumber"];
+    [self.bookView removeObserver:self forKeyPath:@"pageCount"];
     
     [tapDetector release];
     [tiltScroller release];
@@ -1149,6 +1150,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
     
     [self.bookView removeObserver:self forKeyPath:@"pageNumber"];
+    [self.bookView removeObserver:self forKeyPath:@"pageCount"];
     
     if([self currentPageLayout] != newLayout) {        
         if (newLayout == kBlioPageLayoutPlainText && [self.book bookPath]) {
@@ -1171,6 +1173,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                         forKeyPath:@"pageNumber" 
                             options:NSKeyValueObservingOptionNew 
                             context:nil];
+        
+        [self.bookView addObserver:self 
+                        forKeyPath:@"pageCount" 
+                           options:NSKeyValueObservingOptionNew 
+                           context:nil];
         
     }
     
@@ -1280,7 +1287,17 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if ([keyPath isEqual:@"pageNumber"]) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
-        [self.book setLayoutPageNumber:[change objectForKey:NSKeyValueChangeNewKey]];
+        
+        // This should be more generally handled for both types of bookview
+        if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
+            [self.book setLayoutPageNumber:[change objectForKey:NSKeyValueChangeNewKey]];
+        }    
+    }
+    
+    if ([keyPath isEqual:@"pageCount"]) {
+        NSLog(@"updating pagecount: %d", [[change objectForKey:NSKeyValueChangeNewKey] integerValue]);
+        [self updatePageJumpPanelAnimated:YES];
+        [self updatePieButtonAnimated:YES];
     }
 }
 
