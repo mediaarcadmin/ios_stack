@@ -21,15 +21,5 @@
     return [[UIScreen mainScreen] bounds];
 }
 
-- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
-{
-    return [self jumpToUuid:uuid];
-}
-
-- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
-{
-    return [self setPageNumber:pageNumber animated:animated];
-}
-
 
 @end

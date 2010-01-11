@@ -695,7 +695,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         // TODO this should be handled differently
         if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
-            [self.bookView setPageNumber:[[self.book layoutPageNumber] integerValue] animated:NO];
+            [self.bookView goToPageNumber:[[self.book layoutPageNumber] integerValue] animated:NO];
             [self.pieButton setProgress:[[self.book layoutPageNumber] integerValue]/(CGFloat)self.bookView.pageCount];
         }
     }
@@ -1155,7 +1155,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             bookViewController.bookView = layoutView;
             
             // TODO this should be handled differently
-            [self.bookView setPageNumber:[[self.book layoutPageNumber] integerValue] animated:NO];
+            [self.bookView goToPageNumber:[[self.book layoutPageNumber] integerValue] animated:NO];
             [self.pieButton setProgress:[[self.book layoutPageNumber] integerValue]/(CGFloat)self.bookView.pageCount];
             
             [layoutView release];
