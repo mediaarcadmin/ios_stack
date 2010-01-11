@@ -43,6 +43,7 @@
 @property (nonatomic, assign) BOOL pageTextureIsDark;
 
 @property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, assign) NSInteger pageCount;
 
 @end
 
@@ -61,6 +62,7 @@
 @synthesize contentsDataSource = _pageLayoutController;
 
 @synthesize pageNumber = _pageNumber;
+@synthesize pageCount = _pageCount;
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book 
 {
@@ -137,6 +139,7 @@
         [_pageViewToIndexPointCounts addObject:nonRetainedPageView];
         _pageTurningView.currentPageView = currentPageViewAndIndexPoint.first;
        
+        self.pageCount = _pageLayoutController.globalPageCount;
         self.pageNumber = pageNumber;
 
         [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
@@ -236,18 +239,6 @@
     // Preemptive, to make the animation run at the same time as the 
     // page turning view's animation.
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:animated];                
-}
-
-
-- (NSInteger)pageNumber
-{
-    return _pageNumber;
-}
-
-
-- (NSInteger)pageCount
-{
-    return _pageLayoutController.globalPageCount;
 }
 
 - (void)_redisplayCurrentPage
@@ -777,6 +768,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     EucBookPageIndexPoint *pageIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
     NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
     self.pageNumber = pageNumber;
+    self.pageCount = _pageLayoutController.globalPageCount;
     
     [self _updateSliderByteToPageRatio];
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
