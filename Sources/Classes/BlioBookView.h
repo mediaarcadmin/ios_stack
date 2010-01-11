@@ -12,14 +12,17 @@
 @protocol BlioBookView <NSObject>
 
 @required
-- (void)jumpToUuid:(NSString *)uuid;
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+
+@property (nonatomic, readonly) NSInteger pageCount;
 
 // Page numbers start at 1.
 // The EucBookContentsTableViewControllerDataSource protocol defines a way to 
-// map from page numbers to 'dispaly' page number strings.
-@property (nonatomic, assign) NSInteger pageNumber;
-@property (nonatomic, readonly) NSInteger pageCount;
+// map from page numbers to 'display' page number strings.
+@property (nonatomic, readonly) NSInteger pageNumber;
+
+- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
+- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 
 @property (nonatomic, readonly) CGRect firstPageRect;

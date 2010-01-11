@@ -562,7 +562,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(newSectionUuid) {
-        [_bookView jumpToUuid:newSectionUuid];
+        [_bookView goToUuid:newSectionUuid animated:YES];
         [newSectionUuid release];
     }
     [self updatePageJumpPanelAnimated:YES];
@@ -1038,7 +1038,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if (slider.isTracking) {
         _pageJumpSliderTracking = YES;
     } else if (_pageJumpSliderTracking) {
-        [self.bookView setPageNumber:page animated:YES];
+        [self.bookView goToPageNumber:page animated:YES];
         _pageJumpSliderTracking = NO;
     }
     [self.pieButton setProgress:_pageJumpSlider.value/_pageJumpSlider.maximumValue];
@@ -1099,7 +1099,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         int currentPage = [self.bookView pageNumber] + 1;
         if (currentPage >= [self.bookView pageCount]) currentPage = [self.bookView pageCount];
 
-        [self.bookView setPageNumber:currentPage animated:YES];
+        [self.bookView goToPageNumber:currentPage animated:YES];
         [self updatePageJumpPanelAnimated:YES];
     }
 }

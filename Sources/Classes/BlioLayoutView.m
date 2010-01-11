@@ -185,6 +185,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 - (BlioPDFDebugView *)debugView;
 - (void)setDebugView:(BlioPDFDebugView *)newView;
 
+- (void)jumpToUuid:(NSString *)uuid;
+@property (nonatomic, assign) NSInteger pageNumber;
+- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+
 @end
 
 @interface BlioPDFScrollView : UIScrollView <UIScrollViewDelegate> {
@@ -205,6 +209,23 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @end
 
 @implementation BlioLayoutView
+
+
+
+
+
+- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
+{
+    return [self jumpToUuid:uuid];
+}
+
+- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
+{
+    return [self setPageNumber:pageNumber animated:animated];
+}
+
+
+
 
 @synthesize scrollView, pageViews, navigationController, currentPageView, tiltScroller, fonts, scrollToPageInProgress;
 
