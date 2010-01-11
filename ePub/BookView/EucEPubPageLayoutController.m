@@ -155,22 +155,34 @@ static void readRightRaggedJustificationDefault()
 
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber
 {
+    NSUInteger nextPageNumber = _globalPageCount;
     EucBookSection *section = [_book nextTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber].startOfParagraphByteOffset];
-    NSUInteger nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
-    if(nextPageNumber == pageNumber && pageNumber < _globalPageCount) {
-        section = [_book nextTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber+1].startOfParagraphByteOffset];
+    if(section) {
         nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
-    }
+        if(nextPageNumber == pageNumber && pageNumber < _globalPageCount) {
+            nextPageNumber = _globalPageCount;
+            section = [_book nextTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber+1].startOfParagraphByteOffset];
+            if(section) {
+                nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
+            }
+        }
+    } 
     return nextPageNumber;
 }
 
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber
 {
+    NSUInteger nextPageNumber = 1;
     EucBookSection *section = [_book previousTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber].startOfParagraphByteOffset];
-    NSUInteger nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
-    if(nextPageNumber == pageNumber && pageNumber > 1) {
-        section = [_book previousTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber-1].startOfParagraphByteOffset];
+    if(section) {
         nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
+        if(nextPageNumber == pageNumber && pageNumber > 1) {
+            nextPageNumber = 1;
+            section = [_book previousTopLevelSectionForByteOffset:[_bookIndex filteredIndexPointForPage:pageNumber-1].startOfParagraphByteOffset];
+            if(section) {
+                nextPageNumber = [_bookIndex filteredPageForByteOffset:section.startOffset];
+            }
+        }
     }
     return nextPageNumber;
 }

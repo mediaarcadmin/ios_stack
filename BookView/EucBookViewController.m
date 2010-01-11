@@ -250,7 +250,7 @@
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(newSectionUuid) {
-        [((EucBookView *)_bookView) jumpToUuid:newSectionUuid];
+        [((EucBookView *)_bookView) goToUuid:newSectionUuid animated:YES];
         [newSectionUuid release];
     }
 }
