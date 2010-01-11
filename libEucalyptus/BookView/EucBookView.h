@@ -26,6 +26,7 @@
     id<EucPageLayoutController> _pageLayoutController;
 
     NSInteger _pageNumber;
+    NSInteger _pageCount;
     
     NSMutableDictionary *_pageViewToIndexPoint;
     NSCountedSet *_pageViewToIndexPointCounts;
