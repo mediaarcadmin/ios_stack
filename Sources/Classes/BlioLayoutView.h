@@ -36,8 +36,9 @@
 @property (nonatomic, assign) MSTiltScroller *tiltScroller;
 @property (retain) BlioPDFFontList *fonts;
 @property (nonatomic) BOOL scrollToPageInProgress;
-@property (nonatomic) NSInteger pageNumber;
+@property (nonatomic, readonly) NSInteger pageNumber;
 
 - (id)initWithPath:(NSString *)path;
+- (id)initWithPath:(NSString *)path page:(NSUInteger)page animated:(BOOL)animated;
 
 @end

@@ -184,10 +184,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 - (void)loadPage:(int)newPageNumber current:(BOOL)current blank:(BOOL)blank forceReload:(BOOL)reload;
 - (BlioPDFDebugView *)debugView;
 - (void)setDebugView:(BlioPDFDebugView *)newView;
-
-- (void)jumpToUuid:(NSString *)uuid;
-@property (nonatomic, assign) NSInteger pageNumber;
-- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+@property (nonatomic) NSInteger pageNumber;
 
 @end
 
@@ -227,6 +224,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 - (id)initWithPath:(NSString *)path {
+    return [self initWithPath:path page:1 animated:NO];
+}
+
+- (id)initWithPath:(NSString *)path page:(NSUInteger)page animated:(BOOL)animated {
     NSURL *pdfURL = [NSURL fileURLWithPath:path];
     pdf = CGPDFDocumentCreateWithURL((CFURLRef)pdfURL);
     
@@ -236,7 +237,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         // Initialization code
         self.clearsContextBeforeDrawing = NO; // Performance optimisation;
         self.scrollToPageInProgress = NO;
-
+        self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];     
+        
         NSInteger pageCount = CGPDFDocumentGetNumberOfPages(pdf);
         
         UIScrollView *aScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
@@ -255,11 +257,21 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         self.pageViews = pageViewArray;
         [pageViewArray release];
         
-        self.pageNumber = 1;
-        [self loadPage:1 current:YES blank:NO];
-        [self loadPage:2 current:NO blank:NO];
+        if (page > self.pageCount) page = self.pageCount;
+        self.pageNumber = page;
+        
+        if (animated) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
+            [self loadPage:1 current:YES blank:NO];
+        } else {
+            [self loadPage:self.pageNumber current:YES blank:NO];
+            [self loadPage:(self.pageNumber - 1) current:NO blank:NO];
+            [self loadPage:(self.pageNumber + 1) current:NO blank:NO];
+            [self goToPageNumber:self.pageNumber animated:NO];
+        }
         
         [self performSelectorInBackground:@selector(parseFonts) withObject:nil];
+
         /*
         CGPDFDictionaryRef dict = CGPDFDocumentGetInfo(pdf);
         CGPDFDictionaryApplyFunction(dict, &logDictContents, @"documentDict");
@@ -341,12 +353,9 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 - (void)parsePage:(NSInteger)aPageNumber {
-    //NSLog(@"Start parse");
     CGPDFPageRef pageRef = CGPDFDocumentGetPage(pdf, aPageNumber);
     //[self displayDebugRect:CGRectZero forPage:pageNumber];
     BlioPDFParsedPage *parsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:self.fonts];
-    //NSLog(@"Page text: %@", [parsedPage textContent]);
-    //NSLog(@"Text rect: %@", NSStringFromCGRect([parsedPage textRect]));
     [self.currentPageView setCurrentTextRect:[parsedPage textRect]];
     //[self.debugView setInterestRect:[parsedPage textRect]];
     //[self.debugView setNeedsDisplay];
@@ -361,7 +370,12 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 }
 
+- (void)gotoCurrentPageAnimated {
+    [self goToPageNumber:self.pageNumber animated:YES];
+}
+
 - (void)goToPageNumber:(NSInteger)aPageNumber animated:(BOOL)animated {
+    [self willChangeValueForKey:@"pageNumber"];
     CFTimeInterval delayScroll = 0.2f;
     BOOL zoomIn = NO;
     
@@ -371,15 +385,17 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         zoomIn = YES;
     }
     
-    if (aPageNumber != self.pageNumber) {
-        [self loadPage:aPageNumber current:YES blank:NO];
-        if (!animated) [self loadPage:aPageNumber - 1 current:NO blank:NO];
-        if (!animated) [self loadPage:aPageNumber + 1 current:NO blank:NO];
-        
-        pageNumber = aPageNumber;        
+    [self loadPage:aPageNumber current:YES blank:NO];
+    
+    if (animated) {
+        self.scrollToPageInProgress = YES;
+    } else {
+        [self loadPage:aPageNumber - 1 current:NO blank:NO];
+        [self loadPage:aPageNumber + 1 current:NO blank:NO];
     }
     
-    if (animated) self.scrollToPageInProgress = YES;
+    self.pageNumber = aPageNumber;        
+        
     CGRect targetRect = self.currentPageView.frame;
     BOOL willAnimate = animated;
     NSMethodSignature * mySignature = [BlioLayoutView instanceMethodSignatureForSelector:@selector(delayedScrollRectToVisible:animated:zoom:)];
@@ -396,6 +412,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     self.currentPageView = nil;
     [self.scrollView scrollRectToVisible:rect animated:animated];
     if (zoom) [self performSelector:@selector(zoomCurrentViewToContents) withObject:nil afterDelay:0.5f];
+    [self didChangeValueForKey:@"pageNumber"];
 }
 
 - (void)zoomCurrentViewToContents {
@@ -470,7 +487,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
     
 - (void)loadPage:(int)aPageNumber current:(BOOL)current blank:(BOOL)blank forceReload:(BOOL)reload {
-    
     if (aPageNumber < 1) return;
     if (aPageNumber > CGPDFDocumentGetNumberOfPages (pdf)) return;
 	
@@ -561,7 +577,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     if (self.scrollToPageInProgress) {
         self.scrollToPageInProgress = NO;
         
-        [self loadPage:self.pageNumber current:YES blank:NO forceReload:YES];
         [self loadPage:self.pageNumber - 1 current:NO blank:NO forceReload:YES];
         [self loadPage:self.pageNumber + 1 current:NO blank:NO forceReload:YES];      
     }
@@ -574,6 +589,50 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateAfterScroll];
 }
+
+#pragma mark -
+#pragma mark Manual KVO overrides
+
+- (void)setPageNumber:(NSInteger)newPageNumber {
+    if (!self.scrollToPageInProgress) {
+        [self willChangeValueForKey:@"pageNumber"];
+        pageNumber=newPageNumber;
+        [self didChangeValueForKey:@"pageNumber"];
+    } else {
+        pageNumber=newPageNumber;
+    }
+}
+
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)theKey {
+    BOOL automatic = NO;
+    
+    if ([theKey isEqualToString:@"pageNumber"]) {
+        automatic=NO;
+    } else {
+        automatic=[super automaticallyNotifiesObserversForKey:theKey];
+    }
+    return automatic;
+}
+
+#pragma mark -
+#pragma mark Notification Callbacks
+
+- (void)blioCoverPageDidFinishRenderAfterDelay:(NSNotification *)notification {
+    [self goToPageNumber:self.pageNumber animated:YES];
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:@"blioCoverPageDidFinishRender" 
+                                                  object:nil];
+}
+
+- (void)blioCoverPageDidFinishRenderOnMainThread:(NSNotification *)notification {
+    // To allow the tiled view to do its fading out.
+    [self performSelector:@selector(blioCoverPageDidFinishRenderAfterDelay:) withObject:notification afterDelay:0.75];
+}
+
+- (void)blioCoverPageDidFinishRender:(NSNotification *)notification  {
+    [self performSelectorOnMainThread:@selector(blioCoverPageDidFinishRenderOnMainThread:) withObject:notification waitUntilDone:YES];
+}
+
 
 @end
 
@@ -860,7 +919,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     // RENDER DEBUG NSLog(@"currentCTM: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     CGContextClipToRect(ctx, pageRect);
     if (page) CGContextDrawPDFPage(ctx, page);
-    if (cover) [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:self];
+    if (cover) [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
 }
 
 - (void)setPage:(CGPDFPageRef)newPage {
