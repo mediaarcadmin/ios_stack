@@ -409,7 +409,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         visiblePageIndex = pageIndex;        
     }
     
-    //if (animated) self.scrollToPageInProgress = YES;
+    if (animated) self.scrollToPageInProgress = YES;
     CGRect targetRect = self.currentPageView.frame;
     BOOL willAnimate = animated;
     NSMethodSignature * mySignature = [BlioLayoutView instanceMethodSignatureForSelector:@selector(delayedScrollRectToVisible:animated:zoom:)];
@@ -573,11 +573,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     NSInteger currentPageIndex = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     
     if (currentPageIndex != visiblePageIndex) {
-        [self loadPage:currentPageIndex current:YES blank:self.scrollToPageInProgress];
-        if (!self.scrollToPageInProgress) [self loadPage:currentPageIndex - 1 current:NO blank:NO];
-        if (!self.scrollToPageInProgress) [self loadPage:currentPageIndex + 1 current:NO blank:NO];
-        
         visiblePageIndex = currentPageIndex;
+        
+        [self loadPage:currentPageIndex current:YES blank:NO];
+        if (!self.scrollToPageInProgress) {
+            [self loadPage:currentPageIndex - 1 current:NO blank:NO];
+            [self loadPage:currentPageIndex + 1 current:NO blank:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioBookViewPageHasChanged" object:[NSNumber numberWithInt:currentPageIndex+1]];
+        }
         
         if (tiltScroller) {
             [tiltScroller setScrollView:self.currentPageView];
@@ -595,7 +598,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         
         [self loadPage:currentPageIndex current:YES blank:NO forceReload:YES];
         [self loadPage:currentPageIndex - 1 current:NO blank:NO forceReload:YES];
-        [self loadPage:currentPageIndex + 1 current:NO blank:NO forceReload:YES];        
+        [self loadPage:currentPageIndex + 1 current:NO blank:NO forceReload:YES];      
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioBookViewPageHasChanged" object:[NSNumber numberWithInt:currentPageIndex+1]];
     }
 }
 

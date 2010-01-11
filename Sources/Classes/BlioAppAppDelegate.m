@@ -21,6 +21,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
 @synthesize window;
 @synthesize navigationController;
+@synthesize libraryController;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -101,6 +102,9 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
+    NSManagedObjectContext *moc = [self managedObjectContext]; 
+    [libraryController setManagedObjectContext:moc];
+    
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
     window.backgroundColor = [UIColor blackColor];
@@ -129,6 +133,9 @@ static void *background_init_thread(void * arg) {
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Save data if appropriate
+    NSError *error;
+    if (![[self managedObjectContext] save:&error])
+        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 
@@ -136,9 +143,92 @@ static void *background_init_thread(void * arg) {
 #pragma mark Memory management
 
 - (void)dealloc {
+    [managedObjectContext release];
+    [managedObjectModel release];
+    [persistentStoreCoordinator release];
 	[navigationController release];
+    [libraryController release];
 	[window release];
 	[super dealloc];
+}
+
+#pragma mark -
+#pragma mark Core Data stack
+
+/**
+ Returns the managed object context for the application.
+ If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
+ */
+- (NSManagedObjectContext *) managedObjectContext {
+	
+    if (managedObjectContext != nil) {
+        return managedObjectContext;
+    }
+	
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil) {
+        managedObjectContext = [[NSManagedObjectContext alloc] init];
+        [managedObjectContext setPersistentStoreCoordinator: coordinator];
+    }
+    return managedObjectContext;
+}
+
+
+/**
+ Returns the managed object model for the application.
+ If the model doesn't already exist, it is created by merging all of the models found in the application bundle.
+ */
+- (NSManagedObjectModel *)managedObjectModel {
+	
+    if (managedObjectModel != nil) {
+        return managedObjectModel;
+    }
+    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+    return managedObjectModel;
+}
+
+
+/**
+ Returns the persistent store coordinator for the application.
+ If the coordinator doesn't already exist, it is created and the application's store added to it.
+ */
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
+	
+    if (persistentStoreCoordinator != nil) {
+        return persistentStoreCoordinator;
+    }
+	
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSURL *storeUrl = [NSURL fileURLWithPath: [basePath stringByAppendingPathComponent: @"Blio.sqlite"]];
+	
+	NSError *error;
+    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error]) {
+        // Handle error
+        // Delete the current store and start again
+        // TODO - this is just a demo convenience - you would not want to do this in real deployment
+        NSError *fileError;
+        if (![[NSFileManager defaultManager] removeItemAtPath:[storeUrl absoluteString] error:&fileError])
+             NSLog(@"Could not delete the existing persistent store: %@, %@", fileError, [fileError userInfo]);
+            
+        // Attempt to create the store again
+        if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error])
+            NSLog(@"Could not create persistent store: %@, %@", error, [error userInfo]);
+        else
+            NSLog(@"Persistent store recreated after deleting the existing one");
+        
+    }    
+	
+    return persistentStoreCoordinator;
+}
+
+- (NSManagedObjectContext*)newContextToMainStore {
+    NSPersistentStoreCoordinator *coord = nil; 
+    coord = [self persistentStoreCoordinator];
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+    [moc setPersistentStoreCoordinator:coord]; 
+    return [moc autorelease];
 }
 
 @end

@@ -97,12 +97,14 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize libraryLayout = _libraryLayout;
 @synthesize bookCoverPopped = _bookCoverPopped;
 @synthesize firstPageRendered = _firstPageRendered;
+@synthesize managedObjectContext = _managedObjectContext;
 
 - (void)dealloc {
     self.currentBookView = nil;
     self.books = nil;
     self.tableView = nil;
     self.currentPoppedBookCover = nil;
+    self.managedObjectContext = nil;
     [super dealloc];
 }
 
@@ -178,138 +180,144 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [libraryLayoutButton release];
     [segmentedControl release];
     
-    NSMutableArray *aArray = [NSMutableArray array];
-    BlioMockBook *aBook = nil;
+    NSError *error = nil; 
+    NSManagedObjectContext *moc = [self managedObjectContext]; 
     
-    NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
+    // Load any persisted books
+    NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+    NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
+    NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
+    [positionSort release];
+    [request setSortDescriptors:sorters];
+    [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+    self.books = [moc executeFetchRequest:request error:&error];
     
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"Dead Is So Last Year"];
-    [aBook setAuthor:@"Marlene Perez"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"ePubs/Dead Is So Last Year.epub/OPS/cover.png"]];
-    [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"epub" inDirectory:@"ePubs"]];
-    [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"]];
-    [aBook setProgress:0.8f];
-    [aBook setProportionateSize:0.3f];
-    [aArray addObject:aBook];
-    [aBook release];
+    if (error) 
+        NSLog(@"Error loading from persistent store: %@, %@", error, [error userInfo]);
     
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"Exiles In The Garden"];
-    [aBook setAuthor:@"Ward Just"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"ePubs/Exiles In The Garden.epub/OPS/cover.png"]];
-    [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"epub" inDirectory:@"ePubs"]];
-    [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"]];
-    [aBook setProgress:0.3f];
-    [aBook setProportionateSize:0.6f];
-    [aArray addObject:aBook];
-    [aBook release];
+    if (![self.books count]) {
+        NSLog(@"Creating Mock Books");
+        
+        BlioMockBook *aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Dead Is So Last Year"];
+        [aBook setAuthor:@"Marlene Perez"];
+        [aBook setCoverFilename:@"ePubs/Dead Is So Last Year.epub/OPS/cover.png"];
+        [aBook setEpubFilename:@"Dead Is So Last Year"];
+        [aBook setPdfFilename:@"Dead Is So Last Year"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.8f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.3f]];
+        [aBook setPosition:0];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Exiles In The Garden"];
+        [aBook setAuthor:@"Ward Just"];
+        [aBook setCoverFilename:@"ePubs/Exiles In The Garden.epub/OPS/cover.png"];
+        [aBook setEpubFilename:@"Exiles In The Garden"];
+        [aBook setPdfFilename:@"Exiles In The Garden"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.3f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.6f]];
+        [aBook setPosition:[NSNumber numberWithInt:1]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Essentials Of Discrete Mathematics"];
+        [aBook setAuthor:@"David J. Hunter"];
+        [aBook setCoverFilename:@"MockCovers/Essentials_of_Discrete_Mathematics.png"];
+        [aBook setEpubFilename:@"Essentials_of_Discrete_Mathematics"];
+        [aBook setPdfFilename:@"Essentials_of_Discrete_Mathematics"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.2f]];
+        [aBook setPosition:[NSNumber numberWithInt:2]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Three Little Pigs"];
+        [aBook setAuthor:@"Stella Blackstone"];
+        [aBook setCoverFilename:@"MockCovers/Three_Little_Pigs.png"];
+        [aBook setEpubFilename:@"Three Little Pigs"];
+        [aBook setPdfFilename:@"Three Little Pigs"];
+        [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
+        [aBook setPosition:[NSNumber numberWithInt:3]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"The Oz Principle"];
+        [aBook setAuthor:@"Roger Conners"];
+        [aBook setCoverFilename:@"MockCovers/RogerConnors.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.7f]];
+        [aBook setPosition:[NSNumber numberWithInt:4]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"How To Be A Movie Star"];
+        [aBook setAuthor:@"William Mann"];
+        [aBook setCoverFilename:@"MockCovers/WilliamMann.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
+        [aBook setPosition:[NSNumber numberWithInt:5]];
+
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Her Fearful Symmetry"];
+        [aBook setAuthor:@"Audrey Niffenegger"];
+        [aBook setCoverFilename:@"MockCovers/AudreyNiffenegger.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
+        [aBook setPosition:[NSNumber numberWithInt:6]];
+
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"The Lost Symbol"];
+        [aBook setAuthor:@"Dan Brown"];
+        [aBook setCoverFilename:@"MockCovers/DanBrown.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.53f]];
+        [aBook setPosition:[NSNumber numberWithInt:7]];
+
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Hostage"];
+        [aBook setAuthor:@"Don Brown"];
+        [aBook setCoverFilename:@"MockCovers/DonBrown.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.41f]];
+        [aBook setPosition:[NSNumber numberWithInt:8]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"I, Alex Cross"];
+        [aBook setAuthor:@"James Patterson"];
+        [aBook setCoverFilename:@"MockCovers/JamesPatterson.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.65f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.67f]];
+        [aBook setPosition:[NSNumber numberWithInt:9]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Diary of a Wimpy Kid, Dog Days"];
+        [aBook setAuthor:@"Jeff Kinney"];
+        [aBook setCoverFilename:@"MockCovers/JeffKinney.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
+        [aBook setPosition:[NSNumber numberWithInt:10]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Pirate Latitudes"];
+        [aBook setAuthor:@"Michael Crichton"];
+        [aBook setCoverFilename:@"MockCovers/MichaelCrichton.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.54f]];
+        [aBook setPosition:[NSNumber numberWithInt:11]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"The Girl With The Dragon Tatoo"];
+        [aBook setAuthor:@"Stieg Larsson"];
+        [aBook setCoverFilename:@"MockCovers/StiegLarsson.png"];
+        [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
+        [aBook setPosition:[NSNumber numberWithInt:12]];
+        
+        if (![moc save:&error]) {
+            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        } else {
+            self.books = [moc executeFetchRequest:request error:&error];
+        }
+    }
+    [request release];
     
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"Essentials Of Discrete Mathematics"];
-    [aBook setAuthor:@"David J. Hunter"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/Essentials_of_Discrete_Mathematics.png"]];
-    [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"epub" inDirectory:@"ePubs"]];
-    [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]];
-    [aBook setProgress:0.0f];
-    [aBook setProportionateSize:0.2f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"Three Little Pigs"];
-    [aBook setAuthor:@"Stella Blackstone"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/Three_Little_Pigs.png"]];
-    [aBook setBookPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"epub" inDirectory:@"ePubs"]];
-    [aBook setPdfPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]];
-    [aBook setProgress:1.0f];
-    [aBook setProportionateSize:0.05f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"The Oz Principle"];
-    [aBook setAuthor:@"Roger Conners"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/RogerConnors.png"]];
-    [aBook setProgress:0.0f];
-    [aBook setProportionateSize:0.7f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"How To Be A Movie Star"];
-    [aBook setAuthor:@"William Mann"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/WilliamMann.png"]];
-    [aBook setProgress:0.0f];
-    [aBook setProportionateSize:0.45f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"Her Fearful Symmetry"];
-    [aBook setAuthor:@"Audrey Niffenegger"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/AudreyNiffenegger.png"]];
-    [aBook setProgress:0.0f];
-    [aBook setProportionateSize:0.62f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"The Lost Symbol"];
-    [aBook setAuthor:@"Dan Brown"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/DanBrown.png"]];
-    [aBook setProgress:1.0f];
-    [aBook setProportionateSize:0.53f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"Hostage"];
-    [aBook setAuthor:@"Don Brown"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/DonBrown.png"]];
-    [aBook setProgress:0.0f];
-    [aBook setProportionateSize:0.41f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"I, Alex Cross"];
-    [aBook setAuthor:@"James Patterson"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/JamesPatterson.png"]];
-    [aBook setProgress:0.65f];
-    [aBook setProportionateSize:0.67f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"Diary of a Wimpy Kid, Dog Days"];
-    [aBook setAuthor:@"Jeff Kinney"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/JeffKinney.png"]];
-    [aBook setProgress:0.0f];
-    [aBook setProportionateSize:0.45f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"Pirate Latitudes"];
-    [aBook setAuthor:@"Michael Crichton"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/MichaelCrichton.png"]];
-    [aBook setProgress:0.0f];
-    [aBook setProportionateSize:0.54f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    aBook = [[BlioMockBook alloc] init];
-    [aBook setTitle:@"The Girl With The Dragon Tatoo"];
-    [aBook setAuthor:@"Stieg Larsson"];
-    [aBook setCoverPath:[resourcePath stringByAppendingPathComponent:@"MockCovers/StiegLarsson.png"]];
-    [aBook setProgress:1.0f];
-    [aBook setProportionateSize:0.62f];
-    [aArray addObject:aBook];
-    [aBook release];
-    
-    self.books = [NSArray arrayWithArray:aArray];
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor = [UIColor clearColor];
@@ -999,9 +1007,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
-    self.progressSlider.value = [newBook progress];
+    self.progressSlider.value = [[newBook progress] floatValue];
     CGRect progressFrame = self.progressSlider.frame;
-    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [newBook proportionateSize] * kBlioLibraryListContentWidth, progressFrame.size.height);
+    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
     [self setNeedsLayout];
 }
 

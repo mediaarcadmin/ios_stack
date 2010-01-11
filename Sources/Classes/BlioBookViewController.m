@@ -205,8 +205,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
     CGContextScaleCTM(ctx, 1.0, -1.0);
     
-    CGFloat yButtonPadding = 5.0f;
-    CGFloat xButtonPadding = 5.0f;
+    CGFloat yButtonPadding = 7.0f;
+    CGFloat xButtonPadding = 7.0f;
     CGFloat wedgePadding = 2.0f;
     CGRect inRect = CGRectInset(rect, xButtonPadding, yButtonPadding);
     CGFloat insetX, insetY;
@@ -253,7 +253,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
     CGContextSetLineWidth(ctx, 2.0f);
     
+    CGContextSaveGState(ctx);
+    CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1.0f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
     CGContextStrokeEllipseInRect(ctx, outerSquare);
+    CGContextRestoreGState(ctx);
 
     if (progress) {
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
@@ -364,7 +367,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     tapDetector = [[MSTapDetector alloc] init];
     motionControlsEnabled = kBlioTapTurnOff;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapToNextPage) name:@"TapToNextPage" object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pageHasChanged:) name:@"BlioBookViewPageHasChanged" object:nil];
+
     BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
     switch (lastLayout) {
@@ -667,18 +671,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                         
         EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
         [titleView setTitle:[self.book title]];
-        [titleView setAuthor:[self.book author]];                
+        [titleView setAuthor:[self.book author]];
         
         BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:CGRectMake(0,0, 50, 30)];
         [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
         _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
         self.pieButton = aPieButton;
         [aPieButton release];
-                           
-        //_pageJumpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scrubber-icon.png"]
-//                                                           style:UIBarButtonItemStyleBordered 
-//                                                          target:self 
-//                                                          action:@selector(togglePageJumpPanel)];
         
         [self.navigationItem setRightBarButtonItem:_pageJumpButton];
         
@@ -693,6 +692,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
             [[_bookView layer] addAnimation:animation forKey:@"PageViewTransitionIn"];
         }        
+        
+        // TODO this should be handled differently
+        if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
+            [self.bookView setPageNumber:[[self.book layoutPageNumber] integerValue] animated:NO];
+            [self.pieButton setProgress:[[self.book layoutPageNumber] integerValue]/(CGFloat)self.bookView.pageCount];
+        }
     }
 }
 
@@ -926,6 +931,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         } else if(phase == UITouchPhaseCancelled) {
             [_touch release];
             _touch = nil;
+            NSLog(@"UITouchPhaseCancelled");
         }
     }
 }
@@ -1093,6 +1099,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
      */    
 }
 
+- (void)pageHasChanged:(NSNotification *)notification {
+    [self updatePageJumpPanelAnimated:YES];
+    [self.book setLayoutPageNumber:[notification object]];
+}
 
 - (void)tapToNextPage {
     if ([self.bookView isKindOfClass:[BlioEPubView class]]) {
@@ -1144,8 +1154,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:[self.book pdfPath]];
             bookViewController.bookView = layoutView;
             
+            // TODO this should be handled differently
+            [self.bookView setPageNumber:[[self.book layoutPageNumber] integerValue] animated:NO];
+            [self.pieButton setProgress:[[self.book layoutPageNumber] integerValue]/(CGFloat)self.bookView.pageCount];
+            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
+           
         }
     }
     
