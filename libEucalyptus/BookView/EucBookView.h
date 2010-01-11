@@ -26,6 +26,7 @@
     id<EucPageLayoutController> _pageLayoutController;
 
     NSInteger _pageNumber;
+    NSInteger _pageCount;
     
     NSMutableDictionary *_pageViewToIndexPoint;
     NSCountedSet *_pageViewToIndexPointCounts;
@@ -73,7 +74,7 @@
 @property (nonatomic, assign) BOOL undimAfterAppearance;
 @property (nonatomic, assign) BOOL appearAtCoverThenOpen;
 
-@property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, readonly) NSInteger pageCount;
 @property (nonatomic, readonly) NSString *displayPageNumber;
 @property (nonatomic, readonly) NSString *pageDescription;
@@ -97,9 +98,8 @@
 - (IBAction)jumpForwards;
 - (IBAction)jumpBackwards;
 
-- (void)jumpToUuid:(NSString *)uuid;
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
-
+- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
+- (void)goToPageNumber:(NSInteger)newPageNumber animated:(BOOL)animated;
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 

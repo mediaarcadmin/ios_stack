@@ -32,6 +32,7 @@
 #define kBookFontPointSizeDefaultsKey @"EucBookFontPointSize"
 
 @interface EucBookView ()
+- (void)_goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)_removeHighlights;
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber;
 - (NSInteger)_sliderByteToPage:(float)byte;
@@ -40,6 +41,10 @@
 - (void)_updatePageNumberLabel;
 @property (nonatomic, retain) UIImage *pageTexture;
 @property (nonatomic, assign) BOOL pageTextureIsDark;
+
+@property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, assign) NSInteger pageCount;
+
 @end
 
 
@@ -56,6 +61,8 @@
 
 @synthesize contentsDataSource = _pageLayoutController;
 
+@synthesize pageNumber = _pageNumber;
+@synthesize pageCount = _pageCount;
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book 
 {
@@ -131,7 +138,11 @@
         [_pageViewToIndexPoint setObject:currentPageViewAndIndexPoint.second forKey:nonRetainedPageView];
         [_pageViewToIndexPointCounts addObject:nonRetainedPageView];
         _pageTurningView.currentPageView = currentPageViewAndIndexPoint.first;
-        _pageNumber = pageNumber;
+       
+        self.pageCount = _pageLayoutController.globalPageCount;
+        self.pageNumber = pageNumber;
+
+        [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
         [self _updatePageNumberLabel];
         
         _pageTurningView.dimQuotient = _dimQuotient;
@@ -143,7 +154,7 @@
     if(self.window) {
         if(self.appearAtCoverThenOpen) {
             EucBookPageIndexPoint *indexPoint = [_book currentPageIndexPoint];
-            [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:indexPoint] animated:YES];
+            [self _goToPageNumber:[_pageLayoutController pageNumberForIndexPoint:indexPoint] animated:YES];
             self.appearAtCoverThenOpen = NO;
         } 
         if(self.undimAfterAppearance) {
@@ -197,61 +208,37 @@
     }
 }
 
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated forced:(BOOL)forced
+- (void)_goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
 {
     NSInteger oldPageNumber = self.pageNumber;
-    if(forced || oldPageNumber != pageNumber) {
-        THPair *newPageViewAndIndexPoint = [self _pageViewAndIndexPointForBookPageNumber:pageNumber];
+
+    THPair *newPageViewAndIndexPoint = [self _pageViewAndIndexPointForBookPageNumber:pageNumber];
         
-        UIView *newPageView = newPageViewAndIndexPoint.first;
-        EucBookPageIndexPoint *newPageIndexPoint = newPageViewAndIndexPoint.second;
-        
-        NSValue *nonRetainedPageView = [NSValue valueWithNonretainedObject:newPageView];
-        [_pageViewToIndexPoint setObject:newPageIndexPoint forKey:nonRetainedPageView];
-        [_pageViewToIndexPointCounts addObject:nonRetainedPageView];
-        
-        [_book setCurrentPageIndexPoint:newPageIndexPoint];
-        
-        if(animated) {
-            NSInteger count = oldPageNumber - pageNumber;
-            if(count < 0) {
-                count = -count;
-            }
-            [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count];
-        } else {
-            _pageTurningView.currentPageView = newPageView;
-            [_pageTurningView drawView];
-            [self pageTurningView:_pageTurningView didTurnToView:newPageView];
+    UIView *newPageView = newPageViewAndIndexPoint.first;
+    EucBookPageIndexPoint *newPageIndexPoint = newPageViewAndIndexPoint.second;
+    
+    NSValue *nonRetainedPageView = [NSValue valueWithNonretainedObject:newPageView];
+    [_pageViewToIndexPoint setObject:newPageIndexPoint forKey:nonRetainedPageView];
+    [_pageViewToIndexPointCounts addObject:nonRetainedPageView];
+    
+    [_book setCurrentPageIndexPoint:newPageIndexPoint];
+    
+    if(animated && oldPageNumber != pageNumber) {
+        NSInteger count = oldPageNumber - pageNumber;
+        if(count < 0) {
+            count = -count;
         }
+        [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count];
+    } else {
+        _pageTurningView.currentPageView = newPageView;
+        [_pageTurningView drawView];
         
-        [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:animated];
-        _pageNumber = pageNumber;
-        
-        [self _updatePageNumberLabel];
+        [self pageTurningView:_pageTurningView didTurnToView:newPageView];
     }
-}
-
-- (void)setPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
-{
-    [self setPageNumber:pageNumber animated:animated forced:NO];
-}
-
-
-- (void)setPageNumber:(NSInteger)pageNumber
-{
-    [self setPageNumber:pageNumber animated:NO];
-}
-
-
-- (NSInteger)pageNumber
-{
-    return _pageNumber;
-}
-
-
-- (NSInteger)pageCount
-{
-    return _pageLayoutController.globalPageCount;
+    
+    // Preemptive, to make the animation run at the same time as the 
+    // page turning view's animation.
+    [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:animated];                
 }
 
 - (void)_redisplayCurrentPage
@@ -260,7 +247,7 @@
         [_pageViewToIndexPoint removeAllObjects];
         [_pageViewToIndexPointCounts removeAllObjects];
         _dontSaveIndexPoints = YES;
-        [self setPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO forced:YES];
+        [self _goToPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO];
         _dontSaveIndexPoints = NO;
     }
 }    
@@ -403,16 +390,15 @@
         _highlightWordOffset = wordOffset;
         
         if(!_highlightingDisabled) {
-            if(newPageNumber != _pageNumber) {
+            if(newPageNumber != self.pageNumber) {
                 [self _removeHighlights];
-                [self setPageNumber:newPageNumber animated:YES];
+                [self _goToPageNumber:newPageNumber animated:YES];
             } else {
                 [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
             }
         }
     }
 }
-
 
 - (NSString *)displayPageNumber
 {
@@ -424,21 +410,23 @@
     return [_pageLayoutController pageDescriptionForPageNumber:self.pageNumber];
 }
 
-
-- (void)jumpToPage:(NSInteger)newPageNumber
+- (void)goToPageNumber:(NSInteger)newPageNumber animated:(BOOL)animated
 {
-    NSInteger currentPageNumber = self.pageNumber;
-    if(newPageNumber != currentPageNumber) {
-        [self setPageNumber:newPageNumber animated:YES];
-        _savedJumpPage = currentPageNumber;
-        _directionalJumpCount = newPageNumber > currentPageNumber ? 1 : -1;
-        _jumpShouldBeSaved = YES;
-    }
+    [self _goToPageNumber:newPageNumber animated:animated];
 }
 
-- (void)jumpToUuid:(NSString *)uuid
+- (void)_goToPageNumberSavingJump:(NSInteger)newPageNumber animated:(BOOL)animated
 {
-    [self jumpToPage:[_pageLayoutController pageNumberForSectionUuid:uuid]];
+    NSInteger currentPageNumber = self.pageNumber;
+    _savedJumpPage = currentPageNumber;
+    _directionalJumpCount = newPageNumber > currentPageNumber ? 1 : -1;
+    _jumpShouldBeSaved = YES;
+    [self goToPageNumber:newPageNumber animated:animated];
+}
+
+- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
+{
+    [self _goToPageNumberSavingJump:[_pageLayoutController pageNumberForSectionUuid:uuid] animated:animated];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -463,7 +451,7 @@
                 NSString *message = nil;
                 if([scheme caseInsensitiveCompare:@"internal"] == NSOrderedSame) {
                     // This is an internal link - jump to the specified section.
-                    [self jumpToUuid:url.resourceSpecifier];
+                    [self goToUuid:url.resourceSpecifier animated:YES];
                 } else {
                     // See if our delegate wants to handle the link.
                     if(![_delegate respondsToSelector:@selector(bookView:shouldHandleTapOnHyperlink:withAttributes:)] ||
@@ -505,7 +493,7 @@
     if(_directionalJumpCount == -1) {
         // If the last page turn we did was a jump on the opposite direction,
         // jump back to the position we used to be at.
-        [self setPageNumber:_savedJumpPage animated:YES];
+        [self _goToPageNumber:_savedJumpPage animated:YES];
         return;
     }  
     
@@ -517,7 +505,7 @@
     NSInteger newPageNumber = [_pageLayoutController nextSectionPageNumberForPageNumber:currentPageNumber];
     
     if(newPageNumber != currentPageNumber) {
-        [self setPageNumber:newPageNumber animated:YES];
+        [self _goToPageNumber:newPageNumber animated:YES];
         // Save our previous position so that we can jump back to it if the user
         // taps the next section button.
         ++jumpCount;
@@ -534,7 +522,7 @@
     if(_directionalJumpCount == 1) {
         // If the last page turn we did was a jump on the opposite direction,
         // jump back to the position we used to be at.
-        [self setPageNumber:_savedJumpPage animated:YES];
+        [self _goToPageNumber:_savedJumpPage animated:YES];
         return;
     }
     
@@ -550,7 +538,7 @@
     NSInteger newPageNumber = [_pageLayoutController previousSectionPageNumberForPageNumber:currentPageNumber];
     
     if(newPageNumber != currentPageNumber) {
-        [self setPageNumber:newPageNumber animated:YES];
+        [self _goToPageNumber:newPageNumber animated:YES];
         // Save our previous position so that we can jump back to it if the user
         // taps the next section button.
         --jumpCount;
@@ -750,19 +738,20 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     EucBookPageIndexPoint *pageIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
     NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
     
-    if(pageNumber != _pageNumber) {
-        if(!_dontSaveIndexPoints) {
-            [_book setCurrentPageIndexPoint:pageIndexPoint];
-        }
-        if(!_jumpShouldBeSaved) {
-            _directionalJumpCount = 0;
-        } else {
-            _jumpShouldBeSaved = NO;
-        }
-        _pageSlider.scaledValue = [self _pageToSliderByte:pageNumber];
-        _pageNumber = pageNumber;   
-        [self _updatePageNumberLabel];
+    if(!_dontSaveIndexPoints) {
+        [_book setCurrentPageIndexPoint:pageIndexPoint];
     }
+    if(!_jumpShouldBeSaved) {
+        _directionalJumpCount = 0;
+    } else {
+        _jumpShouldBeSaved = NO;
+    }
+    
+    self.pageNumber = pageNumber;   
+    
+    [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
+    [self _updatePageNumberLabel];
+    
     if(_highlightPage == pageNumber) {
         [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
     }
@@ -775,9 +764,16 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _scaleCurrentPointSize = 0;
     
     [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
-    //[_book setCurrentPageIndexPoint:[_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]]];
+    
+    EucBookPageIndexPoint *pageIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
+    NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
+    self.pageNumber = pageNumber;
+    self.pageCount = _pageLayoutController.globalPageCount;
+    
+    [self _updateSliderByteToPageRatio];
+    [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
+    [self _updatePageNumberLabel];
 }
-
 
 - (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
 {
@@ -811,12 +807,10 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     }
 }
 
-
 - (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView viewEdgeIsRigid:(UIView *)view
 {
     return [_pageLayoutController viewShouldBeRigid:view];
 }
-
 
 - (void)_addButtonToView:(UIView *)view withImageNamed:(NSString *)name centerPoint:(CGPoint)centerPoint target:(id)target action:(SEL)action
 {
@@ -1107,7 +1101,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 - (void)_afterPageSliderSlid:(THScalableSlider *)sender
 {
-    [self setPageNumber:[self _sliderByteToPage:sender.scaledValue] animated:YES];
+    [self _goToPageNumberSavingJump:[self _sliderByteToPage:sender.scaledValue] animated:YES];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
@@ -1117,6 +1111,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 - (void)_updateSliderByteToPageRatio
 {
     _sliderByteToPageRatio = 1;
+    _pageSlider.maximumValue = [_pageLayoutController globalPageCount] - 1;
     _pageSlider.maximumAvailable = [_pageLayoutController globalPageCount];
     /*
      if(_paginationIsComplete) {
