@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import <libcss/libcss.h>
 
-@class EucHTMLDBNode, EucHTMLDocument;
+@class EucHTMLDBNode, EucHTMLDocument, THStringRenderer;
 
 @interface EucHTMLDocumentNode : NSObject {
     EucHTMLDBNode *_dbNode;
@@ -19,14 +19,18 @@
     
     css_computed_style *_computedStyle;
     NSString *_text;
+    
+    THStringRenderer *_stringRenderer;
 }
 
 @property (nonatomic, readonly) uint32_t key;
 @property (nonatomic, readonly) EucHTMLDBNode *dbNode;
 
-@property (nonatomic, readonly) css_computed_style *computedStyle;
 @property (nonatomic, readonly) BOOL isTextNode;
 @property (nonatomic, readonly) NSString *text;
+
+@property (nonatomic, readonly) css_computed_style *computedStyle;
+@property (nonatomic, readonly) THStringRenderer *stringRenderer;
 
 @property (nonatomic, readonly) EucHTMLDocumentNode *parent;
 @property (nonatomic, readonly) NSArray *children;

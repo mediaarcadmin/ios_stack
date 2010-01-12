@@ -7,67 +7,12 @@
 //
 
 #import "EucHTMLDocumentRenderer.h"
+#import "EucHTMLDocumentRendererLaidOutNode.h"
 #import "EucHTMLDocumentNode.h"
+#import "EucHTMLDocument.h"
 #import "THPair.h"
 #import "thjust.h"
-
-static NSString *sSingleSpaceString = @" ";
-static NSString *sOpenNodeMarker = @"open";
-static NSString *sCloseNodeMarker = @"close";
-
-typedef struct Breakpoint {
-    uint32_t word;
-    uint32_t hyphenationPoint;
-} Breakpoint;
-
-typedef struct EucPoint {
-    uint32_t x;
-    uint32_t y;
-} EucPoint;
-
-typedef struct EucSize {
-    uint32_t width;
-    uint32_t height;
-} EucSize;
-
-@interface EucHTMLDocumentRendererLaidOutNode : NSObject {
-@public
-    uint32_t blockNodeKey;
-    
-    EucPoint contentPosition;
-    EucSize contentSize;
-    
-    NSString **words;
-    void *hyphenationPoints;
-    uint32_t *wordNodeKeys;
-    uint32_t wordCount;
-    
-    Breakpoint *lineBreaks;
-    EucPoint *linePositions;
-    uint32_t lineCount;
-} 
-
-@end
-
-@implementation EucHTMLDocumentRendererLaidOutNode
-
-- (void)dealloc
-{
-    for(uint32_t i = 0; ++i; i < wordCount) {
-        CFRelease((CFStringRef)words[i]);
-    }
-    free(words);
-    free(hyphenationPoints);
-    free(wordNodeKeys);
-    
-    free(lineBreaks);
-    free(linePositions);
-    
-    [super dealloc];
-}
-
-@end
-
+#import "THStringRenderer.h"
 
 @implementation EucHTMLDocumentRenderer
 
@@ -112,7 +57,7 @@ typedef struct EucSize {
                             [words addObject:(NSString *)string];
                         }
                     }
-                    [words addObject:sSingleSpaceString];
+                    [words addObject:EucHTMLRendererSingleSpaceMarker];
                 }
                 _previousInlineCharacterWasSpace = YES;
             } else {
@@ -165,8 +110,8 @@ Block completion status.
 
     
     EucHTMLDocumentRendererLaidOutNode *thisLaidOutNode = [[EucHTMLDocumentRendererLaidOutNode alloc] init];
-    thisLaidOutNode->contentPosition.x = atX;
-    thisLaidOutNode->contentPosition.y = atY;
+    thisLaidOutNode.frame = CGRectMake(atX, atY, maxWidth, maxHeight);
+    thisLaidOutNode.documentNode = node;
         
 //    While we have subnodes
     EucHTMLDocumentNode *previousSubnode = node;
@@ -215,28 +160,26 @@ Block completion status.
         } else if(isInline) {
             NSMutableArray *words = [[NSMutableArray alloc] init];
 
-            
             EucHTMLDocumentNode *inlineNode = subnode;
             css_computed_style *inlineNodeStyle = subnodeStyle;
 
             NSLog(@"Node:");
 //          //  While subnodes are inline and not float
-            while(inlineNode && 
-                  ([inlineNode isTextNode] || ((inlineNodeStyle = inlineNode.computedStyle) &&
-                                            //css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE &&
-                                            (css_computed_display(inlineNodeStyle, false) & CSS_DISPLAY_INLINE) == CSS_DISPLAY_INLINE))) {
-                
+            while (inlineNode && 
+                   (inlineNode.isTextNode || (inlineNodeStyle &&
+                                                //css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE &&
+                                                (css_computed_display(inlineNodeStyle, false) & CSS_DISPLAY_INLINE) == CSS_DISPLAY_INLINE))) {
 //                Create array of "lineElements" - words, spaces, node start/end markers 
 //                    (used to know about margins, fonts etc).
 //                Combine contents, performing whitespace processing.
 //                Parallel array maps to hyphenation points.
-                if([inlineNode isTextNode]) {
+                if(inlineNode.isTextNode) {
                     [self _accumulateInlineNode:inlineNode words:words];
                 } else {
                     // Open this node.
-                    [words addPairWithFirst:sOpenNodeMarker second:inlineNode];
+                    [words addPairWithFirst:EucHTMLRendererOpenNodeMarker second:inlineNode];
                     if(!inlineNode.children) {
-                        [words addPairWithFirst:sCloseNodeMarker second:inlineNode];
+                        [words addPairWithFirst:EucHTMLRendererCloseNodeMarker second:inlineNode];
                     }
                 }
                                                 
@@ -245,11 +188,16 @@ Block completion status.
                     inlineNode = nextNode;
                 } else {
                     // Close this node.
-                    [words addPairWithFirst:sCloseNodeMarker second:inlineNode];
+                    if(!inlineNode.isTextNode && inlineNode.children) {
+                        // If the node /doesn't/ have children, it's already closed,
+                        // above.
+                        [words addPairWithFirst:EucHTMLRendererCloseNodeMarker second:inlineNode];
+                    }
                     inlineNode = [inlineNode nextUnder:node];
                 }
+                inlineNodeStyle = inlineNode.computedStyle;
             }
-            
+
             NSUInteger wordsCount = words.count;
 
 //            Create horizontally-sized valid-break structure.
@@ -257,6 +205,7 @@ Block completion status.
 //                already on the line.
             
             THBreak *breaks = (THBreak *)malloc(wordsCount * sizeof(THBreak));
+            NSInteger *breakIndexes = (NSInteger *)malloc(wordsCount * sizeof(NSInteger));
             int breakCount = 0;
             int lineSoFarWidth = 0;
             EucHTMLDocumentNode *currentInlineNodeWithStyle = subnode;
@@ -267,22 +216,33 @@ Block completion status.
                 id word = [words objectAtIndex:i];
                 if([word isKindOfClass:[THPair class]]) {
                     THPair *markerPair = (THPair *)word;
-                    if(markerPair.first == sOpenNodeMarker) {
+                    if(markerPair.first == EucHTMLRendererOpenNodeMarker) {
                         currentInlineNodeWithStyle = markerPair.second;
-                        // Margins etc.
-                    } else if(markerPair.first == sCloseNodeMarker) {
+                        // Take account of margins etc.
+                    } else if(markerPair.first == EucHTMLRendererCloseNodeMarker) {
                         currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
-                        // Margins etc.
+                        // Take account of margins etc.
                     }
                 } else {
-                    if(word == sSingleSpaceString) {
+                    css_fixed length;
+                    css_unit unit;
+                    css_computed_font_size(currentInlineNodeWithStyle.computedStyle, &length, &unit);
+                    
+                    CGFloat pixelSize = libcss_size_to_pixels(length, unit);
+                    
+                    if(word == EucHTMLRendererSingleSpaceMarker) {
                         breaks[breakCount].x0 = lineSoFarWidth;
-                        breaks[breakCount].x1 = ++lineSoFarWidth;
+                        lineSoFarWidth += [currentInlineNodeWithStyle.stringRenderer widthOfString:@" "
+                                                                                         pointSize:pixelSize];
+                        breaks[breakCount].x1 = lineSoFarWidth;
                         breaks[breakCount].penalty = 0;
                         breaks[breakCount].flags = TH_JUST_FLAG_ISSPACE;
+                        breakIndexes[breakCount] = i;
                         ++breakCount;
                     } else {
-                        lineSoFarWidth += ((NSString *)word).length;
+                        CGFloat width = [currentInlineNodeWithStyle.stringRenderer widthOfString:word
+                                                                                       pointSize:pixelSize];
+                        lineSoFarWidth += width;
                     }
                 }
             }
@@ -290,16 +250,34 @@ Block completion status.
             breaks[breakCount].x1 = lineSoFarWidth;
             breaks[breakCount].penalty = 0;
             breaks[breakCount].flags = TH_JUST_FLAG_ISHARDBREAK;
-            ++breakCount;            
+            breakIndexes[breakCount] = wordsCount;
+            ++breakCount;
             
 //            Justify resulting paragraph.
             int *usedBreakIndices = (int *)malloc(breakCount * sizeof(int));
-            int usedBreakCount = th_just(breaks, breakCount, 80, 0, usedBreakIndices);
-            
-//            Store word + hyphenation point -> line end map.
-//                Work out line heights.
+            int usedBreakCount = th_just(breaks, breakCount, maxWidth, 0, usedBreakIndices);
+
+            int lastWordIndex = 0;
+            for(int i = 0; i < usedBreakCount; ++i) {
+                int wordIndex = breakIndexes[usedBreakIndices[i]];
+                EucHTMLDocumentRendererLaidOutNode *thisLine = [[EucHTMLDocumentRendererLaidOutNode alloc] init];
+                thisLine.lineContents = [words subarrayWithRange:NSMakeRange(lastWordIndex, wordIndex - lastWordIndex)];
+                
+                // Size and position line.
+                
+                [thisLaidOutNode addChild:thisLine];
+                [thisLine release];
+                
+                lastWordIndex = wordIndex;
+                if(lastWordIndex < wordsCount && [words objectAtIndex:lastWordIndex] == EucHTMLRendererSingleSpaceMarker) {
+                    ++lastWordIndex;
+                }
+            }
+
+            NSLog(@"%ld breaks used", (long)usedBreakCount);
+
 //            If floats end before page ends resulting lines overlap float end positions
-//                Pop and reflow from start of line after overlap stops.
+//                Pop float stack and reflow from start of line after overlap stops.
 //            If resulting lines overflow the bottom of the page
 //                If (overflow count < allowed widows count) 
 //                    If (non-overflowed count - (allowed widows count - overflow count)) > orphans count
@@ -322,12 +300,8 @@ Block completion status.
 //                        Record laid out children in laid out list.
 //                        Return.
             
-            
-            for(NSString *word in words) {
-                NSLog(@"%@", word);
-            }            
-            
             free(breaks);
+            free(breakIndexes);
             [words release];
             
             previousSubnode = inlineNode;

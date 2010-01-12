@@ -7,6 +7,7 @@
  *
  */
 
+#import "LWCNSStringAdditions.h"
 #import "EucHTMLDBNode.h"
 #import "EucHTMLDBNodeManager.h"
 #import <libcss/libcss.h>
@@ -418,7 +419,11 @@ css_error EucHTMLDBParentNode(void *pw, void *node, void **parent)
     EucHTMLDBNodeManager *manager = (EucHTMLDBNodeManager *)pw;
     uint32_t key = (uint32_t)(intptr_t)node;
     
-    *parent = (void *)(intptr_t)[[manager nodeForKey:key] parentNode].key;
+    if([[NSString stringWithLWCString:[manager nodeForKey:key].name] caseInsensitiveCompare:@"body"] == NSOrderedSame) {
+        *parent = NULL;
+    } else {
+        *parent = (void *)(intptr_t)[[manager nodeForKey:key] parentNode].key;
+    }
     
     return CSS_OK;    
 }

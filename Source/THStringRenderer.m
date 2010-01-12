@@ -147,7 +147,14 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 #if TARGET_OS_IPHONE
                             specificFontNames = [UIFont fontNamesForFamilyName:fontName];
 #else
-                            specificFontNames = [[NSFontManager sharedFontManager] availableMembersOfFontFamily:fontName];
+                            {
+                                NSArray *specifics = [[NSFontManager sharedFontManager] availableMembersOfFontFamily:fontName];
+                                NSMutableArray *buildSpecificFontNames = [NSMutableArray arrayWithCapacity:specifics.count];
+                                for(NSArray *specific in specifics) {
+                                    [buildSpecificFontNames addObject:[specific objectAtIndex:0]];
+                                }
+                                specificFontNames = buildSpecificFontNames;
+                            }
 #endif
                             NSInteger specificFontCount = specificFontNames.count;
                             if(specificFontCount) {

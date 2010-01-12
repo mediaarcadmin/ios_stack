@@ -30,6 +30,7 @@
 
 - (void)dealloc
 {
+    [_bodyNode release];
     lwc_context_unref(_lwcContext);
     [super dealloc];
 }
@@ -42,6 +43,31 @@
         CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
     }
     return node;
+}
+
+- (BOOL)nodeIsBody:(EucHTMLDBNode *)node
+{
+    if(_bodyNode) {
+        return node == _bodyNode;
+    } else {
+        if(node.kind == nodeKindElement) {
+            lwc_string *bodyString;
+            lwc_context_intern(_lwcContext, "body", 4, &bodyString);
+            lwc_string *nodeName = node.name;
+            bool isEqual = false;
+            lwc_error err = lwc_context_string_caseless_isequal(_lwcContext,
+                                                                nodeName, 
+                                                                bodyString,
+                                                                &isEqual);
+            if(err == CSS_OK && isEqual) {
+                _bodyNode = [node retain];
+            }
+            
+            lwc_context_string_unref(_lwcContext, bodyString);
+            
+            return _bodyNode ? YES : NO;
+        }                                          
+    }        
 }
 
 - (void)notifyOfDealloc:(EucHTMLDBNode *)node

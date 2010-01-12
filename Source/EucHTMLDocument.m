@@ -18,6 +18,64 @@
 //#import "LibCSSDebug.h"
 //#import "dump_computed.h"
 
+CGFloat libcss_size_to_pixels(css_fixed size, css_unit units)
+{
+    CGFloat ret = FIXTOFLT(size);
+    
+    /*
+    NSString *unns = nil;
+    switch(units) {
+        case CSS_UNIT_EX:
+            unns = @"ex";
+            break;
+        case CSS_UNIT_EM:
+            unns = @"em";
+            break;
+        case CSS_UNIT_IN:
+            unns = @"in";
+            break;
+        case CSS_UNIT_CM:
+            unns = @"cm";
+            break;
+        case CSS_UNIT_MM:
+            unns = @"mm";
+            break;
+        case CSS_UNIT_PC:
+            unns = @"pc";
+            break;
+        case CSS_UNIT_PX:
+            unns = @"px";
+            break;
+        case CSS_UNIT_PT:
+            unns = @"pt";
+            break;
+    }
+    NSLog(@"%f%@", ret, unns);
+    */
+     
+    switch(units) {
+        case CSS_UNIT_EX:
+        case CSS_UNIT_EM:
+            abort();
+            break;
+        case CSS_UNIT_IN:
+            ret *= 2.54;
+        case CSS_UNIT_CM:
+            ret *= 10;
+        case CSS_UNIT_MM:
+            ret *= 0.155828221; // mm per dot on an iPhone screen.
+            break;
+        case CSS_UNIT_PC:
+            ret *= 12;
+            break;
+        case CSS_UNIT_PX:
+        case CSS_UNIT_PT:
+            break;
+    }
+    
+    return ret;
+}
+
 @implementation EucHTMLDocument
 
 @synthesize body = _body;
@@ -187,7 +245,8 @@ static css_error resolve_url(void *pw, lwc_context *dict,
             _keyToExtantNode = CFDictionaryCreateMutable(kCFAllocatorDefault,
                                                          0,
                                                          &keyCallbacks,
-                                                         &valueCallbacks);            
+                                                         &valueCallbacks);
+            CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)_body.key, _body);
         }
     }
     return self;
