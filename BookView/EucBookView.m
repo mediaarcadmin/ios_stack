@@ -748,7 +748,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     }
     
     self.pageNumber = pageNumber;  
-    self.pageCount = _pageLayoutController.globalPageCount;
     
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
     [self _updatePageNumberLabel];
@@ -797,6 +796,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [_pageLayoutController setFontPointSize:fontPointSize];
     [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
     [self _redisplayCurrentPage];
+    self.pageCount = _pageLayoutController.globalPageCount;
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view
