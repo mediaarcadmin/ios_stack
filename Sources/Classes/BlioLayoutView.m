@@ -62,6 +62,7 @@ typedef enum {
     NSMutableDictionary *toUnicode;
     NSMutableDictionary *charEncoding;
     unichar notdef;
+    NSInteger missingWidth;
 }
 
 @property (nonatomic, retain) NSString *key;
@@ -73,16 +74,18 @@ typedef enum {
 @property (nonatomic, retain) NSMutableDictionary *toUnicode;
 @property (nonatomic, retain) NSMutableDictionary *charEncoding;
 @property (nonatomic) unichar notdef;
+@property (nonatomic) NSInteger missingWidth;
 
 - (id)initWithKey:(NSString *)key;
 //- (BOOL)isEqualToFont:(BlioPDFFont *)font;
-- (void)setGlyphLookup:(unichar)glyphCode atIndex:(NSUInteger)glyphIndex;
+//- (void)setGlyphLookup:(unichar)glyphCode atIndex:(NSUInteger)glyphIndex;
 //- (void)setGlyphName:(NSString *)name atIndex:(NSUInteger)glyphIndex;
-- (CGSize)displacementForGlyph:(unichar)glyph;
+
+- (NSInteger)glyphWidthForCharacter:(unichar)character;
 - (NSInteger)decodedCharacterForCharacter:(unichar)character;
 - (void)createEncoding;
 + (NSMutableDictionary *)glyphDictionaryForEncoding:(BlioPDFEncoding)pdfEncoding;
-+ (unichar)characterForGlyphName:(NSString *)name encoding:(BlioPDFEncoding)pdfEncoding;
+//+ (unichar)characterForGlyphName:(NSString *)name encoding:(BlioPDFEncoding)pdfEncoding;
 - (NSString *)stringForUnicode:(unichar)character;
 
 @end
@@ -392,7 +395,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     [self displayDebugRect:CGRectZero forPage:pageNumber];
     BlioPDFParsedPage *parsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:self.fonts];
     [self.currentPageView setCurrentTextRect:[parsedPage textRect]];
-    NSLog(@"Text content:\n%@", [[parsedPage textContent] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
+    //NSLog(@"Text content:\n%@", [[parsedPage textContent] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
     for (NSString *wordRect in [parsedPage wordRects]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioPDFDrawRectOfInterest" object:wordRect];
     }
@@ -1043,7 +1046,6 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
         // Attempt to retrieve a base encoding
         if (CGPDFDictionaryGetName(encodingDict, "BaseEncoding", &name)) {
             encodingName = [NSString stringWithCString:name encoding:NSASCIIStringEncoding];
-            //printf("Encoding string %s\n", name);
             if ([encodingName isEqualToString:@"MacRomanEncoding"])
                 encoding = kBlioPDFEncodingMacRoman;
             if ([encodingName isEqualToString:@"WinAnsiEncoding"])
@@ -1065,13 +1067,6 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
                 if (!CGPDFArrayGetInteger(diffArray, n, &startIndex)) {
                     if (CGPDFArrayGetName(diffArray, n, &name)) {
                         NSString *glyphName = [NSString stringWithCString:name encoding:NSASCIIStringEncoding];
-                        //NSArray *existingGlyphs = [glyphs allKeysForObject:[NSNumber numberWithInt:glyphIndex]];
-                        //for (NSString *key in existingGlyphs) {
-                          //  [glyphs removeObjectForKey:key];
-                        //}
-                        //[glyphs setObject:[NSNumber numberWithInt:glyphIndex] forKey:glyphName];
-                        //[glyphs removeObjectForKey:glyphName];
-                        //[glyphs setObject:[NSNumber numberWithInt:glyphIndex] forKey:glyphName];
                         NSNumber *charLookup = [NSNumber numberWithInt:charIndex];
                         [glyphs removeObjectForKey:charLookup];
                         [glyphs setObject:glyphName forKey:charLookup];
@@ -1084,7 +1079,6 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
         }        
     } else if (CGPDFDictionaryGetName(dict, "Encoding", &name)) {
         encodingName = [NSString stringWithCString:name encoding:NSASCIIStringEncoding];
-         //printf("Encoding string %s\n", name);
         if ([encodingName isEqualToString:@"MacRomanEncoding"])
             encoding = kBlioPDFEncodingMacRoman;
         if ([encodingName isEqualToString:@"WinAnsiEncoding"])
@@ -1100,36 +1094,76 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
     [font setFontEncoding:encoding];
     [font createEncoding];
     
-    //CGPDFInteger firstChar;
-    //if (CGPDFDictionaryGetInteger(dict, "FirstChar", &firstChar))
-        //[font setFirstChar:(NSUInteger)firstChar];
+    CGPDFDictionaryRef descriptorDict;
     
-    //CGPDFInteger lastChar;
-    //if (CGPDFDictionaryGetInteger(dict, "LastChar", &lastChar))
-        //[font setLastChar:(NSUInteger)lastChar];
+    NSUInteger firstWidthChar = 0;
+    CGPDFInteger firstChar;
+    if (CGPDFDictionaryGetInteger(dict, "FirstChar", &firstChar))
+        firstWidthChar = (NSUInteger)firstChar;
     
+    NSUInteger lastWidthChar = 255;
+    CGPDFInteger lastChar;
+    if (CGPDFDictionaryGetInteger(dict, "LastChar", &lastChar))
+        lastWidthChar = (NSUInteger)lastChar;
+    
+    NSInteger defaultWidth = 0;
     CGPDFArrayRef widths;
     if (CGPDFDictionaryGetArray(dict, "Widths", &widths)) {
-        int arraySize = CGPDFArrayGetCount(widths);
-        NSMutableArray *widthsArray = [NSMutableArray array];
+        NSInteger widthsTotal = 0;
+        int arraySize = CGPDFArrayGetCount(widths);        
+        NSMutableDictionary *widthsDict = [font widths];
         
         for(int n = 0; n < arraySize; n++) {
             if (n >= arraySize) continue;
             CGPDFInteger width;
-            if (CGPDFArrayGetInteger(widths, n, &width))
-                [widthsArray addObject:[NSNumber numberWithInt:(int)width]];
+            if (CGPDFArrayGetInteger(widths, n, &width)) {
+                [widthsDict setObject:[NSNumber numberWithInteger:(NSInteger)width] forKey:[NSNumber numberWithInteger:(firstWidthChar + n)]];
+                widthsTotal += width;
+            }
         }
-        //[font setWidths:widthsArray];
+        defaultWidth = (NSInteger)(round(widthsTotal/(float)arraySize));
+//        NSLog(@"%@: Calculated width: %d", baseFont, defaultWidth);
     }
+    
+    if (CGPDFDictionaryGetDictionary(dict, "FontDescriptor", &descriptorDict)) {
+        //CGPDFDictionaryApplyFunction(descriptorDict, &logDictContents, @"descriptorDict"); // TODO REMOVE
+        
+        CGPDFReal missingWidth;
+        CGPDFReal averageWidth;
+        CGPDFReal maxWidth;
+        CGPDFArrayRef fontBBox;
+        if (CGPDFDictionaryGetNumber(descriptorDict, "MissingWidth", &missingWidth)) {
+            //NSLog(@"%@: Missing width: %d", baseFont, (NSInteger)missingWidth);
+            defaultWidth = (NSInteger)missingWidth;
+        } else if (CGPDFDictionaryGetNumber(descriptorDict, "AverageWidth", &averageWidth)) {
+            //NSLog(@"%@: Average width: %d", baseFont, (NSInteger)averageWidth);
+            defaultWidth = (NSInteger)averageWidth;
+        } 
+        
+        // Use the maxWidths if we have nothing better
+        if (defaultWidth == 0) {
+            if (CGPDFDictionaryGetNumber(descriptorDict, "MaxWidth", &maxWidth)) {
+                //NSLog(@"%@: Max width: %d", baseFont, (NSInteger)maxWidth);
+                defaultWidth = (NSInteger)maxWidth;
+            } else if (CGPDFDictionaryGetArray(descriptorDict, "FontBBox", &fontBBox)) {
+                CGPDFReal x1, x2;
+                if (CGPDFArrayGetNumber(fontBBox, 0, &x1) && CGPDFArrayGetNumber(fontBBox, 2, &x2)) {
+                    CGFloat boxWidth = abs(x2 - x1);
+                    //NSLog(@"%@: BBox: %d", baseFont, (NSInteger)boxWidth);
+                    defaultWidth = (NSInteger)boxWidth;
+                }
+            }
+        }
+    }
+    [font setMissingWidth:defaultWidth];
     
     CGPDFStreamRef unicodeStream;
     if (CGPDFDictionaryGetStream(dict, "ToUnicode", &unicodeStream)) {
-        NSMutableDictionary *toUnicodeArray = [font toUnicode];
+        NSMutableDictionary *toUnicodeDict = [font toUnicode];
         
         CGPDFDataFormat constant;
         NSData *data = (NSData *)CGPDFStreamCopyData(unicodeStream, &constant);
         NSString *string = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-        //NSLog(@"PDFStream string:\n%@", string);
         NSScanner *scanner = [NSScanner scannerWithString:string];
         
         NSString *BEGINBFCHAR = @"beginbfchar";
@@ -1155,8 +1189,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
                           [destCharsString appendFormat:@"%C", hexInt];
                         }
                     }
-                    //NSLog(@"BFCHAR: <%02x> <%@>", srcCode, destCharsString);
-                    if (destCharsString) [toUnicodeArray setObject:destCharsString forKey:[NSNumber numberWithInt:srcCode]];
+                    if (destCharsString) [toUnicodeDict setObject:destCharsString forKey:[NSNumber numberWithInt:srcCode]];
                 }
             }
             if ([scanner scanString:BEGINBFRANGE intoString:NULL]) {
@@ -1181,8 +1214,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
                                     [destCharsString appendFormat:@"%C", hexInt];
                                 }
                             }
-                            //NSLog(@"BFRANGE: <%02x> <%@>", beginSrcCode+j, destCharsString);
-                            if (destCharsString) [toUnicodeArray setObject:destCharsString forKey:[NSNumber numberWithInt:beginSrcCode+j]];
+                            if (destCharsString) [toUnicodeDict setObject:destCharsString forKey:[NSNumber numberWithInt:beginSrcCode+j]];
                         }
                     } else {
                         NSMutableString *destCharsString = [NSMutableString string];
@@ -1200,8 +1232,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
                         [lastCharScanner scanHexInt:&lastDestCode];
                         for (int j = 0; j < rangeEntries; j++) {
                             NSString *concatString = [NSString stringWithFormat:@"%@%C", destCharsString, lastDestCode+j];
-                            if (concatString) [toUnicodeArray setObject:concatString forKey:[NSNumber numberWithInt:beginSrcCode+j]];
-                            //NSLog(@"BFRANGE: <%02x> <%@>", beginSrcCode+j, concatString);
+                            if (concatString) [toUnicodeDict setObject:concatString forKey:[NSNumber numberWithInt:beginSrcCode+j]];
                         }
                     }
                 }
@@ -1209,7 +1240,6 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
         }
         
     }
-    //NSLog(@"toUnicode:\n%@", [[font toUnicode] description]);
     
     [[fonts dictionary] setObject:font forKey:baseFont];
     [font release];
@@ -1253,7 +1283,7 @@ static NSDictionary *blioWinAnsiEncodingDict = nil;
 static NSDictionary *blioMacRomanEncodingDict = nil;
 static NSDictionary *blioAdobeGlyphList = nil;
 
-@synthesize key, baseFont, type, fontEncoding, glyphs, widths, toUnicode, charEncoding, notdef;
+@synthesize key, baseFont, type, fontEncoding, glyphs, widths, toUnicode, charEncoding, notdef, missingWidth;
 
 - (id)initWithKey:(NSString *)fontKey {
     
@@ -1261,6 +1291,7 @@ static NSDictionary *blioAdobeGlyphList = nil;
         self.key = fontKey;
         self.toUnicode = [NSMutableDictionary dictionaryWithCapacity:256];
         self.glyphs = [NSMutableDictionary dictionaryWithCapacity:256];
+        self.widths = [NSMutableDictionary dictionaryWithCapacity:256];
     }
     
     return self;
@@ -1282,12 +1313,7 @@ static NSDictionary *blioAdobeGlyphList = nil;
     NSString *value = [toUnicode objectForKey:lookup];
     if (value) {
         return value;
-    }// else {
-//        NSNumber *unicharNum = [charEncoding objectForKey:lookup];
-//        if (unicharNum) {
-//            return [NSString stringWithFormat:@"%C", [unicharNum integerValue]];
-//        }
-//    }
+    }
     return [NSString stringWithFormat:@"%C", character]; // no match
 }
 //
@@ -1316,28 +1342,38 @@ static NSDictionary *blioAdobeGlyphList = nil;
 //    }
 //}
 
-- (void)setGlyphLookup:(unichar)glyphCode atIndex:(NSUInteger)glyphIndex {
-    if (glyphIndex > 255) {
-        NSLog(@"Unexpectedly high glyphIndex (%d) for %C", glyphIndex, glyphCode);
+//- (void)setGlyphLookup:(unichar)glyphCode atIndex:(NSUInteger)glyphIndex {
+//    if (glyphIndex > 255) {
+//        NSLog(@"Unexpectedly high glyphIndex (%d) for %C", glyphIndex, glyphCode);
+//    } else {
+//        //lookup[glyphIndex] = glyphCode;
+//    }
+//}
+
+- (NSInteger)glyphWidthForCharacter:(unichar)character {
+    NSNumber *glyphWidth = [widths objectForKey:[NSNumber numberWithInteger:character]];
+    if (glyphWidth) {
+        return [glyphWidth integerValue];
     } else {
-        //lookup[glyphIndex] = glyphCode;
+        //NSLog(@"Warning: character not in widths: %C [%d]", character, character); // TODO take out
+        return missingWidth;
     }
 }
 
-- (CGSize)displacementForGlyph:(unichar)glyph {
-    if (glyph < 256) {
-        //NSInteger width = widths[glyph];
-        NSInteger width = [[widths objectForKey:[NSNumber numberWithInt:glyph]] intValue];
-        if (width == 0) {
-            // RENDER DEBUG NSLog(@"unichar not in widths: %C [%d]", glyph, glyph);
-            width = 300;
-        }
-        return CGSizeMake(width,300);
-    } else {
-        //NSLog(@"unichar outside bounds: %C [%d]", glyph, glyph);
-        return CGSizeMake(280,300);
-    }
-}
+//- (CGSize)displacementForGlyph:(unichar)glyph {
+//    if (glyph < 256) {
+//        //NSInteger width = widths[glyph];
+//        NSInteger width = [[widths objectForKey:[NSNumber numberWithInt:glyph]] intValue];
+//        if (width == 0) {
+//            // RENDER DEBUG NSLog(@"unichar not in widths: %C [%d]", glyph, glyph);
+//            width = 300;
+//        }
+//        return CGSizeMake(width,300);
+//    } else {
+//        //NSLog(@"unichar outside bounds: %C [%d]", glyph, glyph);
+//        return CGSizeMake(280,300);
+//    }
+//}
 
 - (NSInteger)decodedCharacterForCharacter:(unichar)character {
     NSNumber *lookup = [NSNumber numberWithInt:character];
@@ -1366,7 +1402,7 @@ static NSDictionary *blioAdobeGlyphList = nil;
         } else if ([glyphName isEqualToString:@".notdef"]) {
             self.notdef = [characterCode integerValue];
         } else {
-            NSLog(@"Warning: Missing glyph: '%@'", glyphName);
+            NSLog(@"Warning: Missing glyph: '%@'", glyphName); // TODO take out
         }
     }
     //NSLog(@"Encoding:\n%@", [self.fromEncoding description]);
@@ -6263,43 +6299,43 @@ static NSDictionary *blioAdobeGlyphList = nil;
     }
 }
 
-+ (unichar)characterForGlyphName:(NSString *)name encoding:(BlioPDFEncoding)pdfEncoding {
-    NSNumber *unicharValue;
-    switch (pdfEncoding) {
-        default: // Standard
-            unicharValue = [blioStandardEncodingDict valueForKey:name];
-            break;
-    }
-    
-    if (unicharValue) 
-        return [unicharValue intValue];
-    else
-        return 0;
-}
+//+ (unichar)characterForGlyphName:(NSString *)name encoding:(BlioPDFEncoding)pdfEncoding {
+//    NSNumber *unicharValue;
+//    switch (pdfEncoding) {
+//        default: // Standard
+//            unicharValue = [blioStandardEncodingDict valueForKey:name];
+//            break;
+//    }
+//    
+//    if (unicharValue) 
+//        return [unicharValue intValue];
+//    else
+//        return 0;
+//}
 
 @end
 
 @implementation BlioPDFParsedPage
 
-static void op_MP (CGPDFScannerRef s, void *info) {
-    //NSLog(@"op_MP");
-}
-
-static void op_DP (CGPDFScannerRef s, void *info) {
-    //NSLog(@"op_DP");
-}
-
-static void op_BMC (CGPDFScannerRef s, void *info) {
-    //NSLog(@"op_BMC");
-}
-
-static void op_BDC (CGPDFScannerRef s, void *info) {
-    //NSLog(@"op_BDC");
-}
-
-static void op_EMC (CGPDFScannerRef s, void *info) {
-    //NSLog(@"op_EMC");
-}
+//static void op_MP (CGPDFScannerRef s, void *info) {
+//    //NSLog(@"op_MP");
+//}
+//
+//static void op_DP (CGPDFScannerRef s, void *info) {
+//    //NSLog(@"op_DP");
+//}
+//
+//static void op_BMC (CGPDFScannerRef s, void *info) {
+//    //NSLog(@"op_BMC");
+//}
+//
+//static void op_BDC (CGPDFScannerRef s, void *info) {
+//    //NSLog(@"op_BDC");
+//}
+//
+//static void op_EMC (CGPDFScannerRef s, void *info) {
+//    //NSLog(@"op_EMC");
+//}
 
 static void op_Tf (CGPDFScannerRef s, void *info) {
     //printf("(Tf)");
@@ -6620,42 +6656,38 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
 
 - (void)addCharWithChar:(unichar)characterCode {
     unichar decodedCharacter;
-    CGSize glyphDisplacement;
+    NSInteger glyphWidth;
     
     CGAffineTransform textRenderingMatrix = CGAffineTransformConcat(textStateMatrix, textMatrix);
     NSInteger returnValue = [currentFont decodedCharacterForCharacter:characterCode];
     
     if (returnValue >= 0) {
         decodedCharacter = returnValue;
-        glyphDisplacement = [currentFont displacementForGlyph:decodedCharacter];
+        glyphWidth = [currentFont glyphWidthForCharacter:characterCode];
     } else {
-        //decodedCharacter = characterCode;
         decodedCharacter = [currentFont notdef];
-        glyphDisplacement = [currentFont displacementForGlyph:[currentFont notdef]];
+        glyphWidth = [currentFont glyphWidthForCharacter:[currentFont notdef]];
     }
     
     BOOL forceNewWord = NO;
     CGFloat Tx, Gx;
-    if (decodedCharacter == ' ') {
-        Tx = ((glyphDisplacement.width/1000 - (Tj/1000)) * Tfs + Tc + Tw) * Th;
-        Gx = ((glyphDisplacement.width/1000) * Tfs + Tw) * Th;
+    if (decodedCharacter == 32) {
+        Tx = ((glyphWidth/1000.0f - (Tj/1000.0f)) * Tfs + Tc + Tw) * Th;
+        Gx = ((glyphWidth/1000.0f) * Tfs + Tw) * Th;
         forceNewWord = YES;
     } else {
-        Tx = ((glyphDisplacement.width/1000 - (Tj/1000)) * Tfs + Tc) * Th;
-        Gx = ((glyphDisplacement.width/1000) * Tfs) * Th;
+        Tx = ((glyphWidth/1000.0f - (Tj/1000.0f)) * Tfs + Tc) * Th;
+        Gx = ((glyphWidth/1000.0f) * Tfs) * Th;
     }
-    //    if (Tj) {
-    //        NSLog(@"Horizontal displacement before char %@: %f", [currentFont stringForUnicode:decodedCharacter], -(Tj/1000)*Tfs);
-    //        NSLog(@"Tc: %f Tw: %f", Tc, Tw);
-    //    }
     
     Tj = 0;
     CGAffineTransform offsetMatrix = CGAffineTransformMakeTranslation(Tx, 0);
     
-    
     CGRect glyphRect = CGRectMake(0,0,Gx, Tfs * userUnit);
     CGRect renderRect = CGRectApplyAffineTransform(glyphRect, textRenderingMatrix);
     if (CGRectContainsRect(cropRect, renderRect)) {
+        // This code gets called a lot - would be better if there were no object allocations.
+        NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
         if (forceNewWord) {
             [wordRects addObject:NSStringFromCGRect(renderRect)];
         } else {
@@ -6678,7 +6710,9 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
             }
             //textRect = CGRectEqualToRect(textRect, CGRectZero) ? renderRect : CGRectUnion(textRect, renderRect);
         }
-        [textContent appendFormat:@"%@", [currentFont stringForUnicode:decodedCharacter]];
+        NSString *unicodeString = [currentFont stringForUnicode:decodedCharacter];
+        [textContent appendFormat:@"%@", unicodeString];
+        [innerPool drain];
     }
     
     textMatrix = CGAffineTransformConcat(offsetMatrix, textMatrix);
@@ -6701,11 +6735,11 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
         cropRect = CGPDFPageGetBoxRect(pageRef, kCGPDFCropBox);
         CGPDFOperatorTableRef myTable = CGPDFOperatorTableCreate();
         
-        CGPDFOperatorTableSetCallback (myTable, "MP", &op_MP);
-        CGPDFOperatorTableSetCallback (myTable, "DP", &op_DP);
-        CGPDFOperatorTableSetCallback (myTable, "BMC", &op_BMC);
-        CGPDFOperatorTableSetCallback (myTable, "BDC", &op_BDC);
-        CGPDFOperatorTableSetCallback (myTable, "EMC", &op_EMC);
+//        CGPDFOperatorTableSetCallback (myTable, "MP", &op_MP);
+//        CGPDFOperatorTableSetCallback (myTable, "DP", &op_DP);
+//        CGPDFOperatorTableSetCallback (myTable, "BMC", &op_BMC);
+//        CGPDFOperatorTableSetCallback (myTable, "BDC", &op_BDC);
+//        CGPDFOperatorTableSetCallback (myTable, "EMC", &op_EMC);
         CGPDFOperatorTableSetCallback(myTable, "Tf", &op_Tf);
         CGPDFOperatorTableSetCallback(myTable, "TJ", &op_TJ);
         CGPDFOperatorTableSetCallback(myTable, "Tj", &op_Tj);
@@ -6784,6 +6818,7 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
 
 - (id)initWithFrame:(CGRect)newFrame {
     if ((self = [super initWithFrame:newFrame])) {
+        self.userInteractionEnabled = NO;
         interestPath = CGPathCreateMutable();
         fitTransform = CGAffineTransformIdentity;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addRectOfInterest:) name:@"BlioPDFDrawRectOfInterest" object:nil];
