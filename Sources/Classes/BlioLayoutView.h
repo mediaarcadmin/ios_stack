@@ -12,6 +12,7 @@
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 
 @class BlioPDFFontList;
+@class BlioPDFParsedPage;
 @class BlioPDFDebugView;
 @class BlioPDFScrollView;
 
@@ -22,6 +23,7 @@
     id navigationController;
     NSInteger visiblePageIndex;
     BlioPDFFontList *fonts;
+    BlioPDFParsedPage *parsedPage;
     BlioPDFDebugView *debugView;
     BlioPDFScrollView *currentPageView;
     BOOL scrollToPageInProgress;
@@ -34,11 +36,14 @@
 @property (nonatomic, assign) id navigationController;
 @property (nonatomic, retain) BlioPDFScrollView *currentPageView;
 @property (nonatomic, assign) MSTiltScroller *tiltScroller;
-@property (retain) BlioPDFFontList *fonts;
+@property (nonatomic, retain) BlioPDFFontList *fonts;
+@property (nonatomic, retain) BlioPDFParsedPage *parsedPage;
 @property (nonatomic) BOOL scrollToPageInProgress;
 @property (nonatomic, readonly) NSInteger pageNumber;
 
 - (id)initWithPath:(NSString *)path;
 - (id)initWithPath:(NSString *)path page:(NSUInteger)page animated:(BOOL)animated;
+- (NSString *)parsedText;
+- (void)displayDebug;
 
 @end
