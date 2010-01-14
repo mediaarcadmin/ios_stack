@@ -46,11 +46,33 @@ static void logDictContents(const char *key, CGPDFObjectRef object, void *info) 
     }
 }
 */
+
+static const CGFloat kBlioPDFTextMinLineSpacing = 1.0f;
+static const CGFloat kBlioPDFTextMinWordSpacing = 2.0f;
+
 typedef enum {
     kBlioPDFEncodingStandard = 0,
     kBlioPDFEncodingMacRoman = 1,
     kBlioPDFEncodingWin = 2
 } BlioPDFEncoding;
+
+@interface BlioPDFPositionedString : NSObject {
+    NSString *string;
+    CGRect boundingRect;
+    NSUInteger lineNumber;
+}
+
+@property (nonatomic, retain) NSString *string;
+@property (nonatomic) CGRect boundingRect;
+@property (nonatomic) NSUInteger lineNumber;
+@property (nonatomic, readonly) CGFloat minY;
+@property (nonatomic, readonly) CGFloat minX;
+@property (nonatomic, readonly) CGFloat maxY;
+@property (nonatomic, readonly) CGFloat maxX;
+
+- (id)initWithString:(NSString *)aString;
+
+@end
 
 @interface BlioPDFFont : NSObject {
     NSString *key;
@@ -77,16 +99,11 @@ typedef enum {
 @property (nonatomic) NSInteger missingWidth;
 
 - (id)initWithKey:(NSString *)key;
-//- (BOOL)isEqualToFont:(BlioPDFFont *)font;
-//- (void)setGlyphLookup:(unichar)glyphCode atIndex:(NSUInteger)glyphIndex;
-//- (void)setGlyphName:(NSString *)name atIndex:(NSUInteger)glyphIndex;
-
 - (NSInteger)glyphWidthForCharacter:(unichar)character;
 - (NSInteger)decodedCharacterForCharacter:(unichar)character;
 - (void)createEncoding;
-+ (NSMutableDictionary *)glyphDictionaryForEncoding:(BlioPDFEncoding)pdfEncoding;
-//+ (unichar)characterForGlyphName:(NSString *)name encoding:(BlioPDFEncoding)pdfEncoding;
 - (NSString *)stringForUnicode:(unichar)character;
++ (NSMutableDictionary *)glyphDictionaryForEncoding:(BlioPDFEncoding)pdfEncoding;
 
 @end
 
@@ -102,9 +119,10 @@ typedef enum {
 
 @interface BlioPDFParsedPage : NSObject {
     CGRect cropRect;
-    CGRect textRect;
-    NSMutableArray *wordRects;
-    NSMutableString *textContent;
+    //CGRect textRect;
+    NSMutableArray *positionedStrings;
+    //NSMutableArray *wordRects;
+    //NSMutableString *textContent;
     NSMutableDictionary *fontLookup;
     BlioPDFFontList *fontList;
     CGAffineTransform textMatrix;
@@ -121,9 +139,10 @@ typedef enum {
     BlioPDFFont *currentFont;
 }
 
-@property (nonatomic) CGRect textRect;
-@property (nonatomic, retain) NSMutableArray *wordRects;
-@property (nonatomic, retain) NSMutableString * textContent;
+//@property (nonatomic) CGRect textRect;
+@property (nonatomic, retain) NSMutableArray *positionedStrings;
+//@property (nonatomic, retain) NSMutableArray *wordRects;
+//@property (nonatomic, retain) NSMutableString * textContent;
 @property (nonatomic, retain) NSMutableDictionary *fontLookup;
 @property (nonatomic, retain) BlioPDFFontList *fontList;
 @property (nonatomic) CGAffineTransform textMatrix;
@@ -142,6 +161,9 @@ typedef enum {
 - (id)initWithPage:(CGPDFPageRef)pageRef andFontList:(BlioPDFFontList*)newFontList;
 - (void)updateTextStateMatrix;
 - (void)addCharWithChar:(unichar)characterCode;
+- (NSString *)textContent;
+- (CGRect)rectForWordAtPosition:(NSInteger)position;
+- (NSArray *)textBlocks;
 
 @end
 
@@ -249,7 +271,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @implementation BlioLayoutView
 
 
-@synthesize scrollView, pageViews, navigationController, currentPageView, tiltScroller, fonts, scrollToPageInProgress, pageNumber;
+@synthesize scrollView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, pageNumber;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -261,6 +283,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     self.debugView = nil;
     self.currentPageView = nil;
     self.fonts = nil;
+    self.parsedPage = nil;
     [super dealloc];
 }
 
@@ -333,6 +356,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     return self;
 }
 
+- (NSString *)parsedText {
+    return [self.parsedPage textContent];
+}
+
 - (void)parseFonts {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     BlioPDFFontList *aFontsList = [[BlioPDFFontList alloc] init];
@@ -371,8 +398,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGRect frame = self.scrollView.frame;
     
     CGPDFPageRef pageRef = CGPDFDocumentGetPage(pdf, aPageNumber);
-    CGRect cropRect = CGPDFPageGetBoxRect(pageRef, kCGPDFCropBox);
-    CGRect mediaRect = CGPDFPageGetBoxRect(pageRef, kCGPDFMediaBox);
+    //CGRect cropRect = CGPDFPageGetBoxRect(pageRef, kCGPDFCropBox);
+    //CGRect mediaRect = CGPDFPageGetBoxRect(pageRef, kCGPDFMediaBox);
     frame.origin = CGPointZero;
     CGFloat inset = -kBlioLayoutShadow;
     CGRect insetBounds = UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
@@ -382,27 +409,33 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     frame.origin.y = 0;
     [self.debugView setFrame:frame];
     [self.debugView setFitTransform:fitTransform];
-    [self.debugView setCropRect:cropRect];
-    [self.debugView setMediaRect:mediaRect];
+    //[self.debugView setCropRect:cropRect];
+    //[self.debugView setMediaRect:mediaRect];
     [self.debugView clearAreasOfInterest];
     [self.debugView setInterestRect:rect];
     [self.debugView setNeedsDisplay];
     [self.scrollView bringSubviewToFront:self.debugView];
 }
 
+- (void)displayDebug {
+    [self displayDebugRect:CGRectZero forPage:pageNumber];
+}
+
 - (void)parsePage:(NSInteger)aPageNumber {
     CGPDFPageRef pageRef = CGPDFDocumentGetPage(pdf, aPageNumber);
-    [self displayDebugRect:CGRectZero forPage:pageNumber];
-    BlioPDFParsedPage *parsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:self.fonts];
-    [self.currentPageView setCurrentTextRect:[parsedPage textRect]];
-    //NSLog(@"Text content:\n%@", [[parsedPage textContent] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
-    for (NSString *wordRect in [parsedPage wordRects]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioPDFDrawRectOfInterest" object:wordRect];
-    }
-    //[self.debugView setInterestRect:[parsedPage textRect]];
-    //[self.debugView setNeedsDisplay];
-    [parsedPage release];
-    //NSLog(@"End parse");
+    BlioPDFParsedPage *aParsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:self.fonts];
+    self.parsedPage = aParsedPage;
+    [aParsedPage release];
+}
+
+#pragma mark -
+#pragma mark TTS
+
+- (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset {
+    [self displayDebug];
+    CGRect boundingRect = [self.parsedPage rectForWordAtPosition:wordOffset];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioPDFDrawRectOfInterest" object:NSStringFromCGRect(boundingRect)];
+    return;
 }
 
 #pragma mark -
@@ -1148,7 +1181,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
             } else if (CGPDFDictionaryGetArray(descriptorDict, "FontBBox", &fontBBox)) {
                 CGPDFReal x1, x2;
                 if (CGPDFArrayGetNumber(fontBBox, 0, &x1) && CGPDFArrayGetNumber(fontBBox, 2, &x2)) {
-                    CGFloat boxWidth = abs(x2 - x1);
+                    CGFloat boxWidth = fabs(x2 - x1);
                     //NSLog(@"%@: BBox: %d", baseFont, (NSInteger)boxWidth);
                     defaultWidth = (NSInteger)boxWidth;
                 }
@@ -6347,7 +6380,7 @@ static void op_Tf (CGPDFScannerRef s, void *info) {
         return;
     
     [parsedPage setTfs:number];
-    [parsedPage updateTextStateMatrix];
+    [parsedPage updateTextStateMatrix]; // Should be made inline
     
     if (!CGPDFScannerPopName(s, &name))
         return;
@@ -6515,7 +6548,6 @@ static void op_Td(CGPDFScannerRef inScanner, void *info) {
     if (success) {        
         [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], matrix[0], matrix[1])];
         [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
-        [[parsedPage textContent] appendString:@"\n"];
         //printf("%s", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
     }
     
@@ -6537,7 +6569,6 @@ static void op_TD(CGPDFScannerRef inScanner, void *info) {
     
         [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], matrix[0], matrix[1])];
         [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
-        [[parsedPage textContent] appendString:@"\n"];
         //printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
     }
     
@@ -6549,7 +6580,6 @@ static void op_TSTAR(CGPDFScannerRef inScanner, void *info) {
     
     [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
-    [[parsedPage textContent] appendString:@"\n"];
     //printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
 }
 
@@ -6559,7 +6589,6 @@ static void op_SINGLEQUOTE(CGPDFScannerRef inScanner, void *info) {
     
     [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
-    [[parsedPage textContent] appendString:@"\n"];
     //printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
     
     CGPDFStringRef string;
@@ -6592,7 +6621,6 @@ static void op_DOUBLEQUOTE(CGPDFScannerRef inScanner, void *info) {
     
     [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
-    [[parsedPage textContent] appendString:@"\n"];
     //printf("[%s]", [NSStringFromCGAffineTransform(parsedPage.textMatrix) UTF8String]);
     
     CGPDFStringRef string;
@@ -6637,19 +6665,157 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
 }
     
 
-@synthesize textRect, wordRects, textContent; 
+//@synthesize textRect, positionedStrings, wordRects, textContent; 
+@synthesize positionedStrings;
 @synthesize fontLookup, fontList, currentFont;
 @synthesize textMatrix, textLineMatrix, textStateMatrix, Tj, Tl, Tc, Tw, Th, Ts, Tfs, userUnit;
 
 - (void)dealloc {
     self.fontList = nil;
-    self.wordRects = nil;
+    self.positionedStrings = nil;
+    //self.wordRects = nil;
     self.fontLookup = nil;
-    self.textContent = nil;
+    //self.textContent = nil;
     self.currentFont = nil;
     [super dealloc];
 }
 
+- (NSString *)textContent {
+    NSMutableString *text = [NSMutableString string];
+    
+    NSSortDescriptor *minYDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"minY" ascending:NO] autorelease];
+    NSSortDescriptor *minXDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"minX" ascending:YES] autorelease];
+    NSSortDescriptor *lineDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"lineNumber" ascending:YES] autorelease];
+    
+    NSArray *lineOrderingDescriptors = [NSArray arrayWithObjects:minYDescriptor, minXDescriptor, nil];
+    NSArray *wordOrderingDescriptors = [NSArray arrayWithObjects:lineDescriptor, minXDescriptor, nil];
+    
+    CGFloat currentY = -1;
+    CGFloat currentX = -1;
+    NSInteger line = 0;
+    
+    for (BlioPDFPositionedString *positionedString in [positionedStrings sortedArrayUsingDescriptors:lineOrderingDescriptors]) {
+        if (fabs(positionedString.minY - currentY) >= kBlioPDFTextMinLineSpacing) {
+            line++;
+        }
+        positionedString.lineNumber = line;
+        currentY = positionedString.minY;
+    }
+    
+    line = 1;
+    NSString *lastString = nil;
+    
+    for (BlioPDFPositionedString *positionedString in [positionedStrings sortedArrayUsingDescriptors:wordOrderingDescriptors]) {    
+        if (nil == lastString) {
+            currentX = positionedString.minX;
+        } else if (positionedString.lineNumber != line) {
+            unichar lastChar = [lastString characterAtIndex:[lastString length] - 1];
+            if (lastChar != '-') {
+                [text appendString:@" "];
+            }
+            line = positionedString.lineNumber;
+            currentX = positionedString.minX;
+        }
+        
+        CGFloat displacement = fabs(positionedString.minX - currentX);
+        if (displacement >= kBlioPDFTextMinWordSpacing) {
+            [text appendString:@" "];
+        }
+        lastString = positionedString.string;
+        
+        currentX = positionedString.maxX;
+        [text appendString:lastString];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioPDFDrawRectOfInterest" object:NSStringFromCGRect(positionedString.boundingRect)];
+
+    }
+    
+    // Global substitutions
+    NSString *substitutedString;
+    substitutedString = [text stringByReplacingOccurrencesOfString:@"ﬁ" withString:@"fi"];
+    return substitutedString;
+}
+
+- (CGRect)rectForWordAtPosition:(NSInteger)position {
+    NSMutableString *text = [NSMutableString string];
+    
+    NSSortDescriptor *minYDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"minY" ascending:NO] autorelease];
+    NSSortDescriptor *minXDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"minX" ascending:YES] autorelease];
+    NSSortDescriptor *lineDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"lineNumber" ascending:YES] autorelease];
+    
+    NSArray *lineOrderingDescriptors = [NSArray arrayWithObjects:minYDescriptor, minXDescriptor, nil];
+    NSArray *wordOrderingDescriptors = [NSArray arrayWithObjects:lineDescriptor, minXDescriptor, nil];
+    
+    CGFloat currentY = -1;
+    CGFloat currentX = -1;
+    NSInteger line = 0;
+    
+    for (BlioPDFPositionedString *positionedString in [positionedStrings sortedArrayUsingDescriptors:lineOrderingDescriptors]) {
+        if (fabs(positionedString.minY - currentY) >= kBlioPDFTextMinLineSpacing) {
+            line++;
+        }
+        positionedString.lineNumber = line;
+        currentY = positionedString.minY;
+    }
+    
+    line = 1;
+    NSString *lastString = nil;
+    NSInteger currentWordPosition = 0;
+    NSMutableString *currentWord = nil;
+    CGRect currentWordRect = CGRectZero;
+    
+    for (BlioPDFPositionedString *positionedString in [positionedStrings sortedArrayUsingDescriptors:wordOrderingDescriptors]) {    
+        unichar lastChar = [lastString characterAtIndex:[lastString length] - 1];
+        
+        if (nil == lastString) {
+            currentX = positionedString.minX;
+        } else if (positionedString.lineNumber != line) {
+            if (lastChar != '-') {
+                [text appendString:@" "];
+                currentWordPosition++;
+                if (currentWordPosition > position) return currentWordRect;
+                currentWord = nil;
+            }
+            
+            line = positionedString.lineNumber;
+            currentX = positionedString.minX;
+        }
+        
+        if (lastChar == ' ') {
+            currentWordPosition++;
+            if (currentWordPosition > position) return currentWordRect;
+            currentWord = nil;
+        }
+        
+        CGFloat displacement = fabs(positionedString.minX - currentX);
+        if (displacement >= kBlioPDFTextMinWordSpacing) {
+            [text appendString:@" "];
+            currentWordPosition++;
+            if (currentWordPosition > position) return currentWordRect;
+            currentWord = nil;
+        }
+        
+        lastString = positionedString.string;
+        
+        currentX = positionedString.maxX;
+        
+        if (nil == currentWord) {
+            currentWord = [NSMutableString stringWithString:lastString];
+            currentWordRect = positionedString.boundingRect;
+        } else {
+            [currentWord appendString:lastString];
+            currentWordRect = CGRectUnion(currentWordRect, positionedString.boundingRect);
+        }
+    }
+        
+        return currentWordRect;
+}
+
+- (NSArray *)textBlocks {
+    return nil;
+}
+
+// TODO make this an inline function
 - (void)updateTextStateMatrix {
     textStateMatrix = CGAffineTransformMake(Tfs*Th, 0, 0, Tfs, 0, Ts);
 }
@@ -6680,14 +6846,19 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
         Gx = ((glyphWidth/1000.0f) * Tfs) * Th;
     }
     
-    Tj = 0;
-    CGAffineTransform offsetMatrix = CGAffineTransformMakeTranslation(Tx, 0);
-    
-    CGRect glyphRect = CGRectMake(0,0,Gx, Tfs * userUnit);
-    CGRect renderRect = CGRectApplyAffineTransform(glyphRect, textRenderingMatrix);
-    if (CGRectContainsRect(cropRect, renderRect)) {
-        // This code gets called a lot - would be better if there were no object allocations.
+    CGRect glyphRect = CGRectMake(- (Tj/1000.0f),0,Gx, Tfs * userUnit);
+    CGRect renderedGlyphRect = CGRectApplyAffineTransform(glyphRect, textRenderingMatrix);
+    //NSLog(@"%@ - %@", [currentFont stringForUnicode:decodedCharacter], NSStringFromCGRect(renderedGlyphRect));
+    if (CGRectContainsRect(cropRect, renderedGlyphRect)) {
+        // This code gets called a lot - would be better if there were no autoreleased objects.
         NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
+        
+        BlioPDFPositionedString *newString = [[BlioPDFPositionedString alloc] initWithString:[currentFont stringForUnicode:decodedCharacter]];
+        newString.boundingRect = renderedGlyphRect;
+        [positionedStrings addObject:newString];
+        [newString release];
+        
+        /*
         if (forceNewWord) {
             [wordRects addObject:NSStringFromCGRect(renderRect)];
         } else {
@@ -6712,20 +6883,24 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
         }
         NSString *unicodeString = [currentFont stringForUnicode:decodedCharacter];
         [textContent appendFormat:@"%@", unicodeString];
+        */
         [innerPool drain];
     }
     
+    Tj = 0;
+    CGAffineTransform offsetMatrix = CGAffineTransformMakeTranslation(Tx, 0);
     textMatrix = CGAffineTransformConcat(offsetMatrix, textMatrix);
     
 }
 
 - (id)initWithPage:(CGPDFPageRef)pageRef andFontList:(BlioPDFFontList *)newFontList {
     if ((self = [super init])) {
-        self.textRect = CGRectZero;
-        self.wordRects = [NSMutableArray array];
+        //self.textRect = CGRectZero;
+        self.positionedStrings = [NSMutableArray array];
+        //self.wordRects = [NSMutableArray array];
         self.fontLookup = [NSMutableDictionary dictionary];
         self.fontList = newFontList;
-        self.textContent = [NSMutableString string];
+        //self.textContent = [NSMutableString string];
         self.textMatrix = CGAffineTransformIdentity;
         self.textLineMatrix = CGAffineTransformIdentity;
         self.Th = 1;
@@ -6777,28 +6952,6 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
             [self setUserUnit:userUnitNumber];
         }
         
-        // DEBUG STATMENTS
-        /*
-         CGPDFDictionaryRef viewportDict;
-         CGPDFArrayRef viewportsArray;
-        CGPDFStreamRef contentsStream;
-        if (CGPDFDictionaryGetStream(dict, "Contents", &contentsStream)) {
-            CGPDFDictionaryRef contentsDict = CGPDFStreamGetDictionary(contentsStream);
-            CGPDFDictionaryApplyFunction(contentsDict, &logDictContents, @"contentsDict");
-        }
-        if (CGPDFDictionaryGetArray(dict, "VP", &viewportsArray)) {
-            for(size_t n = 0; n < CGPDFArrayGetCount(viewportsArray); n++) {
-                if (n >= CGPDFArrayGetCount(viewportsArray)) continue;
-                CGPDFArrayGetDictionary(viewportsArray, n, &viewportDict);
-                CGPDFObjectRef object;
-                CGPDFDictionaryGetObject(viewportDict, "BBox", &object);
-                NSLog(@"Viewport BBox of type: %d", CGPDFObjectGetType(object));
-                        
-            }
-        }
-         */
-        // END DEBUG STATEMENTS
-        
         myContentStream = CGPDFContentStreamCreateWithPage (pageRef);
         myScanner = CGPDFScannerCreate (myContentStream, myTable, self);
         CGPDFScannerScan (myScanner);
@@ -6808,6 +6961,44 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
         CGPDFOperatorTableRelease(myTable);
     }
     return self;
+}
+
+@end
+
+@implementation BlioPDFPositionedString
+
+@synthesize string, boundingRect, lineNumber;
+
+- (void)dealloc {
+    self.string = nil;
+    [super dealloc];
+}
+
+- (id)init {
+    return [self initWithString:nil];
+}
+
+- (id)initWithString:(NSString *)aString {
+    if ((self = [super init])) {
+        self.string = aString;
+    }
+    return self;
+}
+
+- (CGFloat)minY {
+    return CGRectGetMinY(boundingRect);
+}
+
+- (CGFloat)minX {
+    return CGRectGetMinX(boundingRect);
+}
+
+- (CGFloat)maxY {
+    return CGRectGetMaxY(boundingRect);
+}
+
+- (CGFloat)maxX {
+    return CGRectGetMaxX(boundingRect);
 }
 
 @end
@@ -6855,7 +7046,9 @@ static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) {
     CGContextStrokeRect(ctx, CGRectApplyAffineTransform(cropRect, fitTransform));
     CGContextSetStrokeColorWithColor(ctx, [UIColor yellowColor].CGColor);
     CGContextAddPath(ctx, interestPath);
-    CGContextStrokePath(ctx);
+    //CGContextStrokePath(ctx);
+    CGContextSetRGBFillColor(ctx, 0, 0, 1, 0.5f);
+    CGContextFillPath(ctx);
     CGContextSetStrokeColorWithColor(ctx, [UIColor greenColor].CGColor);
     CGContextStrokeRect(ctx, CGRectApplyAffineTransform(interestRect, fitTransform));
 }

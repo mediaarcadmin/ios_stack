@@ -488,7 +488,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:nil];
+                                           action:@selector(dummyShowParsedText:)];
     [readingItems addObject:item];
     [item release];
     
@@ -1302,7 +1302,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
     
     if ([keyPath isEqual:@"pageCount"]) {
-        NSLog(@"updating pagecount: %d", [[change objectForKey:NSKeyValueChangeNewKey] integerValue]);
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
     }
@@ -1419,10 +1418,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [aSettingsSheet release];
 }
 
-- (void)dismissViewSettings:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
-}
-
 - (void)speakNextPargraph:(NSTimer*)timer {
 	if ( _acapelaTTS.textToSpeakChanged ) {	
 		[_acapelaTTS setTextToSpeakChanged:NO];
@@ -1434,39 +1429,58 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void) prepareTextToSpeak:(BOOL)continuingSpeech {
-	BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-	BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-	EucEPubBook *book = (EucEPubBook*)bookView.book;
-	uint32_t paragraphId, wordOffset;
-	if ( continuingSpeech ) {
-		// Continuing to speak, we just need more text.
-		paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
-		wordOffset = 0;
-		[_acapelaTTS setCurrentWordOffset:wordOffset];
-		[_acapelaTTS setCurrentParagraph:paragraphId];
-		[_acapelaTTS.paragraphWords release];
-		[_acapelaTTS setParagraphWords:nil];
-		[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
-	}
-	else {
-		[book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
-		// Play button has just been pushed.
-		if ( (paragraphId + wordOffset)!=[_acapelaTTS currentPage] ) {
-			// Starting speech for the first time, or for the first time since changing the 
-			// page or book after stopping speech the last time (whew).
-			[_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
-			[_acapelaTTS setCurrentWordOffset:wordOffset];
-			[_acapelaTTS setCurrentParagraph:paragraphId];
-			if ( _acapelaTTS.paragraphWords != nil ) {
-				[_acapelaTTS.paragraphWords release];
-				[_acapelaTTS setParagraphWords:nil];
-			}
-			[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
-		}
-		// else use the current word and paragraph, which is where we last stopped.
-		// edge case:  what if you stopped speech right after the end of the paragraph?
-	}
-	[_acapelaTTS setTextToSpeakChanged:YES];
+    // THIS IS DUMMY CODE TO TEST TTS IN LAYOUT VIEW
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+        if ( continuingSpeech ) {
+            // Do nothing
+        } else {
+            [_acapelaTTS setCurrentPage:self.bookView.pageNumber]; // Not very robust page-identifier
+            [_acapelaTTS setCurrentWordOffset:0];
+            [_acapelaTTS setCurrentParagraph:1];
+            if ( _acapelaTTS.paragraphWords != nil ) {
+                [_acapelaTTS.paragraphWords release];
+                [_acapelaTTS setParagraphWords:nil];
+            }
+            [_acapelaTTS setParagraphWords:[[(BlioLayoutView *)self.bookView parsedText] componentsSeparatedByString:@" "]];
+            
+        }
+        [_acapelaTTS setTextToSpeakChanged:YES];
+        
+    } else {
+        BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+        BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
+        EucEPubBook *book = (EucEPubBook*)bookView.book;
+        uint32_t paragraphId, wordOffset;
+        if ( continuingSpeech ) {
+            // Continuing to speak, we just need more text.
+            paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
+            wordOffset = 0;
+            [_acapelaTTS setCurrentWordOffset:wordOffset];
+            [_acapelaTTS setCurrentParagraph:paragraphId];
+            [_acapelaTTS.paragraphWords release];
+            [_acapelaTTS setParagraphWords:nil];
+            [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+        }
+        else {
+            [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+            // Play button has just been pushed.
+            if ( (paragraphId + wordOffset)!=[_acapelaTTS currentPage] ) {
+                // Starting speech for the first time, or for the first time since changing the 
+                // page or book after stopping speech the last time (whew).
+                [_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
+                [_acapelaTTS setCurrentWordOffset:wordOffset];
+                [_acapelaTTS setCurrentParagraph:paragraphId];
+                if ( _acapelaTTS.paragraphWords != nil ) {
+                    [_acapelaTTS.paragraphWords release];
+                    [_acapelaTTS setParagraphWords:nil];
+                }
+                [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+            }
+            // else use the current word and paragraph, which is where we last stopped.
+            // edge case:  what if you stopped speech right after the end of the paragraph?
+        }
+        [_acapelaTTS setTextToSpeakChanged:YES];
+    }
 }
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
@@ -1520,7 +1534,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)toggleAudio:(id)sender {
-	if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+	if ([self currentPageLayout] == kBlioPageLayoutPlainText || [self currentPageLayout] == kBlioPageLayoutPageLayout) {
 		UIBarButtonItem *item = (UIBarButtonItem *)sender;
 		
 		UIImage *audioImage = nil;
@@ -1559,7 +1573,32 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		}
 		self.audioPlaying = !self.audioPlaying;  
 		[item setImage:audioImage];
-	}
+	} 
+}
+
+- (void)dummyShowParsedText:(id)sender {
+    if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
+        [(BlioLayoutView *)self.bookView displayDebug];
+        UITextView *aTextView = [[UITextView alloc] initWithFrame:self.view.bounds];
+        [aTextView setEditable:NO];
+        [aTextView setContentInset:UIEdgeInsetsMake(10, 0, 10, 0)];
+        [aTextView setText:[(BlioLayoutView *)self.bookView parsedText]];
+        [aTextView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+        UIViewController *aVC = [[UIViewController alloc] init];
+        aVC.view = aTextView;
+        [aTextView release];
+        UINavigationController *aNC = [[UINavigationController alloc] initWithRootViewController:aVC];
+        [self presentModalViewController:aNC animated:YES];
+        aVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dummyDismissParsedText:)];                                                 
+        aVC.navigationItem.title = [NSString stringWithFormat:@"Page %d Text", self.bookView.pageNumber];
+        aNC.navigationBar.tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
+        [aVC release];
+        [aNC release];
+    }   
+}
+                                                  
+- (void)dummyDismissParsedText:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 #pragma mark -
