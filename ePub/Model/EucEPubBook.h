@@ -49,4 +49,6 @@
 
 - (void)getCurrentParagraphId:(uint32_t *)id wordOffset:(uint32_t *)wordOffset;
 
+- (void)setCurrentPageIndexPointForUuid:(NSString *)uuid;
+
 @end
