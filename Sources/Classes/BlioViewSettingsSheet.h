@@ -18,8 +18,8 @@
     UISegmentedControl *lockButtonSegment;
     UISegmentedControl *tapTurnButtonSegment;
     UIButton *doneButton;
-    UIImage *enableTapTurnImage;
-    UIImage *disableTapTurnImage;
+    UIImage *tapTurnOnImage;
+    UIImage *tapTurnOffImage;
     UIImage *lockRotationImage;
     UIImage *unlockRotationImage;   
 }
