@@ -42,7 +42,7 @@ typedef enum {
     UITouch *_touch;
     BOOL _touchMoved;
             
-    EucBookContentsTableViewController *_contentsSheet;
+    //EucBookContentsTableViewController *_contentsSheet;
     
     BOOL _viewIsDisappearing;
         

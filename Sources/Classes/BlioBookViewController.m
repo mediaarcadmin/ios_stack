@@ -578,21 +578,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self updatePageJumpPanelForPage:self.bookView.pageNumber animated:YES];
 }
 
-- (void)_contentsViewDidAppear
+- (void)_contentsViewDidAppear:(id)sender
 {
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
-- (void)_contentsViewDidDisappear
-{
-    NSString *newSectionUuid = [_contentsSheet.selectedUuid retain];
-    NSInteger newPageNumber = [_contentsSheet.dataSource pageNumberForSectionUuid:newSectionUuid];
-    
-    [_contentsSheet.view removeFromSuperview];
-    [_contentsSheet release];
-    _contentsSheet = nil;
-    
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+- (void)_contentsViewDidDisappear:(id)sender {
+    EucBookContentsTableViewController *contentsSheet = [(BlioContentsTabViewController *)sender contentsController];
+    NSString *newSectionUuid = [contentsSheet.selectedUuid retain];
+    NSInteger newPageNumber = [contentsSheet.dataSource pageNumberForSectionUuid:newSectionUuid];
     
     if(newSectionUuid) {
         [self updatePageJumpPanelForPage:newPageNumber animated:YES];
@@ -606,7 +600,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 {
     NSString *name = [anim valueForKey:@"THName"];
     if([name isEqualToString:@"ContentsSlideIn"]) {
-        [self _contentsViewDidAppear];
+        [self _contentsViewDidAppear:nil];
     } else if([name isEqualToString:@"PageTurningViewSlideOut"]) {
         [(UIView *)[anim valueForKey:@"THView"] removeFromSuperview];   
     }
@@ -761,9 +755,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 {
     if(!self.modalViewController) {
         _viewIsDisappearing = YES;
-        if(_contentsSheet) {
-            [self performSelector:@selector(dismissContents)];
-        }
+//        if(_contentsSheet) {
+//            [self performSelector:@selector(dismissContents)];
+//        }
         if(_bookView) {
             [(THEventCapturingWindow *)self.view.window removeTouchObserver:self forView:_bookView];
 
@@ -1323,9 +1317,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView];
     aContentsTabView.delegate = self;
     [self presentModalViewController:aContentsTabView animated:YES];
-    [aContentsTabView release];
-    
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    [aContentsTabView release];    
 }
 
 - (void)dismissContents:(id)sender {
