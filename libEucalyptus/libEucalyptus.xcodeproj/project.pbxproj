@@ -12,10 +12,6 @@
 		7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9710C2CD820085778B /* TransitionTestMain.m */; };
 		7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */; };
 		7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */; };
-		7D0AE14B10F4B2170002170F /* Dead Is So Last Year.epub in Resources */ = {isa = PBXBuildFile; fileRef = 7D0AE14210F4B2170002170F /* Dead Is So Last Year.epub */; };
-		7D0AE14C10F4B2170002170F /* Essentials_of_Discrete_Mathematics.epub in Resources */ = {isa = PBXBuildFile; fileRef = 7D0AE14310F4B2170002170F /* Essentials_of_Discrete_Mathematics.epub */; };
-		7D0AE14D10F4B2170002170F /* Exiles In The Garden.epub in Resources */ = {isa = PBXBuildFile; fileRef = 7D0AE14410F4B2170002170F /* Exiles In The Garden.epub */; };
-		7D0AE14E10F4B2170002170F /* Three Little Pigs.epub in Resources */ = {isa = PBXBuildFile; fileRef = 7D0AE14510F4B2170002170F /* Three Little Pigs.epub */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
 		7D516E02102872AC005F3C46 /* EucBookViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E00102872AC005F3C46 /* EucBookViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -349,10 +345,6 @@
 		7D034F9710C2CD820085778B /* TransitionTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionTestMain.m; sourceTree = "<group>"; };
 		7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestMainWindow.xib; sourceTree = "<group>"; };
 		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
-		7D0AE14210F4B2170002170F /* Dead Is So Last Year.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Dead Is So Last Year.epub"; path = "../Resources/ePubs/Dead Is So Last Year.epub"; sourceTree = SOURCE_ROOT; };
-		7D0AE14310F4B2170002170F /* Essentials_of_Discrete_Mathematics.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Essentials_of_Discrete_Mathematics.epub; path = ../Resources/ePubs/Essentials_of_Discrete_Mathematics.epub; sourceTree = SOURCE_ROOT; };
-		7D0AE14410F4B2170002170F /* Exiles In The Garden.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Exiles In The Garden.epub"; path = "../Resources/ePubs/Exiles In The Garden.epub"; sourceTree = SOURCE_ROOT; };
-		7D0AE14510F4B2170002170F /* Three Little Pigs.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Three Little Pigs.epub"; path = "../Resources/ePubs/Three Little Pigs.epub"; sourceTree = SOURCE_ROOT; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
 		7D516E00102872AC005F3C46 /* EucBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookViewController.h; sourceTree = "<group>"; };
@@ -896,8 +888,8 @@
 				7D51711C1028AF94005F3C46 /* EucBookReader.h */,
 				7D6AAD641028E7A9006289E6 /* EucBookReference.h */,
 				7D6AAD631028E7A9006289E6 /* EucBookReference.m */,
-				7D6AAD671028E7BD006289E6 /* EucLocalBookReference.m */,
 				7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */,
+				7D6AAD671028E7BD006289E6 /* EucLocalBookReference.m */,
 				7D516E4310287405005F3C46 /* EucBookTextStyle.h */,
 				7D516E4410287405005F3C46 /* EucBookTextStyle.m */,
 				7D51705210288562005F3C46 /* EucBookSection.h */,
@@ -1212,10 +1204,6 @@
 		7D9A96F810D7E48200C2E00A /* TestResources */ = {
 			isa = PBXGroup;
 			children = (
-				7D0AE14210F4B2170002170F /* Dead Is So Last Year.epub */,
-				7D0AE14310F4B2170002170F /* Essentials_of_Discrete_Mathematics.epub */,
-				7D0AE14410F4B2170002170F /* Exiles In The Garden.epub */,
-				7D0AE14510F4B2170002170F /* Three Little Pigs.epub */,
 				7D9A979210D7E48E00C2E00A /* book */,
 			);
 			path = TestResources;
@@ -1609,10 +1597,6 @@
 				7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */,
 				7DB9F85810F38ABD0010DF0B /* LinuxLibertine.otf in Resources */,
-				7D0AE14B10F4B2170002170F /* Dead Is So Last Year.epub in Resources */,
-				7D0AE14C10F4B2170002170F /* Essentials_of_Discrete_Mathematics.epub in Resources */,
-				7D0AE14D10F4B2170002170F /* Exiles In The Garden.epub in Resources */,
-				7D0AE14E10F4B2170002170F /* Three Little Pigs.epub in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
