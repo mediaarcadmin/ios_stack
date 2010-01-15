@@ -614,7 +614,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid
 {
-    [self performSelector:@selector(dismissContents)];
+    [self performSelector:@selector(dismissContents:)];
 }
 
 
@@ -1322,6 +1322,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
+- (void)dismissContents:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+/*
 - (void)showContentsOrig:(id)sender {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
@@ -1412,6 +1417,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
     [UIView commitAnimations];
 }
+*/
 
 - (void)showAddMenu:(id)sender {
     UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];

@@ -10,21 +10,21 @@
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import "BlioBookView.h"
 
-@interface BlioContentsTabViewController : UIViewController {
-    UIToolbar *toolbar;
-    UINavigationController *contentsController;
-    UINavigationController *bookmarksController;
-    UINavigationController *notesController;
+@interface BlioContentsTabViewController : UINavigationController {
+    EucBookContentsTableViewController *contentsController;
+    UITableViewController *bookmarksController;
+    UITableViewController *notesController;
     UIView<BlioBookView> *bookView;
     id<EucBookContentsTableViewControllerDelegate> delegate;
+    UIBarButtonItem *doneButton;
 }
 
-@property (nonatomic, retain) UIToolbar *toolbar;
-@property (nonatomic, retain) UINavigationController *contentsController;
-@property (nonatomic, retain) UINavigationController *bookmarksController;
-@property (nonatomic, retain) UINavigationController *notesController;
+@property (nonatomic, retain) EucBookContentsTableViewController *contentsController;
+@property (nonatomic, retain) UITableViewController *bookmarksController;
+@property (nonatomic, retain) UITableViewController *notesController;
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic, assign) id<EucBookContentsTableViewControllerDelegate> delegate;
+@property (nonatomic, retain) UIBarButtonItem *doneButton;
 
 - (id)initWithBookView:(UIView<BlioBookView> *)aBookView;
 
