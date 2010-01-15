@@ -64,6 +64,7 @@
 		7D381D0310D93023008D34E2 /* UIBarButtonSystemItemRewind.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE810D93023008D34E2 /* UIBarButtonSystemItemRewind.png */; };
 		7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
+		7D4CE4751100C64C0061BDF2 /* BlioBookmarkPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmarkPoint.m */; };
 		7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		7D79183610F2257C00C4D839 /* BlioEPubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioEPubView.m */; };
 		7D81ED2610E90C220016D44A /* paper-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2310E90C220016D44A /* paper-black.png */; };
@@ -231,6 +232,8 @@
 		7D381CE810D93023008D34E2 /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
 		7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
 		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
+		7D4CE4731100C64C0061BDF2 /* BlioBookmarkPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmarkPoint.h; sourceTree = "<group>"; };
+		7D4CE4741100C64C0061BDF2 /* BlioBookmarkPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmarkPoint.m; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
 		7D79183410F2257C00C4D839 /* BlioEPubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEPubView.h; sourceTree = "<group>"; };
@@ -339,6 +342,8 @@
 				C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */,
 				C9775AF410DFD728005E0E2B /* BlioMockBook.h */,
 				C9775AF510DFD728005E0E2B /* BlioMockBook.m */,
+				7D4CE4731100C64C0061BDF2 /* BlioBookmarkPoint.h */,
+				7D4CE4741100C64C0061BDF2 /* BlioBookmarkPoint.m */,
 				7D03EB9610EA724C00430295 /* BlioTestParagraphWords.h */,
 				7D03EB9710EA724C00430295 /* BlioTestParagraphWords.m */,
 				C932B03910ECBC6000B8286A /* BlioNotesView.h */,
@@ -746,6 +751,7 @@
 				555CAF2F10F3B950007B1885 /* AccelerometerFilter.m in Sources */,
 				C9C546F210F7802F00ECE126 /* Blio.xcdatamodel in Sources */,
 				C990F9C6110065CB00C82CA8 /* BlioContentsTabViewController.m in Sources */,
+				7D4CE4751100C64C0061BDF2 /* BlioBookmarkPoint.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

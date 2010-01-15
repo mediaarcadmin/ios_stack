@@ -9,6 +9,8 @@
 
 @protocol EucBookContentsTableViewControllerDataSource;
 
+@class BlioBookmarkPoint;
+
 @protocol BlioBookView <NSObject>
 
 @required
@@ -22,6 +24,9 @@
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+
+@property (nonatomic, readonly) BlioBookmarkPoint *pageBookmarkPoint;
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 
