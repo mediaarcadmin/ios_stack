@@ -535,6 +535,11 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [super dealloc];
 }
 
+- (NSArray *)allUuids
+{
+    return [_anchorPoints allKeys];
+}
+
 - (NSString *)coverPath
 {
     NSString *ret = nil;
@@ -705,6 +710,13 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return [EucBookPageIndexPoint bookPageIndexPointFromOpenFD:_currentPageIndexPointFD];
 }
 
+- (void)setCurrentPageIndexPointForUuid:(NSString *)uuid
+{
+    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+    indexPoint.startOfParagraphByteOffset = [self byteOffsetForUuid:uuid];
+    self.currentPageIndexPoint = indexPoint;
+    [indexPoint release];
+}
 
 - (void)setCurrentPageIndexPoint:(EucBookPageIndexPoint *)currentPage
 {

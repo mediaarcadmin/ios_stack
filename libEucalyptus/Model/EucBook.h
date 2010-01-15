@@ -13,6 +13,8 @@
 
 @protocol EucBook <NSObject>
 
+@property (nonatomic, readonly) NSArray *allUuids;
+
 @property (nonatomic, readonly) id<EucBookReader> reader;
 @property (nonatomic, copy) EucBookPageIndexPoint *currentPageIndexPoint;
 

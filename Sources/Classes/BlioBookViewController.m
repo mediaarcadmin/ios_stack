@@ -1153,6 +1153,30 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         return kBlioPageLayoutPlainText;
 }
 
+- (NSString *)bookUuidFromEPubBook:(EucEPubBook *)book forLayoutPageNumber:(NSInteger)currentPage {
+    // Check for suffix, because the UUIDs also include the filename
+    // that the anchor is in (in ePub, multiple XHTML files can
+    // be in one book).
+    NSInteger bestPageNumber = 0;
+    NSString *bestPageUuid = nil;
+    for(NSString *prospectiveUuid in book.allUuids) {
+        NSRange markerRange = [prospectiveUuid rangeOfString:@"#bliopage" options:NSBackwardsSearch];
+        if(markerRange.location != NSNotFound) {
+            NSUInteger startsAt = markerRange.location + markerRange.length;
+            if(startsAt < prospectiveUuid.length) {
+                NSString *pageNumberString = [prospectiveUuid substringFromIndex:markerRange.location + markerRange.length];
+                NSInteger prospectivePageNumber = [pageNumberString integerValue];
+                if(prospectivePageNumber <= currentPage && 
+                   prospectivePageNumber > bestPageNumber) {
+                    bestPageNumber = prospectivePageNumber;
+                    bestPageUuid = prospectiveUuid;
+                }
+            }
+        }
+    }
+    return bestPageUuid;
+}
+
 - (void)changePageLayout:(id)sender {
     
     BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
@@ -1160,9 +1184,21 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self.bookView removeObserver:self forKeyPath:@"pageNumber"];
     [self.bookView removeObserver:self forKeyPath:@"pageCount"];
     
-    if([self currentPageLayout] != newLayout) {        
+    BlioPageLayout currentLayout = self.currentPageLayout;
+    if(currentLayout != newLayout) {        
         if (newLayout == kBlioPageLayoutPlainText && [self.book bookPath]) {
             EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[self.book bookPath]];
+            
+            if (currentLayout == kBlioPageLayoutPageLayout) {
+                // Try to synchronise the position in the ePub with the page
+                // last viewed in the current layout view.
+                NSString *bestPageUuid = [self bookUuidFromEPubBook:book
+                                                forLayoutPageNumber:self.bookView.pageNumber];
+                if(bestPageUuid) {
+                    [book setCurrentPageIndexPointForUuid:bestPageUuid];
+                }
+            }
+                                 
             BlioEPubView *bookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
                                                                     book:book];
             self.bookView = bookView;
@@ -1174,7 +1210,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
-           
         }
         
         [self.bookView addObserver:self 
