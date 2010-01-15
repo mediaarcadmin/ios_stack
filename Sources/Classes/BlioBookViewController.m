@@ -18,6 +18,7 @@
 #import "BlioNotesView.h"
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
+#import "BlioContentsTabViewController.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -1313,6 +1314,17 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)showContents:(id)sender {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
+    BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView];
+    aContentsTabView.delegate = self;
+    [self presentModalViewController:aContentsTabView animated:YES];
+    [aContentsTabView release];
+    
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+}
+
+- (void)showContentsOrig:(id)sender {
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissContents)];
     [self.navigationItem setRightBarButtonItem:rightItem animated:YES];
     [rightItem release];
@@ -1361,7 +1373,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if (_pageJumpView) [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -_pageJumpView.frame.origin.y)];
 }
 
-- (void)dismissContents {
+- (void)dismissContentsOrig {
     
     UIView *sheetView = _contentsSheet.view;
     CGRect contentsViewFinalRect = sheetView.frame;
@@ -1400,7 +1412,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
     [UIView commitAnimations];
 }
-
 
 - (void)showAddMenu:(id)sender {
     UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
@@ -1616,3 +1627,4 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 @end
+
