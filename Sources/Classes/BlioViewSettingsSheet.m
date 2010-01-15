@@ -19,8 +19,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 
 @interface BlioViewSettingsSheet()
 
-@property (nonatomic, retain) UIImage *enableTapTurnImage;
-@property (nonatomic, retain) UIImage *disableTapTurnImage;
+@property (nonatomic, retain) UIImage *tapTurnOnImage;
+@property (nonatomic, retain) UIImage *tapTurnOffImage;
 @property (nonatomic, retain) UIImage *lockRotationImage;
 @property (nonatomic, retain) UIImage *unlockRotationImage;
 
@@ -36,7 +36,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 @synthesize lockButtonSegment;
 @synthesize tapTurnButtonSegment;
 @synthesize doneButton;
-@synthesize enableTapTurnImage, disableTapTurnImage, lockRotationImage, unlockRotationImage;
+@synthesize tapTurnOnImage, tapTurnOffImage, lockRotationImage, unlockRotationImage;
 
 - (void)dealloc {
     self.fontSizeLabel = nil;
@@ -47,8 +47,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     self.lockButtonSegment = nil;
     self.tapTurnButtonSegment = nil;
     self.doneButton = nil;
-    self.enableTapTurnImage = nil;
-    self.disableTapTurnImage = nil;
+    self.tapTurnOnImage = nil;
+    self.tapTurnOffImage = nil;
     self.lockRotationImage = nil;
     self.unlockRotationImage = nil;
     [super dealloc];
@@ -192,10 +192,12 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 
         if ([newDelegate respondsToSelector:@selector(currentLockRotation)]) {
             NSInteger currentLock = (NSInteger)[newDelegate performSelector:@selector(currentLockRotation)];
-            if (currentLock)
+            if (currentLock) {
                 [aLockButtonSegmentedControl setImage:self.unlockRotationImage forSegmentAtIndex:0];
-            else
+                [aLockButtonSegmentedControl setTintColor:[UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f]];
+            } else {
                 [aLockButtonSegmentedControl setImage:self.lockRotationImage forSegmentAtIndex:0];
+            }
         }
         
         [self.lockButtonSegment addTarget:self action:@selector(changeLockRotation:) forControlEvents:UIControlEventValueChanged];  
@@ -213,15 +215,17 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.tapTurnButtonSegment = aTapTurnButtonSegmentedControl;
         [aTapTurnButtonSegmentedControl release];
         
-        self.enableTapTurnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tilt Advance Off" font:defaultFont color:white textInset:inset];
-        self.disableTapTurnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tilt Advance On" font:defaultFont color:white textInset:inset];
+        self.tapTurnOnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tilt Advance On" font:defaultFont color:white textInset:inset];
+        self.tapTurnOffImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tilt Advance Off" font:defaultFont color:white textInset:inset];
 
         if ([newDelegate respondsToSelector:@selector(currentTapTurn)]) {
             NSInteger currentTapTurn = (NSInteger)[newDelegate performSelector:@selector(currentTapTurn)];
-        if (!currentTapTurn)
-            [aTapTurnButtonSegmentedControl setImage:self.enableTapTurnImage forSegmentAtIndex:0];
-        else
-            [aTapTurnButtonSegmentedControl setImage:self.disableTapTurnImage forSegmentAtIndex:0];
+            if (!currentTapTurn) {
+                [aTapTurnButtonSegmentedControl setImage:self.tapTurnOffImage forSegmentAtIndex:0];
+            } else {
+                [aTapTurnButtonSegmentedControl setImage:self.tapTurnOnImage forSegmentAtIndex:0];
+                [aTapTurnButtonSegmentedControl setTintColor:[UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f]];
+            }
         }
         [self.tapTurnButtonSegment addTarget:self action:@selector(changeTapTurn:) forControlEvents:UIControlEventValueChanged];  
 
@@ -286,10 +290,13 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
      [sender setTitle:@"Lock Rotation" forSegmentAtIndex:0];
      }
      */
-    if ([[sender imageForSegmentAtIndex:[sender selectedSegmentIndex]] isEqual:self.lockRotationImage])
+    if ([[sender imageForSegmentAtIndex:[sender selectedSegmentIndex]] isEqual:self.lockRotationImage]) {
         [sender setImage:self.unlockRotationImage forSegmentAtIndex:0];
-    else
+        [sender setTintColor:[UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f]];
+    } else {
         [sender setImage:self.lockRotationImage forSegmentAtIndex:0];
+        [sender setTintColor:[UIColor darkGrayColor]];
+    }
 }
 
 - (void)changeTapTurn:(id)sender {
@@ -304,10 +311,13 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
      [sender setTitle:@"Tap Turn Off" forSegmentAtIndex:0];
      } 
      */
-    if ([[sender imageForSegmentAtIndex:[sender selectedSegmentIndex]] isEqual:self.disableTapTurnImage])
-        [sender setImage:self.enableTapTurnImage forSegmentAtIndex:0];
-    else
-        [sender setImage:self.disableTapTurnImage forSegmentAtIndex:0];
+    if ([[sender imageForSegmentAtIndex:[sender selectedSegmentIndex]] isEqual:self.tapTurnOffImage]) {
+        [sender setImage:self.tapTurnOnImage forSegmentAtIndex:0];
+        [sender setTintColor:[UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f]];
+    } else {
+        [sender setImage:self.tapTurnOffImage forSegmentAtIndex:0];
+        [sender setTintColor:[UIColor darkGrayColor]];
+    }
 }
 
 
