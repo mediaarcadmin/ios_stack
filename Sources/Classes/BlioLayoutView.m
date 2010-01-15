@@ -325,12 +325,20 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         self.pageNumber = page;
         
         if (animated) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
             [self loadPage:1 current:YES blank:NO];
+            if (page == 1) {
+                for (int i = 1; i < kBlioLayoutMaxViews; i++) {
+                    [self loadPage:i+1 current:NO blank:NO];
+                }
+            } else {
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
+            }
         } else {
             [self loadPage:self.pageNumber current:YES blank:NO];
-            [self loadPage:(self.pageNumber - 1) current:NO blank:NO];
-            [self loadPage:(self.pageNumber + 1) current:NO blank:NO];
+            for (int i = -2; i < -2 + kBlioLayoutMaxViews; i++) {
+                if (i != 0) [self loadPage:self.pageNumber+i current:NO blank:NO];
+            }
+            
             [self goToPageNumber:self.pageNumber animated:NO];
         }
         
@@ -426,6 +434,12 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     BlioPDFParsedPage *aParsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:self.fonts];
     self.parsedPage = aParsedPage;
     [aParsedPage release];
+}
+
+- (void)parseCurrentPageInBackground {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    [self parsePage:self.pageNumber];
+    [pool drain];
 }
 
 #pragma mark -
@@ -647,7 +661,9 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 }
 
 - (void)updateAfterScroll {
-    [self parsePage:self.pageNumber];
+    //[self parsePage:self.pageNumber];
+    self.parsedPage = nil;
+    [self performSelectorInBackground:@selector(parseCurrentPageInBackground) withObject:nil];
     
     if (self.scrollToPageInProgress) {
         self.scrollToPageInProgress = NO;
@@ -959,7 +975,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGPDFPageRelease(page);
     page = newPage;
     
-    if (!CGRectEqualToRect(currentPageRect, newPageRect)) {
+    if (!CGRectEqualToRect(CGRectIntegral(currentPageRect), CGRectIntegral(newPageRect))) {
         [tiledLayer setDelegate:nil];
         [backgroundLayer setDelegate:nil];
         [shadowLayer setDelegate:nil];
@@ -977,8 +993,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         // Force the tiled layers to discard their tile caches
         [tiledLayer setContents:nil];
         [tiledLayer setNeedsDisplay];
-        [shadowLayer setContents:nil];
-        [shadowLayer setNeedsDisplay];
+//        [shadowLayer setContents:nil];
+//        [shadowLayer setNeedsDisplay];
     }
 }
 
