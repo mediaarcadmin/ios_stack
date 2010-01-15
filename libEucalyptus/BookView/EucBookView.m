@@ -415,6 +415,13 @@
     [self _goToPageNumber:newPageNumber animated:animated];
 }
 
+- (void)goToIndexPoint:(EucBookPageIndexPoint *)indexPoint animated:(BOOL)animated;
+{
+    [self _goToPageNumber:[_pageLayoutController pageNumberForIndexPoint:indexPoint]
+                 animated:animated];
+}
+
+
 - (void)_goToPageNumberSavingJump:(NSInteger)newPageNumber animated:(BOOL)animated
 {
     NSInteger currentPageNumber = self.pageNumber;
