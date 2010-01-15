@@ -188,8 +188,20 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if ([(NSObject *)self.delegate respondsToSelector:@selector(_contentsViewDidAppear:)])
+        [(NSObject *)self.delegate performSelector:@selector(_contentsViewDidAppear:) withObject:self];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    if ([(NSObject *)self.delegate respondsToSelector:@selector(_contentsViewDidDisappear:)])
+        [(NSObject *)self.delegate performSelector:@selector(_contentsViewDidDisappear:) withObject:self];
 }
 
 /*

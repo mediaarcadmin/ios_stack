@@ -207,8 +207,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CGPDFPageRef page;
     id layoutView;
     BlioFastCATiledLayer *tiledLayer;
-    CALayer *backgroundLayer;
-    BlioFastCATiledLayer *shadowLayer;
+    BlioFastCATiledLayer *backgroundLayer;
+    CALayer *shadowLayer;
     BlioPDFTiledLayerDelegate *tiledLayerDelegate;
     BlioPDFBackgroundLayerDelegate *backgroundLayerDelegate;
     BlioPDFShadowLayerDelegate *shadowLayerDelegate;
@@ -216,8 +216,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @property (nonatomic, assign) id layoutView;
 @property (nonatomic, retain) BlioFastCATiledLayer *tiledLayer;
-@property (nonatomic, retain) CALayer *backgroundLayer;
-@property (nonatomic, retain) BlioFastCATiledLayer *shadowLayer;
+@property (nonatomic, retain) BlioFastCATiledLayer *backgroundLayer;
+@property (nonatomic, retain) CALayer *shadowLayer;
 @property (nonatomic, retain) BlioPDFBackgroundLayerDelegate *backgroundLayerDelegate;
 @property (nonatomic, retain) BlioPDFTiledLayerDelegate *tiledLayerDelegate;
 @property (nonatomic, retain) BlioPDFShadowLayerDelegate *shadowLayerDelegate;
@@ -910,24 +910,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     
     [tiledLayer setNeedsDisplay];
     
-    self.backgroundLayer = [CALayer layer];
-    BlioPDFBackgroundLayerDelegate *aBackgroundDelegate = [[BlioPDFBackgroundLayerDelegate alloc] init];
-    [aBackgroundDelegate setPageRect:fittedPageRect];
-    backgroundLayer.delegate = aBackgroundDelegate;
-    self.backgroundLayerDelegate = aBackgroundDelegate;
-    [aBackgroundDelegate release];
-    
-    backgroundLayer.bounds = self.bounds;
-    backgroundLayer.position = tiledLayer.position;
-    [self.layer insertSublayer:backgroundLayer below:tiledLayer];
-    [backgroundLayer setNeedsDisplay];
-    
-    self.shadowLayer = [BlioFastCATiledLayer layer];
+    self.shadowLayer = [CALayer layer];
     BlioPDFShadowLayerDelegate *aShadowDelegate = [[BlioPDFShadowLayerDelegate alloc] init];
-    [aShadowDelegate setPageRect:fittedPageRect];
+    [aShadowDelegate setPageRect:CGRectInset(fittedPageRect, 1, 1)];
     shadowLayer.delegate = aShadowDelegate;
-    shadowLayer.levelsOfDetail = 1;
-    shadowLayer.tileSize = CGSizeMake(1024, 1024);
     self.shadowLayerDelegate = aShadowDelegate;
     [aShadowDelegate release];
     
@@ -935,6 +921,21 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     shadowLayer.position = tiledLayer.position;
     [self.layer insertSublayer:shadowLayer below:tiledLayer];
     [shadowLayer setNeedsDisplay];
+    
+    self.backgroundLayer = [BlioFastCATiledLayer layer];
+    BlioPDFBackgroundLayerDelegate *aBackgroundDelegate = [[BlioPDFBackgroundLayerDelegate alloc] init];
+    [aBackgroundDelegate setPageRect:fittedPageRect];
+    backgroundLayer.delegate = aBackgroundDelegate;
+    backgroundLayer.levelsOfDetail = 4;
+    backgroundLayer.levelsOfDetailBias = 4;
+    backgroundLayer.tileSize = CGSizeMake(1024, 1024);
+    self.backgroundLayerDelegate = aBackgroundDelegate;
+    [aBackgroundDelegate release];
+    
+    backgroundLayer.bounds = self.bounds;
+    backgroundLayer.position = tiledLayer.position;
+    [self.layer insertSublayer:backgroundLayer below:tiledLayer];
+    [backgroundLayer setNeedsDisplay];
 }
 
 - (id)initWithFrame:(CGRect)frame andPageRef:(CGPDFPageRef)newPage {
@@ -1009,7 +1010,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @synthesize pageRect;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    //NSLog(@"drawing page background");
+    //NSLog(@"drawing page background with CTM: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
+    //CGContextSetShadowWithColor(ctx, CGSizeMake(0, (kBlioLayoutShadow/2.0f)), kBlioLayoutShadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     CGContextFillRect(ctx, pageRect);
     //NSLog(@"fittedPageRect is %@", NSStringFromCGRect(pageRect));    
