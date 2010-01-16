@@ -13,7 +13,7 @@
 #import "EucPageView.h"
 
 @protocol EucBook, EucPageLayoutController, EucBookViewDelegate;
-@class EucBookReference, THScalableSlider;
+@class EucBookReference, THScalableSlider, EucBookPageIndexPoint;
 
 @interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate> {
     id<EucBookViewDelegate> _delegate;
@@ -100,6 +100,7 @@
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
 - (void)goToPageNumber:(NSInteger)newPageNumber animated:(BOOL)animated;
+- (void)goToIndexPoint:(EucBookPageIndexPoint *)indexPoint animated:(BOOL)animated;
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 

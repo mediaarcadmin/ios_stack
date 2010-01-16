@@ -7,6 +7,7 @@
 //
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutView.h"
+#import "BlioBookmarkPoint.h"
 
 /*
 static void logDictContents(const char *key, CGPDFObjectRef object, void *info) {
@@ -510,6 +511,18 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     [myInvocation setArgument:&willAnimate atIndex:3];
     [myInvocation setArgument:&zoomIn atIndex:4];
     [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:delayScroll];
+}
+
+- (BlioBookmarkPoint *)pageBookmarkPoint
+{
+    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    ret.layoutPage = self.pageNumber;
+    return [ret autorelease];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+{
+    [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
 - (void)delayedScrollRectToVisible:(CGRect)rect animated:(BOOL)animated zoom:(BOOL)zoom {
