@@ -248,6 +248,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 - (BlioPDFDebugView *)debugView;
 - (void)setDebugView:(BlioPDFDebugView *)newView;
 @property (nonatomic) NSInteger pageNumber;
+@property (nonatomic) CGFloat lastZoomScale;
 
 @end
 
@@ -271,13 +272,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @implementation BlioLayoutView
 
 
-@synthesize scrollView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, pageNumber;
+@synthesize scrollView, containerView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, pageNumber, pageCount;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     CGPDFDocumentRelease(pdf);
     self.scrollView = nil;
+    self.containerView = nil;
     self.pageViews = nil;
     self.navigationController = nil;
     self.debugView = nil;
@@ -303,19 +305,32 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         self.scrollToPageInProgress = NO;
         self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];     
         
-        NSInteger pageCount = CGPDFDocumentGetNumberOfPages(pdf);
+        pageCount = CGPDFDocumentGetNumberOfPages(pdf);
         
         UIScrollView *aScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
         aScrollView.contentSize = CGSizeMake(aScrollView.frame.size.width * pageCount, aScrollView.frame.size.height);
         aScrollView.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
         aScrollView.pagingEnabled = YES;
+        aScrollView.minimumZoomScale = 1.0f;
+        aScrollView.maximumZoomScale = kBlioLayoutMaxZoom;
         aScrollView.showsHorizontalScrollIndicator = NO;
         aScrollView.showsVerticalScrollIndicator = NO;
+        aScrollView.clearsContextBeforeDrawing = NO;
+        aScrollView.directionalLockEnabled = YES;
+        aScrollView.bounces = YES;
         aScrollView.scrollsToTop = NO;
         aScrollView.delegate = self;
         [self addSubview:aScrollView];
         self.scrollView = aScrollView;
         [aScrollView release];
+        
+        UIView *aView = [[UIView alloc] initWithFrame:self.bounds];
+        [self.scrollView addSubview:aView];
+        aView.backgroundColor = [UIColor clearColor];
+        aView.autoresizesSubviews = YES;
+        self.containerView = aView;
+        self.containerView.clipsToBounds = NO;
+        [aView release];
         
         NSMutableArray *pageViewArray = [[NSMutableArray alloc] initWithCapacity:kBlioLayoutMaxViews];
         self.pageViews = pageViewArray;
@@ -542,10 +557,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
   return [NSString stringWithFormat:@"%d", aPageNumber];
 }
 
-- (NSInteger)pageCount {
-    return CGPDFDocumentGetNumberOfPages(pdf);
-}
-
 - (CGRect)firstPageRect {
     if ([self pageCount] > 0) {
         CGPDFPageRef firstPage = CGPDFDocumentGetPage(pdf, 1);
@@ -563,11 +574,11 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 #pragma mark Notification Callbacks
 
 - (void)layoutZoomInProgress:(NSNotification *)notification {
-    [self.scrollView setScrollEnabled:NO];
+    //[self.scrollView setScrollEnabled:NO];
 }
 
 - (void)layoutZoomEnded:(NSNotification *)notification {
-    [self.scrollView setScrollEnabled:YES];
+    //[self.scrollView setScrollEnabled:YES];
 }
 
 
@@ -626,7 +637,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         newFrame.origin.x = newFrame.size.width * (aPageNumber - 1);
         newFrame.origin.y = 0;
         [pageView setFrame:newFrame];
-        [self.scrollView addSubview:pageView];
+        //[self.scrollView addSubview:pageView];
+        [self.containerView addSubview:pageView];
     }
     
     if (current) {
@@ -641,22 +653,49 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 #pragma mark -
 #pragma mark Container UIScrollView Delegate
 
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.containerView;
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
+    if (scale == 1.0f) {
+        scrollView.pagingEnabled = YES;
+        scrollView.bounces = YES;
+    } else {
+        scrollView.pagingEnabled = NO;
+        scrollView.bounces = NO;
+    }
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
-    CGFloat pageWidth = self.scrollView.frame.size.width;
-    NSInteger currentPageNumber = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
+    if (sender.zoomScale != lastZoomScale) {
+        [sender setContentSize:CGSizeMake(sender.frame.size.width * pageCount * sender.zoomScale, sender.frame.size.height * sender.zoomScale)];
+        self.lastZoomScale = sender.zoomScale;
+    }
     
+    //CGFloat pageWidth = self.scrollView.frame.size.width;
+    CGFloat pageWidth = sender.contentSize.width / pageCount;
+    
+    NSInteger currentPageNumber = floor((sender.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
+    //NSLog(@"pageWidth: %f, currentPageNumber: %d", pageWidth, currentPageNumber);
     if (currentPageNumber != self.pageNumber) {
-        self.pageNumber = currentPageNumber;
+        
         
         [self loadPage:currentPageNumber current:YES blank:NO];
         if (!self.scrollToPageInProgress) {
-            [self loadPage:currentPageNumber - 1 current:NO blank:NO];
-            [self loadPage:currentPageNumber + 1 current:NO blank:NO];
+            if (currentPageNumber < self.pageNumber) {
+                [self loadPage:currentPageNumber - 1 current:NO blank:NO];
+            }
+            if (currentPageNumber > self.pageNumber) {
+                [self loadPage:currentPageNumber + 1 current:NO blank:NO];
+            }
         }
+                
+        self.pageNumber = currentPageNumber;
         
-        if (tiltScroller) {
-            [tiltScroller setScrollView:self.currentPageView];
-        }
+//        if (tiltScroller) {
+//            [tiltScroller setScrollView:self.currentPageView];
+//        }
     }
 }
 
@@ -671,6 +710,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         [self loadPage:self.pageNumber - 1 current:NO blank:NO forceReload:YES];
         [self loadPage:self.pageNumber + 1 current:NO blank:NO forceReload:YES];      
     }
+    
+    if (tiltScroller) {
+        [tiltScroller setScrollView:self.currentPageView];
+    }
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -679,6 +722,14 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateAfterScroll];
+}
+
+- (CGFloat)lastZoomScale {
+    return lastZoomScale;
+}
+
+- (void)setLastZoomScale:(CGFloat)newScale {
+    lastZoomScale = newScale;
 }
 
 #pragma mark -
@@ -772,8 +823,8 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
         self.directionalLockEnabled = NO;
         self.decelerationRate = UIScrollViewDecelerationRateFast;
         self.delegate = self;
-        self.minimumZoomScale = 1.0f;
-        self.maximumZoomScale = kBlioLayoutMaxZoom;
+        //self.minimumZoomScale = 1.0f;
+        //self.maximumZoomScale = kBlioLayoutMaxZoom;
         self.contentSize = newView.bounds.size;
     }
     return self;
@@ -799,7 +850,6 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.view;
 }
-
 
 - (BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view {
     // get any touch
