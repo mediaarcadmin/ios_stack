@@ -19,6 +19,7 @@
 	uint32_t currentPage;
 	NSString* currentWord;
 	NSArray* paragraphWords;
+	NSArray* visibleParagraphWords;
 	NSTimer* speakingTimer;
 	BOOL textToSpeakChanged;
 }
@@ -43,7 +44,8 @@
 - (void)setVolume:(float)volume;
 - (id)delegate;
 - (void)setDelegate:(id)delegate;
-
+- (BOOL)queueSpeakingString:(NSString *)string;
+- (void)adjustParagraphWords;
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError;
 
 @end

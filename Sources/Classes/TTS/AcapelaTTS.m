@@ -64,6 +64,20 @@
 	[engine setDelegate:delegate];
 }
 
+- (BOOL)queueSpeakingString:(NSString *)string {
+	return [engine queueSpeakingString:string];
+}
+
+- (void)adjustParagraphWords {
+	NSRange pageRange;
+	pageRange.location = [self currentWordOffset];
+	pageRange.length = [self.paragraphWords count] - [self currentWordOffset];
+	NSArray* subParagraph = [self.paragraphWords subarrayWithRange:pageRange];
+	[self.paragraphWords release];
+	[self setParagraphWords:nil];
+	[self setParagraphWords:subParagraph];
+}
+
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError {
 	return [engine objectForProperty:property error:outError];
 }
