@@ -64,6 +64,8 @@
 @synthesize pageNumber = _pageNumber;
 @synthesize pageCount = _pageCount;
 
+@synthesize pageTurningView = _pageTurningView;
+
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book 
 {
     self = [super initWithFrame:frame];
