@@ -683,10 +683,10 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    GLfloat lightY = PAGE_WIDTH * (1.79f - (_dimQuotient * (1.79f - 0.3f)));
+    GLfloat lightZ = PAGE_WIDTH * (1.79f - (_dimQuotient * (1.79f - 0.3f)));
     GLfloat constantAttenuation = 0.55f + (_dimQuotient * (0.9f - 0.55f));
     
-    GLfloat lightPosition[] = { PAGE_WIDTH / 2, PAGE_HEIGHT / 2 - PAGE_WIDTH / 4, -lightY, 1.0f};
+    GLfloat lightPosition[] = { PAGE_WIDTH / 2, PAGE_HEIGHT / 2 - PAGE_WIDTH / 4, -lightZ, 1.0f};
     GLfloat noAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f};
     GLfloat whiteDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
     glLightfv(GL_LIGHT0, GL_AMBIENT, noAmbient);
