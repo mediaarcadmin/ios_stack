@@ -571,6 +571,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         _pageJumpSlider.minimumValue = 1;
         [_pageJumpSlider setValue:pageNumber animated:animated];
         [self _updatePageJumpLabelForPage:pageNumber];
+        NSLog(@"Setting page number to %d via KVO", pageNumber);
     }    
 }
 
