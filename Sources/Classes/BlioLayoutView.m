@@ -397,7 +397,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
 
 - (void)setTiltScroller:(MSTiltScroller*)ts {
     tiltScroller = ts;
-    [tiltScroller setScrollView:self.currentPageView];
+    [tiltScroller setScrollView:self.scrollView];
 }
 
 - (BlioPDFDebugView *)debugView {
@@ -798,9 +798,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
         [self loadPage:self.pageNumber + 1 current:NO blank:NO forceReload:YES];      
     }
     
-    if (tiltScroller) {
-        [tiltScroller setScrollView:self.currentPageView];
-    }
+    //if (tiltScroller) {
+//        [tiltScroller setScrollView:self.currentPageView];
+//    }
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
