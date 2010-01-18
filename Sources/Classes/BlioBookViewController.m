@@ -19,6 +19,7 @@
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
 #import "BlioContentsTabViewController.h"
+#import "BlioLightSettingsViewController.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -1609,7 +1610,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         aNC.navigationBar.tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
         [aVC release];
         [aNC release];
-    }   
+    } else {
+        BlioLightSettingsViewController *controller = [[BlioLightSettingsViewController alloc] initWithNibName:@"Lighting"
+                                                                                                        bundle:[NSBundle mainBundle]];
+        controller.pageTurningView = [(BlioEPubView *)self.bookView pageTurningView];
+        [self.navigationController presentModalViewController:controller animated:YES];
+        [controller release];
+    }
 }
                                                   
 - (void)dummyDismissParsedText:(id)sender {

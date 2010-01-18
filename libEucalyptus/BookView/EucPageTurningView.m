@@ -110,6 +110,52 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 
 @synthesize delegate = _delegate;
 
+@synthesize shininess = _shininess;
+
+@synthesize constantAttenuationFactor = _constantAttenuationFactor;
+@synthesize linearAttenutaionFactor = _linearAttenutaionFactor;
+@synthesize quadraticAttenuationFactor = _quadraticAttenuationFactor;
+
+@synthesize lightPosition = _lightPosition;
+
+
+- (UIColor *)specularColor
+{
+    return [UIColor colorWithRed:_specularColor[0] green:_specularColor[1] blue:_specularColor[2] alpha:_specularColor[3]];
+}
+- (void)setSpecularColor:(UIColor *)color
+{
+    NSParameterAssert(sizeof(CGFloat) == sizeof(GLfloat));
+    const CGFloat *components = CGColorGetComponents(color.CGColor);
+    memcpy(_specularColor, components, 4 * sizeof(GLfloat));
+    [self setNeedsLayout];
+}
+
+- (UIColor *)ambientLightColor
+{
+    return [UIColor colorWithRed:_ambientLightColor[0] green:_ambientLightColor[1] blue:_ambientLightColor[2] alpha:_ambientLightColor[3]];
+}
+- (void)setAmbientLightColor:(UIColor *)color
+{
+    NSParameterAssert(sizeof(CGFloat) == sizeof(GLfloat));
+    const CGFloat *components = CGColorGetComponents(color.CGColor);
+    memcpy(_ambientLightColor, components, 4 * sizeof(GLfloat));
+    [self setNeedsLayout];
+}
+           
+- (UIColor *)diffuseLightColor
+{
+    return [UIColor colorWithRed:_diffuseLightColor[0] green:_diffuseLightColor[1] blue:_diffuseLightColor[2] alpha:_diffuseLightColor[3]];
+}
+- (void)setDiffuseLightColor:(UIColor *)color
+{
+    NSParameterAssert(sizeof(CGFloat) == sizeof(GLfloat));
+    const CGFloat *components = CGColorGetComponents(color.CGColor);
+    memcpy(_diffuseLightColor, components, 4 * sizeof(GLfloat));
+    [self setNeedsLayout];
+}
+
+
 - (void)startAnimation
 {
     if(!_animating) {
@@ -167,6 +213,22 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)_pageTurningViewInternalInit
 {
+    GLfloat white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+    memcpy(_specularColor, white, 4 * sizeof(GLfloat));
+    _shininess = 60.0;
+
+    _constantAttenuationFactor = 0.55f;   
+    _linearAttenutaionFactor = 0.05f;
+    _quadraticAttenuationFactor = 0.0f;
+
+    GLfloat dim[4] = {0.2f, 0.2f, 0.2f, 1.0f};
+    memcpy(_ambientLightColor, dim, 4 * sizeof(GLfloat));
+    memcpy(_diffuseLightColor, white, 4 * sizeof(GLfloat));
+
+    _lightPosition.x = 0.5f;
+    _lightPosition.y = 0.25f;
+    _lightPosition.z = 1.79f;
+    
     [EAGLContext setCurrentContext:context];
 
     CGSize boundsSize = self.bounds.size;
@@ -672,10 +734,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     glLightModelx(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
     
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat mat_shininess[] = { 60.0 };
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, _specularColor);
+    glMaterialfv(GL_FRONT, GL_SHININESS, &_shininess);
     
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -683,19 +743,19 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    GLfloat lightZ = PAGE_WIDTH * (1.79f - (_dimQuotient * (1.79f - 0.3f)));
-    GLfloat constantAttenuation = 0.55f + (_dimQuotient * (0.9f - 0.55f));
     
-    GLfloat lightPosition[] = { PAGE_WIDTH / 2, PAGE_HEIGHT / 2 - PAGE_WIDTH / 4, -lightZ, 1.0f};
-    GLfloat noAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f};
-    GLfloat whiteDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    glLightfv(GL_LIGHT0, GL_AMBIENT, noAmbient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuse);
+    GLfloat lightPosition[] = { PAGE_WIDTH * _lightPosition.x, 
+                                PAGE_HEIGHT * _lightPosition.y, 
+                                -PAGE_WIDTH * (_lightPosition.z - (_dimQuotient * (_lightPosition.z - 0.3f))), 
+                                1.0f};
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, _ambientLightColor);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, _diffuseLightColor);
     
+    GLfloat constantAttenuation = _constantAttenuationFactor + (_dimQuotient * (0.9f - 0.55f));
     glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, constantAttenuation);
-    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05f);
-    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0f);
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, _linearAttenutaionFactor);
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION,_quadraticAttenuationFactor );
 
     glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
