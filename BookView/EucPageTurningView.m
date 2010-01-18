@@ -116,6 +116,8 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 @synthesize linearAttenutaionFactor = _linearAttenutaionFactor;
 @synthesize quadraticAttenuationFactor = _quadraticAttenuationFactor;
 
+@synthesize lightPosition = _lightPosition;
+
 
 - (UIColor *)specularColor
 {
@@ -223,6 +225,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     memcpy(_ambientLightColor, dim, 4 * sizeof(GLfloat));
     memcpy(_diffuseLightColor, white, 4 * sizeof(GLfloat));
 
+    _lightPosition.x = 0.5f;
+    _lightPosition.y = 0.25f;
+    _lightPosition.z = 1.79f;
+    
     [EAGLContext setCurrentContext:context];
 
     CGSize boundsSize = self.bounds.size;
@@ -737,14 +743,16 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    GLfloat lightZ = PAGE_WIDTH * (1.79f - (_dimQuotient * (1.79f - 0.3f)));
-    GLfloat constantAttenuation = _constantAttenuationFactor + (_dimQuotient * (0.9f - 0.55f));
     
-    GLfloat lightPosition[] = { PAGE_WIDTH / 2, PAGE_HEIGHT / 2 - PAGE_WIDTH / 4, -lightZ, 1.0f};
+    GLfloat lightPosition[] = { PAGE_WIDTH * _lightPosition.x, 
+                                PAGE_HEIGHT * _lightPosition.y, 
+                                -PAGE_WIDTH * (_lightPosition.z - (_dimQuotient * (_lightPosition.z - 0.3f))), 
+                                1.0f};
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glLightfv(GL_LIGHT0, GL_AMBIENT, _ambientLightColor);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, _diffuseLightColor);
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     
+    GLfloat constantAttenuation = _constantAttenuationFactor + (_dimQuotient * (0.9f - 0.55f));
     glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, constantAttenuation);
     glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, _linearAttenutaionFactor);
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION,_quadraticAttenuationFactor );

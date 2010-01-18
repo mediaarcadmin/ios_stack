@@ -108,6 +108,8 @@ typedef struct {
     
     GLfloat _ambientLightColor[4];
     GLfloat _diffuseLightColor[4];
+    
+    GLfloatTriplet _lightPosition;
 }
 
 @property (nonatomic,assign) id<EucPageTurningViewDelegate> delegate;
@@ -126,6 +128,7 @@ typedef struct {
 @property (nonatomic, copy) UIColor *ambientLightColor;
 @property (nonatomic, copy) UIColor *diffuseLightColor;
 
+@property (nonatomic, assign) GLfloatTriplet lightPosition;
 
 
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
