@@ -600,7 +600,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     if ([animationID isEqualToString:@"BlioScrollToPage"]) {
         [self scrollViewDidEndScrollingAnimation:self.scrollView];
-        //[self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
+        [self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
     }
 } 
 
