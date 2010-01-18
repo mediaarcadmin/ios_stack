@@ -19,6 +19,7 @@
 @interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource> {
     CGPDFDocumentRef pdf;
     UIScrollView *scrollView;
+    UIView *containerView;
     NSMutableArray *pageViews;
     id navigationController;
     NSInteger visiblePageIndex;
@@ -29,9 +30,12 @@
     BOOL scrollToPageInProgress;
     MSTiltScroller *tiltScroller;
     NSInteger pageNumber;
+    NSInteger pageCount;
+    CGFloat lastZoomScale;
 }
 
 @property (nonatomic, retain) UIScrollView *scrollView;
+@property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) NSMutableArray *pageViews;
 @property (nonatomic, assign) id navigationController;
 @property (nonatomic, retain) BlioPDFScrollView *currentPageView;
