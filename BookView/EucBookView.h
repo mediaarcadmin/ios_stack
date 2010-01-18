@@ -88,6 +88,8 @@
 @property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
+@property (nonatomic, retain, readonly) EucPageTurningView *pageTurningView;
+
 /*
 @property (nonatomic, readonly) float percentRead;
 @property (nonatomic, readonly) float percentPaginated;

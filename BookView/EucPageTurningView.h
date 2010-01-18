@@ -98,12 +98,35 @@ typedef struct {
     CGFloat _automaticTurnPercentage;
     
     //FILE *tempFile;
+    
+    GLfloat _specularColor[4];
+    GLfloat _shininess;
+    
+    GLfloat _constantAttenuationFactor;
+    GLfloat _linearAttenutaionFactor;
+    GLfloat _quadraticAttenuationFactor;
+    
+    GLfloat _ambientLightColor[4];
+    GLfloat _diffuseLightColor[4];
 }
 
 @property (nonatomic,assign) id<EucPageTurningViewDelegate> delegate;
 @property (nonatomic,retain) UIView *currentPageView;
 @property (nonatomic, readonly) UIImage *screenshot;
 @property (nonatomic, assign) CGFloat dimQuotient;
+
+
+@property (nonatomic, copy) UIColor *specularColor;
+@property (nonatomic, assign) GLfloat shininess;
+
+@property (nonatomic, assign) GLfloat constantAttenuationFactor;
+@property (nonatomic, assign) GLfloat linearAttenutaionFactor;
+@property (nonatomic, assign) GLfloat quadraticAttenuationFactor;
+
+@property (nonatomic, copy) UIColor *ambientLightColor;
+@property (nonatomic, copy) UIColor *diffuseLightColor;
+
+
 
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 
