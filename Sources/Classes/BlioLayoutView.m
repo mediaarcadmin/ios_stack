@@ -173,7 +173,7 @@ typedef enum {
 
 static const CGFloat kBlioLayoutMaxZoom = 54.0f; // That's just showing off!
 static const CGFloat kBlioLayoutShadow = 16.0f;
-static const NSUInteger kBlioLayoutMaxViews = 5;
+static const NSUInteger kBlioLayoutMaxViews = 6;
 
 @interface BlioPDFTiledLayerDelegate : NSObject {
     CGPDFPageRef page;
@@ -205,26 +205,24 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 @end
 
 @interface BlioPDFDrawingView : UIView {
+    CGPDFDocumentRef document;
     CGPDFPageRef page;
     id layoutView;
     BlioFastCATiledLayer *tiledLayer;
-    //BlioFastCATiledLayer *backgroundLayer;
     CALayer *shadowLayer;
     BlioPDFTiledLayerDelegate *tiledLayerDelegate;
-    //BlioPDFBackgroundLayerDelegate *backgroundLayerDelegate;
     BlioPDFShadowLayerDelegate *shadowLayerDelegate;
 }
 
 @property (nonatomic, assign) id layoutView;
 @property (nonatomic, retain) BlioFastCATiledLayer *tiledLayer;
-//@property (nonatomic, retain) BlioFastCATiledLayer *backgroundLayer;
 @property (nonatomic, retain) CALayer *shadowLayer;
-//@property (nonatomic, retain) BlioPDFBackgroundLayerDelegate *backgroundLayerDelegate;
 @property (nonatomic, retain) BlioPDFTiledLayerDelegate *tiledLayerDelegate;
 @property (nonatomic, retain) BlioPDFShadowLayerDelegate *shadowLayerDelegate;
-@property (nonatomic) CGPDFPageRef page;
 
-- (id)initWithFrame:(CGRect)frame andPageRef:(CGPDFPageRef)newPage;
+- (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber;
+- (void)setPageNumber:(NSInteger)pageNumber;
+- (CGPDFPageRef)page;
 
 @end
 
@@ -485,30 +483,25 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     CFTimeInterval delayScroll = 0.2f;
     BOOL zoomIn = NO;
     
-    if ([self.currentPageView zoomScale] > 1.0f) {
-        [self.currentPageView setZoomScale:1.0f animated:animated];
-        delayScroll = 0.3f;
+    if ([self.scrollView zoomScale] > 1.0f) {
+        delayScroll = 0.5f + (1.0f * ([self.scrollView zoomScale] / [self.scrollView maximumZoomScale]));
+        
+        [UIView beginAnimations:@"BlioShrinkToPage" context:nil];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationBeginsFromCurrentState:YES];
+        [UIView setAnimationDuration:delayScroll];
+        [self.scrollView setZoomScale:1.0f];
+        [self.scrollView setContentOffset:CGPointMake((self.pageNumber - 1) * self.scrollView.frame.size.width, 0)];
+        [UIView commitAnimations];
         zoomIn = YES;
     }
     
-    [self loadPage:aPageNumber current:YES blank:NO];
-    
-    if (animated) {
-        self.scrollToPageInProgress = YES;
-    } else {
-        [self loadPage:aPageNumber - 1 current:NO blank:NO];
-        [self loadPage:aPageNumber + 1 current:NO blank:NO];
-    }
-    
-    self.pageNumber = aPageNumber;        
-        
-    CGRect targetRect = self.currentPageView.frame;
     BOOL willAnimate = animated;
-    NSMethodSignature * mySignature = [BlioLayoutView instanceMethodSignatureForSelector:@selector(delayedScrollRectToVisible:animated:zoom:)];
+    NSMethodSignature * mySignature = [BlioLayoutView instanceMethodSignatureForSelector:@selector(delayedScrollPageToVisible:animated:zoom:)];
     NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
     [myInvocation setTarget:self];    
-    [myInvocation setSelector:@selector(delayedScrollRectToVisible:animated:zoom:)];
-    [myInvocation setArgument:&targetRect atIndex:2];  
+    [myInvocation setSelector:@selector(delayedScrollPageToVisible:animated:zoom:)];
+    [myInvocation setArgument:&aPageNumber atIndex:2];  
     [myInvocation setArgument:&willAnimate atIndex:3];
     [myInvocation setArgument:&zoomIn atIndex:4];
     [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:delayScroll];
@@ -526,22 +519,90 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
-- (void)delayedScrollRectToVisible:(CGRect)rect animated:(BOOL)animated zoom:(BOOL)zoom {
-    self.currentPageView = nil;
-    [self.scrollView scrollRectToVisible:rect animated:animated];
-    if (zoom) [self performSelector:@selector(zoomCurrentViewToContents) withObject:nil afterDelay:0.5f];
-    [self didChangeValueForKey:@"pageNumber"];
+- (void)delayedScrollPageToVisible:(NSInteger)page animated:(BOOL)animated zoom:(BOOL)zoom {    
+    if (!animated) {
+        [self loadPage:page current:YES blank:NO];
+        [self loadPage:page - 1 current:NO blank:NO];
+        [self loadPage:page + 1 current:NO blank:NO];
+        self.pageNumber = page;
+        
+        [self.scrollView setContentOffset:CGPointMake((page - 1) * self.scrollView.frame.size.width, 0)];
+        if (zoom) [self performSelector:@selector(zoomCurrentViewToContents) withObject:nil afterDelay:0.5f];
+        return;
+    }
+    
+    self.scrollToPageInProgress = YES;
+    
+    CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
+    NSInteger currentPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2; 
+    NSInteger pagesToGo = page - currentPage;
+    
+    if (abs(pagesToGo) > (kBlioLayoutMaxViews - 1)) {
+        if (pagesToGo < 0) {
+            currentPage = page + (kBlioLayoutMaxViews - 1);
+        } else {
+            currentPage = page - (kBlioLayoutMaxViews - 1);
+        }
+        //[self.scrollView setContentOffset:CGPointMake((currentPage - 1) * self.scrollView.frame.size.width, 0)];
+        pagesToGo = page - currentPage;
+    }
+        
+    if (pagesToGo < 0) {
+        // Scrolling backwards
+        for (int i = 0; i < (kBlioLayoutMaxViews - 1); i++) {
+            [self loadPage:currentPage - i current:NO blank:NO];
+        }
+    } else {
+        // Scrolling forwards
+        for (int i = 0; i < (kBlioLayoutMaxViews - 1); i++) {
+            [self loadPage:currentPage + i current:NO blank:NO];
+        }
+    }
+    
+    self.pageNumber = page;
+    NSTimeInterval scrollAnimationDuration = 1.0f + (0.5f * (abs(pagesToGo) / (kBlioLayoutMaxViews - 1)));
+    
+    [self loadPage:page current:YES blank:NO];
+    
+    [UIView beginAnimations:@"BlioScrollToStartingPage" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:0.0f];
+    [self.scrollView setContentOffset:CGPointMake((currentPage - 1) * self.scrollView.frame.size.width, 0)];
+    
+    [UIView beginAnimations:@"BlioScrollToPage" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:NO];
+    [UIView setAnimationDuration:scrollAnimationDuration];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+    if (zoom) {
+        [self performSelector:@selector(zoomCurrentViewToContents) withObject:nil afterDelay:scrollAnimationDuration];
+    } else {
+        [self didChangeValueForKey:@"pageNumber"];
+    }
+    
+    [self.scrollView setContentOffset:CGPointMake((page - 1) * self.scrollView.frame.size.width, 0)];
+    [UIView commitAnimations];
+    [UIView commitAnimations];
 }
-
+ 
 - (void)zoomCurrentViewToContents {
     if (nil != self.currentPageView)
         if (!CGRectEqualToRect([self.currentPageView currentTextRect], CGRectZero))
             [self.currentPageView zoomToContents];
+    //[self didChangeValueForKey:@"pageNumber"];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
     return self;
 }
+
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    if ([animationID isEqualToString:@"BlioScrollToPage"]) {
+        [self scrollViewDidEndScrollingAnimation:self.scrollView];
+        //[self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
+    }
+} 
 
 #pragma mark -
 #pragma mark Contents Data Source protocol methods
@@ -632,7 +693,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
     
     if(nil == pageView || reload) {
         if (viewCacheCount < kBlioLayoutMaxViews) {
-            BlioPDFDrawingView *pdfView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.bounds andPageRef:pdfPageRef];
+            BlioPDFDrawingView *pdfView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.bounds document:pdf page:aPageNumber];
             pageView = [[BlioPDFScrollView alloc] initWithView:pdfView andPageRef:pdfPageRef];
             [pdfView release];
             [self.pageViews addObject:pageView];
@@ -644,7 +705,7 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
             [self.pageViews removeObjectAtIndex:furthestPageIndex];
             [self.pageViews addObject:pageView];
             [pageView release];
-            [(BlioPDFDrawingView *)[pageView view] setPage:pdfPageRef];
+            [(BlioPDFDrawingView *)[pageView view] setPageNumber:aPageNumber];
         }
         
         newFrame = self.scrollView.frame;
@@ -683,17 +744,25 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
     //if (sender.zoomScale < sender.minimumZoomScale) return;
+    //NSLog(@"Scrollview didScroll");
+    NSInteger currentPageNumber;
     
     if (sender.zoomScale != lastZoomScale) {
         [sender setContentSize:CGSizeMake(sender.frame.size.width * pageCount * sender.zoomScale, sender.frame.size.height * sender.zoomScale)];
         self.lastZoomScale = sender.zoomScale;
         //[sender setBounds:CGRectMake(0,0,320 * sender.zoomScale, 480)];
+        //NSLog(@"ContentSize changed to %@", NSStringFromCGSize(sender.contentSize));
+        
+        // If we are zooming, don't update the page number - (contentOffset gets set to zero so it wouldn't work)
+        currentPageNumber = self.pageNumber;
+    } else {
+        CGFloat pageWidth = sender.contentSize.width / pageCount;
+        currentPageNumber = floor((sender.contentOffset.x - pageWidth / 2) / pageWidth) + 2;   
     }
     
     //CGFloat pageWidth = self.scrollView.frame.size.width;
-    CGFloat pageWidth = sender.contentSize.width / pageCount;
     
-    NSInteger currentPageNumber = floor((sender.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
+    //NSLog(@"ContentOffset is %@", NSStringFromCGPoint(sender.contentOffset));
     //NSLog(@"pageWidth: %f, currentPageNumber: %d", pageWidth, currentPageNumber);
     if (currentPageNumber != self.pageNumber) {
         
@@ -706,9 +775,10 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
             if (currentPageNumber > self.pageNumber) {
                 [self loadPage:currentPageNumber + 1 current:NO blank:NO];
             }
+            self.pageNumber = currentPageNumber;
         }
                 
-        self.pageNumber = currentPageNumber;
+        
         
 //        if (tiltScroller) {
 //            [tiltScroller setScrollView:self.currentPageView];
@@ -754,10 +824,12 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
     if (!self.scrollToPageInProgress) {
+        //NSLog(@"Setting pagenumber to %d whilst scrolltopage not in progress", newPageNumber);
         [self willChangeValueForKey:@"pageNumber"];
         pageNumber=newPageNumber;
         [self didChangeValueForKey:@"pageNumber"];
     } else {
+        //NSLog(@"Setting pagenumber to %d whilst scrolltopage is in progress", newPageNumber);
         pageNumber=newPageNumber;
     }
 }
@@ -926,20 +998,17 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 
 @implementation BlioPDFDrawingView
 
-@synthesize layoutView, tiledLayer, shadowLayer, tiledLayerDelegate, shadowLayerDelegate, page;
+@synthesize layoutView, tiledLayer, shadowLayer, tiledLayerDelegate, shadowLayerDelegate;
 
 - (void)dealloc {
-    CGPDFPageRelease(page);
     self.layoutView = nil;
     [self.tiledLayer setDelegate:nil];
-    //[self.backgroundLayer setDelegate:nil];
     [self.shadowLayer setDelegate:nil];
     self.tiledLayerDelegate = nil;
-    //self.backgroundLayerDelegate = nil;
     self.shadowLayerDelegate = nil;
     self.tiledLayer = nil;
-    //self.backgroundLayer = nil;
     self.shadowLayer = nil;
+    CGPDFDocumentRelease(document);
 	[super dealloc];
 }
 
@@ -1023,11 +1092,12 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 //    [backgroundLayer setNeedsDisplay];
 }
 
-- (id)initWithFrame:(CGRect)frame andPageRef:(CGPDFPageRef)newPage {
+- (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber {
 	self = [super initWithFrame:frame];
 	if(self != nil) {
-        page = newPage;
-        CGPDFPageRetain(page);
+        document = aDocument;
+        CGPDFDocumentRetain(document);
+        page = CGPDFDocumentGetPage(document, aPageNumber);
         
         self.backgroundColor = [UIColor clearColor];
         
@@ -1036,13 +1106,15 @@ static const NSUInteger kBlioLayoutMaxViews = 5;
 	return self;
 }
 
-- (void)setPage:(CGPDFPageRef)newPage {
+- (CGPDFPageRef)page {
+    return page;
+}
+
+- (void)setPageNumber:(NSInteger)newPageNumber {
     CGRect currentPageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-    CGRect newPageRect = CGPDFPageGetBoxRect(newPage, kCGPDFCropBox);
-    
-    CGPDFPageRetain(newPage);
-    CGPDFPageRelease(page);
-    page = newPage;
+
+    page = CGPDFDocumentGetPage(document, newPageNumber);
+    CGRect newPageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
     
     if (!CGRectEqualToRect(CGRectIntegral(currentPageRect), CGRectIntegral(newPageRect))) {
         [tiledLayer setDelegate:nil];
