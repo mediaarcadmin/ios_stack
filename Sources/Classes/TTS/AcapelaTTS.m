@@ -31,11 +31,6 @@
 	[engine stopSpeaking];
 }
 
-// Shouldn't really be in the protocol because boundary is actually an Acapela enum val.
-- (void)stopSpeakingAtBoundary:(NSInteger)boundary {
-	[engine stopSpeakingAtBoundary:boundary];
-}
-
 - (BOOL)isSpeaking {
 	return [engine isSpeaking];
 }
@@ -73,8 +68,6 @@
 	pageRange.location = [self currentWordOffset];
 	pageRange.length = [self.paragraphWords count] - [self currentWordOffset];
 	NSArray* subParagraph = [self.paragraphWords subarrayWithRange:pageRange];
-	[self.paragraphWords release];
-	[self setParagraphWords:nil];
 	[self setParagraphWords:subParagraph];
 }
 
