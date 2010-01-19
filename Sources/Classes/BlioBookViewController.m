@@ -664,13 +664,26 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         _returnToToolbarTint = [toolbarTint retain];
         _returnToNavigationBarTint = [navigationBarTint retain];
         _returnToToolbarStyle = toolbarStyle;
-        
+        _returnToNavigationBarTranslucent = navigationBar.translucent;
+        _returnToToolbarTranslucent = toolbar.translucent;
+
         // Set the status bar and navigation bar styles.
-        navigationBar.tintColor = nil;
-        navigationBar.barStyle = UIBarStyleBlackTranslucent;
-        toolbar.tintColor = nil;
-        toolbar.barStyle = UIBarStyleBlackTranslucent;
-        
+        if([_book.author isEqualToString:@"Ward Just"]) {
+            navigationBar.barStyle = UIBarStyleBlackTranslucent;
+            navigationBar.tintColor = [UIColor blackColor];
+            navigationBar.translucent = YES;
+            toolbar.barStyle = UIBarStyleBlackTranslucent;
+            toolbar.tintColor = [UIColor blackColor];
+            toolbar.translucent = YES;
+        } else {
+            navigationBar.translucent = NO;
+            navigationBar.tintColor = nil;
+            navigationBar.barStyle = UIBarStyleBlackTranslucent;
+            toolbar.translucent = NO;
+            toolbar.tintColor = nil;
+            toolbar.barStyle = UIBarStyleBlackTranslucent;
+        }
+
         if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
             [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
         }
@@ -769,6 +782,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [self.navigationController setToolbarHidden:YES animated:NO];
             [self.navigationController setToolbarHidden:NO animated:NO];
             UIToolbar *toolbar = self.navigationController.toolbar;
+            toolbar.translucent = _returnToToolbarTranslucent;
             toolbar.barStyle = _returnToToolbarStyle; 
             toolbar.tintColor = _returnToToolbarTint;
             [_returnToToolbarTint release];
@@ -811,6 +825,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             }           
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleDefault;
+            navBar.translucent = _returnToNavigationBarTranslucent;
             navBar.barStyle = _returnToNavigationBarStyle;
             navBar.tintColor = _returnToNavigationBarTint;
             [_returnToNavigationBarTint release];
@@ -1618,7 +1633,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [self presentModalViewController:aNC animated:YES];
         aVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dummyDismissParsedText:)];                                                 
         aVC.navigationItem.title = [NSString stringWithFormat:@"Page %d Text", self.bookView.pageNumber];
-        aNC.navigationBar.tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
+        aNC.navigationBar.tintColor = _returnToNavigationBarTint;
         [aVC release];
         [aNC release];
     } else {
