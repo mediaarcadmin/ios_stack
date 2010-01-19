@@ -1502,11 +1502,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
                 [_acapelaTTS setCurrentWordOffset:wordOffset];
                 [_acapelaTTS setCurrentParagraph:paragraphId];
-                if ( _acapelaTTS.paragraphWords != nil ) {
-                    [_acapelaTTS.paragraphWords release];
-                    [_acapelaTTS setParagraphWords:nil];
-                }
+                //if ( _acapelaTTS.paragraphWords != nil ) {
+                //    [_acapelaTTS.paragraphWords release];
+                //    [_acapelaTTS setParagraphWords:nil];
+                //}
                 [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+				//[_acapelaTTS.paragraphWords retain];
 				if ( wordOffset != 0 ) 
 					// The first paragraphs words displayed on this page are not at 
 					// the beginning of the paragraph.
