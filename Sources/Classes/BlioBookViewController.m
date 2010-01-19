@@ -1508,7 +1508,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
 	// For testing
 	NSString* thisWord = [string substringWithRange:characterRange];
-	NSLog(thisWord);
+	NSLog(@"%@", thisWord);
 	
 	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
                                                          options:0 
