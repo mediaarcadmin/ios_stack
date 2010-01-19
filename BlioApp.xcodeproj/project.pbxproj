@@ -65,6 +65,7 @@
 		7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		7D4CE4751100C64C0061BDF2 /* BlioBookmarkPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmarkPoint.m */; };
+		7D6F38B31106332600C92A69 /* Square256X256BookPaper.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */; };
 		7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		7D79183610F2257C00C4D839 /* BlioEPubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioEPubView.m */; };
 		7D81ED2610E90C220016D44A /* paper-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2310E90C220016D44A /* paper-black.png */; };
@@ -236,6 +237,7 @@
 		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7D4CE4731100C64C0061BDF2 /* BlioBookmarkPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmarkPoint.h; sourceTree = "<group>"; };
 		7D4CE4741100C64C0061BDF2 /* BlioBookmarkPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmarkPoint.m; sourceTree = "<group>"; };
+		7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Square256X256BookPaper.pvrtc; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
 		7D79183410F2257C00C4D839 /* BlioEPubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEPubView.h; sourceTree = "<group>"; };
@@ -486,9 +488,10 @@
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CCD10D93023008D34E2 /* animatedBookTurnVertices.vertexData */,
 				7D381CDA10D93023008D34E2 /* BookButton.png */,
-				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
 				7D381CDC10D93023008D34E2 /* BookPaper.png */,
 				7D381CDD10D93023008D34E2 /* BookPaperWhite.png */,
+				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
+				7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */,
 				7D381CDE10D93023008D34E2 /* ContentsButton.png */,
 				7D381CDF10D93023008D34E2 /* EPubDefault.css */,
 				7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */,
@@ -731,6 +734,7 @@
 				556D1D5B10F3BE580019315C /* Icon.png in Resources */,
 				7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */,
 				7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */,
+				7D6F38B31106332600C92A69 /* Square256X256BookPaper.pvrtc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
