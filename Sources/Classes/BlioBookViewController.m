@@ -1434,13 +1434,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [aSettingsSheet release];
 }
 
+
 - (void)speakNextPargraph:(NSTimer*)timer {
 	if ( _acapelaTTS.textToSpeakChanged ) {	
 		[_acapelaTTS setTextToSpeakChanged:NO];
-		NSRange pageRange;
-		pageRange.location = [_acapelaTTS currentWordOffset];
-		pageRange.length = [_acapelaTTS.paragraphWords count] - [_acapelaTTS currentWordOffset]; 	
-		[_acapelaTTS startSpeaking:[[_acapelaTTS.paragraphWords subarrayWithRange:pageRange] componentsJoinedByString:@" "]];
+		[_acapelaTTS startSpeaking:[_acapelaTTS.paragraphWords componentsJoinedByString:@" "]];
 	}
 }
 
@@ -1473,10 +1471,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             wordOffset = 0;
             [_acapelaTTS setCurrentWordOffset:wordOffset];
             [_acapelaTTS setCurrentParagraph:paragraphId];
-            [_acapelaTTS.paragraphWords release];
-            [_acapelaTTS setParagraphWords:nil];
+            //[_acapelaTTS.paragraphWords release];
+            //[_acapelaTTS setParagraphWords:nil];
             [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
-        }
+			if ( wordOffset != 0 ) 
+				[_acapelaTTS adjustParagraphWords];
+		}
         else {
             [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
             // Play button has just been pushed.
@@ -1491,25 +1491,35 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                     [_acapelaTTS setParagraphWords:nil];
                 }
                 [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+				if ( wordOffset != 0 ) 
+					// The first paragraphs words displayed on this page are not at 
+					// the beginning of the paragraph.
+					[_acapelaTTS adjustParagraphWords];
             }
-            // else use the current word and paragraph, which is where we last stopped.
-            // edge case:  what if you stopped speech right after the end of the paragraph?
+			else
+				// use the current word and paragraph, which is where we last stopped.
+				// edge case:  what if you stopped speech right after the end of the paragraph?
+				[_acapelaTTS adjustParagraphWords];
         }
         [_acapelaTTS setTextToSpeakChanged:YES];
-    }
+	}
 }
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
 	// For testing
-	//NSString* thisWord = [string substringWithRange:characterRange];
-	//NSLog(thisWord);
+	NSString* thisWord = [string substringWithRange:characterRange];
+	NSLog(thisWord);
 	
 	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
                                                          options:0 
                                                            range:characterRange].location != NSNotFound);
-	// A hack to get around an apparent Acapela bug.
+	// Hacks to get around Acapela bugs.
 	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
-    && ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame);  // E.g. "I and I (a case I've seen)
+    && ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
+    && ([[[NSString stringWithString:@"“"] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame); // E.g. "I and I 
+	
+	BOOL wordDoesNotBeginWithApostrophe = ([[[string substringWithRange:characterRange] substringToIndex:1] compare:@"'"] != NSOrderedSame)
+	&& ([[[string substringWithRange:characterRange] substringToIndex:1] compare:@"’"] != NSOrderedSame);  
 	
 	/* Acapela does assemble hyphenated words, so I'm keeping this condition around
      just in case it turns out they slip up sometimes.
@@ -1520,7 +1530,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
      BOOL wordIsNotHyphenated = ([[string substringWithRange:lastCharacter] compare:@"-"] != NSOrderedSame);
 	 */
 	
-	return wordIsNotPunctuation && wordIsNotRepeated;
+	return wordIsNotPunctuation && wordIsNotRepeated && wordDoesNotBeginWithApostrophe;
 }
 
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
@@ -1560,8 +1570,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
              [_testParagraphWords release];
              _testParagraphWords = nil;
              */
-			//[_acapelaTTS stopSpeaking];
-			[_acapelaTTS stopSpeakingAtBoundary:1];
+			[_acapelaTTS stopSpeaking];
+			//[_acapelaTTS stopSpeakingAtBoundary:1];
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
 		} else { 
 			/* For testing.  If this is uncommented, comment out the call to startSpeakingParagraph below.
@@ -1591,6 +1601,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		[item setImage:audioImage];
 	} 
 }
+
 
 - (void)dummyShowParsedText:(id)sender {
     if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {

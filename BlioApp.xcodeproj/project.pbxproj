@@ -82,10 +82,10 @@
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
 		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
-		A37FC33110EA781700F3DC5A /* libMobilityStaticTFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32F10EA781700F3DC5A /* libMobilityStaticTFat.a */; };
 		A37FC33610EA785F00F3DC5A /* AcapelaTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */; };
 		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
 		A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
+		A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		C932AF9410EBCFBD00B8286A /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */; };
 		C932B03B10ECBC6000B8286A /* BlioNotesView.m in Sources */ = {isa = PBXBuildFile; fileRef = C932B03A10ECBC6000B8286A /* BlioNotesView.m */; };
 		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
@@ -258,7 +258,6 @@
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
-		A37FC32F10EA781700F3DC5A /* libMobilityStaticTFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticTFat.a; path = Libraries/TTS/libMobilityStaticTFat.a; sourceTree = "<group>"; };
 		A37FC33310EA785F00F3DC5A /* AcapelaTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AcapelaTTS.h; path = TTS/AcapelaTTS.h; sourceTree = "<group>"; };
 		A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AcapelaTTS.m; path = TTS/AcapelaTTS.m; sourceTree = "<group>"; };
 		A37FC33510EA785F00F3DC5A /* TTSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTSManager.h; path = TTS/TTSManager.h; sourceTree = "<group>"; };
@@ -267,6 +266,7 @@
 		A37FC33910EA787D00F3DC5A /* force_cpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = force_cpp.h; path = TTS/Acapela/force_cpp.h; sourceTree = "<group>"; };
 		A37FC33A10EA787D00F3DC5A /* setupTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setupTTS.h; path = TTS/Acapela/setupTTS.h; sourceTree = "<group>"; };
 		A37FC33B10EA787D00F3DC5A /* setupTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = setupTTS.m; path = TTS/Acapela/setupTTS.m; sourceTree = "<group>"; };
+		A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticFat.a; path = Libraries/TTS/libMobilityStaticFat.a; sourceTree = "<group>"; };
 		C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsSheet.h; sourceTree = "<group>"; };
 		C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsSheet.m; sourceTree = "<group>"; };
 		C932B03910ECBC6000B8286A /* BlioNotesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioNotesView.h; sourceTree = "<group>"; };
@@ -318,8 +318,8 @@
 				7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */,
 				7D381B9B10D92F2C008D34E2 /* libstdc++.6.dylib in Frameworks */,
 				A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */,
-				A37FC33110EA781700F3DC5A /* libMobilityStaticTFat.a in Frameworks */,
 				C9C5467610F77EDD00ECE126 /* CoreData.framework in Frameworks */,
+				A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,8 +534,8 @@
 		A37FC32D10EA780500F3DC5A /* TTS */ = {
 			isa = PBXGroup;
 			children = (
+				A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */,
 				A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */,
-				A37FC32F10EA781700F3DC5A /* libMobilityStaticTFat.a */,
 			);
 			name = TTS;
 			sourceTree = "<group>";
