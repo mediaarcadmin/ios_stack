@@ -3,62 +3,82 @@
 <plist version="1.0">
 <dict>
 	<key>/OPS/back.xml</key>
-	<integer>280840</integer>
+	<integer>281041</integer>
 	<key>/OPS/c01.xml</key>
-	<integer>4976</integer>
+	<integer>5037</integer>
+	<key>/OPS/c01.xml#bliopage10</key>
+	<integer>5335</integer>
+	<key>/OPS/c01.xml#bliopage11</key>
+	<integer>6476</integer>
+	<key>/OPS/c01.xml#bliopage12</key>
+	<integer>8006</integer>
+	<key>/OPS/c01.xml#bliopage13</key>
+	<integer>9604</integer>
+	<key>/OPS/c01.xml#bliopage14</key>
+	<integer>11144</integer>
+	<key>/OPS/c01.xml#bliopage15</key>
+	<integer>12756</integer>
+	<key>/OPS/c01.xml#bliopage16</key>
+	<integer>14363</integer>
 	<key>/OPS/c02.xml</key>
-	<integer>19275</integer>
+	<integer>19476</integer>
 	<key>/OPS/c03.xml</key>
-	<integer>31199</integer>
+	<integer>31400</integer>
 	<key>/OPS/c04.xml</key>
-	<integer>48376</integer>
+	<integer>48577</integer>
 	<key>/OPS/c05.xml</key>
-	<integer>64040</integer>
+	<integer>64241</integer>
 	<key>/OPS/c06.xml</key>
-	<integer>72632</integer>
+	<integer>72833</integer>
 	<key>/OPS/c07.xml</key>
-	<integer>81652</integer>
+	<integer>81853</integer>
 	<key>/OPS/c08.xml</key>
-	<integer>90476</integer>
+	<integer>90677</integer>
 	<key>/OPS/c09.xml</key>
-	<integer>100792</integer>
+	<integer>100993</integer>
 	<key>/OPS/c10.xml</key>
-	<integer>109038</integer>
+	<integer>109239</integer>
 	<key>/OPS/c11.xml</key>
-	<integer>116522</integer>
+	<integer>116723</integer>
 	<key>/OPS/c12.xml</key>
-	<integer>126739</integer>
+	<integer>126940</integer>
 	<key>/OPS/c13.xml</key>
-	<integer>144386</integer>
+	<integer>144587</integer>
 	<key>/OPS/c14.xml</key>
-	<integer>156790</integer>
+	<integer>156991</integer>
 	<key>/OPS/c15.xml</key>
-	<integer>178351</integer>
+	<integer>178552</integer>
 	<key>/OPS/c16.xml</key>
-	<integer>191706</integer>
+	<integer>191907</integer>
 	<key>/OPS/c17.xml</key>
-	<integer>199155</integer>
+	<integer>199356</integer>
 	<key>/OPS/c18.xml</key>
-	<integer>205751</integer>
+	<integer>205952</integer>
 	<key>/OPS/c19.xml</key>
-	<integer>218575</integer>
+	<integer>218776</integer>
 	<key>/OPS/c20.xml</key>
-	<integer>224561</integer>
+	<integer>224762</integer>
 	<key>/OPS/c21.xml</key>
-	<integer>233368</integer>
+	<integer>233569</integer>
 	<key>/OPS/c22.xml</key>
-	<integer>246155</integer>
+	<integer>246356</integer>
 	<key>/OPS/c23.xml</key>
-	<integer>263684</integer>
+	<integer>263885</integer>
 	<key>/OPS/c24.xml</key>
-	<integer>272411</integer>
+	<integer>272612</integer>
 	<key>/OPS/cover.xml</key>
 	<integer>0</integer>
+	<key>/OPS/cover.xml#bliopage1</key>
+	<integer>405</integer>
 	<key>/OPS/cover.xml#coverimage</key>
 	<integer>341</integer>
 	<key>/OPS/front.xml</key>
-	<integer>906</integer>
+	<integer>948</integer>
+	<key>/OPS/front.xml#bliopage2</key>
+	<integer>1311</integer>
 	<key>/OPS/titlepage.xml</key>
-	<integer>527</integer>
+	<integer>550</integer>
+	<key>/OPS/titlepage.xml#bliopage8</key>
+	<integer>844</integer>
 </dict>
 </plist>
