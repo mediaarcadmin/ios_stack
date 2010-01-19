@@ -15,10 +15,11 @@
 @class BlioPDFParsedPage;
 @class BlioPDFDebugView;
 @class BlioPDFScrollView;
+@class BlioPDFContainerScrollView;
 
 @interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource> {
     CGPDFDocumentRef pdf;
-    UIScrollView *scrollView;
+    BlioPDFContainerScrollView *scrollView;
     UIView *containerView;
     NSMutableArray *pageViews;
     id navigationController;
@@ -28,13 +29,14 @@
     BlioPDFDebugView *debugView;
     BlioPDFScrollView *currentPageView;
     BOOL scrollToPageInProgress;
+    BOOL zoomPageInProgress;
     MSTiltScroller *tiltScroller;
     NSInteger pageNumber;
     NSInteger pageCount;
     CGFloat lastZoomScale;
 }
 
-@property (nonatomic, retain) UIScrollView *scrollView;
+@property (nonatomic, retain) BlioPDFContainerScrollView *scrollView;
 @property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) NSMutableArray *pageViews;
 @property (nonatomic, assign) id navigationController;
@@ -43,6 +45,7 @@
 @property (nonatomic, retain) BlioPDFFontList *fonts;
 @property (nonatomic, retain) BlioPDFParsedPage *parsedPage;
 @property (nonatomic) BOOL scrollToPageInProgress;
+@property (nonatomic) BOOL zoomPageInProgress;
 @property (nonatomic, readonly) NSInteger pageNumber;
 
 - (id)initWithPath:(NSString *)path;
