@@ -14,7 +14,7 @@
 @class BlioPDFFontList;
 @class BlioPDFParsedPage;
 @class BlioPDFDebugView;
-@class BlioPDFDrawingView;
+@class BlioPDFPageView;
 @class BlioPDFContainerScrollView;
 
 @interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource> {
@@ -27,7 +27,7 @@
     BlioPDFFontList *fonts;
     BlioPDFParsedPage *parsedPage;
     BlioPDFDebugView *debugView;
-    BlioPDFDrawingView *currentPageView;
+    BlioPDFPageView *currentPageView;
     BOOL scrollToPageInProgress;
     BOOL zoomPageInProgress;
     MSTiltScroller *tiltScroller;
@@ -40,7 +40,7 @@
 @property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) NSMutableArray *pageViews;
 @property (nonatomic, assign) id navigationController;
-@property (nonatomic, retain) BlioPDFDrawingView *currentPageView;
+@property (nonatomic, retain) BlioPDFPageView *currentPageView;
 @property (nonatomic, assign) MSTiltScroller *tiltScroller;
 @property (nonatomic, retain) BlioPDFFontList *fonts;
 @property (nonatomic, retain) BlioPDFParsedPage *parsedPage;
