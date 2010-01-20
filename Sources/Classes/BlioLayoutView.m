@@ -349,7 +349,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
         self.pageNumber = page;
         
         if (animated) {
-            [self loadPage:1 current:YES preload:NO];
+            [self loadPage:1 current:YES preload:YES];
             if (page == 1) {
                 for (int i = 1; i < kBlioLayoutMaxViews; i++) {
                     [self loadPage:i+1 current:NO preload:NO];
@@ -524,7 +524,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
     [myInvocation setArgument:&aPageNumber atIndex:2];  
     [myInvocation setArgument:&willAnimate atIndex:3];
     [myInvocation setArgument:&zoomIn atIndex:4];
-    [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:delayScroll];
+    if (animated)
+        [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:delayScroll];
+    else   
+        [myInvocation performSelector:@selector(invoke)];
 }
 
 - (BlioBookmarkPoint *)pageBookmarkPoint
@@ -575,12 +578,18 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
     if (pagesToGo < 0) {
         // Scrolling backwards
         for (int i = 0; i < (kBlioLayoutMaxViews - 1); i++) {
-            [self loadPage:currentPage - i current:NO preload:YES];
+            if ((currentPage - i) < page)
+                [self loadPage:currentPage - i current:NO preload:NO];
+            else
+                [self loadPage:currentPage - i current:NO preload:YES];
         }
     } else {
         // Scrolling forwards
         for (int i = 0; i < (kBlioLayoutMaxViews - 1); i++) {
-            [self loadPage:currentPage + i current:NO preload:YES];
+            if ((currentPage + i) > page)
+                [self loadPage:currentPage + i current:NO preload:NO];
+            else
+                [self loadPage:currentPage + i current:NO preload:YES];
         }
     }
     
@@ -837,8 +846,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
         //NSLog(@"force reloading pages around page %d", self.pageNumber);
         self.scrollToPageInProgress = NO;
         
-        [self loadPage:self.pageNumber - 1 current:NO preload:NO forceReload:YES];
-        [self loadPage:self.pageNumber + 1 current:NO preload:NO forceReload:YES];      
+        //[self loadPage:self.pageNumber - 1 current:NO preload:NO forceReload:YES];
+        //[self loadPage:self.pageNumber + 1 current:NO preload:NO forceReload:YES];   
+        [self loadPage:self.pageNumber - 1 current:NO preload:NO forceReload:NO];
+        [self loadPage:self.pageNumber + 1 current:NO preload:NO forceReload:NO]; 
     }
     
     //if (tiltScroller) {
@@ -1059,7 +1070,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
     
     tiledLayer.levelsOfDetail = levels;
     tiledLayer.levelsOfDetailBias = levels;
-    tiledLayer.tileSize = CGSizeMake(1024, 1024);
+    tiledLayer.tileSize = CGSizeMake(2048, 2048);
     //tiledLayer.transform = CATransform3DMakeAffineTransform(CGAffineTransformMakeScale(2.0f, 2.0f));
     //tiledLayer.transform = CATransform3DMakeAffineTransform(CGAffineTransformMakeScale(0.5/fitTransform.a, 0.5/fitTransform.a));
     
@@ -1191,7 +1202,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
 @synthesize pageRect, page, preload;
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    //NSLog(@"drawing page shadow");
+    //NSLog(@"drawing shadow for page %d (preload: %d)", CGPDFPageGetPageNumber(page), preload);
     CGContextSaveGState(ctx);
     CGContextSetShadowWithColor(ctx, CGSizeMake(0, (kBlioLayoutShadow/2.0f)), kBlioLayoutShadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
