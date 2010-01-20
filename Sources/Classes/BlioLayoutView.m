@@ -519,6 +519,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
     [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return bookmarkPoint.layoutPage;
+}
+
 - (void)delayedScrollPageToVisible:(NSInteger)page animated:(BOOL)animated zoom:(BOOL)zoom {    
     if (!animated) {
         [self loadPage:page current:YES blank:NO];
