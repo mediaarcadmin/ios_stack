@@ -552,6 +552,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)_backButtonTapped
 {
+	if (self.audioPlaying) {
+		[_acapelaTTS stopSpeaking];
+		self.audioPlaying = NO;  
+	}
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -1351,10 +1355,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [_acapelaTTS setCurrentPage:self.bookView.pageNumber]; // Not very robust page-identifier
             [_acapelaTTS setCurrentWordOffset:0];
             [_acapelaTTS setCurrentParagraph:1];
-            if ( _acapelaTTS.paragraphWords != nil ) {
-                [_acapelaTTS.paragraphWords release];
-                [_acapelaTTS setParagraphWords:nil];
-            }
             [_acapelaTTS setParagraphWords:[[(BlioLayoutView *)self.bookView parsedText] componentsSeparatedByString:@" "]];
             
         }
@@ -1371,8 +1371,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             wordOffset = 0;
             [_acapelaTTS setCurrentWordOffset:wordOffset];
             [_acapelaTTS setCurrentParagraph:paragraphId];
-            //[_acapelaTTS.paragraphWords release];
-            //[_acapelaTTS setParagraphWords:nil];
             [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
 			if ( wordOffset != 0 ) 
 				[_acapelaTTS adjustParagraphWords];
@@ -1386,10 +1384,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
                 [_acapelaTTS setCurrentWordOffset:wordOffset];
                 [_acapelaTTS setCurrentParagraph:paragraphId];
-                if ( _acapelaTTS.paragraphWords != nil ) {
-                    [_acapelaTTS.paragraphWords release];
-                    [_acapelaTTS setParagraphWords:nil];
-                }
                 [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
 				if ( wordOffset != 0 ) 
 					// The first paragraphs words displayed on this page are not at 

@@ -19,7 +19,6 @@
 	uint32_t currentPage;
 	NSString* currentWord;
 	NSArray* paragraphWords;
-	NSArray* visibleParagraphWords;
 	NSTimer* speakingTimer;
 	BOOL textToSpeakChanged;
 }

@@ -135,5 +135,25 @@
     [eucIndexPoint release];
 }
 
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    if(bookmarkPoint.layoutPage && !bookmarkPoint.ePubWordOffset) {
+        NSString *bestPageUuid = [self _bookUuidFromEPubBook:((EucEPubBook *)self.book)
+                                         forLayoutPageNumber:bookmarkPoint.layoutPage];
+        if(bestPageUuid) {
+            return [self pageNumberForUuid:bestPageUuid];
+        }
+    }
+    EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
+    eucIndexPoint.startOfParagraphByteOffset = bookmarkPoint.ePubParagraphId;
+    eucIndexPoint.startOfPageParagraphWordOffset = bookmarkPoint.ePubWordOffset;
+    eucIndexPoint.startOfPageWordHyphenOffset = bookmarkPoint.ePubHyphenOffset;
+    
+    NSInteger ret = [self pageNumberForIndexPoint:eucIndexPoint];
+    
+    [eucIndexPoint release];
+    
+    return ret;
+}
 
 @end
