@@ -1164,6 +1164,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     
     BlioPageLayout currentLayout = self.currentPageLayout;
     if(currentLayout != newLayout) {        
+		if (self.audioPlaying) {
+			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
+			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+			[_acapelaTTS stopSpeaking];
+			self.audioPlaying = NO;  
+		}
         if (newLayout == kBlioPageLayoutPlainText && [self.book bookPath]) {
             EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[self.book bookPath]];
             BlioEPubView *ePubView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
@@ -1401,8 +1407,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
 	// For testing
-	NSString* thisWord = [string substringWithRange:characterRange];
-	NSLog(@"%@", thisWord);
+	//NSString* thisWord = [string substringWithRange:characterRange];
+	//NSLog(@"%@", thisWord);
 	
 	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
                                                          options:0 
