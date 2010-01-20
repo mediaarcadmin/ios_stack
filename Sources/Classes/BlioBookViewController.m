@@ -1551,13 +1551,22 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 ([[bookmark valueForKey:@"ePubParagraphId"] integerValue] == currentBookmark.ePubParagraphId) &&
                 ([[bookmark valueForKey:@"ePubWordOffset"] integerValue] == currentBookmark.ePubWordOffset) &&
                 ([[bookmark valueForKey:@"ePubHyphenOffset"] integerValue] == currentBookmark.ePubHyphenOffset)) {
-
                 existingBookmark = bookmark;
                 break;
             }
         }
         
         if (nil != existingBookmark) return;
+        
+        NSString *bookmarkText = nil;
+        if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+            EucEPubBook *book = (EucEPubBook*)[(BlioEPubView *)self.bookView book];
+            uint32_t paragraphId, wordOffset;
+            [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+            bookmarkText = [[book paragraphWordsForParagraphWithId:paragraphId] componentsJoinedByString:@" "];
+        } else if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+            bookmarkText = [(BlioLayoutView *)self.bookView parsedText];
+        }
         
         NSManagedObject *newBookmark = [NSEntityDescription
                                      insertNewObjectForEntityForName:@"Bookmark"
@@ -1567,7 +1576,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubParagraphId] forKey:@"ePubParagraphId"];
         [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubWordOffset] forKey:@"ePubWordOffset"];
         [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubHyphenOffset] forKey:@"ePubHyphenOffset"];
-
+        [newBookmark setValue:bookmarkText forKey:@"bookmarkText"];
         [bookmarks addObject:newBookmark];
         
         NSError *error;
@@ -1597,6 +1606,16 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
 }
 
+- (void)notesViewUpdateNote:(BlioNotesView *)notesView {
+    if (nil != notesView.note) {
+        [notesView.note setValue:notesView.textView.text forKey:@"noteText"];
+        
+        NSError *error;
+        if (![[self managedObjectContext] save:&error])
+            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+    }
+}
+
 #pragma mark -
 #pragma mark BlioContentsTabViewControllerDelegate
 
@@ -1616,10 +1635,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)goToContentsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
-//    NSInteger newPageNumber = [self.bookView.dataSource pageNumberForBookmarkPoint:bookmarkPoint];
-//    
-//    [self updatePageJumpPanelForPage:newPageNumber animated:animated];
-//    [self updatePieButtonForPage:newPageNumber animated:animated;
+    NSInteger newPageNumber = [self.bookView pageNumberForBookmarkPoint:bookmarkPoint];
+    
+    [self updatePageJumpPanelForPage:newPageNumber animated:animated];
+    [self updatePieButtonForPage:newPageNumber animated:animated];
     [_bookView goToBookmarkPoint:bookmarkPoint animated:animated];
 }
 

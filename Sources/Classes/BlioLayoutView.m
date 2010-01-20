@@ -258,6 +258,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
 - (void)loadPage:(int)newPageNumber current:(BOOL)current preload:(BOOL)preload forceReload:(BOOL)reload;
 - (BlioPDFDebugView *)debugView;
 - (void)setDebugView:(BlioPDFDebugView *)newView;
+- (void)parsePage:(NSInteger)aPageNumber;
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic) CGFloat lastZoomScale;
 
@@ -396,6 +397,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
 }
 
 - (NSString *)parsedText {
+    // TODO this might not be thread safe if parsing happens on a background thread;
+    // Put into an NSOperation queue and wait until done
+    if (nil == self.parsedPage) {
+        [self parsePage:self.pageNumber];
+    }
     return [self.parsedPage textContent];
 }
 

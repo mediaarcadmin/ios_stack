@@ -173,8 +173,13 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 }
 
 - (void)save:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(notesViewSave:)])
-        [self.delegate performSelector:@selector(notesViewSave:) withObject:self];
+    if (nil != self.note) {
+        if ([self.delegate respondsToSelector:@selector(notesViewUpdateNote:)])
+            [self.delegate performSelector:@selector(notesViewUpdateNote:) withObject:self];
+    } else {
+        if ([self.delegate respondsToSelector:@selector(notesViewCreateNote:)])
+            [self.delegate performSelector:@selector(notesViewCreateNote:) withObject:self];
+    }
     
     [self dismiss:sender];
 }

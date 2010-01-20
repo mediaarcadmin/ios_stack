@@ -20,20 +20,24 @@ typedef enum {
 @interface BlioContentsTabBookmarksViewController : UITableViewController {
     NSMutableSet *bookmarks;
     NSManagedObject *selectedBookmark;
+    UIView<BlioBookView> *bookView;
 }
 
 @property (nonatomic, retain) NSMutableSet *bookmarks;
 @property (nonatomic, retain) NSManagedObject *selectedBookmark;
+@property (nonatomic, retain) UIView<BlioBookView> *bookView;
 
 @end
 
 @interface BlioContentsTabNotesViewController : UITableViewController {
     NSMutableSet *notes;
     NSManagedObject *selectedNote;
+    UIView<BlioBookView> *bookView;
 }
 
 @property (nonatomic, retain) NSMutableSet *notes;
 @property (nonatomic, retain) NSManagedObject *selectedNote;
+@property (nonatomic, retain) UIView<BlioBookView> *bookView;
 
 @end
 
@@ -72,9 +76,11 @@ typedef enum {
         self.contentsController = aContentsController;
         
         [aBookmarksController setBookmarks:[aBook mutableSetValueForKey:@"bookmarks"]];
+        [aBookmarksController setBookView:aBookView]; // Needed to get display page number
         self.bookmarksController = aBookmarksController;
         
         [aNotesController setNotes:[aBook mutableSetValueForKey:@"notes"]];
+        [aNotesController setBookView:aBookView]; // Needed to get display page number
         self.notesController = aNotesController;
         
         UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
@@ -240,14 +246,16 @@ typedef enum {
     BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[self.tabSegment selectedSegmentIndex];
     switch (selectedTab) {
         case kBlioContentsTabViewTabNotes: {
-            BlioBookmarkPoint *aBookMarkPoint = [[BlioBookmarkPoint alloc] init];
-            aBookMarkPoint.ePubParagraphId = [[self.notesController.selectedNote valueForKey:@"ePubParagraphId"] integerValue];
-            aBookMarkPoint.ePubWordOffset = [[self.notesController.selectedNote valueForKey:@"ePubWordOffset"] integerValue];
-            aBookMarkPoint.ePubHyphenOffset = [[self.notesController.selectedNote valueForKey:@"ePubHyphenOffset"] integerValue];
-            aBookMarkPoint.layoutPage = [[self.notesController.selectedNote valueForKey:@"layoutPage"] integerValue];
-            if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkPoint:animated:)])
-                [self.delegate goToContentsBookmarkPoint:aBookMarkPoint animated:NO];
-            [aBookMarkPoint release];
+            if (nil != self.notesController.selectedNote) {
+                BlioBookmarkPoint *aBookMarkPoint = [[BlioBookmarkPoint alloc] init];
+                aBookMarkPoint.ePubParagraphId = [[self.notesController.selectedNote valueForKey:@"ePubParagraphId"] integerValue];
+                aBookMarkPoint.ePubWordOffset = [[self.notesController.selectedNote valueForKey:@"ePubWordOffset"] integerValue];
+                aBookMarkPoint.ePubHyphenOffset = [[self.notesController.selectedNote valueForKey:@"ePubHyphenOffset"] integerValue];
+                aBookMarkPoint.layoutPage = [[self.notesController.selectedNote valueForKey:@"layoutPage"] integerValue];
+                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkPoint:animated:)])
+                    [self.delegate goToContentsBookmarkPoint:aBookMarkPoint animated:NO];
+                [aBookMarkPoint release];
+            }
         } break;
         default:
             break;
@@ -260,23 +268,29 @@ typedef enum {
     BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[self.tabSegment selectedSegmentIndex];
     switch (selectedTab) {
         case kBlioContentsTabViewTabContents: {
-            NSString *sectionUuid = [NSString stringWithString:self.contentsController.selectedUuid];
-            if ([self.delegate respondsToSelector:@selector(goToContentsUuid:animated:)])
-                [self.delegate goToContentsUuid:sectionUuid animated:YES];
+            NSString *selectedUuid = [self.contentsController selectedUuid];
+            if (nil != selectedUuid) {
+                if ([self.delegate respondsToSelector:@selector(goToContentsUuid:animated:)])
+                    [self.delegate goToContentsUuid:selectedUuid animated:YES];
+            }
         }  break;
         case kBlioContentsTabViewTabBookmarks: {
-            BlioBookmarkPoint *aBookMarkPoint = [[BlioBookmarkPoint alloc] init];
-            aBookMarkPoint.ePubParagraphId = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubParagraphId"] integerValue];
-            aBookMarkPoint.ePubWordOffset = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubWordOffset"] integerValue];
-            aBookMarkPoint.ePubHyphenOffset = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubHyphenOffset"] integerValue];
-            aBookMarkPoint.layoutPage = [[self.bookmarksController.selectedBookmark valueForKey:@"layoutPage"] integerValue];
-            if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkPoint:animated:)])
-                [self.delegate goToContentsBookmarkPoint:aBookMarkPoint animated:YES];
-            [aBookMarkPoint release];
+            if (nil != self.bookmarksController.selectedBookmark) {
+                BlioBookmarkPoint *aBookMarkPoint = [[BlioBookmarkPoint alloc] init];
+                aBookMarkPoint.ePubParagraphId = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubParagraphId"] integerValue];
+                aBookMarkPoint.ePubWordOffset = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubWordOffset"] integerValue];
+                aBookMarkPoint.ePubHyphenOffset = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubHyphenOffset"] integerValue];
+                aBookMarkPoint.layoutPage = [[self.bookmarksController.selectedBookmark valueForKey:@"layoutPage"] integerValue];
+                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkPoint:animated:)])
+                    [self.delegate goToContentsBookmarkPoint:aBookMarkPoint animated:YES];
+                [aBookMarkPoint release];
+            }
         }  break;
         case kBlioContentsTabViewTabNotes:
-            if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkPoint:animated:)])
-                [self.delegate showNote:self.notesController.selectedNote animated:YES];
+            if (nil != self.notesController.selectedNote) {
+                if ([self.delegate respondsToSelector:@selector(showNote:animated:)])
+                    [self.delegate showNote:self.notesController.selectedNote animated:YES];
+            }
             break;
     }   
 }
@@ -305,11 +319,12 @@ typedef enum {
 
 @implementation BlioContentsTabBookmarksViewController
 
-@synthesize bookmarks, selectedBookmark;
+@synthesize bookmarks, selectedBookmark, bookView;
 
 - (void)dealloc {
     self.bookmarks = nil;
     self.selectedBookmark = nil;
+    self.bookView = nil;
     [super dealloc];
 }
 
@@ -424,12 +439,24 @@ typedef enum {
     
     // Set up the cell...
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"ePubParagraphId" ascending:YES] autorelease];
+
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
     NSArray *sortedBookmarks = [[self.bookmarks allObjects] sortedArrayUsingDescriptors:sortDescriptors];
     NSManagedObject *currentBookmark = [sortedBookmarks objectAtIndex:row];
-
-    mainLabel.text = [NSString stringWithFormat:@"p.%d", [[currentBookmark valueForKey:@"layoutPage"] integerValue]];
-    secondLabel.text = @"Bookmark text not implemented yet.";
+    
+    // Seems a bit pointless having to jump through these hoops to get the display name
+    BlioBookmarkPoint *aBookMarkPoint = [[BlioBookmarkPoint alloc] init];
+    aBookMarkPoint.ePubParagraphId = [[currentBookmark valueForKey:@"ePubParagraphId"] integerValue];
+    aBookMarkPoint.ePubWordOffset = [[currentBookmark valueForKey:@"ePubWordOffset"] integerValue];
+    aBookMarkPoint.ePubHyphenOffset = [[currentBookmark valueForKey:@"ePubHyphenOffset"] integerValue];
+    aBookMarkPoint.layoutPage = [[currentBookmark valueForKey:@"layoutPage"] integerValue];    
+    NSInteger pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
+    [aBookMarkPoint release];
+    NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
+    
+    mainLabel.text = [NSString stringWithFormat:@"p.%@", displayPage];
+    secondLabel.text = [currentBookmark valueForKey:@"bookmarkText"];
 	
     return cell;
 }
@@ -440,7 +467,9 @@ typedef enum {
     // than just going to the bookmarkPoint directly offers teh flexibility to dismiss the
     // modal view and then animate the goto
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"ePubParagraphId" ascending:YES] autorelease];
+    
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
     NSArray *sortedBookmarks = [[self.bookmarks allObjects] sortedArrayUsingDescriptors:sortDescriptors];
     self.selectedBookmark = [sortedBookmarks objectAtIndex:[indexPath row]];
     
@@ -453,7 +482,9 @@ typedef enum {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source        
         NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
-        NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+        NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"ePubParagraphId" ascending:YES] autorelease];
+        
+        NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
         NSArray *sortedBookmarks = [[self.bookmarks allObjects] sortedArrayUsingDescriptors:sortDescriptors];
         NSManagedObject *currentBookmark = [sortedBookmarks objectAtIndex:[indexPath row]];
         
@@ -468,11 +499,12 @@ typedef enum {
 
 @implementation BlioContentsTabNotesViewController
 
-@synthesize notes, selectedNote;
+@synthesize notes, selectedNote, bookView;
 
 - (void)dealloc {
     self.notes = nil;
     self.selectedNote = nil;
+    self.bookView = nil;
     [super dealloc];
 }
 /*
@@ -587,11 +619,23 @@ typedef enum {
     
     // Set up the cell...
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"ePubParagraphId" ascending:YES] autorelease];
+    
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
     NSArray *sortedNotes = [[self.notes allObjects] sortedArrayUsingDescriptors:sortDescriptors];
     NSManagedObject *currentNote = [sortedNotes objectAtIndex:row];
     
-    mainLabel.text = [NSString stringWithFormat:@"p.%d", [[currentNote valueForKey:@"layoutPage"] integerValue]];
+    // Seems a bit pointless having to jump through these hoops to get the display name
+    BlioBookmarkPoint *aBookMarkPoint = [[BlioBookmarkPoint alloc] init];
+    aBookMarkPoint.ePubParagraphId = [[currentNote valueForKey:@"ePubParagraphId"] integerValue];
+    aBookMarkPoint.ePubWordOffset = [[currentNote valueForKey:@"ePubWordOffset"] integerValue];
+    aBookMarkPoint.ePubHyphenOffset = [[currentNote valueForKey:@"ePubHyphenOffset"] integerValue];
+    aBookMarkPoint.layoutPage = [[currentNote valueForKey:@"layoutPage"] integerValue];    
+    NSInteger pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
+    [aBookMarkPoint release];
+    NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
+    
+    mainLabel.text = [NSString stringWithFormat:@"p.%@", displayPage];
     secondLabel.text = [currentNote valueForKey:@"noteText"];
 	
     return cell;
@@ -603,7 +647,9 @@ typedef enum {
     // than just going to the bookmarkPoint directly offers teh flexibility to dismiss the
     // modal view and then animate the goto
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"ePubParagraphId" ascending:YES] autorelease];
+    
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
     NSArray *sortedNotes = [[self.notes allObjects] sortedArrayUsingDescriptors:sortDescriptors];
     self.selectedNote = [sortedNotes objectAtIndex:[indexPath row]];
     
@@ -616,7 +662,9 @@ typedef enum {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source        
         NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
-        NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+        NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"ePubParagraphId" ascending:YES] autorelease];
+        
+        NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
         NSArray *sortedNotes = [[self.notes allObjects] sortedArrayUsingDescriptors:sortDescriptors];
         NSManagedObject *currentNotes = [sortedNotes objectAtIndex:[indexPath row]];
         
