@@ -16,6 +16,7 @@
 #import "BlioViewSettingsSheet.h"
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
+#import "BlioSpeedReadView.h"
 #import "BlioContentsTabViewController.h"
 #import "BlioLightSettingsViewController.h"
 #import "BlioBookmarkPoint.h"
@@ -1151,6 +1152,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
     if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]])
         return kBlioPageLayoutPageLayout;
+    else if([bookViewController.bookView isKindOfClass:[BlioSpeedReadView class]])
+        return kBlioPageLayoutSpeedRead;
     else
         return kBlioPageLayoutPlainText;
 }
@@ -1189,6 +1192,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
+        } else if (newLayout == kBlioPageLayoutSpeedRead && [self.book bookPath]) {
+            EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[self.book bookPath]];
+            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:book];
+            self.bookView = speedReadView;     
+            [speedReadView release];
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
         }
         
         [self.bookView addObserver:self 
