@@ -423,6 +423,16 @@
                  animated:animated];
 }
 
+- (NSInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint
+{
+    return [_pageLayoutController pageNumberForIndexPoint:indexPoint];
+}
+
+- (NSInteger)pageNumberForUuid:(NSString *)uuid
+{
+    return [_pageLayoutController pageNumberForSectionUuid:uuid];
+}
+
 
 - (void)_goToPageNumberSavingJump:(NSInteger)newPageNumber animated:(BOOL)animated
 {

@@ -104,6 +104,9 @@
 - (void)goToPageNumber:(NSInteger)newPageNumber animated:(BOOL)animated;
 - (void)goToIndexPoint:(EucBookPageIndexPoint *)indexPoint animated:(BOOL)animated;
 
+- (NSInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
+- (NSInteger)pageNumberForUuid:(NSString *)uuid;
+
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 
 - (void)stopAnimation;
