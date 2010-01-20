@@ -208,14 +208,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
 
 @end
 
-@interface BlioPDFBackgroundLayerDelegate : NSObject {
-    CGRect pageRect;
-}
-
-@property(nonatomic) CGRect pageRect;
-
-@end
-
 @interface BlioPDFDrawingView : UIView {
     CGPDFDocumentRef document;
     CGPDFPageRef page;
@@ -1110,20 +1102,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
     [self.layer insertSublayer:shadowLayer below:tiledLayer];
     [shadowLayer setNeedsDisplay];
     
-    //self.backgroundLayer = [BlioFastCATiledLayer layer];
-//    BlioPDFBackgroundLayerDelegate *aBackgroundDelegate = [[BlioPDFBackgroundLayerDelegate alloc] init];
-//    [aBackgroundDelegate setPageRect:fittedPageRect];
-//    backgroundLayer.delegate = aBackgroundDelegate;
-//    backgroundLayer.levelsOfDetail = 4;
-//    backgroundLayer.levelsOfDetailBias = 4;
-//    backgroundLayer.tileSize = CGSizeMake(1024, 1024);
-    //self.backgroundLayerDelegate = aBackgroundDelegate;
-    //[aBackgroundDelegate release];
-    
-    //backgroundLayer.bounds = self.bounds;
-//    backgroundLayer.position = tiledLayer.position;
-//    [self.layer insertSublayer:backgroundLayer below:tiledLayer];
-//    [backgroundLayer setNeedsDisplay];
 }
 
 - (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber {
@@ -1204,20 +1182,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
 - (void)setPage:(CGPDFPageRef)newPage {
     page = newPage;
     pageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-}
-
-@end
-
-@implementation BlioPDFBackgroundLayerDelegate
-
-@synthesize pageRect;
-
-- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    //NSLog(@"drawing page background with CTM: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
-    //CGContextSetShadowWithColor(ctx, CGSizeMake(0, (kBlioLayoutShadow/2.0f)), kBlioLayoutShadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
-    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-    CGContextFillRect(ctx, pageRect);
-    //NSLog(@"fittedPageRect is %@", NSStringFromCGRect(pageRect));    
 }
 
 @end
