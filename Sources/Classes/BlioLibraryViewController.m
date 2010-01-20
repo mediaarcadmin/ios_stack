@@ -458,6 +458,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook];
     
     if (nil != bookViewController) {
+        [bookViewController setManagedObjectContext:self.managedObjectContext];
         bookViewController.toolbarsVisibleAfterAppearance = YES;
         [self.navigationController pushViewController:bookViewController animated:YES];
         [bookViewController release];
@@ -626,6 +627,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         BOOL shrinkCover = NO;
         
         if (nil != bookViewController) {
+            [bookViewController setManagedObjectContext:self.managedObjectContext];
             self.navigationController.navigationBarHidden = YES; // We already animated the cover over it.
             coverRect = [[bookViewController bookView] firstPageRect];
             if (!CGRectEqualToRect([[UIScreen mainScreen] bounds], coverRect)) shrinkCover = YES;

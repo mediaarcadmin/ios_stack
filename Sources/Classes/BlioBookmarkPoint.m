@@ -8,9 +8,8 @@
 
 #import "BlioBookmarkPoint.h"
 
-
 @implementation BlioBookmarkPoint
-
+ 
 @synthesize layoutPage;
 @synthesize ePubParagraphId;
 @synthesize ePubWordOffset;

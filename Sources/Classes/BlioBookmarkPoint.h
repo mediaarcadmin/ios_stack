@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface BlioBookmarkPoint : NSObject {
     NSInteger layoutPage;
     uint32_t ePubParagraphId;

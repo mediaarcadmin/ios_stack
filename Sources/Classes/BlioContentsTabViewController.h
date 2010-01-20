@@ -9,23 +9,45 @@
 #import <UIKit/UIKit.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import "BlioBookView.h"
+#import "BlioMockBook.h"
+#import "BlioBookmarkPoint.h"
+
+@protocol BlioContentsTabViewControllerDelegate <NSObject>
+
+@optional
+
+- (void)dismissContentsTabView:(id)sender;
+
+- (void)showNote:(NSManagedObject *)note animated:(BOOL)animated;
+- (void)goToContentsBookmarkPoint:bookmarkPoint animated:(BOOL)animated;
+- (void)goToContentsUuid:(NSString *)sectionUuid animated:(BOOL)animated;
+- (void)deleteBookmark:(NSManagedObject *)bookmark;
+- (void)deleteNote:(NSManagedObject *)note;
+
+@end
+
+@class BlioContentsTabBookmarksViewController, BlioContentsTabNotesViewController;
 
 @interface BlioContentsTabViewController : UINavigationController {
     EucBookContentsTableViewController *contentsController;
-    UITableViewController *bookmarksController;
-    UITableViewController *notesController;
+    BlioContentsTabBookmarksViewController *bookmarksController;
+    BlioContentsTabNotesViewController *notesController;
     UIView<BlioBookView> *bookView;
-    id<EucBookContentsTableViewControllerDelegate> delegate;
+    id<EucBookContentsTableViewControllerDelegate, BlioContentsTabViewControllerDelegate> delegate;
     UIBarButtonItem *doneButton;
+    BlioMockBook *book;
+    UISegmentedControl *tabSegment;
 }
 
 @property (nonatomic, retain) EucBookContentsTableViewController *contentsController;
-@property (nonatomic, retain) UITableViewController *bookmarksController;
-@property (nonatomic, retain) UITableViewController *notesController;
+@property (nonatomic, retain) BlioContentsTabBookmarksViewController *bookmarksController;
+@property (nonatomic, retain) BlioContentsTabNotesViewController *notesController;
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
-@property (nonatomic, assign) id<EucBookContentsTableViewControllerDelegate> delegate;
+@property (nonatomic, assign) id<EucBookContentsTableViewControllerDelegate, BlioContentsTabViewControllerDelegate> delegate;
 @property (nonatomic, retain) UIBarButtonItem *doneButton;
+@property (nonatomic, retain) BlioMockBook *book;
+@property (nonatomic, retain) UISegmentedControl *tabSegment;
 
-- (id)initWithBookView:(UIView<BlioBookView> *)aBookView;
+- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioMockBook *)aBook;
 
 @end

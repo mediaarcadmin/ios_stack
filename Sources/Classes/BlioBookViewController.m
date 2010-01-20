@@ -5,7 +5,6 @@
 //  Created by James Montgomerie on 09/05/2008.
 //  Copyright 2008 Things Made Out Of Other Things Ltd. All rights reserved.
 //
-
 #import <QuartzCore/QuartzCore.h>
 #import "BlioBookViewController.h"
 #import <libEucalyptus/THNavigationButton.h>
@@ -15,11 +14,11 @@
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucEPubBook.h>
 #import "BlioViewSettingsSheet.h"
-#import "BlioNotesView.h"
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
 #import "BlioContentsTabViewController.h"
 #import "BlioLightSettingsViewController.h"
+#import "BlioBookmarkPoint.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -324,6 +323,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 @synthesize currentPageColor = _currentPageColor;
 
 @synthesize audioPlaying = _audioPlaying;
+@synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize tiltScroller, tapDetector, motionControlsEnabled;
 
@@ -579,37 +579,19 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self updatePageJumpPanelForPage:self.bookView.pageNumber animated:YES];
 }
 
-- (void)_contentsViewDidAppear:(id)sender
-{
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-}
-
-- (void)_contentsViewDidDisappear:(id)sender {
-    EucBookContentsTableViewController *contentsSheet = [(BlioContentsTabViewController *)sender contentsController];
-    NSString *newSectionUuid = [contentsSheet.selectedUuid retain];
-    NSInteger newPageNumber = [contentsSheet.dataSource pageNumberForSectionUuid:newSectionUuid];
-    
-    if(newSectionUuid) {
-        [self updatePageJumpPanelForPage:newPageNumber animated:YES];
-        [self updatePieButtonForPage:newPageNumber animated:YES];
-        [_bookView goToUuid:newSectionUuid animated:YES];
-        [newSectionUuid release];
-    }
-}
-
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
     NSString *name = [anim valueForKey:@"THName"];
-    if([name isEqualToString:@"ContentsSlideIn"]) {
-        [self _contentsViewDidAppear:nil];
-    } else if([name isEqualToString:@"PageTurningViewSlideOut"]) {
+    //if([name isEqualToString:@"ContentsSlideIn"]) {
+//        [self _contentsViewDidAppear:nil];
+//    } else 
+    if([name isEqualToString:@"PageTurningViewSlideOut"]) {
         [(UIView *)[anim valueForKey:@"THView"] removeFromSuperview];   
     }
 }
 
-- (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid
-{
-    [self performSelector:@selector(dismissContents:)];
+- (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid {
+    [self performSelector:@selector(dismissContentsTabView:)];
 }
 
 
@@ -876,7 +858,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     self.book = nil;
     self.pageJumpView = nil;
     self.pieButton = nil;
-    
+    self.managedObjectContext = nil;
 	[super dealloc];
 }
 
@@ -1330,108 +1312,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)showContents:(id)sender {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
-    BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView];
+    BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
     aContentsTabView.delegate = self;
     [self presentModalViewController:aContentsTabView animated:YES];
     [aContentsTabView release];    
 }
-
-- (void)dismissContents:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
-}
-
-/*
-- (void)showContentsOrig:(id)sender {
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissContents)];
-    [self.navigationItem setRightBarButtonItem:rightItem animated:YES];
-    [rightItem release];
-    
-    _contentsSheet = [[EucBookContentsTableViewController alloc] init];
-    _contentsSheet.dataSource = _bookView.contentsDataSource;
-    _contentsSheet.delegate = self;        
-    _contentsSheet.currentSectionUuid = [_bookView.contentsDataSource sectionUuidForPageNumber:_bookView.pageNumber];
-    
-    UIView *sheetView = _contentsSheet.view;
-    
-    UIView *window = self.view.window;    
-    CGRect windowFrame = window.frame;
-    UINavigationBar *navBar = self.navigationController.navigationBar;
-    CGRect navBarRect = [navBar.superview convertRect:navBar.frame toView:window];
-    
-    sheetView.frame = CGRectMake(0, (navBarRect.origin.y + navBarRect.size.height), windowFrame.size.width, windowFrame.size.height - (navBarRect.origin.y + navBarRect.size.height)); 
-    
-    // Push in the contents sheet.
-    CATransition *animation = [CATransition animation];
-    [animation setType:kCATransitionMoveIn];
-    [animation setSubtype:kCATransitionFromTop];
-    [animation setDuration:0.3f];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    [animation setValue:@"ContentsSlideIn" forKey:@"THName"];
-    [animation setDelegate:self];
-    [[sheetView layer] addAnimation:animation forKey:@"ContentSlide"];
-    
-    [window addSubview:sheetView];
-    
-    // Fade the nav bar and its contents to blue
-    animation = [CATransition animation];
-    [animation setType:kCATransitionFade];
-    [animation setDuration:0.3f];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    [[navBar layer] addAnimation:animation forKey:@"NavBarFade"];
-    
-    navBar.barStyle = UIBarStyleDefault;
-    navBar.tintColor = _returnToNavigationBarTint;
-    ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleDefault;
-    [((UIButton *)self.navigationItem.rightBarButtonItem.customView) setImage:[UIImage imageNamed:@"BookButton.png"]
-                                                                     forState:UIControlStateNormal];
-    [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:0.0f];
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-    if (_pageJumpView) [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -_pageJumpView.frame.origin.y)];
-}
-
-- (void)dismissContentsOrig {
-    
-    UIView *sheetView = _contentsSheet.view;
-    CGRect contentsViewFinalRect = sheetView.frame;
-    contentsViewFinalRect.origin.y = contentsViewFinalRect.origin.y + contentsViewFinalRect.size.height;
-    
-    // Push out the contents sheet.
-    [UIView beginAnimations:@"contentsSheetDisappear" context:NULL];
-    [UIView setAnimationDidStopSelector:@selector(_contentsViewDidDisappear)];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDuration:0.3f];
-    
-    sheetView.frame = contentsViewFinalRect;
-    [self.navigationItem setRightBarButtonItem:_pageJumpButton animated:NO];
-    
-    if(!_viewIsDisappearing) {
-        if(_contentsSheet.selectedUuid != nil && self.navigationController.toolbarHidden) {
-            [self toggleToolbars];
-        }        
-        
-        // Turn the nav bar and its contents back to translucent.
-        UINavigationBar *navBar = self.navigationController.navigationBar;
-        
-        CATransition *animation = [CATransition animation];
-        [animation setType:kCATransitionFade];
-        [animation setDuration:0.3f];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        [[navBar layer] addAnimation:animation forKey:@"animation"];
-        
-        navBar.tintColor = nil;
-        navBar.barStyle = UIBarStyleBlackTranslucent;
-        ((THNavigationButton *)self.navigationItem.leftBarButtonItem.customView).barStyle = UIBarStyleBlackTranslucent;
-        [((UIButton *)self.navigationItem.leftBarButtonItem.customView) setAlpha:1.0f];
-        
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES]; 
-        if (_pageJumpView) [_pageJumpView setTransform:CGAffineTransformIdentity];
-    }
-    [UIView commitAnimations];
-}
-*/
 
 - (void)showAddMenu:(id)sender {
     UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
@@ -1658,9 +1543,118 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         UIView *container = self.navigationController.visibleViewController.view;
         NSString *pageNumber = [self currentPageNumber];
         BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber];
+        [aNotesView setDelegate:self];
         [aNotesView showInView:container];
         [aNotesView release];
+    } else if (buttonIndex == kBlioLibraryAddBookmarkAction) {
+        BlioBookmarkPoint *currentBookmark = self.bookView.pageBookmarkPoint;
+        
+        NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
+        NSManagedObject *existingBookmark = nil;
+        
+        for (NSManagedObject *bookmark in bookmarks) {
+            if (([[bookmark valueForKey:@"layoutPage"] integerValue] == currentBookmark.layoutPage) &&
+                ([[bookmark valueForKey:@"ePubParagraphId"] integerValue] == currentBookmark.ePubParagraphId) &&
+                ([[bookmark valueForKey:@"ePubWordOffset"] integerValue] == currentBookmark.ePubWordOffset) &&
+                ([[bookmark valueForKey:@"ePubHyphenOffset"] integerValue] == currentBookmark.ePubHyphenOffset)) {
+
+                existingBookmark = bookmark;
+                break;
+            }
+        }
+        
+        if (nil != existingBookmark) return;
+        
+        NSManagedObject *newBookmark = [NSEntityDescription
+                                     insertNewObjectForEntityForName:@"Bookmark"
+                                     inManagedObjectContext:[self managedObjectContext]];
+        
+        [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.layoutPage] forKey:@"layoutPage"];
+        [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubParagraphId] forKey:@"ePubParagraphId"];
+        [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubWordOffset] forKey:@"ePubWordOffset"];
+        [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubHyphenOffset] forKey:@"ePubHyphenOffset"];
+
+        [bookmarks addObject:newBookmark];
+        
+        NSError *error;
+        if (![[self managedObjectContext] save:&error])
+            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
     }
+}
+
+- (void)notesViewCreateNote:(BlioNotesView *)notesView {
+    BlioBookmarkPoint *currentBookmark = self.bookView.pageBookmarkPoint;
+    
+    NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
+        
+    NSManagedObject *newNote = [NSEntityDescription
+                                    insertNewObjectForEntityForName:@"Note"
+                                    inManagedObjectContext:[self managedObjectContext]];
+    
+    [newNote setValue:[NSNumber numberWithInteger:currentBookmark.layoutPage] forKey:@"layoutPage"];
+    [newNote setValue:[NSNumber numberWithInteger:currentBookmark.ePubParagraphId] forKey:@"ePubParagraphId"];
+    [newNote setValue:[NSNumber numberWithInteger:currentBookmark.ePubWordOffset] forKey:@"ePubWordOffset"];
+    [newNote setValue:[NSNumber numberWithInteger:currentBookmark.ePubHyphenOffset] forKey:@"ePubHyphenOffset"];
+    [newNote setValue:notesView.textView.text forKey:@"noteText"];
+    [notes addObject:newNote];
+    
+    NSError *error;
+    if (![[self managedObjectContext] save:&error])
+        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+}
+
+#pragma mark -
+#pragma mark BlioContentsTabViewControllerDelegate
+
+- (void)dismissContentsTabView:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)showNote:(NSManagedObject *)note animated:(BOOL)animated {
+    if (_pageJumpView && !_pageJumpView.hidden) [self performSelector:@selector(togglePageJumpPanel)];
+    UIView *container = self.navigationController.visibleViewController.view;
+    NSString *pageNumber = [self currentPageNumber];
+    
+    BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber note:note];
+    [aNotesView setDelegate:self];
+    [aNotesView showInView:container animated:animated];
+    [aNotesView release];
+}
+
+- (void)goToContentsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+//    NSInteger newPageNumber = [self.bookView.dataSource pageNumberForBookmarkPoint:bookmarkPoint];
+//    
+//    [self updatePageJumpPanelForPage:newPageNumber animated:animated];
+//    [self updatePieButtonForPage:newPageNumber animated:animated;
+    [_bookView goToBookmarkPoint:bookmarkPoint animated:animated];
+}
+
+- (void)goToContentsUuid:(NSString *)sectionUuid animated:(BOOL)animated {
+    NSInteger newPageNumber = [[self.bookView contentsDataSource] pageNumberForSectionUuid:sectionUuid];
+
+    [self updatePageJumpPanelForPage:newPageNumber animated:animated];
+    [self updatePieButtonForPage:newPageNumber animated:animated];
+    [_bookView goToUuid:sectionUuid animated:animated];
+}
+
+- (void)deleteNote:(NSManagedObject *)note {
+    NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
+    [notes removeObject:note];
+    [[self managedObjectContext] deleteObject:note];
+    
+    NSError *error;
+    if (![[self managedObjectContext] save:&error])
+        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+}
+
+- (void)deleteBookmark:(NSManagedObject *)bookmark {
+    NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
+    [bookmarks removeObject:bookmark];
+    [[self managedObjectContext] deleteObject:bookmark];
+    
+    NSError *error;
+    if (![[self managedObjectContext] save:&error])
+        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 @end

@@ -6,12 +6,15 @@
 //  Copyright 2008 Things Made Out Of Other Things Ltd. All rights reserved.
 //
 
+#import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import "AcapelaTTS.h"
 #import "BlioMockBook.h"
 #import "BlioBookView.h"
+#import "BlioNotesView.h"
+#import "BlioContentsTabViewController.h"
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
 
@@ -30,7 +33,7 @@ typedef enum {
     kBlioPageColorNeutral = 2,
 } BlioPageColor;
 
-@interface BlioBookViewController : UIViewController <THEventCaptureObserver,EucBookContentsTableViewControllerDelegate,UIActionSheetDelegate,UIAccelerometerDelegate> {
+@interface BlioBookViewController : UIViewController <THEventCaptureObserver,EucBookContentsTableViewControllerDelegate,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate> {
     BOOL _firstAppearance;
     
     UIView<BlioBookView> *_bookView;
@@ -79,6 +82,7 @@ typedef enum {
     UISlider* _pageJumpSlider;
     BOOL _pageJumpSliderTracking;
     BlioBookViewControllerProgressPieButton *_pieButton;
+    NSManagedObjectContext *_managedObjectContext;
 }
 
 // Designated initializers.
@@ -104,6 +108,7 @@ typedef enum {
 
 @property (nonatomic, retain) UIView *pageJumpView;
 @property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 - (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;

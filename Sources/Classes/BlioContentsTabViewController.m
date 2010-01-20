@@ -8,27 +8,52 @@
 
 #import "BlioContentsTabViewController.h"
 
-@interface BlioContentsTabBookmarksViewController : UITableViewController
+#define MAINLABEL_TAG 1
+#define SECONDLABEL_TAG 2
+
+typedef enum {
+    kBlioContentsTabViewTabContents = 0,
+    kBlioContentsTabViewTabBookmarks = 1,
+    kBlioContentsTabViewTabNotes = 2
+} BlioContentsTabViewTab;
+
+@interface BlioContentsTabBookmarksViewController : UITableViewController {
+    NSMutableSet *bookmarks;
+    NSManagedObject *selectedBookmark;
+}
+
+@property (nonatomic, retain) NSMutableSet *bookmarks;
+@property (nonatomic, retain) NSManagedObject *selectedBookmark;
+
 @end
 
-@interface BlioContentsTabNotesViewController : UITableViewController
+@interface BlioContentsTabNotesViewController : UITableViewController {
+    NSMutableSet *notes;
+    NSManagedObject *selectedNote;
+}
+
+@property (nonatomic, retain) NSMutableSet *notes;
+@property (nonatomic, retain) NSManagedObject *selectedNote;
+
 @end
 
 @implementation BlioContentsTabViewController
 
-@synthesize contentsController, bookmarksController, notesController, bookView, delegate, doneButton;
+@synthesize contentsController, bookmarksController, notesController, bookView, book, delegate, doneButton, tabSegment;
 
 - (void)dealloc {
     self.contentsController = nil;
     self.bookmarksController = nil;
     self.notesController = nil;
     self.bookView = nil;
+    self.book = nil;
     self.delegate = nil;
     self.doneButton = nil;
+    self.tabSegment = nil;
     [super dealloc];
 }
 
-- (id)initWithBookView:(UIView<BlioBookView> *)aBookView {
+- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioMockBook *)aBook {
         
     EucBookContentsTableViewController *aContentsController = [[EucBookContentsTableViewController alloc] init];
     aContentsController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -43,8 +68,13 @@
     
 	if ((self = [super initWithRootViewController:aContentsController])) {
         self.bookView = aBookView;
+        self.book = aBook;
         self.contentsController = aContentsController;
+        
+        [aBookmarksController setBookmarks:[aBook mutableSetValueForKey:@"bookmarks"]];
         self.bookmarksController = aBookmarksController;
+        
+        [aNotesController setNotes:[aBook mutableSetValueForKey:@"notes"]];
         self.notesController = aNotesController;
         
         UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
@@ -65,6 +95,7 @@
         aTabSegmentedControl.selectedSegmentIndex = 0;
         [aTabSegmentedControl addTarget:self action:@selector(changeTab:) forControlEvents:UIControlEventValueChanged];
         item = [[UIBarButtonItem alloc] initWithCustomView:aTabSegmentedControl];
+        self.tabSegment = aTabSegmentedControl;
         [aTabSegmentedControl release];
         [tabItems addObject:item];
         [item release];
@@ -93,16 +124,16 @@
 
 - (void)changeTab:(id)sender {
     
-    NSUInteger selectedTab = [sender selectedSegmentIndex];
+    BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[sender selectedSegmentIndex];
     switch (selectedTab) {
-        case 0:
+        case kBlioContentsTabViewTabContents:
             [self popToRootViewControllerAnimated:NO];
             break;
-        case 1:
+        case kBlioContentsTabViewTabBookmarks:
             [self popToRootViewControllerAnimated:NO];
             [self pushViewController:self.bookmarksController animated:NO];
             break;
-        case 2:
+        case kBlioContentsTabViewTabNotes:
             [self popToRootViewControllerAnimated:NO];
             [self pushViewController:self.notesController animated:NO];
             break;
@@ -173,8 +204,18 @@
 }
 
 - (void)dismissTabView:(id)sender {
-    if ([(NSObject *)self.delegate respondsToSelector:@selector(dismissContents:)])
-        [(NSObject *)self.delegate performSelector:@selector(dismissContents:) withObject:sender];
+    if ([self.delegate respondsToSelector:@selector(dismissContentsTabView:)])
+        [self.delegate performSelector:@selector(dismissContentsTabView:) withObject:sender];
+}
+
+- (void)deleteBookmark:(NSManagedObject *)bookmark {
+    if ([self.delegate respondsToSelector:@selector(deleteBookmark:)])
+        [self.delegate performSelector:@selector(deleteBookmark:) withObject:bookmark];
+}
+
+- (void)deleteNote:(NSManagedObject *)bookmark {
+    if ([self.delegate respondsToSelector:@selector(deleteNote:)])
+        [self.delegate performSelector:@selector(deleteNote:) withObject:bookmark];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -190,18 +231,54 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if ([(NSObject *)self.delegate respondsToSelector:@selector(_contentsViewDidAppear:)])
-        [(NSObject *)self.delegate performSelector:@selector(_contentsViewDidAppear:) withObject:self];
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+    
+    BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[self.tabSegment selectedSegmentIndex];
+    switch (selectedTab) {
+        case kBlioContentsTabViewTabNotes: {
+            BlioBookmarkPoint *aBookMarkPoint = [[BlioBookmarkPoint alloc] init];
+            aBookMarkPoint.ePubParagraphId = [[self.notesController.selectedNote valueForKey:@"ePubParagraphId"] integerValue];
+            aBookMarkPoint.ePubWordOffset = [[self.notesController.selectedNote valueForKey:@"ePubWordOffset"] integerValue];
+            aBookMarkPoint.ePubHyphenOffset = [[self.notesController.selectedNote valueForKey:@"ePubHyphenOffset"] integerValue];
+            aBookMarkPoint.layoutPage = [[self.notesController.selectedNote valueForKey:@"layoutPage"] integerValue];
+            if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkPoint:animated:)])
+                [self.delegate goToContentsBookmarkPoint:aBookMarkPoint animated:NO];
+            [aBookMarkPoint release];
+        } break;
+        default:
+            break;
+    }   
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    if ([(NSObject *)self.delegate respondsToSelector:@selector(_contentsViewDidDisappear:)])
-        [(NSObject *)self.delegate performSelector:@selector(_contentsViewDidDisappear:) withObject:self];
+    
+    BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[self.tabSegment selectedSegmentIndex];
+    switch (selectedTab) {
+        case kBlioContentsTabViewTabContents: {
+            NSString *sectionUuid = [NSString stringWithString:self.contentsController.selectedUuid];
+            if ([self.delegate respondsToSelector:@selector(goToContentsUuid:animated:)])
+                [self.delegate goToContentsUuid:sectionUuid animated:YES];
+        }  break;
+        case kBlioContentsTabViewTabBookmarks: {
+            BlioBookmarkPoint *aBookMarkPoint = [[BlioBookmarkPoint alloc] init];
+            aBookMarkPoint.ePubParagraphId = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubParagraphId"] integerValue];
+            aBookMarkPoint.ePubWordOffset = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubWordOffset"] integerValue];
+            aBookMarkPoint.ePubHyphenOffset = [[self.bookmarksController.selectedBookmark valueForKey:@"ePubHyphenOffset"] integerValue];
+            aBookMarkPoint.layoutPage = [[self.bookmarksController.selectedBookmark valueForKey:@"layoutPage"] integerValue];
+            if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkPoint:animated:)])
+                [self.delegate goToContentsBookmarkPoint:aBookMarkPoint animated:YES];
+            [aBookMarkPoint release];
+        }  break;
+        case kBlioContentsTabViewTabNotes:
+            if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkPoint:animated:)])
+                [self.delegate showNote:self.notesController.selectedNote animated:YES];
+            break;
+    }   
 }
 
 /*
@@ -228,6 +305,14 @@
 
 @implementation BlioContentsTabBookmarksViewController
 
+@synthesize bookmarks, selectedBookmark;
+
+- (void)dealloc {
+    self.bookmarks = nil;
+    self.selectedBookmark = nil;
+    [super dealloc];
+}
+
 /*
  - (id)initWithStyle:(UITableViewStyle)style {
  // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -243,7 +328,6 @@
  
      // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
      self.navigationItem.rightBarButtonItem = self.editButtonItem;
-   
  }
  
 
@@ -298,83 +382,99 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    return [self.bookmarks count];
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    NSUInteger row = [indexPath row];
+    UILabel *mainLabel, *secondLabel;
+    
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        mainLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10.0, 0.0, 65.0, 44.0)] autorelease];
+        mainLabel.tag = MAINLABEL_TAG;
+        mainLabel.textColor = [UIColor darkGrayColor];
+        mainLabel.backgroundColor = [UIColor clearColor];
+        mainLabel.font = [UIFont systemFontOfSize:17.0f];
+        mainLabel.textAlignment = UITextAlignmentRight;
+        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        [cell.contentView addSubview:mainLabel];
+        
+        secondLabel = [[[UILabel alloc] initWithFrame:CGRectMake(83.0, 0.0, 220.0, 44.0)] autorelease];
+        secondLabel.tag = SECONDLABEL_TAG;
+        secondLabel.backgroundColor = [UIColor clearColor];
+        secondLabel.font = [UIFont systemFontOfSize:17.0];
+        secondLabel.textAlignment = UITextAlignmentLeft;
+        secondLabel.textColor = [UIColor blackColor];
+        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        [cell.contentView addSubview:secondLabel];
+    } else {
+        mainLabel = (UILabel *)[cell.contentView viewWithTag:MAINLABEL_TAG];
+        secondLabel = (UILabel *)[cell.contentView viewWithTag:SECONDLABEL_TAG];
     }
+
     
     // Set up the cell...
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+    NSArray *sortedBookmarks = [[self.bookmarks allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+    NSManagedObject *currentBookmark = [sortedBookmarks objectAtIndex:row];
+
+    mainLabel.text = [NSString stringWithFormat:@"p.%d", [[currentBookmark valueForKey:@"layoutPage"] integerValue]];
+    secondLabel.text = @"Bookmark text not implemented yet.";
 	
     return cell;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController];
-	// [anotherViewController release];
+    // Setting the selectedBookmarkPoint and then dismissing the view, rather 
+    // than just going to the bookmarkPoint directly offers teh flexibility to dismiss the
+    // modal view and then animate the goto
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+    NSArray *sortedBookmarks = [[self.bookmarks allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+    self.selectedBookmark = [sortedBookmarks objectAtIndex:[indexPath row]];
+    
+    [self.navigationController performSelector:@selector(dismissTabView:) withObject:nil];
 }
 
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-
-/*
  // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- 
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
- }   
- else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }   
- }
- */
-
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
-
-- (void)dealloc {
-    [super dealloc];
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source        
+        NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
+        NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+        NSArray *sortedBookmarks = [[self.bookmarks allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+        NSManagedObject *currentBookmark = [sortedBookmarks objectAtIndex:[indexPath row]];
+        
+        [self.navigationController performSelector:@selector(deleteBookmark:) withObject:currentBookmark];
+        
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+    }   
 }
-
+ 
 
 @end
 
 @implementation BlioContentsTabNotesViewController
 
+@synthesize notes, selectedNote;
+
+- (void)dealloc {
+    self.notes = nil;
+    self.selectedNote = nil;
+    [super dealloc];
+}
 /*
  - (id)initWithStyle:(UITableViewStyle)style {
  // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -445,78 +545,86 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    return [self.notes count];
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    NSUInteger row = [indexPath row];
+    UILabel *mainLabel, *secondLabel;
+    
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        mainLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10.0, 0.0, 65.0, 44.0)] autorelease];
+        mainLabel.tag = MAINLABEL_TAG;
+        mainLabel.textColor = [UIColor darkGrayColor];
+        mainLabel.backgroundColor = [UIColor clearColor];
+        mainLabel.font = [UIFont systemFontOfSize:17.0f];
+        mainLabel.textAlignment = UITextAlignmentRight;
+        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        [cell.contentView addSubview:mainLabel];
+        
+        secondLabel = [[[UILabel alloc] initWithFrame:CGRectMake(83.0, 0.0, 220.0, 44.0)] autorelease];
+        secondLabel.tag = SECONDLABEL_TAG;
+        secondLabel.backgroundColor = [UIColor clearColor];
+        secondLabel.font = [UIFont boldSystemFontOfSize:17.0];
+        secondLabel.textAlignment = UITextAlignmentLeft;
+        secondLabel.textColor = [UIColor blackColor];
+        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        [cell.contentView addSubview:secondLabel];
+    } else {
+        mainLabel = (UILabel *)[cell.contentView viewWithTag:MAINLABEL_TAG];
+        secondLabel = (UILabel *)[cell.contentView viewWithTag:SECONDLABEL_TAG];
     }
     
+    
     // Set up the cell...
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+    NSArray *sortedNotes = [[self.notes allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+    NSManagedObject *currentNote = [sortedNotes objectAtIndex:row];
+    
+    mainLabel.text = [NSString stringWithFormat:@"p.%d", [[currentNote valueForKey:@"layoutPage"] integerValue]];
+    secondLabel.text = [currentNote valueForKey:@"noteText"];
 	
     return cell;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController];
-	// [anotherViewController release];
+    // Setting the selectedBookmarkPoint and then dismissing the view, rather 
+    // than just going to the bookmarkPoint directly offers teh flexibility to dismiss the
+    // modal view and then animate the goto
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+    NSArray *sortedNotes = [[self.notes allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+    self.selectedNote = [sortedNotes objectAtIndex:[indexPath row]];
+    
+    [self.navigationController performSelector:@selector(dismissTabView:) withObject:nil];
 }
 
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-
-/*
  // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- 
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
- }   
- else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }   
- }
- */
-
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
-
-- (void)dealloc {
-    [super dealloc];
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source        
+        NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"layoutPage" ascending:YES] autorelease];
+        NSArray *sortDescriptors = [NSArray arrayWithObject:sortPageDescriptor];
+        NSArray *sortedNotes = [[self.notes allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+        NSManagedObject *currentNotes = [sortedNotes objectAtIndex:[indexPath row]];
+        
+        [self.navigationController performSelector:@selector(deleteNote:) withObject:currentNotes];
+        
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+    }   
 }
-
 
 @end
 

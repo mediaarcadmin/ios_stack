@@ -21,23 +21,39 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 
 @implementation BlioNotesView
 
-@synthesize page;
+@synthesize page, textView, delegate, note;
+
+- (void)dealloc {
+    self.page = nil;
+    self.textView = nil;
+    self.delegate = nil;
+    self.note = nil;
+    [super dealloc];
+}
 
 - (id)initWithFrame:(CGRect)frame {
     return [self initWithPage:nil];
 }
 
 - (id)initWithPage:(NSString *)pageNumber {
+    return [self initWithPage:pageNumber note:nil];
+}
+
+- (id)initWithPage:(NSString *)pageNumber note:(NSManagedObject *)aNote {
     if ((self = [super initWithFrame:CGRectZero])) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
         self.page = pageNumber;
-        
+        self.note = aNote;
     }
     return self;
 }
 
 - (void)showInView:(UIView *)view {
+    [self showInView:view animated:YES];
+}
+
+- (void)showInView:(UIView *)view animated:(BOOL)animated {
     [self removeFromSuperview];
     
     CGRect newFrame = CGRectMake(0, 
@@ -98,18 +114,21 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     //aTextView.font = [UIFont boldSystemFontOfSize:14.0f];
     aTextView.font = [UIFont fontWithName:@"Marker Felt" size:18.0f];
     aTextView.backgroundColor = [UIColor clearColor];
+    [aTextView setText:[self.note valueForKey:@"noteText"]];
     [aTextView becomeFirstResponder];
     [self addSubview:aTextView];
-    textView = aTextView;
+    self.textView = aTextView;
     [aTextView release];
     
-    CGFloat yOffscreen = -CGRectGetMaxY(newFrame);
-    self.transform = CGAffineTransformMakeTranslation(0, yOffscreen);
-    [UIView beginAnimations:@"showFromTop" context:nil];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-    [UIView setAnimationDuration:0.35f];
-    self.transform = CGAffineTransformIdentity;
-    [UIView commitAnimations];
+    if (animated) {
+        CGFloat yOffscreen = -CGRectGetMaxY(newFrame);
+        self.transform = CGAffineTransformMakeTranslation(0, yOffscreen);
+        [UIView beginAnimations:@"showFromTop" context:nil];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+        [UIView setAnimationDuration:0.35f];
+        self.transform = CGAffineTransformIdentity;
+        [UIView commitAnimations];
+    }
                         
 }
 
@@ -141,7 +160,7 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 }
 
 - (void)dismiss:(id)sender {
-    [textView resignFirstResponder];
+    [self.textView resignFirstResponder];
     CGFloat yOffscreen = -CGRectGetMaxY(self.frame);
     
     [UIView beginAnimations:@"exitToTop" context:self];
@@ -154,17 +173,15 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 }
 
 - (void)save:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(notesViewSave:)])
+        [self.delegate performSelector:@selector(notesViewSave:) withObject:self];
+    
     [self dismiss:sender];
 }
                                                   
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     [(UIView *)context removeFromSuperview];
 }                                                  
-
-- (void)dealloc {
-    self.page = nil;
-    [super dealloc];
-}
 
 
 @end

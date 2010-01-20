@@ -495,6 +495,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
 }
 
 - (void)goToPageNumber:(NSInteger)aPageNumber animated:(BOOL)animated {
+    
+    if (aPageNumber < 1 ) 
+        aPageNumber = 1;
+    else if (aPageNumber > pageCount)
+        aPageNumber = pageCount;
+    
     [self willChangeValueForKey:@"pageNumber"];
     CFTimeInterval delayScroll = 0.2f;
     BOOL zoomIn = NO;
