@@ -44,6 +44,7 @@ typedef enum {
     
     UITouch *_touch;
     BOOL _touchMoved;
+    CFAbsoluteTime _touchStartTime;
             
     //EucBookContentsTableViewController *_contentsSheet;
     
