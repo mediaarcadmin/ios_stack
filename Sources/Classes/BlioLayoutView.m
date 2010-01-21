@@ -873,8 +873,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
     lastZoomScale = newScale;
 }
 
-- (void)zoomAtPoint:(CGPoint)point {
+- (void)zoomAtPoint:(NSString *)pointString {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    CGPoint point = CGPointFromString(pointString);
+    
     self.zoomPageInProgress = YES;
     if (self.scrollView.zoomScale > 1.0f) {
         [UIView beginAnimations:@"BlioZoomPage" context:nil];
@@ -888,17 +890,36 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
         [self.scrollView setContentOffset:CGPointMake((self.pageNumber - 1) * self.scrollView.frame.size.width, 0)];
         self.lastZoomScale = self.scrollView.zoomScale;
         [UIView commitAnimations];
-        //[self.scrollView setDirectionalLockEnabled:NO];
     } else {
+        [self.scrollView setPagingEnabled:NO];
+        [self.scrollView setBounces:NO];
+
+        //[self.scrollView setZoomScale:2.0f];
+//        [self.scrollView setContentSize:CGSizeMake(self.scrollView.frame.size.width * pageCount * 2, self.scrollView.frame.size.height * self.scrollView.zoomScale)];
+
+        //if (CGRectEqualToRect(self.currentTextRect, CGRectZero)) {
         [UIView beginAnimations:@"BlioZoomPage" context:nil];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
         [UIView setAnimationBeginsFromCurrentState:YES];
         [UIView setAnimationDuration:0.35f];
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        
+//        [self.scrollView setZoomScale:2.0f animated:NO];
+//        [self.scrollView setContentSize:CGSizeMake(self.scrollView.frame.size.width * pageCount * self.scrollView.zoomScale, self.scrollView.frame.size.height * self.scrollView.zoomScale)];
         [self.scrollView setZoomScale:2.0f];
         [self.scrollView setContentSize:CGSizeMake(self.scrollView.frame.size.width * pageCount * self.scrollView.zoomScale, self.scrollView.frame.size.height * self.scrollView.zoomScale)];
-        [self.scrollView setContentOffset:CGPointMake((self.pageNumber - 1) * self.scrollView.frame.size.width * self.scrollView.zoomScale, 0)];
+
+        CGFloat pageWidth = self.scrollView.frame.size.width * self.scrollView.zoomScale;
+        CGFloat pageWidthExpansion = pageWidth - self.scrollView.frame.size.width;
+        CGFloat pageHeight = self.scrollView.frame.size.height * self.scrollView.zoomScale;
+        CGFloat pageHeightExpansion = pageHeight - self.scrollView.frame.size.height;
+
+        CGPoint viewOrigin = CGPointMake((self.pageNumber - 1) * pageWidth, 0);
+        CGFloat xOffset = pageWidthExpansion * (point.x / CGRectGetWidth(self.scrollView.bounds));
+        CGFloat yOffset = pageHeightExpansion * (point.y / CGRectGetHeight(self.scrollView.bounds));
+        [self.scrollView setContentOffset:CGPointMake(viewOrigin.x + xOffset, viewOrigin.y + yOffset)];
+
         //NSLog(@"Content offset: %@", NSStringFromCGPoint(self.scrollView.contentOffset));
         self.lastZoomScale = self.scrollView.zoomScale;
 //        NSLog(@"Done setting contentOffset");
@@ -1020,7 +1041,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6;
     // get any touch
     UITouch * t = [touches anyObject];
     if( [t tapCount]>1 ) {
-        CGPoint point = [t locationInView:self];
+        CGPoint point = [t locationInView:(UIView *)self.delegate];
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomAtPoint:)])
           [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(point)];
         return NO;

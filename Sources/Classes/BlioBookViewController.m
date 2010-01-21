@@ -533,7 +533,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)setBookView:(UIView<BlioBookView> *)bookView
 {
     if(_bookView != bookView) {
-        THEventCapturingWindow *window = (THEventCapturingWindow *)[_bookView superview];
+        THEventCapturingWindow *window = (THEventCapturingWindow *)self.view.window;
         [window removeTouchObserver:self forView:_bookView];
         
         [_bookView removeFromSuperview];
@@ -546,8 +546,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];  
         
-        [window addSubview:_bookView];
-        [window sendSubviewToBack:_bookView];
+//        [window addSubview:_bookView];
+//        [window sendSubviewToBack:_bookView];
+        [self.view addSubview:_bookView];
+        [self.view sendSubviewToBack:_bookView];
     }
 }
 
@@ -602,6 +604,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)loadView 
 {
+    UIView *root = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    //root.userInteractionEnabled = NO;
+    root.backgroundColor = [UIColor clearColor];
+    self.view = root;
+    [root release];
+    
+    /*
     CGRect mainScreenBounds = [[UIScreen mainScreen] applicationFrame];
     _BlioBookViewControllerTransparentView *mainSuperview = [[_BlioBookViewControllerTransparentView alloc] initWithFrame:mainScreenBounds];
     mainSuperview.controller = self;
@@ -611,7 +620,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     mainSuperview.multipleTouchEnabled = YES;
     self.view = mainSuperview;
     [mainSuperview release];
-        
+     */   
     if(!self.toolbarsVisibleAfterAppearance) {
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     }    
@@ -706,8 +715,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         [self.navigationItem setRightBarButtonItem:_pageJumpButton];
         
-        [window addSubview:_bookView];
-        [window sendSubviewToBack:_bookView];
+        //[window addSubview:_bookView];
+        //[window sendSubviewToBack:_bookView];
+        [self.view addSubview:_bookView];
+        [self.view sendSubviewToBack:_bookView];
         
         if(animated) {
             CATransition *animation = [CATransition animation];
