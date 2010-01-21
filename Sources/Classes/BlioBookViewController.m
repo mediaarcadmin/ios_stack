@@ -13,6 +13,7 @@
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucEPubBook.h>
+#import <libEucalyptus/EucHighlighter.h>
 #import "BlioViewSettingsSheet.h"
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
@@ -259,7 +260,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1.0f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
     CGContextStrokeEllipseInRect(ctx, outerSquare);
     CGContextRestoreGState(ctx);
-
+    
     if (progress) {
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
         fillOval(ctx, innerSquare, 0, progress*360);
@@ -368,77 +369,19 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (id)initWithBook:(BlioMockBook *)newBook {
-    tiltScroller = [[MSTiltScroller alloc] init];
-    tapDetector = [[MSTapDetector alloc] init];
-    motionControlsEnabled = kBlioTapTurnOff;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapToNextPage) name:@"TapToNextPage" object:nil];
-
-    BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
-    
-    switch (lastLayout) {
-        case kBlioPageLayoutPageLayout: {
-            if ([newBook pdfPath]) {
-                BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithPath:[newBook pdfPath] page:[[newBook layoutPageNumber] integerValue] animated:YES];
-                
-                if ((self = [self initWithBookView:aBookView])) {
-                    self.bookView = aBookView;
-                    self.book = newBook;
-                }
-                [aBookView release];
-            } else {
-            return nil;
-            }
-        }
-            break;
-        default: {
-            if ([newBook bookPath]) {
-                EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
-                BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
-                aBookView.appearAtCoverThenOpen = YES;
-                if ((self = [self initWithBookView:aBookView])) {
-                    self.bookView = aBookView;
-                    self.book = newBook;
-                    self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
-                }
-                [aBookView release];
-                [aEPubBook release];
-            } else {
-                return nil;
-            }
-        } 
-            break;
-    }
-    
-    if (nil != self.bookView) {
-        [self.bookView addObserver:self 
-                        forKeyPath:@"pageNumber" 
-                           options:NSKeyValueObservingOptionNew 
-                           context:nil];
-        
-        [self.bookView addObserver:self 
-                        forKeyPath:@"pageCount" 
-                           options:NSKeyValueObservingOptionNew 
-                           context:nil];
-    }
-    
-    return self;
-}
-
-- (id)initWithBookView:(UIView<BlioBookView> *)view
-{
-	if ((self = [super initWithNibName:nil bundle:nil])) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         self.audioPlaying = NO;
         self.wantsFullScreenLayout = YES;
-
+        
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
         [backArrow addTarget:self
                       action:@selector(_backButtonTapped) 
             forControlEvents:UIControlEventTouchUpInside];
-
+        
         UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
         self.navigationItem.leftBarButtonItem = backItem;
         [backItem release];
-                
+        
         EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
         CGRect frame = titleView.frame;
         frame.size.width = [[UIScreen mainScreen] bounds].size.width;
@@ -446,15 +389,53 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         titleView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
         self.navigationItem.titleView = titleView;
         [titleView release];
-                
+        
         _firstAppearance = YES;
         
         self.toolbarItems = [self _toolbarItemsForReadingView];
         
         _pageJumpView = nil;
-        _bookView = [view retain];        
+        
+        tiltScroller = [[MSTiltScroller alloc] init];
+        tapDetector = [[MSTapDetector alloc] init];
+        motionControlsEnabled = kBlioTapTurnOff;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapToNextPage) name:@"TapToNextPage" object:nil];
+        
+        BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
+        
+        switch (lastLayout) {
+            case kBlioPageLayoutPageLayout: {
+                if ([newBook pdfPath]) {
+                    BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithPath:[newBook pdfPath] page:[[newBook layoutPageNumber] integerValue] animated:YES];
+                    
+                    self.book = newBook;
+                    self.bookView = aBookView;
+                    [aBookView release];
+                } else {
+                    return nil;
+                }
+            }
+                break;
+            default: {
+                if ([newBook bookPath]) {
+                    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
+                    BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
+                    aBookView.appearAtCoverThenOpen = YES;
+                    
+                    self.book = newBook;
+                    self.bookView = aBookView;
+                    self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+                    
+                    [aBookView release];
+                    [aEPubBook release];
+                } else {
+                    return nil;
+                }
+            } 
+                break;
+        }        
     }
-	return self;
+    return self;
 }
 
 - (NSArray *)_toolbarItemsForReadingView {
@@ -533,23 +514,41 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)setBookView:(UIView<BlioBookView> *)bookView
 {
     if(_bookView != bookView) {
-        THEventCapturingWindow *window = (THEventCapturingWindow *)self.view.window;
-        [window removeTouchObserver:self forView:_bookView];
+        if(_bookView) {
+            [_bookView removeObserver:self forKeyPath:@"pageNumber"];
+            [_bookView removeObserver:self forKeyPath:@"pageCount"];        
+            if(_bookView.superview) {
+                THEventCapturingWindow *window = (THEventCapturingWindow *)_bookView.window;
+                [window removeTouchObserver:self forView:_bookView];
+                [_bookView removeFromSuperview];
+            }
+        }
         
-        [_bookView removeFromSuperview];
         [_bookView release];
         _bookView = [bookView retain];
         
-        [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
-        
-        EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
-        [titleView setTitle:[self.book title]];
-        [titleView setAuthor:[self.book author]];  
-        
-//        [window addSubview:_bookView];
-//        [window sendSubviewToBack:_bookView];
-        [self.view addSubview:_bookView];
-        [self.view sendSubviewToBack:_bookView];
+        if(_bookView) {
+            if(self.isViewLoaded) {
+                EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
+                [titleView setTitle:[self.book title]];
+                [titleView setAuthor:[self.book author]];              
+                
+                [self.view addSubview:_bookView];
+                [self.view sendSubviewToBack:_bookView];
+                
+                [(THEventCapturingWindow *)_bookView.window addTouchObserver:self forView:_bookView];
+            }
+            
+            [_bookView addObserver:self 
+                        forKeyPath:@"pageNumber" 
+                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
+                           context:nil];
+            
+            [_bookView addObserver:self 
+                        forKeyPath:@"pageCount" 
+                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
+                           context:nil];    
+        }
     }
 }
 
@@ -586,17 +585,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self updatePageJumpPanelForPage:self.bookView.pageNumber animated:YES];
 }
 
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
-{
-    NSString *name = [anim valueForKey:@"THName"];
-    //if([name isEqualToString:@"ContentsSlideIn"]) {
-//        [self _contentsViewDidAppear:nil];
-//    } else 
-    if([name isEqualToString:@"PageTurningViewSlideOut"]) {
-        [(UIView *)[anim valueForKey:@"THView"] removeFromSuperview];   
-    }
-}
-
 - (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid {
     [self performSelector:@selector(dismissContentsTabView:)];
 }
@@ -605,22 +593,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)loadView 
 {
     UIView *root = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-    //root.userInteractionEnabled = NO;
-    root.backgroundColor = [UIColor clearColor];
+    root.backgroundColor = [UIColor blackColor];
+    root.opaque = YES;
+    if(_bookView) {
+        [root addSubview:_bookView];
+        [root sendSubviewToBack:_bookView];
+    }
     self.view = root;
     [root release];
     
-    /*
-    CGRect mainScreenBounds = [[UIScreen mainScreen] applicationFrame];
-    _BlioBookViewControllerTransparentView *mainSuperview = [[_BlioBookViewControllerTransparentView alloc] initWithFrame:mainScreenBounds];
-    mainSuperview.controller = self;
-    [mainSuperview setBackgroundColor:[UIColor clearColor]];
-    [mainSuperview setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
-    mainSuperview.opaque = NO;
-    mainSuperview.multipleTouchEnabled = YES;
-    self.view = mainSuperview;
-    [mainSuperview release];
-     */   
     if(!self.toolbarsVisibleAfterAppearance) {
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     }    
@@ -662,7 +643,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         _returnToToolbarStyle = toolbarStyle;
         _returnToNavigationBarTranslucent = navigationBar.translucent;
         _returnToToolbarTranslucent = toolbar.translucent;
-
+        
         // Set the status bar and navigation bar styles.
         if([_book.author isEqualToString:@"Ward Just"]) {
             navigationBar.barStyle = UIBarStyleBlackTranslucent;
@@ -679,7 +660,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             toolbar.tintColor = nil;
             toolbar.barStyle = UIBarStyleBlackTranslucent;
         }
-
+        
         if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
             [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
         }
@@ -699,10 +680,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [self.navigationController setToolbarHidden:YES];
             }
         }
-
-        UIWindow *window = self.navigationController.view.window;
-        [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
-                        
+        
+        if(_bookView) {
+            // Couldn't be done at view creation time, because there was
+            // no handle to the window.
+            UIWindow *window = self.navigationController.view.window;
+            [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
+        }
+        
         EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];
@@ -714,21 +699,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [aPieButton release];
         
         [self.navigationItem setRightBarButtonItem:_pageJumpButton];
-        
-        //[window addSubview:_bookView];
-        //[window sendSubviewToBack:_bookView];
-        [self.view addSubview:_bookView];
-        [self.view sendSubviewToBack:_bookView];
-        
-        if(animated) {
-            CATransition *animation = [CATransition animation];
-            animation.type = kCATransitionPush;
-            animation.subtype = kCATransitionFromRight;
-            animation.duration = 1.0/3.0;
-            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-            [[_bookView layer] addAnimation:animation forKey:@"PageViewTransitionIn"];
-        }        
-        
     }
 }
 
@@ -767,16 +737,17 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 {
     if(!self.modalViewController) {
         _viewIsDisappearing = YES;
-//        if(_contentsSheet) {
-//            [self performSelector:@selector(dismissContents)];
-//        }
+        //        if(_contentsSheet) {
+        //            [self performSelector:@selector(dismissContents)];
+        //        }
         if(_bookView) {
-            [(THEventCapturingWindow *)self.view.window removeTouchObserver:self forView:_bookView];
-
+            // Need to do this now before the view is removed and doesn't have a window.
+            [(THEventCapturingWindow *)_bookView.window removeTouchObserver:self forView:_bookView];
+            
             if([_bookView respondsToSelector:@selector(stopAnimation)]) {
                 [_bookView performSelector:@selector(stopAnimation)];
             }
-
+            
             [self.navigationController setToolbarHidden:YES animated:NO];
             [self.navigationController setToolbarHidden:NO animated:NO];
             UIToolbar *toolbar = self.navigationController.toolbar;
@@ -793,18 +764,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 animation.duration = 1.0/3.0;
                 animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
                 
-                // Set some state so that we can remove the pageview from its
-                // superview in the animationDidStop delegate.
-                [animation setValue:@"PageTurningViewSlideOut" forKey:@"THName"];
-                [animation setValue:_bookView forKey:@"THView"];
-                animation.delegate = self;
-                
-                [[_bookView layer] addAnimation:animation forKey:@"PageViewTransitionOut"];
+                [animation setValue:_bookView forKey:@"THView"];                
                 [[toolbar layer] addAnimation:animation forKey:@"PageViewTransitionOut"];
-            } else {
-                [_bookView removeFromSuperview];
-            }
-            
+            } 
             
             // Restore the hiden/visible state of the status bar and 
             // navigation bar.
@@ -831,13 +793,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             
             [UIView commitAnimations];
             
-
             if(_returnToNavigationBarHidden != self.navigationController.isNavigationBarHidden) {
                 [self.navigationController setNavigationBarHidden:_returnToNavigationBarHidden 
                                                          animated:NO];
             }     
         }
-        [NSObject cancelPreviousPerformRequestsWithTarget:self];
     }
 }
 
@@ -846,6 +806,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 {    
     _viewIsDisappearing = NO;
 }
+
+
+- (void)viewDidUnload
+{
+    self.bookView = nil;
+}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
@@ -865,12 +832,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
-    [self.bookView removeObserver:self forKeyPath:@"pageNumber"];
-    [self.bookView removeObserver:self forKeyPath:@"pageCount"];
     
     [tapDetector release];
     [tiltScroller release];
-    [_bookView release];
+    
+    self.bookView = nil;
     self.book = nil;
     self.pageJumpView = nil;
     self.pieButton = nil;
@@ -972,101 +938,101 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void) togglePageJumpPanel
 { 
-  CGPoint navBarBottomLeft = CGPointMake(0.0, self.navigationController.navigationBar.frame.size.height);
-  CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:self.navigationController.navigationBar];
+    CGPoint navBarBottomLeft = CGPointMake(0.0, self.navigationController.navigationBar.frame.size.height);
+    CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:self.navigationController.navigationBar];
     
-  if(!_pageJumpView) {
-    self.pageJumpView = [[UIView alloc] init];
-    [self.pageJumpView release];
-    
-    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, screenSize.width, 46)];
-    _pageJumpView.hidden = YES;
-    _pageJumpView.opaque = NO;
-    _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
-
-    CGRect labelFrame = _pageJumpView.bounds;
-    labelFrame.size.height = 20;
-    CGRect sliderFrame = _pageJumpView.bounds;
-    sliderFrame.origin.y = 20;
-    sliderFrame.origin.x = 4;
-    sliderFrame.size.height = 24;
-    sliderFrame.size.width -= 8;
-    
-  // the slider
-    UISlider* slider = [[UISlider alloc] initWithFrame: sliderFrame];
-    _pageJumpSlider = slider;
-    
-    UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
-    leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
-    [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
-    
-    UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
-    rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
-    [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
-    
-    UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];
-    [slider setThumbImage:thumbImage forState:UIControlStateNormal];
-    [slider setThumbImage:thumbImage forState:UIControlStateHighlighted];            
-    
-    [slider addTarget:self action:@selector(_pageSliderSlid:) forControlEvents:UIControlEventValueChanged];
-    
-    slider.maximumValue = self.bookView.pageCount;
-    slider.minimumValue = 1;
-    [slider setValue:self.bookView.pageNumber];
-  
-    _pageJumpSliderTracking = NO;
-    
-  // feedback label
-    _pageJumpLabel = [[UILabel alloc] initWithFrame:labelFrame];
-    _pageJumpLabel.textAlignment = UITextAlignmentCenter;
-    _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
-    _pageJumpLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-    _pageJumpLabel.minimumFontSize = 8;
-    _pageJumpLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
-    _pageJumpLabel.shadowOffset = CGSizeMake(0, -1);
+    if(!_pageJumpView) {
+        self.pageJumpView = [[UIView alloc] init];
+        [self.pageJumpView release];
         
-    _pageJumpLabel.backgroundColor = [UIColor clearColor];
-    _pageJumpLabel.textColor = [UIColor whiteColor];
+        CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+        [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, screenSize.width, 46)];
+        _pageJumpView.hidden = YES;
+        _pageJumpView.opaque = NO;
+        _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+        
+        CGRect labelFrame = _pageJumpView.bounds;
+        labelFrame.size.height = 20;
+        CGRect sliderFrame = _pageJumpView.bounds;
+        sliderFrame.origin.y = 20;
+        sliderFrame.origin.x = 4;
+        sliderFrame.size.height = 24;
+        sliderFrame.size.width -= 8;
+        
+        // the slider
+        UISlider* slider = [[UISlider alloc] initWithFrame: sliderFrame];
+        _pageJumpSlider = slider;
+        
+        UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
+        leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
+        [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
+        
+        UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
+        rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+        [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
+        
+        UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];
+        [slider setThumbImage:thumbImage forState:UIControlStateNormal];
+        [slider setThumbImage:thumbImage forState:UIControlStateHighlighted];            
+        
+        [slider addTarget:self action:@selector(_pageSliderSlid:) forControlEvents:UIControlEventValueChanged];
+        
+        slider.maximumValue = self.bookView.pageCount;
+        slider.minimumValue = 1;
+        [slider setValue:self.bookView.pageNumber];
+        
+        _pageJumpSliderTracking = NO;
+        
+        // feedback label
+        _pageJumpLabel = [[UILabel alloc] initWithFrame:labelFrame];
+        _pageJumpLabel.textAlignment = UITextAlignmentCenter;
+        _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
+        _pageJumpLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        _pageJumpLabel.minimumFontSize = 8;
+        _pageJumpLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
+        _pageJumpLabel.shadowOffset = CGSizeMake(0, -1);
+        
+        _pageJumpLabel.backgroundColor = [UIColor clearColor];
+        _pageJumpLabel.textColor = [UIColor whiteColor];
+        
+        [_pageJumpView addSubview:_pageJumpLabel];
+        [_pageJumpView addSubview:slider];
+        
+        [self.view addSubview:_pageJumpView];
+    }
     
-    [_pageJumpView addSubview:_pageJumpLabel];
-    [_pageJumpView addSubview:slider];
-  
-    [self.view addSubview:_pageJumpView];
-  }
-  
-  CGSize sz = _pageJumpView.bounds.size;
-  BOOL hiding = !_pageJumpView.hidden;
-  [self.pieButton setToggled:!hiding];
-  
-  if (!hiding) {
-    _pageJumpView.alpha = 0.0;
-    _pageJumpView.hidden = NO;
-    [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
-    [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
-  }
-  
-  [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
-  [UIView setAnimationDidStopSelector:@selector(_pageJumpPanelDidAnimate)];
-  [UIView setAnimationDelegate:self];
-  [UIView setAnimationDuration:0.3f];
-
-  if (hiding) {
-    _pageJumpView.alpha = 0.0;
-    [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
-  } else {
-    _pageJumpView.alpha = 1.0;
-    [_pageJumpView setFrame:CGRectMake(0, xt.y, sz.width, sz.height)];
-  }
-  
-  [UIView commitAnimations];
+    CGSize sz = _pageJumpView.bounds.size;
+    BOOL hiding = !_pageJumpView.hidden;
+    [self.pieButton setToggled:!hiding];
+    
+    if (!hiding) {
+        _pageJumpView.alpha = 0.0;
+        _pageJumpView.hidden = NO;
+        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
+        [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
+    }
+    
+    [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
+    [UIView setAnimationDidStopSelector:@selector(_pageJumpPanelDidAnimate)];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDuration:0.3f];
+    
+    if (hiding) {
+        _pageJumpView.alpha = 0.0;
+        [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
+    } else {
+        _pageJumpView.alpha = 1.0;
+        [_pageJumpView setFrame:CGRectMake(0, xt.y, sz.width, sz.height)];
+    }
+    
+    [UIView commitAnimations];
 }
 
 - (void) _pageJumpPanelDidAnimate
 {
-  if (_pageJumpView.alpha == 0.0) {
-    _pageJumpView.hidden = YES;
-  }
+    if (_pageJumpView.alpha == 0.0) {
+        _pageJumpView.hidden = YES;
+    }
 }
 
 - (void) _pageSliderSlid: (id) sender
@@ -1090,23 +1056,23 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void) _updatePageJumpLabelForPage:(NSInteger)page
 {
-  NSString* section = [self.bookView.contentsDataSource sectionUuidForPageNumber:page];
-  THPair* chapter = [self.bookView.contentsDataSource presentationNameAndSubTitleForSectionUuid:section];
-  NSString* pageStr = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
-  
-  if (section && chapter.first) {
-    if (pageStr) {
-      _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
+    NSString* section = [self.bookView.contentsDataSource sectionUuidForPageNumber:page];
+    THPair* chapter = [self.bookView.contentsDataSource presentationNameAndSubTitleForSectionUuid:section];
+    NSString* pageStr = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
+    
+    if (section && chapter.first) {
+        if (pageStr) {
+            _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
+        } else {
+            _pageJumpLabel.text = [NSString stringWithFormat:@"%@", chapter.first];
+        }
     } else {
-      _pageJumpLabel.text = [NSString stringWithFormat:@"%@", chapter.first];
-    }
-  } else {
-    if (pageStr) {
-      _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
-    } else {
-      _pageJumpLabel.text = self.book.title;
-    }
-  } // of no section name
+        if (pageStr) {
+            _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
+        } else {
+            _pageJumpLabel.text = self.book.title;
+        }
+    } // of no section name
 }
 
 #pragma mark -
@@ -1173,9 +1139,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     
     BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
     
-    [self.bookView removeObserver:self forKeyPath:@"pageNumber"];
-    [self.bookView removeObserver:self forKeyPath:@"pageCount"];
-    
     BlioPageLayout currentLayout = self.currentPageLayout;
     if(currentLayout != newLayout) {        
 		if (self.audioPlaying) {
@@ -1210,17 +1173,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
         }
-        
-        [self.bookView addObserver:self 
-                        forKeyPath:@"pageNumber" 
-                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
-                            context:nil];
-        
-        [self.bookView addObserver:self 
-                        forKeyPath:@"pageCount" 
-                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
-                           context:nil];
-        
     }
 }
 
@@ -1697,4 +1649,3 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 @end
-

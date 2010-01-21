@@ -87,7 +87,6 @@ typedef enum {
 
 // Designated initializers.
 - (id)initWithBook:(BlioMockBook *)newBook;
-- (id)initWithBookView:(UIView<BlioBookView> *)view;
 
 @property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, assign) BOOL toolbarsVisibleAfterAppearance;
