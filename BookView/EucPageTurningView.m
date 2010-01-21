@@ -358,7 +358,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
 
     self.multipleTouchEnabled = YES;
-    self.exclusiveTouch = YES;
+    //self.exclusiveTouch = YES;
     self.opaque = YES;
     self.userInteractionEnabled = YES;
     //tempFile = fopen("/tmp/vertexdata", "w");
