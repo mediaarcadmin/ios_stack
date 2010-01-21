@@ -13,7 +13,7 @@
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucEPubBook.h>
-#import <libEucalyptus/EucHighlighter.h>
+//#import <libEucalyptus/EucHighlighter.h>
 #import "BlioViewSettingsSheet.h"
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
