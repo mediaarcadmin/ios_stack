@@ -874,4 +874,13 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     }
 }
 
+- (void)setCurrentParagraphId:(uint32_t)id wordOffset:(uint32_t)wordOffset
+{
+    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+    indexPoint.startOfParagraphByteOffset = id;
+    indexPoint.startOfPageParagraphWordOffset = wordOffset;
+    self.currentPageIndexPoint = indexPoint;
+    [indexPoint release];
+}
+
 @end
