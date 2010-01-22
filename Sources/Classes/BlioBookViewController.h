@@ -18,7 +18,7 @@
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
 
-@class EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference, BlioBookViewControllerProgressPieButton;
+@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -44,7 +44,6 @@ typedef enum {
     
     UITouch *_touch;
     BOOL _touchMoved;
-    CFAbsoluteTime _touchStartTime;
             
     //EucBookContentsTableViewController *_contentsSheet;
     

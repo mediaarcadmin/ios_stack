@@ -13,7 +13,6 @@
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucEPubBook.h>
-#import <libEucalyptus/EucHighlighter.h>
 #import "BlioViewSettingsSheet.h"
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
@@ -547,7 +546,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [_bookView addObserver:self 
                         forKeyPath:@"pageCount" 
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
-                           context:nil];    
+                           context:nil];   
         }
     }
 }
@@ -915,15 +914,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         if(phase == UITouchPhaseBegan) {
             _touch = [touch retain];
             _touchMoved = NO;
-            _touchStartTime = CFAbsoluteTimeGetCurrent();
         }
     } else if(touch == _touch) {
-        if(phase == UITouchPhaseMoved || phase == UITouchPhaseEnded) { 
-/*            if(CFAbsoluteTimeGetCurrent() > (_touchStartTime + 0.5)) {
-                [[[EucHighlighter alloc] init] attachToView:self.bookView 
-                                              forTapAtPoint:[touch locationInView:self.bookView]];
-  */          }
-        } 
         if(phase == UITouchPhaseMoved) { 
             _touchMoved = YES;
             if(!self.navigationController.toolbarHidden) {

@@ -7,21 +7,27 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "THEventCapturingWindow.h"
 
 @class EucHighlighterOverlayView;
+@protocol EucHighlighterDataSource;
 
-@interface EucHighlighter : NSObject {
-    EucHighlighterOverlayView *_overlayView;
+@interface EucHighlighter : NSObject <THEventCaptureObserver> {
+    id<EucHighlighterDataSource> _dataSource;
+    
+    UIView *_attachedView;
+    UITouch *_trackingTouch;
+    BOOL _tracking;
 }
 
-- (BOOL)attachToView:(UIView *)view forTapAtPoint:(CGPoint)point;
+@property (nonatomic, assign) id<EucHighlighterDataSource> dataSource;
+@property (nonatomic, assign, getter=isTracking) BOOL tracking;
+
+- (void)attachToView:(UIView *)view;
 - (void)detatchFromView;
 
-- (void)temporarilyHighlightElementAtIndex:(NSInteger)elementIndex inBlockAtIndex:(NSInteger)blockIndex animated:(BOOL)animated;
+- (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 - (void)clearTemporaryHighlights;
-
-- (NSInteger)highlightElementsFromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
-- (void)removeHighlight:(NSInteger)highlightId;
 
 @end
 
@@ -35,20 +41,10 @@
 
 
 @protocol EucHighlighterDataSource <NSObject>
-
-- (NSUInteger)blockCountForEucHighlighter:(EucHighlighter *)highlighter;
-- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockAtIndex:(NSUInteger)index;
-- (NSUInteger)eucHighlighter:(EucHighlighter *)highlighter elementCountForBlockAtIndex:(NSInteger)index;
+/*
+- (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter;
+- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id;
+- (NSArray *)identifiersForElementsOfBlockAtIndex:(NSUInteger)index;
 - (NSArray *)rectsForElementsOfBlockAtIndex:(NSUInteger)index;
-
-@end
-
-
-@interface NSIndexPath (EucHighlighter)
-
-+ (NSIndexPath *)indexPathForElement:(NSUInteger)element inBlock:(NSUInteger)block;
-
-@property(nonatomic,readonly) NSUInteger block;
-@property(nonatomic,readonly) NSUInteger element;
-
+*/
 @end
