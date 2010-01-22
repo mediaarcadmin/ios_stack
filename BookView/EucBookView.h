@@ -10,12 +10,23 @@
 
 #import "EucBookContentsTableViewController.h"
 #import "EucPageTurningView.h"
+#import "EucHighlighter.h"
 #import "EucPageView.h"
 
 @protocol EucBook, EucPageLayoutController, EucBookViewDelegate;
-@class EucBookReference, THScalableSlider, EucBookPageIndexPoint;
+@class EucBookReference, THScalableSlider, EucBookPageIndexPoint, EucHighlighter;
 
-@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate> {
+typedef struct EucPoint {
+    uint32_t paragraphId;
+    uint32_t wordOffset;
+} EucPoint;
+
+typedef struct EucRange {
+    EucPoint start;
+    EucPoint end;
+} EucRange;
+
+@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucHighlighterDataSource> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
 
@@ -62,6 +73,8 @@
 
     NSMutableArray *_highlightLayers;
     BOOL _highlightingDisabled;
+    
+    EucHighlighter *_highlighter;
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
@@ -108,6 +121,9 @@
 - (NSInteger)pageNumberForUuid:(NSString *)uuid;
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+
+@property (nonatomic, readonly) EucRange selectedRange;
+- (void)clearSelectedRange;
 
 - (void)stopAnimation;
 

@@ -15,6 +15,7 @@
 #import "EucBookPageIndexPoint.h"
 #import "EucBookTitleView.h"
 #import "EucPageTextView.h"
+#import "EucHighlighter.h"
 
 #import "THUIViewAdditions.h"
 #import "THRoundRectView.h"
@@ -32,6 +33,7 @@
 #define kBookFontPointSizeDefaultsKey @"EucBookFontPointSize"
 
 @interface EucBookView ()
+- (void)_redisplayCurrentPage;
 - (void)_goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)_removeHighlights;
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber;
@@ -95,13 +97,19 @@
         
         _pageLayoutController = [[[_book pageLayoutControllerClass] alloc] initWithBook:_book fontPointSize:desiredPointSize];  
         
-        self.opaque = YES;
+        self.opaque = YES;        
     }
     return self;
 }
 
 - (void)dealloc
 {
+    if(_highlighter) {
+        [_highlighter removeObserver:self
+                          forKeyPath:@"isTracking"];
+        [_highlighter detatchFromView];
+        [_highlighter release];
+    }
     [self _removeHighlights];
 
     [_book release];
@@ -147,7 +155,7 @@
         [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
         [self _updatePageNumberLabel];
         
-        _pageTurningView.dimQuotient = _dimQuotient;
+        _pageTurningView.dimQuotient = _dimQuotient;        
     }
 }
 
@@ -164,34 +172,26 @@
             NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];
             [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
         }  
+        _highlighter = [[EucHighlighter alloc] init];
+        [_highlighter attachToView:self];
+        [_highlighter addObserver:self
+                       forKeyPath:@"isTracking"
+                          options:NSKeyValueObservingOptionNew
+                          context:NULL];
     } else {
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
         _pageTurningView = nil;
+        
         [_pageViewToIndexPoint removeAllObjects];
         [_pageViewToIndexPointCounts removeAllObjects];
+        
+        [_highlighter detatchFromView];
+        [_highlighter removeObserver:self
+                          forKeyPath:@"isTracking"];
+        [_highlighter release];
+        _highlighter = nil;
     }
-}
-
-- (void)stopAnimation
-{
-    [_pageTurningView stopAnimation];
-}
-
-- (UIImage *)currentPageImage
-{
-    return [_pageTurningView screenshot];
-}
-
-- (CGFloat)dimQuotient
-{
-    return _dimQuotient;
-}
-
-- (void)setDimQuotient:(CGFloat)dimQuotient 
-{
-    _dimQuotient = dimQuotient;
-    _pageTurningView.dimQuotient = dimQuotient;  
 }
 
 - (void)updateDimQuotientForTimeAfterAppearance:(NSNumber *)appearanceTime
@@ -210,49 +210,47 @@
     }
 }
 
-- (void)_goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
+- (void)stopAnimation
 {
-    NSInteger oldPageNumber = self.pageNumber;
-
-    THPair *newPageViewAndIndexPoint = [self _pageViewAndIndexPointForBookPageNumber:pageNumber];
-        
-    UIView *newPageView = newPageViewAndIndexPoint.first;
-    EucBookPageIndexPoint *newPageIndexPoint = newPageViewAndIndexPoint.second;
-    
-    NSValue *nonRetainedPageView = [NSValue valueWithNonretainedObject:newPageView];
-    [_pageViewToIndexPoint setObject:newPageIndexPoint forKey:nonRetainedPageView];
-    [_pageViewToIndexPointCounts addObject:nonRetainedPageView];
-    
-    [_book setCurrentPageIndexPoint:newPageIndexPoint];
-    
-    if(animated && oldPageNumber != pageNumber) {
-        NSInteger count = oldPageNumber - pageNumber;
-        if(count < 0) {
-            count = -count;
-        }
-        [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count];
-    } else {
-        _pageTurningView.currentPageView = newPageView;
-        [_pageTurningView drawView];
-        
-        [self pageTurningView:_pageTurningView didTurnToView:newPageView];
-    }
-    
-    // Preemptive, to make the animation run at the same time as the 
-    // page turning view's animation.
-    [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:animated];                
+    [_pageTurningView stopAnimation];
 }
 
-- (void)_redisplayCurrentPage
+#pragma mark -
+#pragma mark Properties
+
+- (NSString *)displayPageNumber
 {
-    if(_pageTurningView) {
-        [_pageViewToIndexPoint removeAllObjects];
-        [_pageViewToIndexPointCounts removeAllObjects];
-        _dontSaveIndexPoints = YES;
-        [self _goToPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO];
-        _dontSaveIndexPoints = NO;
-    }
-}    
+    return [_pageLayoutController displayPageNumberForPageNumber:self.pageNumber];
+}
+
+- (NSString *)pageDescription
+{
+    return [_pageLayoutController pageDescriptionForPageNumber:self.pageNumber];
+}
+
+- (CGFloat)fontPointSize
+{
+    return _pageLayoutController.fontPointSize;
+}
+
+- (void)setFontPointSize:(CGFloat)fontPointSize
+{
+    [_pageLayoutController setFontPointSize:fontPointSize];
+    [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
+    [self _redisplayCurrentPage];
+    self.pageCount = _pageLayoutController.globalPageCount;
+}
+
+- (CGFloat)dimQuotient
+{
+    return _dimQuotient;
+}
+
+- (void)setDimQuotient:(CGFloat)dimQuotient 
+{
+    _dimQuotient = dimQuotient;
+    _pageTurningView.dimQuotient = dimQuotient;  
+}
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
@@ -262,6 +260,15 @@
         [self _redisplayCurrentPage];
     }
 }
+
+- (UIImage *)currentPageImage
+{
+    return [_pageTurningView screenshot];
+}
+
+
+#pragma mark -
+#pragma mark Highlighting
 
 - (void)_removeHighlights
 {
@@ -402,15 +409,52 @@
     }
 }
 
-- (NSString *)displayPageNumber
+#pragma mark -
+#pragma mark Navigation
+
+- (void)_goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated
 {
-    return [_pageLayoutController displayPageNumberForPageNumber:self.pageNumber];
+    NSInteger oldPageNumber = self.pageNumber;
+    
+    THPair *newPageViewAndIndexPoint = [self _pageViewAndIndexPointForBookPageNumber:pageNumber];
+    
+    UIView *newPageView = newPageViewAndIndexPoint.first;
+    EucBookPageIndexPoint *newPageIndexPoint = newPageViewAndIndexPoint.second;
+    
+    NSValue *nonRetainedPageView = [NSValue valueWithNonretainedObject:newPageView];
+    [_pageViewToIndexPoint setObject:newPageIndexPoint forKey:nonRetainedPageView];
+    [_pageViewToIndexPointCounts addObject:nonRetainedPageView];
+    
+    [_book setCurrentPageIndexPoint:newPageIndexPoint];
+    
+    if(animated && oldPageNumber != pageNumber) {
+        NSInteger count = oldPageNumber - pageNumber;
+        if(count < 0) {
+            count = -count;
+        }
+        [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count];
+    } else {
+        _pageTurningView.currentPageView = newPageView;
+        [_pageTurningView drawView];
+        
+        [self pageTurningView:_pageTurningView didTurnToView:newPageView];
+    }
+    
+    // Preemptive, to make the animation run at the same time as the 
+    // page turning view's animation.
+    [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:animated];                
 }
 
-- (NSString *)pageDescription
+- (void)_redisplayCurrentPage
 {
-    return [_pageLayoutController pageDescriptionForPageNumber:self.pageNumber];
-}
+    if(_pageTurningView) {
+        [_pageViewToIndexPoint removeAllObjects];
+        [_pageViewToIndexPointCounts removeAllObjects];
+        _dontSaveIndexPoints = YES;
+        [self _goToPageNumber:[_pageLayoutController pageNumberForIndexPoint:[_book currentPageIndexPoint]] animated:NO];
+        _dontSaveIndexPoints = NO;
+    }
+}    
 
 - (void)goToPageNumber:(NSInteger)newPageNumber animated:(BOOL)animated
 {
@@ -448,64 +492,7 @@
     [self _goToPageNumberSavingJump:[_pageLayoutController pageNumberForSectionUuid:uuid] animated:animated];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if(buttonIndex != alertView.cancelButtonIndex) {
-        UIApplication *application = [UIApplication sharedApplication];
-        
-        // Looks nice if we leave time for the sheet's fading to fade out.
-        [application beginIgnoringInteractionEvents];
-        [application performSelector:@selector(openURL:) withObject:((THAlertViewWithUserInfo *)alertView).userInfo afterDelay:0];
-    }
-}
 
-- (void)_hyperlinkTapped:(NSDictionary *)attributes
-{
-    NSString *URLString = [attributes objectForKey:@"href"];
-    if(URLString) {
-        NSURL *url = [NSURL URLWithString:URLString];
-        if(url) {
-            NSString *scheme = url.scheme;
-            if(scheme) {
-                NSString *message = nil;
-                if([scheme caseInsensitiveCompare:@"internal"] == NSOrderedSame) {
-                    // This is an internal link - jump to the specified section.
-                    [self goToUuid:url.resourceSpecifier animated:YES];
-                } else {
-                    // See if our delegate wants to handle the link.
-                    if(![_delegate respondsToSelector:@selector(bookView:shouldHandleTapOnHyperlink:withAttributes:)] ||
-                       [_delegate bookView:self shouldHandleTapOnHyperlink:url withAttributes:attributes]) {
-                        if([scheme caseInsensitiveCompare:@"http"] == NSOrderedSame) {
-                            NSString *absolute = url.absoluteString;
-                            if([absolute matchPOSIXRegex:@"(itunes|phobos).*\\.com" flags:REG_EXTENDED | REG_ICASE]) {
-                                if([absolute matchPOSIXRegex:@"(viewsoftware|[/]app[/])" flags:REG_EXTENDED | REG_ICASE]) {
-                                    message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to an app in the App Store.\n\nDo you want to switch to the App Store to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked app hyperlink in the App Store"), url.host];
-                                } else {
-                                    message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped will open iTunes.\n\nDo you want to switch to iTunes now?", @"Message for sheet in book view asking if the user wants to open a clicked URL hyperlink in iTunes"), url.host];
-                                }
-                            } else {
-                                message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to a page at “%@”, on the Internet.\n\nDo you want to switch to Safari to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked URL hyperlink in Safari"), url.host];
-                            }
-                        } else if([scheme caseInsensitiveCompare:@"mailto"] == NSOrderedSame) {
-                            message = [NSString stringWithFormat:NSLocalizedString(@"Do you want to switch to the Mail application to write an email to “%@” now?", @"Message for sheet in book view askng if the user wants to open a clicked mailto hyperlink in Mail"), url.resourceSpecifier];
-                        } 
-                        
-                        if(message) {
-                            THAlertViewWithUserInfo *alertView = [[THAlertViewWithUserInfo alloc] initWithTitle:nil
-                                                                                                        message:message
-                                                                                                       delegate:self
-                                                                                              cancelButtonTitle:NSLocalizedString(@"Don’t Switch", @"Button to cancel opening of a clicked hyperlink") 
-                                                                                              otherButtonTitles:NSLocalizedString(@"Switch", @"Button to confirm opening of a clicked hyperlink"), nil];
-                            alertView.userInfo = url;
-                            [alertView show];
-                            [alertView release];
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 - (void)jumpForwards
 {    
@@ -569,6 +556,9 @@
     }
 }
 
+#pragma mark -
+#pragma mark PageView Handling
+
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber
 {          
     THPair *ret = [_pageLayoutController viewAndIndexPointForPageNumber:pageNumber withPageTexture:self.pageTexture isDark:self.pageTextureIsDark];
@@ -578,6 +568,67 @@
     }
     
     return ret;
+}
+
+#pragma mark Hyperlinks
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex != alertView.cancelButtonIndex) {
+        UIApplication *application = [UIApplication sharedApplication];
+        
+        // Looks nice if we leave time for the sheet's fading to fade out.
+        [application beginIgnoringInteractionEvents];
+        [application performSelector:@selector(openURL:) withObject:((THAlertViewWithUserInfo *)alertView).userInfo afterDelay:0];
+    }
+}
+
+- (void)_hyperlinkTapped:(NSDictionary *)attributes
+{
+    NSString *URLString = [attributes objectForKey:@"href"];
+    if(URLString) {
+        NSURL *url = [NSURL URLWithString:URLString];
+        if(url) {
+            NSString *scheme = url.scheme;
+            if(scheme) {
+                NSString *message = nil;
+                if([scheme caseInsensitiveCompare:@"internal"] == NSOrderedSame) {
+                    // This is an internal link - jump to the specified section.
+                    [self goToUuid:url.resourceSpecifier animated:YES];
+                } else {
+                    // See if our delegate wants to handle the link.
+                    if(![_delegate respondsToSelector:@selector(bookView:shouldHandleTapOnHyperlink:withAttributes:)] ||
+                       [_delegate bookView:self shouldHandleTapOnHyperlink:url withAttributes:attributes]) {
+                        if([scheme caseInsensitiveCompare:@"http"] == NSOrderedSame) {
+                            NSString *absolute = url.absoluteString;
+                            if([absolute matchPOSIXRegex:@"(itunes|phobos).*\\.com" flags:REG_EXTENDED | REG_ICASE]) {
+                                if([absolute matchPOSIXRegex:@"(viewsoftware|[/]app[/])" flags:REG_EXTENDED | REG_ICASE]) {
+                                    message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to an app in the App Store.\n\nDo you want to switch to the App Store to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked app hyperlink in the App Store"), url.host];
+                                } else {
+                                    message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped will open iTunes.\n\nDo you want to switch to iTunes now?", @"Message for sheet in book view asking if the user wants to open a clicked URL hyperlink in iTunes"), url.host];
+                                }
+                            } else {
+                                message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to a page at “%@”, on the Internet.\n\nDo you want to switch to Safari to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked URL hyperlink in Safari"), url.host];
+                            }
+                        } else if([scheme caseInsensitiveCompare:@"mailto"] == NSOrderedSame) {
+                            message = [NSString stringWithFormat:NSLocalizedString(@"Do you want to switch to the Mail application to write an email to “%@” now?", @"Message for sheet in book view askng if the user wants to open a clicked mailto hyperlink in Mail"), url.resourceSpecifier];
+                        } 
+                        
+                        if(message) {
+                            THAlertViewWithUserInfo *alertView = [[THAlertViewWithUserInfo alloc] initWithTitle:nil
+                                                                                                        message:message
+                                                                                                       delegate:self
+                                                                                              cancelButtonTitle:NSLocalizedString(@"Don’t Switch", @"Button to cancel opening of a clicked hyperlink") 
+                                                                                              otherButtonTitles:NSLocalizedString(@"Switch", @"Button to confirm opening of a clicked hyperlink"), nil];
+                            alertView.userInfo = url;
+                            [alertView show];
+                            [alertView release];
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -593,6 +644,10 @@
     [self _hyperlinkTapped:attributes];
 }
 
+#pragma mark -
+#pragma mark PageTurningView Callbacks
+
+#pragma mark View supply
 
 - (UIView *)pageTurningView:(EucPageTurningView *)pageTurningView previousViewForView:(UIView *)view
 {
@@ -635,6 +690,7 @@
     }
 }
 
+#pragma mark Scaling
 
 static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect bounds, CGPoint returnedPoints[2]) 
 {
@@ -752,6 +808,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     return ret;
 }
 
+#pragma mark Status callbacks
+
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didTurnToView:(UIView *)view
 {
     EucBookPageIndexPoint *pageIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
@@ -805,19 +863,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _highlightingDisabled = NO;
 }
 
-- (CGFloat)fontPointSize
-{
-    return _pageLayoutController.fontPointSize;
-}
-
-- (void)setFontPointSize:(CGFloat)fontPointSize
-{
-    [_pageLayoutController setFontPointSize:fontPointSize];
-    [[NSUserDefaults standardUserDefaults] setFloat:_pageLayoutController.fontPointSize forKey:kBookFontPointSizeDefaultsKey];
-    [self _redisplayCurrentPage];
-    self.pageCount = _pageLayoutController.globalPageCount;
-}
-
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view
 {
     NSValue *nonRetainedPageView = [NSValue valueWithNonretainedObject:view];
@@ -831,6 +876,9 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 {
     return [_pageLayoutController viewShouldBeRigid:view];
 }
+
+#pragma mark -
+#pragma mark Toolbar
 
 - (void)_addButtonToView:(UIView *)view withImageNamed:(NSString *)name centerPoint:(CGPoint)centerPoint target:(id)target action:(SEL)action
 {
@@ -1125,7 +1173,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
-#pragma mark -
 #pragma mark Rework below to allow pagination again!
 
 - (void)_updateSliderByteToPageRatio
@@ -1176,6 +1223,17 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 {
     [self _updateSliderByteToPageRatio];
     [self _updatePageNumberLabel];
+}
+
+- (EucRange)selectedRange
+{
+    EucRange selectedRange = {{0, 0}, {0, 0}};
+    return selectedRange;
+}
+
+- (void)clearSelectedRange
+{
+    
 }
 
 @end
