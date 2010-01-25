@@ -1052,50 +1052,52 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if([touches containsObject:_touch]) {
-        // If first movement
-        if(!_animating) {
-            // usleep(180000); Test to see if it would be acceptable to re-cache
-            // the view here (it would not).
-            
-            // Store touch, note direction.
-            BOOL shouldAnimate = YES;
-            CGPoint location = [_touch locationInView:self];
-            CGPoint previousLocation = [_touch previousLocationInView:self];
-            if(!_animating && previousLocation.x < location.x) {
-                if(_pageViews[0]) {
-                    for(int column = 1; column < X_VERTEX_COUNT; ++column) {
-                        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
-                            GLfloat radius = _pageVertices[row][column].x;                            
-                            _pageVertices[row][column].z = -radius * sinf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
-                            _pageVertices[row][column].x = radius * cosf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
-                        }
-                    }                    
+        if(self.userInteractionEnabled) {
+            // If first movement
+            if(!_animating) {
+                // usleep(180000); Test to see if it would be acceptable to re-cache
+                // the view here (it would not).
+                
+                // Store touch, note direction.
+                BOOL shouldAnimate = YES;
+                CGPoint location = [_touch locationInView:self];
+                CGPoint previousLocation = [_touch previousLocationInView:self];
+                if(!_animating && previousLocation.x < location.x) {
+                    if(_pageViews[0]) {
+                        for(int column = 1; column < X_VERTEX_COUNT; ++column) {
+                            for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
+                                GLfloat radius = _pageVertices[row][column].x;                            
+                                _pageVertices[row][column].z = -radius * sinf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
+                                _pageVertices[row][column].x = radius * cosf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
+                            }
+                        }                    
+                    } else {
+                        shouldAnimate = NO;
+                    }
+                } else if (!_animating) {
+                    if(_pageViews[2]) {
+                        _flatPageIndex = 2;
+                    } else {
+                        shouldAnimate = NO;
+                    }
+                }
+                if(!_animating && !_vibrated) {
+                    [_pageViews[1] touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
+                }
+                if(shouldAnimate) {
+                    _vibrated = NO;
+                    [self setTouchLocationFromTouch:_touch firstTouch:YES];
+                    [self startAnimation];
                 } else {
-                    shouldAnimate = NO;
+                    if(!_vibrated) {
+                        AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                        _vibrated = YES;
+                    }
                 }
-            } else if (!_animating) {
-                if(_pageViews[2]) {
-                    _flatPageIndex = 2;
-                } else {
-                    shouldAnimate = NO;
-                }
+            } else if(!_vibrated) {
+                // Set touch location
+                [self setTouchLocationFromTouch:_touch firstTouch:NO];
             }
-            if(!_animating && !_vibrated) {
-                [_pageViews[1] touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
-            }
-            if(shouldAnimate) {
-                _vibrated = NO;
-                [self setTouchLocationFromTouch:_touch firstTouch:YES];
-                [self startAnimation];
-            } else {
-                if(!_vibrated) {
-                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
-                    _vibrated = YES;
-                }
-            }
-        } else if(!_vibrated) {
-            // Set touch location
-            [self setTouchLocationFromTouch:_touch firstTouch:NO];
         }
     } else if([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]]) {
         if(!_pinchUnderway) {
@@ -1265,6 +1267,13 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         [_pageViews[1] touchesCancelled:touches withEvent:event];
     }
     [self _touchesEndedOrCancelled:touches withEvent:event];
+}
+
+- (void)setUserInteractionEnabled:(BOOL)enabled
+{
+    if(_touch) {
+        [self _touchesEndedOrCancelled:[NSSet setWithObject:_touch] withEvent:nil];
+    }
 }
 
 // Since gravity is the only force we're using, we just manually add it in 
