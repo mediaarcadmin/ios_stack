@@ -1604,6 +1604,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 	// Return YES for supported orientations
     if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
         return YES;
