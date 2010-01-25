@@ -1337,11 +1337,27 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         uint32_t paragraphId, wordOffset;
         if ( continuingSpeech ) {
             // Continuing to speak, we just need more text.
-            paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
-            wordOffset = 0;
-            [_acapelaTTS setCurrentWordOffset:wordOffset];
-            [_acapelaTTS setCurrentParagraph:paragraphId];
-            [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+			while ( true ) {
+				paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
+				wordOffset = 0;
+				[_acapelaTTS setCurrentWordOffset:wordOffset];
+				[_acapelaTTS setCurrentParagraph:paragraphId];
+				[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+				if ( _acapelaTTS.paragraphWords == nil ) {
+					// end of the book
+					UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
+					[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+					[_acapelaTTS stopSpeaking];
+					self.audioPlaying = NO;
+					return;
+				}
+				else if ( [_acapelaTTS.paragraphWords count] == 0 ) {
+					// empty paragraph, go to the next.
+					continue;
+				}
+				else
+					break;
+			}
 			if ( wordOffset != 0 ) 
 				[_acapelaTTS adjustParagraphWords];
 		}
@@ -1371,8 +1387,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
 	// For testing
-	//NSString* thisWord = [string substringWithRange:characterRange];
-	//NSLog(@"%@", thisWord);
+	NSString* thisWord = [string substringWithRange:characterRange];
+	NSLog(@"%@", thisWord);
 	
 	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
                                                          options:0 
@@ -1409,11 +1425,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
-	// The first string that comes in here after speaking has resumed has invalid range: 
-	// location not zero but a high number.
-    if(characterRange.location + characterRange.length < string.length) {
+    if(characterRange.location + characterRange.length <= string.length) {
 		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
-			NSLog(@"About to speak a word: \"%@\"", [string substringWithRange:characterRange]);
             BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
             BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
             [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
