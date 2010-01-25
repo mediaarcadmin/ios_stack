@@ -13,7 +13,6 @@
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucEPubBook.h>
-//#import <libEucalyptus/EucHighlighter.h>
 #import "BlioViewSettingsSheet.h"
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
@@ -547,7 +546,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [_bookView addObserver:self 
                         forKeyPath:@"pageCount" 
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
-                           context:nil];    
+                           context:nil];   
         }
     }
 }

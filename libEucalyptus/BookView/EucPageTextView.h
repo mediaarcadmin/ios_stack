@@ -86,6 +86,9 @@ typedef struct {
           justify:(BOOL)justify
            italic:(BOOL)italic;
 
+- (NSArray *)paragraphIds;
+- (CGRect)frameOfParagraphWithId:(uint32_t)id;
+- (NSArray *)wordOffsetsForParagraphWithId:(uint32_t)id;
 - (NSArray *)rectsForWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 
 - (void)addBlankLines:(CGFloat)blankLineCount;

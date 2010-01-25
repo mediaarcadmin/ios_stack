@@ -218,7 +218,7 @@ static void *background_init_thread(void * arg) {
         else
             NSLog(@"Persistent store recreated after deleting the existing one");
         
-    }    
+   }    
 	
     return persistentStoreCoordinator;
 }

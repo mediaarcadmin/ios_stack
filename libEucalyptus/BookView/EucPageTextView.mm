@@ -1019,6 +1019,59 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     return ret;
 }
 
+- (NSArray *)paragraphIds
+{
+    NSMutableArray *ret = [NSMutableArray array];
+    
+    uint32_t lastId = 0;
+    for(NSUInteger i = 0; i < _stringsCount; ++i) {
+        uint32_t thisId = _stringParagraphAndWordOffsets[i] >> 32;
+        if(thisId != lastId) {
+            [ret addObject:[NSNumber numberWithInt:thisId]];
+            lastId = thisId;
+        }
+    }
+    if(!ret.count) {
+        ret = nil;
+    }
+    return ret;    
+}
+
+- (CGRect)frameOfParagraphWithId:(uint32_t)id
+{
+    BOOL found = NO;
+    CGRect ret = CGRectZero;
+    for(NSUInteger i = 0; i < _stringsCount; ++i) {
+        uint32_t thisId = _stringParagraphAndWordOffsets[i] >> 32;
+        if(thisId == id) {
+            if(found) {
+                ret = CGRectUnion(ret, _stringRects[i]);
+            } else {
+                ret = _stringRects[i];
+                found = YES;
+            }
+        }
+    }
+    return ret;
+}
+
+- (NSArray *)wordOffsetsForParagraphWithId:(uint32_t)id
+{
+    NSMutableArray *ret = [NSMutableArray array];
+    
+    for(NSUInteger i = 0; i < _stringsCount; ++i) {
+        uint64_t thisParagraphIdAndWordOffset = _stringParagraphAndWordOffsets[i];
+        uint32_t thisId = thisParagraphIdAndWordOffset >> 32;
+        if(thisId == id) {
+            [ret addObject:[NSNumber numberWithInt:(uint32_t)thisParagraphIdAndWordOffset]];
+        }
+    }
+    if(!ret.count) {
+        ret = nil;
+    }
+    return ret;    
+}
+
 - (NSArray *)rectsForWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset
 {
     NSMutableArray *ret = [[NSMutableArray alloc] initWithCapacity:2];
@@ -1027,7 +1080,6 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
     for(NSUInteger i = 0; i < _stringsCount; ++i) {
         if(_stringParagraphAndWordOffsets[i] == key) {
             [ret addObject:[NSValue valueWithCGRect:_stringRects[i]]];
-            NSLog(@"%@", _stringsWithAttributes[i]);
         }
     }
     if(!ret.count) {

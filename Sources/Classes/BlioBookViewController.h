@@ -18,7 +18,7 @@
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
 
-@class EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference, BlioBookViewControllerProgressPieButton;
+@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton;
 @protocol EucBook, BlioBookView;
 
 typedef enum {

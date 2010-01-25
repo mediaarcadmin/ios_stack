@@ -40,16 +40,17 @@
 
 - (void)removeTouchObserver:(id <THEventCaptureObserver>)observer forView:(UIView *)view;
 {
-    NSUInteger count = [_eventCaptureViewsToObserve count];
-    if(count) {
-        for(NSUInteger i = count-1; i >=0; --i) {
+    NSUInteger i = [_eventCaptureViewsToObserve count];
+    if(i) {
+        do {
+            --i;
             if(((NSValue *)[_eventCaptureViewsToObserve objectAtIndex:i]).nonretainedObjectValue == view &&
                ((NSValue *)[_eventCaptureObservers objectAtIndex:i]).nonretainedObjectValue == observer) {
                 [_eventCaptureViewsToObserve removeObjectAtIndex:i];
                 [_eventCaptureObservers removeObjectAtIndex:i];
                 break;
             }
-        }
+        } while(i != 0);
     }
     if([_eventCaptureViewsToObserve count] == 0) {
         [_eventCaptureObservers release];
