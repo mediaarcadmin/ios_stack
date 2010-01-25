@@ -130,7 +130,6 @@ typedef struct {
 
 @property (nonatomic, assign) GLfloatTriplet lightPosition;
 
-
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 
 @end

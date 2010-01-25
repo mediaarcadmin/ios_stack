@@ -14,10 +14,16 @@
 
 @interface EucHighlighter : NSObject <THEventCaptureObserver> {
     id<EucHighlighterDataSource> _dataSource;
+    CGImageRef _magnificationLoupeImage;
     
     UIView *_attachedView;
     UITouch *_trackingTouch;
     BOOL _tracking;
+    
+    UIView *_viewWithSelection;
+    UIImageView *_loupeView;
+    
+    NSMutableArray *_highlightLayers;
 }
 
 @property (nonatomic, assign) id<EucHighlighterDataSource> dataSource;
@@ -26,8 +32,10 @@
 - (void)attachToView:(UIView *)view;
 - (void)detatchFromView;
 
+/*
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 - (void)clearTemporaryHighlights;
+*/
 
 @end
 
@@ -41,10 +49,18 @@
 
 
 @protocol EucHighlighterDataSource <NSObject>
-/*
+
+@required
 - (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter;
 - (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id;
-- (NSArray *)identifiersForElementsOfBlockAtIndex:(NSUInteger)index;
-- (NSArray *)rectsForElementsOfBlockAtIndex:(NSUInteger)index;
-*/
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id;
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+
+@optional
+// Data source can supply an image that will be used to replace the view while
+// selection is taking place.  This is uesful if he view's layer would otherwise
+// not respond to renderInContext: 'correctly' (for example, it's an OpenGL
+// backed view.
+- (UIImage *)viewSnapshotImageForEucHighlighter:(EucHighlighter *)highlighter;
+
 @end

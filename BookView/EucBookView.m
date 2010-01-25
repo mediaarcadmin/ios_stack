@@ -106,7 +106,7 @@
 {
     if(_highlighter) {
         [_highlighter removeObserver:self
-                          forKeyPath:@"isTracking"];
+                          forKeyPath:@"tracking"];
         [_highlighter detatchFromView];
         [_highlighter release];
     }
@@ -175,9 +175,10 @@
         _highlighter = [[EucHighlighter alloc] init];
         [_highlighter attachToView:self];
         [_highlighter addObserver:self
-                       forKeyPath:@"isTracking"
-                          options:NSKeyValueObservingOptionNew
+                       forKeyPath:@"tracking"
+                          options:0
                           context:NULL];
+        _highlighter.dataSource = self;
     } else {
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
@@ -188,7 +189,7 @@
         
         [_highlighter detatchFromView];
         [_highlighter removeObserver:self
-                          forKeyPath:@"isTracking"];
+                          forKeyPath:@"tracking"];
         [_highlighter release];
         _highlighter = nil;
     }
@@ -877,6 +878,72 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     return [_pageLayoutController viewShouldBeRigid:view];
 }
 
+
+#pragma mark -
+#pragma mark Highlighter
+
+- (UIImage *)viewSnapshotImageForEucHighlighter:(EucHighlighter *)highlighter
+{
+    return self.currentPageImage;
+}
+
+- (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter
+{
+    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+    EucPageTextView *pageTextView = pageView.bookTextView;
+    return [pageTextView paragraphIds];
+}
+
+- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id
+{
+    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+    EucPageTextView *pageTextView = pageView.bookTextView;
+    return [pageView convertRect:[pageTextView frameOfParagraphWithId:[id intValue]] fromView:pageTextView];    
+}
+
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id;
+{
+    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+    EucPageTextView *pageTextView = pageView.bookTextView;
+    return [pageTextView wordOffsetsForParagraphWithId:[id intValue]];
+}
+
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+{
+    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+    EucPageTextView *pageTextView = pageView.bookTextView;
+    
+    NSArray *rects = [pageTextView rectsForWordAtParagraphId:[blockId intValue] wordOffset:[elementId intValue]];
+    NSUInteger rectsCount = rects.count;
+    if(rectsCount) {
+        NSMutableArray *ret = [NSMutableArray arrayWithCapacity:rectsCount];
+        for(NSValue *rect in rects) {
+            [ret addObject:[NSValue valueWithCGRect:[pageView convertRect:[rect CGRectValue] fromView:pageTextView]]];
+        }
+        return ret;
+    }
+    return nil;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if(object == _highlighter &&
+       [keyPath isEqualToString:@"tracking"]) {
+        _pageTurningView.userInteractionEnabled = !((EucHighlighter *)object).isTracking;
+    }
+}
+
+- (EucRange)selectedRange
+{
+    EucRange selectedRange = {{0, 0}, {0, 0}};
+    return selectedRange;
+}
+
+- (void)clearSelectedRange
+{
+    
+}
+
 #pragma mark -
 #pragma mark Toolbar
 
@@ -1223,17 +1290,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 {
     [self _updateSliderByteToPageRatio];
     [self _updatePageNumberLabel];
-}
-
-- (EucRange)selectedRange
-{
-    EucRange selectedRange = {{0, 0}, {0, 0}};
-    return selectedRange;
-}
-
-- (void)clearSelectedRange
-{
-    
 }
 
 @end

@@ -228,6 +228,8 @@
 		7D9A987610D7E73800C2E00A /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC610C2E61E0001203D /* BookPaper.png */; };
 		7D9A98A210D7E85100C2E00A /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC910C2E61E0001203D /* EPubDefault.css */; };
 		7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A986610D7E6F100C2E00A /* HyphenationPatterns */; };
+		7D9F31EA110DB8220041A902 /* MagnificationLoupe.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F31E9110DB8220041A902 /* MagnificationLoupe.png */; };
+		7D9F31EB110DB8220041A902 /* MagnificationLoupe.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F31E9110DB8220041A902 /* MagnificationLoupe.png */; };
 		7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
 		7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
@@ -594,6 +596,7 @@
 		7D9A96E310D7E42A00C2E00A /* PaginateRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginateRootViewController.xib; sourceTree = "<group>"; };
 		7D9A979210D7E48E00C2E00A /* book */ = {isa = PBXFileReference; lastKnownFileType = folder; path = book; sourceTree = "<group>"; };
 		7D9A986610D7E6F100C2E00A /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
+		7D9F31E9110DB8220041A902 /* MagnificationLoupe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupe.png; sourceTree = "<group>"; };
 		7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
 		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
@@ -1231,6 +1234,7 @@
 		7DD48EB610C2E61E0001203D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7D9F31E9110DB8220041A902 /* MagnificationLoupe.png */,
 				7D9A986610D7E6F100C2E00A /* HyphenationPatterns */,
 				7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */,
 				7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */,
@@ -1599,6 +1603,7 @@
 				7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */,
 				7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */,
+				7D9F31EA110DB8220041A902 /* MagnificationLoupe.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1617,6 +1622,7 @@
 				7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */,
 				7DB9F85810F38ABD0010DF0B /* LinuxLibertine.otf in Resources */,
+				7D9F31EB110DB8220041A902 /* MagnificationLoupe.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
