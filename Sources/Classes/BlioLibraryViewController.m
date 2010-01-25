@@ -234,6 +234,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/Three_Little_Pigs.png"];
         [aBook setEpubFilename:@"Three Little Pigs"];
         [aBook setPdfFilename:@"Three Little Pigs"];
+        [aBook setAudiobookFilename:@"Three Little Pigs"];
+        [aBook setHasAudioRights:[NSNumber numberWithBool:YES]];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
         [aBook setPosition:[NSNumber numberWithInt:3]];
@@ -1009,6 +1011,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
+    if ([newBook audioRights]) {
+        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
+    }
     self.progressSlider.value = [[newBook progress] floatValue];
     CGRect progressFrame = self.progressSlider.frame;
     self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);

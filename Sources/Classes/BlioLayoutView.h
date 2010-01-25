@@ -29,11 +29,12 @@
     BlioPDFDebugView *debugView;
     BlioPDFPageView *currentPageView;
     BOOL scrollToPageInProgress;
-    BOOL zoomPageInProgress;
+    BOOL disableScrollUpdating;
     MSTiltScroller *tiltScroller;
     NSInteger pageNumber;
     NSInteger pageCount;
     CGFloat lastZoomScale;
+    CALayer *sharpLayer;
 }
 
 @property (nonatomic, retain) BlioPDFContainerScrollView *scrollView;
@@ -45,7 +46,7 @@
 @property (nonatomic, retain) BlioPDFFontList *fonts;
 @property (nonatomic, retain) BlioPDFParsedPage *parsedPage;
 @property (nonatomic) BOOL scrollToPageInProgress;
-@property (nonatomic) BOOL zoomPageInProgress;
+@property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
 
 - (id)initWithPath:(NSString *)path;

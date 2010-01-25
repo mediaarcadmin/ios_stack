@@ -24,6 +24,8 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 @dynamic proportionateSize;
 @dynamic position;
 @dynamic layoutPageNumber;
+@dynamic hasAudioRights;
+@dynamic audiobookFilename;
 
 - (void)dealloc {
     [coverThumb release];
@@ -40,6 +42,14 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 
 - (NSString *)pdfPath {
     return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"pdfFilename"] ofType:@"pdf" inDirectory:@"PDFs"];
+}
+
+- (NSString *)audiobookPath {
+    return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"audiobookFilename"] ofType:@"mp3" inDirectory:@"audiobooks"];
+}
+
+- (BOOL)audioRights {
+    return [[self valueForKey:@"hasAudioRights"] boolValue];
 }
 
 - (UIImage *)coverImage {

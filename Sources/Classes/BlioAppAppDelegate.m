@@ -209,7 +209,7 @@ static void *background_init_thread(void * arg) {
         // Delete the current store and start again
         // TODO - this is just a demo convenience - you would not want to do this in real deployment
         NSError *fileError;
-        if (![[NSFileManager defaultManager] removeItemAtPath:[storeUrl absoluteString] error:&fileError])
+        if (![[NSFileManager defaultManager] removeItemAtPath:[[storeUrl absoluteURL] path] error:&fileError])
              NSLog(@"Could not delete the existing persistent store: %@, %@", fileError, [fileError userInfo]);
             
         // Attempt to create the store again

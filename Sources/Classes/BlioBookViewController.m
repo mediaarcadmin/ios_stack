@@ -813,14 +813,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     self.bookView = nil;
 }
 
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
-{
-	// Return YES for supported orientations
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-
 - (void)didReceiveMemoryWarning 
 {
 	[super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
@@ -1592,6 +1584,29 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         if (![[self managedObjectContext] save:&error])
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
     }
+}
+
+#pragma mark -
+#pragma mark Rotation Handling
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+	// Return YES for supported orientations
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
+        return YES;
+    else
+        return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [UIView beginAnimations:@"rotateBookView" context:nil];
+    [UIView setAnimationDuration:duration];
+    if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
+        [self.bookView setFrame:CGRectMake(0,0,320,480)];
+    } else {
+        [self.bookView setFrame:CGRectMake(0,0,480,320)];
+    }
+    [UIView commitAnimations];
 }
 
 #pragma mark -

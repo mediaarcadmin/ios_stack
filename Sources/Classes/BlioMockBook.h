@@ -23,11 +23,15 @@
 @property (nonatomic, retain) NSNumber *proportionateSize;
 @property (nonatomic, retain) NSNumber *position;
 @property (nonatomic, retain) NSNumber *layoutPageNumber;
+@property (nonatomic, retain) NSNumber *hasAudioRights;
+@property (nonatomic, retain) NSString *audiobookFilename;
 
 - (UIImage *)coverImage;
 - (UIImage *)coverThumbForGrid;
 - (UIImage *)coverThumbForList;
 - (NSString *)bookPath;
 - (NSString *)pdfPath;
+- (NSString *)audiobookPath;
+- (BOOL)audioRights;
 
 @end
