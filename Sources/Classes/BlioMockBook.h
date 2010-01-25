@@ -25,6 +25,7 @@
 @property (nonatomic, retain) NSNumber *layoutPageNumber;
 @property (nonatomic, retain) NSNumber *hasAudioRights;
 @property (nonatomic, retain) NSString *audiobookFilename;
+@property (nonatomic, retain) NSString *audiotimingFilename;
 
 - (UIImage *)coverImage;
 - (UIImage *)coverThumbForGrid;
@@ -32,6 +33,7 @@
 - (NSString *)bookPath;
 - (NSString *)pdfPath;
 - (NSString *)audiobookPath;
+- (NSString *)audiotimingPath;
 - (BOOL)audioRights;
 
 @end

@@ -554,7 +554,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)_backButtonTapped
 {
 	if (self.audioPlaying) {
-		[_acapelaTTS stopSpeaking];
+		[self stopAudio];
 		self.audioPlaying = NO;  
 	}
     [self.navigationController popViewControllerAnimated:YES];
@@ -1135,7 +1135,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		if (self.audioPlaying) {
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-			[_acapelaTTS stopSpeaking];
+			[self stopAudio];
 			self.audioPlaying = NO;  
 		}
         if (newLayout == kBlioPageLayoutPlainText && [self.book bookPath]) {
@@ -1346,7 +1346,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 					// end of the book
 					UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 					[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-					[_acapelaTTS stopSpeaking];
+					[self stopAudio];
 					self.audioPlaying = NO;
 					return;
 				}
@@ -1435,42 +1435,46 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
+- (void)stopAudio {			
+		if (![self.book audioRights]) 
+			[_acapelaTTS stopSpeaking];
+		else if ([self.book audiobookFilename] != nil) 
+			[_player stop];
+}
+	
 - (void)toggleAudio:(id)sender {
 	if ([self currentPageLayout] == kBlioPageLayoutPlainText || [self currentPageLayout] == kBlioPageLayoutPageLayout) {
 		UIBarButtonItem *item = (UIBarButtonItem *)sender;
 		
 		UIImage *audioImage = nil;
 		if (self.audioPlaying) {
-			/* For testing
-             [_testParagraphWords stopParagraphGetting];
-             [_testParagraphWords release];
-             _testParagraphWords = nil;
-             */
-			[_acapelaTTS stopSpeaking];
-			//[_acapelaTTS stopSpeakingAtBoundary:1];
+			[self stopAudio];
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
 		} else { 
-			/* For testing.  If this is uncommented, comment out the call to startSpeakingParagraph below.
-			 BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-			 BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-			 EucEPubBook *book = (EucEPubBook*)bookView.book;
-			 uint32_t paragraphId, wordOffset;
-			 [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
-			 _testParagraphWords = [[BlioTestParagraphWords alloc] init];
-			 [_testParagraphWords startParagraphGettingFromBook:book atParagraphWithId:paragraphId];
-			 */
 			if (!self.navigationController.toolbarHidden) {
                 [self toggleToolbars];
             }
-			if (_acapelaTTS == nil) {
-				_acapelaTTS = [[AcapelaTTS alloc] init];
-				[_acapelaTTS initTTS];
-				[_acapelaTTS setDelegate:self];
-				[_acapelaTTS setRate:180];   // Will get from settings.
-				[_acapelaTTS setVolume:70];  // Likewise.
-				[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextPargraph:) userInfo:nil repeats:YES]];
+			if (![self.book audioRights]) {
+				if (_acapelaTTS == nil) {
+					_acapelaTTS = [[AcapelaTTS alloc] init];
+					[_acapelaTTS initTTS];
+					[_acapelaTTS setDelegate:self];
+					[_acapelaTTS setRate:180];   // Will get from settings.
+					[_acapelaTTS setVolume:70];  // Likewise.
+					[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextPargraph:) userInfo:nil repeats:YES]];
+				}
+				[self prepareTextToSpeak:NO];
 			}
-			[self prepareTextToSpeak:NO];
+			else if ([self.book audiobookFilename] != nil) {	
+				NSError* err;
+				if ( _player != nil )
+					[_player release];
+				_player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[self.book audiobookPath]] 
+																error:&err];
+				_player.volume = 1.0;    // Will get from settings.
+				[_player prepareToPlay];
+				[_player play];
+			}
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
 		}
 		self.audioPlaying = !self.audioPlaying;  
