@@ -17,6 +17,9 @@
     CGImageRef _magnificationLoupeImage;
     
     UIView *_attachedView;
+    
+    NSMutableArray *_temporaryHighlightLayers;
+
     UITouch *_trackingTouch;
     BOOL _tracking;
     
@@ -32,10 +35,8 @@
 - (void)attachToView:(UIView *)view;
 - (void)detatchFromView;
 
-/*
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
-- (void)clearTemporaryHighlights;
-*/
+- (void)removeTemporaryHighlight;
 
 @end
 

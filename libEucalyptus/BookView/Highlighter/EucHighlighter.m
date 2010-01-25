@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "EucHighlighter.h"
 #import "EucHighlighterOverlayView.h"
+#import "THGeometryUtils.h"
 #import "THEventCapturingWindow.h"
 #import "THImageFactory.h"
 #import "THLog.h"
@@ -17,8 +18,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 @interface EucHighlighter ()
 
-
 @property (nonatomic, retain) UIView *attachedView;
+
+@property (nonatomic, retain) NSMutableArray *temporaryHighlightLayers;
+
 @property (nonatomic, retain) UITouch *trackingTouch;
 
 @property (nonatomic, retain) UIView *viewWithSelection;
@@ -35,6 +38,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @synthesize dataSource = _dataSource;
 
 @synthesize attachedView = _attachedView;
+
+@synthesize temporaryHighlightLayers = _temporaryHighlightLayers;
+
 @synthesize trackingTouch = _trackingTouch;
 @synthesize tracking = _tracking;
 
@@ -44,8 +50,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (void)dealloc
 {
+    if(self.temporaryHighlightLayers) {
+        THWarn(@"Highlighter released with temporary highlight displayed.");
+        [self removeTemporaryHighlight];
+    }    
     if(self.attachedView) {
-        THWarn(@"Highlighter released while still attahed to view");
+        THWarn(@"Highlighter released while still attached to view.");
         [self detatchFromView];
     }
     [_trackingTouch release];
@@ -79,25 +89,130 @@ static const CGFloat sLoupePopDuration = 0.05f;
     }    
 }
 
+#pragma mark -
+#pragma mark CAAnimation Delegate Methods
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{   
+    NSString *name = [anim valueForKey:@"THName"];
+    if(name) {
+        if([name isEqualToString:@"EucHighlighterLoupePopDown"]) {
+            [[anim valueForKey:@"THView"] removeFromSuperview];
+        } else if([name isEqualToString:@"EucHighlighterEndOfLineHighlight"]) {
+            [[anim valueForKey:@"THLayer"] removeFromSuperlayer];
+        }
+    }
+}
+
+#pragma mark -
+#pragma mark Temporary Highlights
+
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
-{
+{    
+    NSArray *rects = [self.dataSource eucHighlighter:self
+                       rectsForElementWithIdentifier:elementId
+                               ofBlockWithIdentifier:blockId];
     
+    NSMutableArray *temporaryHilightLayers = self.temporaryHighlightLayers;
+    NSMutableArray *newTemporaryHighlightLayers = [[NSMutableArray alloc] initWithCapacity:2];
+    
+    CALayer *attachedViewLayer = self.attachedView.layer;
+    
+    for(NSValue *rectValue in rects) {
+        CGRect rect = [rectValue CGRectValue];
+        
+        CGPoint newCenter = CGPointMake(rect.origin.x + (rect.size.width / 2.0f), rect.origin.y + (rect.size.height / 2.0f));
+        CALayer *layer = nil;
+        if(temporaryHilightLayers.count) {
+            CGFloat bestDistance = CGFLOAT_MAX;
+            for(CALayer *prospectiveLayer in temporaryHilightLayers) {
+                CGPoint prospectiveCenter = prospectiveLayer.position;
+                if(prospectiveCenter.x < newCenter.x) {
+                    CGFloat thisDistance = CGPointDistance(prospectiveCenter, newCenter);
+                    if(thisDistance < bestDistance) {
+                        bestDistance = thisDistance;
+                        layer = [prospectiveLayer retain];
+                    }
+                }
+            }
+        } 
+        rect.size.width += 4;
+        rect.size.height += 4;
+        
+        if(layer) {
+            [temporaryHilightLayers removeObject:layer];
+        } else {                 
+            layer = [[CALayer alloc] init];
+            layer.cornerRadius = 4;
+            layer.backgroundColor = [[[UIColor blueColor] colorWithAlphaComponent:0.25f] CGColor];
+            layer.position = CGPointMake(newCenter.x - rect.size.width / 2.0f + 1.0f, newCenter.y);
+            layer.bounds = CGRectMake(0, 0, 1, rect.size.height);
+            [attachedViewLayer addSublayer:layer];              
+        }
+        
+        CGRect newBounds = CGRectMake(0, 0, rect.size.width, rect.size.height);
+        
+        CABasicAnimation *move = [CABasicAnimation animation];
+        move.keyPath = @"position";
+        move.fromValue = [NSValue valueWithCGPoint:layer.position];
+        move.toValue = [NSValue valueWithCGPoint:newCenter];
+        CABasicAnimation *shape = [CABasicAnimation animation];
+        shape.keyPath = @"bounds";
+        shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
+        shape.toValue = [NSValue valueWithCGRect:newBounds];
+        
+        CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+        animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
+        animationGroup.duration = 0.2f;
+        
+        [layer addAnimation:animationGroup forKey:nil];
+        
+        layer.position = newCenter;
+        layer.bounds = newBounds;
+        
+        [newTemporaryHighlightLayers addObject:layer];
+        [layer release];
+    }
+    for(CALayer *layer in temporaryHilightLayers) {
+        CGRect frame = layer.frame;
+        CGPoint newCenter = CGPointMake(frame.origin.x + frame.size.width - 1.0f, 
+                                        frame.origin.y + frame.size.height / 2.0f);
+        CGRect newBounds = CGRectMake(0, 0, 1, frame.size.height);
+        
+        CABasicAnimation *move = [CABasicAnimation animation];
+        move.keyPath = @"position";
+        move.fromValue = [NSValue valueWithCGPoint:layer.position];
+        move.toValue = [NSValue valueWithCGPoint:newCenter];
+        CABasicAnimation *shape = [CABasicAnimation animation];
+        shape.keyPath = @"bounds";
+        shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
+        shape.toValue = [NSValue valueWithCGRect:newBounds];
+        
+        CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+        animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
+        animationGroup.duration = 0.2f;
+        animationGroup.delegate = self;
+        
+        [animationGroup setValue:@"EucHighlighterEndOfLineHighlight" forKey:@"THName"];
+        [animationGroup setValue:layer forKey:@"THLayer"];
+        [layer addAnimation:animationGroup forKey:@"EucHighlighterEndOfLineHighlight"]; 
+        
+        layer.position = newCenter;
+        layer.bounds = newBounds;
+    }
+    self.temporaryHighlightLayers = newTemporaryHighlightLayers;
 }
 
-- (void)clearTemporaryHighlights
+- (void)removeTemporaryHighlight
 {
-    
+    for(CALayer *layer in self.temporaryHighlightLayers) {
+        [layer removeFromSuperlayer];
+    }
+    self.temporaryHighlightLayers = nil;
 }
 
-- (NSInteger)highlightElementsFromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-    return 0;
-}
-
-- (void)removeHighlight:(NSInteger)highlightId 
-{
-    
-}
+#pragma mark -
+#pragma mark Selection
 
 - (CGImageRef)magnificationLoupeImage
 {
@@ -137,7 +252,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                                            1.0f);
         loupePopUp.fromValue = [NSValue valueWithCATransform3D:fromTransform];
         loupePopUp.duration = sLoupePopDuration;
-        [loupeView.layer addAnimation:loupePopUp forKey:@"popup"];
+        [loupeView.layer addAnimation:loupePopUp forKey:@"EucHighlighterLoupePopUp"];
         [loupePopUp release];
     }
         
@@ -196,17 +311,6 @@ static const CGFloat sLoupePopDuration = 0.05f;
     loupeView.frame = [self.viewWithSelection convertRect:frame toView:loupeView.superview];
 }
 
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
-{   
-    NSString *name = [anim valueForKey:@"THName"];
-    if(name) {
-        if([name isEqualToString:@"loupePopDown"]) {
-            UIImageView *loupeView = [anim valueForKey:@"THView"];
-            [loupeView removeFromSuperview];
-        }
-    }
-}
-
 - (void)_removeLoupe
 {
     UIImageView *loupeView = self.loupeView;
@@ -223,9 +327,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
     loupePopDown.toValue = [NSValue valueWithCATransform3D:toTransform];
     loupePopDown.duration = sLoupePopDuration;
     loupePopDown.delegate = self;
-    [loupePopDown setValue:@"loupePopDown" forKey:@"THName"];
+    [loupePopDown setValue:@"EucHighlighterLoupePopDown" forKey:@"THName"];
     [loupePopDown setValue:loupeView forKey:@"THView"];
-    [loupeViewLayer addAnimation:loupePopDown forKey:@"popdown"];
+    [loupeViewLayer addAnimation:loupePopDown forKey:@"EucHighlighterLoupePopDown"];
     [loupePopDown release];
     
     // Avoid popping back to full-size.

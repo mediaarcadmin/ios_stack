@@ -97,7 +97,7 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 - (void)_calculateVertexNormals;    
 //- (void)_accumulateForces;  // Not used - see comments around implementation.
 - (void)_verlet;
-- (void)_satisfyConstraints;
+- (BOOL)_satisfyConstraints;
 - (void)_setupConstraints;
 - (void)_postAnimationViewAndTextureRecache;
 
@@ -700,10 +700,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
 - (void)drawView 
 {        
+    BOOL shouldStopAnimating = !_animating;
     if(_animating && !_isTurningAutomatically) {
         //[self _accumulateForces]; // Not used - see comments around implementation.
         [self _verlet];
-        [self _satisfyConstraints];
+        shouldStopAnimating = [self _satisfyConstraints];
         [self _calculateVertexNormals];
     }
     
@@ -770,7 +771,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, _triangleStripIndices);
     
-    if(_animating) {
+    if(!shouldStopAnimating) {
         glClear(GL_DEPTH_BUFFER_BIT);
             
         glBindTexture(GL_TEXTURE_2D, _pageTextures[_flatPageIndex-1]);
@@ -897,7 +898,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             }
             
             if(++_automaticTurnFrame >= (_automaticTurnIsForwards ? _animatedTurnFrameCount : (_reverseAnimatedTurnFrameCount + 1))) {
-                [self stopAnimation];
+                shouldStopAnimating = YES;
                 [[UIApplication sharedApplication] endIgnoringInteractionEvents];
                 
                 _isTurningAutomatically = NO;
@@ -958,6 +959,10 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
     if(_viewsNeedRecache) {
         [self _postAnimationViewAndTextureRecache];
+    }
+    
+    if(shouldStopAnimating) {
+        [self stopAnimation];
     }
 }
 
@@ -1328,8 +1333,10 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
 #define NUM_ITERATIONS 40
 
-- (void)_satisfyConstraints
+- (BOOL)_satisfyConstraints
 {
+    BOOL shouldStopAnimating = NO;
+    
     BOOL pageHasRigidEdge;
     if([_delegate respondsToSelector:@selector(pageTurningView:viewEdgeIsRigid:)]) {
         pageHasRigidEdge = [_delegate pageTurningView:self viewEdgeIsRigid:_pageViews[_flatPageIndex-1]];
@@ -1438,7 +1445,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         if(isFlat || hasFlipped) {
             memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
             memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-            [self stopAnimation];
             _touchVelocity = 0;
             
             if(_flatPageIndex == 2) {
@@ -1471,9 +1477,13 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                     _recacheFlags[0] = YES;
                 }
             }  
+            
+            shouldStopAnimating = YES;
+
             break;
         }
     }
+    return shouldStopAnimating;
 }
 
 - (void)_postAnimationViewAndTextureRecache
