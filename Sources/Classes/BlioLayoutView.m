@@ -389,8 +389,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         
         if (animated) {
             [self loadPage:1 current:YES preload:YES];
+            [self loadPage:2 current:NO preload:YES];
             if (page == 1) {
-                for (int i = 1; i < kBlioLayoutMaxViews; i++) {
+                for (int i = 2; i < kBlioLayoutMaxViews; i++) {
                     [self loadPage:i+1 current:NO preload:NO];
                 }
             } else {
@@ -541,7 +542,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self willChangeValueForKey:@"pageNumber"];
     
     if (animated) {
-        if (targetPage == self.pageNumber) return;
         // Animation steps:
         // 1. Move the current page and its adjacent pages next to the target page's adjacent pages
         // 2. Load the target page and its adjacent pages
@@ -552,9 +552,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         
         // 1. Move the current page and its adjacent pages next to the target page's adjacent pages
-        NSInteger startPage = self.pageNumber;
-        self.pageNumber = targetPage;
         CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
+        NSInteger startPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
+        self.pageNumber = targetPage;
         NSInteger pagesToGo = targetPage - startPage;
         NSInteger pagesToOffset = 0;
         
@@ -820,7 +820,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
             [self.pageViews removeObjectAtIndex:furthestPageIndex];
             [self.pageViews addObject:pageView];
             [pageView release];
-            [(BlioPDFDrawingView *)[pageView view] setPageNumber:aPageNumber];
+            //[(BlioPDFDrawingView *)[pageView view] setPageNumber:aPageNumber];
         }
         
         newFrame = self.scrollView.frame;
@@ -1219,6 +1219,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     CGPDFPageRetain(newPage);
     CGPDFPageRelease(page);
     page = newPage;
+    [self.view setPageNumber:CGPDFPageGetPageNumber(newPage)];
 }
 
 - (CGPoint)convertPointToPDFPage:(CGPoint)point {
@@ -1481,6 +1482,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         sharpLayer.opacity = 0;
         sharpLayer.zPosition = 0;        
         [sharpLayer setNeedsDisplay];
+        
+        [shadowLayerDelegate setPage:page];
+        [shadowLayer setNeedsDisplay];
         
         // Force the tiled layer to discard it's tile caches
         [tiledLayerDelegate setPage:page];
