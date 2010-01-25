@@ -554,6 +554,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         // 1. Move the current page and its adjacent pages next to the target page's adjacent pages
         CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
         NSInteger startPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
+        if (startPage == targetPage) return;
         self.pageNumber = targetPage;
         NSInteger pagesToGo = targetPage - startPage;
         NSInteger pagesToOffset = 0;
@@ -566,9 +567,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         
         if (abs(pagesToGo) > 3) {
             pagesToOffset = pagesToGo - (3 * (pagesToGo/abs(pagesToGo)));
-            CGFloat frameOffset = pagesToOffset * pageWidth;
-            CGRect firstFrame = CGRectMake((startPage - 2) * self.scrollView.frame.size.width * self.scrollView.zoomScale, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height);
-            CGRect lastFrame = CGRectMake((startPage - 2 + 2) * self.scrollView.frame.size.width * self.scrollView.zoomScale, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height);
+            CGFloat frameOffset = pagesToOffset * self.scrollView.frame.size.width;
+            CGRect firstFrame = CGRectMake((startPage - 2) * self.scrollView.frame.size.width, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height);
+            CGRect lastFrame = CGRectMake((startPage - 2 + 2) * self.scrollView.frame.size.width, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height);
             CGRect pagesToOffsetRect = CGRectUnion(firstFrame, lastFrame);
             
             for (BlioPDFPageView *page in self.pageViews) {
@@ -579,18 +580,26 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
                         newFrame.origin.x += frameOffset;
                         page.frame = newFrame;
                         [page setValid:NO];
-                        [pagesToPreserve addObject:page];
+                        BlioPDFPageView *existingPage = nil;
+                        for (BlioPDFPageView *preservedPage in pagesToPreserve) {
+                            if ((CGRectEqualToRect(page.frame, preservedPage.frame)) &&
+                                (preservePageNum == CGPDFPageGetPageNumber([preservedPage.view page]))) {
+                                    existingPage = page;
+                                    break;
+                                }
+                        }
+                        if (nil == existingPage) [pagesToPreserve addObject:page];
                     } //else {
 //                        NSLog(@"Page in position but wrong page number");
 //                    }
                 }
             }
-            currentOffset = CGPointMake(currentOffset.x + frameOffset, currentOffset.y);
+            currentOffset = CGPointMake(currentOffset.x + frameOffset*self.scrollView.zoomScale, currentOffset.y);
             [self.scrollView setContentOffset:currentOffset animated:NO];
         }
         
         if ([pagesToPreserve count] > 3) {
-            NSLog(@"Something wrong"); // TODO remove this check
+            NSLog(@"WARNING: more than 3 pages found to preserve duing go to animation: %@", [pagesToPreserve description]); 
         }
         
         // 2. Load the target page and its adjacent pages
@@ -772,7 +781,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if (aPageNumber < 1) return nil;
     if (aPageNumber > CGPDFDocumentGetNumberOfPages (pdf)) return nil;
     
-    NSLog(@"LoadPage:%d current:%d preload:%d", aPageNumber, current, preload);
+    //NSLog(@"LoadPage:%d current:%d preload:%d", aPageNumber, current, preload);
 	
     BlioPDFPageView *pageView = nil;
     CGPDFPageRef pdfPageRef = CGPDFDocumentGetPage(pdf, aPageNumber);

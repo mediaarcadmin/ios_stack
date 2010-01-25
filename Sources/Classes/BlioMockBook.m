@@ -45,7 +45,7 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 }
 
 - (NSString *)audiobookPath {
-    return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"audiobookFilename"] ofType:@"mp3" inDirectory:@"audiobooks"];
+    return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"audiobookFilename"] ofType:@"mp3" inDirectory:[@"Audiobooks" stringByAppendingPathComponent:[self valueForKey:@"audiobookFilename"]]];
 }
 
 - (BOOL)audioRights {

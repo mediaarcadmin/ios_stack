@@ -85,6 +85,7 @@
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
+		A357A737110DF5F500402BD7 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A357A731110DF5F500402BD7 /* AudioBooks */; };
 		A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
 		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		A37FC33610EA785F00F3DC5A /* AcapelaTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */; };
@@ -267,6 +268,7 @@
 		7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLightSettingsViewController.m; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		A357A731110DF5F500402BD7 /* AudioBooks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AudioBooks; sourceTree = "<group>"; };
 		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
 		A37FC33310EA785F00F3DC5A /* AcapelaTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AcapelaTTS.h; path = TTS/AcapelaTTS.h; sourceTree = "<group>"; };
@@ -415,6 +417,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A357A731110DF5F500402BD7 /* AudioBooks */,
 				553E98F91107B8E600FB309D /* speedread-background-dark-portrait.png */,
 				553E98FA1107B8E600FB309D /* speedread-thumb.png */,
 				7DB9F95210F3A08C0010DF0B /* logo-white.png */,
@@ -752,6 +755,7 @@
 				553E98FB1107B8E600FB309D /* speedread-background-dark-portrait.png in Resources */,
 				553E98FC1107B8E600FB309D /* speedread-thumb.png in Resources */,
 				7D57493D110A4D3A00A07367 /* MagnificationLoupe.png in Resources */,
+				A357A737110DF5F500402BD7 /* AudioBooks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
