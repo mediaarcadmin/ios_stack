@@ -273,112 +273,14 @@
 
 - (void)_removeHighlights
 {
-    for(CALayer *oldLayer in _highlightLayers) {
-        [oldLayer removeFromSuperlayer];
-    }
-    [_highlightLayers release];
-    _highlightLayers = nil;
-}
-
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
-{
-    if([[anim valueForKey:@"THName"] isEqual:@"EucBookViewEndOfLineHighlight"]) {
-        [[anim valueForKey:@"THLayer"] removeFromSuperlayer];
-    }
+    [_highlighter removeTemporaryHighlight];
 }
 
 - (void)_moveHighlightToWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset 
 {
-    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    EucPageTextView *pageTextView = pageView.bookTextView;
-    
-    NSArray *rects = [pageTextView rectsForWordAtParagraphId:paragraphId wordOffset:wordOffset];
-    
-    NSMutableArray *newHighlightLayers = [[NSMutableArray alloc] initWithCapacity:2];
-    for(NSValue *rectValue in rects) {
-        CGRect rect = [pageView convertRect:[rectValue CGRectValue] fromView:pageTextView];
-
-        CGPoint newCenter = CGPointMake(rect.origin.x + (rect.size.width / 2.0f), rect.origin.y + (rect.size.height / 2.0f));
-        CALayer *layer = nil;
-        if(_highlightLayers.count) {
-            CGFloat bestDistance = CGFLOAT_MAX;
-            for(CALayer *prospectiveLayer in _highlightLayers) {
-                CGPoint prospectiveCenter = prospectiveLayer.position;
-                if(prospectiveCenter.x < newCenter.x) {
-                    CGFloat thisDistance = CGPointDistance(prospectiveCenter, newCenter);
-                    if(thisDistance < bestDistance) {
-                        bestDistance = thisDistance;
-                        layer = [prospectiveLayer retain];
-                    }
-                }
-            }
-        } 
-        rect.size.width += 4;
-        rect.size.height += 4;
-
-        if(layer) {
-            [_highlightLayers removeObject:layer];
-        } else {                 
-            layer = [[CALayer alloc] init];
-            layer.cornerRadius = 4;
-            layer.backgroundColor = [[[UIColor blueColor] colorWithAlphaComponent:0.25f] CGColor];
-            layer.position = CGPointMake(newCenter.x - rect.size.width / 2.0f + 1.0f, newCenter.y);
-            layer.bounds = CGRectMake(0, 0, 1, rect.size.height);
-            [_pageTurningView.layer addSublayer:layer];              
-        }
-        
-        CGRect newBounds = CGRectMake(0, 0, rect.size.width, rect.size.height);
-        
-        CABasicAnimation *move = [CABasicAnimation animation];
-        move.keyPath = @"position";
-        move.fromValue = [NSValue valueWithCGPoint:layer.position];
-        move.toValue = [NSValue valueWithCGPoint:newCenter];
-        CABasicAnimation *shape = [CABasicAnimation animation];
-        shape.keyPath = @"bounds";
-        shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
-        shape.toValue = [NSValue valueWithCGRect:newBounds];
-        
-        CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
-        animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
-        animationGroup.duration = 0.2f;
-
-        [layer addAnimation:animationGroup forKey:nil];
-        
-        layer.position = newCenter;
-        layer.bounds = newBounds;
-        
-        [newHighlightLayers addObject:layer];
-        [layer release];
-    }
-    for(CALayer *layer in _highlightLayers) {
-        CGRect frame = layer.frame;
-        CGPoint newCenter = CGPointMake(frame.origin.x + frame.size.width - 1.0f, 
-                                        frame.origin.y + frame.size.height / 2.0f);
-        CGRect newBounds = CGRectMake(0, 0, 1, frame.size.height);
-        
-        CABasicAnimation *move = [CABasicAnimation animation];
-        move.keyPath = @"position";
-        move.fromValue = [NSValue valueWithCGPoint:layer.position];
-        move.toValue = [NSValue valueWithCGPoint:newCenter];
-        CABasicAnimation *shape = [CABasicAnimation animation];
-        shape.keyPath = @"bounds";
-        shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
-        shape.toValue = [NSValue valueWithCGRect:newBounds];
-        
-        CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
-        animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
-        animationGroup.duration = 0.2f;
-        animationGroup.delegate = self;
-
-        [animationGroup setValue:@"EucBookViewEndOfLineHighlight" forKey:@"THName"];
-        [animationGroup setValue:layer forKey:@"THLayer"];
-        [layer addAnimation:animationGroup forKey:@"EucBookViewEndOfLineHighlight"]; 
-        
-        layer.position = newCenter;
-        layer.bounds = newBounds;
-    }
-    [_highlightLayers release];
-    _highlightLayers = [newHighlightLayers retain];
+    [_highlighter temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:wordOffset]
+                                     inBlockWithIdentifier:[NSNumber numberWithInt:paragraphId] 
+                                                  animated:YES];
 }
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
@@ -829,10 +731,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
     [self _updatePageNumberLabel];
-    
-    if(_highlightPage == pageNumber) {
-        [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
-    }
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view
@@ -862,6 +760,9 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 - (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
 {
     _highlightingDisabled = NO;
+    if(_highlightPage == self.pageNumber) {
+        [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
+    }    
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view
