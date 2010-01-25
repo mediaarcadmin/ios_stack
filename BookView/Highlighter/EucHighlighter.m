@@ -324,6 +324,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
     toTransform = CATransform3DScale(toTransform, 1.0f / magnificationLoupeSize.width,
                                        1.0f / magnificationLoupeSize.height,
                                        1.0f);
+    loupePopDown.fromValue = [NSValue valueWithCATransform3D:loupeViewLayer.transform];
     loupePopDown.toValue = [NSValue valueWithCATransform3D:toTransform];
     loupePopDown.duration = sLoupePopDuration;
     loupePopDown.delegate = self;
