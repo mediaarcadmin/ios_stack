@@ -10,6 +10,7 @@
 @protocol EucBookContentsTableViewControllerDataSource;
 
 @class BlioBookmarkPoint;
+@class BlioMockBook;
 
 @protocol BlioBookView <NSObject>
 
@@ -22,6 +23,7 @@
 // map from page numbers to 'display' page number strings.
 @property (nonatomic, readonly) NSInteger pageNumber;
 
+- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated;
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 

@@ -405,8 +405,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         switch (lastLayout) {
             case kBlioPageLayoutPageLayout: {
                 if ([newBook pdfPath]) {
-                    BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithPath:[newBook pdfPath] page:[[newBook layoutPageNumber] integerValue] animated:YES];
-                    
+                    BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithBook:newBook animated:YES];
                     self.book = newBook;
                     self.bookView = aBookView;
                     [aBookView release];
@@ -417,16 +416,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 break;
             default: {
                 if ([newBook bookPath]) {
-                    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[newBook bookPath]];
-                    BlioEPubView *aBookView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:aEPubBook];
-                    aBookView.appearAtCoverThenOpen = YES;
-                    
+                    BlioEPubView *aBookView = [[BlioEPubView alloc] initWithBook:newBook animated:YES];
                     self.book = newBook;
                     self.bookView = aBookView;
                     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
-                    
                     [aBookView release];
-                    [aEPubBook release];
                 } else {
                     return nil;
                 }
@@ -1139,27 +1133,19 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			self.audioPlaying = NO;  
 		}
         if (newLayout == kBlioPageLayoutPlainText && [self.book bookPath]) {
-            EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[self.book bookPath]];
-            BlioEPubView *ePubView = [[BlioEPubView alloc] initWithFrame:[[UIScreen mainScreen] bounds] 
-                                                                    book:book];
-            
+            BlioEPubView *ePubView = [[BlioEPubView alloc] initWithBook:self.book animated:NO];
             [ePubView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
-            
             self.bookView = ePubView;
             [ePubView release];
-            [book release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
-            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:[self.book pdfPath] page:[[self.book layoutPageNumber] integerValue] animated:NO];
-            
+            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithBook:self.book animated:NO];
             [layoutView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
-
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self.book bookPath]) {
-            EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[self.book bookPath]];
-            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:[[UIScreen mainScreen] bounds] book:book];
+            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithBook:self.book animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];

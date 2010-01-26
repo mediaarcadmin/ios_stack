@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioBookView.h"
+#import "BlioMockBook.h"
 #import "MSTiltScroller.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
+#import <libEucalyptus/EucHighlighter.h>
 
 @class BlioPDFFontList;
 @class BlioPDFParsedPage;
@@ -17,7 +19,8 @@
 @class BlioPDFPageView;
 @class BlioPDFContainerScrollView;
 
-@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource> {
+@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource, EucHighlighterDataSource> {
+    BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioPDFContainerScrollView *scrollView;
     UIView *containerView;
@@ -35,8 +38,10 @@
     NSInteger pageCount;
     CGFloat lastZoomScale;
     CALayer *sharpLayer;
+    EucHighlighter *highlighter;
 }
 
+@property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, retain) BlioPDFContainerScrollView *scrollView;
 @property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) NSMutableArray *pageViews;
@@ -48,9 +53,8 @@
 @property (nonatomic) BOOL scrollToPageInProgress;
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
+@property (nonatomic, retain) EucHighlighter *highlighter;
 
-- (id)initWithPath:(NSString *)path;
-- (id)initWithPath:(NSString *)path page:(NSUInteger)page animated:(BOOL)animated;
 - (NSString *)parsedText;
 - (void)displayDebug;
 

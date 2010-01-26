@@ -1,0 +1,1804 @@
+<BookContents>
+  <Section PageIndex="0">
+    <Flow>
+      <Paragraph PageIndex="0">
+        <TextGroup>
+          <Word Text="Storytime" Rect="159,234,566,179" />
+          <Word Text="First" Rect="259,402,169,117" />
+          <Word Text="Tales" Rect="454,401,180,116" />
+          <Word Text="for" Rect="249,488,115,111" />
+          <Word Text="Sharing" Rect="384,481,242,116" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="1">
+        <TextGroup>
+          <Word Text="Storytime" Rect="184,52,505,160" />
+          <Word Text="First" Rect="258,188,151,104" />
+          <Word Text="Tales" Rect="432,187,160,103" />
+          <Word Text="for" Rect="249,261,103,99" />
+          <Word Text="Sharing" Rect="370,255,216,103" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="1">
+        <TextGroup>
+          <Word Text="Told" Rect="239,739,57,38" />
+          <Word Text="by" Rect="309,739,29,38" />
+          <Word Text="Stella" Rect="354,734,91,45" />
+          <Word Text="Blackstone" Rect="460,734,171,45" />
+          <Word Text="Illustrated" Rect="240,799,144,38" />
+          <Word Text="by" Rect="397,799,29,38" />
+          <Word Text="Anne" Rect="441,794,74,45" />
+          <Word Text="Wilson" Rect="532,794,99,45" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="For" Rect="309,127,27,27" />
+          <Word Text="Cecilia" Rect="343,127,53,27" />
+          <Word Text="and" Rect="403,127,29,27" />
+          <Word Text="Rufus" Rect="439,127,46,27" />
+          <Word Text="—" Rect="492,127,24,27" />
+          <Word Text="S." Rect="524,127,15,27" />
+          <Word Text="B." Rect="546,127,15,27" />
+          <Word Text="For" Rect="238,162,27,27" />
+          <Word Text="friendships" Rect="272,162,87,27" />
+          <Word Text="and" Rect="367,162,29,27" />
+          <Word Text="many" Rect="402,162,38,27" />
+          <Word Text="shared" Rect="447,162,54,27" />
+          <Word Text="tales" Rect="508,162,40,27" />
+          <Word Text="—" Rect="555,162,24,27" />
+          <Word Text="A." Rect="587,162,17,27" />
+          <Word Text="W." Rect="611,159,22,30" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="Barefoot" Rect="394,248,46,15" />
+          <Word Text="Books" Rect="444,248,32,15" />
+          <Word Text="124" Rect="387,263,20,15" />
+          <Word Text="Walcot" Rect="410,263,38,15" />
+          <Word Text="Street" Rect="452,263,31,15" />
+          <Word Text="Bath" Rect="394,278,26,15" />
+          <Word Text="BA1" Rect="424,278,24,15" />
+          <Word Text="5BG" Rect="451,278,25,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="Text" Rect="319,307,25,15" />
+          <Word Text="copyright" Rect="347,307,49,15" />
+          <Word Text="©" Rect="400,307,9,15" />
+          <Word Text="2005" Rect="413,307,26,15" />
+          <Word Text="by" Rect="443,307,13,15" />
+          <Word Text="Stella" Rect="460,307,30,15" />
+          <Word Text="Blackstone" Rect="494,307,58,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="Illustrations" Rect="311,322,63,15" />
+          <Word Text="copyright" Rect="378,322,49,15" />
+          <Word Text="©" Rect="431,322,9,15" />
+          <Word Text="2005" Rect="444,322,26,15" />
+          <Word Text="by" Rect="474,322,13,15" />
+          <Word Text="Anne" Rect="491,322,28,15" />
+          <Word Text="Wilson" Rect="522,322,37,15" />
+          <Word Text="The" Rect="247,336,21,15" />
+          <Word Text="moral" Rect="272,336,32,15" />
+          <Word Text="right" Rect="307,336,25,15" />
+          <Word Text="of" Rect="335,336,10,15" />
+          <Word Text="Stella" Rect="349,336,30,15" />
+          <Word Text="Blackstone" Rect="383,336,58,15" />
+          <Word Text="to" Rect="445,336,11,15" />
+          <Word Text="be" Rect="459,336,12,15" />
+          <Word Text="identified" Rect="475,336,49,15" />
+          <Word Text="as" Rect="528,336,12,15" />
+          <Word Text="the" Rect="544,336,16,15" />
+          <Word Text="author" Rect="564,336,36,15" />
+          <Word Text="and" Rect="603,336,21,15" />
+          <Word Text="Anne" Rect="232,351,28,15" />
+          <Word Text="Wilson" Rect="264,351,37,15" />
+          <Word Text="to" Rect="304,351,11,15" />
+          <Word Text="be" Rect="318,351,12,15" />
+          <Word Text="identified" Rect="334,351,49,15" />
+          <Word Text="as" Rect="388,351,12,15" />
+          <Word Text="the" Rect="403,351,16,15" />
+          <Word Text="illustrator" Rect="423,351,52,15" />
+          <Word Text="of" Rect="478,351,10,15" />
+          <Word Text="this" Rect="492,351,19,15" />
+          <Word Text="work" Rect="515,351,26,15" />
+          <Word Text="has" Rect="544,351,18,15" />
+          <Word Text="been" Rect="566,351,25,15" />
+          <Word Text="asserted" Rect="595,351,43,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="First" Rect="267,380,24,15" />
+          <Word Text="published" Rect="295,380,51,15" />
+          <Word Text="in" Rect="349,380,10,15" />
+          <Word Text="Great" Rect="363,380,31,15" />
+          <Word Text="Britain" Rect="398,380,37,15" />
+          <Word Text="in" Rect="439,380,10,15" />
+          <Word Text="2005" Rect="452,380,26,15" />
+          <Word Text="by" Rect="483,380,13,15" />
+          <Word Text="Barefoot" Rect="499,380,46,15" />
+          <Word Text="Books" Rect="549,380,32,15" />
+          <Word Text="Ltd" Rect="585,380,19,15" />
+          <Word Text="All" Rect="195,395,15,15" />
+          <Word Text="rights" Rect="214,395,29,15" />
+          <Word Text="reserved." Rect="247,395,47,15" />
+          <Word Text="No" Rect="298,395,17,15" />
+          <Word Text="part" Rect="318,395,22,15" />
+          <Word Text="of" Rect="344,395,10,15" />
+          <Word Text="this" Rect="358,395,19,15" />
+          <Word Text="book" Rect="380,395,26,15" />
+          <Word Text="may" Rect="410,395,23,15" />
+          <Word Text="be" Rect="437,395,12,15" />
+          <Word Text="reproduced" Rect="453,395,60,15" />
+          <Word Text="in" Rect="516,395,10,15" />
+          <Word Text="any" Rect="530,395,20,15" />
+          <Word Text="form" Rect="553,395,25,15" />
+          <Word Text="or" Rect="582,395,11,15" />
+          <Word Text="by" Rect="597,395,13,15" />
+          <Word Text="any" Rect="613,395,20,15" />
+          <Word Text="means," Rect="637,395,38,15" />
+          <Word Text="electronic" Rect="194,410,51,15" />
+          <Word Text="or" Rect="249,410,11,15" />
+          <Word Text="mechanical," Rect="263,410,65,15" />
+          <Word Text="including" Rect="332,410,49,15" />
+          <Word Text="photocopying," Rect="384,410,75,15" />
+          <Word Text="recording" Rect="463,410,50,15" />
+          <Word Text="or" Rect="517,410,11,15" />
+          <Word Text="by" Rect="531,410,13,15" />
+          <Word Text="any" Rect="548,410,20,15" />
+          <Word Text="information" Rect="571,410,63,15" />
+          <Word Text="storage" Rect="638,410,38,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="and" Rect="250,424,21,15" />
+          <Word Text="retrieval" Rect="275,424,43,15" />
+          <Word Text="system," Rect="322,424,39,15" />
+          <Word Text="without" Rect="365,424,40,15" />
+          <Word Text="permission" Rect="408,424,57,15" />
+          <Word Text="in" Rect="469,424,10,15" />
+          <Word Text="writing" Rect="482,424,37,15" />
+          <Word Text="from" Rect="523,424,25,15" />
+          <Word Text="the" Rect="552,424,16,15" />
+          <Word Text="publisher" Rect="572,424,48,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="This" Rect="308,454,24,15" />
+          <Word Text="book" Rect="335,454,26,15" />
+          <Word Text="was" Rect="365,454,20,15" />
+          <Word Text="typeset" Rect="389,454,37,15" />
+          <Word Text="in" Rect="429,454,10,15" />
+          <Word Text="Soupbone" Rect="443,454,53,15" />
+          <Word Text="and" Rect="500,454,21,15" />
+          <Word Text="Plantin" Rect="524,454,39,15" />
+          <Word Text="The" Rect="248,468,21,15" />
+          <Word Text="illustrations" Rect="273,468,62,15" />
+          <Word Text="were" Rect="339,468,25,15" />
+          <Word Text="prepared" Rect="367,468,48,15" />
+          <Word Text="in" Rect="418,468,10,15" />
+          <Word Text="printed" Rect="432,468,38,15" />
+          <Word Text="collaged" Rect="474,468,44,15" />
+          <Word Text="papers" Rect="522,468,35,15" />
+          <Word Text="with" Rect="561,468,23,15" />
+          <Word Text="acrylic" Rect="587,468,35,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="and" Rect="368,483,21,15" />
+          <Word Text="printed" Rect="393,483,38,15" />
+          <Word Text="backgrounds" Rect="434,483,68,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="Graphic" Rect="321,527,44,15" />
+          <Word Text="design" Rect="369,527,33,15" />
+          <Word Text="by" Rect="406,527,13,15" />
+          <Word Text="Jemima" Rect="422,527,41,15" />
+          <Word Text="Lumley," Rect="467,527,44,15" />
+          <Word Text="Bristol" Rect="514,527,35,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="Colour" Rect="317,542,37,15" />
+          <Word Text="separation" Rect="358,542,56,15" />
+          <Word Text="by" Rect="418,542,13,15" />
+          <Word Text="Bright" Rect="434,542,33,15" />
+          <Word Text="Arts," Rect="470,542,25,15" />
+          <Word Text="Singapore" Rect="500,542,54,15" />
+          <Word Text="Printed" Rect="269,556,39,15" />
+          <Word Text="and" Rect="312,556,21,15" />
+          <Word Text="bound" Rect="336,556,34,15" />
+          <Word Text="in" Rect="374,556,10,15" />
+          <Word Text="China" Rect="388,556,33,15" />
+          <Word Text="by" Rect="424,556,13,15" />
+          <Word Text="South" Rect="441,556,31,15" />
+          <Word Text="China" Rect="476,556,33,15" />
+          <Word Text="Printing" Rect="513,556,42,15" />
+          <Word Text="Co." Rect="559,556,19,15" />
+          <Word Text="Ltd" Rect="582,556,19,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="This" Rect="294,586,24,15" />
+          <Word Text="book" Rect="322,586,26,15" />
+          <Word Text="has" Rect="351,586,18,15" />
+          <Word Text="been" Rect="374,586,25,15" />
+          <Word Text="printed" Rect="402,586,38,15" />
+          <Word Text="on" Rect="444,586,13,15" />
+          <Word Text="100%" Rect="461,586,31,15" />
+          <Word Text="acid-free" Rect="495,586,47,15" />
+          <Word Text="paper" Rect="545,586,31,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="Hardback" Rect="350,615,54,15" />
+          <Word Text="ISBN" Rect="407,615,30,15" />
+          <Word Text="1-84148-344-3" Rect="441,615,79,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="British" Rect="325,644,35,15" />
+          <Word Text="Cataloguing-in-Publication" Rect="364,644,146,15" />
+          <Word Text="Data:" Rect="513,644,32,15" />
+          <Word Text="a" Rect="253,659,7,15" />
+          <Word Text="catalogue" Rect="263,659,52,15" />
+          <Word Text="record" Rect="319,659,34,15" />
+          <Word Text="for" Rect="356,659,15,15" />
+          <Word Text="this" Rect="374,659,19,15" />
+          <Word Text="book" Rect="397,659,26,15" />
+          <Word Text="is" Rect="426,659,8,15" />
+          <Word Text="available" Rect="438,659,49,15" />
+          <Word Text="from" Rect="491,659,25,15" />
+          <Word Text="the" Rect="519,659,16,15" />
+          <Word Text="British" Rect="539,659,35,15" />
+          <Word Text="Library" Rect="578,659,40,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="2">
+        <TextGroup>
+          <Word Text="1" Rect="391,688,7,15" />
+          <Word Text="3" Rect="401,688,7,15" />
+          <Word Text="5" Rect="411,688,7,15" />
+          <Word Text="7" Rect="422,688,7,15" />
+          <Word Text="9" Rect="432,688,7,15" />
+          <Word Text="8" Rect="442,688,7,15" />
+          <Word Text="6" Rect="452,688,7,15" />
+          <Word Text="4" Rect="463,688,7,15" />
+          <Word Text="2" Rect="473,688,7,15" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="4">
+        <TextGroup>
+          <Word Text="The" Rect="272,177,72,60" />
+          <Word Text="Three" Rect="362,177,116,60" />
+          <Word Text="Little" Rect="496,177,116,60" />
+          <Word Text="Pigs" Rect="630,177,78,60" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="4">
+        <TextGroup>
+          <Word Text="This" Rect="249,274,53,33" />
+          <Word Text="is" Rect="311,274,18,33" />
+          <Word Text="a" Rect="337,274,15,33" />
+          <Word Text="story" Rect="360,274,57,33" />
+          <Word Text="about" Rect="426,274,69,33" />
+          <Word Text="three" Rect="503,274,59,33" />
+          <Word Text="little" Rect="570,274,52,33" />
+          <Word Text="pigs" Rect="630,274,46,33" />
+          <Word Text="and" Rect="684,274,46,33" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="4">
+        <TextGroup>
+          <Word Text="a" Rect="397,314,15,33" />
+          <Word Text="big," Rect="420,314,44,33" />
+          <Word Text="bad" Rect="472,314,46,33" />
+          <Word Text="wolf." Rect="526,314,57,33" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="4">
+        <TextGroup>
+          <Word Text="The" Rect="201,394,38,27" />
+          <Word Text="three" Rect="246,394,47,27" />
+          <Word Text="little" Rect="299,394,42,27" />
+          <Word Text="pigs" Rect="348,394,37,27" />
+          <Word Text="were" Rect="391,394,44,27" />
+          <Word Text="all" Rect="441,394,24,27" />
+          <Word Text="pink" Rect="472,394,41,27" />
+          <Word Text="and" Rect="519,394,37,27" />
+          <Word Text="plump," Rect="562,394,67,27" />
+          <Word Text="and" Rect="636,394,37,27" />
+          <Word Text="they" Rect="679,394,40,27" />
+          <Word Text="all" Rect="725,394,24,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="had" Rect="201,432,37,27" />
+          <Word Text="curly" Rect="244,432,47,27" />
+          <Word Text="whirly" Rect="297,432,58,27" />
+          <Word Text="tails." Rect="362,432,46,27" />
+          <Word Text="When" Rect="414,432,56,27" />
+          <Word Text="it" Rect="476,432,13,27" />
+          <Word Text="was" Rect="495,432,36,27" />
+          <Word Text="time" Rect="538,432,41,27" />
+          <Word Text="for" Rect="586,432,26,27" />
+          <Word Text="them" Rect="619,432,48,27" />
+          <Word Text="to" Rect="673,432,19,27" />
+          <Word Text="make" Rect="698,432,52,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="their" Rect="201,469,43,27" />
+          <Word Text="way" Rect="250,469,39,27" />
+          <Word Text="in" Rect="296,469,18,27" />
+          <Word Text="the" Rect="320,469,29,27" />
+          <Word Text="world," Rect="356,469,59,27" />
+          <Word Text="their" Rect="422,469,43,27" />
+          <Word Text="mother" Rect="471,469,67,27" />
+          <Word Text="gave" Rect="545,469,43,27" />
+          <Word Text="them" Rect="595,469,48,27" />
+          <Word Text="a" Rect="649,469,12,27" />
+          <Word Text="piece" Rect="668,469,48,27" />
+          <Word Text="of" Rect="722,469,18,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="advice." Rect="201,506,67,27" />
+          <Word Text="‘Look" Rect="274,506,55,27" />
+          <Word Text="after" Rect="336,506,44,27" />
+          <Word Text="yourselves,’" Rect="386,506,108,27" />
+          <Word Text="she" Rect="501,506,30,27" />
+          <Word Text="said," Rect="538,506,45,27" />
+          <Word Text="‘and" Rect="589,506,43,27" />
+          <Word Text="whatever" Rect="639,506,85,27" />
+          <Word Text="you" Rect="731,506,34,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="do," Rect="201,544,30,27" />
+          <Word Text="keep" Rect="238,544,43,27" />
+          <Word Text="out" Rect="287,544,31,27" />
+          <Word Text="of" Rect="324,544,18,27" />
+          <Word Text="the" Rect="349,544,29,27" />
+          <Word Text="way" Rect="385,544,39,27" />
+          <Word Text="of" Rect="430,544,18,27" />
+          <Word Text="the" Rect="455,544,29,27" />
+          <Word Text="big," Rect="490,544,35,27" />
+          <Word Text="bad" Rect="532,544,37,27" />
+          <Word Text="wolf.’" Rect="575,544,52,27" />
+          <Word Text="Then" Rect="633,544,50,27" />
+          <Word Text="she" Rect="690,544,30,27" />
+          <Word Text="gave" Rect="727,544,43,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="each" Rect="201,581,44,27" />
+          <Word Text="of" Rect="252,581,18,27" />
+          <Word Text="them" Rect="277,581,48,27" />
+          <Word Text="a" Rect="331,581,12,27" />
+          <Word Text="goodbye" Rect="350,581,79,27" />
+          <Word Text="nose" Rect="435,581,42,27" />
+          <Word Text="rub," Rect="484,581,38,27" />
+          <Word Text="and" Rect="529,581,37,27" />
+          <Word Text="off" Rect="572,581,25,27" />
+          <Word Text="they" Rect="603,581,40,27" />
+          <Word Text="went." Rect="650,581,51,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="4">
+        <TextGroup>
+          <Word Text="69" Rect="424,982,22,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="5">
+        <TextGroup>
+          <Word Text="The" Rect="100,167,38,27" />
+          <Word Text="first" Rect="145,167,36,27" />
+          <Word Text="little" Rect="187,167,42,27" />
+          <Word Text="pig" Rect="235,167,29,27" />
+          <Word Text="scampered" Rect="270,167,101,27" />
+          <Word Text="along" Rect="378,167,53,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="until" Rect="77,204,43,27" />
+          <Word Text="he" Rect="127,204,22,27" />
+          <Word Text="came" Rect="155,204,51,27" />
+          <Word Text="to" Rect="213,204,19,27" />
+          <Word Text="a" Rect="238,204,12,27" />
+          <Word Text="pile" Rect="257,204,34,27" />
+          <Word Text="of" Rect="297,204,18,27" />
+          <Word Text="straw." Rect="322,204,58,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="5">
+        <TextGroup>
+          <Word Text="‘Aha!’" Rect="100,242,58,27" />
+          <Word Text="thought" Rect="165,242,73,27" />
+          <Word Text="the" Rect="244,242,29,27" />
+          <Word Text="first" Rect="280,242,36,27" />
+          <Word Text="little" Rect="322,242,42,27" />
+          <Word Text="pig." Rect="370,242,35,27" />
+          <Word Text="‘This" Rect="412,242,49,27" />
+          <Word Text="straw" Rect="467,242,51,27" />
+          <Word Text="is" Rect="525,242,14,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="just" Rect="77,279,33,27" />
+          <Word Text="what" Rect="117,279,47,27" />
+          <Word Text="I" Rect="171,279,8,27" />
+          <Word Text="need" Rect="185,279,44,27" />
+          <Word Text="to" Rect="236,279,19,27" />
+          <Word Text="build" Rect="261,279,48,27" />
+          <Word Text="myself" Rect="316,279,60,27" />
+          <Word Text="a" Rect="382,279,12,27" />
+          <Word Text="cosy" Rect="401,279,41,27" />
+          <Word Text="little" Rect="449,279,42,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="house.’" Rect="77,316,67,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="5">
+        <TextGroup>
+          <Word Text="He" Rect="100,354,28,27" />
+          <Word Text="set" Rect="135,354,26,27" />
+          <Word Text="to" Rect="167,354,19,27" />
+          <Word Text="work," Rect="192,354,52,27" />
+          <Word Text="and" Rect="251,354,37,27" />
+          <Word Text="in" Rect="294,354,18,27" />
+          <Word Text="no" Rect="319,354,24,27" />
+          <Word Text="time" Rect="349,354,41,27" />
+          <Word Text="at" Rect="397,354,19,27" />
+          <Word Text="all" Rect="423,354,24,27" />
+          <Word Text="his" Rect="453,354,26,27" />
+          <Word Text="straw" Rect="486,354,51,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="house" Rect="77,391,54,27" />
+          <Word Text="was" Rect="138,391,36,27" />
+          <Word Text="finished." Rect="181,391,79,27" />
+          <Word Text="He" Rect="267,391,28,27" />
+          <Word Text="was" Rect="302,391,36,27" />
+          <Word Text="just" Rect="344,391,33,27" />
+          <Word Text="putting" Rect="384,391,67,27" />
+          <Word Text="the" Rect="458,391,29,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="finishing" Rect="77,428,80,27" />
+          <Word Text="touches" Rect="164,428,71,27" />
+          <Word Text="to" Rect="241,428,19,27" />
+          <Word Text="it" Rect="267,428,13,27" />
+          <Word Text="when" Rect="286,428,50,27" />
+          <Word Text="who" Rect="342,428,39,27" />
+          <Word Text="should" Rect="388,428,62,27" />
+          <Word Text="come" Rect="457,428,50,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="along" Rect="77,466,53,27" />
+          <Word Text="but" Rect="137,466,31,27" />
+          <Word Text="the" Rect="174,466,29,27" />
+          <Word Text="big," Rect="210,466,35,27" />
+          <Word Text="bad" Rect="251,466,37,27" />
+          <Word Text="wolf!" Rect="295,466,46,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="5">
+        <TextGroup>
+          <Word Text="‘Mmmm,’" Rect="100,503,96,27" />
+          <Word Text="said" Rect="202,503,39,27" />
+          <Word Text="the" Rect="247,503,29,27" />
+          <Word Text="big," Rect="283,503,35,27" />
+          <Word Text="bad" Rect="324,503,37,27" />
+          <Word Text="wolf" Rect="368,503,40,27" />
+          <Word Text="to" Rect="414,503,19,27" />
+          <Word Text="himself." Rect="439,503,73,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="5">
+        <TextGroup>
+          <Word Text="‘That" Rect="77,540,54,27" />
+          <Word Text="plump" Rect="138,540,60,27" />
+          <Word Text="little" Rect="205,540,42,27" />
+          <Word Text="pig" Rect="253,540,29,27" />
+          <Word Text="would" Rect="288,540,57,27" />
+          <Word Text="make" Rect="352,540,52,27" />
+          <Word Text="a" Rect="410,540,12,27" />
+          <Word Text="tasty" Rect="429,540,46,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="mid-morning" Rect="77,578,123,27" />
+          <Word Text="snack.’" Rect="207,578,66,27" />
+          <Word Text="And" Rect="280,578,40,27" />
+          <Word Text="he" Rect="326,578,22,27" />
+          <Word Text="licked" Rect="355,578,55,27" />
+          <Word Text="his" Rect="416,578,26,27" />
+          <Word Text="lips" Rect="449,578,32,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="with" Rect="77,615,40,27" />
+          <Word Text="his" Rect="124,615,26,27" />
+          <Word Text="long," Rect="157,615,47,27" />
+          <Word Text="mean" Rect="210,615,53,27" />
+          <Word Text="tongue." Rect="270,615,70,27" />
+          <Word Text="Then" Rect="346,615,50,27" />
+          <Word Text="he" Rect="403,615,22,27" />
+          <Word Text="walked" Rect="432,615,67,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="right" Rect="77,652,44,27" />
+          <Word Text="up" Rect="128,652,24,27" />
+          <Word Text="to" Rect="158,652,19,27" />
+          <Word Text="the" Rect="183,652,29,27" />
+          <Word Text="little" Rect="219,652,42,27" />
+          <Word Text="straw" Rect="267,652,51,27" />
+          <Word Text="house," Rect="325,652,60,27" />
+          <Word Text="as" Rect="392,652,21,27" />
+          <Word Text="bold" Rect="419,652,42,27" />
+          <Word Text="as" Rect="468,652,21,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="brass," Rect="77,690,55,27" />
+          <Word Text="and" Rect="139,690,37,27" />
+          <Word Text="knocked" Rect="183,690,78,27" />
+          <Word Text="on" Rect="267,690,24,27" />
+          <Word Text="the" Rect="297,690,29,27" />
+          <Word Text="door." Rect="333,690,50,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="5">
+        <TextGroup>
+          <Word Text="70" Rect="422,985,27,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="6">
+        <TextGroup>
+          <Word Text="‘Who’s" Rect="219,462,66,27" />
+          <Word Text="there?’" Rect="291,462,62,27" />
+          <Word Text="called" Rect="359,462,56,27" />
+          <Word Text="the" Rect="422,462,29,27" />
+          <Word Text="first" Rect="457,462,36,27" />
+          <Word Text="little" Rect="500,462,42,27" />
+          <Word Text="pig," Rect="548,462,35,27" />
+          <Word Text="and" Rect="589,462,37,27" />
+          <Word Text="his" Rect="632,462,26,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="curly" Rect="196,499,47,27" />
+          <Word Text="whirly" Rect="249,499,58,27" />
+          <Word Text="tail" Rect="313,499,31,27" />
+          <Word Text="gave" Rect="351,499,43,27" />
+          <Word Text="a" Rect="401,499,12,27" />
+          <Word Text="curly" Rect="420,499,47,27" />
+          <Word Text="whirly" Rect="473,499,58,27" />
+          <Word Text="tremble." Rect="537,499,78,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="6">
+        <TextGroup>
+          <Word Text="‘It’s" Rect="219,537,36,27" />
+          <Word Text="only" Rect="261,537,40,27" />
+          <Word Text="me," Rect="308,537,35,27" />
+          <Word Text="your" Rect="349,537,42,27" />
+          <Word Text="friendly" Rect="398,537,71,27" />
+          <Word Text="local" Rect="476,537,46,27" />
+          <Word Text="wolf,’" Rect="528,537,52,27" />
+          <Word Text="his" Rect="586,537,26,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="visitor" Rect="196,574,57,27" />
+          <Word Text="replied." Rect="259,574,70,27" />
+          <Word Text="‘Can" Rect="336,574,47,27" />
+          <Word Text="I" Rect="390,574,8,27" />
+          <Word Text="come" Rect="404,574,50,27" />
+          <Word Text="in?’" Rect="461,574,32,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="6">
+        <TextGroup>
+          <Word Text="But" Rect="219,611,34,27" />
+          <Word Text="the" Rect="259,611,29,27" />
+          <Word Text="first" Rect="295,611,36,27" />
+          <Word Text="little" Rect="337,611,42,27" />
+          <Word Text="pig" Rect="385,611,29,27" />
+          <Word Text="remembered" Rect="420,611,117,27" />
+          <Word Text="his" Rect="544,611,26,27" />
+          <Word Text="mother’s" Rect="577,611,82,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="warning." Rect="196,649,83,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="6">
+        <TextGroup>
+          <Word Text="‘No," Rect="219,686,42,27" />
+          <Word Text="no," Rect="267,686,30,27" />
+          <Word Text="no!" Rect="304,686,30,27" />
+          <Word Text="Not" Rect="340,686,37,27" />
+          <Word Text="by" Rect="383,686,23,27" />
+          <Word Text="the" Rect="413,686,29,27" />
+          <Word Text="hair" Rect="448,686,38,27" />
+          <Word Text="on" Rect="493,686,24,27" />
+          <Word Text="my" Rect="523,686,29,27" />
+          <Word Text="chinny" Rect="559,686,63,27" />
+          <Word Text="chin" Rect="628,686,40,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="chin!’" Rect="196,723,52,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="6">
+        <TextGroup>
+          <Word Text="‘Then" Rect="219,761,57,27" />
+          <Word Text="I’ll" Rect="282,761,26,27" />
+          <Word Text="huff" Rect="314,761,37,27" />
+          <Word Text="and" Rect="358,761,37,27" />
+          <Word Text="I’ll" Rect="401,761,26,27" />
+          <Word Text="puff" Rect="434,761,37,27" />
+          <Word Text="and" Rect="478,761,37,27" />
+          <Word Text="I’ll" Rect="521,761,26,27" />
+          <Word Text="blow" Rect="553,761,45,27" />
+          <Word Text="your" Rect="605,761,42,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="house" Rect="196,798,54,27" />
+          <Word Text="in!’" Rect="257,798,30,27" />
+          <Word Text="boomed" Rect="294,798,76,27" />
+          <Word Text="the" Rect="376,798,29,27" />
+          <Word Text="wolf." Rect="411,798,46,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="6">
+        <TextGroup>
+          <Word Text="And" Rect="219,835,40,27" />
+          <Word Text="that" Rect="265,835,39,27" />
+          <Word Text="was" Rect="310,835,36,27" />
+          <Word Text="the" Rect="353,835,29,27" />
+          <Word Text="end" Rect="388,835,34,27" />
+          <Word Text="of" Rect="429,835,18,27" />
+          <Word Text="the" Rect="454,835,29,27" />
+          <Word Text="first" Rect="490,835,36,27" />
+          <Word Text="little" Rect="532,835,42,27" />
+          <Word Text="pig." Rect="580,835,35,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="6">
+        <TextGroup>
+          <Word Text="71" Rect="426,981,19,27" />
+          <Word Text="71" Rect="426,982,19,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="7">
+        <TextGroup>
+          <Word Text="The" Rect="100,132,38,27" />
+          <Word Text="second" Rect="145,132,64,27" />
+          <Word Text="little" Rect="216,132,42,27" />
+          <Word Text="pig" Rect="264,132,29,27" />
+          <Word Text="scampered" Rect="299,132,101,27" />
+          <Word Text="along" Rect="407,132,53,27" />
+          <Word Text="until" Rect="466,132,43,27" />
+          <Word Text="he" Rect="516,132,22,27" />
+          <Word Text="came" Rect="544,132,51,27" />
+          <Word Text="to" Rect="602,132,19,27" />
+          <Word Text="a" Rect="627,132,12,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="pile" Rect="77,170,34,27" />
+          <Word Text="of" Rect="117,170,18,27" />
+          <Word Text="sticks." Rect="142,170,57,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="7">
+        <TextGroup>
+          <Word Text="‘Aha!’" Rect="100,207,58,27" />
+          <Word Text="thought" Rect="165,207,73,27" />
+          <Word Text="the" Rect="244,207,29,27" />
+          <Word Text="second" Rect="280,207,64,27" />
+          <Word Text="little" Rect="351,207,42,27" />
+          <Word Text="pig." Rect="399,207,35,27" />
+          <Word Text="‘These" Rect="440,207,63,27" />
+          <Word Text="sticks" Rect="510,207,51,27" />
+          <Word Text="are" Rect="567,207,30,27" />
+          <Word Text="just" Rect="604,207,33,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="what" Rect="77,244,47,27" />
+          <Word Text="I" Rect="131,244,8,27" />
+          <Word Text="need" Rect="145,244,44,27" />
+          <Word Text="to" Rect="196,244,19,27" />
+          <Word Text="build" Rect="222,244,48,27" />
+          <Word Text="myself" Rect="276,244,60,27" />
+          <Word Text="a" Rect="343,244,12,27" />
+          <Word Text="cosy" Rect="362,244,41,27" />
+          <Word Text="little" Rect="409,244,42,27" />
+          <Word Text="house.’" Rect="457,244,67,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="7">
+        <TextGroup>
+          <Word Text="He" Rect="100,282,28,27" />
+          <Word Text="set" Rect="135,282,26,27" />
+          <Word Text="to" Rect="167,282,19,27" />
+          <Word Text="work," Rect="192,282,52,27" />
+          <Word Text="and" Rect="251,282,37,27" />
+          <Word Text="within" Rect="294,282,58,27" />
+          <Word Text="a" Rect="359,282,12,27" />
+          <Word Text="few" Rect="378,282,32,27" />
+          <Word Text="hours" Rect="417,282,52,27" />
+          <Word Text="his" Rect="475,282,26,27" />
+          <Word Text="stick" Rect="508,282,42,27" />
+          <Word Text="house" Rect="557,282,54,27" />
+          <Word Text="was" Rect="618,282,36,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="finished." Rect="77,319,79,27" />
+          <Word Text="He" Rect="163,319,28,27" />
+          <Word Text="was" Rect="198,319,36,27" />
+          <Word Text="just" Rect="241,319,33,27" />
+          <Word Text="putting" Rect="281,319,67,27" />
+          <Word Text="the" Rect="354,319,29,27" />
+          <Word Text="finishing" Rect="390,319,80,27" />
+          <Word Text="touches" Rect="476,319,71,27" />
+          <Word Text="to" Rect="554,319,19,27" />
+          <Word Text="it" Rect="579,319,13,27" />
+          <Word Text="when" Rect="599,319,50,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="who" Rect="77,356,39,27" />
+          <Word Text="should" Rect="123,356,62,27" />
+          <Word Text="come" Rect="192,356,50,27" />
+          <Word Text="along" Rect="248,356,53,27" />
+          <Word Text="but" Rect="308,356,31,27" />
+          <Word Text="the" Rect="345,356,29,27" />
+          <Word Text="big," Rect="381,356,35,27" />
+          <Word Text="bad" Rect="422,356,37,27" />
+          <Word Text="wolf!" Rect="465,356,46,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="7">
+        <TextGroup>
+          <Word Text="‘Mmmm,’" Rect="100,394,96,27" />
+          <Word Text="said" Rect="202,394,39,27" />
+          <Word Text="the" Rect="247,394,29,27" />
+          <Word Text="big," Rect="283,394,35,27" />
+          <Word Text="bad" Rect="324,394,37,27" />
+          <Word Text="wolf" Rect="368,394,40,27" />
+          <Word Text="to" Rect="414,394,19,27" />
+          <Word Text="himself." Rect="439,394,73,27" />
+          <Word Text="‘Another" Rect="519,394,82,27" />
+          <Word Text="plump" Rect="608,394,60,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="little" Rect="77,431,42,27" />
+          <Word Text="pig!" Rect="125,431,35,27" />
+          <Word Text="Wouldn’t" Rect="167,431,89,27" />
+          <Word Text="he" Rect="262,431,22,27" />
+          <Word Text="make" Rect="290,431,52,27" />
+          <Word Text="a" Rect="349,431,12,27" />
+          <Word Text="tasty" Rect="368,431,46,27" />
+          <Word Text="lunchtime" Rect="420,431,94,27" />
+          <Word Text="snack?’" Rect="520,431,68,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="7">
+        <TextGroup>
+          <Word Text="And" Rect="77,468,40,27" />
+          <Word Text="he" Rect="124,468,22,27" />
+          <Word Text="licked" Rect="152,468,55,27" />
+          <Word Text="his" Rect="213,468,26,27" />
+          <Word Text="lips" Rect="246,468,32,27" />
+          <Word Text="with" Rect="285,468,40,27" />
+          <Word Text="his" Rect="332,468,26,27" />
+          <Word Text="long," Rect="364,468,47,27" />
+          <Word Text="mean" Rect="417,468,53,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="tongue." Rect="77,506,70,27" />
+          <Word Text="Then" Rect="154,506,50,27" />
+          <Word Text="he" Rect="211,506,22,27" />
+          <Word Text="strode" Rect="239,506,57,27" />
+          <Word Text="up" Rect="303,506,24,27" />
+          <Word Text="to" Rect="334,506,19,27" />
+          <Word Text="the" Rect="359,506,29,27" />
+          <Word Text="little" Rect="395,506,42,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="stick" Rect="77,543,42,27" />
+          <Word Text="house," Rect="126,543,60,27" />
+          <Word Text="as" Rect="193,543,21,27" />
+          <Word Text="bold" Rect="220,543,42,27" />
+          <Word Text="as" Rect="268,543,21,27" />
+          <Word Text="brass," Rect="296,543,55,27" />
+          <Word Text="and" Rect="358,543,37,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="knocked" Rect="77,580,78,27" />
+          <Word Text="on" Rect="162,580,24,27" />
+          <Word Text="the" Rect="192,580,29,27" />
+          <Word Text="door." Rect="228,580,50,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="7">
+        <TextGroup>
+          <Word Text="72" Rect="421,985,27,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="8">
+        <TextGroup>
+          <Word Text="‘Who’s" Rect="118,534,66,27" />
+          <Word Text="there?’" Rect="190,534,62,27" />
+          <Word Text="called" Rect="259,534,56,27" />
+          <Word Text="the" Rect="321,534,29,27" />
+          <Word Text="second" Rect="357,534,64,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="little" Rect="96,572,42,27" />
+          <Word Text="pig," Rect="144,572,35,27" />
+          <Word Text="and" Rect="185,572,37,27" />
+          <Word Text="his" Rect="228,572,26,27" />
+          <Word Text="curly" Rect="261,572,47,27" />
+          <Word Text="whirly" Rect="314,572,58,27" />
+          <Word Text="tail" Rect="379,572,31,27" />
+          <Word Text="gave" Rect="416,572,43,27" />
+          <Word Text="a" Rect="466,572,12,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="curly" Rect="96,609,47,27" />
+          <Word Text="whirly" Rect="149,609,58,27" />
+          <Word Text="tremble." Rect="213,609,78,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="8">
+        <TextGroup>
+          <Word Text="‘It’s" Rect="118,646,36,27" />
+          <Word Text="only" Rect="161,646,40,27" />
+          <Word Text="me," Rect="207,646,35,27" />
+          <Word Text="your" Rect="249,646,42,27" />
+          <Word Text="friendly" Rect="298,646,71,27" />
+          <Word Text="local" Rect="376,646,46,27" />
+          <Word Text="wolf,’" Rect="428,646,52,27" />
+          <Word Text="his" Rect="486,646,26,27" />
+          <Word Text="visitor" Rect="519,646,57,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="replied." Rect="96,684,70,27" />
+          <Word Text="‘Can" Rect="172,684,47,27" />
+          <Word Text="I" Rect="226,684,8,27" />
+          <Word Text="come" Rect="241,684,50,27" />
+          <Word Text="in?’" Rect="297,684,32,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="8">
+        <TextGroup>
+          <Word Text="But" Rect="118,721,34,27" />
+          <Word Text="the" Rect="159,721,29,27" />
+          <Word Text="second" Rect="194,721,64,27" />
+          <Word Text="little" Rect="265,721,42,27" />
+          <Word Text="pig" Rect="313,721,29,27" />
+          <Word Text="also" Rect="349,721,38,27" />
+          <Word Text="remembered" Rect="393,721,117,27" />
+          <Word Text="his" Rect="517,721,26,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="mother’s" Rect="96,758,82,27" />
+          <Word Text="warning." Rect="184,758,83,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="8">
+        <TextGroup>
+          <Word Text="‘No," Rect="118,796,42,27" />
+          <Word Text="no," Rect="167,796,30,27" />
+          <Word Text="no!" Rect="203,796,30,27" />
+          <Word Text="Not" Rect="240,796,37,27" />
+          <Word Text="by" Rect="283,796,23,27" />
+          <Word Text="the" Rect="312,796,29,27" />
+          <Word Text="hair" Rect="348,796,38,27" />
+          <Word Text="on" Rect="392,796,24,27" />
+          <Word Text="my" Rect="423,796,29,27" />
+          <Word Text="chinny" Rect="458,796,63,27" />
+          <Word Text="chin" Rect="528,796,40,27" />
+          <Word Text="chin!’" Rect="574,796,52,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="8">
+        <TextGroup>
+          <Word Text="‘Then" Rect="118,833,57,27" />
+          <Word Text="I’ll" Rect="181,833,26,27" />
+          <Word Text="huff" Rect="214,833,37,27" />
+          <Word Text="and" Rect="258,833,37,27" />
+          <Word Text="I’ll" Rect="301,833,26,27" />
+          <Word Text="puff" Rect="333,833,37,27" />
+          <Word Text="and" Rect="377,833,37,27" />
+          <Word Text="I’ll" Rect="421,833,26,27" />
+          <Word Text="blow" Rect="453,833,45,27" />
+          <Word Text="your" Rect="504,833,42,27" />
+          <Word Text="house" Rect="553,833,54,27" />
+          <Word Text="in!’" Rect="614,833,30,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="boomed" Rect="96,870,76,27" />
+          <Word Text="the" Rect="178,870,29,27" />
+          <Word Text="wolf." Rect="214,870,46,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="8">
+        <TextGroup>
+          <Word Text="And" Rect="118,908,40,27" />
+          <Word Text="that" Rect="164,908,39,27" />
+          <Word Text="was" Rect="210,908,36,27" />
+          <Word Text="the" Rect="252,908,29,27" />
+          <Word Text="end" Rect="288,908,34,27" />
+          <Word Text="of" Rect="329,908,18,27" />
+          <Word Text="the" Rect="354,908,29,27" />
+          <Word Text="second" Rect="389,908,64,27" />
+          <Word Text="little" Rect="460,908,42,27" />
+          <Word Text="pig." Rect="508,908,35,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="8">
+        <TextGroup>
+          <Word Text="73" Rect="422,981,27,27" />
+          <Word Text="73" Rect="422,982,27,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="10">
+        <TextGroup>
+          <Word Text="You" Rect="227,130,39,27" />
+          <Word Text="are" Rect="273,130,30,27" />
+          <Word Text="probably" Rect="310,130,84,27" />
+          <Word Text="beginning" Rect="401,130,92,27" />
+          <Word Text="to" Rect="499,130,19,27" />
+          <Word Text="wonder" Rect="524,130,70,27" />
+          <Word Text="what" Rect="600,130,47,27" />
+          <Word Text="the" Rect="654,130,29,27" />
+          <Word Text="third" Rect="689,130,45,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="little" Rect="205,167,42,27" />
+          <Word Text="pig" Rect="253,167,29,27" />
+          <Word Text="was" Rect="288,167,36,27" />
+          <Word Text="up" Rect="331,167,24,27" />
+          <Word Text="to." Rect="361,167,25,27" />
+          <Word Text="Well," Rect="393,167,49,27" />
+          <Word Text="he" Rect="448,167,22,27" />
+          <Word Text="didn’t" Rect="477,167,56,27" />
+          <Word Text="scamper" Rect="539,167,79,27" />
+          <Word Text="off" Rect="625,167,25,27" />
+          <Word Text="quite" Rect="656,167,47,27" />
+          <Word Text="as" Rect="710,167,21,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="quickly" Rect="205,205,67,27" />
+          <Word Text="as" Rect="278,205,21,27" />
+          <Word Text="his" Rect="306,205,26,27" />
+          <Word Text="brothers." Rect="338,205,83,27" />
+          <Word Text="In" Rect="428,205,20,27" />
+          <Word Text="fact," Rect="455,205,42,27" />
+          <Word Text="he" Rect="504,205,22,27" />
+          <Word Text="sauntered" Rect="532,205,93,27" />
+          <Word Text="along" Rect="632,205,53,27" />
+          <Word Text="quite" Rect="691,205,47,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="slowly," Rect="205,242,64,27" />
+          <Word Text="picking" Rect="275,242,67,27" />
+          <Word Text="up" Rect="349,242,24,27" />
+          <Word Text="a" Rect="380,242,12,27" />
+          <Word Text="useful" Rect="399,242,55,27" />
+          <Word Text="thing" Rect="461,242,48,27" />
+          <Word Text="here," Rect="515,242,46,27" />
+          <Word Text="and" Rect="568,242,37,27" />
+          <Word Text="a" Rect="611,242,12,27" />
+          <Word Text="useful" Rect="630,242,55,27" />
+          <Word Text="thing" Rect="692,242,48,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="there." Rect="205,279,53,27" />
+          <Word Text="By" Rect="264,279,25,27" />
+          <Word Text="the" Rect="296,279,29,27" />
+          <Word Text="end" Rect="332,279,34,27" />
+          <Word Text="of" Rect="373,279,18,27" />
+          <Word Text="the" Rect="398,279,29,27" />
+          <Word Text="morning," Rect="433,279,85,27" />
+          <Word Text="he" Rect="525,279,22,27" />
+          <Word Text="had" Rect="554,279,37,27" />
+          <Word Text="found" Rect="597,279,55,27" />
+          <Word Text="a" Rect="658,279,12,27" />
+          <Word Text="stack" Rect="677,279,49,27" />
+          <Word Text="of" Rect="732,279,18,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="bricks," Rect="205,317,61,27" />
+          <Word Text="a" Rect="272,317,12,27" />
+          <Word Text="stack" Rect="291,317,49,27" />
+          <Word Text="of" Rect="347,317,18,27" />
+          <Word Text="roof" Rect="371,317,38,27" />
+          <Word Text="tiles," Rect="416,317,43,27" />
+          <Word Text="some" Rect="466,317,48,27" />
+          <Word Text="planks" Rect="521,317,62,27" />
+          <Word Text="of" Rect="589,317,18,27" />
+          <Word Text="wood," Rect="613,317,57,27" />
+          <Word Text="a" Rect="677,317,12,27" />
+          <Word Text="box" Rect="696,317,34,27" />
+          <Word Text="of" Rect="737,317,18,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="tools" Rect="205,354,44,27" />
+          <Word Text="and" Rect="256,354,37,27" />
+          <Word Text="a" Rect="299,354,12,27" />
+          <Word Text="big," Rect="318,354,35,27" />
+          <Word Text="red" Rect="359,354,30,27" />
+          <Word Text="cooking" Rect="396,354,73,27" />
+          <Word Text="pot." Rect="475,354,37,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="10">
+        <TextGroup>
+          <Word Text="The" Rect="227,391,38,27" />
+          <Word Text="third" Rect="272,391,45,27" />
+          <Word Text="little" Rect="324,391,42,27" />
+          <Word Text="pig" Rect="372,391,29,27" />
+          <Word Text="sat" Rect="407,391,28,27" />
+          <Word Text="down" Rect="441,391,52,27" />
+          <Word Text="for" Rect="499,391,26,27" />
+          <Word Text="a" Rect="532,391,12,27" />
+          <Word Text="while" Rect="551,391,49,27" />
+          <Word Text="and" Rect="607,391,37,27" />
+          <Word Text="made" Rect="650,391,53,27" />
+          <Word Text="a" Rect="709,391,12,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="plan." Rect="205,429,49,27" />
+          <Word Text="Then" Rect="260,429,50,27" />
+          <Word Text="he" Rect="317,429,22,27" />
+          <Word Text="set" Rect="345,429,26,27" />
+          <Word Text="to" Rect="377,429,19,27" />
+          <Word Text="work." Rect="402,429,52,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="10">
+        <TextGroup>
+          <Word Text="First," Rect="227,466,50,27" />
+          <Word Text="he" Rect="283,466,22,27" />
+          <Word Text="dug" Rect="312,466,35,27" />
+          <Word Text="foundations" Rect="354,466,112,27" />
+          <Word Text="for" Rect="473,466,26,27" />
+          <Word Text="his" Rect="505,466,26,27" />
+          <Word Text="house." Rect="538,466,60,27" />
+          <Word Text="Next" Rect="605,466,46,27" />
+          <Word Text="he" Rect="657,466,22,27" />
+          <Word Text="laid" Rect="686,466,36,27" />
+          <Word Text="the" Rect="728,466,29,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="bricks." Rect="205,503,61,27" />
+          <Word Text="Then" Rect="272,503,50,27" />
+          <Word Text="he" Rect="329,503,22,27" />
+          <Word Text="sawed" Rect="358,503,59,27" />
+          <Word Text="up" Rect="423,503,24,27" />
+          <Word Text="the" Rect="454,503,29,27" />
+          <Word Text="planks" Rect="489,503,62,27" />
+          <Word Text="of" Rect="557,503,18,27" />
+          <Word Text="wood" Rect="582,503,51,27" />
+          <Word Text="to" Rect="640,503,19,27" />
+          <Word Text="make" Rect="665,503,52,27" />
+          <Word Text="a" Rect="723,503,12,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="door," Rect="205,541,50,27" />
+          <Word Text="and" Rect="261,541,37,27" />
+          <Word Text="windows" Rect="304,541,81,27" />
+          <Word Text="with" Rect="392,541,40,27" />
+          <Word Text="shutters," Rect="439,541,80,27" />
+          <Word Text="and" Rect="525,541,37,27" />
+          <Word Text="rafters" Rect="568,541,61,27" />
+          <Word Text="for" Rect="635,541,26,27" />
+          <Word Text="the" Rect="668,541,29,27" />
+          <Word Text="roof." Rect="704,541,44,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="10">
+        <TextGroup>
+          <Word Text="Finally," Rect="205,578,73,27" />
+          <Word Text="he" Rect="284,578,22,27" />
+          <Word Text="laid" Rect="312,578,36,27" />
+          <Word Text="the" Rect="355,578,29,27" />
+          <Word Text="roof" Rect="391,578,38,27" />
+          <Word Text="tiles." Rect="435,578,43,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="10">
+        <TextGroup>
+          <Word Text="The" Rect="227,615,38,27" />
+          <Word Text="third" Rect="272,615,45,27" />
+          <Word Text="little" Rect="324,615,42,27" />
+          <Word Text="pig" Rect="372,615,29,27" />
+          <Word Text="stepped" Rect="407,615,72,27" />
+          <Word Text="back" Rect="485,615,45,27" />
+          <Word Text="to" Rect="537,615,19,27" />
+          <Word Text="check" Rect="562,615,53,27" />
+          <Word Text="his" Rect="621,615,26,27" />
+          <Word Text="work." Rect="654,615,52,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="10">
+        <TextGroup>
+          <Word Text="‘Not" Rect="227,653,43,27" />
+          <Word Text="bad,’" Rect="277,653,49,27" />
+          <Word Text="he" Rect="332,653,22,27" />
+          <Word Text="thought" Rect="361,653,73,27" />
+          <Word Text="to" Rect="440,653,19,27" />
+          <Word Text="himself." Rect="465,653,73,27" />
+          <Word Text="‘But" Rect="545,653,40,27" />
+          <Word Text="I’m" Rect="592,653,33,27" />
+          <Word Text="hungry!" Rect="631,653,72,27" />
+          <Word Text="I’ll" Rect="710,653,26,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="put" Rect="205,690,31,27" />
+          <Word Text="the" Rect="242,690,29,27" />
+          <Word Text="pot" Rect="278,690,31,27" />
+          <Word Text="on" Rect="315,690,24,27" />
+          <Word Text="the" Rect="345,690,29,27" />
+          <Word Text="fire" Rect="381,690,30,27" />
+          <Word Text="and" Rect="418,690,37,27" />
+          <Word Text="make" Rect="461,690,52,27" />
+          <Word Text="some" Rect="520,690,48,27" />
+          <Word Text="supper.’" Rect="575,690,75,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="10">
+        <TextGroup>
+          <Word Text="Soon" Rect="227,727,48,27" />
+          <Word Text="a" Rect="282,727,12,27" />
+          <Word Text="long" Rect="301,727,40,27" />
+          <Word Text="plume" Rect="348,727,58,27" />
+          <Word Text="of" Rect="413,727,18,27" />
+          <Word Text="smoke" Rect="437,727,59,27" />
+          <Word Text="could" Rect="503,727,52,27" />
+          <Word Text="be" Rect="562,727,22,27" />
+          <Word Text="seen" Rect="590,727,41,27" />
+          <Word Text="rising" Rect="637,727,51,27" />
+          <Word Text="from" Rect="695,727,45,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="the" Rect="205,765,29,27" />
+          <Word Text="house" Rect="240,765,54,27" />
+          <Word Text="of" Rect="301,765,18,27" />
+          <Word Text="the" Rect="326,765,29,27" />
+          <Word Text="third" Rect="361,765,45,27" />
+          <Word Text="little" Rect="413,765,42,27" />
+          <Word Text="pig." Rect="461,765,35,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="10">
+        <TextGroup>
+          <Word Text="75" Rect="423,982,25,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="And" Rect="100,132,40,27" />
+          <Word Text="soon" Rect="146,132,44,27" />
+          <Word Text="the" Rect="197,132,29,27" />
+          <Word Text="big," Rect="232,132,35,27" />
+          <Word Text="bad" Rect="274,132,37,27" />
+          <Word Text="wolf" Rect="317,132,40,27" />
+          <Word Text="—" Rect="363,132,21,27" />
+          <Word Text="who," Rect="391,132,45,27" />
+          <Word Text="as" Rect="442,132,21,27" />
+          <Word Text="you" Rect="470,132,34,27" />
+          <Word Text="have" Rect="511,132,45,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="probably" Rect="77,170,84,27" />
+          <Word Text="guessed," Rect="168,170,78,27" />
+          <Word Text="was" Rect="253,170,36,27" />
+          <Word Text="not" Rect="296,170,31,27" />
+          <Word Text="very" Rect="333,170,39,27" />
+          <Word Text="far" Rect="379,170,27,27" />
+          <Word Text="away" Rect="412,170,51,27" />
+          <Word Text="—" Rect="470,170,21,27" />
+          <Word Text="sniffed" Rect="498,170,62,27" />
+          <Word Text="the" Rect="566,170,29,27" />
+          <Word Text="cool" Rect="602,170,39,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="evening" Rect="77,207,71,27" />
+          <Word Text="air" Rect="155,207,26,27" />
+          <Word Text="and" Rect="188,207,37,27" />
+          <Word Text="licked" Rect="231,207,55,27" />
+          <Word Text="his" Rect="292,207,26,27" />
+          <Word Text="lips" Rect="325,207,32,27" />
+          <Word Text="with" Rect="364,207,40,27" />
+          <Word Text="his" Rect="411,207,26,27" />
+          <Word Text="long," Rect="443,207,47,27" />
+          <Word Text="mean" Rect="496,207,53,27" />
+          <Word Text="tongue." Rect="556,207,70,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="‘Mmmm,’" Rect="100,244,96,27" />
+          <Word Text="the" Rect="202,244,29,27" />
+          <Word Text="wolf" Rect="238,244,40,27" />
+          <Word Text="said" Rect="284,244,39,27" />
+          <Word Text="to" Rect="329,244,19,27" />
+          <Word Text="himself." Rect="354,244,73,27" />
+          <Word Text="‘This" Rect="434,244,49,27" />
+          <Word Text="must" Rect="489,244,46,27" />
+          <Word Text="be" Rect="542,244,22,27" />
+          <Word Text="my" Rect="571,244,29,27" />
+          <Word Text="lucky" Rect="606,244,50,27" />
+          <Word Text="day." Rect="662,244,41,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="Yet" Rect="77,282,32,27" />
+          <Word Text="another" Rect="116,282,73,27" />
+          <Word Text="plump" Rect="196,282,60,27" />
+          <Word Text="little" Rect="263,282,42,27" />
+          <Word Text="pig" Rect="311,282,29,27" />
+          <Word Text="waiting" Rect="346,282,70,27" />
+          <Word Text="for" Rect="422,282,26,27" />
+          <Word Text="a" Rect="455,282,12,27" />
+          <Word Text="visit" Rect="474,282,37,27" />
+          <Word Text="from" Rect="518,282,45,27" />
+          <Word Text="his" Rect="569,282,26,27" />
+          <Word Text="friendly" Rect="602,282,71,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="local" Rect="77,319,46,27" />
+          <Word Text="wolf!" Rect="129,319,46,27" />
+          <Word Text="I" Rect="182,319,8,27" />
+          <Word Text="think" Rect="196,319,48,27" />
+          <Word Text="it’s" Rect="251,319,28,27" />
+          <Word Text="time" Rect="285,319,41,27" />
+          <Word Text="for" Rect="333,319,26,27" />
+          <Word Text="a" Rect="365,319,12,27" />
+          <Word Text="little" Rect="384,319,42,27" />
+          <Word Text="early-evening" Rect="432,319,126,27" />
+          <Word Text="snack" Rect="565,319,54,27" />
+          <Word Text="." Rect="625,319,6,27" />
+          <Word Text="." Rect="638,319,6,27" />
+          <Word Text=".’" Rect="651,319,12,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="And" Rect="100,356,40,27" />
+          <Word Text="the" Rect="146,356,29,27" />
+          <Word Text="big," Rect="182,356,35,27" />
+          <Word Text="bad" Rect="223,356,37,27" />
+          <Word Text="wolf" Rect="266,356,40,27" />
+          <Word Text="came" Rect="312,356,51,27" />
+          <Word Text="striding" Rect="370,356,70,27" />
+          <Word Text="up" Rect="447,356,24,27" />
+          <Word Text="to" Rect="477,356,19,27" />
+          <Word Text="the" Rect="503,356,29,27" />
+          <Word Text="door" Rect="538,356,43,27" />
+          <Word Text="of" Rect="588,356,18,27" />
+          <Word Text="the" Rect="613,356,29,27" />
+          <Word Text="little" Rect="648,356,42,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="brick" Rect="77,394,47,27" />
+          <Word Text="house" Rect="131,394,54,27" />
+          <Word Text="and" Rect="191,394,37,27" />
+          <Word Text="called" Rect="235,394,56,27" />
+          <Word Text="out:" Rect="297,394,37,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="‘Little" Rect="100,431,56,27" />
+          <Word Text="pig," Rect="163,431,35,27" />
+          <Word Text="little" Rect="204,431,42,27" />
+          <Word Text="pig," Rect="252,431,35,27" />
+          <Word Text="may" Rect="294,431,41,27" />
+          <Word Text="I" Rect="342,431,8,27" />
+          <Word Text="come" Rect="356,431,50,27" />
+          <Word Text="in?’" Rect="413,431,32,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="But" Rect="100,468,34,27" />
+          <Word Text="the" Rect="141,468,29,27" />
+          <Word Text="third" Rect="176,468,45,27" />
+          <Word Text="little" Rect="228,468,42,27" />
+          <Word Text="pig’s" Rect="276,468,43,27" />
+          <Word Text="curly" Rect="326,468,47,27" />
+          <Word Text="whirly" Rect="379,468,58,27" />
+          <Word Text="tail" Rect="443,468,31,27" />
+          <Word Text="went" Rect="481,468,45,27" />
+          <Word Text="completely" Rect="532,468,101,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="straight" Rect="77,506,72,27" />
+          <Word Text="with" Rect="155,506,40,27" />
+          <Word Text="alarm" Rect="202,506,57,27" />
+          <Word Text="and" Rect="266,506,37,27" />
+          <Word Text="he" Rect="309,506,22,27" />
+          <Word Text="knew" Rect="338,506,49,27" />
+          <Word Text="at" Rect="393,506,19,27" />
+          <Word Text="once" Rect="419,506,44,27" />
+          <Word Text="that" Rect="469,506,39,27" />
+          <Word Text="whoever" Rect="514,506,77,27" />
+          <Word Text="was" Rect="598,506,36,27" />
+          <Word Text="at" Rect="641,506,19,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="the" Rect="77,543,29,27" />
+          <Word Text="other" Rect="113,543,49,27" />
+          <Word Text="side" Rect="168,543,36,27" />
+          <Word Text="of" Rect="211,543,18,27" />
+          <Word Text="the" Rect="236,543,29,27" />
+          <Word Text="door" Rect="271,543,43,27" />
+          <Word Text="meant" Rect="321,543,60,27" />
+          <Word Text="trouble." Rect="388,543,73,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="‘No," Rect="100,580,42,27" />
+          <Word Text="you" Rect="149,580,34,27" />
+          <Word Text="may" Rect="190,580,41,27" />
+          <Word Text="not!’" Rect="238,580,43,27" />
+          <Word Text="he" Rect="287,580,22,27" />
+          <Word Text="said." Rect="316,580,45,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="‘Then" Rect="100,618,57,27" />
+          <Word Text="I’ll" Rect="163,618,26,27" />
+          <Word Text="huff" Rect="196,618,37,27" />
+          <Word Text="and" Rect="239,618,37,27" />
+          <Word Text="I’ll" Rect="283,618,26,27" />
+          <Word Text="puff" Rect="315,618,37,27" />
+          <Word Text="and" Rect="359,618,37,27" />
+          <Word Text="I’ll" Rect="403,618,26,27" />
+          <Word Text="blow" Rect="435,618,45,27" />
+          <Word Text="your" Rect="486,618,42,27" />
+          <Word Text="house" Rect="535,618,54,27" />
+          <Word Text="in!’" Rect="596,618,30,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="boomed" Rect="77,655,76,27" />
+          <Word Text="the" Rect="160,655,29,27" />
+          <Word Text="big," Rect="195,655,35,27" />
+          <Word Text="bad" Rect="237,655,37,27" />
+          <Word Text="wolf." Rect="280,655,46,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="11">
+        <TextGroup>
+          <Word Text="76" Rect="423,985,23,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="12">
+        <TextGroup>
+          <Word Text="77" Rect="422,982,26,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="13">
+        <TextGroup>
+          <Word Text="And" Rect="100,132,40,27" />
+          <Word Text="the" Rect="146,132,29,27" />
+          <Word Text="big," Rect="182,132,35,27" />
+          <Word Text="bad" Rect="223,132,37,27" />
+          <Word Text="wolf" Rect="266,132,40,27" />
+          <Word Text="huffed" Rect="312,132,60,27" />
+          <Word Text="and" Rect="379,132,37,27" />
+          <Word Text="puffed" Rect="422,132,60,27" />
+          <Word Text="and" Rect="488,132,37,27" />
+          <Word Text="blew" Rect="532,132,43,27" />
+          <Word Text="as" Rect="581,132,21,27" />
+          <Word Text="hard" Rect="609,132,45,27" />
+          <Word Text="as" Rect="660,132,21,27" />
+          <Word Text="he" Rect="687,132,22,27" />
+          <Word Text="could." Rect="716,132,58,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="13">
+        <TextGroup>
+          <Word Text="But" Rect="77,170,34,27" />
+          <Word Text="nothing" Rect="118,170,72,27" />
+          <Word Text="happened." Rect="196,170,99,27" />
+          <Word Text="He" Rect="302,170,28,27" />
+          <Word Text="could" Rect="336,170,52,27" />
+          <Word Text="not" Rect="395,170,31,27" />
+          <Word Text="blow" Rect="432,170,45,27" />
+          <Word Text="the" Rect="483,170,29,27" />
+          <Word Text="brick" Rect="519,170,47,27" />
+          <Word Text="house" Rect="572,170,54,27" />
+          <Word Text="down." Rect="633,170,58,27" />
+          <Word Text="In" Rect="697,170,20,27" />
+          <Word Text="fact," Rect="724,170,42,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="he" Rect="77,207,22,27" />
+          <Word Text="could" Rect="106,207,52,27" />
+          <Word Text="not" Rect="164,207,31,27" />
+          <Word Text="even" Rect="202,207,42,27" />
+          <Word Text="budge" Rect="251,207,57,27" />
+          <Word Text="a" Rect="314,207,12,27" />
+          <Word Text="single" Rect="333,207,53,27" />
+          <Word Text="brick." Rect="393,207,53,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="13">
+        <TextGroup>
+          <Word Text="Well," Rect="100,244,49,27" />
+          <Word Text="the" Rect="156,244,29,27" />
+          <Word Text="wolf" Rect="191,244,40,27" />
+          <Word Text="was" Rect="237,244,36,27" />
+          <Word Text="furious," Rect="280,244,71,27" />
+          <Word Text="but" Rect="358,244,31,27" />
+          <Word Text="he" Rect="396,244,22,27" />
+          <Word Text="was" Rect="424,244,36,27" />
+          <Word Text="not" Rect="467,244,31,27" />
+          <Word Text="going" Rect="505,244,51,27" />
+          <Word Text="to" Rect="562,244,19,27" />
+          <Word Text="give" Rect="587,244,37,27" />
+          <Word Text="up" Rect="631,244,24,27" />
+          <Word Text="that" Rect="662,244,39,27" />
+          <Word Text="easily." Rect="707,244,59,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="13">
+        <TextGroup>
+          <Word Text="He" Rect="77,282,28,27" />
+          <Word Text="stepped" Rect="112,282,72,27" />
+          <Word Text="back" Rect="190,282,45,27" />
+          <Word Text="a" Rect="242,282,12,27" />
+          <Word Text="few" Rect="261,282,32,27" />
+          <Word Text="paces" Rect="300,282,53,27" />
+          <Word Text="and" Rect="359,282,37,27" />
+          <Word Text="then" Rect="402,282,41,27" />
+          <Word Text="ran" Rect="450,282,33,27" />
+          <Word Text="at" Rect="489,282,19,27" />
+          <Word Text="the" Rect="515,282,29,27" />
+          <Word Text="little" Rect="551,282,42,27" />
+          <Word Text="brick" Rect="599,282,47,27" />
+          <Word Text="house," Rect="652,282,60,27" />
+          <Word Text="as" Rect="719,282,21,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="fast" Rect="77,319,35,27" />
+          <Word Text="as" Rect="118,319,21,27" />
+          <Word Text="his" Rect="146,319,26,27" />
+          <Word Text="legs" Rect="179,319,35,27" />
+          <Word Text="would" Rect="220,319,57,27" />
+          <Word Text="carry" Rect="284,319,49,27" />
+          <Word Text="him." Rect="340,319,42,27" />
+          <Word Text="Just" Rect="389,319,35,27" />
+          <Word Text="before" Rect="430,319,58,27" />
+          <Word Text="he" Rect="495,319,22,27" />
+          <Word Text="reached" Rect="524,319,75,27" />
+          <Word Text="it," Rect="605,319,19,27" />
+          <Word Text="he" Rect="630,319,22,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="hurled" Rect="77,356,60,27" />
+          <Word Text="himself" Rect="144,356,67,27" />
+          <Word Text="at" Rect="218,356,19,27" />
+          <Word Text="the" Rect="244,356,29,27" />
+          <Word Text="roof," Rect="279,356,44,27" />
+          <Word Text="but" Rect="330,356,31,27" />
+          <Word Text="he" Rect="368,356,22,27" />
+          <Word Text="lost" Rect="396,356,33,27" />
+          <Word Text="his" Rect="436,356,26,27" />
+          <Word Text="foothold" Rect="468,356,78,27" />
+          <Word Text="and" Rect="553,356,37,27" />
+          <Word Text="fell" Rect="597,356,28,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="off" Rect="77,394,25,27" />
+          <Word Text="backwards," Rect="109,394,108,27" />
+          <Word Text="flat" Rect="223,394,32,27" />
+          <Word Text="on" Rect="262,394,24,27" />
+          <Word Text="the" Rect="292,394,29,27" />
+          <Word Text="ground." Rect="328,394,73,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="13">
+        <TextGroup>
+          <Word Text="78" Rect="423,985,24,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="14">
+        <TextGroup>
+          <Word Text="79" Rect="423,982,24,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="15">
+        <TextGroup>
+          <Word Text="Inside" Rect="100,132,57,27" />
+          <Word Text="the" Rect="163,132,29,27" />
+          <Word Text="little" Rect="199,132,42,27" />
+          <Word Text="brick" Rect="247,132,47,27" />
+          <Word Text="house," Rect="300,132,60,27" />
+          <Word Text="the" Rect="367,132,29,27" />
+          <Word Text="third" Rect="403,132,45,27" />
+          <Word Text="little" Rect="454,132,42,27" />
+          <Word Text="pig" Rect="502,132,29,27" />
+          <Word Text="put" Rect="537,132,31,27" />
+          <Word Text="a" Rect="575,132,12,27" />
+          <Word Text="big" Rect="594,132,29,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="pot" Rect="77,170,31,27" />
+          <Word Text="of" Rect="115,170,18,27" />
+          <Word Text="water" Rect="139,170,53,27" />
+          <Word Text="on" Rect="199,170,24,27" />
+          <Word Text="the" Rect="229,170,29,27" />
+          <Word Text="fire," Rect="265,170,37,27" />
+          <Word Text="whistling" Rect="308,170,83,27" />
+          <Word Text="merrily" Rect="398,170,67,27" />
+          <Word Text="as" Rect="471,170,21,27" />
+          <Word Text="he" Rect="498,170,22,27" />
+          <Word Text="worked." Rect="527,170,74,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="15">
+        <TextGroup>
+          <Word Text="Of" Rect="77,207,24,27" />
+          <Word Text="course," Rect="108,207,66,27" />
+          <Word Text="this" Rect="181,207,33,27" />
+          <Word Text="made" Rect="221,207,53,27" />
+          <Word Text="the" Rect="280,207,29,27" />
+          <Word Text="wolf" Rect="316,207,40,27" />
+          <Word Text="even" Rect="362,207,42,27" />
+          <Word Text="angrier." Rect="411,207,73,27" />
+          <Word Text="He" Rect="491,207,28,27" />
+          <Word Text="took" Rect="526,207,41,27" />
+          <Word Text="a" Rect="573,207,12,27" />
+          <Word Text="few" Rect="592,207,32,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="more" Rect="77,244,48,27" />
+          <Word Text="paces" Rect="132,244,53,27" />
+          <Word Text="back" Rect="191,244,45,27" />
+          <Word Text="and" Rect="243,244,37,27" />
+          <Word Text="then" Rect="286,244,41,27" />
+          <Word Text="took" Rect="334,244,41,27" />
+          <Word Text="another" Rect="382,244,73,27" />
+          <Word Text="flying" Rect="462,244,52,27" />
+          <Word Text="leap" Rect="520,244,40,27" />
+          <Word Text="at" Rect="567,244,19,27" />
+          <Word Text="the" Rect="593,244,29,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="roof" Rect="77,282,38,27" />
+          <Word Text="of" Rect="122,282,18,27" />
+          <Word Text="the" Rect="146,282,29,27" />
+          <Word Text="house," Rect="182,282,60,27" />
+          <Word Text="but" Rect="249,282,31,27" />
+          <Word Text="his" Rect="287,282,26,27" />
+          <Word Text="claws" Rect="319,282,52,27" />
+          <Word Text="slipped" Rect="378,282,66,27" />
+          <Word Text="on" Rect="451,282,24,27" />
+          <Word Text="the" Rect="481,282,29,27" />
+          <Word Text="shiny" Rect="517,282,49,27" />
+          <Word Text="new" Rect="572,282,38,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="tiles" Rect="77,319,37,27" />
+          <Word Text="and" Rect="121,319,37,27" />
+          <Word Text="this" Rect="164,319,33,27" />
+          <Word Text="time" Rect="204,319,41,27" />
+          <Word Text="he" Rect="252,319,22,27" />
+          <Word Text="tumbled" Rect="281,319,78,27" />
+          <Word Text="head" Rect="365,319,47,27" />
+          <Word Text="first" Rect="418,319,36,27" />
+          <Word Text="on" Rect="460,319,24,27" />
+          <Word Text="to" Rect="491,319,19,27" />
+          <Word Text="the" Rect="516,319,29,27" />
+          <Word Text="ground." Rect="552,319,73,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="15">
+        <TextGroup>
+          <Word Text="Inside," Rect="100,356,63,27" />
+          <Word Text="the" Rect="169,356,29,27" />
+          <Word Text="third" Rect="205,356,45,27" />
+          <Word Text="little" Rect="257,356,42,27" />
+          <Word Text="pig" Rect="305,356,29,27" />
+          <Word Text="whistled" Rect="340,356,77,27" />
+          <Word Text="merrily" Rect="423,356,67,27" />
+          <Word Text="as" Rect="496,356,21,27" />
+          <Word Text="the" Rect="524,356,29,27" />
+          <Word Text="pot" Rect="559,356,31,27" />
+          <Word Text="of" Rect="597,356,18,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="water" Rect="77,394,53,27" />
+          <Word Text="started" Rect="137,394,65,27" />
+          <Word Text="to" Rect="209,394,19,27" />
+          <Word Text="bubble" Rect="234,394,64,27" />
+          <Word Text="and" Rect="304,394,37,27" />
+          <Word Text="boil." Rect="348,394,41,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="15">
+        <TextGroup>
+          <Word Text="By" Rect="100,431,25,27" />
+          <Word Text="now," Rect="132,431,46,27" />
+          <Word Text="the" Rect="184,431,29,27" />
+          <Word Text="wolf" Rect="220,431,40,27" />
+          <Word Text="was" Rect="266,431,36,27" />
+          <Word Text="in" Rect="309,431,18,27" />
+          <Word Text="a" Rect="333,431,12,27" />
+          <Word Text="towering" Rect="352,431,81,27" />
+          <Word Text="rage," Rect="440,431,47,27" />
+          <Word Text="but" Rect="494,431,31,27" />
+          <Word Text="he" Rect="531,431,22,27" />
+          <Word Text="had" Rect="560,431,37,27" />
+          <Word Text="to" Rect="603,431,19,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="wait" Rect="77,468,41,27" />
+          <Word Text="a" Rect="125,468,12,27" />
+          <Word Text="bit" Rect="144,468,25,27" />
+          <Word Text="to" Rect="175,468,19,27" />
+          <Word Text="get" Rect="200,468,28,27" />
+          <Word Text="his" Rect="235,468,26,27" />
+          <Word Text="breath" Rect="267,468,61,27" />
+          <Word Text="back." Rect="335,468,51,27" />
+          <Word Text="When" Rect="393,468,56,27" />
+          <Word Text="he" Rect="455,468,22,27" />
+          <Word Text="had" Rect="484,468,37,27" />
+          <Word Text="recovered," Rect="527,468,96,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="he" Rect="77,506,22,27" />
+          <Word Text="charged" Rect="106,506,75,27" />
+          <Word Text="at" Rect="188,506,19,27" />
+          <Word Text="the" Rect="214,506,29,27" />
+          <Word Text="little" Rect="249,506,42,27" />
+          <Word Text="brick" Rect="297,506,47,27" />
+          <Word Text="house" Rect="351,506,54,27" />
+          <Word Text="and" Rect="411,506,37,27" />
+          <Word Text="leapt" Rect="455,506,47,27" />
+          <Word Text="towards" Rect="508,506,75,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="the" Rect="77,543,29,27" />
+          <Word Text="roof." Rect="113,543,44,27" />
+          <Word Text="This" Rect="163,543,42,27" />
+          <Word Text="time" Rect="212,543,41,27" />
+          <Word Text="he" Rect="260,543,22,27" />
+          <Word Text="made" Rect="289,543,53,27" />
+          <Word Text="it." Rect="348,543,19,27" />
+          <Word Text="He" Rect="374,543,28,27" />
+          <Word Text="gave" Rect="409,543,43,27" />
+          <Word Text="a" Rect="459,543,12,27" />
+          <Word Text="roar" Rect="478,543,40,27" />
+          <Word Text="of" Rect="524,543,18,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="triumph," Rect="77,580,82,27" />
+          <Word Text="then" Rect="166,580,41,27" />
+          <Word Text="he" Rect="213,580,22,27" />
+          <Word Text="plunged" Rect="242,580,75,27" />
+          <Word Text="down" Rect="324,580,52,27" />
+          <Word Text="the" Rect="382,580,29,27" />
+          <Word Text="chimney" Rect="417,580,79,27" />
+          <Word Text="and" Rect="503,580,37,27" />
+          <Word Text="fell" Rect="546,580,28,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="straight" Rect="77,618,72,27" />
+          <Word Text="into" Rect="155,618,37,27" />
+          <Word Text="the" Rect="199,618,29,27" />
+          <Word Text="cooking" Rect="234,618,73,27" />
+          <Word Text="pot!" Rect="314,618,37,27" />
+          <Word Text="And" Rect="357,618,40,27" />
+          <Word Text="that" Rect="403,618,39,27" />
+          <Word Text="was" Rect="448,618,36,27" />
+          <Word Text="the" Rect="491,618,29,27" />
+          <Word Text="end" Rect="527,618,34,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="of" Rect="77,655,18,27" />
+          <Word Text="the" Rect="102,655,29,27" />
+          <Word Text="big," Rect="138,655,35,27" />
+          <Word Text="bad" Rect="179,655,37,27" />
+          <Word Text="wolf." Rect="222,655,46,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="15">
+        <TextGroup>
+          <Word Text="80" Rect="423,985,24,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="16">
+        <TextGroup>
+          <Word Text="The" Rect="307,132,33,27" />
+          <Word Text="next" Rect="345,132,39,27" />
+          <Word Text="day," Rect="389,132,37,27" />
+          <Word Text="the" Rect="431,132,30,27" />
+          <Word Text="third" Rect="466,132,43,27" />
+          <Word Text="little" Rect="514,132,40,27" />
+          <Word Text="pig" Rect="559,132,29,27" />
+          <Word Text="put" Rect="593,132,31,27" />
+          <Word Text="up" Rect="629,132,24,27" />
+          <Word Text="a" Rect="658,132,10,27" />
+          <Word Text="sign," Rect="673,132,42,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="which" Rect="284,169,54,27" />
+          <Word Text="said:" Rect="343,169,40,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="16">
+        <TextGroup>
+          <Word Text="PIGS" Rect="381,243,74,48" />
+          <Word Text="ARE" Rect="465,243,63,48" />
+          <Word Text="WELCOME." Rect="538,243,177,48" />
+          <Word Text="WOLVES" Rect="401,296,137,48" />
+          <Word Text="ARE" Rect="547,296,63,48" />
+          <Word Text="NOT." Rect="620,296,79,48" />
+          <Word Text="VISITING" Rect="412,349,138,48" />
+          <Word Text="WOLVES" Rect="560,349,137,48" />
+          <Word Text="WILL" Rect="337,403,78,48" />
+          <Word Text="BE" Rect="425,403,40,48" />
+          <Word Text="PUT" Rect="474,403,65,48" />
+          <Word Text="IN" Rect="548,403,35,48" />
+          <Word Text="THE" Rect="593,403,63,48" />
+          <Word Text="POT." Rect="665,403,74,48" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="16">
+        <TextGroup>
+          <Word Text="The" Rect="307,495,33,27" />
+          <Word Text="third" Rect="345,495,43,27" />
+          <Word Text="little" Rect="393,495,40,27" />
+          <Word Text="pig" Rect="438,495,29,27" />
+          <Word Text="had" Rect="472,495,34,27" />
+          <Word Text="a" Rect="511,495,10,27" />
+          <Word Text="long" Rect="527,495,41,27" />
+          <Word Text="and" Rect="572,495,34,27" />
+          <Word Text="happy" Rect="611,495,56,27" />
+          <Word Text="life," Rect="673,495,31,27" />
+        </TextGroup>
+        <TextGroup>
+          <Word Text="and" Rect="284,532,34,27" />
+          <Word Text="he" Rect="323,532,23,27" />
+          <Word Text="was" Rect="351,532,34,27" />
+          <Word Text="never" Rect="390,532,50,27" />
+          <Word Text="troubled" Rect="446,532,77,27" />
+          <Word Text="by" Rect="528,532,22,27" />
+          <Word Text="wolves" Rect="556,532,62,27" />
+          <Word Text="again." Rect="623,532,54,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="16">
+        <TextGroup>
+          <Word Text="81" Rect="432,984,22,27" />
+        </TextGroup>
+      </Paragraph>
+      <Paragraph PageIndex="17">
+        <TextGroup>
+          <Word Text="Storytime" Rect="159,234,566,179" />
+          <Word Text="First" Rect="259,402,169,117" />
+          <Word Text="Tales" Rect="454,401,180,116" />
+          <Word Text="for" Rect="249,488,115,111" />
+          <Word Text="Sharing" Rect="384,481,242,116" />
+        </TextGroup>
+      </Paragraph>
+    </Flow>
+  </Section>
+</BookContents>

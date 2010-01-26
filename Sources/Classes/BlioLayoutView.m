@@ -315,12 +315,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @implementation BlioLayoutView
 
 
-@synthesize scrollView, containerView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount;
+@synthesize book, scrollView, containerView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, highlighter;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     CGPDFDocumentRelease(pdf);
+    self.book = nil;
     self.scrollView = nil;
     self.containerView = nil;
     self.pageViews = nil;
@@ -329,21 +330,22 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.currentPageView = nil;
     self.fonts = nil;
     self.parsedPage = nil;
+    [self.highlighter removeObserver:self forKeyPath:@"tracking"];
+    [self.highlighter detatchFromView];
+    self.highlighter = nil;
     [super dealloc];
 }
 
-- (id)initWithPath:(NSString *)path {
-    return [self initWithPath:path page:1 animated:NO];
-}
-
-- (id)initWithPath:(NSString *)path page:(NSUInteger)page animated:(BOOL)animated {
-    NSURL *pdfURL = [NSURL fileURLWithPath:path];
+- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
+//- (id)initWithPath:(NSString *)path page:(NSUInteger)page animated:(BOOL)animated {
+    NSURL *pdfURL = [NSURL fileURLWithPath:[aBook pdfPath]];
     pdf = CGPDFDocumentCreateWithURL((CFURLRef)pdfURL);
     
     if (NULL == pdf) return nil;
     
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {
         // Initialization code
+        self.book = aBook;
         self.clearsContextBeforeDrawing = NO; // Performance optimisation;
         self.scrollToPageInProgress = NO;
         self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];    
@@ -372,10 +374,21 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         self.scrollView = aScrollView;
         [aScrollView release];
         
+        EucHighlighter *aHighlighter = [[EucHighlighter alloc] init];
+        [aHighlighter attachToView:self];
+        [aHighlighter addObserver:self
+                       forKeyPath:@"tracking"
+                          options:0
+                          context:NULL];
+        aHighlighter.dataSource = self;
+        self.highlighter = aHighlighter;
+        [aHighlighter release];
+        
         UIView *aView = [[UIView alloc] initWithFrame:self.bounds];
         [self.scrollView addSubview:aView];
         aView.backgroundColor = [UIColor clearColor];
         aView.autoresizesSubviews = YES;
+        
         self.containerView = aView;
         self.containerView.clipsToBounds = NO;
         [aView release];
@@ -383,6 +396,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         NSMutableArray *pageViewArray = [[NSMutableArray alloc] initWithCapacity:kBlioLayoutMaxViews];
         self.pageViews = pageViewArray;
         [pageViewArray release];
+        
+        NSNumber *savedPage = [aBook layoutPageNumber];
+        NSInteger page = (nil != savedPage) ? [savedPage intValue] : 1;
         
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
@@ -509,6 +525,59 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [self parsePage:self.pageNumber];
     [pool drain];
+}
+
+#pragma mark -
+#pragma mark Highlighter
+
+- (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter {
+//    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+//    EucPageTextView *pageTextView = pageView.bookTextView;
+//    return [pageTextView paragraphIds];
+    return [self.parsedPage textBlocks];
+}
+
+- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id
+{
+//    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+//    EucPageTextView *pageTextView = pageView.bookTextView;
+//    return [pageView convertRect:[pageTextView frameOfParagraphWithId:[id intValue]] fromView:pageTextView];    
+    return [(BlioPDFPositionedString *)id boundingRect];
+}
+
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id;
+{
+//    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+//    EucPageTextView *pageTextView = pageView.bookTextView;
+//    return [pageTextView wordOffsetsForParagraphWithId:[id intValue]];
+    //NSMutableArray *words = [NSMutableArray array];
+    
+    return [NSArray arrayWithObject:id];
+}
+
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+{
+    //EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+//    EucPageTextView *pageTextView = pageView.bookTextView;
+//    
+//    NSArray *rects = [pageTextView rectsForWordAtParagraphId:[blockId intValue] wordOffset:[elementId intValue]];
+//    NSUInteger rectsCount = rects.count;
+//    if(rectsCount) {
+//        NSMutableArray *ret = [NSMutableArray arrayWithCapacity:rectsCount];
+//        for(NSValue *rect in rects) {
+//            [ret addObject:[NSValue valueWithCGRect:[pageView convertRect:[rect CGRectValue] fromView:pageTextView]]];
+//        }
+//        return ret;
+//    }
+//    return nil;
+    return [NSArray arrayWithObject:[NSValue valueWithCGRect:[(BlioPDFPositionedString *)blockId boundingRect]]];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if(object == self.highlighter &&
+       [keyPath isEqualToString:@"tracking"]) {
+        self.scrollView.scrollEnabled = !((EucHighlighter *)object).isTracking;
+    }
 }
 
 #pragma mark -
@@ -1062,6 +1131,15 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         self.lastZoomScale = self.scrollView.zoomScale;
         [UIView commitAnimations];
     } else {
+        NSArray *pages = [[self.book textFlow] pages];
+        NSInteger pageIndex = self.pageNumber - 1;
+        if (pageIndex < [pages count]) {
+            NSArray *paragraphs = [pages objectAtIndex:pageIndex];
+            for (BlioTextFlowParagraph *paragraph in paragraphs) {
+                NSLog(@"PageIndex: %d\n Words: %@", [paragraph pageIndex], [paragraph string]); 
+            }
+        }
+        
         NSArray *textBlocks = [self.parsedPage textBlocks];
         
         [self.scrollView setPagingEnabled:NO];
@@ -1313,12 +1391,18 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @synthesize pageCount;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"Touches began in scrollview");
     UITouch * t = [touches anyObject];
     if( [t tapCount]>1 ) {
         CGPoint point = [t locationInView:(UIView *)self.delegate];
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomAtPoint:)])
             [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(point)];
     }
+}
+
+- (BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view {
+  NSLog(@"Touches should begin in scrollview");
+    return YES;
 }
 
     

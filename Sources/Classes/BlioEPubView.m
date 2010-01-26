@@ -19,6 +19,19 @@
 @dynamic pageCount;
 @dynamic contentsDataSource;
 
+- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
+    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook bookPath]];
+    if (nil == aEPubBook) return nil;
+    
+
+    if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:aEPubBook])) {
+        if (animated) self.appearAtCoverThenOpen = YES;
+    }
+    [aEPubBook release];
+    
+    return self;
+}
+
 - (CGRect)firstPageRect
 {
     return [[UIScreen mainScreen] bounds];

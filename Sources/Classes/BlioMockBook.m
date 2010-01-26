@@ -27,9 +27,11 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic audiotimingFilename;
+@dynamic textflowFilename;
 
 - (void)dealloc {
-    [coverThumb release];
+    if (coverThumb) [coverThumb release];
+    if (textFlow) [textFlow release];
     [super dealloc];
 }
 
@@ -55,6 +57,14 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 
 - (BOOL)audioRights {
     return [[self valueForKey:@"hasAudioRights"] boolValue];
+}
+
+- (NSString *)textflowPath {
+    NSString *filename = [self valueForKey:@"textflowFilename"];
+    if (filename)
+        return [[NSBundle mainBundle] pathForResource:filename ofType:@"xml" inDirectory:@"TextFlows"];
+    else
+        return nil;
 }
 
 - (UIImage *)coverImage {
@@ -169,6 +179,14 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 
 - (UIImage *)coverThumbForList {
     return [self coverThumbForSize:CGSizeMake(kBlioMockBookListThumbWidth, kBlioMockBookListThumbHeight)];
+}
+
+- (BlioTextFlow *)textFlow {
+    if (nil == textFlow) {
+        textFlow = [[BlioTextFlow alloc] init];
+        [textFlow addFlowViewFileAtPath:[self textflowPath]];
+    }
+    return textFlow;
 }
 
 @end
