@@ -1276,9 +1276,10 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
 - (void)setUserInteractionEnabled:(BOOL)enabled
 {
-    if(_touch) {
+    if(!enabled && _touch) {
         [self _touchesEndedOrCancelled:[NSSet setWithObject:_touch] withEvent:nil];
     }
+    [super setUserInteractionEnabled:enabled];
 }
 
 // Since gravity is the only force we're using, we just manually add it in 

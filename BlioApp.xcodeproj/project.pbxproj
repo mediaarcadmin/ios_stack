@@ -84,6 +84,8 @@
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
+		7DE7DB28110F662600403651 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB26110F662600403651 /* SelectionEnd.png */; };
+		7DE7DB29110F662600403651 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB27110F662600403651 /* SelectionKnob.png */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		A349F06B110E31CC009A8F89 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A349F067110E31CC009A8F89 /* AudioBooks */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
@@ -267,6 +269,8 @@
 		7DE7B5E21104B4FD0021F382 /* Lighting.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Lighting.xib; sourceTree = "<group>"; };
 		7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLightSettingsViewController.h; sourceTree = "<group>"; };
 		7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLightSettingsViewController.m; sourceTree = "<group>"; };
+		7DE7DB26110F662600403651 /* SelectionEnd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SelectionEnd.png; path = /tmp/SelectionEnd.png; sourceTree = "<absolute>"; };
+		7DE7DB27110F662600403651 /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SelectionKnob.png; path = /tmp/SelectionKnob.png; sourceTree = "<absolute>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A349F067110E31CC009A8F89 /* AudioBooks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AudioBooks; sourceTree = "<group>"; };
@@ -505,6 +509,8 @@
 			isa = PBXGroup;
 			children = (
 				7D57493C110A4D3A00A07367 /* MagnificationLoupe.png */,
+				7DE7DB26110F662600403651 /* SelectionEnd.png */,
+				7DE7DB27110F662600403651 /* SelectionKnob.png */,
 				7D381D0510D93039008D34E2 /* HyphenationPatterns */,
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CCD10D93023008D34E2 /* animatedBookTurnVertices.vertexData */,
@@ -760,6 +766,8 @@
 				553E98FC1107B8E600FB309D /* speedread-thumb.png in Resources */,
 				7D57493D110A4D3A00A07367 /* MagnificationLoupe.png in Resources */,
 				A349F06B110E31CC009A8F89 /* AudioBooks in Resources */,
+				7DE7DB28110F662600403651 /* SelectionEnd.png in Resources */,
+				7DE7DB29110F662600403651 /* SelectionKnob.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,11 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "THEventCapturingWindow.h"
 
-@class EucHighlighterOverlayView;
+@class EucHighlighterOverlayView, THPair;
 @protocol EucHighlighterDataSource;
+
+typedef enum EucHighlighterTrackingStage {
+    EucHighlighterTrackingStageNone,
+    EucHighlighterTrackingStageFirstSelection,
+    EucHighlighterTrackingStageSelectedAndWaiting,
+    EucHighlighterTrackingStageChangingSelection,
+} EucHighlighterTrackingStage;
+    
 
 @interface EucHighlighter : NSObject <THEventCaptureObserver> {
     id<EucHighlighterDataSource> _dataSource;
+    
     CGImageRef _magnificationLoupeImage;
     
     UIView *_attachedView;
@@ -21,16 +30,23 @@
     NSMutableArray *_temporaryHighlightLayers;
 
     UITouch *_trackingTouch;
+    BOOL _trackingTouchHasMoved;
     BOOL _tracking;
+    EucHighlighterTrackingStage _trackingStage;
     
     UIView *_viewWithSelection;
     UIImageView *_loupeView;
     
     NSMutableArray *_highlightLayers;
+    THPair *_highlightEndLayers;
+    THPair *_highlightKnobLayers;
+    
+    CALayer *_draggingKnob;
 }
 
 @property (nonatomic, assign) id<EucHighlighterDataSource> dataSource;
-@property (nonatomic, assign, getter=isTracking) BOOL tracking;
+@property (nonatomic, assign, readonly, getter=isTracking) BOOL tracking;
+@property (nonatomic, assign, readonly) EucHighlighterTrackingStage trackingStage;
 
 - (void)attachToView:(UIView *)view;
 - (void)detatchFromView;
