@@ -51,8 +51,6 @@
 
 
 
-- (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)eucBook;
-
 @property (nonatomic, readonly) NSInteger pageCount;
 @property (nonatomic, readonly) NSInteger pageNumber;
 

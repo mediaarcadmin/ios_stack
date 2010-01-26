@@ -55,7 +55,6 @@
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucHighlighter *highlighter;
 
-- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated;
 - (NSString *)parsedText;
 - (void)displayDebug;
 

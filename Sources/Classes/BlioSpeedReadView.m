@@ -12,60 +12,59 @@
 #import <QuartzCore/CALayer.h>
 #import <QuartzCore/CATransaction.h>
 #import <libEucalyptus/EucEPubBook.h>
+#import "BlioMockBook.h"
 
 @implementation BlioSpeedReadView
 
 @synthesize pageCount, pageNumber, currentWordOffset, currentParagraph, currentPage, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, speed, font, textArray, nextWordTimer;
 
-- (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)eucBook {
-    self = [super initWithFrame:frame];
+- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
+    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook bookPath]];
+    if (nil == aEPubBook) return nil;
     
-    book = [eucBook retain];
+    if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
+        book = [aEPubBook retain];
+        
+        [self setMultipleTouchEnabled:NO];
+        [self setBackgroundColor:[UIColor blackColor]];
 
-
-
+        fingerImageHolder = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 93, 93)];
+        fingerImage = [[CALayer alloc] init];
+        [fingerImage setContents:(id)[[UIImage imageNamed:@"speedread-thumb.png"] CGImage]];
+        [fingerImage setFrame:CGRectMake(0, 0, 93, 93)];
+        [fingerImageHolder.layer addSublayer:fingerImage];
+        
+        backgroundImage = [[CALayer alloc] init];
+        [backgroundImage setFrame:CGRectMake(0, 0, 320, 480)];
+        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedread-background-dark-portrait.png"] CGImage]];
+        [self.layer addSublayer:backgroundImage];
+        
+        bigTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 200, 290, 40)];
+        [bigTextLabel setTextColor:[UIColor whiteColor]];
+        [bigTextLabel setBackgroundColor:[UIColor clearColor]];
+        
+        [self addSubview:bigTextLabel];
+        
+        [CATransaction begin];
+        [CATransaction setValue:[NSNumber numberWithFloat:0.0f] forKey:kCATransactionAnimationDuration];
+        
+        fingerImage.transform = CATransform3DMakeScale(0.01, 0.01, 1);
+        [fingerImage setOpacity:0.0f];
+        [CATransaction commit];
+        
+        [self addSubview:fingerImageHolder];
+        
+        font = [UIFont fontWithName:@"Helvetica" size:32.0];
+        
+        speed = 0;
+        currentWordOffset = 0;
+        [bigTextLabel setFont:font];
+        
+        [self fillArrayWithCurrentParagraph];	
+        [bigTextLabel setText:[textArray objectAtIndex:0]];
+    }
     
-    [self setMultipleTouchEnabled:NO];
-    [self setBackgroundColor:[UIColor blackColor]];
-
-
-    
-    fingerImageHolder = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 93, 93)];
-    fingerImage = [[CALayer alloc] init];
-    [fingerImage setContents:(id)[[UIImage imageNamed:@"speedread-thumb.png"] CGImage]];
-    [fingerImage setFrame:CGRectMake(0, 0, 93, 93)];
-    [fingerImageHolder.layer addSublayer:fingerImage];
-    
-    backgroundImage = [[CALayer alloc] init];
-    [backgroundImage setFrame:CGRectMake(0, 0, 320, 480)];
-    [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedread-background-dark-portrait.png"] CGImage]];
-    [self.layer addSublayer:backgroundImage];
-    
-    bigTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 200, 290, 40)];
-    [bigTextLabel setTextColor:[UIColor whiteColor]];
-    [bigTextLabel setBackgroundColor:[UIColor clearColor]];
-    
-    [self addSubview:bigTextLabel];
-    
-    [CATransaction begin];
-    [CATransaction setValue:[NSNumber numberWithFloat:0.0f] forKey:kCATransactionAnimationDuration];
-    
-    fingerImage.transform = CATransform3DMakeScale(0.01, 0.01, 1);
-    [fingerImage setOpacity:0.0f];
-    [CATransaction commit];
-
-    [self addSubview:fingerImageHolder];
-    
-    font = [UIFont fontWithName:@"Helvetica" size:32.0];
-    
-	speed = 0;
-	currentWordOffset = 0;
-	[bigTextLabel setFont:font];
-    
-    [self fillArrayWithCurrentParagraph];	
-	[bigTextLabel setText:[textArray objectAtIndex:0]];
-
-
+    [aEPubBook release];
     return self;
 }
 
