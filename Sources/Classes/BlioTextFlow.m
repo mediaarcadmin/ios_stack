@@ -72,6 +72,32 @@
         NSLog(@"TextFlow file at path: %@ failed to parse", path);
 }
 
+#pragma mark -
+#pragma mark Convenience methods
+
+- (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex {
+    NSArray *pageParagraphs = [NSArray array];
+    if (pageIndex < [pages count]) {
+        pageParagraphs = [pages objectAtIndex:pageIndex];
+    }
+    return pageParagraphs;
+}
+
+- (NSString *)stringForPageAtIndex:(NSInteger)pageIndex {
+    NSMutableString *pageString = [NSMutableString string];
+    NSArray *pageParagraphs = [self paragraphsForPageAtIndex:pageIndex];
+    for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
+        if ([pageString length])
+            [pageString appendFormat:@"\n\n%@", paragraph.string];
+        else 
+            [pageString appendString:paragraph.string];
+    }
+    return pageString;
+}
+
+#pragma mark -
+#pragma mark Parsing methods
+
 - (void)parserDidEndDocument:(NSXMLParser *)parser {
     self.textFlowParser = nil;
 }
@@ -194,12 +220,28 @@
     return self;
 }
 
-- (NSString *)string {
+- (NSArray *)wordsArray {
     NSMutableArray *allWordStrings = [NSMutableArray arrayWithCapacity:[self.words count]];
     for (BlioTextFlowPositionedWord *word in self.words) {
         [allWordStrings addObject:word.string];
     }
-    return [allWordStrings componentsJoinedByString:@" "];
+    return allWordStrings;
+}
+
+- (NSString *)string {
+    return [self.wordsArray componentsJoinedByString:@" "];
+}
+
+- (CGRect)rect {
+    if (CGRectEqualToRect(rect, CGRectZero)) {
+        for (BlioTextFlowPositionedWord *word in self.words) {
+            if (CGRectIsNull(rect))
+                rect = word.rect;
+            else
+                rect = CGRectUnion(rect, word.rect);
+        }
+    }
+    return rect;
 }
 
 @end

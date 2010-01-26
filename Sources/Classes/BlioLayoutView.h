@@ -55,7 +55,7 @@
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucHighlighter *highlighter;
 
-- (NSString *)parsedText;
 - (void)displayDebug;
+- (NSArray *)paragraphWordsForParagraphWithId:(uint32_t)paragraphId;
 
 @end

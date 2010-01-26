@@ -1310,7 +1310,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [_acapelaTTS setCurrentPage:self.bookView.pageNumber]; // Not very robust page-identifier
             [_acapelaTTS setCurrentWordOffset:0];
             [_acapelaTTS setCurrentParagraph:1];
-            [_acapelaTTS setParagraphWords:[[(BlioLayoutView *)self.bookView parsedText] componentsSeparatedByString:@" "]];
+            [_acapelaTTS setParagraphWords:[(BlioLayoutView *)self.bookView paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
             
         }
         [_acapelaTTS setTextToSpeakChanged:YES];
@@ -1475,7 +1475,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         UITextView *aTextView = [[UITextView alloc] initWithFrame:self.view.bounds];
         [aTextView setEditable:NO];
         [aTextView setContentInset:UIEdgeInsetsMake(10, 0, 10, 0)];
-        [aTextView setText:[(BlioLayoutView *)self.bookView parsedText]];
+        NSInteger pageIndex = self.bookView.pageNumber - 1;
+        [aTextView setText:[[self.book textFlow] stringForPageAtIndex:pageIndex]];
         [aTextView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
         UIViewController *aVC = [[UIViewController alloc] init];
         aVC.view = aTextView;
@@ -1537,7 +1538,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
             bookmarkText = [[book paragraphWordsForParagraphWithId:paragraphId] componentsJoinedByString:@" "];
         } else if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-            bookmarkText = [(BlioLayoutView *)self.bookView parsedText];
+            NSInteger pageIndex = self.bookView.pageNumber - 1;
+            bookmarkText = [[self.book textFlow] stringForPageAtIndex:pageIndex];
         }
         
         NSManagedObject *newBookmark = [NSEntityDescription

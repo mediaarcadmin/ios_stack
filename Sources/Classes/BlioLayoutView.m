@@ -329,7 +329,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.debugView = nil;
     self.currentPageView = nil;
     self.fonts = nil;
-    self.parsedPage = nil;
     [self.highlighter removeObserver:self forKeyPath:@"tracking"];
     [self.highlighter detatchFromView];
     self.highlighter = nil;
@@ -444,15 +443,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return self;
 }
 
-- (NSString *)parsedText {
-    // TODO this might not be thread safe if parsing happens on a background thread;
-    // Put into an NSOperation queue and wait until done
-    if (nil == self.parsedPage) {
-        [self parsePage:self.pageNumber];
-    }
-    return [self.parsedPage textContent];
-}
-
 - (void)parseFonts {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     BlioPDFFontList *aFontsList = [[BlioPDFFontList alloc] init];
@@ -514,63 +504,28 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self displayDebugRect:CGRectZero forPage:pageNumber];
 }
 
-- (void)parsePage:(NSInteger)aPageNumber {
-    CGPDFPageRef pageRef = CGPDFDocumentGetPage(pdf, aPageNumber);
-    BlioPDFParsedPage *aParsedPage = [[BlioPDFParsedPage alloc] initWithPage:pageRef andFontList:self.fonts];
-    self.parsedPage = aParsedPage;
-    [aParsedPage release];
-}
-
-- (void)parseCurrentPageInBackground {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    [self parsePage:self.pageNumber];
-    [pool drain];
-}
-
 #pragma mark -
 #pragma mark Highlighter
 
 - (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter {
-//    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-//    EucPageTextView *pageTextView = pageView.bookTextView;
-//    return [pageTextView paragraphIds];
-    return [self.parsedPage textBlocks];
+    NSInteger pageIndex = self.pageNumber - 1;
+    return [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
 }
 
-- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id
-{
-//    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-//    EucPageTextView *pageTextView = pageView.bookTextView;
-//    return [pageView convertRect:[pageTextView frameOfParagraphWithId:[id intValue]] fromView:pageTextView];    
-    return [(BlioPDFPositionedString *)id boundingRect];
+- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id {
+    return [(BlioTextFlowParagraph *)id rect];
 }
 
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id;
-{
-//    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-//    EucPageTextView *pageTextView = pageView.bookTextView;
-//    return [pageTextView wordOffsetsForParagraphWithId:[id intValue]];
-    //NSMutableArray *words = [NSMutableArray array];
-    
-    return [NSArray arrayWithObject:id];
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id; {
+    return [(BlioTextFlowParagraph *)id words];
 }
 
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
-{
-    //EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-//    EucPageTextView *pageTextView = pageView.bookTextView;
-//    
-//    NSArray *rects = [pageTextView rectsForWordAtParagraphId:[blockId intValue] wordOffset:[elementId intValue]];
-//    NSUInteger rectsCount = rects.count;
-//    if(rectsCount) {
-//        NSMutableArray *ret = [NSMutableArray arrayWithCapacity:rectsCount];
-//        for(NSValue *rect in rects) {
-//            [ret addObject:[NSValue valueWithCGRect:[pageView convertRect:[rect CGRectValue] fromView:pageTextView]]];
-//        }
-//        return ret;
-//    }
-//    return nil;
-    return [NSArray arrayWithObject:[NSValue valueWithCGRect:[(BlioPDFPositionedString *)blockId boundingRect]]];
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId {    
+    CGRect wordRect = [(BlioTextFlowPositionedWord *)elementId rect];
+    CGRect convertedRect = [self.currentPageView convertRectFromPDFPage:wordRect];
+
+    NSLog(@"word: %@ wordRect: %@ page: %@, converted: %@",  [(BlioTextFlowPositionedWord *)elementId string], NSStringFromCGRect(wordRect), NSStringFromCGRect(CGPDFPageGetBoxRect([self.currentPageView page], kCGPDFCropBox)), NSStringFromCGRect(convertedRect));
+    return [NSArray arrayWithObject:[NSValue valueWithCGRect:convertedRect]];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -583,10 +538,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 #pragma mark -
 #pragma mark TTS
 
+- (NSArray *)paragraphWordsForParagraphWithId:(uint32_t)paragraphId {
+    NSInteger pageIndex = self.pageNumber - 1;
+    return [[[[self.book textFlow] paragraphsForPageAtIndex:pageIndex] objectAtIndex:paragraphId] wordsArray];
+}
+
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset {
-    [self displayDebug];
-    CGRect boundingRect = [self.parsedPage rectForWordAtPosition:wordOffset];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioPDFDrawRectOfInterest" object:NSStringFromCGRect(boundingRect)];
     return;
 }
 
@@ -1073,11 +1030,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self renderSharpPageAtScale:self.scrollView.zoomScale];
     if (self.disableScrollUpdating) return;
     
-    //NSLog(@"Update after scroll");
-    //[self parsePage:self.pageNumber];
-    self.parsedPage = nil;
-    //[self performSelectorInBackground:@selector(parseCurrentPageInBackground) withObject:nil];
-    [self performSelector:@selector(parseCurrentPageInBackground)]; // Moved to foreground to stop crashes - should be in NSOperationQueue
     
     if (self.scrollToPageInProgress) {
         //NSLog(@"force reloading pages around page %d", self.pageNumber);
@@ -1131,14 +1083,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         self.lastZoomScale = self.scrollView.zoomScale;
         [UIView commitAnimations];
     } else {
-        NSArray *pages = [[self.book textFlow] pages];
         NSInteger pageIndex = self.pageNumber - 1;
-        if (pageIndex < [pages count]) {
-            NSArray *paragraphs = [pages objectAtIndex:pageIndex];
-            for (BlioTextFlowParagraph *paragraph in paragraphs) {
-                NSLog(@"PageIndex: %d\n Words: %@", [paragraph pageIndex], [paragraph string]); 
-            }
+        NSArray *paragraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+        for (BlioTextFlowParagraph *paragraph in paragraphs) {
+            NSLog(@"PageIndex: %d\n Words: %@", [paragraph pageIndex], [paragraph string]); 
         }
+
         
         NSArray *textBlocks = [self.parsedPage textBlocks];
         

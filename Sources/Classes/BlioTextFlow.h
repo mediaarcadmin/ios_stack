@@ -31,12 +31,15 @@
 @interface BlioTextFlowParagraph : NSObject {
     NSInteger pageIndex;
     NSMutableArray *words;
+    CGRect rect;
 }
 
 @property (nonatomic) NSInteger pageIndex;
 @property (nonatomic, retain) NSMutableArray *words;
+@property (nonatomic, readonly) CGRect rect;
 
 - (NSString *)string;
+- (NSArray *)wordsArray;
 
 @end
 
@@ -59,5 +62,9 @@
 @property (nonatomic, retain) NSMutableArray *paragraphs;
 
 - (void)addFlowViewFileAtPath:(NSString *)path;
+
+// Convenience methods
+- (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex;
+- (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
 
 @end
