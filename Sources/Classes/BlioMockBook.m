@@ -27,6 +27,7 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic audiotimingFilename;
+@dynamic textflowFilename;
 
 - (void)dealloc {
     [coverThumb release];
@@ -55,6 +56,14 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 
 - (BOOL)audioRights {
     return [[self valueForKey:@"hasAudioRights"] boolValue];
+}
+
+- (NSString *)textflowPath {
+    NSString *filename = [self valueForKey:@"textflowFilename"];
+    if (filename)
+        return [[NSBundle mainBundle] pathForResource:filename ofType:@"xml" inDirectory:@"TextFlows"];
+    else
+        return nil;
 }
 
 - (UIImage *)coverImage {

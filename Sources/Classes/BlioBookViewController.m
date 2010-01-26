@@ -328,6 +328,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 @synthesize tiltScroller, tapDetector, motionControlsEnabled;
 
+@synthesize textFlow = _textFlow;
+
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
     return !self.hidesBottomBarWhenPushed;
@@ -369,6 +371,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (id)initWithBook:(BlioMockBook *)newBook {
     if ((self = [super initWithNibName:nil bundle:nil])) {
+        
+        // Might need to move this into bookView to be lazily parsed for larger books
+        BlioTextFlow *aTextFlow = [[BlioTextFlow alloc] init];
+        [aTextFlow addFlowViewFileAtPath:[newBook textflowPath]];
+        self.textFlow = aTextFlow;
+        [aTextFlow release];
+        
         self.audioPlaying = NO;
         self.wantsFullScreenLayout = YES;
         
@@ -832,6 +841,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     self.pageJumpView = nil;
     self.pieButton = nil;
     self.managedObjectContext = nil;
+    self.textFlow = nil;
 	[super dealloc];
 }
 

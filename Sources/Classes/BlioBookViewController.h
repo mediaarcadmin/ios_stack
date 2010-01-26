@@ -18,6 +18,7 @@
 #import "BlioContentsTabViewController.h"
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
+#import "BlioTextFlow.h"
 
 @class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton;
 @protocol EucBook, BlioBookView;
@@ -85,6 +86,7 @@ typedef enum {
     BOOL _pageJumpSliderTracking;
     BlioBookViewControllerProgressPieButton *_pieButton;
     NSManagedObjectContext *_managedObjectContext;
+    BlioTextFlow *_textFlow;
 }
 
 // Designated initializers.
@@ -110,6 +112,7 @@ typedef enum {
 @property (nonatomic, retain) UIView *pageJumpView;
 @property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain) BlioTextFlow *textFlow;
 
 - (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;

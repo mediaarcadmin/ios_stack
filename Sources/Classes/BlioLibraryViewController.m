@@ -237,6 +237,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setAudiobookFilename:@"Three Little Pigs"];
         [aBook setAudiotimingFilename:@"Three Little Pigs"];
         [aBook setHasAudioRights:[NSNumber numberWithBool:YES]];
+        [aBook setTextflowFilename:@"Three_Little_Pigs"];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
         [aBook setPosition:[NSNumber numberWithInt:3]];

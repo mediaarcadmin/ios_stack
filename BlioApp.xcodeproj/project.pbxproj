@@ -118,6 +118,8 @@
 		C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */; };
 		C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57810F2289D00FD5F22 /* icon-lock.png */; };
 		C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57910F2289D00FD5F22 /* icon-finger.png */; };
+		C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E1FA24110EE4D500999587 /* BlioTextFlow.m */; };
+		C9E1FAAA110F26DB00999587 /* TextFlows in Resources */ = {isa = PBXBuildFile; fileRef = C9E1FAA7110F26DB00999587 /* TextFlows */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -313,6 +315,9 @@
 		C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioUIImageAdditions.m; sourceTree = "<group>"; };
 		C9D8A57810F2289D00FD5F22 /* icon-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-lock.png"; sourceTree = "<group>"; };
 		C9D8A57910F2289D00FD5F22 /* icon-finger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-finger.png"; sourceTree = "<group>"; };
+		C9E1FA23110EE4D500999587 /* BlioTextFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlow.h; sourceTree = "<group>"; };
+		C9E1FA24110EE4D500999587 /* BlioTextFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlow.m; sourceTree = "<group>"; };
+		C9E1FAA7110F26DB00999587 /* TextFlows */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TextFlows; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -361,6 +366,8 @@
 				7D79183510F2257C00C4D839 /* BlioEPubView.m */,
 				C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */,
 				C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */,
+				C9E1FA23110EE4D500999587 /* BlioTextFlow.h */,
+				C9E1FA24110EE4D500999587 /* BlioTextFlow.m */,
 				553E98FF1107B8F200FB309D /* BlioSpeedReadView.h */,
 				553E99001107B8F200FB309D /* BlioSpeedReadView.m */,
 				C9775AF410DFD728005E0E2B /* BlioMockBook.h */,
@@ -420,7 +427,13 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
+				C9E1FAA7110F26DB00999587 /* TextFlows */,
 				A349F067110E31CC009A8F89 /* AudioBooks */,
+				A37FC0D910EA76AD00F3DC5A /* TTS */,
+				C9775E9A10DFE1C3005E0E2B /* MockCovers */,
+				C94D27B510DBCF4C00F30AFE /* PDFs */,
+				7DF58BA210DA9A86004E3DBB /* ePubs */,
 				553E98F91107B8E600FB309D /* speedread-background-dark-portrait.png */,
 				553E98FA1107B8E600FB309D /* speedread-thumb.png */,
 				7DB9F95210F3A08C0010DF0B /* logo-white.png */,
@@ -434,7 +447,6 @@
 				7D81ED2310E90C220016D44A /* paper-black.png */,
 				7D81ED2410E90C220016D44A /* paper-neutral.png */,
 				7D81ED2510E90C220016D44A /* paper-white.png */,
-				A37FC0D910EA76AD00F3DC5A /* TTS */,
 				C94D863E10E78E140094B9C5 /* button-getbooks.png */,
 				C94D863F10E78E140094B9C5 /* button-settings.png */,
 				C94D864010E78E140094B9C5 /* button-sync.png */,
@@ -458,10 +470,6 @@
 				55822F1D10F2891B008614FD /* icon-plus.png */,
 				55822F1E10F2891B008614FD /* icon-search.png */,
 				7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */,
-				C9775E9A10DFE1C3005E0E2B /* MockCovers */,
-				C94D27B510DBCF4C00F30AFE /* PDFs */,
-				7DF58BA210DA9A86004E3DBB /* ePubs */,
-				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				7DE7B5E21104B4FD0021F382 /* Lighting.xib */,
@@ -760,6 +768,7 @@
 				553E98FC1107B8E600FB309D /* speedread-thumb.png in Resources */,
 				7D57493D110A4D3A00A07367 /* MagnificationLoupe.png in Resources */,
 				A349F06B110E31CC009A8F89 /* AudioBooks in Resources */,
+				C9E1FAAA110F26DB00999587 /* TextFlows in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -792,6 +801,7 @@
 				7D4CE4751100C64C0061BDF2 /* BlioBookmarkPoint.m in Sources */,
 				7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */,
 				553E99011107B8F200FB309D /* BlioSpeedReadView.m in Sources */,
+				C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
