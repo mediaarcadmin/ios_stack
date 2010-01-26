@@ -187,4 +187,19 @@
     [super dealloc];
 }
 
+- (id)init {
+    if ((self = [super init])) {
+        self.words = [NSMutableArray array];
+    }
+    return self;
+}
+
+- (NSString *)string {
+    NSMutableArray *allWordStrings = [NSMutableArray arrayWithCapacity:[self.words count]];
+    for (BlioTextFlowPositionedWord *word in self.words) {
+        [allWordStrings addObject:word.string];
+    }
+    return [allWordStrings componentsJoinedByString:@" "];
+}
+
 @end

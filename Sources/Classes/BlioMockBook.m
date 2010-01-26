@@ -30,7 +30,8 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 @dynamic textflowFilename;
 
 - (void)dealloc {
-    [coverThumb release];
+    if (coverThumb) [coverThumb release];
+    if (textFlow) [textFlow release];
     [super dealloc];
 }
 
@@ -178,6 +179,14 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 
 - (UIImage *)coverThumbForList {
     return [self coverThumbForSize:CGSizeMake(kBlioMockBookListThumbWidth, kBlioMockBookListThumbHeight)];
+}
+
+- (BlioTextFlow *)textFlow {
+    if (nil == textFlow) {
+        textFlow = [[BlioTextFlow alloc] init];
+        [textFlow addFlowViewFileAtPath:[self textflowPath]];
+    }
+    return textFlow;
 }
 
 @end

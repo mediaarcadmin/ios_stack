@@ -328,8 +328,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 @synthesize tiltScroller, tapDetector, motionControlsEnabled;
 
-@synthesize textFlow = _textFlow;
-
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
     return !self.hidesBottomBarWhenPushed;
@@ -371,13 +369,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (id)initWithBook:(BlioMockBook *)newBook {
     if ((self = [super initWithNibName:nil bundle:nil])) {
-        
-        // Might need to move this into bookView to be lazily parsed for larger books
-        BlioTextFlow *aTextFlow = [[BlioTextFlow alloc] init];
-        [aTextFlow addFlowViewFileAtPath:[newBook textflowPath]];
-        self.textFlow = aTextFlow;
-        [aTextFlow release];
-        
         self.audioPlaying = NO;
         self.wantsFullScreenLayout = YES;
         
@@ -414,8 +405,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         switch (lastLayout) {
             case kBlioPageLayoutPageLayout: {
                 if ([newBook pdfPath]) {
-                    BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithPath:[newBook pdfPath] page:[[newBook layoutPageNumber] integerValue] animated:YES];
-                    
+                    BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithBook:newBook animated:YES];
                     self.book = newBook;
                     self.bookView = aBookView;
                     [aBookView release];
@@ -841,7 +831,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     self.pageJumpView = nil;
     self.pieButton = nil;
     self.managedObjectContext = nil;
-    self.textFlow = nil;
 	[super dealloc];
 }
 
@@ -1160,8 +1149,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [book release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
-            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithPath:[self.book pdfPath] page:[[self.book layoutPageNumber] integerValue] animated:NO];
-            
+            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithBook:self.book animated:NO];
             [layoutView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
 
             self.bookView = layoutView;            

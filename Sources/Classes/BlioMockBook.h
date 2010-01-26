@@ -8,10 +8,11 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
+#import "BlioTextFlow.h"
 
 @interface BlioMockBook : NSManagedObject {
     UIImage *coverThumb;
+    BlioTextFlow *textFlow;
 }
 
 @property (nonatomic, retain) NSString *title;
@@ -37,5 +38,6 @@
 - (NSString *)audiotimingPath;
 - (BOOL)audioRights;
 - (NSString *)textflowPath;
+- (BlioTextFlow *)textFlow;
 
 @end

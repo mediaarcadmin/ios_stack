@@ -36,6 +36,8 @@
 @property (nonatomic) NSInteger pageIndex;
 @property (nonatomic, retain) NSMutableArray *words;
 
+- (NSString *)string;
+
 @end
 
 @interface BlioTextFlow : NSObject {

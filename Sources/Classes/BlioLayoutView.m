@@ -315,12 +315,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @implementation BlioLayoutView
 
 
-@synthesize scrollView, containerView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, highlighter;
+@synthesize book, scrollView, containerView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, highlighter;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     CGPDFDocumentRelease(pdf);
+    self.book = nil;
     self.scrollView = nil;
     self.containerView = nil;
     self.pageViews = nil;
@@ -335,18 +336,16 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [super dealloc];
 }
 
-- (id)initWithPath:(NSString *)path {
-    return [self initWithPath:path page:1 animated:NO];
-}
-
-- (id)initWithPath:(NSString *)path page:(NSUInteger)page animated:(BOOL)animated {
-    NSURL *pdfURL = [NSURL fileURLWithPath:path];
+- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
+//- (id)initWithPath:(NSString *)path page:(NSUInteger)page animated:(BOOL)animated {
+    NSURL *pdfURL = [NSURL fileURLWithPath:[aBook pdfPath]];
     pdf = CGPDFDocumentCreateWithURL((CFURLRef)pdfURL);
     
     if (NULL == pdf) return nil;
     
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {
         // Initialization code
+        self.book = aBook;
         self.clearsContextBeforeDrawing = NO; // Performance optimisation;
         self.scrollToPageInProgress = NO;
         self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];    
@@ -397,6 +396,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         NSMutableArray *pageViewArray = [[NSMutableArray alloc] initWithCapacity:kBlioLayoutMaxViews];
         self.pageViews = pageViewArray;
         [pageViewArray release];
+        
+        NSNumber *savedPage = [aBook layoutPageNumber];
+        NSInteger page = (nil != savedPage) ? [savedPage intValue] : 1;
         
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
@@ -1129,6 +1131,15 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         self.lastZoomScale = self.scrollView.zoomScale;
         [UIView commitAnimations];
     } else {
+        NSArray *pages = [[self.book textFlow] pages];
+        NSInteger pageIndex = self.pageNumber - 1;
+        if (pageIndex < [pages count]) {
+            NSArray *paragraphs = [pages objectAtIndex:pageIndex];
+            for (BlioTextFlowParagraph *paragraph in paragraphs) {
+                NSLog(@"PageIndex: %d\n Words: %@", [paragraph pageIndex], [paragraph string]); 
+            }
+        }
+        
         NSArray *textBlocks = [self.parsedPage textBlocks];
         
         [self.scrollView setPagingEnabled:NO];
