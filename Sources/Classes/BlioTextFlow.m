@@ -118,7 +118,7 @@
 
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
     self.textFlowParser = nil;
-    NSLog(@"TextFlow parsing error %i, File: %@, Description: %@, Line: %i, Column: %i", [parseError code], [self.currentSection path],
+    NSLog(@"TextFlow parsing error %i, File: %@, Domain: %@, Description: %@, Line: %i, Column: %i", [parseError code], [parseError domain], [self.currentSection path],
           [[parser parserError] localizedDescription], [parser lineNumber], [parser columnNumber]);
 }  
 
