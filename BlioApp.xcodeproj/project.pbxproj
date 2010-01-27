@@ -95,6 +95,7 @@
 		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
 		A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
 		A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
+		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
 		C932AF9410EBCFBD00B8286A /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */; };
 		C932B03B10ECBC6000B8286A /* BlioNotesView.m in Sources */ = {isa = PBXBuildFile; fileRef = C932B03A10ECBC6000B8286A /* BlioNotesView.m */; };
 		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
@@ -288,6 +289,8 @@
 		A37FC33A10EA787D00F3DC5A /* setupTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setupTTS.h; path = TTS/Acapela/setupTTS.h; sourceTree = "<group>"; };
 		A37FC33B10EA787D00F3DC5A /* setupTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = setupTTS.m; path = TTS/Acapela/setupTTS.m; sourceTree = "<group>"; };
 		A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticFat.a; path = Libraries/TTS/libMobilityStaticFat.a; sourceTree = "<group>"; };
+		A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioBookManager.h; sourceTree = "<group>"; };
+		A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioBookManager.m; sourceTree = "<group>"; };
 		C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsSheet.h; sourceTree = "<group>"; };
 		C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsSheet.m; sourceTree = "<group>"; };
 		C932B03910ECBC6000B8286A /* BlioNotesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioNotesView.h; sourceTree = "<group>"; };
@@ -392,6 +395,8 @@
 				55822E1910F276E0008614FD /* MSTapDetector.m */,
 				555CAF2D10F3B950007B1885 /* AccelerometerFilter.h */,
 				555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */,
+				A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */,
+				A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -810,6 +815,7 @@
 				7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */,
 				553E99011107B8F200FB309D /* BlioSpeedReadView.m in Sources */,
 				C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */,
+				A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
