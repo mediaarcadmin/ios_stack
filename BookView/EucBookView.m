@@ -753,12 +753,14 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 - (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
 {
+    _highlighter.selectionDisabled = YES;
     _highlightingDisabled = YES;
     [self _removeHighlights];
 }
 
 - (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
 {
+    _highlighter.selectionDisabled = NO;
     _highlightingDisabled = NO;
     if(_highlightPage == self.pageNumber) {
         [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];

@@ -8,7 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "EucHighlighter.h"
-#import "EucHighlighterOverlayView.h"
+#import "EucHighlighterRange.h"
 #import "THGeometryUtils.h"
 #import "THEventCapturingWindow.h"
 #import "THPair.h"
@@ -36,6 +36,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, retain) THPair *highlightKnobLayers;
 
 @property (nonatomic, retain) CALayer *draggingKnob;
+@property (nonatomic, assign) CGFloat draggingKnobVerticalOffset;
 
 - (CGImageRef)magnificationLoupeImage;
 - (void)_trackTouch:(UITouch *)touch;
@@ -44,9 +45,13 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 @implementation EucHighlighter
 
+@synthesize selectionDisabled = _selectionDisabled;
+
 @synthesize dataSource = _dataSource;
 
 @synthesize attachedView = _attachedView;
+
+@synthesize selectedRange = _selectedRange;
 
 @synthesize temporaryHighlightLayers = _temporaryHighlightLayers;
 
@@ -63,10 +68,13 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @synthesize highlightKnobLayers = _highlightKnobLayers;
 
 @synthesize draggingKnob = _draggingKnob;
+@synthesize draggingKnobVerticalOffset = _draggingKnobVerticalOffset;
 
 
 - (void)dealloc
 {
+    self.selectedRange = nil;
+    
     if(self.temporaryHighlightLayers) {
         THWarn(@"Highlighter released with temporary highlight displayed.");
         [self removeTemporaryHighlight];
@@ -245,8 +253,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
 {
     if(!_highlightEndLayers)  {
         NSData *imageData = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucHighlighter class]] pathForResource:@"SelectionEnd" ofType:@"png"]];
-
         CGImageRef endImage = [UIImage imageWithData:imageData].CGImage;
+        [imageData release];
+        
         CGFloat imageWidth = CGImageGetWidth(endImage);
         
         CALayer *highlightEndLayer1 = [[CALayer alloc] init];
@@ -269,8 +278,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
 {
     if(!_highlightKnobLayers) {
         NSData *imageData = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucHighlighter class]] pathForResource:@"SelectionKnob" ofType:@"png"]];
-        
         CGImageRef knobImage = [UIImage imageWithData:imageData].CGImage;
+        [imageData release];
+        
         CGFloat imageWidth = CGImageGetWidth(knobImage);
         CGFloat imageHeight = CGImageGetHeight(knobImage);
         
@@ -295,11 +305,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
 
+    NSArray *highlightLayers = self.highlightLayers;
     
     THPair *highlightEndLayers = self.highlightEndLayers;
     THPair *highlightKnobLayers = self.highlightKnobLayers;
  
-    CALayer *leftHighlightLayer = [self.highlightLayers objectAtIndex:0];
+    CALayer *leftHighlightLayer = [highlightLayers objectAtIndex:0];
     
     CALayer *leftEndLayer = highlightEndLayers.first;
     [leftHighlightLayer addSublayer:leftEndLayer];
@@ -315,7 +326,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
     leftKnobLayer.position = CGPointMake(-1.5f, -4.5f);
     leftKnobLayer.hidden = NO;
     
-    CALayer *rightHighlightLayer = [self.highlightLayers lastObject];
+    CALayer *rightHighlightLayer = [highlightLayers lastObject];
+    for(NSUInteger i = highlightLayers.count - 2; rightHighlightLayer.isHidden; --i) {
+        rightHighlightLayer = [highlightLayers objectAtIndex:i];
+    }
+    
     CALayer *rightEndLayer = highlightEndLayers.second;
     [rightHighlightLayer addSublayer:rightEndLayer];
     CGRect rightEndBounds = rightEndLayer.bounds;
@@ -466,21 +481,20 @@ static const CGFloat sLoupePopDuration = 0.05f;
         
         if(previousStage == EucHighlighterTrackingStageFirstSelection) {
             [self _removeLoupe];
-        } else if(previousStage == EucHighlighterTrackingStageFirstSelection) {
+        } else if(previousStage == EucHighlighterTrackingStageChangingSelection) {
             self.draggingKnob = nil;
         }
 
         switch(stage) {
             case EucHighlighterTrackingStageNone:
             {
-                [self _removeAllHighlightLayers];
                 if(self.viewWithSelection != self.attachedView) {
                     [(THEventCapturingWindow *)self.viewWithSelection.window removeTouchObserver:self forView:self.viewWithSelection];
                     [self.viewWithSelection removeFromSuperview];
                     self.viewWithSelection = nil;
                 }
+                [self _removeAllHighlightLayers];
                 self.tracking = NO;
-                
                 break;
             } 
             case EucHighlighterTrackingStageFirstSelection:
@@ -506,12 +520,6 @@ static const CGFloat sLoupePopDuration = 0.05f;
             } 
             case EucHighlighterTrackingStageSelectedAndWaiting:
             {
-                // Clean up extraneous highlighting layers.
-                NSMutableArray *highlightLayers = self.highlightLayers;
-                for(CALayer *layer = [highlightLayers lastObject]; layer.isHidden; layer = [highlightLayers lastObject]) {
-                    [layer removeFromSuperlayer];
-                    [highlightLayers removeLastObject];
-                }
                 [self _positionKnobs]; 
                 
                 break;   
@@ -524,7 +532,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
     }
 }
 
-- (NSArray *)_highlightRectsForPoint:(CGPoint)point
+- (THPair *)_blockAndElementIdsAndHighlightRectsForPoint:(CGPoint)point
 {
     id<EucHighlighterDataSource> dataSource = self.dataSource;
     for(id blockId in [dataSource blockIdentifiersForEucHighlighter:self]) {
@@ -533,7 +541,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 NSArray *rectsForElement = [dataSource eucHighlighter:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
                 for(NSValue *rectValue in rectsForElement) {
                     if(CGRectContainsPoint([rectValue CGRectValue], point)) {
-                        return rectsForElement;
+                        return [THPair pairWithFirst:[THPair pairWithFirst:blockId second:elementId] 
+                                              second:rectsForElement];
                     }
                 }
             }
@@ -542,18 +551,110 @@ static const CGFloat sLoupePopDuration = 0.05f;
     return nil;
 }
 
-- (void)_trackTouch:(UITouch *)touch
+- (THPair *)_closestBlockAndElementIdsForPoint:(CGPoint)point
 {
-    if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {
-        UIView *viewWithSelection = self.viewWithSelection;
-        CGPoint location = [touch locationInView:viewWithSelection];
+    id bestBlockId = nil;
+    id bestElementId = nil;
+    
+    CGFloat bestDistance = CGFLOAT_MAX;
+    
+    id<EucHighlighterDataSource> dataSource = self.dataSource;
+    for(id blockId in [dataSource blockIdentifiersForEucHighlighter:self]) {
+        for(id elementId in [dataSource eucHighlighter:self identifiersForElementsOfBlockWithIdentifier:blockId]) {
+            NSArray *rectsForElement = [dataSource eucHighlighter:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
+            for(NSValue *rectValue in rectsForElement) {
+                CGFloat distance = CGPointDistanceFromRect(point, [rectValue CGRectValue]);
+                if(distance < bestDistance) {
+                    bestDistance = distance;
+                    bestBlockId = blockId;
+                    bestElementId = elementId;
+                }
+            }
+        }
+    }
+    if(bestDistance != CGFLOAT_MAX) {
+        return [THPair pairWithFirst:bestBlockId second:bestElementId];
+    } else {
+        return nil; 
+    }
+}
+
+- (void)setSelectedRange:(EucHighlighterRange *)newRange
+{
+    if(newRange && ![newRange isEqual:_selectedRange]) {        
+        id<EucHighlighterDataSource> dataSource = self.dataSource;
         
-        NSArray *highlightRects = [self _highlightRectsForPoint:location];
-        NSMutableArray *highlightLayers = self.highlightLayers;
+        // Work out he rects to highlight
+        NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
+        
+        NSArray *blockIds = [dataSource blockIdentifiersForEucHighlighter:self];
+        NSUInteger blockIdIndex = 0;
+        
+        id startBlockId = newRange.startBlockId;
+        id endBlockId = newRange.endBlockId;
+        id startElementId = newRange.startElementId;
+        id endElementId = newRange.endElementId;
+
+        while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+            ++blockIdIndex;
+        }
+        BOOL isFirstBlock = YES;
+        BOOL isLastBlock = NO;
+        BOOL isFirstElement = YES;
+        CGRect currentLineRect = CGRectZero;
+        do {
+            id blockId = [blockIds objectAtIndex:blockIdIndex];
+                        
+            NSArray *elementIds = [dataSource eucHighlighter:self identifiersForElementsOfBlockWithIdentifier:blockId];
+            NSUInteger elementIdCount = elementIds.count;
+            NSUInteger elementIdIndex = 0;
             
+            isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+            
+            id elementId;
+            if(isFirstBlock) {
+                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                    ++elementIdIndex;
+                }
+                isFirstBlock = NO;
+            }
+            
+            do {
+                elementId = [elementIds objectAtIndex:elementIdIndex];
+                for(NSValue *rectValue in [dataSource eucHighlighter:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId]) {
+                    CGRect thisRect = [rectValue CGRectValue];
+                    if(isFirstElement) {
+                        currentLineRect = thisRect;
+                        isFirstElement = NO;
+                    } else {
+                        if((currentLineRect.origin.y <= thisRect.origin.y && currentLineRect.origin.y + currentLineRect.size.height > thisRect.origin.y) ||
+                           (currentLineRect.origin.y <= thisRect.origin.y + thisRect.size.height  && currentLineRect.origin.y + currentLineRect.size.height > thisRect.origin.y + thisRect.size.height)) {
+                            CGFloat newLimit = MAX(currentLineRect.origin.y + currentLineRect.size.height, 
+                                                   thisRect.origin.y + thisRect.size.height);
+                            currentLineRect.origin.y = MIN(currentLineRect.origin.y, thisRect.origin.y);
+                            currentLineRect.size.height = newLimit - currentLineRect.origin.y;
+                            currentLineRect.size.width = (thisRect.size.width + thisRect.origin.x) - currentLineRect.origin.x; 
+                        } else {
+                            [highlightRects addObject:[NSValue valueWithCGRect:currentLineRect]];
+                            currentLineRect = thisRect;
+                        }
+                    }
+                }
+                ++elementIdIndex;
+            } while (isLastBlock ? 
+                       ([elementId compare:endElementId] < NSOrderedSame) : 
+                       elementIdIndex < elementIdCount);
+            ++blockIdIndex;
+        } while(!isLastBlock);
+        [highlightRects addObject:[NSValue valueWithCGRect:currentLineRect]];
+
+        // Highlight them, reusing the current highlight layers if possible.
+        UIView *viewWithSelection = self.viewWithSelection;
+        NSMutableArray *highlightLayers = self.highlightLayers;
+                
         [CATransaction begin];
         [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-
+        
         NSUInteger highlightRectsCount = highlightRects.count;
         NSUInteger unusedHighlightLayersCount = highlightLayers.count;
         if(highlightRectsCount) {        
@@ -562,9 +663,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
                     highlightLayers = [NSMutableArray arrayWithCapacity:highlightRectsCount];
                     self.highlightLayers = highlightLayers;
                 }
+                CGColorRef highlightColor = [[UIColor colorWithRed:47.0f/255.0f green:102.0f/255.0f blue:179.0f/255.0f alpha:0.2f] CGColor];
                 for(NSUInteger i = unusedHighlightLayersCount; i < highlightRectsCount; ++i) {
                     CALayer *layer = [[CALayer alloc] init];
-                    layer.backgroundColor = [[UIColor colorWithRed:47.0f/255.0f green:102.0f/255.0f blue:179.0f/255.0f alpha:0.2f] CGColor];
+                    layer.backgroundColor = highlightColor;
                     [highlightLayers addObject:layer];
                     ++unusedHighlightLayersCount;
                     [layer release];
@@ -572,7 +674,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 }
             }
         } 
-            
+        
         for(NSUInteger i = 0; i < highlightRectsCount; ++i) {
             CALayer *layer = [highlightLayers objectAtIndex:i];
             NSValue *rectValue = [highlightRects objectAtIndex:i];
@@ -582,13 +684,95 @@ static const CGFloat sLoupePopDuration = 0.05f;
         }
         
         for(NSUInteger i = 0; i < unusedHighlightLayersCount; ++i) {
+            // Hide unused layers.
             ((CALayer *)[highlightLayers objectAtIndex:highlightRectsCount + i]).hidden = YES;
+        }        
+                        
+        [CATransaction commit];
+        
+        if(self.trackingStage != EucHighlighterTrackingStageFirstSelection) {
+            [self _positionKnobs];
         }
         
-        [CATransaction commit];
-
-        [self _loupeToPoint:location];
+        _selectedRange = [newRange retain];
+    } 
+    if(!newRange) {
+        if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {
+            for(CALayer *layer in self.highlightLayers) {
+                layer.hidden = YES;
+            }            
+        } else {
+            [self setTrackingStage:EucHighlighterTrackingStageNone];
+        }
     }
+}
+
+- (void)_trackTouch:(UITouch *)touch
+{       
+    UIView *viewWithSelection = self.viewWithSelection;
+    CGPoint location = [touch locationInView:viewWithSelection];
+
+    EucHighlighterRange *newSelectedRange = nil;
+    
+    if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {   
+        [self _loupeToPoint:location];
+
+        THPair *blockAndElementAndHighlightRects = [self _blockAndElementIdsAndHighlightRectsForPoint:location];
+        THPair *blockAndElementIds = blockAndElementAndHighlightRects.first;
+        
+        if(blockAndElementIds) {
+            newSelectedRange = [[EucHighlighterRange alloc] init];
+            id blockId = blockAndElementIds.first;
+            id elementId = blockAndElementIds.second;
+            
+            newSelectedRange.startBlockId = blockId;
+            newSelectedRange.endBlockId = blockId;
+            newSelectedRange.startElementId = elementId;
+            newSelectedRange.endElementId = elementId;
+        }
+    } else {
+        location.y += self.draggingKnobVerticalOffset;
+        THPair *closestBlockAndElement = [self _closestBlockAndElementIdsForPoint:location];
+        
+        if(closestBlockAndElement) {
+            newSelectedRange = [[EucHighlighterRange alloc] init];
+            
+            id blockId = closestBlockAndElement.first;
+            id elementId = closestBlockAndElement.second;
+            
+            EucHighlighterRange *currentSelectedRange = self.selectedRange;
+
+            BOOL left = self.draggingKnob == self.highlightKnobLayers.first;
+            if(left) {
+                newSelectedRange.endBlockId = currentSelectedRange.endBlockId;
+                newSelectedRange.endElementId = currentSelectedRange.endElementId;
+                NSComparisonResult blockComparison = [blockId compare:currentSelectedRange.endBlockId];
+                if(blockComparison == NSOrderedAscending ||
+                   (blockComparison == NSOrderedSame && [elementId compare:currentSelectedRange.endElementId] == NSOrderedAscending)) {
+                    newSelectedRange.startBlockId = blockId;
+                    newSelectedRange.startElementId = elementId;
+                } else {
+                    newSelectedRange.startBlockId = currentSelectedRange.endBlockId;
+                    newSelectedRange.startElementId = currentSelectedRange.endElementId;
+                }
+            } else {
+                newSelectedRange.startBlockId = currentSelectedRange.startBlockId;
+                newSelectedRange.startElementId = currentSelectedRange.startElementId;
+                NSComparisonResult blockComparison = [blockId compare:currentSelectedRange.startBlockId];
+                if(blockComparison == NSOrderedDescending ||
+                   (blockComparison == NSOrderedSame && [elementId compare:currentSelectedRange.startElementId] == NSOrderedDescending)) {
+                    newSelectedRange.endBlockId = blockId;
+                    newSelectedRange.endElementId = elementId;
+                } else {
+                    newSelectedRange.endBlockId = currentSelectedRange.startBlockId;
+                    newSelectedRange.endElementId = currentSelectedRange.startElementId;
+                }
+            }
+        }
+    }
+        
+    self.selectedRange = newSelectedRange;
+    [newSelectedRange release];
 }
 
 - (void)_startSelection
@@ -599,9 +783,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
     self.trackingTouchHasMoved = YES;
 }
 
-- (CALayer *)_knobForTouch:(UITouch *)touch
+- (void)_setDraggingKnobFromTouch:(UITouch *)touch
 {
-    CALayer *ret = nil;
+    CALayer *draggingKnob = nil;
+    CGFloat draggingKnobVerticalOffset = 0.0f;
     
     THPair *highlightKnobLayers = self.highlightKnobLayers;
     if(highlightKnobLayers) {
@@ -611,58 +796,81 @@ static const CGFloat sLoupePopDuration = 0.05f;
             CALayer *viewWithSelectionLayer = viewWithSelection.layer;
             
             CGPoint touchPoint = [touch locationInView:viewWithSelection];
-            CGRect leftKnobRect = [leftKnobLayer convertRect:leftKnobLayer.bounds toLayer:viewWithSelectionLayer];
+            CGRect leftKnobRect = CGRectInset([leftKnobLayer convertRect:leftKnobLayer.bounds toLayer:viewWithSelectionLayer], -8.0f, -8.0f);
 
             if(CGRectContainsPoint(leftKnobRect, touchPoint)) {
-                ret = leftKnobLayer;
+                draggingKnob = leftKnobLayer;
+                CALayer *endLayer = self.highlightEndLayers.first;
+                CGPoint endLayerCenter = [endLayer convertPoint:endLayer.position toLayer:viewWithSelectionLayer];
+                draggingKnobVerticalOffset = endLayerCenter.y - touchPoint.y;
             } else {
                 CALayer *rightKnobLayer = self.highlightKnobLayers.second;
-                CGRect rightKnobRect = [rightKnobLayer convertRect:rightKnobLayer.bounds toLayer:viewWithSelectionLayer];
+                CGRect rightKnobRect = CGRectInset([rightKnobLayer convertRect:rightKnobLayer.bounds toLayer:viewWithSelectionLayer], -8.0f, -8.0f);
                 if(CGRectContainsPoint(rightKnobRect, touchPoint)) {
-                    ret = rightKnobLayer;
+                    draggingKnob = rightKnobLayer;
+                    CALayer *endLayer = self.highlightEndLayers.second;
+                    CGPoint endLayerCenter = [endLayer convertPoint:endLayer.position toLayer:viewWithSelectionLayer];
+                    draggingKnobVerticalOffset = endLayerCenter.y - touchPoint.y;                    
                 }
             }
         }
     }
-    return ret;
+
+    self.draggingKnob = draggingKnob;
+    self.draggingKnobVerticalOffset = draggingKnobVerticalOffset;
+}
+
+- (void)setSelectionDisabled:(BOOL)selectionDisabled
+{
+    _selectionDisabled = selectionDisabled;
+    if(_selectionDisabled) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+        self.trackingStage = EucHighlighterTrackingStageNone;
+        self.trackingTouch = nil;
+    }
 }
 
 - (void)observeTouch:(UITouch *)touch
 {
-    UITouch *trackingTouch = self.trackingTouch;
-    UITouchPhase phase = touch.phase;
-    BOOL currentlyTracking = self.isTracking;
-    
-    if(!trackingTouch && phase == UITouchPhaseBegan) {
-        self.trackingTouch = touch;
-        self.trackingTouchHasMoved = NO;
-        if(!currentlyTracking || 
-           !(self.draggingKnob = [self _knobForTouch:touch])) {
-            [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
-        } else {
-            if(self.draggingKnob) {
-                self.trackingStage = EucHighlighterTrackingStageChangingSelection;
-                [self _trackTouch:touch];
-            } 
-        }
-    } else if(touch == trackingTouch) {
-        if(!currentlyTracking || 
-           (self.trackingStage == EucHighlighterTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
-            self.trackingTouch = nil;
-            self.trackingStage = EucHighlighterTrackingStageNone;
-        } else {        
-            if(phase == UITouchPhaseMoved) { 
-                self.trackingTouchHasMoved = YES;
-                [self _trackTouch:touch];
-            } else if(phase == UITouchPhaseEnded || phase == UITouchPhaseCancelled) {
-                [self _trackTouch:touch];
-                if(self.trackingTouchHasMoved && self.highlightLayers.count && !((CALayer *)[self.highlightLayers objectAtIndex:0]).isHidden) {
-                    self.trackingStage = EucHighlighterTrackingStageSelectedAndWaiting;
-                } else {
-                    self.trackingStage = EucHighlighterTrackingStageNone;
-                }
+    if(!self.selectionDisabled) {
+        UITouch *trackingTouch = self.trackingTouch;
+        UITouchPhase phase = touch.phase;
+        BOOL currentlyTracking = self.isTracking;
+        
+        if(!trackingTouch && phase == UITouchPhaseBegan) {
+            self.trackingTouch = touch;
+            self.trackingTouchHasMoved = NO;
+            if(currentlyTracking) {
+                [self _setDraggingKnobFromTouch:touch];
+            }
+            if(!currentlyTracking || 
+               !self.draggingKnob) {
+                [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
+            } else {
+                if(self.draggingKnob) {
+                    self.trackingStage = EucHighlighterTrackingStageChangingSelection;
+                    [self _trackTouch:touch];
+                } 
+            }
+        } else if(touch == trackingTouch) {
+            if(!currentlyTracking || 
+               (self.trackingStage == EucHighlighterTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
+                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
                 self.trackingTouch = nil;
+                self.trackingStage = EucHighlighterTrackingStageNone;
+            } else {        
+                if(phase == UITouchPhaseMoved) { 
+                    self.trackingTouchHasMoved = YES;
+                    [self _trackTouch:touch];
+                } else if(phase == UITouchPhaseEnded || phase == UITouchPhaseCancelled) {
+                    [self _trackTouch:touch];
+                    if(self.trackingTouchHasMoved && self.highlightLayers.count && !((CALayer *)[self.highlightLayers objectAtIndex:0]).isHidden) {
+                        self.trackingStage = EucHighlighterTrackingStageSelectedAndWaiting;
+                    } else {
+                        self.trackingStage = EucHighlighterTrackingStageNone;
+                    }
+                    self.trackingTouch = nil;
+                }
             }
         }
     }

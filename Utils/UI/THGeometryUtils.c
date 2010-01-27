@@ -18,3 +18,35 @@ CGFloat CGPointDistance(CGPoint firstPoint, CGPoint secondPoint)
     
     return hypotf(xDifference, yDifference);
 }
+
+CGFloat CGPointDistanceFromRect(CGPoint point, CGRect rect)
+{
+    Boolean outside = FALSE;
+    CGPoint closestPointOnEdge = point;
+    if(closestPointOnEdge.x < rect.origin.x) {
+        closestPointOnEdge.x = rect.origin.x;
+        outside = TRUE;
+    } else {
+        CGFloat maxXInRect = rect.origin.x + rect.size.width;
+        if(closestPointOnEdge.x > maxXInRect) {
+            closestPointOnEdge.x = maxXInRect;
+            outside = TRUE;
+        }
+    }
+    if(closestPointOnEdge.y < rect.origin.y) {
+        closestPointOnEdge.y = rect.origin.y;
+        outside = TRUE;
+    } else {
+        CGFloat maxYInRect = rect.origin.y + rect.size.height;
+        if(closestPointOnEdge.y > maxYInRect) {
+            closestPointOnEdge.y = maxYInRect;
+            outside = TRUE;
+        }
+    }
+    if(outside) {
+        return CGPointDistance(point, closestPointOnEdge);
+    } else {
+        // Point is inside the rect.
+        return 0.0f;
+    }
+}
