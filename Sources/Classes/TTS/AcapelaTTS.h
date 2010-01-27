@@ -14,7 +14,7 @@
 	setupTTS* setupData;
 	AcapelaSpeech* engine;
 	AcapelaLicense* ttsLicense;
-	uint32_t currentParagraph;
+	id currentParagraph;
 	uint32_t currentWordOffset;
 	uint32_t currentPage;
 	NSString* currentWord;
@@ -29,7 +29,7 @@
 @property (nonatomic, retain) NSArray* paragraphWords;
 @property (nonatomic, retain) NSString* currentWord;
 @property (nonatomic, retain) NSTimer* speakingTimer;
-@property (nonatomic) uint32_t currentParagraph;
+@property (nonatomic, assign) id currentParagraph;
 @property (nonatomic) uint32_t currentWordOffset;
 @property (nonatomic) uint32_t currentPage;
 @property (nonatomic) BOOL textToSpeakChanged;

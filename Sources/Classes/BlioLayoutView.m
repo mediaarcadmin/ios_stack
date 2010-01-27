@@ -392,7 +392,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         [aScrollView release];
         
         EucHighlighter *aHighlighter = [[EucHighlighter alloc] init];
-        [aHighlighter attachToView:self];
+        [aHighlighter attachToView:self.scrollView];
         [aHighlighter addObserver:self
                        forKeyPath:@"tracking"
                           options:0
@@ -540,24 +540,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId {    
     CGRect wordRect = [(BlioTextFlowPositionedWord *)elementId rect];
-    //CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform([self.currentPageView page], kCGPDFCropBox, self.bounds, 0, true);
-    //CGRect fittedRect = CGRectApplyAffineTransform(wordRect, fitTransform);
-    //[[NSNotificationCenter defaultCenter] postNotificationName:@"BlioPDFDrawRectOfInterest" object:NSStringFromCGRect(fittedRect)];
     NSMutableArray *currentHighlights = [NSMutableArray arrayWithArray:[[[self.currentPageView view] highlightLayerDelegate] highlights]];
     [currentHighlights addObject:[NSValue valueWithCGRect:wordRect]];
     BlioPDFHighlightLayerDelegate *del = [[self.currentPageView view] highlightLayerDelegate];
     [del setHighlights:currentHighlights];
     [[[self.currentPageView view] highlightLayer] setNeedsDisplay];
-
-    
-    //CGRect convertedRect = [self.currentPageView convertRectFromPDFPage:wordRect];
-    CGRect pageRect = CGPDFPageGetBoxRect([self.currentPageView page], kCGPDFCropBox);
-    CGFloat inset = -kBlioLayoutShadow;
-    CGRect insetBounds = UIEdgeInsetsInsetRect([[UIScreen mainScreen] bounds], UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-    CGFloat scale = CGRectGetWidth(insetBounds)/CGRectGetWidth(pageRect);
-    CGRect convertedRect = CGRectMake(wordRect.origin.x * scale, wordRect.origin.y * scale, wordRect.size.width * scale, wordRect.size.height * scale);
-    NSLog(@"word: %@ wordRect: %@ page: %@, converted: %@",  [(BlioTextFlowPositionedWord *)elementId string], NSStringFromCGRect(wordRect), NSStringFromCGRect(CGPDFPageGetBoxRect([self.currentPageView page], kCGPDFCropBox)), NSStringFromCGRect(convertedRect));
-    return [NSArray arrayWithObject:[NSValue valueWithCGRect:CGRectZero]];
+    return [NSArray arrayWithObject:[NSValue valueWithCGRect:wordRect]];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -570,13 +558,63 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 #pragma mark -
 #pragma mark TTS
 
-- (NSArray *)paragraphWordsForParagraphWithId:(uint32_t)paragraphId {
+- (id)getCurrentParagraphId {
+    NSArray *pages = [[self.book textFlow] pages];
     NSInteger pageIndex = self.pageNumber - 1;
-    return [[[[self.book textFlow] paragraphsForPageAtIndex:pageIndex] objectAtIndex:paragraphId] wordsArray];
+    if (pageIndex >= [pages count]) return nil;
+        
+    NSArray *page = [pages objectAtIndex:pageIndex];
+    if (![page count])
+        return nil;
+    else
+        return [page objectAtIndex:0];
+}
+
+- (NSUInteger)getCurrentWordOffset {
+    return 0;
+}
+
+- (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphID {
+    BlioTextFlowParagraph *currentParagraph = (BlioTextFlowParagraph *)paragraphID;
+    NSArray *pages = [[self.book textFlow] pages];
+    if (![pages count]) return nil;    
+    
+    if (!currentParagraph) {
+        NSArray *page = [pages objectAtIndex:0];
+        if (![page count])
+            return nil;
+        else
+            return [page objectAtIndex:0];
+    } else {
+        NSInteger pageIndex = [currentParagraph pageIndex];
+        if (pageIndex < [pages count]) {
+            NSArray *page = [pages objectAtIndex:pageIndex];
+            NSUInteger currentIndex = [page indexOfObject:currentParagraph];
+            if (++currentIndex < [page count]) {
+                return [page objectAtIndex:currentIndex];
+            } else {
+                while (++pageIndex < ([pages count])) {
+                    NSArray *page = [pages objectAtIndex:pageIndex];
+                    if ([page count])
+                        return [page objectAtIndex:0];
+                }
+            }
+        }
+    }
+    return nil;
+}
+
+- (NSArray *)paragraphWordsForParagraphWithId:(id)paragraphId {
+    return [(BlioTextFlowParagraph *)paragraphId wordsArray];
 }
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset {
-    return;
+    BlioTextFlowParagraph *currentParagraph = (BlioTextFlowParagraph *)paragraphId;
+    NSInteger pageIndex = [currentParagraph pageIndex];
+    NSInteger targetPageNumber = ++pageIndex;
+    if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
+        [self goToPageNumber:targetPageNumber animated:YES];
+    }
 }
 
 #pragma mark -
@@ -607,12 +645,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         // 4. Scroll to the target page
         // 5. Zoom in the target page
         
-        [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-        
         // 1. Move the current page and its adjacent pages next to the target page's adjacent pages
         CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
         NSInteger startPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
         if (startPage == targetPage) return;
+        
+        [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         self.pageNumber = targetPage;
         NSInteger pagesToGo = targetPage - startPage;
         NSInteger pagesToOffset = 0;
@@ -1561,12 +1599,15 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         [tiledLayer setDelegate:nil];
         [shadowLayer setDelegate:nil];
         [sharpLayer setDelegate:nil];
+        [highlightLayer setDelegate:nil];
         [tiledLayer removeFromSuperlayer];
         [shadowLayer removeFromSuperlayer];
         [sharpLayer removeFromSuperlayer];
+        [highlightLayer removeFromSuperlayer];
         self.tiledLayerDelegate = nil;
         self.shadowLayerDelegate = nil;
         self.sharpLayerDelegate = nil;
+        self.highlightLayerDelegate = nil;
         
         [self configureLayers];
     } else {
@@ -1577,6 +1618,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         
         [shadowLayerDelegate setPage:page];
         [shadowLayer setNeedsDisplay];
+        
+        [highlightLayerDelegate setPage:page];
+        [highlightLayerDelegate setHighlights:nil];
+        [highlightLayer setNeedsDisplay];
         
         // Force the tiled layer to discard it's tile caches
         [tiledLayerDelegate setPage:page];
@@ -1729,17 +1774,21 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-//    CGRect boundingRect = CGContextGetClipBoundingBox(ctx);
-//    CGContextScaleCTM(ctx, 1, -1);
-//    CGContextTranslateCTM(ctx, 0, -CGRectGetHeight(boundingRect));
-    CGContextSetRGBFillColor(ctx, 0, 1, 0, 0.3f);
+    CGRect boundingRect = CGContextGetClipBoundingBox(ctx);
+    CGContextScaleCTM(ctx, 1, -1);
+    CGContextTranslateCTM(ctx, 0, -CGRectGetHeight(boundingRect));
+    //CGContextSetRGBFillColor(ctx, 0, 1, 0, 0.3f);
     
-    CGRect cropRect = CGRectApplyAffineTransform(CGPDFPageGetBoxRect(page, kCGPDFCropBox), fitTransform);
-    CGContextFillRect(ctx, cropRect);
+    //CGRect cropRect = CGRectApplyAffineTransform(CGPDFPageGetBoxRect(page, kCGPDFCropBox), fitTransform);
+    //CGContextFillRect(ctx, cropRect);
     
     CGContextSetRGBFillColor(ctx, 1, 0, 1, 0.5f);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0 green:1 blue:1 alpha:0.5f].CGColor);
+    CGContextSetLineWidth(ctx, 0.25f);
+    CGFloat dash[2]={1.0f,1.0f};
+    CGContextSetLineDash (ctx, 0, dash, 2);
     for (NSValue *rectVal in self.highlights) {
-        CGContextFillRect(ctx, CGRectApplyAffineTransform([rectVal CGRectValue], highlightsTransform));
+        CGContextStrokeRect(ctx, CGRectApplyAffineTransform([rectVal CGRectValue], highlightsTransform));
     }
 }
 

@@ -56,6 +56,9 @@
 @property (nonatomic, retain) EucHighlighter *highlighter;
 
 - (void)displayDebug;
-- (NSArray *)paragraphWordsForParagraphWithId:(uint32_t)paragraphId;
+- (id)getCurrentParagraphId;
+- (NSUInteger)getCurrentWordOffset;
+- (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphId;
+- (NSArray *)paragraphWordsForParagraphWithId:(id)paragraphId;
 
 @end

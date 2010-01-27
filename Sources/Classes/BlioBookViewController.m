@@ -1304,14 +1304,54 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void) prepareTextToSpeak:(BOOL)continuingSpeech {
     // THIS IS DUMMY CODE TO TEST TTS IN LAYOUT VIEW
     if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+        id paragraphId;
+        NSUInteger wordOffset;
         if ( continuingSpeech ) {
-            // Do nothing
-        } else {
-            [_acapelaTTS setCurrentPage:self.bookView.pageNumber]; // Not very robust page-identifier
-            [_acapelaTTS setCurrentWordOffset:0];
-            [_acapelaTTS setCurrentParagraph:1];
-            [_acapelaTTS setParagraphWords:[(BlioLayoutView *)self.bookView paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
-            
+            // Continuing to speak, we just need more text.
+			while ( true ) {
+				paragraphId = [(BlioLayoutView *)self.bookView paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
+				wordOffset = 0;
+				[_acapelaTTS setCurrentWordOffset:wordOffset];
+				[_acapelaTTS setCurrentParagraph:paragraphId];
+				[_acapelaTTS setParagraphWords:[(BlioLayoutView *)self.bookView paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+				if ( _acapelaTTS.paragraphWords == nil ) {
+					// end of the book
+					UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
+					[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+					[self stopAudio];
+					self.audioPlaying = NO;
+					return;
+				}
+				else if ( [_acapelaTTS.paragraphWords count] == 0 ) {
+					// empty paragraph, go to the next.
+					continue;
+				}
+				else
+					break;
+			}
+			if ( wordOffset != 0 ) 
+				[_acapelaTTS adjustParagraphWords];
+		}
+        else {
+            paragraphId = [(BlioLayoutView *)self.bookView getCurrentParagraphId];
+            wordOffset = [(BlioLayoutView *)self.bookView getCurrentWordOffset];
+            // Play button has just been pushed.
+            if ([(BlioLayoutView *)self.bookView pageNumber] != [_acapelaTTS currentPage]) {
+                // Starting speech for the first time, or for the first time since changing the 
+                // page or book after stopping speech the last time (whew).
+                [_acapelaTTS setCurrentPage:[(BlioLayoutView *)self.bookView pageNumber]]; // Not very robust page-identifier
+                [_acapelaTTS setCurrentWordOffset:wordOffset];
+                [_acapelaTTS setCurrentParagraph:paragraphId];
+                [_acapelaTTS setParagraphWords:[(BlioLayoutView *)self.bookView paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+				if ( wordOffset != 0 ) 
+					// The first paragraphs words displayed on this page are not at 
+					// the beginning of the paragraph.
+					[_acapelaTTS adjustParagraphWords];
+            }
+			else
+				// use the current word and paragraph, which is where we last stopped.
+				// edge case:  what if you stopped speech right after the end of the paragraph?
+				[_acapelaTTS adjustParagraphWords];
         }
         [_acapelaTTS setTextToSpeakChanged:YES];
         
@@ -1323,11 +1363,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         if ( continuingSpeech ) {
             // Continuing to speak, we just need more text.
 			while ( true ) {
-				paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
+				paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:(uint32_t)_acapelaTTS.currentParagraph];
 				wordOffset = 0;
 				[_acapelaTTS setCurrentWordOffset:wordOffset];
-				[_acapelaTTS setCurrentParagraph:paragraphId];
-				[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+				[_acapelaTTS setCurrentParagraph:(id)paragraphId];
+				[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:(uint32_t)[_acapelaTTS currentParagraph]]];
 				if ( _acapelaTTS.paragraphWords == nil ) {
 					// end of the book
 					UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
@@ -1354,8 +1394,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 // page or book after stopping speech the last time (whew).
                 [_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
                 [_acapelaTTS setCurrentWordOffset:wordOffset];
-                [_acapelaTTS setCurrentParagraph:paragraphId];
-                [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
+                [_acapelaTTS setCurrentParagraph:(id)paragraphId];
+                [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:(uint32_t)[_acapelaTTS currentParagraph]]];
 				if ( wordOffset != 0 ) 
 					// The first paragraphs words displayed on this page are not at 
 					// the beginning of the paragraph.
@@ -1414,7 +1454,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
             BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
             BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-            [bookView highlightWordAtParagraphId:_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
+            [bookView highlightWordAtParagraphId:(uint32_t)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
             [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
 			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
         }
