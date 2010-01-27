@@ -238,6 +238,10 @@
 		7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
 		7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
+		7DBE059E1110416600DE22DC /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059C1110416600DE22DC /* SelectionEnd.png */; };
+		7DBE059F1110416600DE22DC /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059D1110416600DE22DC /* SelectionKnob.png */; };
+		7DBE05A01110416600DE22DC /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059C1110416600DE22DC /* SelectionEnd.png */; };
+		7DBE05A11110416600DE22DC /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059D1110416600DE22DC /* SelectionKnob.png */; };
 		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
 		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
 		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
@@ -269,10 +273,6 @@
 		7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */; };
 		7DE587701070D08600441B2E /* EucFilteredBookPageIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */; };
 		7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */; };
-		7DE7D921110F2AF200403651 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7D920110F2AF200403651 /* SelectionEnd.png */; };
-		7DE7D922110F2AF200403651 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7D920110F2AF200403651 /* SelectionEnd.png */; };
-		7DE7D924110F2AFE00403651 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7D923110F2AFE00403651 /* SelectionKnob.png */; };
-		7DE7D925110F2AFE00403651 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7D923110F2AFE00403651 /* SelectionKnob.png */; };
 		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */; };
 		7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF58B5D10DA9005004E3DBB /* EucBookView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -605,6 +605,8 @@
 		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
 		7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
+		7DBE059C1110416600DE22DC /* SelectionEnd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionEnd.png; sourceTree = "<group>"; };
+		7DBE059D1110416600DE22DC /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionKnob.png; sourceTree = "<group>"; };
 		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7DD48E5410C2E42C0001203D /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin9/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7DD48E5810C2E44F0001203D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -635,8 +637,6 @@
 		7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = reverseAnimatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
 		7DE5876E1070D08600441B2E /* EucFilteredBookPageIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucFilteredBookPageIndex.h; sourceTree = "<group>"; };
 		7DE5876F1070D08600441B2E /* EucFilteredBookPageIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucFilteredBookPageIndex.m; sourceTree = "<group>"; };
-		7DE7D920110F2AF200403651 /* SelectionEnd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SelectionEnd.png; path = /tmp/SelectionEnd.png; sourceTree = "<absolute>"; };
-		7DE7D923110F2AFE00403651 /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SelectionKnob.png; path = /tmp/SelectionKnob.png; sourceTree = "<absolute>"; };
 		7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTextFittingLabel.h; sourceTree = "<group>"; };
 		7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTextFittingLabel.m; sourceTree = "<group>"; };
 		7DF58B5D10DA9005004E3DBB /* EucBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookView.h; sourceTree = "<group>"; };
@@ -1240,9 +1240,9 @@
 		7DD48EB610C2E61E0001203D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7DBE059C1110416600DE22DC /* SelectionEnd.png */,
+				7DBE059D1110416600DE22DC /* SelectionKnob.png */,
 				7D9F31E9110DB8220041A902 /* MagnificationLoupe.png */,
-				7DE7D920110F2AF200403651 /* SelectionEnd.png */,
-				7DE7D923110F2AFE00403651 /* SelectionKnob.png */,
 				7D9A986610D7E6F100C2E00A /* HyphenationPatterns */,
 				7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */,
 				7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */,
@@ -1612,8 +1612,8 @@
 				7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */,
 				7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */,
 				7D9F31EA110DB8220041A902 /* MagnificationLoupe.png in Resources */,
-				7DE7D921110F2AF200403651 /* SelectionEnd.png in Resources */,
-				7DE7D924110F2AFE00403651 /* SelectionKnob.png in Resources */,
+				7DBE059E1110416600DE22DC /* SelectionEnd.png in Resources */,
+				7DBE059F1110416600DE22DC /* SelectionKnob.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1633,8 +1633,8 @@
 				7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */,
 				7DB9F85810F38ABD0010DF0B /* LinuxLibertine.otf in Resources */,
 				7D9F31EB110DB8220041A902 /* MagnificationLoupe.png in Resources */,
-				7DE7D922110F2AF200403651 /* SelectionEnd.png in Resources */,
-				7DE7D925110F2AFE00403651 /* SelectionKnob.png in Resources */,
+				7DBE05A01110416600DE22DC /* SelectionEnd.png in Resources */,
+				7DBE05A11110416600DE22DC /* SelectionKnob.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
