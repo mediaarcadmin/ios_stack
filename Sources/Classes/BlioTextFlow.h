@@ -36,11 +36,13 @@
     NSInteger pageIndex;
     NSMutableArray *words;
     CGRect rect;
+    BOOL folio;
 }
 
 @property (nonatomic) NSInteger pageIndex;
 @property (nonatomic, retain) NSMutableArray *words;
 @property (nonatomic, readonly) CGRect rect;
+@property (nonatomic) BOOL folio;
 
 - (NSString *)string;
 - (NSArray *)wordsArray;

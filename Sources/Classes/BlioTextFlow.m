@@ -142,17 +142,39 @@
         }
         
     } else if ([elementName isEqualToString:@"TextGroup"]) {
+        NSInteger currentPageIndex;
+        if (nil != self.currentParagraph)
+            currentPageIndex = [self.currentParagraph pageIndex];
+        else
+            currentPageIndex = -1;
+            
+        NSString *pageNumber = [attributeDict objectForKey:@"PageIndex"];
+        if (!pageNumber) {
+            self.currentPage = nil;
+            return;
+        }
+        NSInteger newPageIndex = [pageNumber intValue];
+        if (newPageIndex < 0) {
+            self.currentPage = nil;
+            return;
+        }
+        
         NSString *newParagraph = [attributeDict objectForKey:@"NewParagraph"];
-        if ([newParagraph isEqualToString:@"True"]) {
+        if ([newParagraph isEqualToString:@"True"] || (newPageIndex > currentPageIndex)) {
             BlioTextFlowParagraph *aParagraph = [[BlioTextFlowParagraph alloc] init];
             self.currentParagraph = aParagraph;
             [aParagraph release];
+            
+            NSString *folio = [attributeDict objectForKey:@"Folio"];
+            if ([folio isEqualToString:@"True"]) {
+                [self.currentParagraph setFolio:YES];
+            } else {
+                [self.currentParagraph setFolio:NO];
+                [self.paragraphs addObject:self.currentParagraph];
+            }
         }
         
-        NSString *folio = [attributeDict objectForKey:@"Folio"];
-        if (![folio isEqualToString:@"True"]) {
-            [self.paragraphs addObject:self.currentParagraph];
-            
+        if (![self.currentParagraph folio]) {           
             NSString *pageNumber = [attributeDict objectForKey:@"PageIndex"];
             if (pageNumber) {
                 NSInteger pageIndex = [pageNumber intValue];
@@ -172,7 +194,7 @@
             }            
         }
         
-    } else if ([elementName isEqualToString:@"Word"]) {
+    } else if ([elementName isEqualToString:@"Word"] && ![self.currentParagraph folio]) {
         NSString *wordString = [attributeDict objectForKey:@"Text"];
         NSString *wordRect = [attributeDict objectForKey:@"Rect"];
         NSArray *wordRectArray = [wordRect componentsSeparatedByString:@","];
@@ -231,7 +253,7 @@
 
 @implementation BlioTextFlowParagraph
 
-@synthesize pageIndex, words;
+@synthesize pageIndex, words, folio;
 
 - (void)dealloc {
     self.words = nil;
@@ -241,6 +263,7 @@
 - (id)init {
     if ((self = [super init])) {
         self.words = [NSMutableArray array];
+        self.folio = NO;
     }
     return self;
 }
