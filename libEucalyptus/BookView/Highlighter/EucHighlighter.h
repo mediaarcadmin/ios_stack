@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "THEventCapturingWindow.h"
 
-@class EucHighlighterOverlayView, THPair;
+@class EucHighlighterRange, THPair;
 @protocol EucHighlighterDataSource;
 
 typedef enum EucHighlighterTrackingStage {
@@ -21,6 +21,8 @@ typedef enum EucHighlighterTrackingStage {
     
 
 @interface EucHighlighter : NSObject <THEventCaptureObserver> {
+    BOOL _selectionDisabled;
+    
     id<EucHighlighterDataSource> _dataSource;
     
     CGImageRef _magnificationLoupeImage;
@@ -34,17 +36,24 @@ typedef enum EucHighlighterTrackingStage {
     BOOL _tracking;
     EucHighlighterTrackingStage _trackingStage;
     
+    EucHighlighterRange *_selectedRange;
+
     UIView *_viewWithSelection;
     UIImageView *_loupeView;
     
     NSMutableArray *_highlightLayers;
     THPair *_highlightEndLayers;
-    THPair *_highlightKnobLayers;
+    THPair *_highlightKnobLayers;    
     
     CALayer *_draggingKnob;
+    CGFloat _draggingKnobVerticalOffset;
 }
 
+@property (nonatomic, assign) BOOL selectionDisabled;
+
 @property (nonatomic, assign) id<EucHighlighterDataSource> dataSource;
+@property (nonatomic, retain) EucHighlighterRange *selectedRange;
+
 @property (nonatomic, assign, readonly, getter=isTracking) BOOL tracking;
 @property (nonatomic, assign, readonly) EucHighlighterTrackingStage trackingStage;
 
