@@ -8,10 +8,10 @@
 
 #import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import "AcapelaTTS.h"
+#import "BlioAudioBookManager.h"
 #import "BlioMockBook.h"
 #import "BlioBookView.h"
 #import "BlioNotesView.h"
@@ -68,7 +68,7 @@ typedef enum {
     BOOL _audioPlaying;
     
     AcapelaTTS* _acapelaTTS;
-	AVAudioPlayer* _player;
+	BlioAudioBookManager* _audioBookManager;
     
     BlioMockBook *_book;
 

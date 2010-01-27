@@ -16,15 +16,22 @@
     [super sendEvent:event];
     
     if(_eventCaptureViewsToObserve) {
+        NSUInteger count = _eventCaptureViewsToObserve.count;
+        
+        // Take copies in case something that we call adds or removes an 
+        // observer.
+        NSArray *viewsToObserve = [_eventCaptureViewsToObserve copy];
+        NSArray *observers = [_eventCaptureObservers copy];
         for(UITouch *touch in [event allTouches]) {
-            NSUInteger count = [_eventCaptureViewsToObserve count];
             for(NSUInteger i = 0; i < count; ++i) {
-                UIView *viewToObserve = ((NSValue *)[_eventCaptureViewsToObserve objectAtIndex:i]).nonretainedObjectValue;
+                UIView *viewToObserve = ((NSValue *)[viewsToObserve objectAtIndex:i]).nonretainedObjectValue;
                 if([touch.view isDescendantOfView:viewToObserve]) {
-                    [((NSValue *)[_eventCaptureObservers objectAtIndex:i]).nonretainedObjectValue observeTouch:touch];
+                    [((NSValue *)[observers objectAtIndex:i]).nonretainedObjectValue observeTouch:touch];
                 }
             }
         }
+        [viewsToObserve release];
+        [observers release];
     }
 }
 

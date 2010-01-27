@@ -1425,7 +1425,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		if (![self.book audioRights]) 
 			[_acapelaTTS stopSpeaking];
 		else if ([self.book audiobookFilename] != nil) 
-			[_player stop];
+			[_audioBookManager stopAudio];
 }
 	
 - (void)toggleAudio:(id)sender {
@@ -1451,15 +1451,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				}
 				[self prepareTextToSpeak:NO];
 			}
-			else if ([self.book audiobookFilename] != nil) {	
-				NSError* err;
-				if ( _player != nil )
-					[_player release];
-				_player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[self.book audiobookPath]] 
-																error:&err];
-				_player.volume = 1.0;    // Will get from settings.
-				[_player prepareToPlay];
-				[_player play];
+			else if ([self.book audiobookFilename] != nil) {
+				if ( _audioBookManager == nil )
+					_audioBookManager = [[BlioAudioBookManager alloc] initWithAudioBook:[self.book audiobookPath] audioTiming:[self.book audiotimingPath]]; 
+				else {
+					[_audioBookManager setAudioBook:[self.book audiobookPath]];
+					[_audioBookManager setAudioTiming:[self.book audiotimingPath]];
+				}
+				[_audioBookManager playAudio];
 			}
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
 		}
