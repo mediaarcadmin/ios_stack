@@ -1,0 +1,498 @@
+<FlowSet>
+  <Flow Name="f0" TopOfPage="True">
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="Praise" Rect="212,50,50,18" />
+      <Word Text="for" Rect="267,50,26,23" />
+      <Word Text="DEAD" Rect="157,73,35,30" />
+      <Word Text="IS" Rect="195,73,13,30" />
+      <Word Text="THE" Rect="213,73,24,30" />
+      <Word Text="NEW" Rect="241,73,29,30" />
+      <Word Text="BLACK" Rect="274,73,43,30" />
+      <Word Text="and" Rect="321,82,27,18" />
+      <Word Text="DEAD" Rect="169,102,35,30" />
+      <Word Text="IS" Rect="208,102,13,30" />
+      <Word Text="A" Rect="225,102,9,30" />
+      <Word Text="STATE" Rect="239,102,38,30" />
+      <Word Text="OF" Rect="281,102,16,30" />
+      <Word Text="MIND" Rect="301,102,34,30" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="“Fans" Rect="67,156,31,20" />
+      <Word Text="who" Rect="101,156,25,20" />
+      <Word Text="mourn" Rect="129,156,39,20" />
+      <Word Text="the" Rect="171,156,18,20" />
+      <Word Text="loss" Rect="192,156,21,20" />
+      <Word Text="of" Rect="216,156,11,20" />
+      <Word Text="TV’s" Rect="231,156,29,20" />
+      <Word Text="Veronica" Rect="263,156,44,20" />
+      <Word Text="Mars" Rect="311,156,28,20" />
+      <Word Text="are" Rect="343,156,17,20" />
+      <Word Text="in" Rect="363,156,11,20" />
+      <Word Text="for" Rect="377,156,16,20" />
+      <Word Text="a" Rect="397,156,6,20" />
+      <Word Text="treat" Rect="406,156,26,20" />
+      <Word Text="as" Rect="72,177,11,20" />
+      <Word Text="Perez" Rect="87,177,31,20" />
+      <Word Text="delivers" Rect="121,177,42,20" />
+      <Word Text="a" Rect="167,177,6,20" />
+      <Word Text="wise-cracking," Rect="177,177,80,21" />
+      <Word Text="boy-lusting," Rect="260,177,67,21" />
+      <Word Text="determined" Rect="330,177,65,21" />
+      <Word Text="sleuth" Rect="398,177,34,20" />
+      <Word Text="of" Rect="72,198,11,20" />
+      <Word Text="a" Rect="87,198,6,21" />
+      <Word Text="high" Rect="96,198,25,21" />
+      <Word Text="school" Rect="124,198,36,21" />
+      <Word Text="protagonist" Rect="163,198,64,21" />
+      <Word Text="." Rect="231,198,3,20" />
+      <Word Text="." Rect="238,198,3,20" />
+      <Word Text="." Rect="245,198,3,21" />
+      <Word Text="this" Rect="251,198,21,21" />
+      <Word Text="quick," Rect="275,198,34,21" />
+      <Word Text="lighter-than-air" Rect="312,198,86,21" />
+      <Word Text="spoof" Rect="401,198,31,21" />
+      <Word Text="of" Rect="72,220,11,20" />
+      <Word Text="the" Rect="87,220,18,20" />
+      <Word Text="undead," Rect="109,220,45,20" />
+      <Word Text="cheerleaders" Rect="158,220,69,20" />
+      <Word Text="and" Rect="230,220,21,20" />
+      <Word Text="popularity" Rect="255,220,59,21" />
+      <Word Text="is" Rect="317,220,9,20" />
+      <Word Text="pure" Rect="330,220,26,20" />
+      <Word Text="pleasure.”" Rect="360,220,53,20" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="—Publishers" Rect="326,241,66,20" />
+      <Word Text="Weekly" Rect="395,241,37,20" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="“Sassy," Rect="67,273,37,21" />
+      <Word Text="romantic," Rect="107,273,54,20" />
+      <Word Text="and" Rect="164,273,21,20" />
+      <Word Text="spooky-fun!”" Rect="189,273,72,21" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="—Cynthia" Rect="178,294,62,21" />
+      <Word Text="Leitich" Rect="243,294,40,20" />
+      <Word Text="Smith," Rect="287,294,39,20" />
+      <Word Text="author" Rect="328,294,38,20" />
+      <Word Text="of" Rect="370,294,11,20" />
+      <Word Text="Tantalize" Rect="385,294,47,20" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="“A" Rect="67,326,16,20" />
+      <Word Text="hit." Rect="86,326,19,20" />
+      <Word Text="." Rect="109,326,3,20" />
+      <Word Text="." Rect="116,326,3,20" />
+      <Word Text="." Rect="123,326,3,20" />
+      <Word Text="Grabbed" Rect="129,326,50,20" />
+      <Word Text="me" Rect="183,326,17,20" />
+      <Word Text="with" Rect="204,326,26,20" />
+      <Word Text="the" Rect="234,326,18,20" />
+      <Word Text="first" Rect="256,326,22,20" />
+      <Word Text="page" Rect="281,326,26,21" />
+      <Word Text="and" Rect="311,326,21,20" />
+      <Word Text="didn’t" Rect="336,326,32,20" />
+      <Word Text="let" Rect="372,326,14,20" />
+      <Word Text="go.”" Rect="389,326,21,21" />
+      <Word Text="—Julie" Rect="72,348,40,20" />
+      <Word Text="Kenner," Rect="116,348,45,20" />
+      <Word Text="author" Rect="164,348,38,20" />
+      <Word Text="of" Rect="206,348,11,20" />
+      <Word Text="The" Rect="221,348,21,20" />
+      <Word Text="Good" Rect="246,348,28,20" />
+      <Word Text="Ghoul’s" Rect="277,348,37,20" />
+      <Word Text="Guide" Rect="318,348,31,20" />
+      <Word Text="to" Rect="353,348,9,20" />
+      <Word Text="Getting" Rect="366,348,37,21" />
+      <Word Text="Even" Rect="407,348,25,20" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="“Snarky" Rect="67,380,45,21" />
+      <Word Text="sisters" Rect="116,380,35,20" />
+      <Word Text="with" Rect="155,380,26,20" />
+      <Word Text="psychic" Rect="185,380,42,21" />
+      <Word Text="powers;" Rect="231,380,43,20" />
+      <Word Text="secret" Rect="279,380,33,20" />
+      <Word Text="cabals" Rect="316,380,34,20" />
+      <Word Text="of" Rect="354,380,11,20" />
+      <Word Text="vamps" Rect="370,380,36,20" />
+      <Word Text="and" Rect="411,380,21,20" />
+      <Word Text="werewolves;" Rect="72,401,68,20" />
+      <Word Text="missing" Rect="144,401,44,21" />
+      <Word Text="parental(s);" Rect="193,401,66,20" />
+      <Word Text="and" Rect="263,401,22,20" />
+      <Word Text="lots" Rect="289,401,21,20" />
+      <Word Text="of" Rect="315,401,11,20" />
+      <Word Text="mysteries" Rect="331,401,54,21" />
+      <Word Text="yet" Rect="390,401,17,21" />
+      <Word Text="un-" Rect="411,401,20,20" />
+      <Word Text="solved." Rect="72,422,38,21" />
+      <Word Text="Nightshade" Rect="113,422,66,21" />
+      <Word Text="is" Rect="182,422,9,21" />
+      <Word Text="my" Rect="194,422,18,21" />
+      <Word Text="kinda" Rect="215,422,32,21" />
+      <Word Text="town" Rect="250,422,29,21" />
+      <Word Text="." Rect="283,422,3,20" />
+      <Word Text="." Rect="290,422,3,20" />
+      <Word Text="." Rect="297,422,3,21" />
+      <Word Text="can’t" Rect="302,422,25,21" />
+      <Word Text="wait" Rect="331,422,24,21" />
+      <Word Text="to" Rect="358,422,12,21" />
+      <Word Text="hang" Rect="372,422,28,21" />
+      <Word Text="there" Rect="403,422,29,21" />
+      <Word Text="again" Rect="72,444,30,21" />
+      <Word Text="ASAP!”" Rect="105,444,47,20" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="—Nancy" Rect="167,444,55,21" />
+      <Word Text="Holder," Rect="226,444,44,20" />
+      <Word Text="author" Rect="274,444,38,20" />
+      <Word Text="of" Rect="317,444,11,20" />
+      <Word Text="Pretty" Rect="333,444,31,20" />
+      <Word Text="Little" Rect="368,444,27,20" />
+      <Word Text="Devils" Rect="400,444,32,20" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="“A" Rect="67,476,16,21" />
+      <Word Text="fun" Rect="85,476,19,21" />
+      <Word Text="ride" Rect="107,476,22,21" />
+      <Word Text="from" Rect="132,476,27,21" />
+      <Word Text="start" Rect="162,476,25,21" />
+      <Word Text="to" Rect="190,476,12,21" />
+      <Word Text="finish." Rect="205,476,34,21" />
+      <Word Text="Perez’s" Rect="241,476,37,21" />
+      <Word Text="smart" Rect="280,476,32,21" />
+      <Word Text="and" Rect="315,476,21,21" />
+      <Word Text="sassy" Rect="339,476,27,21" />
+      <Word Text="style" Rect="369,476,25,21" />
+      <Word Text="soars.”" Rect="397,476,35,21" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="—Mary" Rect="114,497,47,21" />
+      <Word Text="E." Rect="165,497,12,20" />
+      <Word Text="Pearson," Rect="181,497,48,20" />
+      <Word Text="author" Rect="232,497,38,20" />
+      <Word Text="of" Rect="273,497,11,20" />
+      <Word Text="The" Rect="289,497,21,20" />
+      <Word Text="Adoration" Rect="314,497,51,20" />
+      <Word Text="of" Rect="368,497,9,21" />
+      <Word Text="Jenna" Rect="381,497,28,20" />
+      <Word Text="Fox" Rect="413,497,19,20" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="“Psy-gn" Rect="67,529,43,21" />
+      <Word Text="me" Rect="113,529,17,20" />
+      <Word Text="up" Rect="134,529,15,20" />
+      <Word Text="for" Rect="152,529,16,20" />
+      <Word Text="more" Rect="172,529,29,20" />
+      <Word Text="of" Rect="204,529,11,20" />
+      <Word Text="Daisy" Rect="219,529,33,21" />
+      <Word Text="and" Rect="256,529,21,20" />
+      <Word Text="her" Rect="280,529,19,20" />
+      <Word Text="psychic" Rect="302,529,41,21" />
+      <Word Text="sisters." Rect="347,529,38,20" />
+      <Word Text="Hot" Rect="387,529,24,20" />
+      <Word Text="ro-" Rect="415,529,17,20" />
+      <Word Text="mances," Rect="72,550,46,20" />
+      <Word Text="cold-hearted," Rect="122,550,76,20" />
+      <Word Text="soul-sucking" Rect="202,550,72,21" />
+      <Word Text="vampires," Rect="278,550,54,20" />
+      <Word Text="and" Rect="336,550,21,20" />
+      <Word Text="cheerleaders" Rect="362,550,70,20" />
+      <Word Text="dragging" Rect="72,572,49,21" />
+      <Word Text="roll-around" Rect="125,572,64,20" />
+      <Word Text="coffins." Rect="193,572,40,20" />
+      <Word Text="What’s" Rect="235,572,40,20" />
+      <Word Text="not" Rect="279,572,19,20" />
+      <Word Text="to" Rect="302,572,12,20" />
+      <Word Text="love?”" Rect="318,572,31,20" />
+    </TextGroup>
+    <TextGroup PageIndex="1" NewParagraph="True">
+      <Word Text="—Gail" Rect="135,593,40,20" />
+      <Word Text="Giles," Rect="179,593,33,20" />
+      <Word Text="author" Rect="215,593,38,20" />
+      <Word Text="of" Rect="257,593,11,20" />
+      <Word Text="Dead" Rect="272,593,28,20" />
+      <Word Text="Girls" Rect="304,593,25,20" />
+      <Word Text="Don’t" Rect="332,593,28,20" />
+      <Word Text="Write" Rect="364,593,30,20" />
+      <Word Text="Letters" Rect="397,593,34,20" />
+    </TextGroup>
+    <TextGroup PageIndex="2" NewParagraph="True">
+      <Word Text="OTHER" Rect="110,168,45,32" />
+      <Word Text="BOOKS" Rect="160,168,48,32" />
+      <Word Text="BY" Rect="213,168,19,32" />
+      <Word Text="MARLENE" Rect="237,168,64,32" />
+      <Word Text="PEREZ" Rect="306,168,42,32" />
+    </TextGroup>
+    <TextGroup PageIndex="2" NewParagraph="True">
+      <Word Text="Dead" Rect="168,220,28,20" />
+      <Word Text="Is" Rect="201,220,9,20" />
+      <Word Text="the" Rect="214,220,15,20" />
+      <Word Text="New" Rect="233,220,25,20" />
+      <Word Text="Black" Rect="261,220,28,20" />
+      <Word Text="Dead" Rect="165,241,28,20" />
+      <Word Text="Is" Rect="197,241,9,20" />
+      <Word Text="a" Rect="210,241,6,20" />
+      <Word Text="State" Rect="221,241,25,20" />
+      <Word Text="of" Rect="250,241,9,21" />
+      <Word Text="Mind" Rect="263,241,30,20" />
+      <Word Text="Love" Rect="161,263,25,20" />
+      <Word Text="in" Rect="190,263,10,20" />
+      <Word Text="the" Rect="204,263,15,20" />
+      <Word Text="Corner" Rect="224,263,37,20" />
+      <Word Text="Pocket" Rect="264,263,33,20" />
+      <Word Text="Unexpected" Rect="164,284,60,20" />
+      <Word Text="Development" Rect="227,284,67,20" />
+    </TextGroup>
+    <TextGroup PageIndex="3" NewParagraph="True">
+      <Word Text="DEAD" Rect="92,48,206,150" />
+      <Word Text="IS" Rect="97,150,82,144" />
+      <Word Text="SO" Rect="200,144,107,145" />
+      <Word Text="LAST" Rect="102,241,186,149" />
+      <Word Text="YEAR" Rect="107,336,201,150" />
+      <Word Text="marlene" Rect="94,461,137,44" />
+      <Word Text="perez" Rect="244,455,99,47" />
+    </TextGroup>
+    <TextGroup PageIndex="3" NewParagraph="True">
+      <Word Text="HOUGHTON" Rect="288,566,51,20" />
+      <Word Text="MIFFLIN" Rect="342,566,35,20" />
+      <Word Text="HARCOURT" Rect="382,566,52,20" />
+    </TextGroup>
+    <TextGroup PageIndex="3" NewParagraph="True">
+      <Word Text="New" Rect="342,587,23,13" />
+      <Word Text="York" Rect="370,587,29,14" />
+      <Word Text="Boston" Rect="290,587,42,13" />
+    </TextGroup>
+    <TextGroup PageIndex="3" NewParagraph="True">
+      <Word Text="2009" Rect="412,587,22,13" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="Copyright" Rect="159,97,40,14" />
+      <Word Text="©" Rect="200,97,8,14" />
+      <Word Text="2009" Rect="210,97,19,14" />
+      <Word Text="by" Rect="231,97,9,14" />
+      <Word Text="Marlene" Rect="242,97,32,14" />
+      <Word Text="Perez" Rect="276,97,21,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="All" Rect="110,123,12,14" />
+      <Word Text="rights" Rect="124,123,22,14" />
+      <Word Text="reserved." Rect="148,123,33,14" />
+      <Word Text="Published" Rect="183,123,38,14" />
+      <Word Text="in" Rect="223,123,8,14" />
+      <Word Text="the" Rect="233,123,12,14" />
+      <Word Text="United" Rect="247,123,27,14" />
+      <Word Text="States" Rect="276,123,23,14" />
+      <Word Text="by" Rect="302,123,9,14" />
+      <Word Text="Graphia," Rect="313,123,34,14" />
+      <Word Text="an" Rect="106,137,9,14" />
+      <Word Text="imprint" Rect="117,137,29,14" />
+      <Word Text="of" Rect="149,137,8,14" />
+      <Word Text="Houghton" Rect="159,137,41,14" />
+      <Word Text="Mifflin" Rect="201,137,27,14" />
+      <Word Text="Harcourt" Rect="230,137,36,14" />
+      <Word Text="Publishing" Rect="268,137,41,14" />
+      <Word Text="Company." Rect="312,137,39,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="Requests" Rect="89,163,35,14" />
+      <Word Text="for" Rect="126,163,11,14" />
+      <Word Text="permission" Rect="139,163,42,14" />
+      <Word Text="to" Rect="183,163,8,14" />
+      <Word Text="make" Rect="193,163,20,14" />
+      <Word Text="copies" Rect="215,163,23,14" />
+      <Word Text="of" Rect="241,163,8,14" />
+      <Word Text="any" Rect="251,163,13,14" />
+      <Word Text="part" Rect="266,163,16,14" />
+      <Word Text="of" Rect="284,163,8,14" />
+      <Word Text="the" Rect="294,163,12,13" />
+      <Word Text="work" Rect="309,163,19,13" />
+      <Word Text="should" Rect="330,163,26,13" />
+      <Word Text="be" Rect="358,163,9,13" />
+      <Word Text="submitted" Rect="72,177,39,14" />
+      <Word Text="online" Rect="112,177,24,14" />
+      <Word Text="at" Rect="138,177,7,14" />
+      <Word Text="www.harcourt.com/contact" Rect="148,177,104,14" />
+      <Word Text="or" Rect="254,177,8,14" />
+      <Word Text="mailed" Rect="264,177,26,14" />
+      <Word Text="to" Rect="292,177,8,14" />
+      <Word Text="the" Rect="302,177,12,14" />
+      <Word Text="following" Rect="316,177,35,14" />
+      <Word Text="address:" Rect="354,177,30,14" />
+      <Word Text="Permissions" Rect="83,190,46,14" />
+      <Word Text="Department," Rect="131,190,49,14" />
+      <Word Text="Houghton" Rect="182,190,41,14" />
+      <Word Text="Mifflin" Rect="225,190,27,14" />
+      <Word Text="Harcourt" Rect="253,190,36,14" />
+      <Word Text="Publishing" Rect="292,190,41,14" />
+      <Word Text="Company," Rect="335,190,39,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="6277" Rect="124,203,19,13" />
+      <Word Text="Sea" Rect="145,203,14,13" />
+      <Word Text="Harbor" Rect="161,203,29,13" />
+      <Word Text="Drive," Rect="192,203,24,13" />
+      <Word Text="Orlando," Rect="218,203,35,13" />
+      <Word Text="Florida" Rect="254,203,28,13" />
+      <Word Text="32887-6777." Rect="284,203,48,13" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="Graphia" Rect="117,230,32,14" />
+      <Word Text="and" Rect="151,230,14,14" />
+      <Word Text="the" Rect="167,230,12,14" />
+      <Word Text="Graphia" Rect="181,230,32,14" />
+      <Word Text="logo" Rect="215,230,16,14" />
+      <Word Text="are" Rect="233,230,11,14" />
+      <Word Text="registered" Rect="247,230,37,14" />
+      <Word Text="trademarks" Rect="286,230,43,14" />
+      <Word Text="of" Rect="331,230,8,14" />
+      <Word Text="Houghton" Rect="132,243,40,14" />
+      <Word Text="Mifflin" Rect="175,243,27,14" />
+      <Word Text="Harcourt" Rect="204,243,36,14" />
+      <Word Text="Publishing" Rect="242,243,41,14" />
+      <Word Text="Company." Rect="285,243,39,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4">
+      <Word Text="www.graphiabooks.com" Rect="183,270,91,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="The" Rect="144,297,16,13" />
+      <Word Text="text" Rect="162,297,15,13" />
+      <Word Text="of" Rect="179,297,8,13" />
+      <Word Text="this" Rect="189,297,14,13" />
+      <Word Text="book" Rect="205,297,19,13" />
+      <Word Text="is" Rect="226,297,6,13" />
+      <Word Text="set" Rect="235,297,11,13" />
+      <Word Text="in" Rect="247,297,8,13" />
+      <Word Text="Adobe" Rect="257,297,26,13" />
+      <Word Text="Jenson." Rect="285,297,27,13" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="Library" Rect="129,323,28,14" />
+      <Word Text="of" Rect="159,323,8,14" />
+      <Word Text="Congress" Rect="169,323,35,14" />
+      <Word Text="Cataloging-in-Publication" Rect="207,323,99,14" />
+      <Word Text="Data" Rect="308,323,19,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="Perez," Rect="198,337,23,13" />
+      <Word Text="Marlene." Rect="223,337,34,13" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="Dead" Rect="153,350,21,14" />
+      <Word Text="is" Rect="176,350,6,14" />
+      <Word Text="so" Rect="184,350,8,14" />
+      <Word Text="last" Rect="195,350,13,14" />
+      <Word Text="year" Rect="210,350,16,14" />
+      <Word Text="/" Rect="228,350,4,14" />
+      <Word Text="by" Rect="234,350,9,14" />
+      <Word Text="Marlene" Rect="246,350,32,14" />
+      <Word Text="Perez." Rect="280,350,23,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="p." Rect="217,363,7,14" />
+      <Word Text="cm." Rect="226,363,14,14" />
+      <Word Text="Summary:" Rect="73,377,40,14" />
+      <Word Text="In" Rect="115,377,8,14" />
+      <Word Text="the" Rect="125,377,12,14" />
+      <Word Text="beach" Rect="140,377,22,14" />
+      <Word Text="town" Rect="164,377,19,14" />
+      <Word Text="of" Rect="185,377,8,14" />
+      <Word Text="Nightshade," Rect="195,377,47,14" />
+      <Word Text="California," Rect="244,377,41,14" />
+      <Word Text="home" Rect="286,377,22,14" />
+      <Word Text="to" Rect="310,377,8,14" />
+      <Word Text="both" Rect="320,377,18,14" />
+      <Word Text="human" Rect="340,377,27,14" />
+      <Word Text="and" Rect="369,377,14,14" />
+      <Word Text="supernatural" Rect="57,390,48,14" />
+      <Word Text="beings," Rect="107,390,26,14" />
+      <Word Text="the" Rect="135,390,12,14" />
+      <Word Text="Giordano" Rect="150,390,37,14" />
+      <Word Text="sisters" Rect="189,390,23,14" />
+      <Word Text="find" Rect="214,390,15,14" />
+      <Word Text="summer" Rect="232,390,31,14" />
+      <Word Text="employment" Rect="265,390,48,14" />
+      <Word Text="and" Rect="315,390,14,14" />
+      <Word Text="uncover" Rect="331,390,30,14" />
+      <Word Text="mysteries" Rect="363,390,36,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="involving" Rect="125,403,34,14" />
+      <Word Text="doppelgangers" Rect="161,403,55,14" />
+      <Word Text="and" Rect="218,403,14,14" />
+      <Word Text="oversized" Rect="234,403,35,14" />
+      <Word Text="football" Rect="272,403,29,14" />
+      <Word Text="players." Rect="303,403,28,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="ISBN" Rect="165,417,24,14" />
+      <Word Text="978-0-15-206216-3" Rect="191,417,74,14" />
+      <Word Text="(pbk.)" Rect="267,417,24,14" />
+      <Word Text="[1." Rect="70,430,10,14" />
+      <Word Text="Supernatural—Fiction." Rect="82,430,90,14" />
+      <Word Text="2." Rect="174,430,7,14" />
+      <Word Text="Psychic" Rect="183,430,29,14" />
+      <Word Text="ability—Fiction." Rect="213,430,63,14" />
+      <Word Text="3." Rect="279,430,7,14" />
+      <Word Text="Sisters—Fiction.]" Rect="287,430,69,14" />
+      <Word Text="I." Rect="358,430,6,14" />
+      <Word Text="Title." Rect="365,430,20,14" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="PZ7.P4258De" Rect="189,443,57,13" />
+      <Word Text="2009" Rect="248,443,19,13" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="[Fic]—dc22" Rect="204,457,47,13" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="2008048426" Rect="204,470,47,13" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="ISBN" Rect="178,497,24,13" />
+      <Word Text="978-0-15-206216-3" Rect="204,497,74,13" />
+    </TextGroup>
+    <TextGroup PageIndex="4" NewParagraph="True">
+      <Word Text="Printed" Rect="152,523,29,13" />
+      <Word Text="in" Rect="183,523,8,13" />
+      <Word Text="the" Rect="193,523,12,13" />
+      <Word Text="United" Rect="207,523,27,13" />
+      <Word Text="States" Rect="236,523,23,13" />
+      <Word Text="of" Rect="261,523,8,13" />
+      <Word Text="America" Rect="271,523,33,13" />
+      <Word Text="QUM" Rect="163,537,25,13" />
+      <Word Text="10" Rect="193,537,9,13" />
+      <Word Text="9" Rect="208,537,5,13" />
+      <Word Text="8" Rect="218,537,5,13" />
+      <Word Text="7" Rect="228,537,5,13" />
+      <Word Text="6" Rect="238,537,5,13" />
+      <Word Text="5" Rect="248,537,5,13" />
+      <Word Text="4" Rect="258,537,5,13" />
+      <Word Text="3" Rect="268,537,5,13" />
+      <Word Text="2" Rect="278,537,5,13" />
+      <Word Text="1" Rect="288,537,5,13" />
+    </TextGroup>
+    <TextGroup PageIndex="5" NewParagraph="True">
+      <Word Text="To" Rect="201,177,13,20" />
+      <Word Text="my" Rect="218,177,16,20" />
+      <Word Text="sister" Rect="238,177,25,20" />
+      <Word Text="Teresa," Rect="267,177,36,20" />
+      <Word Text="who" Rect="179,199,21,20" />
+      <Word Text="I" Rect="204,199,5,20" />
+      <Word Text="can" Rect="213,199,18,20" />
+      <Word Text="always" Rect="234,199,34,20" />
+      <Word Text="laugh" Rect="272,199,27,21" />
+      <Word Text="with" Rect="303,199,23,20" />
+    </TextGroup>
+    <TextGroup PageIndex="7" NewParagraph="True">
+      <Word Text="DEAD" Rect="171,168,37,32" />
+      <Word Text="IS" Rect="214,168,14,32" />
+      <Word Text="SO" Rect="233,168,19,32" />
+      <Word Text="LAST" Rect="257,168,33,32" />
+      <Word Text="YEAR" Rect="296,168,36,32" />
+    </TextGroup>
+  </Flow>
+</FlowSet>

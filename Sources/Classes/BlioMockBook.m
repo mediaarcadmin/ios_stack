@@ -183,8 +183,7 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 
 - (BlioTextFlow *)textFlow {
     if (nil == textFlow) {
-        textFlow = [[BlioTextFlow alloc] init];
-        [textFlow addFlowViewFileAtPath:[self textflowPath]];
+        textFlow = [[BlioTextFlow alloc] initWithPath:[self textflowPath]];
     }
     return textFlow;
 }

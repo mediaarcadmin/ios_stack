@@ -84,8 +84,6 @@
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
-		7DE7DB28110F662600403651 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB26110F662600403651 /* SelectionEnd.png */; };
-		7DE7DB29110F662600403651 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB27110F662600403651 /* SelectionKnob.png */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		A349F06B110E31CC009A8F89 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A349F067110E31CC009A8F89 /* AudioBooks */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
@@ -780,8 +778,6 @@
 				7D57493D110A4D3A00A07367 /* MagnificationLoupe.png in Resources */,
 				A349F06B110E31CC009A8F89 /* AudioBooks in Resources */,
 				C9E1FAAA110F26DB00999587 /* TextFlows in Resources */,
-				7DE7DB28110F662600403651 /* SelectionEnd.png in Resources */,
-				7DE7DB29110F662600403651 /* SelectionKnob.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

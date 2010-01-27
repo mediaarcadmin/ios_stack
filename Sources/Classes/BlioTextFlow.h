@@ -20,11 +20,15 @@
 
 @interface BlioTextFlowSection : NSObject {
     NSInteger pageIndex;
-    NSString *string;
+    NSString *name;
+    NSString *path;
+    NSString *anchor;
 }
 
 @property (nonatomic) NSInteger pageIndex;
-@property (nonatomic, retain) NSString *string;
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *path;
+@property (nonatomic, retain) NSString *anchor;
 
 @end
 
@@ -61,7 +65,7 @@
 @property (nonatomic, retain) NSMutableArray *pages;
 @property (nonatomic, retain) NSMutableArray *paragraphs;
 
-- (void)addFlowViewFileAtPath:(NSString *)path;
+- (id)initWithPath:(NSString *)path;
 
 // Convenience methods
 - (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex;

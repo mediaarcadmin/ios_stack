@@ -18,7 +18,7 @@
 	char lineBuffer[BUFSIZ];
 	timingFile = fopen([audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding],"r");
 	while (fgets(lineBuffer, sizeof(lineBuffer),timingFile)) {
-		NSString* thisLine = [NSString stringWithCString:lineBuffer];
+		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
 		//NSLog(thisLine);
 		NSRange initRange;
 		initRange.location = 0;
