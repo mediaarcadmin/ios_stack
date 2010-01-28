@@ -283,7 +283,7 @@
 - (CGRect)rect {
     if (CGRectEqualToRect(rect, CGRectZero)) {
         for (BlioTextFlowPositionedWord *word in self.words) {
-            if (CGRectIsNull(rect))
+            if (CGRectEqualToRect(rect, CGRectZero))
                 rect = word.rect;
             else
                 rect = CGRectUnion(rect, word.rect);
