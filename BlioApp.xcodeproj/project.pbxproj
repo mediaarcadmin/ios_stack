@@ -75,6 +75,8 @@
 		7D81ED2610E90C220016D44A /* paper-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2310E90C220016D44A /* paper-black.png */; };
 		7D81ED2710E90C220016D44A /* paper-neutral.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2410E90C220016D44A /* paper-neutral.png */; };
 		7D81ED2810E90C220016D44A /* paper-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2510E90C220016D44A /* paper-white.png */; };
+		7D981E2211123DA600827E55 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB27110F662600403651 /* SelectionKnob.png */; };
+		7D981E2311123DAB00827E55 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB26110F662600403651 /* SelectionEnd.png */; };
 		7DB9F6FC10F364060010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6F810F364060010DF0B /* LinuxLibertine-Bold.otf */; };
 		7DB9F6FD10F364060010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6F910F364060010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F6FE10F364060010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6FA10F364060010DF0B /* LinuxLibertine-Italic.otf */; };
@@ -778,6 +780,8 @@
 				7D57493D110A4D3A00A07367 /* MagnificationLoupe.png in Resources */,
 				A349F06B110E31CC009A8F89 /* AudioBooks in Resources */,
 				C9E1FAAA110F26DB00999587 /* TextFlows in Resources */,
+				7D981E2211123DA600827E55 /* SelectionKnob.png in Resources */,
+				7D981E2311123DAB00827E55 /* SelectionEnd.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
