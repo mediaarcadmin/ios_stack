@@ -10,3 +10,4 @@
 #import <CoreGraphics/CoreGraphics.h>
 
 CGFloat CGPointDistance(CGPoint firstPoint, CGPoint secondPoint);
+CGFloat CGPointDistanceFromRect(CGPoint point, CGRect rect);

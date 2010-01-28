@@ -1023,7 +1023,7 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
 {
     NSMutableArray *ret = [NSMutableArray array];
     
-    uint32_t lastId = 0;
+    uint32_t lastId = std::numeric_limits<uint32_t>::max();
     for(NSUInteger i = 0; i < _stringsCount; ++i) {
         uint32_t thisId = _stringParagraphAndWordOffsets[i] >> 32;
         if(thisId != lastId) {
@@ -1059,11 +1059,16 @@ static void _deleteVectorCallback(CFAllocatorRef allocator, const void *value)
 {
     NSMutableArray *ret = [NSMutableArray array];
     
+    uint32_t lastWordOffset = std::numeric_limits<uint32_t>::max();
     for(NSUInteger i = 0; i < _stringsCount; ++i) {
         uint64_t thisParagraphIdAndWordOffset = _stringParagraphAndWordOffsets[i];
         uint32_t thisId = thisParagraphIdAndWordOffset >> 32;
         if(thisId == id) {
-            [ret addObject:[NSNumber numberWithInt:(uint32_t)thisParagraphIdAndWordOffset]];
+            uint32_t wordOffset = (uint32_t)thisParagraphIdAndWordOffset;
+            if(wordOffset != lastWordOffset) {
+                [ret addObject:[NSNumber numberWithInt:wordOffset]];
+                lastWordOffset = wordOffset;
+            }
         }
     }
     if(!ret.count) {

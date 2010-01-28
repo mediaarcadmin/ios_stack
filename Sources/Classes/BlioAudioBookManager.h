@@ -15,16 +15,20 @@
 	int timeIx;
 	AVAudioPlayer* avPlayer;
 	NSTimer* readingTimer;
+	BOOL startedPlaying;
 }
 
 @property (nonatomic, retain) NSMutableArray* times;
 @property (nonatomic, retain) AVAudioPlayer* avPlayer;
 @property (nonatomic, retain) NSTimer* readingTimer;
+@property (nonatomic, assign) BOOL startedPlaying;
 
 - (id)initWithAudioBook:(NSString*)audioBookPath audioTiming:(NSString*)audioTimingPath;
-- (void)setAudioBook:(NSString*)audioBookPath;
+- (void)loadTimesFromFile:(NSString*)audioTimingPath;
+- (BOOL)setAudioBook:(NSString*)audioBookPath;
 - (void)setAudioTiming:(NSString*)audioTimingPath;
 - (void)playAudio;
 - (void)stopAudio;
+- (void)pauseAudio;
 
 @end

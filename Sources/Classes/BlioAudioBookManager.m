@@ -11,7 +11,7 @@
 
 @implementation BlioAudioBookManager
 
-@synthesize times, avPlayer, readingTimer;
+@synthesize times, avPlayer, readingTimer, startedPlaying;
 
 - (void)loadTimesFromFile:(NSString*)audioTimingPath {
 	FILE* timingFile;
@@ -37,20 +37,25 @@
 
 - (id)initWithAudioBook:(NSString*)audioBookPath audioTiming:(NSString*)audioTimingPath {
 	if ( (self = [super init]) ) {
+		[self setAvPlayer:nil]; 
 		[self setAudioBook:audioBookPath];
 		[self setAudioTiming:audioTimingPath];
+		[self setStartedPlaying:NO]; 
 	}
 	return self;
 }
 
-- (void)setAudioBook:(NSString*)audioBookPath {
+- (BOOL)setAudioBook:(NSString*)audioBookPath {
 	if ( self.avPlayer != nil )
 		[self.avPlayer release];
 	NSError* err;
 	self.avPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:audioBookPath] 
 													  error:&err];
 	self.avPlayer.volume = 1.0;    // Will get from settings.
-	[self.avPlayer prepareToPlay];
+	BOOL prepared = [self.avPlayer prepareToPlay];
+	if ( err == nil && prepared )
+		return YES;
+	return NO;
 }
 
 - (void)setAudioTiming:(NSString*)audioTimingPath {	
@@ -65,6 +70,10 @@
 
 - (void)stopAudio {
 	[avPlayer stop];
+}
+
+- (void)pauseAudio {
+	[avPlayer pause];
 }
 
 @end
