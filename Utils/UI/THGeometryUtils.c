@@ -50,3 +50,17 @@ CGFloat CGPointDistanceFromRect(CGPoint point, CGRect rect)
         return 0.0f;
     }
 }
+
+CGRect CGRectScreenIntegral(CGRect rect, CGSize scaleFactors) 
+{
+    rect.origin.x = rect.origin.x * scaleFactors.width;
+    rect.size.width = rect.size.width * scaleFactors.width;
+    rect.origin.y = rect.origin.y * scaleFactors.height;
+    rect.size.height = rect.size.height * scaleFactors.height;
+    rect = CGRectIntegral(rect);
+    rect.origin.x = rect.origin.x / scaleFactors.width;
+    rect.size.width = rect.size.width / scaleFactors.width;
+    rect.origin.y = rect.origin.y / scaleFactors.height;
+    rect.size.height = rect.size.height / scaleFactors.height;
+    return rect;
+}

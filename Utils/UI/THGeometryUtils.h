@@ -11,3 +11,4 @@
 
 CGFloat CGPointDistance(CGPoint firstPoint, CGPoint secondPoint);
 CGFloat CGPointDistanceFromRect(CGPoint point, CGRect rect);
+CGRect CGRectScreenIntegral(CGRect rect, CGSize scaleFactors) ;

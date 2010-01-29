@@ -64,6 +64,9 @@ typedef enum EucHighlighterTrackingStage {
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 - (void)removeTemporaryHighlight;
 
+// Can be called e.g. after a view is zoomed to redisplay the selection with
+// handles sized correctly.
+- (void)redisplaySelectedRange; 
 
 // Controls whether the highlighter sniff touches for the view it's attached
 // to.  
