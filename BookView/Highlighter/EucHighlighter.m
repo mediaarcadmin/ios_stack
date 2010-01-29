@@ -433,15 +433,19 @@ static const CGFloat sLoupePopDuration = 0.05f;
     loupeView.image = loupeContentsFactory.snapshotUIImage;
     [loupeContentsFactory release];
     
+    
+    CGPoint superviewPoint = [self.viewWithSelection convertPoint:point toView:loupeView.superview];
+    
     // Position the loupe.
     CGRect frame = loupeView.frame;
-    frame.origin.x = point.x - (frame.size.width / 2.0f);
-    frame.origin.y = point.y - frame.size.height + 3;
+    frame.origin.x = superviewPoint.x - (frame.size.width / 2.0f);
+    frame.origin.y = superviewPoint.y - frame.size.height + 3;
     
     // Make sure the loupe doesn't go too far off the top of the screen so that 
     // the user can still see the middle of it.
+    frame.origin.x = MAX(0, frame.origin.x);
     frame.origin.y = MAX(frame.origin.y, floorf(-magnificationLoupeSize.height * 0.33));
-    loupeView.frame = [self.viewWithSelection convertRect:frame toView:loupeView.superview];
+    loupeView.frame = frame;
 }
 
 - (void)_removeLoupe
