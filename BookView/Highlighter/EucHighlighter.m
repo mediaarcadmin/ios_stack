@@ -366,6 +366,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
     CGSize magnificationLoupeSize = CGSizeMake(CGImageGetWidth(magnificationLoupeImage),
                                                CGImageGetHeight(magnificationLoupeImage));
 
+    UIWindow *window = self.viewWithSelection.window;
     UIImageView *loupeView = self.loupeView;
     if(!self.loupeView) {
         // Create an imageView that will hold the magnified image.
@@ -377,7 +378,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
         self.loupeView = loupeView;
         // Don't add it to self.viewWithSelection - we're using renderInContext:
         // below, so the effect would be an infinite tunnel after a few moves.
-        [self.viewWithSelection.window addSubview:loupeView];
+        [window addSubview:loupeView];
         
         CABasicAnimation *loupePopUp = [[CABasicAnimation alloc] init];
         loupePopUp.keyPath = @"transform";
@@ -396,18 +397,26 @@ static const CGFloat sLoupePopDuration = 0.05f;
     THImageFactory *loupeContentsFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
     CGContextRef context = loupeContentsFactory.CGContext;
 
+    // Work out the final scale factor of the view on screen so that we can
+    // scale to bigger than that.
+    CGRect scaledRect = [self.viewWithSelection convertRect:CGRectMake(0, 0, 1, 1) toView:window];    
+    
+    // We want 1.25 * bigger.
+    CGFloat scaleFactorX = scaledRect.size.width * 1.25;
+    CGFloat scaleFactorY = scaledRect.size.height * 1.25;
+    
     // First, draw the magnified view.  We use renderInContents on the 
     // view's layer.
     CGContextSaveGState(context);
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     
-    // Scale the context by 1.25 and translate it so that we can draw the view
+    // Scale the context and translate it so that we can draw the view
     // in the correct place.
-    CGContextScaleCTM(context, 1.25f, -1.25f);
+    CGContextScaleCTM(context, scaleFactorX, -scaleFactorY);
     
-    // '* 0.8' below to cunteract the 1.25X scaling.
-    CGPoint translationPoint = CGPointMake(-point.x + magnificationLoupeSize.width * (0.5f * 0.8f), 
-                                           -point.y - magnificationLoupeSize.width * (0.5f * 0.8f));
+    // '* (1 / scaleFactor)' below to counteract the existing * 1.25 scaling.
+    CGPoint translationPoint = CGPointMake(-point.x + magnificationLoupeSize.width * (0.5f * (1 / scaleFactorX)), 
+                                           -point.y - magnificationLoupeSize.width * (0.5f * (1 / scaleFactorY)));
     
     // Don't show blank area off the bottom of the view.
     translationPoint.y = MAX(-viewWithSelectionSize.height, translationPoint.y); 
@@ -437,12 +446,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
     [loupeContentsFactory release];
     
     
-    CGPoint superviewPoint = [self.viewWithSelection convertPoint:point toView:loupeView.superview];
+    CGPoint windowPoint = [self.viewWithSelection convertPoint:point toView:window];
     
     // Position the loupe.
     CGRect frame = loupeView.frame;
-    frame.origin.x = superviewPoint.x - (frame.size.width / 2.0f);
-    frame.origin.y = superviewPoint.y - frame.size.height + 3;
+    frame.origin.x = windowPoint.x - (frame.size.width / 2.0f);
+    frame.origin.y = windowPoint.y - frame.size.height + 3;
     
     // Make sure the loupe doesn't go too far off the top of the screen so that 
     // the user can still see the middle of it.
@@ -714,9 +723,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
     } 
     if(!newRange) {
         if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {
+            [CATransaction begin];
+            [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
             for(CALayer *layer in self.highlightLayers) {
                 layer.hidden = YES;
-            }            
+            }      
+            [CATransaction commit];
         } else {
             [self setTrackingStage:EucHighlighterTrackingStageNone];
         }
@@ -731,8 +743,6 @@ static const CGFloat sLoupePopDuration = 0.05f;
     EucHighlighterRange *newSelectedRange = nil;
     
     if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {   
-        [self _loupeToPoint:location];
-
         THPair *blockAndElementAndHighlightRects = [self _blockAndElementIdsAndHighlightRectsForPoint:location];
         THPair *blockAndElementIds = blockAndElementAndHighlightRects.first;
         
@@ -789,6 +799,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
         
     self.selectedRange = newSelectedRange;
     [newSelectedRange release];
+    
+    if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {   
+        [self _loupeToPoint:location];
+    }
 }
 
 - (void)_startSelection
