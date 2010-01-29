@@ -31,4 +31,9 @@
 }
 
 
+- (CGSize)screenScaleFactors
+{
+    return [self convertRect:CGRectMake(0, 0, 1, 1) toView:self.window].size;
+}
+
 @end

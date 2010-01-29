@@ -757,7 +757,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 - (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
     [self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
     [self renderSharpPageAtScale:self.scrollView.zoomScale];
-
+    [self.highlighter redisplaySelectedRange]; 
+    
     if (scale == 1.0f) {
         scrollView.pagingEnabled = YES;
         scrollView.bounces = YES;

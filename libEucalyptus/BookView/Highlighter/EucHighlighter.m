@@ -11,6 +11,7 @@
 #import "EucHighlighterRange.h"
 #import "THGeometryUtils.h"
 #import "THEventCapturingWindow.h"
+#import "THUIViewAdditions.h"
 #import "THPair.h"
 #import "THImageFactory.h"
 #import "THLog.h"
@@ -317,6 +318,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
 
+    // We scale the layers we're adding or apply transforms to ensure they appear
+    // at the correct size on screen even if the view they're part of is zoomed.
+    CGSize scaleFactors = [self.attachedView screenScaleFactors];
+    CGSize inverseScaleFactors = CGSizeMake(1.0f / scaleFactors.width, 1.0f / scaleFactors.height);
+    CATransform3D knobTransform = CATransform3DMakeScale(inverseScaleFactors.width, inverseScaleFactors.height, 1);
+    
     NSArray *highlightLayers = self.highlightLayers;
     
     THPair *highlightEndLayers = self.highlightEndLayers;
@@ -326,17 +333,18 @@ static const CGFloat sLoupePopDuration = 0.05f;
     
     CALayer *leftEndLayer = highlightEndLayers.first;
     [leftHighlightLayer addSublayer:leftEndLayer];
-    CGRect leftEndBounds = leftEndLayer.bounds;
+    
     CGFloat leftSelectionHeight = leftHighlightLayer.bounds.size.height;
-    leftEndBounds.size.height = leftSelectionHeight;
-    leftEndLayer.bounds = leftEndBounds;
-    leftEndLayer.position = CGPointMake(-1.0f, leftSelectionHeight * 0.5f);
+    leftEndLayer.bounds = CGRectMake(0, 0, 3.0f * inverseScaleFactors.width, leftSelectionHeight);
+    leftEndLayer.position = CGPointMake(-0.5f * inverseScaleFactors.width, leftSelectionHeight * 0.5f);
     leftEndLayer.hidden = NO;
     
     CALayer *leftKnobLayer = highlightKnobLayers.first;
     [leftHighlightLayer addSublayer:leftKnobLayer];
-    leftKnobLayer.position = CGPointMake(-1.5f, -4.5f);
+    leftKnobLayer.position = CGPointMake(-0.5f * inverseScaleFactors.width, -4.5f * inverseScaleFactors.height);
+    leftKnobLayer.transform = knobTransform;
     leftKnobLayer.hidden = NO;
+    
     
     CALayer *rightHighlightLayer = [highlightLayers lastObject];
     for(NSUInteger i = highlightLayers.count - 2; rightHighlightLayer.isHidden; --i) {
@@ -345,16 +353,16 @@ static const CGFloat sLoupePopDuration = 0.05f;
     
     CALayer *rightEndLayer = highlightEndLayers.second;
     [rightHighlightLayer addSublayer:rightEndLayer];
-    CGRect rightEndBounds = rightEndLayer.bounds;
+    
     CGSize rightSelectionSize = rightHighlightLayer.bounds.size;
-    rightEndBounds.size.height = rightSelectionSize.height;
-    rightEndLayer.bounds = rightEndBounds;
-    rightEndLayer.position = CGPointMake(rightSelectionSize.width + 2.0f, rightSelectionSize.height * 0.5f);
+    rightEndLayer.bounds = CGRectMake(0, 0, 3.0f * inverseScaleFactors.width, rightSelectionSize.height);
+    rightEndLayer.position = CGPointMake(rightSelectionSize.width + (0.5f * inverseScaleFactors.width), rightSelectionSize.height * 0.5f);
     rightEndLayer.hidden = NO;
     
     CALayer *rightKnobLayer = highlightKnobLayers.second;
     [rightHighlightLayer addSublayer:rightKnobLayer];
-    rightKnobLayer.position = CGPointMake(rightSelectionSize.width + 1.5f, rightSelectionSize.height + 7.5f);
+    rightKnobLayer.position = CGPointMake(rightSelectionSize.width + (0.5f  * inverseScaleFactors.width), rightSelectionSize.height + (7.5f * inverseScaleFactors.width));
+    rightKnobLayer.transform = knobTransform;
     rightEndLayer.hidden = NO;
 
     [CATransaction commit];
@@ -399,11 +407,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
     // Work out the final scale factor of the view on screen so that we can
     // scale to bigger than that.
-    CGRect scaledRect = [self.viewWithSelection convertRect:CGRectMake(0, 0, 1, 1) toView:window];    
+    CGSize screenScaleFactors = [self.attachedView screenScaleFactors];    
     
     // We want 1.25 * bigger.
-    CGFloat scaleFactorX = scaledRect.size.width * 1.25;
-    CGFloat scaleFactorY = scaledRect.size.height * 1.25;
+    CGFloat scaleFactorX = screenScaleFactors.width * 1.25;
+    CGFloat scaleFactorY = screenScaleFactors.height * 1.25;
     
     // First, draw the magnified view.  We use renderInContents on the 
     // view's layer.
@@ -604,9 +612,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
     }
 }
 
-- (void)setSelectedRange:(EucHighlighterRange *)newRange
+- (void)redisplaySelectedRange
 {
-    if(newRange && ![newRange isEqual:_selectedRange]) {        
+    EucHighlighterRange *selectedRange = self.selectedRange;
+    if(selectedRange) {
         id<EucHighlighterDataSource> dataSource = self.dataSource;
         
         // Work out he rects to highlight
@@ -615,11 +624,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
         NSArray *blockIds = [dataSource blockIdentifiersForEucHighlighter:self];
         NSUInteger blockIdIndex = 0;
         
-        id startBlockId = newRange.startBlockId;
-        id endBlockId = newRange.endBlockId;
-        id startElementId = newRange.startElementId;
-        id endElementId = newRange.endElementId;
-
+        id startBlockId = selectedRange.startBlockId;
+        id endBlockId = selectedRange.endBlockId;
+        id startElementId = selectedRange.startElementId;
+        id endElementId = selectedRange.endElementId;
+        
         while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
             ++blockIdIndex;
         }
@@ -629,7 +638,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
         CGRect currentLineRect = CGRectZero;
         do {
             id blockId = [blockIds objectAtIndex:blockIdIndex];
-                        
+            
             NSArray *elementIds = [dataSource eucHighlighter:self identifiersForElementsOfBlockWithIdentifier:blockId];
             NSUInteger elementIdCount = elementIds.count;
             NSUInteger elementIdIndex = 0;
@@ -652,8 +661,15 @@ static const CGFloat sLoupePopDuration = 0.05f;
                         currentLineRect = thisRect;
                         isFirstElement = NO;
                     } else {
-                        if((currentLineRect.origin.y <= thisRect.origin.y && currentLineRect.origin.y + currentLineRect.size.height > thisRect.origin.y) ||
-                           (currentLineRect.origin.y <= thisRect.origin.y + thisRect.size.height  && currentLineRect.origin.y + currentLineRect.size.height > thisRect.origin.y + thisRect.size.height)) {
+                        CGFloat overlappingPixels = 
+                            MIN(currentLineRect.origin.y + currentLineRect.size.height, thisRect.origin.y + thisRect.size.height)
+                              - MAX(currentLineRect.origin.y, thisRect.origin.y);
+                        
+                        // Try to work out if this rect is "on the same line" as
+                        // the last one, and extend the "line rect" if it is.
+                        if(thisRect.origin.x >= currentLineRect.origin.x + currentLineRect.size.width &&
+                           (overlappingPixels > 0.33 * currentLineRect.size.height ||
+                            overlappingPixels > 0.33 * thisRect.size.height)) {
                             CGFloat newLimit = MAX(currentLineRect.origin.y + currentLineRect.size.height, 
                                                    thisRect.origin.y + thisRect.size.height);
                             currentLineRect.origin.y = MIN(currentLineRect.origin.y, thisRect.origin.y);
@@ -667,16 +683,16 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 }
                 ++elementIdIndex;
             } while (isLastBlock ? 
-                       ([elementId compare:endElementId] < NSOrderedSame) : 
-                       elementIdIndex < elementIdCount);
+                     ([elementId compare:endElementId] < NSOrderedSame) : 
+                     elementIdIndex < elementIdCount);
             ++blockIdIndex;
         } while(!isLastBlock);
         [highlightRects addObject:[NSValue valueWithCGRect:currentLineRect]];
-
+        
         // Highlight them, reusing the current highlight layers if possible.
         UIView *viewWithSelection = self.viewWithSelection;
         NSMutableArray *highlightLayers = self.highlightLayers;
-                
+        
         [CATransaction begin];
         [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
         
@@ -700,10 +716,14 @@ static const CGFloat sLoupePopDuration = 0.05f;
             }
         } 
         
+        // We'll scale the rects to make sure they will be on pixl boundies
+        // on screen even if the layer they're in has a scale transform applied.
+        CGSize screenScaleFactors = [self.attachedView screenScaleFactors];
+        
         for(NSUInteger i = 0; i < highlightRectsCount; ++i) {
             CALayer *layer = [highlightLayers objectAtIndex:i];
             NSValue *rectValue = [highlightRects objectAtIndex:i];
-            layer.frame = [rectValue CGRectValue];
+            layer.frame = CGRectScreenIntegral([rectValue CGRectValue], screenScaleFactors);
             layer.hidden = NO;
             --unusedHighlightLayersCount;
         }
@@ -712,14 +732,20 @@ static const CGFloat sLoupePopDuration = 0.05f;
             // Hide unused layers.
             ((CALayer *)[highlightLayers objectAtIndex:highlightRectsCount + i]).hidden = YES;
         }        
-                        
+        
         [CATransaction commit];
         
         if(self.trackingStage != EucHighlighterTrackingStageFirstSelection) {
             [self _positionKnobs];
-        }
-        
+        }   
+    }
+}
+
+- (void)setSelectedRange:(EucHighlighterRange *)newRange
+{
+    if(newRange && ![newRange isEqual:_selectedRange]) {        
         _selectedRange = [newRange retain];
+        [self redisplaySelectedRange];
     } 
     if(!newRange) {
         if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {

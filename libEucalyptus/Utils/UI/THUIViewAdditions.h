@@ -12,5 +12,6 @@
 @interface  UIView (THUIViewAdditions)
 
 - (void)centerInSuperview;
+- (CGSize)screenScaleFactors;
 
 @end
