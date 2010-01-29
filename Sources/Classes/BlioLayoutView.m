@@ -627,12 +627,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
         [self goToPageNumber:targetPageNumber animated:YES];
     }
+    
+
     NSArray *words = [currentParagraph words];
     if ([words count] > wordOffset) {
         BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
-        CGRect highlightRect = [word rect];
-        [[[self.currentPageView view] highlightLayerDelegate] setHighlights:[NSArray arrayWithObject:[NSValue valueWithCGRect:highlightRect]]];
-        [[[self.currentPageView view] highlightLayer] setNeedsDisplay];
+        [self.highlighter temporarilyHighlightElementWithIdentfier:word inBlockWithIdentifier:currentParagraph animated:YES];
     }
 }
 
