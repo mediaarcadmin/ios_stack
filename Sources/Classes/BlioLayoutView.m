@@ -263,6 +263,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return self;
 }
 
+- (BOOL)wantsTouchesSniffed {
+    return NO;
+}
+
 - (void)setTiltScroller:(MSTiltScroller*)ts {
     tiltScroller = ts;
     [tiltScroller setScrollView:self.scrollView];

@@ -32,6 +32,10 @@
     return self;
 }
 
+- (BOOL)wantsTouchesSniffed {
+    return YES;
+}
+
 - (CGRect)firstPageRect
 {
     return [[UIScreen mainScreen] bounds];

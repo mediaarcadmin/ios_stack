@@ -17,6 +17,7 @@
 @required
 
 @property (nonatomic, readonly) NSInteger pageCount;
+@property (nonatomic, readonly) BOOL wantsTouchesSniffed;
 
 // Page numbers start at 1.
 // The EucBookContentsTableViewControllerDataSource protocol defines a way to 
