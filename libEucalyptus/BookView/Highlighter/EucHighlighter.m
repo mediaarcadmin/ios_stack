@@ -114,6 +114,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (void)detatchFromView
 {
+    self.selectedRange = nil;
     UIView *attachedView = self.attachedView;
     for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
         if(self.shouldSniffTouches && [window isKindOfClass:[THEventCapturingWindow class]]) {
