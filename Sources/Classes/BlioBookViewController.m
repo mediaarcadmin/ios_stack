@@ -511,8 +511,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [_bookView removeObserver:self forKeyPath:@"pageNumber"];
             [_bookView removeObserver:self forKeyPath:@"pageCount"];        
             if(_bookView.superview) {
-                THEventCapturingWindow *window = (THEventCapturingWindow *)_bookView.window;
-                [window removeTouchObserver:self forView:_bookView];
+                //THEventCapturingWindow *window = (THEventCapturingWindow *)_bookView.window;
+                //[window removeTouchObserver:self forView:_bookView];
                 [_bookView removeFromSuperview];
             }
         }
@@ -529,7 +529,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [self.view addSubview:_bookView];
                 [self.view sendSubviewToBack:_bookView];
                 
-                [(THEventCapturingWindow *)_bookView.window addTouchObserver:self forView:_bookView];
+                //[(THEventCapturingWindow *)_bookView.window addTouchObserver:self forView:_bookView];
             }
             
             [_bookView addObserver:self 
@@ -674,12 +674,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             }
         }
         
-        if(_bookView) {
+        //if(_bookView) {
             // Couldn't be done at view creation time, because there was
             // no handle to the window.
-            UIWindow *window = self.navigationController.view.window;
-            [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
-        }
+            //UIWindow *window = self.navigationController.view.window;
+            //[(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
+        //}
         
         EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
         [titleView setTitle:[self.book title]];
@@ -735,7 +735,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         //        }
         if(_bookView) {
             // Need to do this now before the view is removed and doesn't have a window.
-            [(THEventCapturingWindow *)_bookView.window removeTouchObserver:self forView:_bookView];
+            //[(THEventCapturingWindow *)_bookView.window removeTouchObserver:self forView:_bookView];
             
             if([_bookView respondsToSelector:@selector(stopAnimation)]) {
                 [_bookView performSelector:@selector(stopAnimation)];
@@ -1058,6 +1058,24 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             _pageJumpLabel.text = self.book.title;
         }
     } // of no section name
+}
+
+#pragma mark -
+#pragma mark Touches
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    _touchMoved = NO;
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    _touchMoved = YES;
+    if(!self.navigationController.toolbarHidden)
+        [self toggleToolbars];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if(!_touchMoved)
+        [self toggleToolbars];
 }
 
 #pragma mark -
