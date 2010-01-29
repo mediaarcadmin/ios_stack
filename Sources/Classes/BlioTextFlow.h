@@ -11,10 +11,16 @@
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
     CGRect rect;
+    NSInteger pageIndex;
+    NSInteger wordIndex;
 }
 
 @property (nonatomic, retain) NSString *string;
 @property (nonatomic) CGRect rect;
+@property (nonatomic) NSInteger pageIndex;
+@property (nonatomic) NSInteger wordIndex;
+
+- (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs;
 
 @end
 
@@ -34,18 +40,21 @@
 
 @interface BlioTextFlowParagraph : NSObject {
     NSInteger pageIndex;
+    NSInteger paragraphIndex;
     NSMutableArray *words;
     CGRect rect;
     BOOL folio;
 }
 
 @property (nonatomic) NSInteger pageIndex;
+@property (nonatomic) NSInteger paragraphIndex;
 @property (nonatomic, retain) NSMutableArray *words;
 @property (nonatomic, readonly) CGRect rect;
 @property (nonatomic) BOOL folio;
 
 - (NSString *)string;
 - (NSArray *)wordsArray;
+- (NSComparisonResult)compare:(BlioTextFlowParagraph *)rhs;
 
 @end
 

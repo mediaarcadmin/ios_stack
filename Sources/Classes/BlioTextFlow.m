@@ -188,8 +188,10 @@
                     }
                     self.currentPage = [self.pages objectAtIndex:pageIndex];
                     [self.currentParagraph setPageIndex:pageIndex];
-                    if (![self.currentPage containsObject:self.currentParagraph])
+                    if (![self.currentPage containsObject:self.currentParagraph]) {
                         [self.currentPage addObject:self.currentParagraph];
+                        [self.currentParagraph setParagraphIndex:[self.currentPage count] - 1];
+                    }
                 }
             }            
         }
@@ -207,6 +209,8 @@
                                         [[wordRectArray objectAtIndex:2] intValue],
                                         [[wordRectArray objectAtIndex:3] intValue])];
             [[self.currentParagraph words] addObject:newWord];
+            [newWord setPageIndex:[self.currentParagraph pageIndex]];
+            [newWord setWordIndex:[[self.currentParagraph words] count] - 1];
             [newWord release];
         }
     }
@@ -229,11 +233,27 @@
 
 @implementation BlioTextFlowPositionedWord
 
-@synthesize string, rect;
+@synthesize string, rect, pageIndex, wordIndex;
 
 - (void)dealloc {
     self.string = nil;
     [super dealloc];
+}
+
+- (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs {
+    if ([self pageIndex] == [rhs pageIndex]) {
+        if ([self wordIndex] < [rhs wordIndex]) {
+            return NSOrderedAscending;
+        } else if ([self wordIndex] > [rhs wordIndex]) {
+            return NSOrderedDescending;
+        } else {
+            return NSOrderedSame;
+        }
+    } else if ([self pageIndex] < [rhs pageIndex]) {
+        return NSOrderedAscending;
+    } else {
+        return NSOrderedDescending;
+    }
 }
 
 @end
@@ -253,7 +273,7 @@
 
 @implementation BlioTextFlowParagraph
 
-@synthesize pageIndex, words, folio;
+@synthesize pageIndex, paragraphIndex, words, folio;
 
 - (void)dealloc {
     self.words = nil;
@@ -290,6 +310,22 @@
         }
     }
     return rect;
+}
+
+- (NSComparisonResult)compare:(BlioTextFlowParagraph *)rhs {
+    if ([self pageIndex] == [rhs pageIndex]) {
+        if ([self paragraphIndex] < [rhs paragraphIndex]) {
+            return NSOrderedAscending;
+        } else if ([self paragraphIndex] > [rhs paragraphIndex]) {
+            return NSOrderedDescending;
+        } else {
+            return NSOrderedSame;
+        }
+    } else if ([self pageIndex] < [rhs pageIndex]) {
+        return NSOrderedAscending;
+    } else {
+        return NSOrderedDescending;
+    }
 }
 
 @end

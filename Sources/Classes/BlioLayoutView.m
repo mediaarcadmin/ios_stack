@@ -309,9 +309,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 @interface BlioPDFContainerScrollView : UIScrollView {
     NSInteger pageCount;
+    EucHighlighter *highlighter;
 }
 
 @property (nonatomic) NSInteger pageCount;
+@property (nonatomic, assign) EucHighlighter *highlighter;
 
 @end
 
@@ -353,7 +355,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.debugView = nil;
     self.currentPageView = nil;
     self.fonts = nil;
-    [self.highlighter removeObserver:self forKeyPath:@"tracking"];
+    //[self.highlighter removeObserver:self forKeyPath:@"tracking"];
     [self.highlighter detatchFromView];
     self.highlighter = nil;
     [super dealloc];
@@ -407,13 +409,15 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         [aView release];
         
         EucHighlighter *aHighlighter = [[EucHighlighter alloc] init];
+        [aHighlighter setShouldSniffTouches:NO];
         [aHighlighter attachToView:self.scrollView];
-        [aHighlighter addObserver:self
-                       forKeyPath:@"tracking"
-                          options:0
-                          context:NULL];
+        //[aHighlighter addObserver:self
+//                       forKeyPath:@"tracking"
+//                          options:0
+//                          context:NULL];
         aHighlighter.dataSource = self;
         self.highlighter = aHighlighter;
+        [self.scrollView setHighlighter:aHighlighter];
         [aHighlighter release];
         
         NSMutableArray *pageViewArray = [[NSMutableArray alloc] initWithCapacity:kBlioLayoutMaxViews];
@@ -622,6 +626,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     NSInteger targetPageNumber = ++pageIndex;
     if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
         [self goToPageNumber:targetPageNumber animated:YES];
+    }
+    NSArray *words = [currentParagraph words];
+    if ([words count] > wordOffset) {
+        BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
+        CGRect highlightRect = [word rect];
+        [[[self.currentPageView view] highlightLayerDelegate] setHighlights:[NSArray arrayWithObject:[NSValue valueWithCGRect:highlightRect]]];
+        [[[self.currentPageView view] highlightLayer] setNeedsDisplay];
     }
 }
 
@@ -1435,20 +1446,45 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
 @implementation BlioPDFContainerScrollView
 
-@synthesize pageCount;
+@synthesize pageCount, highlighter;
+
+- (void)dealloc {
+    self.highlighter = nil;
+    [super dealloc];
+}
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    //NSLog(@"Touches began in scrollview");
+    NSLog(@"Touches began in scrollview");
+    [self setScrollEnabled:NO];
     UITouch * t = [touches anyObject];
     if( [t tapCount]>1 ) {
         CGPoint point = [t locationInView:(UIView *)self.delegate];
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomAtPoint:)])
             [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(point)];
+    } else {
+        [self.highlighter touchesBegan:touches];
     }
 }
 
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"Touches moved in scrollview");
+    [self.highlighter touchesMoved:touches];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"Touches ended in scrollview");
+    [self setScrollEnabled:YES];
+    [self.highlighter touchesEnded:touches];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"Touches cancelled in scrollview");
+    [self setScrollEnabled:YES];
+    [self.highlighter touchesCancelled:touches];
+}
+
 - (BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view {
-  //NSLog(@"Touches should begin in scrollview");
+    NSLog(@"Touches should begin in scrollview");
     return YES;
 }
 
