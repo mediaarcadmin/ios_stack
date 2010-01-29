@@ -310,10 +310,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @interface BlioPDFContainerScrollView : UIScrollView {
     NSInteger pageCount;
     EucHighlighter *highlighter;
+    NSTimer *doubleTapTimer;
 }
 
 @property (nonatomic) NSInteger pageCount;
 @property (nonatomic, assign) EucHighlighter *highlighter;
+@property (nonatomic, retain) NSTimer *doubleTapTimer;
 
 @end
 
@@ -957,6 +959,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
     if (current) {
         self.currentPageView = pageView;
+        NSLog(@"attached to view");
         [self.highlighter attachToView:self.currentPageView];
     }
     
@@ -1446,39 +1449,64 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
 @implementation BlioPDFContainerScrollView
 
-@synthesize pageCount, highlighter;
+@synthesize pageCount, highlighter, doubleTapTimer;
 
 - (void)dealloc {
     self.highlighter = nil;
+    [self.doubleTapTimer invalidate];
+    self.doubleTapTimer = nil;
     [super dealloc];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"Touches began in scrollview");
+      [self.doubleTapTimer invalidate];
+      self.doubleTapTimer = nil;
+    
     [self setScrollEnabled:NO];
     UITouch * t = [touches anyObject];
     if( [t tapCount]>1 ) {
+        NSLog(@"doubletap");
+        self.doubleTapTimer = nil;
         CGPoint point = [t locationInView:(UIView *)self.delegate];
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomAtPoint:)])
             [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(point)];
     } else {
-        [self.highlighter touchesBegan:touches];
+        //[self.highlighter touchesBegan:touches];
+        self.doubleTapTimer = [NSTimer scheduledTimerWithTimeInterval:0.35f target:self selector:@selector(delayedTouchesBegan:) userInfo:touches repeats:NO];
     }
+}
+
+- (void)delayedTouchesBegan:(NSTimer *)timer {
+    NSLog(@"Delayed touches began in scrollview");
+    NSSet *touches = (NSSet *)[timer userInfo];
+    self.doubleTapTimer = nil;
+    [self.doubleTapTimer invalidate];
+    [self.highlighter touchesBegan:touches];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"Touches moved in scrollview");
+    [self.doubleTapTimer fire];
+    
     [self.highlighter touchesMoved:touches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"Touches ended in scrollview");
+    [self.doubleTapTimer invalidate];
+    self.doubleTapTimer = nil;
+    
+    
     [self setScrollEnabled:YES];
     [self.highlighter touchesEnded:touches];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"Touches cancelled in scrollview");
+    [self.doubleTapTimer invalidate];
+    self.doubleTapTimer = nil;
+    
     [self setScrollEnabled:YES];
     [self.highlighter touchesCancelled:touches];
 }
