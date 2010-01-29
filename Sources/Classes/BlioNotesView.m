@@ -65,7 +65,6 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     
     UIFont *buttonFont = [UIFont boldSystemFontOfSize:12.0f];
     NSString *buttonText = @"Cancel";
-    CGSize buttonSize = [buttonText sizeWithFont:buttonFont];
     UIImage *buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
 
     UISegmentedControl *aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
@@ -77,7 +76,6 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     [aButtonSegment release];
     
     buttonText = @"Save";
-    buttonSize = [buttonText sizeWithFont:buttonFont];
     buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
 
     aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];

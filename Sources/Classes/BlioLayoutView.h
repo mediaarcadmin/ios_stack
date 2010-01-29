@@ -55,7 +55,6 @@
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucHighlighter *highlighter;
 
-- (void)displayDebug;
 - (id)getCurrentParagraphId;
 - (NSUInteger)getCurrentWordOffset;
 - (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphId;

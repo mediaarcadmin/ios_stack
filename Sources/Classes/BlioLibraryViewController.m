@@ -629,7 +629,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         BlioMockBook *currentBook = [self.currentBookView book];
         BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:currentBook];
         
-        CGRect coverRect = [[UIScreen mainScreen] bounds];
+        CGRect coverRect;
         BOOL shrinkCover = NO;
         
         if (nil != bookViewController) {

@@ -124,6 +124,7 @@ typedef enum {
     
     [aContentsController release];
     [aBookmarksController release];
+    [aNotesController release];
     
     return self;
 }

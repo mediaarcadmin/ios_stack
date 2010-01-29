@@ -1569,7 +1569,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)dummyShowParsedText:(id)sender {
     if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
-        [(BlioLayoutView *)self.bookView displayDebug];
         UITextView *aTextView = [[UITextView alloc] initWithFrame:self.view.bounds];
         [aTextView setEditable:NO];
         [aTextView setContentInset:UIEdgeInsetsMake(10, 0, 10, 0)];

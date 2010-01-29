@@ -223,13 +223,5 @@ static void *background_init_thread(void * arg) {
     return persistentStoreCoordinator;
 }
 
-- (NSManagedObjectContext*)newContextToMainStore {
-    NSPersistentStoreCoordinator *coord = nil; 
-    coord = [self persistentStoreCoordinator];
-    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
-    [moc setPersistentStoreCoordinator:coord]; 
-    return [moc autorelease];
-}
-
 @end
 
