@@ -21,6 +21,7 @@ typedef enum EucHighlighterTrackingStage {
     
 
 @interface EucHighlighter : NSObject <THEventCaptureObserver> {
+    BOOL _shouldSniffTouches;
     BOOL _selectionDisabled;
     
     id<EucHighlighterDataSource> _dataSource;
@@ -62,6 +63,20 @@ typedef enum EucHighlighterTrackingStage {
 
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 - (void)removeTemporaryHighlight;
+
+
+// Controls whether the highlighter sniff touches for the view it's attached
+// to.  
+// Default = YES.  
+// If set to NO, touch should be forwarded to the 
+// bedin, moved, ended, cancelled etc. interfaces.
+// Do not change this while the highlighter is attached to a view.
+@property (nonatomic, assign) BOOL shouldSniffTouches;
+
+- (void)touchesBegan:(NSSet *)touches;
+- (void)touchesMoved:(NSSet *)touches;
+- (void)touchesEnded:(NSSet *)touches;
+- (void)touchesCancelled:(NSSet *)touches;
 
 @end
 

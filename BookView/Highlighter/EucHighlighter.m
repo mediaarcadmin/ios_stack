@@ -45,6 +45,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 @implementation EucHighlighter
 
+@synthesize shouldSniffTouches = _shouldSniffTouches;
 @synthesize selectionDisabled = _selectionDisabled;
 
 @synthesize dataSource = _dataSource;
@@ -70,6 +71,13 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @synthesize draggingKnob = _draggingKnob;
 @synthesize draggingKnobVerticalOffset = _draggingKnobVerticalOffset;
 
+- (id)init 
+{
+    if((self = [super init])) {
+        _shouldSniffTouches = YES;
+    }
+    return self;
+}
 
 - (void)dealloc
 {
@@ -97,7 +105,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
         [self detatchFromView];
     }
     for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
-        if([window isKindOfClass:[THEventCapturingWindow class]]) {
+        if(self.shouldSniffTouches && [window isKindOfClass:[THEventCapturingWindow class]]) {
             [window addTouchObserver:self forView:view];
         }
     }
@@ -108,7 +116,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 {
     UIView *attachedView = self.attachedView;
     for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
-        if([window isKindOfClass:[THEventCapturingWindow class]]) {
+        if(self.shouldSniffTouches && [window isKindOfClass:[THEventCapturingWindow class]]) {
             [window removeTouchObserver:self forView:attachedView];
         }
     }    
@@ -830,48 +838,90 @@ static const CGFloat sLoupePopDuration = 0.05f;
     }
 }
 
+- (void)touchesBegan:(NSSet *)touches
+{
+    if(!self.selectionDisabled && !self.trackingTouch) {
+        UITouch *touch = [touches anyObject];
+        BOOL currentlyTracking = self.isTracking;
+
+        self.trackingTouch = touch;
+        self.trackingTouchHasMoved = NO;
+        if(currentlyTracking) {
+            [self _setDraggingKnobFromTouch:touch];
+        }
+        if(!currentlyTracking || 
+           !self.draggingKnob) {
+            [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
+        } else {
+            if(self.draggingKnob) {
+                self.trackingStage = EucHighlighterTrackingStageChangingSelection;
+                [self _trackTouch:touch];
+            } 
+        }
+        
+    }
+}
+
+- (void)touchesMoved:(NSSet *)touches
+{
+    UITouch *trackingTouch = self.trackingTouch;
+    if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
+        if(!self.isTracking || 
+           (self.trackingStage == EucHighlighterTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+            self.trackingTouch = nil;
+            self.trackingStage = EucHighlighterTrackingStageNone;
+        } else {
+            self.trackingTouchHasMoved = YES;
+            [self _trackTouch:trackingTouch];
+        }
+    }
+}
+    
+- (void)touchesEnded:(NSSet *)touches
+{
+    UITouch *trackingTouch = self.trackingTouch;
+    if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
+        if(!self.isTracking || 
+           (self.trackingStage == EucHighlighterTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+            self.trackingTouch = nil;
+            self.trackingStage = EucHighlighterTrackingStageNone;
+        } else {
+            [self _trackTouch:trackingTouch];
+            if(self.trackingTouchHasMoved && self.highlightLayers.count && !((CALayer *)[self.highlightLayers objectAtIndex:0]).isHidden) {
+                self.trackingStage = EucHighlighterTrackingStageSelectedAndWaiting;
+            } else {
+                self.trackingStage = EucHighlighterTrackingStageNone;
+            }
+            self.trackingTouch = nil;            
+        }
+    }
+}
+
+- (void)touchesCancelled:(NSSet *)touches
+{
+    [self touchesEnded:touches];
+}
+
 - (void)observeTouch:(UITouch *)touch
 {
     if(!self.selectionDisabled) {
-        UITouch *trackingTouch = self.trackingTouch;
-        UITouchPhase phase = touch.phase;
-        BOOL currentlyTracking = self.isTracking;
-        
-        if(!trackingTouch && phase == UITouchPhaseBegan) {
-            self.trackingTouch = touch;
-            self.trackingTouchHasMoved = NO;
-            if(currentlyTracking) {
-                [self _setDraggingKnobFromTouch:touch];
-            }
-            if(!currentlyTracking || 
-               !self.draggingKnob) {
-                [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
-            } else {
-                if(self.draggingKnob) {
-                    self.trackingStage = EucHighlighterTrackingStageChangingSelection;
-                    [self _trackTouch:touch];
-                } 
-            }
-        } else if(touch == trackingTouch) {
-            if(!currentlyTracking || 
-               (self.trackingStage == EucHighlighterTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
-                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
-                self.trackingTouch = nil;
-                self.trackingStage = EucHighlighterTrackingStageNone;
-            } else {        
-                if(phase == UITouchPhaseMoved) { 
-                    self.trackingTouchHasMoved = YES;
-                    [self _trackTouch:touch];
-                } else if(phase == UITouchPhaseEnded || phase == UITouchPhaseCancelled) {
-                    [self _trackTouch:touch];
-                    if(self.trackingTouchHasMoved && self.highlightLayers.count && !((CALayer *)[self.highlightLayers objectAtIndex:0]).isHidden) {
-                        self.trackingStage = EucHighlighterTrackingStageSelectedAndWaiting;
-                    } else {
-                        self.trackingStage = EucHighlighterTrackingStageNone;
-                    }
-                    self.trackingTouch = nil;
-                }
-            }
+        NSSet *touchSet = [NSSet setWithObject:touch];
+        switch(touch.phase) {
+            case UITouchPhaseBegan:
+                [self touchesBegan:touchSet];
+                break;
+            case UITouchPhaseMoved: 
+                [self touchesMoved:touchSet];
+                break;
+            case UITouchPhaseEnded:
+                [self touchesEnded:touchSet];
+                break;
+            case UITouchPhaseCancelled:
+            default:
+                [self touchesCancelled:touchSet];
+                break;
         }
     }
 }
