@@ -410,7 +410,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         
         EucHighlighter *aHighlighter = [[EucHighlighter alloc] init];
         [aHighlighter setShouldSniffTouches:NO];
-        [aHighlighter attachToView:self.scrollView];
+        //[aHighlighter attachToView:self.scrollView];
         //[aHighlighter addObserver:self
 //                       forKeyPath:@"tracking"
 //                          options:0
@@ -544,8 +544,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     CGRect blockRect = [(BlioTextFlowParagraph *)id rect];
     CGAffineTransform viewTransform = [[self.currentPageView view] viewTransform];
     CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
-    CGRect viewRect = [self.scrollView convertRect:pageRect fromView:self];
-    return viewRect;
+    //CGRect viewRect = [self.scrollView convertRect:pageRect fromView:self];
+    return pageRect;
 }
 
 - (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id; {
@@ -556,16 +556,16 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     CGRect wordRect = [(BlioTextFlowPositionedWord *)elementId rect];
     CGAffineTransform viewTransform = [[self.currentPageView view] viewTransform];
     CGRect pageRect = CGRectApplyAffineTransform(wordRect, viewTransform);
-    CGRect viewRect = [self.scrollView convertRect:pageRect fromView:self];
-    return [NSArray arrayWithObject:[NSValue valueWithCGRect:viewRect]];
+//    CGRect viewRect = [self.scrollView convertRect:pageRect fromView:self];
+    return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if(object == self.highlighter &&
-       [keyPath isEqualToString:@"tracking"]) {
-        self.scrollView.scrollEnabled = !((EucHighlighter *)object).isTracking;
-    }
-}
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+//    if(object == self.highlighter &&
+//       [keyPath isEqualToString:@"tracking"]) {
+//        self.scrollView.scrollEnabled = !((EucHighlighter *)object).isTracking;
+//    }
+//}
 
 #pragma mark -
 #pragma mark TTS
@@ -957,7 +957,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
     if (current) {
         self.currentPageView = pageView;
-        //[self.highlighter attachToView:self.currentPageView];
+        [self.highlighter attachToView:self.currentPageView];
     }
     
     if (preload) [pageView renderSharpPageAtScale:1];
