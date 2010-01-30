@@ -237,7 +237,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setEpubFilename:@"Three Little Pigs"];
         [aBook setPdfFilename:@"Three Little Pigs"];
         [aBook setAudiobookFilename:@"Three Little Pigs"];
-        [aBook setAudiotimingFilename:@"Three Little Pigs"];
+        [aBook setTimingIndicesFilename:@"Three Little Pigs"];
         [aBook setHasAudioRights:[NSNumber numberWithBool:YES]];
         [aBook setTextflowFilename:@"Three Little Pigs_split"];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];

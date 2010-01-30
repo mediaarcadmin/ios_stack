@@ -11,7 +11,7 @@
 
 @implementation BlioAudioBookManager
 
-@synthesize times, avPlayer, readingTimer, startedPlaying;
+@synthesize times, avPlayer, readingTimer, startedPlaying, timingFiles;
 
 - (void)loadTimesFromFile:(NSString*)audioTimingPath {
 	FILE* timingFile;
@@ -39,7 +39,18 @@
 	if ( (self = [super init]) ) {
 		[self setAvPlayer:nil]; 
 		[self setAudioBook:audioBookPath];
-		[self setAudioTiming:audioTimingPath];
+		[self setTimingFiles:[[NSMutableArray alloc] init]];
+		[self retrieveTimingIndices:audioTimingPath];
+		[self setStartedPlaying:NO]; 
+	}
+	return self;
+}
+
+- (id)initWithPath:(NSString*)indexTimingPath {
+	if ( (self = [super init]) ) {
+		[self setAvPlayer:nil]; 
+		[self setTimingFiles:[[NSMutableArray alloc] init]];
+		[self retrieveTimingIndices:indexTimingPath];
 		[self setStartedPlaying:NO]; 
 	}
 	return self;
@@ -58,6 +69,33 @@
 	return NO;
 }
 
+- (void)retrieveTimingIndices:(NSString*)timingIndicesFile {	
+	FILE* indexFile;
+	char lineBuffer[BUFSIZ];
+	indexFile = fopen([timingIndicesFile cStringUsingEncoding:NSASCIIStringEncoding],"r");
+	while (fgets(lineBuffer, sizeof(lineBuffer),indexFile)) {
+		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
+		NSRange eolRange = [thisLine rangeOfString:@"\r\n"];
+		if ( eolRange.location != NSNotFound ) 
+			thisLine = [thisLine substringToIndex:eolRange.location];
+		[self.timingFiles addObject:thisLine];
+	}
+	/*
+	NSArray* pathComps = [indexTimingPath pathComponents];
+	NSString* filename = [pathComps objectAtIndex:[pathComps count]-1];
+	NSString* fileext = [@"." stringByAppendingString:[filename pathExtension]];
+	NSRange extRange = [filename rangeOfString:fileext];
+	NSString* filenamePrefix = [filename substringToIndex:extRange.location];
+	while (fgets(lineBuffer, sizeof(lineBuffer),indexFile)) {
+		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
+		NSRange eolRange = [thisLine rangeOfString:@"\r\n"];
+		thisLine = [thisLine substringToIndex:eolRange.location];
+		[self.timingFiles addObject:[filenamePrefix stringByAppendingString:[[@" " stringByAppendingString:thisLine] stringByAppendingString:fileext]]];
+	}
+	 */
+	fclose(indexFile);
+}
+
 - (void)setAudioTiming:(NSString*)audioTimingPath {	
 	if ( self.times != nil )
 		[self.times release];
@@ -70,6 +108,7 @@
 
 - (void)stopAudio {
 	[avPlayer stop];
+	[self setStartedPlaying:NO];
 }
 
 - (void)pauseAudio {

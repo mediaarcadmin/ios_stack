@@ -26,7 +26,7 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 @dynamic layoutPageNumber;
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
-@dynamic audiotimingFilename;
+@dynamic timingIndicesFilename;
 @dynamic textflowFilename;
 
 - (void)dealloc {
@@ -51,8 +51,8 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
     return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"audiobookFilename"] ofType:@"mp3" inDirectory:@"AudioBooks"];
 }
 
-- (NSString *)audiotimingPath {
-    return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"audiotimingFilename"] ofType:@"rtx" inDirectory:@"AudioBooks"];
+- (NSString *)timingIndicesPath {
+    return [[NSBundle mainBundle] pathForResource:[self valueForKey:@"timingIndicesFilename"] ofType:@"rtx" inDirectory:@"AudioBooks"];
 }
 
 - (BOOL)audioRights {

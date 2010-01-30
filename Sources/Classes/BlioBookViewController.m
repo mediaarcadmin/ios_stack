@@ -1462,6 +1462,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	return wordIsNotPunctuation && wordIsNotRepeated && wordDoesNotBeginWithApostrophe;
 }
 
+// ******* Acapela delegate methods 
+
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
 	if (finishedSpeaking) {
@@ -1485,6 +1487,29 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
+// ***********************************
+
+// ********* AVAudioPlayer delegate methods
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag { 
+	// Not getting here at end of audio for some reason.
+	UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
+	[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+	self.audioPlaying = NO;
+	if (!flag)
+		NSLog(@"Audio player error.");
+}
+
+- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer*)player error:(NSError*)error { 
+	NSLog(@"Audio player error.");
+}
+
+- (void)audioPlayerEndInterruption:(AVAudioPlayer*) player { 
+	[_audioBookManager playAudio];
+}
+		
+// ***********************************
+
 - (void)stopAudio {			
 		if (![self.book audioRights]) 
 			[_acapelaTTS stopSpeaking];
@@ -1499,44 +1524,28 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		[_audioBookManager pauseAudio];
 }
 	
-/* For multiple timing files, temporary handling as resources
+// For multiple timing files, temporary handling as resources
 - (BOOL)findTimingFile:(NSInteger)layoutPage {
-	switch (layoutPage) {
-		case 5:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath5]];
-			return YES;
-		case 6:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath6]];
-			return YES;
-		case 7:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath7]];
-			return YES;
-		case 8:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath8]];
-			return YES;
-		case 9:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath9]];
-			return YES;
-		case 11:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath11]];
-			return YES;
-		case 12:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath12]];
-			return YES;
-		case 14:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath14]];
-			return YES;
-		case 16:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath16]];
-			return YES;
-		case 17:
-			[_audioBookManager setAudioTiming:[self.book audiotimingPath17]];
-			return YES;
-		default:
-			return NO;
+	NSString* fileSuffix;
+	BOOL foundFile = NO;
+	for ( int i=0; i<[_audioBookManager.timingFiles count] ; ++i ) {
+		fileSuffix = (NSString*)[_audioBookManager.timingFiles objectAtIndex:i];
+		NSRange numRange;
+		numRange.location = 1;
+		numRange.length = [fileSuffix length] -1;
+		if ( [[fileSuffix substringWithRange:numRange] integerValue] == layoutPage ) {
+			foundFile = YES;
+			break;
+		}
 	}
+	if ( foundFile ) {
+		NSRange extRange = [[self.book timingIndicesPath] rangeOfString:@".rtx"];
+		NSString* timingPath = [[[self.book timingIndicesPath] substringToIndex:extRange.location] stringByAppendingString:[[@" " stringByAppendingString:fileSuffix] stringByAppendingString:@".rtx"]];
+		[_audioBookManager setAudioTiming:timingPath];
+		return YES;
+	}
+	return NO;
 }
- */
 
 - (void)toggleAudio:(id)sender {
 	if ([self currentPageLayout] == kBlioPageLayoutPlainText || [self currentPageLayout] == kBlioPageLayoutPageLayout) {
@@ -1563,22 +1572,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			}
 			else if ([self.book audiobookFilename] != nil) {
 				if ( _audioBookManager == nil || _audioBookManager.startedPlaying == NO ) { 
-					// Temporary.  If multiple timing files, will match page number to lowest numbered filename.
-					if ( [self.bookView.pageBookmarkPoint layoutPage] != 5 )  {
-						// Must be on right page to start reading.  This assumes we can only start playing at the beginning of an mp3,
-						// don't know of an audio api where we could start at a selected word.
-						// Alternative is to go that page; don't think so.
+					if ( _audioBookManager == nil )
+						_audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath]];
+					if ( ![_audioBookManager setAudioBook:[self.book audiobookPath]] ) {
+						NSLog(@"Audio player could not be initialized.");
 						return;
 					}
-					if ( _audioBookManager == nil )
-						_audioBookManager = [[BlioAudioBookManager alloc] initWithAudioBook:[self.book audiobookPath] audioTiming:[self.book audiotimingPath]]; 
-					else {
-						if ( ![_audioBookManager setAudioBook:[self.book audiobookPath]] ) {
-							NSLog(@"Audio player could not be initialized.");
-							return;
-						}
-						[_audioBookManager setAudioTiming:[self.book audiotimingPath]];
-					}
+					if ( ![self findTimingFile:[self.bookView.pageBookmarkPoint layoutPage]] )  
+						// No timing file for this page.
+						return;
 					[_audioBookManager setStartedPlaying:YES];
 				}
 				[_audioBookManager playAudio];
