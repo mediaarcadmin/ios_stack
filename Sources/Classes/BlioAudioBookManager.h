@@ -25,7 +25,7 @@
 @property (nonatomic, retain) NSTimer* readingTimer;
 @property (nonatomic, assign) BOOL startedPlaying;
 
-- (id)initWithAudioBook:(NSString*)audioBookPath audioTiming:(NSString*)audioTimingPath;
+- (id)initWithPath:(NSString*)indexTimingPath;
 - (void)loadTimesFromFile:(NSString*)audioTimingPath;
 - (BOOL)setAudioBook:(NSString*)audioBookPath;
 - (void)retrieveTimingIndices:(NSString*)timingIndicesFile;

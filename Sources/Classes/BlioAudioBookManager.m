@@ -35,17 +35,6 @@
 	fclose(timingFile);
 }
 
-- (id)initWithAudioBook:(NSString*)audioBookPath audioTiming:(NSString*)audioTimingPath {
-	if ( (self = [super init]) ) {
-		[self setAvPlayer:nil]; 
-		[self setAudioBook:audioBookPath];
-		[self setTimingFiles:[[NSMutableArray alloc] init]];
-		[self retrieveTimingIndices:audioTimingPath];
-		[self setStartedPlaying:NO]; 
-	}
-	return self;
-}
-
 - (id)initWithPath:(NSString*)indexTimingPath {
 	if ( (self = [super init]) ) {
 		[self setAvPlayer:nil]; 
@@ -80,19 +69,6 @@
 			thisLine = [thisLine substringToIndex:eolRange.location];
 		[self.timingFiles addObject:thisLine];
 	}
-	/*
-	NSArray* pathComps = [indexTimingPath pathComponents];
-	NSString* filename = [pathComps objectAtIndex:[pathComps count]-1];
-	NSString* fileext = [@"." stringByAppendingString:[filename pathExtension]];
-	NSRange extRange = [filename rangeOfString:fileext];
-	NSString* filenamePrefix = [filename substringToIndex:extRange.location];
-	while (fgets(lineBuffer, sizeof(lineBuffer),indexFile)) {
-		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
-		NSRange eolRange = [thisLine rangeOfString:@"\r\n"];
-		thisLine = [thisLine substringToIndex:eolRange.location];
-		[self.timingFiles addObject:[filenamePrefix stringByAppendingString:[[@" " stringByAppendingString:thisLine] stringByAppendingString:fileext]]];
-	}
-	 */
 	fclose(indexFile);
 }
 
