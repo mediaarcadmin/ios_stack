@@ -11,7 +11,7 @@
 
 @implementation BlioAudioBookManager
 
-@synthesize times, avPlayer, readingTimer, startedPlaying, timingFiles;
+@synthesize times, avPlayer, timingFiles, timeIx, timeStarted, lastTime;
 
 - (void)loadTimesFromFile:(NSString*)audioTimingPath {
 	FILE* timingFile;
@@ -39,6 +39,7 @@
 	if ( (self = [super init]) ) {
 		[self setAvPlayer:nil]; 
 		[self setTimingFiles:[[NSMutableArray alloc] init]];
+		[self setTimes:[[NSMutableArray alloc] init]];
 		[self retrieveTimingIndices:indexTimingPath];
 		[self setStartedPlaying:NO]; 
 	}
@@ -79,16 +80,20 @@
 }
 
 - (void)playAudio {
+	[self setTimeStarted:[[NSDate date] timeIntervalSince1970]];
 	[avPlayer play];
 }
 
 - (void)stopAudio {
-	[avPlayer stop];
+	[self.speakingTimer invalidate];
 	[self setStartedPlaying:NO];
+	[avPlayer stop];
 }
 
 - (void)pauseAudio {
+	[self.speakingTimer invalidate];
 	[avPlayer pause];
+	self.lastTime = [[self.times objectAtIndex:self.timeIx] integerValue];
 }
 
 @end

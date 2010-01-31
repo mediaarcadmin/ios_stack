@@ -87,6 +87,7 @@
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
+		A3169289111488C9005AAE5E /* BlioAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3169288111488C9005AAE5E /* BlioAudioManager.m */; };
 		A349F06B110E31CC009A8F89 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A349F067110E31CC009A8F89 /* AudioBooks */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
@@ -276,6 +277,8 @@
 		7DE7DB27110F662600403651 /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionKnob.png; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		A3169287111488C9005AAE5E /* BlioAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioManager.h; sourceTree = "<group>"; };
+		A3169288111488C9005AAE5E /* BlioAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioManager.m; sourceTree = "<group>"; };
 		A349F067110E31CC009A8F89 /* AudioBooks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AudioBooks; sourceTree = "<group>"; };
 		A349F11B110E34DE009A8F89 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
@@ -397,6 +400,8 @@
 				555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */,
 				A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */,
 				A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */,
+				A3169287111488C9005AAE5E /* BlioAudioManager.h */,
+				A3169288111488C9005AAE5E /* BlioAudioManager.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -816,6 +821,7 @@
 				553E99011107B8F200FB309D /* BlioSpeedReadView.m in Sources */,
 				C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */,
 				A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */,
+				A3169289111488C9005AAE5E /* BlioAudioManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

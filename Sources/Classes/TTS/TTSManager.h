@@ -12,6 +12,7 @@
 - (void)initTTS;
 - (BOOL)startSpeaking:(NSString *)string;
 - (void)stopSpeaking;
+- (void)pauseSpeaking;
 @optional
 - (void)stopSpeakingAtBoundary:(NSInteger)boundary;
 - (BOOL)isSpeaking;

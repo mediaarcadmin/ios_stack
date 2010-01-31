@@ -8,22 +8,23 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
+#import "BlioAudioManager.h"
 
-@interface BlioAudioBookManager : NSObject {
+@interface BlioAudioBookManager : BlioAudioManager {
 	NSMutableArray* times;
-	int timeStarted;
-	int timeIx;
+	NSInteger timeStarted;
+	NSInteger timeIx;
+	NSInteger lastTime;
 	AVAudioPlayer* avPlayer;
-	NSTimer* readingTimer;
-	BOOL startedPlaying;
 	NSMutableArray* timingFiles;
 }
 
 @property (nonatomic, retain) NSMutableArray* times;
 @property (nonatomic, retain) NSMutableArray* timingFiles;
 @property (nonatomic, retain) AVAudioPlayer* avPlayer;
-@property (nonatomic, retain) NSTimer* readingTimer;
-@property (nonatomic, assign) BOOL startedPlaying;
+@property (nonatomic, assign) NSInteger timeIx;
+@property (nonatomic, assign) NSInteger lastTime;
+@property (nonatomic, assign) NSInteger timeStarted;
 
 - (id)initWithPath:(NSString*)indexTimingPath;
 - (void)loadTimesFromFile:(NSString*)audioTimingPath;

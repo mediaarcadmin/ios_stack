@@ -13,7 +13,7 @@
 
 @implementation AcapelaTTS
 
-@synthesize setupData, engine, ttsLicense, currentWordOffset, currentParagraph, currentWord, currentPage, paragraphWords, textToSpeakChanged, speakingTimer;
+@synthesize setupData, engine, ttsLicense;
 
 - (void)initTTS {
 	[self setSetupData:[[setupTTS alloc] initialize]]; 
@@ -22,12 +22,18 @@
 	[self setCurrentPage:-1];
 	[self setParagraphWords:nil];
 	[self setTextToSpeakChanged:NO];
+	[self setStartedPlaying:NO];
 }
 
 - (BOOL)startSpeaking:(NSString *)string {
 	return [engine startSpeakingString:string];
 }
 - (void)stopSpeaking {
+	[self setStartedPlaying:NO];
+	[engine stopSpeaking];
+}
+
+- (void)pauseSpeaking {
 	[engine stopSpeaking];
 }
 
@@ -63,13 +69,6 @@
 	return [engine queueSpeakingString:string];
 }
 
-- (void)adjustParagraphWords {
-	NSRange pageRange;
-	pageRange.location = [self currentWordOffset];
-	pageRange.length = [self.paragraphWords count] - [self currentWordOffset];
-	NSArray* subParagraph = [self.paragraphWords subarrayWithRange:pageRange];
-	[self setParagraphWords:subParagraph];
-}
 
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError {
 	return [engine objectForProperty:property error:outError];

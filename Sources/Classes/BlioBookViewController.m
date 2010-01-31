@@ -1325,7 +1325,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	}
 }
 
-- (void) prepareTextToSpeak:(BOOL)continuingSpeech {
+- (void) prepareTextToSpeak:(BOOL)continuingSpeech audioManager:(BlioAudioManager*)audioMgr{
     // THIS IS DUMMY CODE TO TEST TTS IN LAYOUT VIEW
     if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
         id paragraphId;
@@ -1362,7 +1362,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             // Play button has just been pushed.
             if ([(BlioLayoutView *)self.bookView pageNumber] != [_acapelaTTS currentPage]) {
                 // Starting speech for the first time, or for the first time since changing the 
-                // page or book after stopping speech the last time (whew).
+                // page or book after stopping speech the last time (whew). 
                 [_acapelaTTS setCurrentPage:[(BlioLayoutView *)self.bookView pageNumber]]; // Not very robust page-identifier
                 [_acapelaTTS setCurrentWordOffset:wordOffset];
                 [_acapelaTTS setCurrentParagraph:paragraphId];
@@ -1379,7 +1379,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         }
         [_acapelaTTS setTextToSpeakChanged:YES];
         
-    } else {
+    } else { 
         BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
         BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
         EucEPubBook *book = (EucEPubBook*)bookView.book;
@@ -1387,12 +1387,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         if ( continuingSpeech ) {
             // Continuing to speak, we just need more text.
 			while ( true ) {
-				paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:(uint32_t)_acapelaTTS.currentParagraph];
+				paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:(uint32_t)audioMgr.currentParagraph];
 				wordOffset = 0;
-				[_acapelaTTS setCurrentWordOffset:wordOffset];
-				[_acapelaTTS setCurrentParagraph:(id)paragraphId];
-				[_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:(uint32_t)[_acapelaTTS currentParagraph]]];
-				if ( _acapelaTTS.paragraphWords == nil ) {
+				[audioMgr setCurrentWordOffset:wordOffset];
+				[audioMgr setAdjustedWordOffset:wordOffset];
+				[audioMgr setCurrentParagraph:(id)paragraphId];
+				[audioMgr setParagraphWords:[book paragraphWordsForParagraphWithId:(uint32_t)[audioMgr currentParagraph]]];
+				if ( audioMgr.paragraphWords == nil ) {
 					// end of the book
 					UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 					[item setImage:[UIImage imageNamed:@"icon-play.png"]];
@@ -1400,37 +1401,39 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 					self.audioPlaying = NO;
 					return;
 				}
-				else if ( [_acapelaTTS.paragraphWords count] == 0 ) {
+				else if ( [audioMgr.paragraphWords count] == 0 ) 
 					// empty paragraph, go to the next.
 					continue;
-				}
 				else
 					break;
 			}
 			if ( wordOffset != 0 ) 
-				[_acapelaTTS adjustParagraphWords];
+				[audioMgr adjustParagraphWords];
 		}
         else {
             [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
+			//NSLog(@"1 paragraphId: %d",paragraphId);
+			//NSLog(@"1 wordOffset: %d",wordOffset);
             // Play button has just been pushed.
-            if ( (paragraphId + wordOffset)!=[_acapelaTTS currentPage] ) {
+			if ( (paragraphId + wordOffset)!=[audioMgr currentPage] ) {
                 // Starting speech for the first time, or for the first time since changing the 
                 // page or book after stopping speech the last time (whew).
-                [_acapelaTTS setCurrentPage:(paragraphId + wordOffset)]; // Not very robust page-identifier
-                [_acapelaTTS setCurrentWordOffset:wordOffset];
-                [_acapelaTTS setCurrentParagraph:(id)paragraphId];
-                [_acapelaTTS setParagraphWords:[book paragraphWordsForParagraphWithId:(uint32_t)[_acapelaTTS currentParagraph]]];
+                [audioMgr setCurrentPage:(paragraphId + wordOffset)]; // Not reliable! because of this speech that should resume backs up to top of page sometimes
+                [audioMgr setCurrentWordOffset:wordOffset];
+                [audioMgr setCurrentParagraph:(id)paragraphId];
+                [audioMgr setParagraphWords:[book paragraphWordsForParagraphWithId:(uint32_t)[audioMgr currentParagraph]]];
 				if ( wordOffset != 0 ) 
 					// The first paragraphs words displayed on this page are not at 
 					// the beginning of the paragraph.
-					[_acapelaTTS adjustParagraphWords];
+					[audioMgr adjustParagraphWords];
             }
 			else
 				// use the current word and paragraph, which is where we last stopped.
 				// edge case:  what if you stopped speech right after the end of the paragraph?
-				[_acapelaTTS adjustParagraphWords];
+				[audioMgr adjustParagraphWords];
         }
-        [_acapelaTTS setTextToSpeakChanged:YES];
+		[audioMgr setStartedPlaying:YES];
+        [audioMgr setTextToSpeakChanged:YES];
 	}
 }
 
@@ -1468,7 +1471,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 {
 	if (finishedSpeaking) {
 		// Reached end of paragraph.  Start on the next.
-		[self prepareTextToSpeak:YES]; 
+		[self prepareTextToSpeak:YES audioManager:_acapelaTTS]; 
 	}
 	//else stop button pushed before end of paragraph.
 }
@@ -1497,7 +1500,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	[item setImage:[UIImage imageNamed:@"icon-play.png"]];
 	self.audioPlaying = NO;
 	if (!flag)
-		NSLog(@"Audio player error.");
+		NSLog(@"Audio player terminated because of error.");
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer*)player error:(NSError*)error { 
@@ -1510,16 +1513,42 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		
 // ***********************************
 
+- (void)checkHighlightTime:(NSTimer*)timer {
+	//printf("elapsed: %d\n",timeElapsed);
+	//printf("stored: %d\n",[[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue]);
+	//printf("av currentTime: %f\n",[ _audioBookManager.avPlayer currentTime]*1000);
+	if ( _audioBookManager.timeIx == [_audioBookManager.times count] ) {
+		// end of file
+		// TODO: timeIx = 0, load next file
+		[timer invalidate];
+		return;
+	}
+	int timeElapsed = (int) (([[NSDate date] timeIntervalSince1970] - _audioBookManager.timeStarted) * 1000.0);
+	BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+	BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
+	if ( timeElapsed + _audioBookManager.lastTime >= [[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue] ) {
+		[bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
+		[_audioBookManager setCurrentWordOffset:[_audioBookManager currentWordOffset]+1];
+		_audioBookManager.timeIx++;
+		 //[_audioBookManager setCurrentWord:[string substringWithRange:characterRange]];
+		
+		if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) 
+			// Last word of paragraph, get more words.  
+			[self prepareTextToSpeak:YES audioManager:_audioBookManager];
+	}
+}
+
 - (void)stopAudio {			
 		if (![self.book audioRights]) 
 			[_acapelaTTS stopSpeaking];
 		else if ([self.book audiobookFilename] != nil) 
 			[_audioBookManager stopAudio];
+
 }
 
 - (void)pauseAudio {			
 	if (![self.book audioRights]) 
-		[_acapelaTTS stopSpeaking]; // TODO: Acapela pause may not do here
+		[_acapelaTTS pauseSpeaking]; 
 	else if ([self.book audiobookFilename] != nil) 
 		[_audioBookManager pauseAudio];
 }
@@ -1550,7 +1579,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)toggleAudio:(id)sender {
 	if ([self currentPageLayout] == kBlioPageLayoutPlainText || [self currentPageLayout] == kBlioPageLayoutPageLayout) {
 		UIBarButtonItem *item = (UIBarButtonItem *)sender;
-		
 		UIImage *audioImage = nil;
 		if (self.audioPlaying) {
 			[self pauseAudio];
@@ -1568,10 +1596,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 					[_acapelaTTS setVolume:70];  // Likewise.
 					[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextPargraph:) userInfo:nil repeats:YES]];
 				}
-				[self prepareTextToSpeak:NO];
+				[self prepareTextToSpeak:NO audioManager:_acapelaTTS];
 			}
 			else if ([self.book audiobookFilename] != nil) {
-				if ( _audioBookManager == nil || _audioBookManager.startedPlaying == NO ) { 
+				if ( _audioBookManager.startedPlaying == NO ) { 
 					if ( _audioBookManager == nil )
 						_audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath]];
 					if ( ![_audioBookManager setAudioBook:[self.book audiobookPath]] ) {
@@ -1581,8 +1609,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 					if ( ![self findTimingFile:[self.bookView.pageBookmarkPoint layoutPage]] )  
 						// No timing file for this page.
 						return;
-					[_audioBookManager setStartedPlaying:YES];
+					[self prepareTextToSpeak:NO audioManager:_audioBookManager];
 				}
+				[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 				[_audioBookManager playAudio];
 			}
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
