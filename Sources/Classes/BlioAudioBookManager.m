@@ -11,15 +11,15 @@
 
 @implementation BlioAudioBookManager
 
-@synthesize times, avPlayer, timingFiles, timeIx, timeStarted, lastTime;
+@synthesize times, queuedTimes, avPlayer, timingFiles, timeIx, queueIx, timeStarted, pausedAtTime, lastOnPageTime;
 
 - (void)loadTimesFromFile:(NSString*)audioTimingPath {
 	FILE* timingFile;
 	char lineBuffer[BUFSIZ];
 	timingFile = fopen([audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding],"r");
+	NSMutableArray* fileTimes = [[NSMutableArray alloc] init];
 	while (fgets(lineBuffer, sizeof(lineBuffer),timingFile)) {
 		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
-		//NSLog(thisLine);
 		NSRange initRange;
 		initRange.location = 0;
 		initRange.length = 2;
@@ -29,24 +29,43 @@
 		timeRange.location = [thisLine rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location + 1;
 		timeRange.length = [[thisLine substringFromIndex:timeRange.location]  rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location;
 		NSString* thisTimeStr = [thisLine substringWithRange:timeRange];
-		NSNumber* thisTime = [[NSNumber alloc] initWithInt:atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding])];
-		[self.times addObject:thisTime];
+		//NSNumber* thisTime = [[NSNumber alloc] initWithInt:atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding])];
+		//[fileTimes addObject:thisTime];
+		[fileTimes addObject:[[NSNumber alloc] initWithInt:atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding])]];
 	}
+	[self.queuedTimes addObject:fileTimes];
 	fclose(timingFile);
 }
 
-- (id)initWithPath:(NSString*)indexTimingPath {
+- (void)fillTimingQueue:(NSString*)indexTimingPath {
+	NSString* fileSuffix;
+	for ( int i=0; i<[self.timingFiles count] ; ++i ) {
+		fileSuffix = (NSString*)[self.timingFiles objectAtIndex:i];
+		NSRange numRange;
+		numRange.location = 1;
+		numRange.length = [fileSuffix length] -1;
+		NSRange extRange = [indexTimingPath rangeOfString:@".rtx"];
+		NSString* timingPath = [[indexTimingPath substringToIndex:extRange.location] stringByAppendingString:[[@" " stringByAppendingString:fileSuffix] stringByAppendingString:@".rtx"]];
+		[self loadTimesFromFile:timingPath];
+	}
+}
+
+- (id)initWithPath:(NSString*)timingIndicesPath {
 	if ( (self = [super init]) ) {
 		[self setAvPlayer:nil]; 
 		[self setTimingFiles:[[NSMutableArray alloc] init]];
 		[self setTimes:[[NSMutableArray alloc] init]];
-		[self retrieveTimingIndices:indexTimingPath];
+		[self setQueuedTimes:[[NSMutableArray alloc] init]];
+		[self retrieveTimingIndices:timingIndicesPath];
+		[self fillTimingQueue:timingIndicesPath];
 		[self setStartedPlaying:NO]; 
+		[self setPausedAtTime:0]; 
+		[self setLastOnPageTime:0];
 	}
 	return self;
 }
 
-- (BOOL)setAudioBook:(NSString*)audioBookPath {
+- (BOOL)initAudioWithBook:(NSString*)audioBookPath {
 	if ( self.avPlayer != nil )
 		[self.avPlayer release];
 	NSError* err;
@@ -73,14 +92,9 @@
 	fclose(indexFile);
 }
 
-- (void)setAudioTiming:(NSString*)audioTimingPath {	
-	if ( self.times != nil )
-		[self.times release];
-	[self loadTimesFromFile:audioTimingPath];
-}
-
 - (void)playAudio {
-	[self setTimeStarted:[[NSDate date] timeIntervalSince1970]];
+	[self setTimeStarted:[avPlayer currentTime]];
+	//[self setTimeStarted:[[NSDate date] timeIntervalSince1970]];
 	[avPlayer play];
 }
 
@@ -91,9 +105,18 @@
 }
 
 - (void)pauseAudio {
-	[self.speakingTimer invalidate];
 	[avPlayer pause];
-	self.lastTime = [[self.times objectAtIndex:self.timeIx] integerValue];
+	[self.speakingTimer invalidate];
+	int i;
+	// The timer doesn't stop as quickly as the audio stops, so timeIx 
+	// gets a little bit ahead.  Use currentTime to reset it.
+	for ( i=0;i<[times count];++i) {
+		if ( [[self.times objectAtIndex:i] intValue] > [avPlayer currentTime]*1000 )
+			break;
+	}
+	self.timeIx = i;
+	self.pausedAtTime = [[self.times objectAtIndex:self.timeIx] intValue];
+	//NSLog(@"Pausing audio, timeIx is %d, lastTime is %d",self.timeIx,self.pausedAtTime);
 }
 
 @end

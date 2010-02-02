@@ -12,25 +12,30 @@
 
 @interface BlioAudioBookManager : BlioAudioManager {
 	NSMutableArray* times;
+	NSMutableArray* queuedTimes; // Not really a queue, but the term is handy.
 	NSInteger timeStarted;
 	NSInteger timeIx;
-	NSInteger lastTime;
+	NSInteger queueIx;
+	NSInteger pausedAtTime;
+	NSInteger lastOnPageTime;
 	AVAudioPlayer* avPlayer;
 	NSMutableArray* timingFiles;
 }
 
 @property (nonatomic, retain) NSMutableArray* times;
+@property (nonatomic, retain) NSMutableArray* queuedTimes;
 @property (nonatomic, retain) NSMutableArray* timingFiles;
 @property (nonatomic, retain) AVAudioPlayer* avPlayer;
 @property (nonatomic, assign) NSInteger timeIx;
-@property (nonatomic, assign) NSInteger lastTime;
+@property (nonatomic, assign) NSInteger queueIx;
+@property (nonatomic, assign) NSInteger pausedAtTime;
+@property (nonatomic, assign) NSInteger lastOnPageTime;
 @property (nonatomic, assign) NSInteger timeStarted;
 
-- (id)initWithPath:(NSString*)indexTimingPath;
+- (id)initWithPath:(NSString*)timingIndicesPath;
 - (void)loadTimesFromFile:(NSString*)audioTimingPath;
-- (BOOL)setAudioBook:(NSString*)audioBookPath;
+- (BOOL)initAudioWithBook:(NSString*)audioBookPath;
 - (void)retrieveTimingIndices:(NSString*)timingIndicesFile;
-- (void)setAudioTiming:(NSString*)audioTimingFile;
 - (void)playAudio;
 - (void)stopAudio;
 - (void)pauseAudio;

@@ -426,7 +426,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 }
             } 
                 break;
-        }        
+        }
+		
+		if ([self.book audiobookFilename] != nil) 
+			// We need to do this here instead of lazily when the play button is pushed because it takes too long.
+			_audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath]];        
     }
     return self;
 }
@@ -1318,7 +1322,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 
-- (void)speakNextPargraph:(NSTimer*)timer {
+- (void)speakNextParagraph:(NSTimer*)timer {
 	if ( _acapelaTTS.textToSpeakChanged ) {	
 		[_acapelaTTS setTextToSpeakChanged:NO];
 		[_acapelaTTS startSpeaking:[_acapelaTTS.paragraphWords componentsJoinedByString:@" "]];
@@ -1447,7 +1451,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
         EucEPubBook *book = (EucEPubBook*)bookView.book;
 		return [[NSNumber alloc] initWithInteger:[book paragraphIdForParagraphAfterParagraphWithId:[paragraph integerValue]]];
-		//return [NSNumber numberWithInteger:[book paragraphIdForParagraphAfterParagraphWithId:[paragraph integerValue]]];
 	}
 	else
 		return nil;
@@ -1603,12 +1606,16 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 {
     if(characterRange.location + characterRange.length <= string.length) {
 		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
-            BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-            BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
+            //BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+            //BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
 			if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-				[bookView highlightWordAtParagraphId:(uint32_t)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
-			else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) 
+				[(BlioLayoutView *)self.bookView  highlightWordAtParagraphId:(uint32_t)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
+				//[bookView highlightWordAtParagraphId:(uint32_t)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
+			else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
+				BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+				BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
 				[bookView highlightWordAtParagraphId:[_acapelaTTS.currentParagraph integerValue] wordOffset:_acapelaTTS.currentWordOffset];
+			}
             [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
 			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
         }
@@ -1638,32 +1645,68 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		
 // ***********************************
 
+- (BOOL)findTimes:(NSInteger)layoutPage {
+	NSString* fileSuffix;
+	for ( int i=0; i<[_audioBookManager.timingFiles count] ; ++i ) {
+		fileSuffix = (NSString*)[_audioBookManager.timingFiles objectAtIndex:i];
+		NSRange numRange;
+		numRange.location = 1;
+		numRange.length = [fileSuffix length] -1;
+		if ( [[fileSuffix substringWithRange:numRange] integerValue] == layoutPage ) {
+			_audioBookManager.queueIx = i; // timingFiles and queuedTimes correspond
+			_audioBookManager.times = [_audioBookManager.queuedTimes objectAtIndex:i];
+			return YES;
+		}
+	}
+	return NO;
+}
+
 - (void)checkHighlightTime:(NSTimer*)timer {
 	//printf("elapsed: %d\n",timeElapsed);
 	//printf("stored: %d\n",[[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue]);
 	//printf("av currentTime: %f\n",[ _audioBookManager.avPlayer currentTime]*1000);
+	
 	if ( _audioBookManager.timeIx == [_audioBookManager.times count] ) {
-		// end of file
-		// TODO: timeIx = 0, load next file
-		[timer invalidate];
-		return;
+		// End of times for this page, get next page's times if any.
+		if ( _audioBookManager.queueIx + 1 < [_audioBookManager.queuedTimes count] ) {
+			[_audioBookManager setLastOnPageTime:_audioBookManager.lastOnPageTime+[[_audioBookManager.times objectAtIndex:--_audioBookManager.timeIx] intValue]];
+			_audioBookManager.timeIx = 0;
+			_audioBookManager.times = [_audioBookManager.queuedTimes objectAtIndex:++_audioBookManager.queueIx];
+		}
+		/*
+		else {
+			// Audio will end.	
+			// I'd rather this happen in audioDidFinishPlaying, but not getting into that for some reason.
+			// Could it happen in prepareTextToSpeak like TTS?
+			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
+			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+			//[self stopAudio];
+			self.audioPlaying = NO;
+			return;
+		}
+		 */
 	}
-	int timeElapsed = (int) (([[NSDate date] timeIntervalSince1970] - _audioBookManager.timeStarted) * 1000.0);
-	BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-	BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-	if ( timeElapsed + _audioBookManager.lastTime >= [[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue] ) {
+	
+	if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) 
+		// Last word of paragraph, get more words.  
+		// Problem: this takes long enough that it throws off the timing.
+		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+	
+	int timeElapsed = (int) (([_audioBookManager.avPlayer currentTime] - _audioBookManager.timeStarted) * 1000.0);
+	if ( (timeElapsed + _audioBookManager.pausedAtTime) >= ([[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue] + _audioBookManager.lastOnPageTime) ) {
 		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-			[bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
-		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) 
-			// Problem: if just switching here from Fixed view, then prepareTextForSpeaking may not have been called for flowview
-			[bookView highlightWordAtParagraphId:[_audioBookManager.currentParagraph integerValue] wordOffset:_audioBookManager.currentWordOffset];			
-		[_audioBookManager setCurrentWordOffset:[_audioBookManager currentWordOffset]+1];
-		_audioBookManager.timeIx++;
-		 //[_audioBookManager setCurrentWord:[string substringWithRange:characterRange]];
+			[(BlioLayoutView *)self.bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
+			//[bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
+		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
+			// Problem: if just switching here from Fixed view, then prepareTextForSpeaking would not have been called for flowview
+			BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
+			BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
+			[bookView highlightWordAtParagraphId:[_audioBookManager.currentParagraph integerValue] wordOffset:_audioBookManager.currentWordOffset];	
+		}
+		++_audioBookManager.currentWordOffset;
+		++_audioBookManager.timeIx;
 		
-		if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) 
-			// Last word of paragraph, get more words.  
-			[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+		 //[_audioBookManager setCurrentWord:[string substringWithRange:characterRange]];
 	}
 }
 
@@ -1672,7 +1715,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			[_acapelaTTS stopSpeaking];
 		else if ([self.book audiobookFilename] != nil) 
 			[_audioBookManager stopAudio];
-
 }
 
 - (void)pauseAudio {			
@@ -1680,29 +1722,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		[_acapelaTTS pauseSpeaking]; 
 	else if ([self.book audiobookFilename] != nil) 
 		[_audioBookManager pauseAudio];
-}
-	
-// For multiple timing files, temporary handling as resources
-- (BOOL)findTimingFile:(NSInteger)layoutPage {
-	NSString* fileSuffix;
-	BOOL foundFile = NO;
-	for ( int i=0; i<[_audioBookManager.timingFiles count] ; ++i ) {
-		fileSuffix = (NSString*)[_audioBookManager.timingFiles objectAtIndex:i];
-		NSRange numRange;
-		numRange.location = 1;
-		numRange.length = [fileSuffix length] -1;
-		if ( [[fileSuffix substringWithRange:numRange] integerValue] == layoutPage ) {
-			foundFile = YES;
-			break;
-		}
-	}
-	if ( foundFile ) {
-		NSRange extRange = [[self.book timingIndicesPath] rangeOfString:@".rtx"];
-		NSString* timingPath = [[[self.book timingIndicesPath] substringToIndex:extRange.location] stringByAppendingString:[[@" " stringByAppendingString:fileSuffix] stringByAppendingString:@".rtx"]];
-		[_audioBookManager setAudioTiming:timingPath];
-		return YES;
-	}
-	return NO;
 }
 
 - (void)toggleAudio:(id)sender {
@@ -1723,22 +1742,22 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 					[_acapelaTTS setDelegate:self];
 					[_acapelaTTS setRate:180];   // Will get from settings.
 					[_acapelaTTS setVolume:70];  // Likewise.
-					[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextPargraph:) userInfo:nil repeats:YES]];
+					[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextParagraph:) userInfo:nil repeats:YES]];
 				}
 				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
 			}
 			else if ([self.book audiobookFilename] != nil) {
 				if ( _audioBookManager.startedPlaying == NO ) { 
-					if ( _audioBookManager == nil )
-						_audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath]];
-					if ( ![_audioBookManager setAudioBook:[self.book audiobookPath]] ) {
+					if ( ![_audioBookManager initAudioWithBook:[self.book audiobookPath]] ) {
 						NSLog(@"Audio player could not be initialized.");
 						return;
 					}
-					if ( ![self findTimingFile:[self.bookView.pageBookmarkPoint layoutPage]] )  
+					if ( ![self findTimes:[self.bookView.pageBookmarkPoint layoutPage]] )  
 						// No timing file for this page.
+						// Look for next page with a timing file?
 						return;
 					[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+					//[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 				}
 				[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 				[_audioBookManager playAudio];
