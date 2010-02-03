@@ -59,5 +59,6 @@
 - (NSUInteger)getCurrentWordOffset;
 - (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphId;
 - (NSArray *)paragraphWordsForParagraphWithId:(id)paragraphId;
+- (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 
 @end
