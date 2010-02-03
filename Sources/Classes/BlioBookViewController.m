@@ -1662,14 +1662,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)checkHighlightTime:(NSTimer*)timer {
-	//printf("elapsed: %d\n",timeElapsed);
-	//printf("stored: %d\n",[[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue]);
-	//printf("av currentTime: %f\n",[ _audioBookManager.avPlayer currentTime]*1000);
 	
 	if ( _audioBookManager.timeIx == [_audioBookManager.times count] ) {
 		// End of times for this page, get next page's times if any.
 		if ( _audioBookManager.queueIx + 1 < [_audioBookManager.queuedTimes count] ) {
-			[_audioBookManager setLastOnPageTime:_audioBookManager.lastOnPageTime+[[_audioBookManager.times objectAtIndex:--_audioBookManager.timeIx] intValue]];
+			[_audioBookManager setLastOnPageTime:_audioBookManager.lastOnPageTime+[[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx-1] intValue]];
 			_audioBookManager.timeIx = 0;
 			_audioBookManager.times = [_audioBookManager.queuedTimes objectAtIndex:++_audioBookManager.queueIx];
 		}
@@ -1689,10 +1686,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	
 	if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) 
 		// Last word of paragraph, get more words.  
-		// Problem: this takes long enough that it throws off the timing.
 		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
 	
 	int timeElapsed = (int) (([_audioBookManager.avPlayer currentTime] - _audioBookManager.timeStarted) * 1000.0);
+	//NSLog(@"elapsed: %d\n",timeElapsed);
+	//NSLog(@"stored: %d\n",[[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue]);
+	//printf("av currentTime: %f\n",[ _audioBookManager.avPlayer currentTime]*1000);
 	if ( (timeElapsed + _audioBookManager.pausedAtTime) >= ([[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue] + _audioBookManager.lastOnPageTime) ) {
 		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
 			[(BlioLayoutView *)self.bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
@@ -1746,18 +1745,34 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				}
 				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
 			}
-			else if ([self.book audiobookFilename] != nil) {
+			else if ([self.book audiobookFilename] != nil) {\
 				if ( _audioBookManager.startedPlaying == NO ) { 
 					if ( ![_audioBookManager initAudioWithBook:[self.book audiobookPath]] ) {
 						NSLog(@"Audio player could not be initialized.");
 						return;
 					}
-					if ( ![self findTimes:[self.bookView.pageBookmarkPoint layoutPage]] )  
+					// So far this only would work for fixed view.
+					if ( ![self findTimes:[self.bookView.pageBookmarkPoint layoutPage]] < 0 )  
 						// No timing file for this page.
-						// Look for next page with a timing file?
+						// Instead of returning, look for next page with a timing file?
 						return;
+					if ( _audioBookManager.queueIx > 0 ) {
+						// Not starting audio at the beginning, so figure out how far in to start.
+						int lastWordTimes = 0;
+						int lastWordTime=0;
+						int lastWordDurations = 0;
+						for ( int i=0;i<_audioBookManager.queueIx;++i ) {  
+							NSMutableArray* prevTimes = (NSMutableArray*)[_audioBookManager.queuedTimes objectAtIndex:i]; 
+							lastWordTime = [(NSNumber*)[prevTimes lastObject] intValue];
+							lastWordTimes += lastWordTime;
+							lastWordDurations += [(NSNumber*)[_audioBookManager.queuedLastTimes objectAtIndex:i] intValue];
+						}
+						// Arg, adding the time of the first word is right for the third page, wrong for the second page.
+						NSTimeInterval playerOffset = (lastWordTimes + lastWordDurations + [(NSNumber*)[_audioBookManager.times objectAtIndex:0] intValue])/1000.0;  
+						// Cue up the player for the first word of this page.  OR: to end of last word of last page?
+						[_audioBookManager.avPlayer setCurrentTime:playerOffset];
+					}
 					[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
-					//[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 				}
 				[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 				[_audioBookManager playAudio];

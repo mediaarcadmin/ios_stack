@@ -11,13 +11,15 @@
 
 @implementation BlioAudioBookManager
 
-@synthesize times, queuedTimes, avPlayer, timingFiles, timeIx, queueIx, timeStarted, pausedAtTime, lastOnPageTime;
+@synthesize times, queuedTimes, queuedLastTimes, avPlayer, timingFiles, timeIx, queueIx, timeStarted, pausedAtTime, lastOnPageTime;
 
 - (void)loadTimesFromFile:(NSString*)audioTimingPath {
 	FILE* timingFile;
 	char lineBuffer[BUFSIZ];
 	timingFile = fopen([audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding],"r");
 	NSMutableArray* fileTimes = [[NSMutableArray alloc] init];
+	NSString* thisTimeStr;
+	int lastTime;
 	while (fgets(lineBuffer, sizeof(lineBuffer),timingFile)) {
 		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
 		NSRange initRange;
@@ -28,12 +30,17 @@
 		NSRange timeRange;
 		timeRange.location = [thisLine rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location + 1;
 		timeRange.length = [[thisLine substringFromIndex:timeRange.location]  rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location;
-		NSString* thisTimeStr = [thisLine substringWithRange:timeRange];
-		//NSNumber* thisTime = [[NSNumber alloc] initWithInt:atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding])];
-		//[fileTimes addObject:thisTime];
-		[fileTimes addObject:[[NSNumber alloc] initWithInt:atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding])]];
+		thisTimeStr = [thisLine substringWithRange:timeRange];
+		lastTime = atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding]);
+		[fileTimes addObject:[[NSNumber alloc] initWithInt:lastTime]];
 	}
 	[self.queuedTimes addObject:fileTimes];
+	// Get duration of last word in this file
+	NSRange endTimeRange;
+	endTimeRange.location = [thisTimeStr rangeOfString:@","].location + 1;
+	endTimeRange.length = [[thisTimeStr substringFromIndex:endTimeRange.location]  rangeOfString:@","].location;
+	NSString* endTimeStr = [thisTimeStr substringWithRange:endTimeRange];
+	[self.queuedLastTimes addObject:[[NSNumber alloc] initWithInt:atoi([endTimeStr cStringUsingEncoding:NSASCIIStringEncoding])-lastTime]];
 	fclose(timingFile);
 }
 
@@ -56,6 +63,7 @@
 		[self setTimingFiles:[[NSMutableArray alloc] init]];
 		[self setTimes:[[NSMutableArray alloc] init]];
 		[self setQueuedTimes:[[NSMutableArray alloc] init]];
+		[self setQueuedLastTimes:[[NSMutableArray alloc] init]];
 		[self retrieveTimingIndices:timingIndicesPath];
 		[self fillTimingQueue:timingIndicesPath];
 		[self setStartedPlaying:NO]; 
