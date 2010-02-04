@@ -8,229 +8,6 @@
 
 #import "BlioTextFlow.h"
 
-@interface BlioTextFlowSlow()
-
-@property (nonatomic, retain) NSXMLParser *textFlowParser;
-@property (nonatomic, retain) BlioTextFlowSection *currentSection;
-@property (nonatomic, retain) NSMutableArray *currentPage;
-@property (nonatomic, retain) BlioTextFlowParagraph *currentParagraph;
-@property (nonatomic, retain) BlioTextFlowPositionedWord *currentWord;
-@property (nonatomic, retain) NSString *currentWordString;
-@property (nonatomic, retain) NSString *currentWordRect;
-
-- (BOOL)parseFileAtPath:(NSString *)path;
-
-@end
-
-@implementation BlioTextFlowSlow
-
-@synthesize sections, pages, paragraphs;
-@synthesize textFlowParser, currentSection, currentPage, currentParagraph, currentWord, currentWordString, currentWordRect;
-
-- (void)dealloc {
-    self.textFlowParser = nil;
-    self.sections = nil;
-    self.pages = nil;
-    self.paragraphs = nil;
-    self.currentSection = nil;
-    self.currentPage = nil;
-    self.currentParagraph = nil;
-    self.currentWord = nil;
-    self.currentWordString = nil;
-    self.currentWordRect = nil;
-    [super dealloc];
-}
-
-- (id)initWithPath:(NSString *)path {      
-    if ((self = [super init])) {
-        self.sections = [NSMutableArray array];
-        
-        BOOL success = [self parseFileAtPath:path];
-        
-        if (!success) {
-            NSLog(@"TextFlow file at path: %@ failed to parse", path);
-            self.sections = nil;
-            return nil;
-        }
-        
-        self.pages = [NSMutableArray array];
-        self.paragraphs = [NSMutableArray array];
-        
-        for (BlioTextFlowSection *section in self.sections) {
-            self.currentSection = section;
-            [self parseFileAtPath:[[NSBundle mainBundle] pathForResource:[section path] ofType:@"xml" inDirectory:@"TextFlows"]];
-        }
-        
-    }
-    
-    return self;
-}
-
-- (BOOL)parseFileAtPath:(NSString *)path {
-    if (nil == path) {
-        return NO;
-    } else if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        NSLog(@"Error: FlowView file does not exist at path: %@", path);
-        return NO;
-    }
-
-    BOOL success;
-    NSURL *xmlURL = [NSURL fileURLWithPath:path];
-
-    NSXMLParser *aTextFlowParser = [[NSXMLParser alloc] initWithContentsOfURL:xmlURL];
-    [aTextFlowParser setDelegate:self];
-    success = [aTextFlowParser parse];
-    self.textFlowParser = aTextFlowParser;
-    [aTextFlowParser release];
-    
-    return success;
-}
-
-#pragma mark -
-#pragma mark Convenience methods
-
-- (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex {
-    NSArray *pageParagraphs = [NSArray array];
-    if (pageIndex < [pages count]) {
-        pageParagraphs = [pages objectAtIndex:pageIndex];
-    }
-    return pageParagraphs;
-}
-
-- (NSString *)stringForPageAtIndex:(NSInteger)pageIndex {
-    NSMutableString *pageString = [NSMutableString string];
-    NSArray *pageParagraphs = [self paragraphsForPageAtIndex:pageIndex];
-    for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
-        if ([pageString length])
-            [pageString appendFormat:@"\n\n%@", paragraph.string];
-        else 
-            [pageString appendString:paragraph.string];
-    }
-    return pageString;
-}
-
-#pragma mark -
-#pragma mark Parsing methods
-
-- (void)parserDidEndDocument:(NSXMLParser *)parser {
-    self.textFlowParser = nil;
-}
-
-- (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
-    self.textFlowParser = nil;
-    NSLog(@"TextFlow parsing error %i, Domain: %@, File: %@, Description: %@, Line: %i, Column: %i", [parseError code], [parseError domain], [self.currentSection path],
-          [[parser parserError] localizedDescription], [parser lineNumber], [parser columnNumber]);
-}  
-
--(void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    if ([elementName isEqualToString:@"Section"]) {
-        BlioTextFlowSection *aSection = [[BlioTextFlowSection alloc] init];
-        self.currentSection = aSection;
-        [aSection release];
-        
-        NSString *pageNumber = [attributeDict objectForKey:@"PageIndex"];
-        if (pageNumber) [self.currentSection setPageIndex:[pageNumber intValue]];
-        NSString *sectionName = [attributeDict objectForKey:@"Name"];
-        if (sectionName) [self.currentSection setName:sectionName];
-        NSString *sectionPath = [attributeDict objectForKey:@"Source"];
-        if (sectionPath) {
-            NSArray *sectionArray = [sectionPath componentsSeparatedByString:@"#"];
-            [self.currentSection setPath:[[sectionArray objectAtIndex:0] stringByDeletingPathExtension]];
-            if ([sectionArray count] > 1) [self.currentSection setAnchor:[sectionArray objectAtIndex:1]];
-        }
-        
-    } else if ([elementName isEqualToString:@"TextGroup"]) {
-        NSInteger currentPageIndex;
-        if (nil != self.currentParagraph)
-            currentPageIndex = [self.currentParagraph pageIndex];
-        else
-            currentPageIndex = -1;
-            
-        NSString *pageNumber = [attributeDict objectForKey:@"PageIndex"];
-        if (!pageNumber) {
-            self.currentPage = nil;
-            return;
-        }
-        NSInteger newPageIndex = [pageNumber intValue];
-        if (newPageIndex < 0) {
-            self.currentPage = nil;
-            return;
-        }
-        
-        NSString *newParagraph = [attributeDict objectForKey:@"NewParagraph"];
-        if ([newParagraph isEqualToString:@"True"] || (newPageIndex > currentPageIndex)) {
-            BlioTextFlowParagraph *aParagraph = [[BlioTextFlowParagraph alloc] init];
-            self.currentParagraph = aParagraph;
-            [aParagraph release];
-            
-            NSString *folio = [attributeDict objectForKey:@"Folio"];
-            if ([folio isEqualToString:@"True"]) {
-                [self.currentParagraph setFolio:YES];
-            } else {
-                [self.currentParagraph setFolio:NO];
-                [self.paragraphs addObject:self.currentParagraph];
-            }
-        }
-        
-        if (![self.currentParagraph folio]) {           
-            NSString *pageNumber = [attributeDict objectForKey:@"PageIndex"];
-            if (pageNumber) {
-                NSInteger pageIndex = [pageNumber intValue];
-                if (pageIndex < 0) {
-                    self.currentPage = nil;
-                } else {
-                    while ([self.pages count] <= pageIndex) {
-                        NSMutableArray *aPage = [[NSMutableArray alloc] init];
-                        [self.pages addObject:aPage];
-                        [aPage release];
-                    }
-                    self.currentPage = [self.pages objectAtIndex:pageIndex];
-                    [self.currentParagraph setPageIndex:pageIndex];
-                    if (![self.currentPage containsObject:self.currentParagraph]) {
-                        [self.currentPage addObject:self.currentParagraph];
-                        [self.currentParagraph setParagraphIndex:[self.currentPage count] - 1];
-                    }
-                }
-            }            
-        }
-        
-    } else if ([elementName isEqualToString:@"Word"] && ![self.currentParagraph folio]) {
-        NSString *wordString = [attributeDict objectForKey:@"Text"];
-        NSString *wordRect = [attributeDict objectForKey:@"Rect"];
-        NSArray *wordRectArray = [wordRect componentsSeparatedByString:@","];
-        
-        if (wordString && ([wordRectArray count] == 4)) {
-            BlioTextFlowPositionedWord *newWord = [[BlioTextFlowPositionedWord alloc] init];
-            [newWord setString:wordString];
-            [newWord setRect:CGRectMake([[wordRectArray objectAtIndex:0] intValue], 
-                                        [[wordRectArray objectAtIndex:1] intValue],
-                                        [[wordRectArray objectAtIndex:2] intValue],
-                                        [[wordRectArray objectAtIndex:3] intValue])];
-            [[self.currentParagraph words] addObject:newWord];
-            [newWord setPageIndex:[self.currentParagraph pageIndex]];
-            [newWord setWordIndex:[[self.currentParagraph words] count] - 1];
-            [newWord release];
-        }
-    }
-
-    [pool drain];
-}
-
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    if ([elementName isEqualToString:@"Section"]) {
-        [self.sections addObject:self.currentSection];
-        self.currentSection = nil;
-    }
-    
-    [pool drain];
-}
-        
-@end
-
 @implementation BlioTextFlowPositionedWord
 
 @synthesize string, rect, pageIndex, wordIndex;
@@ -292,7 +69,7 @@
 
 @implementation BlioTextFlowPageMarker
 
-@synthesize pageIndex, lineNumber, byteIndex;
+@synthesize pageIndex, byteIndex;
 
 @end
 
@@ -356,26 +133,13 @@
 
 @end
 
-#if 0
-// Function prototypes for SAX callbacks.
-static void startElementSAX(void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI, int nb_namespaces, const xmlChar **namespaces, int nb_attributes, int nb_defaulted, const xmlChar **attributes);
-static void	endElementSAX(void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI);
-static void	charactersFoundSAX(void * ctx, const xmlChar * ch, int len);
-static void errorEncounteredSAX(void * ctx, const char * msg, ...);
-
-// Forward reference. The structure is defined in full at the end of the file.
-static xmlSAXHandler simpleSAXHandlerStruct;
-
-#endif
 @interface BlioTextFlow()
 
-@property (nonatomic, retain) BlioTextFlowSection *currentSection;
-@property (nonatomic, retain) NSMutableArray *currentPage;
-@property (nonatomic, retain) BlioTextFlowParagraph *currentParagraph;
-@property (nonatomic, retain) BlioTextFlowPositionedWord *currentWord;
-@property (nonatomic, retain) NSString *currentWordString;
-@property (nonatomic, retain) NSString *currentWordRect;
 @property (nonatomic) NSInteger currentPageIndex;
+@property (nonatomic, retain) BlioTextFlowSection *currentSection;
+@property (nonatomic, retain) BlioTextFlowParagraph *currentParagraph;
+@property (nonatomic, retain) NSMutableArray *currentParagraphArray;
+@property (nonatomic, readonly) XML_Parser currentParser;
 
 - (void)parseSectionsFileAtPath:(NSString *)path;
 - (void)parseSection:(BlioTextFlowSection *)section;
@@ -386,21 +150,14 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 
 @implementation BlioTextFlow
 
-@synthesize sections, pages, paragraphs;
-@synthesize currentSection, currentPage, currentParagraph, currentWord, currentWordString, currentWordRect;
-@synthesize done, parsingAnElement, storingCharacters, countOfParsedElements, characterBuffer, parsePool;
+@synthesize sections;
+@synthesize currentSection, currentParagraph;
 @synthesize currentPageIndex, currentParagraphArray, currentParser;
 
 - (void)dealloc {
     self.sections = nil;
-    self.pages = nil;
-    self.paragraphs = nil;
     self.currentSection = nil;
-    self.currentPage = nil;
     self.currentParagraph = nil;
-    self.currentWord = nil;
-    self.currentWordString = nil;
-    self.currentWordRect = nil;
     self.currentParagraphArray = nil;
     if (nil != self.currentParser) {
         XML_ParserFree(currentParser);
@@ -411,8 +168,6 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 - (id)initWithPath:(NSString *)path {    
     if ((self = [super init])) {
         self.sections = [NSMutableSet set];
-        self.pages = [NSMutableArray array];
-        self.paragraphs = [NSMutableArray array];
         
         [self performSelectorInBackground:@selector(parseSectionsFileAtPath:) withObject:path];
     }
@@ -429,7 +184,7 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 }
 
 - (void)parseSectionsComplete {
-    NSLog(@"TextFlow pageMarkers created");
+    //NSLog(@"TextFlow pageMarkers created");
 }
 
 #pragma mark -
@@ -725,7 +480,7 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
 }
 
 - (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex {
-    NSLog(@"Request for paragraphs at page %d", pageIndex);
+   // NSLog(@"Request for paragraphs at page %d", pageIndex);
     NSArray *pageParagraphs = [NSArray array];
     
     BlioTextFlowSection *targetSection = nil;
@@ -751,7 +506,6 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         }
         
         if ((nil != targetMarker) && (nil != firstMarker)) {
-            NSLog(@"Page %d is at byte %d in file %@", pageIndex, [targetMarker byteIndex], [targetSection path]);
             NSArray *pageParagraphsFromDisk = [self paragraphsForPage:pageIndex inSection:targetSection targetMarker:targetMarker firstMarker:firstMarker];
             if (nil != pageParagraphsFromDisk) pageParagraphs = pageParagraphsFromDisk;
             
@@ -759,7 +513,7 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
 
     }
     
-    NSLog(@"Paragraphs retrieved from disk");
+    //NSLog(@"Paragraphs retrieved from disk");
     return pageParagraphs;
 }
 

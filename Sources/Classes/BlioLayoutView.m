@@ -304,15 +304,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 #pragma mark TTS
 
 - (id)getCurrentParagraphId {
-    NSArray *pages = [[self.book textFlow] pages];
     NSInteger pageIndex = self.pageNumber - 1;
-    if (pageIndex >= [pages count]) return nil;
-        
-    NSArray *page = [pages objectAtIndex:pageIndex];
-    if (![page count])
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+
+    if (![pageParagraphs count])
         return nil;
     else
-        return [page objectAtIndex:0];
+        return [pageParagraphs objectAtIndex:0];
 }
 
 - (NSUInteger)getCurrentWordOffset {
@@ -321,30 +319,28 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphID {
     BlioTextFlowParagraph *currentParagraph = (BlioTextFlowParagraph *)paragraphID;
-    NSArray *pages = [[self.book textFlow] pages];
-    if (![pages count]) return nil;    
     
     if (!currentParagraph) {
-        NSArray *page = [pages objectAtIndex:0];
-        if (![page count])
+        NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:0];
+        
+        if (![pageParagraphs count])
             return nil;
         else
-            return [page objectAtIndex:0];
+            return [pageParagraphs objectAtIndex:0];
     } else {
         NSInteger pageIndex = [currentParagraph pageIndex];
-        if (pageIndex < [pages count]) {
-            NSArray *page = [pages objectAtIndex:pageIndex];
-            NSUInteger currentIndex = [page indexOfObject:currentParagraph];
-            if (++currentIndex < [page count]) {
-                return [page objectAtIndex:currentIndex];
+        NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+        NSUInteger currentIndex = [pageParagraphs indexOfObject:currentParagraph];
+            if (++currentIndex < [pageParagraphs count]) {
+                return [pageParagraphs objectAtIndex:currentIndex];
             } else {
-                while (++pageIndex < ([pages count])) {
-                    NSArray *page = [pages objectAtIndex:pageIndex];
-                    if ([page count])
-                        return [page objectAtIndex:0];
+                while (++pageIndex < ([self pageCount])) {
+                    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+                    if ([pageParagraphs count])
+                        return [pageParagraphs objectAtIndex:0];
                 }
             }
-        }
+        
     }
     return nil;
 }
