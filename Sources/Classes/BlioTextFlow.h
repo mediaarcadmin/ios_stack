@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <libxml/xmlreader.h>
 #import <libxml/parser.h>
+#import "expat.h"
 
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
@@ -29,10 +30,12 @@
 @interface BlioTextFlowPageMarker : NSObject {
     NSInteger pageIndex;
     NSInteger lineNumber;
+    NSInteger byteIndex;
 }
 
 @property (nonatomic) NSInteger pageIndex;
 @property (nonatomic) NSInteger lineNumber;
+@property (nonatomic) NSInteger byteIndex;
 
 @end
 
@@ -129,6 +132,9 @@
     BlioTextFlowPositionedWord *currentWord;
     NSString *currentWordString;
     NSString *currentWordRect;
+    NSInteger currentPageIndex;
+    NSMutableArray *currentParagraphArray;
+    XML_Parser currentParser;
 }
 
 @property (nonatomic, retain) NSMutableSet *sections;
@@ -141,6 +147,8 @@
 @property NSUInteger countOfParsedElements;
 // The autorelease pool property is assign because autorelease pools cannot be retained.
 @property (nonatomic, assign) NSAutoreleasePool *parsePool;
+@property (nonatomic, retain) NSMutableArray *currentParagraphArray;
+@property (nonatomic, readonly) XML_Parser currentParser;
 
 - (id)initWithPath:(NSString *)path;
 

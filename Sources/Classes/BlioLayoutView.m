@@ -256,6 +256,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
             [self goToPageNumber:self.pageNumber animated:NO];
         }
         
+        [self.book textFlow]; // start text flow parsing in the background
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutZoomInProgress:) name:@"BlioLayoutZoomInProgress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutZoomEnded:) name:@"BlioLayoutZoomEnded" object:nil];
         

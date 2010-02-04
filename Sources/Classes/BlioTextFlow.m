@@ -282,9 +282,8 @@
 }
 
 - (NSArray *)sortedPageMarkers {
-    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
-    NSSortDescriptor *sortLineDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"lineNumber" ascending:YES] autorelease];
-    NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortPageDescriptor, sortLineDescriptor, nil] autorelease];
+    NSSortDescriptor *sortByteDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"byteIndex" ascending:YES] autorelease];
+    NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortByteDescriptor, nil] autorelease];
     
     return [[self.pageMarkers allObjects] sortedArrayUsingDescriptors:sortDescriptors];
 }
@@ -293,7 +292,7 @@
 
 @implementation BlioTextFlowPageMarker
 
-@synthesize pageIndex, lineNumber;
+@synthesize pageIndex, lineNumber, byteIndex;
 
 @end
 
@@ -376,9 +375,12 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 @property (nonatomic, retain) BlioTextFlowPositionedWord *currentWord;
 @property (nonatomic, retain) NSString *currentWordString;
 @property (nonatomic, retain) NSString *currentWordRect;
+@property (nonatomic) NSInteger currentPageIndex;
 
 - (void)parseSectionsFileAtPath:(NSString *)path;
 - (void)parseSection:(BlioTextFlowSection *)section;
+- (NSArray *)paragraphsForPage:(NSInteger)pageIndex inSection:(BlioTextFlowSection *)section targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker;
+
 
 @end
 
@@ -387,6 +389,7 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 @synthesize sections, pages, paragraphs;
 @synthesize currentSection, currentPage, currentParagraph, currentWord, currentWordString, currentWordRect;
 @synthesize done, parsingAnElement, storingCharacters, countOfParsedElements, characterBuffer, parsePool;
+@synthesize currentPageIndex, currentParagraphArray, currentParser;
 
 - (void)dealloc {
     self.sections = nil;
@@ -398,6 +401,10 @@ static xmlSAXHandler simpleSAXHandlerStruct;
     self.currentWord = nil;
     self.currentWordString = nil;
     self.currentWordRect = nil;
+    self.currentParagraphArray = nil;
+    if (nil != self.currentParser) {
+        XML_ParserFree(currentParser);
+    }
     [super dealloc];
 }
 
@@ -423,81 +430,67 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 
 - (void)parseSectionsComplete {
     NSLog(@"TextFlow pageMarkers created");
-//    for (BlioTextFlowSection *section in self.sections) {
-//        for (BlioTextFlowPageMarker *pageMarker in [section sortedPageMarkers]) {
-//            NSLog(@"%@ (%d): %d-%d", [section name], [section pageIndex], [pageMarker pageIndex], [pageMarker lineNumber]);
-//        }
-//    }
 }
+
+#pragma mark -
+#pragma mark Split XML (sections file) parsing
+
+static void splitXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
+    
+    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
+    
+    if(strcmp("Section", name) == 0) {
+        BlioTextFlowSection *aSection = [[BlioTextFlowSection alloc] init];
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageIndex", atts[i]) == 0) {
+                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != pageIndexString) {
+                    NSInteger newIndex = [pageIndexString integerValue];
+                    [pageIndexString release];
+                    [aSection setPageIndex:newIndex];
+                }
+            } else if (strcmp("Name", atts[i]) == 0) {
+                NSString *nameString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != nameString) {
+                    [aSection setName:nameString];
+                    [nameString release];
+                }
+            } else if (strcmp("Source", atts[i]) == 0) {
+                NSString *sourceString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != sourceString) {
+                    NSArray *sectionArray = [sourceString componentsSeparatedByString:@"#"];
+                    [aSection setPath:[[sectionArray objectAtIndex:0] stringByDeletingPathExtension]];
+                    if ([sectionArray count] > 1) [aSection setAnchor:[sectionArray objectAtIndex:1]];
+                    [sourceString release];
+                }
+            }
+        }
+        
+        if (nil != aSection) {
+            [textFlow performSelectorOnMainThread:@selector(addSection:) withObject:aSection waitUntilDone:NO];
+            [aSection release];
+        }
+    }
+    
+}   
 
 - (void)parseSectionsFileAtPath:(NSString *)path {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-    NSData *xmlData = [NSData dataWithContentsOfMappedFile:path];
-    xmlTextReaderPtr reader = xmlReaderForMemory([xmlData bytes], 
-                                                 [xmlData length], 
-                                                 [path UTF8String], nil, 
-                                                 (XML_PARSE_NOBLANKS | XML_PARSE_NOCDATA | XML_PARSE_NOERROR | XML_PARSE_NOWARNING));
-    if (!reader) {
-        NSLog(@"Failed to load xmlreader");
-        return;
+    
+    NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
+    currentParser = XML_ParserCreate(NULL);
+    XML_SetStartElementHandler(currentParser, splitXMLParsingStartElementHandler);
+    XML_SetUserData(currentParser, (void *)self);    
+    if (!XML_Parse(currentParser, [data bytes], [data length], XML_TRUE)) {
+        char *error = (char *)XML_ErrorString(XML_GetErrorCode(currentParser));
+        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
     }
-    
-    NSString *currentTagName = nil;
-    NSString *currentAttributeValue = nil;
-    
-    char* temp;
-    while (true) {
-        if (!xmlTextReaderRead(reader)) break;
-        switch (xmlTextReaderNodeType(reader)) {
-            case XML_READER_TYPE_ELEMENT:
-                //We are starting an element
-                temp =  (char *)xmlTextReaderConstName(reader);
-                currentTagName = [NSString stringWithCString:temp encoding:NSUTF8StringEncoding];
-                
-                if ([currentTagName isEqualToString:@"Section"]) {
-                    BlioTextFlowSection *aSection = [[BlioTextFlowSection alloc] init];
-                    
-                    temp = (char*)xmlTextReaderGetAttribute(reader, (const xmlChar *)"PageIndex");
-                    currentAttributeValue = temp ? [NSString stringWithCString:temp encoding:NSUTF8StringEncoding] : nil;
-                    
-                    if (nil != currentAttributeValue) {
-                        [aSection setPageIndex:[currentAttributeValue intValue]];
-                    }
-                    
-                    temp = (char*)xmlTextReaderGetAttribute(reader, (const xmlChar *)"Name");
-                    currentAttributeValue = temp ? [NSString stringWithCString:temp encoding:NSUTF8StringEncoding] : nil;
-                    
-                    if (nil != currentAttributeValue) {
-                        [aSection setName:currentAttributeValue];
-                    } 
-                    
-                    temp = (char*)xmlTextReaderGetAttribute(reader, (const xmlChar *)"Source");
-                    currentAttributeValue = temp ? [NSString stringWithCString:temp encoding:NSUTF8StringEncoding] : nil;
-                    
-                    if (nil != currentAttributeValue) {
-                        NSArray *sectionArray = [currentAttributeValue componentsSeparatedByString:@"#"];
-                        [aSection setPath:[[sectionArray objectAtIndex:0] stringByDeletingPathExtension]];
-                        if ([sectionArray count] > 1) [aSection setAnchor:[sectionArray objectAtIndex:1]];
-                        
-                    }
-                    
-                    if (nil != aSection) {
-                        [self performSelectorOnMainThread:@selector(addSection:) withObject:aSection waitUntilDone:NO];
-                        [aSection release];
-                    }
-                }
-                    
-                break;
-            default: continue;
-        }
-	}
-            
-    xmlFreeTextReader(reader);
+    XML_ParserFree(currentParser);
+    [data release];
     
     [self performSelectorOnMainThread:@selector(parseSectionsFileComplete) withObject:nil waitUntilDone:NO];
 
-    
     [pool drain];
 }
 
@@ -510,132 +503,216 @@ static xmlSAXHandler simpleSAXHandlerStruct;
     
     [self performSelectorOnMainThread:@selector(parseSectionsComplete) withObject:nil waitUntilDone:NO];
     [pool drain];
-}
+} 
+
+#pragma mark -
+#pragma mark Flow XML (contents file) parsing
+
+static void flowXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
+    
+    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
+    NSInteger newPageIndex = -1;
+    
+    if(strcmp("TextGroup", name) == 0) {
+        
+        NSInteger currentByteIndex = (NSInteger)(XML_GetCurrentByteIndex([textFlow currentParser]));
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageIndex", atts[i]) == 0) {
+                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != pageIndexString) {
+                    newPageIndex = [pageIndexString integerValue];
+                    [pageIndexString release];
+                }
+            } 
+        }
+        
+        if ((newPageIndex >= 0) && (newPageIndex != [textFlow currentPageIndex])) {
+            BlioTextFlowPageMarker *newPageMarker = [[BlioTextFlowPageMarker alloc] init];
+            [newPageMarker setPageIndex:newPageIndex];
+            [newPageMarker setByteIndex:currentByteIndex];
+            [[textFlow currentSection] performSelectorOnMainThread:@selector(addPageMarker:) withObject:newPageMarker waitUntilDone:NO];
+            [newPageMarker release];
+            [textFlow setCurrentPageIndex:newPageIndex];
+        }
+    }
+    
+}   
 
 - (void)parseSection:(BlioTextFlowSection *)section {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSString *path = [[NSBundle mainBundle] pathForResource:[section path] ofType:@"xml" inDirectory:@"TextFlows"];
-    //NSFileHandle *sectionFile = [NSFileHandle fileHandleForReadingAtPath:path];
+    NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
     
+    if (!data) return;
     
-    NSData *xmlData = [NSData dataWithContentsOfMappedFile:path];
-    xmlTextReaderPtr reader = xmlReaderForMemory([xmlData bytes], 
-                                                 [xmlData length], 
-                                                 [path UTF8String], nil, 
-                                                 (XML_PARSE_NOBLANKS | XML_PARSE_NOCDATA | XML_PARSE_NOERROR | XML_PARSE_NOWARNING));
-    //xmlTextReaderPtr reader = xmlReaderForFd([sectionFile fileDescriptor], [path UTF8String], nil, 
-//                                             (XML_PARSE_NOBLANKS | XML_PARSE_NOCDATA | XML_PARSE_NOERROR | XML_PARSE_NOWARNING));
+    [self setCurrentPageIndex:-1];
+    [self setCurrentSection:section];
     
-    if (!reader) {
-        NSLog(@"Failed to load xmlreader");
-        return;
+    currentParser = XML_ParserCreate(NULL);
+    XML_SetStartElementHandler(currentParser, flowXMLParsingStartElementHandler);
+    XML_SetUserData(currentParser, (void *)self);    
+    if (!XML_Parse(currentParser, [data bytes], [data length], XML_TRUE)) {
+        char *error = (char *)XML_ErrorString(XML_GetErrorCode(currentParser));
+        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
     }
-    
-    NSString *currentTagName = nil;
-    NSString *currentAttributeValue = nil;
-    //BlioTextFlowParagraph *currentPara;
-    NSInteger currentPageIndex = -1;
-    
-    char* temp;
-    while (true) {
-        if (!xmlTextReaderRead(reader)) break;
-        switch (xmlTextReaderNodeType(reader)) {
-            case XML_READER_TYPE_ELEMENT:
-                //We are starting an element
-                temp =  (char *)xmlTextReaderConstName(reader);
-                currentTagName = [NSString stringWithCString:temp encoding:NSUTF8StringEncoding];
-                
-                if ([currentTagName isEqualToString:@"TextGroup"]) {
-                    
-                    temp = (char*)xmlTextReaderGetAttribute(reader, (const xmlChar *)"PageIndex");
-                    currentAttributeValue = temp ? [NSString stringWithCString:temp encoding:NSUTF8StringEncoding] : nil;
-                    
-                    if (nil == currentAttributeValue) break;        
-                    NSInteger newPageIndex = [currentAttributeValue intValue];
-                    if (newPageIndex < 0) break;
-                    
-//                    NSLog(@"TextGroup at %f with index: %d, parser line: %d, node line: %d", (float)xmlTextReaderByteConsumed(reader), newPageIndex,
-//                          (int)xmlTextReaderGetParserLineNumber(reader), (int)(xmlTextReaderCurrentNode(reader)->line));
-                    
-                    if (newPageIndex != currentPageIndex) {
-                        BlioTextFlowPageMarker *newPageMarker = [[BlioTextFlowPageMarker alloc] init];
-                        [newPageMarker setPageIndex:newPageIndex];
-                        [newPageMarker setLineNumber:(NSInteger)(xmlTextReaderCurrentNode(reader)->line)];
-                        [section performSelectorOnMainThread:@selector(addPageMarker:) withObject:newPageMarker waitUntilDone:NO];
-                        [newPageMarker release];
-                        currentPageIndex = newPageIndex;
-                    }
-                }
-                break;
-            default: continue;
-        }
-    }
-                    
-    xmlFreeTextReader(reader);
-    
+    XML_ParserFree(currentParser);
+    [data release];
+        
     [pool drain];
 }
 
 
-- (NSArray *)paragraphsForPage:(NSInteger)pageIndex inSection:(BlioTextFlowSection *)section atMarker:(BlioTextFlowPageMarker *)pageMarker {
-    NSArray *paragraphArray = nil;
+#pragma mark -
+#pragma mark Fragment XML (paragraph) parsing
+
+static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
     
-    if (nil != [section path]) {
-        NSString *sectionPath = [[NSBundle mainBundle] pathForResource:[section path] ofType:@"xml" inDirectory:@"TextFlows"];
-        NSData *xmlData = [NSData dataWithContentsOfMappedFile:sectionPath];
-        xmlTextReaderPtr reader = xmlReaderForMemory([xmlData bytes], 
-                                                     [xmlData length], 
-                                                     [sectionPath UTF8String], nil, 
-                                                     (XML_PARSE_NOBLANKS | XML_PARSE_NOCDATA | XML_PARSE_NOERROR | XML_PARSE_NOWARNING));
-        if (!reader) {
-            NSLog(@"Failed to load xmlreader");
-            return nil;
-        }
+    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
+
+    if (strcmp("TextGroup", name) == 0) {        
+        NSInteger targetIndex = [textFlow currentPageIndex];
+        NSMutableArray *paragraphArray = [textFlow currentParagraphArray];
+        BOOL newParagraph = NO;
+        BOOL folio = NO;
         
-        NSString *currentTagName = nil;
-        NSString *currentAttributeValue = nil;
-        
-        char* temp;
-        BOOL pageProcessed = NO;
-        
-        while (!pageProcessed) {
-            if (!xmlTextReaderRead(reader)) break;
-            switch (xmlTextReaderNodeType(reader)) {
-                case XML_READER_TYPE_ELEMENT:
-                    //We are starting an element
-                    temp =  (char *)xmlTextReaderConstName(reader);
-                    currentTagName = [NSString stringWithCString:temp encoding:NSUTF8StringEncoding];
-                    
-                    if ([currentTagName isEqualToString:@"TextGroup"]) {
-                        temp = (char*)xmlTextReaderGetAttribute(reader, (const xmlChar *)"PageIndex");
-                        currentAttributeValue = temp ? [NSString stringWithCString:temp encoding:NSUTF8StringEncoding] : nil;
-//                        NSLog(@"TextGroup with page index %@", currentAttributeValue);
-                        if ([currentAttributeValue integerValue] == pageIndex) {
-                            paragraphArray = [NSArray array];
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageIndex", atts[i]) == 0) {
+                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != pageIndexString) {
+                    NSInteger newIndex = [pageIndexString integerValue];
+                    [pageIndexString release];
+                    if (newIndex == targetIndex) {
+                        if (nil == paragraphArray) {
+                            paragraphArray = [NSMutableArray array];
+                            [textFlow setCurrentParagraphArray:paragraphArray];
                         }
+                    } else if (newIndex > targetIndex) {
+                        XML_StopParser([textFlow currentParser], false);
+                        return;
+                    } else {
+                        return;
                     }
-                    break;
-                case XML_READER_TYPE_END_ELEMENT:
-                    //We are ending an element
-                    if (nil != paragraphArray) {
-                        temp =  (char *)xmlTextReaderConstName(reader);
-                        currentTagName = [NSString stringWithCString:temp encoding:NSUTF8StringEncoding];
-                    
-                        if ([currentTagName isEqualToString:@"TextGroup"]) {
-                            temp = (char*)xmlTextReaderGetAttribute(reader, (const xmlChar *)"PageIndex");
-                            currentAttributeValue = temp ? [NSString stringWithCString:temp encoding:NSUTF8StringEncoding] : nil;
-                            NSLog(@"TextGroup ended with page index %@", currentAttributeValue);
-                            if ([currentAttributeValue integerValue] == pageIndex) pageProcessed = YES;
-                        }
-                    }
-                    break;
-                default: continue;
+                }
+            } else if (strcmp("NewParagraph", atts[i]) == 0) {
+                NSString *newParagraphString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != newParagraphString && [newParagraphString isEqualToString:@"True"]) {
+                    newParagraph = YES;
+                    [newParagraphString release];
+                }
+            } else if (strcmp("Folio", atts[i]) == 0) {
+                NSString *folioString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != folioString && [folioString isEqualToString:@"True"]) {
+                    folio = YES;
+                    [folioString release];
+                }
             }
         }
-    }
         
-    return paragraphArray;
+        BlioTextFlowParagraph *paragraph = [textFlow currentParagraph];
+        if (!folio && (nil == paragraph || newParagraph)) {
+            paragraph = [[BlioTextFlowParagraph alloc] init];
+            [paragraph setPageIndex:targetIndex];
+            NSUInteger newParagraphIndex = [paragraphArray count];
+            [paragraph setParagraphIndex:newParagraphIndex];
+            [paragraphArray addObject:paragraph];
+            [textFlow setCurrentParagraph:paragraph];
+            [paragraph release];
+        } else if (folio) {
+            [textFlow setCurrentParagraph:nil];
+        }
+
+    } else if (strcmp("Word", name) == 0) {
+        NSString *textString = nil;
+        NSArray *rectArray = nil;
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("Text", atts[i]) == 0) {
+                textString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+            } else if (strcmp("Rect", atts[i]) == 0) {
+                NSString *rectString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != rectString) {
+                    rectArray = [rectString componentsSeparatedByString:@","];
+                    [rectString release];
+                }
+            }
+        }
+                
+        if ((nil != textString) && ([rectArray count] == 4)) {
+            BlioTextFlowParagraph *paragraph = [textFlow currentParagraph];
+            BlioTextFlowPositionedWord *newWord = [[BlioTextFlowPositionedWord alloc] init];
+            [newWord setString:textString];
+            [newWord setRect:CGRectMake([[rectArray objectAtIndex:0] intValue], 
+                                        [[rectArray objectAtIndex:1] intValue],
+                                        [[rectArray objectAtIndex:2] intValue],
+                                        [[rectArray objectAtIndex:3] intValue])];
+            
+            [newWord setPageIndex:[paragraph pageIndex]];
+            [newWord setWordIndex:[[paragraph words] count]];
+            [[paragraph words] addObject:newWord];
+            [newWord release];
+        }
+                     
+        if (nil != textString) {
+            [textString release];
+        }
+    }
+}
+
+static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)  {
+    if(strcmp("Flow", name) == 0) {
+        BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
+        XML_StopParser([textFlow currentParser], false);
+    }
+}
+
+- (NSArray *)paragraphsForPage:(NSInteger)pageIndex inSection:(BlioTextFlowSection *)section targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker {
+    
+    self.currentParagraphArray = nil;
+    
+    if (nil != [section path]) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:[section path] ofType:@"xml" inDirectory:@"TextFlows"];
+        NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
+        
+        NSUInteger dataLength = [data length];
+        NSUInteger offset = (NSUInteger)[targetMarker byteIndex];
+        if (offset >= dataLength) return nil;
+        
+        currentParser = XML_ParserCreate(NULL);
+        XML_SetStartElementHandler(currentParser, fragmentXMLParsingStartElementHandler);
+        XML_SetEndElementHandler(currentParser, fragmentXMLParsingEndElementHandler);
+        XML_SetUserData(currentParser, (void *)self);  
+        
+        // Parse anything before the first marker in the file
+        NSUInteger firstFragmentLength = [firstMarker byteIndex] - 1;
+        if (!XML_Parse(currentParser, [data bytes], firstFragmentLength - 1, XML_FALSE)) {
+            enum XML_Error errorCode = XML_GetErrorCode(currentParser);
+            if (errorCode != XML_ERROR_ABORTED) {
+                char *error = (char *)XML_ErrorString(errorCode);
+                NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
+            }
+        }
+        
+        NSUInteger targetFragmentLength = dataLength - offset;
+        const void* offsetBytes = [data bytes] + offset;
+        
+        [self setCurrentPageIndex:[targetMarker pageIndex]];
+        [self setCurrentParagraph:nil];
+          
+        if (!XML_Parse(currentParser, offsetBytes, targetFragmentLength, XML_FALSE)) {
+            enum XML_Error errorCode = XML_GetErrorCode(currentParser);
+            if (errorCode != XML_ERROR_ABORTED) {
+                char *error = (char *)XML_ErrorString(errorCode);
+                NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
+            }
+        }
+        XML_ParserFree(currentParser);
+        [data release];
+
+    }
+    
+    return [NSArray arrayWithArray:self.currentParagraphArray];
 }
 
 #pragma mark -
@@ -648,7 +725,7 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 }
 
 - (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex {
-    NSLog(@"Request for paragraph %d", pageIndex);
+    NSLog(@"Request for paragraphs at page %d", pageIndex);
     NSArray *pageParagraphs = [NSArray array];
     
     BlioTextFlowSection *targetSection = nil;
@@ -660,32 +737,30 @@ static xmlSAXHandler simpleSAXHandlerStruct;
     }
     
     if (nil != targetSection) {
-        BlioTextFlowPageMarker *targetPageMarker = nil;
-        for (BlioTextFlowPageMarker *pageMarker in [targetSection sortedPageMarkers]) {
-            if ([pageMarker pageIndex] == pageIndex) targetPageMarker = pageMarker;
+        BlioTextFlowPageMarker *targetMarker = nil;
+        BlioTextFlowPageMarker *firstMarker = nil;
+        
+        NSArray *sortedPageMarkers = [targetSection sortedPageMarkers];
+        NSUInteger i, count = [sortedPageMarkers count];
+        for (i = 0; i < count; i++) {
+            BlioTextFlowPageMarker *pageMarker = [sortedPageMarkers objectAtIndex:i];
+            if (i == 0) firstMarker = pageMarker;
+            if ([pageMarker pageIndex] == pageIndex) targetMarker = pageMarker;
             if ([pageMarker pageIndex] >= pageIndex) 
                 break;
         }
         
-        if (nil != targetPageMarker) {
-            NSLog(@"Page %d is at line %d in file %@", pageIndex, [targetPageMarker lineNumber], [targetSection path]);
-                            
-            NSArray *pageParagraphsFromDisk = [self paragraphsForPage:pageIndex inSection:targetSection atMarker:targetPageMarker];
+        if ((nil != targetMarker) && (nil != firstMarker)) {
+            NSLog(@"Page %d is at byte %d in file %@", pageIndex, [targetMarker byteIndex], [targetSection path]);
+            NSArray *pageParagraphsFromDisk = [self paragraphsForPage:pageIndex inSection:targetSection targetMarker:targetMarker firstMarker:firstMarker];
             if (nil != pageParagraphsFromDisk) pageParagraphs = pageParagraphsFromDisk;
             
         }
 
     }
-    NSLog(@"Page paragraphs: %@", [pageParagraphs description]);
     
+    NSLog(@"Paragraphs retrieved from disk");
     return pageParagraphs;
-    
-    
-    //NSArray *pageParagraphs = [NSArray array];
-//    if (pageIndex < [pages count]) {
-//        pageParagraphs = [pages objectAtIndex:pageIndex];
-//    }
-//    return pageParagraphs;
 }
 
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex {
@@ -700,171 +775,4 @@ static xmlSAXHandler simpleSAXHandlerStruct;
     return pageString;
 }
 
-static const NSUInteger kAutoreleasePoolPurgeFrequency = 20;
-
-- (void)finishedCurrentElement {
-    countOfParsedElements++;
-    // Periodically purge the autorelease pool. The frequency of this action may need to be tuned according to the 
-    // size of the objects being parsed. The goal is to keep the autorelease pool from growing too large, but 
-    // taking this action too frequently would be wasteful and reduce performance.
-    if (countOfParsedElements == kAutoreleasePoolPurgeFrequency) {
-        [parsePool release];
-        self.parsePool = [[NSAutoreleasePool alloc] init];
-        countOfParsedElements = 0;
-    }
-}
-
-/*
- Character data is appended to a buffer until the current element ends.
- */
-- (void)appendCharacters:(const char *)charactersFound length:(NSInteger)length {
-    [characterBuffer appendBytes:charactersFound length:length];
-}
-
-- (NSString *)currentString {
-    // Create a string with the character data using UTF-8 encoding. UTF-8 is the default XML data encoding.
-    NSString *currentString = [[[NSString alloc] initWithData:characterBuffer encoding:NSUTF8StringEncoding] autorelease];
-    [characterBuffer setLength:0];
-    return currentString;
-}
-
 @end
-
-#pragma mark SAX Parsing Callbacks
-
-#if 0
-// The following constants are the XML element names and their string lengths for parsing comparison.
-// The lengths include the null terminator, to ensure exact matches.
-static const char *kName_Section = "Section";
-static const NSUInteger kLength_Section = 8;
-static const char *kName_PageIndex = "PageIndex";
-static const NSUInteger kLength_PageIndex = 10;
-static const char *kName_Name = "Name";
-static const NSUInteger kLength_Name = 5;
-//static const char *kName_Source = "Source";
-//static const NSUInteger kLength_Source = 7;
-static const char *kName_TextGroup = "TextGroup";
-static const NSUInteger kLength_TextGroup = 10;
-static const char *kName_Text = "Text";
-static const NSUInteger kLength_Text = 5;
-static const char *kName_Rect = "Rect";
-static const NSUInteger kLength_Rect = 5;
-#endif
-/*
- This callback is invoked when the parser finds the beginning of a node in the XML.
- */
-#if 0
-static void startElementSAX(void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI, 
-                            int nb_namespaces, const xmlChar **namespaces, int nb_attributes, int nb_defaulted, const xmlChar **attributes) {
-    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
-    // The second parameter to strncmp is the name of the element, which we known from the XML schema of the feed.
-    // The third parameter to strncmp is the number of characters in the element name, plus 1 for the null terminator.
-    if (prefix == NULL && !strncmp((const char *)localname, kName_Section, kLength_Section)) {
-        //Song *newSong = [[Song alloc] init];
-//        parser.currentSong = newSong;
-//        [newSong release];
-        textFlow.parsingAnElement = YES;
-    } else  if (prefix == NULL && !strncmp((const char *)localname, kName_PageIndex, kLength_PageIndex)) {
-        
-        textFlow.parsingAnElement = YES;
-    } else  if (prefix == NULL && !strncmp((const char *)localname, kName_Name, kLength_Name)) {
-        
-        textFlow.parsingAnElement = YES;
-    } else  if (prefix != NULL && !strncmp((const char *)localname, kName_Text, kLength_Text)) {
-        
-        textFlow.parsingAnElement = YES;
-    } else  if (prefix != NULL && !strncmp((const char *)localname, kName_Rect, kLength_Rect)) {
-        
-        textFlow.parsingAnElement = YES;
-    } else if (textFlow.parsingAnElement) {
-        textFlow.storingCharacters = YES;
-    }
-}
-
-/*
- This callback is invoked when the parse reaches the end of a node. For the nodes we
- care about, this means we have all the character data. The next step is to create an NSString using the buffer
- contents and store that..
- */
-static void	endElementSAX(void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI) {    
-    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
-    if (textFlow.parsingAnElement == NO) return;
-    
-    // Prefix denotes...?
-    if (prefix == NULL) {
-        if (!strncmp((const char *)localname, kName_Section, kLength_Section)) {
-            //[parser finishedCurrentSong];
-            textFlow.parsingAnElement = NO;
-        } else if (!strncmp((const char *)localname, kName_PageIndex, kLength_PageIndex)) {
-            //parser.currentSong.title = [parser currentString];
-        } else if (!strncmp((const char *)localname, kName_Name, kLength_Name)) {
-            //parser.currentSong.category = [parser currentString];
-        }
-    } else if (!strncmp((const char *)prefix, kName_TextGroup, kLength_TextGroup)) {
-        if (!strncmp((const char *)localname, kName_Text, kLength_Text)) {
-            //parser.currentSong.artist = [parser currentString];
-        } else if (!strncmp((const char *)localname, kName_Rect, kLength_Rect)) {
-            //parser.currentSong.album = [parser currentString];
-        }
-    }
-    textFlow.storingCharacters = NO;
-}
-
-/*
- This callback is invoked when the parser encounters character data inside a node. The parser class determines how to use the character data.
- */
-static void	charactersFoundSAX(void *ctx, const xmlChar *ch, int len) {
-    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
-    // A state variable, "storingCharacters", is set when nodes of interest begin and end. 
-    // This determines whether character data is handled or ignored. 
-    if (textFlow.storingCharacters == NO) return;
-    [textFlow appendCharacters:(const char *)ch length:len];
-}
-
-/*
- A production application should include robust error handling as part of its parsing implementation.
- The specifics of how errors are handled depends on the application.
- */
-static void errorEncounteredSAX(void *ctx, const char *msg, ...) {
-    // Handle errors as appropriate for your application.
-    NSCAssert(NO, @"Unhandled error encountered during SAX parse.");
-}
-
-// The handler struct has positions for a large number of callback functions. If NULL is supplied at a given position,
-// that callback functionality won't be used. Refer to libxml documentation at http://www.xmlsoft.org for more information
-// about the SAX callbacks.
-static xmlSAXHandler simpleSAXHandlerStruct = {
-    NULL,                       /* internalSubset */
-    NULL,                       /* isStandalone   */
-    NULL,                       /* hasInternalSubset */
-    NULL,                       /* hasExternalSubset */
-    NULL,                       /* resolveEntity */
-    NULL,                       /* getEntity */
-    NULL,                       /* entityDecl */
-    NULL,                       /* notationDecl */
-    NULL,                       /* attributeDecl */
-    NULL,                       /* elementDecl */
-    NULL,                       /* unparsedEntityDecl */
-    NULL,                       /* setDocumentLocator */
-    NULL,                       /* startDocument */
-    NULL,                       /* endDocument */
-    NULL,                       /* startElement*/
-    NULL,                       /* endElement */
-    NULL,                       /* reference */
-    charactersFoundSAX,         /* characters */
-    NULL,                       /* ignorableWhitespace */
-    NULL,                       /* processingInstruction */
-    NULL,                       /* comment */
-    NULL,                       /* warning */
-    errorEncounteredSAX,        /* error */
-    NULL,                       /* fatalError //: unused error() get all the errors */
-    NULL,                       /* getParameterEntity */
-    NULL,                       /* cdataBlock */
-    NULL,                       /* externalSubset */
-    XML_SAX2_MAGIC,             //
-    NULL,
-    startElementSAX,            /* startElementNs */
-    endElementSAX,              /* endElementNs */
-    NULL,                       /* serror */
-};
-#endif
