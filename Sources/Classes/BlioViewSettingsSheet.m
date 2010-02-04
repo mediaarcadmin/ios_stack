@@ -89,7 +89,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         UIEdgeInsets inset = UIEdgeInsetsMake(0, 2, 2, 2);
         UIImage *plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:white textInset:inset];
         UIImage *layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:white textInset:inset];
-        UIImage *speedImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"SpeedRead" font:defaultFont color:white textInset:inset];
+        UIImage *speedImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:white textInset:inset];
         
         NSArray *segmentImages = [NSArray arrayWithObjects:
                                   plainImage,
