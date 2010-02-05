@@ -14,6 +14,7 @@
 #import "BlioMockBook.h"
 #import "BlioUIImageAdditions.h"
 #import "BlioTestParagraphWords.h"
+#import "BlioStoreTabViewController.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -135,7 +136,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-getbooks.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
-                                           action:nil];
+                                           action:@selector(showStore:)];
     [libraryItems addObject:item];
     [item release];
     
@@ -519,6 +520,15 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
  return YES;
  }
  */
+
+#pragma mark -
+#pragma mark Toolbar Actions
+
+- (void)showStore:(id)sender {    
+    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] init];
+    [self presentModalViewController:aStoreController animated:YES];
+    [aStoreController release];    
+}
 
 #pragma mark -
 #pragma mark Library Actions
