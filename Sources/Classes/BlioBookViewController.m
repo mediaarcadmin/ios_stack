@@ -1182,7 +1182,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
         return NO;
     else
         return YES;
