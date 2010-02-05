@@ -14,24 +14,26 @@
     CGRect rect;
     NSInteger pageIndex;
     NSInteger wordIndex;
+    NSNumber *wordID;
 }
 
 @property (nonatomic, retain) NSString *string;
 @property (nonatomic) CGRect rect;
 @property (nonatomic) NSInteger pageIndex;
 @property (nonatomic) NSInteger wordIndex;
+@property (nonatomic, retain) NSNumber *wordID;
 
 - (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs;
 
 @end
 
 @interface BlioTextFlowPageMarker : NSObject {
-    NSInteger pageIndex;
-    NSInteger byteIndex;
+    NSUInteger pageIndex;
+    NSUInteger byteIndex;
 }
 
-@property (nonatomic) NSInteger pageIndex;
-@property (nonatomic) NSInteger byteIndex;
+@property (nonatomic) NSUInteger pageIndex;
+@property (nonatomic) NSUInteger byteIndex;
 
 @end
 
@@ -57,6 +59,7 @@
 @interface BlioTextFlowParagraph : NSObject {
     NSInteger pageIndex;
     NSInteger paragraphIndex;
+    NSString *paragraphID;
     NSMutableArray *words;
     CGRect rect;
     BOOL folio;
@@ -64,6 +67,7 @@
 
 @property (nonatomic) NSInteger pageIndex;
 @property (nonatomic) NSInteger paragraphIndex;
+@property (nonatomic, retain) NSString *paragraphID;
 @property (nonatomic, retain) NSMutableArray *words;
 @property (nonatomic, readonly) CGRect rect;
 @property (nonatomic) BOOL folio;
@@ -71,6 +75,8 @@
 - (NSString *)string;
 - (NSArray *)wordsArray;
 - (NSComparisonResult)compare:(BlioTextFlowParagraph *)rhs;
++ (NSInteger)pageIndexForParagraphID:(id)aParagraphID;
++ (NSInteger)paragraphIndexForParagraphID:(id)aParagraphID;
 
 @end
 
@@ -81,6 +87,8 @@
     BlioTextFlowParagraph *currentParagraph;
     NSMutableArray *currentParagraphArray;
     XML_Parser currentParser;
+    NSInteger cachedPageIndex;
+    NSArray *cachedPageParagraphs;
 }
 
 @property (nonatomic, retain) NSMutableSet *sections;

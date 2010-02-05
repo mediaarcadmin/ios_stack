@@ -19,7 +19,7 @@
 @class BlioPDFPageView;
 @class BlioPDFContainerScrollView;
 
-@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource, EucHighlighterDataSource> {
+@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, BlioTTSDataSource, EucBookContentsTableViewControllerDataSource, EucHighlighterDataSource> {
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioPDFContainerScrollView *scrollView;
@@ -54,11 +54,5 @@
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucHighlighter *highlighter;
-
-- (id)getCurrentParagraphId;
-- (NSUInteger)getCurrentWordOffset;
-- (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphId;
-- (NSArray *)paragraphWordsForParagraphWithId:(id)paragraphId;
-- (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 
 @end

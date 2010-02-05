@@ -279,24 +279,63 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter {
     NSInteger pageIndex = self.pageNumber - 1;
-    return [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSMutableArray *identifiers = [NSMutableArray array];
+    for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
+        [identifiers addObject:[paragraph paragraphID]];
+    }
+    return identifiers;
 }
 
-- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id {
-    CGRect blockRect = [(BlioTextFlowParagraph *)id rect];
-    CGAffineTransform viewTransform = [[self.currentPageView view] viewTransform];
-    CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
+- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)paragraphID {
+    CGRect pageRect = CGRectZero;
+    
+    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+    
+    if ([pageParagraphs count] > currentIndex) {
+        CGRect blockRect = [[pageParagraphs objectAtIndex:currentIndex] rect];
+        CGAffineTransform viewTransform = [[self.currentPageView view] viewTransform];
+        pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
+    }
+    
     return pageRect;
 }
 
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id; {
-    return [(BlioTextFlowParagraph *)id words];
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)paragraphID; {
+    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+    
+    if ([pageParagraphs count] > currentIndex) {
+        NSMutableArray *identifiers = [NSMutableArray array];
+        for (BlioTextFlowPositionedWord *word in [[pageParagraphs objectAtIndex:currentIndex] words]) {
+            [identifiers addObject:[word wordID]];
+        }
+        return identifiers;
+    } else {
+        return [NSArray array];
+    }
 }
 
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId {    
-    CGRect wordRect = [(BlioTextFlowPositionedWord *)elementId rect];
-    CGAffineTransform viewTransform = [[self.currentPageView view] viewTransform];
-    CGRect pageRect = CGRectApplyAffineTransform(wordRect, viewTransform);
+- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)paragraphID {    
+    CGRect pageRect = CGRectZero;
+    
+    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+    
+    if ([pageParagraphs count] > currentIndex) {
+        NSArray *words = [[pageParagraphs objectAtIndex:currentIndex] words];
+        NSInteger offset = [wordID integerValue];
+        if (offset < [words count]) {
+            CGRect wordRect = [[words objectAtIndex:offset] rect];
+            CGAffineTransform viewTransform = [[self.currentPageView view] viewTransform];
+            pageRect = CGRectApplyAffineTransform(wordRect, viewTransform);
+        }
+    }
+    
     return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
 }
 
@@ -310,34 +349,34 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if (![pageParagraphs count])
         return nil;
     else
-        return [pageParagraphs objectAtIndex:0];
+        return [[pageParagraphs objectAtIndex:0] paragraphID];
 }
 
-- (NSUInteger)getCurrentWordOffset {
+- (uint32_t)getCurrentWordOffset {
     return 0;
 }
 
-- (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphID {
-    BlioTextFlowParagraph *currentParagraph = (BlioTextFlowParagraph *)paragraphID;
-    
-    if (!currentParagraph) {
+- (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphID {    
+    if (!paragraphID) {
         NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:0];
         
         if (![pageParagraphs count])
             return nil;
         else
-            return [pageParagraphs objectAtIndex:0];
+            return (id)[[pageParagraphs objectAtIndex:0] paragraphID];
     } else {
-        NSInteger pageIndex = [currentParagraph pageIndex];
+
+        NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
         NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-        NSUInteger currentIndex = [pageParagraphs indexOfObject:currentParagraph];
+        NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+        
             if (++currentIndex < [pageParagraphs count]) {
-                return [pageParagraphs objectAtIndex:currentIndex];
+                return (id)[[pageParagraphs objectAtIndex:currentIndex] paragraphID];
             } else {
                 while (++pageIndex < ([self pageCount])) {
                     NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
                     if ([pageParagraphs count])
-                        return [pageParagraphs objectAtIndex:0];
+                        return (id)[[pageParagraphs objectAtIndex:0] paragraphID];
                 }
             }
         
@@ -345,24 +384,38 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return nil;
 }
 
-- (NSArray *)paragraphWordsForParagraphWithId:(id)paragraphId {
-    return [(BlioTextFlowParagraph *)paragraphId wordsArray];
+- (NSArray *)paragraphWordsForParagraphWithId:(id)paragraphID {
+    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+    
+    if ([pageParagraphs count] > currentIndex)
+        return [[pageParagraphs objectAtIndex:currentIndex] wordsArray];
+    else
+        return nil;
+    
 }
 
-- (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset {
-    BlioTextFlowParagraph *currentParagraph = (BlioTextFlowParagraph *)paragraphId;
-    NSInteger pageIndex = [currentParagraph pageIndex];
-    NSInteger targetPageNumber = ++pageIndex;
-    if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
-        [self goToPageNumber:targetPageNumber animated:YES];
-    }
+- (void)highlightWordAtParagraphId:(id)paragraphID wordOffset:(uint32_t)wordOffset {
+    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
     
-
-    NSArray *words = [currentParagraph words];
-    if ([words count] > wordOffset) {
-        BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
-        [self.highlighter temporarilyHighlightElementWithIdentfier:word inBlockWithIdentifier:currentParagraph animated:YES];
+    if ([pageParagraphs count] > currentIndex) {
+        BlioTextFlowParagraph *currentParagraph = [pageParagraphs objectAtIndex:currentIndex];
+        NSInteger targetPageNumber = ++pageIndex;
+        if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
+            [self goToPageNumber:targetPageNumber animated:YES];
+        }
+        
+        NSArray *words = [currentParagraph words];
+        if ([words count] > wordOffset) {
+            BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
+            [self.highlighter temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:paragraphID animated:YES];
+        }
+                                                   
     }
+
 }
 
 #pragma mark -

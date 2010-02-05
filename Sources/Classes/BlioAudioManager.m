@@ -13,6 +13,11 @@
 
 @synthesize currentWordOffset, adjustedWordOffset, currentParagraph, currentWord, currentPage, startedPlaying, textToSpeakChanged, paragraphWords, speakingTimer;
 
+- (void)dealloc {
+    self.currentParagraph = nil;
+    [super dealloc];
+}
+
 - (void)adjustParagraphWords {
 	NSRange pageRange;
 	pageRange.location = self.currentWordOffset - self.adjustedWordOffset;

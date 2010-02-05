@@ -1609,7 +1609,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             //BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
             //BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
 			if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-				[(BlioLayoutView *)self.bookView  highlightWordAtParagraphId:(uint32_t)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
+				[(BlioLayoutView *)self.bookView  highlightWordAtParagraphId:(id)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
 				//[bookView highlightWordAtParagraphId:(uint32_t)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
 			else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 				BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
@@ -1694,7 +1694,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	//printf("av currentTime: %f\n",[ _audioBookManager.avPlayer currentTime]*1000);
 	if ( (timeElapsed + _audioBookManager.pausedAtTime) >= ([[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue] + _audioBookManager.lastOnPageTime) ) {
 		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-			[(BlioLayoutView *)self.bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
+			[(BlioLayoutView *)self.bookView highlightWordAtParagraphId:(id)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
 			//[bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
 		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 			// Problem: if just switching here from Fixed view, then prepareTextForSpeaking would not have been called for flowview

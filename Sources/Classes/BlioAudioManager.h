@@ -25,7 +25,7 @@
 @property (nonatomic, retain) NSArray* paragraphWords;
 @property (nonatomic, retain) NSString* currentWord;
 @property (nonatomic, retain) NSTimer* speakingTimer;
-@property (nonatomic, assign) id currentParagraph;
+@property (nonatomic, retain) id currentParagraph;
 @property (nonatomic) uint32_t currentWordOffset;
 @property (nonatomic) uint32_t adjustedWordOffset;
 @property (nonatomic) uint32_t currentPage; 

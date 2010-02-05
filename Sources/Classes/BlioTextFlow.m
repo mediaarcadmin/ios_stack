@@ -10,10 +10,11 @@
 
 @implementation BlioTextFlowPositionedWord
 
-@synthesize string, rect, pageIndex, wordIndex;
+@synthesize string, rect, pageIndex, wordIndex, wordID;
 
 - (void)dealloc {
     self.string = nil;
+    self.wordID = nil;
     [super dealloc];
 }
 
@@ -76,10 +77,11 @@
 
 @implementation BlioTextFlowParagraph
 
-@synthesize pageIndex, paragraphIndex, words, folio;
+@synthesize pageIndex, paragraphIndex, paragraphID, words, folio;
 
 - (void)dealloc {
     self.words = nil;
+    self.paragraphID = nil;
     [super dealloc];
 }
 
@@ -131,6 +133,28 @@
     }
 }
 
++ (NSInteger)pageIndexForParagraphID:(id)aParagraphID {
+    NSString *paraID = (NSString *)aParagraphID;
+    
+    if (nil != paraID) {
+        NSArray *components = [paraID componentsSeparatedByString:@"-"];
+        return [[components objectAtIndex:0] integerValue];
+    } else {
+        return -1;
+    }
+}
+
++ (NSInteger)paragraphIndexForParagraphID:(id)aParagraphID {
+    NSString *paraID = (NSString *)aParagraphID;
+    NSArray *components = [paraID componentsSeparatedByString:@"-"];
+
+    if ([components count] > 1) {
+        return [[components objectAtIndex:1] integerValue];
+    } else {
+        return -1;
+    }
+}
+
 @end
 
 @interface BlioTextFlow()
@@ -140,6 +164,8 @@
 @property (nonatomic, retain) BlioTextFlowParagraph *currentParagraph;
 @property (nonatomic, retain) NSMutableArray *currentParagraphArray;
 @property (nonatomic, readonly) XML_Parser currentParser;
+@property (nonatomic) NSInteger cachedPageIndex;
+@property (nonatomic, retain) NSArray *cachedPageParagraphs;
 
 - (void)parseSectionsFileAtPath:(NSString *)path;
 - (void)parseSection:(BlioTextFlowSection *)section;
@@ -153,12 +179,14 @@
 @synthesize sections;
 @synthesize currentSection, currentParagraph;
 @synthesize currentPageIndex, currentParagraphArray, currentParser;
+@synthesize cachedPageIndex, cachedPageParagraphs;
 
 - (void)dealloc {
     self.sections = nil;
     self.currentSection = nil;
     self.currentParagraph = nil;
     self.currentParagraphArray = nil;
+    self.cachedPageParagraphs = nil;
     if (nil != self.currentParser) {
         XML_ParserFree(currentParser);
     }
@@ -270,7 +298,7 @@ static void flowXMLParsingStartElementHandler(void *ctx, const XML_Char *name, c
     
     if(strcmp("TextGroup", name) == 0) {
         
-        NSInteger currentByteIndex = (NSInteger)(XML_GetCurrentByteIndex([textFlow currentParser]));
+        NSUInteger currentByteIndex = (NSUInteger)(XML_GetCurrentByteIndex([textFlow currentParser]));
         
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("PageIndex", atts[i]) == 0) {
@@ -326,7 +354,8 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     
     BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
 
-    if (strcmp("TextGroup", name) == 0) {        
+    if (strcmp("TextGroup", name) == 0) {    
+
         NSInteger targetIndex = [textFlow currentPageIndex];
         NSMutableArray *paragraphArray = [textFlow currentParagraphArray];
         BOOL newParagraph = NO;
@@ -371,6 +400,9 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             [paragraph setPageIndex:targetIndex];
             NSUInteger newParagraphIndex = [paragraphArray count];
             [paragraph setParagraphIndex:newParagraphIndex];
+            NSString *idString = [[NSString alloc] initWithFormat:@"%d-%d", targetIndex, newParagraphIndex];
+            [paragraph setParagraphID:idString];
+            [idString release];
             [paragraphArray addObject:paragraph];
             [textFlow setCurrentParagraph:paragraph];
             [paragraph release];
@@ -404,7 +436,9 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                                         [[rectArray objectAtIndex:3] intValue])];
             
             [newWord setPageIndex:[paragraph pageIndex]];
-            [newWord setWordIndex:[[paragraph words] count]];
+            NSInteger index = [[paragraph words] count];
+            [newWord setWordIndex:index];
+            [newWord setWordID:[NSNumber numberWithInteger:index]];
             [[paragraph words] addObject:newWord];
             [newWord release];
         }
@@ -480,7 +514,9 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
 }
 
 - (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex {
-   // NSLog(@"Request for paragraphs at page %d", pageIndex);
+    if (self.cachedPageParagraphs && (self.cachedPageIndex == pageIndex))
+        return self.cachedPageParagraphs;
+    
     NSArray *pageParagraphs = [NSArray array];
     
     BlioTextFlowSection *targetSection = nil;
@@ -514,6 +550,9 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
     }
     
     //NSLog(@"Paragraphs retrieved from disk");
+    self.cachedPageParagraphs = pageParagraphs;
+    self.cachedPageIndex = pageIndex;
+    
     return pageParagraphs;
 }
 

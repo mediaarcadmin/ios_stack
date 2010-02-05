@@ -7,6 +7,16 @@
  *
  */
 
+@protocol BlioTTSDataSource <NSObject>
+
+@required
+- (id)getCurrentParagraphId;
+- (uint32_t)getCurrentWordOffset;
+- (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphId;
+- (NSArray *)paragraphWordsForParagraphWithId:(id)paragraphId;
+- (void)highlightWordAtParagraphId:(id)paragraphId wordOffset:(uint32_t)wordOffset;
+@end
+
 @protocol EucBookContentsTableViewControllerDataSource;
 
 @class BlioBookmarkPoint;
