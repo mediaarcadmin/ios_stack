@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "expat.h"
+#import <expat/expat.h>
 
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;

@@ -743,20 +743,23 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (void)setSelectedRange:(EucHighlighterRange *)newRange
 {
-    if(newRange && ![newRange isEqual:_selectedRange]) {        
+    if(newRange != _selectedRange &&
+       !(newRange && [newRange isEqual:_selectedRange])) {
+        [_selectedRange release];
         _selectedRange = [newRange retain];
-        [self redisplaySelectedRange];
-    } 
-    if(!newRange) {
-        if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {
-            [CATransaction begin];
-            [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-            for(CALayer *layer in self.highlightLayers) {
-                layer.hidden = YES;
-            }      
-            [CATransaction commit];
+        if(newRange) {
+            [self redisplaySelectedRange];
         } else {
-            [self setTrackingStage:EucHighlighterTrackingStageNone];
+            if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {
+                [CATransaction begin];
+                [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+                for(CALayer *layer in self.highlightLayers) {
+                    layer.hidden = YES;
+                }      
+                [CATransaction commit];
+            } else {
+                [self setTrackingStage:EucHighlighterTrackingStageNone];
+            }
         }
     }
 }
