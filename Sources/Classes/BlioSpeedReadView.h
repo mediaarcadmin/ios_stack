@@ -17,35 +17,39 @@
     NSMutableArray *pageViews;
     id navigationController;
     NSInteger visiblePageIndex;
-
-
+    
     NSInteger pageNumber;
     NSInteger pageCount;
     
     uint32_t currentParagraph;
 	uint32_t currentWordOffset;
 	uint32_t currentPage;
-
+    
     EucBookReference<EucBook> *book;
     
     UIView *fingerImageHolder;
     CALayer *fingerImage;
     CALayer *backgroundImage;
+    float initialTouchDifference;
+    
+    float initialFontSize;
+    float currentFontSize;
+    float zooming;
     
     
     UILabel *bigTextLabel;
-	
+	UILabel *sampleTextLabel;
+    
 	float speed;
 	
-    
 	UIFont* font;
     
 	NSMutableArray *textArray;
 	
 	NSTimer *nextWordTimer;
-
-
-
+    
+    
+    
     
 }
 
@@ -87,6 +91,7 @@
 @property (nonatomic, retain) NSTimer *nextWordTimer;
 
 @property (nonatomic, retain) UILabel *bigTextLabel;
+@property (nonatomic, retain) UILabel *sampleTextLabel;
 
 
 @end
