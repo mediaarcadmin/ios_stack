@@ -164,8 +164,8 @@
 		7D5173481028B98A005F3C46 /* antlr3ucs2inputstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D51730A1028B98A005F3C46 /* antlr3ucs2inputstream.c */; };
 		7D5173F31028BA14005F3C46 /* ascii.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739A1028BA14005F3C46 /* ascii.h */; };
 		7D5173F41028BA14005F3C46 /* asciitab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739B1028BA14005F3C46 /* asciitab.h */; };
-		7D5173F51028BA14005F3C46 /* expat.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739D1028BA14005F3C46 /* expat.h */; };
-		7D5173F61028BA14005F3C46 /* expat_external.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739E1028BA14005F3C46 /* expat_external.h */; };
+		7D5173F51028BA14005F3C46 /* expat.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739D1028BA14005F3C46 /* expat.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D5173F61028BA14005F3C46 /* expat_external.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739E1028BA14005F3C46 /* expat_external.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D5173F71028BA14005F3C46 /* iasciitab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173A21028BA14005F3C46 /* iasciitab.h */; };
 		7D5173F81028BA14005F3C46 /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173A31028BA14005F3C46 /* internal.h */; };
 		7D5173F91028BA14005F3C46 /* latin1tab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173A41028BA14005F3C46 /* latin1tab.h */; };
@@ -2068,7 +2068,9 @@
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_EXPAT_CONFIG_H;
 				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/expat;
 				PRODUCT_NAME = expat;
+				PUBLIC_HEADERS_FOLDER_PATH = include/expat;
 			};
 			name = Debug;
 		};
@@ -2083,7 +2085,9 @@
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_EXPAT_CONFIG_H;
 				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/expat;
 				PRODUCT_NAME = expat;
+				PUBLIC_HEADERS_FOLDER_PATH = include/expat;
 			};
 			name = Release;
 		};
@@ -2287,7 +2291,9 @@
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_EXPAT_CONFIG_H;
 				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/expat;
 				PRODUCT_NAME = expat;
+				PUBLIC_HEADERS_FOLDER_PATH = include/expat;
 			};
 			name = Beta;
 		};
@@ -2383,7 +2389,9 @@
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_EXPAT_CONFIG_H;
 				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/expat;
 				PRODUCT_NAME = expat;
+				PUBLIC_HEADERS_FOLDER_PATH = include/expat;
 			};
 			name = AppStore;
 		};
