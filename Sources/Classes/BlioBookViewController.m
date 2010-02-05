@@ -61,6 +61,8 @@ typedef enum {
     kBlioTapTurnOn = 1,
 } BlioTapTurn;
 
+#define PAGE_TIMING_DELTA 250
+
 @interface BlioBookViewControllerProgressPieButton : UIControl {
     CGFloat progress;
     UIColor *tintColor;
@@ -1329,120 +1331,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	}
 }
 
-/*
-- (void) prepareTextToSpeak:(BOOL)continuingSpeech audioManager:(BlioAudioManager*)audioMgr{
-    // THIS IS DUMMY CODE TO TEST TTS IN LAYOUT VIEW
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-        id paragraphId;
-        NSUInteger wordOffset;
-        if ( continuingSpeech ) {
-            // Continuing to speak, we just need more text.
-			while ( true ) {
-				paragraphId = [(BlioLayoutView *)self.bookView paragraphIdForParagraphAfterParagraphWithId:_acapelaTTS.currentParagraph];
-				wordOffset = 0;
-				[_acapelaTTS setCurrentWordOffset:wordOffset];
-				[_acapelaTTS setCurrentParagraph:paragraphId];
-				[_acapelaTTS setParagraphWords:[(BlioLayoutView *)self.bookView paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
-				if ( _acapelaTTS.paragraphWords == nil ) {
-					// end of the book
-					UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-					[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-					[self stopAudio];
-					self.audioPlaying = NO;
-					return;
-				}
-				else if ( [_acapelaTTS.paragraphWords count] == 0 ) {
-					// empty paragraph, go to the next.
-					continue;
-				}
-				else
-					break;
-			}
-			if ( wordOffset != 0 ) 
-				[_acapelaTTS adjustParagraphWords];
-		}
-        else {
-            paragraphId = [(BlioLayoutView *)self.bookView getCurrentParagraphId];
-            wordOffset = [(BlioLayoutView *)self.bookView getCurrentWordOffset];
-            // Play button has just been pushed.
-            if ([(BlioLayoutView *)self.bookView pageNumber] != [_acapelaTTS currentPage]) {
-                // Starting speech for the first time, or for the first time since changing the 
-                // page or book after stopping speech the last time (whew). 
-                [_acapelaTTS setCurrentPage:[(BlioLayoutView *)self.bookView pageNumber]]; // Not very robust page-identifier
-                [_acapelaTTS setCurrentWordOffset:wordOffset];
-                [_acapelaTTS setCurrentParagraph:paragraphId];
-                [_acapelaTTS setParagraphWords:[(BlioLayoutView *)self.bookView paragraphWordsForParagraphWithId:[_acapelaTTS currentParagraph]]];
-				if ( wordOffset != 0 ) 
-					// The first paragraphs words displayed on this page are not at 
-					// the beginning of the paragraph.
-					[_acapelaTTS adjustParagraphWords];
-            }
-			else
-				// use the current word and paragraph, which is where we last stopped.
-				// edge case:  what if you stopped speech right after the end of the paragraph?
-				[_acapelaTTS adjustParagraphWords];
-        }
-        [_acapelaTTS setTextToSpeakChanged:YES];
-        
-    } else { 
-        BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-        BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-        EucEPubBook *book = (EucEPubBook*)bookView.book;
-        uint32_t paragraphId, wordOffset;
-        if ( continuingSpeech ) {
-            // Continuing to speak, we just need more text.
-			while ( true ) {
-				paragraphId = [book paragraphIdForParagraphAfterParagraphWithId:(uint32_t)audioMgr.currentParagraph];
-				wordOffset = 0;
-				[audioMgr setCurrentWordOffset:wordOffset];
-				[audioMgr setAdjustedWordOffset:wordOffset];
-				[audioMgr setCurrentParagraph:(id)paragraphId];
-				[audioMgr setParagraphWords:[book paragraphWordsForParagraphWithId:(uint32_t)[audioMgr currentParagraph]]];
-				if ( audioMgr.paragraphWords == nil ) {
-					// end of the book
-					UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-					[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-					[self stopAudio];
-					self.audioPlaying = NO;
-					return;
-				}
-				else if ( [audioMgr.paragraphWords count] == 0 ) 
-					// empty paragraph, go to the next.
-					continue;
-				else
-					break;
-			}
-			if ( wordOffset != 0 ) 
-				[audioMgr adjustParagraphWords];
-		}
-        else {
-            [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
-			//NSLog(@"1 paragraphId: %d",paragraphId);
-			//NSLog(@"1 wordOffset: %d",wordOffset);
-            // Play button has just been pushed.
-			if ( (paragraphId + wordOffset)!=[audioMgr currentPage] ) {
-                // Starting speech for the first time, or for the first time since changing the 
-                // page or book after stopping speech the last time (whew).
-                [audioMgr setCurrentPage:(paragraphId + wordOffset)]; // Not reliable! because of this speech that should resume backs up to top of page sometimes
-                [audioMgr setCurrentWordOffset:wordOffset];
-                [audioMgr setCurrentParagraph:(id)paragraphId];
-                [audioMgr setParagraphWords:[book paragraphWordsForParagraphWithId:(uint32_t)[audioMgr currentParagraph]]];
-				if ( wordOffset != 0 ) 
-					// The first paragraphs words displayed on this page are not at 
-					// the beginning of the paragraph.
-					[audioMgr adjustParagraphWords];
-            }
-			else
-				// use the current word and paragraph, which is where we last stopped.
-				// edge case:  what if you stopped speech right after the end of the paragraph?
-				[audioMgr adjustParagraphWords];
-        }
-		[audioMgr setStartedPlaying:YES];
-        [audioMgr setTextToSpeakChanged:YES];
-	}
-} 
-*/
-
 - (id)getParagraphId:(BlioPageLayout)pagetype currentParagraph:(id)paragraph {
 	if ( pagetype==kBlioPageLayoutPageLayout ) 
 		return [(BlioLayoutView *)self.bookView paragraphIdForParagraphAfterParagraphWithId:paragraph];
@@ -1661,29 +1549,24 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	return NO;
 }
 
-- (void)checkHighlightTime:(NSTimer*)timer {
-	
+- (void)checkHighlightTime:(NSTimer*)timer {	
 	if ( _audioBookManager.timeIx == [_audioBookManager.times count] ) {
 		// End of times for this page, get next page's times if any.
 		if ( _audioBookManager.queueIx + 1 < [_audioBookManager.queuedTimes count] ) {
-			[_audioBookManager setLastOnPageTime:_audioBookManager.lastOnPageTime+[[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx-1] intValue]];
+			[_audioBookManager setLastOnPageTime:(_audioBookManager.lastOnPageTime + [(NSNumber*)[_audioBookManager.queuedEndTimes objectAtIndex:_audioBookManager.queueIx] intValue] + PAGE_TIMING_DELTA)];  
 			_audioBookManager.timeIx = 0;
 			_audioBookManager.times = [_audioBookManager.queuedTimes objectAtIndex:++_audioBookManager.queueIx];
 		}
-		/*
 		else {
 			// Audio will end.	
 			// I'd rather this happen in audioDidFinishPlaying, but not getting into that for some reason.
-			// Could it happen in prepareTextToSpeak like TTS?
+			// As a result, this button toggling is happening too soon, before the audio really ends.
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-			//[self stopAudio];
 			self.audioPlaying = NO;
 			return;
 		}
-		 */
 	}
-	
 	if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) 
 		// Last word of paragraph, get more words.  
 		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
@@ -1695,7 +1578,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	if ( (timeElapsed + _audioBookManager.pausedAtTime) >= ([[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue] + _audioBookManager.lastOnPageTime) ) {
 		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
 			[(BlioLayoutView *)self.bookView highlightWordAtParagraphId:(id)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
-			//[bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
+		//[bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
 		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 			// Problem: if just switching here from Fixed view, then prepareTextForSpeaking would not have been called for flowview
 			BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
@@ -1705,7 +1588,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		++_audioBookManager.currentWordOffset;
 		++_audioBookManager.timeIx;
 		
-		 //[_audioBookManager setCurrentWord:[string substringWithRange:characterRange]];
+		//[_audioBookManager setCurrentWord:[string substringWithRange:characterRange]];
 	}
 }
 
@@ -1758,18 +1641,17 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 						return;
 					if ( _audioBookManager.queueIx > 0 ) {
 						// Not starting audio at the beginning, so figure out how far in to start.
-						int lastWordTimes = 0;
-						int lastWordTime=0;
-						int lastWordDurations = 0;
+						//int lastWordTimes = 0;
+						int endWordTime, endWordTimes = 0;
 						for ( int i=0;i<_audioBookManager.queueIx;++i ) {  
-							NSMutableArray* prevTimes = (NSMutableArray*)[_audioBookManager.queuedTimes objectAtIndex:i]; 
-							lastWordTime = [(NSNumber*)[prevTimes lastObject] intValue];
-							lastWordTimes += lastWordTime;
-							lastWordDurations += [(NSNumber*)[_audioBookManager.queuedLastTimes objectAtIndex:i] intValue];
+							endWordTime = [(NSNumber*)[_audioBookManager.queuedEndTimes objectAtIndex:i] intValue];
+							endWordTimes += endWordTime;
 						}
-						// Arg, adding the time of the first word is right for the third page, wrong for the second page.
-						NSTimeInterval playerOffset = (lastWordTimes + lastWordDurations + [(NSNumber*)[_audioBookManager.times objectAtIndex:0] intValue])/1000.0;  
-						// Cue up the player for the first word of this page.  OR: to end of last word of last page?
+						// Inconsistent requirements here.  Sometimes and sometimes not it's necessary to add the offset of the first word on this page.
+						// Even after it's added the total offset still is too low after a certain number of pages.  I'm guessing the problem is a
+						// vestige of how the timing files are split up.
+						NSTimeInterval playerOffset = (endWordTimes + [(NSNumber*)[_audioBookManager.times objectAtIndex:0] intValue] + PAGE_TIMING_DELTA)/1000.0;  
+						// Cue up the player for the first word of this page.  OR: to end of last word of last page
 						[_audioBookManager.avPlayer setCurrentTime:playerOffset];
 					}
 					[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
