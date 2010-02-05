@@ -26,7 +26,7 @@
 @property (nonatomic, retain) NSNumber *layoutPageNumber;
 @property (nonatomic, retain) NSNumber *hasAudioRights;
 @property (nonatomic, retain) NSString *audiobookFilename;
-@property (nonatomic, retain) NSString *audiotimingFilename;
+@property (nonatomic, retain) NSString *timingIndicesFilename;
 @property (nonatomic, retain) NSString *textflowFilename;
 
 - (UIImage *)coverImage;
@@ -35,7 +35,7 @@
 - (NSString *)bookPath;
 - (NSString *)pdfPath;
 - (NSString *)audiobookPath;
-- (NSString *)audiotimingPath;
+- (NSString *)timingIndicesPath;
 - (BOOL)audioRights;
 - (NSString *)textflowPath;
 - (BlioTextFlow *)textFlow;

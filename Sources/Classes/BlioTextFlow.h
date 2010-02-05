@@ -6,7 +6,8 @@
 //  Copyright 2010 BitWink. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import "expat.h"
 
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
@@ -24,17 +25,32 @@
 
 @end
 
+@interface BlioTextFlowPageMarker : NSObject {
+    NSInteger pageIndex;
+    NSInteger byteIndex;
+}
+
+@property (nonatomic) NSInteger pageIndex;
+@property (nonatomic) NSInteger byteIndex;
+
+@end
+
 @interface BlioTextFlowSection : NSObject {
     NSInteger pageIndex;
     NSString *name;
     NSString *path;
     NSString *anchor;
+    NSMutableSet *pageMarkers;
 }
 
 @property (nonatomic) NSInteger pageIndex;
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *path;
 @property (nonatomic, retain) NSString *anchor;
+@property (nonatomic, retain) NSMutableSet *pageMarkers;
+
+- (void)addPageMarker:(BlioTextFlowPageMarker *)aPageMarker;
+- (NSArray *)sortedPageMarkers;
 
 @end
 
@@ -59,26 +75,20 @@
 @end
 
 @interface BlioTextFlow : NSObject {
-    NSXMLParser *textFlowParser;
-    NSMutableArray *sections;
-    NSMutableArray *pages;
-    NSMutableArray *paragraphs;
-    
+    NSMutableSet *sections;
+    NSInteger currentPageIndex;
     BlioTextFlowSection *currentSection;
-    NSMutableArray *currentPage;
     BlioTextFlowParagraph *currentParagraph;
-    BlioTextFlowPositionedWord *currentWord;
-    NSString *currentWordString;
-    NSString *currentWordRect;
+    NSMutableArray *currentParagraphArray;
+    XML_Parser currentParser;
 }
 
-@property (nonatomic, retain) NSMutableArray *sections;
-@property (nonatomic, retain) NSMutableArray *pages;
-@property (nonatomic, retain) NSMutableArray *paragraphs;
+@property (nonatomic, retain) NSMutableSet *sections;
 
 - (id)initWithPath:(NSString *)path;
 
 // Convenience methods
+- (NSArray *)sortedSections;
 - (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
 

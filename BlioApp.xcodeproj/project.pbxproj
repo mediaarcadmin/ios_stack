@@ -87,6 +87,7 @@
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
+		A3169289111488C9005AAE5E /* BlioAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3169288111488C9005AAE5E /* BlioAudioManager.m */; };
 		A349F06B110E31CC009A8F89 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A349F067110E31CC009A8F89 /* AudioBooks */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
@@ -276,6 +277,8 @@
 		7DE7DB27110F662600403651 /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionKnob.png; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		A3169287111488C9005AAE5E /* BlioAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioManager.h; sourceTree = "<group>"; };
+		A3169288111488C9005AAE5E /* BlioAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioManager.m; sourceTree = "<group>"; };
 		A349F067110E31CC009A8F89 /* AudioBooks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AudioBooks; sourceTree = "<group>"; };
 		A349F11B110E34DE009A8F89 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
@@ -301,6 +304,20 @@
 		C94D863E10E78E140094B9C5 /* button-getbooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-getbooks.png"; sourceTree = "<group>"; };
 		C94D863F10E78E140094B9C5 /* button-settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-settings.png"; sourceTree = "<group>"; };
 		C94D864010E78E140094B9C5 /* button-sync.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-sync.png"; sourceTree = "<group>"; };
+		C9725CE5111AFFA2001BCC0B /* ascii.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ascii.h; sourceTree = "<group>"; };
+		C9725CE6111AFFA2001BCC0B /* asciitab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asciitab.h; sourceTree = "<group>"; };
+		C9725CE7111AFFA2001BCC0B /* expat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expat.h; sourceTree = "<group>"; };
+		C9725CE8111AFFA2001BCC0B /* expat_external.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expat_external.h; sourceTree = "<group>"; };
+		C9725CE9111AFFA2001BCC0B /* iasciitab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iasciitab.h; sourceTree = "<group>"; };
+		C9725CEA111AFFA2001BCC0B /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
+		C9725CEB111AFFA2001BCC0B /* latin1tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = latin1tab.h; sourceTree = "<group>"; };
+		C9725CEC111AFFA2001BCC0B /* macconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macconfig.h; sourceTree = "<group>"; };
+		C9725CED111AFFA2001BCC0B /* nametab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nametab.h; sourceTree = "<group>"; };
+		C9725CEE111AFFA2001BCC0B /* utf8tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8tab.h; sourceTree = "<group>"; };
+		C9725CEF111AFFA2001BCC0B /* winconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = winconfig.h; sourceTree = "<group>"; };
+		C9725CF2111AFFA2001BCC0B /* xmlrole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmlrole.h; sourceTree = "<group>"; };
+		C9725CF4111AFFA2001BCC0B /* xmltok.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmltok.h; sourceTree = "<group>"; };
+		C9725CF6111AFFA2001BCC0B /* xmltok_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmltok_impl.h; sourceTree = "<group>"; };
 		C9775AF410DFD728005E0E2B /* BlioMockBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMockBook.h; sourceTree = "<group>"; };
 		C9775AF510DFD728005E0E2B /* BlioMockBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMockBook.m; sourceTree = "<group>"; };
 		C9775E9A10DFE1C3005E0E2B /* MockCovers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MockCovers; sourceTree = "<group>"; };
@@ -397,6 +414,8 @@
 				555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */,
 				A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */,
 				A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */,
+				A3169287111488C9005AAE5E /* BlioAudioManager.h */,
+				A3169288111488C9005AAE5E /* BlioAudioManager.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -436,6 +455,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C9725CE3111AFFA2001BCC0B /* expat */,
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				C9E1FAA7110F26DB00999587 /* TextFlows */,
 				A349F067110E31CC009A8F89 /* AudioBooks */,
@@ -596,6 +616,36 @@
 				A37FC33510EA785F00F3DC5A /* TTSManager.h */,
 			);
 			name = TTS;
+			sourceTree = "<group>";
+		};
+		C9725CE3111AFFA2001BCC0B /* expat */ = {
+			isa = PBXGroup;
+			children = (
+				C9725CE4111AFFA2001BCC0B /* headers */,
+			);
+			path = expat;
+			sourceTree = "<group>";
+		};
+		C9725CE4111AFFA2001BCC0B /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				C9725CE5111AFFA2001BCC0B /* ascii.h */,
+				C9725CE6111AFFA2001BCC0B /* asciitab.h */,
+				C9725CE7111AFFA2001BCC0B /* expat.h */,
+				C9725CE8111AFFA2001BCC0B /* expat_external.h */,
+				C9725CE9111AFFA2001BCC0B /* iasciitab.h */,
+				C9725CEA111AFFA2001BCC0B /* internal.h */,
+				C9725CEB111AFFA2001BCC0B /* latin1tab.h */,
+				C9725CEC111AFFA2001BCC0B /* macconfig.h */,
+				C9725CED111AFFA2001BCC0B /* nametab.h */,
+				C9725CEE111AFFA2001BCC0B /* utf8tab.h */,
+				C9725CEF111AFFA2001BCC0B /* winconfig.h */,
+				C9725CF2111AFFA2001BCC0B /* xmlrole.h */,
+				C9725CF4111AFFA2001BCC0B /* xmltok.h */,
+				C9725CF6111AFFA2001BCC0B /* xmltok_impl.h */,
+			);
+			name = headers;
+			path = lib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -816,6 +866,7 @@
 				553E99011107B8F200FB309D /* BlioSpeedReadView.m in Sources */,
 				C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */,
 				A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */,
+				A3169289111488C9005AAE5E /* BlioAudioManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,6 +896,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/TTS\"",
+					"\"$(SRCROOT)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -867,6 +919,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/TTS\"",
+					"\"$(SRCROOT)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -884,6 +937,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				PREBINDING = NO;
 				SDKROOT = iphonesimulator3.0;
 				WARNING_CFLAGS = "-Wall";
@@ -898,6 +952,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				PREBINDING = NO;
 				SDKROOT = iphonesimulator3.0;
 				WARNING_CFLAGS = "-Wall";

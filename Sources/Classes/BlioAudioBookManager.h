@@ -8,25 +8,36 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
+#import "BlioAudioManager.h"
 
-@interface BlioAudioBookManager : NSObject {
+@interface BlioAudioBookManager : BlioAudioManager {
 	NSMutableArray* times;
-	int timeStarted;
-	int timeIx;
+	NSMutableArray* queuedTimes; // Not really a queue, but the term is handy.
+	NSMutableArray* queuedLastTimes; 
+	NSInteger timeStarted;
+	NSInteger timeIx;
+	NSInteger queueIx;
+	NSInteger pausedAtTime;
+	NSInteger lastOnPageTime;
 	AVAudioPlayer* avPlayer;
-	NSTimer* readingTimer;
-	BOOL startedPlaying;
+	NSMutableArray* timingFiles;
 }
 
 @property (nonatomic, retain) NSMutableArray* times;
+@property (nonatomic, retain) NSMutableArray* queuedTimes;
+@property (nonatomic, retain) NSMutableArray* queuedLastTimes;
+@property (nonatomic, retain) NSMutableArray* timingFiles;
 @property (nonatomic, retain) AVAudioPlayer* avPlayer;
-@property (nonatomic, retain) NSTimer* readingTimer;
-@property (nonatomic, assign) BOOL startedPlaying;
+@property (nonatomic, assign) NSInteger timeIx;
+@property (nonatomic, assign) NSInteger queueIx;
+@property (nonatomic, assign) NSInteger pausedAtTime;
+@property (nonatomic, assign) NSInteger lastOnPageTime;
+@property (nonatomic, assign) NSInteger timeStarted;
 
-- (id)initWithAudioBook:(NSString*)audioBookPath audioTiming:(NSString*)audioTimingPath;
+- (id)initWithPath:(NSString*)timingIndicesPath;
 - (void)loadTimesFromFile:(NSString*)audioTimingPath;
-- (BOOL)setAudioBook:(NSString*)audioBookPath;
-- (void)setAudioTiming:(NSString*)audioTimingPath;
+- (BOOL)initAudioWithBook:(NSString*)audioBookPath;
+- (void)retrieveTimingIndices:(NSString*)timingIndicesFile;
 - (void)playAudio;
 - (void)stopAudio;
 - (void)pauseAudio;
