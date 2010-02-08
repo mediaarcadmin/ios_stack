@@ -23,6 +23,7 @@
 	[self setParagraphWords:nil];
 	[self setTextToSpeakChanged:NO];
 	[self setStartedPlaying:NO];
+	[self setPageChanged:YES];
 }
 
 - (BOOL)startSpeaking:(NSString *)string {

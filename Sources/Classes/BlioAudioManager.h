@@ -17,6 +17,7 @@
 	NSArray* paragraphWords;
 	NSTimer* speakingTimer;
 	BOOL startedPlaying;
+	BOOL pageChanged;
 	// TTS
 	BOOL textToSpeakChanged; 
 	NSString* currentWord;
@@ -30,6 +31,7 @@
 @property (nonatomic) uint32_t adjustedWordOffset;
 @property (nonatomic) uint32_t currentPage; 
 @property (nonatomic, assign) BOOL startedPlaying;
+@property (nonatomic, assign) BOOL pageChanged;
 @property (nonatomic) BOOL textToSpeakChanged; 
 
 - (void)adjustParagraphWords;

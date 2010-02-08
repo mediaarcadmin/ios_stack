@@ -1,0 +1,14 @@
+PATH =	""
+PHO	"NLP212/enu.trr"			PHONETISATION TREE
+BNX	"NLP212/enu.bnx"			BNX prepro
+DIC	"NLP212/enu.dca"			DICO
+LDI     "NLP212/enu.ldi"                   LOCUTIONS
+PRO	"NLP212/enu.oso"			PROSODY 
+GRI     "NLP212/enu_iv.gra"			POS Tagger IV words
+GRO     "NLP212/enu_oov.gra"			POS Tagger OOV words
+PST 	"NLP212/enu.pst"			PST
+END	""
+SLV	"RYAN212/ryan_22k_ns.cvcu"	[FILE]
+SLL	"RYAN212/ryan_22k_ns.cvcu.nuul216vqfp"	[FILE]
+END	""
+
