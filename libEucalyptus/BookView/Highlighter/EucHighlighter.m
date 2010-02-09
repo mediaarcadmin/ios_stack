@@ -43,6 +43,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, assign) CGFloat draggingKnobVerticalOffset;
 
 @property (nonatomic, retain) EucMenuController *menuController;
+@property (nonatomic, assign) BOOL menuShouldBeAvailable;
 
 - (CGImageRef)magnificationLoupeImage;
 - (void)_trackTouch:(UITouch *)touch;
@@ -79,6 +80,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @synthesize draggingKnobVerticalOffset = _draggingKnobVerticalOffset;
 
 @synthesize menuController = _menuController;
+@synthesize shouldHideMenu = _shouldHideMenu;
+@synthesize menuShouldBeAvailable = _menuShouldBeAvailable;
 
 - (id)init 
 {
@@ -127,6 +130,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
     if(self.temporaryHighlightLayers) {
         [self removeTemporaryHighlight];
     }        
+    self.menuShouldBeAvailable = NO;
     [self.menuController setMenuVisible:NO animated:NO];
     self.menuController = nil;
     UIView *attachedView = self.attachedView;
@@ -527,6 +531,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
         } else if(previousStage == EucHighlighterTrackingStageChangingSelection) {
             self.draggingKnob = nil;
         } else if(previousStage == EucHighlighterTrackingStageSelectedAndWaiting) {
+            self.menuShouldBeAvailable = NO;
             [self.menuController setMenuVisible:NO animated:YES];
         }
 
@@ -585,7 +590,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
                             }
                         }
                         [menuController setTargetRect:targetRect inView:self.viewWithSelection];
-                        [menuController setMenuVisible:YES animated:YES];   
+                        self.menuShouldBeAvailable = YES;
+                        if(!self.shouldHideMenu) {
+                            [menuController setMenuVisible:YES animated:YES];
+                        }
                     }
                 }
                                             
@@ -1007,6 +1015,22 @@ static const CGFloat sLoupePopDuration = 0.05f;
             default:
                 [self touchesCancelled:touchSet];
                 break;
+        }
+    }
+}
+
+- (void)setShouldHideMenu:(BOOL)shouldHideMenu
+{
+    if(shouldHideMenu != _shouldHideMenu) {
+        _shouldHideMenu = shouldHideMenu;
+        EucMenuController *menuController = self.menuController;
+        if(menuController && self.menuShouldBeAvailable) {
+            if(menuController.menuVisible && shouldHideMenu) {
+                [menuController setMenuVisible:NO animated:YES];
+            } else if(!menuController.menuVisible && !shouldHideMenu) {
+                [menuController setMenuVisible:YES animated:YES];
+            }
+            
         }
     }
 }
