@@ -51,9 +51,12 @@ typedef enum EucHighlighterTrackingStage {
     CGFloat _draggingKnobVerticalOffset;
     
     EucMenuController *_menuController;
+    BOOL _shouldHideMenu;
+    BOOL _menuShouldBeAvailable;
 }
 
 @property (nonatomic, assign) BOOL selectionDisabled;
+@property (nonatomic, assign) BOOL shouldHideMenu; // This is intended to be used to temporarily hide a menu (i.e. while zooming).
 
 @property (nonatomic, assign) id<EucHighlighterDataSource> dataSource;
 @property (nonatomic, assign) id<EucHighlighterDelegate> delegate;
