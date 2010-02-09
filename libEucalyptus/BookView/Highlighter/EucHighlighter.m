@@ -897,7 +897,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
             CALayer *viewWithSelectionLayer = viewWithSelection.layer;
             
             CGPoint touchPoint = [touch locationInView:viewWithSelection];
-            CGRect leftKnobRect = CGRectInset([leftKnobLayer convertRect:leftKnobLayer.bounds toLayer:viewWithSelectionLayer], -8.0f, -8.0f);
+            CGRect leftKnobRect = [leftKnobLayer convertRect:CGRectInset(leftKnobLayer.bounds, -8.0f, -8.0f) toLayer:viewWithSelectionLayer];
 
             if(CGRectContainsPoint(leftKnobRect, touchPoint)) {
                 draggingKnob = leftKnobLayer;
@@ -906,7 +906,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 draggingKnobVerticalOffset = endLayerCenter.y - touchPoint.y;
             } else {
                 CALayer *rightKnobLayer = self.highlightKnobLayers.second;
-                CGRect rightKnobRect = CGRectInset([rightKnobLayer convertRect:rightKnobLayer.bounds toLayer:viewWithSelectionLayer], -8.0f, -8.0f);
+                CGRect rightKnobRect = [rightKnobLayer convertRect:CGRectInset(rightKnobLayer.bounds, -8.0f, -8.0f) toLayer:viewWithSelectionLayer];
                 if(CGRectContainsPoint(rightKnobRect, touchPoint)) {
                     draggingKnob = rightKnobLayer;
                     CALayer *endLayer = self.highlightEndLayers.second;
