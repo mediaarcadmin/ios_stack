@@ -49,35 +49,44 @@
 
 - (void)setMenuVisible:(BOOL)menuVisible animated:(BOOL)animated
 {
-    [CATransaction begin];
-    EucMenuView *menuView = self.menuView;
-    if(menuVisible) {
-        if(!menuView) {
-            menuView = [[EucMenuView alloc] initWithFrame:CGRectZero];
-            [menuView addTarget:self 
-                         action:@selector(touchUpInsideMenu:)
-               forControlEvents:UIControlEventTouchUpInside];
-            self.menuView = menuView;
-            [menuView release];
+    if(menuVisible != _menuVisible) {
+        [CATransaction begin];
+        EucMenuView *menuView = self.menuView;
+        if(menuVisible) {
+            if(!menuView) {
+                menuView = [[EucMenuView alloc] initWithFrame:CGRectZero];
+                [menuView addTarget:self 
+                             action:@selector(touchUpInsideMenu:)
+                   forControlEvents:UIControlEventTouchUpInside];
+                self.menuView = menuView;
+                [menuView release];
+            } else {
+                menuView.hidden = NO;
+            }
+            menuView.titles = [self.menuItems valueForKey:@"title"];
+            [self.targetWindow addSubview:menuView];
+            [menuView positionAndResizeForAttachingToRect:self.windowTargetRect];
         } else {
-            menuView.hidden = NO;
+            if(menuView) {
+                menuView.hidden = YES;
+                menuView.selected = NO;
+            }
         }
-        menuView.titles = [self.menuItems valueForKey:@"title"];
-        [self.targetWindow addSubview:menuView];
-        [menuView positionAndResizeForAttachingToRect:self.windowTargetRect];
-    } else {
-        if(menuView) {
-            menuView.hidden = YES;
-            menuView.selected = NO;
+        if(menuView && animated) {
+            CATransition *transition = [CATransition animation];
+            transition.type = kCATransitionFade;
+            transition.duration = 0.1f;
+            [menuView.layer addAnimation:transition forKey:@"fadeTransition"];
         }
+        [CATransaction commit];
+        
+        _menuVisible = menuVisible;
     }
-    if(menuView && animated) {
-        CATransition *transition = [CATransition animation];
-        transition.type = kCATransitionFade;
-        transition.duration = 0.1f;
-        [menuView.layer addAnimation:transition forKey:@"fadeTransition"];
-    }
-    [CATransaction commit];
+}
+
+- (void)setMenuVisible:(BOOL)menuVisible
+{
+    [self setMenuVisible:menuVisible animated:NO];
 }
 
 - (void)touchUpInsideMenu:(EucMenuView *)menuView
