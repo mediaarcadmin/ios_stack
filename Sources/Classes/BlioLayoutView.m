@@ -832,6 +832,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
     [self renderSharpPageAtScale:self.scrollView.zoomScale];
     [self.highlighter redisplaySelectedRange]; 
+    [self.highlighter setShouldHideMenu:NO];
+    
     
     if (scale == 1.0f) {
         scrollView.pagingEnabled = YES;
@@ -851,20 +853,24 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    [self.currentPageView hideSharpPage];
-    [self hideSharpPage];
-}
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+////    [self.currentPageView hideSharpPage];
+////    [self hideSharpPage];
+//}
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
-        [self.currentPageView renderSharpPageAtScale:aScrollView.zoomScale];
-        [self renderSharpPageAtScale:aScrollView.zoomScale];
+        //[self.currentPageView renderSharpPageAtScale:aScrollView.zoomScale];
+//        [self renderSharpPageAtScale:aScrollView.zoomScale];
+        [self.highlighter setShouldHideMenu:NO];
     }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
+    [self.highlighter setShouldHideMenu:YES];
+
     if (self.disableScrollUpdating) return;
+
     //if (sender.zoomScale < sender.minimumZoomScale) return;
     //NSLog(@"Scrollview didScroll");
     NSInteger currentPageNumber;
@@ -912,8 +918,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)updateAfterScroll {
-    [self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
-    [self renderSharpPageAtScale:self.scrollView.zoomScale];
+    [self.highlighter setShouldHideMenu:NO];
+//    [self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
+//    [self renderSharpPageAtScale:self.scrollView.zoomScale];
     if (self.disableScrollUpdating) return;
     
     
