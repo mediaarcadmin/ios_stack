@@ -8,6 +8,7 @@
 
 #import "BlioStoreGetBooksController.h"
 
+
 @implementation BlioStoreGetBooksController
 
 @synthesize savedSearchTerm, savedScopeButtonIndex, searchWasActive, searchDisplayController;
@@ -22,19 +23,34 @@
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         self.title = @"Get Books";
         
+        // UIBarStyleDefault for a UISearchBar doesn't match UIBarStyleDefault for a UINavigationBar
+        // This tint is pretty close, but both should be set to make it seamless
+        UIColor *matchedTintColor = [UIColor colorWithHue:0.595 saturation:0.267 brightness:0.68 alpha:1];
+        self.navigationController.navigationBar.tintColor = matchedTintColor;
+        
         UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"Get Books" image:nil tag:kBlioStoreGetBooksTag];
         self.tabBarItem = theItem;
         [theItem release];
         
-        UISearchBar *aSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
-        [self.tableView setTableHeaderView:aSearchBar];
+        UISearchBar *aSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,43)];
+        //[aSearchBar setTintColor:[UIColor colorWithRed:0.437 green:0.518 blue:0.635 alpha:1.0f]];
+        [aSearchBar setShowsCancelButton:NO];
+        [aSearchBar setTintColor:matchedTintColor];
+        //[aSearchBar sizeToFit];
+        //UIBarButtonItem *aSearchButton = [[UIBarButtonItem alloc] initWithCustomView:aSearchBar];
+        //[self.navigationItem setLeftBarButtonItem:aSearchButton];
+        //[aSearchButton release];
+        [self.navigationItem setTitleView:aSearchBar];
         UISearchDisplayController *aSearchDisplayController = [[UISearchDisplayController alloc]
                                                                initWithSearchBar:aSearchBar contentsController:self];
         aSearchDisplayController.delegate = self;
         aSearchDisplayController.searchResultsDataSource = self;
         aSearchDisplayController.searchResultsDelegate = self;
+        [aSearchDisplayController setActive:YES animated:NO];
         self.searchDisplayController = aSearchDisplayController;
         [aSearchDisplayController release];
+        [aSearchBar setShowsCancelButton:NO];
+        [aSearchBar becomeFirstResponder];
         [aSearchBar release];
     }
     return self;
@@ -57,6 +73,7 @@
         [self.searchDisplayController setActive:self.searchWasActive];
         [self.searchDisplayController.searchBar setSelectedScopeButtonIndex:self.savedScopeButtonIndex];
         [self.searchDisplayController.searchBar setText:savedSearchTerm];
+        
         
         self.savedSearchTerm = nil;
     }
@@ -113,11 +130,15 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+        return 2;
+    else
+        return 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section 
 { 
+    
 	switch (section) 
 	{ 
 		case 0: 
@@ -150,6 +171,7 @@
     }
 	else
 	{
+        return 0;
         //return [self.listContent count];
         switch (section) 
         { 
@@ -287,7 +309,23 @@
 }
 
 #pragma mark -
-#pragma mark UISearchDisplayController Delegate Methods
+#pragma mark UISearch Delegate Methods
+//
+//- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar {
+//    return NO;
+//}
+
+//- (void) searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
+//    return;
+//}
+
+- (void) searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    [controller setActive:YES animated:NO];
+}
+    
+- (void) searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
+    [controller setActive:YES animated:NO];
+}
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {

@@ -33,7 +33,7 @@
     if ((self = [super init])) {
         self.delegate = self;
         
-        UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissTabView:)];        
+        UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(dismissTabView:)];        
         
         BlioStoreFeaturedController* vc1 = [[BlioStoreFeaturedController alloc] init];
         UINavigationController* nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];

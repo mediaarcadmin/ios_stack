@@ -246,12 +246,22 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setPosition:[NSNumber numberWithInt:3]];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        [aBook setTitle:@"Fables: Legends In Exile"];
+        [aBook setAuthor:@"Bill Willingham"];
+        [aBook setCoverFilename:@"MockCovers/FablesLegendsInExile.png"];
+        [aBook setEpubFilename:nil];
+        [aBook setPdfFilename:@"Legends"];
+        [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
+        [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
+        [aBook setPosition:[NSNumber numberWithInt:4]];
+        
+        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"The Oz Principle"];
         [aBook setAuthor:@"Roger Conners"];
         [aBook setCoverFilename:@"MockCovers/RogerConnors.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.7f]];
-        [aBook setPosition:[NSNumber numberWithInt:4]];
+        [aBook setPosition:[NSNumber numberWithInt:5]];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"How To Be A Movie Star"];
@@ -259,7 +269,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/WilliamMann.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
-        [aBook setPosition:[NSNumber numberWithInt:5]];
+        [aBook setPosition:[NSNumber numberWithInt:6]];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Her Fearful Symmetry"];
@@ -267,7 +277,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/AudreyNiffenegger.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
-        [aBook setPosition:[NSNumber numberWithInt:6]];
+        [aBook setPosition:[NSNumber numberWithInt:7]];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"The Lost Symbol"];
@@ -275,7 +285,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/DanBrown.png"];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.53f]];
-        [aBook setPosition:[NSNumber numberWithInt:7]];
+        [aBook setPosition:[NSNumber numberWithInt:8]];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Hostage"];
@@ -283,7 +293,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/DonBrown.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.41f]];
-        [aBook setPosition:[NSNumber numberWithInt:8]];
+        [aBook setPosition:[NSNumber numberWithInt:9]];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"I, Alex Cross"];
@@ -291,7 +301,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/JamesPatterson.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.65f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.67f]];
-        [aBook setPosition:[NSNumber numberWithInt:9]];
+        [aBook setPosition:[NSNumber numberWithInt:10]];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Diary of a Wimpy Kid, Dog Days"];
@@ -299,7 +309,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/JeffKinney.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
-        [aBook setPosition:[NSNumber numberWithInt:10]];
+        [aBook setPosition:[NSNumber numberWithInt:11]];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Pirate Latitudes"];
@@ -307,7 +317,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/MichaelCrichton.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.54f]];
-        [aBook setPosition:[NSNumber numberWithInt:11]];
+        [aBook setPosition:[NSNumber numberWithInt:12]];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"The Girl With The Dragon Tatoo"];
@@ -315,7 +325,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/StiegLarsson.png"];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
-        [aBook setPosition:[NSNumber numberWithInt:12]];
+        [aBook setPosition:[NSNumber numberWithInt:13]];
         
         if (![moc save:&error]) {
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
