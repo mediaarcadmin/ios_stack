@@ -520,6 +520,18 @@ static const CGFloat sLoupePopDuration = 0.05f;
     self.highlightKnobLayers = nil;    
 }
 
+- (void)_positionMenu
+{
+    CGRect targetRect = [[[self highlightLayers] objectAtIndex:0] frame];
+    for(CALayer *layer in self.highlightLayers) {
+        if(!layer.isHidden) {
+            targetRect = CGRectUnion(targetRect, layer.frame);
+        }
+    }
+    [self.menuController setTargetRect:targetRect inView:self.viewWithSelection];
+    
+}
+
 - (void)setTrackingStage:(EucHighlighterTrackingStage)stage;
 {
     if(stage != _trackingStage) {
@@ -582,14 +594,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                         }
                         
                         menuController.menuItems = menuItems;
-                        
-                        CGRect targetRect = [[[self highlightLayers] objectAtIndex:0] frame];
-                        for(CALayer *layer in self.highlightLayers) {
-                            if(!layer.isHidden) {
-                                targetRect = CGRectUnion(targetRect, layer.frame);
-                            }
-                        }
-                        [menuController setTargetRect:targetRect inView:self.viewWithSelection];
+                        [self _positionMenu];
                         self.menuShouldBeAvailable = YES;
                         if(!self.shouldHideMenu) {
                             [menuController setMenuVisible:YES animated:YES];
@@ -1028,9 +1033,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
             if(menuController.menuVisible && shouldHideMenu) {
                 [menuController setMenuVisible:NO animated:YES];
             } else if(!menuController.menuVisible && !shouldHideMenu) {
+                [self _positionMenu];
                 [menuController setMenuVisible:YES animated:YES];
             }
-            
         }
     }
 }
