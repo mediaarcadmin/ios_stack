@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "THEventCapturingWindow.h"
 
-@class EucHighlighterRange, THPair;
-@protocol EucHighlighterDataSource;
+@class EucHighlighterRange, THPair, EucMenuController;
+@protocol EucHighlighterDataSource, EucHighlighterDelegate;
 
 typedef enum EucHighlighterTrackingStage {
     EucHighlighterTrackingStageNone,
@@ -25,6 +25,7 @@ typedef enum EucHighlighterTrackingStage {
     BOOL _selectionDisabled;
     
     id<EucHighlighterDataSource> _dataSource;
+    id<EucHighlighterDelegate> _delegate;
     
     CGImageRef _magnificationLoupeImage;
     
@@ -48,11 +49,14 @@ typedef enum EucHighlighterTrackingStage {
     
     CALayer *_draggingKnob;
     CGFloat _draggingKnobVerticalOffset;
+    
+    EucMenuController *_menuController;
 }
 
 @property (nonatomic, assign) BOOL selectionDisabled;
 
 @property (nonatomic, assign) id<EucHighlighterDataSource> dataSource;
+@property (nonatomic, assign) id<EucHighlighterDelegate> delegate;
 @property (nonatomic, retain) EucHighlighterRange *selectedRange;
 
 @property (nonatomic, assign, readonly, getter=isTracking) BOOL tracking;
@@ -86,8 +90,9 @@ typedef enum EucHighlighterTrackingStage {
 
 @protocol EucHighlighterDelegate <NSObject>
 
-- (NSArray *)menuTitlesForEucHighlighter:(EucHighlighter *)highlighter;
-- (void)eucHighlighter:(EucHighlighter *)highlighter didSelectMenuItemAtIndex:(NSUInteger)index;
+@optional
+// An array of EucMenuItems.
+- (NSArray *)menuItemsForEucHighlighter:(EucHighlighter *)highlighter;
 
 @end
 

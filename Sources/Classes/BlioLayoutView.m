@@ -8,6 +8,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutView.h"
 #import "BlioBookmarkPoint.h"
+#import <libEucalyptus/EucMenuItem.h>
 
 static const CGFloat kBlioPDFBlockMinimumWidth = 50;
 static const CGFloat kBlioPDFBlockInsetX = 6;
@@ -223,6 +224,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         EucHighlighter *aHighlighter = [[EucHighlighter alloc] init];
         [aHighlighter setShouldSniffTouches:NO];
         aHighlighter.dataSource = self;
+        aHighlighter.delegate =  self;
         self.highlighter = aHighlighter;
         [self.scrollView setHighlighter:aHighlighter];
         [aHighlighter release];
@@ -337,6 +339,27 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     }
     
     return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
+}
+
+- (NSArray *)menuItemsForEucHighlighter:(EucHighlighter *)hilighter
+{
+    EucMenuItem *highlightItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
+                                                             action:@selector(highlight:)];
+    EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
+                                                           action:@selector(addNote:)];
+    EucMenuItem *copyItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
+                                                        action:@selector(copy:)];
+    EucMenuItem *showWebToolsItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu in layout view")
+                                                                action:@selector(showWebTools:)];
+    
+    NSArray *ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
+    
+    [highlightItem release];
+    [addNoteItem release];
+    [copyItem release];
+    [showWebToolsItem release];
+    
+    return ret;
 }
 
 #pragma mark -

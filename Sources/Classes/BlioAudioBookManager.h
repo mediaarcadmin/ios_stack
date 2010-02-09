@@ -10,10 +10,12 @@
 #import <Foundation/Foundation.h>
 #import "BlioAudioManager.h"
 
+#define PAGE_TIMING_DELTA 250
+
 @interface BlioAudioBookManager : BlioAudioManager {
 	NSMutableArray* times;
 	NSMutableArray* queuedTimes; // Not really a queue, but the term is handy.
-	NSMutableArray* queuedLastTimes; 
+	NSMutableArray* queuedEndTimes; 
 	NSInteger timeStarted;
 	NSInteger timeIx;
 	NSInteger queueIx;
@@ -25,7 +27,7 @@
 
 @property (nonatomic, retain) NSMutableArray* times;
 @property (nonatomic, retain) NSMutableArray* queuedTimes;
-@property (nonatomic, retain) NSMutableArray* queuedLastTimes;
+@property (nonatomic, retain) NSMutableArray* queuedEndTimes;
 @property (nonatomic, retain) NSMutableArray* timingFiles;
 @property (nonatomic, retain) AVAudioPlayer* avPlayer;
 @property (nonatomic, assign) NSInteger timeIx;

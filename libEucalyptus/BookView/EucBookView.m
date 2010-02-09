@@ -55,6 +55,9 @@
 @synthesize delegate = _delegate;
 @synthesize book = _book;
 
+@synthesize allowsSelection = _allowsSelection;
+@synthesize highlighterDelegate = _highlighterDelegate;
+
 @synthesize pageTexture = _pageTexture;
 @synthesize pageTextureIsDark = _pageTextureIsDark;
 
@@ -156,6 +159,13 @@
         [self _updatePageNumberLabel];
         
         _pageTurningView.dimQuotient = _dimQuotient;        
+    } 
+    if(_highlighter) {
+        [_highlighter removeObserver:self
+                          forKeyPath:@"tracking"];
+        [_highlighter detatchFromView];
+        [_highlighter release];
+        _highlighter = nil;
     }
 }
 
@@ -173,12 +183,16 @@
             [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
         }  
         _highlighter = [[EucHighlighter alloc] init];
+        _highlighter.shouldSniffTouches = self.allowsSelection;
         [_highlighter attachToView:self];
         [_highlighter addObserver:self
                        forKeyPath:@"tracking"
                           options:0
                           context:NULL];
         _highlighter.dataSource = self;
+        if(_highlighterDelegate) {
+            _highlighter.delegate = _highlighterDelegate;
+        }
     } else {
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
@@ -186,12 +200,6 @@
         
         [_pageViewToIndexPoint removeAllObjects];
         [_pageViewToIndexPointCounts removeAllObjects];
-        
-        [_highlighter detatchFromView];
-        [_highlighter removeObserver:self
-                          forKeyPath:@"tracking"];
-        [_highlighter release];
-        _highlighter = nil;
     }
 }
 
@@ -310,6 +318,14 @@
             }
         }
     }
+}
+
+- (void)setHighlighterDelegate:(id <EucHighlighterDelegate>)highlighterDelegate
+{
+    if(_highlighter) {
+        _highlighter.delegate = highlighterDelegate;
+    }
+    _highlighterDelegate = highlighterDelegate;
 }
 
 #pragma mark -

@@ -19,7 +19,7 @@
 @class BlioPDFPageView;
 @class BlioPDFContainerScrollView;
 
-@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, BlioTTSDataSource, EucBookContentsTableViewControllerDataSource, EucHighlighterDataSource> {
+@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, BlioTTSDataSource, EucBookContentsTableViewControllerDataSource, EucHighlighterDataSource, EucHighlighterDelegate> {
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioPDFContainerScrollView *scrollView;

@@ -13,7 +13,7 @@
 #import "EucHighlighter.h"
 #import "EucPageView.h"
 
-@protocol EucBook, EucPageLayoutController, EucBookViewDelegate;
+@protocol EucBook, EucPageLayoutController, EucBookViewDelegate, EucHighlighterDelegate;
 @class EucBookReference, THScalableSlider, EucBookPageIndexPoint, EucHighlighter;
 
 typedef struct EucPoint {
@@ -30,6 +30,8 @@ typedef struct EucRange {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
 
+    BOOL _allowsSelection;
+    
     UIImage *_pageTexture;
     BOOL _pageTextureIsDark;
     
@@ -75,13 +77,17 @@ typedef struct EucRange {
     BOOL _highlightingDisabled;
     
     EucHighlighter *_highlighter;
+    id<EucHighlighterDelegate> _highlighterDelegate;
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
 
 @property (nonatomic, assign) id<EucBookViewDelegate> delegate;
+@property (nonatomic, assign) id<EucHighlighterDelegate> highlighterDelegate;
 
 @property (nonatomic, readonly) EucBookReference<EucBook> *book;
+
+@property (nonatomic, assign) BOOL allowsSelection;
 
 @property (nonatomic, assign) CGFloat dimQuotient;
 @property (nonatomic, assign) BOOL undimAfterAppearance;
@@ -132,4 +138,5 @@ typedef struct EucRange {
 @protocol EucBookViewDelegate <NSObject>
 @optional
 - (BOOL)bookView:(EucBookView *)controller shouldHandleTapOnHyperlink:(NSURL *)link withAttributes:(NSDictionary *)attributes;
+
 @end

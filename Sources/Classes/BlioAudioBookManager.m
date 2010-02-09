@@ -11,14 +11,14 @@
 
 @implementation BlioAudioBookManager
 
-@synthesize times, queuedTimes, queuedLastTimes, avPlayer, timingFiles, timeIx, queueIx, timeStarted, pausedAtTime, lastOnPageTime;
+@synthesize times, queuedTimes, queuedEndTimes, avPlayer, timingFiles, timeIx, queueIx, timeStarted, pausedAtTime, lastOnPageTime;
 
 - (void)loadTimesFromFile:(NSString*)audioTimingPath {
 	FILE* timingFile;
 	char lineBuffer[BUFSIZ];
 	timingFile = fopen([audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding],"r");
 	NSMutableArray* fileTimes = [[NSMutableArray alloc] init];
-	NSString* thisTimeStr;
+	NSString* thisTimeStr = nil;
 	int lastTime;
 	while (fgets(lineBuffer, sizeof(lineBuffer),timingFile)) {
 		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
@@ -34,13 +34,18 @@
 		lastTime = atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding]);
 		[fileTimes addObject:[[NSNumber alloc] initWithInt:lastTime]];
 	}
+	if ( thisTimeStr == nil ) {
+		NSLog(@"Empty timing file, %s", [audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding]);
+		return;
+	}
 	[self.queuedTimes addObject:fileTimes];
 	// Get duration of last word in this file
 	NSRange endTimeRange;
 	endTimeRange.location = [thisTimeStr rangeOfString:@","].location + 1;
 	endTimeRange.length = [[thisTimeStr substringFromIndex:endTimeRange.location]  rangeOfString:@","].location;
 	NSString* endTimeStr = [thisTimeStr substringWithRange:endTimeRange];
-	[self.queuedLastTimes addObject:[[NSNumber alloc] initWithInt:atoi([endTimeStr cStringUsingEncoding:NSASCIIStringEncoding])-lastTime]];
+	[self.queuedEndTimes addObject:[[NSNumber alloc] initWithInt:atoi([endTimeStr cStringUsingEncoding:NSASCIIStringEncoding])]];
+	NSLog(@"Adding end time: %d",[[[NSNumber alloc] initWithInt:atoi([endTimeStr cStringUsingEncoding:NSASCIIStringEncoding])] intValue]);
 	fclose(timingFile);
 }
 
@@ -63,12 +68,13 @@
 		[self setTimingFiles:[[NSMutableArray alloc] init]];
 		[self setTimes:[[NSMutableArray alloc] init]];
 		[self setQueuedTimes:[[NSMutableArray alloc] init]];
-		[self setQueuedLastTimes:[[NSMutableArray alloc] init]];
+		[self setQueuedEndTimes:[[NSMutableArray alloc] init]];
 		[self retrieveTimingIndices:timingIndicesPath];
 		[self fillTimingQueue:timingIndicesPath];
 		[self setStartedPlaying:NO]; 
 		[self setPausedAtTime:0]; 
 		[self setLastOnPageTime:0];
+		[self setPageChanged:YES];
 	}
 	return self;
 }
@@ -119,12 +125,12 @@
 	// The timer doesn't stop as quickly as the audio stops, so timeIx 
 	// gets a little bit ahead.  Use currentTime to reset it.
 	for ( i=0;i<[times count];++i) {
-		if ( [[self.times objectAtIndex:i] intValue] > [avPlayer currentTime]*1000 )
+		if ( [[self.times objectAtIndex:i] intValue] + self.lastOnPageTime > [avPlayer currentTime]*1000 )
 			break;
 	}
-	self.timeIx = i;
-	self.pausedAtTime = [[self.times objectAtIndex:self.timeIx] intValue];
-	//NSLog(@"Pausing audio, timeIx is %d, lastTime is %d",self.timeIx,self.pausedAtTime);
+	self.timeIx = i-1;
+	self.pausedAtTime = [[self.times objectAtIndex:self.timeIx] intValue] + self.lastOnPageTime;
+	NSLog(@"Pausing audio, timeIx is %d, pausedAtTime is %d",self.timeIx,self.pausedAtTime);
 }
 
 @end
