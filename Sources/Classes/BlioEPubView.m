@@ -11,6 +11,7 @@
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucEPubPageLayoutController.h>
+#import <libEucalyptus/EucMenuItem.h>
 
 @implementation BlioEPubView
 
@@ -21,10 +22,14 @@
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
     EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook bookPath]];
-    if (nil == aEPubBook) return nil;
+    if(nil == aEPubBook) {
+        [self release];
+        return nil;
+    }
     
-
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:aEPubBook])) {
+        self.allowsSelection = YES;
+        self.highlighterDelegate = self;
         if (animated) self.appearAtCoverThenOpen = YES;
     }
     [aEPubBook release];
@@ -169,6 +174,28 @@
     NSInteger ret = [self pageNumberForIndexPoint:eucIndexPoint];
     
     [eucIndexPoint release];
+    
+    return ret;
+}
+
+
+- (NSArray *)menuItemsForEucHighlighter:(EucHighlighter *)hilighter
+{
+    EucMenuItem *highlightItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
+                                                             action:@selector(highlight:)];
+    EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
+                                                           action:@selector(addNote:)];
+    EucMenuItem *copyItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
+                                                        action:@selector(copy:)];
+    EucMenuItem *showWebToolsItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu in layout view")
+                                                                action:@selector(showWebTools:)];
+    
+    NSArray *ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
+    
+    [highlightItem release];
+    [addNoteItem release];
+    [copyItem release];
+    [showWebToolsItem release];
     
     return ret;
 }

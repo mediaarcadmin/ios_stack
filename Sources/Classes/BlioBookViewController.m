@@ -1865,4 +1865,30 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
 }
 
+
+#pragma mark -
+#pragma mark Edit Menu Responder Actions 
+
+
+- (void)highlight:(id)sender
+{
+    NSLog(@"Hilight!");
+}
+
+- (void)addNote:(id)sender
+{
+    NSLog(@"Note!");
+}
+
+- (void)copy:(id)sender
+{
+    NSLog(@"Copy!");
+}
+
+- (void)showWebTools:(id)sender
+{
+    NSLog(@"Web Tools!");
+}
+
+
 @end

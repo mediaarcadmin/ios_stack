@@ -9,6 +9,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import "EucHighlighter.h"
 #import "EucHighlighterRange.h"
+#import "EucMenuController.h"
+#import "EucMenuItem.h"
+
 #import "THGeometryUtils.h"
 #import "THEventCapturingWindow.h"
 #import "THUIViewAdditions.h"
@@ -39,6 +42,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, retain) CALayer *draggingKnob;
 @property (nonatomic, assign) CGFloat draggingKnobVerticalOffset;
 
+@property (nonatomic, retain) EucMenuController *menuController;
+
 - (CGImageRef)magnificationLoupeImage;
 - (void)_trackTouch:(UITouch *)touch;
 
@@ -50,6 +55,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @synthesize selectionDisabled = _selectionDisabled;
 
 @synthesize dataSource = _dataSource;
+@synthesize delegate = _delegate;
 
 @synthesize attachedView = _attachedView;
 
@@ -71,6 +77,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 @synthesize draggingKnob = _draggingKnob;
 @synthesize draggingKnobVerticalOffset = _draggingKnobVerticalOffset;
+
+@synthesize menuController = _menuController;
 
 - (id)init 
 {
@@ -119,6 +127,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
     if(self.temporaryHighlightLayers) {
         [self removeTemporaryHighlight];
     }        
+    [self.menuController setMenuVisible:NO animated:NO];
+    self.menuController = nil;
     UIView *attachedView = self.attachedView;
     for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
         if(self.shouldSniffTouches && [window isKindOfClass:[THEventCapturingWindow class]]) {
@@ -516,6 +526,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
             [self _removeLoupe];
         } else if(previousStage == EucHighlighterTrackingStageChangingSelection) {
             self.draggingKnob = nil;
+        } else if(previousStage == EucHighlighterTrackingStageSelectedAndWaiting) {
+            [self.menuController setMenuVisible:NO animated:YES];
         }
 
         switch(stage) {
@@ -554,7 +566,29 @@ static const CGFloat sLoupePopDuration = 0.05f;
             case EucHighlighterTrackingStageSelectedAndWaiting:
             {
                 [self _positionKnobs]; 
-                
+                id<EucHighlighterDelegate> delegate = self.delegate;
+                if([delegate respondsToSelector:@selector(menuItemsForEucHighlighter:)]) {
+                    NSArray *menuItems = [delegate menuItemsForEucHighlighter:self];
+                    if(menuItems) {
+                        EucMenuController *menuController = self.menuController;
+                        if(!menuController)  {
+                            menuController = [[EucMenuController alloc] init];
+                            self.menuController = menuController;
+                        }
+                        
+                        menuController.menuItems = menuItems;
+                        
+                        CGRect targetRect = [[[self highlightLayers] objectAtIndex:0] frame];
+                        for(CALayer *layer in self.highlightLayers) {
+                            if(!layer.isHidden) {
+                                targetRect = CGRectUnion(targetRect, layer.frame);
+                            }
+                        }
+                        [menuController setTargetRect:targetRect inView:self.viewWithSelection];
+                        [menuController setMenuVisible:YES animated:YES];   
+                    }
+                }
+                                            
                 break;   
             }
             case EucHighlighterTrackingStageChangingSelection:
