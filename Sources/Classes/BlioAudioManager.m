@@ -11,7 +11,7 @@
 
 @implementation BlioAudioManager
 
-@synthesize currentWordOffset, adjustedWordOffset, currentParagraph, currentWord, currentPage, startedPlaying, textToSpeakChanged, paragraphWords, speakingTimer;
+@synthesize currentWordOffset, adjustedWordOffset, currentParagraph, currentWord, currentPage, startedPlaying, pageChanged, textToSpeakChanged, paragraphWords, speakingTimer;
 
 - (void)dealloc {
     self.currentParagraph = nil;

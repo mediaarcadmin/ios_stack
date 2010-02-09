@@ -74,6 +74,7 @@
 		[self setStartedPlaying:NO]; 
 		[self setPausedAtTime:0]; 
 		[self setLastOnPageTime:0];
+		[self setPageChanged:YES];
 	}
 	return self;
 }

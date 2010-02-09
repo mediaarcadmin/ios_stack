@@ -10,6 +10,8 @@
 #import <Foundation/Foundation.h>
 #import "BlioAudioManager.h"
 
+#define PAGE_TIMING_DELTA 250
+
 @interface BlioAudioBookManager : BlioAudioManager {
 	NSMutableArray* times;
 	NSMutableArray* queuedTimes; // Not really a queue, but the term is handy.
