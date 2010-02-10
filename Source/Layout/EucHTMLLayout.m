@@ -1,12 +1,12 @@
 //
-//  EucHTMLLayoutPositionedBlock.m
+//  EucHTMLLayout.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 13/12/2009.
 //  Copyright 2009 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucHTMLRenderer.h"
+#import "EucHTMLLayout.h"
 
 #import "EucHTMLDocument.h"
 #import "EucHTMLDocumentNode.h"
@@ -19,7 +19,7 @@
 #import "THStringRenderer.h"
 #import "thjust.h"
 
-@implementation EucHTMLRenderer
+@implementation EucHTMLLayout
 
 @synthesize document = _document;
 

@@ -1,5 +1,5 @@
 //
-//  EucHTMLRenderer.h
+//  EucHTMLLayout.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 13/12/2009.
@@ -10,7 +10,7 @@
 
 @class EucHTMLDocument, EucHTMLLayoutPositionedBlock;
 
-@interface EucHTMLRenderer : NSObject {
+@interface EucHTMLLayout : NSObject {
     EucHTMLDocument *_document;
 }
 

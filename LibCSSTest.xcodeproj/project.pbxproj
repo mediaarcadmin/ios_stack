@@ -23,7 +23,7 @@
 		7D22476710FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475A10FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m */; };
 		7D22476810FD00D200CFD8B5 /* EucHTMLLayoutLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475C10FD00D200CFD8B5 /* EucHTMLLayoutLine.m */; };
 		7D22476910FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475E10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m */; };
-		7D2247CA10FD025A00CFD8B5 /* EucHTMLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2247C910FD025A00CFD8B5 /* EucHTMLRenderer.m */; };
+		7D2247CA10FD025A00CFD8B5 /* EucHTMLLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2247C910FD025A00CFD8B5 /* EucHTMLLayout.m */; };
 		7D22481810FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22481710FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m */; };
 		7D6A856D10C42D9C0024B8D6 /* detect.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0410C41CEA00D8A42E /* detect.c */; };
 		7D6A856E10C42DB70024B8D6 /* hubbub.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0710C41CEA00D8A42E /* hubbub.c */; };
@@ -193,8 +193,8 @@
 		7D22475C10FD00D200CFD8B5 /* EucHTMLLayoutLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutLine.m; sourceTree = "<group>"; };
 		7D22475D10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutDocumentRun.h; sourceTree = "<group>"; };
 		7D22475E10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutDocumentRun.m; sourceTree = "<group>"; };
-		7D2247C810FD025A00CFD8B5 /* EucHTMLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLRenderer.h; sourceTree = "<group>"; };
-		7D2247C910FD025A00CFD8B5 /* EucHTMLRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLRenderer.m; sourceTree = "<group>"; };
+		7D2247C810FD025A00CFD8B5 /* EucHTMLLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayout.h; sourceTree = "<group>"; };
+		7D2247C910FD025A00CFD8B5 /* EucHTMLLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayout.m; sourceTree = "<group>"; };
 		7D22481610FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutPositionedRun.h; sourceTree = "<group>"; };
 		7D22481710FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutPositionedRun.m; sourceTree = "<group>"; };
 		7D6A59DB10C41CEA00D8A42E /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
@@ -712,11 +712,10 @@
 				7DC9542010FA744C00A89585 /* LWCNSStringAdditions.m */,
 				32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* LibCSSTest.m */,
-				7D2247C810FD025A00CFD8B5 /* EucHTMLRenderer.h */,
-				7D2247C910FD025A00CFD8B5 /* EucHTMLRenderer.m */,
 				7D22474610FD00D200CFD8B5 /* DB */,
 				7D22474F10FD00D200CFD8B5 /* Document */,
 				7D22475810FD00D200CFD8B5 /* Layout */,
+				7D90593C1123034600167D20 /* Render */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -773,6 +772,8 @@
 		7D22475810FD00D200CFD8B5 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
+				7D2247C810FD025A00CFD8B5 /* EucHTMLLayout.h */,
+				7D2247C910FD025A00CFD8B5 /* EucHTMLLayout.m */,
 				7D22475910FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.h */,
 				7D22475A10FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m */,
 				7D22475D10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.h */,
@@ -1885,6 +1886,13 @@
 			path = "META-INF";
 			sourceTree = "<group>";
 		};
+		7D90593C1123034600167D20 /* Render */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Render;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2124,7 +2132,7 @@
 				7D22476710FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m in Sources */,
 				7D22476810FD00D200CFD8B5 /* EucHTMLLayoutLine.m in Sources */,
 				7D22476910FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m in Sources */,
-				7D2247CA10FD025A00CFD8B5 /* EucHTMLRenderer.m in Sources */,
+				7D2247CA10FD025A00CFD8B5 /* EucHTMLLayout.m in Sources */,
 				7D22481810FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
