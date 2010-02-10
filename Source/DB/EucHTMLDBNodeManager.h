@@ -23,7 +23,7 @@
 - (id)initWithHTMLDB:(EucHTMLDB *)htmlDb lwcContext:(lwc_context *)lwcContext;
 - (EucHTMLDBNode *)nodeForKey:(uint32_t)key;
 
-- (BOOL)nodeIsBody;
+- (BOOL)nodeIsBody:(EucHTMLDBNode *)node;
 
 // Private - used by EucHTMLDBNode.
 - (void)notifyOfDealloc:(EucHTMLDBNode *)node;

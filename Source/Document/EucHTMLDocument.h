@@ -38,6 +38,8 @@ CGFloat libcss_size_to_pixels(css_fixed size, css_unit units);
 - (id)initWithPath:(NSString *)path;
 - (EucHTMLDocumentNode *)nodeForKey:(uint32_t)key;
 
+- (BOOL)nodeIsBody:(EucHTMLDocumentNode *)node;
+
 // Logically package-scope propeties.
 @property (nonatomic, readonly) EucHTMLDBNodeManager *htmlDBNodeManager;
 @property (nonatomic, readonly) css_select_ctx *selectContext;

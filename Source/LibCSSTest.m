@@ -4,7 +4,8 @@
 #include <libcss/libcss.h>
 
 #include "EucHTMLDocument.h"
-#include "EucHTMLDocumentRenderer.h"
+#include "EucHTMLDocumentNode.h"
+#include "EucHTMLRenderer.h"
 
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -30,14 +31,13 @@ int main (int argc, const char * argv[]) {
 
     EucHTMLDocument *document = [[EucHTMLDocument alloc] initWithPath:[NSString stringWithUTF8String:argv[2]]];
     
-    EucHTMLDocumentRenderer *renderer = [[EucHTMLDocumentRenderer alloc] init];
-    [renderer layoutNode:document.body 
-                     atX:0 
-                     atY:0
-         maxContentWidth:32
-        maxContentHeight:UINT32_MAX
-            laidOutNodes:nil 
-           laidOutFloats:nil];
+    EucHTMLRenderer *renderer = [[EucHTMLRenderer alloc] init];
+    renderer.document = document;
+    CGRect frame = CGRectMake(0, 0, 320, CGFLOAT_MAX);
+    [renderer layoutFromNodeWithId:document.body.key
+                        wordOffset:0
+                      hyphenOffset:0
+                           inFrame:frame];
     [renderer release];
     
     [document release];

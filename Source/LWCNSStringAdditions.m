@@ -12,9 +12,9 @@
 
 + (id)stringWithLWCString:(lwc_string *)lwcString
 {
-    return [[NSString alloc] initWithBytes:lwc_string_data(lwcString) 
-                                    length:lwc_string_length(lwcString) 
-                                  encoding:NSUTF8StringEncoding];
+    return [[[NSString alloc] initWithBytes:lwc_string_data(lwcString) 
+                                     length:lwc_string_length(lwcString) 
+                                   encoding:NSUTF8StringEncoding] autorelease];
 }
 
 @end

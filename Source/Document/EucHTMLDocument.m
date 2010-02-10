@@ -22,8 +22,8 @@ CGFloat libcss_size_to_pixels(css_fixed size, css_unit units)
 {
     CGFloat ret = FIXTOFLT(size);
     
-    /*
-    NSString *unns = nil;
+    
+    /*NSString *unns = nil;
     switch(units) {
         case CSS_UNIT_EX:
             unns = @"ex";
@@ -49,10 +49,8 @@ CGFloat libcss_size_to_pixels(css_fixed size, css_unit units)
         case CSS_UNIT_PT:
             unns = @"pt";
             break;
-    }
-    NSLog(@"%f%@", ret, unns);
-    */
-     
+    }*/
+
     switch(units) {
         case CSS_UNIT_EX:
         case CSS_UNIT_EM:
@@ -177,7 +175,7 @@ static css_error resolve_url(void *pw, lwc_context *dict,
 - (id)initWithPath:(NSString *)path
 {
     if((self = [super init])) {
-        BOOL success;
+        BOOL success = NO;
         _db = EucHTMLDBCreateWithHTMLAtPath([path fileSystemRepresentation],
                                             "/tmp/test.db");
         if(_db) {
@@ -262,6 +260,10 @@ static css_error resolve_url(void *pw, lwc_context *dict,
     return node;
 }
 
+- (BOOL)nodeIsBody:(EucHTMLDocumentNode *)node
+{
+    return [_manager nodeIsBody:node.dbNode];
+}
 
 - (void)notifyOfDealloc:(EucHTMLDocumentNode *)node
 {

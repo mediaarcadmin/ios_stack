@@ -626,9 +626,11 @@ static hubbub_error EucHTMLDBRemoveChild(void *ctx, void *parent, void *child, v
             free(childrenArray);
         }
         
-        ret = EucHTMLDBRefNode(ctx, child);
         if(ret == HUBBUB_OK) {
-            *result = child;
+            ret = EucHTMLDBRefNode(ctx, child);
+            if(ret == HUBBUB_OK) {
+                *result = child;
+            }
         }
     }
     
@@ -981,6 +983,8 @@ EucHTMLDB *EucHTMLDBCreateWithHTMLAtPath(const char* htmlPath, const char* dbPat
     const ssize_t chunkSize = 4096;
     uint8_t buffer[chunkSize];
     hubbub_error err;
+    hubbub_parser *parser = NULL;
+    hubbub_tree_handler *treeHandler = NULL;
     
     EucHTMLDB *context = EucHTMLDBOpen("/tmp/test.db", O_CREAT | O_RDWR | O_TRUNC);
     
@@ -990,14 +994,13 @@ EucHTMLDB *EucHTMLDBCreateWithHTMLAtPath(const char* htmlPath, const char* dbPat
 		goto bail;
 	}
     
-    hubbub_parser *parser;
     err = hubbub_parser_create(NULL, true, EucRealloc, NULL, &parser);
     if(err != HUBBUB_OK) {
         fprintf(stderr, "Error \"%s\" creating parser\n", hubbub_error_to_string(err));
         goto bail;
     }
     
-    hubbub_tree_handler *treeHandler = EucHTMLDBHubbubTreeHandlerCreateWithContext(context);
+    treeHandler = EucHTMLDBHubbubTreeHandlerCreateWithContext(context);
     
     hubbub_parser_optparams params;
 	params.tree_handler = treeHandler;

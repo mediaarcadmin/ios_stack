@@ -158,14 +158,13 @@ css_error EucHTMLDBNodeName(void *pw, void *node, lwc_context *dict, lwc_string 
         uint32_t classesCount = 0;
         if(classesString.len) {
             const uint8_t *start = classesString.ptr;
-            const uint8_t *cursor = classesString.ptr;
             const uint8_t *end = classesString.ptr + classesString.len;
             
             while(start < end) {
                 while(start != end && isspace(*start)) {
                     ++start;
                 }
-                cursor = start;
+                const uint8_t *cursor = start;
                 while(cursor < end && !isspace(*cursor)) {
                     ++cursor;
                 }
@@ -574,14 +573,13 @@ css_error EucHTMLDBNodeHasAttributeIncludes(void *pw, void *node, lwc_string *na
             const char *attributeString = lwc_string_data(attributeValue);
             
             const char *start = attributeString;
-            const char *cursor = attributeString;
             const char *end = start + attributeLength;
             
             while(start < end) {
                 while(start < end && isspace(*start)) {
                     ++start;
                 }
-                cursor = start;
+                const char *cursor = start;
                 while(cursor < end && !isspace(*cursor)) {
                     ++cursor;
                 }

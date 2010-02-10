@@ -47,9 +47,7 @@
 
 - (BOOL)nodeIsBody:(EucHTMLDBNode *)node
 {
-    if(_bodyNode) {
-        return node == _bodyNode;
-    } else {
+    if(!_bodyNode) {
         if(node.kind == nodeKindElement) {
             lwc_string *bodyString;
             lwc_context_intern(_lwcContext, "body", 4, &bodyString);
@@ -63,11 +61,10 @@
                 _bodyNode = [node retain];
             }
             
-            lwc_context_string_unref(_lwcContext, bodyString);
-            
-            return _bodyNode ? YES : NO;
+            lwc_context_string_unref(_lwcContext, bodyString);            
         }                                          
     }        
+    return node == _bodyNode;
 }
 
 - (void)notifyOfDealloc:(EucHTMLDBNode *)node

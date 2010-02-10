@@ -240,11 +240,9 @@ EucHTMLDB *EucHTMLDBOpen(char *path, int flags)
     if(!context->db) {
         err = HUBBUB_UNKNOWN;
         fprintf(stderr, "Error \"%ld\" opening database at \"%s\"\n", (long)errno, path);
-        goto bail;
     }    
     
     if(err != HUBBUB_OK) {
-    bail:
         unlink(path);
         free(context);
         context = NULL;

@@ -25,9 +25,11 @@
 
 @property (nonatomic, readonly) uint32_t key;
 @property (nonatomic, readonly) EucHTMLDBNode *dbNode;
+@property (nonatomic, assign, readonly) EucHTMLDocument *document;
 
 @property (nonatomic, readonly) BOOL isTextNode;
 @property (nonatomic, readonly) NSString *text;
+@property (nonatomic, readonly) NSString *name;
 
 @property (nonatomic, readonly) css_computed_style *computedStyle;
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;

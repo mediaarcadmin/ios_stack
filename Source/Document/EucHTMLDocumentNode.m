@@ -14,16 +14,18 @@
 #import "EucHTMLDocumentNode.h"
 #import "LWCNSStringAdditions.h"
 #import "THStringRenderer.h"
+#import "THLog.h"
 
 @implementation EucHTMLDocumentNode
 
 @synthesize dbNode = _dbNode;
+@synthesize document = _document;
 
 - (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucHTMLDocument *)document;
 {
     if((self = [super init])) {
         _dbNode = [dbNode retain];
-        _document = [document retain];
+        _document = document;
     }
     return self;
 }
@@ -38,12 +40,9 @@
         css_computed_style_destroy(_computedStyle);
     }
     
-    if(_text) {
-        [_text release];
-    }
+    [_text release];
         
     [_dbNode release];
-    [_document release];
     
     [super dealloc];
 }
@@ -56,6 +55,11 @@
 - (BOOL)isTextNode
 {
     return _dbNode.kind == nodeKindText;
+}
+
+- (NSString *)name
+{
+    return [NSString stringWithLWCString:_dbNode.name];
 }
 
 - (NSString *)text
@@ -88,18 +92,25 @@
                                              _computedStyle,
                                              selectHandler,
                                              _document.htmlDBNodeManager);
-            if(self != _document.body) {
-                EucHTMLDocumentNode *parent = self.parent;
-                if(parent) {
-                    const css_computed_style *parentStyle = parent.computedStyle;
-                    if(parentStyle) {
-                        err = css_computed_style_compose(parentStyle, 
-                                                         _computedStyle,
-                                                         selectHandler->compute_font_size,
-                                                         _document.htmlDBNodeManager,
-                                                         _computedStyle);
-                    }
-                } 
+            if(err == CSS_OK) {
+                if(self != _document.body) {
+                    EucHTMLDocumentNode *parent = self.parent;
+                    if(parent) {
+                        const css_computed_style *parentStyle = parent.computedStyle;
+                        if(parentStyle) {
+                            err = css_computed_style_compose(parentStyle, 
+                                                             _computedStyle,
+                                                             selectHandler->compute_font_size,
+                                                             _document.htmlDBNodeManager,
+                                                             _computedStyle);
+                            if(err != CSS_OK) {
+                                THWarn(@"Error %ld composing style", (long)err);
+                            }
+                        }
+                    } 
+                }
+            } else {
+                THWarn(@"Error %ld selecting style", (long)err);
             }
         }
     }
@@ -109,7 +120,12 @@
 - (THStringRenderer *)stringRenderer
 {
     if(!_stringRenderer) {
-        css_computed_style *style = self.computedStyle;
+        css_computed_style *style;
+        if(self.isTextNode) {
+            style = self.parent.computedStyle;
+        } else {
+            style = self.computedStyle;
+        }
         
         if(style) {
             THStringRendererFontStyleFlags styleFlags = THStringRendererFontStyleFlagRegular;
