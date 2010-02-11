@@ -8,7 +8,7 @@
 
 #import "BlioStoreTabViewController.h"
 #import "BlioStoreFeaturedController.h"
-#import "BlioStoreCategoriesController.h"
+#import "BlioStoreCollectionController.h"
 #import "BlioStoreGetBooksController.h"
 #import "BlioStoreMyVaultController.h"
 #import "BlioStoreDownloadsController.h"
@@ -40,7 +40,9 @@
         [vc1.navigationItem setRightBarButtonItem:aDoneButton];
         [vc1 release];
         
-        BlioStoreCategoriesController* vc2 = [[BlioStoreCategoriesController alloc] init];
+        BlioStoreCollectionController* vc2 = [[BlioStoreCollectionController alloc] init];
+        NSURL *targetFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"feedbooks" ofType:@"atom" inDirectory:@"Feeds"]];
+        [vc2 setFeedURL:targetFeedURL];
         UINavigationController* nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
         [vc2.navigationItem setRightBarButtonItem:aDoneButton];
         [vc2 release];
