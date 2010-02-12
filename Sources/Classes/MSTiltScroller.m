@@ -331,11 +331,11 @@
     
 	if (initialAngleV < accV) {
 		currentAngleV = accV - initialAngleV;
-		directionV = kScrollUpDirection;
+		directionV = kScrollDownDirection;
 	} else {
         
 		currentAngleV = initialAngleV - accV;//+.05;
-		directionV = kScrollDownDirection;
+		directionV = kScrollUpDirection;
 	}
     
     if (initialAngleH < accH) {
