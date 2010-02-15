@@ -57,12 +57,6 @@
     return _dbNode.kind == nodeKindText;
 }
 
-- (BOOL)isBlockLevel
-{
-    css_computed_style *style = self.computedStyle;
-    return style && (css_computed_display(style, false) & CSS_DISPLAY_BLOCK) == CSS_DISPLAY_BLOCK;
-}
-
 - (NSString *)name
 {
     lwc_string *name = _dbNode.name;
@@ -156,7 +150,7 @@
                 css_stylesheet_destroy(inlineStyle);
             }
         }
-    }
+    } 
     return _computedStyle;
 }
 
@@ -232,15 +226,20 @@
     }    
 }
 
+- (EucHTMLDocumentNode *)blockLevelNode
+{
+    EucHTMLDocumentNode *prospectiveNode = self;
+    css_computed_style *currentNodeStyle = self.computedStyle;
+    while(prospectiveNode && (!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK)) {
+        prospectiveNode = prospectiveNode.parent;
+        currentNodeStyle = prospectiveNode.computedStyle;
+    }  
+    return prospectiveNode;    
+}
+
 - (EucHTMLDocumentNode *)blockLevelParent
 {
-    EucHTMLDocumentNode *prospectiveParent = self;
-    css_computed_style *currentNodeStyle = NULL;
-    do {
-        prospectiveParent = prospectiveParent.parent;
-        currentNodeStyle = prospectiveParent.computedStyle;
-    } while(prospectiveParent && (!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK));
-    return prospectiveParent;
+    return self.parent.blockLevelNode;
 }
 
 - (EucHTMLDocumentNode *)next

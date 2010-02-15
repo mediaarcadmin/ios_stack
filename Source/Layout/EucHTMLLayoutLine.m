@@ -24,6 +24,7 @@
 @synthesize size = _size;
 
 @synthesize indent = _indent;
+@synthesize align = _align;
 
 - (void)sizeToFitInWidth:(CGFloat)width;
 {
@@ -67,6 +68,19 @@
     return self.endComponentOffset - self.startComponentOffset;
 }
 
+- (CGFloat)componentWidth
+{
+    CGFloat componentWidth = 0.0f;
+    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = self.componentInfos;
+    uint32_t componentCount = self.componentCount;
+
+    for(uint32_t i = 0; i < componentCount; ++i) {
+        componentWidth += componentInfos[i].width;
+    }
+    
+    return componentWidth;
+}
+
 - (void)setStartComponentOffset:(uint32_t)offset
 {
     _startComponentOffset = offset;
@@ -76,5 +90,6 @@
 {
     return CGRectMake(_origin.x, _origin.y, _size.width, _size.height);
 }
+
 
 @end

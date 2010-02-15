@@ -65,7 +65,7 @@
     css_computed_margin_left(computedStyle, &fixed, &unit);
     borderRect.origin.x = frame.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width);
     css_computed_margin_right(computedStyle, &fixed, &unit);
-    borderRect.size.width = CGRectGetMaxY(frame) - libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width) - borderRect.origin.x;
+    borderRect.size.width = CGRectGetMaxX(frame) - libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width) - borderRect.origin.x;
     borderRect.size.height = CGFLOAT_MAX;
     _borderRect = borderRect;
     
@@ -79,7 +79,7 @@
     css_computed_border_left_width(computedStyle, &fixed, &unit);
     paddingRect.origin.x = borderRect.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit, 0);
     css_computed_border_right_width(computedStyle, &fixed, &unit);
-    paddingRect.size.width = CGRectGetMaxY(borderRect) - libcss_size_to_pixels(computedStyle, fixed, unit, 0) - paddingRect.origin.x;
+    paddingRect.size.width = CGRectGetMaxX(borderRect) - libcss_size_to_pixels(computedStyle, fixed, unit, 0) - paddingRect.origin.x;
     paddingRect.size.height = CGFLOAT_MAX;
     _paddingRect = paddingRect;
     
@@ -93,7 +93,7 @@
     css_computed_padding_left(computedStyle, &fixed, &unit);
     contentRect.origin.x = paddingRect.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width);
     css_computed_padding_right(computedStyle, &fixed, &unit);
-    contentRect.size.width = CGRectGetMaxY(paddingRect) - libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width) - contentRect.origin.x;
+    contentRect.size.width = CGRectGetMaxX(paddingRect) - libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width) - contentRect.origin.x;
     contentRect.size.height = CGFLOAT_MAX;
     _contentRect = contentRect;    
     

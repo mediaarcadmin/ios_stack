@@ -26,6 +26,7 @@
     CGFloat _baseline;
     
     CGFloat _indent;
+    uint8_t _align;
 }
 
 @property (nonatomic, retain) EucHTMLLayoutDocumentRun *documentRun;
@@ -40,10 +41,12 @@
 @property (nonatomic, assign, readonly) CGRect frame;
 
 @property (nonatomic, assign) CGFloat indent;
+@property (nonatomic, assign) uint8_t align;
 
 @property (nonatomic, readonly) id *components;
 @property (nonatomic, readonly) EucHTMLLayoutDocumentRunComponentInfo *componentInfos;
 @property (nonatomic, readonly) uint32_t componentCount;
+@property (nonatomic, readonly) CGFloat componentWidth;
 
 - (void)sizeToFitInWidth:(CGFloat)width;
 

@@ -14,6 +14,8 @@
 #import "THStringRenderer.h"
 #import "thjust.h"
 
+#import <libcss/libcss.h>
+
 static id sSingleSpaceMarker;
 static id sOpenNodeMarker;
 static id sCloseNodeMarker;
@@ -134,11 +136,7 @@ static id sCloseNodeMarker;
 {
     CGFloat ret = 0.0f;
     
-    EucHTMLDocumentNode *documentNode = _startNode;
-    if(!documentNode.isBlockLevel) {
-        documentNode = documentNode.blockLevelParent;
-    }
-    css_computed_style *style = documentNode.computedStyle;
+    css_computed_style *style = _startNode.blockLevelNode.computedStyle;
     if(style) {
         css_fixed length;
         css_unit unit;
@@ -147,6 +145,18 @@ static id sCloseNodeMarker;
     }
     return ret;
 }
+
+- (uint8_t)_textAlign;
+{
+    uint8_t ret = CSS_TEXT_ALIGN_DEFAULT;
+    
+    css_computed_style *style = _startNode.blockLevelNode.computedStyle;
+    if(style) {
+        ret = css_computed_text_align(style);
+    }
+    return ret;
+}
+
 
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)info
 {
@@ -384,22 +394,15 @@ static id sCloseNodeMarker;
 
     CGPoint lineOrigin = frame.origin;
     CGRect positionedRunFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 0);
-    
-    /*
-    NSLog(@"lines:");
-    CGFloat lastLineStart = 0;
-    for(int i = 0; i < usedBreakCount; ++i) {
-        THBreak *thisBreak = _potentialBreaks + (usedBreakIndexes[i] + startBreakOffset);
-        printf("line: %fpx\n", thisBreak->x0 - lastLineStart);
-        lastLineStart = thisBreak->x1;
-    }
-     */
+
+    uint8_t textAlign = [self _textAlign];
     
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
     int lineStartComponentOffset = startComponentOffset;
+    EucHTMLLayoutLine *newLine = nil;
     for(int i = 0; i < usedBreakCount; ++i) {
         int thisComponentOffset = _potentialBreakToComponentOffset[usedBreakIndexes[i] + startBreakOffset];
-        EucHTMLLayoutLine *newLine = [[EucHTMLLayoutLine alloc] init];
+        newLine = [[EucHTMLLayoutLine alloc] init];
         newLine.documentRun = self;
         newLine.startComponentOffset = lineStartComponentOffset;
         newLine.startHyphenOffset = 0;
@@ -412,6 +415,7 @@ static id sCloseNodeMarker;
             newLine.indent = textIndent;
             textIndent = 0.0f;
         }
+        newLine.align = textAlign;
         [newLine sizeToFitInWidth:frame.size.width];
 
         CGFloat newHeight = positionedRunFrame.size.height + newLine.size.height;
@@ -425,13 +429,13 @@ static id sCloseNodeMarker;
 
         [newLine release];
         
-        /*CGFloat calculatedWidth = 0;
-        for(int j = 0; j < newLine.componentCount; ++j) {
-            calculatedWidth += newLine.componentInfos[j].width;
+        if(newLine.componentCount == 0) {
+            NSLog(@"fdsfdsfds");
         }
-       // NSLog(@"Calculated: %p: %s", newLine, [NSStringFromRect(NSRectFromCGRect(newLine.frame)) UTF8String]);
-        printf("lin2: %fpx\n", calculatedWidth);
-         */
+    }
+    if(textAlign == CSS_TEXT_ALIGN_JUSTIFY) {
+        // The last line of a paragraph should have default justification.
+        newLine.align = CSS_TEXT_ALIGN_DEFAULT;
     }
     
     EucHTMLLayoutPositionedRun *ret = nil;

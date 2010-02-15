@@ -31,12 +31,11 @@
 @property (nonatomic, readonly) NSString *text;
 @property (nonatomic, readonly) NSString *name;
 
-@property (nonatomic, readonly) BOOL isBlockLevel;
-
 @property (nonatomic, readonly) css_computed_style *computedStyle;
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 
 @property (nonatomic, readonly) EucHTMLDocumentNode *parent;
+@property (nonatomic, readonly) EucHTMLDocumentNode *blockLevelNode;
 @property (nonatomic, readonly) EucHTMLDocumentNode *blockLevelParent;
 @property (nonatomic, readonly) NSArray *children;
 @property (nonatomic, readonly) EucHTMLDocumentNode *next;

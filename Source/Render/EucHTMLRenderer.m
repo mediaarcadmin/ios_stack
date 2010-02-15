@@ -63,34 +63,82 @@
     Class nsStringClass = [NSString class];
     id singleSpaceMarker = [EucHTMLLayoutDocumentRun singleSpaceMarker];
     
-    printf("Rendering %p: %s:\t", line, [NSStringFromRect(NSRectFromCGRect(line.frame)) UTF8String]);
-
-    CGFloat xPosition = line.frame.origin.x + line.indent;
-    CGFloat yPosition = line.frame.origin.y;
-    for(uint32_t i = 0; i < componentCount; ++i) {
-        id component = components[i];
-        EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
-        if([component isKindOfClass:nsStringClass]) {
-            THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
-            [stringRenderer drawString:component
-                             inContext:_cgContext 
-                               atPoint:CGPointMake(xPosition, yPosition)
-                             pointSize:componentInfo->pointSize];
-            printf("%s", [component UTF8String]);
-            xPosition += componentInfo->width;
-        } else if(component == singleSpaceMarker) {
-            putchar(' ');
-            xPosition += componentInfo->width;
-        }
+    CGRect lineFrame = line.frame;
+    CGFloat xPosition = lineFrame.origin.x;
+    CGFloat yPosition = lineFrame.origin.y;
+    switch(line.align) {
+        case CSS_TEXT_ALIGN_RIGHT:
+            {
+                xPosition += lineFrame.size.width;
+                for(uint32_t i = 0; i < componentCount; ++i) {
+                    id component = components[i];
+                    EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
+                    if([component isKindOfClass:nsStringClass]) {
+                        xPosition -= componentInfo->width;
+                        THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
+                        [stringRenderer drawString:component
+                                         inContext:_cgContext 
+                                           atPoint:CGPointMake(xPosition, yPosition)
+                                         pointSize:componentInfo->pointSize];
+                    } else if(component == singleSpaceMarker) {
+                        xPosition -= componentInfo->width;
+                    }
+                }
+            }
+            break;            
+        case CSS_TEXT_ALIGN_JUSTIFY:
+            {
+                CGFloat extraWidthNeeded = lineFrame.size.width - line.indent - line.componentWidth;
+                CGFloat spacesRemaining = 0.0f;
+                for(uint32_t i = 0; i < componentCount; ++i) {
+                    if(components[i] == singleSpaceMarker) {
+                        spacesRemaining++;
+                    }
+                }
+                xPosition += line.indent;
+                for(uint32_t i = 0; i < componentCount; ++i) {
+                    id component = components[i];
+                    EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
+                    if([component isKindOfClass:nsStringClass]) {
+                        THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
+                        [stringRenderer drawString:component
+                                         inContext:_cgContext 
+                                           atPoint:CGPointMake(xPosition, yPosition)
+                                         pointSize:componentInfo->pointSize];
+                        xPosition += componentInfo->width;
+                    } else if(component == singleSpaceMarker) {
+                        CGFloat extraSpace = extraWidthNeeded / spacesRemaining;
+                        xPosition += componentInfo->width + extraSpace;
+                        extraWidthNeeded -= extraSpace;
+                        --spacesRemaining;
+                    }
+                }                
+                NSParameterAssert(extraWidthNeeded == 0.0f || componentCount == 1);
+            }
+            break;
+        case CSS_TEXT_ALIGN_CENTER:
+            xPosition += (lineFrame.size.width - line.componentWidth) * 0.5f;
+            // fall through.
+        default:
+            {
+                xPosition += line.indent;
+                for(uint32_t i = 0; i < componentCount; ++i) {
+                    id component = components[i];
+                    EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
+                    if([component isKindOfClass:nsStringClass]) {
+                        THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
+                        [stringRenderer drawString:component
+                                         inContext:_cgContext 
+                                           atPoint:CGPointMake(xPosition, yPosition)
+                                         pointSize:componentInfo->pointSize];
+                        xPosition += componentInfo->width;
+                    } else if(component == singleSpaceMarker) {
+                        xPosition += componentInfo->width;
+                    }
+                }
+            }
+            break;
     }
-    
-    printf(" :  %fpx", xPosition);
-    
-    if(xPosition > 480) {
-        NSLog(@"Warning!");
-    }
-    
-    printf("\n");
 }
 
 @end

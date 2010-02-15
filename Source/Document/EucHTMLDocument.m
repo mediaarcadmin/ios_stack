@@ -79,7 +79,7 @@ CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size
         case CSS_UNIT_PT:
             break;
         case CSS_UNIT_PCT:
-            ret *= percentageBase * 0.01f;
+            ret = percentageBase * (ret * 0.01f);
             break;
         default:
             THWarn(@"Unexpected unit %ld (%f size) - not converting.", (long)units, (double)ret);

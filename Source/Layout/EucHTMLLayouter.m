@@ -87,7 +87,7 @@ Block completion status.
         CGFloat nextY = frame.origin.y;
         uint32_t nextRunId = currentDocumentNode.key;
         do {            
-            CGRect potentialFrame = currentPositionedBlock.frame;
+            CGRect potentialFrame = currentPositionedBlock.contentRect;
             if(potentialFrame.size.height != CGFLOAT_MAX) {
                 potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
             }
@@ -137,13 +137,13 @@ Block completion status.
                     [currentPositionedBlock closeBottomFromYPoint:nextY];
                     nextY = NSMaxY(currentPositionedBlock.frame);
                     currentPositionedBlock = currentPositionedBlock.parent;
-                    CGRect potentialFrame = currentPositionedBlock.frame;
-                    if(potentialFrame.size.height != CGFLOAT_MAX) {
-                        potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
-                    }
-                    potentialFrame.origin.y = nextY;
                 }
-
+                CGRect potentialFrame = currentPositionedBlock.contentRect;
+                if(potentialFrame.size.height != CGFLOAT_MAX) {
+                    potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
+                }
+                potentialFrame.origin.y = nextY;
+                
                 EucHTMLLayoutPositionedBlock *newBlock = [[EucHTMLLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode];
                 [newBlock positionInFrame:potentialFrame
                             collapsingTop:NO];
