@@ -8,8 +8,8 @@
 
 #import "BlioStoreTabViewController.h"
 #import "BlioStoreFeaturedController.h"
-#import "BlioStoreCollectionController.h"
-#import "BlioStoreGetBooksController.h"
+#import "BlioStoreCategoriesController.h"
+#import "BlioStoreSearchController.h"
 #import "BlioStoreMyVaultController.h"
 #import "BlioStoreDownloadsController.h"
 
@@ -40,14 +40,25 @@
         [vc1.navigationItem setRightBarButtonItem:aDoneButton];
         [vc1 release];
         
-        BlioStoreCollectionController* vc2 = [[BlioStoreCollectionController alloc] init];
-        NSURL *targetFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"feedbooks" ofType:@"atom" inDirectory:@"Feeds"]];
-        [vc2 setFeedURL:targetFeedURL];
+        BlioStoreCategoriesController* vc2 = [[BlioStoreCategoriesController alloc] init];
+        NSURL *feedbooksFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"feedbooks" ofType:@"atom" inDirectory:@"Feeds"]];
+        BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
+        [feedBooksFeed setTitle:@"Feedbooks"];
+        [feedBooksFeed setFeedURL:feedbooksFeedURL];
+        [feedBooksFeed setParserClass:[BlioStoreLocalParser class]];
+        NSURL *googleFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"googlebooks" ofType:@"atom" inDirectory:@"Feeds"]];
+        BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
+        [googleBooksFeed setTitle:@"Google Books"];
+        [googleBooksFeed setFeedURL:googleFeedURL];
+        [googleBooksFeed setParserClass:[BlioStoreLocalParser class]];
+        [vc2 setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
+        [feedBooksFeed release];
+        [googleBooksFeed release];
         UINavigationController* nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
         [vc2.navigationItem setRightBarButtonItem:aDoneButton];
         [vc2 release];
         
-        BlioStoreGetBooksController* vc3 = [[BlioStoreGetBooksController alloc] init];
+        BlioStoreSearchController* vc3 = [[BlioStoreSearchController alloc] init];
         UINavigationController* nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
         [vc3.navigationItem setRightBarButtonItem:aDoneButton];
         [vc3 release];

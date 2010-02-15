@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/stylesheets/catalog.xsl"?>
+<feed xmlns:thr="http://purl.org/syndication/thread/1.0" xmlns:app="http://www.w3.org/2007/app" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xml:lang="en-US" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns="http://www.w3.org/2005/Atom" xmlns:dcterms="http://purl.org/dc/terms/">
+<entry>
+  <title>Adventure</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Adventure"/>
+</entry>
+<entry>
+  <title>Biography</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Biography"/>
+</entry>
+<entry>
+  <title>Collections</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Collections"/>
+</entry>
+<entry>
+  <title>Crime/Mystery</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Crime%7CMystery"/>
+</entry>
+<entry>
+  <title>Essay</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Essay"/>
+</entry>
+<entry>
+  <title>Fantasy</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Fantasy"/>
+</entry>
+<entry>
+  <title>Ghost Stories</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:%22Ghost+Stories%22"/>
+</entry>
+<entry>
+  <title>Gothic</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Gothic"/>
+</entry>
+<entry>
+  <title>History</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:History"/>
+</entry>
+<entry>
+  <title>Horror</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Horror"/>
+</entry>
+<entry>
+  <title>Humor/Satire</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Humor%7CHumour%7CSatire"/>
+</entry>
+<entry>
+  <title>Non-Fiction</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:%22Non-Fiction%22"/>
+</entry>
+<entry>
+  <title>Novels</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Novels"/>
+</entry>
+<entry>
+  <title>Philosophy</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Philosophy"/>
+</entry>
+<entry>
+  <title>Plays</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Plays"/>
+</entry>
+<entry>
+  <title>Poetry</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Poetry"/>
+</entry>
+<entry>
+  <title>Politics</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Politics"/>
+</entry>
+<entry>
+  <title>Psychology</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Psychology"/>
+</entry>
+<entry>
+  <title>Religion</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Religion"/>
+</entry>
+<entry>
+  <title>Romance</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Romance"/>
+</entry>
+<entry>
+  <title>Science</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Science"/>
+</entry>
+<entry>
+  <title>Science Fiction</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:%22Science+Fiction%22"/>
+</entry>
+<entry>
+  <title>Sexuality</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Sexuality"/>
+</entry>
+<entry>
+  <title>Short Fiction</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:%22Short+Fiction%22"/>
+</entry>
+<entry>
+  <title>Thriller</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Thriller"/>
+</entry>
+<entry>
+  <title>Travel</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Travel"/>
+</entry>
+<entry>
+  <title>War</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:War"/>
+</entry>
+<entry>
+  <title>Western</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:Western"/>
+</entry>
+<entry>
+  <title>Young Readers</title>
+  <id>BlioStoreGoogleBooksParser</id>
+  <link type="application/atom+xml" href="http://books.google.com/books/feeds/volumes?q=insubject:%22Young+Readers%22"/>
+</entry>
+</feed>
