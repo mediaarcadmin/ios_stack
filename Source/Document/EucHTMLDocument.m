@@ -200,39 +200,6 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                         if(_bodyDBNode) {
                             if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
                                 [self _setupStylesheets:@"/Users/jamie/Development/LibCSSTest/Resources/EPubDefault.css"];
-                                
-                                /*EucHTMLDBNode *current = _bodyDBNode;
-                                
-                                do {
-                                    if(current.kind == nodeKindElement) {
-                                        css_computed_style *computed;
-                                        css_computed_style_create(EucRealloc, NULL, &computed);
-                                        css_error err = css_select_style(_selectCtx, 
-                                                                         (void *)(uintptr_t)current.key,
-                                                                         CSS_PSEUDO_ELEMENT_NONE, 
-                                                                         CSS_MEDIA_PRINT, 
-                                                                         NULL, 
-                                                                         computed,
-                                                                         [EucHTMLDBNode selectHandler],
-                                                                         _manager);
-                                        if(err == CSS_OK) { 
-                                            char *buf = malloc(8192);
-                                            if (buf == NULL) {
-                                                assert(0 && "No memory for result data");
-                                            }
-                                            size_t buflen = 8192;
-                                            
-                                            dump_computed_style(computed, buf, &buflen);
-                                            printf("%ld - <%s>:\n%s\n\n\n", (long)current.key, lwc_string_data(current.name), buf);
-                                            
-                                            free(buf);
-                                            css_computed_style_destroy(computed);
-                                        } else {
-                                            NSLog(@"Error %ld", (long)err);
-                                        }
-                                    }
-                                } while(current = [current nextNodeUnder:_bodyDBNode]);*/
-                                
                                 _body = [[[EucHTMLDocumentNode alloc] initWithHTMLDBNode:_bodyDBNode inDocument:self] retain];
                                 success = YES;
                             }
