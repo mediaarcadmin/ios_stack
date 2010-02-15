@@ -23,7 +23,7 @@
 		7D22476710FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475A10FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m */; };
 		7D22476810FD00D200CFD8B5 /* EucHTMLLayoutLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475C10FD00D200CFD8B5 /* EucHTMLLayoutLine.m */; };
 		7D22476910FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475E10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m */; };
-		7D2247CA10FD025A00CFD8B5 /* EucHTMLLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2247C910FD025A00CFD8B5 /* EucHTMLLayout.m */; };
+		7D2247CA10FD025A00CFD8B5 /* EucHTMLLayouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */; };
 		7D22481810FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22481710FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m */; };
 		7D6A856D10C42D9C0024B8D6 /* detect.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0410C41CEA00D8A42E /* detect.c */; };
 		7D6A856E10C42DB70024B8D6 /* hubbub.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0710C41CEA00D8A42E /* hubbub.c */; };
@@ -61,6 +61,7 @@
 		7D6A85B910C42F400024B8D6 /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DC26D8710C4260E00248A49 /* libparserutils.a */; };
 		7D6A85BA10C42F400024B8D6 /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DC26D5D10C4241A00248A49 /* libwapcaplet.a */; };
 		7D6A862410C44AEA0024B8D6 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D6A862310C44AEA0024B8D6 /* libiconv.dylib */; };
+		7D9059481123063E00167D20 /* EucHTMLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9059471123063E00167D20 /* EucHTMLRenderer.m */; };
 		7DC26D6010C4242500248A49 /* libwapcaplet.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5BC710C41CEB00D8A42E /* libwapcaplet.c */; };
 		7DC26D8F10C4264D00248A49 /* aliases.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5B5610C41CEA00D8A42E /* aliases.c */; };
 		7DC26D9110C4264D00248A49 /* charset.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5B5810C41CEA00D8A42E /* charset.c */; };
@@ -193,8 +194,8 @@
 		7D22475C10FD00D200CFD8B5 /* EucHTMLLayoutLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutLine.m; sourceTree = "<group>"; };
 		7D22475D10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutDocumentRun.h; sourceTree = "<group>"; };
 		7D22475E10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutDocumentRun.m; sourceTree = "<group>"; };
-		7D2247C810FD025A00CFD8B5 /* EucHTMLLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayout.h; sourceTree = "<group>"; };
-		7D2247C910FD025A00CFD8B5 /* EucHTMLLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayout.m; sourceTree = "<group>"; };
+		7D2247C810FD025A00CFD8B5 /* EucHTMLLayouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayouter.h; sourceTree = "<group>"; };
+		7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayouter.m; sourceTree = "<group>"; };
 		7D22481610FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutPositionedRun.h; sourceTree = "<group>"; };
 		7D22481710FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutPositionedRun.m; sourceTree = "<group>"; };
 		7D6A59DB10C41CEA00D8A42E /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
@@ -627,6 +628,8 @@
 		7D6A866510C44EC10024B8D6 /* toc.ncx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = toc.ncx; sourceTree = "<group>"; };
 		7D6A866710C44EC10024B8D6 /* container.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = container.xml; sourceTree = "<group>"; };
 		7D6A866810C44EC10024B8D6 /* mimetype */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mimetype; sourceTree = "<group>"; };
+		7D9059461123063E00167D20 /* EucHTMLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLRenderer.h; sourceTree = "<group>"; };
+		7D9059471123063E00167D20 /* EucHTMLRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLRenderer.m; sourceTree = "<group>"; };
 		7DAFEFB210D108D900D41F50 /* LibCSSDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibCSSDebug.h; sourceTree = "<group>"; };
 		7DC26D5D10C4241A00248A49 /* libwapcaplet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwapcaplet.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DC26D8710C4260E00248A49 /* libparserutils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libparserutils.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -772,8 +775,8 @@
 		7D22475810FD00D200CFD8B5 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
-				7D2247C810FD025A00CFD8B5 /* EucHTMLLayout.h */,
-				7D2247C910FD025A00CFD8B5 /* EucHTMLLayout.m */,
+				7D2247C810FD025A00CFD8B5 /* EucHTMLLayouter.h */,
+				7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */,
 				7D22475910FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.h */,
 				7D22475A10FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m */,
 				7D22475D10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.h */,
@@ -1889,6 +1892,8 @@
 		7D90593C1123034600167D20 /* Render */ = {
 			isa = PBXGroup;
 			children = (
+				7D9059461123063E00167D20 /* EucHTMLRenderer.h */,
+				7D9059471123063E00167D20 /* EucHTMLRenderer.m */,
 			);
 			path = Render;
 			sourceTree = "<group>";
@@ -2132,8 +2137,9 @@
 				7D22476710FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m in Sources */,
 				7D22476810FD00D200CFD8B5 /* EucHTMLLayoutLine.m in Sources */,
 				7D22476910FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m in Sources */,
-				7D2247CA10FD025A00CFD8B5 /* EucHTMLLayout.m in Sources */,
+				7D2247CA10FD025A00CFD8B5 /* EucHTMLLayouter.m in Sources */,
 				7D22481810FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m in Sources */,
+				7D9059481123063E00167D20 /* EucHTMLRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2168,6 +2174,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -2190,6 +2200,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/LibCSSTest_Prefix.pch;

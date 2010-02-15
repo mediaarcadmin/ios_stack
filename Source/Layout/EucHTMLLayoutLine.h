@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EucHTMLLayoutDocumentRun.h"
 
 @class EucHTMLLayoutDocumentRun;
 
@@ -34,6 +35,11 @@
 
 @property (nonatomic, assign) CGPoint origin;
 @property (nonatomic, assign) CGSize size;
+@property (nonatomic, assign, readonly) CGRect frame;
+
+@property (nonatomic, readonly) id *components;
+@property (nonatomic, readonly) EucHTMLLayoutDocumentRunComponentInfo *componentInfos;
+@property (nonatomic, readonly) uint32_t componentCount;
 
 - (void)sizeToFitInWidth:(CGFloat)width;
 

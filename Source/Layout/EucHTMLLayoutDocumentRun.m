@@ -20,7 +20,7 @@ static id sCloseNodeMarker;
 
 @interface EucHTMLLayoutDocumentRun ()
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)size;
-- (void)_accumulateInlineNode:(EucHTMLDocumentNode *)subnode;
+- (void)_accumulateTextNode:(EucHTMLDocumentNode *)subnode;
 @end 
 
 @implementation EucHTMLLayoutDocumentRun
@@ -54,29 +54,6 @@ static id sCloseNodeMarker;
 @synthesize components = _components;
 @synthesize componentInfos = _componentInfos;
 
-- (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)info
-{
-    if(_componentsCount == _componentsCapacity) {
-        _componentsCapacity += 256;
-        _components = realloc(_components, _componentsCapacity * sizeof(id));
-        _componentInfos = realloc(_componentInfos, _componentsCapacity * sizeof(EucHTMLLayoutDocumentRunComponentInfo));
-        _componentOffsetToWordOffset = realloc(_componentOffsetToWordOffset, _componentsCapacity * sizeof(size_t));
-        _wordOffsetToComponentOffset = realloc(_wordOffsetToComponentOffset, _componentsCapacity * sizeof(size_t));
-    }
-    
-    _components[_componentsCount] = [component retain];
-    if(info) {
-        _componentInfos[_componentsCount] = *info;
-    }
-    if(isWord) {
-        _componentOffsetToWordOffset[_componentsCount] = _wordsCount;
-        _wordOffsetToComponentOffset[_wordsCount] = _componentsCount;
-        ++_wordsCount;
-    }
-    
-    ++_componentsCount;
-}
-
 - (id)initWithNode:(EucHTMLDocumentNode *)inlineNode 
     underLimitNode:(EucHTMLDocumentNode *)underNode
              forId:(uint32_t)id
@@ -93,16 +70,15 @@ static id sCloseNodeMarker;
                inlineNode && 
                (inlineNode.isTextNode || (inlineNodeStyle &&
                                           //css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE &&
-                                          (css_computed_display(inlineNodeStyle, false) & CSS_DISPLAY_INLINE) == CSS_DISPLAY_INLINE))) {
+                                          (css_computed_display(inlineNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK))) {
             if(inlineNode.isTextNode) {
-                [self _accumulateInlineNode:inlineNode];
+                [self _accumulateTextNode:inlineNode];
             } else {
                 // Open this node.
-                [self _addComponent:[EucHTMLLayoutDocumentRun openNodeMarker] isWord:NO info:NULL];
-                [self _addComponent:inlineNode isWord:NO info:NULL];
+                EucHTMLLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
+                [self _addComponent:[EucHTMLLayoutDocumentRun openNodeMarker] isWord:NO info:&info];
                 if(!inlineNode.children) {
-                    [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:NULL];
-                    [self _addComponent:inlineNode isWord:NO info:NULL];
+                    [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
                 }
             }
             
@@ -112,8 +88,8 @@ static id sCloseNodeMarker;
                 if(!inlineNode.isTextNode && inlineNode.children) {
                     // If the node /doesn't/ have children, it's already closed,
                     // above.
-                    [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:NULL];
-                    [self _addComponent:inlineNode isWord:NO info:NULL];
+                    EucHTMLLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
+                    [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
                 }
                 nextNode = [inlineNode nextUnder:underNode];
             }
@@ -121,7 +97,7 @@ static id sCloseNodeMarker;
                 inlineNode = nextNode;
                 inlineNodeStyle = inlineNode.computedStyle;
             } else {
-                inlineNode = [inlineNode next];
+                inlineNode = [inlineNode nextUnder:[[inlineNode document] body]];
                 reachedLimit = YES;
             }
         }    
@@ -153,7 +129,31 @@ static id sCloseNodeMarker;
     [super dealloc];
 }
 
-- (void)_accumulateInlineNode:(EucHTMLDocumentNode *)subnode 
+- (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)info
+{
+    if(_componentsCount == _componentsCapacity) {
+        _componentsCapacity += 256;
+        _components = realloc(_components, _componentsCapacity * sizeof(id));
+        _componentInfos = realloc(_componentInfos, _componentsCapacity * sizeof(EucHTMLLayoutDocumentRunComponentInfo));
+        _componentOffsetToWordOffset = realloc(_componentOffsetToWordOffset, _componentsCapacity * sizeof(size_t));
+        _wordOffsetToComponentOffset = realloc(_wordOffsetToComponentOffset, _componentsCapacity * sizeof(size_t));
+    }
+    
+    _components[_componentsCount] = [component retain];
+    if(info) {
+        _componentInfos[_componentsCount] = *info;
+    }
+    if(isWord) {
+        _wordOffsetToComponentOffset[_wordsCount] = _startOfLastNonSpaceRun;
+        ++_wordsCount;
+    } else if(component == sSingleSpaceMarker) {
+        _startOfLastNonSpaceRun = _componentsCount;
+    }
+    
+    ++_componentsCount;
+}
+
+- (void)_accumulateTextNode:(EucHTMLDocumentNode *)subnode 
 {
     css_computed_style *subnodeStyle;
     subnodeStyle = [subnode.parent computedStyle];
@@ -163,14 +163,16 @@ static id sCloseNodeMarker;
     css_fixed length;
     css_unit unit;
     css_computed_font_size(subnodeStyle, &length, &unit);
-    CGFloat fontPixelSize = libcss_size_to_pixels(length, unit);            
+    CGFloat fontPixelSize = libcss_size_to_pixels(subnodeStyle, length, unit);            
     CGFloat lineSpacing = [stringRenderer lineSpacingForPointSize:fontPixelSize];
     CGFloat ascender = [stringRenderer ascenderForPointSize:fontPixelSize];
     CGFloat descender = [stringRenderer descenderForPointSize:fontPixelSize];
     EucHTMLLayoutDocumentRunComponentInfo spaceInfo = { [stringRenderer widthOfString:@" " pointSize:fontPixelSize],
                                                         lineSpacing,
                                                         ascender,
-                                                        descender };
+                                                        descender,
+                                                        fontPixelSize,
+                                                        subnode };
     
     CFStringRef text = (CFStringRef)subnode.text;
     CFIndex textLength = CFStringGetLength(text);
@@ -192,34 +194,42 @@ static id sCloseNodeMarker;
         
         const UniChar *wordStart = cursor;
         
+        BOOL sawNewline = NO;
         while(cursor < end) {
             UniChar ch = *cursor;
-            if(ch == 0x0009 || // tab
-               ch == 0x000D || // CR
-               ch == 0x000A || // LF
-               ch == 0x0020    // Space
-               ) {
-                if(!_previousInlineCharacterWasSpace) {
-                    if(wordStart != cursor) {
-                        CFStringRef string = CFStringCreateWithCharacters(kCFAllocatorDefault,
-                                                                          wordStart, 
-                                                                          cursor - wordStart);
-                        if(string) {
-                            EucHTMLLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
-                                                                            lineSpacing,
-                                                                            ascender,
-                                                                            descender };
-                            [self _addComponent:(id)string isWord:YES info:&info];
-                        }
+            switch(ch) {
+                case 0x000D: // CR
+                case 0x000A: // LF
+                    if(!sawNewline) {
+                        sawNewline = YES;
                     }
-                    [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
-                }
-                _previousInlineCharacterWasSpace = YES;
-            } else {
-                if(_previousInlineCharacterWasSpace) {
-                    wordStart = cursor;
-                }
-                _previousInlineCharacterWasSpace = NO;
+                    // No break = fall through.
+                case 0x0009: // tab
+                case 0x0020: // Space
+                    if(!_previousInlineCharacterWasSpace) {
+                        if(wordStart != cursor) {
+                            CFStringRef string = CFStringCreateWithCharacters(kCFAllocatorDefault,
+                                                                              wordStart, 
+                                                                              cursor - wordStart);
+                            if(string) {
+                                EucHTMLLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
+                                    lineSpacing,
+                                    ascender,
+                                    descender,
+                                    fontPixelSize,
+                                    subnode };
+                                [self _addComponent:(id)string isWord:YES info:&info];
+                            }
+                        }
+                        _previousInlineCharacterWasSpace = YES;
+                    }
+                    break;
+                default:
+                    if(_previousInlineCharacterWasSpace) {
+                        [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                        wordStart = cursor;
+                        _previousInlineCharacterWasSpace = NO;
+                    }
             }
             ++cursor;
         }
@@ -231,8 +241,22 @@ static id sCloseNodeMarker;
                 EucHTMLLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
                                                                lineSpacing,
                                                                ascender,
-                                                               descender };
+                                                               descender,
+                                                               fontPixelSize,
+                                                               subnode };
                 [self _addComponent:(id)string isWord:YES info:&info];
+            }
+        } else {
+            if(wordStart == characters && sawNewline) {
+                // Don't do anything - we collapse the spaces around the newline, 
+                // then remove the newline, leaving an empty run.
+                // See http://www.w3.org/TR/2009/CR-CSS2-20090908/visuren.html
+                // Section 9.2.2.1:
+                // "White space content that would subsequently be collapsed 
+                // away according to the 'white-space' property does not 
+                // generate any anonymous inline boxes."
+            } else {
+                [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
             }
         }
         
@@ -254,7 +278,7 @@ static id sCloseNodeMarker;
         if(currentInlineNodeWithStyle.isTextNode) {
             currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
         }
-        int lineSoFarWidth = 0;
+        CGFloat lineSoFarWidth = 0;
         for(NSUInteger i = 0; i < _componentsCount; ++i) {
             id component = _components[i];
             if(component == sSingleSpaceMarker) {
@@ -265,20 +289,21 @@ static id sCloseNodeMarker;
                 breaks[breaksCount].flags = TH_JUST_FLAG_ISSPACE;
                 breakToComponentOffset[breaksCount] = i;
                 ++breaksCount;
+                
+                if(breaksCount >= breaksCapacity) {
+                    breaksCapacity += _componentsCount;
+                    breaks = realloc(breaks, breaksCapacity * sizeof(THBreak));
+                    breakToComponentOffset = realloc(breakToComponentOffset, breaksCapacity * sizeof(int));
+                }                
             } else if(component == sOpenNodeMarker) {
-                currentInlineNodeWithStyle = _components[++i];
+                currentInlineNodeWithStyle = _componentInfos[i].documentNode;
                 // Take account of margins etc.
             } else if(component == sCloseNodeMarker) {
-                ++i; // Skip the closed node reference.
+                NSParameterAssert(_componentInfos[i].documentNode == currentInlineNodeWithStyle);
                 currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
                 // Take account of margins etc.
             } else {            
                 lineSoFarWidth += _componentInfos[i].width;
-            }
-            if(breaksCount >= breaksCapacity) {
-                breaksCapacity += _componentsCount;
-                breaks = realloc(breaks, breaksCapacity * sizeof(THBreak));
-                breakToComponentOffset = realloc(breakToComponentOffset, breaksCapacity * sizeof(int));
             }
         }
         breaks[breaksCount].x0 = lineSoFarWidth;
@@ -307,6 +332,10 @@ static id sCloseNodeMarker;
                                            wordOffset:(uint32_t)wordOffset 
                                          hyphenOffset:(uint32_t)hyphenOffset
 {
+    if(_wordsCount == 0) {
+        return nil;
+    }    
+    
     [self potentialBreaks];
     
     size_t startComponentOffset = _wordOffsetToComponentOffset[wordOffset];
@@ -317,20 +346,30 @@ static id sCloseNodeMarker;
     
     int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
     int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
-    int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, floorf(frame.size.width), 0, usedBreakIndexes);
+    int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, frame.size.width, 0, usedBreakIndexes);
 
     CGPoint lineOrigin = frame.origin;
     CGRect positionedRunFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 0);
     
-    NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
-    int previousComponentOffset = startComponentOffset;
+    
+    NSLog(@"lines:");
+    CGFloat lastLineStart = 0;
     for(int i = 0; i < usedBreakCount; ++i) {
-        int thisComponentOffset = usedBreakIndexes[i] + startBreakOffset;
+        THBreak *thisBreak = _potentialBreaks + (usedBreakIndexes[i] + startBreakOffset);
+        printf("line: %fpx\n", thisBreak->x0 - lastLineStart);
+        lastLineStart = thisBreak->x1;
+    }
+     
+    
+    NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
+    int lineStartComponentOffset = startComponentOffset;
+    for(int i = 0; i < usedBreakCount; ++i) {
+        int thisComponentOffset = _potentialBreakToComponentOffset[usedBreakIndexes[i] + startBreakOffset];
         EucHTMLLayoutLine *newLine = [[EucHTMLLayoutLine alloc] init];
         newLine.documentRun = self;
-        newLine.startComponentOffset = _potentialBreakToComponentOffset[previousComponentOffset];
+        newLine.startComponentOffset = lineStartComponentOffset;
         newLine.startHyphenOffset = 0;
-        newLine.endComponentOffset = _potentialBreakToComponentOffset[thisComponentOffset];
+        newLine.endComponentOffset = thisComponentOffset;
         newLine.endHyphenOffset = 0;
         newLine.origin = lineOrigin;
         [newLine sizeToFitInWidth:frame.size.width];
@@ -340,11 +379,20 @@ static id sCloseNodeMarker;
             positionedRunFrame.size.height = newHeight;
             [lines addObject:newLine];
         }
+        
+        lineOrigin.y += newLine.size.height;
+        lineStartComponentOffset = thisComponentOffset + 1; // +1 to skip the space.
+
         [newLine release];
         
-        previousComponentOffset = thisComponentOffset;
+        /*CGFloat calculatedWidth = 0;
+        for(int j = 0; j < newLine.componentCount; ++j) {
+            calculatedWidth += newLine.componentInfos[j].width;
+        }
+       // NSLog(@"Calculated: %p: %s", newLine, [NSStringFromRect(NSRectFromCGRect(newLine.frame)) UTF8String]);
+        printf("lin2: %fpx\n", calculatedWidth);
+         */
     }
-    
     
     EucHTMLLayoutPositionedRun *ret = nil;
     if(lines.count) {

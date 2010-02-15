@@ -35,6 +35,7 @@
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 
 @property (nonatomic, readonly) EucHTMLDocumentNode *parent;
+@property (nonatomic, readonly) EucHTMLDocumentNode *blockLevelParent;
 @property (nonatomic, readonly) NSArray *children;
 @property (nonatomic, readonly) EucHTMLDocumentNode *next;
 - (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under;

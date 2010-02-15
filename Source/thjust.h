@@ -10,6 +10,8 @@
 #ifndef __THJUST_H__
 #define __THJUST_H__
 
+#include <CoreGraphics/CGBase.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
@@ -57,9 +59,9 @@ extern "C" {
 //      10 units further from the 'ideal' width than it really is).
 // 'flags' are flags as described above.
 typedef struct THBreak {
-    int x0;
-    int x1;
-    int penalty;
+    CGFloat x0;
+    CGFloat x1;
+    CGFloat penalty;
     int flags;
 } THBreak;
 
@@ -71,7 +73,7 @@ typedef struct THBreak {
 // Note that the last break must have the flag TH_JUST_FLAG_ISHARDBREAK set,
 // otherwise it will be used in the justification calculations (i.e. the 
 // justifier will attempt to make it the same length as the other lines).
-int th_just(const THBreak *breaks, int break_count, int ideal_width, int two_hyphen_penalty, int *result);
+int th_just(const THBreak *breaks, int break_count, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result);
 
 #ifdef __cplusplus
 }

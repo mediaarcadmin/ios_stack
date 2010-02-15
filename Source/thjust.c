@@ -34,14 +34,14 @@
 // Rivest's "Introduction to Algorithms" (edition 1).
 
 struct Estimates {
-    int shortest_path_estimate;
+    CGFloat shortest_path_estimate;
     int predecessor;
     bool examined;
 };
 
 static int extract_min(struct Estimates *estimates, int count)
 {
-    int smallest_estimate_found = INT_MAX;
+    CGFloat smallest_estimate_found = CGFLOAT_MAX;
     int smallest_index = -1;
     for(int i = 0; i < count; ++i) { 
         if(!estimates[i].examined && 
@@ -58,19 +58,19 @@ static int extract_min(struct Estimates *estimates, int count)
     return smallest_index;
 }
 
-static int calculate_weight(int from_break_index, int to_break_index, const THBreak *breaks, int count, int ideal_width, int two_hyphen_penalty) 
+static CGFloat calculate_weight(int from_break_index, int to_break_index, const THBreak *breaks, int count, CGFloat ideal_width, CGFloat two_hyphen_penalty) 
 {
-    int weight = INT_MAX;
+    CGFloat weight = CGFLOAT_MAX;
     
-    int line_start = from_break_index == -1 ? 0 : breaks[from_break_index].x1;
-    int line_end = breaks[to_break_index].x0;
+    CGFloat line_start = from_break_index == -1 ? 0 : breaks[from_break_index].x1;
+    CGFloat line_end = breaks[to_break_index].x0;
     
-    int line_width = line_end - line_start;
+    CGFloat line_width = line_end - line_start;
     
-    int width_difference = ideal_width - line_width;
+    CGFloat width_difference = ideal_width - line_width;
     if(width_difference >= 0) {
         if((breaks[to_break_index].flags & TH_JUST_FLAG_ISHARDBREAK) != 0) {
-            weight = 0;
+            weight = 0.0f;
         } else {
             weight = width_difference + breaks[to_break_index].penalty;
             if(from_break_index != -1 &&
@@ -85,14 +85,14 @@ static int calculate_weight(int from_break_index, int to_break_index, const THBr
     return weight;
 }
 
-static void relax_reachable_from(int break_u, const THBreak *breaks, struct Estimates *estimates, int count, int ideal_width, int two_hyphen_penalty) 
+static void relax_reachable_from(int break_u, const THBreak *breaks, struct Estimates *estimates, int count, CGFloat ideal_width, CGFloat two_hyphen_penalty) 
 {
-    int break_u_estimate = (break_u == -1 ? 0 : estimates[break_u].shortest_path_estimate);
+    CGFloat break_u_estimate = (break_u == -1 ? 0 : estimates[break_u].shortest_path_estimate);
     bool found_a_break = false;
     for(int break_v = break_u + 1; break_v < count; ++break_v) {
-        int weight_from_u_to_v = calculate_weight(break_u, break_v, breaks, count, ideal_width, two_hyphen_penalty);
-        if(weight_from_u_to_v < INT_MAX) {
-            int total_weight_to_v = break_u_estimate + weight_from_u_to_v;
+        CGFloat weight_from_u_to_v = calculate_weight(break_u, break_v, breaks, count, ideal_width, two_hyphen_penalty);
+        if(weight_from_u_to_v < CGFLOAT_MAX) {
+            CGFloat total_weight_to_v = break_u_estimate + weight_from_u_to_v;
             if(estimates[break_v].shortest_path_estimate > total_weight_to_v) {
                 estimates[break_v].shortest_path_estimate = total_weight_to_v;
                 estimates[break_v].predecessor = break_u;
@@ -118,11 +118,11 @@ static void relax_reachable_from(int break_u, const THBreak *breaks, struct Esti
     }
 }
 
-int th_just(const THBreak *breaks, int break_count, int ideal_width, int two_hyphen_penalty, int *result) 
+int th_just(const THBreak *breaks, int break_count, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result) 
 {
     struct Estimates *estimates = malloc(sizeof(struct Estimates) * (break_count));
     for(int i = 0; i < break_count; ++i) {
-        estimates[i].shortest_path_estimate = INT_MAX;
+        estimates[i].shortest_path_estimate = CGFLOAT_MAX;
         //estimates[i].predecessor = 0; // Doesn't matter if this is garbage, it will get filled in later.
         estimates[i].examined = false;
     }

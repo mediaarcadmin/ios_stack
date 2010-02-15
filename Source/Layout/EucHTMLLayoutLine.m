@@ -9,7 +9,7 @@
 #import "EucHTMLLayoutLine.h"
 #import "EucHTMLDocumentNode.h"
 #import "EucHTMLLayoutDocumentRun.h"
-#import "THPair.h"
+#import "THLog.h"
 
 @implementation EucHTMLLayoutLine
 
@@ -48,6 +48,31 @@
     }
     _baseline = maxAscender;
     _size = CGSizeMake(width, maxAscender + maxDescenderAndLineHeightAddition);
+}
+
+- (id *)components
+{
+    return _documentRun.components + self.startComponentOffset;
+}
+
+- (EucHTMLLayoutDocumentRunComponentInfo *)componentInfos
+{
+    return _documentRun.componentInfos + self.startComponentOffset;
+}
+
+- (uint32_t)componentCount
+{
+    return self.endComponentOffset - self.startComponentOffset;
+}
+
+- (void)setStartComponentOffset:(uint32_t)offset
+{
+    _startComponentOffset = offset;
+}
+
+- (CGRect)frame
+{
+    return CGRectMake(_origin.x, _origin.y, _size.width, _size.height);
 }
 
 @end

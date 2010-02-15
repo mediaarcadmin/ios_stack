@@ -18,10 +18,9 @@
 //#import "LibCSSDebug.h"
 //#import "dump_computed.h"
 
-CGFloat libcss_size_to_pixels(css_fixed size, css_unit units)
+CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size, css_unit units)
 {
     CGFloat ret = FIXTOFLT(size);
-    
     
     /*NSString *unns = nil;
     switch(units) {
@@ -53,13 +52,21 @@ CGFloat libcss_size_to_pixels(css_fixed size, css_unit units)
 
     switch(units) {
         case CSS_UNIT_EX:
+            NSCParameterAssert(units != CSS_UNIT_EX);
+            break;
         case CSS_UNIT_EM:
-            abort();
+            {
+                css_fixed fontSize;
+                css_unit fontUnit;
+                css_computed_font_size(computed_style, &fontSize, &fontUnit);
+                NSCParameterAssert(fontUnit == CSS_UNIT_PX || fontUnit == CSS_UNIT_PT);
+                ret = FIXTOFLT(FMUL(size, fontSize));
+            }
             break;
         case CSS_UNIT_IN:
-            ret *= 2.54;
-        case CSS_UNIT_CM:
-            ret *= 10;
+            ret *= 2.54;        // Convert to cm.
+        case CSS_UNIT_CM:  
+            ret *= 10;          // Convert to mm.
         case CSS_UNIT_MM:
             ret *= 0.155828221; // mm per dot on an iPhone screen.
             break;
@@ -71,7 +78,7 @@ CGFloat libcss_size_to_pixels(css_fixed size, css_unit units)
             break;
     }
     
-    return ret;
+    return roundf(ret);
 }
 
 @implementation EucHTMLDocument

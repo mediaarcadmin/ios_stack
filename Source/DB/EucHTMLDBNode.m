@@ -674,8 +674,9 @@ css_error EucHTMLDBNodePresentationalHint(void *pw, void *node,
 	return CSS_PROPERTY_NOT_SET;
 }
 
-css_error EucHTMLDBUADefaultForProperty(void *pw, uint32_t property, css_hint *hint)
+css_error EucHTMLDBUADefaultForProperty(void *pw, uint32_t propertyIn, css_hint *hint)
 {
+    enum css_properties_e property = (enum css_properties_e)propertyIn;
 	if (property == CSS_PROP_COLOR) {
 		hint->data.color = 0x00000000;
 		hint->status = CSS_COLOR_COLOR;
@@ -698,13 +699,13 @@ css_error EucHTMLDBUADefaultForProperty(void *pw, uint32_t property, css_hint *h
 css_error EucHTMLDBComputeFontSize(void *pw, const css_hint *parent, css_hint *size)
 {
 	static css_hint_length sizes[] = {
-		{ FLTTOFIX(6.75), CSS_UNIT_PT },
-		{ FLTTOFIX(7.50), CSS_UNIT_PT },
-		{ FLTTOFIX(9.75), CSS_UNIT_PT },
-		{ FLTTOFIX(12.0), CSS_UNIT_PT },
-		{ FLTTOFIX(13.5), CSS_UNIT_PT },
-		{ FLTTOFIX(18.0), CSS_UNIT_PT },
-		{ FLTTOFIX(24.0), CSS_UNIT_PT }
+		{ FLTTOFIX(18.0f / 1.2f / 1.2f / 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(18.0f / 1.2f / 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(18.0f / 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(18.0f), CSS_UNIT_PT },
+		{ FLTTOFIX(18.0f * 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(18.0f * 1.2f * 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(18.0f * 1.2f * 1.2f * 1.2f), CSS_UNIT_PT }
 	};
 	const css_hint_length *parent_size;
         
@@ -751,6 +752,8 @@ css_error EucHTMLDBComputeFontSize(void *pw, const css_hint *parent, css_hint *s
 	}
     
 	size->status = CSS_FONT_SIZE_DIMENSION;
+
+    assert(size->data.length.unit == CSS_UNIT_PT || size->data.length.unit == CSS_UNIT_PX);
     
 	return CSS_OK;
 }

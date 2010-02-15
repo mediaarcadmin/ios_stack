@@ -59,7 +59,12 @@
 
 - (NSString *)name
 {
-    return [NSString stringWithLWCString:_dbNode.name];
+    lwc_string *name = _dbNode.name;
+    if(name) {
+        return [NSString stringWithLWCString:name];
+    } else {
+        return nil;
+    }
 }
 
 - (NSString *)text
@@ -187,6 +192,17 @@
     } else {
         return nil;
     }    
+}
+
+- (EucHTMLDocumentNode *)blockLevelParent
+{
+    EucHTMLDocumentNode *prospectiveParent = self;
+    css_computed_style *currentNodeStyle = NULL;
+    do {
+        prospectiveParent = prospectiveParent.parent;
+        currentNodeStyle = prospectiveParent.computedStyle;
+    } while(prospectiveParent && (!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK));
+    return prospectiveParent;
 }
 
 - (EucHTMLDocumentNode *)next

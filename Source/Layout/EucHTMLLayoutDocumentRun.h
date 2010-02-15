@@ -16,6 +16,8 @@ typedef struct EucHTMLLayoutDocumentRunComponentInfo {
     CGFloat lineHeight;
     CGFloat ascender;
     CGFloat descender;
+    CGFloat pointSize;
+    EucHTMLDocumentNode *documentNode;
 } EucHTMLLayoutDocumentRunComponentInfo;
 
 @interface EucHTMLLayoutDocumentRun : NSObject {
@@ -33,7 +35,7 @@ typedef struct EucHTMLLayoutDocumentRunComponentInfo {
 
     size_t _wordsCount;
     size_t *_wordOffsetToComponentOffset;
-
+    size_t _startOfLastNonSpaceRun;
 
     BOOL _previousInlineCharacterWasSpace;
     

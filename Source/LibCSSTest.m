@@ -5,7 +5,9 @@
 
 #include "EucHTMLDocument.h"
 #include "EucHTMLDocumentNode.h"
-#include "EucHTMLLayout.h"
+#include "EucHTMLLayouter.h"
+#include "EucHTMLRenderer.h"
+#include "EucHTMLLayoutPositionedBlock.h"
 
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -31,18 +33,43 @@ int main (int argc, const char * argv[]) {
 
     EucHTMLDocument *document = [[EucHTMLDocument alloc] initWithPath:[NSString stringWithUTF8String:argv[2]]];
     
-    EucHTMLLayout *renderer = [[EucHTMLLayout alloc] init];
-    renderer.document = document;
+    EucHTMLLayouter *layouter = [[EucHTMLLayouter alloc] init];
+    layouter.document = document;
     CGRect frame = CGRectMake(0, 0, 320, CGFLOAT_MAX);
-    EucHTMLLayoutPositionedBlock *positionedBlock = [renderer layoutFromNodeWithId:document.body.key
+    EucHTMLLayoutPositionedBlock *positionedBlock = [layouter layoutFromNodeWithId:document.body.key
                                                                         wordOffset:0
                                                                       hyphenOffset:0
                                                                            inFrame:frame];
+    [layouter release];
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+    CGContextRef renderingContext = CGBitmapContextCreate(NULL,
+                                                          positionedBlock.frame.size.width,
+                                                          positionedBlock.frame.size.height,
+                                                          8,
+                                                          positionedBlock.frame.size.width * 4,
+                                                          colorSpace, 
+                                                          kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedFirst);
+    CGColorSpaceRelease(colorSpace);
     
     
-    
+    EucHTMLRenderer *renderer = [[EucHTMLRenderer alloc] init];
+    renderer.cgContext = renderingContext;
+    [renderer render:positionedBlock];
     [renderer release];
+        
+    CGImageRef image = CGBitmapContextCreateImage(renderingContext);
+    CGContextRelease(renderingContext);
     
+    CGImageDestinationRef pngDestination = CGImageDestinationCreateWithURL((CFURLRef)[NSURL fileURLWithPath:@"/tmp/rendered.png"], 
+                                                                           kUTTypePNG, 
+                                                                           1, 
+                                                                           NULL);
+    CGImageDestinationAddImage(pngDestination, image, NULL);
+    CGImageDestinationFinalize(pngDestination);
+    CFRelease(pngDestination);
+    CGImageRelease(image);
+                                     
     [document release];
     
 bail:

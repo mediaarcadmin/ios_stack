@@ -1,12 +1,12 @@
 //
-//  EucHTMLLayout.h
+//  EucHTMLLayouter.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 13/12/2009.
 //  Copyright 2009 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucHTMLLayout.h"
+#import "EucHTMLLayouter.h"
 
 #import "EucHTMLDocument.h"
 #import "EucHTMLDocumentNode.h"
@@ -19,7 +19,7 @@
 #import "THStringRenderer.h"
 #import "thjust.h"
 
-@implementation EucHTMLLayout
+@implementation EucHTMLLayouter
 
 @synthesize document = _document;
 
@@ -62,14 +62,16 @@ Block completion status.
                                           hyphenOffset:(uint32_t)hyphenOffset
                                                inFrame:(CGRect)frame
 {
-    EucHTMLDocumentNode* currentDocumentNode = [self.document nodeForKey:nodeId];
+    EucHTMLDocument *document = self.document;
+    EucHTMLDocumentNode* currentDocumentNode = [document nodeForKey:nodeId];
     
     if(currentDocumentNode) {
         css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
 
         EucHTMLLayoutPositionedBlock *currentPositionedBlock = nil;
         EucHTMLLayoutPositionedBlock *positionedRoot = nil;      
-        if(currentNodeStyle && (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_INLINE) == CSS_DISPLAY_INLINE) {
+        if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+            currentDocumentNode = currentDocumentNode.blockLevelParent;
             positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode.parent
                                                    returningInnermost:&currentPositionedBlock
                                                               inFrame:frame
@@ -78,8 +80,9 @@ Block completion status.
             positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode
                                                    returningInnermost:&currentPositionedBlock
                                                               inFrame:frame
-                                               collapsingInnermostTop:NO];   
+                                               collapsingInnermostTop:NO];
         }
+        currentDocumentNode = [currentDocumentNode next];
         
         CGFloat nextY = frame.origin.y;
         uint32_t nextRunId = currentDocumentNode.key;
@@ -91,8 +94,7 @@ Block completion status.
             potentialFrame.origin.y = nextY;
             
             css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
-            if(currentDocumentNode.isTextNode ||
-               (currentNodeStyle && (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_INLINE) == CSS_DISPLAY_INLINE)) {
+            if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
                 // This is an inline element - start a run.
                 
                 EucHTMLDocumentNode *underNode = currentDocumentNode.parent;
@@ -103,7 +105,7 @@ Block completion status.
                                                                                                  forId:nextRunId];
                 
                 // Position it.
-                EucHTMLLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:currentPositionedBlock.frame
+                EucHTMLLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
                                                                                     wordOffset:wordOffset
                                                                                   hyphenOffset:hyphenOffset];
                 if(positionedRun) {
@@ -127,15 +129,27 @@ Block completion status.
                 }
                 [documentRun release];
             } else {
-                //NSLog(@"%@", currentDocumentNode.name);
-
                 // This is a block-level element.
-                
+
+                // Find the block's parent, closing open nodes until we reach it.
+                EucHTMLDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
+                while(currentPositionedBlock.documentNode != currentDocumentNodeBlockLevelParent) {
+                    [currentPositionedBlock closeBottomFromYPoint:nextY];
+                    nextY = NSMaxY(currentPositionedBlock.frame);
+                    currentPositionedBlock = currentPositionedBlock.parent;
+                    CGRect potentialFrame = currentPositionedBlock.frame;
+                    if(potentialFrame.size.height != CGFLOAT_MAX) {
+                        potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
+                    }
+                    potentialFrame.origin.y = nextY;
+                }
+
                 EucHTMLLayoutPositionedBlock *newBlock = [[EucHTMLLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode];
                 [newBlock positionInFrame:potentialFrame
                             collapsingTop:NO];
                 newBlock.parent = currentPositionedBlock;
-                [currentPositionedBlock addSubEntity:newBlock];
+                [currentPositionedBlock addSubEntity:newBlock];                    
+                
                 currentPositionedBlock = [newBlock autorelease];
 
                 nextY = newBlock.contentRect.origin.y;
@@ -147,6 +161,19 @@ Block completion status.
             }
         } while(currentDocumentNode);
         
+        while(currentPositionedBlock) {
+            [currentPositionedBlock closeBottomFromYPoint:nextY];
+            nextY = NSMaxY(currentPositionedBlock.frame);
+            currentPositionedBlock = currentPositionedBlock.parent;
+            CGRect potentialFrame = currentPositionedBlock.frame;
+            if(potentialFrame.size.height != CGFLOAT_MAX) {
+                potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
+            }
+            potentialFrame.origin.y = nextY;
+        }
+        
+        [positionedRoot closeBottomFromYPoint:nextY];
+
         return positionedRoot;
     } else {
         return nil;
