@@ -24,6 +24,8 @@
     CGSize _size;
     
     CGFloat _baseline;
+    
+    CGFloat _indent;
 }
 
 @property (nonatomic, retain) EucHTMLLayoutDocumentRun *documentRun;
@@ -36,6 +38,8 @@
 @property (nonatomic, assign) CGPoint origin;
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign, readonly) CGRect frame;
+
+@property (nonatomic, assign) CGFloat indent;
 
 @property (nonatomic, readonly) id *components;
 @property (nonatomic, readonly) EucHTMLLayoutDocumentRunComponentInfo *componentInfos;

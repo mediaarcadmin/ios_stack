@@ -58,11 +58,11 @@ static int extract_min(struct Estimates *estimates, int count)
     return smallest_index;
 }
 
-static CGFloat calculate_weight(int from_break_index, int to_break_index, const THBreak *breaks, int count, CGFloat ideal_width, CGFloat two_hyphen_penalty) 
+static CGFloat calculate_weight(int from_break_index, int to_break_index, const THBreak *breaks, int count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty) 
 {
     CGFloat weight = CGFLOAT_MAX;
     
-    CGFloat line_start = from_break_index == -1 ? 0 : breaks[from_break_index].x1;
+    CGFloat line_start = from_break_index == -1 ? -offset : breaks[from_break_index].x1;
     CGFloat line_end = breaks[to_break_index].x0;
     
     CGFloat line_width = line_end - line_start;
@@ -85,12 +85,12 @@ static CGFloat calculate_weight(int from_break_index, int to_break_index, const 
     return weight;
 }
 
-static void relax_reachable_from(int break_u, const THBreak *breaks, struct Estimates *estimates, int count, CGFloat ideal_width, CGFloat two_hyphen_penalty) 
+static void relax_reachable_from(int break_u, const THBreak *breaks, struct Estimates *estimates, int count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty) 
 {
     CGFloat break_u_estimate = (break_u == -1 ? 0 : estimates[break_u].shortest_path_estimate);
     bool found_a_break = false;
     for(int break_v = break_u + 1; break_v < count; ++break_v) {
-        CGFloat weight_from_u_to_v = calculate_weight(break_u, break_v, breaks, count, ideal_width, two_hyphen_penalty);
+        CGFloat weight_from_u_to_v = calculate_weight(break_u, break_v, breaks, count, offset, ideal_width, two_hyphen_penalty);
         if(weight_from_u_to_v < CGFLOAT_MAX) {
             CGFloat total_weight_to_v = break_u_estimate + weight_from_u_to_v;
             if(estimates[break_v].shortest_path_estimate > total_weight_to_v) {
@@ -118,7 +118,7 @@ static void relax_reachable_from(int break_u, const THBreak *breaks, struct Esti
     }
 }
 
-int th_just(const THBreak *breaks, int break_count, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result) 
+int th_just(const THBreak *breaks, int break_count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result) 
 {
     struct Estimates *estimates = malloc(sizeof(struct Estimates) * (break_count));
     for(int i = 0; i < break_count; ++i) {
@@ -130,7 +130,7 @@ int th_just(const THBreak *breaks, int break_count, CGFloat ideal_width, CGFloat
     // The meat of Dijkstra's algorithm:
     int examining_break = -1;
     do {
-        relax_reachable_from(examining_break, breaks, estimates, break_count, ideal_width, two_hyphen_penalty);
+        relax_reachable_from(examining_break, breaks, estimates, break_count, offset, ideal_width, two_hyphen_penalty);
         examining_break = extract_min(estimates, break_count);
     } while(examining_break != -1);
     

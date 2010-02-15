@@ -65,7 +65,7 @@
     
     printf("Rendering %p: %s:\t", line, [NSStringFromRect(NSRectFromCGRect(line.frame)) UTF8String]);
 
-    CGFloat xPosition = line.frame.origin.x;
+    CGFloat xPosition = line.frame.origin.x + line.indent;
     CGFloat yPosition = line.frame.origin.y;
     for(uint32_t i = 0; i < componentCount; ++i) {
         id component = components[i];

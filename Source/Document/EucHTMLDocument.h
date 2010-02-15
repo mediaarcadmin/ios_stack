@@ -11,7 +11,7 @@
 #import <libcss/libcss.h>
 #import "EucHTMLDB.h"
 
-CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size, css_unit units);
+CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase);
 
 @class EucHTMLDocumentNode, EucHTMLDBNodeManager, EucHTMLDBNode;
 

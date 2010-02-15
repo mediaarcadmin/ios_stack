@@ -60,12 +60,12 @@
         borderRect.origin.y = frame.origin.y;
     } else {
         css_computed_margin_top(computedStyle, &fixed, &unit);
-        borderRect.origin.y = frame.origin.y + libcss_size_to_pixels(computedStyle, fixed, unit);
+        borderRect.origin.y = frame.origin.y + libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width);
     }
     css_computed_margin_left(computedStyle, &fixed, &unit);
-    borderRect.origin.x = frame.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit);
+    borderRect.origin.x = frame.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width);
     css_computed_margin_right(computedStyle, &fixed, &unit);
-    borderRect.size.width = CGRectGetMaxY(frame) - libcss_size_to_pixels(computedStyle, fixed, unit) - borderRect.origin.x;
+    borderRect.size.width = CGRectGetMaxY(frame) - libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width) - borderRect.origin.x;
     borderRect.size.height = CGFLOAT_MAX;
     _borderRect = borderRect;
     
@@ -74,12 +74,12 @@
         paddingRect.origin.y = borderRect.origin.y;
     } else {
         css_computed_border_top_width(computedStyle, &fixed, &unit);
-        paddingRect.origin.y = borderRect.origin.y + libcss_size_to_pixels(computedStyle, fixed, unit);
+        paddingRect.origin.y = borderRect.origin.y + libcss_size_to_pixels(computedStyle, fixed, unit, 0);
     }
     css_computed_border_left_width(computedStyle, &fixed, &unit);
-    paddingRect.origin.x = borderRect.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit);
+    paddingRect.origin.x = borderRect.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit, 0);
     css_computed_border_right_width(computedStyle, &fixed, &unit);
-    paddingRect.size.width = CGRectGetMaxY(borderRect) - libcss_size_to_pixels(computedStyle, fixed, unit) - paddingRect.origin.x;
+    paddingRect.size.width = CGRectGetMaxY(borderRect) - libcss_size_to_pixels(computedStyle, fixed, unit, 0) - paddingRect.origin.x;
     paddingRect.size.height = CGFLOAT_MAX;
     _paddingRect = paddingRect;
     
@@ -88,12 +88,12 @@
         contentRect.origin.y = paddingRect.origin.y;
     } else {
         css_computed_padding_top(computedStyle, &fixed, &unit);
-        contentRect.origin.y = paddingRect.origin.y + libcss_size_to_pixels(computedStyle, fixed, unit);
+        contentRect.origin.y = paddingRect.origin.y + libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width);
     }    
     css_computed_padding_left(computedStyle, &fixed, &unit);
-    contentRect.origin.x = paddingRect.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit);
+    contentRect.origin.x = paddingRect.origin.x + libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width);
     css_computed_padding_right(computedStyle, &fixed, &unit);
-    contentRect.size.width = CGRectGetMaxY(paddingRect) - libcss_size_to_pixels(computedStyle, fixed, unit) - contentRect.origin.x;
+    contentRect.size.width = CGRectGetMaxY(paddingRect) - libcss_size_to_pixels(computedStyle, fixed, unit, frame.size.width) - contentRect.origin.x;
     contentRect.size.height = CGFLOAT_MAX;
     _contentRect = contentRect;    
     
@@ -110,16 +110,17 @@
     css_fixed fixed;
     css_unit unit;
     
+    CGFloat width = self.frame.size.width;
     css_computed_padding_bottom(computedStyle, &fixed, &unit);
-    point += libcss_size_to_pixels(computedStyle, fixed, unit);
+    point += libcss_size_to_pixels(computedStyle, fixed, unit, width);
     _paddingRect.size.height = point - _paddingRect.origin.y;
     
     css_computed_border_bottom_width(computedStyle, &fixed, &unit);
-    point += libcss_size_to_pixels(computedStyle, fixed, unit);
+    point += libcss_size_to_pixels(computedStyle, fixed, unit, 0);
     _borderRect.size.height = point - _borderRect.origin.y;
     
     css_computed_margin_bottom(computedStyle, &fixed, &unit);
-    point += libcss_size_to_pixels(computedStyle, fixed, unit);
+    point += libcss_size_to_pixels(computedStyle, fixed, unit, width);
     _frame.size.height = point - _frame.origin.y;
 }
 

@@ -57,6 +57,12 @@
     return _dbNode.kind == nodeKindText;
 }
 
+- (BOOL)isBlockLevel
+{
+    css_computed_style *style = self.computedStyle;
+    return style && (css_computed_display(style, false) & CSS_DISPLAY_BLOCK) == CSS_DISPLAY_BLOCK;
+}
+
 - (NSString *)name
 {
     lwc_string *name = _dbNode.name;

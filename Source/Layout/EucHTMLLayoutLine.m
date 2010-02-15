@@ -23,6 +23,8 @@
 @synthesize origin = _origin;
 @synthesize size = _size;
 
+@synthesize indent = _indent;
+
 - (void)sizeToFitInWidth:(CGFloat)width;
 {
     CGFloat maxAscender = 0;

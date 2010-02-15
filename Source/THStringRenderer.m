@@ -550,7 +550,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     }
     
     _lastUsedBreaksIndexes = malloc(_lastBreakCount * sizeof(int));
-    _lastUsedBreakCount = th_just(_lastBreaks, _lastBreakCount, floorf(maxWidth), 0, _lastUsedBreaksIndexes);
+    _lastUsedBreakCount = th_just(_lastBreaks, _lastBreakCount, 0, floorf(maxWidth), 0, _lastUsedBreaksIndexes);
     
     int longestLineLength = 0;
     int previousLineStart = 0;

@@ -73,7 +73,7 @@ typedef struct THBreak {
 // Note that the last break must have the flag TH_JUST_FLAG_ISHARDBREAK set,
 // otherwise it will be used in the justification calculations (i.e. the 
 // justifier will attempt to make it the same length as the other lines).
-int th_just(const THBreak *breaks, int break_count, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result);
+int th_just(const THBreak *breaks, int break_count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result);
 
 #ifdef __cplusplus
 }

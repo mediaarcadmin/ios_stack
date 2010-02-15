@@ -31,6 +31,8 @@
 @property (nonatomic, readonly) NSString *text;
 @property (nonatomic, readonly) NSString *name;
 
+@property (nonatomic, readonly) BOOL isBlockLevel;
+
 @property (nonatomic, readonly) css_computed_style *computedStyle;
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 

@@ -15,10 +15,12 @@
 #import "EucHTMLDBNode.h"
 #import "EucHTMLDBNodeManager.h"
 
+#import "THLog.h"
+
 //#import "LibCSSDebug.h"
 //#import "dump_computed.h"
 
-CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size, css_unit units)
+CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase)
 {
     CGFloat ret = FIXTOFLT(size);
     
@@ -64,17 +66,23 @@ CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size
             }
             break;
         case CSS_UNIT_IN:
-            ret *= 2.54;        // Convert to cm.
+            ret *= 2.54f;        // Convert to cm.
         case CSS_UNIT_CM:  
-            ret *= 10;          // Convert to mm.
+            ret *= 10.0f;          // Convert to mm.
         case CSS_UNIT_MM:
-            ret *= 0.155828221; // mm per dot on an iPhone screen.
+            ret *= 0.155828221f; // mm per dot on an iPhone screen.
             break;
         case CSS_UNIT_PC:
-            ret *= 12;
+            ret *= 12.0f;
             break;
         case CSS_UNIT_PX:
         case CSS_UNIT_PT:
+            break;
+        case CSS_UNIT_PCT:
+            ret *= percentageBase * 0.01f;
+            break;
+        default:
+            THWarn(@"Unexpected unit %ld (%f size) - not converting.", (long)units, (double)ret);
             break;
     }
     

@@ -21,6 +21,7 @@ static id sCloseNodeMarker;
 @interface EucHTMLLayoutDocumentRun ()
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)size;
 - (void)_accumulateTextNode:(EucHTMLDocumentNode *)subnode;
+- (CGFloat)_textIndentInWidth:(CGFloat)width;
 @end 
 
 @implementation EucHTMLLayoutDocumentRun
@@ -129,6 +130,24 @@ static id sCloseNodeMarker;
     [super dealloc];
 }
 
+- (CGFloat)_textIndentInWidth:(CGFloat)width;
+{
+    CGFloat ret = 0.0f;
+    
+    EucHTMLDocumentNode *documentNode = _startNode;
+    if(!documentNode.isBlockLevel) {
+        documentNode = documentNode.blockLevelParent;
+    }
+    css_computed_style *style = documentNode.computedStyle;
+    if(style) {
+        css_fixed length;
+        css_unit unit;
+        css_computed_text_indent(style, &length, &unit);
+        ret = libcss_size_to_pixels(style, length, unit, width);
+    }
+    return ret;
+}
+
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)info
 {
     if(_componentsCount == _componentsCapacity) {
@@ -163,7 +182,9 @@ static id sCloseNodeMarker;
     css_fixed length;
     css_unit unit;
     css_computed_font_size(subnodeStyle, &length, &unit);
-    CGFloat fontPixelSize = libcss_size_to_pixels(subnodeStyle, length, unit);            
+    
+    // The font size percentages should already be fully resolved.
+    CGFloat fontPixelSize = libcss_size_to_pixels(subnodeStyle, length, unit, 0);             
     CGFloat lineSpacing = [stringRenderer lineSpacingForPointSize:fontPixelSize];
     CGFloat ascender = [stringRenderer ascenderForPointSize:fontPixelSize];
     CGFloat descender = [stringRenderer descenderForPointSize:fontPixelSize];
@@ -278,7 +299,8 @@ static id sCloseNodeMarker;
         if(currentInlineNodeWithStyle.isTextNode) {
             currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
         }
-        CGFloat lineSoFarWidth = 0;
+        
+        CGFloat lineSoFarWidth = 0.0f;
         for(NSUInteger i = 0; i < _componentsCount; ++i) {
             id component = _components[i];
             if(component == sSingleSpaceMarker) {
@@ -344,9 +366,21 @@ static id sCloseNodeMarker;
         ++startBreakOffset;
     }
     
+    CGFloat textIndent;
+    if(hyphenOffset == 0 && wordOffset == 0) {
+        textIndent = [self _textIndentInWidth:frame.size.width];
+    } else {
+        textIndent = 0.0f;
+    }
+    
     int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
     int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
-    int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, frame.size.width, 0, usedBreakIndexes);
+    CGFloat indentationOffset = 0;
+    if(startBreakOffset) {
+        indentationOffset = -_potentialBreaks[startBreakOffset].x1;
+    }
+    indentationOffset += textIndent;
+    int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, textIndent, frame.size.width, 0, usedBreakIndexes);
 
     CGPoint lineOrigin = frame.origin;
     CGRect positionedRunFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 0);
@@ -371,9 +405,15 @@ static id sCloseNodeMarker;
         newLine.startHyphenOffset = 0;
         newLine.endComponentOffset = thisComponentOffset;
         newLine.endHyphenOffset = 0;
-        newLine.origin = lineOrigin;
-        [newLine sizeToFitInWidth:frame.size.width];
         
+        newLine.origin = lineOrigin;
+        
+        if(textIndent) {
+            newLine.indent = textIndent;
+            textIndent = 0.0f;
+        }
+        [newLine sizeToFitInWidth:frame.size.width];
+
         CGFloat newHeight = positionedRunFrame.size.height + newLine.size.height;
         if(newHeight <= frame.size.height) {
             positionedRunFrame.size.height = newHeight;
