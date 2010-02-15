@@ -70,7 +70,7 @@ void *EucRealloc(void *ptr, size_t len, void *pw);
 // 'flags' are flags ass pased to open().
 // e.g. O_CREAT | O_RDWR | O_TRUNC to create a new HTDP to write into.
 //      O_RDONLY to read an existing tree.
-EucHTMLDB *EucHTMLDBOpen(char *path, int flags);
+EucHTMLDB *EucHTMLDBOpen(const char *path, int flags);
 void EucHTMLDBClose(EucHTMLDB *context);
 
 uint32_t EucHTMLDBPutUint32Array(EucHTMLDB *context, uint32_t key, const uint32_t *keyArray, uint32_t count);

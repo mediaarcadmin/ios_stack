@@ -43,6 +43,9 @@ CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size
 // Logically package-scope propeties.
 @property (nonatomic, readonly) EucHTMLDBNodeManager *htmlDBNodeManager;
 @property (nonatomic, readonly) css_select_ctx *selectContext;
+@property (nonatomic, readonly) lwc_context *lwcContext;
+
+css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_string *rel, lwc_string **abs);
 
 // Private - used by EucHTMLDBNode.
 - (void)notifyOfDealloc:(EucHTMLDocumentNode *)node;

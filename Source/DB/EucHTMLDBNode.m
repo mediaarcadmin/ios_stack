@@ -121,7 +121,7 @@ css_error EucHTMLDBNodeName(void *pw, void *node, lwc_context *dict, lwc_string 
                 hubbub_string thisName;
                 hubbub_string thisValue;
                 EucHTMLDBCopyAttribute(self->_htmlDb, attributeArray[i], &ns, &thisName, &thisValue);
-                if(ns == HUBBUB_NS_HTML && 
+                if(/*ns == HUBBUB_NS_HTML &&*/
                    nameLength == thisName.len && 
                    strncasecmp(attributeName, (const char *)thisName.ptr, nameLength) == 0 && thisValue.len) {
                     free((void *)thisName.ptr);

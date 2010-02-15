@@ -986,7 +986,7 @@ EucHTMLDB *EucHTMLDBCreateWithHTMLAtPath(const char* htmlPath, const char* dbPat
     hubbub_parser *parser = NULL;
     hubbub_tree_handler *treeHandler = NULL;
     
-    EucHTMLDB *context = EucHTMLDBOpen("/tmp/test.db", O_CREAT | O_RDWR | O_TRUNC);
+    EucHTMLDB *context = EucHTMLDBOpen(dbPath, O_CREAT | O_RDWR | O_TRUNC);
     
     FILE *fp = fopen(htmlPath, "rb");
 	if (fp == NULL) {

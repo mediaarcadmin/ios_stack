@@ -351,7 +351,7 @@ static id sCloseNodeMarker;
     CGPoint lineOrigin = frame.origin;
     CGRect positionedRunFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 0);
     
-    
+    /*
     NSLog(@"lines:");
     CGFloat lastLineStart = 0;
     for(int i = 0; i < usedBreakCount; ++i) {
@@ -359,7 +359,7 @@ static id sCloseNodeMarker;
         printf("line: %fpx\n", thisBreak->x0 - lastLineStart);
         lastLineStart = thisBreak->x1;
     }
-     
+     */
     
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
     int lineStartComponentOffset = startComponentOffset;

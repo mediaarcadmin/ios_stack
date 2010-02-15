@@ -85,10 +85,10 @@ CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size
 
 @synthesize body = _body;
 @synthesize selectContext = _selectCtx;
+@synthesize lwcContext = _lwcContext;
 @synthesize htmlDBNodeManager = _manager;
 
-static css_error resolve_url(void *pw, lwc_context *dict,
-                             const char *base, lwc_string *rel, lwc_string **abs)
+css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_string *rel, lwc_string **abs)
 {    
 	/* About as useless as possible */
 	*abs = lwc_context_string_ref(dict, rel);
@@ -107,7 +107,7 @@ static css_error resolve_url(void *pw, lwc_context *dict,
                              CSS_MEDIA_ALL, false,
                              false, _lwcContext,
                              EucRealloc, NULL,
-                             resolve_url, NULL,
+                             EucResolveURL, NULL,
                              &stylesheet) == CSS_OK) {
         css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)baseSheet.bytes, baseSheet.length);
         if(err == CSS_NEEDDATA) {
@@ -146,7 +146,7 @@ static css_error resolve_url(void *pw, lwc_context *dict,
                                          CSS_MEDIA_ALL, false,
                                          false, _lwcContext,
                                          EucRealloc, NULL,
-                                         resolve_url, NULL,
+                                         EucResolveURL, NULL,
                                          &stylesheet) == CSS_OK) {
                     
                     css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)styleChars, styleLength);
@@ -184,7 +184,7 @@ static css_error resolve_url(void *pw, lwc_context *dict,
     if((self = [super init])) {
         BOOL success = NO;
         _db = EucHTMLDBCreateWithHTMLAtPath([path fileSystemRepresentation],
-                                            "/tmp/test.db");
+                                            NULL);
         if(_db) {
              if(lwc_create_context(EucRealloc, NULL, &_lwcContext) == lwc_error_ok) {
                 lwc_context_ref(_lwcContext);

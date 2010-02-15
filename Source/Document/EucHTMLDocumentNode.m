@@ -87,16 +87,44 @@
 {
     if(_dbNode.kind == nodeKindElement) {
         if(!_computedStyle) {
+            css_error err;
+            
+            css_stylesheet *inlineStyle = NULL;
+            hubbub_string inlineStyleString = [_dbNode copyHubbubAttributeForName:"style"];
+            if(inlineStyleString.len) {
+                err = css_stylesheet_create(CSS_LEVEL_21, "UTF-8",
+                                            "", "", CSS_ORIGIN_AUTHOR, 
+                                            CSS_MEDIA_ALL, false,
+                                            true, _document.lwcContext,
+                                            EucRealloc, NULL,
+                                            EucResolveURL, NULL,
+                                            &inlineStyle);
+                if(err != CSS_OK) {
+                    THWarn(@"Error %ld creating inline style", (long)err);
+                } else {
+                    err = css_stylesheet_append_data(inlineStyle, inlineStyleString.ptr, inlineStyleString.len);
+                    if(err == CSS_NEEDDATA) {
+                        err = css_stylesheet_data_done(inlineStyle);
+                    }
+                    if(err != CSS_OK) {
+                        THWarn(@"Error %ld adding data to inline style", (long)err);
+                        css_stylesheet_destroy(inlineStyle);
+                        inlineStyle = NULL;
+                    }
+                }
+                free((void *)inlineStyleString.ptr);
+            }
+            
             css_computed_style_create(EucRealloc, NULL, &_computedStyle);
             css_select_handler *selectHandler = [EucHTMLDBNode selectHandler];
-            css_error err = css_select_style(_document.selectContext, 
-                                             (void *)(uintptr_t)_dbNode.key,
-                                             CSS_PSEUDO_ELEMENT_NONE, 
-                                             CSS_MEDIA_PRINT, 
-                                             NULL, 
-                                             _computedStyle,
-                                             selectHandler,
-                                             _document.htmlDBNodeManager);
+            err = css_select_style(_document.selectContext, 
+                                   (void *)(uintptr_t)_dbNode.key,
+                                   CSS_PSEUDO_ELEMENT_NONE, 
+                                   CSS_MEDIA_PRINT, 
+                                   inlineStyle, 
+                                   _computedStyle,
+                                   selectHandler,
+                                   _document.htmlDBNodeManager);
             if(err == CSS_OK) {
                 if(self != _document.body) {
                     EucHTMLDocumentNode *parent = self.parent;
@@ -116,6 +144,10 @@
                 }
             } else {
                 THWarn(@"Error %ld selecting style", (long)err);
+            }
+            
+            if(inlineStyle) {
+                css_stylesheet_destroy(inlineStyle);
             }
         }
     }

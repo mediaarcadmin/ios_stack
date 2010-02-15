@@ -224,7 +224,7 @@ void *EucRealloc(void *ptr, size_t len, void *pw)
 }
 
 
-EucHTMLDB *EucHTMLDBOpen(char *path, int flags) 
+EucHTMLDB *EucHTMLDBOpen(const char *path, int flags) 
 {
     EucHTMLDB *context = calloc(1, sizeof(EucHTMLDB));
     
