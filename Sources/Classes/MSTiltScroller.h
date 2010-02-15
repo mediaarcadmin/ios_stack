@@ -16,21 +16,24 @@
 	
 	float initialAngleY;
 	float initialAngleZ;
-	float initialAngle;
-
+    
+	float initialAngleV;
+	float initialAngleH;    
+    
 	int xMultiplier;
-
+    
 	
 	UIImageView *bezelView;
 	
-	int lastSpeed;
+	int lastSpeedV;
+	int lastSpeedH;    
 	
 	NSTimer* scrollbarUpdateTimer;
 	
 	UIDeviceOrientation oldOrientation;
 	
 	id delegate;
-
+    
 }
 
 
@@ -41,12 +44,14 @@
 
 
 @property (nonatomic) bool enabled;
-@property (nonatomic) float initialAngle;
+@property (nonatomic) float initialAngleV;
+@property (nonatomic) float initialAngleH;
 @property (nonatomic) float initialAngleY;
 @property (nonatomic) float initialAngleZ;
 
 
-@property (nonatomic) int lastSpeed;
+@property (nonatomic) int lastSpeedV;
+@property (nonatomic) int lastSpeedH;
 
 @property (nonatomic, assign) id delegate;
 
@@ -54,7 +59,8 @@
 - (id)initWithScrollView:(UIScrollView *)sv;
 
 
-- (float)calculateSpeed:(float)angle;
+- (float)calculateSpeedV:(float)angle;
+- (float)calculateSpeedH:(float)angle;
 - (void)stop:(bool)showBezel;
 - (void)start:(bool)showBezel;
 - (bool)toggleScroller:(bool)showBezel;
