@@ -1182,7 +1182,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
+    //Dave changed this line to connect the settings buttons to tilt scrolling directions!
+    //if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
+    if ([self currentPageLayout] == kBlioPageLayoutSpeedRead)    
         return NO;
     else
         return YES;
@@ -1218,6 +1220,31 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             bookView.fontPointSize = kBlioFontPointSizeArray[newSize];
             [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
         }
+    }
+    
+    //Dave added this to control the tiltscrolling direction settings!
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+        switch ([sender selectedSegmentIndex]) {
+            case 0:
+                tiltScroller.directionModifierH = 1;
+                tiltScroller.directionModifierV = 1;                
+                break;
+            case 1:
+                tiltScroller.directionModifierH = -1;
+                tiltScroller.directionModifierV = -1;                
+                break;
+            case 3:
+                tiltScroller.directionModifierH = 1;
+                tiltScroller.directionModifierV = -1;                
+                break;
+            case 4:
+                tiltScroller.directionModifierH = -1;
+                tiltScroller.directionModifierV = 1;                
+                break;                
+            default:
+                break;
+        }
+        
     }
 }
 

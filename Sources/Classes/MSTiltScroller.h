@@ -34,6 +34,8 @@
 	
 	id delegate;
     
+    int directionModifierH;
+    int directionModifierV;    
 }
 
 
@@ -54,6 +56,9 @@
 @property (nonatomic) int lastSpeedH;
 
 @property (nonatomic, assign) id delegate;
+
+@property (nonatomic) int directionModifierH;
+@property (nonatomic) int directionModifierV;
 
 - (id)initWithWebView:(UIWebView *)wv;
 - (id)initWithScrollView:(UIScrollView *)sv;

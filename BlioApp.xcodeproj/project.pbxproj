@@ -1157,7 +1157,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				PREBINDING = NO;
-				SDKROOT = iphonesimulator3.0;
+				SDKROOT = iphoneos3.0;
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Debug;
