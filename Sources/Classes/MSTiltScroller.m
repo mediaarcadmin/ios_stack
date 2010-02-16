@@ -56,13 +56,14 @@
 
 @synthesize lastSpeedV;
 @synthesize lastSpeedH;
-
+@synthesize directionModifierH, directionModifierV;
 
 - (id)init {
     
 	self = [super init];
 	
-	
+	directionModifierH = 1;
+	directionModifierV = 1;    
 	
 	
 	
@@ -91,7 +92,8 @@
 	
 	
 	
-	
+	directionModifierH = 1;
+	directionModifierV = 1;    
 	
 	initialAngleV = -100;
 	initialAngleH = -100;    
@@ -115,7 +117,8 @@
     
 	
 	
-	
+	directionModifierH = 1;
+	directionModifierV = 1;    
     
     
 	initialAngleV = -100;
@@ -331,20 +334,20 @@
     
 	if (initialAngleV < accV) {
 		currentAngleV = accV - initialAngleV;
-		directionV = kScrollDownDirection;
+		directionV = kScrollDownDirection*directionModifierV;
 	} else {
         
 		currentAngleV = initialAngleV - accV;//+.05;
-		directionV = kScrollUpDirection;
+		directionV = kScrollUpDirection*directionModifierV;
 	}
     
     if (initialAngleH < accH) {
 		currentAngleH = accH - initialAngleH;
-		directionH = kScrollUpDirection;
+		directionH = kScrollUpDirection*directionModifierH;
 	} else {
         
 		currentAngleH = initialAngleH - accH;//+.05;
-		directionH = kScrollDownDirection;
+		directionH = kScrollDownDirection*directionModifierH;
 	}
     
     
