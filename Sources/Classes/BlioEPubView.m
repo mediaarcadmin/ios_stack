@@ -7,7 +7,7 @@
 //
 
 #import "BlioEPubView.h"
-#import "BlioBookmarkPoint.h"
+#import "BlioBookmark.h"
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucEPubPageLayoutController.h>
@@ -124,9 +124,9 @@
     return bestPageNumber;
 }
 
-- (BlioBookmarkPoint *)pageBookmarkPoint
+- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
 {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
     
     EucBookPageIndexPoint *eucIndexPoint = ((EucEPubBook *)self.book).currentPageIndexPoint;
     ret.ePubParagraphId = eucIndexPoint.startOfParagraphByteOffset;
@@ -138,7 +138,7 @@
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
     if(bookmarkPoint.layoutPage && !bookmarkPoint.ePubWordOffset) {
         NSString *bestPageUuid = [self _bookUuidFromEPubBook:((EucEPubBook *)self.book)
@@ -157,7 +157,7 @@
     [eucIndexPoint release];
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint
 {
     if(bookmarkPoint.layoutPage && !bookmarkPoint.ePubWordOffset) {
         NSString *bestPageUuid = [self _bookUuidFromEPubBook:((EucEPubBook *)self.book)

@@ -7,7 +7,7 @@
 //
 
 #import "BlioSpeedReadView.h"
-#import "BlioBookmarkPoint.h"
+#import "BlioBookmark.h"
 #import <QuartzCore/QuartzCore.h>
 #import <QuartzCore/CALayer.h>
 #import <QuartzCore/CATransaction.h>
@@ -368,19 +368,19 @@
 - (void)goToPageNumber:(NSInteger)aPageNumber animated:(BOOL)animated {
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint {
     return bookmarkPoint.layoutPage;
 }
 
-- (BlioBookmarkPoint *)pageBookmarkPoint
+- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
 {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
     ret.layoutPage = self.pageNumber;
     return [ret autorelease];
     
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
     currentParagraph = bookmarkPoint.ePubParagraphId;
     currentWordOffset = bookmarkPoint.ePubWordOffset;

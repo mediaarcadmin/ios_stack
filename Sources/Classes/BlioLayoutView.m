@@ -7,8 +7,9 @@
 //
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutView.h"
-#import "BlioBookmarkPoint.h"
+#import "BlioBookmark.h"
 #import <libEucalyptus/EucMenuItem.h>
+#import <libEucalyptus/EucHighlighterRange.h>
 
 static const CGFloat kBlioPDFBlockMinimumWidth = 50;
 static const CGFloat kBlioPDFBlockInsetX = 6;
@@ -362,6 +363,45 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return ret;
 }
 
+- (BlioBookmarkRange *)selectedRange {
+    EucHighlighterRange *highlighterRange = [self.highlighter selectedRange];
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkPoint *endPoint = nil;
+
+    if (nil != highlighterRange) {
+        BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+        
+        NSInteger startPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:[highlighterRange startBlockId]];
+        NSInteger endPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:[highlighterRange endBlockId]];
+        NSInteger startParagraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:[highlighterRange startBlockId]];
+        NSInteger endParagraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:[highlighterRange endBlockId]];
+        NSInteger startWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange startElementId]];
+        NSInteger endWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange endElementId]];
+        
+        
+        [startPoint setLayoutPage:startPageIndex + 1];
+        [startPoint setParagraphOffset:startParagraphOffset];
+        [startPoint setWordOffset:startWordOffset];
+        
+        [endPoint setLayoutPage:endPageIndex + 1];
+        [endPoint setParagraphOffset:endParagraphOffset];
+        [endPoint setWordOffset:endWordOffset];
+    } else {
+        [startPoint setLayoutPage:self.pageNumber];
+    }
+    
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    [range setStartPoint:startPoint];
+    [range setEndPoint:endPoint];
+    
+    [startPoint release];
+    if (nil != endPoint) [endPoint release];
+    
+    return [range autorelease];
+}
+
 #pragma mark -
 #pragma mark TTS
 
@@ -597,21 +637,29 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self didChangeValueForKey:@"pageNumber"];
 }
 
-- (BlioBookmarkPoint *)pageBookmarkPoint
+- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
 {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
     ret.layoutPage = self.pageNumber;
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
     [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
+    [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
+}
+
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint
 {
     return bookmarkPoint.layoutPage;
+}
+
+- (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
+    return bookmarkRange.startPoint.layoutPage;
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {

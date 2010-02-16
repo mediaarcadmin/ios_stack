@@ -34,6 +34,11 @@
     }
 }
 
++ (NSInteger)wordIndexForWordID:(id)aWordID {
+    NSNumber *wordIDNum = (NSNumber *)aWordID;
+    return [wordIDNum integerValue];
+}
+
 @end
 
 @implementation BlioTextFlowSection

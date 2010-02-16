@@ -19,7 +19,7 @@
 #import "BlioSpeedReadView.h"
 #import "BlioContentsTabViewController.h"
 #import "BlioLightSettingsViewController.h"
-#import "BlioBookmarkPoint.h"
+#import "BlioBookmark.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -304,8 +304,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 @interface BlioBookViewController (PRIVATE)
 - (NSArray *)_toolbarItemsForReadingView;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
-
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
+- (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
 
 @end
 
@@ -1720,31 +1720,30 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == kBlioLibraryAddNoteAction) {
-        if (_pageJumpView && !_pageJumpView.hidden) [self performSelector:@selector(togglePageJumpPanel)];
-        UIView *container = self.navigationController.visibleViewController.view;
-        NSString *pageNumber = [self currentPageNumber];
-        BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber];
-        [aNotesView setDelegate:self];
-        [aNotesView showInView:container];
-        [aNotesView release];
+        if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
+            BlioBookmarkRange *range = [self.bookView selectedRange];
+            [self displayNote:nil atRange:range animated:YES];
+        }
     } else if (buttonIndex == kBlioLibraryAddBookmarkAction) {
-        BlioBookmarkPoint *currentBookmark = self.bookView.pageBookmarkPoint;
+        // TODO Clean this up to remove Abosulte points and work with BookmarkRanges directly
+        BlioBookmarkAbsolutePoint *currentBookmarkAbsolutePoint = self.bookView.pageBookmarkPoint;
+        BlioBookmarkPoint *currentBookmarkPoint = [BlioBookmarkPoint bookmarkPointWithAbsolutePoint:currentBookmarkAbsolutePoint];
+        BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
         
         NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
         NSManagedObject *existingBookmark = nil;
         
         for (NSManagedObject *bookmark in bookmarks) {
-            if (([[bookmark valueForKey:@"layoutPage"] integerValue] == currentBookmark.layoutPage) &&
-                ([[bookmark valueForKey:@"ePubParagraphId"] integerValue] == currentBookmark.ePubParagraphId) &&
-                ([[bookmark valueForKey:@"ePubWordOffset"] integerValue] == currentBookmark.ePubWordOffset) &&
-                ([[bookmark valueForKey:@"ePubHyphenOffset"] integerValue] == currentBookmark.ePubHyphenOffset)) {
+            if ([BlioBookmarkRange bookmark:bookmark isEqualToBookmarkRange:currentBookmarkRange]) {
                 existingBookmark = bookmark;
                 break;
             }
         }
         
+        // Don't allow duplicate bookmarks to be created
         if (nil != existingBookmark) return;
         
+        // TODO clean this up to consolodate Bookmark range and getCurrentParagraphId
         NSString *bookmarkText = nil;
         if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
             EucEPubBook *book = (EucEPubBook*)[(BlioEPubView *)self.bookView book];
@@ -1757,13 +1756,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         }
         
         NSManagedObject *newBookmark = [NSEntityDescription
-                                     insertNewObjectForEntityForName:@"Bookmark"
-                                     inManagedObjectContext:[self managedObjectContext]];
+                                        insertNewObjectForEntityForName:@"BlioBookmark"
+                                        inManagedObjectContext:[self managedObjectContext]];
         
-        [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.layoutPage] forKey:@"layoutPage"];
-        [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubParagraphId] forKey:@"ePubParagraphId"];
-        [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubWordOffset] forKey:@"ePubWordOffset"];
-        [newBookmark setValue:[NSNumber numberWithInteger:currentBookmark.ePubHyphenOffset] forKey:@"ePubHyphenOffset"];
+        NSManagedObject *newRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+        [newBookmark setValue:newRange forKey:@"range"];
         [newBookmark setValue:bookmarkText forKey:@"bookmarkText"];
         [bookmarks addObject:newBookmark];
         
@@ -1774,7 +1771,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)notesViewCreateNote:(BlioNotesView *)notesView {
-    BlioBookmarkPoint *currentBookmark = self.bookView.pageBookmarkPoint;
+    BlioBookmarkAbsolutePoint *currentBookmark = self.bookView.pageBookmarkPoint;
     
     NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
         
@@ -1835,23 +1832,34 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self dismissModalViewControllerAnimated:YES];
 }
 
-- (void)showNote:(NSManagedObject *)note animated:(BOOL)animated {
+- (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated {
     if (_pageJumpView && !_pageJumpView.hidden) [self performSelector:@selector(togglePageJumpPanel)];
     UIView *container = self.navigationController.visibleViewController.view;
-    NSString *pageNumber = [self currentPageNumber];
     
-    BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithPage:pageNumber note:note];
+    BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithRange:range note:note];
     [aNotesView setDelegate:self];
     [aNotesView showInView:container animated:animated];
     [aNotesView release];
 }
 
-- (void)goToContentsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
-    NSInteger newPageNumber = [self.bookView pageNumberForBookmarkPoint:bookmarkPoint];
+- (void)goToContentsBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
+    NSInteger pageNum;
+    if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
+        pageNum = [self.bookView pageNumberForBookmarkRange:bookmarkRange];
+    } else {
+        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:bookmarkRange.startPoint];
+        pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
+    }
     
-    [self updatePageJumpPanelForPage:newPageNumber animated:animated];
-    [self updatePieButtonForPage:newPageNumber animated:animated];
-    [_bookView goToBookmarkPoint:bookmarkPoint animated:animated];
+    [self updatePageJumpPanelForPage:pageNum animated:animated];
+    [self updatePieButtonForPage:pageNum animated:animated];
+    
+    if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
+        [self.bookView goToBookmarkRange:bookmarkRange animated:animated];
+    } else {
+        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:bookmarkRange.startPoint];
+        [self.bookView goToBookmarkPoint:aBookMarkPoint animated:animated];
+    }
 }
 
 - (void)goToContentsUuid:(NSString *)sectionUuid animated:(BOOL)animated {
@@ -1894,7 +1902,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)addNote:(id)sender
 {
-    NSLog(@"Note!");
+    if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
+        BlioBookmarkRange *range = [self.bookView selectedRange];
+        [self displayNote:nil atRange:range animated:YES];
+    }
 }
 
 - (void)copy:(id)sender

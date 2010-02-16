@@ -10,7 +10,7 @@
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import "BlioBookView.h"
 #import "BlioMockBook.h"
-#import "BlioBookmarkPoint.h"
+#import "BlioBookmark.h"
 
 @protocol BlioContentsTabViewControllerDelegate <NSObject>
 
@@ -18,8 +18,8 @@
 
 - (void)dismissContentsTabView:(id)sender;
 
-- (void)showNote:(NSManagedObject *)note animated:(BOOL)animated;
-- (void)goToContentsBookmarkPoint:bookmarkPoint animated:(BOOL)animated;
+- (void)displayNote:(NSManagedObject *)note animated:(BOOL)animated;
+- (void)goToContentsBookmarkRange:bookmarkRange animated:(BOOL)animated;
 - (void)goToContentsUuid:(NSString *)sectionUuid animated:(BOOL)animated;
 - (void)deleteBookmark:(NSManagedObject *)bookmark;
 - (void)deleteNote:(NSManagedObject *)note;

@@ -24,6 +24,7 @@
 @property (nonatomic, retain) NSNumber *wordID;
 
 - (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs;
++ (NSInteger)wordIndexForWordID:(id)aWordID;
 
 @end
 
