@@ -864,6 +864,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 //        [self renderSharpPageAtScale:aScrollView.zoomScale];
         [self.highlighter setShouldHideMenu:NO];
     }
+    if (tiltScroller) [tiltScroller resetAngle];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {

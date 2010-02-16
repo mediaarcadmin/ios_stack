@@ -60,9 +60,7 @@
 @property (nonatomic) int directionModifierH;
 @property (nonatomic) int directionModifierV;
 
-- (id)initWithWebView:(UIWebView *)wv;
 - (id)initWithScrollView:(UIScrollView *)sv;
-
 
 - (float)calculateSpeedV:(float)angle;
 - (float)calculateSpeedH:(float)angle;

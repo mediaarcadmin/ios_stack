@@ -62,8 +62,8 @@
     
 	self = [super init];
 	
-	directionModifierH = 1;
-	directionModifierV = 1;    
+	directionModifierH = -1;
+	directionModifierV = -1;    
 	
 	
 	
@@ -92,8 +92,8 @@
 	
 	
 	
-	directionModifierH = 1;
-	directionModifierV = 1;    
+	directionModifierH = -1;
+	directionModifierV = -1;    
 	
 	initialAngleV = -100;
 	initialAngleH = -100;    
@@ -110,32 +110,6 @@
 	
     
 }
-
-- (id)initWithWebView:(UIWebView *)wv {
-	self = [super init];
-	self.webView = wv; 
-    
-	
-	
-	directionModifierH = 1;
-	directionModifierV = 1;    
-    
-    
-	initialAngleV = -100;
-	initialAngleH = -100;    
-	initialAngleY = -100;
-	initialAngleZ = -100;
-	lastSpeedV = 0;
-	enabled = false;
-    
-	oldOrientation = [[UIDevice currentDevice] orientation];
-	xMultiplier = 1;
-	if (oldOrientation == UIDeviceOrientationLandscapeRight) xMultiplier = -1;
-	
-	return self;
-	
-}
-
 
 
 -(void)autoRotateBezel:(NSNotification*)note
