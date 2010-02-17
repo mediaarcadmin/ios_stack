@@ -47,10 +47,12 @@
 @interface BlioBookmarkRange : NSObject {
     BlioBookmarkPoint *startPoint;
     BlioBookmarkPoint *endPoint;
+    UIColor *color;
 }
 
 @property (nonatomic, retain) BlioBookmarkPoint *startPoint;
 @property (nonatomic, retain) BlioBookmarkPoint *endPoint;
+@property (nonatomic, retain) UIColor *color;
 
 - (NSManagedObject *)persistentBookmarkRangeInContext:(NSManagedObjectContext *)moc;
 + (BOOL)bookmark:(NSManagedObject *)persistedBookmarkRange isEqualToBookmarkRange:(BlioBookmarkRange *)bookmarkRange;

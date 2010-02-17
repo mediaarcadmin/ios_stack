@@ -107,6 +107,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber;
 - (void)setPageNumber:(NSInteger)pageNumber;
+- (void)setHighlights:(NSArray *)newHighlights;
 - (CGPDFPageRef)page;
 
 @end
@@ -152,24 +153,24 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 - (CGRect)convertRectFromPDFPage:(CGRect)rect;
 - (void)renderSharpPageAtScale:(CGFloat)scale;
 - (void)hideSharpPage;
-//- (void)zoomToContents;
+- (void)setHighlights:(NSArray *)newHighlights;
 
 @end
 
 @implementation BlioLayoutView
 
 
-@synthesize book, scrollView, containerView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, highlighter;
+@synthesize delegate, book, scrollView, containerView, pageViews, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, highlighter;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     CGPDFDocumentRelease(pdf);
+    self.delegate = nil;
     self.book = nil;
     self.scrollView = nil;
     self.containerView = nil;
     self.pageViews = nil;
-    self.navigationController = nil;
     self.currentPageView = nil;
     self.fonts = nil;
     [self.highlighter detatchFromView];
@@ -275,6 +276,63 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 - (void)setTiltScroller:(MSTiltScroller*)ts {
     tiltScroller = ts;
     [tiltScroller setScrollView:self.scrollView];
+}
+
+#pragma mark -
+#pragma mark Highlights
+
+- (void)displayHighlights {
+    NSInteger pageIndex = self.pageNumber - 1;
+    NSInteger nextPageIndex = pageIndex + 1;
+    NSInteger prevPageIndex = pageIndex - 1;
+    
+    if (nextPageIndex >= self.pageCount) nextPageIndex = pageIndex;
+    if (prevPageIndex < 0) prevPageIndex = 0;
+    
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:nextPageIndex];
+    NSUInteger maxOffset = [pageParagraphs count];
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    startPoint.layoutPage = prevPageIndex + 1;
+    startPoint.paragraphOffset = 0;
+    
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+    endPoint.layoutPage = nextPageIndex + 1;
+    endPoint.paragraphOffset = maxOffset;
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    range.startPoint = startPoint;
+    range.endPoint = endPoint;
+    
+    NSArray *highlightRanges = [self.delegate highlightedRangesForRange:range];
+    
+    [startPoint release];
+    [endPoint release];
+    [range release];
+    
+    NSMutableArray *highlightRects = [NSMutableArray array];
+    
+    for (BlioBookmarkRange *highlightRange in highlightRanges) {
+        NSLog(@"Highlight of color %@", [highlightRange.color description]);
+            
+        NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:(highlightRange.startPoint.layoutPage - 1)];
+        
+        if ([pageParagraphs count] > highlightRange.startPoint.paragraphOffset) {
+            NSArray *words = [[pageParagraphs objectAtIndex:highlightRange.startPoint.paragraphOffset] words];
+            if (highlightRange.startPoint.wordOffset < [words count]) {
+                CGRect wordRect = [[words objectAtIndex:highlightRange.startPoint.wordOffset] rect];
+                [highlightRects addObject:[NSValue valueWithCGRect:wordRect]];
+            }
+        }
+        
+    }
+    
+    NSLog(@"highlightRects: %@", highlightRects);
+    [self.currentPageView setHighlights:highlightRects];
+}
+
+- (void)refreshHighlights {
+    [self displayHighlights];
 }
 
 #pragma mark -
@@ -1216,6 +1274,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self.view setPageNumber:CGPDFPageGetPageNumber(newPage)];
 }
 
+- (void)setHighlights:(NSArray *)newHighlights {
+    [self.view setHighlights:newHighlights];
+}
+
 - (CGPoint)convertPointToPDFPage:(CGPoint)point {
     CGPoint invertedViewPoint = CGPointMake(point.x, CGRectGetHeight(self.bounds) - point.y);
     
@@ -1606,6 +1668,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         [tiledLayer setNeedsDisplay];
         
     }
+}
+
+- (void)setHighlights:(NSArray *)newHighlights {
+    [highlightLayerDelegate setHighlights:newHighlights];
+    [highlightLayer setNeedsDisplay];
 }
 
 @end

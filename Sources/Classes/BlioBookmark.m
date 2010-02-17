@@ -71,11 +71,12 @@
 
 @implementation BlioBookmarkRange
 
-@synthesize startPoint, endPoint;
+@synthesize startPoint, endPoint, color;
 
 - (void)dealloc {
     self.startPoint = nil;
     self.endPoint = nil;
+    self.color = nil;
     [super dealloc];
 }
 
@@ -89,6 +90,7 @@
     
     [newBookmarkRange setValue:startBookmarkPoint forKey:@"startPoint"];
     [newBookmarkRange setValue:endBookmarkPoint forKey:@"endPoint"];
+    [newBookmarkRange setValue:self.color forKey:@"color"];
 
     return newBookmarkRange;
 }
@@ -111,6 +113,7 @@
 + (BlioBookmarkRange *)bookmarkRangeWithBookmarkPoint:(BlioBookmarkPoint *)point {
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
     range.startPoint = point;
+    range.endPoint = point;
     
     return [range autorelease];
 }
@@ -119,6 +122,7 @@
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
     range.startPoint = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"startPoint"]];
     range.endPoint = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"endPoint"]];
+    range.color = [persistedBookmarkRange valueForKey:@"color"];
     
     return [range autorelease];
 }

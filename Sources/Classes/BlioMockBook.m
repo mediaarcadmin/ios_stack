@@ -188,6 +188,60 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
     return textFlow;
 }
 
+- (NSArray *)sortedBookmarks {
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
+    return [[[self valueForKey:@"bookmarks"] allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+}
+
+- (NSArray *)sortedNotes {
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
+    return [[[self valueForKey:@"notes"] allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+}
+
+- (NSArray *)sortedHighlights {
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, nil];
+    return [[[self valueForKey:@"highlights"] allObjects] sortedArrayUsingDescriptors:sortDescriptors];
+}
+
+- (NSArray *)sortedHighlightsForRange:(BlioBookmarkRange *)range {
+    NSManagedObjectContext *moc = [self managedObjectContext]; 
+    NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+    [request setEntity:[NSEntityDescription entityForName:@"BlioHighlight" inManagedObjectContext:moc]];
+    
+    NSNumber *minPageLayout = [NSNumber numberWithInteger:range.startPoint.layoutPage];
+    NSNumber *maxPageLayout = [NSNumber numberWithInteger:range.endPoint.layoutPage];
+    //NSArray *pageLayoutRange = [NSArray arrayWithObjects:minPageLayout, maxPageLayout, nil];
+        
+    NSPredicate *startsOnPage = nil; 
+    startsOnPage = [NSPredicate predicateWithFormat:@"(range.startPoint.layoutPage > %@) AND (range.startPoint.layoutPage < %@)", minPageLayout, maxPageLayout]; 
+    [request setPredicate:startsOnPage];
+    
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortWordDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.wordOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.hyphenOffset" ascending:YES] autorelease];
+
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, sortWordDescriptor, sortHyphenDescriptor, nil];
+    [request setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil; 
+    NSArray *results = [moc executeFetchRequest:request error:&error]; 
+    [request release];
+    
+    if (error) {
+        NSLog(@"Error whilst retrieving highlights for range. %@, %@", error, [error userInfo]); 
+        return nil;
+    } else {
+        return results;
+    }
+}
+
 @end
 
 

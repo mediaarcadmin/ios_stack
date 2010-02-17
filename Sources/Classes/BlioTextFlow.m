@@ -39,6 +39,10 @@
     return [wordIDNum integerValue];
 }
 
++ (id)wordIDForWordIndex:(NSInteger)aWordIndex {
+    return [NSNumber numberWithInteger:aWordIndex];
+}
+
 @end
 
 @implementation BlioTextFlowSection
@@ -158,6 +162,10 @@
     } else {
         return -1;
     }
+}
+
++ (id)paragraphIDForPageIndex:(NSInteger)aPageIndex paragraphIndex:(NSInteger)aParagraphIndex {
+    return [NSString stringWithFormat:@"%d-%d", aPageIndex, aParagraphIndex];
 }
 
 @end

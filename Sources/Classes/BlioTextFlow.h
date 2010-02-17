@@ -25,6 +25,7 @@
 
 - (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs;
 + (NSInteger)wordIndexForWordID:(id)aWordID;
++ (id)wordIDForWordIndex:(NSInteger)aWordIndex;
 
 @end
 
@@ -78,6 +79,7 @@
 - (NSComparisonResult)compare:(BlioTextFlowParagraph *)rhs;
 + (NSInteger)pageIndexForParagraphID:(id)aParagraphID;
 + (NSInteger)paragraphIndexForParagraphID:(id)aParagraphID;
++ (id)paragraphIDForPageIndex:(NSInteger)aPageIndex paragraphIndex:(NSInteger)aParagraphIndex;
 
 @end
 

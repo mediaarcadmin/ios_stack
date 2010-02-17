@@ -7,6 +7,17 @@
  *
  */
 
+#import "BlioBookmark.h"
+
+#pragma mark -
+@protocol BlioBookDelegate <NSObject>
+
+@required
+- (NSArray *)highlightedRangesForRange:(BlioBookmarkRange *)range;
+- (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange;
+@end
+
+#pragma mark -
 @protocol BlioTTSDataSource <NSObject>
 
 @required
@@ -17,8 +28,9 @@
 - (void)highlightWordAtParagraphId:(id)paragraphId wordOffset:(uint32_t)wordOffset;
 @end
 
-@protocol EucBookContentsTableViewControllerDataSource;
+#pragma mark -
 
+@protocol EucBookContentsTableViewControllerDataSource;
 @class BlioBookmarkAbsolutePoint;
 @class BlioBookmarkRange;
 @class BlioMockBook;
@@ -62,5 +74,7 @@
 - (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange;
 - (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
 
+// Book highlights
+- (void)refreshHighlights;
 
 @end

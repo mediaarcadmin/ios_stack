@@ -408,6 +408,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                     BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithBook:newBook animated:YES];
                     self.book = newBook;
                     self.bookView = aBookView;
+                    [aBookView setDelegate:self];
                     [aBookView release];
                 } else {
                     return nil;
@@ -1168,6 +1169,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithBook:self.book animated:NO];
+            [layoutView setDelegate:self];
             [layoutView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = layoutView;            
             [layoutView release];
@@ -1919,6 +1921,25 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
 }
 
+#pragma mark -
+#pragma mark BlioBookDelegate 
+
+- (NSArray *)highlightedRangesForRange:(BlioBookmarkRange *)range {
+    NSMutableArray *highlightRanges = [NSMutableArray array];
+    
+    for (NSManagedObject *highlight in [self.book sortedHighlightsForRange:range]) {
+        BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[highlight valueForKey:@"range"]];
+        [highlightRanges addObject:range];
+    }
+    
+    return [NSArray arrayWithArray:highlightRanges];
+}
+
+- (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange {
+    return;
+}
+
+
 
 #pragma mark -
 #pragma mark Edit Menu Responder Actions 
@@ -1926,7 +1947,26 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)highlight:(id)sender
 {
-    NSLog(@"Hilight!");
+    if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
+        BlioBookmarkRange *selectedRange = [self.bookView selectedRange];
+        NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
+        
+        NSManagedObject *newHighlight = [NSEntityDescription
+                                    insertNewObjectForEntityForName:@"BlioHighlight"
+                                    inManagedObjectContext:[self managedObjectContext]];
+        
+        NSManagedObject *newRange = [selectedRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+        [newRange setValue:[UIColor yellowColor] forKey:@"color"];
+        [newHighlight setValue:newRange forKey:@"range"];
+        [highlights addObject:newHighlight];
+        
+        NSError *error;
+        if (![[self managedObjectContext] save:&error])
+            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+    }
+    if ([self.bookView respondsToSelector:@selector(refreshHighlights)]) {
+        [self.bookView refreshHighlights];
+    }
 }
 
 - (void)addNote:(id)sender
