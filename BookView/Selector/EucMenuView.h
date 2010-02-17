@@ -11,6 +11,7 @@
 
 @interface EucMenuView : UIControl {
     NSArray *_titles;
+    NSArray *_colors;
     
     CGRect _mainRect;
     BOOL _arrowAtTop;
@@ -37,7 +38,8 @@
     NSUInteger _selectedIndex;
 }
 
-@property (nonatomic, copy) NSArray *titles;
+@property (nonatomic, retain) NSArray *titles;
+@property (nonatomic, retain) NSArray *colors;
 @property (nonatomic, assign) NSUInteger selectedIndex;
 
 - (void)positionAndResizeForAttachingToRect:(CGRect)rect;

@@ -36,6 +36,7 @@ static const CGFloat sOuterYPadding = 2.0f;
 @implementation EucMenuView
 
 @synthesize titles = _titles;
+@synthesize colors = _colors;
 @synthesize mainRect = _mainRect;
 @synthesize arrowAtTop = _arrowAtTop;
 @synthesize arrowMidX = _arrowMidX;
@@ -265,6 +266,7 @@ static const CGFloat sOuterYPadding = 2.0f;
     }
     
     NSArray *titles =  self.titles;
+    NSArray *colors =  self.colors;
     NSUInteger titlesCount = titles.count;
     NSUInteger breaks = titlesCount - 1;
     for(int i = 0; i < breaks; ++i) {
@@ -272,10 +274,17 @@ static const CGFloat sOuterYPadding = 2.0f;
     }
     
     CGFloat mainRectHeight = self.mainRect.size.height;
-    [[UIColor whiteColor] set];
     UIFont *font = self.font;
+    UIColor *whiteColor = [UIColor whiteColor];
     for(int i = 0; i < titlesCount; ++i) {
         NSString *title = [titles objectAtIndex:i];
+        UIColor *color = [colors objectAtIndex:i];
+        if(color && (id)color != (id)[NSNull null]) {
+            [color set];
+        } else {
+            [whiteColor set];
+        }
+        
         CGSize titleSize = [title sizeWithFont:font];
         CGPoint stringPoint = CGPointMake(_regionRects[i].origin.x + sInnerMargins, self.mainRect.origin.y);
         if(i == 0) {

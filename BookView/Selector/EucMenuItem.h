@@ -11,10 +11,12 @@
 @interface EucMenuItem : NSObject {
     NSString *_title;
     SEL _action;
+    UIColor *_color;
 }
 
 @property(nonatomic, copy) NSString *title;
 @property(nonatomic, assign) SEL action;
+@property(nonatomic, retain) UIColor* color;
 
 - (id)initWithTitle:(NSString *)title action:(SEL)action;
 - (void)invokeAt:(UIResponder *)responder;

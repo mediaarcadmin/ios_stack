@@ -263,6 +263,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
     self.temporaryHighlightLayers = nil;
 }
 
+
+
 #pragma mark -
 #pragma mark Selection
 
@@ -520,6 +522,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
     self.highlightKnobLayers = nil;    
 }
 
+
+- (void)changeActiveMenuItemsTo:(NSArray *)menuItems
+{
+    [self.menuController setMenuItems:menuItems];
+}
+
 - (void)_positionMenu
 {
     CGRect targetRect = [[[self highlightLayers] objectAtIndex:0] frame];
@@ -659,6 +667,100 @@ static const CGFloat sLoupePopDuration = 0.05f;
     }
 }
 
+
++ (NSArray *)coalescedLineRectsForElementRects:(NSArray *)elementRects inView:(UIView *)view 
+{
+    // We'll scale the rects to make sure they will be on pixl boundies
+    // on screen even if the layer they're in has a scale transform applied.
+    CGSize screenScaleFactors = [view screenScaleFactors];        
+        
+    NSMutableArray *ret = [NSMutableArray array];
+    CGRect currentLineRect = CGRectZero;
+    
+    BOOL isFirstElement = YES;
+    for(NSValue *rectValue in elementRects) {
+        CGRect thisRect = [rectValue CGRectValue];
+        if(isFirstElement) {
+            currentLineRect = thisRect;
+            isFirstElement = NO;
+        } else {
+            CGFloat overlappingPixels = 
+                MIN(currentLineRect.origin.y + currentLineRect.size.height, thisRect.origin.y + thisRect.size.height)
+                - MAX(currentLineRect.origin.y, thisRect.origin.y);
+            
+            // Try to work out if this rect is "on the same line" as
+            // the last one, and extend the "line rect" if it is.
+            if(thisRect.origin.x >= currentLineRect.origin.x + currentLineRect.size.width &&
+               (overlappingPixels > 0.33 * currentLineRect.size.height ||
+                overlappingPixels > 0.33 * thisRect.size.height)) {
+                   CGFloat newLimit = MAX(currentLineRect.origin.y + currentLineRect.size.height, 
+                                          thisRect.origin.y + thisRect.size.height);
+                   currentLineRect.origin.y = MIN(currentLineRect.origin.y, thisRect.origin.y);
+                   currentLineRect.size.height = newLimit - currentLineRect.origin.y;
+                   currentLineRect.size.width = (thisRect.size.width + thisRect.origin.x) - currentLineRect.origin.x; 
+               } else {
+                   [ret addObject:[NSValue valueWithCGRect:CGRectScreenIntegral(currentLineRect, screenScaleFactors)]];
+                   currentLineRect = thisRect;
+               }
+        }
+    }
+    if(!CGRectEqualToRect(currentLineRect, CGRectZero)) {
+        [ret addObject:[NSValue valueWithCGRect:CGRectScreenIntegral(currentLineRect, screenScaleFactors)]];
+    }   
+    return ret;
+}
+
+- (NSArray *)highlightRectsForRange:(EucSelectorRange *)selectedRange 
+                       inDataSource:(id<EucSelectorDataSource>)dataSource 
+                            forView:(UIView *)view 
+{                                      
+    NSArray *blockIds = [dataSource blockIdentifiersForEucSelector:self];
+    NSUInteger blockIdIndex = 0;
+    
+    NSMutableArray *nonCoalescedRects = [NSMutableArray array];
+    
+    id startBlockId = selectedRange.startBlockId;
+    id endBlockId = selectedRange.endBlockId;
+    id startElementId = selectedRange.startElementId;
+    id endElementId = selectedRange.endElementId;
+    
+    while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+        ++blockIdIndex;
+    }
+    BOOL isFirstBlock = YES;
+    BOOL isLastBlock = NO;
+    do {
+        id blockId = [blockIds objectAtIndex:blockIdIndex];
+        
+        NSArray *elementIds = [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId];
+        NSUInteger elementIdCount = elementIds.count;
+        NSUInteger elementIdIndex = 0;
+        
+        isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+        
+        id elementId;
+        if(isFirstBlock) {
+            while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                ++elementIdIndex;
+            }
+            isFirstBlock = NO;
+        }
+        
+        do {
+            elementId = [elementIds objectAtIndex:elementIdIndex];
+            [nonCoalescedRects addObjectsFromArray:[dataSource eucSelector:self 
+                                             rectsForElementWithIdentifier:elementId
+                                                     ofBlockWithIdentifier:blockId]];
+            ++elementIdIndex;
+        } while (isLastBlock ? 
+                 ([elementId compare:endElementId] < NSOrderedSame) : 
+                 elementIdIndex < elementIdCount);
+        ++blockIdIndex;
+    } while(!isLastBlock);
+    
+    return [[self class] coalescedLineRectsForElementRects:nonCoalescedRects inView:view];
+}
+
 - (void)redisplaySelectedRange
 {
     EucSelectorRange *selectedRange = self.selectedRange;
@@ -666,75 +768,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
         id<EucSelectorDataSource> dataSource = self.dataSource;
         
         // Work out he rects to highlight
-        NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
-        
-        NSArray *blockIds = [dataSource blockIdentifiersForEucSelector:self];
-        NSUInteger blockIdIndex = 0;
-        
-        id startBlockId = selectedRange.startBlockId;
-        id endBlockId = selectedRange.endBlockId;
-        id startElementId = selectedRange.startElementId;
-        id endElementId = selectedRange.endElementId;
-        
-        while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
-            ++blockIdIndex;
-        }
-        BOOL isFirstBlock = YES;
-        BOOL isLastBlock = NO;
-        BOOL isFirstElement = YES;
-        CGRect currentLineRect = CGRectZero;
-        do {
-            id blockId = [blockIds objectAtIndex:blockIdIndex];
-            
-            NSArray *elementIds = [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId];
-            NSUInteger elementIdCount = elementIds.count;
-            NSUInteger elementIdIndex = 0;
-            
-            isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
-            
-            id elementId;
-            if(isFirstBlock) {
-                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
-                    ++elementIdIndex;
-                }
-                isFirstBlock = NO;
-            }
-            
-            do {
-                elementId = [elementIds objectAtIndex:elementIdIndex];
-                for(NSValue *rectValue in [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId]) {
-                    CGRect thisRect = [rectValue CGRectValue];
-                    if(isFirstElement) {
-                        currentLineRect = thisRect;
-                        isFirstElement = NO;
-                    } else {
-                        CGFloat overlappingPixels = 
-                            MIN(currentLineRect.origin.y + currentLineRect.size.height, thisRect.origin.y + thisRect.size.height)
-                              - MAX(currentLineRect.origin.y, thisRect.origin.y);
-                        
-                        // Try to work out if this rect is "on the same line" as
-                        // the last one, and extend the "line rect" if it is.
-                        if(thisRect.origin.x >= currentLineRect.origin.x + currentLineRect.size.width &&
-                           (overlappingPixels > 0.33 * currentLineRect.size.height ||
-                            overlappingPixels > 0.33 * thisRect.size.height)) {
-                            CGFloat newLimit = MAX(currentLineRect.origin.y + currentLineRect.size.height, 
-                                                   thisRect.origin.y + thisRect.size.height);
-                            currentLineRect.origin.y = MIN(currentLineRect.origin.y, thisRect.origin.y);
-                            currentLineRect.size.height = newLimit - currentLineRect.origin.y;
-                            currentLineRect.size.width = (thisRect.size.width + thisRect.origin.x) - currentLineRect.origin.x; 
-                        } else {
-                            [highlightRects addObject:[NSValue valueWithCGRect:currentLineRect]];
-                            currentLineRect = thisRect;
-                        }
-                    }
-                }
-                ++elementIdIndex;
-            } while (isLastBlock ? 
-                     ([elementId compare:endElementId] < NSOrderedSame) : 
-                     elementIdIndex < elementIdCount);
-            ++blockIdIndex;
-        } while(!isLastBlock);
-        [highlightRects addObject:[NSValue valueWithCGRect:currentLineRect]];
+        NSArray *highlightRects = [self highlightRectsForRange:selectedRange 
+                                                  inDataSource:dataSource 
+                                                       forView:self.attachedView];
         
         // Highlight them, reusing the current highlight layers if possible.
         UIView *viewWithSelection = self.viewWithSelection;
@@ -762,15 +798,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 }
             }
         } 
-        
-        // We'll scale the rects to make sure they will be on pixl boundies
-        // on screen even if the layer they're in has a scale transform applied.
-        CGSize screenScaleFactors = [self.attachedView screenScaleFactors];
-        
+                
         for(NSUInteger i = 0; i < highlightRectsCount; ++i) {
             CALayer *layer = [highlightLayers objectAtIndex:i];
             NSValue *rectValue = [highlightRects objectAtIndex:i];
-            layer.frame = CGRectScreenIntegral([rectValue CGRectValue], screenScaleFactors);
+            layer.frame = [rectValue CGRectValue];
             layer.hidden = NO;
             --unusedHighlightLayersCount;
         }
@@ -809,6 +841,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
             }
         }
     }
+}
+
+- (BOOL)selectedRangeIsHighlight
+{
+    return NO;
 }
 
 - (void)_trackTouch:(UITouch *)touch
