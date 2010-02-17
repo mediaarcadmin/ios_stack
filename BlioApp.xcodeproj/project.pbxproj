@@ -68,15 +68,9 @@
 		7D381CF310D93023008D34E2 /* rightButtonBlackOpaque.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD710D93023008D34E2 /* rightButtonBlackOpaque.png */; };
 		7D381CF410D93023008D34E2 /* rightButtonBlackTranslucent.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD810D93023008D34E2 /* rightButtonBlackTranslucent.png */; };
 		7D381CF510D93023008D34E2 /* rightButtonBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CD910D93023008D34E2 /* rightButtonBlue.png */; };
-		7D381CF610D93023008D34E2 /* BookButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDA10D93023008D34E2 /* BookButton.png */; };
 		7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
-		7D381CF810D93023008D34E2 /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDC10D93023008D34E2 /* BookPaper.png */; };
-		7D381CF910D93023008D34E2 /* BookPaperWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDD10D93023008D34E2 /* BookPaperWhite.png */; };
-		7D381CFA10D93023008D34E2 /* ContentsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDE10D93023008D34E2 /* ContentsButton.png */; };
 		7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
 		7D381D0110D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */; };
-		7D381D0210D93023008D34E2 /* UIBarButtonSystemItemFastForward.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE710D93023008D34E2 /* UIBarButtonSystemItemFastForward.png */; };
-		7D381D0310D93023008D34E2 /* UIBarButtonSystemItemRewind.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE810D93023008D34E2 /* UIBarButtonSystemItemRewind.png */; };
 		7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		7D4CE4751100C64C0061BDF2 /* BlioBookmarkPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmarkPoint.m */; };
@@ -326,15 +320,9 @@
 		7D381CD710D93023008D34E2 /* rightButtonBlackOpaque.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlackOpaque.png; sourceTree = "<group>"; };
 		7D381CD810D93023008D34E2 /* rightButtonBlackTranslucent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlackTranslucent.png; sourceTree = "<group>"; };
 		7D381CD910D93023008D34E2 /* rightButtonBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightButtonBlue.png; sourceTree = "<group>"; };
-		7D381CDA10D93023008D34E2 /* BookButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookButton.png; sourceTree = "<group>"; };
 		7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
-		7D381CDC10D93023008D34E2 /* BookPaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaper.png; sourceTree = "<group>"; };
-		7D381CDD10D93023008D34E2 /* BookPaperWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaperWhite.png; sourceTree = "<group>"; };
-		7D381CDE10D93023008D34E2 /* ContentsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ContentsButton.png; sourceTree = "<group>"; };
 		7D381CDF10D93023008D34E2 /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
 		7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = reverseAnimatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
-		7D381CE710D93023008D34E2 /* UIBarButtonSystemItemFastForward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemFastForward.png; sourceTree = "<group>"; };
-		7D381CE810D93023008D34E2 /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
 		7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
 		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7D4CE4731100C64C0061BDF2 /* BlioBookmarkPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmarkPoint.h; sourceTree = "<group>"; };
@@ -658,16 +646,10 @@
 				7D381D0510D93039008D34E2 /* HyphenationPatterns */,
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CCD10D93023008D34E2 /* animatedBookTurnVertices.vertexData */,
-				7D381CDA10D93023008D34E2 /* BookButton.png */,
-				7D381CDC10D93023008D34E2 /* BookPaper.png */,
-				7D381CDD10D93023008D34E2 /* BookPaperWhite.png */,
 				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
 				7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */,
-				7D381CDE10D93023008D34E2 /* ContentsButton.png */,
 				7D381CDF10D93023008D34E2 /* EPubDefault.css */,
 				7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */,
-				7D381CE710D93023008D34E2 /* UIBarButtonSystemItemFastForward.png */,
-				7D381CE810D93023008D34E2 /* UIBarButtonSystemItemRewind.png */,
 				7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */,
 				7DB9F6F810F364060010DF0B /* LinuxLibertine-Bold.otf */,
 				7DB9F6F910F364060010DF0B /* LinuxLibertine-BoldItalic.otf */,
@@ -950,15 +932,9 @@
 				7D381CF310D93023008D34E2 /* rightButtonBlackOpaque.png in Resources */,
 				7D381CF410D93023008D34E2 /* rightButtonBlackTranslucent.png in Resources */,
 				7D381CF510D93023008D34E2 /* rightButtonBlue.png in Resources */,
-				7D381CF610D93023008D34E2 /* BookButton.png in Resources */,
 				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
-				7D381CF810D93023008D34E2 /* BookPaper.png in Resources */,
-				7D381CF910D93023008D34E2 /* BookPaperWhite.png in Resources */,
-				7D381CFA10D93023008D34E2 /* ContentsButton.png in Resources */,
 				7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */,
 				7D381D0110D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData in Resources */,
-				7D381D0210D93023008D34E2 /* UIBarButtonSystemItemFastForward.png in Resources */,
-				7D381D0310D93023008D34E2 /* UIBarButtonSystemItemRewind.png in Resources */,
 				7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */,
 				7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */,
 				7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */,
