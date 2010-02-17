@@ -10,11 +10,11 @@
 
 #import "EucBookContentsTableViewController.h"
 #import "EucPageTurningView.h"
-#import "EucHighlighter.h"
+#import "EucSelector.h"
 #import "EucPageView.h"
 
-@protocol EucBook, EucPageLayoutController, EucBookViewDelegate, EucHighlighterDelegate;
-@class EucBookReference, THScalableSlider, EucBookPageIndexPoint, EucHighlighter;
+@protocol EucBook, EucPageLayoutController, EucBookViewDelegate, EucSelectorDelegate;
+@class EucBookReference, THScalableSlider, EucBookPageIndexPoint, EucSelector;
 
 typedef struct EucPoint {
     uint32_t paragraphId;
@@ -26,7 +26,7 @@ typedef struct EucRange {
     EucPoint end;
 } EucRange;
 
-@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucHighlighterDataSource> {
+@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDataSource> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
 
@@ -76,14 +76,14 @@ typedef struct EucRange {
     NSMutableArray *_highlightLayers;
     BOOL _highlightingDisabled;
     
-    EucHighlighter *_highlighter;
-    id<EucHighlighterDelegate> _highlighterDelegate;
+    EucSelector *_selector;
+    id<EucSelectorDelegate> _selectorDelegate;
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
 
 @property (nonatomic, assign) id<EucBookViewDelegate> delegate;
-@property (nonatomic, assign) id<EucHighlighterDelegate> highlighterDelegate;
+@property (nonatomic, assign) id<EucSelectorDelegate> selectorDelegate;
 
 @property (nonatomic, readonly) EucBookReference<EucBook> *book;
 
