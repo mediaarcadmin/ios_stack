@@ -1251,16 +1251,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)setCurrentPageColor:(BlioPageColor)newColor
 {
-    if(newColor != self.currentPageColor) {
-        UIView<BlioBookView> *bookView = self.bookView;
-        if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
-            NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
-                                                                  ofType:@""];
-            UIImage *pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
-            [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
-        }  
-        _currentPageColor = newColor;
-    }
+    UIView<BlioBookView> *bookView = self.bookView;
+    if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
+                                                              ofType:@""];
+        UIImage *pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+        [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
+    }  
+    _currentPageColor = newColor;
 }
 
 - (void)changePageColor:(id)sender {
