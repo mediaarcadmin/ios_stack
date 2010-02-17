@@ -124,13 +124,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 @interface BlioPDFContainerScrollView : UIScrollView {
     NSInteger pageCount;
-    EucHighlighter *highlighter;
+    EucSelector *selector;
     NSTimer *doubleTapBeginTimer;
     NSTimer *doubleTapEndTimer;
 }
 
 @property (nonatomic) NSInteger pageCount;
-@property (nonatomic, assign) EucHighlighter *highlighter;
+@property (nonatomic, assign) EucSelector *selector;
 @property (nonatomic, retain) NSTimer *doubleTapBeginTimer;
 @property (nonatomic, retain) NSTimer *doubleTapEndTimer;
 
@@ -160,7 +160,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @implementation BlioLayoutView
 
 
-@synthesize delegate, book, scrollView, containerView, pageViews, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, highlighter;
+@synthesize delegate, book, scrollView, containerView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -173,8 +173,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.pageViews = nil;
     self.currentPageView = nil;
     self.fonts = nil;
-    [self.highlighter detatchFromView];
-    self.highlighter = nil;
+    [self.selector detatchFromView];
+    self.selector = nil;
     [super dealloc];
 }
 
@@ -223,13 +223,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         self.containerView.clipsToBounds = NO;
         [aView release];
         
-        EucHighlighter *aHighlighter = [[EucHighlighter alloc] init];
-        [aHighlighter setShouldSniffTouches:NO];
-        aHighlighter.dataSource = self;
-        aHighlighter.delegate =  self;
-        self.highlighter = aHighlighter;
-        [self.scrollView setHighlighter:aHighlighter];
-        [aHighlighter release];
+        EucSelector *aSelector = [[EucSelector alloc] init];
+        [aSelector setShouldSniffTouches:NO];
+        aSelector.dataSource = self;
+        aSelector.delegate =  self;
+        self.selector = aSelector;
+        [self.scrollView setSelector:aSelector];
+        [aSelector release];
         
         NSMutableArray *pageViewArray = [[NSMutableArray alloc] initWithCapacity:kBlioLayoutMaxViews];
         self.pageViews = pageViewArray;
@@ -337,8 +337,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 #pragma mark -
 #pragma mark Highlighter
+#pragma mark Selector
 
-- (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter {
+- (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
     NSInteger pageIndex = self.pageNumber - 1;
     NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
     NSMutableArray *identifiers = [NSMutableArray array];
@@ -348,7 +349,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return identifiers;
 }
 
-- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)paragraphID {
+- (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)paragraphID {
     CGRect pageRect = CGRectZero;
     
     NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
@@ -364,7 +365,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return pageRect;
 }
 
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)paragraphID; {
+- (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)paragraphID; {
     NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
     NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
     NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
@@ -380,7 +381,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     }
 }
 
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)paragraphID {    
+- (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)paragraphID {    
     CGRect pageRect = CGRectZero;
     
     NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
@@ -400,7 +401,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
 }
 
-- (NSArray *)menuItemsForEucHighlighter:(EucHighlighter *)hilighter
+- (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter
 {
     EucMenuItem *highlightItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
                                                              action:@selector(highlight:)];
@@ -532,7 +533,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         NSArray *words = [currentParagraph words];
         if ([words count] > wordOffset) {
             BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
-            [self.highlighter temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:paragraphID animated:YES];
+            [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:paragraphID animated:YES];
         }
                                                    
     }
@@ -856,7 +857,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if (current) {
         self.currentPageView = pageView;
         //NSLog(@"attached to view");
-        [self.highlighter attachToView:self.currentPageView];
+        [self.selector attachToView:self.currentPageView];
     }
     
     if (preload) [pageView renderSharpPageAtScale:1];
@@ -937,8 +938,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 - (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
     [self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
     [self renderSharpPageAtScale:self.scrollView.zoomScale];
-    [self.highlighter redisplaySelectedRange]; 
-    [self.highlighter setShouldHideMenu:NO];
+    [self.selector redisplaySelectedRange]; 
+    [self.selector setShouldHideMenu:NO];
     
     
     if (scale == 1.0f) {
@@ -968,12 +969,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if (!decelerate) {
         //[self.currentPageView renderSharpPageAtScale:aScrollView.zoomScale];
 //        [self renderSharpPageAtScale:aScrollView.zoomScale];
-        [self.highlighter setShouldHideMenu:NO];
+        [self.selector setShouldHideMenu:NO];
     }
+    if (tiltScroller) [tiltScroller resetAngle];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
-    [self.highlighter setShouldHideMenu:YES];
+    [self.selector setShouldHideMenu:YES];
 
     if (self.disableScrollUpdating) return;
 
@@ -1024,7 +1026,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)updateAfterScroll {
-    [self.highlighter setShouldHideMenu:NO];
+    [self.selector setShouldHideMenu:NO];
 //    [self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
 //    [self renderSharpPageAtScale:self.scrollView.zoomScale];
     if (self.disableScrollUpdating) return;
@@ -1357,10 +1359,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
 @implementation BlioPDFContainerScrollView
 
-@synthesize pageCount, highlighter, doubleTapBeginTimer, doubleTapEndTimer;
+@synthesize pageCount, selector, doubleTapBeginTimer, doubleTapEndTimer;
 
 - (void)dealloc {
-    self.highlighter = nil;
+    self.selector = nil;
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
     [self.doubleTapEndTimer invalidate];
@@ -1389,20 +1391,20 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 - (void)delayedTouchesBegan:(NSTimer *)timer {
     NSSet *touches = (NSSet *)[timer userInfo];
     [self.doubleTapBeginTimer invalidate];
-    [self.highlighter touchesBegan:touches];
+    [self.selector touchesBegan:touches];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     if (self.doubleTapBeginTimer) {
         [self.doubleTapBeginTimer invalidate];
         self.doubleTapBeginTimer = nil;
-        [self.highlighter touchesBegan:touches];
+        [self.selector touchesBegan:touches];
     }
     
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
 
-    [self.highlighter touchesMoved:touches];
+    [self.selector touchesMoved:touches];
     [[self nextResponder] touchesMoved:touches withEvent:event];
 }
 
@@ -1413,7 +1415,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.doubleTapEndTimer = nil;
     
     [self setScrollEnabled:YES];
-    [self.highlighter touchesEnded:touches];
+    [self.selector touchesEnded:touches];
     
     UITouch * t = [touches anyObject];
     if( [t tapCount] == 1 ) {
@@ -1432,7 +1434,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.doubleTapBeginTimer = nil;
     
     [self setScrollEnabled:YES];
-    [self.highlighter touchesCancelled:touches];
+    [self.selector touchesCancelled:touches];
 }
 
 - (BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view {

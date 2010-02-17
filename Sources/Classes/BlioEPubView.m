@@ -29,7 +29,7 @@
     
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:aEPubBook])) {
         self.allowsSelection = YES;
-        self.highlighterDelegate = self;
+        self.selectorDelegate = self;
         if (animated) self.appearAtCoverThenOpen = YES;
     }
     [aEPubBook release];
@@ -179,7 +179,7 @@
 }
 
 
-- (NSArray *)menuItemsForEucHighlighter:(EucHighlighter *)hilighter
+- (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter
 {
     EucMenuItem *highlightItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
                                                              action:@selector(highlight:)];

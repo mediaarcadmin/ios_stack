@@ -15,7 +15,7 @@
 #import "EucBookPageIndexPoint.h"
 #import "EucBookTitleView.h"
 #import "EucPageTextView.h"
-#import "EucHighlighter.h"
+#import "EucSelector.h"
 
 #import "THUIViewAdditions.h"
 #import "THRoundRectView.h"
@@ -56,7 +56,7 @@
 @synthesize book = _book;
 
 @synthesize allowsSelection = _allowsSelection;
-@synthesize highlighterDelegate = _highlighterDelegate;
+@synthesize selectorDelegate = _selectorDelegate;
 
 @synthesize pageTexture = _pageTexture;
 @synthesize pageTextureIsDark = _pageTextureIsDark;
@@ -107,11 +107,11 @@
 
 - (void)dealloc
 {
-    if(_highlighter) {
-        [_highlighter removeObserver:self
+    if(_selector) {
+        [_selector removeObserver:self
                           forKeyPath:@"tracking"];
-        [_highlighter detatchFromView];
-        [_highlighter release];
+        [_selector detatchFromView];
+        [_selector release];
     }
     [self _removeHighlights];
 
@@ -160,12 +160,12 @@
         
         _pageTurningView.dimQuotient = _dimQuotient;        
     } 
-    if(_highlighter) {
-        [_highlighter removeObserver:self
+    if(_selector) {
+        [_selector removeObserver:self
                           forKeyPath:@"tracking"];
-        [_highlighter detatchFromView];
-        [_highlighter release];
-        _highlighter = nil;
+        [_selector detatchFromView];
+        [_selector release];
+        _selector = nil;
     }
 }
 
@@ -182,16 +182,16 @@
             NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];
             [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
         }  
-        _highlighter = [[EucHighlighter alloc] init];
-        _highlighter.shouldSniffTouches = self.allowsSelection;
-        [_highlighter attachToView:self];
-        [_highlighter addObserver:self
+        _selector = [[EucSelector alloc] init];
+        _selector.shouldSniffTouches = self.allowsSelection;
+        [_selector attachToView:self];
+        [_selector addObserver:self
                        forKeyPath:@"tracking"
                           options:0
                           context:NULL];
-        _highlighter.dataSource = self;
-        if(_highlighterDelegate) {
-            _highlighter.delegate = _highlighterDelegate;
+        _selector.dataSource = self;
+        if(_selectorDelegate) {
+            _selector.delegate = _selectorDelegate;
         }
     } else {
         [_pageTurningView removeFromSuperview];
@@ -281,12 +281,12 @@
 
 - (void)_removeHighlights
 {
-    [_highlighter removeTemporaryHighlight];
+    [_selector removeTemporaryHighlight];
 }
 
 - (void)_moveHighlightToWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset 
 {
-    [_highlighter temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:wordOffset]
+    [_selector temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:wordOffset]
                                      inBlockWithIdentifier:[NSNumber numberWithInt:paragraphId] 
                                                   animated:YES];
 }
@@ -320,12 +320,12 @@
     }
 }
 
-- (void)setHighlighterDelegate:(id <EucHighlighterDelegate>)highlighterDelegate
+- (void)setHighlighterDelegate:(id <EucSelectorDelegate>)selectorDelegate
 {
-    if(_highlighter) {
-        _highlighter.delegate = highlighterDelegate;
+    if(_selector) {
+        _selector.delegate = selectorDelegate;
     }
-    _highlighterDelegate = highlighterDelegate;
+    _selectorDelegate = selectorDelegate;
 }
 
 #pragma mark -
@@ -769,14 +769,14 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 - (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
 {
-    _highlighter.selectionDisabled = YES;
+    _selector.selectionDisabled = YES;
     _highlightingDisabled = YES;
     [self _removeHighlights];
 }
 
 - (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
 {
-    _highlighter.selectionDisabled = NO;
+    _selector.selectionDisabled = NO;
     _highlightingDisabled = NO;
     if(_highlightPage == self.pageNumber) {
         [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
@@ -801,33 +801,33 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 #pragma mark -
 #pragma mark Highlighter
 
-- (UIImage *)viewSnapshotImageForEucHighlighter:(EucHighlighter *)highlighter
+- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector
 {
     return self.currentPageImage;
 }
 
-- (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter
+- (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
     EucPageTextView *pageTextView = pageView.bookTextView;
     return [pageTextView paragraphIds];
 }
 
-- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id
+- (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)id
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
     EucPageTextView *pageTextView = pageView.bookTextView;
     return [pageView convertRect:[pageTextView frameOfParagraphWithId:[id intValue]] fromView:pageTextView];    
 }
 
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id;
+- (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)id;
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
     EucPageTextView *pageTextView = pageView.bookTextView;
     return [pageTextView wordOffsetsForParagraphWithId:[id intValue]];
 }
 
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+- (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
     EucPageTextView *pageTextView = pageView.bookTextView;
@@ -846,9 +846,9 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if(object == _highlighter &&
+    if(object == _selector &&
        [keyPath isEqualToString:@"tracking"]) {
-        _pageTurningView.userInteractionEnabled = !((EucHighlighter *)object).isTracking;
+        _pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
     }
 }
 

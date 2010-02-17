@@ -12,8 +12,8 @@
 		7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9710C2CD820085778B /* TransitionTestMain.m */; };
 		7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */; };
 		7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */; };
-		7D0D81AD1107873900C672AC /* EucHighlighter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucHighlighter.m */; };
-		7D0D81AE1107874000C672AC /* EucHighlighter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucHighlighter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
+		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
 		7D35ADAF1121739B00A7AC62 /* EucMenuView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883FCA111C7735009669A8 /* EucMenuView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -255,8 +255,8 @@
 		7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A986610D7E6F100C2E00A /* HyphenationPatterns */; };
 		7D9F31EA110DB8220041A902 /* MagnificationLoupe.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F31E9110DB8220041A902 /* MagnificationLoupe.png */; };
 		7D9F31EB110DB8220041A902 /* MagnificationLoupe.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F31E9110DB8220041A902 /* MagnificationLoupe.png */; };
-		7DB0901D1110C75300CC5694 /* EucHighlighterRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucHighlighterRange.m */; };
-		7DB0901E1110C76B00CC5694 /* EucHighlighterRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB08CD111106EAC00CC5694 /* EucHighlighterRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */; };
+		7DB0901E1110C76B00CC5694 /* EucSelectorRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
 		7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
@@ -381,8 +381,8 @@
 		7D034F9710C2CD820085778B /* TransitionTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionTestMain.m; sourceTree = "<group>"; };
 		7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestMainWindow.xib; sourceTree = "<group>"; };
 		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
-		7D0D818211075E2A00C672AC /* EucHighlighter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHighlighter.h; sourceTree = "<group>"; };
-		7D0D818311075E2A00C672AC /* EucHighlighter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHighlighter.m; sourceTree = "<group>"; };
+		7D0D818211075E2A00C672AC /* EucSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelector.h; sourceTree = "<group>"; };
+		7D0D818311075E2A00C672AC /* EucSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelector.m; sourceTree = "<group>"; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
 		7D516E00102872AC005F3C46 /* EucBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookViewController.h; sourceTree = "<group>"; };
@@ -642,8 +642,8 @@
 		7D9A979210D7E48E00C2E00A /* book */ = {isa = PBXFileReference; lastKnownFileType = folder; path = book; sourceTree = "<group>"; };
 		7D9A986610D7E6F100C2E00A /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7D9F31E9110DB8220041A902 /* MagnificationLoupe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupe.png; sourceTree = "<group>"; };
-		7DB08CD111106EAC00CC5694 /* EucHighlighterRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHighlighterRange.h; sourceTree = "<group>"; };
-		7DB08CD211106EAC00CC5694 /* EucHighlighterRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHighlighterRange.m; sourceTree = "<group>"; };
+		7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorRange.h; sourceTree = "<group>"; };
+		7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorRange.m; sourceTree = "<group>"; };
 		7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
 		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
@@ -822,13 +822,13 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		7D0D817D11075E0E00C672AC /* Highlighter */ = {
+		7D0D817D11075E0E00C672AC /* Selector */ = {
 			isa = PBXGroup;
 			children = (
-				7D0D818211075E2A00C672AC /* EucHighlighter.h */,
-				7D0D818311075E2A00C672AC /* EucHighlighter.m */,
-				7DB08CD111106EAC00CC5694 /* EucHighlighterRange.h */,
-				7DB08CD211106EAC00CC5694 /* EucHighlighterRange.m */,
+				7D0D818211075E2A00C672AC /* EucSelector.h */,
+				7D0D818311075E2A00C672AC /* EucSelector.m */,
+				7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */,
+				7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */,
 				7D883F5D111C5862009669A8 /* EucMenuItem.h */,
 				7D883F5E111C5862009669A8 /* EucMenuItem.m */,
 				7D883FCA111C7735009669A8 /* EucMenuView.h */,
@@ -836,13 +836,13 @@
 				7D883F63111C586F009669A8 /* EucMenuController.h */,
 				7D883F64111C586F009669A8 /* EucMenuController.m */,
 			);
-			path = Highlighter;
+			path = Selector;
 			sourceTree = "<group>";
 		};
 		7D516DFF102872A5005F3C46 /* BookView */ = {
 			isa = PBXGroup;
 			children = (
-				7D0D817D11075E0E00C672AC /* Highlighter */,
+				7D0D817D11075E0E00C672AC /* Selector */,
 				7D516E00102872AC005F3C46 /* EucBookViewController.h */,
 				7D516E01102872AC005F3C46 /* EucBookViewController.m */,
 				7DF58B5D10DA9005004E3DBB /* EucBookView.h */,
@@ -1482,8 +1482,8 @@
 				7DE587701070D08600441B2E /* EucFilteredBookPageIndex.h in Headers */,
 				7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */,
 				7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */,
-				7D0D81AE1107874000C672AC /* EucHighlighter.h in Headers */,
-				7DB0901E1110C76B00CC5694 /* EucHighlighterRange.h in Headers */,
+				7D0D81AE1107874000C672AC /* EucSelector.h in Headers */,
+				7DB0901E1110C76B00CC5694 /* EucSelectorRange.h in Headers */,
 				7D883FA0111C640C009669A8 /* EucMenuItem.h in Headers */,
 				7D883FA2111C640C009669A8 /* EucMenuController.h in Headers */,
 				7D35ADAF1121739B00A7AC62 /* EucMenuView.h in Headers */,
@@ -1862,8 +1862,8 @@
 				7DE587711070D08600441B2E /* EucFilteredBookPageIndex.m in Sources */,
 				7DF58B6010DA9005004E3DBB /* EucBookView.m in Sources */,
 				7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */,
-				7D0D81AD1107873900C672AC /* EucHighlighter.m in Sources */,
-				7DB0901D1110C75300CC5694 /* EucHighlighterRange.m in Sources */,
+				7D0D81AD1107873900C672AC /* EucSelector.m in Sources */,
+				7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */,
 				7D883FA1111C640C009669A8 /* EucMenuItem.m in Sources */,
 				7D883FA3111C640C009669A8 /* EucMenuController.m in Sources */,
 				7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */,
