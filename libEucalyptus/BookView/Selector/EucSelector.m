@@ -45,7 +45,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, retain) EucMenuController *menuController;
 @property (nonatomic, assign) BOOL menuShouldBeAvailable;
 
-- (CGImageRef)magnificationLoupeImage;
+- (CGImageRef)magnificationLoupeHighImage;
+- (CGImageRef)magnificationLoupeLowImage;
+- (CGImageRef)magnificationLoupeMaskImage;
 - (void)_trackTouch:(UITouch *)touch;
 
 @end
@@ -104,8 +106,14 @@ static const CGFloat sLoupePopDuration = 0.05f;
         [self detatchFromView];
     }
     [_trackingTouch release];
-    if(_magnificationLoupeImage) {
-        CGImageRelease(_magnificationLoupeImage);
+    if(_magnificationLoupeLowImage) {
+        CGImageRelease(_magnificationLoupeLowImage);
+    }    
+    if(_magnificationLoupeHighImage) {
+        CGImageRelease(_magnificationLoupeHighImage);
+    }    
+    if(_magnificationLoupeMaskImage) {
+        CGImageRelease(_magnificationLoupeMaskImage);
     }    
     
     [super dealloc];
@@ -268,14 +276,34 @@ static const CGFloat sLoupePopDuration = 0.05f;
 #pragma mark -
 #pragma mark Selection
 
-- (CGImageRef)magnificationLoupeImage
+- (CGImageRef)magnificationLoupeLowImage
 {
-    if(!_magnificationLoupeImage) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupe" ofType:@"png"]];
-        _magnificationLoupeImage = CGImageRetain([UIImage imageWithData:data].CGImage);
+    if(!_magnificationLoupeLowImage) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeLow" ofType:@"png"]];
+        _magnificationLoupeLowImage = CGImageRetain([UIImage imageWithData:data].CGImage);
         [data release];
     }
-    return _magnificationLoupeImage;
+    return _magnificationLoupeLowImage;
+}
+
+- (CGImageRef)magnificationLoupeHighImage
+{
+    if(!_magnificationLoupeHighImage) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeHigh" ofType:@"png"]];
+        _magnificationLoupeHighImage = CGImageRetain([UIImage imageWithData:data].CGImage);
+        [data release];
+    }
+    return _magnificationLoupeHighImage;
+}
+
+- (CGImageRef)magnificationLoupeMaskImage
+{
+    if(!_magnificationLoupeMaskImage) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeMask" ofType:@"png"]];
+        _magnificationLoupeMaskImage = CGImageRetain([UIImage imageWithData:data].CGImage);
+        [data release];
+    }
+    return _magnificationLoupeMaskImage;
 }
 
 - (THPair *)highlightEndLayers
@@ -386,9 +414,13 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (void)_loupeToPoint:(CGPoint)point;
 {
-    CGImageRef magnificationLoupeImage = self.magnificationLoupeImage;
-    CGSize magnificationLoupeSize = CGSizeMake(CGImageGetWidth(magnificationLoupeImage),
-                                               CGImageGetHeight(magnificationLoupeImage));
+    CGImageRef magnificationLoupeHighImage = self.magnificationLoupeHighImage;
+    CGImageRef magnificationLoupeLowImage = self.magnificationLoupeLowImage;
+    CGImageRef magnificationLoupeMaskImage = self.magnificationLoupeMaskImage;
+    
+    CGSize magnificationLoupeSize = CGSizeMake(CGImageGetWidth(magnificationLoupeHighImage),
+                                               CGImageGetHeight(magnificationLoupeHighImage));
+    CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
 
     UIWindow *window = self.viewWithSelection.window;
     UIImageView *loupeView = self.loupeView;
@@ -421,6 +453,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
     THImageFactory *loupeContentsFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
     CGContextRef context = loupeContentsFactory.CGContext;
 
+    // First the lower image.
+    CGContextDrawImage(context, 
+                       magnificationLoupeRect,
+                       magnificationLoupeLowImage);            
+    
     // Work out the final scale factor of the view on screen so that we can
     // scale to bigger than that.
     CGSize screenScaleFactors = [self.attachedView screenScaleFactors];    
@@ -429,9 +466,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
     CGFloat scaleFactorX = screenScaleFactors.width * 1.25;
     CGFloat scaleFactorY = screenScaleFactors.height * 1.25;
     
-    // First, draw the magnified view.  We use renderInContents on the 
-    // view's layer.
+    // Now, the view.
     CGContextSaveGState(context);
+    
+    // Mask the image.
+    CGContextClipToMask(context, magnificationLoupeRect, magnificationLoupeMaskImage);
+    
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     
     // Scale the context and translate it so that we can draw the view
@@ -453,18 +493,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
     [[self.viewWithSelection layer] renderInContext:context];
     CGContextRestoreGState(context);
     
-    // Now, mask out the loupe area.
-    CGContextSetBlendMode(context, kCGBlendModeDestinationIn);
+    // Draw the upper part of the loupe.
     CGContextDrawImage(context, 
-                       CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height),
-                       magnificationLoupeImage);
-    
-    // Draw the loupe.
-    CGContextSetBlendMode(context, kCGBlendModePlusDarker);
-    CGContextDrawImage(context, 
-                       CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height),
-                       magnificationLoupeImage);    
-    
+                       magnificationLoupeRect,
+                       magnificationLoupeHighImage);    
+
     // Now get the image we constructed and put it into the loupe view.
     loupeView.image = loupeContentsFactory.snapshotUIImage;
     [loupeContentsFactory release];
