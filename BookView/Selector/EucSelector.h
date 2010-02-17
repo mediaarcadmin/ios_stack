@@ -26,7 +26,9 @@ typedef enum EucSelectorTrackingStage {
     id<EucSelectorDataSource> _dataSource;
     id<EucSelectorDelegate> _delegate;
     
-    CGImageRef _magnificationLoupeImage;
+    CGImageRef _magnificationLoupeHighImage;
+    CGImageRef _magnificationLoupeLowImage;
+    CGImageRef _magnificationLoupeMaskImage;
     
     UIView *_attachedView;
     
