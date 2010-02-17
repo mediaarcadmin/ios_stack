@@ -19,6 +19,8 @@
     CGRect _windowTargetRect;
     
     EucMenuView *_menuView;
+    
+    NSUInteger _menuSelectStepCount;
 }
 
 @property(nonatomic, retain) NSArray *menuItems;

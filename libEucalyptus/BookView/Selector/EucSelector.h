@@ -59,7 +59,9 @@ typedef enum EucSelectorTrackingStage {
 
 @property (nonatomic, assign) id<EucSelectorDataSource> dataSource;
 @property (nonatomic, assign) id<EucSelectorDelegate> delegate;
+
 @property (nonatomic, retain) EucSelectorRange *selectedRange;
+@property (nonatomic, readonly) BOOL selectedRangeIsHighlight;
 
 @property (nonatomic, assign, readonly, getter=isTracking) BOOL tracking;
 @property (nonatomic, assign, readonly) EucSelectorTrackingStage trackingStage;
@@ -70,9 +72,16 @@ typedef enum EucSelectorTrackingStage {
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 - (void)removeTemporaryHighlight;
 
+// Can be called in a menu callback to change the menu items rather than
+// dismissing the menu.
+- (void)changeActiveMenuItemsTo:(NSArray *)menuItems;
+
 // Can be called e.g. after a view is zoomed to redisplay the selection with
 // handles sized correctly.
 - (void)redisplaySelectedRange; 
+
+// Utility class method exposed for outside use.
++ (NSArray *)coalescedLineRectsForElementRects:(NSArray *)elementRects inView:(UIView *)view;
 
 // Controls whether the selector sniff touches for the view it's attached
 // to.  
@@ -96,6 +105,14 @@ typedef enum EucSelectorTrackingStage {
 // An array of EucMenuItems.
 - (NSArray *)menuItemsForEucSelector:(EucSelector *)selector;
 
+// Between willBegin/didEnd, the highlighter will highlight the range it's
+// notifying the delagete of.  If the delegate is displaying its own highlight
+// for the range usually, it should 'turn it off' during this time.
+
+// Optionally return a UIColor to use for the selection highlight (nil = default blue color).
+- (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange;
+- (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)selectedRange movedToRange:(EucSelectorRange *)selectedRange;
+
 @end
 
 
@@ -113,5 +130,10 @@ typedef enum EucSelectorTrackingStage {
 // not respond to renderInContext: 'correctly' (for example, it's an OpenGL
 // backed view.
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector;
+
+// Should return an array of EucSelectorRanges.
+// These are used to tell if the user has tapped in an already-highlighted
+// area.
+- (NSArray *)highlightRangesForEucSelector:(EucSelector *)selector;
 
 @end

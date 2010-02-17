@@ -12,6 +12,7 @@
 
 @synthesize title = _title;
 @synthesize action = _action;
+@synthesize color = _color;
 
 - (id)initWithTitle:(NSString *)title action:(SEL)action
 {
