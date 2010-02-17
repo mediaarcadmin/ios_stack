@@ -219,12 +219,15 @@ typedef enum {
                     [self.delegate goToContentsBookmarkRange:aBookmarkRange animated:NO];
             }
         }  break;
-        case kBlioContentsTabViewTabNotes:
-            if (nil != self.notesController.selectedNote) {
-                if ([self.delegate respondsToSelector:@selector(displayNote:animated:)])
-                    [self.delegate displayNote:self.notesController.selectedNote animated:YES];
+        case kBlioContentsTabViewTabNotes: {
+            NSManagedObject *note = self.notesController.selectedNote;
+            if (nil != note) {
+                BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[note valueForKey:@"range"]];
+                if ([self.delegate respondsToSelector:@selector(displayNote:atRange:animated:)])
+                    [self.delegate displayNote:note atRange:range animated:YES];
             }
-            break;
+                     
+        }   break;
     }   
 }
 

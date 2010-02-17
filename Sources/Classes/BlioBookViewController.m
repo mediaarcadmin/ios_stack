@@ -1798,18 +1798,20 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)notesViewCreateNote:(BlioNotesView *)notesView {
-    BlioBookmarkAbsolutePoint *currentBookmark = self.bookView.pageBookmarkPoint;
+    // TODO Clean this up to remove Abosulte points and work with BookmarkRanges directly
+    BlioBookmarkAbsolutePoint *currentBookmarkAbsolutePoint = self.bookView.pageBookmarkPoint;
+    BlioBookmarkPoint *currentBookmarkPoint = [BlioBookmarkPoint bookmarkPointWithAbsolutePoint:currentBookmarkAbsolutePoint];
+    BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
+    
     
     NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
-        
+            
     NSManagedObject *newNote = [NSEntityDescription
-                                    insertNewObjectForEntityForName:@"Note"
+                                    insertNewObjectForEntityForName:@"BlioNote"
                                     inManagedObjectContext:[self managedObjectContext]];
     
-    [newNote setValue:[NSNumber numberWithInteger:currentBookmark.layoutPage] forKey:@"layoutPage"];
-    [newNote setValue:[NSNumber numberWithInteger:currentBookmark.ePubParagraphId] forKey:@"ePubParagraphId"];
-    [newNote setValue:[NSNumber numberWithInteger:currentBookmark.ePubWordOffset] forKey:@"ePubWordOffset"];
-    [newNote setValue:[NSNumber numberWithInteger:currentBookmark.ePubHyphenOffset] forKey:@"ePubHyphenOffset"];
+    NSManagedObject *newRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+    [newNote setValue:newRange forKey:@"range"];
     [newNote setValue:notesView.textView.text forKey:@"noteText"];
     [notes addObject:newNote];
     

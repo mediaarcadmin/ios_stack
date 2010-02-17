@@ -18,7 +18,7 @@
 
 - (void)dismissContentsTabView:(id)sender;
 
-- (void)displayNote:(NSManagedObject *)note animated:(BOOL)animated;
+- (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
 - (void)goToContentsBookmarkRange:bookmarkRange animated:(BOOL)animated;
 - (void)goToContentsUuid:(NSString *)sectionUuid animated:(BOOL)animated;
 - (void)deleteBookmark:(NSManagedObject *)bookmark;
