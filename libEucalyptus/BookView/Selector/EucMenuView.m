@@ -294,7 +294,7 @@ static const CGFloat sOuterYPadding = 2.0f;
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    NSUInteger selectedIndex;
+    NSUInteger selectedIndex = 0;
     BOOL inRect = NO;
     CGPoint touchPoint = [touch locationInView:self];
     NSUInteger titlesCount = self.titles.count;

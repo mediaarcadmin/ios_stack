@@ -11,7 +11,7 @@
 #import "BlioMockBook.h"
 #import "MSTiltScroller.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
-#import <libEucalyptus/EucHighlighter.h>
+#import <libEucalyptus/EucSelector.h>
 
 @class BlioPDFFontList;
 @class BlioPDFParsedPage;
@@ -19,7 +19,7 @@
 @class BlioPDFPageView;
 @class BlioPDFContainerScrollView;
 
-@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, BlioTTSDataSource, EucBookContentsTableViewControllerDataSource, EucHighlighterDataSource, EucHighlighterDelegate> {
+@interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, BlioTTSDataSource, EucBookContentsTableViewControllerDataSource, EucSelectorDataSource, EucSelectorDelegate> {
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioPDFContainerScrollView *scrollView;
@@ -38,7 +38,7 @@
     NSInteger pageCount;
     CGFloat lastZoomScale;
     CALayer *sharpLayer;
-    EucHighlighter *highlighter;
+    EucSelector *selector;
 }
 
 @property (nonatomic, retain) BlioMockBook *book;
@@ -53,6 +53,6 @@
 @property (nonatomic) BOOL scrollToPageInProgress;
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
-@property (nonatomic, retain) EucHighlighter *highlighter;
+@property (nonatomic, retain) EucSelector *selector;
 
 @end

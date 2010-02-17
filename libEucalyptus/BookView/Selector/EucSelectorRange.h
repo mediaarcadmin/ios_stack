@@ -1,5 +1,5 @@
 //
-//  EucHighlighterRange.h
+//  EucSelectorRange.h
 //  libEucalyptus
 //
 //  Created by James Montgomerie on 27/01/2010.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface EucHighlighterRange : NSObject {
+@interface EucSelectorRange : NSObject {
     id _startBlockId;
     id _startElementId;
     id _endBlockId;

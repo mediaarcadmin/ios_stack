@@ -1,5 +1,5 @@
 //
-//  EucHighlighter.h
+//  EucSelector.h
 //  libEucalyptus
 //
 //  Created by James Montgomerie on 20/01/2010.
@@ -9,23 +9,22 @@
 #import <UIKit/UIKit.h>
 #import "THEventCapturingWindow.h"
 
-@class EucHighlighterRange, THPair, EucMenuController;
-@protocol EucHighlighterDataSource, EucHighlighterDelegate;
+@class EucSelectorRange, THPair, EucMenuController;
+@protocol EucSelectorDataSource, EucSelectorDelegate;
 
-typedef enum EucHighlighterTrackingStage {
-    EucHighlighterTrackingStageNone,
-    EucHighlighterTrackingStageFirstSelection,
-    EucHighlighterTrackingStageSelectedAndWaiting,
-    EucHighlighterTrackingStageChangingSelection,
-} EucHighlighterTrackingStage;
-    
+typedef enum EucSelectorTrackingStage {
+    EucSelectorTrackingStageNone,
+    EucSelectorTrackingStageFirstSelection,
+    EucSelectorTrackingStageSelectedAndWaiting,
+    EucSelectorTrackingStageChangingSelection,
+} EucSelectorTrackingStage;
 
-@interface EucHighlighter : NSObject <THEventCaptureObserver> {
+@interface EucSelector : NSObject <THEventCaptureObserver> {
     BOOL _shouldSniffTouches;
     BOOL _selectionDisabled;
     
-    id<EucHighlighterDataSource> _dataSource;
-    id<EucHighlighterDelegate> _delegate;
+    id<EucSelectorDataSource> _dataSource;
+    id<EucSelectorDelegate> _delegate;
     
     CGImageRef _magnificationLoupeImage;
     
@@ -36,9 +35,9 @@ typedef enum EucHighlighterTrackingStage {
     UITouch *_trackingTouch;
     BOOL _trackingTouchHasMoved;
     BOOL _tracking;
-    EucHighlighterTrackingStage _trackingStage;
+    EucSelectorTrackingStage _trackingStage;
     
-    EucHighlighterRange *_selectedRange;
+    EucSelectorRange *_selectedRange;
 
     UIView *_viewWithSelection;
     UIImageView *_loupeView;
@@ -58,12 +57,12 @@ typedef enum EucHighlighterTrackingStage {
 @property (nonatomic, assign) BOOL selectionDisabled;
 @property (nonatomic, assign) BOOL shouldHideMenu; // This is intended to be used to temporarily hide a menu (i.e. while zooming).
 
-@property (nonatomic, assign) id<EucHighlighterDataSource> dataSource;
-@property (nonatomic, assign) id<EucHighlighterDelegate> delegate;
-@property (nonatomic, retain) EucHighlighterRange *selectedRange;
+@property (nonatomic, assign) id<EucSelectorDataSource> dataSource;
+@property (nonatomic, assign) id<EucSelectorDelegate> delegate;
+@property (nonatomic, retain) EucSelectorRange *selectedRange;
 
 @property (nonatomic, assign, readonly, getter=isTracking) BOOL tracking;
-@property (nonatomic, assign, readonly) EucHighlighterTrackingStage trackingStage;
+@property (nonatomic, assign, readonly) EucSelectorTrackingStage trackingStage;
 
 - (void)attachToView:(UIView *)view;
 - (void)detatchFromView;
@@ -75,12 +74,12 @@ typedef enum EucHighlighterTrackingStage {
 // handles sized correctly.
 - (void)redisplaySelectedRange; 
 
-// Controls whether the highlighter sniff touches for the view it's attached
+// Controls whether the selector sniff touches for the view it's attached
 // to.  
 // Default = YES.  
 // If set to NO, touch should be forwarded to the 
 // bedin, moved, ended, cancelled etc. interfaces.
-// Do not change this while the highlighter is attached to a view.
+// Do not change this while the selector is attached to a view.
 @property (nonatomic, assign) BOOL shouldSniffTouches;
 
 - (void)touchesBegan:(NSSet *)touches;
@@ -91,28 +90,28 @@ typedef enum EucHighlighterTrackingStage {
 @end
 
 
-@protocol EucHighlighterDelegate <NSObject>
+@protocol EucSelectorDelegate <NSObject>
 
 @optional
 // An array of EucMenuItems.
-- (NSArray *)menuItemsForEucHighlighter:(EucHighlighter *)highlighter;
+- (NSArray *)menuItemsForEucSelector:(EucSelector *)selector;
 
 @end
 
 
-@protocol EucHighlighterDataSource <NSObject>
+@protocol EucSelectorDataSource <NSObject>
 
 @required
-- (NSArray *)blockIdentifiersForEucHighlighter:(EucHighlighter *)highlighter;
-- (CGRect)eucHighlighter:(EucHighlighter *)highlighter frameOfBlockWithIdentifier:(id)id;
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter identifiersForElementsOfBlockWithIdentifier:(id)id;
-- (NSArray *)eucHighlighter:(EucHighlighter *)highlighter rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+- (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector;
+- (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)id;
+- (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)id;
+- (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 
 @optional
 // Data source can supply an image that will be used to replace the view while
 // selection is taking place.  This is uesful if he view's layer would otherwise
 // not respond to renderInContext: 'correctly' (for example, it's an OpenGL
 // backed view.
-- (UIImage *)viewSnapshotImageForEucHighlighter:(EucHighlighter *)highlighter;
+- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector;
 
 @end

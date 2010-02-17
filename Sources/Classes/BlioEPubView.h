@@ -7,9 +7,9 @@
 //
 
 #import <libEucalyptus/EucBookView.h>
-#import <libEucalyptus/EucHighlighter.h>
+#import <libEucalyptus/EucSelector.h>
 #import "BlioBookViewController.h"
 
-@interface BlioEPubView : EucBookView <BlioBookView, EucHighlighterDelegate> {}
+@interface BlioEPubView : EucBookView <BlioBookView, EucSelectorDelegate> {}
 
 @end

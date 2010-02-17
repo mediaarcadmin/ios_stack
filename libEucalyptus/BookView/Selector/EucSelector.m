@@ -1,5 +1,5 @@
 //
-//  EucHighlighter.m
+//  EucSelector.m
 //  libEucalyptus
 //
 //  Created by James Montgomerie on 20/01/2010.
@@ -7,8 +7,8 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
-#import "EucHighlighter.h"
-#import "EucHighlighterRange.h"
+#import "EucSelector.h"
+#import "EucSelectorRange.h"
 #import "EucMenuController.h"
 #import "EucMenuItem.h"
 
@@ -21,7 +21,7 @@
 
 static const CGFloat sLoupePopDuration = 0.05f;
 
-@interface EucHighlighter ()
+@interface EucSelector ()
 
 @property (nonatomic, retain) UIView *attachedView;
 
@@ -30,7 +30,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, retain) UITouch *trackingTouch;
 @property (nonatomic, assign) BOOL trackingTouchHasMoved;
 @property (nonatomic, assign, getter=isTracking) BOOL tracking;
-@property (nonatomic, assign) EucHighlighterTrackingStage trackingStage;
+@property (nonatomic, assign) EucSelectorTrackingStage trackingStage;
 
 @property (nonatomic, retain) UIView *viewWithSelection;
 @property (nonatomic, retain) UIImageView *loupeView;
@@ -50,7 +50,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 @end
 
-@implementation EucHighlighter
+@implementation EucSelector
 
 @synthesize shouldSniffTouches = _shouldSniffTouches;
 @synthesize selectionDisabled = _selectionDisabled;
@@ -148,9 +148,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
 {   
     NSString *name = [anim valueForKey:@"THName"];
     if(name) {
-        if([name isEqualToString:@"EucHighlighterLoupePopDown"]) {
+        if([name isEqualToString:@"EucSelectorLoupePopDown"]) {
             [[anim valueForKey:@"THView"] removeFromSuperview];
-        } else if([name isEqualToString:@"EucHighlighterEndOfLineHighlight"]) {
+        } else if([name isEqualToString:@"EucSelectorEndOfLineHighlight"]) {
             [[anim valueForKey:@"THLayer"] removeFromSuperlayer];
         }
     }
@@ -161,7 +161,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 {    
-    NSArray *rects = [self.dataSource eucHighlighter:self
+    NSArray *rects = [self.dataSource eucSelector:self
                        rectsForElementWithIdentifier:elementId
                                ofBlockWithIdentifier:blockId];
     
@@ -245,9 +245,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
         animationGroup.duration = 0.2f;
         animationGroup.delegate = self;
         
-        [animationGroup setValue:@"EucHighlighterEndOfLineHighlight" forKey:@"THName"];
+        [animationGroup setValue:@"EucSelectorEndOfLineHighlight" forKey:@"THName"];
         [animationGroup setValue:layer forKey:@"THLayer"];
-        [layer addAnimation:animationGroup forKey:@"EucHighlighterEndOfLineHighlight"]; 
+        [layer addAnimation:animationGroup forKey:@"EucSelectorEndOfLineHighlight"]; 
         
         layer.position = newCenter;
         layer.bounds = newBounds;
@@ -269,7 +269,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 - (CGImageRef)magnificationLoupeImage
 {
     if(!_magnificationLoupeImage) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucHighlighter class]] pathForResource:@"MagnificationLoupe" ofType:@"png"]];
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupe" ofType:@"png"]];
         _magnificationLoupeImage = CGImageRetain([UIImage imageWithData:data].CGImage);
         [data release];
     }
@@ -279,7 +279,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 - (THPair *)highlightEndLayers
 {
     if(!_highlightEndLayers)  {
-        NSData *imageData = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucHighlighter class]] pathForResource:@"SelectionEnd" ofType:@"png"]];
+        NSData *imageData = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"SelectionEnd" ofType:@"png"]];
         CGImageRef endImage = [UIImage imageWithData:imageData].CGImage;
         [imageData release];
         
@@ -304,7 +304,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 - (THPair *)highlightKnobLayers
 {
     if(!_highlightKnobLayers) {
-        NSData *imageData = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucHighlighter class]] pathForResource:@"SelectionKnob" ofType:@"png"]];
+        NSData *imageData = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"SelectionKnob" ofType:@"png"]];
         CGImageRef knobImage = [UIImage imageWithData:imageData].CGImage;
         [imageData release];
         
@@ -411,7 +411,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                                            1.0f);
         loupePopUp.fromValue = [NSValue valueWithCATransform3D:fromTransform];
         loupePopUp.duration = sLoupePopDuration;
-        [loupeView.layer addAnimation:loupePopUp forKey:@"EucHighlighterLoupePopUp"];
+        [loupeView.layer addAnimation:loupePopUp forKey:@"EucSelectorLoupePopUp"];
         [loupePopUp release];
     }
         
@@ -499,9 +499,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
     loupePopDown.toValue = [NSValue valueWithCATransform3D:toTransform];
     loupePopDown.duration = sLoupePopDuration;
     loupePopDown.delegate = self;
-    [loupePopDown setValue:@"EucHighlighterLoupePopDown" forKey:@"THName"];
+    [loupePopDown setValue:@"EucSelectorLoupePopDown" forKey:@"THName"];
     [loupePopDown setValue:loupeView forKey:@"THView"];
-    [loupeViewLayer addAnimation:loupePopDown forKey:@"EucHighlighterLoupePopDown"];
+    [loupeViewLayer addAnimation:loupePopDown forKey:@"EucSelectorLoupePopDown"];
     [loupePopDown release];
     
     // Avoid popping back to full-size.
@@ -532,23 +532,23 @@ static const CGFloat sLoupePopDuration = 0.05f;
     
 }
 
-- (void)setTrackingStage:(EucHighlighterTrackingStage)stage;
+- (void)setTrackingStage:(EucSelectorTrackingStage)stage;
 {
     if(stage != _trackingStage) {
-        EucHighlighterTrackingStage previousStage = _trackingStage;
+        EucSelectorTrackingStage previousStage = _trackingStage;
         _trackingStage = stage;
         
-        if(previousStage == EucHighlighterTrackingStageFirstSelection) {
+        if(previousStage == EucSelectorTrackingStageFirstSelection) {
             [self _removeLoupe];
-        } else if(previousStage == EucHighlighterTrackingStageChangingSelection) {
+        } else if(previousStage == EucSelectorTrackingStageChangingSelection) {
             self.draggingKnob = nil;
-        } else if(previousStage == EucHighlighterTrackingStageSelectedAndWaiting) {
+        } else if(previousStage == EucSelectorTrackingStageSelectedAndWaiting) {
             self.menuShouldBeAvailable = NO;
             [self.menuController setMenuVisible:NO animated:YES];
         }
 
         switch(stage) {
-            case EucHighlighterTrackingStageNone:
+            case EucSelectorTrackingStageNone:
             {
                 if(self.viewWithSelection != self.attachedView) {
                     [(THEventCapturingWindow *)self.viewWithSelection.window removeTouchObserver:self forView:self.viewWithSelection];
@@ -559,12 +559,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 self.tracking = NO;
                 break;
             } 
-            case EucHighlighterTrackingStageFirstSelection:
+            case EucSelectorTrackingStageFirstSelection:
             {
-                if(previousStage == EucHighlighterTrackingStageNone) {
-                    if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucHighlighter:)]) {
+                if(previousStage == EucSelectorTrackingStageNone) {
+                    if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
                         UIView *attachedView = self.attachedView;
-                        UIImageView *dummySelectionView = [[UIImageView alloc] initWithImage:[self.dataSource viewSnapshotImageForEucHighlighter:self]];
+                        UIImageView *dummySelectionView = [[UIImageView alloc] initWithImage:[self.dataSource viewSnapshotImageForEucSelector:self]];
                         dummySelectionView.frame = attachedView.frame;
                         [attachedView.superview insertSubview:dummySelectionView aboveSubview:attachedView];
                         [(THEventCapturingWindow *)dummySelectionView.window addTouchObserver:self forView:dummySelectionView];
@@ -580,12 +580,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 [self _trackTouch:self.trackingTouch];
                 break;
             } 
-            case EucHighlighterTrackingStageSelectedAndWaiting:
+            case EucSelectorTrackingStageSelectedAndWaiting:
             {
                 [self _positionKnobs]; 
-                id<EucHighlighterDelegate> delegate = self.delegate;
-                if([delegate respondsToSelector:@selector(menuItemsForEucHighlighter:)]) {
-                    NSArray *menuItems = [delegate menuItemsForEucHighlighter:self];
+                id<EucSelectorDelegate> delegate = self.delegate;
+                if([delegate respondsToSelector:@selector(menuItemsForEucSelector:)]) {
+                    NSArray *menuItems = [delegate menuItemsForEucSelector:self];
                     if(menuItems) {
                         EucMenuController *menuController = self.menuController;
                         if(!menuController)  {
@@ -604,7 +604,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                                             
                 break;   
             }
-            case EucHighlighterTrackingStageChangingSelection:
+            case EucSelectorTrackingStageChangingSelection:
             {                
                 break;
             } 
@@ -614,11 +614,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (THPair *)_blockAndElementIdsAndHighlightRectsForPoint:(CGPoint)point
 {
-    id<EucHighlighterDataSource> dataSource = self.dataSource;
-    for(id blockId in [dataSource blockIdentifiersForEucHighlighter:self]) {
-        if(CGRectContainsPoint([dataSource eucHighlighter:self frameOfBlockWithIdentifier:blockId], point)) {
-            for(id elementId in [dataSource eucHighlighter:self identifiersForElementsOfBlockWithIdentifier:blockId]) {
-                NSArray *rectsForElement = [dataSource eucHighlighter:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
+    id<EucSelectorDataSource> dataSource = self.dataSource;
+    for(id blockId in [dataSource blockIdentifiersForEucSelector:self]) {
+        if(CGRectContainsPoint([dataSource eucSelector:self frameOfBlockWithIdentifier:blockId], point)) {
+            for(id elementId in [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId]) {
+                NSArray *rectsForElement = [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
                 for(NSValue *rectValue in rectsForElement) {
                     if(CGRectContainsPoint([rectValue CGRectValue], point)) {
                         return [THPair pairWithFirst:[THPair pairWithFirst:blockId second:elementId] 
@@ -638,10 +638,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
     
     CGFloat bestDistance = CGFLOAT_MAX;
     
-    id<EucHighlighterDataSource> dataSource = self.dataSource;
-    for(id blockId in [dataSource blockIdentifiersForEucHighlighter:self]) {
-        for(id elementId in [dataSource eucHighlighter:self identifiersForElementsOfBlockWithIdentifier:blockId]) {
-            NSArray *rectsForElement = [dataSource eucHighlighter:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
+    id<EucSelectorDataSource> dataSource = self.dataSource;
+    for(id blockId in [dataSource blockIdentifiersForEucSelector:self]) {
+        for(id elementId in [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId]) {
+            NSArray *rectsForElement = [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
             for(NSValue *rectValue in rectsForElement) {
                 CGFloat distance = CGPointDistanceFromRect(point, [rectValue CGRectValue]);
                 if(distance < bestDistance) {
@@ -661,14 +661,14 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (void)redisplaySelectedRange
 {
-    EucHighlighterRange *selectedRange = self.selectedRange;
+    EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
-        id<EucHighlighterDataSource> dataSource = self.dataSource;
+        id<EucSelectorDataSource> dataSource = self.dataSource;
         
         // Work out he rects to highlight
         NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
         
-        NSArray *blockIds = [dataSource blockIdentifiersForEucHighlighter:self];
+        NSArray *blockIds = [dataSource blockIdentifiersForEucSelector:self];
         NSUInteger blockIdIndex = 0;
         
         id startBlockId = selectedRange.startBlockId;
@@ -686,7 +686,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
         do {
             id blockId = [blockIds objectAtIndex:blockIdIndex];
             
-            NSArray *elementIds = [dataSource eucHighlighter:self identifiersForElementsOfBlockWithIdentifier:blockId];
+            NSArray *elementIds = [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId];
             NSUInteger elementIdCount = elementIds.count;
             NSUInteger elementIdIndex = 0;
             
@@ -702,7 +702,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
             
             do {
                 elementId = [elementIds objectAtIndex:elementIdIndex];
-                for(NSValue *rectValue in [dataSource eucHighlighter:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId]) {
+                for(NSValue *rectValue in [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId]) {
                     CGRect thisRect = [rectValue CGRectValue];
                     if(isFirstElement) {
                         currentLineRect = thisRect;
@@ -782,13 +782,13 @@ static const CGFloat sLoupePopDuration = 0.05f;
         
         [CATransaction commit];
         
-        if(self.trackingStage != EucHighlighterTrackingStageFirstSelection) {
+        if(self.trackingStage != EucSelectorTrackingStageFirstSelection) {
             [self _positionKnobs];
         }   
     }
 }
 
-- (void)setSelectedRange:(EucHighlighterRange *)newRange
+- (void)setSelectedRange:(EucSelectorRange *)newRange
 {
     if(newRange != _selectedRange &&
        !(newRange && [newRange isEqual:_selectedRange])) {
@@ -797,7 +797,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
         if(newRange) {
             [self redisplaySelectedRange];
         } else {
-            if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {
+            if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {
                 [CATransaction begin];
                 [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
                 for(CALayer *layer in self.highlightLayers) {
@@ -805,7 +805,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 }      
                 [CATransaction commit];
             } else {
-                [self setTrackingStage:EucHighlighterTrackingStageNone];
+                [self setTrackingStage:EucSelectorTrackingStageNone];
             }
         }
     }
@@ -816,14 +816,14 @@ static const CGFloat sLoupePopDuration = 0.05f;
     UIView *viewWithSelection = self.viewWithSelection;
     CGPoint location = [touch locationInView:viewWithSelection];
 
-    EucHighlighterRange *newSelectedRange = nil;
+    EucSelectorRange *newSelectedRange = nil;
     
-    if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {   
+    if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {   
         THPair *blockAndElementAndHighlightRects = [self _blockAndElementIdsAndHighlightRectsForPoint:location];
         THPair *blockAndElementIds = blockAndElementAndHighlightRects.first;
         
         if(blockAndElementIds) {
-            newSelectedRange = [[EucHighlighterRange alloc] init];
+            newSelectedRange = [[EucSelectorRange alloc] init];
             id blockId = blockAndElementIds.first;
             id elementId = blockAndElementIds.second;
             
@@ -837,12 +837,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
         THPair *closestBlockAndElement = [self _closestBlockAndElementIdsForPoint:location];
         
         if(closestBlockAndElement) {
-            newSelectedRange = [[EucHighlighterRange alloc] init];
+            newSelectedRange = [[EucSelectorRange alloc] init];
             
             id blockId = closestBlockAndElement.first;
             id elementId = closestBlockAndElement.second;
             
-            EucHighlighterRange *currentSelectedRange = self.selectedRange;
+            EucSelectorRange *currentSelectedRange = self.selectedRange;
 
             BOOL left = self.draggingKnob == self.highlightKnobLayers.first;
             if(left) {
@@ -876,14 +876,14 @@ static const CGFloat sLoupePopDuration = 0.05f;
     self.selectedRange = newSelectedRange;
     [newSelectedRange release];
     
-    if(self.trackingStage == EucHighlighterTrackingStageFirstSelection) {   
+    if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {   
         [self _loupeToPoint:location];
     }
 }
 
 - (void)_startSelection
 {
-    self.trackingStage = EucHighlighterTrackingStageFirstSelection;
+    self.trackingStage = EucSelectorTrackingStageFirstSelection;
     
     // This is cheating a bit...
     self.trackingTouchHasMoved = YES;
@@ -931,7 +931,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
     _selectionDisabled = selectionDisabled;
     if(_selectionDisabled) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
-        self.trackingStage = EucHighlighterTrackingStageNone;
+        self.trackingStage = EucSelectorTrackingStageNone;
         self.trackingTouch = nil;
     }
 }
@@ -952,7 +952,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
             [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
         } else {
             if(self.draggingKnob) {
-                self.trackingStage = EucHighlighterTrackingStageChangingSelection;
+                self.trackingStage = EucSelectorTrackingStageChangingSelection;
                 [self _trackTouch:touch];
             } 
         }
@@ -965,10 +965,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
     UITouch *trackingTouch = self.trackingTouch;
     if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
         if(!self.isTracking || 
-           (self.trackingStage == EucHighlighterTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
+           (self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
             self.trackingTouch = nil;
-            self.trackingStage = EucHighlighterTrackingStageNone;
+            self.trackingStage = EucSelectorTrackingStageNone;
         } else {
             self.trackingTouchHasMoved = YES;
             [self _trackTouch:trackingTouch];
@@ -981,16 +981,16 @@ static const CGFloat sLoupePopDuration = 0.05f;
     UITouch *trackingTouch = self.trackingTouch;
     if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
         if(!self.isTracking || 
-           (self.trackingStage == EucHighlighterTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
+           (self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
             self.trackingTouch = nil;
-            self.trackingStage = EucHighlighterTrackingStageNone;
+            self.trackingStage = EucSelectorTrackingStageNone;
         } else {
             [self _trackTouch:trackingTouch];
             if(self.trackingTouchHasMoved && self.highlightLayers.count && !((CALayer *)[self.highlightLayers objectAtIndex:0]).isHidden) {
-                self.trackingStage = EucHighlighterTrackingStageSelectedAndWaiting;
+                self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
             } else {
-                self.trackingStage = EucHighlighterTrackingStageNone;
+                self.trackingStage = EucSelectorTrackingStageNone;
             }
             self.trackingTouch = nil;            
         }

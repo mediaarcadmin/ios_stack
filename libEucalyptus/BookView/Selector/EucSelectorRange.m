@@ -1,14 +1,14 @@
 //
-//  EucHighlighterRange.m
+//  EucSelectorRange.m
 //  libEucalyptus
 //
 //  Created by James Montgomerie on 27/01/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucHighlighterRange.h"
+#import "EucSelectorRange.h"
 
-@implementation EucHighlighterRange
+@implementation EucSelectorRange
 
 @synthesize startBlockId = _startBlockId;
 @synthesize startElementId = _startElementId;
@@ -17,8 +17,8 @@
 
 - (BOOL)isEqual:(id)object
 {
-    if([object isKindOfClass:[EucHighlighterRange class]]) {
-        EucHighlighterRange *rhs = object;
+    if([object isKindOfClass:[EucSelectorRange class]]) {
+        EucSelectorRange *rhs = object;
         return _startBlockId == rhs->_startBlockId && _startElementId == rhs->_startElementId && 
                _endBlockId == rhs->_endBlockId && _endElementId == rhs->_endElementId;
     }
