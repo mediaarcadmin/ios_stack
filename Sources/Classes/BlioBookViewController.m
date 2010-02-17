@@ -1164,6 +1164,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             BlioEPubView *ePubView = [[BlioEPubView alloc] initWithBook:self.book animated:NO];
             [ePubView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = ePubView;
+            self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
