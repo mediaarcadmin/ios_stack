@@ -40,6 +40,9 @@ typedef enum EucSelectorTrackingStage {
     EucSelectorTrackingStage _trackingStage;
     
     EucSelectorRange *_selectedRange;
+    EucSelectorRange *_selectedRangeOriginalHighlightRange;
+    BOOL _selectedRangeIsHighlight;
+    UIColor *_selectionColor;
 
     UIView *_viewWithSelection;
     UIImageView *_loupeView;
@@ -54,6 +57,10 @@ typedef enum EucSelectorTrackingStage {
     EucMenuController *_menuController;
     BOOL _shouldHideMenu;
     BOOL _menuShouldBeAvailable;
+    
+    NSArray *_cachedBlockIdentifiers;
+    CFMutableDictionaryRef _cachedBlockIdentifierToElements;
+    NSArray *_cachedHighlightRanges;
 }
 
 @property (nonatomic, assign) BOOL selectionDisabled;
