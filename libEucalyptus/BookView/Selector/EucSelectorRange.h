@@ -20,6 +20,7 @@
 @property (nonatomic, retain) id endBlockId;
 @property (nonatomic, retain) id endElementId;
 
+- (BOOL)overlaps:(EucSelectorRange *)otherRange;
 - (BOOL)isEqual:(id)object;
 - (NSUInteger)hash;
 
