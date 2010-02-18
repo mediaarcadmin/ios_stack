@@ -365,6 +365,67 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 #pragma mark -
 #pragma mark Selector
 
+- (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range {
+    NSInteger pageIndex = self.pageNumber - 1;
+    
+    EucSelectorRange *selectorRange = [[EucSelectorRange alloc] init];
+    selectorRange.startBlockId = [BlioTextFlowParagraph paragraphIDForPageIndex:pageIndex paragraphIndex:range.startPoint.paragraphOffset];
+    selectorRange.startElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:range.startPoint.wordOffset];
+    selectorRange.endBlockId = [BlioTextFlowParagraph paragraphIDForPageIndex:pageIndex paragraphIndex:range.endPoint.paragraphOffset];
+    selectorRange.endElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:range.endPoint.wordOffset];
+    
+    return [selectorRange autorelease];
+}
+
+- (NSArray *)bookmarkRangesForEucSelector:(EucSelector *)selector {
+    NSInteger pageIndex = self.pageNumber - 1;
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSUInteger maxOffset = [pageParagraphs count];
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    startPoint.layoutPage = self.pageNumber;
+    startPoint.paragraphOffset = 0;
+    
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+    endPoint.layoutPage = self.pageNumber;
+    endPoint.paragraphOffset = maxOffset;
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    range.startPoint = startPoint;
+    range.endPoint = endPoint;
+    
+    NSArray *highlightRanges = [self.delegate rangesToHighlightForRange:range];
+    
+    [startPoint release];
+    [endPoint release];
+    [range release];
+    
+    return [NSArray arrayWithArray:highlightRanges];
+}
+
+- (NSArray *)highlightRangesForEucSelector:(EucSelector *)aSelector {
+       
+    NSMutableArray *selectorRanges = [NSMutableArray array];
+    
+    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForEucSelector:aSelector]) {
+        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
+        [selectorRanges addObject:range];
+    }
+    
+    return [NSArray arrayWithArray:selectorRanges];
+}
+
+- (UIColor *)eucSelector:(EucSelector *)aSelector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange {
+    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForEucSelector:aSelector]) {
+        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
+        if ([selectedRange isEqual:range]) {
+            return [highlightRange.color colorWithAlphaComponent:0.3f];
+        }
+    }
+    
+    return nil;
+}
+
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
     NSInteger pageIndex = self.pageNumber - 1;
     NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
