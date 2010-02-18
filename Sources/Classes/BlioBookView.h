@@ -14,8 +14,8 @@
 
 @required
 - (NSArray *)rangesToHighlightForRange:(BlioBookmarkRange *)range;
-- (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange;
-- (void)highlightWithColor:(UIColor *)color;
+- (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor;
+- (void)addHighlightWithColor:(UIColor *)color;
 - (void)addNoteWithColor:(UIColor *)color;
 @end
 
@@ -75,8 +75,5 @@
 - (BlioBookmarkRange *)selectedRange;
 - (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange;
 - (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
-
-// Book highlights
-- (void)refreshHighlights;
 
 @end

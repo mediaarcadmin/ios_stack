@@ -127,6 +127,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 - (BlioPDFPageView *)loadPage:(int)newPageNumber current:(BOOL)current preload:(BOOL)preload;
 - (BlioPDFPageView *)loadPage:(int)newPageNumber current:(BOOL)current preload:(BOOL)preload forceReload:(BOOL)reload;
 - (BlioPDFPageView *)loadPage:(int)aPageNumber current:(BOOL)current preload:(BOOL)preload forceReload:(BOOL)reload preserve:(NSArray *)preservedPages;
+- (NSArray *)bookmarkRangesForCurrentPage;
+- (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
+- (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic) CGFloat lastZoomScale;
 
@@ -170,7 +173,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @implementation BlioLayoutView
 
 
-@synthesize delegate, book, scrollView, containerView, pageViews, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector;
+@synthesize delegate, book, scrollView, containerView, pageViews, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -185,6 +188,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.fonts = nil;
     [self.selector detatchFromView];
     self.selector = nil;
+    self.lastHighlightColor = nil;
     [super dealloc];
 }
 
@@ -362,7 +366,19 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)refreshHighlights {
-    [self displayHighlightsForPage:self.pageNumber inView:self.currentPageView excluding:nil];
+    EucSelectorRange *selectedRange = [self.selector selectedRange];
+    
+    if (nil != selectedRange) {
+        for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
+            EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
+            if ([selectedRange isEqual:range]) {
+                [self displayHighlightsForPage:self.pageNumber inView:self.currentPageView excluding:highlightRange];
+                return;
+            }
+        }
+    } else {
+        [self displayHighlightsForPage:self.pageNumber inView:self.currentPageView excluding:nil];
+    }
 }
 
 #pragma mark -
@@ -403,7 +419,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return [bookmarkRange autorelease];
 }
 
-- (NSArray *)bookmarkRangesForEucSelector:(EucSelector *)selector {
+- (NSArray *)bookmarkRangesForCurrentPage {
     NSInteger pageIndex = self.pageNumber - 1;
     NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
     NSUInteger maxOffset = [pageParagraphs count];
@@ -433,7 +449,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
        
     NSMutableArray *selectorRanges = [NSMutableArray array];
     
-    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForEucSelector:aSelector]) {
+    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
         [selectorRanges addObject:range];
     }
@@ -442,7 +458,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (UIColor *)eucSelector:(EucSelector *)aSelector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange {
-    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForEucSelector:aSelector]) {
+    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
         if ([selectedRange isEqual:range]) {
             [self displayHighlightsForPage:self.pageNumber inView:self.currentPageView excluding:highlightRange];
@@ -454,20 +470,20 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange {
-//    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForEucSelector:aSelector]) {
-//        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
-//        if ([selectedRange isEqual:range]) {
-//            return [highlightRange.color colorWithAlphaComponent:0.3f];
-//        }
-//    }
     
-    BlioBookmarkRange *fromBookmarkRange = [self bookmarkRangeFromSelectorRange:fromRange];
-    BlioBookmarkRange *toBookmarkRange = [self bookmarkRangeFromSelectorRange:toRange];
+    if ((nil != toRange) && ![fromRange isEqual:toRange]) {
+    
+        BlioBookmarkRange *fromBookmarkRange = [self bookmarkRangeFromSelectorRange:fromRange];
+        BlioBookmarkRange *toBookmarkRange = [self bookmarkRangeFromSelectorRange:toRange];
 
-    if ([self.delegate respondsToSelector:@selector(updateHighlightAtRange:toRange:)])
-        [self.delegate updateHighlightAtRange:fromBookmarkRange toRange:toBookmarkRange];
-
-    [self displayHighlightsForPage:self.pageNumber inView:self.currentPageView excluding:nil];
+        if ([self.delegate respondsToSelector:@selector(updateHighlightAtRange:toRange:withColor:)])
+            [self.delegate updateHighlightAtRange:fromBookmarkRange toRange:toBookmarkRange withColor:nil];
+        
+    }
+    
+    // Set this to nil now because the refresh depends on it
+    [self.selector setSelectedRange:nil];
+    [self refreshHighlights];
 }
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
@@ -532,7 +548,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
 }
 
-- (NSArray *)highlightMenuItems {
+- (NSArray *)highlightMenuItemsWithCopy:(BOOL)copy {
     EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
                                                            action:@selector(addNote:)];
     
@@ -551,8 +567,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     EucMenuItem *greenItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorGreen:)] autorelease];
     greenItem.color = [UIColor greenColor];
         
-    NSArray *ret = [NSArray arrayWithObjects:addNoteItem, copyItem, yellowItem, redItem, blueItem, greenItem, nil];
-    
+    NSArray *ret;
+    if (copy)
+        ret = [NSArray arrayWithObjects:addNoteItem, copyItem, yellowItem, redItem, blueItem, greenItem, nil];
+    else
+        ret = [NSArray arrayWithObjects:addNoteItem, yellowItem, redItem, blueItem, greenItem, nil];
+
     return ret;
 }
 
@@ -582,7 +602,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter {
-    return [self rootMenuItemsWithCopy:YES];
+    if ([self.selector selectedRangeIsHighlight])
+        return [self highlightMenuItemsWithCopy:YES];
+    else
+        return [self rootMenuItemsWithCopy:YES];
 }
 
 - (BlioBookmarkRange *)selectedRange {
@@ -627,45 +650,50 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 #pragma mark -
 #pragma mark Selector Menu Responder Actions 
 
-- (void)highlightColorYellow:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
-        [self.delegate highlightWithColor:[UIColor yellowColor]];
+- (void)addHighlightWithColor:(UIColor *)color {
+    if ([self.selector selectedRangeIsHighlight]) {
+        BlioBookmarkRange *fromBookmarkRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
+        BlioBookmarkRange *toBookmarkRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
         
+        if ([self.delegate respondsToSelector:@selector(updateHighlightAtRange:toRange:withColor:)])
+            [self.delegate updateHighlightAtRange:fromBookmarkRange toRange:toBookmarkRange withColor:color];
+        
+        // Deselect, this will fire the endEditing highlight callback which refreshes
         [self.selector setSelectedRange:nil];
+
+    } else {
+        
+        if ([self.delegate respondsToSelector:@selector(addHighlightWithColor:)])
+            [self.delegate addHighlightWithColor:color];
+        
+        // Set this to nil now because the refresh depends on it
+        [self.selector setSelectedRange:nil];
+        [self refreshHighlights];
     }
+    
+    self.lastHighlightColor = color;
+}
+
+- (void)highlightColorYellow:(id)sender {
+    [self addHighlightWithColor:[UIColor yellowColor]];
 }
 
 - (void)highlightColorRed:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
-        [self.delegate highlightWithColor:[UIColor redColor]];
-        
-        [self.selector setSelectedRange:nil];
-    }
+    [self addHighlightWithColor:[UIColor redColor]];
 }
 
 - (void)highlightColorBlue:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
-        [self.delegate highlightWithColor:[UIColor blueColor]];
-        
-        [self.selector setSelectedRange:nil];
-    }
+    [self addHighlightWithColor:[UIColor blueColor]];
 }
 
 - (void)highlightColorGreen:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
-        [self.delegate highlightWithColor:[UIColor greenColor]];
-        
-        [self.selector setSelectedRange:nil];
-    }
+    [self addHighlightWithColor:[UIColor greenColor]];
 }
 
 - (void)highlight:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
-        [self.delegate highlightWithColor:[UIColor blueColor]];
-        
-        //[self.selector setSelectedRange:nil];
-        [self.selector changeActiveMenuItemsTo:[self highlightMenuItems]];
-    }
+    if (nil == self.lastHighlightColor) 
+        self.lastHighlightColor = [UIColor blueColor];
+    [self addHighlightWithColor:self.lastHighlightColor];
 }
 
 - (void)addNote:(id)sender {
@@ -727,7 +755,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
     [[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[allWordStrings componentsJoinedByString:@" "]]];
     
-    [self.selector changeActiveMenuItemsTo:[self rootMenuItemsWithCopy:NO]];
+    if ([self.selector selectedRangeIsHighlight])
+        [self.selector changeActiveMenuItemsTo:[self highlightMenuItemsWithCopy:NO]];
+    else
+        [self.selector changeActiveMenuItemsTo:[self rootMenuItemsWithCopy:NO]];
+    
 }
 
 - (void)showWebTools:(id)sender {

@@ -39,6 +39,7 @@
     CGFloat lastZoomScale;
     CALayer *sharpLayer;
     EucSelector *selector;
+    UIColor *lastHighlightColor;
 }
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;
@@ -54,5 +55,6 @@
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
+@property (nonatomic, retain) UIColor *lastHighlightColor;
 
 @end

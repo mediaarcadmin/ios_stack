@@ -1927,7 +1927,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     return [NSArray arrayWithArray:[self.book sortedHighlightRangesForRange:range]];
 }
 
-- (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange {
+- (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor {
     
     NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
     
@@ -1942,13 +1942,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.paragraphOffset] forKeyPath:@"range.endPoint.paragraphOffset"];
             [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.wordOffset] forKeyPath:@"range.endPoint.wordOffset"];
             [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.hyphenOffset] forKeyPath:@"range.endPoint.hyphenOffset"];
-            
+            if (nil != newColor) [highlight setValue:newColor forKeyPath:@"range.color"];
+
             NSError *error;
             if (![[self managedObjectContext] save:&error])
                 NSLog(@"Save after updating highlight failed with error: %@, %@", error, [error userInfo]);
 
-            if ([self.bookView respondsToSelector:@selector(refreshHighlights)])
-                [self.bookView refreshHighlights];
+            //if ([self.bookView respondsToSelector:@selector(refreshHighlights)])
+//                [self.bookView refreshHighlights];
             
             break;
         }
@@ -1961,7 +1962,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark Edit Menu Responder Actions 
 
 
-- (void)highlightWithColor:(UIColor *)color {
+- (void)addHighlightWithColor:(UIColor *)color {
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
         BlioBookmarkRange *selectedRange = [self.bookView selectedRange];
         NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
@@ -1994,12 +1995,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
     }
     
-    if ([self.bookView respondsToSelector:@selector(refreshHighlights)])
-        [self.bookView refreshHighlights];
+    //if ([self.bookView respondsToSelector:@selector(refreshHighlights)])
+        //[self.bookView refreshHighlights];
 }
 
 - (void)addNoteWithColor:(UIColor *)color {
-    [self highlightWithColor:color];
+    [self addHighlightWithColor:color];
     
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
         BlioBookmarkRange *range = [self.bookView selectedRange];
