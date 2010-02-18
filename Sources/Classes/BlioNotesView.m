@@ -32,18 +32,16 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 }
 
 - (id)initWithFrame:(CGRect)frame {
-    return [self initWithPage:nil];
+    return [self initWithRange:nil note:nil];
 }
 
-- (id)initWithPage:(NSString *)pageNumber {
-    return [self initWithPage:pageNumber note:nil];
-}
-
-- (id)initWithPage:(NSString *)pageNumber note:(NSManagedObject *)aNote {
+- (id)initWithRange:(BlioBookmarkRange *)range note:(NSManagedObject *)aNote {
+    if (nil == range) return nil;
+    
     if ((self = [super initWithFrame:CGRectZero])) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        self.page = pageNumber;
+        self.page = [[NSNumber numberWithInteger:[[range startPoint] layoutPage]] stringValue];
         self.note = aNote;
     }
     return self;

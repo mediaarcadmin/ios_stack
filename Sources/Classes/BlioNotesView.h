@@ -8,6 +8,7 @@
 
 #import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
+#import "BlioBookmark.h"
 
 @class BlioNotesView;
 
@@ -33,8 +34,7 @@
 @property (nonatomic, assign) id<BlioNotesViewDelegate> delegate;
 @property (nonatomic, retain) NSManagedObject *note;
 
-- (id)initWithPage:(NSString *)pageNumber;
-- (id)initWithPage:(NSString *)pageNumber note:(NSManagedObject *)aNote;
+- (id)initWithRange:(BlioBookmarkRange *)range note:(NSManagedObject *)aNote;
 - (void)showInView:(UIView *)view;
 - (void)showInView:(UIView *)view animated:(BOOL)animated;
 

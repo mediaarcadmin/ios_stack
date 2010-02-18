@@ -34,6 +34,15 @@
     }
 }
 
++ (NSInteger)wordIndexForWordID:(id)aWordID {
+    NSNumber *wordIDNum = (NSNumber *)aWordID;
+    return [wordIDNum integerValue];
+}
+
++ (id)wordIDForWordIndex:(NSInteger)aWordIndex {
+    return [NSNumber numberWithInteger:aWordIndex];
+}
+
 @end
 
 @implementation BlioTextFlowSection
@@ -153,6 +162,10 @@
     } else {
         return -1;
     }
+}
+
++ (id)paragraphIDForPageIndex:(NSInteger)aPageIndex paragraphIndex:(NSInteger)aParagraphIndex {
+    return [NSString stringWithFormat:@"%d-%d", aPageIndex, aParagraphIndex];
 }
 
 @end
@@ -381,14 +394,14 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 }
             } else if (strcmp("NewParagraph", atts[i]) == 0) {
                 NSString *newParagraphString = [[NSString alloc] initWithUTF8String:atts[i+1]];
-                if (nil != newParagraphString && [newParagraphString isEqualToString:@"True"]) {
-                    newParagraph = YES;
+                if (nil != newParagraphString) {
+                    if ([newParagraphString isEqualToString:@"True"]) newParagraph = YES;
                     [newParagraphString release];
                 }
             } else if (strcmp("Folio", atts[i]) == 0) {
                 NSString *folioString = [[NSString alloc] initWithUTF8String:atts[i+1]];
-                if (nil != folioString && [folioString isEqualToString:@"True"]) {
-                    folio = YES;
+                if (nil != folioString) {
+                    if ([folioString isEqualToString:@"True"]) folio = YES;
                     [folioString release];
                 }
             }
@@ -416,7 +429,7 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("Text", atts[i]) == 0) {
-                textString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                textString = [NSString stringWithUTF8String:atts[i+1]];
             } else if (strcmp("Rect", atts[i]) == 0) {
                 NSString *rectString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != rectString) {
@@ -442,10 +455,6 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             [[paragraph words] addObject:newWord];
             [newWord release];
         }
-                     
-        if (nil != textString) {
-            [textString release];
-        }
     }
 }
 
@@ -466,7 +475,10 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         
         NSUInteger dataLength = [data length];
         NSUInteger offset = (NSUInteger)[targetMarker byteIndex];
-        if (offset >= dataLength) return nil;
+        if (offset >= dataLength) {
+            [data release];
+            return nil;
+        }
         
         currentParser = XML_ParserCreate(NULL);
         XML_SetStartElementHandler(currentParser, fragmentXMLParsingStartElementHandler);
@@ -554,6 +566,16 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
     self.cachedPageIndex = pageIndex;
     
     return pageParagraphs;
+}
+
+- (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex {
+    NSMutableArray *wordsArray = [NSMutableArray array];
+    
+    for (BlioTextFlowParagraph *paragraph in [self paragraphsForPageAtIndex:pageIndex]) {
+        [wordsArray addObjectsFromArray:[paragraph wordsArray]];
+    }
+    
+    return [NSArray arrayWithArray:wordsArray];
 }
 
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex {

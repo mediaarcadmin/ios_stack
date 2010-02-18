@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "BlioTextFlow.h"
+#import "BlioBookmark.h"
 
 @interface BlioMockBook : NSManagedObject {
     UIImage *coverThumb;
@@ -39,5 +40,10 @@
 - (BOOL)audioRights;
 - (NSString *)textflowPath;
 - (BlioTextFlow *)textFlow;
+
+- (NSArray *)sortedBookmarks;
+- (NSArray *)sortedNotes;
+- (NSArray *)sortedHighlights;
+- (NSArray *)sortedHighlightRangesForRange:(BlioBookmarkRange *)range;
 
 @end

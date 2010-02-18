@@ -7,8 +7,9 @@
 //
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutView.h"
-#import "BlioBookmarkPoint.h"
+#import "BlioBookmark.h"
 #import <libEucalyptus/EucMenuItem.h>
+#import <libEucalyptus/EucSelectorRange.h>
 
 static const CGFloat kBlioPDFBlockMinimumWidth = 50;
 static const CGFloat kBlioPDFBlockInsetX = 6;
@@ -22,6 +23,16 @@ static const CGFloat kBlioPDFGoToZoomScale = 0.7f;
 static const CGFloat kBlioLayoutMaxZoom = 54.0f;
 static const CGFloat kBlioLayoutShadow = 16.0f;
 static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the go to animations to look right
+
+@interface BlioLayoutViewColoredRect : NSObject {
+    CGRect rect;
+    UIColor *color;
+}
+
+@property (nonatomic) CGRect rect;
+@property (nonatomic, retain) UIColor *color;
+
+@end
 
 @interface BlioPDFTiledLayerDelegate : NSObject {
     CGPDFPageRef page;
@@ -106,6 +117,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber;
 - (void)setPageNumber:(NSInteger)pageNumber;
+- (void)setHighlights:(NSArray *)newHighlights;
 - (CGPDFPageRef)page;
 
 @end
@@ -151,24 +163,24 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 - (CGRect)convertRectFromPDFPage:(CGRect)rect;
 - (void)renderSharpPageAtScale:(CGFloat)scale;
 - (void)hideSharpPage;
-//- (void)zoomToContents;
+- (void)setHighlights:(NSArray *)newHighlights;
 
 @end
 
 @implementation BlioLayoutView
 
 
-@synthesize book, scrollView, containerView, pageViews, navigationController, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector;
+@synthesize delegate, book, scrollView, containerView, pageViews, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     CGPDFDocumentRelease(pdf);
+    self.delegate = nil;
     self.book = nil;
     self.scrollView = nil;
     self.containerView = nil;
     self.pageViews = nil;
-    self.navigationController = nil;
     self.currentPageView = nil;
     self.fonts = nil;
     [self.selector detatchFromView];
@@ -277,7 +289,142 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 #pragma mark -
+#pragma mark Highlights
+
+- (void)displayHighlightsForPage:(NSInteger)aPageNumber inView:(BlioPDFPageView *)view {
+    if (aPageNumber < 1) return;
+    if (aPageNumber > CGPDFDocumentGetNumberOfPages (pdf)) return;
+
+    NSInteger pageIndex = aPageNumber - 1;
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSUInteger maxOffset = [pageParagraphs count];
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    startPoint.layoutPage = aPageNumber;
+    startPoint.paragraphOffset = 0;
+    
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+    endPoint.layoutPage = aPageNumber;
+    endPoint.paragraphOffset = maxOffset;
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    range.startPoint = startPoint;
+    range.endPoint = endPoint;
+    
+    NSArray *highlightRanges = [self.delegate rangesToHighlightForRange:range];
+    
+    [startPoint release];
+    [endPoint release];
+    [range release];
+    
+    NSMutableArray *allHighlights = [NSMutableArray array];
+    
+    for (BlioBookmarkRange *highlightRange in highlightRanges) {
+        
+        NSMutableArray *highlightRects = [NSMutableArray array];
+        
+        for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
+            for (BlioTextFlowPositionedWord *word in [paragraph words]) {
+                if (((highlightRange.startPoint.layoutPage < aPageNumber) &&
+                     (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
+                     (word.wordIndex <= highlightRange.endPoint.wordOffset)) ||
+                    
+                    ((highlightRange.endPoint.layoutPage > aPageNumber) &&
+                     (paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
+                     (word.wordIndex >= highlightRange.startPoint.wordOffset)) ||
+                    
+                    ((paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
+                     (word.wordIndex >= highlightRange.startPoint.wordOffset) &&
+                     (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
+                     (word.wordIndex <= highlightRange.endPoint.wordOffset))) {
+                        
+                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                    }
+            }
+        }
+        
+        NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
+        
+        for (NSValue *rectValue in coalescedRects) {
+            BlioLayoutViewColoredRect *coloredRect = [[BlioLayoutViewColoredRect alloc] init];
+            coloredRect.color = highlightRange.color;
+            coloredRect.rect = [rectValue CGRectValue];
+            [allHighlights addObject:coloredRect];
+            [coloredRect release];
+        }
+        
+    }
+    
+    [view setHighlights:allHighlights];
+}
+
+- (void)refreshHighlights {
+    [self displayHighlightsForPage:self.pageNumber inView:self.currentPageView];
+}
+
+#pragma mark -
 #pragma mark Selector
+
+- (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range {
+    NSInteger pageIndex = self.pageNumber - 1;
+    
+    EucSelectorRange *selectorRange = [[EucSelectorRange alloc] init];
+    selectorRange.startBlockId = [BlioTextFlowParagraph paragraphIDForPageIndex:pageIndex paragraphIndex:range.startPoint.paragraphOffset];
+    selectorRange.startElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:range.startPoint.wordOffset];
+    selectorRange.endBlockId = [BlioTextFlowParagraph paragraphIDForPageIndex:pageIndex paragraphIndex:range.endPoint.paragraphOffset];
+    selectorRange.endElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:range.endPoint.wordOffset];
+    
+    return [selectorRange autorelease];
+}
+
+- (NSArray *)bookmarkRangesForEucSelector:(EucSelector *)selector {
+    NSInteger pageIndex = self.pageNumber - 1;
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSUInteger maxOffset = [pageParagraphs count];
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    startPoint.layoutPage = self.pageNumber;
+    startPoint.paragraphOffset = 0;
+    
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+    endPoint.layoutPage = self.pageNumber;
+    endPoint.paragraphOffset = maxOffset;
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    range.startPoint = startPoint;
+    range.endPoint = endPoint;
+    
+    NSArray *highlightRanges = [self.delegate rangesToHighlightForRange:range];
+    
+    [startPoint release];
+    [endPoint release];
+    [range release];
+    
+    return [NSArray arrayWithArray:highlightRanges];
+}
+
+- (NSArray *)highlightRangesForEucSelector:(EucSelector *)aSelector {
+       
+    NSMutableArray *selectorRanges = [NSMutableArray array];
+    
+    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForEucSelector:aSelector]) {
+        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
+        [selectorRanges addObject:range];
+    }
+    
+    return [NSArray arrayWithArray:selectorRanges];
+}
+
+- (UIColor *)eucSelector:(EucSelector *)aSelector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange {
+    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForEucSelector:aSelector]) {
+        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
+        if ([selectedRange isEqual:range]) {
+            return [highlightRange.color colorWithAlphaComponent:0.3f];
+        }
+    }
+    
+    return nil;
+}
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
     NSInteger pageIndex = self.pageNumber - 1;
@@ -341,8 +488,31 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
 }
 
-- (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter
-{
+- (NSArray *)highlightMenuItems {
+    EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
+                                                           action:@selector(addNote:)];
+    
+    EucMenuItem *copyItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
+                                                        action:@selector(copy:)];
+    
+    EucMenuItem *yellowItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorYellow:)] autorelease];
+    yellowItem.color = [UIColor yellowColor];
+    
+    EucMenuItem *redItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorRed:)] autorelease];
+    redItem.color = [UIColor redColor];
+    
+    EucMenuItem *blueItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorBlue:)] autorelease];
+    blueItem.color = [UIColor blueColor];
+    
+    EucMenuItem *greenItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorGreen:)] autorelease];
+    greenItem.color = [UIColor greenColor];
+        
+    NSArray *ret = [NSArray arrayWithObjects:addNoteItem, copyItem, yellowItem, redItem, blueItem, greenItem, nil];
+    
+    return ret;
+}
+
+- (NSArray *)rootMenuItemsWithCopy:(BOOL)copy {
     EucMenuItem *highlightItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
                                                              action:@selector(highlight:)];
     EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
@@ -352,7 +522,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     EucMenuItem *showWebToolsItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu in layout view")
                                                                 action:@selector(showWebTools:)];
     
-    NSArray *ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
+    NSArray *ret;
+    if (copy)
+        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
+    else
+        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, showWebToolsItem, nil];
+
     
     [highlightItem release];
     [addNoteItem release];
@@ -360,6 +535,159 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [showWebToolsItem release];
     
     return ret;
+}
+
+- (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter {
+    return [self rootMenuItemsWithCopy:YES];
+}
+
+- (BlioBookmarkRange *)selectedRange {
+    EucSelectorRange *highlighterRange = [self.selector selectedRange];
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkPoint *endPoint = nil;
+
+    if (nil != highlighterRange) {
+        endPoint = [[BlioBookmarkPoint alloc] init];
+        
+        NSInteger startPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:[highlighterRange startBlockId]];
+        NSInteger endPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:[highlighterRange endBlockId]];
+        NSInteger startParagraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:[highlighterRange startBlockId]];
+        NSInteger endParagraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:[highlighterRange endBlockId]];
+        NSInteger startWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange startElementId]];
+        NSInteger endWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange endElementId]];
+        
+        
+        [startPoint setLayoutPage:startPageIndex + 1];
+        [startPoint setParagraphOffset:startParagraphOffset];
+        [startPoint setWordOffset:startWordOffset];
+        
+        [endPoint setLayoutPage:endPageIndex + 1];
+        [endPoint setParagraphOffset:endParagraphOffset];
+        [endPoint setWordOffset:endWordOffset];
+    } else {
+        [startPoint setLayoutPage:self.pageNumber];
+    }
+    
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    [range setStartPoint:startPoint];
+    [range setEndPoint:endPoint];
+    
+    [startPoint release];
+    if (nil != endPoint) [endPoint release];
+    
+    return [range autorelease];
+}
+
+#pragma mark -
+#pragma mark Selector Menu Responder Actions 
+
+- (void)highlightColorYellow:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor yellowColor]];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)highlightColorRed:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor redColor]];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)highlightColorBlue:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor blueColor]];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)highlightColorGreen:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor greenColor]];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)highlight:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor blueColor]];
+        
+        //[self.selector setSelectedRange:nil];
+        [self.selector changeActiveMenuItemsTo:[self highlightMenuItems]];
+    }
+}
+
+- (void)addNote:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(addNoteWithColor:)])
+        [self.delegate addNoteWithColor:[UIColor blueColor]];
+    
+    // TODO - this probably doesn't want to deselect yet in case the note is cancelled
+    // Or the selection could be saved and reinstated
+    // Or we could just not bother but it might be annoying
+    [self.selector setSelectedRange:nil];
+}
+
+- (void)copy:(id)sender {
+    NSInteger currentPage = self.pageNumber;
+    
+    EucSelectorRange *selectorRange = [self.selector selectedRange];
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    startPoint.layoutPage = currentPage;
+    startPoint.paragraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:selectorRange.startBlockId];
+    startPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:selectorRange.startElementId];
+
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+    endPoint.paragraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:selectorRange.endBlockId];
+    endPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:selectorRange.endElementId];
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    range.startPoint = startPoint;
+    range.endPoint = endPoint;
+    
+    [startPoint release];
+    [endPoint release];
+    
+    NSMutableArray *allWordStrings = [NSMutableArray array];
+    NSInteger pageIndex = currentPage - 1;
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    
+    for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
+        for (BlioTextFlowPositionedWord *word in [paragraph words]) {
+            if (((range.startPoint.layoutPage < currentPage) &&
+                 (paragraph.paragraphIndex <= range.endPoint.paragraphOffset) &&
+                 (word.wordIndex <= range.endPoint.wordOffset)) ||
+                
+                ((range.endPoint.layoutPage > currentPage) &&
+                 (paragraph.paragraphIndex >= range.startPoint.paragraphOffset) &&
+                 (word.wordIndex >= range.startPoint.wordOffset)) ||
+                
+                ((paragraph.paragraphIndex >= range.startPoint.paragraphOffset) &&
+                 (word.wordIndex >= range.startPoint.wordOffset) &&
+                 (paragraph.paragraphIndex <= range.endPoint.paragraphOffset) &&
+                 (word.wordIndex <= range.endPoint.wordOffset))) {
+                    
+                    [allWordStrings addObject:[word string]];
+                }
+        }
+    }
+
+    [range release];
+
+    [[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[allWordStrings componentsJoinedByString:@" "]]];
+    
+    [self.selector changeActiveMenuItemsTo:[self rootMenuItemsWithCopy:NO]];
+}
+
+- (void)showWebTools:(id)sender {
+    NSLog(@"Web Tools!");
 }
 
 #pragma mark -
@@ -597,21 +925,29 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self didChangeValueForKey:@"pageNumber"];
 }
 
-- (BlioBookmarkPoint *)pageBookmarkPoint
+- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
 {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
     ret.layoutPage = self.pageNumber;
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
     [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
+    [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
+}
+
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint
 {
     return bookmarkPoint.layoutPage;
+}
+
+- (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
+    return bookmarkRange.startPoint.layoutPage;
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
@@ -758,6 +1094,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [pageView setPreload:preload];
     [pageView setCover:(aPageNumber == 1)];
     [pageView setValid:YES];
+    
+    [self displayHighlightsForPage:aPageNumber inView:pageView];
     
     return pageView;
 }
@@ -1169,6 +1507,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self.view setPageNumber:CGPDFPageGetPageNumber(newPage)];
 }
 
+- (void)setHighlights:(NSArray *)newHighlights {
+    [self.view setHighlights:newHighlights];
+}
+
 - (CGPoint)convertPointToPDFPage:(CGPoint)point {
     CGPoint invertedViewPoint = CGPointMake(point.x, CGRectGetHeight(self.bounds) - point.y);
     
@@ -1561,6 +1903,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     }
 }
 
+- (void)setHighlights:(NSArray *)newHighlights {
+    [highlightLayerDelegate setHighlights:newHighlights];
+    [highlightLayer setNeedsDisplay];
+}
+
 @end
 
 
@@ -1681,20 +2028,23 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     CGContextScaleCTM(ctx, 1, -1);
     CGContextTranslateCTM(ctx, 0, -CGRectGetHeight(boundingRect));
     
-    CGContextSetRGBFillColor(ctx, 1, 1, 0, 0.3f);
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.5f green:0.3f blue:0 alpha:1.0f].CGColor);
-    CGContextSetLineWidth(ctx, 0.5f);
-    CGFloat dash[2]={0.5f,1.5f};
-    CGContextSetLineDash (ctx, 0, dash, 2);
+    //CGContextSetRGBFillColor(ctx, 1, 1, 0, 0.3f);
+//    CGFloat dash[2]={0.5f,1.5f};
+//    CGContextSetLineDash (ctx, 0, dash, 2);
     
     CGContextConcatCTM(ctx, fitTransform);
         
-    for (NSValue *rectVal in self.highlights) {
-        CGRect highlightRect = [rectVal CGRectValue];
+    for (BlioLayoutViewColoredRect *coloredRect in self.highlights) {
+        UIColor *highlightColor = [coloredRect color];
+        CGContextSetFillColorWithColor(ctx, [highlightColor colorWithAlphaComponent:0.3f].CGColor);
+        //CGContextSetStrokeColorWithColor(ctx, [highlightColor colorWithAlphaComponent:1.0f].CGColor);
+        //CGContextSetLineWidth(ctx, 1.0f);
+        
+        CGRect highlightRect = [coloredRect rect];
         CGRect adjustedRect = CGRectApplyAffineTransform(highlightRect, highlightsTransform);
-        CGContextClearRect(ctx, CGRectInset(adjustedRect, -1, -1));
+        //CGContextClearRect(ctx, CGRectInset(adjustedRect, -1, -1));
         CGContextFillRect(ctx, adjustedRect);
-        CGContextStrokeRect(ctx, adjustedRect);
+        //CGContextStrokeRect(ctx, adjustedRect);
     }
 }
 
@@ -1704,6 +2054,17 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 + (CFTimeInterval)fadeDuration {
     return 0.0;
+}
+
+@end
+
+@implementation BlioLayoutViewColoredRect
+
+@synthesize rect, color;
+
+- (void)dealloc {
+    self.color = nil;
+    [super dealloc];
 }
 
 @end

@@ -20,12 +20,12 @@
 @class BlioPDFContainerScrollView;
 
 @interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, BlioTTSDataSource, EucBookContentsTableViewControllerDataSource, EucSelectorDataSource, EucSelectorDelegate> {
+    id<BlioBookDelegate> delegate;
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioPDFContainerScrollView *scrollView;
     UIView *containerView;
     NSMutableArray *pageViews;
-    id navigationController;
     NSInteger visiblePageIndex;
     BlioPDFFontList *fonts;
     BlioPDFParsedPage *parsedPage;
@@ -41,11 +41,11 @@
     EucSelector *selector;
 }
 
+@property (nonatomic, assign) id<BlioBookDelegate> delegate;
 @property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, retain) BlioPDFContainerScrollView *scrollView;
 @property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) NSMutableArray *pageViews;
-@property (nonatomic, assign) id navigationController;
 @property (nonatomic, retain) BlioPDFPageView *currentPageView;
 @property (nonatomic, assign) MSTiltScroller *tiltScroller;
 @property (nonatomic, retain) BlioPDFFontList *fonts;

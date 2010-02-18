@@ -7,6 +7,19 @@
  *
  */
 
+#import "BlioBookmark.h"
+
+#pragma mark -
+@protocol BlioBookDelegate <NSObject>
+
+@required
+- (NSArray *)rangesToHighlightForRange:(BlioBookmarkRange *)range;
+- (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange;
+- (void)highlightWithColor:(UIColor *)color;
+- (void)addNoteWithColor:(UIColor *)color;
+@end
+
+#pragma mark -
 @protocol BlioTTSDataSource <NSObject>
 
 @required
@@ -17,9 +30,11 @@
 - (void)highlightWordAtParagraphId:(id)paragraphId wordOffset:(uint32_t)wordOffset;
 @end
 
-@protocol EucBookContentsTableViewControllerDataSource;
+#pragma mark -
 
-@class BlioBookmarkPoint;
+@protocol EucBookContentsTableViewControllerDataSource;
+@class BlioBookmarkAbsolutePoint;
+@class BlioBookmarkRange;
 @class BlioMockBook;
 
 @protocol BlioBookView <NSObject>
@@ -38,9 +53,9 @@
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 
-@property (nonatomic, readonly) BlioBookmarkPoint *pageBookmarkPoint;
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+@property (nonatomic, readonly) BlioBookmarkAbsolutePoint *pageBookmarkPoint;
+- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated;
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 
@@ -55,5 +70,13 @@
 @property (nonatomic, retain, readonly) UIImage *pageTexture;
 @property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+
+// BookMarkRange methods - some of these should be required once flow view is ready
+- (BlioBookmarkRange *)selectedRange;
+- (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange;
+- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
+
+// Book highlights
+- (void)refreshHighlights;
 
 @end

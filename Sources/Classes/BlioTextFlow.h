@@ -24,6 +24,8 @@
 @property (nonatomic, retain) NSNumber *wordID;
 
 - (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs;
++ (NSInteger)wordIndexForWordID:(id)aWordID;
++ (id)wordIDForWordIndex:(NSInteger)aWordIndex;
 
 @end
 
@@ -77,6 +79,7 @@
 - (NSComparisonResult)compare:(BlioTextFlowParagraph *)rhs;
 + (NSInteger)pageIndexForParagraphID:(id)aParagraphID;
 + (NSInteger)paragraphIndexForParagraphID:(id)aParagraphID;
++ (id)paragraphIDForPageIndex:(NSInteger)aPageIndex paragraphIndex:(NSInteger)aParagraphIndex;
 
 @end
 
@@ -98,6 +101,7 @@
 // Convenience methods
 - (NSArray *)sortedSections;
 - (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex;
+- (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
 
 @end
