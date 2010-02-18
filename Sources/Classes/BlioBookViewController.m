@@ -1924,15 +1924,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark -
 #pragma mark BlioBookDelegate 
 
-- (NSArray *)highlightedRangesForRange:(BlioBookmarkRange *)range {
-    NSMutableArray *highlightRanges = [NSMutableArray array];
-    
-    for (NSManagedObject *highlight in [self.book sortedHighlightsForRange:range]) {
-        BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[highlight valueForKey:@"range"]];
-        [highlightRanges addObject:range];
-    }
-    
-    return [NSArray arrayWithArray:highlightRanges];
+- (NSArray *)rangesToHighlightForRange:(BlioBookmarkRange *)range {    
+    return [NSArray arrayWithArray:[self.book sortedHighlightRangesForRange:range]];
 }
 
 - (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange {
@@ -1945,8 +1938,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark Edit Menu Responder Actions 
 
 
-- (void)highlight:(id)sender
-{
+- (void)highlight {
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
         BlioBookmarkRange *selectedRange = [self.bookView selectedRange];
         NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
@@ -1956,7 +1948,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                                     inManagedObjectContext:[self managedObjectContext]];
         
         NSManagedObject *newRange = [selectedRange persistentBookmarkRangeInContext:[self managedObjectContext]];
-        [newRange setValue:[UIColor yellowColor] forKey:@"color"];
+        [newRange setValue:[UIColor redColor] forKey:@"color"];
         [newHighlight setValue:newRange forKey:@"range"];
         [highlights addObject:newHighlight];
         
@@ -1969,22 +1961,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
-- (void)addNote:(id)sender
-{
+- (void)addNote {
+    [self highlight];
+    
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
         BlioBookmarkRange *range = [self.bookView selectedRange];
         [self displayNote:nil atRange:range animated:YES];
     }
-}
-
-- (void)copy:(id)sender
-{
-    NSLog(@"Copy!");
-}
-
-- (void)showWebTools:(id)sender
-{
-    NSLog(@"Web Tools!");
 }
 
 

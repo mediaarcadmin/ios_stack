@@ -101,6 +101,7 @@
 // Convenience methods
 - (NSArray *)sortedSections;
 - (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex;
+- (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
 
 @end

@@ -568,6 +568,16 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
     return pageParagraphs;
 }
 
+- (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex {
+    NSMutableArray *wordsArray = [NSMutableArray array];
+    
+    for (BlioTextFlowParagraph *paragraph in [self paragraphsForPageAtIndex:pageIndex]) {
+        [wordsArray addObjectsFromArray:[paragraph wordsArray]];
+    }
+    
+    return [NSArray arrayWithArray:wordsArray];
+}
+
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex {
     NSMutableString *pageString = [NSMutableString string];
     NSArray *pageParagraphs = [self paragraphsForPageAtIndex:pageIndex];

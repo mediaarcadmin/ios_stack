@@ -13,8 +13,10 @@
 @protocol BlioBookDelegate <NSObject>
 
 @required
-- (NSArray *)highlightedRangesForRange:(BlioBookmarkRange *)range;
+- (NSArray *)rangesToHighlightForRange:(BlioBookmarkRange *)range;
 - (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange;
+- (void)highlight;
+- (void)addNote;
 @end
 
 #pragma mark -
