@@ -1051,6 +1051,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 if([highlightRange overlaps:newSelectedRange] && 
                    ![highlightRange isEqual:self.selectedRangeOriginalHighlightRange]) {
                     newSelectedRange = nil;
+                    break;
                 }
             }
             
