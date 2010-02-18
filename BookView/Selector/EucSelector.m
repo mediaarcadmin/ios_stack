@@ -999,6 +999,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 if([highlightRange overlaps:newSelectedRange]) {
                     newSelectedRange = highlightRange;
                     newSelectedRangeIsHighlight = YES;
+                    break;
                 }
             }
         }
