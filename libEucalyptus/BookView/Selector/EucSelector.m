@@ -701,12 +701,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
 }
 
 
-+ (NSArray *)coalescedLineRectsForElementRects:(NSArray *)elementRects inView:(UIView *)view 
-{
-    // We'll scale the rects to make sure they will be on pixl boundies
-    // on screen even if the layer they're in has a scale transform applied.
-    CGSize screenScaleFactors = [view screenScaleFactors];        
-        
++ (NSArray *)coalescedLineRectsForElementRects:(NSArray *)elementRects
+{        
     NSMutableArray *ret = [NSMutableArray array];
     CGRect currentLineRect = CGRectZero;
     
@@ -732,21 +728,21 @@ static const CGFloat sLoupePopDuration = 0.05f;
                    currentLineRect.size.height = newLimit - currentLineRect.origin.y;
                    currentLineRect.size.width = (thisRect.size.width + thisRect.origin.x) - currentLineRect.origin.x; 
                } else {
-                   [ret addObject:[NSValue valueWithCGRect:CGRectScreenIntegral(currentLineRect, screenScaleFactors)]];
+                   [ret addObject:[NSValue valueWithCGRect:currentLineRect]];
                    currentLineRect = thisRect;
                }
         }
     }
     if(!CGRectEqualToRect(currentLineRect, CGRectZero)) {
-        [ret addObject:[NSValue valueWithCGRect:CGRectScreenIntegral(currentLineRect, screenScaleFactors)]];
+        [ret addObject:[NSValue valueWithCGRect:currentLineRect]];
     }   
     return ret;
 }
 
 - (NSArray *)highlightRectsForRange:(EucSelectorRange *)selectedRange 
-                       inDataSource:(id<EucSelectorDataSource>)dataSource 
-                            forView:(UIView *)view 
-{                                      
+{                                   
+    id<EucSelectorDataSource> dataSource = self.dataSource;
+        
     NSArray *blockIds = [dataSource blockIdentifiersForEucSelector:self];
     NSUInteger blockIdIndex = 0;
     
@@ -791,19 +787,25 @@ static const CGFloat sLoupePopDuration = 0.05f;
         ++blockIdIndex;
     } while(!isLastBlock);
     
-    return [[self class] coalescedLineRectsForElementRects:nonCoalescedRects inView:view];
+    NSArray *coalescedRects = [[self class] coalescedLineRectsForElementRects:nonCoalescedRects];
+    
+    // We'll scale the rects to make sure they will be on pixl boundies
+    // on screen even if the layer they're in has a scale transform applied.
+    CGSize screenScaleFactors = [self.attachedView screenScaleFactors];
+    
+    NSMutableArray *ret = [NSMutableArray arrayWithCapacity:coalescedRects.count];
+    for(NSValue *rectValue in coalescedRects) {
+        [ret addObject:[NSValue valueWithCGRect:CGRectScreenIntegral([rectValue CGRectValue], screenScaleFactors)]];
+    }
+    return ret;
 }
 
 - (void)redisplaySelectedRange
 {
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
-        id<EucSelectorDataSource> dataSource = self.dataSource;
-        
         // Work out he rects to highlight
-        NSArray *highlightRects = [self highlightRectsForRange:selectedRange 
-                                                  inDataSource:dataSource 
-                                                       forView:self.attachedView];
+        NSArray *highlightRects = [self highlightRectsForRange:selectedRange];
         
         // Highlight them, reusing the current highlight layers if possible.
         UIView *viewWithSelection = self.viewWithSelection;
