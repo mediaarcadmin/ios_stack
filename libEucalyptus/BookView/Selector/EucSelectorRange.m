@@ -15,12 +15,44 @@
 @synthesize endBlockId = _endBlockId;
 @synthesize endElementId = _endElementId;
 
+
+- (BOOL)overlaps:(EucSelectorRange *)otherRange
+{
+    NSComparisonResult endStartComparison;
+    NSComparisonResult endStartBlockComparison = [_endBlockId compare:otherRange->_startBlockId];
+    if(endStartBlockComparison == NSOrderedSame) {
+        endStartComparison = [_endElementId compare:otherRange->_startElementId];
+    } else {
+        endStartComparison = endStartBlockComparison;
+    }
+    
+    if(endStartComparison == NSOrderedAscending) {
+        return NO;
+    }    
+    
+    NSComparisonResult startEndComparison;
+    NSComparisonResult startEndBlockComparison = [_startBlockId compare:otherRange->_endBlockId];
+    if(startEndBlockComparison == NSOrderedSame){
+        startEndComparison = [_startElementId compare:otherRange->_endElementId];
+    } else {
+        startEndComparison = startEndBlockComparison;
+    }
+    
+    if(startEndComparison == NSOrderedDescending) {
+        return NO;
+    }
+    
+    return YES;
+}
+
 - (BOOL)isEqual:(id)object
 {
-    if([object isKindOfClass:[EucSelectorRange class]]) {
+    if(object == self) {
+        return YES;
+    } else if([object isKindOfClass:[EucSelectorRange class]]) {
         EucSelectorRange *rhs = object;
-        return _startBlockId == rhs->_startBlockId && _startElementId == rhs->_startElementId && 
-               _endBlockId == rhs->_endBlockId && _endElementId == rhs->_endElementId;
+        return [_startBlockId compare:rhs->_startBlockId] == NSOrderedSame && [_startElementId compare:rhs->_startElementId] == NSOrderedSame && 
+               [_endBlockId compare:rhs->_endBlockId] == NSOrderedSame && [_endElementId compare:rhs->_endElementId] == NSOrderedSame ;
     }
     return NO;
 }

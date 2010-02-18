@@ -27,10 +27,15 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 @property (nonatomic, retain) NSMutableArray *temporaryHighlightLayers;
 
-@property (nonatomic, retain) UITouch *trackingTouch;
+@property (nonatomic, assign) BOOL selectedRangeIsHighlight;
+@property (nonatomic, retain) EucSelectorRange *selectedRangeOriginalHighlightRange;
+
+@property (nonatomic, assign) UITouch *trackingTouch;
 @property (nonatomic, assign) BOOL trackingTouchHasMoved;
 @property (nonatomic, assign, getter=isTracking) BOOL tracking;
 @property (nonatomic, assign) EucSelectorTrackingStage trackingStage;
+
+@property (nonatomic, retain) UIColor *selectionColor;
 
 @property (nonatomic, retain) UIView *viewWithSelection;
 @property (nonatomic, retain) UIImageView *loupeView;
@@ -50,6 +55,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
 - (CGImageRef)magnificationLoupeMaskImage;
 - (void)_trackTouch:(UITouch *)touch;
 
+// Cache's the data sources responses during selection.
+- (void)_clearSelectionCaches;
+- (NSArray *)_blockIdentifiers;
+- (NSArray *)_identifiersForElementsOfBlockWithIdentifier:(id)blockId;
+- (NSArray *)_highlightRanges;
+
 @end
 
 @implementation EucSelector
@@ -66,10 +77,15 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 @synthesize temporaryHighlightLayers = _temporaryHighlightLayers;
 
+@synthesize selectedRangeIsHighlight = _selectedRangeIsHighlight;
+@synthesize selectedRangeOriginalHighlightRange = _selectedRangeOriginalHighlightRange;
+
 @synthesize trackingTouch = _trackingTouch;
 @synthesize trackingTouchHasMoved = _trackingTouchHasMoved;
 @synthesize tracking = _tracking;
 @synthesize trackingStage = _trackingStage;
+
+@synthesize selectionColor = _selectionColor;
 
 @synthesize viewWithSelection = _viewWithSelection;
 @synthesize loupeView = _loupeView;
@@ -591,12 +607,24 @@ static const CGFloat sLoupePopDuration = 0.05f;
         switch(stage) {
             case EucSelectorTrackingStageNone:
             {
+                if(previousStage != EucSelectorTrackingStageFirstSelection) {
+                    if(self.selectedRangeIsHighlight &&
+                       [self.delegate respondsToSelector:@selector(eucSelector:didEndEditingHighlightWithRange:movedToRange:)]) {
+                       [self.delegate eucSelector:self 
+                  didEndEditingHighlightWithRange:self.selectedRangeOriginalHighlightRange
+                                     movedToRange:self.selectedRange];
+                    }
+                    self.selectedRangeOriginalHighlightRange = nil;
+                    self.selectionColor = nil;
+                }
+                
                 if(self.viewWithSelection != self.attachedView) {
                     [(THEventCapturingWindow *)self.viewWithSelection.window removeTouchObserver:self forView:self.viewWithSelection];
                     [self.viewWithSelection removeFromSuperview];
                     self.viewWithSelection = nil;
                 }
                 [self _removeAllHighlightLayers];
+                [self _clearSelectionCaches];
                 self.tracking = NO;
                 break;
             } 
@@ -613,7 +641,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                         [dummySelectionView release];
                     } else {
                         self.viewWithSelection = self.attachedView;
-                    }                                
+                    }
                     self.tracking = YES;
                 } else {
                     [self _removeAllHighlightLayers];
@@ -623,6 +651,13 @@ static const CGFloat sLoupePopDuration = 0.05f;
             } 
             case EucSelectorTrackingStageSelectedAndWaiting:
             {
+                if(previousStage == EucSelectorTrackingStageFirstSelection && self.selectedRangeIsHighlight) {
+                    self.selectedRangeOriginalHighlightRange = self.selectedRange;
+                    if([self.delegate respondsToSelector:@selector(eucSelector:willBeginEditingHighlightWithRange:)]) {
+                        self.selectionColor = [self.delegate eucSelector:self willBeginEditingHighlightWithRange:self.selectedRange];
+                    } 
+                }
+                
                 [self _positionKnobs]; 
                 id<EucSelectorDelegate> delegate = self.delegate;
                 if([delegate respondsToSelector:@selector(menuItemsForEucSelector:)]) {
@@ -653,17 +688,68 @@ static const CGFloat sLoupePopDuration = 0.05f;
     }
 }
 
-- (THPair *)_blockAndElementIdsAndHighlightRectsForPoint:(CGPoint)point
+- (void)_clearSelectionCaches
+{
+    [_cachedBlockIdentifiers release];
+    _cachedBlockIdentifiers = nil;
+    CFRelease(_cachedBlockIdentifierToElements);
+    _cachedBlockIdentifierToElements = NULL;
+    [_cachedHighlightRanges release];
+    _cachedHighlightRanges = nil;
+}
+
+- (NSArray *)_blockIdentifiers
+{
+    if(!_cachedBlockIdentifiers) {
+        _cachedBlockIdentifiers = [([self.dataSource blockIdentifiersForEucSelector:self] ?: [NSArray array]) retain];
+    }
+    return _cachedBlockIdentifiers;
+}
+
+- (NSArray *)_identifiersForElementsOfBlockWithIdentifier:(id)blockId
+{
+    if(!_cachedBlockIdentifierToElements) {
+        _cachedBlockIdentifierToElements = CFDictionaryCreateMutable(kCFAllocatorDefault,
+                                                                     0, 
+                                                                     &kCFTypeDictionaryKeyCallBacks, 
+                                                                     &kCFTypeDictionaryValueCallBacks);
+    }
+    NSArray *ret = (NSArray *)CFDictionaryGetValue(_cachedBlockIdentifierToElements, blockId);
+    if(!ret) {
+        ret = [self.dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId] ?: [NSArray array];
+        if(ret) {
+            CFDictionarySetValue(_cachedBlockIdentifierToElements, blockId, ret);
+        }
+    }
+    return ret;
+}
+
+- (NSArray *)_highlightRanges
+{
+    NSArray *ret = _cachedHighlightRanges;
+    if(!ret) {
+        id<EucSelectorDataSource> dataSource = self.dataSource;
+        if([dataSource respondsToSelector:@selector(highlightRangesForEucSelector:)]) {
+            ret = [dataSource highlightRangesForEucSelector:self];
+        }
+        if(!ret) {
+            ret = [NSArray array];
+        }
+        _cachedHighlightRanges = [ret retain];
+    }
+    return ret;
+}
+
+- (THPair *)_blockAndElementIdsForPoint:(CGPoint)point
 {
     id<EucSelectorDataSource> dataSource = self.dataSource;
-    for(id blockId in [dataSource blockIdentifiersForEucSelector:self]) {
+    for(id blockId in [self _blockIdentifiers]) {
         if(CGRectContainsPoint([dataSource eucSelector:self frameOfBlockWithIdentifier:blockId], point)) {
-            for(id elementId in [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId]) {
+            for(id elementId in [self _identifiersForElementsOfBlockWithIdentifier:blockId]) {
                 NSArray *rectsForElement = [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
                 for(NSValue *rectValue in rectsForElement) {
                     if(CGRectContainsPoint([rectValue CGRectValue], point)) {
-                        return [THPair pairWithFirst:[THPair pairWithFirst:blockId second:elementId] 
-                                              second:rectsForElement];
+                        return [THPair pairWithFirst:blockId second:elementId];
                     }
                 }
             }
@@ -680,8 +766,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
     CGFloat bestDistance = CGFLOAT_MAX;
     
     id<EucSelectorDataSource> dataSource = self.dataSource;
-    for(id blockId in [dataSource blockIdentifiersForEucSelector:self]) {
-        for(id elementId in [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId]) {
+    for(id blockId in [self _blockIdentifiers]) {
+        for(id elementId in [self _identifiersForElementsOfBlockWithIdentifier:blockId]) {
             NSArray *rectsForElement = [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
             for(NSValue *rectValue in rectsForElement) {
                 CGFloat distance = CGPointDistanceFromRect(point, [rectValue CGRectValue]);
@@ -743,7 +829,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 {                                   
     id<EucSelectorDataSource> dataSource = self.dataSource;
         
-    NSArray *blockIds = [dataSource blockIdentifiersForEucSelector:self];
+    NSArray *blockIds = [self _blockIdentifiers];
     NSUInteger blockIdIndex = 0;
     
     NSMutableArray *nonCoalescedRects = [NSMutableArray array];
@@ -761,7 +847,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
     do {
         id blockId = [blockIds objectAtIndex:blockIdIndex];
         
-        NSArray *elementIds = [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId];
+        NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:blockId];
         NSUInteger elementIdCount = elementIds.count;
         NSUInteger elementIdIndex = 0;
         
@@ -872,15 +958,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 }      
                 [CATransaction commit];
             } else {
-                [self setTrackingStage:EucSelectorTrackingStageNone];
+                self.trackingStage = EucSelectorTrackingStageNone;
             }
         }
     }
-}
-
-- (BOOL)selectedRangeIsHighlight
-{
-    return NO;
 }
 
 - (void)_trackTouch:(UITouch *)touch
@@ -888,14 +969,13 @@ static const CGFloat sLoupePopDuration = 0.05f;
     UIView *viewWithSelection = self.viewWithSelection;
     CGPoint location = [touch locationInView:viewWithSelection];
 
-    EucSelectorRange *newSelectedRange = nil;
-    
-    if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {   
-        THPair *blockAndElementAndHighlightRects = [self _blockAndElementIdsAndHighlightRectsForPoint:location];
-        THPair *blockAndElementIds = blockAndElementAndHighlightRects.first;
-        
+    if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {
+        EucSelectorRange *newSelectedRange = nil;
+        BOOL newSelectedRangeIsHighlight = NO;
+
+        THPair *blockAndElementIds = [self _blockAndElementIdsForPoint:location];        
         if(blockAndElementIds) {
-            newSelectedRange = [[EucSelectorRange alloc] init];
+            newSelectedRange = [[[EucSelectorRange alloc] init] autorelease];
             id blockId = blockAndElementIds.first;
             id elementId = blockAndElementIds.second;
             
@@ -903,13 +983,24 @@ static const CGFloat sLoupePopDuration = 0.05f;
             newSelectedRange.endBlockId = blockId;
             newSelectedRange.startElementId = elementId;
             newSelectedRange.endElementId = elementId;
+
+            // If we overlap a highlight range, select the entire range.
+            for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
+                if([highlightRange overlaps:newSelectedRange]) {
+                    newSelectedRange = highlightRange;
+                    newSelectedRangeIsHighlight = YES;
+                }
+            }
         }
+        
+        self.selectedRange = newSelectedRange;
+        self.selectedRangeIsHighlight = newSelectedRangeIsHighlight;
     } else {
         location.y += self.draggingKnobVerticalOffset;
         THPair *closestBlockAndElement = [self _closestBlockAndElementIdsForPoint:location];
         
         if(closestBlockAndElement) {
-            newSelectedRange = [[EucSelectorRange alloc] init];
+            EucSelectorRange *newSelectedRange = [[[EucSelectorRange alloc] init] autorelease];
             
             id blockId = closestBlockAndElement.first;
             id elementId = closestBlockAndElement.second;
@@ -942,11 +1033,22 @@ static const CGFloat sLoupePopDuration = 0.05f;
                     newSelectedRange.endElementId = currentSelectedRange.startElementId;
                 }
             }
+            
+            // We're not allowed to drag over highlight ranges unless they're
+            // the one we started editing, so if we overlap any,
+            // reset the selection.
+            for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
+                if([highlightRange overlaps:newSelectedRange] && 
+                   ![highlightRange isEqual:self.selectedRangeOriginalHighlightRange]) {
+                    newSelectedRange = nil;
+                }
+            }
+            
+            if(newSelectedRange) {
+                self.selectedRange = newSelectedRange;
+            }
         }
     }
-        
-    self.selectedRange = newSelectedRange;
-    [newSelectedRange release];
     
     if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {   
         [self _loupeToPoint:location];
