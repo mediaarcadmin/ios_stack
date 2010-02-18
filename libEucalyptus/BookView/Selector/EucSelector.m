@@ -701,8 +701,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
 {
     [_cachedBlockIdentifiers release];
     _cachedBlockIdentifiers = nil;
-    CFRelease(_cachedBlockIdentifierToElements);
-    _cachedBlockIdentifierToElements = NULL;
+    if(_cachedBlockIdentifierToElements) {
+        CFRelease(_cachedBlockIdentifierToElements);
+        _cachedBlockIdentifierToElements = NULL;
+    }
     [_cachedHighlightRanges release];
     _cachedHighlightRanges = nil;
 }
