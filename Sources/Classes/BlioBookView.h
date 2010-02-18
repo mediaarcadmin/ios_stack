@@ -15,8 +15,8 @@
 @required
 - (NSArray *)rangesToHighlightForRange:(BlioBookmarkRange *)range;
 - (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange;
-- (void)highlight;
-- (void)addNote;
+- (void)highlightWithColor:(UIColor *)color;
+- (void)addNoteWithColor:(UIColor *)color;
 @end
 
 #pragma mark -

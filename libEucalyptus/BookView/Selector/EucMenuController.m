@@ -47,6 +47,36 @@
     self.windowTargetRect = [targetView convertRect:targetRect toView:targetWindow];
 }
 
+- (void)setMenuItems:(NSArray *)menuItems
+{
+    if(menuItems != _menuItems) {
+        [_menuItems release];
+        _menuItems = [menuItems retain];
+        
+        EucMenuView *menuView = self.menuView;
+        if(menuView) {
+            menuView.titles = [menuItems valueForKey:@"title"];
+            menuView.colors = [menuItems valueForKey:@"color"];
+
+            if(self.isMenuVisible) {
+                if(_menuSelectStepCount != 0) {
+                    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_menuSelectStep) object:nil];
+                    _menuSelectStepCount = 0;
+                    [[UIApplication sharedApplication] endIgnoringInteractionEvents]; 
+                }
+                
+                menuView.selected = NO;
+                [menuView positionAndResizeForAttachingToRect:self.windowTargetRect];
+                
+                CATransition *transition = [CATransition animation];
+                transition.type = kCATransitionFade;
+                transition.duration = 0.1f;
+                [menuView.layer addAnimation:transition forKey:@"menuSwitchFade"];                
+            }
+        }
+    }
+}
+
 - (void)setMenuVisible:(BOOL)menuVisible animated:(BOOL)animated
 {
     if(menuVisible != _menuVisible) {
@@ -63,7 +93,10 @@
             } else {
                 menuView.hidden = NO;
             }
-            menuView.titles = [self.menuItems valueForKey:@"title"];
+            
+            NSArray *menuItems = self.menuItems;
+            menuView.titles = [menuItems valueForKey:@"title"];
+            menuView.colors = [menuItems valueForKey:@"color"];
             [self.targetWindow addSubview:menuView];
             [menuView positionAndResizeForAttachingToRect:self.windowTargetRect];
         } else {
@@ -95,36 +128,42 @@
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         menuView.selected = NO;
         [menuView setNeedsDisplay];
-        [self performSelector:@selector(_flashStepTwo) withObject:nil afterDelay:0.1f];
+        _menuSelectStepCount = 1;
+        [self performSelector:@selector(_menuSelectStep) withObject:nil afterDelay:0.1f];
     }
 }
 
-- (void)_flashStepTwo
+- (void)_menuSelectStep
 {
-    EucMenuView *menuView = self.menuView;
-    menuView.selected = YES;
-    [menuView setNeedsDisplay];
-    [self performSelector:@selector(_flashStepThree) withObject:nil afterDelay:1.0f / 3.0f];
+    switch(_menuSelectStepCount) {
+        case 1:
+            {
+                EucMenuView *menuView = self.menuView;
+                menuView.selected = YES;
+                [menuView setNeedsDisplay];
+                ++_menuSelectStepCount;
+                [self performSelector:@selector(_menuSelectStep) withObject:nil afterDelay:1.0f / 3.0f];
+            } 
+            break;
+        case 2:
+            {
+                EucMenuView *menuView = self.menuView;
+                menuView.selected = NO;
+                [menuView setNeedsDisplay];
+                ++_menuSelectStepCount;
+                [self performSelector:@selector(_menuSelectStep) withObject:nil afterDelay:0.0f];
+                [(EucMenuItem *)[self.menuItems objectAtIndex:self.menuView.selectedIndex] invokeAt:self.targetView];
+            } 
+            break;
+        case 3:
+            {
+                [self setMenuVisible:NO animated:YES];
+                _menuSelectStepCount = 0;
+                [[UIApplication sharedApplication] endIgnoringInteractionEvents]; 
+            }
+            break;
+    }
 }
 
-- (void)_flashStepThree
-{
-    EucMenuView *menuView = self.menuView;
-    menuView.selected = NO;
-    [menuView setNeedsDisplay];
-    [self performSelector:@selector(_flashStepFour) withObject:nil afterDelay:0.0f];
-}
-
-- (void)_flashStepFour
-{
-    [self setMenuVisible:NO animated:YES];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents]; 
-    [self performSelector:@selector(_flashStepFive) withObject:nil afterDelay:0.0f];
-}
-
-- (void)_flashStepFive
-{
-    [(EucMenuItem *)[self.menuItems objectAtIndex:self.menuView.selectedIndex] invokeAt:self.targetView];
-}
 
 @end

@@ -343,15 +343,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
             }
         }
         
-        NSArray *coallescedRects;
-        if ([self.selector respondsToSelector:@selector(coallesceLineRectsForRects:)]) {            
-            coallescedRects = [self.selector coallesceLineRectsForRects:highlightRects];
-            
-        } else {
-            coallescedRects = highlightRects;
-        }
+        NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
         
-        for (NSValue *rectValue in coallescedRects) {
+        for (NSValue *rectValue in coalescedRects) {
             BlioLayoutViewColoredRect *coloredRect = [[BlioLayoutViewColoredRect alloc] init];
             coloredRect.color = highlightRange.color;
             coloredRect.rect = [rectValue CGRectValue];
@@ -433,7 +427,31 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
 }
 
-- (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter {
+- (NSArray *)highlightMenuItems {
+    EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
+                                                           action:@selector(addNote:)];
+    
+    EucMenuItem *copyItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
+                                                        action:@selector(copy:)];
+    
+    EucMenuItem *yellowItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorYellow:)] autorelease];
+    yellowItem.color = [UIColor yellowColor];
+    
+    EucMenuItem *redItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorRed:)] autorelease];
+    redItem.color = [UIColor redColor];
+    
+    EucMenuItem *blueItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorBlue:)] autorelease];
+    blueItem.color = [UIColor blueColor];
+    
+    EucMenuItem *greenItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorGreen:)] autorelease];
+    greenItem.color = [UIColor greenColor];
+        
+    NSArray *ret = [NSArray arrayWithObjects:addNoteItem, copyItem, yellowItem, redItem, blueItem, greenItem, nil];
+    
+    return ret;
+}
+
+- (NSArray *)rootMenuItemsWithCopy:(BOOL)copy {
     EucMenuItem *highlightItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
                                                              action:@selector(highlight:)];
     EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
@@ -443,7 +461,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     EucMenuItem *showWebToolsItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu in layout view")
                                                                 action:@selector(showWebTools:)];
     
-    NSArray *ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
+    NSArray *ret;
+    if (copy)
+        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
+    else
+        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, showWebToolsItem, nil];
+
     
     [highlightItem release];
     [addNoteItem release];
@@ -451,6 +474,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [showWebToolsItem release];
     
     return ret;
+}
+
+- (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter {
+    return [self rootMenuItemsWithCopy:YES];
 }
 
 - (BlioBookmarkRange *)selectedRange {
@@ -495,18 +522,54 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 #pragma mark -
 #pragma mark Selector Menu Responder Actions 
 
+- (void)highlightColorYellow:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor yellowColor]];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)highlightColorRed:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor redColor]];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)highlightColorBlue:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor blueColor]];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)highlightColorGreen:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor greenColor]];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
 
 - (void)highlight:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(highlight)])
-        [self.delegate highlight];
+    if ([self.delegate respondsToSelector:@selector(highlightWithColor:)]) {
+        [self.delegate highlightWithColor:[UIColor blueColor]];
         
-    [self.selector setSelectedRange:nil];
+        //[self.selector setSelectedRange:nil];
+        [self.selector changeActiveMenuItemsTo:[self highlightMenuItems]];
+    }
 }
 
 - (void)addNote:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(addNote)])
-        [self.delegate addNote];
+    if ([self.delegate respondsToSelector:@selector(addNoteWithColor:)])
+        [self.delegate addNoteWithColor:[UIColor blueColor]];
     
+    // TODO - this probably doesn't want to deselect yet in case the note is cancelled
+    // Or the selection could be saved and reinstated
+    // Or we could just not bother but it might be annoying
     [self.selector setSelectedRange:nil];
 }
 
@@ -558,6 +621,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [range release];
 
     [[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[allWordStrings componentsJoinedByString:@" "]]];
+    
+    [self.selector changeActiveMenuItemsTo:[self rootMenuItemsWithCopy:NO]];
 }
 
 - (void)showWebTools:(id)sender {

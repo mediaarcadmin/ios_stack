@@ -45,7 +45,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, retain) EucMenuController *menuController;
 @property (nonatomic, assign) BOOL menuShouldBeAvailable;
 
-- (CGImageRef)magnificationLoupeImage;
+- (CGImageRef)magnificationLoupeHighImage;
+- (CGImageRef)magnificationLoupeLowImage;
+- (CGImageRef)magnificationLoupeMaskImage;
 - (void)_trackTouch:(UITouch *)touch;
 
 @end
@@ -104,8 +106,14 @@ static const CGFloat sLoupePopDuration = 0.05f;
         [self detatchFromView];
     }
     [_trackingTouch release];
-    if(_magnificationLoupeImage) {
-        CGImageRelease(_magnificationLoupeImage);
+    if(_magnificationLoupeLowImage) {
+        CGImageRelease(_magnificationLoupeLowImage);
+    }    
+    if(_magnificationLoupeHighImage) {
+        CGImageRelease(_magnificationLoupeHighImage);
+    }    
+    if(_magnificationLoupeMaskImage) {
+        CGImageRelease(_magnificationLoupeMaskImage);
     }    
     
     [super dealloc];
@@ -263,17 +271,39 @@ static const CGFloat sLoupePopDuration = 0.05f;
     self.temporaryHighlightLayers = nil;
 }
 
+
+
 #pragma mark -
 #pragma mark Selection
 
-- (CGImageRef)magnificationLoupeImage
+- (CGImageRef)magnificationLoupeLowImage
 {
-    if(!_magnificationLoupeImage) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupe" ofType:@"png"]];
-        _magnificationLoupeImage = CGImageRetain([UIImage imageWithData:data].CGImage);
+    if(!_magnificationLoupeLowImage) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeLow" ofType:@"png"]];
+        _magnificationLoupeLowImage = CGImageRetain([UIImage imageWithData:data].CGImage);
         [data release];
     }
-    return _magnificationLoupeImage;
+    return _magnificationLoupeLowImage;
+}
+
+- (CGImageRef)magnificationLoupeHighImage
+{
+    if(!_magnificationLoupeHighImage) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeHigh" ofType:@"png"]];
+        _magnificationLoupeHighImage = CGImageRetain([UIImage imageWithData:data].CGImage);
+        [data release];
+    }
+    return _magnificationLoupeHighImage;
+}
+
+- (CGImageRef)magnificationLoupeMaskImage
+{
+    if(!_magnificationLoupeMaskImage) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeMask" ofType:@"png"]];
+        _magnificationLoupeMaskImage = CGImageRetain([UIImage imageWithData:data].CGImage);
+        [data release];
+    }
+    return _magnificationLoupeMaskImage;
 }
 
 - (THPair *)highlightEndLayers
@@ -384,9 +414,13 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (void)_loupeToPoint:(CGPoint)point;
 {
-    CGImageRef magnificationLoupeImage = self.magnificationLoupeImage;
-    CGSize magnificationLoupeSize = CGSizeMake(CGImageGetWidth(magnificationLoupeImage),
-                                               CGImageGetHeight(magnificationLoupeImage));
+    CGImageRef magnificationLoupeHighImage = self.magnificationLoupeHighImage;
+    CGImageRef magnificationLoupeLowImage = self.magnificationLoupeLowImage;
+    CGImageRef magnificationLoupeMaskImage = self.magnificationLoupeMaskImage;
+    
+    CGSize magnificationLoupeSize = CGSizeMake(CGImageGetWidth(magnificationLoupeHighImage),
+                                               CGImageGetHeight(magnificationLoupeHighImage));
+    CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
 
     UIWindow *window = self.viewWithSelection.window;
     UIImageView *loupeView = self.loupeView;
@@ -419,6 +453,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
     THImageFactory *loupeContentsFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
     CGContextRef context = loupeContentsFactory.CGContext;
 
+    // First the lower image.
+    CGContextDrawImage(context, 
+                       magnificationLoupeRect,
+                       magnificationLoupeLowImage);            
+    
     // Work out the final scale factor of the view on screen so that we can
     // scale to bigger than that.
     CGSize screenScaleFactors = [self.attachedView screenScaleFactors];    
@@ -427,9 +466,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
     CGFloat scaleFactorX = screenScaleFactors.width * 1.25;
     CGFloat scaleFactorY = screenScaleFactors.height * 1.25;
     
-    // First, draw the magnified view.  We use renderInContents on the 
-    // view's layer.
+    // Now, the view.
     CGContextSaveGState(context);
+    
+    // Mask the image.
+    CGContextClipToMask(context, magnificationLoupeRect, magnificationLoupeMaskImage);
+    
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     
     // Scale the context and translate it so that we can draw the view
@@ -451,18 +493,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
     [[self.viewWithSelection layer] renderInContext:context];
     CGContextRestoreGState(context);
     
-    // Now, mask out the loupe area.
-    CGContextSetBlendMode(context, kCGBlendModeDestinationIn);
+    // Draw the upper part of the loupe.
     CGContextDrawImage(context, 
-                       CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height),
-                       magnificationLoupeImage);
-    
-    // Draw the loupe.
-    CGContextSetBlendMode(context, kCGBlendModePlusDarker);
-    CGContextDrawImage(context, 
-                       CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height),
-                       magnificationLoupeImage);    
-    
+                       magnificationLoupeRect,
+                       magnificationLoupeHighImage);    
+
     // Now get the image we constructed and put it into the loupe view.
     loupeView.image = loupeContentsFactory.snapshotUIImage;
     [loupeContentsFactory release];
@@ -518,6 +553,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
     self.highlightLayers = nil;
     self.highlightEndLayers = nil;
     self.highlightKnobLayers = nil;    
+}
+
+
+- (void)changeActiveMenuItemsTo:(NSArray *)menuItems
+{
+    [self.menuController setMenuItems:menuItems];
 }
 
 - (void)_positionMenu
@@ -659,82 +700,112 @@ static const CGFloat sLoupePopDuration = 0.05f;
     }
 }
 
+
++ (NSArray *)coalescedLineRectsForElementRects:(NSArray *)elementRects
+{        
+    NSMutableArray *ret = [NSMutableArray array];
+    CGRect currentLineRect = CGRectZero;
+    
+    BOOL isFirstElement = YES;
+    for(NSValue *rectValue in elementRects) {
+        CGRect thisRect = [rectValue CGRectValue];
+        if(isFirstElement) {
+            currentLineRect = thisRect;
+            isFirstElement = NO;
+        } else {
+            CGFloat overlappingPixels = 
+                MIN(currentLineRect.origin.y + currentLineRect.size.height, thisRect.origin.y + thisRect.size.height)
+                - MAX(currentLineRect.origin.y, thisRect.origin.y);
+            
+            // Try to work out if this rect is "on the same line" as
+            // the last one, and extend the "line rect" if it is.
+            if(thisRect.origin.x >= currentLineRect.origin.x + currentLineRect.size.width &&
+               (overlappingPixels > 0.33 * currentLineRect.size.height ||
+                overlappingPixels > 0.33 * thisRect.size.height)) {
+                   CGFloat newLimit = MAX(currentLineRect.origin.y + currentLineRect.size.height, 
+                                          thisRect.origin.y + thisRect.size.height);
+                   currentLineRect.origin.y = MIN(currentLineRect.origin.y, thisRect.origin.y);
+                   currentLineRect.size.height = newLimit - currentLineRect.origin.y;
+                   currentLineRect.size.width = (thisRect.size.width + thisRect.origin.x) - currentLineRect.origin.x; 
+               } else {
+                   [ret addObject:[NSValue valueWithCGRect:currentLineRect]];
+                   currentLineRect = thisRect;
+               }
+        }
+    }
+    if(!CGRectEqualToRect(currentLineRect, CGRectZero)) {
+        [ret addObject:[NSValue valueWithCGRect:currentLineRect]];
+    }   
+    return ret;
+}
+
+- (NSArray *)highlightRectsForRange:(EucSelectorRange *)selectedRange 
+{                                   
+    id<EucSelectorDataSource> dataSource = self.dataSource;
+        
+    NSArray *blockIds = [dataSource blockIdentifiersForEucSelector:self];
+    NSUInteger blockIdIndex = 0;
+    
+    NSMutableArray *nonCoalescedRects = [NSMutableArray array];
+    
+    id startBlockId = selectedRange.startBlockId;
+    id endBlockId = selectedRange.endBlockId;
+    id startElementId = selectedRange.startElementId;
+    id endElementId = selectedRange.endElementId;
+    
+    while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+        ++blockIdIndex;
+    }
+    BOOL isFirstBlock = YES;
+    BOOL isLastBlock = NO;
+    do {
+        id blockId = [blockIds objectAtIndex:blockIdIndex];
+        
+        NSArray *elementIds = [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId];
+        NSUInteger elementIdCount = elementIds.count;
+        NSUInteger elementIdIndex = 0;
+        
+        isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+        
+        id elementId;
+        if(isFirstBlock) {
+            while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                ++elementIdIndex;
+            }
+            isFirstBlock = NO;
+        }
+        
+        do {
+            elementId = [elementIds objectAtIndex:elementIdIndex];
+            [nonCoalescedRects addObjectsFromArray:[dataSource eucSelector:self 
+                                             rectsForElementWithIdentifier:elementId
+                                                     ofBlockWithIdentifier:blockId]];
+            ++elementIdIndex;
+        } while (isLastBlock ? 
+                 ([elementId compare:endElementId] < NSOrderedSame) : 
+                 elementIdIndex < elementIdCount);
+        ++blockIdIndex;
+    } while(!isLastBlock);
+    
+    NSArray *coalescedRects = [[self class] coalescedLineRectsForElementRects:nonCoalescedRects];
+    
+    // We'll scale the rects to make sure they will be on pixl boundies
+    // on screen even if the layer they're in has a scale transform applied.
+    CGSize screenScaleFactors = [self.attachedView screenScaleFactors];
+    
+    NSMutableArray *ret = [NSMutableArray arrayWithCapacity:coalescedRects.count];
+    for(NSValue *rectValue in coalescedRects) {
+        [ret addObject:[NSValue valueWithCGRect:CGRectScreenIntegral([rectValue CGRectValue], screenScaleFactors)]];
+    }
+    return ret;
+}
+
 - (void)redisplaySelectedRange
 {
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
-        id<EucSelectorDataSource> dataSource = self.dataSource;
-        
         // Work out he rects to highlight
-        NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
-        
-        NSArray *blockIds = [dataSource blockIdentifiersForEucSelector:self];
-        NSUInteger blockIdIndex = 0;
-        
-        id startBlockId = selectedRange.startBlockId;
-        id endBlockId = selectedRange.endBlockId;
-        id startElementId = selectedRange.startElementId;
-        id endElementId = selectedRange.endElementId;
-        
-        while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
-            ++blockIdIndex;
-        }
-        BOOL isFirstBlock = YES;
-        BOOL isLastBlock = NO;
-        BOOL isFirstElement = YES;
-        CGRect currentLineRect = CGRectZero;
-        do {
-            id blockId = [blockIds objectAtIndex:blockIdIndex];
-            
-            NSArray *elementIds = [dataSource eucSelector:self identifiersForElementsOfBlockWithIdentifier:blockId];
-            NSUInteger elementIdCount = elementIds.count;
-            NSUInteger elementIdIndex = 0;
-            
-            isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
-            
-            id elementId;
-            if(isFirstBlock) {
-                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
-                    ++elementIdIndex;
-                }
-                isFirstBlock = NO;
-            }
-            
-            do {
-                elementId = [elementIds objectAtIndex:elementIdIndex];
-                for(NSValue *rectValue in [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId]) {
-                    CGRect thisRect = [rectValue CGRectValue];
-                    if(isFirstElement) {
-                        currentLineRect = thisRect;
-                        isFirstElement = NO;
-                    } else {
-                        CGFloat overlappingPixels = 
-                            MIN(currentLineRect.origin.y + currentLineRect.size.height, thisRect.origin.y + thisRect.size.height)
-                              - MAX(currentLineRect.origin.y, thisRect.origin.y);
-                        
-                        // Try to work out if this rect is "on the same line" as
-                        // the last one, and extend the "line rect" if it is.
-                        if(thisRect.origin.x >= currentLineRect.origin.x + currentLineRect.size.width &&
-                           (overlappingPixels > 0.33 * currentLineRect.size.height ||
-                            overlappingPixels > 0.33 * thisRect.size.height)) {
-                            CGFloat newLimit = MAX(currentLineRect.origin.y + currentLineRect.size.height, 
-                                                   thisRect.origin.y + thisRect.size.height);
-                            currentLineRect.origin.y = MIN(currentLineRect.origin.y, thisRect.origin.y);
-                            currentLineRect.size.height = newLimit - currentLineRect.origin.y;
-                            currentLineRect.size.width = (thisRect.size.width + thisRect.origin.x) - currentLineRect.origin.x; 
-                        } else {
-                            [highlightRects addObject:[NSValue valueWithCGRect:currentLineRect]];
-                            currentLineRect = thisRect;
-                        }
-                    }
-                }
-                ++elementIdIndex;
-            } while (isLastBlock ? 
-                     ([elementId compare:endElementId] < NSOrderedSame) : 
-                     elementIdIndex < elementIdCount);
-            ++blockIdIndex;
-        } while(!isLastBlock);
-        [highlightRects addObject:[NSValue valueWithCGRect:currentLineRect]];
+        NSArray *highlightRects = [self highlightRectsForRange:selectedRange];
         
         // Highlight them, reusing the current highlight layers if possible.
         UIView *viewWithSelection = self.viewWithSelection;
@@ -762,15 +833,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 }
             }
         } 
-        
-        // We'll scale the rects to make sure they will be on pixl boundies
-        // on screen even if the layer they're in has a scale transform applied.
-        CGSize screenScaleFactors = [self.attachedView screenScaleFactors];
-        
+                
         for(NSUInteger i = 0; i < highlightRectsCount; ++i) {
             CALayer *layer = [highlightLayers objectAtIndex:i];
             NSValue *rectValue = [highlightRects objectAtIndex:i];
-            layer.frame = CGRectScreenIntegral([rectValue CGRectValue], screenScaleFactors);
+            layer.frame = [rectValue CGRectValue];
             layer.hidden = NO;
             --unusedHighlightLayersCount;
         }
@@ -809,6 +876,11 @@ static const CGFloat sLoupePopDuration = 0.05f;
             }
         }
     }
+}
+
+- (BOOL)selectedRangeIsHighlight
+{
+    return NO;
 }
 
 - (void)_trackTouch:(UITouch *)touch

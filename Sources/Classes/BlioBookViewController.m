@@ -647,21 +647,21 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         _returnToToolbarTranslucent = toolbar.translucent;
         
         // Set the status bar and navigation bar styles.
-        if([_book.author isEqualToString:@"Ward Just"]) {
+        /*if([_book.author isEqualToString:@"Ward Just"]) {
             navigationBar.barStyle = UIBarStyleBlackTranslucent;
             navigationBar.tintColor = [UIColor blackColor];
             navigationBar.translucent = YES;
             toolbar.barStyle = UIBarStyleBlackTranslucent;
             toolbar.tintColor = [UIColor blackColor];
             toolbar.translucent = YES;
-        } else {
+        } else {*/
             navigationBar.translucent = NO;
             navigationBar.tintColor = nil;
             navigationBar.barStyle = UIBarStyleBlackTranslucent;
             toolbar.translucent = NO;
             toolbar.tintColor = nil;
             toolbar.barStyle = UIBarStyleBlackTranslucent;
-        }
+        /*}*/
         
         if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
             [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
@@ -1165,6 +1165,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             BlioEPubView *ePubView = [[BlioEPubView alloc] initWithBook:self.book animated:NO];
             [ePubView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = ePubView;
+            self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
@@ -1252,16 +1253,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)setCurrentPageColor:(BlioPageColor)newColor
 {
-    if(newColor != self.currentPageColor) {
-        UIView<BlioBookView> *bookView = self.bookView;
-        if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
-            NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
-                                                                  ofType:@""];
-            UIImage *pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
-            [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
-        }  
-        _currentPageColor = newColor;
-    }
+    UIView<BlioBookView> *bookView = self.bookView;
+    if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
+                                                              ofType:@""];
+        UIImage *pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+        [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
+    }  
+    _currentPageColor = newColor;
 }
 
 - (void)changePageColor:(id)sender {
@@ -1938,19 +1937,32 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark Edit Menu Responder Actions 
 
 
-- (void)highlight {
+- (void)highlightWithColor:(UIColor *)color {
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
         BlioBookmarkRange *selectedRange = [self.bookView selectedRange];
         NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
         
-        NSManagedObject *newHighlight = [NSEntityDescription
-                                    insertNewObjectForEntityForName:@"BlioHighlight"
-                                    inManagedObjectContext:[self managedObjectContext]];
+        NSManagedObject *existingHighlight = nil;
         
-        NSManagedObject *newRange = [selectedRange persistentBookmarkRangeInContext:[self managedObjectContext]];
-        [newRange setValue:[UIColor redColor] forKey:@"color"];
-        [newHighlight setValue:newRange forKey:@"range"];
-        [highlights addObject:newHighlight];
+        for (NSManagedObject *highlight in highlights) {
+            if ([BlioBookmarkRange bookmark:highlight isEqualToBookmarkRange:selectedRange]) {
+                existingHighlight = highlight;
+                break;
+            }
+        }
+        
+        if (nil != existingHighlight) {
+            [existingHighlight setValue:color forKeyPath:@"range.color"];
+        } else {
+            NSManagedObject *newHighlight = [NSEntityDescription
+                                             insertNewObjectForEntityForName:@"BlioHighlight"
+                                             inManagedObjectContext:[self managedObjectContext]];
+            
+            NSManagedObject *newRange = [selectedRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+            [newRange setValue:color forKey:@"color"];
+            [newHighlight setValue:newRange forKey:@"range"];
+            [highlights addObject:newHighlight];
+        }
         
         NSError *error;
         if (![[self managedObjectContext] save:&error])
@@ -1961,8 +1973,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
-- (void)addNote {
-    [self highlight];
+- (void)addNoteWithColor:(UIColor *)color {
+    [self highlightWithColor:color];
     
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
         BlioBookmarkRange *range = [self.bookView selectedRange];
