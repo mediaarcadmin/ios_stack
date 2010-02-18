@@ -70,7 +70,9 @@ typedef enum EucSelectorTrackingStage {
 @property (nonatomic, assign) id<EucSelectorDelegate> delegate;
 
 @property (nonatomic, retain) EucSelectorRange *selectedRange;
-@property (nonatomic, readonly) BOOL selectedRangeIsHighlight;
+@property (nonatomic, assign, readonly) BOOL selectedRangeIsHighlight;
+@property (nonatomic, retain, readonly) EucSelectorRange *selectedRangeOriginalHighlightRange;
+
 
 @property (nonatomic, assign, readonly, getter=isTracking) BOOL tracking;
 @property (nonatomic, assign, readonly) EucSelectorTrackingStage trackingStage;
