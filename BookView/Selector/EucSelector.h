@@ -83,7 +83,7 @@ typedef enum EucSelectorTrackingStage {
 - (void)redisplaySelectedRange; 
 
 // Utility class method exposed for outside use.
-+ (NSArray *)coalescedLineRectsForElementRects:(NSArray *)elementRects inView:(UIView *)view;
++ (NSArray *)coalescedLineRectsForElementRects:(NSArray *)elementRects;
 
 // Controls whether the selector sniff touches for the view it's attached
 // to.  
