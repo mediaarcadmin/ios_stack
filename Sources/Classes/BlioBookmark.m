@@ -95,6 +95,23 @@
     return newBookmarkRange;
 }
 
+- (BOOL)isEqual:(id)object {
+    BlioBookmarkRange *otherRange = (BlioBookmarkRange *)object;
+    
+    if ((otherRange.startPoint.layoutPage == self.startPoint.layoutPage) &&
+        (otherRange.startPoint.paragraphOffset == self.startPoint.paragraphOffset) &&
+        (otherRange.startPoint.wordOffset == self.startPoint.wordOffset) &&
+        (otherRange.startPoint.hyphenOffset == self.startPoint.hyphenOffset) &&
+        (otherRange.endPoint.layoutPage == self.endPoint.layoutPage) &&
+        (otherRange.endPoint.paragraphOffset == self.endPoint.paragraphOffset) &&
+        (otherRange.endPoint.wordOffset == self.endPoint.wordOffset) &&
+        (otherRange.endPoint.hyphenOffset == self.endPoint.hyphenOffset)) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 + (BOOL)bookmark:(NSManagedObject *)persistedBookmarkRange isEqualToBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
     if (([[persistedBookmarkRange valueForKeyPath:@"range.startPoint.layoutPage"] integerValue] == bookmarkRange.startPoint.layoutPage) &&
         ([[persistedBookmarkRange valueForKeyPath:@"range.startPoint.paragraphOffset"] integerValue] == bookmarkRange.startPoint.paragraphOffset) &&

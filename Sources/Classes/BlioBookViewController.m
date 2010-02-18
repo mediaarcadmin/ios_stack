@@ -1928,7 +1928,31 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange {
-    return;
+    
+    NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
+    
+    // TODO this is inefficient for large sets of bookmarks - make a fetchRequest to do this
+    for (NSManagedObject *highlight in highlights) {
+        if ([BlioBookmarkRange bookmark:highlight isEqualToBookmarkRange:fromRange]) {
+            [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.layoutPage] forKeyPath:@"range.startPoint.layoutPage"];
+            [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.paragraphOffset] forKeyPath:@"range.startPoint.paragraphOffset"];
+            [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.wordOffset] forKeyPath:@"range.startPoint.wordOffset"];
+            [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.hyphenOffset] forKeyPath:@"range.startPoint.hyphenOffset"];
+            [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.layoutPage] forKeyPath:@"range.endPoint.layoutPage"];
+            [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.paragraphOffset] forKeyPath:@"range.endPoint.paragraphOffset"];
+            [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.wordOffset] forKeyPath:@"range.endPoint.wordOffset"];
+            [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.hyphenOffset] forKeyPath:@"range.endPoint.hyphenOffset"];
+            
+            NSError *error;
+            if (![[self managedObjectContext] save:&error])
+                NSLog(@"Save after updating highlight failed with error: %@, %@", error, [error userInfo]);
+
+            if ([self.bookView respondsToSelector:@selector(refreshHighlights)])
+                [self.bookView refreshHighlights];
+            
+            break;
+        }
+    }
 }
 
 
@@ -1944,6 +1968,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         NSManagedObject *existingHighlight = nil;
         
+        // TODO this is inefficient for large sets of bookmarks - make a fetchRequest to do this
         for (NSManagedObject *highlight in highlights) {
             if ([BlioBookmarkRange bookmark:highlight isEqualToBookmarkRange:selectedRange]) {
                 existingHighlight = highlight;
@@ -1968,9 +1993,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         if (![[self managedObjectContext] save:&error])
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
     }
-    if ([self.bookView respondsToSelector:@selector(refreshHighlights)]) {
+    
+    if ([self.bookView respondsToSelector:@selector(refreshHighlights)])
         [self.bookView refreshHighlights];
-    }
 }
 
 - (void)addNoteWithColor:(UIColor *)color {
