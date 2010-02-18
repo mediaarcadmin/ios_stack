@@ -654,7 +654,16 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 if(previousStage == EucSelectorTrackingStageFirstSelection && self.selectedRangeIsHighlight) {
                     self.selectedRangeOriginalHighlightRange = self.selectedRange;
                     if([self.delegate respondsToSelector:@selector(eucSelector:willBeginEditingHighlightWithRange:)]) {
-                        self.selectionColor = [self.delegate eucSelector:self willBeginEditingHighlightWithRange:self.selectedRange];
+                        UIColor *selectionColor = [self.delegate eucSelector:self willBeginEditingHighlightWithRange:self.selectedRange];
+                        if(selectionColor) {
+                            self.selectionColor = selectionColor;
+                            
+                            // Recolor any existing highlight layers.
+                            CGColorRef cgColor = selectionColor.CGColor;
+                            for(CALayer *layer in self.highlightLayers) {
+                                layer.backgroundColor = cgColor;
+                            }
+                        }
                     } 
                 }
                 
@@ -908,7 +917,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
                     highlightLayers = [NSMutableArray arrayWithCapacity:highlightRectsCount];
                     self.highlightLayers = highlightLayers;
                 }
-                CGColorRef highlightColor = [[UIColor colorWithRed:47.0f/255.0f green:102.0f/255.0f blue:179.0f/255.0f alpha:0.2f] CGColor];
+                UIColor *highlightUIColor = self.selectionColor ?: [UIColor colorWithRed:47.0f/255.0f green:102.0f/255.0f blue:179.0f/255.0f alpha:0.2f];
+                CGColorRef highlightColor = highlightUIColor.CGColor;
                 for(NSUInteger i = unusedHighlightLayersCount; i < highlightRectsCount; ++i) {
                     CALayer *layer = [[CALayer alloc] init];
                     layer.backgroundColor = highlightColor;
