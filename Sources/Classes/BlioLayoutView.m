@@ -666,7 +666,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (void)highlight:(id)sender {
     if (nil == self.lastHighlightColor) 
-        self.lastHighlightColor = [UIColor blueColor];
+        self.lastHighlightColor = [UIColor yellowColor];
     [self addHighlightWithColor:self.lastHighlightColor];
 }
 
@@ -680,7 +680,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (void)addNote:(id)sender {
     if (nil == self.lastHighlightColor) 
-        self.lastHighlightColor = [UIColor blueColor];
+        self.lastHighlightColor = [UIColor yellowColor];
     
     if ([self.selector selectedRangeIsHighlight]) {
         BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
