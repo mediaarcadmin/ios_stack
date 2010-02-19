@@ -709,6 +709,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     startPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:selectorRange.startElementId];
 
     BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+    endPoint.layoutPage = currentPage;
     endPoint.paragraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:selectorRange.endBlockId];
     endPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:selectorRange.endElementId];
     
@@ -725,21 +726,40 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
     for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
         for (BlioTextFlowPositionedWord *word in [paragraph words]) {
-            if (((range.startPoint.layoutPage < currentPage) &&
-                 (paragraph.paragraphIndex <= range.endPoint.paragraphOffset) &&
-                 (word.wordIndex <= range.endPoint.wordOffset)) ||
+            if ((range.startPoint.layoutPage < currentPage) &&
+                (paragraph.paragraphIndex <= range.endPoint.paragraphOffset) &&
+                (word.wordIndex <= range.endPoint.wordOffset)) {
                 
-                ((range.endPoint.layoutPage > currentPage) &&
-                 (paragraph.paragraphIndex >= range.startPoint.paragraphOffset) &&
-                 (word.wordIndex >= range.startPoint.wordOffset)) ||
+                [allWordStrings addObject:[word string]];
                 
-                ((paragraph.paragraphIndex >= range.startPoint.paragraphOffset) &&
-                 (word.wordIndex >= range.startPoint.wordOffset) &&
-                 (paragraph.paragraphIndex <= range.endPoint.paragraphOffset) &&
-                 (word.wordIndex <= range.endPoint.wordOffset))) {
-                    
+            } else if ((range.endPoint.layoutPage > currentPage) &&
+                       (paragraph.paragraphIndex >= range.startPoint.paragraphOffset) &&
+                       (word.wordIndex >= range.startPoint.wordOffset)) {
+                
+                [allWordStrings addObject:[word string]];
+                
+            } else if ((range.startPoint.layoutPage == currentPage) &&
+                       (paragraph.paragraphIndex == range.startPoint.paragraphOffset) &&
+                       (word.wordIndex >= range.startPoint.wordOffset)) {
+                
+                if ((paragraph.paragraphIndex == range.endPoint.paragraphOffset) &&
+                    (word.wordIndex <= range.endPoint.wordOffset)) {
+                    [allWordStrings addObject:[word string]];
+                } else if (paragraph.paragraphIndex < range.endPoint.paragraphOffset) {
                     [allWordStrings addObject:[word string]];
                 }
+                    
+            } else if ((range.startPoint.layoutPage == currentPage) &&
+                       (paragraph.paragraphIndex > range.startPoint.paragraphOffset)) {
+                
+                if ((paragraph.paragraphIndex == range.endPoint.paragraphOffset) &&
+                    (word.wordIndex <= range.endPoint.wordOffset)) {
+                    [allWordStrings addObject:[word string]];
+                } else if (paragraph.paragraphIndex < range.endPoint.paragraphOffset) {
+                    [allWordStrings addObject:[word string]];
+                }
+                
+            }
         }
     }
 
@@ -2188,21 +2208,39 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
                 if ([self isCancelled]) return;
                 
                 for (BlioTextFlowPositionedWord *word in [paragraph words]) {
-                    if (((highlightRange.startPoint.layoutPage < self.pageNumber) &&
-                         (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
-                         (word.wordIndex <= highlightRange.endPoint.wordOffset)) ||
+                    if ((highlightRange.startPoint.layoutPage < self.pageNumber) &&
+                        (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
+                        (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
                         
-                        ((highlightRange.endPoint.layoutPage > self.pageNumber) &&
-                         (paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
-                         (word.wordIndex >= highlightRange.startPoint.wordOffset)) ||
+                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         
-                        ((paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
-                         (word.wordIndex >= highlightRange.startPoint.wordOffset) &&
-                         (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
-                         (word.wordIndex <= highlightRange.endPoint.wordOffset))) {
-                            
+                    } else if ((highlightRange.endPoint.layoutPage > self.pageNumber) &&
+                               (paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
+                               (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
+                        
+                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        
+                    } else if ((highlightRange.startPoint.layoutPage == self.pageNumber) &&
+                               (paragraph.paragraphIndex == highlightRange.startPoint.paragraphOffset) &&
+                               (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
+                        
+                        if ((paragraph.paragraphIndex == highlightRange.endPoint.paragraphOffset) &&
+                            (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
+                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        } else if (paragraph.paragraphIndex < highlightRange.endPoint.paragraphOffset) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         }
+                        
+                    } else if ((highlightRange.startPoint.layoutPage == self.pageNumber) &&
+                               (paragraph.paragraphIndex > highlightRange.startPoint.paragraphOffset)) {
+                        
+                        if ((paragraph.paragraphIndex == highlightRange.endPoint.paragraphOffset) &&
+                            (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
+                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        } else if (paragraph.paragraphIndex < highlightRange.endPoint.paragraphOffset) {
+                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        }
+                    }
                 }
             }
             
