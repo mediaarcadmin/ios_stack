@@ -581,11 +581,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     EucSelectorRange *highlighterRange = [self.selector selectedRange];
     
     BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-    BlioBookmarkPoint *endPoint = nil;
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];;
 
-    if (nil != highlighterRange) {
-        endPoint = [[BlioBookmarkPoint alloc] init];
-        
+    if (nil != highlighterRange) {        
         NSInteger startPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:[highlighterRange startBlockId]];
         NSInteger endPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:[highlighterRange endBlockId]];
         NSInteger startParagraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:[highlighterRange startBlockId]];
@@ -603,6 +601,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         [endPoint setWordOffset:endWordOffset];
     } else {
         [startPoint setLayoutPage:self.pageNumber];
+        [endPoint setLayoutPage:self.pageNumber];
     }
     
     
@@ -611,7 +610,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [range setEndPoint:endPoint];
     
     [startPoint release];
-    if (nil != endPoint) [endPoint release];
+    [endPoint release];
     
     return [range autorelease];
 }
@@ -666,13 +665,23 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)addNote:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(addNoteWithColor:)])
-        [self.delegate addNoteWithColor:[UIColor blueColor]];
+    if (nil == self.lastHighlightColor) 
+        self.lastHighlightColor = [UIColor blueColor];
+    
+    if ([self.selector selectedRangeIsHighlight]) {
+        BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
+        if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:withColor:)])
+            [self.delegate updateHighlightNoteAtRange:highlightRange withColor:self.lastHighlightColor];
+    } else {
+        if ([self.delegate respondsToSelector:@selector(addHighlightNoteWithColor:)])
+            [self.delegate addHighlightNoteWithColor:self.lastHighlightColor];
+    }
     
     // TODO - this probably doesn't want to deselect yet in case the note is cancelled
     // Or the selection could be saved and reinstated
     // Or we could just not bother but it might be annoying
     [self.selector setSelectedRange:nil];
+    [self refreshHighlights];
 }
 
 - (void)copy:(id)sender {

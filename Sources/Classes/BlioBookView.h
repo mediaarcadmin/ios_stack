@@ -17,7 +17,9 @@
 - (NSArray *)rangesToHighlightForLayoutPage:(NSInteger)pageNumber;
 - (void)updateHighlightAtRange:(BlioBookmarkRange *)fromRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor;
 - (void)addHighlightWithColor:(UIColor *)color;
-- (void)addNoteWithColor:(UIColor *)color;
+- (void)addHighlightNoteWithColor:(UIColor *)color;
+- (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange withColor:(UIColor *)newColor;
+
 @end
 
 #pragma mark -
