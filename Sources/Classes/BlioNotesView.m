@@ -21,13 +21,14 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
 
 @implementation BlioNotesView
 
-@synthesize page, textView, delegate, note;
+@synthesize page, textView, delegate, note, range;
 
 - (void)dealloc {
     self.page = nil;
     self.textView = nil;
     self.delegate = nil;
     self.note = nil;
+    self.range = nil;
     [super dealloc];
 }
 
@@ -35,14 +36,15 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     return [self initWithRange:nil note:nil];
 }
 
-- (id)initWithRange:(BlioBookmarkRange *)range note:(NSManagedObject *)aNote {
-    if (nil == range) return nil;
+- (id)initWithRange:(BlioBookmarkRange *)aRange note:(NSManagedObject *)aNote {
+    if (nil == aRange) return nil;
     
     if ((self = [super initWithFrame:CGRectZero])) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        self.page = [[NSNumber numberWithInteger:[[range startPoint] layoutPage]] stringValue];
+        self.page = [[NSNumber numberWithInteger:[[aRange startPoint] layoutPage]] stringValue];
         self.note = aNote;
+        self.range = aRange;
     }
     return self;
 }

@@ -1799,22 +1799,40 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)notesViewCreateNote:(BlioNotesView *)notesView {
-    // TODO Clean this up to remove Abosulte points and work with BookmarkRanges directly
-    BlioBookmarkAbsolutePoint *currentBookmarkAbsolutePoint = self.bookView.pageBookmarkPoint;
-    BlioBookmarkPoint *currentBookmarkPoint = [BlioBookmarkPoint bookmarkPointWithAbsolutePoint:currentBookmarkAbsolutePoint];
-    BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
-    
-    
     NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
-            
-    NSManagedObject *newNote = [NSEntityDescription
-                                    insertNewObjectForEntityForName:@"BlioNote"
-                                    inManagedObjectContext:[self managedObjectContext]];
     
-    NSManagedObject *newRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
-    [newNote setValue:newRange forKey:@"range"];
-    [newNote setValue:notesView.textView.text forKey:@"noteText"];
-    [notes addObject:newNote];
+    NSManagedObject *newNote = [NSEntityDescription
+                                insertNewObjectForEntityForName:@"BlioNote"
+                                inManagedObjectContext:[self managedObjectContext]];
+    
+    BlioBookmarkRange *noteRange = notesView.range;
+    NSManagedObject *existingHighlight = nil;
+    
+    NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
+
+    // TODO this is inefficient for large sets of bookmarks - make a fetchRequest to do this
+    for (NSManagedObject *highlight in highlights) {
+        if ([BlioBookmarkRange bookmark:highlight isEqualToBookmarkRange:noteRange]) {
+            existingHighlight = highlight;
+            break;
+        }
+    }
+    
+    if (nil != existingHighlight) {
+        [newNote setValue:existingHighlight forKey:@"highlight"];
+        [newNote setValue:[existingHighlight valueForKey:@"range"] forKey:@"range"];
+        [newNote setValue:notesView.textView.text forKey:@"noteText"];
+        [notes addObject:newNote];
+    } else {
+        if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
+            noteRange = [self.bookView selectedRange];
+            
+            NSManagedObject *newRange = [noteRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+            [newNote setValue:newRange forKey:@"range"];
+            [newNote setValue:notesView.textView.text forKey:@"noteText"];
+            [notes addObject:newNote];
+        }
+    }
     
     NSError *error;
     if (![[self managedObjectContext] save:&error])
@@ -1824,6 +1842,20 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)notesViewUpdateNote:(BlioNotesView *)notesView {
     if (nil != notesView.note) {
         [notesView.note setValue:notesView.textView.text forKey:@"noteText"];
+        
+        BlioBookmarkRange *highlightRange = notesView.range;
+        if (nil != highlightRange) {
+            NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
+        
+            // TODO this is inefficient for large sets of bookmarks - make a fetchRequest to do this
+            for (NSManagedObject *highlight in highlights) {
+                if ([BlioBookmarkRange bookmark:highlight isEqualToBookmarkRange:highlightRange]) {
+                    [notesView.note setValue:highlight forKey:@"highlight"];
+                    [notesView.note setValue:[highlight valueForKey:@"range"] forKey:@"range"];
+                    break;
+                }
+            }
+        }
         
         NSError *error;
         if (![[self managedObjectContext] save:&error])
@@ -2003,7 +2035,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         //[self.bookView refreshHighlights];
 }
 
-- (void)addNoteWithColor:(UIColor *)color {
+- (void)addHighlightNoteWithColor:(UIColor *)color {
     [self addHighlightWithColor:color];
     
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
@@ -2012,5 +2044,37 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
+- (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange withColor:(UIColor *)newColor {
+    if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
+        BlioBookmarkRange *toRange = [self.bookView selectedRange];
+        NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
+        NSManagedObject *existingNote = nil;
+        // TODO this is inefficient for large sets of bookmarks - make a fetchRequest to do this
+        for (NSManagedObject *highlight in highlights) {
+            if ([BlioBookmarkRange bookmark:highlight isEqualToBookmarkRange:highlightRange]) {
+                [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.layoutPage] forKeyPath:@"range.startPoint.layoutPage"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.paragraphOffset] forKeyPath:@"range.startPoint.paragraphOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.wordOffset] forKeyPath:@"range.startPoint.wordOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.hyphenOffset] forKeyPath:@"range.startPoint.hyphenOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.layoutPage] forKeyPath:@"range.endPoint.layoutPage"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.paragraphOffset] forKeyPath:@"range.endPoint.paragraphOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.wordOffset] forKeyPath:@"range.endPoint.wordOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.hyphenOffset] forKeyPath:@"range.endPoint.hyphenOffset"];
+                if (nil != newColor) [highlight setValue:newColor forKeyPath:@"range.color"];
+                
+                NSError *error;
+                if (![[self managedObjectContext] save:&error])
+                    NSLog(@"Save after updating highlight failed with error: %@, %@", error, [error userInfo]);
+                
+                existingNote = [highlight valueForKey:@"note"];
+
+                break;
+            }
+        }
+        
+        [self displayNote:existingNote atRange:toRange animated:YES];
+    }
+
+}
 
 @end
