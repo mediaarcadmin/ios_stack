@@ -251,7 +251,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         aScrollView.scrollsToTop = NO;
         aScrollView.delegate = self;
         aScrollView.pageCount = pageCount;
-        aScrollView.canCancelContentTouches = YES;
+        aScrollView.canCancelContentTouches = NO;
         [self addSubview:aScrollView];
         self.scrollView = aScrollView;
         [aScrollView release];
@@ -601,9 +601,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if((object == self.selector) && ([keyPath isEqualToString:@"tracking"])) {
         if (((EucSelector *)object).isTracking) {
             [self.delegate hideToolbars];
-            self.scrollView.canCancelContentTouches = NO;
+            self.scrollView.scrollEnabled = NO;
         } else {
-            self.scrollView.canCancelContentTouches = YES;
+            self.scrollView.scrollEnabled = YES;
         }
     }
 }
@@ -1715,13 +1715,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"Touches began");
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
     
-    //[self setScrollEnabled:NO];
     UITouch * t = [touches anyObject];
     if( [t tapCount]>1 ) {
         CGPoint point = [t locationInView:(UIView *)self.delegate];
@@ -1733,19 +1731,15 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)delayedTouchesBegan:(NSTimer *)timer {
-    NSLog(@"Delayed touches began");
     NSSet *touches = (NSSet *)[timer userInfo];
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
     [self.selector touchesBegan:touches];
-    NSLog(@"Delayed touches began ended");
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"Touches moved");
     if (nil != self.doubleTapBeginTimer) {
         NSSet *beganTouches = (NSSet *)[self.doubleTapBeginTimer userInfo];
-        NSLog(@"Sending began to selector");
         [self.selector touchesBegan:beganTouches];
         [self.doubleTapBeginTimer invalidate];
         self.doubleTapBeginTimer = nil;
@@ -1753,8 +1747,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
-    NSLog(@"Sending moved to selector");
+          
     [self.selector touchesMoved:touches];
+          
+    if ([self.selector trackingStage] != EucSelectorTrackingStageNone) {
+        [self setScrollEnabled:NO];
+    }
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -1763,7 +1761,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
     
-    //[self setScrollEnabled:YES];
+    [self setScrollEnabled:YES];
     
     if (![self.selector isTracking]) {
         UITouch * t = [touches anyObject];
@@ -1785,19 +1783,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
     
-    //[self setScrollEnabled:YES];
+    [self setScrollEnabled:YES];
     [self.selector touchesCancelled:touches];
-}
-
-- (BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view {
-    return YES;
-}
-
-- (BOOL)touchesShouldCancelInContentView:(UIView *)view {
-    if (![self.selector isTracking])
-        return YES;
-    else
-        return NO;
 }
     
 @end    
