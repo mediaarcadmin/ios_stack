@@ -114,6 +114,5 @@ typedef enum {
 - (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;
 - (void)stopAudio;
-- (void)toggleToolbars;
 
 @end

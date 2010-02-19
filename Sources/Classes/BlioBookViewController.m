@@ -861,6 +861,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     } 
 }
 
+- (void)hideToolbars
+{
+    if(!self.navigationController.toolbarHidden)
+        [self toggleToolbars];
+}
+
 - (void)toggleToolbars
 {
     if(_fadeState == BookViewControlleUIFadeStateNone) {
@@ -1069,24 +1075,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             _pageJumpLabel.text = self.book.title;
         }
     } // of no section name
-}
-
-#pragma mark -
-#pragma mark Touches
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    _touchMoved = NO;
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    _touchMoved = YES;
-    if(!self.navigationController.toolbarHidden)
-        [self toggleToolbars];
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    if(!_touchMoved)
-        [self toggleToolbars];
 }
 
 #pragma mark -

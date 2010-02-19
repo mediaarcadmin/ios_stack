@@ -20,6 +20,9 @@
 - (void)addHighlightNoteWithColor:(UIColor *)color;
 - (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange withColor:(UIColor *)newColor;
 
+- (void)hideToolbars;
+- (void)toggleToolbars;
+
 @end
 
 #pragma mark -

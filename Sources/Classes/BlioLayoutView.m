@@ -158,12 +158,14 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     EucSelector *selector;
     NSTimer *doubleTapBeginTimer;
     NSTimer *doubleTapEndTimer;
+    id<BlioBookDelegate> bookDelegate;
 }
 
 @property (nonatomic) NSInteger pageCount;
 @property (nonatomic, assign) EucSelector *selector;
 @property (nonatomic, retain) NSTimer *doubleTapBeginTimer;
 @property (nonatomic, retain) NSTimer *doubleTapEndTimer;
+@property (nonatomic, assign) id<BlioBookDelegate> bookDelegate;
 
 @end
 
@@ -208,9 +210,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.pageViews = nil;
     self.currentPageView = nil;
     self.fonts = nil;
+    self.lastHighlightColor = nil;
+    
+    [self.selector removeObserver:self forKeyPath:@"tracking"];
     [self.selector detatchFromView];
     self.selector = nil;
-    self.lastHighlightColor = nil;
+
     [super dealloc];
 }
 
@@ -264,6 +269,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         aSelector.dataSource = self;
         aSelector.delegate =  self;
         self.selector = aSelector;
+        [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         [self.scrollView setSelector:aSelector];
         [aSelector release];
         
@@ -310,6 +316,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (BOOL)wantsTouchesSniffed {
     return NO;
+}
+
+- (void)setDelegate:(id<BlioBookDelegate>)newDelegate {
+    delegate = newDelegate;
+    [self.scrollView setBookDelegate:newDelegate];
 }
 
 - (void)setTiltScroller:(MSTiltScroller*)ts {
@@ -427,6 +438,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (UIColor *)eucSelector:(EucSelector *)aSelector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange {
+    
+    
     for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
         if ([selectedRange isEqual:range]) {
@@ -581,6 +594,16 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         return [self highlightMenuItemsWithCopy:YES];
     else
         return [self rootMenuItemsWithCopy:YES];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if((object == self.selector) &&
+       ([keyPath isEqualToString:@"tracking"]) &&
+       (((EucSelector *)object).isTracking)) {
+        
+        [self.delegate hideToolbars];
+        
+    }
 }
 
 - (BlioBookmarkRange *)selectedRange {
@@ -1254,11 +1277,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
-    [self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
-    [self renderSharpPageAtScale:self.scrollView.zoomScale];
-    [self.selector redisplaySelectedRange]; 
+    //[self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
+    //[self renderSharpPageAtScale:self.scrollView.zoomScale];
+    if([self.selector isTracking])
+        [self.selector redisplaySelectedRange]; 
     [self.selector setShouldHideMenu:NO];
-    
     
     if (scale == 1.0f) {
         scrollView.pagingEnabled = YES;
@@ -1677,7 +1700,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
 @implementation BlioPDFContainerScrollView
 
-@synthesize pageCount, selector, doubleTapBeginTimer, doubleTapEndTimer;
+@synthesize pageCount, selector, doubleTapBeginTimer, doubleTapEndTimer, bookDelegate;
 
 - (void)dealloc {
     self.selector = nil;
@@ -1685,6 +1708,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.doubleTapBeginTimer = nil;
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
+    self.bookDelegate = nil;
     [super dealloc];
 }
 
@@ -1703,7 +1727,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     } else {
         self.doubleTapBeginTimer = [NSTimer scheduledTimerWithTimeInterval:0.05f target:self selector:@selector(delayedTouchesBegan:) userInfo:touches repeats:NO];
     }
-    [[self nextResponder] touchesBegan:touches withEvent:event];
 }
 
 - (void)delayedTouchesBegan:(NSTimer *)timer {
@@ -1723,7 +1746,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.doubleTapEndTimer = nil;
 
     [self.selector touchesMoved:touches];
-    [[self nextResponder] touchesMoved:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -1733,18 +1755,21 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.doubleTapEndTimer = nil;
     
     [self setScrollEnabled:YES];
-    [self.selector touchesEnded:touches];
     
-    UITouch * t = [touches anyObject];
-    if( [t tapCount] == 1 ) {
-        self.doubleTapEndTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(delayedTouchesEnded:) userInfo:touches repeats:NO];
+    if (![self.selector isTracking]) {
+        UITouch * t = [touches anyObject];
+        if( [t tapCount] == 1 ) {
+            self.doubleTapEndTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(delayedTouchesEnded:) userInfo:touches repeats:NO];
+        }
     }
+    
+    // This must always be sent to the selector to ensure state consistency
+    [self.selector touchesEnded:touches];
 }
 
 - (void)delayedTouchesEnded:(NSTimer *)timer {
-    NSSet *touches = (NSSet *)[timer userInfo];
     [self.doubleTapEndTimer invalidate];
-    [[self nextResponder] touchesEnded:touches withEvent:nil];
+    [self.bookDelegate toggleToolbars];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
