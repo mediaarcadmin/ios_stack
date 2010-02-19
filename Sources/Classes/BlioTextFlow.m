@@ -10,16 +10,17 @@
 
 @implementation BlioTextFlowPositionedWord
 
-@synthesize string, rect, pageIndex, wordIndex, wordID;
+@synthesize string, rect, paragraphID, wordIndex, wordID;
 
 - (void)dealloc {
     self.string = nil;
+    self.paragraphID = nil;
     self.wordID = nil;
     [super dealloc];
 }
 
 - (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs {
-    if ([self pageIndex] == [rhs pageIndex]) {
+    if ([[self paragraphID] compare:[rhs paragraphID]] == NSOrderedSame) {
         if ([self wordIndex] < [rhs wordIndex]) {
             return NSOrderedAscending;
         } else if ([self wordIndex] > [rhs wordIndex]) {
@@ -27,10 +28,8 @@
         } else {
             return NSOrderedSame;
         }
-    } else if ([self pageIndex] < [rhs pageIndex]) {
-        return NSOrderedAscending;
     } else {
-        return NSOrderedDescending;
+        return [[self paragraphID] compare:[rhs paragraphID]];
     }
 }
 
@@ -127,45 +126,19 @@
 }
 
 - (NSComparisonResult)compare:(BlioTextFlowParagraph *)rhs {
-    if ([self pageIndex] == [rhs pageIndex]) {
-        if ([self paragraphIndex] < [rhs paragraphIndex]) {
-            return NSOrderedAscending;
-        } else if ([self paragraphIndex] > [rhs paragraphIndex]) {
-            return NSOrderedDescending;
-        } else {
-            return NSOrderedSame;
-        }
-    } else if ([self pageIndex] < [rhs pageIndex]) {
-        return NSOrderedAscending;
-    } else {
-        return NSOrderedDescending;
-    }
+    return [self.paragraphID compare:rhs.paragraphID];
 }
 
 + (NSInteger)pageIndexForParagraphID:(id)aParagraphID {
-    NSString *paraID = (NSString *)aParagraphID;
-    
-    if (nil != paraID) {
-        NSArray *components = [paraID componentsSeparatedByString:@"-"];
-        return [[components objectAtIndex:0] integerValue];
-    } else {
-        return -1;
-    }
+    return [(NSIndexPath *)aParagraphID section];
 }
 
 + (NSInteger)paragraphIndexForParagraphID:(id)aParagraphID {
-    NSString *paraID = (NSString *)aParagraphID;
-    NSArray *components = [paraID componentsSeparatedByString:@"-"];
-
-    if ([components count] > 1) {
-        return [[components objectAtIndex:1] integerValue];
-    } else {
-        return -1;
-    }
+    return [(NSIndexPath *)aParagraphID row];
 }
 
 + (id)paragraphIDForPageIndex:(NSInteger)aPageIndex paragraphIndex:(NSInteger)aParagraphIndex {
-    return [NSString stringWithFormat:@"%d-%d", aPageIndex, aParagraphIndex];
+    return [NSIndexPath indexPathForRow:aParagraphIndex inSection:aPageIndex];
 }
 
 @end
@@ -416,9 +389,8 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             [paragraph setPageIndex:targetIndex];
             NSUInteger newParagraphIndex = [paragraphArray count];
             [paragraph setParagraphIndex:newParagraphIndex];
-            NSString *idString = [[NSString alloc] initWithFormat:@"%d-%d", targetIndex, newParagraphIndex];
-            [paragraph setParagraphID:idString];
-            [idString release];
+            NSIndexPath *paragraphID = [BlioTextFlowParagraph paragraphIDForPageIndex:targetIndex paragraphIndex:newParagraphIndex];
+            [paragraph setParagraphID:paragraphID];
             [paragraphArray addObject:paragraph];
             [textFlow setCurrentParagraph:paragraph];
             [paragraph release];
@@ -451,7 +423,7 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                                         [[rectArray objectAtIndex:2] intValue],
                                         [[rectArray objectAtIndex:3] intValue])];
             
-            [newWord setPageIndex:[paragraph pageIndex]];
+            [newWord setParagraphID:[paragraph paragraphID]];
             NSInteger index = [[paragraph words] count];
             [newWord setWordIndex:index];
             [newWord setWordID:[NSNumber numberWithInteger:index]];

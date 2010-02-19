@@ -12,14 +12,14 @@
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
     CGRect rect;
-    NSInteger pageIndex;
+    NSIndexPath *paragraphID;
     NSInteger wordIndex;
     NSNumber *wordID;
 }
 
 @property (nonatomic, retain) NSString *string;
 @property (nonatomic) CGRect rect;
-@property (nonatomic) NSInteger pageIndex;
+@property (nonatomic, retain) NSIndexPath *paragraphID;
 @property (nonatomic) NSInteger wordIndex;
 @property (nonatomic, retain) NSNumber *wordID;
 
@@ -61,7 +61,7 @@
 @interface BlioTextFlowParagraph : NSObject {
     NSInteger pageIndex;
     NSInteger paragraphIndex;
-    NSString *paragraphID;
+    NSIndexPath *paragraphID;
     NSMutableArray *words;
     CGRect rect;
     BOOL folio;
@@ -69,7 +69,7 @@
 
 @property (nonatomic) NSInteger pageIndex;
 @property (nonatomic) NSInteger paragraphIndex;
-@property (nonatomic, retain) NSString *paragraphID;
+@property (nonatomic, retain) NSIndexPath *paragraphID;
 @property (nonatomic, retain) NSMutableArray *words;
 @property (nonatomic, readonly) CGRect rect;
 @property (nonatomic) BOOL folio;
