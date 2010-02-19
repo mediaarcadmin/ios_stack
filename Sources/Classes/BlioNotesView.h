@@ -27,12 +27,14 @@
     NSString *page;
     id<BlioNotesViewDelegate> delegate;
     NSManagedObject *note;
+    BlioBookmarkRange *range;
 }
 
 @property (nonatomic, retain) UITextView *textView;
 @property (nonatomic, retain) NSString *page;
 @property (nonatomic, assign) id<BlioNotesViewDelegate> delegate;
 @property (nonatomic, retain) NSManagedObject *note;
+@property (nonatomic, retain) BlioBookmarkRange *range;
 
 - (id)initWithRange:(BlioBookmarkRange *)range note:(NSManagedObject *)aNote;
 - (void)showInView:(UIView *)view;
