@@ -1923,6 +1923,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark -
 #pragma mark BlioBookDelegate 
 
+- (NSArray *)rangesToHighlightForLayoutPage:(NSInteger)pageNumber {
+    return [NSArray arrayWithArray:[self.book sortedHighlightRangesForLayoutPage:pageNumber]];
+}
+
 - (NSArray *)rangesToHighlightForRange:(BlioBookmarkRange *)range {    
     return [NSArray arrayWithArray:[self.book sortedHighlightRangesForRange:range]];
 }

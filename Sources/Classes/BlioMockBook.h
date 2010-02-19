@@ -44,6 +44,7 @@
 - (NSArray *)sortedBookmarks;
 - (NSArray *)sortedNotes;
 - (NSArray *)sortedHighlights;
+- (NSArray *)sortedHighlightRangesForLayoutPage:(NSInteger)layoutPage;
 - (NSArray *)sortedHighlightRangesForRange:(BlioBookmarkRange *)range;
 
 @end

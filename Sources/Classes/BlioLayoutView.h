@@ -40,6 +40,7 @@
     CALayer *sharpLayer;
     EucSelector *selector;
     UIColor *lastHighlightColor;
+    NSOperationQueue *fetchHighlightsQueue;
 }
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;
@@ -56,5 +57,6 @@
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
 @property (nonatomic, retain) UIColor *lastHighlightColor;
+@property (nonatomic, retain) NSOperationQueue *fetchHighlightsQueue;
 
 @end

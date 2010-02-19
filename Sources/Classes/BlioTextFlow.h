@@ -92,9 +92,11 @@
     XML_Parser currentParser;
     NSInteger cachedPageIndex;
     NSArray *cachedPageParagraphs;
+    BOOL ready;
 }
 
 @property (nonatomic, retain) NSMutableSet *sections;
+@property (nonatomic) BOOL ready;
 
 - (id)initWithPath:(NSString *)path;
 

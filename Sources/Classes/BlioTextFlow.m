@@ -193,6 +193,7 @@
 @synthesize currentSection, currentParagraph;
 @synthesize currentPageIndex, currentParagraphArray, currentParser;
 @synthesize cachedPageIndex, cachedPageParagraphs;
+@synthesize ready;
 
 - (void)dealloc {
     self.sections = nil;
@@ -209,7 +210,7 @@
 - (id)initWithPath:(NSString *)path {    
     if ((self = [super init])) {
         self.sections = [NSMutableSet set];
-        
+        self.ready = NO;
         [self performSelectorInBackground:@selector(parseSectionsFileAtPath:) withObject:path];
     }
     return self;
@@ -226,6 +227,7 @@
 
 - (void)parseSectionsComplete {
     //NSLog(@"TextFlow pageMarkers created");
+    self.ready = YES;
 }
 
 #pragma mark -
@@ -501,12 +503,17 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         [self setCurrentPageIndex:[targetMarker pageIndex]];
         [self setCurrentParagraph:nil];
           
-        if (!XML_Parse(currentParser, offsetBytes, targetFragmentLength, XML_FALSE)) {
-            enum XML_Error errorCode = XML_GetErrorCode(currentParser);
-            if (errorCode != XML_ERROR_ABORTED) {
-                char *error = (char *)XML_ErrorString(errorCode);
-                NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
+        @try {
+            if (!XML_Parse(currentParser, offsetBytes, targetFragmentLength, XML_FALSE)) {
+                enum XML_Error errorCode = XML_GetErrorCode(currentParser);
+                if (errorCode != XML_ERROR_ABORTED) {
+                    char *error = (char *)XML_ErrorString(errorCode);
+                    NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
+                }
             }
+        }
+        @catch (NSException * e) {
+            NSLog(@"TextFlow parsing exception: '%@' in file: '%@'", e.userInfo, path);
         }
         XML_ParserFree(currentParser);
         [data release];

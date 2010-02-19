@@ -17,6 +17,24 @@ static const CGFloat kBlioPDFBlockInsetY = 10;
 static const CGFloat kBlioPDFShadowShrinkScale = 2;
 static const CGFloat kBlioPDFGoToZoomScale = 0.7f;
 
+@interface BlioLayoutHighlightsOperation : NSOperation {
+    NSInteger pageNumber;
+    BlioPDFPageView *view;
+    BlioBookmarkRange *excludedBookmark;
+    NSArray *highlightRanges;
+    BlioTextFlow *textFlow;
+}
+
+- (id)initWithPage:(NSInteger)aPageNumber view:(BlioPDFPageView *)view exclusion:(BlioBookmarkRange *)excludedBookmark highlights:(NSArray *)highlightRanges textFlow:(BlioTextFlow *)aTextFlow;
+
+@property (nonatomic) NSInteger pageNumber;
+@property (nonatomic, retain) BlioPDFPageView *view;
+@property (nonatomic, retain) BlioBookmarkRange *excludedBookmark;
+@property (nonatomic, retain) NSArray *highlightRanges;
+@property (nonatomic, retain) BlioTextFlow *textFlow;
+
+@end
+
 @interface BlioFastCATiledLayer : CATiledLayer
 @end
 
@@ -173,12 +191,16 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @implementation BlioLayoutView
 
 
-@synthesize delegate, book, scrollView, containerView, pageViews, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor;
+@synthesize delegate, book, scrollView, containerView, pageViews, currentPageView, tiltScroller, fonts, parsedPage, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor, fetchHighlightsQueue;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     CGPDFDocumentRelease(pdf);
+    
+    [self.fetchHighlightsQueue cancelAllOperations];
+    self.fetchHighlightsQueue = nil;
+    
     self.delegate = nil;
     self.book = nil;
     self.scrollView = nil;
@@ -274,6 +296,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
             [self goToPageNumber:self.pageNumber animated:NO];
         }
         
+        NSOperationQueue* aQueue = [[NSOperationQueue alloc] init];
+        self.fetchHighlightsQueue = aQueue;
+        [aQueue release];
+        
         [self.book textFlow]; // start text flow parsing in the background
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutZoomInProgress:) name:@"BlioLayoutZoomInProgress" object:nil];
@@ -295,74 +321,14 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 #pragma mark -
 #pragma mark Highlights
 
-- (void)displayHighlightsForPage:(NSInteger)aPageNumber inView:(BlioPDFPageView *)view excluding:(BlioBookmarkRange *)excludedBookmark {
-    if (aPageNumber < 1) return;
-    if (aPageNumber > CGPDFDocumentGetNumberOfPages (pdf)) return;
-
-    NSInteger pageIndex = aPageNumber - 1;
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    NSUInteger maxOffset = [pageParagraphs count];
+- (void)displayHighlightsForPage:(NSInteger)aPageNumber inView:(BlioPDFPageView *)view excluding:(BlioBookmarkRange *)excludedBookmark {    
     
-    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-    startPoint.layoutPage = aPageNumber;
-    startPoint.paragraphOffset = 0;
+    NSArray *highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
     
-    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
-    endPoint.layoutPage = aPageNumber;
-    endPoint.paragraphOffset = maxOffset;
-    
-    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
-    range.startPoint = startPoint;
-    range.endPoint = endPoint;
-    
-    NSArray *highlightRanges = [self.delegate rangesToHighlightForRange:range];
-    
-    [startPoint release];
-    [endPoint release];
-    [range release];
-    
-    NSMutableArray *allHighlights = [NSMutableArray array];
-    
-    for (BlioBookmarkRange *highlightRange in highlightRanges) {
-        
-        if (![highlightRange isEqual:excludedBookmark]) {
-            
-            NSMutableArray *highlightRects = [NSMutableArray array];
-            
-            for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
-                for (BlioTextFlowPositionedWord *word in [paragraph words]) {
-                    if (((highlightRange.startPoint.layoutPage < aPageNumber) &&
-                         (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
-                         (word.wordIndex <= highlightRange.endPoint.wordOffset)) ||
-                        
-                        ((highlightRange.endPoint.layoutPage > aPageNumber) &&
-                         (paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
-                         (word.wordIndex >= highlightRange.startPoint.wordOffset)) ||
-                        
-                        ((paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
-                         (word.wordIndex >= highlightRange.startPoint.wordOffset) &&
-                         (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
-                         (word.wordIndex <= highlightRange.endPoint.wordOffset))) {
-                            
-                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        }
-                }
-            }
-            
-            NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
-            
-            for (NSValue *rectValue in coalescedRects) {
-                BlioLayoutViewColoredRect *coloredRect = [[BlioLayoutViewColoredRect alloc] init];
-                coloredRect.color = highlightRange.color;
-                coloredRect.rect = [rectValue CGRectValue];
-                [allHighlights addObject:coloredRect];
-                [coloredRect release];
-            }
-        }
-        
-    }
-    
-    [view setHighlights:allHighlights];
+    BlioLayoutHighlightsOperation *anOperation = [[BlioLayoutHighlightsOperation alloc] initWithPage:aPageNumber view:view exclusion:excludedBookmark highlights:highlightRanges textFlow:[self.book textFlow]];
+    [self.fetchHighlightsQueue cancelAllOperations];
+    [self.fetchHighlightsQueue addOperation:anOperation];
+    [anOperation release];
 }
 
 - (void)refreshHighlights {
@@ -1162,7 +1128,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if (current) {
         self.currentPageView = pageView;
         //NSLog(@"attached to view");
-        [self.selector attachToView:self.currentPageView];
+        [self.selector attachToView:pageView];
+        [self displayHighlightsForPage:aPageNumber inView:pageView excluding:nil];
     }
     
     if (preload) [pageView renderSharpPageAtScale:1];
@@ -1170,9 +1137,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [pageView setPreload:preload];
     [pageView setCover:(aPageNumber == 1)];
     [pageView setValid:YES];
-    
-    [self displayHighlightsForPage:aPageNumber inView:pageView excluding:nil];
-    
+        
     return pageView;
 }
 
@@ -2141,6 +2106,92 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 - (void)dealloc {
     self.color = nil;
     [super dealloc];
+}
+
+@end
+
+@implementation BlioLayoutHighlightsOperation
+
+@synthesize pageNumber, view, excludedBookmark, highlightRanges, textFlow;
+
+- (void)dealloc {
+    self.view = nil;
+    self.excludedBookmark = nil;
+    self.highlightRanges = nil;
+    self.textFlow = nil;
+    [super dealloc];
+}
+
+- (id)initWithPage:(NSInteger)aPageNumber view:(BlioPDFPageView *)aView exclusion:(BlioBookmarkRange *)aExcludedBookmark highlights:(NSArray *)aHighlightRanges textFlow:(BlioTextFlow *)aTextFlow {
+    if((self = [super init])) {
+        
+        self.pageNumber = aPageNumber;
+        self.view = aView;
+        self.excludedBookmark = aExcludedBookmark;
+        self.highlightRanges = aHighlightRanges;
+        self.textFlow = aTextFlow;
+    }
+    
+    return self;
+}
+
+- (void)main {
+    if ([self isCancelled]) return;
+        
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSInteger pageIndex = self.pageNumber - 1;
+    NSArray *pageParagraphs = [self.textFlow paragraphsForPageAtIndex:pageIndex];
+    
+    if ([self isCancelled]) return;
+    
+    NSMutableArray *allHighlights = [NSMutableArray array];
+    for (BlioBookmarkRange *highlightRange in self.highlightRanges) {
+        if ([self isCancelled]) return;
+        
+        if (![highlightRange isEqual:self.excludedBookmark]) {
+            
+            NSMutableArray *highlightRects = [NSMutableArray array];
+            
+            for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
+                if ([self isCancelled]) return;
+                
+                for (BlioTextFlowPositionedWord *word in [paragraph words]) {
+                    if (((highlightRange.startPoint.layoutPage < self.pageNumber) &&
+                         (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
+                         (word.wordIndex <= highlightRange.endPoint.wordOffset)) ||
+                        
+                        ((highlightRange.endPoint.layoutPage > self.pageNumber) &&
+                         (paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
+                         (word.wordIndex >= highlightRange.startPoint.wordOffset)) ||
+                        
+                        ((paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
+                         (word.wordIndex >= highlightRange.startPoint.wordOffset) &&
+                         (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
+                         (word.wordIndex <= highlightRange.endPoint.wordOffset))) {
+                            
+                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        }
+                }
+            }
+            
+            if ([self isCancelled]) return;
+            NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
+            
+            for (NSValue *rectValue in coalescedRects) {
+                BlioLayoutViewColoredRect *coloredRect = [[BlioLayoutViewColoredRect alloc] init];
+                coloredRect.color = highlightRange.color;
+                coloredRect.rect = [rectValue CGRectValue];
+                [allHighlights addObject:coloredRect];
+                [coloredRect release];
+            }
+        }
+        
+    }
+    if ([self isCancelled]) return;
+    [self.view performSelectorOnMainThread:@selector(setHighlights:) withObject:allHighlights waitUntilDone:NO];
+    
+    [pool drain];
 }
 
 @end
