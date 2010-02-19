@@ -162,7 +162,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
         if(self.shouldSniffTouches && [window isKindOfClass:[THEventCapturingWindow class]]) {
             [window removeTouchObserver:self forView:attachedView];
         }
-    }    
+    }
+    self.attachedView = nil;
 }
 
 #pragma mark -
