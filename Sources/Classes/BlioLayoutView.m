@@ -517,13 +517,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
 }
 
-- (NSArray *)highlightMenuItemsWithCopy:(BOOL)copy {
-    EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
-                                                           action:@selector(addNote:)];
-    
-    EucMenuItem *copyItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
-                                                        action:@selector(copy:)];
-    
+- (NSArray *)colorMenuItems {    
     EucMenuItem *yellowItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorYellow:)] autorelease];
     yellowItem.color = [UIColor yellowColor];
     
@@ -535,37 +529,49 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
     EucMenuItem *greenItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorGreen:)] autorelease];
     greenItem.color = [UIColor greenColor];
+    
+    NSArray *ret = [NSArray arrayWithObjects:yellowItem, redItem, blueItem, greenItem, nil];
         
+    return ret;
+}
+
+- (NSArray *)highlightMenuItemsWithCopy:(BOOL)copy {
+    EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
+                                                            action:@selector(addNote:)] autorelease];
+    
+    EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
+                                                         action:@selector(copy:)] autorelease];
+    
+    EucMenuItem *colorItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Color", "\"Color\" option in popup menu in layout view")
+                                                          action:@selector(showColorMenu:)] autorelease];
+    
+    EucMenuItem *removeItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Remove", "\"Remove Highlight\" option in popup menu in layout view")
+                                                           action:@selector(removeHighlight:)] autorelease];
+
     NSArray *ret;
     if (copy)
-        ret = [NSArray arrayWithObjects:addNoteItem, copyItem, yellowItem, redItem, blueItem, greenItem, nil];
+        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, colorItem, nil];
     else
-        ret = [NSArray arrayWithObjects:addNoteItem, yellowItem, redItem, blueItem, greenItem, nil];
+        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, colorItem, nil];
 
     return ret;
 }
 
 - (NSArray *)rootMenuItemsWithCopy:(BOOL)copy {
-    EucMenuItem *highlightItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
-                                                             action:@selector(highlight:)];
-    EucMenuItem *addNoteItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
-                                                           action:@selector(addNote:)];
-    EucMenuItem *copyItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
-                                                        action:@selector(copy:)];
-    EucMenuItem *showWebToolsItem = [[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu in layout view")
-                                                                action:@selector(showWebTools:)];
+    EucMenuItem *highlightItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
+                                                              action:@selector(highlight:)] autorelease];
+    EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
+                                                            action:@selector(addNote:)] autorelease];
+    EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
+                                                         action:@selector(copy:)] autorelease];
+    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu in layout view")
+                                                                 action:@selector(showWebTools:)] autorelease];
     
     NSArray *ret;
     if (copy)
         ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
     else
         ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, showWebToolsItem, nil];
-
-    
-    [highlightItem release];
-    [addNoteItem release];
-    [copyItem release];
-    [showWebToolsItem release];
     
     return ret;
 }
@@ -662,6 +668,14 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if (nil == self.lastHighlightColor) 
         self.lastHighlightColor = [UIColor blueColor];
     [self addHighlightWithColor:self.lastHighlightColor];
+}
+
+- (void)showColorMenu:(id)sender {
+    [self.selector changeActiveMenuItemsTo:[self colorMenuItems]];
+}
+
+- (void)removeHighlight:(id)sender {
+    NSLog(@"Remove Highlight");
 }
 
 - (void)addNote:(id)sender {
