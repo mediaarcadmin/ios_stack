@@ -26,6 +26,7 @@
 - (void)dealloc
 {
     [_title release];
+    [_color release];
     [super dealloc];
 }
 
