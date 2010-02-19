@@ -671,7 +671,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     if ([self.selector selectedRangeIsHighlight]) {
         BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
         if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:withColor:)])
-            [self.delegate updateHighlightNoteAtRange:highlightRange withColor:self.lastHighlightColor];
+            [self.delegate updateHighlightNoteAtRange:highlightRange withColor:nil];
     } else {
         if ([self.delegate respondsToSelector:@selector(addHighlightNoteWithColor:)])
             [self.delegate addHighlightNoteWithColor:self.lastHighlightColor];
