@@ -605,20 +605,21 @@ static const CGFloat sLoupePopDuration = 0.05f;
             [self.menuController setMenuVisible:NO animated:YES];
         }
 
+        if(previousStage != EucSelectorTrackingStageFirstSelection && 
+           (stage == EucSelectorTrackingStageNone || stage == EucSelectorTrackingStageFirstSelection)) {
+            if(self.selectedRangeIsHighlight &&
+               [self.delegate respondsToSelector:@selector(eucSelector:didEndEditingHighlightWithRange:movedToRange:)]) {
+                [self.delegate eucSelector:self 
+           didEndEditingHighlightWithRange:self.selectedRangeOriginalHighlightRange
+                              movedToRange:self.selectedRange];
+            }
+            self.selectedRangeOriginalHighlightRange = nil;
+            self.selectionColor = nil;
+        }
+        
         switch(stage) {
             case EucSelectorTrackingStageNone:
             {
-                if(previousStage != EucSelectorTrackingStageFirstSelection) {
-                    if(self.selectedRangeIsHighlight &&
-                       [self.delegate respondsToSelector:@selector(eucSelector:didEndEditingHighlightWithRange:movedToRange:)]) {
-                       [self.delegate eucSelector:self 
-                  didEndEditingHighlightWithRange:self.selectedRangeOriginalHighlightRange
-                                     movedToRange:self.selectedRange];
-                    }
-                    self.selectedRangeOriginalHighlightRange = nil;
-                    self.selectionColor = nil;
-                }
-                
                 if(self.viewWithSelection != self.attachedView) {
                     [(THEventCapturingWindow *)self.viewWithSelection.window removeTouchObserver:self forView:self.viewWithSelection];
                     [self.viewWithSelection removeFromSuperview];
