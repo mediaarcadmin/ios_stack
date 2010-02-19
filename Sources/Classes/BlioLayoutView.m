@@ -1948,8 +1948,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)setHighlights:(NSArray *)newHighlights {
+    [CATransaction begin];
+    [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+    
     [highlightLayerDelegate setHighlights:newHighlights];
     [highlightLayer setNeedsDisplay];
+    
+    [CATransaction commit];
 }
 
 @end
