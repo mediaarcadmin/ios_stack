@@ -301,9 +301,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         [aQueue release];
         
         [self.book textFlow]; // start text flow parsing in the background
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutZoomInProgress:) name:@"BlioLayoutZoomInProgress" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutZoomEnded:) name:@"BlioLayoutZoomEnded" object:nil];
+        // Register for when the textFlow is done so we can refresh highlights
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFlowIsReady:) name:@"BlioTextFlowReady" object:nil];
         
     }
     return self;
@@ -345,6 +344,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     } else {
         [self displayHighlightsForPage:self.pageNumber inView:self.currentPageView excluding:nil];
     }
+}
+
+- (void)textFlowIsReady:(NSNotification *)notification {
+    [self refreshHighlights];
 }
 
 #pragma mark -

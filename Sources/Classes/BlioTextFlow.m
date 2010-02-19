@@ -228,6 +228,7 @@
 - (void)parseSectionsComplete {
     //NSLog(@"TextFlow pageMarkers created");
     self.ready = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioTextFlowReady" object:self];
 }
 
 #pragma mark -
