@@ -15,6 +15,7 @@
 #import "BlioUIImageAdditions.h"
 #import "BlioTestParagraphWords.h"
 #import "BlioStoreTabViewController.h"
+#import "BlioAppSettingsController.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -147,7 +148,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-settings.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
-                                           action:nil];
+                                           action:@selector(showSettings:)];
     [libraryItems addObject:item];
     [item release];
     
@@ -538,6 +539,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] init];
     [self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
+}
+
+- (void)showSettings:(id)sender {    
+	BlioAppSettingsController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
+    [self presentModalViewController:settingsController animated:YES];
+    [settingsController release];    
 }
 
 #pragma mark -
