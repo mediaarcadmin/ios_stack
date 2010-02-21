@@ -1410,18 +1410,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		return nil;
 }
 
-/*
-- (NSInteger)getCurrentPage:(BlioPageLayout)pageType paragraphId:(id)paragraph wordOffset:(NSInteger)offset {
-	if ( pageType==kBlioPageLayoutPageLayout ) 
-		return [(BlioLayoutView *)self.bookView pageNumber];
-	else if ( pageType==kBlioPageLayoutPlainText ) 
-		return ([paragraph integerValue] + offset); // Not reliable! because of this speech that should resume backs up to top of page sometimes
-	else
-		// meaningless
-		return -1;
-}
- */
-
 - (id) getNextParagraph:(NSInteger*)wordOffset blioPageType:(BlioPageLayout)pageType audioManager:(BlioAudioManager*)audioMgr {
 	id paragraphId;
 	while ( true ) {
@@ -1491,8 +1479,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
 	// For testing
-	NSString* thisWord = [string substringWithRange:characterRange];
-	NSLog(@"%@", thisWord);
+	//NSString* thisWord = [string substringWithRange:characterRange];
+	//NSLog(@"%@", thisWord);
 	
 	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
                                                          options:0 
@@ -1566,8 +1554,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)audioPlayerEndInterruption:(AVAudioPlayer*) player { 
 	[_audioBookManager playAudio];
 }
-		
-// ***********************************
 
 - (BOOL)findTimes:(NSInteger)layoutPage {
 	NSString* fileSuffix;
@@ -1611,7 +1597,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	if ( (timeElapsed + _audioBookManager.pausedAtTime) >= ([[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue] + _audioBookManager.lastOnPageTime) ) {
 		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
 			[(BlioLayoutView *)self.bookView highlightWordAtParagraphId:(id)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
-		//[bookView highlightWordAtParagraphId:(uint32_t)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
 		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 			// Problem: if just switching here from Fixed view, then prepareTextForSpeaking would not have been called for flowview
 			BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
@@ -1654,9 +1639,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				if (_acapelaTTS == nil) {
 					_acapelaTTS = [[AcapelaTTS alloc] init];
 					[_acapelaTTS initTTS];
-					[_acapelaTTS setDelegate:self];
-					[_acapelaTTS setRate:180];   // Will get from settings.
-					[_acapelaTTS setVolume:70];  // Likewise.
+					[_acapelaTTS setDelegate:self]; 
 					[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextParagraph:) userInfo:nil repeats:YES]];
 				}
 				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];

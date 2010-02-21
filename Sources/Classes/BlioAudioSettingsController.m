@@ -18,7 +18,7 @@
 	self = [super init];
 	if (self)
 	{
-		self.title = @"Audio";
+		self.title = @"Text to Speech";
 	}
 	return self;
 }
@@ -43,22 +43,21 @@
 	// Voice control
 	CGFloat yPlacement = kTopMargin;
 	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
-	[self.view addSubview:[BlioAudioSettingsController labelWithFrame:frame title:@"Text to Speech Voice"]];
+	[self.view addSubview:[BlioAudioSettingsController labelWithFrame:frame title:@"Voice"]];
 
 	yPlacement += kTweenMargin + kLabelHeight;
-	UISegmentedControl * segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+	voiceControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
 	frame = CGRectMake(	kLeftMargin,
 					   yPlacement,
 					   self.view.bounds.size.width - (kRightMargin * 2.0),
 					   kSegmentedControlHeight);
-	segmentedControl.frame = frame;
-	[segmentedControl addTarget:self action:@selector(changeVoice:) forControlEvents:UIControlEventValueChanged];
-	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+	voiceControl.frame = frame;
+	[voiceControl addTarget:self action:@selector(changeVoice:) forControlEvents:UIControlEventValueChanged];
+	voiceControl.segmentedControlStyle = UISegmentedControlStyleBar;
 	// If no voice has previously been set, set to the first voice (female).
-	[segmentedControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]];
-	
-	[self.view addSubview:segmentedControl];
-	[segmentedControl release];
+	[voiceControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]];
+	[self.view addSubview:voiceControl];
+	[voiceControl release];
 	
 	// Speed control
 	yPlacement += (kTweenMargin * 2.0) + kSegmentedControlHeight;
@@ -66,25 +65,30 @@
 					   yPlacement,
 					   self.view.bounds.size.width,
 					   kLabelHeight);
-	[self.view addSubview:[BlioAudioSettingsController labelWithFrame:frame title:@"Text to Speech Speed"]];
-	
-	segmentTextContent = [NSArray arrayWithObjects: @"Slow", @"Medium", @"Fast", nil];
-	segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+	[self.view addSubview:[BlioAudioSettingsController labelWithFrame:frame title:@"Speed"]];
 	yPlacement += kTweenMargin + kLabelHeight;
 	frame = CGRectMake(	kLeftMargin,
 					   yPlacement,
 					   self.view.bounds.size.width - (kRightMargin * 2.0),
-					   kSegmentedControlHeight);
-	segmentedControl.frame = frame;
-	//[segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
-	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;	
-	segmentedControl.selectedSegmentIndex = 1;
+					   kSliderHeight);
 	
-	[self.view addSubview:segmentedControl];
-	[segmentedControl release];
+	speedControl = [[UISlider alloc] initWithFrame:frame];
+	[speedControl addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventValueChanged];
+	
+	// in case the parent view draws with a custom color or gradient, use a transparent color
+	speedControl.backgroundColor = [UIColor clearColor];
+	speedControl.minimumValue = 80.0;
+	speedControl.maximumValue = 360.0;
+	speedControl.continuous = NO;
+	if ( [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastSpeedDefaultsKey] == 0 )
+		// Preference has not been set.  Set to default.
+		[[NSUserDefaults standardUserDefaults] setFloat:180.0 forKey:kBlioLastSpeedDefaultsKey];
+	speedControl.value = [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastSpeedDefaultsKey];
+	[self.view addSubview:speedControl];
+	[speedControl release];
 	
 	// Volume control
-	yPlacement += (kTweenMargin * 2.0) + kSegmentedControlHeight;
+	yPlacement += (kTweenMargin * 2.0) + kSliderHeight + kLabelHeight;
 	frame = CGRectMake(	kLeftMargin,
 					   yPlacement,
 					   self.view.bounds.size.width,
@@ -96,18 +100,19 @@
 					   self.view.bounds.size.width - (kRightMargin * 2.0),
 					   kSliderHeight);
 
-	UISlider* sliderCtl = [[UISlider alloc] initWithFrame:frame];
-	[sliderCtl addTarget:self action:@selector(adjustVolume:) forControlEvents:UIControlEventValueChanged];
-	
+	volumeControl = [[UISlider alloc] initWithFrame:frame];
+	[volumeControl addTarget:self action:@selector(changeVolume:) forControlEvents:UIControlEventValueChanged];
 	// in case the parent view draws with a custom color or gradient, use a transparent color
-	sliderCtl.backgroundColor = [UIColor clearColor];
-	
-	sliderCtl.minimumValue = 0.0;
-	sliderCtl.maximumValue = 100.0;
-	sliderCtl.continuous = YES;
-	sliderCtl.value = 50.0;
-	[self.view addSubview:sliderCtl];
-	[sliderCtl release];
+	volumeControl.backgroundColor = [UIColor clearColor];
+	volumeControl.minimumValue = 0.1; 
+	volumeControl.maximumValue = 100.0;
+	volumeControl.continuous = NO;
+	if ( [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastVolumeDefaultsKey] == 0 )
+		// Preference has not been set.  Set to default.
+		[[NSUserDefaults standardUserDefaults] setFloat:50.0 forKey:kBlioLastVolumeDefaultsKey];
+	volumeControl.value = [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastVolumeDefaultsKey];
+	[self.view addSubview:volumeControl];
+	[volumeControl release];
 	
 	// Play sample button.
 	yPlacement += (kTweenMargin * 2.0) + kSliderHeight + kLabelHeight;
@@ -129,20 +134,29 @@
 	contentView.autoresizesSubviews = YES;
 	self.view = contentView;
 	[contentView release];
-	
 	[self createControls];	
 }
 
 
 - (void)changeVoice:(id)sender
 {
-	[[NSUserDefaults standardUserDefaults] setInteger:(AcapelaVoice)([sender selectedSegmentIndex]) forKey:kBlioLastVoiceDefaultsKey];
+	UISegmentedControl* ctl = (UISegmentedControl*)sender;
+	if ( ctl == voiceControl )
+		[[NSUserDefaults standardUserDefaults] setInteger:(AcapelaVoice)([sender selectedSegmentIndex]) forKey:kBlioLastVoiceDefaultsKey];
 }
 
-- (void)adjustVolume:(id)sender
+- (void)changeSpeed:(id)sender
 {
-	
-	
+	UISlider* ctl = (UISlider*)sender;
+	if ( ctl == speedControl )
+		[[NSUserDefaults standardUserDefaults] setFloat:ctl.value forKey:kBlioLastSpeedDefaultsKey];
+}
+
+- (void)changeVolume:(id)sender
+{
+	UISlider* ctl = (UISlider*)sender;
+	if ( ctl == volumeControl )
+		[[NSUserDefaults standardUserDefaults] setFloat:ctl.value forKey:kBlioLastVolumeDefaultsKey];
 }
 
 @end
