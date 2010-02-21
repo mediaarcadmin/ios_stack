@@ -6,7 +6,6 @@
 //  Copyright 2009 Kurzweil Technologies Inc.. All rights reserved.
 //
 
-
 #import "AcapelaTTS.h"
 #include "Acapela/babkurz.lic.h"
 #include "Acapela/babkurz.lic.01e560b3.password"

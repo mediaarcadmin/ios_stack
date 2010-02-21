@@ -8,6 +8,7 @@
 
 #import "BlioAudioSettingsController.h"
 #import "BlioAppSettingsConstants.h"
+#import "AcapelaTTS.h"
 
 @implementation BlioAudioSettingsController
 
@@ -37,7 +38,7 @@
 
 - (void)createControls
 {
-	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Male", @"Female", nil];
+	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Female", @"Male", nil];
 	
 	// Voice control
 	CGFloat yPlacement = kTopMargin;
@@ -51,9 +52,10 @@
 					   self.view.bounds.size.width - (kRightMargin * 2.0),
 					   kSegmentedControlHeight);
 	segmentedControl.frame = frame;
-	[segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
+	[segmentedControl addTarget:self action:@selector(changeVoice:) forControlEvents:UIControlEventValueChanged];
 	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-	segmentedControl.selectedSegmentIndex = 1;
+	// If no voice has previously been set, set to the first voice (female).
+	[segmentedControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]];
 	
 	[self.view addSubview:segmentedControl];
 	[segmentedControl release];
@@ -74,7 +76,7 @@
 					   self.view.bounds.size.width - (kRightMargin * 2.0),
 					   kSegmentedControlHeight);
 	segmentedControl.frame = frame;
-	[segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
+	//[segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
 	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;	
 	segmentedControl.selectedSegmentIndex = 1;
 	
@@ -106,6 +108,17 @@
 	sliderCtl.value = 50.0;
 	[self.view addSubview:sliderCtl];
 	[sliderCtl release];
+	
+	// Play sample button.
+	yPlacement += (kTweenMargin * 2.0) + kSliderHeight + kLabelHeight;
+	UIButton* playButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+	playButton.frame = CGRectMake((self.view.bounds.size.width - kStdButtonWidth)/2, yPlacement, kStdButtonWidth, kStdButtonHeight);
+	[playButton setTitle:@"Play sample" forState:UIControlStateNormal];
+	playButton.backgroundColor = [UIColor clearColor];
+	//[playButton addTarget:self action:@selector(action:) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview:playButton];
+	[playButton release];
+	
 }
 
 - (void)loadView
@@ -120,15 +133,16 @@
 	[self createControls];	
 }
 
+
+- (void)changeVoice:(id)sender
+{
+	[[NSUserDefaults standardUserDefaults] setInteger:(AcapelaVoice)([sender selectedSegmentIndex]) forKey:kBlioLastVoiceDefaultsKey];
+}
+
 - (void)adjustVolume:(id)sender
 {
 	
 	
-}
-
-- (void)segmentAction:(id)sender
-{
-	//NSLog(@"selected segment = %d", [sender selectedSegmentIndex]);
 }
 
 @end

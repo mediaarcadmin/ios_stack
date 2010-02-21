@@ -11,6 +11,11 @@
 #import "setupTTS.h"
 #import "BlioAudioManager.h"
 
+typedef enum {
+    kAcapelaVoiceUSEnglishLaura = 0,
+    kAcapelaVoiceUSEnglishRyan = 1,
+} AcapelaVoice;
+
 @interface AcapelaTTS : BlioAudioManager<TTSManager> {
 	setupTTS* setupData;
 	AcapelaSpeech* engine;

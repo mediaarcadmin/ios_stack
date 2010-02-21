@@ -1517,7 +1517,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	return wordIsNotPunctuation && wordIsNotRepeated && wordDoesNotBeginWithApostrophe;
 }
 
-// ******* Acapela delegate methods 
+#pragma mark -
+#pragma mark Acapela Delegate Methods 
 
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
@@ -1546,9 +1547,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
-// ***********************************
-
-// ********* AVAudioPlayer delegate methods
+#pragma mark -
+#pragma mark AVAudioPlayer Delegate Methods 
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag { 
 	// Not getting here at end of audio for some reason.

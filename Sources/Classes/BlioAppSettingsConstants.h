@@ -20,3 +20,8 @@
 #define kSegmentedControlHeight 40.0
 #define kLabelHeight			20.0
 #define kSliderHeight			7.0
+
+// NSUserDefaults keys
+static NSString * const kBlioLastVoiceDefaultsKey = @"lastVoice";
+static NSString * const kBlioLastSpeedDefaultsKey = @"lastSpeed";
+
