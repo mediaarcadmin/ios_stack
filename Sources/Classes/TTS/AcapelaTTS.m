@@ -6,6 +6,7 @@
 //  Copyright 2009 Kurzweil Technologies Inc.. All rights reserved.
 //
 
+#import "BlioAppSettingsConstants.h"
 #import "AcapelaTTS.h"
 #include "Acapela/babkurz.lic.h"
 #include "Acapela/babkurz.lic.01e560b3.password"
@@ -22,7 +23,15 @@
 	[self setParagraphWords:nil];
 	[self setTextToSpeakChanged:NO];
 	[self setStartedPlaying:NO];
-	[self setPageChanged:YES];
+	[self setPageChanged:YES];   
+	if ( [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastSpeedDefaultsKey] == 0 )
+		// Preference has not been set.  Set to default.
+		[[NSUserDefaults standardUserDefaults] setFloat:180.0 forKey:kBlioLastSpeedDefaultsKey];
+	[self setRate:[[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastSpeedDefaultsKey]];	
+	if ( [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastVolumeDefaultsKey] == 0 )
+		// Preference has not been set.  Set to default.
+		[[NSUserDefaults standardUserDefaults] setFloat:50.0 forKey:kBlioLastVolumeDefaultsKey];
+	[self setVolume:[[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastVolumeDefaultsKey]];
 }
 
 - (BOOL)startSpeaking:(NSString *)string {

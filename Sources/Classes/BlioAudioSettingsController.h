@@ -10,7 +10,9 @@
 
 
 @interface BlioAudioSettingsController : UIViewController {
-
+	UISegmentedControl* voiceControl;
+	UISlider* speedControl;
+	UISlider* volumeControl;
 }
 
 @end
