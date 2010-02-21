@@ -26,10 +26,6 @@ typedef enum EucSelectorTrackingStage {
     id<EucSelectorDataSource> _dataSource;
     id<EucSelectorDelegate> _delegate;
     
-    CGImageRef _magnificationLoupeHighImage;
-    CGImageRef _magnificationLoupeLowImage;
-    CGImageRef _magnificationLoupeMaskImage;
-    
     UIView *_attachedView;
     
     NSMutableArray *_temporaryHighlightLayers;
@@ -45,6 +41,8 @@ typedef enum EucSelectorTrackingStage {
     UIColor *_selectionColor;
 
     UIView *_viewWithSelection;
+    
+    NSString *_currentLoupeKind;
     CALayer *_loupeLayer;
     CALayer *_loupeContentsLayer;
     THImageFactory *_loupeContentsImageFactory;

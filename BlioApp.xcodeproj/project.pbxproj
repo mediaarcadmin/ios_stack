@@ -74,6 +74,9 @@
 		7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		7D4CE4751100C64C0061BDF2 /* BlioBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */; };
+		7D5EC9571131963F0054F657 /* LineLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9541131963F0054F657 /* LineLoupeHigh.png */; };
+		7D5EC9581131963F0054F657 /* LineLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9551131963F0054F657 /* LineLoupeLow.png */; };
+		7D5EC9591131963F0054F657 /* LineLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9561131963F0054F657 /* LineLoupeMask.png */; };
 		7D6F38B31106332600C92A69 /* Square256X256BookPaper.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */; };
 		7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		7D79183610F2257C00C4D839 /* BlioEPubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioEPubView.m */; };
@@ -329,6 +332,9 @@
 		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmark.h; sourceTree = "<group>"; };
 		7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmark.m; sourceTree = "<group>"; };
+		7D5EC9541131963F0054F657 /* LineLoupeHigh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeHigh.png; sourceTree = "<group>"; };
+		7D5EC9551131963F0054F657 /* LineLoupeLow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeLow.png; sourceTree = "<group>"; };
+		7D5EC9561131963F0054F657 /* LineLoupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeMask.png; sourceTree = "<group>"; };
 		7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Square256X256BookPaper.pvrtc; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
@@ -678,6 +684,9 @@
 				7DABAD29112C9A7F0036BA8D /* MagnificationLoupeHigh.png */,
 				7DABAD2A112C9A7F0036BA8D /* MagnificationLoupeLow.png */,
 				7DABAD2B112C9A7F0036BA8D /* MagnificationLoupeMask.png */,
+				7D5EC9541131963F0054F657 /* LineLoupeHigh.png */,
+				7D5EC9551131963F0054F657 /* LineLoupeLow.png */,
+				7D5EC9561131963F0054F657 /* LineLoupeMask.png */,
 				7D381CCF10D93023008D34E2 /* iPodLikeSliderBlueLeftCap.png */,
 				7D381CD010D93023008D34E2 /* iPodLikeSliderKnob-Small.png */,
 				7D381CD110D93023008D34E2 /* iPodLikeSliderKnob.png */,
@@ -1018,6 +1027,9 @@
 				7DABAD2C112C9A7F0036BA8D /* MagnificationLoupeHigh.png in Resources */,
 				7DABAD2D112C9A7F0036BA8D /* MagnificationLoupeLow.png in Resources */,
 				7DABAD2E112C9A7F0036BA8D /* MagnificationLoupeMask.png in Resources */,
+				7D5EC9571131963F0054F657 /* LineLoupeHigh.png in Resources */,
+				7D5EC9581131963F0054F657 /* LineLoupeLow.png in Resources */,
+				7D5EC9591131963F0054F657 /* LineLoupeMask.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

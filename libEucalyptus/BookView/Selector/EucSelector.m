@@ -19,7 +19,8 @@
 #import "THImageFactory.h"
 #import "THLog.h"
 
-static const CGFloat sLoupePopDuration = 0.05f;
+static const CGFloat sLoupePopUpDuration = 0.05f;
+static const CGFloat sLoupePopDownDuration = 0.1f;
 
 @interface EucSelector ()
 
@@ -38,6 +39,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, retain) UIColor *selectionColor;
 
 @property (nonatomic, retain) UIView *viewWithSelection;
+
+@property (nonatomic, retain) NSString *currentLoupeKind;
 @property (nonatomic, retain) CALayer *loupeLayer;
 @property (nonatomic, retain) CALayer *loupeContentsLayer;
 @property (nonatomic, retain) THImageFactory *loupeContentsImageFactory;
@@ -52,9 +55,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, retain) EucMenuController *menuController;
 @property (nonatomic, assign) BOOL menuShouldBeAvailable;
 
-- (CGImageRef)magnificationLoupeHighImage;
-- (CGImageRef)magnificationLoupeLowImage;
-- (CGImageRef)magnificationLoupeMaskImage;
+- (CGImageRef)_cgImageNamed:(NSString *)name;
+
 - (void)_trackTouch:(UITouch *)touch;
 
 // Cache's the data sources responses during selection.
@@ -90,6 +92,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @synthesize selectionColor = _selectionColor;
 
 @synthesize viewWithSelection = _viewWithSelection;
+
+@synthesize currentLoupeKind = _currentLoupeKind;
 @synthesize loupeLayer = _loupeLayer;
 @synthesize loupeContentsLayer = _loupeContentsLayer;
 @synthesize loupeContentsImageFactory = _loupeContentsImageFactory;
@@ -126,15 +130,6 @@ static const CGFloat sLoupePopDuration = 0.05f;
         [self detatchFromView];
     }
     [_trackingTouch release];
-    if(_magnificationLoupeLowImage) {
-        CGImageRelease(_magnificationLoupeLowImage);
-    }    
-    if(_magnificationLoupeHighImage) {
-        CGImageRelease(_magnificationLoupeHighImage);
-    }    
-    if(_magnificationLoupeMaskImage) {
-        CGImageRelease(_magnificationLoupeMaskImage);
-    }    
     
     [super dealloc];
 }
@@ -296,42 +291,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
 #pragma mark -
 #pragma mark Selection
 
-- (CGImageRef)magnificationLoupeLowImage
-{
-    if(!_magnificationLoupeLowImage) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeLow" ofType:@"png"]];
-        _magnificationLoupeLowImage = CGImageRetain([UIImage imageWithData:data].CGImage);
-        [data release];
-    }
-    return _magnificationLoupeLowImage;
-}
-
-- (CGImageRef)magnificationLoupeHighImage
-{
-    if(!_magnificationLoupeHighImage) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeHigh" ofType:@"png"]];
-        _magnificationLoupeHighImage = CGImageRetain([UIImage imageWithData:data].CGImage);
-        [data release];
-    }
-    return _magnificationLoupeHighImage;
-}
-
-- (CGImageRef)magnificationLoupeMaskImage
-{
-    if(!_magnificationLoupeMaskImage) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"MagnificationLoupeMask" ofType:@"png"]];
-        _magnificationLoupeMaskImage = CGImageRetain([UIImage imageWithData:data].CGImage);
-        [data release];
-    }
-    return _magnificationLoupeMaskImage;
-}
-
 - (THPair *)highlightEndLayers
 {
     if(!_highlightEndLayers)  {
-        NSData *imageData = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"SelectionEnd" ofType:@"png"]];
-        CGImageRef endImage = [UIImage imageWithData:imageData].CGImage;
-        [imageData release];
+        CGImageRef endImage = [self _cgImageNamed:@"SelectionEnd.png"];
         
         CGFloat imageWidth = CGImageGetWidth(endImage);
         
@@ -354,9 +317,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 - (THPair *)highlightKnobLayers
 {
     if(!_highlightKnobLayers) {
-        NSData *imageData = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:@"SelectionKnob" ofType:@"png"]];
-        CGImageRef knobImage = [UIImage imageWithData:imageData].CGImage;
-        [imageData release];
+        CGImageRef knobImage = [self _cgImageNamed:@"SelectionKnob.png"];
         
         CGFloat imageWidth = CGImageGetWidth(knobImage);
         CGFloat imageHeight = CGImageGetHeight(knobImage);
@@ -432,81 +393,98 @@ static const CGFloat sLoupePopDuration = 0.05f;
     [CATransaction commit];
 }
 
-- (void)_loupeToPoint:(CGPoint)point;
+- (void)_setupLoupe:(NSString *)loupeKind
 {
-    CGImageRef magnificationLoupeHighImage = self.magnificationLoupeHighImage;
-    CGImageRef magnificationLoupeLowImage = self.magnificationLoupeLowImage;
-    CGImageRef magnificationLoupeMaskImage = self.magnificationLoupeMaskImage;
-    
-    CGSize magnificationLoupeSize = CGSizeMake(CGImageGetWidth(magnificationLoupeHighImage),
-                                               CGImageGetHeight(magnificationLoupeHighImage));
-    CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
-
-    UIWindow *window = self.viewWithSelection.window;
-    CALayer *loupeContentsLayer = self.loupeContentsLayer;
-    THImageFactory *loupeContentsImageFactory;
-    CALayer *loupeLayer;
-    if(!loupeContentsLayer) {
-        CGPoint magnificationLoupeCenter = CGPointMake(magnificationLoupeSize.width * 0.5f, magnificationLoupeSize.height * 0.5f);
+    self.loupeLayer = nil;
+    self.loupeContentsLayer = nil;
+    self.loupeContentsImageFactory = nil;
         
-        loupeLayer = [[CALayer alloc] init];
-        loupeLayer.bounds = magnificationLoupeRect;
-        self.loupeLayer = loupeLayer;
+    if(loupeKind != nil) {
+        CGImageRef highImage = [self _cgImageNamed:[NSString stringWithFormat:@"%@LoupeHigh.png", loupeKind]];
+        CGImageRef lowImage = [self _cgImageNamed:[NSString stringWithFormat:@"%@LoupeLow.png", loupeKind]];
+        CGImageRef maskImage = [self _cgImageNamed:[NSString stringWithFormat:@"%@LoupeMask.png", loupeKind]];
+            
+        CGSize magnificationLoupeSize = CGSizeMake(CGImageGetWidth(highImage),
+                                                   CGImageGetHeight(highImage));
+        CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
         
-        loupeLayer.contents = (id)magnificationLoupeLowImage;
-
-        CALayer *contentsMaskLayer = [[CALayer alloc] init];
-        contentsMaskLayer.bounds = magnificationLoupeRect;
-        contentsMaskLayer.position = magnificationLoupeCenter;
-        contentsMaskLayer.contents = (id)magnificationLoupeMaskImage;
-        
-        loupeContentsLayer = [[CALayer alloc] init];
-        loupeContentsLayer.bounds = magnificationLoupeRect;
-        loupeContentsLayer.position = magnificationLoupeCenter;
-        loupeContentsLayer.mask = contentsMaskLayer;
-        
-        self.loupeContentsLayer = loupeContentsLayer;
-        [loupeLayer addSublayer:loupeContentsLayer];
-        
-        [loupeContentsLayer release];
-        [contentsMaskLayer release];
-        
-        // The top of the glass.
-        CALayer *highLayer = [[CALayer alloc] init];
-        highLayer.bounds = magnificationLoupeRect;
-        highLayer.contents = (id)magnificationLoupeHighImage;
-        [loupeLayer addSublayer:highLayer];
-        highLayer.position = CGPointMake(magnificationLoupeSize.width * 0.5f, magnificationLoupeSize.height * 0.5f);
-        [highLayer release];
-                
-        // Don't add it to self.viewWithSelection - we're using renderInContext:
-        // below, so the effect would be an infinite tunnel after a few moves.
-        [window.layer addSublayer:loupeLayer];
-        
-        CABasicAnimation *loupePopUp = [[CABasicAnimation alloc] init];
-        loupePopUp.keyPath = @"transform";
-        CATransform3D fromTransform = CATransform3DMakeTranslation(0, magnificationLoupeSize.height * 0.5f, 0);
-        fromTransform = CATransform3DScale(fromTransform, 
-                                           1.0f / magnificationLoupeSize.width,
-                                           1.0f / magnificationLoupeSize.height,
-                                           1.0f);
-        loupePopUp.fromValue = [NSValue valueWithCATransform3D:fromTransform];
-        loupePopUp.duration = sLoupePopDuration;
-        [loupeLayer addAnimation:loupePopUp forKey:@"EucSelectorLoupePopUp"];
-        [loupePopUp release];
-        
-        loupeContentsImageFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
-        self.loupeContentsImageFactory = loupeContentsImageFactory;
-        [loupeContentsImageFactory release];
-    } else {
-        loupeLayer = self.loupeLayer;
-        loupeContentsImageFactory = self.loupeContentsImageFactory;
+        UIWindow *window = self.viewWithSelection.window;
+        CALayer *loupeContentsLayer = self.loupeContentsLayer;
+        THImageFactory *loupeContentsImageFactory;
+        CALayer *loupeLayer;
+        if(!loupeContentsLayer) {
+            CGPoint magnificationLoupeCenter = CGPointMake(magnificationLoupeSize.width * 0.5f, magnificationLoupeSize.height * 0.5f);
+            
+            loupeLayer = [[CALayer alloc] init];
+            loupeLayer.bounds = magnificationLoupeRect;
+            self.loupeLayer = loupeLayer;
+            
+            loupeLayer.contents = (id)lowImage;
+            
+            CALayer *contentsMaskLayer = [[CALayer alloc] init];
+            contentsMaskLayer.bounds = magnificationLoupeRect;
+            contentsMaskLayer.position = magnificationLoupeCenter;
+            contentsMaskLayer.contents = (id)maskImage;
+            
+            loupeContentsLayer = [[CALayer alloc] init];
+            loupeContentsLayer.bounds = magnificationLoupeRect;
+            loupeContentsLayer.position = magnificationLoupeCenter;
+            loupeContentsLayer.mask = contentsMaskLayer;
+            
+            self.loupeContentsLayer = loupeContentsLayer;
+            [loupeLayer addSublayer:loupeContentsLayer];
+            
+            [loupeContentsLayer release];
+            [contentsMaskLayer release];
+            
+            // The top of the glass.
+            CALayer *highLayer = [[CALayer alloc] init];
+            highLayer.bounds = magnificationLoupeRect;
+            highLayer.contents = (id)highImage;
+            [loupeLayer addSublayer:highLayer];
+            highLayer.position = CGPointMake(magnificationLoupeSize.width * 0.5f, magnificationLoupeSize.height * 0.5f);
+            [highLayer release];
+            
+            // Don't add it to self.viewWithSelection - we're using renderInContext:
+            // below, so the effect would be an infinite tunnel after a few moves.
+            [window.layer addSublayer:loupeLayer];
+            
+            CABasicAnimation *loupePopUp = [[CABasicAnimation alloc] init];
+            loupePopUp.keyPath = @"transform";
+            CATransform3D fromTransform = CATransform3DMakeTranslation(0, magnificationLoupeSize.height * 0.5f, 0);
+            fromTransform = CATransform3DScale(fromTransform, 
+                                               1.0f / magnificationLoupeSize.width,
+                                               1.0f / magnificationLoupeSize.height,
+                                               1.0f);
+            loupePopUp.fromValue = [NSValue valueWithCATransform3D:fromTransform];
+            loupePopUp.duration = sLoupePopUpDuration;
+            [loupeLayer addAnimation:loupePopUp forKey:@"EucSelectorLoupePopUp"];
+            [loupePopUp release];
+            
+            loupeContentsImageFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
+            self.loupeContentsImageFactory = loupeContentsImageFactory;
+            [loupeContentsImageFactory release];
+        }
     }
+    self.currentLoupeKind = loupeKind;
+}
+
+- (void)_loupeToPoint:(CGPoint)point yOffset:(CGFloat)yOffset;
+{
+    NSParameterAssert(self.loupeLayer);
     
+    CALayer *loupeLayer = self.loupeLayer;
+    CALayer *loupeContentsLayer = self.loupeContentsLayer;
+    THImageFactory *loupeContentsImageFactory = self.loupeContentsImageFactory;
+
+    CGRect magnificationLoupeRect = loupeLayer.bounds;
+    CGSize magnificationLoupeSize = magnificationLoupeRect.size;
+
     UIView *viewToMagnify = self.viewWithSelection;
-    CGSize screenScaleFactors = [viewToMagnify screenScaleFactors];
-    
     CGSize viewToMagnifySize = viewToMagnify.bounds.size;
+    
+    UIWindow *window = viewToMagnify.window;
+    CGSize screenScaleFactors = [viewToMagnify screenScaleFactors];
     
     // We want 1.25 * bigger.
     CGFloat scaleFactorX = screenScaleFactors.width * 1.25f;
@@ -551,12 +529,12 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
     // Position the loupe.
     CGRect frame = magnificationLoupeRect;
-    frame.origin.x = windowPoint.x - (frame.size.width * 0.5f);
-    frame.origin.y = windowPoint.y - frame.size.height + 3.0f;
+    frame.origin.x = roundf(windowPoint.x - (frame.size.width * 0.5f));
+    frame.origin.y = roundf(windowPoint.y - frame.size.height + yOffset);
     
     // Make sure the loupe doesn't go too far off the top of the screen so that 
     // the user can still see the middle of it.
-    CGFloat minY = floorf(-magnificationLoupeSize.height * 0.33f);
+    CGFloat minY = roundf(-magnificationLoupeSize.height * 0.33f);
     //frame.origin.x = MAX(frame.origin.x, 0);
     frame.origin.y = MAX(frame.origin.y, minY);
     
@@ -577,7 +555,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                                        1.0f);
     loupePopDown.fromValue = [NSValue valueWithCATransform3D:loupeLayer.transform];
     loupePopDown.toValue = [NSValue valueWithCATransform3D:toTransform];
-    loupePopDown.duration = sLoupePopDuration;
+    loupePopDown.duration = sLoupePopDownDuration;
     loupePopDown.delegate = self;
     [loupePopDown setValue:@"EucSelectorLoupePopDown" forKey:@"THName"];
     [loupePopDown setValue:loupeLayer forKey:@"THLayer"];
@@ -589,9 +567,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
     // Forget this loupe.  It will be removed from its superview in the 
     // animationDidStop callback.
-    self.loupeLayer = nil;
-    self.loupeContentsLayer = nil;
-    self.loupeContentsImageFactory = nil;
+    [self _setupLoupe:nil];
 }
 
 - (void)_removeAllHighlightLayers
@@ -629,6 +605,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
         if(previousStage == EucSelectorTrackingStageFirstSelection) {
             [self _removeLoupe];
         } else if(previousStage == EucSelectorTrackingStageChangingSelection) {
+            [self _removeLoupe];
             self.draggingKnob = nil;
         } else if(previousStage == EucSelectorTrackingStageSelectedAndWaiting) {
             self.menuShouldBeAvailable = NO;
@@ -678,6 +655,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 } else {
                     [self _removeAllHighlightLayers];
                 }
+                [self _setupLoupe:@"Magnification"];
                 [self _trackTouch:self.trackingTouch];
                 break;
             } 
@@ -722,7 +700,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
                 break;   
             }
             case EucSelectorTrackingStageChangingSelection:
-            {                
+            {         
+                [self _setupLoupe:@"Line"];
                 break;
             } 
         }
@@ -1088,6 +1067,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
         
         self.selectedRange = newSelectedRange;
         self.selectedRangeIsHighlight = newSelectedRangeIsHighlight;
+        
+        [self _loupeToPoint:location yOffset:4.0f];
     } else {
         location.y += self.draggingKnobVerticalOffset;
         THPair *closestBlockAndElement = [self _closestBlockAndElementIdsForPoint:location];
@@ -1141,11 +1122,15 @@ static const CGFloat sLoupePopDuration = 0.05f;
             if(newSelectedRange) {
                 self.selectedRange = newSelectedRange;
             }
+            
+            CALayer *endLayer = left ? self.highlightEndLayers.first : self.highlightEndLayers.second;
+            CGRect endLayerFrame = [endLayer convertRect:endLayer.bounds toLayer:viewWithSelection.layer];
+            CGRect endLayerScreenBounds = [viewWithSelection convertRect:endLayerFrame toView:viewWithSelection.window];
+            CGFloat yOffset = - roundf(endLayerScreenBounds.size.height * 0.5f) + (left ? -13.0f : -1.0f);
+            [self _loupeToPoint:CGPointMake(roundf(endLayerFrame.origin.x + endLayerFrame.size.width * 0.5f),
+                                            roundf(endLayerFrame.origin.y + endLayerFrame.size.height * 0.5f))
+                        yOffset:yOffset];                            
         }
-    }
-    
-    if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {   
-        [self _loupeToPoint:location];
     }
 }
 
@@ -1255,7 +1240,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
             self.trackingStage = EucSelectorTrackingStageNone;
         } else {
             [self _trackTouch:trackingTouch];
-            if(self.trackingTouchHasMoved && self.highlightLayers.count && !((CALayer *)[self.highlightLayers objectAtIndex:0]).isHidden) {
+            if((self.trackingStage == EucSelectorTrackingStageChangingSelection && self.draggingKnob) ||
+               (self.trackingTouchHasMoved && self.highlightLayers.count && !((CALayer *)[self.highlightLayers objectAtIndex:0]).isHidden)) {
                 self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
             } else {
                 self.trackingStage = EucSelectorTrackingStageNone;
@@ -1306,6 +1292,15 @@ static const CGFloat sLoupePopDuration = 0.05f;
             }
         }
     }
+}
+
+
+- (CGImageRef)_cgImageNamed:(NSString *)name
+{
+    NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:name ofType:nil]];
+    CGImageRef ret = CGImageRetain([UIImage imageWithData:data].CGImage);
+    [data release];
+    return (CGImageRef)[(id)ret autorelease];
 }
 
 @end
