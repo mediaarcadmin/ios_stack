@@ -38,7 +38,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @property (nonatomic, retain) UIColor *selectionColor;
 
 @property (nonatomic, retain) UIView *viewWithSelection;
-@property (nonatomic, retain) UIImageView *loupeView;
+@property (nonatomic, retain) CALayer *loupeLayer;
+@property (nonatomic, retain) CALayer *loupeContentsLayer;
+@property (nonatomic, retain) THImageFactory *loupeContentsImageFactory;
 
 @property (nonatomic, retain) NSMutableArray *highlightLayers;
 @property (nonatomic, retain) THPair *highlightEndLayers;
@@ -88,7 +90,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
 @synthesize selectionColor = _selectionColor;
 
 @synthesize viewWithSelection = _viewWithSelection;
-@synthesize loupeView = _loupeView;
+@synthesize loupeLayer = _loupeLayer;
+@synthesize loupeContentsLayer = _loupeContentsLayer;
+@synthesize loupeContentsImageFactory = _loupeContentsImageFactory;
 
 @synthesize highlightLayers = _highlightLayers;
 @synthesize highlightEndLayers = _highlightEndLayers;
@@ -173,9 +177,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 {   
     NSString *name = [anim valueForKey:@"THName"];
     if(name) {
-        if([name isEqualToString:@"EucSelectorLoupePopDown"]) {
-            [[anim valueForKey:@"THView"] removeFromSuperview];
-        } else if([name isEqualToString:@"EucSelectorEndOfLineHighlight"]) {
+        if([name isEqualToString:@"EucSelectorLoupePopDown"] || [name isEqualToString:@"EucSelectorEndOfLineHighlight"]) {
             [[anim valueForKey:@"THLayer"] removeFromSuperlayer];
         }
     }
@@ -186,6 +188,7 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 {    
+    // Don't use the caches in this method, they're only valid during a selection!
     NSArray *rects = [self.dataSource eucSelector:self
                        rectsForElementWithIdentifier:elementId
                                ofBlockWithIdentifier:blockId];
@@ -440,54 +443,80 @@ static const CGFloat sLoupePopDuration = 0.05f;
     CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
 
     UIWindow *window = self.viewWithSelection.window;
-    UIImageView *loupeView = self.loupeView;
-    if(!self.loupeView) {
-        // Create an imageView that will hold the magnified image.
-        // If this isn't performant, we can replace this method with a 
-        // loupe UIView subclass that draws like below in its drawrect.
-        loupeView = [[UIImageView alloc] initWithFrame:CGRectMake(point.x, point.y, 
-                                                                  magnificationLoupeSize.width, 
-                                                                  magnificationLoupeSize.height)];
-        self.loupeView = loupeView;
+    CALayer *loupeContentsLayer = self.loupeContentsLayer;
+    THImageFactory *loupeContentsImageFactory;
+    CALayer *loupeLayer;
+    if(!loupeContentsLayer) {
+        CGPoint magnificationLoupeCenter = CGPointMake(magnificationLoupeSize.width * 0.5f, magnificationLoupeSize.height * 0.5f);
+        
+        loupeLayer = [[CALayer alloc] init];
+        loupeLayer.bounds = magnificationLoupeRect;
+        self.loupeLayer = loupeLayer;
+        
+        loupeLayer.contents = (id)magnificationLoupeLowImage;
+
+        CALayer *contentsMaskLayer = [[CALayer alloc] init];
+        contentsMaskLayer.bounds = magnificationLoupeRect;
+        contentsMaskLayer.position = magnificationLoupeCenter;
+        contentsMaskLayer.contents = (id)magnificationLoupeMaskImage;
+        
+        loupeContentsLayer = [[CALayer alloc] init];
+        loupeContentsLayer.bounds = magnificationLoupeRect;
+        loupeContentsLayer.position = magnificationLoupeCenter;
+        loupeContentsLayer.mask = contentsMaskLayer;
+        
+        self.loupeContentsLayer = loupeContentsLayer;
+        [loupeLayer addSublayer:loupeContentsLayer];
+        
+        [loupeContentsLayer release];
+        [contentsMaskLayer release];
+        
+        // The top of the glass.
+        CALayer *highLayer = [[CALayer alloc] init];
+        highLayer.bounds = magnificationLoupeRect;
+        highLayer.contents = (id)magnificationLoupeHighImage;
+        [loupeLayer addSublayer:highLayer];
+        highLayer.position = CGPointMake(magnificationLoupeSize.width * 0.5f, magnificationLoupeSize.height * 0.5f);
+        [highLayer release];
+                
         // Don't add it to self.viewWithSelection - we're using renderInContext:
         // below, so the effect would be an infinite tunnel after a few moves.
-        [window addSubview:loupeView];
+        [window.layer addSublayer:loupeLayer];
         
         CABasicAnimation *loupePopUp = [[CABasicAnimation alloc] init];
         loupePopUp.keyPath = @"transform";
-        CATransform3D fromTransform = CATransform3DMakeTranslation(0, magnificationLoupeSize.height / 2.0f, 0);
+        CATransform3D fromTransform = CATransform3DMakeTranslation(0, magnificationLoupeSize.height * 0.5f, 0);
         fromTransform = CATransform3DScale(fromTransform, 
                                            1.0f / magnificationLoupeSize.width,
                                            1.0f / magnificationLoupeSize.height,
                                            1.0f);
         loupePopUp.fromValue = [NSValue valueWithCATransform3D:fromTransform];
         loupePopUp.duration = sLoupePopDuration;
-        [loupeView.layer addAnimation:loupePopUp forKey:@"EucSelectorLoupePopUp"];
+        [loupeLayer addAnimation:loupePopUp forKey:@"EucSelectorLoupePopUp"];
         [loupePopUp release];
-    }
         
-    CGSize viewWithSelectionSize = self.viewWithSelection.bounds.size;
-    THImageFactory *loupeContentsFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
-    CGContextRef context = loupeContentsFactory.CGContext;
-
-    // First the lower image.
-    CGContextDrawImage(context, 
-                       magnificationLoupeRect,
-                       magnificationLoupeLowImage);            
+        loupeContentsImageFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
+        self.loupeContentsImageFactory = loupeContentsImageFactory;
+        [loupeContentsImageFactory release];
+    } else {
+        loupeLayer = self.loupeLayer;
+        loupeContentsImageFactory = self.loupeContentsImageFactory;
+    }
     
-    // Work out the final scale factor of the view on screen so that we can
-    // scale to bigger than that.
-    CGSize screenScaleFactors = [self.attachedView screenScaleFactors];    
+    UIView *viewToMagnify = self.viewWithSelection;
+    CGSize screenScaleFactors = [viewToMagnify screenScaleFactors];
+    
+    CGSize viewToMagnifySize = viewToMagnify.bounds.size;
     
     // We want 1.25 * bigger.
-    CGFloat scaleFactorX = screenScaleFactors.width * 1.25;
-    CGFloat scaleFactorY = screenScaleFactors.height * 1.25;
+    CGFloat scaleFactorX = screenScaleFactors.width * 1.25f;
+    CGFloat scaleFactorY = screenScaleFactors.height * 1.25f;
     
     // Now, the view.
+    CGContextRef context = loupeContentsImageFactory.CGContext;
     CGContextSaveGState(context);
     
-    // Mask the image.
-    CGContextClipToMask(context, magnificationLoupeRect, magnificationLoupeMaskImage);
+    CGContextClearRect(context, magnificationLoupeRect);
     
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     
@@ -496,50 +525,49 @@ static const CGFloat sLoupePopDuration = 0.05f;
     CGContextScaleCTM(context, scaleFactorX, -scaleFactorY);
     
     // '* (1 / scaleFactor)' below to counteract the existing * 1.25 scaling.
-    CGPoint translationPoint = CGPointMake(-point.x + magnificationLoupeSize.width * (0.5f * (1 / scaleFactorX)), 
-                                           -point.y - magnificationLoupeSize.width * (0.5f * (1 / scaleFactorY)));
+    CGPoint translationPoint = CGPointMake(-point.x + magnificationLoupeSize.width * (0.5f * (1.0f / scaleFactorX)), 
+                                           -point.y - magnificationLoupeSize.height * (0.5f * (1.0f / scaleFactorY)));
     
     // Don't show blank area off the bottom of the view.
-    translationPoint.y = MAX(-viewWithSelectionSize.height, translationPoint.y); 
+    translationPoint.y = MAX(-viewToMagnifySize.height, translationPoint.y); 
     
     CGContextTranslateCTM(context, 
                           translationPoint.x,
                           translationPoint.y);
     
     // Draw the view. 
-    [[self.viewWithSelection layer] renderInContext:context];
+    [[viewToMagnify layer] renderInContext:context];
+    
     CGContextRestoreGState(context);
     
-    // Draw the upper part of the loupe.
-    CGContextDrawImage(context, 
-                       magnificationLoupeRect,
-                       magnificationLoupeHighImage);    
-
     // Now get the image we constructed and put it into the loupe view.
-    loupeView.image = loupeContentsFactory.snapshotUIImage;
-    [loupeContentsFactory release];
-    
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+
+    // We draw the layer content in the -drawLayer:inContext: delegate method.
+    loupeContentsLayer.contents = (id)loupeContentsImageFactory.snapshotCGImage;
     
     CGPoint windowPoint = [self.viewWithSelection convertPoint:point toView:window];
-    
+
     // Position the loupe.
-    CGRect frame = loupeView.frame;
-    frame.origin.x = windowPoint.x - (frame.size.width / 2.0f);
-    frame.origin.y = windowPoint.y - frame.size.height + 3;
+    CGRect frame = magnificationLoupeRect;
+    frame.origin.x = windowPoint.x - (frame.size.width * 0.5f);
+    frame.origin.y = windowPoint.y - frame.size.height + 3.0f;
     
     // Make sure the loupe doesn't go too far off the top of the screen so that 
     // the user can still see the middle of it.
-    frame.origin.x = MAX(0, frame.origin.x);
-    frame.origin.y = MAX(frame.origin.y, floorf(-magnificationLoupeSize.height * 0.33));
-    loupeView.frame = frame;
+    CGFloat minY = floorf(-magnificationLoupeSize.height * 0.33f);
+    //frame.origin.x = MAX(frame.origin.x, 0);
+    frame.origin.y = MAX(frame.origin.y, minY);
+    
+    loupeLayer.position = CGPointMake(frame.origin.x + frame.size.width * 0.5f, frame.origin.y + frame.size.height * 0.5f);
+    [CATransaction commit];
 }
 
 - (void)_removeLoupe
 {
-    UIImageView *loupeView = self.loupeView;
-    CGSize magnificationLoupeSize = loupeView.bounds.size;
-
-    CALayer *loupeViewLayer = loupeView.layer;
+    CALayer *loupeLayer = self.loupeLayer;
+    CGSize magnificationLoupeSize = loupeLayer.bounds.size;
     
     CABasicAnimation *loupePopDown = [[CABasicAnimation alloc] init];
     loupePopDown.keyPath = @"transform";
@@ -547,21 +575,23 @@ static const CGFloat sLoupePopDuration = 0.05f;
     toTransform = CATransform3DScale(toTransform, 1.0f / magnificationLoupeSize.width,
                                        1.0f / magnificationLoupeSize.height,
                                        1.0f);
-    loupePopDown.fromValue = [NSValue valueWithCATransform3D:loupeViewLayer.transform];
+    loupePopDown.fromValue = [NSValue valueWithCATransform3D:loupeLayer.transform];
     loupePopDown.toValue = [NSValue valueWithCATransform3D:toTransform];
     loupePopDown.duration = sLoupePopDuration;
     loupePopDown.delegate = self;
     [loupePopDown setValue:@"EucSelectorLoupePopDown" forKey:@"THName"];
-    [loupePopDown setValue:loupeView forKey:@"THView"];
-    [loupeViewLayer addAnimation:loupePopDown forKey:@"EucSelectorLoupePopDown"];
+    [loupePopDown setValue:loupeLayer forKey:@"THLayer"];
+    [loupeLayer addAnimation:loupePopDown forKey:@"EucSelectorLoupePopDown"];
     [loupePopDown release];
     
     // Avoid popping back to full-size.
-    loupeViewLayer.transform = toTransform;
+    loupeLayer.transform = toTransform;
 
     // Forget this loupe.  It will be removed from its superview in the 
     // animationDidStop callback.
-    self.loupeView = nil;
+    self.loupeLayer = nil;
+    self.loupeContentsLayer = nil;
+    self.loupeContentsImageFactory = nil;
 }
 
 - (void)_removeAllHighlightLayers
@@ -707,6 +737,14 @@ static const CGFloat sLoupePopDuration = 0.05f;
         CFRelease(_cachedBlockIdentifierToElements);
         _cachedBlockIdentifierToElements = NULL;
     }
+    if(_cachedBlockIdentifierToRects) {
+        CFRelease(_cachedBlockIdentifierToRects);
+        _cachedBlockIdentifierToRects = NULL;
+    }
+    if(_cachedBlockAndElementIdentifierToRects) {
+        CFRelease(_cachedBlockAndElementIdentifierToRects);
+        _cachedBlockAndElementIdentifierToRects = NULL;
+    }
     [_cachedHighlightRanges release];
     _cachedHighlightRanges = nil;
 }
@@ -737,6 +775,51 @@ static const CGFloat sLoupePopDuration = 0.05f;
     return ret;
 }
 
+- (CGRect)_frameOfBlockWithIdentifier:(id)blockId
+{
+    if(!_cachedBlockIdentifierToRects) {
+        _cachedBlockIdentifierToRects = CFDictionaryCreateMutable(kCFAllocatorDefault,
+                                                                  0, 
+                                                                  &kCFTypeDictionaryKeyCallBacks, 
+                                                                  &kCFTypeDictionaryValueCallBacks);
+    }
+    NSValue *ret = (NSValue *)CFDictionaryGetValue(_cachedBlockIdentifierToRects, blockId);
+    if(ret) {
+        return [ret CGRectValue];
+    } else {
+        CGRect rect = [self.dataSource eucSelector:self frameOfBlockWithIdentifier:blockId];
+        CFDictionarySetValue(_cachedBlockIdentifierToRects, blockId, [NSValue valueWithCGRect:rect]);
+        return rect;
+    }
+}
+
+- (NSArray *)_rectsForElementWithIdentifier:(id)elementId 
+                      ofBlockWithIdentifier:(id)blockId
+{
+    if(!_cachedBlockAndElementIdentifierToRects) {
+        _cachedBlockAndElementIdentifierToRects = CFDictionaryCreateMutable(kCFAllocatorDefault,
+                                                                            0, 
+                                                                            &kCFTypeDictionaryKeyCallBacks, 
+                                                                            &kCFTypeDictionaryValueCallBacks);
+    }
+    CFMutableDictionaryRef thisBlockElementRects = (CFMutableDictionaryRef)CFDictionaryGetValue(_cachedBlockAndElementIdentifierToRects, blockId);
+    if(!thisBlockElementRects) {
+        thisBlockElementRects = CFDictionaryCreateMutable(kCFAllocatorDefault,
+                                                          0, 
+                                                          &kCFTypeDictionaryKeyCallBacks, 
+                                                          &kCFTypeDictionaryValueCallBacks);
+        CFDictionarySetValue(_cachedBlockAndElementIdentifierToRects, blockId, thisBlockElementRects);
+        CFRelease(thisBlockElementRects);
+        
+    }
+    NSArray *ret = (NSArray *)CFDictionaryGetValue(thisBlockElementRects, elementId);
+    if(!ret) {
+        ret = [self.dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
+        CFDictionarySetValue(thisBlockElementRects, elementId, ret);
+    }
+    return ret;
+}
+
 - (NSArray *)_highlightRanges
 {
     NSArray *ret = _cachedHighlightRanges;
@@ -755,11 +838,10 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (THPair *)_blockAndElementIdsForPoint:(CGPoint)point
 {
-    id<EucSelectorDataSource> dataSource = self.dataSource;
     for(id blockId in [self _blockIdentifiers]) {
-        if(CGRectContainsPoint([dataSource eucSelector:self frameOfBlockWithIdentifier:blockId], point)) {
+        if(CGRectContainsPoint([self _frameOfBlockWithIdentifier:blockId], point)) {
             for(id elementId in [self _identifiersForElementsOfBlockWithIdentifier:blockId]) {
-                NSArray *rectsForElement = [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
+                NSArray *rectsForElement = [self _rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
                 for(NSValue *rectValue in rectsForElement) {
                     if(CGRectContainsPoint([rectValue CGRectValue], point)) {
                         return [THPair pairWithFirst:blockId second:elementId];
@@ -778,10 +860,9 @@ static const CGFloat sLoupePopDuration = 0.05f;
     
     CGFloat bestDistance = CGFLOAT_MAX;
     
-    id<EucSelectorDataSource> dataSource = self.dataSource;
     for(id blockId in [self _blockIdentifiers]) {
         for(id elementId in [self _identifiersForElementsOfBlockWithIdentifier:blockId]) {
-            NSArray *rectsForElement = [dataSource eucSelector:self rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
+            NSArray *rectsForElement = [self _rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
             for(NSValue *rectValue in rectsForElement) {
                 CGFloat distance = CGPointDistanceFromRect(point, [rectValue CGRectValue]);
                 if(distance < bestDistance) {
@@ -840,8 +921,6 @@ static const CGFloat sLoupePopDuration = 0.05f;
 
 - (NSArray *)highlightRectsForRange:(EucSelectorRange *)selectedRange 
 {                                   
-    id<EucSelectorDataSource> dataSource = self.dataSource;
-        
     NSArray *blockIds = [self _blockIdentifiers];
     NSUInteger blockIdIndex = 0;
     
@@ -876,9 +955,8 @@ static const CGFloat sLoupePopDuration = 0.05f;
         
         do {
             elementId = [elementIds objectAtIndex:elementIdIndex];
-            [nonCoalescedRects addObjectsFromArray:[dataSource eucSelector:self 
-                                             rectsForElementWithIdentifier:elementId
-                                                     ofBlockWithIdentifier:blockId]];
+            [nonCoalescedRects addObjectsFromArray:[self _rectsForElementWithIdentifier:elementId
+                                                                  ofBlockWithIdentifier:blockId]];
             ++elementIdIndex;
         } while (isLastBlock ? 
                  ([elementId compare:endElementId] < NSOrderedSame) : 
