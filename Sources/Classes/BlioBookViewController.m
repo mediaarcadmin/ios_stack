@@ -1302,8 +1302,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [self.book setLayoutPageNumber:[change objectForKey:NSKeyValueChangeNewKey]];
         }    
 		
-		if ( _acapelaTTS != nil )
-			[_acapelaTTS setPageChanged:YES];  
+		if ( *[BlioBookViewController getTTSEngine] != nil )
+			[*[BlioBookViewController getTTSEngine] setPageChanged:YES];  
 		if ( _audioBookManager != nil )
 			[_audioBookManager setPageChanged:YES];
 		
@@ -1345,9 +1345,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 
 - (void)speakNextParagraph:(NSTimer*)timer {
-	if ( _acapelaTTS.textToSpeakChanged ) {	
-		[_acapelaTTS setTextToSpeakChanged:NO];
-		[_acapelaTTS startSpeaking:[_acapelaTTS.paragraphWords componentsJoinedByString:@" "]];
+	if ( (*[BlioBookViewController getTTSEngine]).textToSpeakChanged ) {	
+		[*[BlioBookViewController getTTSEngine] setTextToSpeakChanged:NO];
+		[*[BlioBookViewController getTTSEngine] startSpeaking:[(*[BlioBookViewController getTTSEngine]).paragraphWords componentsJoinedByString:@" "]];
 	}
 }
 
@@ -1486,9 +1486,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                                                          options:0 
                                                            range:characterRange].location != NSNotFound);
 	// Hacks to get around Acapela bugs.
-	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
-    && ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
-    && ([[[NSString stringWithString:@"“"] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame); // E.g. "I and I 
+	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[*[BlioBookViewController getTTSEngine] currentWord]] != NSOrderedSame)
+    && ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[*[BlioBookViewController getTTSEngine] currentWord]] != NSOrderedSame)
+    && ([[[NSString stringWithString:@"“"] stringByAppendingString:[string substringWithRange:characterRange]] compare:[*[BlioBookViewController getTTSEngine] currentWord]] != NSOrderedSame); // E.g. "I and I 
 	
 	BOOL wordDoesNotBeginWithApostrophe = ([[[string substringWithRange:characterRange] substringToIndex:1] compare:@"'"] != NSOrderedSame)
 	&& ([[[string substringWithRange:characterRange] substringToIndex:1] compare:@"’"] != NSOrderedSame);  
@@ -1512,7 +1512,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 {
 	if (finishedSpeaking) {
 		// Reached end of paragraph.  Start on the next.
-		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_acapelaTTS]; 
+		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:*[BlioBookViewController getTTSEngine]]; 
 	}
 	//else stop button pushed before end of paragraph.
 }
@@ -1523,14 +1523,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if(characterRange.location + characterRange.length <= string.length) {
 		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
 			if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-				[(BlioLayoutView *)self.bookView  highlightWordAtParagraphId:(id)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
+				[(BlioLayoutView *)self.bookView  highlightWordAtParagraphId:(id)((*[BlioBookViewController getTTSEngine]).currentParagraph) wordOffset:(*[BlioBookViewController getTTSEngine]).currentWordOffset];
 			else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 				BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
 				BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-				[bookView highlightWordAtParagraphId:[_acapelaTTS.currentParagraph integerValue] wordOffset:_acapelaTTS.currentWordOffset];
+				[bookView highlightWordAtParagraphId:[(*[BlioBookViewController getTTSEngine]).currentParagraph integerValue] wordOffset:(*[BlioBookViewController getTTSEngine]).currentWordOffset];
 			}
-            [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
-			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
+            [*[BlioBookViewController getTTSEngine] setCurrentWordOffset:[*[BlioBookViewController getTTSEngine] currentWordOffset]+1];
+			[*[BlioBookViewController getTTSEngine] setCurrentWord:[string substringWithRange:characterRange]];  
         }
     }
 }
@@ -1553,6 +1553,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)audioPlayerEndInterruption:(AVAudioPlayer*) player { 
 	[_audioBookManager playAudio];
+}
+
+#pragma mark -
+#pragma mark Audio Handling 
+
+// Singleton pattern
++ (AcapelaTTS**)getTTSEngine {
+	static AcapelaTTS* ttsEngine = nil;
+	return &ttsEngine;
 }
 
 - (BOOL)findTimes:(NSInteger)layoutPage {
@@ -1612,14 +1621,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)stopAudio {			
 		if (![self.book audioRights]) 
-			[_acapelaTTS stopSpeaking];
+			[*[BlioBookViewController getTTSEngine] stopSpeaking];
 		else if ([self.book audiobookFilename] != nil) 
 			[_audioBookManager stopAudio];
 }
 
 - (void)pauseAudio {			
 	if (![self.book audioRights]) 
-		[_acapelaTTS pauseSpeaking]; 
+		[*[BlioBookViewController getTTSEngine] pauseSpeaking]; 
 	else if ([self.book audiobookFilename] != nil) 
 		[_audioBookManager pauseAudio];
 }
@@ -1636,13 +1645,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [self toggleToolbars];
             }
 			if (![self.book audioRights]) {
-				if (_acapelaTTS == nil) {
-					_acapelaTTS = [[AcapelaTTS alloc] init];
-					[_acapelaTTS initTTS];
-					[_acapelaTTS setDelegate:self]; 
-					[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextParagraph:) userInfo:nil repeats:YES]];
-				}
-				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
+				if (*[BlioBookViewController getTTSEngine] == nil) 
+					*[BlioBookViewController getTTSEngine] = [[AcapelaTTS alloc] init];
+				[*[BlioBookViewController getTTSEngine] initTTS];  // Picks up any preferences that might have changed since last time.
+				// TODO: do the following only the first time we play...
+				[*[BlioBookViewController getTTSEngine] setDelegate:self]; 
+				[*[BlioBookViewController getTTSEngine] setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextParagraph:) userInfo:nil repeats:YES]];
+				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:*[BlioBookViewController getTTSEngine]];
 			}
 			else if ([self.book audiobookFilename] != nil) {\
 				if ( _audioBookManager.startedPlaying == NO ) { 

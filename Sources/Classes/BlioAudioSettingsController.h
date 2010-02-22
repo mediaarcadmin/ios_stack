@@ -13,6 +13,7 @@
 	UISegmentedControl* voiceControl;
 	UISlider* speedControl;
 	UISlider* volumeControl;
+	UIButton* playButton;
 }
 
 @end
