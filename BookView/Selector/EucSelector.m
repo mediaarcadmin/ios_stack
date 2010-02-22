@@ -1254,12 +1254,14 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)touchesCancelled:(NSSet *)touches
 {
-    if(self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting  && !self.draggingKnob) {
-        // This was a touch outside the selection.
-        // Since it was cancelled, treat it as if it never existed.
-        self.trackingTouch = nil;
-    } else {
-        [self touchesEnded:touches];
+    if([touches containsObject:trackingTouch]) {
+        if(self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting  && !self.draggingKnob) {
+            // This was a touch outside the selection.
+            // Since it was cancelled, treat it as if it never existed.
+            self.trackingTouch = nil;
+        } else {
+            [self touchesEnded:touches];
+        }
     }
 }
 
