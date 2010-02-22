@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "THEventCapturingWindow.h"
 
-@class EucSelectorRange, THPair, EucMenuController;
+@class EucSelectorRange, THPair, EucMenuController, THImageFactory;
 @protocol EucSelectorDataSource, EucSelectorDelegate;
 
 typedef enum EucSelectorTrackingStage {
@@ -26,10 +26,6 @@ typedef enum EucSelectorTrackingStage {
     id<EucSelectorDataSource> _dataSource;
     id<EucSelectorDelegate> _delegate;
     
-    CGImageRef _magnificationLoupeHighImage;
-    CGImageRef _magnificationLoupeLowImage;
-    CGImageRef _magnificationLoupeMaskImage;
-    
     UIView *_attachedView;
     
     NSMutableArray *_temporaryHighlightLayers;
@@ -45,7 +41,11 @@ typedef enum EucSelectorTrackingStage {
     UIColor *_selectionColor;
 
     UIView *_viewWithSelection;
-    UIImageView *_loupeView;
+    
+    NSString *_currentLoupeKind;
+    CALayer *_loupeLayer;
+    CALayer *_loupeContentsLayer;
+    THImageFactory *_loupeContentsImageFactory;
     
     NSMutableArray *_highlightLayers;
     THPair *_highlightEndLayers;
@@ -60,6 +60,8 @@ typedef enum EucSelectorTrackingStage {
     
     NSArray *_cachedBlockIdentifiers;
     CFMutableDictionaryRef _cachedBlockIdentifierToElements;
+    CFMutableDictionaryRef _cachedBlockIdentifierToRects;
+    CFMutableDictionaryRef _cachedBlockAndElementIdentifierToRects;
     NSArray *_cachedHighlightRanges;
 }
 

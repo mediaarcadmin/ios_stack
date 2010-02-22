@@ -7,6 +7,8 @@
 //
 
 #import "setupTTS.h"
+#import "AcapelaTTS.h"
+#import "BlioAppSettingsConstants.h"
 
 @implementation setupTTS
 
@@ -19,8 +21,8 @@
 {
 	AutoMode = FALSE;
 	Voices = [[NSArray arrayWithArray:[AcapelaSpeech availableVoices]] retain];
-	if (Voices.count > 0)
-		CurrentVoiceName = [[self SetCurrentVoice:0] retain];
+	if (Voices.count > 0) 
+		CurrentVoiceName = [[self SetCurrentVoice:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]] retain];
 	else
 		CurrentVoice = NULL;
 	
