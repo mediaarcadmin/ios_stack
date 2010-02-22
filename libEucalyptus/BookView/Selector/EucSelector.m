@@ -1016,11 +1016,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     if(newRange != _selectedRange &&
        !(newRange && [newRange isEqual:_selectedRange])) {
-        [_selectedRange release];
-        _selectedRange = [newRange retain];
-        if(newRange) {
-            [self redisplaySelectedRange];
-        } else {
+        if(!newRange) {
             if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {
                 [CATransaction begin];
                 [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
@@ -1030,8 +1026,13 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [CATransaction commit];
             } else {
                 self.trackingStage = EucSelectorTrackingStageNone;
-            }
+            }            
         }
+        [_selectedRange release];
+        _selectedRange = [newRange retain];
+        if(newRange) {
+            [self redisplaySelectedRange];
+        } 
     }
 }
 
