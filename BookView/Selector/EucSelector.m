@@ -1258,6 +1258,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         if(self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting  && !self.draggingKnob) {
             // This was a touch outside the selection.
             // Since it was cancelled, treat it as if it never existed.
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
             self.trackingTouch = nil;
         } else {
             [self touchesEnded:touches];
