@@ -1767,10 +1767,15 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self.doubleTapBeginTimer invalidate];
-    self.doubleTapBeginTimer = nil;
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
+    
+    if (nil != self.doubleTapBeginTimer) {
+        NSSet *beganTouches = (NSSet *)[self.doubleTapBeginTimer userInfo];
+        [self.selector touchesBegan:beganTouches];
+        [self.doubleTapBeginTimer invalidate];
+        self.doubleTapBeginTimer = nil;
+    }
     
     [self setScrollEnabled:YES];
     
