@@ -307,10 +307,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         self.fetchHighlightsQueue = aQueue;
         [aQueue release];
         
-        [self.book textFlow]; // start text flow parsing in the background
-        // Register for when the textFlow is done so we can refresh highlights
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFlowIsReady:) name:@"BlioTextFlowReady" object:nil];
-        
+        [self.book textFlow]; // start text flow parsing in the background        
     }
     return self;
 }
@@ -1580,6 +1577,9 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:@"blioCoverPageDidFinishRender" 
                                                   object:nil];
+    
+    // Register for when the textFlow is done so we can refresh highlights
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFlowIsReady:) name:@"BlioTextFlowReady" object:nil];
 }
 
 - (void)blioCoverPageDidFinishRenderOnMainThread:(NSNotification *)notification {
