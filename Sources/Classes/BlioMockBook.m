@@ -324,6 +324,45 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
     return highlightRanges;
 }
 
+- (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range {
+    NSManagedObjectContext *moc = [self managedObjectContext]; 
+    NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+    [request setEntity:[NSEntityDescription entityForName:@"BlioHighlight" inManagedObjectContext:moc]];
+        
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(book == %@) AND (range.startPoint.layoutPage == %@) AND (range.startPoint.paragraphOffset == %@) AND (range.startPoint.wordOffset == %@) AND (range.startPoint.hyphenOffset == %@) AND (range.endPoint.layoutPage == %@) AND (range.endPoint.paragraphOffset == %@) AND (range.endPoint.wordOffset == %@) AND (range.endPoint.hyphenOffset == %@)",
+                              self,
+                              [NSNumber numberWithInteger:range.startPoint.layoutPage],
+                              [NSNumber numberWithInteger:range.startPoint.paragraphOffset],
+                              [NSNumber numberWithInteger:range.startPoint.wordOffset],
+                              [NSNumber numberWithInteger:range.startPoint.hyphenOffset],
+                              [NSNumber numberWithInteger:range.endPoint.layoutPage],
+                              [NSNumber numberWithInteger:range.endPoint.paragraphOffset],
+                              [NSNumber numberWithInteger:range.endPoint.wordOffset],
+                              [NSNumber numberWithInteger:range.endPoint.hyphenOffset]
+                              ];
+        
+    [request setPredicate:predicate];
+    
+    
+    NSError *error = nil; 
+    NSArray *results = [moc executeFetchRequest:request error:&error]; 
+    [request release];
+    
+    if (error) {
+        NSLog(@"Error whilst fetching highlight with range. %@, %@", error, [error userInfo]); 
+        return nil;
+    }
+    
+    if ([results count] == 1) {
+        return [results objectAtIndex:0];
+    } else if ([results count] > 1) {
+        NSLog(@"Warning multiple highlights found with identical ranges. Only first returned.");
+        return [results objectAtIndex:0];
+    } else {
+        return nil;
+    }
+}
+
 @end
 
 

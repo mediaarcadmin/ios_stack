@@ -189,6 +189,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
     NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
     [positionSort release];
+    [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setSortDescriptors:sorters];
     [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
     self.books = [moc executeFetchRequest:request error:&error];
