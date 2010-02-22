@@ -1967,7 +1967,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.wordOffset] forKeyPath:@"range.endPoint.wordOffset"];
             [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.hyphenOffset] forKeyPath:@"range.endPoint.hyphenOffset"];
             if (nil != newColor) [highlight setValue:newColor forKeyPath:@"range.color"];
-
+            
             NSError *error;
             if (![[self managedObjectContext] save:&error])
                 NSLog(@"Save after updating highlight failed with error: %@, %@", error, [error userInfo]);
@@ -1980,7 +1980,32 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
-
+- (void)removeHighlightAtRange:(BlioBookmarkRange *)range {
+    // This also removes any note attached to the highlight
+    NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
+    NSManagedObject *existingHighlight = nil;
+    // TODO this is inefficient for large sets of bookmarks - make a fetchRequest to do this
+    for (NSManagedObject *highlight in highlights) {
+        if ([BlioBookmarkRange bookmark:highlight isEqualToBookmarkRange:range]) {
+            existingHighlight = highlight;            
+            break;
+        }
+    }
+    
+    if (nil != existingHighlight) {
+        
+        NSManagedObject *associatedNote = [existingHighlight valueForKey:@"note"];
+        if (nil != associatedNote) {
+            [[self managedObjectContext] deleteObject:associatedNote];        
+        }
+        
+        [[self managedObjectContext] deleteObject:existingHighlight];
+        
+        NSError *error;
+        if (![[self managedObjectContext] save:&error])
+        NSLog(@"Save after removing highlight failed with error: %@, %@", error, [error userInfo]);
+     }
+}
 
 #pragma mark -
 #pragma mark Edit Menu Responder Actions 

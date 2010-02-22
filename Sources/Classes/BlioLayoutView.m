@@ -690,8 +690,6 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)highlight:(id)sender {
-    if (nil == self.lastHighlightColor) 
-        self.lastHighlightColor = [UIColor yellowColor];
     [self addHighlightWithColor:self.lastHighlightColor];
 }
 
@@ -700,13 +698,17 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)removeHighlight:(id)sender {
-    NSLog(@"Remove Highlight");
+    BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
+
+    if ([self.delegate respondsToSelector:@selector(removeHighlightAtRange:)])
+        [self.delegate removeHighlightAtRange:highlightRange];
+    
+    // Set this to nil now because the refresh depends on it
+    [self.selector setSelectedRange:nil];
+    [self refreshHighlights];
 }
 
 - (void)addNote:(id)sender {
-    if (nil == self.lastHighlightColor) 
-        self.lastHighlightColor = [UIColor yellowColor];
-    
     if ([self.selector selectedRangeIsHighlight]) {
         BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
         if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:withColor:)])
@@ -801,6 +803,15 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (void)showWebTools:(id)sender {
     NSLog(@"Web Tools!");
+}
+
+- (UIColor *)lastHighlightColor {
+    if (nil == lastHighlightColor) {
+        lastHighlightColor = [UIColor yellowColor];
+        [lastHighlightColor retain];
+    }
+    
+    return lastHighlightColor;
 }
 
 #pragma mark -
