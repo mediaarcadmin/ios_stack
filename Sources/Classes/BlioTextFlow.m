@@ -175,7 +175,12 @@
     self.currentParagraphArray = nil;
     self.cachedPageParagraphs = nil;
     if (nil != self.currentParser) {
-        XML_ParserFree(currentParser);
+        enum XML_Status status = XML_StopParser(currentParser, false);
+        if (status == XML_STATUS_OK) {
+            XML_ParserFree(currentParser);
+        } else {
+            NSLog(@"Error whilst attempting to stop XML Parser in TextFlow dealloc.");
+        }
     }
     [super dealloc];
 }
@@ -488,7 +493,12 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         @catch (NSException * e) {
             NSLog(@"TextFlow parsing exception: '%@' in file: '%@'", e.userInfo, path);
         }
-        XML_ParserFree(currentParser);
+        
+        @try {
+            XML_ParserFree(currentParser);
+        } @catch (NSException * e) {
+            NSLog(@"TextFlow parser freeing exception: '%@'.", e.userInfo);
+        }
         [data release];
 
     }

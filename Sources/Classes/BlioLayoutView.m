@@ -17,6 +17,14 @@ static const CGFloat kBlioPDFBlockInsetY = 10;
 static const CGFloat kBlioPDFShadowShrinkScale = 2;
 static const CGFloat kBlioPDFGoToZoomScale = 0.7f;
 
+typedef enum BlioLayoutTouchForwardingState {
+    BlioLayoutTouchForwardingStateNone,
+    BlioLayoutTouchForwardingStateForwardedBegin,
+    BlioLayoutTouchForwardingStateForwardedBeginTimerExpired,
+    BlioLayoutTouchForwardingStateMultiTouchBegin,
+    BlioLayoutTouchForwardingStateCancelled
+} BlioLayoutTouchForwardingState;
+
 @interface BlioLayoutHighlightsOperation : NSOperation {
     NSInteger pageNumber;
     BlioPDFPageView *view;
@@ -159,6 +167,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     NSTimer *doubleTapBeginTimer;
     NSTimer *doubleTapEndTimer;
     id<BlioBookDelegate> bookDelegate;
+    BlioLayoutTouchForwardingState forwardingState;
 }
 
 @property (nonatomic) NSInteger pageCount;
@@ -166,6 +175,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @property (nonatomic, retain) NSTimer *doubleTapBeginTimer;
 @property (nonatomic, retain) NSTimer *doubleTapEndTimer;
 @property (nonatomic, assign) id<BlioBookDelegate> bookDelegate;
+@property (nonatomic) BlioLayoutTouchForwardingState forwardingState;
 
 @end
 
@@ -213,6 +223,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     self.lastHighlightColor = nil;
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
+    [self.selector removeObserver:self forKeyPath:@"trackingStage"];
     [self.selector detatchFromView];
     self.selector = nil;
 
@@ -252,6 +263,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         aScrollView.delegate = self;
         aScrollView.pageCount = pageCount;
         aScrollView.canCancelContentTouches = NO;
+        aScrollView.delaysContentTouches = NO;
         [self addSubview:aScrollView];
         self.scrollView = aScrollView;
         [aScrollView release];
@@ -271,6 +283,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         aSelector.delegate =  self;
         self.selector = aSelector;
         [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
+        [aSelector addObserver:self forKeyPath:@"trackingStage" options:0 context:NULL];
         [self.scrollView setSelector:aSelector];
         [aSelector release];
         
@@ -595,12 +608,33 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if((object == self.selector) && ([keyPath isEqualToString:@"tracking"])) {
-        if (((EucSelector *)object).isTracking) {
-            [self.delegate hideToolbars];
-            self.scrollView.scrollEnabled = NO;
-        } else {
-            self.scrollView.scrollEnabled = YES;
+    if(object == self.selector) {
+        if ([keyPath isEqualToString:@"tracking"]) {
+            if (((EucSelector *)object).isTracking) {
+                [self.delegate hideToolbars];
+            } else {
+                [self.scrollView setScrollEnabled:YES];
+            }
+                
+        } else if ([keyPath isEqualToString:@"trackingStage"]) {
+            
+            switch ([(EucSelector *)object trackingStage]) {
+                case EucSelectorTrackingStageNone:
+                    [self.scrollView setScrollEnabled:YES];
+                    break;
+                case EucSelectorTrackingStageFirstSelection:
+                    [self.scrollView setScrollEnabled:NO];
+                    break;
+                case EucSelectorTrackingStageSelectedAndWaiting:
+                    [self.scrollView setScrollEnabled:YES];
+                    break;
+                case EucSelectorTrackingStageChangingSelection:
+                    [self.scrollView setScrollEnabled:NO];
+                    break;
+                default:
+                    break;
+            }
+
         }
     }
 }
@@ -1205,8 +1239,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     }
     
     if (current) {
+        [self.selector setSelectedRange:nil];
         self.currentPageView = pageView;
-        //NSLog(@"attached to view");
         [self.selector attachToView:pageView];
         [self displayHighlightsForPage:aPageNumber inView:pageView excluding:nil];
     }
@@ -1290,8 +1324,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     //[self.currentPageView renderSharpPageAtScale:self.scrollView.zoomScale];
     //[self renderSharpPageAtScale:self.scrollView.zoomScale];
     if([self.selector isTracking])
-        [self.selector redisplaySelectedRange]; 
-    [self.selector setShouldHideMenu:NO];
+        [self.selector redisplaySelectedRange];
+    
+    if (![self.scrollView isDragging]) {
+        [self.selector setShouldHideMenu:NO];
+    }
+
     
     if (scale == 1.0f) {
         scrollView.pagingEnabled = YES;
@@ -1397,6 +1435,16 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 //        [tiltScroller setScrollView:self.currentPageView];
 //    }
 }
+
+- (BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view {   // default returns YES
+    NSLog(@"touches should begin");
+    return NO;
+}  
+
+- (BOOL)touchesShouldCancelInContentView:(UIView *)view {
+    NSLog(@"touches should cancel");
+    return NO;
+}   
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     self.disableScrollUpdating = NO;
@@ -1713,7 +1761,14 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
 @implementation BlioPDFContainerScrollView
 
-@synthesize pageCount, selector, doubleTapBeginTimer, doubleTapEndTimer, bookDelegate;
+@synthesize pageCount, selector, doubleTapBeginTimer, doubleTapEndTimer, bookDelegate, forwardingState;
+
+- (id)initWithFrame:(CGRect)frame {
+    if ((self = [super initWithFrame:frame])) {
+        self.forwardingState = BlioLayoutTouchForwardingStateNone;
+    }
+    return self;
+}
 
 - (void)dealloc {
     self.selector = nil;
@@ -1726,81 +1781,134 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
-    [self.doubleTapEndTimer invalidate];
-    self.doubleTapEndTimer = nil;
     
+    if (nil != self.doubleTapEndTimer) {
+        self.forwardingState = BlioLayoutTouchForwardingStateCancelled;
+        [self.doubleTapEndTimer fire];
+    }
+    
+    NSSet *allTouches = [event touchesForView:self];
+    if ([allTouches count] > 1) {
+        
+        if (self.forwardingState != BlioLayoutTouchForwardingStateNone) {
+            [self.selector touchesCancelled:allTouches];
+        }
+            
+        self.forwardingState = BlioLayoutTouchForwardingStateMultiTouchBegin;
+        return;
+    }
+        
     UITouch * t = [touches anyObject];
-    if( [t tapCount]>1 ) {
+//    if (self.forwardingState != BlioLayoutTouchForwardingStateNone) {
+//        self.forwardingState = BlioLayoutTouchForwardingStateNone;
+//        [self.selector touchesCancelled:touches];
+//    }
+    if([t tapCount] == 2) {
         CGPoint point = [t locationInView:(UIView *)self.delegate];
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomAtPoint:)])
-            [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(point)];
+            [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(point)];  
     } else {
-        self.doubleTapBeginTimer = [NSTimer scheduledTimerWithTimeInterval:0.05f target:self selector:@selector(delayedTouchesBegan:) userInfo:touches repeats:NO];
+        [self.selector touchesBegan:touches];
+        self.forwardingState = BlioLayoutTouchForwardingStateForwardedBegin;
+        self.doubleTapBeginTimer = [NSTimer scheduledTimerWithTimeInterval:0.25f target:self selector:@selector(delayedTouchesBegan:) userInfo:nil repeats:NO];
     }
 }
 
 - (void)delayedTouchesBegan:(NSTimer *)timer {
-    NSSet *touches = (NSSet *)[timer userInfo];
+    self.forwardingState = BlioLayoutTouchForwardingStateForwardedBeginTimerExpired;
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
-    [self.selector touchesBegan:touches];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.forwardingState == BlioLayoutTouchForwardingStateMultiTouchBegin) return;
+    
     if (nil != self.doubleTapBeginTimer) {
-        NSSet *beganTouches = (NSSet *)[self.doubleTapBeginTimer userInfo];
-        [self.selector touchesBegan:beganTouches];
         [self.doubleTapBeginTimer invalidate];
         self.doubleTapBeginTimer = nil;
     }
     
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
-          
-    [self.selector touchesMoved:touches];
-          
-    if ([self.selector trackingStage] != EucSelectorTrackingStageNone) {
-        [self setScrollEnabled:NO];
+    
+    self.forwardingState = BlioLayoutTouchForwardingStateForwardedBeginTimerExpired;
+              
+    if ([self.selector isTracking]) {
+        switch ([self.selector trackingStage]) {
+            case EucSelectorTrackingStageFirstSelection:
+            case EucSelectorTrackingStageChangingSelection:
+                [self.selector touchesMoved:touches];
+                break;
+            default:
+                break;
+        }
     }
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.forwardingState == BlioLayoutTouchForwardingStateMultiTouchBegin) {
+        NSSet *allTouches = [event touchesForView:self];
+        if ([allTouches count] <= 1) self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        return;
+    }
+
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
-    
-    if (nil != self.doubleTapBeginTimer) {
-        NSSet *beganTouches = (NSSet *)[self.doubleTapBeginTimer userInfo];
-        [self.selector touchesBegan:beganTouches];
-        [self.doubleTapBeginTimer invalidate];
-        self.doubleTapBeginTimer = nil;
-    }
-    
-    [self setScrollEnabled:YES];
-    
-    if (![self.selector isTracking]) {
-        UITouch * t = [touches anyObject];
-        if( [t tapCount] == 1 ) {
-            self.doubleTapEndTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(delayedTouchesEnded:) userInfo:touches repeats:NO];
-        }
-    }
-    
-    // This must always be sent to the selector to ensure state consistency
-    [self.selector touchesEnded:touches];
-}
-
-- (void)delayedTouchesEnded:(NSTimer *)timer {
-    [self.doubleTapEndTimer invalidate];
-    [self.bookDelegate toggleToolbars];
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
     
-    [self setScrollEnabled:YES];
-    [self.selector touchesCancelled:touches];
+    switch (self.forwardingState) {
+        case BlioLayoutTouchForwardingStateCancelled:
+            [self.selector touchesCancelled:touches];
+            self.forwardingState = BlioLayoutTouchForwardingStateNone;
+            break;
+        case BlioLayoutTouchForwardingStateForwardedBegin:
+            self.doubleTapEndTimer = [NSTimer scheduledTimerWithTimeInterval:0.35f target:self selector:@selector(delayedTouchesEnded:) userInfo:touches repeats:NO];
+            break;
+        case BlioLayoutTouchForwardingStateForwardedBeginTimerExpired:
+            self.forwardingState = BlioLayoutTouchForwardingStateNone;
+            [self.selector touchesEnded:touches];
+            break;
+        default:
+        break;
+    }
+}
+
+- (void)delayedTouchesEnded:(NSTimer *)timer {
+    NSSet *touches = (NSSet *)[timer userInfo];
+    
+    if (self.forwardingState == BlioLayoutTouchForwardingStateCancelled) {
+        [self.selector touchesCancelled:touches];
+    } else {
+        UITouch * t = [touches anyObject];
+        if ((![self.selector isTracking]) && ([t tapCount] == 1))
+            [self.bookDelegate toggleToolbars];        
+        
+        [self.selector touchesEnded:touches];
+    }
+    
+    self.forwardingState = BlioLayoutTouchForwardingStateNone;
+    [self.doubleTapEndTimer invalidate];
+    self.doubleTapEndTimer = nil;
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.doubleTapEndTimer invalidate];
+    self.doubleTapEndTimer = nil;
+    [self.doubleTapBeginTimer invalidate];
+    self.doubleTapBeginTimer = nil;
+    
+    if (self.forwardingState == BlioLayoutTouchForwardingStateMultiTouchBegin) {
+        NSSet *allTouches = [event touchesForView:self];
+        if ([allTouches count] <= 1) self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        return;
+    } else if (self.forwardingState != BlioLayoutTouchForwardingStateNone) {
+        self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        [self.selector touchesCancelled:touches];
+    }
 }
     
 @end    
