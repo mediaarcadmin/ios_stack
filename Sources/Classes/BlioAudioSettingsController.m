@@ -8,6 +8,7 @@
 
 #import "BlioAudioSettingsController.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioBookViewController.h"
 #import "AcapelaTTS.h"
 
 @implementation BlioAudioSettingsController
@@ -21,6 +22,12 @@
 		self.title = @"Text to Speech";
 	}
 	return self;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+	AcapelaTTS** tts = [BlioBookViewController getTTSEngine];
+	if ( *tts != nil && [*tts isSpeaking] )
+		[*tts stopSpeaking]; 
 }
 
 + (UILabel *)labelWithFrame:(CGRect)frame title:(NSString *)title
@@ -38,7 +45,7 @@
 
 - (void)createControls
 {
-	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Female", @"Male", nil];
+	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Laura", @"Ryan", nil];
 	
 	// Voice control
 	CGFloat yPlacement = kTopMargin;
@@ -74,7 +81,6 @@
 	
 	speedControl = [[UISlider alloc] initWithFrame:frame];
 	[speedControl addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventValueChanged];
-	
 	// in case the parent view draws with a custom color or gradient, use a transparent color
 	speedControl.backgroundColor = [UIColor clearColor];
 	speedControl.minimumValue = 80.0;
@@ -102,7 +108,6 @@
 
 	volumeControl = [[UISlider alloc] initWithFrame:frame];
 	[volumeControl addTarget:self action:@selector(changeVolume:) forControlEvents:UIControlEventValueChanged];
-	// in case the parent view draws with a custom color or gradient, use a transparent color
 	volumeControl.backgroundColor = [UIColor clearColor];
 	volumeControl.minimumValue = 0.1; 
 	volumeControl.maximumValue = 100.0;
@@ -116,11 +121,11 @@
 	
 	// Play sample button.
 	yPlacement += (kTweenMargin * 2.0) + kSliderHeight + kLabelHeight;
-	UIButton* playButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+	playButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 	playButton.frame = CGRectMake((self.view.bounds.size.width - kStdButtonWidth)/2, yPlacement, kStdButtonWidth, kStdButtonHeight);
 	[playButton setTitle:@"Play sample" forState:UIControlStateNormal];
 	playButton.backgroundColor = [UIColor clearColor];
-	//[playButton addTarget:self action:@selector(action:) forControlEvents:UIControlEventTouchUpInside];
+	[playButton addTarget:self action:@selector(playSample:) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:playButton];
 	[playButton release];
 	
@@ -157,6 +162,17 @@
 	UISlider* ctl = (UISlider*)sender;
 	if ( ctl == volumeControl )
 		[[NSUserDefaults standardUserDefaults] setFloat:ctl.value forKey:kBlioLastVolumeDefaultsKey];
+}
+
+- (void)playSample:(id)sender {	
+	UIButton* ctl = (UIButton*)sender;
+	if ( ctl == playButton ) {
+		AcapelaTTS** tts = [BlioBookViewController getTTSEngine];
+		if ( *tts == nil )
+			*tts = [[AcapelaTTS alloc] init]; 	
+		[*tts initTTS];
+		[*tts startSpeaking:@"It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness."]; 
+	}
 }
 
 @end

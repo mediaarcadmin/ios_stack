@@ -1344,6 +1344,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 
+#pragma mark -
+#pragma mark TTS Handling 
+
 - (void)speakNextParagraph:(NSTimer*)timer {
 	if ( _acapelaTTS.textToSpeakChanged ) {	
 		[_acapelaTTS setTextToSpeakChanged:NO];
@@ -1379,16 +1382,16 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 /*
-- (BOOL)pageChanged:(BlioPageLayout)pageType paragraphId:(id)paragraph wordOffset:(NSUInteger)offset currentPage:(NSInteger)page audioManager:(BlioAudioManager*)audioMgr{
-	if ( pageType==kBlioPageLayoutPageLayout ) 
-		return [(BlioLayoutView *)self.bookView pageNumber] != page;
-	else if ( pageType==kBlioPageLayoutPlainText ) {
-		return (([paragraph integerValue] + offset) != page);
-	}
-	else
-		// meaningless
-		return NO;
-}
+ - (BOOL)pageChanged:(BlioPageLayout)pageType paragraphId:(id)paragraph wordOffset:(NSUInteger)offset currentPage:(NSInteger)page audioManager:(BlioAudioManager*)audioMgr{
+ if ( pageType==kBlioPageLayoutPageLayout ) 
+ return [(BlioLayoutView *)self.bookView pageNumber] != page;
+ else if ( pageType==kBlioPageLayoutPlainText ) {
+ return (([paragraph integerValue] + offset) != page);
+ }
+ else
+ // meaningless
+ return NO;
+ }
  */
 
 - (id)getCurrentParagraph:(BlioPageLayout)pageType wordOffset:(NSInteger*)offset {
@@ -1505,6 +1508,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	return wordIsNotPunctuation && wordIsNotRepeated && wordDoesNotBeginWithApostrophe;
 }
 
+// Singleton pattern
++ (AcapelaTTS**)getTTSEngine {
+	static AcapelaTTS* ttsEngine = nil; // can't initialize here unfortunately
+	return &ttsEngine;
+}
+
 #pragma mark -
 #pragma mark Acapela Delegate Methods 
 
@@ -1523,7 +1532,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if(characterRange.location + characterRange.length <= string.length) {
 		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
 			if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-				[(BlioLayoutView *)self.bookView  highlightWordAtParagraphId:(id)_acapelaTTS.currentParagraph wordOffset:_acapelaTTS.currentWordOffset];
+				[(BlioLayoutView *)self.bookView  highlightWordAtParagraphId:(id)(_acapelaTTS.currentParagraph) wordOffset:_acapelaTTS.currentWordOffset];
 			else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 				BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
 				BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
@@ -1554,6 +1563,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)audioPlayerEndInterruption:(AVAudioPlayer*) player { 
 	[_audioBookManager playAudio];
 }
+
+#pragma mark -
+#pragma mark Audiobook and General Audio Handling 
 
 - (BOOL)findTimes:(NSInteger)layoutPage {
 	NSString* fileSuffix;
@@ -1636,12 +1648,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [self toggleToolbars];
             }
 			if (![self.book audioRights]) {
-				if (_acapelaTTS == nil) {
-					_acapelaTTS = [[AcapelaTTS alloc] init];
-					[_acapelaTTS initTTS];
-					[_acapelaTTS setDelegate:self]; 
-					[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextParagraph:) userInfo:nil repeats:YES]];
-				}
+				if (*[BlioBookViewController getTTSEngine] == nil) 
+					*[BlioBookViewController getTTSEngine] = [[AcapelaTTS alloc] init];
+				_acapelaTTS = *[BlioBookViewController getTTSEngine];
+				[_acapelaTTS initTTS];  // Picks up any preferences that might have changed since last time.
+				// TODO: do the following only the first time we play...
+				[_acapelaTTS setDelegate:self]; 
+				[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextParagraph:) userInfo:nil repeats:YES]];
 				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
 			}
 			else if ([self.book audiobookFilename] != nil) {\

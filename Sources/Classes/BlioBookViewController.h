@@ -67,7 +67,7 @@ typedef enum {
     BOOL _overrideReturnToStatusBarHidden;
     BOOL _audioPlaying;
     
-    AcapelaTTS* _acapelaTTS;
+	AcapelaTTS* _acapelaTTS;
 	BlioAudioBookManager* _audioBookManager;
     
     BlioMockBook *_book;
@@ -114,5 +114,7 @@ typedef enum {
 - (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;
 - (void)stopAudio;
+
++ (AcapelaTTS**)getTTSEngine;
 
 @end
