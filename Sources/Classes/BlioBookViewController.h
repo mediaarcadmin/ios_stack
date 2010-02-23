@@ -67,6 +67,7 @@ typedef enum {
     BOOL _overrideReturnToStatusBarHidden;
     BOOL _audioPlaying;
     
+	AcapelaTTS* _acapelaTTS;
 	BlioAudioBookManager* _audioBookManager;
     
     BlioMockBook *_book;

@@ -24,6 +24,12 @@
 	return self;
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+	AcapelaTTS** tts = [BlioBookViewController getTTSEngine];
+	if ( *tts != nil && [*tts isSpeaking] )
+		[*tts stopSpeaking]; 
+}
+
 + (UILabel *)labelWithFrame:(CGRect)frame title:(NSString *)title
 {
     UILabel *label = [[[UILabel alloc] initWithFrame:frame] autorelease];
@@ -39,7 +45,7 @@
 
 - (void)createControls
 {
-	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Female", @"Male", nil];
+	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Laura", @"Ryan", nil];
 	
 	// Voice control
 	CGFloat yPlacement = kTopMargin;
