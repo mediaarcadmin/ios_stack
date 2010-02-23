@@ -11,7 +11,12 @@
 #import "BlioTextFlow.h"
 #import "BlioBookmark.h"
 
-@interface BlioMockBook : NSManagedObject {
+@protocol BlioBookText
+- (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
+@end
+
+
+@interface BlioMockBook : NSManagedObject <BlioBookText> {
     UIImage *coverThumb;
     BlioTextFlow *textFlow;
 }

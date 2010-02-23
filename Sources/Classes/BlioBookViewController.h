@@ -16,6 +16,7 @@
 #import "BlioBookView.h"
 #import "BlioNotesView.h"
 #import "BlioContentsTabViewController.h"
+#import "BlioWebToolsViewController.h"
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
 

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <expat/expat.h>
+#import "BlioBookmark.h"
 
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
@@ -96,7 +97,7 @@
 }
 
 @property (nonatomic, retain) NSMutableSet *sections;
-@property (nonatomic) BOOL ready;
+@property (nonatomic, getter=isReady) BOOL ready;
 
 - (id)initWithPath:(NSString *)path;
 
@@ -104,6 +105,7 @@
 - (NSArray *)sortedSections;
 - (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex;
+- (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
 
 @end

@@ -568,6 +568,56 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
     return [NSArray arrayWithArray:wordsArray];
 }
 
+- (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range {
+    NSMutableArray *allWordStrings = [NSMutableArray array];
+    
+    for (NSInteger pageNumber = range.startPoint.layoutPage; pageNumber <= range.endPoint.layoutPage; pageNumber++) {
+        NSInteger pageIndex = pageNumber - 1;
+
+        for (BlioTextFlowParagraph *paragraph in [self paragraphsForPageAtIndex:pageIndex]) {
+            for (BlioTextFlowPositionedWord *word in [paragraph words]) {
+                if ((range.startPoint.layoutPage < pageNumber) &&
+                    (paragraph.paragraphIndex <= range.endPoint.paragraphOffset) &&
+                    (word.wordIndex <= range.endPoint.wordOffset)) {
+                    
+                    [allWordStrings addObject:[word string]];
+                    
+                } else if ((range.endPoint.layoutPage > pageNumber) &&
+                           (paragraph.paragraphIndex >= range.startPoint.paragraphOffset) &&
+                           (word.wordIndex >= range.startPoint.wordOffset)) {
+                    
+                    [allWordStrings addObject:[word string]];
+                    
+                } else if ((range.startPoint.layoutPage == pageNumber) &&
+                           (paragraph.paragraphIndex == range.startPoint.paragraphOffset) &&
+                           (word.wordIndex >= range.startPoint.wordOffset)) {
+                    
+                    if ((paragraph.paragraphIndex == range.endPoint.paragraphOffset) &&
+                        (word.wordIndex <= range.endPoint.wordOffset)) {
+                        [allWordStrings addObject:[word string]];
+                    } else if (paragraph.paragraphIndex < range.endPoint.paragraphOffset) {
+                        [allWordStrings addObject:[word string]];
+                    }
+                    
+                } else if ((range.startPoint.layoutPage == pageNumber) &&
+                           (paragraph.paragraphIndex > range.startPoint.paragraphOffset)) {
+                    
+                    if ((paragraph.paragraphIndex == range.endPoint.paragraphOffset) &&
+                        (word.wordIndex <= range.endPoint.wordOffset)) {
+                        [allWordStrings addObject:[word string]];
+                    } else if (paragraph.paragraphIndex < range.endPoint.paragraphOffset) {
+                        [allWordStrings addObject:[word string]];
+                    }
+                    
+                }
+            }
+        }
+        
+    }
+
+    return [NSArray arrayWithArray:allWordStrings];
+}
+
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex {
     NSMutableString *pageString = [NSMutableString string];
     NSArray *pageParagraphs = [self paragraphsForPageAtIndex:pageIndex];

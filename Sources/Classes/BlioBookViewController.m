@@ -1974,6 +1974,35 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
      }
 }
 
+- (void)dismissWebTool:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)openWebToolDictionaryWithRange:(BlioBookmarkRange *)range {
+    
+}
+
+- (void)openWebToolTranslateWithRange:(BlioBookmarkRange *)range {
+    
+}
+
+- (void)openWebToolSearchWithRange:(BlioBookmarkRange *)range {
+    NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
+    NSString *encodedParam = [[wordStrings componentsJoinedByString:@" "] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *queryString = [NSString stringWithFormat: @"http://www.google.com/m?q=%@", encodedParam];
+	NSURL *url = [NSURL URLWithString:queryString];
+    
+    if (nil != url) {
+        BlioWebToolsViewController *aWebToolController = [[BlioWebToolsViewController alloc] initWithURL:url];
+        aWebToolController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissWebTool:)];                                                 
+        aWebToolController.topViewController.navigationItem.title = @"Web Search";
+        aWebToolController.navigationBar.tintColor = _returnToNavigationBarTint;
+        [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+        [self presentModalViewController:aWebToolController animated:YES];
+        [aWebToolController release];
+    }
+}
+
 #pragma mark -
 #pragma mark Edit Menu Responder Actions 
 

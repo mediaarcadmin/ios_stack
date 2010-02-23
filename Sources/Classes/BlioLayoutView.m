@@ -559,6 +559,21 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     return ret;
 }
 
+- (NSArray *)webToolsMenuItems {    
+    EucMenuItem *dictionaryItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Dictionary", "\"Dictionary\" option in popup menu in layout view")
+                                                               action:@selector(dictionary:)] autorelease];
+    
+    EucMenuItem *translateItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Translate", "\"Translate\" option in popup menu in layout view")
+                                                              action:@selector(translate:)] autorelease];
+    
+    EucMenuItem *searchItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Search", "\"Search\" option in popup menu in layout view")
+                                                           action:@selector(search:)] autorelease];
+        
+    NSArray *ret = [NSArray arrayWithObjects:dictionaryItem, translateItem, searchItem, nil];
+    
+    return ret;
+}
+
 - (NSArray *)highlightMenuItemsWithCopy:(BOOL)copy {
     EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
                                                             action:@selector(addNote:)] autorelease];
@@ -833,7 +848,34 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
 
 - (void)showWebTools:(id)sender {
-    NSLog(@"Web Tools!");
+    [self.selector changeActiveMenuItemsTo:[self webToolsMenuItems]];
+}
+
+- (void)dictionary:(id)sender {
+    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+    if ([self.delegate respondsToSelector:@selector(openWebToolDictionaryWithRange:)]) {
+        [self.delegate openWebToolDictionaryWithRange:webToolRange];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)translate:(id)sender {
+    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+    if ([self.delegate respondsToSelector:@selector(openWebToolTranslateWithRange:)]) {
+        [self.delegate openWebToolTranslateWithRange:webToolRange];
+        
+        [self.selector setSelectedRange:nil];
+    }
+}
+
+- (void)search:(id)sender {
+    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+    if ([self.delegate respondsToSelector:@selector(openWebToolSearchWithRange:)]) {
+        [self.delegate openWebToolSearchWithRange:webToolRange];
+        
+        [self.selector setSelectedRange:nil];
+    }
 }
 
 - (UIColor *)lastHighlightColor {

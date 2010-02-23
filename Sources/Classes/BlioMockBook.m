@@ -363,6 +363,16 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
     }
 }
 
+#pragma mark -
+#pragma mark BlioBookText
+
+- (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range {
+    if ((nil != self.textFlow) && ([self.textFlow isReady])) {
+        return [self.textFlow wordStringsForBookmarkRange:range];
+    }
+    return nil;
+}
+
 @end
 
 
