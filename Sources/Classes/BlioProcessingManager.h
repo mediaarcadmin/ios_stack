@@ -8,6 +8,20 @@
 
 #import <CoreData/CoreData.h>
 
+@interface BlioProcessingBookOperation : NSOperation {
+    NSManagedObjectID *bookID;
+    NSPersistentStoreCoordinator *storeCoordinator;
+    BOOL forceReprocess;
+    NSUInteger percentageComplete;
+}
+
+@property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, retain) NSPersistentStoreCoordinator *storeCoordinator;
+@property (nonatomic) BOOL forceReprocess;
+@property (nonatomic) NSUInteger percentageComplete;
+
+@end
+
 @protocol BlioProcessingDelegate
 @optional
 - (void)pauseProcessing;
@@ -18,6 +32,9 @@
 
 @interface BlioProcessingManager : NSObject <BlioProcessingDelegate> {
     NSManagedObjectContext *managedObjectContext;
+    
+    NSOperationQueue *preAvailabilityQueue;
+    NSOperationQueue *postAvailabilityQueue;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;

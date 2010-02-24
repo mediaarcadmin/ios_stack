@@ -36,7 +36,12 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
 }
 
 - (NSString *)coverPath {
-    return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[self valueForKey:@"coverFilename"]];
+    NSString *coverPath = [self.bookCacheDirectory stringByAppendingPathComponent:[self valueForKey:@"coverFilename"]];
+     
+    if ([[NSFileManager defaultManager] fileExistsAtPath:coverPath]) 
+        return coverPath;
+    else
+        return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[self valueForKey:@"coverFilename"]];
 }
 
 - (NSString *)bookPath {
@@ -363,6 +368,13 @@ static const CGFloat kBlioMockBookGridThumbWidth = 102;
     }
 }
 
+- (NSString *)bookCacheDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
+    return bookPath;
+}
+         
 #pragma mark -
 #pragma mark BlioBookText
 
