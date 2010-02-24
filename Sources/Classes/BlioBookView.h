@@ -21,6 +21,8 @@
 - (void)removeHighlightAtRange:(BlioBookmarkRange *)range;
 - (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange withColor:(UIColor *)newColor;
 
+- (void)copyWithRange:(BlioBookmarkRange *)range;
+
 - (void)openWebToolDictionaryWithRange:(BlioBookmarkRange *)range;
 - (void)openWebToolTranslateWithRange:(BlioBookmarkRange *)range;
 - (void)openWebToolSearchWithRange:(BlioBookmarkRange *)range;

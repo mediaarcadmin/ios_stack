@@ -771,80 +771,16 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self refreshHighlights];
 }
 
-- (void)copy:(id)sender {
-    NSInteger currentPage = self.pageNumber;
-    
-    EucSelectorRange *selectorRange = [self.selector selectedRange];
-    
-    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-    startPoint.layoutPage = currentPage;
-    startPoint.paragraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:selectorRange.startBlockId];
-    startPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:selectorRange.startElementId];
-
-    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
-    endPoint.layoutPage = currentPage;
-    endPoint.paragraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:selectorRange.endBlockId];
-    endPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:selectorRange.endElementId];
-    
-    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
-    range.startPoint = startPoint;
-    range.endPoint = endPoint;
-    
-    [startPoint release];
-    [endPoint release];
-    
-    NSMutableArray *allWordStrings = [NSMutableArray array];
-    NSInteger pageIndex = currentPage - 1;
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    
-    for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
-        for (BlioTextFlowPositionedWord *word in [paragraph words]) {
-            if ((range.startPoint.layoutPage < currentPage) &&
-                (paragraph.paragraphIndex <= range.endPoint.paragraphOffset) &&
-                (word.wordIndex <= range.endPoint.wordOffset)) {
-                
-                [allWordStrings addObject:[word string]];
-                
-            } else if ((range.endPoint.layoutPage > currentPage) &&
-                       (paragraph.paragraphIndex >= range.startPoint.paragraphOffset) &&
-                       (word.wordIndex >= range.startPoint.wordOffset)) {
-                
-                [allWordStrings addObject:[word string]];
-                
-            } else if ((range.startPoint.layoutPage == currentPage) &&
-                       (paragraph.paragraphIndex == range.startPoint.paragraphOffset) &&
-                       (word.wordIndex >= range.startPoint.wordOffset)) {
-                
-                if ((paragraph.paragraphIndex == range.endPoint.paragraphOffset) &&
-                    (word.wordIndex <= range.endPoint.wordOffset)) {
-                    [allWordStrings addObject:[word string]];
-                } else if (paragraph.paragraphIndex < range.endPoint.paragraphOffset) {
-                    [allWordStrings addObject:[word string]];
-                }
-                    
-            } else if ((range.startPoint.layoutPage == currentPage) &&
-                       (paragraph.paragraphIndex > range.startPoint.paragraphOffset)) {
-                
-                if ((paragraph.paragraphIndex == range.endPoint.paragraphOffset) &&
-                    (word.wordIndex <= range.endPoint.wordOffset)) {
-                    [allWordStrings addObject:[word string]];
-                } else if (paragraph.paragraphIndex < range.endPoint.paragraphOffset) {
-                    [allWordStrings addObject:[word string]];
-                }
-                
-            }
-        }
-    }
-
-    [range release];
-
-    [[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[allWordStrings componentsJoinedByString:@" "]]];
-    
-    if ([self.selector selectedRangeIsHighlight])
-        [self.selector changeActiveMenuItemsTo:[self highlightMenuItemsWithCopy:NO]];
-    else
-        [self.selector changeActiveMenuItemsTo:[self rootMenuItemsWithCopy:NO]];
-    
+- (void)copy:(id)sender {    
+    BlioBookmarkRange *copyRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+    if ([self.delegate respondsToSelector:@selector(copyWithRange:)]) {
+        [self.delegate copyWithRange:copyRange];
+        
+        if ([self.selector selectedRangeIsHighlight])
+            [self.selector changeActiveMenuItemsTo:[self highlightMenuItemsWithCopy:NO]];
+        else
+            [self.selector changeActiveMenuItemsTo:[self rootMenuItemsWithCopy:NO]];
+    }    
 }
 
 - (void)showWebTools:(id)sender {

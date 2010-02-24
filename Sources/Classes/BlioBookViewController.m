@@ -1974,6 +1974,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
      }
 }
 
+- (void)copyWithRange:(BlioBookmarkRange *)range {
+    NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
+    [[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[wordStrings componentsJoinedByString:@" "]]];
+}
+
 - (void)dismissWebTool:(id)sender {
     [self dismissModalViewControllerAnimated:YES];
 }
