@@ -262,7 +262,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         aScrollView.scrollsToTop = NO;
         aScrollView.delegate = self;
         aScrollView.pageCount = pageCount;
-        aScrollView.canCancelContentTouches = NO;
+        aScrollView.canCancelContentTouches = YES;
         aScrollView.delaysContentTouches = NO;
         [self addSubview:aScrollView];
         self.scrollView = aScrollView;
