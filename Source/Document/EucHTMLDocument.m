@@ -10,6 +10,9 @@
 
 #import "EucHTMLDocument.h"
 #import "EucHTMLDocumentNode.h"
+#import "EucHTMLDocumentConcreteNode.h"
+#import "EucHTMLDocumentGeneratedContainerNode.h"
+#import "EucHTMLDocumentGeneratedTextNode.h"
 
 #import "EucHTMLDBCreation.h"
 #import "EucHTMLDBNode.h"
@@ -208,7 +211,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                         if(_bodyDBNode) {
                             if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
                                 [self _setupStylesheets:@"/Users/jamie/Development/LibCSSTest/Resources/EPubDefault.css"];
-                                _body = [[[EucHTMLDocumentNode alloc] initWithHTMLDBNode:_bodyDBNode inDocument:self] retain];
+                                _body = [[[EucHTMLDocumentConcreteNode alloc] initWithHTMLDBNode:_bodyDBNode inDocument:self] retain];
                                 success = YES;
                             }
                         }
@@ -236,18 +239,36 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 {
     EucHTMLDocumentNode *node = (EucHTMLDocumentNode *)CFDictionaryGetValue(_keyToExtantNode, (void *)(uintptr_t)key);
     if(!node) {
-        node = [[[EucHTMLDocumentNode alloc] initWithHTMLDBNode:[_manager nodeForKey:key] inDocument:self] autorelease];
+        uint32_t keyKind = key & GENERATED_NODE_KEY_MASK;
+        if(keyKind != 0) {
+            if(keyKind < GENERATED_NODE_TEXT_KEY_FLAG) {
+                node = [[EucHTMLDocumentGeneratedContainerNode alloc] initWithDocument:self 
+                                                                             parentKey:key ^ keyKind 
+                                                                        isBeforeParent:(keyKind == GENERATED_NODE_BEFORE_CONTAINER_KEY_FLAG)];
+            } else {
+                NSParameterAssert((keyKind & GENERATED_NODE_TEXT_KEY_FLAG) == GENERATED_NODE_TEXT_KEY_FLAG);
+                node = [[EucHTMLDocumentGeneratedTextNode alloc] initWithDocument:self
+                                                                        parentKey:key ^ GENERATED_NODE_TEXT_KEY_FLAG];
+            }
+        } else {
+            node = [[EucHTMLDocumentConcreteNode alloc] initWithHTMLDBNode:[_manager nodeForKey:key >> DB_KEY_MAPPING_SHIFT] inDocument:self];
+        }
         CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
+        [node autorelease];
     }
     return node;
 }
 
 - (BOOL)nodeIsBody:(EucHTMLDocumentNode *)node
 {
-    return [_manager nodeIsBody:node.dbNode];
+    if([node isKindOfClass:[EucHTMLDocumentConcreteNode class]]) {
+        return [_manager nodeIsBody:((EucHTMLDocumentConcreteNode *)node).dbNode];
+    } else {
+        return NO;
+    }
 }
 
-- (void)notifyOfDealloc:(EucHTMLDocumentNode *)node
+- (void)notifyOfDealloc:(EucHTMLDocumentConcreteNode *)node
 {
     CFDictionaryRemoveValue(_keyToExtantNode, (void *)(uintptr_t)node.key);
 }

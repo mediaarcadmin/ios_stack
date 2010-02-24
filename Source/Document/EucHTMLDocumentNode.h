@@ -2,45 +2,44 @@
 //  EucHTMLDocumentNode.h
 //  LibCSSTest
 //
-//  Created by James Montgomerie on 10/12/2009.
-//  Copyright 2009 Things Made Out Of Other Things. All rights reserved.
+//  Created by James Montgomerie on 24/02/2010.
+//  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 #import <libcss/libcss.h>
 
-@class EucHTMLDBNode, EucHTMLDocument, THStringRenderer;
+@class EucHTMLDocument, THStringRenderer;
 
 @interface EucHTMLDocumentNode : NSObject {
-    EucHTMLDBNode *_dbNode;
     EucHTMLDocument *_document;
-    
-    NSArray *_children;
-    
-    css_computed_style *_computedStyle;
-    NSString *_text;
     
     THStringRenderer *_stringRenderer;
 }
 
-@property (nonatomic, readonly) uint32_t key;
-@property (nonatomic, readonly) EucHTMLDBNode *dbNode;
-@property (nonatomic, assign, readonly) EucHTMLDocument *document;
+// Concrete:
 
-@property (nonatomic, readonly) BOOL isTextNode;
-@property (nonatomic, readonly) NSString *text;
-@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, assign) EucHTMLDocument *document;
+@property (nonatomic, assign) uint32_t key;
 
-@property (nonatomic, readonly) css_computed_style *computedStyle;
-@property (nonatomic, readonly) THStringRenderer *stringRenderer;
-
-@property (nonatomic, readonly) EucHTMLDocumentNode *parent;
 @property (nonatomic, readonly) EucHTMLDocumentNode *blockLevelNode;
 @property (nonatomic, readonly) EucHTMLDocumentNode *blockLevelParent;
-@property (nonatomic, readonly) NSArray *children;
+
 @property (nonatomic, readonly) EucHTMLDocumentNode *next;
 - (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under;
 
-- (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucHTMLDocument *)document;
+@property (nonatomic, readonly) THStringRenderer *stringRenderer;
+
+// Overridable:
+@property (nonatomic, readonly) BOOL isTextNode;  // Default: NO
+@property (nonatomic, readonly) NSString *text;   // Default: nil;
+
+// Abstract:
+
+@property (nonatomic, readonly) EucHTMLDocumentNode *parent;
+@property (nonatomic, readonly) NSUInteger childrenCount;
+@property (nonatomic, readonly) NSArray *children;
+
+@property (nonatomic, readonly) css_computed_style *computedStyle;
 
 @end

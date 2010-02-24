@@ -10,6 +10,8 @@
 #import "EucHTMLLayoutPositionedRun.h"
 #import "EucHTMLLayoutLine.h"
 #import "EucHTMLDocument.h"
+#import "EucHTMLDocumentConcreteNode.h"
+#import "EucHTMLDocumentGeneratedTextNode.h"
 #import "EucHTMLDocumentNode.h"
 #import "THStringRenderer.h"
 #import "thjust.h"
@@ -19,6 +21,7 @@
 static id sSingleSpaceMarker;
 static id sOpenNodeMarker;
 static id sCloseNodeMarker;
+static id sHardBreakMarker;
 
 @interface EucHTMLLayoutDocumentRun ()
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)size;
@@ -33,6 +36,7 @@ static id sCloseNodeMarker;
     sSingleSpaceMarker = (id)kCFNull;
     sOpenNodeMarker = [[NSObject alloc] init];
     sCloseNodeMarker = [[NSObject alloc] init];
+    sHardBreakMarker = [[NSObject alloc] init];
 }
 
 + (id)singleSpaceMarker
@@ -48,6 +52,11 @@ static id sCloseNodeMarker;
 + (id)closeNodeMarker
 {
     return sCloseNodeMarker;
+}
+
++ (id)hardBreakMarker
+{
+    return sHardBreakMarker;
 }
 
 @synthesize id = _id;
@@ -80,7 +89,7 @@ static id sCloseNodeMarker;
                 // Open this node.
                 EucHTMLLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
                 [self _addComponent:[EucHTMLLayoutDocumentRun openNodeMarker] isWord:NO info:&info];
-                if(!inlineNode.children) {
+                if(inlineNode.childrenCount > 0) {
                     [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
                 }
             }
@@ -88,7 +97,7 @@ static id sCloseNodeMarker;
             EucHTMLDocumentNode *nextNode = [inlineNode nextUnder:inlineNode.parent];
             if(!nextNode) {
                 // Close this node.
-                if(!inlineNode.isTextNode && inlineNode.children) {
+                if(!inlineNode.isTextNode && inlineNode.childrenCount > 0) {
                     // If the node /doesn't/ have children, it's already closed,
                     // above.
                     EucHTMLLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
@@ -100,7 +109,7 @@ static id sCloseNodeMarker;
                 inlineNode = nextNode;
                 inlineNodeStyle = inlineNode.computedStyle;
             } else {
-                inlineNode = [inlineNode nextUnder:[[inlineNode document] body]];
+                inlineNode = [inlineNode nextUnder:[inlineNode.document body]];
                 reachedLimit = YES;
             }
         }    
@@ -187,6 +196,8 @@ static id sCloseNodeMarker;
     css_computed_style *subnodeStyle;
     subnodeStyle = [subnode.parent computedStyle];
     
+    enum css_white_space_e whiteSpaceModel = css_computed_white_space(subnodeStyle);
+    
     THStringRenderer *stringRenderer = subnode.stringRenderer;
     
     css_fixed length;
@@ -229,12 +240,12 @@ static id sCloseNodeMarker;
         while(cursor < end) {
             UniChar ch = *cursor;
             switch(ch) {
-                case 0x000D: // CR
                 case 0x000A: // LF
+                case 0x000D: // CR
                     if(!sawNewline) {
                         sawNewline = YES;
                     }
-                    // No break = fall through.
+                    // No break - fall through.
                 case 0x0009: // tab
                 case 0x0020: // Space
                     if(!_previousInlineCharacterWasSpace) {
@@ -254,10 +265,27 @@ static id sCloseNodeMarker;
                         }
                         _previousInlineCharacterWasSpace = YES;
                     }
+                    if(ch == 0x000A && 
+                       (whiteSpaceModel == CSS_WHITE_SPACE_PRE_LINE ||
+                        whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
+                        whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP)) {
+                        EucHTMLLayoutDocumentRunComponentInfo hardBreakInfo = { 0,
+                           lineSpacing,
+                           ascender,
+                           descender,
+                           fontPixelSize,
+                           subnode };
+                        [self _addComponent:[EucHTMLLayoutDocumentRun hardBreakMarker] isWord:NO info:&hardBreakInfo];
+                        _alreadyInsertedNewline = YES;
+                    }
                     break;
                 default:
                     if(_previousInlineCharacterWasSpace) {
-                        [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                        if(!_alreadyInsertedNewline) {
+                            [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                        } else {
+                            _alreadyInsertedNewline = NO;
+                        }
                         wordStart = cursor;
                         _previousInlineCharacterWasSpace = NO;
                     }
@@ -277,7 +305,7 @@ static id sCloseNodeMarker;
                                                                subnode };
                 [self _addComponent:(id)string isWord:YES info:&info];
             }
-        } else {
+        } /*else {
             if(wordStart == characters && sawNewline) {
                 // Don't do anything - we collapse the spaces around the newline, 
                 // then remove the newline, leaving an empty run.
@@ -287,9 +315,13 @@ static id sCloseNodeMarker;
                 // away according to the 'white-space' property does not 
                 // generate any anonymous inline boxes."
             } else {
-                [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                if(!_alreadyInsertedNewline) {
+                    [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                } else {
+                    _alreadyInsertedNewline = NO;
+                }
             }
-        }
+        }*/
         
         if(charactersToFree) {
             free(charactersToFree);
@@ -334,6 +366,20 @@ static id sCloseNodeMarker;
                 NSParameterAssert(_componentInfos[i].documentNode == currentInlineNodeWithStyle);
                 currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
                 // Take account of margins etc.
+            } else if(component == sHardBreakMarker) {
+                breaks[breaksCount].x0 = lineSoFarWidth;
+                lineSoFarWidth += _componentInfos[i].width;
+                breaks[breaksCount].x1 = lineSoFarWidth;
+                breaks[breaksCount].penalty = 0;
+                breaks[breaksCount].flags = TH_JUST_FLAG_ISHARDBREAK;
+                breakToComponentOffset[breaksCount] = i;
+                ++breaksCount;
+                
+                if(breaksCount >= breaksCapacity) {
+                    breaksCapacity += _componentsCount;
+                    breaks = realloc(breaks, breaksCapacity * sizeof(THBreak));
+                    breakToComponentOffset = realloc(breakToComponentOffset, breaksCapacity * sizeof(int));
+                }                                
             } else {            
                 lineSoFarWidth += _componentInfos[i].width;
             }
@@ -415,7 +461,12 @@ static id sCloseNodeMarker;
             newLine.indent = textIndent;
             textIndent = 0.0f;
         }
-        newLine.align = textAlign;
+        if(textAlign == CSS_TEXT_ALIGN_JUSTIFY &&
+           (_potentialBreaks[usedBreakIndexes[i] + startBreakOffset].flags & TH_JUST_FLAG_ISHARDBREAK) == TH_JUST_FLAG_ISHARDBREAK) {
+            newLine.align = CSS_TEXT_ALIGN_DEFAULT;
+        } else {
+            newLine.align = textAlign;
+        }
         [newLine sizeToFitInWidth:frame.size.width];
 
         CGFloat newHeight = positionedRunFrame.size.height + newLine.size.height;
@@ -428,14 +479,6 @@ static id sCloseNodeMarker;
         lineStartComponentOffset = thisComponentOffset + 1; // +1 to skip the space.
 
         [newLine release];
-        
-        if(newLine.componentCount == 0) {
-            NSLog(@"fdsfdsfds");
-        }
-    }
-    if(textAlign == CSS_TEXT_ALIGN_JUSTIFY) {
-        // The last line of a paragraph should have default justification.
-        newLine.align = CSS_TEXT_ALIGN_DEFAULT;
     }
     
     EucHTMLLayoutPositionedRun *ret = nil;

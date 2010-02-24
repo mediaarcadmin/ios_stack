@@ -38,6 +38,7 @@ typedef struct EucHTMLLayoutDocumentRunComponentInfo {
     size_t _startOfLastNonSpaceRun;
 
     BOOL _previousInlineCharacterWasSpace;
+    BOOL _alreadyInsertedNewline;
     
     struct THBreak *_potentialBreaks;
     int *_potentialBreakToComponentOffset;

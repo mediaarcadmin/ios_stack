@@ -5,6 +5,7 @@
 
 #include "EucHTMLDocument.h"
 #include "EucHTMLDocumentNode.h"
+#include "EucHTMLDocumentConcreteNode.h"
 #include "EucHTMLLayouter.h"
 #include "EucHTMLRenderer.h"
 #include "EucHTMLLayoutPositionedBlock.h"

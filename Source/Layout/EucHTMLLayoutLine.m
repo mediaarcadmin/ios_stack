@@ -51,6 +51,12 @@
     }
     _baseline = maxAscender;
     _size = CGSizeMake(width, maxAscender + maxDescenderAndLineHeightAddition);
+    
+    // TODO: Properly respect line height.
+    // This is a hack to make newlines work...
+    if(_size.height == 0) {
+        _size.height = 12;
+    }
 }
 
 - (id *)components

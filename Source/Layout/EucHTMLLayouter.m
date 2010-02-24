@@ -10,6 +10,7 @@
 
 #import "EucHTMLDocument.h"
 #import "EucHTMLDocumentNode.h"
+#import "EucHTMLDocumentConcreteNode.h"
 
 #import "EucHTMLLayoutPositionedBlock.h"
 #import "EucHTMLLayoutPositionedRun.h"
@@ -81,10 +82,10 @@ Block completion status.
                                                               inFrame:frame
                                                afterInternalPageBreak:NO];
         }
-        currentDocumentNode = [currentDocumentNode next];
+        currentDocumentNode = currentDocumentNode.next;
         
         CGFloat nextY = frame.origin.y;
-        uint32_t nextRunId = currentDocumentNode.key;
+        uint32_t nextRunId = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;
         do {            
             CGRect potentialFrame = currentPositionedBlock.contentRect;
             if(potentialFrame.size.height != CGFLOAT_MAX) {
@@ -122,7 +123,7 @@ Block completion status.
                 if(runsNextNode) {
                     // Non-first run in a block has the ID of its first element.
                     currentDocumentNode = runsNextNode;
-                    nextRunId = currentDocumentNode.key;
+                    nextRunId = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;
                 } else {
                     currentDocumentNode = documentRun.nextNodeInDocument;
                 }
@@ -153,7 +154,7 @@ Block completion status.
                 nextY = newBlock.contentRect.origin.y;
                 
                 // First run in a block has the ID of the block it's in.
-                nextRunId = currentDocumentNode.key;  
+                nextRunId = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;  
                 
                 currentDocumentNode = currentDocumentNode.next;
             }
@@ -183,8 +184,8 @@ Block completion status.
         
     CGFloat currentY;
     
-    EucHTMLDocumentNode *previousSubnode = node;
-    EucHTMLDocumentNode *subnode = [node nextUnder:node];
+    EucHTMLBaseNode *previousSubnode = node;
+    EucHTMLBaseNode *subnode = [node nextUnder:node];
     while(subnode != nil) {         
         css_computed_style *subnodeStyle;
         BOOL isInline;

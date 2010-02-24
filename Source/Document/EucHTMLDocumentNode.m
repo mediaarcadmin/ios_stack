@@ -2,156 +2,71 @@
 //  EucHTMLDocumentNode.m
 //  LibCSSTest
 //
-//  Created by James Montgomerie on 10/12/2009.
-//  Copyright 2009 Things Made Out Of Other Things. All rights reserved.
+//  Created by James Montgomerie on 24/02/2010.
+//  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <libcss/libcss.h>
-#import <libcss/properties.h>
-
-#import "EucHTMLDBNode.h"
-#import "EucHTMLDocument.h"
 #import "EucHTMLDocumentNode.h"
-#import "LWCNSStringAdditions.h"
 #import "THStringRenderer.h"
-#import "THLog.h"
+#import "LWCNSStringAdditions.h"
 
 @implementation EucHTMLDocumentNode
 
-@synthesize dbNode = _dbNode;
-@synthesize document = _document;
+@dynamic parent;
 
-- (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucHTMLDocument *)document;
-{
-    if((self = [super init])) {
-        _dbNode = [dbNode retain];
-        _document = document;
-    }
-    return self;
-}
+@dynamic childrenCount;
+@dynamic children;
+
+@dynamic computedStyle;
+
+
+@synthesize document = _document;
+@synthesize key = _key;
+
 
 - (void)dealloc
 {
-    [_document notifyOfDealloc:self];
- 
-    [_children release];
-    
-    if(_computedStyle) {
-        css_computed_style_destroy(_computedStyle);
-    }
-    
-    [_text release];
-        
-    [_dbNode release];
+    [self.document notifyOfDealloc:self];
+
+    [_stringRenderer release];
     
     [super dealloc];
 }
 
-- (uint32_t)key
+- (EucHTMLDocumentNode *)_nodeAfter:(EucHTMLDocumentNode *)child under:(EucHTMLDocumentNode *)under
 {
-    return _dbNode.key;
-}
-
-- (BOOL)isTextNode
-{
-    return _dbNode.kind == nodeKindText;
-}
-
-- (NSString *)name
-{
-    lwc_string *name = _dbNode.name;
-    if(name) {
-        return [NSString stringWithLWCString:name];
-    } else {
+    NSUInteger childrenCount =  self.childrenCount;
+    if(childrenCount > 1) {
+        NSArray *children = self.children;
+        NSUInteger i = 0;
+        NSUInteger maxChildBeforeEnd = childrenCount - 1;
+        for(; i < maxChildBeforeEnd; ++i) {
+            if([children objectAtIndex:i] == child) {
+                return [children objectAtIndex:i + 1];
+            }
+        }
+    }
+    // This is our last child.
+    if(self == under) {
         return nil;
     }
+    return [self.parent _nodeAfter:self under:under];
 }
 
-- (NSString *)text
-{
-    if(!_text) {
-        char *contents;
-        size_t length = 0;
-        if([_dbNode getCharacterContents:&contents length:&length]) {
-            _text = (NSString *)CFStringCreateWithBytes(kCFAllocatorDefault,
-                                                        (const UInt8 *)contents, 
-                                                        length, 
-                                                        kCFStringEncodingUTF8, 
-                                                        false);
-        }
-    }
-    return _text;
-}
-
-- (css_computed_style *)computedStyle
-{
-    if(_dbNode.kind == nodeKindElement) {
-        if(!_computedStyle) {
-            css_error err;
-            
-            css_stylesheet *inlineStyle = NULL;
-            hubbub_string inlineStyleString = [_dbNode copyHubbubAttributeForName:"style"];
-            if(inlineStyleString.len) {
-                err = css_stylesheet_create(CSS_LEVEL_21, "UTF-8",
-                                            "", "", CSS_ORIGIN_AUTHOR, 
-                                            CSS_MEDIA_ALL, false,
-                                            true, _document.lwcContext,
-                                            EucRealloc, NULL,
-                                            EucResolveURL, NULL,
-                                            &inlineStyle);
-                if(err != CSS_OK) {
-                    THWarn(@"Error %ld creating inline style", (long)err);
-                } else {
-                    err = css_stylesheet_append_data(inlineStyle, inlineStyleString.ptr, inlineStyleString.len);
-                    if(err == CSS_NEEDDATA) {
-                        err = css_stylesheet_data_done(inlineStyle);
-                    }
-                    if(err != CSS_OK) {
-                        THWarn(@"Error %ld adding data to inline style", (long)err);
-                        css_stylesheet_destroy(inlineStyle);
-                        inlineStyle = NULL;
-                    }
-                }
-                free((void *)inlineStyleString.ptr);
-            }
-            
-            css_computed_style_create(EucRealloc, NULL, &_computedStyle);
-            css_select_handler *selectHandler = [EucHTMLDBNode selectHandler];
-            err = css_select_style(_document.selectContext, 
-                                   (void *)(uintptr_t)_dbNode.key,
-                                   CSS_PSEUDO_ELEMENT_NONE, 
-                                   CSS_MEDIA_PRINT, 
-                                   inlineStyle, 
-                                   _computedStyle,
-                                   selectHandler,
-                                   _document.htmlDBNodeManager);
-            if(err == CSS_OK) {
-                if(self != _document.body) {
-                    EucHTMLDocumentNode *parent = self.parent;
-                    if(parent) {
-                        const css_computed_style *parentStyle = parent.computedStyle;
-                        if(parentStyle) {
-                            err = css_computed_style_compose(parentStyle, 
-                                                             _computedStyle,
-                                                             selectHandler->compute_font_size,
-                                                             _document.htmlDBNodeManager,
-                                                             _computedStyle);
-                            if(err != CSS_OK) {
-                                THWarn(@"Error %ld composing style", (long)err);
-                            }
-                        }
-                    } 
-                }
-            } else {
-                THWarn(@"Error %ld selecting style", (long)err);
-            }
-            
-            if(inlineStyle) {
-                css_stylesheet_destroy(inlineStyle);
-            }
-        }
+- (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under {
+    NSArray *children = self.children;
+    if(children) {
+        return [children objectAtIndex:0];
+    } else if(self != under){
+        return [self.parent _nodeAfter:self under:under];
+    } else {
+        return NULL;
     } 
-    return _computedStyle;
+}
+
+- (EucHTMLDocumentNode *)next
+{
+    return [self nextUnder:nil];
 }
 
 - (THStringRenderer *)stringRenderer
@@ -166,7 +81,7 @@
         
         if(style) {
             THStringRendererFontStyleFlags styleFlags = THStringRendererFontStyleFlagRegular;
-
+            
             uint8_t fontStyle = css_computed_font_style(style);
             if(fontStyle == CSS_FONT_STYLE_ITALIC ||
                fontStyle == CSS_FONT_STYLE_OBLIQUE) {
@@ -216,16 +131,6 @@
     return _stringRenderer;
 }
 
-- (EucHTMLDocumentNode *)parent
-{
-    EucHTMLDBNode *parentDBNode = _dbNode.parentNode;
-    if(parentDBNode) {
-        return [_document nodeForKey:parentDBNode.key];
-    } else {
-        return nil;
-    }    
-}
-
 - (EucHTMLDocumentNode *)blockLevelNode
 {
     EucHTMLDocumentNode *prospectiveNode = self;
@@ -242,39 +147,14 @@
     return self.parent.blockLevelNode;
 }
 
-- (EucHTMLDocumentNode *)next
+- (BOOL)isTextNode
 {
-    EucHTMLDBNode *nextDBNode = _dbNode.nextNode;
-    if(nextDBNode) {
-        return [_document nodeForKey:nextDBNode.key];
-    } else {
-        return nil;
-    }    
+    return NO;
 }
 
-- (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under {
-    EucHTMLDBNode *nextDBNode = [_dbNode nextNodeUnder:under.dbNode];
-    if(nextDBNode) {
-        return [_document nodeForKey:nextDBNode.key];
-    } else {
-        return nil;
-    }
-}
-
-- (NSArray *)children
+- (NSString *)text
 {
-    if(!_children) {
-        uint32_t childrenCount = _dbNode.childrenKeysCount;
-        if(childrenCount) {
-            EucHTMLDocumentNode *children[childrenCount];
-            uint32_t *childrenKeys = _dbNode.childrenKeys;
-            for(uint32_t i = 0; i < childrenCount; ++i) {
-                children[i] = [_document nodeForKey:childrenKeys[i]];
-            }
-            _children = [[NSArray alloc] initWithObjects:children count:childrenCount];
-        }
-    }
-    return _children;
+    return nil;
 }
 
 @end

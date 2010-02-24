@@ -11,9 +11,15 @@
 #import <libcss/libcss.h>
 #import "EucHTMLDB.h"
 
+#define DB_KEY_MAPPING_SHIFT 3
+#define GENERATED_NODE_BEFORE_CONTAINER_KEY_FLAG 0x1
+#define GENERATED_NODE_AFTER_CONTAINER_KEY_FLAG  0x2
+#define GENERATED_NODE_TEXT_KEY_FLAG             0x4
+#define GENERATED_NODE_KEY_MASK                  0x7
+
 CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase);
 
-@class EucHTMLDocumentNode, EucHTMLDBNodeManager, EucHTMLDBNode;
+@class EucHTMLDocumentNode, EucHTMLDocumentConcreteNode, EucHTMLDBNodeManager, EucHTMLDBNode;
 
 @interface EucHTMLDocument : NSObject {
     EucHTMLDB *_db;
@@ -23,7 +29,7 @@ CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size
     EucHTMLDBNode *_rootDBNode;
     EucHTMLDBNode *_bodyDBNode;
     
-    EucHTMLDocumentNode *_body;
+    EucHTMLDocumentConcreteNode *_body;
     
     css_select_ctx *_selectCtx;
     
@@ -33,7 +39,7 @@ CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size
     CFMutableDictionaryRef _keyToExtantNode;
 }
 
-@property (nonatomic, readonly) EucHTMLDocumentNode *body;
+@property (nonatomic, readonly) EucHTMLDocumentConcreteNode *body;
 
 - (id)initWithPath:(NSString *)path;
 - (EucHTMLDocumentNode *)nodeForKey:(uint32_t)key;
@@ -48,6 +54,6 @@ CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size
 css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_string *rel, lwc_string **abs);
 
 // Private - used by EucHTMLDBNode.
-- (void)notifyOfDealloc:(EucHTMLDocumentNode *)node;
+- (void)notifyOfDealloc:(EucHTMLDocumentConcreteNode *)node;
 
 @end

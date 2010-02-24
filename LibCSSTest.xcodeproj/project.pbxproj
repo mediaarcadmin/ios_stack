@@ -19,12 +19,15 @@
 		7D22476110FD00D200CFD8B5 /* EucHTMLDBNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22474C10FD00D200CFD8B5 /* EucHTMLDBNode.m */; };
 		7D22476210FD00D200CFD8B5 /* EucHTMLDBNodeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22474E10FD00D200CFD8B5 /* EucHTMLDBNodeManager.m */; };
 		7D22476310FD00D200CFD8B5 /* EucHTMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475110FD00D200CFD8B5 /* EucHTMLDocument.m */; };
-		7D22476410FD00D200CFD8B5 /* EucHTMLDocumentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475310FD00D200CFD8B5 /* EucHTMLDocumentNode.m */; };
+		7D22476410FD00D200CFD8B5 /* EucHTMLDocumentConcreteNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475310FD00D200CFD8B5 /* EucHTMLDocumentConcreteNode.m */; };
 		7D22476710FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475A10FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m */; };
 		7D22476810FD00D200CFD8B5 /* EucHTMLLayoutLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475C10FD00D200CFD8B5 /* EucHTMLLayoutLine.m */; };
 		7D22476910FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475E10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m */; };
 		7D2247CA10FD025A00CFD8B5 /* EucHTMLLayouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */; };
 		7D22481810FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22481710FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m */; };
+		7D396936113586AC006ECF7B /* EucHTMLDocumentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D396935113586AC006ECF7B /* EucHTMLDocumentNode.m */; };
+		7D396A601135A51B006ECF7B /* EucHTMLDocumentGeneratedContainerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D39680B113540E0006ECF7B /* EucHTMLDocumentGeneratedContainerNode.m */; };
+		7D396B461135C7E7006ECF7B /* EucHTMLDocumentGeneratedTextNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D396B451135C7E7006ECF7B /* EucHTMLDocumentGeneratedTextNode.m */; };
 		7D6A856D10C42D9C0024B8D6 /* detect.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0410C41CEA00D8A42E /* detect.c */; };
 		7D6A856E10C42DB70024B8D6 /* hubbub.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0710C41CEA00D8A42E /* hubbub.c */; };
 		7D6A856F10C42DB70024B8D6 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0910C41CEA00D8A42E /* parser.c */; };
@@ -186,8 +189,8 @@
 		7D22474E10FD00D200CFD8B5 /* EucHTMLDBNodeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDBNodeManager.m; sourceTree = "<group>"; };
 		7D22475010FD00D200CFD8B5 /* EucHTMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDocument.h; sourceTree = "<group>"; };
 		7D22475110FD00D200CFD8B5 /* EucHTMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDocument.m; sourceTree = "<group>"; };
-		7D22475210FD00D200CFD8B5 /* EucHTMLDocumentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDocumentNode.h; sourceTree = "<group>"; };
-		7D22475310FD00D200CFD8B5 /* EucHTMLDocumentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDocumentNode.m; sourceTree = "<group>"; };
+		7D22475210FD00D200CFD8B5 /* EucHTMLDocumentConcreteNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDocumentConcreteNode.h; sourceTree = "<group>"; };
+		7D22475310FD00D200CFD8B5 /* EucHTMLDocumentConcreteNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDocumentConcreteNode.m; sourceTree = "<group>"; };
 		7D22475910FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutPositionedBlock.h; sourceTree = "<group>"; };
 		7D22475A10FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutPositionedBlock.m; sourceTree = "<group>"; };
 		7D22475B10FD00D200CFD8B5 /* EucHTMLLayoutLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutLine.h; sourceTree = "<group>"; };
@@ -198,6 +201,12 @@
 		7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayouter.m; sourceTree = "<group>"; };
 		7D22481610FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutPositionedRun.h; sourceTree = "<group>"; };
 		7D22481710FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutPositionedRun.m; sourceTree = "<group>"; };
+		7D39680A113540E0006ECF7B /* EucHTMLDocumentGeneratedContainerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDocumentGeneratedContainerNode.h; sourceTree = "<group>"; };
+		7D39680B113540E0006ECF7B /* EucHTMLDocumentGeneratedContainerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDocumentGeneratedContainerNode.m; sourceTree = "<group>"; };
+		7D396934113586AC006ECF7B /* EucHTMLDocumentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDocumentNode.h; sourceTree = "<group>"; };
+		7D396935113586AC006ECF7B /* EucHTMLDocumentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDocumentNode.m; sourceTree = "<group>"; };
+		7D396B441135C7E7006ECF7B /* EucHTMLDocumentGeneratedTextNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDocumentGeneratedTextNode.h; sourceTree = "<group>"; };
+		7D396B451135C7E7006ECF7B /* EucHTMLDocumentGeneratedTextNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDocumentGeneratedTextNode.m; sourceTree = "<group>"; };
 		7D6A59DB10C41CEA00D8A42E /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		7D6A59DD10C41CEA00D8A42E /* entities.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = entities.xslt; sourceTree = "<group>"; };
 		7D6A59DE10C41CEA00D8A42E /* get_entities */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = get_entities; sourceTree = "<group>"; };
@@ -766,8 +775,14 @@
 			children = (
 				7D22475010FD00D200CFD8B5 /* EucHTMLDocument.h */,
 				7D22475110FD00D200CFD8B5 /* EucHTMLDocument.m */,
-				7D22475210FD00D200CFD8B5 /* EucHTMLDocumentNode.h */,
-				7D22475310FD00D200CFD8B5 /* EucHTMLDocumentNode.m */,
+				7D396934113586AC006ECF7B /* EucHTMLDocumentNode.h */,
+				7D396935113586AC006ECF7B /* EucHTMLDocumentNode.m */,
+				7D22475210FD00D200CFD8B5 /* EucHTMLDocumentConcreteNode.h */,
+				7D22475310FD00D200CFD8B5 /* EucHTMLDocumentConcreteNode.m */,
+				7D39680A113540E0006ECF7B /* EucHTMLDocumentGeneratedContainerNode.h */,
+				7D39680B113540E0006ECF7B /* EucHTMLDocumentGeneratedContainerNode.m */,
+				7D396B441135C7E7006ECF7B /* EucHTMLDocumentGeneratedTextNode.h */,
+				7D396B451135C7E7006ECF7B /* EucHTMLDocumentGeneratedTextNode.m */,
 			);
 			path = Document;
 			sourceTree = "<group>";
@@ -2133,13 +2148,16 @@
 				7D22476110FD00D200CFD8B5 /* EucHTMLDBNode.m in Sources */,
 				7D22476210FD00D200CFD8B5 /* EucHTMLDBNodeManager.m in Sources */,
 				7D22476310FD00D200CFD8B5 /* EucHTMLDocument.m in Sources */,
-				7D22476410FD00D200CFD8B5 /* EucHTMLDocumentNode.m in Sources */,
+				7D22476410FD00D200CFD8B5 /* EucHTMLDocumentConcreteNode.m in Sources */,
 				7D22476710FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m in Sources */,
 				7D22476810FD00D200CFD8B5 /* EucHTMLLayoutLine.m in Sources */,
 				7D22476910FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m in Sources */,
 				7D2247CA10FD025A00CFD8B5 /* EucHTMLLayouter.m in Sources */,
 				7D22481810FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m in Sources */,
 				7D9059481123063E00167D20 /* EucHTMLRenderer.m in Sources */,
+				7D396936113586AC006ECF7B /* EucHTMLDocumentNode.m in Sources */,
+				7D396A601135A51B006ECF7B /* EucHTMLDocumentGeneratedContainerNode.m in Sources */,
+				7D396B461135C7E7006ECF7B /* EucHTMLDocumentGeneratedTextNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

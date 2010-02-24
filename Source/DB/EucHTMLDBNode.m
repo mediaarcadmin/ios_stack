@@ -336,10 +336,11 @@ css_error EucHTMLDBNodeID(void *pw, void *node, lwc_context *dict, lwc_string **
     uint32_t childrenCount = self.childrenKeysCount;
     if(childrenCount) {
         return [_manager nodeForKey:self.childrenKeys[0]];
-    } else {
+    } else if(self != node) {
         return [self.parentNode _nodeAfter:self.key under:node.key];
+    } else {
+        return nil;
     }
-    return NULL;
 }
 
 - (EucHTMLDBNode *)nextNode
