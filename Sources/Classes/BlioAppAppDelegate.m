@@ -104,6 +104,7 @@ static void *background_init_thread(void * arg) {
     
     NSManagedObjectContext *moc = [self managedObjectContext]; 
     [libraryController setManagedObjectContext:moc];
+    [libraryController setProcessingDelegate:[self processingManager]];
     
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
@@ -146,6 +147,7 @@ static void *background_init_thread(void * arg) {
     [managedObjectContext release];
     [managedObjectModel release];
     [persistentStoreCoordinator release];
+    [processingManager release];
 	[navigationController release];
     [libraryController release];
 	[window release];
@@ -221,6 +223,21 @@ static void *background_init_thread(void * arg) {
    }    
 	
     return persistentStoreCoordinator;
+}
+
+/**
+ Returns the processing manager for the application.
+ If it doesn't already exist, it is created
+ */
+- (BlioProcessingManager *)processingManager {
+	
+    if (processingManager != nil) {
+        return processingManager;
+    }
+	
+    processingManager = [[BlioProcessingManager alloc] initWithManagedObjectContext:[self managedObjectContext]];
+   	
+    return processingManager;
 }
 
 @end

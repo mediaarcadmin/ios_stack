@@ -100,6 +100,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize bookCoverPopped = _bookCoverPopped;
 @synthesize firstPageRendered = _firstPageRendered;
 @synthesize managedObjectContext = _managedObjectContext;
+@synthesize processingDelegate = _processingDelegate;
 
 - (void)dealloc {
     self.currentBookView = nil;
@@ -107,6 +108,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     self.tableView = nil;
     self.currentPoppedBookCover = nil;
     self.managedObjectContext = nil;
+    self.processingDelegate = nil;
     [super dealloc];
 }
 
@@ -190,8 +192,10 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
     NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
     [positionSort release];
+    
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setSortDescriptors:sorters];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithBool:YES]]];
     [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
     self.books = [moc executeFetchRequest:request error:&error];
     
@@ -211,6 +215,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.8f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.3f]];
         [aBook setPosition:0];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Exiles In The Garden"];
@@ -222,7 +227,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.3f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.6f]];
         [aBook setPosition:[NSNumber numberWithInt:1]];
-        
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
+         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Essentials Of Discrete Mathematics"];
         [aBook setAuthor:@"David J. Hunter"];
@@ -232,6 +238,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.2f]];
         [aBook setPosition:[NSNumber numberWithInt:2]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Three Little Pigs"];
@@ -246,6 +253,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
         [aBook setPosition:[NSNumber numberWithInt:3]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Fables: Legends In Exile"];
@@ -256,6 +264,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
         [aBook setPosition:[NSNumber numberWithInt:4]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"The Oz Principle"];
@@ -264,6 +273,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.7f]];
         [aBook setPosition:[NSNumber numberWithInt:5]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"How To Be A Movie Star"];
@@ -272,6 +282,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
         [aBook setPosition:[NSNumber numberWithInt:6]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Her Fearful Symmetry"];
@@ -280,6 +291,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
         [aBook setPosition:[NSNumber numberWithInt:7]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"The Lost Symbol"];
@@ -288,6 +300,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.53f]];
         [aBook setPosition:[NSNumber numberWithInt:8]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Hostage"];
@@ -296,6 +309,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.41f]];
         [aBook setPosition:[NSNumber numberWithInt:9]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"I, Alex Cross"];
@@ -304,6 +318,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.65f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.67f]];
         [aBook setPosition:[NSNumber numberWithInt:10]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Diary of a Wimpy Kid, Dog Days"];
@@ -312,6 +327,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
         [aBook setPosition:[NSNumber numberWithInt:11]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"Pirate Latitudes"];
@@ -320,6 +336,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.54f]];
         [aBook setPosition:[NSNumber numberWithInt:12]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
         [aBook setTitle:@"The Girl With The Dragon Tatoo"];
@@ -328,6 +345,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
         [aBook setPosition:[NSNumber numberWithInt:13]];
+        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         if (![moc save:&error]) {
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
@@ -537,7 +555,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark Toolbar Actions
 
 - (void)showStore:(id)sender {    
-    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] init];
+    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate];
     [self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
 }

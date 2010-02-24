@@ -16,6 +16,7 @@ typedef enum {
 } BlioLibraryLayout;
 
 @class BlioLibraryBookView;
+@protocol BlioProcessingDelegate;
 
 @interface BlioLibraryViewController : UITableViewController <UIActionSheetDelegate> {
     BlioLibraryBookView *_currentBookView;
@@ -28,6 +29,7 @@ typedef enum {
     
     BlioTestParagraphWords *_testParagraphWords;
     NSManagedObjectContext *_managedObjectContext;
+    id<BlioProcessingDelegate> _processingDelegate;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -38,5 +40,6 @@ typedef enum {
 @property (nonatomic, retain) NSArray *books;
 @property (nonatomic, readonly) NSInteger columnCount;
 @property (nonatomic) BlioLibraryLayout libraryLayout;
+@property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 
 @end

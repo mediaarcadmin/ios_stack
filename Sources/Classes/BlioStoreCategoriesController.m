@@ -16,10 +16,11 @@
 
 @implementation BlioStoreCategoriesController
 
-@synthesize feeds;
+@synthesize feeds, processingDelegate;
 
 - (void)dealloc {
     self.feeds = nil;
+    self.processingDelegate = nil;
     [super dealloc];
 }
 
@@ -190,6 +191,8 @@
         [aCategoriesController setFeeds:[NSArray arrayWithObject:aFeed]];
         [aFeed release];
         
+        [aCategoriesController setProcessingDelegate:self.processingDelegate];
+        
         [aCategoriesController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
         [self.navigationController pushViewController:aCategoriesController animated:YES];
         [aCategoriesController release];
@@ -199,6 +202,7 @@
             BlioStoreParsedEntity *entity = [feed.entities objectAtIndex:[indexPath row]];
             BlioStoreBookViewController *aEntityController = [[BlioStoreBookViewController alloc] initWithNibName:@"BlioStoreBookView"
                                                                                                        bundle:[NSBundle mainBundle]];
+            [aEntityController setProcessingDelegate:self.processingDelegate];
             [aEntityController setTitle:[entity title]];
             [aEntityController setEntity:entity];
             [aEntityController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "BlioStoreBooksSourceParser.h"
 
+@protocol BlioProcessingDelegate;
+
 @interface BlioStoreBookViewController : UIViewController {
     NSOperationQueue *fetchThumbQueue;
     BlioStoreParsedEntity *entity;
@@ -26,6 +28,8 @@
     UILabel *publicationDate;
     UILabel *pages;
     UILabel *publisher;
+    
+    id <BlioProcessingDelegate> processingDelegate;
 }
 
 @property (nonatomic, retain) NSOperationQueue *fetchThumbQueue;
@@ -44,5 +48,9 @@
 @property (nonatomic, retain) IBOutlet UILabel *publicationDate;
 @property (nonatomic, retain) IBOutlet UILabel *pages;
 @property (nonatomic, retain) IBOutlet UILabel *publisher;
+
+@property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
+
+- (IBAction)downloadButtonPressed:(id)sender;
 
 @end

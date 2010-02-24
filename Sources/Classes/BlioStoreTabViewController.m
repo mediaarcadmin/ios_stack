@@ -13,9 +13,16 @@
 #import "BlioStoreMyVaultController.h"
 #import "BlioStoreDownloadsController.h"
 
+@interface BlioStoreTabViewController()
+@property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
+@end
+
 @implementation BlioStoreTabViewController
 
+@synthesize processingDelegate;
+
 - (void)dealloc {
+    self.processingDelegate = nil;
     [super dealloc];
 }
 
@@ -28,9 +35,13 @@
     return self;
 }
 */
-
 - (id)init {
+    return [self initWithProcessingDelegate:nil];
+}
+
+- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate {
     if ((self = [super init])) {
+        self.processingDelegate = aProcessingDelegate;
         self.delegate = self;
         
         UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(dismissTabView:)];        
@@ -54,11 +65,16 @@
         [vc2 setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
         [feedBooksFeed release];
         [googleBooksFeed release];
+        
+        [vc2 setProcessingDelegate:self.processingDelegate];
+        
         UINavigationController* nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
         [vc2.navigationItem setRightBarButtonItem:aDoneButton];
         [vc2 release];
         
         BlioStoreSearchController* vc3 = [[BlioStoreSearchController alloc] init];
+        [vc3 setProcessingDelegate:self.processingDelegate];
+        
         UINavigationController* nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
         [vc3.navigationItem setRightBarButtonItem:aDoneButton];
         [vc3 release];
