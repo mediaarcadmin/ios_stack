@@ -1,5 +1,5 @@
 //
-//  EucHTMLLayoutBlock.m
+//  EucHTMLLayoutPositionedBlock.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
@@ -10,6 +10,10 @@
 #import "EucHTMLDocument.h"
 #import "EucHTMLDocumentNode.h"
 #import <libcss/libcss.h>
+
+@interface EucHTMLLayoutPositionedBlock ()
+- (void)_collapseTopMarginUpwards;
+@end
 
 @implementation EucHTMLLayoutPositionedBlock
 
@@ -47,7 +51,7 @@
     [super dealloc];
 }
 
-- (void)positionInFrame:(CGRect)frame collapsingTop:(BOOL)collapsingTop
+- (void)positionInFrame:(CGRect)frame afterInternalPageBreak:(BOOL)afterInternalPageBreak
 {
     _frame = frame;
     
@@ -56,7 +60,7 @@
     css_unit unit;
     
     CGRect borderRect;
-    if(collapsingTop) {
+    if(afterInternalPageBreak) {
         borderRect.origin.y = frame.origin.y;
     } else {
         css_computed_margin_top(computedStyle, &fixed, &unit);
@@ -70,7 +74,7 @@
     _borderRect = borderRect;
     
     CGRect paddingRect;
-    if(collapsingTop) {
+    if(afterInternalPageBreak) {
         paddingRect.origin.y = borderRect.origin.y;
     } else {
         css_computed_border_top_width(computedStyle, &fixed, &unit);
@@ -84,7 +88,7 @@
     _paddingRect = paddingRect;
     
     CGRect contentRect;
-    if(collapsingTop) {
+    if(afterInternalPageBreak) {
         contentRect.origin.y = paddingRect.origin.y;
     } else {
         css_computed_padding_top(computedStyle, &fixed, &unit);
@@ -99,6 +103,23 @@
     
     if(frame.size.height != CGFLOAT_MAX) {
         [self closeBottomFromYPoint:frame.size.height];
+    }
+}
+
+static inline CGFloat collapse(CGFloat one, CGFloat two) 
+{
+    if(one < 0) {
+        if(two < 0) {
+            return MIN(one, two);
+        } else {
+            return two + one;
+        }
+    } else {
+        if(two < 0) {
+            return one + two;
+        } else {
+            return MAX(one, two);
+        }        
     }
 }
 
@@ -120,13 +141,164 @@
     _borderRect.size.height = point - _borderRect.origin.y;
     
     css_computed_margin_bottom(computedStyle, &fixed, &unit);
-    point += libcss_size_to_pixels(computedStyle, fixed, unit, width);
-    _frame.size.height = point - _frame.origin.y;
+    CGFloat bottomMarginHeight = libcss_size_to_pixels(computedStyle, fixed, unit, width);
+    
+    // If we have a bottom margin, and the box is otherwise empty, the margin
+    // should collapse upwards.
+    if(bottomMarginHeight != 0.0f && 
+       _contentRect.size.height == 0.0f &&
+       _paddingRect.size.height == 0.0f && 
+       _borderRect.size.height == 0.0f) {
+        
+        CGFloat oldTopMarginHeight = _borderRect.origin.y - _frame.origin.y;
+        CGFloat newTopMargin = collapse(oldTopMarginHeight, bottomMarginHeight);
+        CGFloat topMarginDifference = newTopMargin - oldTopMarginHeight;
+        if(topMarginDifference) {
+            _paddingRect.origin.y += topMarginDifference;
+            _borderRect.origin.y += topMarginDifference;
+            if(oldTopMarginHeight == 0.0f) {
+                // Further collapse the margin upwards, if possible.
+                [self _collapseTopMarginUpwards];
+            }            
+        }
+        _frame.size.height = 0.0f;
+    } else {
+        point += bottomMarginHeight;
+        _frame.size.height = point - _frame.origin.y;
+    }
 }
 
 - (void)addSubEntity:(id)subEntity
 {
     [_subEntities addObject:subEntity];
+    
+    if([subEntity isKindOfClass:[EucHTMLLayoutPositionedBlock class]]) {
+        EucHTMLLayoutPositionedBlock *subBlock = (EucHTMLLayoutPositionedBlock *)subEntity;
+        subBlock.parent = self;
+        [subBlock _collapseTopMarginUpwards];
+    }
+}
+
+- (id)_previousSibling
+{
+    id ret = nil;
+    NSArray *siblings = self.parent.subEntities;
+    NSUInteger myIndex = [siblings indexOfObject:self];
+    if(myIndex != 0) {
+        ret = [siblings objectAtIndex:myIndex - 1];
+    }
+    return ret;
+}
+
+- (void)_collapseTopMarginUpwards
+{
+    NSParameterAssert(self.subEntities.count == 0);
+                      
+    CGFloat oldTopMarginHeight = _borderRect.origin.y - _frame.origin.y;
+    if(oldTopMarginHeight) {
+        NSMutableArray *blocksToAdjust = [NSMutableArray arrayWithObject:self];
+        
+        CGFloat adjustBy = 0.0f;
+        BOOL didCollapse = NO;
+        
+        EucHTMLLayoutPositionedBlock *previouslyExamining = self;
+        EucHTMLLayoutPositionedBlock *potentiallyCollapseInto = nil;
+
+        Class eucHTMLLayoutPositionedBlockClass = [EucHTMLLayoutPositionedBlock class];
+        while(previouslyExamining) {
+            potentiallyCollapseInto = previouslyExamining._previousSibling;
+            if(![potentiallyCollapseInto isKindOfClass:eucHTMLLayoutPositionedBlockClass]) {
+                potentiallyCollapseInto = nil;
+                break;
+            }
+            if(!potentiallyCollapseInto) {
+                potentiallyCollapseInto = previouslyExamining.parent;
+            }
+            if(potentiallyCollapseInto) {
+                if(!potentiallyCollapseInto.frame.size.height) {
+                    [blocksToAdjust addObject:potentiallyCollapseInto];
+                    previouslyExamining = potentiallyCollapseInto;
+                } else {
+                    break;
+                }
+            }
+        }
+        
+        if(potentiallyCollapseInto) {
+            CGRect potentiallyCollapseIntoFrame = potentiallyCollapseInto.frame;
+            if(potentiallyCollapseIntoFrame.size.height) {
+                CGFloat collapseIntoBottomMarginHeight = CGRectGetMaxY(potentiallyCollapseIntoFrame) - CGRectGetMaxY(potentiallyCollapseInto.borderRect);
+                if(collapseIntoBottomMarginHeight) {
+                    CGFloat newBottomMarginHeight = collapse(oldTopMarginHeight, collapseIntoBottomMarginHeight);
+                    if(collapseIntoBottomMarginHeight != newBottomMarginHeight) {
+                        CGFloat marginDifference = newBottomMarginHeight - collapseIntoBottomMarginHeight;
+                        
+                        potentiallyCollapseIntoFrame.size.height += marginDifference;
+                        potentiallyCollapseInto.frame = potentiallyCollapseIntoFrame;
+                        
+                        adjustBy = marginDifference;
+                    }
+                    didCollapse = YES;
+                } else {
+                    CGRect potentiallyCollapseIntoBorderRect = potentiallyCollapseInto.borderRect;
+                    CGRect potentiallyCollapseIntoPaddingRect = potentiallyCollapseInto.paddingRect;
+                    CGRect potentiallyCollapseIntoContentRect = potentiallyCollapseInto.contentRect;
+                    if(potentiallyCollapseIntoBorderRect.size.height == 0 &&
+                       potentiallyCollapseIntoPaddingRect.size.height == 0 &&
+                       potentiallyCollapseIntoContentRect.size.height == 0) {
+                        CGFloat collapseIntoTopMarginHeight = potentiallyCollapseIntoBorderRect.origin.y - potentiallyCollapseIntoFrame.origin.y;
+                        CGFloat newTopMarginHeight = collapse(oldTopMarginHeight, collapseIntoTopMarginHeight);
+                        if(collapseIntoTopMarginHeight != newTopMarginHeight) {  
+                            CGFloat marginDifference = newTopMarginHeight - collapseIntoTopMarginHeight;
+                            adjustBy = marginDifference;
+                            
+                            potentiallyCollapseIntoFrame.size.height += adjustBy;
+                            potentiallyCollapseInto.frame = potentiallyCollapseIntoFrame;
+
+                            potentiallyCollapseIntoBorderRect.origin.y += adjustBy;
+                            potentiallyCollapseInto.borderRect = potentiallyCollapseIntoBorderRect;
+                            
+                            potentiallyCollapseIntoPaddingRect.origin.y += adjustBy;
+                            potentiallyCollapseInto.borderRect = potentiallyCollapseIntoPaddingRect;
+                            
+                            potentiallyCollapseIntoContentRect.origin.y += adjustBy;
+                            potentiallyCollapseInto.contentRect = potentiallyCollapseIntoContentRect;                            
+                        }
+                        didCollapse = YES;
+                    }
+                }
+            }
+        }
+        
+        if(didCollapse) {    
+            // Collapse my top margin.
+            _borderRect.origin.y -= oldTopMarginHeight;
+            _paddingRect.origin.y -= oldTopMarginHeight;
+            _contentRect.origin.y -= oldTopMarginHeight; 
+            
+            // Move ourselves, and any intervening empty blocks, to adjust
+            // for the moved margin.
+            if(adjustBy != 0.0f) {
+                for(EucHTMLLayoutPositionedBlock *block in blocksToAdjust) {
+                    CGRect rect = block.frame;
+                    rect.origin.y += adjustBy;
+                    block.frame = rect;
+                    
+                    rect = block.borderRect;
+                    rect.origin.y += adjustBy;
+                    block.borderRect = rect;
+
+                    rect = block.paddingRect;
+                    rect.origin.y += adjustBy;
+                    block.borderRect = rect;
+                    
+                    rect = block.contentRect;
+                    rect.origin.y += adjustBy;
+                    block.contentRect = rect;
+                }
+            }
+        }
+    }
 }
 
 @end

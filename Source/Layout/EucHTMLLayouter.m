@@ -34,11 +34,11 @@ Block completion status.
 - (EucHTMLLayoutPositionedBlock *)_constructBlockAndAncestorsForNode:(EucHTMLDocumentNode *)node
                                                   returningInnermost:(EucHTMLLayoutPositionedBlock **)innermost
                                                              inFrame:(CGRect)frame
-                                              collapsingInnermostTop:(BOOL)collapseInnermostTop
+                                              afterInternalPageBreak:(BOOL)afterInternalPageBreak
 {
     EucHTMLLayoutPositionedBlock *newContainer = [[[EucHTMLLayoutPositionedBlock alloc] initWithDocumentNode:node] autorelease];
     newContainer.documentNode = node;
-    [newContainer positionInFrame:frame collapsingTop:collapseInnermostTop];
+    [newContainer positionInFrame:frame afterInternalPageBreak:afterInternalPageBreak];
     
     EucHTMLLayoutPositionedBlock *outermost = nil;
     if(![node.document nodeIsBody:node]) {
@@ -46,8 +46,7 @@ Block completion status.
         outermost = [self _constructBlockAndAncestorsForNode:node.parent
                                           returningInnermost:&parentContainer
                                                      inFrame:newContainer.contentRect
-                                      collapsingInnermostTop:YES];
-        newContainer.parent = parentContainer;
+                                      afterInternalPageBreak:YES];
         [parentContainer addSubEntity:newContainer];
     } else {
         outermost = newContainer;
@@ -75,12 +74,12 @@ Block completion status.
             positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode.parent
                                                    returningInnermost:&currentPositionedBlock
                                                               inFrame:frame
-                                               collapsingInnermostTop:YES];               
+                                               afterInternalPageBreak:YES];               
         } else {
             positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode
                                                    returningInnermost:&currentPositionedBlock
                                                               inFrame:frame
-                                               collapsingInnermostTop:NO];
+                                               afterInternalPageBreak:NO];
         }
         currentDocumentNode = [currentDocumentNode next];
         
@@ -146,8 +145,7 @@ Block completion status.
                 
                 EucHTMLLayoutPositionedBlock *newBlock = [[EucHTMLLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode];
                 [newBlock positionInFrame:potentialFrame
-                            collapsingTop:NO];
-                newBlock.parent = currentPositionedBlock;
+                            afterInternalPageBreak:NO];
                 [currentPositionedBlock addSubEntity:newBlock];                    
                 
                 currentPositionedBlock = [newBlock autorelease];

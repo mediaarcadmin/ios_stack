@@ -33,7 +33,7 @@
 
 - (id)initWithDocumentNode:(EucHTMLDocumentNode *)documentNode;
 
-- (void)positionInFrame:(CGRect)frame collapsingTop:(BOOL)collapsingTop;
+- (void)positionInFrame:(CGRect)frame afterInternalPageBreak:(BOOL)afterInternalPageBreak;
 - (void)closeBottomFromYPoint:(CGFloat)point;
 
 - (void)addSubEntity:(id)subEntity;
