@@ -20,13 +20,12 @@
 @property (nonatomic) BOOL forceReprocess;
 @property (nonatomic) NSUInteger percentageComplete;
 
+- (void)setBookValue:(id)value forKey:(NSString *)key;
+
 @end
 
 @protocol BlioProcessingDelegate
-@optional
-- (void)pauseProcessing;
-- (void)resumeProcessing;
-
+@required
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL;
 @end
 

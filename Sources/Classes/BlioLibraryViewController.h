@@ -18,7 +18,7 @@ typedef enum {
 @class BlioLibraryBookView;
 @protocol BlioProcessingDelegate;
 
-@interface BlioLibraryViewController : UITableViewController <UIActionSheetDelegate> {
+@interface BlioLibraryViewController : UITableViewController <NSFetchedResultsControllerDelegate, UIActionSheetDelegate> {
     BlioLibraryBookView *_currentBookView;
     UIImageView *_currentPoppedBookCover;
     BOOL _bookCoverPopped;
@@ -30,6 +30,8 @@ typedef enum {
     BlioTestParagraphWords *_testParagraphWords;
     NSManagedObjectContext *_managedObjectContext;
     id<BlioProcessingDelegate> _processingDelegate;
+    
+    NSFetchedResultsController *_fetchedResultsController;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -41,5 +43,6 @@ typedef enum {
 @property (nonatomic, readonly) NSInteger columnCount;
 @property (nonatomic) BlioLibraryLayout libraryLayout;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 @end

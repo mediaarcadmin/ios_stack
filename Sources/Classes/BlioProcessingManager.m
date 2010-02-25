@@ -63,14 +63,28 @@
 #pragma mark -
 #pragma mark BlioProcessingDelegate
 
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL {
-    NSLog(@"book enqueued with title: %@, authors: %@, coverURL: %@, ePurlURL: %@, pdfURL: %@", title, authors, coverURL, ePubURL, pdfURL);
-    
+- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL {    
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (nil != moc) {
-        BlioMockBook *aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];        
+        
+        NSError *error;
+        BlioMockBook *aBook;
+        
+        NSUInteger count = [moc countForFetchRequest:request error:&error];
+        [request release];
+        if (count == NSNotFound) {
+            NSLog(@"Failed to retrieve book count with error: %@, %@", error, [error userInfo]);
+            return;
+        } else {
+            aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
+        }
+        
         [aBook setValue:title forKey:@"title"];
         [aBook setValue:[authors lastObject] forKey:@"author"];
+        [aBook setValue:[NSNumber numberWithInt:count] forKey:@"position"];        
         [aBook setValue:[NSNumber numberWithBool:NO] forKey:@"processingComplete"];
         
         CFUUIDRef theUUID = CFUUIDCreate(NULL);
@@ -79,7 +93,6 @@
         [aBook setValue:(NSString *)uniqueString forKey:@"uuid"];
         CFRelease(uniqueString);
         
-        NSError *error;
         if (![moc save:&error]) {
             NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
         } else {
@@ -113,7 +126,7 @@
 
 - (void)setBookValue:(id)value forKey:(NSString *)key {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+     
     NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
     [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
     NSManagedObject *book = [moc objectWithID:self.bookID];
@@ -125,6 +138,45 @@
     NSError *error;
     if (![moc save:&error]) {
         NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+    }
+    
+    [moc release];
+    
+    [pool drain];
+}
+
+- (void)setBookProcessingComplete {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+    [moc setPersistentStoreCoordinator:self.storeCoordinator];
+    NSManagedObject *book = [moc objectWithID:self.bookID];
+    
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book");
+        return;
+    }
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithBool:YES]]];
+    
+    // Block whilst we calculate the position so that other threads don't perform the same
+    // check at the same time
+    NSError *error;
+    @synchronized (self.storeCoordinator) {
+        NSUInteger count = [moc countForFetchRequest:request error:&error];
+        if (count == NSNotFound) {
+            NSLog(@"Failed to retrieve book count with error: %@, %@", error, [error userInfo]);
+        } else {
+            [book setValue:[NSNumber numberWithInt:count] forKey:@"position"];
+            [book setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
+        }
+    
+        NSError *error;
+        if (![moc save:&error]) {
+            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        }
     }
     
     [moc release];
@@ -190,9 +242,7 @@
         [pool drain];
         return;
     }
-    
-    NSLog(@"downloaded data of size: %d", [data length]);
-    
+        
     if ([self isCancelled]) {
         [pool drain];
         return;
@@ -210,7 +260,6 @@
     NSString *cachedFilename = [self.cacheDirectory stringByAppendingPathComponent:filename];
     [data writeToFile:cachedFilename atomically:YES];
     
-    NSLog(@"Saving cover with filename %@", filename);
     [self setBookValue:filename forKey:@"coverFilename"];
     [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
     

@@ -101,14 +101,17 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize firstPageRendered = _firstPageRendered;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate = _processingDelegate;
+@synthesize fetchedResultsController = _fetchedResultsController;
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.currentBookView = nil;
     self.books = nil;
     self.tableView = nil;
     self.currentPoppedBookCover = nil;
     self.managedObjectContext = nil;
     self.processingDelegate = nil;
+    self.fetchedResultsController = nil;
     [super dealloc];
 }
 
@@ -188,21 +191,31 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     NSManagedObjectContext *moc = [self managedObjectContext]; 
     
     // Load any persisted books
+    // N.B. Do not set a predicate on this request, if you do there is a risk that
+    // the fetchedResultsController won't auto-update correctly
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
-    NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
+    NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:NO];
     NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
     [positionSort release];
     
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
-    [request setSortDescriptors:sorters];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithBool:YES]]];
     [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-    self.books = [moc executeFetchRequest:request error:&error];
+    [request setSortDescriptors:sorters];
+    
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
+                                              initWithFetchRequest:request
+                                              managedObjectContext:moc
+                                              sectionNameKeyPath:nil
+                                              cacheName:@"BlioFetchedBooks"];
+    [request release];
+    
+    [aFetchedResultsController setDelegate:self];
+    [aFetchedResultsController performFetch:&error];
     
     if (error) 
         NSLog(@"Error loading from persistent store: %@, %@", error, [error userInfo]);
     
-    if (![self.books count]) {
+    if (![[aFetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
         
         BlioMockBook *aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -214,7 +227,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setTextflowFilename:@"Dead Is So Last Year_split"];
         [aBook setProgress:[NSNumber numberWithFloat:0.8f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.3f]];
-        [aBook setPosition:0];
+        [aBook setPosition:[NSNumber numberWithInt:12]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -226,7 +239,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setTextflowFilename:@"ExilesInTheGarden_split"];
         [aBook setProgress:[NSNumber numberWithFloat:0.3f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.6f]];
-        [aBook setPosition:[NSNumber numberWithInt:1]];
+        [aBook setPosition:[NSNumber numberWithInt:12]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
          
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -237,7 +250,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setPdfFilename:@"Essentials_of_Discrete_Mathematics"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.2f]];
-        [aBook setPosition:[NSNumber numberWithInt:2]];
+        [aBook setPosition:[NSNumber numberWithInt:11]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -252,7 +265,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setTextflowFilename:@"Three Little Pigs_split"];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
-        [aBook setPosition:[NSNumber numberWithInt:3]];
+        [aBook setPosition:[NSNumber numberWithInt:10]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -263,7 +276,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setPdfFilename:@"Legends"];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
-        [aBook setPosition:[NSNumber numberWithInt:4]];
+        [aBook setPosition:[NSNumber numberWithInt:9]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -272,7 +285,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/RogerConnors.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.7f]];
-        [aBook setPosition:[NSNumber numberWithInt:5]];
+        [aBook setPosition:[NSNumber numberWithInt:8]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -281,7 +294,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/WilliamMann.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
-        [aBook setPosition:[NSNumber numberWithInt:6]];
+        [aBook setPosition:[NSNumber numberWithInt:7]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -290,7 +303,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/AudreyNiffenegger.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
-        [aBook setPosition:[NSNumber numberWithInt:7]];
+        [aBook setPosition:[NSNumber numberWithInt:6]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -299,7 +312,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/DanBrown.png"];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.53f]];
-        [aBook setPosition:[NSNumber numberWithInt:8]];
+        [aBook setPosition:[NSNumber numberWithInt:5]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
 
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -308,7 +321,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/DonBrown.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.41f]];
-        [aBook setPosition:[NSNumber numberWithInt:9]];
+        [aBook setPosition:[NSNumber numberWithInt:4]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -317,7 +330,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/JamesPatterson.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.65f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.67f]];
-        [aBook setPosition:[NSNumber numberWithInt:10]];
+        [aBook setPosition:[NSNumber numberWithInt:3]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -326,7 +339,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/JeffKinney.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
-        [aBook setPosition:[NSNumber numberWithInt:11]];
+        [aBook setPosition:[NSNumber numberWithInt:2]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -335,7 +348,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/MichaelCrichton.png"];
         [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.54f]];
-        [aBook setPosition:[NSNumber numberWithInt:12]];
+        [aBook setPosition:[NSNumber numberWithInt:1]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
@@ -344,21 +357,24 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aBook setCoverFilename:@"MockCovers/StiegLarsson.png"];
         [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
         [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
-        [aBook setPosition:[NSNumber numberWithInt:13]];
+        [aBook setPosition:[NSNumber numberWithInt:0]];
         [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         
         if (![moc save:&error]) {
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
-        } else {
-            self.books = [moc executeFetchRequest:request error:&error];
-        }
+        }// else {
+//            [fetchedResultsController performFetch:&error];
+//        }
     }
-    [request release];
+    
+    self.fetchedResultsController = aFetchedResultsController;
+    [aFetchedResultsController release];
     
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor = [UIColor clearColor];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -409,21 +425,32 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark Table View Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    NSUInteger count = [[self.fetchedResultsController sections] count];
+    if (count == 0) {
+        count = 1;
+    }
+    return count;
 }
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:section];
+        bookCount = [sectionInfo numberOfObjects];
+    }
+    
     switch (self.libraryLayout) {
         case kBlioLibraryLayoutGrid: {
-            NSInteger bookCount = [self.books count];
             NSInteger columnCount = self.columnCount;
             NSInteger rowCount = bookCount / columnCount;
             if (bookCount % columnCount) rowCount++;
             return rowCount;
         } break;
         default:
-            return [self.books count];
+            return bookCount;
             break;
     }
 }
@@ -451,7 +478,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                 cell = [[[BlioLibraryGridCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:GridCellIdentifier] autorelease];
             }  
             
-            cell.books = self.books;
+            cell.books = [self.fetchedResultsController fetchedObjects];
             cell.rowIndex = [indexPath row]; // N.B. currently these need to be set before the column count
             cell.delegate = self; // N.B. currently these need to be set before the column count
             cell.columnCount = self.columnCount;
@@ -477,7 +504,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                 cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
             }
             
-            cell.book = [self.books objectAtIndex:[indexPath row]];
+            cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
             cell.delegate = self;
             
             if ([indexPath row] % 2)
@@ -491,7 +518,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BlioMockBook *selectedBook = [self.books objectAtIndex:[indexPath row]];
+    BlioMockBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
     BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook];
     
     if (nil != bookViewController) {
@@ -550,6 +577,49 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
  return YES;
  }
  */
+
+#pragma mark -
+#pragma mark Fetched Results Controller Delegate
+//- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+//    [self.tableView beginUpdates];
+//}
+
+/*
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+	
+	UITableView *aTableView = self.tableView;
+	
+	switch(type) {
+			
+		case NSFetchedResultsChangeInsert:
+			[aTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeDelete:
+			[aTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeUpdate:
+			[aTableView reloadRowsAtIndexPaths: [NSArray arrayWithObject: indexPath] withRowAnimation: UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeMove:
+			[aTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+			// Reloading the section inserts a new row and ensures that titles are updated appropriately.
+			[aTableView reloadSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+	}
+}
+*/
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView reloadData];
+}
+
+#pragma mark -
+#pragma mark Core Data Multi-Threading
+- (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
+	[[self managedObjectContext] mergeChangesFromContextDidSaveNotification:notification];
+}
 
 #pragma mark -
 #pragma mark Toolbar Actions
