@@ -17,7 +17,7 @@
 {
     if((self = [super init])) {
         self.document = document;
-        self.key = parentKey | GENERATED_NODE_TEXT_KEY_FLAG;
+        self.key = parentKey | EucHTMLDocumentNodeKeyFlagGeneratedTextNode;
         _parentKey = parentKey;
     }
     return self;

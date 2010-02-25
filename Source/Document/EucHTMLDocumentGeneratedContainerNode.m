@@ -19,7 +19,7 @@
 {
     if((self = [super init])) {
         self.document = document;
-        self.key = parentKey | (beforeParent ? GENERATED_NODE_BEFORE_CONTAINER_KEY_FLAG : GENERATED_NODE_AFTER_CONTAINER_KEY_FLAG);
+        self.key = parentKey | (beforeParent ? EucHTMLDocumentNodeKeyFlagBeforeContainerNode : EucHTMLDocumentNodeKeyFlagAfterContainerNode);
         _parentKey = parentKey;
         _beforeParent = beforeParent;
     }
@@ -38,7 +38,7 @@
 
 - (NSArray *)children
 {
-    return [NSArray arrayWithObject:[self.document nodeForKey:self.key | GENERATED_NODE_TEXT_KEY_FLAG]];
+    return [NSArray arrayWithObject:[self.document nodeForKey:self.key | EucHTMLDocumentNodeKeyFlagGeneratedTextNode]];
 }
 
 - (css_computed_style *)computedStyle

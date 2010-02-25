@@ -6,6 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucHTMLDocument.h"
 #import "EucHTMLDocumentNode.h"
 #import "THStringRenderer.h"
 #import "LWCNSStringAdditions.h"

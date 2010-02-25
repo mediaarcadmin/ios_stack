@@ -150,7 +150,7 @@ static id sHardBreakMarker;
         css_fixed length;
         css_unit unit;
         css_computed_text_indent(style, &length, &unit);
-        ret = libcss_size_to_pixels(style, length, unit, width);
+        ret = EucHTMLLibCSSSizeToPixels(style, length, unit, width);
     }
     return ret;
 }
@@ -205,7 +205,7 @@ static id sHardBreakMarker;
     css_computed_font_size(subnodeStyle, &length, &unit);
     
     // The font size percentages should already be fully resolved.
-    CGFloat fontPixelSize = libcss_size_to_pixels(subnodeStyle, length, unit, 0);             
+    CGFloat fontPixelSize = EucHTMLLibCSSSizeToPixels(subnodeStyle, length, unit, 0);             
     CGFloat lineSpacing = [stringRenderer lineSpacingForPointSize:fontPixelSize];
     CGFloat ascender = [stringRenderer ascenderForPointSize:fontPixelSize];
     CGFloat descender = [stringRenderer descenderForPointSize:fontPixelSize];
@@ -406,9 +406,11 @@ static id sHardBreakMarker;
     return _potentialBreaksCount;
 }
 
+
 - (EucHTMLLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
                                            wordOffset:(uint32_t)wordOffset 
                                          hyphenOffset:(uint32_t)hyphenOffset
+                                   returningCompleted:(BOOL *)returningCompleted
 {
     if(_wordsCount == 0) {
         return nil;
@@ -439,16 +441,21 @@ static id sHardBreakMarker;
     int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, textIndent, frame.size.width, 0, usedBreakIndexes);
 
     CGPoint lineOrigin = frame.origin;
-    CGRect positionedRunFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 0);
 
     uint8_t textAlign = [self _textAlign];
     
+    
+    BOOL completed = YES;
+
+    CGFloat maxY = CGRectGetMaxY(frame);
+    CGFloat lastLineMaxY = maxY;
+    
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
     int lineStartComponentOffset = startComponentOffset;
-    EucHTMLLayoutLine *newLine = nil;
+    
     for(int i = 0; i < usedBreakCount; ++i) {
         int thisComponentOffset = _potentialBreakToComponentOffset[usedBreakIndexes[i] + startBreakOffset];
-        newLine = [[EucHTMLLayoutLine alloc] init];
+        EucHTMLLayoutLine *newLine = [[EucHTMLLayoutLine alloc] init];
         newLine.documentRun = self;
         newLine.startComponentOffset = lineStartComponentOffset;
         newLine.startHyphenOffset = 0;
@@ -469,25 +476,33 @@ static id sHardBreakMarker;
         }
         [newLine sizeToFitInWidth:frame.size.width];
 
-        CGFloat newHeight = positionedRunFrame.size.height + newLine.size.height;
-        if(newHeight <= frame.size.height) {
-            positionedRunFrame.size.height = newHeight;
+        CGFloat newLineMaxY = lineOrigin.y + newLine.size.height;
+        if(newLineMaxY > maxY) {
+            completed = NO;
+            [newLine release];        
+            break;
+        } else  {
+            lastLineMaxY = newLineMaxY;
             [lines addObject:newLine];
+            [newLine release];        
         }
         
-        lineOrigin.y += newLine.size.height;
+        lineOrigin.y = lastLineMaxY;
         lineStartComponentOffset = thisComponentOffset + 1; // +1 to skip the space.
-
-        [newLine release];
     }
     
     EucHTMLLayoutPositionedRun *ret = nil;
     if(lines.count) {
+        CGRect positionedRunFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY - frame.origin.y);
         ret = [[EucHTMLLayoutPositionedRun alloc] initWithDocumentRun:self 
                                                                 lines:lines
                                                                 frame:positionedRunFrame];
     }
     free(usedBreakIndexes);
+    
+    if(returningCompleted) {
+        *returningCompleted = completed;
+    }
     
     return [ret autorelease];
 }

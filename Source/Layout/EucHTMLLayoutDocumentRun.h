@@ -48,6 +48,7 @@ typedef struct EucHTMLLayoutDocumentRunComponentInfo {
 + (id)singleSpaceMarker;
 + (id)openNodeMarker;
 + (id)closeNodeMarker;
++ (id)hardBreakMarker;
 
 @property (nonatomic, readonly) uint32_t id;
 @property (nonatomic, readonly) EucHTMLDocumentNode *nextNodeUnderLimitNode;
@@ -62,6 +63,7 @@ typedef struct EucHTMLLayoutDocumentRunComponentInfo {
 
 - (EucHTMLLayoutPositionedRun *)positionedRunForFrame:(CGRect)bounds
                                            wordOffset:(uint32_t)wordOffset 
-                                         hyphenOffset:(uint32_t)hyphenOffset;    
+                                         hyphenOffset:(uint32_t)hyphenOffset
+                                   returningCompleted:(BOOL *)returningCompleted;
 
 @end

@@ -10,6 +10,13 @@
 
 @class EucHTMLDocument, EucHTMLLayoutPositionedBlock;
 
+typedef struct EucHTMLLayoutBookmark
+{
+    uint32_t nodeKey;
+    uint32_t wordOffset;
+    uint32_t componentOffset;
+} EucHTMLLayoutBookmark;
+
 @interface EucHTMLLayouter : NSObject {
     EucHTMLDocument *_document;
 }

@@ -23,7 +23,7 @@
 //#import "LibCSSDebug.h"
 //#import "dump_computed.h"
 
-CGFloat libcss_size_to_pixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase)
+CGFloat EucHTMLLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase)
 {
     CGFloat ret = FIXTOFLT(size);
     
@@ -239,19 +239,19 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 {
     EucHTMLDocumentNode *node = (EucHTMLDocumentNode *)CFDictionaryGetValue(_keyToExtantNode, (void *)(uintptr_t)key);
     if(!node) {
-        uint32_t keyKind = key & GENERATED_NODE_KEY_MASK;
+        uint32_t keyKind = key & EucHTMLDocumentNodeKeyFlagMask;
         if(keyKind != 0) {
-            if(keyKind < GENERATED_NODE_TEXT_KEY_FLAG) {
+            if(keyKind < EucHTMLDocumentNodeKeyFlagGeneratedTextNode) {
                 node = [[EucHTMLDocumentGeneratedContainerNode alloc] initWithDocument:self 
                                                                              parentKey:key ^ keyKind 
-                                                                        isBeforeParent:(keyKind == GENERATED_NODE_BEFORE_CONTAINER_KEY_FLAG)];
+                                                                        isBeforeParent:(keyKind == EucHTMLDocumentNodeKeyFlagBeforeContainerNode)];
             } else {
-                NSParameterAssert((keyKind & GENERATED_NODE_TEXT_KEY_FLAG) == GENERATED_NODE_TEXT_KEY_FLAG);
+                NSParameterAssert((keyKind & EucHTMLDocumentNodeKeyFlagGeneratedTextNode) == EucHTMLDocumentNodeKeyFlagGeneratedTextNode);
                 node = [[EucHTMLDocumentGeneratedTextNode alloc] initWithDocument:self
-                                                                        parentKey:key ^ GENERATED_NODE_TEXT_KEY_FLAG];
+                                                                        parentKey:key ^ EucHTMLDocumentNodeKeyFlagGeneratedTextNode];
             }
         } else {
-            node = [[EucHTMLDocumentConcreteNode alloc] initWithHTMLDBNode:[_manager nodeForKey:key >> DB_KEY_MAPPING_SHIFT] inDocument:self];
+            node = [[EucHTMLDocumentConcreteNode alloc] initWithHTMLDBNode:[_manager nodeForKey:key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS] inDocument:self];
         }
         CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
         [node autorelease];
@@ -268,7 +268,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     }
 }
 
-- (void)notifyOfDealloc:(EucHTMLDocumentConcreteNode *)node
+- (void)notifyOfDealloc:(EucHTMLDocumentNode *)node
 {
     CFDictionaryRemoveValue(_keyToExtantNode, (void *)(uintptr_t)node.key);
 }

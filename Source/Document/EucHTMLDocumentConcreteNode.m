@@ -26,7 +26,7 @@
     if((self = [super init])) {
         _dbNode = [dbNode retain];
         self.document = document;
-        self.key = _dbNode.key << DB_KEY_MAPPING_SHIFT;
+        self.key = _dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
     }
     return self;
 }
@@ -211,7 +211,7 @@
 {
     EucHTMLDBNode *parentDBNode = _dbNode.parentNode;
     if(parentDBNode) {
-        return [_document nodeForKey:parentDBNode.key << DB_KEY_MAPPING_SHIFT];
+        return [_document nodeForKey:parentDBNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
     } else {
         return nil;
     }    
@@ -237,17 +237,17 @@
             NSMutableArray *children = [[NSMutableArray alloc] initWithCapacity:childrenCount];
             
             if(self.computedBeforeStyle) {
-                [children addObject:[_document nodeForKey:self.key | GENERATED_NODE_BEFORE_CONTAINER_KEY_FLAG]];
+                [children addObject:[_document nodeForKey:self.key | EucHTMLDocumentNodeKeyFlagBeforeContainerNode]];
             }
             
             uint32_t dbNodeChildrenCount = _dbNode.childrenKeysCount;
             uint32_t *childrenKeys = _dbNode.childrenKeys;
             for(uint32_t i = 0; i < dbNodeChildrenCount; ++i) {
-                [children addObject:[_document nodeForKey:childrenKeys[i] << DB_KEY_MAPPING_SHIFT]];
+                [children addObject:[_document nodeForKey:childrenKeys[i] << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS]];
             }
 
             if(self.computedAfterStyle) {
-                [children addObject:[_document nodeForKey:self.key | GENERATED_NODE_AFTER_CONTAINER_KEY_FLAG]];
+                [children addObject:[_document nodeForKey:self.key | EucHTMLDocumentNodeKeyFlagAfterContainerNode]];
             }
             
             _children = children;

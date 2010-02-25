@@ -105,15 +105,15 @@ Block completion status.
                                                                                                  forId:nextRunId];
                 
                 // Position it.
+                BOOL positionedRunIsComplete;
                 EucHTMLLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
                                                                                     wordOffset:wordOffset
-                                                                                  hyphenOffset:hyphenOffset];
+                                                                                  hyphenOffset:hyphenOffset
+                                                                            returningCompleted:&positionedRunIsComplete];
                 if(positionedRun) {
                     [currentPositionedBlock addSubEntity:positionedRun];
                 }
-                
-                //NSLog(@"%@", positionedRun.lines);
-                
+                                
                 wordOffset = 0;
                 hyphenOffset = 0;
                 
@@ -134,7 +134,7 @@ Block completion status.
                 // Find the block's parent, closing open nodes until we reach it.
                 EucHTMLDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
                 while(currentPositionedBlock.documentNode != currentDocumentNodeBlockLevelParent) {
-                    [currentPositionedBlock closeBottomFromYPoint:nextY];
+                    [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:NO];
                     nextY = NSMaxY(currentPositionedBlock.frame);
                     currentPositionedBlock = currentPositionedBlock.parent;
                 }
@@ -161,7 +161,7 @@ Block completion status.
         } while(currentDocumentNode);
         
         while(currentPositionedBlock) {
-            [currentPositionedBlock closeBottomFromYPoint:nextY];
+            [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:NO];
             nextY = NSMaxY(currentPositionedBlock.frame);
             currentPositionedBlock = currentPositionedBlock.parent;
             CGRect potentialFrame = currentPositionedBlock.frame;
@@ -171,7 +171,7 @@ Block completion status.
             potentialFrame.origin.y = nextY;
         }
         
-        [positionedRoot closeBottomFromYPoint:nextY];
+        [positionedRoot closeBottomFromYPoint:nextY atInternalPageBreak:NO];
 
         return positionedRoot;
     } else {
