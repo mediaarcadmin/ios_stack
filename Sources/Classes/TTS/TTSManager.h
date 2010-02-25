@@ -9,7 +9,6 @@
 
 @protocol TTSManager 
 @required
-- (void)initTTS;
 - (BOOL)startSpeaking:(NSString *)string;
 - (void)stopSpeaking;
 - (void)pauseSpeaking;

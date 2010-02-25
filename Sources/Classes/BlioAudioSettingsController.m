@@ -9,7 +9,6 @@
 #import "BlioAudioSettingsController.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookViewController.h"
-#import "AcapelaTTS.h"
 
 @implementation BlioAudioSettingsController
 
@@ -20,6 +19,7 @@
 	if (self)
 	{
 		self.title = @"Text to Speech";
+		//self.currentVoice = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey];
 	}
 	return self;
 }
@@ -168,9 +168,12 @@
 	UIButton* ctl = (UIButton*)sender;
 	if ( ctl == playButton ) {
 		AcapelaTTS** tts = [BlioBookViewController getTTSEngine];
-		if ( *tts == nil )
-			*tts = [[AcapelaTTS alloc] init]; 	
-		[*tts initTTS];
+		if ( *tts == nil ) {
+			*tts = [[AcapelaTTS alloc] init]; 
+			[*tts setEngineWithPreferences:YES];
+		}
+		else
+			[*tts setEngineWithPreferences:[*tts voiceHasChanged]];
 		[*tts startSpeaking:@"It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness."]; 
 	}
 }

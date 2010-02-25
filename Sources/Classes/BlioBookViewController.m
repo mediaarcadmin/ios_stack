@@ -324,6 +324,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 @synthesize currentPageColor = _currentPageColor;
 
 @synthesize audioPlaying = _audioPlaying;
+@synthesize ttsPlayed = _ttsPlayed;
 @synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize tiltScroller, tapDetector, motionControlsEnabled;
@@ -370,6 +371,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (id)initWithBook:(BlioMockBook *)newBook {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         self.audioPlaying = NO;
+        self.ttsPlayed = NO;
         self.wantsFullScreenLayout = YES;
         
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
@@ -1636,6 +1638,22 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		[_audioBookManager pauseAudio];
 }
 
+- (void)prepareTTSEngine {
+	if (*[BlioBookViewController getTTSEngine] == nil) {
+		*[BlioBookViewController getTTSEngine] = [[AcapelaTTS alloc] init];
+		[*[BlioBookViewController getTTSEngine] setEngineWithPreferences:YES];  
+	}
+	else
+		[*[BlioBookViewController getTTSEngine] setEngineWithPreferences:[*[BlioBookViewController getTTSEngine] voiceHasChanged]]; 
+	if (!self.ttsPlayed) {
+		// This isn't part of initialization because that can happen in the settings page
+		// when the BookViewController doesn't exist.
+		self.ttsPlayed = YES;
+		_acapelaTTS = *[BlioBookViewController getTTSEngine]; 
+		[_acapelaTTS setDelegate:self]; 
+	} 
+}
+
 - (void)toggleAudio:(id)sender {
 	if ([self currentPageLayout] == kBlioPageLayoutPlainText || [self currentPageLayout] == kBlioPageLayoutPageLayout) {
 		UIBarButtonItem *item = (UIBarButtonItem *)sender;
@@ -1648,16 +1666,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [self toggleToolbars];
             }
 			if (![self.book audioRights]) {
-				if (*[BlioBookViewController getTTSEngine] == nil) 
-					*[BlioBookViewController getTTSEngine] = [[AcapelaTTS alloc] init];
-				_acapelaTTS = *[BlioBookViewController getTTSEngine];
-				[_acapelaTTS initTTS];  // Picks up any preferences that might have changed since last time.
-				// TODO: do the following only the first time we play...
-				[_acapelaTTS setDelegate:self]; 
-				[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextParagraph:) userInfo:nil repeats:YES]];
+				[self prepareTTSEngine];
+				[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextParagraph:) userInfo:nil repeats:YES]];				
 				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
 			}
-			else if ([self.book audiobookFilename] != nil) {\
+			else if ([self.book audiobookFilename] != nil) {
 				if ( _audioBookManager.startedPlaying == NO ) { 
 					if ( ![_audioBookManager initAudioWithBook:[self.book audiobookPath]] ) {
 						NSLog(@"Audio player could not be initialized.");
@@ -1974,9 +1987,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
      }
 }
 
-- (void)copyWithRange:(BlioBookmarkRange *)range {
-    NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
-    [[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[wordStrings componentsJoinedByString:@" "]]];
+- (void)copyWithRange:(BlioBookmarkRange*)range {
+	NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
+	[[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[wordStrings componentsJoinedByString:@" "]]];
 }
 
 - (void)dismissWebTool:(id)sender {

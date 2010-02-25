@@ -15,15 +15,49 @@
 
 @synthesize setupData, engine, ttsLicense;
 
-- (void)initTTS {
-	[self setSetupData:[[setupTTS alloc] initialize]]; 
+
+- (id)init {
+    if ((self = [super init])) {
+		[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd] autorelease]];
+		[self setSetupData:[setupTTS alloc]];
+		[self setEngine:[[AcapelaSpeech alloc] autorelease]];
+		[self setCurrentPage:-1];
+		[self setParagraphWords:nil];
+		[self setTextToSpeakChanged:NO];
+		[self setStartedPlaying:NO];
+		[self setPageChanged:YES];
+    }
+    return self;
+}
+
+/*
+- (void)initTTS { 
 	[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd] autorelease]];
-    [self setEngine:[[[AcapelaSpeech alloc] initWithVoice:setupData.CurrentVoice license:ttsLicense] autorelease]];
+	//[self setSetupData:[[setupTTS alloc] initialize]];
+	//[self setEngine:[[[AcapelaSpeech alloc] initWithVoice:setupData.CurrentVoice license:ttsLicense] autorelease]];
+	[self setSetupData:[setupTTS alloc]];
+	[self setEngine:[[AcapelaSpeech alloc] autorelease]];
+	[self setPreferences];
 	[self setCurrentPage:-1];
 	[self setParagraphWords:nil];
 	[self setTextToSpeakChanged:NO];
 	[self setStartedPlaying:NO];
-	[self setPageChanged:YES];   
+	[self setPageChanged:YES];  
+}
+ */
+
+- (BOOL)voiceHasChanged {
+	return ((([[self.setupData CurrentVoiceName] compare:@"Laura"]==NSOrderedSame) && 
+			 [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]!=(NSInteger)kAcapelaVoiceUSEnglishLaura) ||
+			(([[self.setupData CurrentVoiceName] compare:@"Ryan"]==NSOrderedSame) && 
+			 [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]!=(NSInteger)kAcapelaVoiceUSEnglishRyan));
+}
+
+- (void)setEngineWithPreferences:(BOOL)voiceChanged {
+	if (voiceChanged) {  
+		[self.setupData initialize];
+		[self.engine initWithVoice:setupData.CurrentVoice license:ttsLicense];
+	}
 	if ( [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastSpeedDefaultsKey] == 0 )
 		// Preference has not been set.  Set to default.
 		[[NSUserDefaults standardUserDefaults] setFloat:180.0 forKey:kBlioLastSpeedDefaultsKey];
@@ -77,7 +111,6 @@
 - (BOOL)queueSpeakingString:(NSString *)string {
 	return [engine queueSpeakingString:string];
 }
-
 
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError {
 	return [engine objectForProperty:property error:outError];

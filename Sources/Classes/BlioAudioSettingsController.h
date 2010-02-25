@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "AcapelaTTS.h"
 
 @interface BlioAudioSettingsController : UIViewController {
 	UISegmentedControl* voiceControl;

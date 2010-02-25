@@ -66,10 +66,11 @@ typedef enum {
     BOOL _overrideReturnToStatusBarStyle;
     BOOL _overrideReturnToNavigationBarHidden;
     BOOL _overrideReturnToStatusBarHidden;
-    BOOL _audioPlaying;
     
 	AcapelaTTS* _acapelaTTS;
 	BlioAudioBookManager* _audioBookManager;
+    BOOL _audioPlaying;
+    BOOL _ttsPlayed;
     
     BlioMockBook *_book;
 
@@ -102,7 +103,8 @@ typedef enum {
 @property (nonatomic, assign) BlioPageColor currentPageColor;
 
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
-@property (nonatomic) BOOL audioPlaying;
+@property (nonatomic, assign) BOOL audioPlaying;
+@property (nonatomic, assign) BOOL ttsPlayed;
 
 @property (nonatomic, retain) MSTiltScroller *tiltScroller;
 @property (nonatomic, retain) MSTapDetector *tapDetector;

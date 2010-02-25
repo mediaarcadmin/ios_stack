@@ -36,6 +36,9 @@ typedef enum {
 - (void)setVolume:(float)volume;
 - (id)delegate;
 - (void)setDelegate:(id)delegate;
+
+- (BOOL)voiceHasChanged ;
+- (void)setEngineWithPreferences:(BOOL)voiceChanged;
 - (BOOL)queueSpeakingString:(NSString *)string;
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError;
 
