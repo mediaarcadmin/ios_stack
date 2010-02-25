@@ -39,7 +39,7 @@ int main (int argc, const char * argv[]) {
     CGRect frame = CGRectMake(0, 0, 320, CGFLOAT_MAX);
     EucHTMLLayoutPositionedBlock *positionedBlock = [layouter layoutFromNodeWithId:document.body.key
                                                                         wordOffset:0
-                                                                      hyphenOffset:0
+                                                                     elementOffset:0
                                                                            inFrame:frame];
     [layouter release];
     

@@ -10,6 +10,7 @@
 #import "EucHTMLDocumentNode.h"
 #import "EucHTMLLayoutPositionedBlock.h"
 #import "EucHTMLLayoutDocumentRun.h"
+#import "EucHTMLLayoutDocumentRun_Package.h"
 #import "EucHTMLLayoutPositionedRun.h"
 #import "EucHTMLLayoutLine.h"
 #import "EucHTMLRenderer.h"
@@ -57,12 +58,18 @@
 
 - (void)_renderLine:(EucHTMLLayoutLine *)line
 {
-    id *components = line.components;
-    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = line.componentInfos;
-    uint32_t componentCount = line.componentCount;
     Class nsStringClass = [NSString class];
     id singleSpaceMarker = [EucHTMLLayoutDocumentRun singleSpaceMarker];
     
+    EucHTMLLayoutDocumentRun *documentRun = line.documentRun;
+    
+    size_t componentsCount = documentRun.componentsCount;
+    id *components = documentRun.components;
+    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = documentRun.componentInfos;
+    
+    EucHTMLLayoutDocumentRunPoint startPoint = line.startPoint;
+    EucHTMLLayoutDocumentRunPoint endPoint = line.endPoint;
+        
     CGRect lineFrame = line.frame;
     CGFloat xPosition = lineFrame.origin.x;
     CGFloat yPosition = lineFrame.origin.y;
@@ -70,7 +77,10 @@
         case CSS_TEXT_ALIGN_RIGHT:
             {
                 xPosition += lineFrame.size.width;
-                for(uint32_t i = 0; i < componentCount; ++i) {
+                for(uint32_t i = documentRun.wordToComponent[startPoint.word] + startPoint.element;
+                    i < componentsCount &&
+                    !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
+                    ++i) {
                     id component = components[i];
                     EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
                     if([component isKindOfClass:nsStringClass]) {
@@ -90,13 +100,19 @@
             {
                 CGFloat extraWidthNeeded = lineFrame.size.width - line.indent - line.componentWidth;
                 CGFloat spacesRemaining = 0.0f;
-                for(uint32_t i = 0; i < componentCount; ++i) {
+                for(uint32_t i = documentRun.wordToComponent[startPoint.word] + startPoint.element;
+                    i < componentsCount &&
+                    !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
+                    ++i) {
                     if(components[i] == singleSpaceMarker) {
                         spacesRemaining++;
                     }
                 }
                 xPosition += line.indent;
-                for(uint32_t i = 0; i < componentCount; ++i) {
+                for(uint32_t i = documentRun.wordToComponent[startPoint.word] + startPoint.element;
+                    i < componentsCount &&
+                    !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
+                    ++i) {
                     id component = components[i];
                     EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
                     if([component isKindOfClass:nsStringClass]) {
@@ -113,7 +129,6 @@
                         --spacesRemaining;
                     }
                 }                
-                NSParameterAssert(extraWidthNeeded == 0.0f || componentCount == 1);
             }
             break;
         case CSS_TEXT_ALIGN_CENTER:
@@ -122,7 +137,10 @@
         default:
             {
                 xPosition += line.indent;
-                for(uint32_t i = 0; i < componentCount; ++i) {
+                for(uint32_t i = documentRun.wordToComponent[startPoint.word] + startPoint.element;
+                    i < componentsCount &&
+                    !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
+                    ++i) {
                     id component = components[i];
                     EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
                     if([component isKindOfClass:nsStringClass]) {

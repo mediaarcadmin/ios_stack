@@ -9,19 +9,20 @@
 #import "EucHTMLLayoutLine.h"
 #import "EucHTMLDocumentNode.h"
 #import "EucHTMLLayoutDocumentRun.h"
+#import "EucHTMLLayoutDocumentRun_Package.h"
 #import "THLog.h"
 
 @implementation EucHTMLLayoutLine
 
 @synthesize documentRun = _documentRun;
 
-@synthesize startComponentOffset = _startComponentOffset;
-@synthesize startHyphenOffset = _startHyphenOffset;
-@synthesize endComponentOffset = _endComponentOffset;
-@synthesize endHyphenOffset = _endHyphenOffset;
+@synthesize startPoint = _startPoint;
+@synthesize endPoint = _endPoint;
 
 @synthesize origin = _origin;
 @synthesize size = _size;
+
+@synthesize componentWidth = _componentWidth;
 
 @synthesize indent = _indent;
 @synthesize align = _align;
@@ -34,68 +35,45 @@
     id spaceMarker = [EucHTMLLayoutDocumentRun singleSpaceMarker];
     Class NSStringClass = [NSString class];
     
-    for(uint32_t offset = _startComponentOffset; offset < _endComponentOffset; ++offset) {
-        id component = _documentRun.components[offset];
-        
-        if([component isKindOfClass:NSStringClass] ||
+    size_t componentsCount = _documentRun.componentsCount;
+    id *components = _documentRun.components;
+    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = _documentRun.componentInfos;
+    
+    uint32_t startComponentOffset = _documentRun.wordToComponent[_startPoint.word] + _startPoint.element;
+    for(uint32_t i = startComponentOffset;
+        i < componentsCount &&
+        !(componentInfos[i].point.word == _endPoint.word && componentInfos[i].point.element == _endPoint.element); 
+        ++i) {
+        id component = components[i];
+        EucHTMLLayoutDocumentRunComponentInfo *info =  componentInfos + i;
+        BOOL isWord = [component isKindOfClass:NSStringClass];
+        if(isWord ||
            component == spaceMarker) {
-            EucHTMLLayoutDocumentRunComponentInfo info =  _documentRun.componentInfos[offset];
-            if(info.ascender > maxAscender) {
-                maxAscender = info.ascender;
+            CGFloat ascender = info->ascender;
+            if(ascender > maxAscender) {
+                maxAscender = ascender;
             }
-            CGFloat descenderAndLineHeightAddition = info.lineHeight - info.ascender;
+            CGFloat descenderAndLineHeightAddition = info->lineHeight - info->ascender;
             if(descenderAndLineHeightAddition > maxDescenderAndLineHeightAddition) {
                 maxDescenderAndLineHeightAddition = descenderAndLineHeightAddition;
             }
         }
+        _componentWidth += info->width;
     }
+
     _baseline = maxAscender;
     _size = CGSizeMake(width, maxAscender + maxDescenderAndLineHeightAddition);
     
     // TODO: Properly respect line height.
     // This is a hack to make newlines work...
     if(_size.height == 0) {
-        _size.height = 12;
+        _size.height = 16;
     }
-}
-
-- (id *)components
-{
-    return _documentRun.components + self.startComponentOffset;
-}
-
-- (EucHTMLLayoutDocumentRunComponentInfo *)componentInfos
-{
-    return _documentRun.componentInfos + self.startComponentOffset;
-}
-
-- (uint32_t)componentCount
-{
-    return self.endComponentOffset - self.startComponentOffset;
-}
-
-- (CGFloat)componentWidth
-{
-    CGFloat componentWidth = 0.0f;
-    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = self.componentInfos;
-    uint32_t componentCount = self.componentCount;
-
-    for(uint32_t i = 0; i < componentCount; ++i) {
-        componentWidth += componentInfos[i].width;
-    }
-    
-    return componentWidth;
-}
-
-- (void)setStartComponentOffset:(uint32_t)offset
-{
-    _startComponentOffset = offset;
 }
 
 - (CGRect)frame
 {
     return CGRectMake(_origin.x, _origin.y, _size.width, _size.height);
 }
-
 
 @end

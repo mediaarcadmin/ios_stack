@@ -11,6 +11,11 @@
 @class EucHTMLDocumentNode, EucHTMLLayoutPositionedRun;
 struct THBreak;
 
+typedef struct EucHTMLLayoutDocumentRunPoint {
+    uint32_t word;
+    uint32_t element;
+} EucHTMLLayoutDocumentRunPoint;
+
 typedef struct EucHTMLLayoutDocumentRunComponentInfo {
     CGFloat width;
     CGFloat lineHeight;
@@ -18,7 +23,10 @@ typedef struct EucHTMLLayoutDocumentRunComponentInfo {
     CGFloat descender;
     CGFloat pointSize;
     EucHTMLDocumentNode *documentNode;
+    EucHTMLLayoutDocumentRunPoint point;
 } EucHTMLLayoutDocumentRunComponentInfo;
+
+struct EucHTMLLayoutDocumentRunBreakInfo;
 
 @interface EucHTMLLayoutDocumentRun : NSObject {
     uint32_t _id;
@@ -26,22 +34,22 @@ typedef struct EucHTMLLayoutDocumentRunComponentInfo {
     EucHTMLDocumentNode *_nextNodeUnderLimitNode;
     EucHTMLDocumentNode *_nextNodeInDocument;
 
-    
     size_t _componentsCount;
     size_t _componentsCapacity;
     id *_components;
     EucHTMLLayoutDocumentRunComponentInfo *_componentInfos;
-    size_t *_componentOffsetToWordOffset;
 
     size_t _wordsCount;
-    size_t *_wordOffsetToComponentOffset;
-    size_t _startOfLastNonSpaceRun;
-
+    size_t _wordToComponentCapacity;
+    uint32_t *_wordToComponent;
+    
+    uint32_t _currentWordElementCount;
+   
     BOOL _previousInlineCharacterWasSpace;
     BOOL _alreadyInsertedNewline;
     
     struct THBreak *_potentialBreaks;
-    int *_potentialBreakToComponentOffset;
+    struct EucHTMLLayoutDocumentRunBreakInfo *_potentialBreakInfos;
     int _potentialBreaksCount;
 }
 
@@ -54,16 +62,13 @@ typedef struct EucHTMLLayoutDocumentRunComponentInfo {
 @property (nonatomic, readonly) EucHTMLDocumentNode *nextNodeUnderLimitNode;
 @property (nonatomic, readonly) EucHTMLDocumentNode *nextNodeInDocument;
 
-@property (nonatomic, readonly) id *components;
-@property (nonatomic, readonly) EucHTMLLayoutDocumentRunComponentInfo *componentInfos;
-
 - (id)initWithNode:(EucHTMLDocumentNode *)node 
     underLimitNode:(EucHTMLDocumentNode *)underNode
              forId:(uint32_t)id;
 
 - (EucHTMLLayoutPositionedRun *)positionedRunForFrame:(CGRect)bounds
                                            wordOffset:(uint32_t)wordOffset 
-                                         hyphenOffset:(uint32_t)hyphenOffset
+                                        elementOffset:(uint32_t)elementOffset
                                    returningCompleted:(BOOL *)returningCompleted;
 
 @end

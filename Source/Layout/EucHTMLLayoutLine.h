@@ -14,16 +14,14 @@
 @interface EucHTMLLayoutLine : NSObject {
     EucHTMLLayoutDocumentRun *_documentRun;
     
-    uint32_t _startComponentOffset;
-    uint32_t _startHyphenOffset;
-    
-    uint32_t _endComponentOffset;
-    uint32_t _endHyphenOffset;
-    
+    EucHTMLLayoutDocumentRunPoint _startPoint;
+    EucHTMLLayoutDocumentRunPoint _endPoint;
+
     CGPoint _origin; 
     CGSize _size;
     
     CGFloat _baseline;
+    CGFloat _componentWidth;
     
     CGFloat _indent;
     uint8_t _align;
@@ -31,10 +29,8 @@
 
 @property (nonatomic, retain) EucHTMLLayoutDocumentRun *documentRun;
 
-@property (nonatomic, assign) uint32_t startComponentOffset;
-@property (nonatomic, assign) uint32_t startHyphenOffset;
-@property (nonatomic, assign) uint32_t endComponentOffset;
-@property (nonatomic, assign) uint32_t endHyphenOffset;
+@property (nonatomic, assign) EucHTMLLayoutDocumentRunPoint startPoint;
+@property (nonatomic, assign) EucHTMLLayoutDocumentRunPoint endPoint;
 
 @property (nonatomic, assign) CGPoint origin;
 @property (nonatomic, assign) CGSize size;
@@ -43,9 +39,6 @@
 @property (nonatomic, assign) CGFloat indent;
 @property (nonatomic, assign) uint8_t align;
 
-@property (nonatomic, readonly) id *components;
-@property (nonatomic, readonly) EucHTMLLayoutDocumentRunComponentInfo *componentInfos;
-@property (nonatomic, readonly) uint32_t componentCount;
 @property (nonatomic, readonly) CGFloat componentWidth;
 
 - (void)sizeToFitInWidth:(CGFloat)width;

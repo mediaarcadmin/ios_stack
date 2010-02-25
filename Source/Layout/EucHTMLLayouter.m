@@ -59,7 +59,7 @@ Block completion status.
                                                         
 - (EucHTMLLayoutPositionedBlock *)layoutFromNodeWithId:(uint32_t)nodeId
                                             wordOffset:(uint32_t)wordOffset
-                                          hyphenOffset:(uint32_t)hyphenOffset
+                                         elementOffset:(uint32_t)elementOffset
                                                inFrame:(CGRect)frame
 {
     EucHTMLDocument *document = self.document;
@@ -108,14 +108,18 @@ Block completion status.
                 BOOL positionedRunIsComplete;
                 EucHTMLLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
                                                                                     wordOffset:wordOffset
-                                                                                  hyphenOffset:hyphenOffset
+                                                                                 elementOffset:elementOffset
                                                                             returningCompleted:&positionedRunIsComplete];
                 if(positionedRun) {
                     [currentPositionedBlock addSubEntity:positionedRun];
                 }
-                                
-                wordOffset = 0;
-                hyphenOffset = 0;
+                             
+                if(elementOffset) {
+                    elementOffset = 0;
+                }
+                if(wordOffset) {
+                    wordOffset = 0;
+                }
                 
                 nextY = CGRectGetMaxY(positionedRun.frame);
                 

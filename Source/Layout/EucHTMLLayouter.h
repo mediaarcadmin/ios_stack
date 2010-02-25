@@ -10,12 +10,12 @@
 
 @class EucHTMLDocument, EucHTMLLayoutPositionedBlock;
 
-typedef struct EucHTMLLayoutBookmark
+typedef struct EucHTMLLayoutPoint
 {
     uint32_t nodeKey;
-    uint32_t wordOffset;
-    uint32_t componentOffset;
-} EucHTMLLayoutBookmark;
+    uint32_t word;
+    uint32_t element;
+} EucHTMLLayoutPoint;
 
 @interface EucHTMLLayouter : NSObject {
     EucHTMLDocument *_document;
@@ -25,7 +25,7 @@ typedef struct EucHTMLLayoutBookmark
 
 - (EucHTMLLayoutPositionedBlock *)layoutFromNodeWithId:(uint32_t)nodeId
                                             wordOffset:(uint32_t)wordOffset
-                                          hyphenOffset:(uint32_t)hyphenOffset
+                                         elementOffset:(uint32_t)elementOffset
                                                inFrame:(CGRect)frame;
 
 @end

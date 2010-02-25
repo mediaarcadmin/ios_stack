@@ -179,6 +179,7 @@
 		7D019FE910E7646F00119926 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		7D019FED10E7647C00119926 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7D01A08710E771B700119926 /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
+		7D03FED41136F6B20050F515 /* EucHTMLLayoutDocumentRun_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutDocumentRun_Package.h; sourceTree = "<group>"; };
 		7D22474710FD00D200CFD8B5 /* EucHTMLDB.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucHTMLDB.c; sourceTree = "<group>"; };
 		7D22474810FD00D200CFD8B5 /* EucHTMLDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDB.h; sourceTree = "<group>"; };
 		7D22474910FD00D200CFD8B5 /* EucHTMLDBCreation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucHTMLDBCreation.c; sourceTree = "<group>"; };
@@ -790,6 +791,7 @@
 		7D22475810FD00D200CFD8B5 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
+				7D03FED41136F6B20050F515 /* EucHTMLLayoutDocumentRun_Package.h */,
 				7D2247C810FD025A00CFD8B5 /* EucHTMLLayouter.h */,
 				7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */,
 				7D22475910FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.h */,

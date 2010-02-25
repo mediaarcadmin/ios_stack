@@ -7,6 +7,7 @@
 //
 
 #import "EucHTMLLayoutDocumentRun.h"
+#import "EucHTMLLayoutDocumentRun_Package.h"
 #import "EucHTMLLayoutPositionedRun.h"
 #import "EucHTMLLayoutLine.h"
 #import "EucHTMLDocument.h"
@@ -23,6 +24,11 @@ static id sOpenNodeMarker;
 static id sCloseNodeMarker;
 static id sHardBreakMarker;
 
+typedef struct EucHTMLLayoutDocumentRunBreakInfo {
+    EucHTMLLayoutDocumentRunPoint point;
+    BOOL isComponent;
+} EucHTMLLayoutDocumentRunBreakInfo;
+
 @interface EucHTMLLayoutDocumentRun ()
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)size;
 - (void)_accumulateTextNode:(EucHTMLDocumentNode *)subnode;
@@ -30,6 +36,11 @@ static id sHardBreakMarker;
 @end 
 
 @implementation EucHTMLLayoutDocumentRun
+
+@synthesize components = _components;
+@synthesize componentInfos = _componentInfos;
+@synthesize componentsCount = _componentsCount;
+@synthesize wordToComponent = _wordToComponent;
 
 + (void)initialize
 {
@@ -63,9 +74,6 @@ static id sHardBreakMarker;
 @synthesize nextNodeUnderLimitNode = _nextNodeUnderLimitNode;
 @synthesize nextNodeInDocument = _nextNodeInDocument;
 
-@synthesize components = _components;
-@synthesize componentInfos = _componentInfos;
-
 - (id)initWithNode:(EucHTMLDocumentNode *)inlineNode 
     underLimitNode:(EucHTMLDocumentNode *)underNode
              forId:(uint32_t)id
@@ -75,6 +83,12 @@ static id sHardBreakMarker;
         
         _startNode = [inlineNode retain];
         css_computed_style *inlineNodeStyle = inlineNode.computedStyle;
+        
+        // _wordToComponent is 1-indexed for words - word '0' is the start of 
+        // this run - so set that up now.
+        _wordToComponentCapacity = 128;
+        _wordToComponent = malloc(_wordToComponentCapacity * sizeof(uint32_t));
+        _wordToComponent[0] = 0;         
         
         BOOL reachedLimit = NO;
         
@@ -128,11 +142,11 @@ static id sHardBreakMarker;
         [_components[i] release];
     }
     free(_components);
-    free(_componentOffsetToWordOffset);
-    free(_wordOffsetToComponentOffset);
+    free(_componentInfos);
+    free(_wordToComponent);
     
     free(_potentialBreaks);
-    free(_potentialBreakToComponentOffset);
+    free(_potentialBreakInfos);
 
     [_startNode release];
     [_nextNodeUnderLimitNode release];
@@ -169,26 +183,32 @@ static id sHardBreakMarker;
 
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)info
 {
-    if(_componentsCount == _componentsCapacity) {
-        _componentsCapacity += 256;
+
+    if(isWord) {
+        ++_wordsCount;
+        if(_wordToComponentCapacity == _wordsCount) {
+            _wordToComponentCapacity += 128;
+            _wordToComponent = realloc(_wordToComponent, _wordToComponentCapacity * sizeof(uint32_t));
+        }
+        _wordToComponent[_wordsCount] = _componentsCount;
+        _currentWordElementCount = 0;
+    }
+    
+    if(_componentsCapacity == _componentsCount) {
+        _componentsCapacity += 128;
         _components = realloc(_components, _componentsCapacity * sizeof(id));
         _componentInfos = realloc(_componentInfos, _componentsCapacity * sizeof(EucHTMLLayoutDocumentRunComponentInfo));
-        _componentOffsetToWordOffset = realloc(_componentOffsetToWordOffset, _componentsCapacity * sizeof(size_t));
-        _wordOffsetToComponentOffset = realloc(_wordOffsetToComponentOffset, _componentsCapacity * sizeof(size_t));
     }
+    
+    info->point.word = _wordsCount;
+    info->point.element = _currentWordElementCount;
     
     _components[_componentsCount] = [component retain];
-    if(info) {
-        _componentInfos[_componentsCount] = *info;
-    }
-    if(isWord) {
-        _wordOffsetToComponentOffset[_wordsCount] = _startOfLastNonSpaceRun;
-        ++_wordsCount;
-    } else if(component == sSingleSpaceMarker) {
-        _startOfLastNonSpaceRun = _componentsCount;
-    }
+    _componentInfos[_componentsCount] = *info;
+    
     
     ++_componentsCount;
+    ++_currentWordElementCount;
 }
 
 - (void)_accumulateTextNode:(EucHTMLDocumentNode *)subnode 
@@ -334,7 +354,7 @@ static id sHardBreakMarker;
     if(!_potentialBreaks) {
         int breaksCapacity = _componentsCount;
         THBreak *breaks = malloc(breaksCapacity * sizeof(THBreak));
-        int *breakToComponentOffset = malloc(breaksCapacity * sizeof(int));
+        EucHTMLLayoutDocumentRunBreakInfo *breakInfos = malloc(breaksCapacity * sizeof(EucHTMLLayoutDocumentRunBreakInfo));
         int breaksCount = 0;
         
         EucHTMLDocumentNode *currentInlineNodeWithStyle = _startNode;
@@ -351,14 +371,9 @@ static id sHardBreakMarker;
                 breaks[breaksCount].x1 = lineSoFarWidth;
                 breaks[breaksCount].penalty = 0;
                 breaks[breaksCount].flags = TH_JUST_FLAG_ISSPACE;
-                breakToComponentOffset[breaksCount] = i;
+                breakInfos[breaksCount].point = _componentInfos[i].point;
+                breakInfos[breaksCount].isComponent = YES;
                 ++breaksCount;
-                
-                if(breaksCount >= breaksCapacity) {
-                    breaksCapacity += _componentsCount;
-                    breaks = realloc(breaks, breaksCapacity * sizeof(THBreak));
-                    breakToComponentOffset = realloc(breakToComponentOffset, breaksCapacity * sizeof(int));
-                }                
             } else if(component == sOpenNodeMarker) {
                 currentInlineNodeWithStyle = _componentInfos[i].documentNode;
                 // Take account of margins etc.
@@ -372,28 +387,31 @@ static id sHardBreakMarker;
                 breaks[breaksCount].x1 = lineSoFarWidth;
                 breaks[breaksCount].penalty = 0;
                 breaks[breaksCount].flags = TH_JUST_FLAG_ISHARDBREAK;
-                breakToComponentOffset[breaksCount] = i;
-                ++breaksCount;
-                
-                if(breaksCount >= breaksCapacity) {
-                    breaksCapacity += _componentsCount;
-                    breaks = realloc(breaks, breaksCapacity * sizeof(THBreak));
-                    breakToComponentOffset = realloc(breakToComponentOffset, breaksCapacity * sizeof(int));
-                }                                
+                breakInfos[breaksCount].point = _componentInfos[i].point;
+                breakInfos[breaksCount].isComponent = YES;
+                ++breaksCount;                
             } else {            
                 lineSoFarWidth += _componentInfos[i].width;
             }
+            
+            if(breaksCount >= breaksCapacity) {
+                breaksCapacity += _componentsCount;
+                breaks = realloc(breaks, breaksCapacity * sizeof(THBreak));
+                breakInfos = realloc(breakInfos, breaksCapacity * sizeof(EucHTMLLayoutDocumentRunBreakInfo));
+            }                                            
         }
         breaks[breaksCount].x0 = lineSoFarWidth;
         breaks[breaksCount].x1 = lineSoFarWidth;
         breaks[breaksCount].penalty = 0;
         breaks[breaksCount].flags = TH_JUST_FLAG_ISHARDBREAK;
-        breakToComponentOffset[breaksCount] = _componentsCount;
+        breakInfos[breaksCount].point.word = _wordsCount + 1;
+        breakInfos[breaksCount].point.element = 0;
+        breakInfos[breaksCount].isComponent = NO;
         ++breaksCount;
         
         _potentialBreaks = breaks;
         _potentialBreaksCount = breaksCount;
-        _potentialBreakToComponentOffset = breakToComponentOffset;
+        _potentialBreakInfos = breakInfos;
     }
     return _potentialBreaks;
 }
@@ -406,10 +424,15 @@ static id sHardBreakMarker;
     return _potentialBreaksCount;
 }
 
+- (uint32_t)_pointToComponentOffset:(EucHTMLLayoutDocumentRunPoint)point
+{
+    uint32_t component = _wordToComponent[point.word] + point.element;
+    return component;
+}
 
 - (EucHTMLLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
                                            wordOffset:(uint32_t)wordOffset 
-                                         hyphenOffset:(uint32_t)hyphenOffset
+                                        elementOffset:(uint32_t)elementOffset
                                    returningCompleted:(BOOL *)returningCompleted
 {
     if(_wordsCount == 0) {
@@ -418,14 +441,18 @@ static id sHardBreakMarker;
     
     [self potentialBreaks];
     
-    size_t startComponentOffset = _wordOffsetToComponentOffset[wordOffset];
     size_t startBreakOffset = 0;
-    while(_potentialBreakToComponentOffset[startBreakOffset] < startComponentOffset) {
-        ++startBreakOffset;
+    for(;;) {
+        EucHTMLLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
+        if(point.element < wordOffset || point.element < elementOffset) {
+            ++startBreakOffset;
+        } else {
+            break;
+        }
     }
     
     CGFloat textIndent;
-    if(hyphenOffset == 0 && wordOffset == 0) {
+    if(elementOffset == 0 && wordOffset == 0) {
         textIndent = [self _textIndentInWidth:frame.size.width];
     } else {
         textIndent = 0.0f;
@@ -438,12 +465,11 @@ static id sHardBreakMarker;
         indentationOffset = -_potentialBreaks[startBreakOffset].x1;
     }
     indentationOffset += textIndent;
-    int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, textIndent, frame.size.width, 0, usedBreakIndexes);
+    int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, frame.size.width, 0, usedBreakIndexes);
 
     CGPoint lineOrigin = frame.origin;
 
     uint8_t textAlign = [self _textAlign];
-    
     
     BOOL completed = YES;
 
@@ -451,17 +477,38 @@ static id sHardBreakMarker;
     CGFloat lastLineMaxY = maxY;
     
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
-    int lineStartComponentOffset = startComponentOffset;
+    EucHTMLLayoutDocumentRunBreakInfo lastLineBreakInfo;
+    if(startBreakOffset) {
+        lastLineBreakInfo = _potentialBreakInfos[startBreakOffset];
+    } else {
+        EucHTMLLayoutDocumentRunBreakInfo zeroBreakInfo = { { 0, 0 }, NO };
+        lastLineBreakInfo = zeroBreakInfo;
+    }
     
     for(int i = 0; i < usedBreakCount; ++i) {
-        int thisComponentOffset = _potentialBreakToComponentOffset[usedBreakIndexes[i] + startBreakOffset];
+        EucHTMLLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
         EucHTMLLayoutLine *newLine = [[EucHTMLLayoutLine alloc] init];
         newLine.documentRun = self;
-        newLine.startComponentOffset = lineStartComponentOffset;
-        newLine.startHyphenOffset = 0;
-        newLine.endComponentOffset = thisComponentOffset;
-        newLine.endHyphenOffset = 0;
-        
+        if(lastLineBreakInfo.isComponent) {
+            EucHTMLLayoutDocumentRunPoint point = lastLineBreakInfo.point;
+            uint32_t componentOffset = [self _pointToComponentOffset:point];
+            ++componentOffset;
+            if(componentOffset == _componentsCount) {
+                // This is off the end of the components array.
+                // This must be an empty line at the end of a run.
+                // We remove this - the only way it can happen is if the last
+                // line ends in a newline (e.g. <br>), and we're about to add
+                // an implicit newline at tee end of the block anyway.
+                [newLine release];        
+                break;
+            } else {
+                newLine.startPoint = _componentInfos[componentOffset].point;
+            }
+        } else {
+            newLine.startPoint = lastLineBreakInfo.point; // Do something to skip the space!
+        }
+        newLine.endPoint = thisLineBreakInfo.point;
+
         newLine.origin = lineOrigin;
         
         if(textIndent) {
@@ -488,7 +535,7 @@ static id sHardBreakMarker;
         }
         
         lineOrigin.y = lastLineMaxY;
-        lineStartComponentOffset = thisComponentOffset + 1; // +1 to skip the space.
+        lastLineBreakInfo = thisLineBreakInfo; 
     }
     
     EucHTMLLayoutPositionedRun *ret = nil;
@@ -508,3 +555,5 @@ static id sHardBreakMarker;
 }
 
 @end
+
+
