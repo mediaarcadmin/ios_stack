@@ -8,8 +8,8 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "BlioStoreBookViewController.h"
+#import "BlioProcessing.h"
 #import <libEucalyptus/THUIImageAdditions.h>
-#import "BlioProcessingManager.h"
 
 #define AUTHORPADDINGABOVE 4
 #define AUTHORPADDINGBELOW 9
@@ -160,7 +160,9 @@
                                           authors:[NSArray arrayWithObject:self.entity.author]
                                          coverURL:self.entity.coverUrl ? [NSURL URLWithString:self.entity.coverUrl] : nil
                                           ePubURL:self.entity.ePubUrl ? [NSURL URLWithString:self.entity.ePubUrl] : nil 
-                                           pdfURL:self.entity.pdfUrl ? [NSURL URLWithString:self.entity.pdfUrl] : nil];
+                                           pdfURL:self.entity.pdfUrl ? [NSURL URLWithString:self.entity.pdfUrl] : nil
+                                      textFlowURL:nil
+                                     audiobookURL:nil];
 }
 
 - (void)didReceiveMemoryWarning {

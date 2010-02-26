@@ -7,27 +7,7 @@
 //
 
 #import <CoreData/CoreData.h>
-
-@interface BlioProcessingBookOperation : NSOperation {
-    NSManagedObjectID *bookID;
-    NSPersistentStoreCoordinator *storeCoordinator;
-    BOOL forceReprocess;
-    NSUInteger percentageComplete;
-}
-
-@property (nonatomic, retain) NSManagedObjectID *bookID;
-@property (nonatomic, retain) NSPersistentStoreCoordinator *storeCoordinator;
-@property (nonatomic) BOOL forceReprocess;
-@property (nonatomic) NSUInteger percentageComplete;
-
-- (void)setBookValue:(id)value forKey:(NSString *)key;
-
-@end
-
-@protocol BlioProcessingDelegate
-@required
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL;
-@end
+#import "BlioProcessing.h"
 
 @interface BlioProcessingManager : NSObject <BlioProcessingDelegate> {
     NSManagedObjectContext *managedObjectContext;

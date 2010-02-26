@@ -94,10 +94,12 @@
     NSInteger cachedPageIndex;
     NSArray *cachedPageParagraphs;
     BOOL ready;
+    NSString *basePath;
 }
 
 @property (nonatomic, retain) NSMutableSet *sections;
 @property (nonatomic, getter=isReady) BOOL ready;
+@property (nonatomic, retain) NSString *basePath;
 
 - (id)initWithPath:(NSString *)path;
 

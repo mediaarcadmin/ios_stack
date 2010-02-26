@@ -7,25 +7,8 @@
 //
 
 #import "BlioProcessingManager.h"
+#import "BlioProcessingStandardOperations.h"
 #import "BlioMockBook.h"
-
-@interface BlioProcessingDownloadOperation : BlioProcessingBookOperation {
-    NSURL *url;
-    NSString *cacheDirectory;
-}
-
-@property (nonatomic, retain) NSURL* url;
-@property (nonatomic, retain) NSString* cacheDirectory;
-
-- (id)initWithUrl:(NSURL *)aURL cacheDirectory:(NSString *)aCacheDir;
-
-@end
-
-@interface BlioProcessingDownloadPDFOperation : BlioProcessingDownloadOperation
-@end
-
-@interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation
-@end
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -63,7 +46,9 @@
 #pragma mark -
 #pragma mark BlioProcessingDelegate
 
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL {    
+- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                audiobookURL:(NSURL *)audiobookURL {    
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (nil != moc) {
         
@@ -101,170 +86,81 @@
             
             if (![[NSFileManager defaultManager] createDirectoryAtPath:cacheDir withIntermediateDirectories:YES attributes:nil error:&error])
                 NSLog(@"Failed to create book cache directory in processing manager with error: %@, %@", error, [error userInfo]);
-
+            
+            NSMutableArray *bookOps = [NSMutableArray array];
+            
             if (nil != coverURL) {
-                BlioProcessingDownloadCoverOperation *downloadOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:coverURL cacheDirectory:cacheDir];
-                downloadOp.bookID = bookID;
-                downloadOp.storeCoordinator = [moc persistentStoreCoordinator];
-                [self.preAvailabilityQueue addOperation:downloadOp];
+                BlioProcessingDownloadCoverOperation *coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:coverURL];
+                coverOp.bookID = bookID;
+                coverOp.storeCoordinator = [moc persistentStoreCoordinator];
+                coverOp.cacheDirectory = cacheDir;
+                [self.preAvailabilityQueue addOperation:coverOp];
+                [bookOps addObject:coverOp];
+                
+                BlioProcessingGenerateCoverThumbsOperation *thumbsOp = [[BlioProcessingGenerateCoverThumbsOperation alloc] init];
+                thumbsOp.bookID = bookID;
+                thumbsOp.storeCoordinator = [moc persistentStoreCoordinator];
+                thumbsOp.cacheDirectory = cacheDir;
+                [thumbsOp addDependency:coverOp];
+                [self.preAvailabilityQueue addOperation:thumbsOp];
+                [bookOps addObject:thumbsOp];
+                
+                [coverOp release];
+                [thumbsOp release];
             }
+            
+            if (nil != ePubURL) {
+                BlioProcessingDownloadEPubOperation *ePubOp = [[BlioProcessingDownloadEPubOperation alloc] initWithUrl:ePubURL];
+                ePubOp.bookID = bookID;
+                ePubOp.storeCoordinator = [moc persistentStoreCoordinator];
+                ePubOp.cacheDirectory = cacheDir;
+                [self.preAvailabilityQueue addOperation:ePubOp];
+                [bookOps addObject:ePubOp];
+                [ePubOp release];
+            }
+            
+            if (nil != pdfURL) {
+                BlioProcessingDownloadPdfOperation *pdfOp = [[BlioProcessingDownloadPdfOperation alloc] initWithUrl:pdfURL];
+                pdfOp.bookID = bookID;
+                pdfOp.storeCoordinator = [moc persistentStoreCoordinator];
+                pdfOp.cacheDirectory = cacheDir;
+                [self.preAvailabilityQueue addOperation:pdfOp];
+                [bookOps addObject:pdfOp];
+                [pdfOp release];
+            }
+            
+            if (nil != textFlowURL) {
+                BlioProcessingDownloadTextFlowOperation *textFlowOp = [[BlioProcessingDownloadTextFlowOperation alloc] initWithUrl:textFlowURL];
+                textFlowOp.bookID = bookID;
+                textFlowOp.storeCoordinator = [moc persistentStoreCoordinator];
+                textFlowOp.cacheDirectory = cacheDir;
+                [self.preAvailabilityQueue addOperation:textFlowOp];
+                [bookOps addObject:textFlowOp];
+                [textFlowOp release];
+            }
+            
+            if (nil != audiobookURL) {
+                BlioProcessingDownloadAudiobookOperation *audiobookOp = [[BlioProcessingDownloadAudiobookOperation alloc] initWithUrl:audiobookURL];
+                audiobookOp.bookID = bookID;
+                audiobookOp.storeCoordinator = [moc persistentStoreCoordinator];
+                audiobookOp.cacheDirectory = cacheDir;
+                [self.preAvailabilityQueue addOperation:audiobookOp];
+                [bookOps addObject:audiobookOp];
+                [audiobookOp release];
+            }
+            
+            BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];
+            completeOp.bookID = bookID;
+            completeOp.storeCoordinator = [moc persistentStoreCoordinator];
+            
+            for (NSOperation *op in bookOps) {
+                [completeOp addDependency:op];
+            }
+            
+            [self.preAvailabilityQueue addOperation:completeOp];
+            [completeOp release];
         }
     }
 }
-
-@end
-
-@implementation BlioProcessingBookOperation
-
-@synthesize bookID, storeCoordinator, forceReprocess, percentageComplete;
-
-- (void)dealloc {
-    self.bookID = nil;
-    self.storeCoordinator = nil;
-    [super dealloc];
-}
-
-- (void)setBookValue:(id)value forKey:(NSString *)key {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-     
-    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
-    [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
-    NSManagedObject *book = [moc objectWithID:self.bookID];
-    if (nil == book) 
-        NSLog(@"Failed to retrieve book");
-    else
-        [book setValue:value forKey:key];
-    
-    NSError *error;
-    if (![moc save:&error]) {
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
-    }
-    
-    [moc release];
-    
-    [pool drain];
-}
-
-- (void)setBookProcessingComplete {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
-    [moc setPersistentStoreCoordinator:self.storeCoordinator];
-    NSManagedObject *book = [moc objectWithID:self.bookID];
-    
-    if (nil == book) {
-        NSLog(@"Failed to retrieve book");
-        return;
-    }
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithBool:YES]]];
-    
-    // Block whilst we calculate the position so that other threads don't perform the same
-    // check at the same time
-    NSError *error;
-    @synchronized (self.storeCoordinator) {
-        NSUInteger count = [moc countForFetchRequest:request error:&error];
-        if (count == NSNotFound) {
-            NSLog(@"Failed to retrieve book count with error: %@, %@", error, [error userInfo]);
-        } else {
-            [book setValue:[NSNumber numberWithInt:count] forKey:@"position"];
-            [book setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        }
-    
-        NSError *error;
-        if (![moc save:&error]) {
-            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
-        }
-    }
-    
-    [moc release];
-    
-    [pool drain];
-}
-
-@end
-
-@implementation BlioProcessingDownloadOperation
-
-@synthesize url, cacheDirectory;
-
-- (void) dealloc {
-    self.url = nil;
-    self.cacheDirectory = nil;
-    [super dealloc];
-}
-
-- (id)initWithUrl:(NSURL *)aURL cacheDirectory:(NSString *)aCacheDir {
-    
-    if (nil == aURL) return nil;
-    
-    if((self = [super init])) {
-        self.url = aURL;
-        self.cacheDirectory = aCacheDir;
-    }
-
-    return self;
-}
-
-@end
-
-@implementation BlioProcessingDownloadPDFOperation
-
-- (void)main {
-    if ([self isCancelled]) return;
-    
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    [pool drain];
-}
-
-
-@end
-
-@implementation BlioProcessingDownloadCoverOperation
-
-- (void)main {
-    if ([self isCancelled]) return;
-    
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    NSError *error;
-    NSURLResponse *response;
-    
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:self.url];
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    [request release];
-    
-    if (error) {
-        NSLog(@"Failed to download from URL with error: %@, %@", error, [error userInfo]);
-        [pool drain];
-        return;
-    }
-        
-    if ([self isCancelled]) {
-        [pool drain];
-        return;
-    }
-    
-    NSString *extension = [[response suggestedFilename] pathExtension];
-    if (nil == extension) extension = @"png";
-    
-    CFUUIDRef theUUID = CFUUIDCreate(NULL);
-    CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
-    CFRelease(theUUID);
-    NSString *filename = [(NSString *)uniqueString stringByAppendingPathExtension:extension];
-    CFRelease(uniqueString);
-    
-    NSString *cachedFilename = [self.cacheDirectory stringByAppendingPathComponent:filename];
-    [data writeToFile:cachedFilename atomically:YES];
-    
-    [self setBookValue:filename forKey:@"coverFilename"];
-    [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-    
-    [pool drain];
-}
-
 
 @end

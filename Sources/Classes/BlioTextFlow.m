@@ -166,6 +166,7 @@
 @synthesize currentSection, currentParagraph;
 @synthesize currentPageIndex, currentParagraphArray, currentParser;
 @synthesize cachedPageIndex, cachedPageParagraphs;
+@synthesize basePath;
 @synthesize ready;
 
 - (void)dealloc {
@@ -174,6 +175,7 @@
     self.currentParagraph = nil;
     self.currentParagraphArray = nil;
     self.cachedPageParagraphs = nil;
+    self.basePath = nil;
     if (nil != self.currentParser) {
         enum XML_Status status = XML_StopParser(currentParser, false);
         if (status == XML_STATUS_OK) {
@@ -237,7 +239,7 @@ static void splitXMLParsingStartElementHandler(void *ctx, const XML_Char *name, 
                 NSString *sourceString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != sourceString) {
                     NSArray *sectionArray = [sourceString componentsSeparatedByString:@"#"];
-                    [aSection setPath:[[sectionArray objectAtIndex:0] stringByDeletingPathExtension]];
+                    [aSection setPath:[[textFlow basePath] stringByAppendingPathComponent:[sectionArray objectAtIndex:0]]];
                     if ([sectionArray count] > 1) [aSection setAnchor:[sectionArray objectAtIndex:1]];
                     [sourceString release];
                 }
@@ -256,6 +258,10 @@ static void splitXMLParsingStartElementHandler(void *ctx, const XML_Char *name, 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
+    
+    if (nil == data) return;
+    
+    self.basePath = [path stringByDeletingLastPathComponent];
     currentParser = XML_ParserCreate(NULL);
     XML_SetStartElementHandler(currentParser, splitXMLParsingStartElementHandler);
     XML_SetUserData(currentParser, (void *)self);    
@@ -319,7 +325,7 @@ static void flowXMLParsingStartElementHandler(void *ctx, const XML_Char *name, c
 - (void)parseSection:(BlioTextFlowSection *)section {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:[section path] ofType:@"xml" inDirectory:@"TextFlows"];
+    NSString *path = [section path];
     NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
     
     if (!data) return;
@@ -448,10 +454,11 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
 - (NSArray *)paragraphsForPage:(NSInteger)pageIndex inSection:(BlioTextFlowSection *)section targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker {
     
     self.currentParagraphArray = nil;
+    NSString *path = [section path];
     
-    if (nil != [section path]) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:[section path] ofType:@"xml" inDirectory:@"TextFlows"];
+    if (nil != path) {
         NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
+        if (nil == data) return nil;
         
         NSUInteger dataLength = [data length];
         NSUInteger offset = (NSUInteger)[targetMarker byteIndex];

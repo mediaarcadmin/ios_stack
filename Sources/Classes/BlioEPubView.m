@@ -21,7 +21,7 @@
 @dynamic contentsDataSource;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
-    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook bookPath]];
+    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook ePubPath]];
     if(nil == aEPubBook) {
         [self release];
         return nil;

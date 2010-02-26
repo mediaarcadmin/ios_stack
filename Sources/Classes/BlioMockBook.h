@@ -39,7 +39,7 @@
 - (UIImage *)coverImage;
 - (UIImage *)coverThumbForGrid;
 - (UIImage *)coverThumbForList;
-- (NSString *)bookPath;
+- (NSString *)ePubPath;
 - (NSString *)pdfPath;
 - (NSString *)audiobookPath;
 - (NSString *)timingIndicesPath;

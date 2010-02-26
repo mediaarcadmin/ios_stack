@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BlioProcessingManager.h"
+#import "BlioProcessing.h"
 
 @interface BlioStoreTabViewController : UITabBarController <UITabBarControllerDelegate> {
     id <BlioProcessingDelegate> processingDelegate;

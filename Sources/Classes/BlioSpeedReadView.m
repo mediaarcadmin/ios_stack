@@ -19,7 +19,7 @@
 @synthesize pageCount, pageNumber, currentWordOffset, currentParagraph, currentPage, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
-    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook bookPath]];
+    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook ePubPath]];
     if (nil == aEPubBook) return nil;
     
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
