@@ -35,10 +35,11 @@
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 @property (nonatomic, retain) NSString *textflowFilename;
 
+- (NSString *)bookCacheDirectory;
 - (UIImage *)coverImage;
 - (UIImage *)coverThumbForGrid;
 - (UIImage *)coverThumbForList;
-- (NSString *)bookPath;
+- (NSString *)ePubPath;
 - (NSString *)pdfPath;
 - (NSString *)audiobookPath;
 - (NSString *)timingIndicesPath;

@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "BlioStoreBookViewController.h"
+#import "BlioProcessing.h"
 #import <libEucalyptus/THUIImageAdditions.h>
 
 #define AUTHORPADDINGABOVE 4
@@ -26,7 +27,7 @@
 @implementation BlioStoreBookViewController
 
 @synthesize fetchThumbQueue, entity, scroller, container, bookThumb, bookTitle, bookShadow, bookPlaceholder, authors, download, summary, releaseDate, publicationDate, pages, publisher, belowSummaryDetails;
-
+@synthesize processingDelegate;
 
 - (void)dealloc {
     [self.fetchThumbQueue cancelAllOperations];
@@ -45,6 +46,7 @@
     self.publicationDate = nil;
     self.pages = nil;
     self.publisher = nil;
+    self.processingDelegate = nil;
     [super dealloc];
 }
 
@@ -151,6 +153,16 @@
         [self.bookThumb setAlpha:1.0f];
         [self.bookShadow setAlpha:1.0f];
     }
+}
+
+- (IBAction)downloadButtonPressed:(id)sender {
+    [self.processingDelegate enqueueBookWithTitle:self.entity.title 
+                                          authors:[NSArray arrayWithObject:self.entity.author]
+                                         coverURL:self.entity.coverUrl ? [NSURL URLWithString:self.entity.coverUrl] : nil
+                                          ePubURL:self.entity.ePubUrl ? [NSURL URLWithString:self.entity.ePubUrl] : nil 
+                                           pdfURL:self.entity.pdfUrl ? [NSURL URLWithString:self.entity.pdfUrl] : nil
+                                      textFlowURL:nil
+                                     audiobookURL:nil];
 }
 
 - (void)didReceiveMemoryWarning {

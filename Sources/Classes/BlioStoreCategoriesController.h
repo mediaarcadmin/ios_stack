@@ -11,10 +11,14 @@
 
 static const NSInteger kBlioStoreCategoriesTag = 1;
 
+@protocol BlioProcessingDelegate;
+
 @interface BlioStoreCategoriesController : UITableViewController <BlioStoreBooksSourceParserDelegate> {
     NSMutableArray *feeds;
+    id <BlioProcessingDelegate> processingDelegate;
 }
 
 @property (nonatomic, retain) NSMutableArray *feeds;
+@property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
 
 @end
