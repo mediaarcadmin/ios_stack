@@ -1453,8 +1453,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	else {
 		paragraphId = [self getCurrentParagraph:pageType wordOffset:&wordOffset];
 		// Play button has just been pushed.
-		if ( audioMgr.pageChanged ) {
-			// Starting speech for the first time, or for the first time since changing the 
+		if ( audioMgr.pageChanged ) {  
+			// Page has changed since the stop button was last pushed (and pageChanged is initialized to true).
+			// So we're starting speech for the first time, or for the first time since changing the 
 			// page or book after stopping speech the last time (whew).
 			//[audioMgr setCurrentPage:[self getCurrentPage:pageType paragraphId:paragraphId wordOffset:wordOffset]]; // Using pageChanged instead
 			[audioMgr setCurrentWordOffset:wordOffset];
@@ -1632,10 +1633,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)pauseAudio {			
-	if (![self.book audioRights]) 
-		[_acapelaTTS pauseSpeaking]; 
-	else if ([self.book audiobookFilename] != nil) 
+	if (![self.book audioRights]) {
+		[_acapelaTTS pauseSpeaking];
+		[_acapelaTTS setPageChanged:NO]; // In case speaking continued through a page turn.
+	}
+	else if ([self.book audiobookFilename] != nil) {
 		[_audioBookManager pauseAudio];
+		[_audioBookManager setPageChanged:NO];
+	}
 }
 
 - (void)prepareTTSEngine {
@@ -1659,7 +1664,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		UIBarButtonItem *item = (UIBarButtonItem *)sender;
 		UIImage *audioImage = nil;
 		if (self.audioPlaying) {
-			[self pauseAudio];
+			[self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
 		} else { 
 			if (!self.navigationController.toolbarHidden) {

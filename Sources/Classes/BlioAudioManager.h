@@ -17,7 +17,7 @@
 	NSArray* paragraphWords;
 	NSTimer* speakingTimer;
 	BOOL startedPlaying;
-	BOOL pageChanged;
+	BOOL pageChanged;  // This means page has changed since the stop button was last pressed.
 	// TTS
 	BOOL textToSpeakChanged; 
 	NSString* currentWord;

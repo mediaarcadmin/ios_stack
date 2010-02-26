@@ -19,7 +19,6 @@
 	if (self)
 	{
 		self.title = @"Text to Speech";
-		//self.currentVoice = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey];
 	}
 	return self;
 }
