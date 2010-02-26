@@ -14,27 +14,36 @@
 
 @interface BlioProcessingDownloadOperation : BlioProcessingOperation {
     NSURL *url;
+    NSString *localFilename;
 }
 
 @property (nonatomic, retain) NSURL* url;
+@property (nonatomic, retain) NSString* localFilename;
 
 - (id)initWithUrl:(NSURL *)aURL;
+- (void)downloadDidFinishSuccessfully:(BOOL)success;
+
+@end
+
+@interface BlioProcessingDownloadAndUnzipOperation : BlioProcessingDownloadOperation
+
+- (void)unzipDidFinishSuccessfully:(BOOL)success;
 
 @end
 
 @interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation
 @end
 
-@interface BlioProcessingDownloadEPubOperation : BlioProcessingDownloadOperation
+@interface BlioProcessingDownloadEPubOperation : BlioProcessingDownloadAndUnzipOperation
 @end
 
 @interface BlioProcessingDownloadPdfOperation : BlioProcessingDownloadOperation
 @end
 
-@interface BlioProcessingDownloadTextFlowOperation : BlioProcessingDownloadOperation
+@interface BlioProcessingDownloadTextFlowOperation : BlioProcessingDownloadAndUnzipOperation
 @end
 
-@interface BlioProcessingDownloadAudiobookOperation : BlioProcessingDownloadOperation
+@interface BlioProcessingDownloadAudiobookOperation : BlioProcessingDownloadAndUnzipOperation
 @end
 
 @interface BlioProcessingGenerateCoverThumbsOperation : BlioProcessingOperation
