@@ -2001,24 +2001,63 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self dismissModalViewControllerAnimated:YES];
 }
 
-- (void)openWebToolDictionaryWithRange:(BlioBookmarkRange *)range {
-    
+- (void)webNavigate:(id)sender {	
+	BlioWebToolsViewController* webViewController = (BlioWebToolsViewController*)self.modalViewController;
+	switch([sender selectedSegmentIndex] )
+	{
+		case 0: 
+			[(UIWebView*)webViewController.topViewController.view goBack];
+			break;
+		case 1: 
+			[(UIWebView*)webViewController.topViewController.view goForward];
+			break;
+		case 2: 
+			[(UIWebView*)webViewController.topViewController.view reload];
+			break;
+		default: 
+			break;
+	}
 }
 
-- (void)openWebToolTranslateWithRange:(BlioBookmarkRange *)range {
-    
-}
-
-- (void)openWebToolSearchWithRange:(BlioBookmarkRange *)range {
-    NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
+- (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type { 
+	NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
     NSString *encodedParam = [[wordStrings componentsJoinedByString:@" "] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *queryString = [NSString stringWithFormat: @"http://www.google.com/m?q=%@", encodedParam];
-	NSURL *url = [NSURL URLWithString:queryString];
-    
+	NSString *queryString;
+	NSString* titleString;
+	switch (type) {
+		case dictionaryTool:
+			// TODO: get from preference
+			titleString = [NSString stringWithString:@"Dictionary"];
+			break;
+		case wikipediaTool:
+			titleString = [NSString stringWithString:@"Wikipedia"];
+			break;
+		case searchTool:
+			// TODO: get from preference
+			queryString = [NSString stringWithFormat: @"http://www.google.com/search?hl=en&source=hp&q=%@", encodedParam];  
+			titleString = [NSString stringWithString:@"Web Search"];
+			break;
+		default:
+			break;
+	}
+    NSURL *url = [NSURL URLWithString:queryString];
     if (nil != url) {
         BlioWebToolsViewController *aWebToolController = [[BlioWebToolsViewController alloc] initWithURL:url];
         aWebToolController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissWebTool:)];                                                 
-        aWebToolController.topViewController.navigationItem.title = @"Web Search";
+        aWebToolController.topViewController.navigationItem.title = titleString;
+		
+		NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", @"R", nil]; // until there's icons...
+		UISegmentedControl* segmentedControl = [[UISegmentedControl alloc] initWithItems:buttonNames];
+		segmentedControl.momentary = YES;
+		segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+		segmentedControl.frame = CGRectMake(0, 0, 100, 30);
+		[segmentedControl addTarget:self action:@selector(webNavigate:) forControlEvents:UIControlEventValueChanged];
+		UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
+		[segmentedControl release];
+		aWebToolController.topViewController.navigationItem.leftBarButtonItem = segmentBarItem;
+		[segmentBarItem release];
+		
         aWebToolController.navigationBar.tintColor = _returnToNavigationBarTint;
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         [self presentModalViewController:aWebToolController animated:YES];

@@ -8,8 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+#define ACTIVITY_INDICATOR 99
 
-@interface BlioWebToolsViewController : UINavigationController {
+typedef enum  {
+    dictionaryTool = 0,
+    //thesaurusTool = 1,
+    wikipediaTool = 1,
+    searchTool = 2,
+} BlioWebToolsType;
+
+@interface BlioWebToolsViewController : UINavigationController<UIWebViewDelegate> {
     BOOL statusBarHiddenOnEntry;
 }
 
