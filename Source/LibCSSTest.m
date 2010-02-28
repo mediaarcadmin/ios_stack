@@ -37,10 +37,9 @@ int main (int argc, const char * argv[]) {
     EucHTMLLayouter *layouter = [[EucHTMLLayouter alloc] init];
     layouter.document = document;
     CGRect frame = CGRectMake(0, 0, 320, CGFLOAT_MAX);
-    EucHTMLLayoutPositionedBlock *positionedBlock = [layouter layoutFromNodeWithId:document.body.key
-                                                                        wordOffset:0
-                                                                     elementOffset:0
-                                                                           inFrame:frame];
+    EucHTMLLayoutPoint layoutPoint = { document.body.key, 0, 0 };
+    EucHTMLLayoutPositionedBlock *positionedBlock = [layouter layoutFromPoint:layoutPoint
+                                                                      inFrame:frame];
     [layouter release];
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);

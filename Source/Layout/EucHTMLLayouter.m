@@ -20,6 +20,8 @@
 #import "THStringRenderer.h"
 #import "thjust.h"
 
+#import <parserutils/utils/stack.h>
+
 @implementation EucHTMLLayouter
 
 @synthesize document = _document;
@@ -56,20 +58,120 @@ Block completion status.
     *innermost = newContainer;
     return outermost;
 }
-                                                        
-- (EucHTMLLayoutPositionedBlock *)layoutFromNodeWithId:(uint32_t)nodeId
-                                            wordOffset:(uint32_t)wordOffset
-                                         elementOffset:(uint32_t)elementOffset
-                                               inFrame:(CGRect)frame
+
+
+- (BOOL)_trimBlockToFrame:(CGRect)frame returningNextPoint:(EucHTMLLayoutPoint *)returningNextPoint
 {
+    
+}
+ 
+
+- (EucHTMLLayoutPositionedBlock *)layoutFromPoint:(EucHTMLLayoutPoint)point
+                                          inFrame:(CGRect)frame
+                               returningNextPoint:(EucHTMLLayoutPoint *)returningNextPoint
+                               returningCompleted:(BOOL *)returningCompleted
+{
+    EucHTMLLayoutPositionedBlock *positionedRoot = nil;      
+    
+    /*
+     
+        In the normal flow, page breaks can occur at the following places:
+    
+             1) In the vertical margin between block boxes. When an unforced 
+                page break occurs here, the used values of the relevant 
+                'margin-top' and 'margin-bottom' properties are set to '0'.
+                When a forced page break occurs here, the used value of the
+                relevant 'margin-bottom' property is set to '0'; the relevant
+                'margin-top' used value may either be set to '0' or retained.
+             2) Between line boxes inside a block box.
+             3) Between the content edge of a block box and the outer edges of
+                its child content (margin edges of block-level children or line
+                box edges for inline-level children) if there is a (non-zero)
+                gap between them.
+
+          Note: It is expected that CSS3 will specify that the relevant 
+                'margin-top' applies (i.e., is not set to '0') after a forced 
+                page break.
+
+
+        These breaks are subject to the following rules:
+        
+        Rule A: Breaking at (1) is allowed only if the 'page-break-after' and
+                'page-break-before' properties of all the elements generating
+                boxes that meet at this margin allow it, which is when at least
+                one of them has the value 'always', 'left', or 'right', or when
+                all of them are 'auto'.
+        Rule B: However, if all of them are 'auto' and a common ancestor of all
+                the elements has a 'page-break-inside' value of 'avoid', then
+                breaking here is not allowed.
+        Rule C: Breaking at (2) is allowed only if the number of line boxes
+                between the break and the start of the enclosing block box is
+                the value of 'orphans' or more, and the number of line boxes
+                between the break and the end of the box is the value of
+                'widows' or more.
+        Rule D: In addition, breaking at (2) or (3) is allowed only if the
+                'page-break-inside' property of the element and all its
+                ancestors is 'auto'.
+
+
+        Reformulating:
+    
+        Always: Between the content edge of a block box and the outer edges of
+                its child content (margin edges of block-level children or line
+                box edges for inline-level children) if there is a (non-zero)
+                gap between them, only if the 'page-break-inside' property of
+                the element and all its ancestors is 'auto'.
+     
+        Rule A: In the vertical margin between block boxes, only when at least
+                one of them have 'page-break-after' and 'page-break-before' 
+                properties of the value 'always', 'left', or 'right', or when
+                all of them are 'auto' /unless/ all of them are 'auto', and 
+                a common ancestor has a 'page-break-inside' value of 'avoid'.
+     
+        Rule B: [ Not in effect initially ].
+                In the vertical margin between block boxes, only when at all the
+                'page-break-after' and 'page-break-before' are 'auto', and 
+                a common ancestor has a 'page-break-inside' value of 'avoid'.
+     
+        Rule C: Between line boxes inside a block box, if the number of line
+                boxes between the break and the start of the enclosing block 
+                box is the value of 'orphans' or more, and the number of line
+                boxes between the break and the end of the box is the value of
+                'widows' or more, only if the 'page-break-inside' property of
+                the element and all its ancestors is 'auto'.
+        
+        Rule D: [ Not in effect initially ].
+                Between the content edge of a block box and the outer edges of
+                its child content (margin edges of block-level children or line
+                box edges for inline-level children) if there is a (non-zero)
+                gap between them, only if the 'page-break-inside' property of
+                the element and all its ancestors is NOT 'auto'.
+                Between line boxes inside a block box, if the number of line
+                boxes between the break and the start of the enclosing block 
+                box is the value of 'orphans' or more, and the number of line
+                boxes between the break and the end of the box is the value of
+                'widows' or more, only if the 'page-break-inside' property of
+                the element and all its ancestors is NOT 'auto'.
+     
+    */                
+    
+    parserutils_stack *aBreakpoints, *bBreakpoints, *cBreakpoints, *dBreakpoints;
+    parserutils_stack_create(sizeof(EucHTMLLayoutPoint), 64, EucRealloc, NULL, &aBreakpoints);
+    parserutils_stack_create(sizeof(EucHTMLLayoutPoint), 64, EucRealloc, NULL, &bBreakpoints);
+    parserutils_stack_create(sizeof(EucHTMLLayoutPoint), 64, EucRealloc, NULL, &cBreakpoints);
+    parserutils_stack_create(sizeof(EucHTMLLayoutPoint), 64, EucRealloc, NULL, &dBreakpoints);
+    
+    uint32_t nodeKey = point.nodeKey;
+    uint32_t wordOffset = point.word;
+    uint32_t elementOffset = point.element;
+    
     EucHTMLDocument *document = self.document;
-    EucHTMLDocumentNode* currentDocumentNode = [document nodeForKey:nodeId];
+    EucHTMLDocumentNode* currentDocumentNode = [document nodeForKey:nodeKey];
     
     if(currentDocumentNode) {
         css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
 
         EucHTMLLayoutPositionedBlock *currentPositionedBlock = nil;
-        EucHTMLLayoutPositionedBlock *positionedRoot = nil;      
         if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
             currentDocumentNode = currentDocumentNode.blockLevelParent;
             positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode.parent
@@ -84,8 +186,11 @@ Block completion status.
         }
         currentDocumentNode = currentDocumentNode.next;
         
+        BOOL reachedBottomOfFrame = NO;
+        EucHTMLLayoutPoint nextPointAfterBottomOfFrame;
+        
         CGFloat nextY = frame.origin.y;
-        uint32_t nextRunId = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;
+        uint32_t nextRunNodeKey = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;
         do {            
             CGRect potentialFrame = currentPositionedBlock.contentRect;
             if(potentialFrame.size.height != CGFLOAT_MAX) {
@@ -102,7 +207,7 @@ Block completion status.
                 // Get the next run.
                 EucHTMLLayoutDocumentRun *documentRun = [[EucHTMLLayoutDocumentRun alloc] initWithNode:currentDocumentNode
                                                                                         underLimitNode:underNode
-                                                                                                 forId:nextRunId];
+                                                                                                 forId:nextRunNodeKey];
                 
                 // Position it.
                 BOOL positionedRunIsComplete;
@@ -112,6 +217,20 @@ Block completion status.
                                                                             returningCompleted:&positionedRunIsComplete];
                 if(positionedRun) {
                     [currentPositionedBlock addSubEntity:positionedRun];
+                }
+                if(!positionedRunIsComplete) {
+                    reachedBottomOfFrame = YES;
+                    nextPointAfterBottomOfFrame.nodeKey = nextRunNodeKey;
+                    if(positionedRun) {
+                        EucHTMLLayoutLine *lastLine = positionedRun.lines.lastObject;
+                        EucHTMLLayoutDocumentRunPoint lastLineEndPoint = lastLine.endPoint;
+                        
+                        nextPointAfterBottomOfFrame.word = lastLineEndPoint.word;
+                        nextPointAfterBottomOfFrame.element = lastLineEndPoint.element;
+                    } else {
+                        nextPointAfterBottomOfFrame.word = wordOffset;
+                        nextPointAfterBottomOfFrame.element = elementOffset;
+                    }
                 }
                              
                 if(elementOffset) {
@@ -127,7 +246,7 @@ Block completion status.
                 if(runsNextNode) {
                     // Non-first run in a block has the ID of its first element.
                     currentDocumentNode = runsNextNode;
-                    nextRunId = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;
+                    nextRunNodeKey = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;
                 } else {
                     currentDocumentNode = documentRun.nextNodeInDocument;
                 }
@@ -158,14 +277,14 @@ Block completion status.
                 nextY = newBlock.contentRect.origin.y;
                 
                 // First run in a block has the ID of the block it's in.
-                nextRunId = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;  
+                nextRunNodeKey = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;  
                 
                 currentDocumentNode = currentDocumentNode.next;
             }
-        } while(currentDocumentNode);
+        } while(!reachedBottomOfFrame && currentDocumentNode);
         
         while(currentPositionedBlock) {
-            [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:NO];
+            [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:reachedBottomOfFrame];
             nextY = NSMaxY(currentPositionedBlock.frame);
             currentPositionedBlock = currentPositionedBlock.parent;
             CGRect potentialFrame = currentPositionedBlock.frame;
@@ -177,10 +296,20 @@ Block completion status.
         
         [positionedRoot closeBottomFromYPoint:nextY atInternalPageBreak:NO];
 
-        return positionedRoot;
-    } else {
-        return nil;
+        if(returningCompleted) {
+            *returningCompleted = !reachedBottomOfFrame;
+        }
+        if(!reachedBottomOfFrame && returningNextPoint) {
+            *returningNextPoint = nextPointAfterBottomOfFrame;
+        }
     }
+    
+    parserutils_stack_destroy(aBreakpoints);
+    parserutils_stack_destroy(bBreakpoints);
+    parserutils_stack_destroy(cBreakpoints);
+    parserutils_stack_destroy(dBreakpoints);
+    
+    return positionedRoot;
 }
     
 /*

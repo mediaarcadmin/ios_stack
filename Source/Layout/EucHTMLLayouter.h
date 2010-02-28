@@ -23,9 +23,8 @@ typedef struct EucHTMLLayoutPoint
 
 @property (nonatomic, retain) EucHTMLDocument *document;
 
-- (EucHTMLLayoutPositionedBlock *)layoutFromNodeWithId:(uint32_t)nodeId
-                                            wordOffset:(uint32_t)wordOffset
-                                         elementOffset:(uint32_t)elementOffset
-                                               inFrame:(CGRect)frame;
+- (EucHTMLLayoutPositionedBlock *)layoutFromPoint:(EucHTMLLayoutPoint) point
+                                          inFrame:(CGRect)frame
+                               returningNextPoint:(EucHTMLLayoutPoint *)nextPoint;
 
 @end
