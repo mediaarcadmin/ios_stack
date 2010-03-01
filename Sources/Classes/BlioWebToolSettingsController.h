@@ -11,6 +11,7 @@
 
 @interface BlioWebToolSettingsController : UIViewController {
 	UISegmentedControl* searchControl;
+	UISegmentedControl* encyclopediaControl;
 }
 
 @end

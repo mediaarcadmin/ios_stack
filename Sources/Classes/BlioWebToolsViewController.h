@@ -13,7 +13,7 @@
 typedef enum  {
     dictionaryTool = 0,
     //thesaurusTool = 1,
-    wikipediaTool = 1,
+    encyclopediaTool = 1,
     searchTool = 2,
 } BlioWebToolsType;
 
@@ -22,6 +22,11 @@ typedef enum  {
     yahooOption = 1,
     bingOption = 2,
 } BlioSearchEngineOption;
+
+typedef enum  {
+    wikipediaOption = 0,
+    britannicaOption = 1,
+} BlioEncyclopediaOption;
 
 @interface BlioWebToolsViewController : UINavigationController<UIWebViewDelegate> {
     BOOL statusBarHiddenOnEntry;
