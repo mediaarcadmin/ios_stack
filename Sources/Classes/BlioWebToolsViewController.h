@@ -17,8 +17,15 @@ typedef enum  {
     searchTool = 2,
 } BlioWebToolsType;
 
+typedef enum  {
+    googleOption = 0,
+    yahooOption = 1,
+    bingOption = 2,
+} BlioSearchEngineOption;
+
 @interface BlioWebToolsViewController : UINavigationController<UIWebViewDelegate> {
     BOOL statusBarHiddenOnEntry;
+	NSArray* urls;
 }
 
 - (id)initWithURL:(NSURL *)url;

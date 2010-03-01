@@ -20,6 +20,7 @@
 #import "BlioContentsTabViewController.h"
 #import "BlioLightSettingsViewController.h"
 #import "BlioBookmark.h"
+#import "BlioAppSettingsConstants.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -2011,9 +2012,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		case 1: 
 			[(UIWebView*)webViewController.topViewController.view goForward];
 			break;
-		case 2: 
-			[(UIWebView*)webViewController.topViewController.view reload];
-			break;
+		//case 2: 
+		//	[(UIWebView*)webViewController.topViewController.view reload];
+		//	break;
 		default: 
 			break;
 	}
@@ -2031,10 +2032,21 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			break;
 		case wikipediaTool:
 			titleString = [NSString stringWithString:@"Wikipedia"];
-			break;
+			break;			
 		case searchTool:
-			// TODO: get from preference
-			queryString = [NSString stringWithFormat: @"http://www.google.com/search?hl=en&source=hp&q=%@", encodedParam];  
+			switch ((BlioSearchEngineOption)[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastSearchEngineDefaultsKey]) {
+				case googleOption:
+					queryString = [NSString stringWithFormat: @"http://www.google.com/search?hl=en&source=hp&q=%@", encodedParam];
+					break;
+				case yahooOption:
+					queryString = [NSString stringWithFormat: @"http://www.yahoo.com", encodedParam];
+					break;
+				case bingOption:
+					queryString = [NSString stringWithFormat: @"http://www.bing.com", encodedParam];
+					break;
+				default:
+					break;
+			}  
 			titleString = [NSString stringWithString:@"Web Search"];
 			break;
 		default:
@@ -2046,12 +2058,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         aWebToolController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissWebTool:)];                                                 
         aWebToolController.topViewController.navigationItem.title = titleString;
 		
-		NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", @"R", nil]; // until there's icons...
+		NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", nil]; // until there's icons...
 		UISegmentedControl* segmentedControl = [[UISegmentedControl alloc] initWithItems:buttonNames];
 		segmentedControl.momentary = YES;
-		segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-		segmentedControl.frame = CGRectMake(0, 0, 100, 30);
+		segmentedControl.frame = CGRectMake(0, 0, 70, 30);
 		[segmentedControl addTarget:self action:@selector(webNavigate:) forControlEvents:UIControlEventValueChanged];
 		UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
 		[segmentedControl release];
