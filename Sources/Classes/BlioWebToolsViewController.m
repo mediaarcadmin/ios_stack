@@ -21,13 +21,23 @@
     
     UIViewController *aVC = [[UIViewController alloc] init];
     aVC.view = aWebView;
+	
+	UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
+	[activityIndicator setCenter:CGPointMake(160.0f, 208.0f)];
+    [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+	activityIndicator.tag = ACTIVITY_INDICATOR;
+    [aWebView addSubview:activityIndicator];
+	[activityIndicator release];
+	
+	aWebView.delegate = self;
+	
     [aWebView release];
     
 	if ((self = [super initWithRootViewController:aVC])) {
         // Configure controller
     }
-    
-    [aVC release];
+	
+	[aVC release];
 
     return self;
 }
@@ -46,6 +56,16 @@
 - (void)loadView {
 }
 */
+
+-(void)webViewDidStartLoad:(UIWebView*)webView {
+	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
+	[activityIndicator startAnimating];
+}
+
+-(void)webViewDidFinishLoad:(UIWebView*)webView {
+	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
+	[activityIndicator stopAnimating];
+}
 
                  
 - (void)viewWillAppear:(BOOL)animated {

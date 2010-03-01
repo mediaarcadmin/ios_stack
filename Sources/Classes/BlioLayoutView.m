@@ -8,6 +8,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutView.h"
 #import "BlioBookmark.h"
+#import "BlioWebToolsViewController.h"
 #import <libEucalyptus/EucMenuItem.h>
 #import <libEucalyptus/EucSelectorRange.h>
 
@@ -563,13 +564,16 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     EucMenuItem *dictionaryItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Dictionary", "\"Dictionary\" option in popup menu in layout view")
                                                                action:@selector(dictionary:)] autorelease];
     
-    EucMenuItem *translateItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Translate", "\"Translate\" option in popup menu in layout view")
-                                                              action:@selector(translate:)] autorelease];
+    //EucMenuItem *thesaurusItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Thesaurus", "\"Thesaurus\" option in popup menu in layout view")
+    //                                                          action:@selector(thesaurus:)] autorelease];
+    
+    EucMenuItem *wikipediaItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Wikipedia", "\"Wikipedia\" option in popup menu in layout view")
+                                                              action:@selector(wikipedia:)] autorelease];
     
     EucMenuItem *searchItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Search", "\"Search\" option in popup menu in layout view")
                                                            action:@selector(search:)] autorelease];
         
-    NSArray *ret = [NSArray arrayWithObjects:dictionaryItem, translateItem, searchItem, nil];
+    NSArray *ret = [NSArray arrayWithObjects:dictionaryItem/*, thesaurusItem*/, wikipediaItem, searchItem, nil];
     
     return ret;
 }
@@ -787,29 +791,38 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [self.selector changeActiveMenuItemsTo:[self webToolsMenuItems]];
 }
 
+
 - (void)dictionary:(id)sender {
     BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolDictionaryWithRange:)]) {
-        [self.delegate openWebToolDictionaryWithRange:webToolRange];
-        
+    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
+        [self.delegate openWebToolWithRange:webToolRange  toolType:dictionaryTool];
         [self.selector setSelectedRange:nil];
     }
 }
 
-- (void)translate:(id)sender {
+/*
+- (void)thesaurus:(id)sender {
     BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolTranslateWithRange:)]) {
-        [self.delegate openWebToolTranslateWithRange:webToolRange];
+    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
+        [self.delegate openWebToolWithRange:webToolRange toolType:thesaurusTool];
         
+        [self.selector setSelectedRange:nil];
+    }
+}
+ */
+
+- (void)wikipedia:(id)sender {
+    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
+        [self.delegate openWebToolWithRange:webToolRange toolType:wikipediaTool];
         [self.selector setSelectedRange:nil];
     }
 }
 
 - (void)search:(id)sender {
     BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolSearchWithRange:)]) {
-        [self.delegate openWebToolSearchWithRange:webToolRange];
-        
+    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
+        [self.delegate openWebToolWithRange:webToolRange toolType:searchTool];
         [self.selector setSelectedRange:nil];
     }
 }

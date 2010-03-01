@@ -8,6 +8,7 @@
 
 #import "BlioAppSettingsController.h"
 #import "BlioAudioSettingsController.h"
+#import "BlioWebToolSettingsController.h"
 
 @implementation BlioAppSettingsController
 
@@ -52,7 +53,7 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 
@@ -72,7 +73,16 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
-	[cell.textLabel setText:@"Text to Speech"];
+	switch ( [indexPath section] ) {
+		case 0:
+			[cell.textLabel setText:@"Text to Speech"];
+			break;
+		case 1:
+			[cell.textLabel setText:@"Web Tools"];
+			break;
+		default:
+			break;
+	}
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
     return cell;
@@ -80,9 +90,22 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	BlioAudioSettingsController *audioController = [[BlioAudioSettingsController alloc] init];
-	[self.navigationController pushViewController:audioController animated:YES];
-	[audioController release];
+	BlioAudioSettingsController *audioController;
+	BlioWebToolSettingsController *webToolController;
+	switch ( [indexPath section] ) {
+		case 0:
+			audioController = [[BlioAudioSettingsController alloc] init];
+			[self.navigationController pushViewController:audioController animated:YES];
+			[audioController release];
+			break;
+		case 1:
+			webToolController = [[BlioWebToolSettingsController alloc] init];
+			[self.navigationController pushViewController:webToolController animated:YES];
+			[webToolController release];
+			break;
+		default:
+			break;
+	}
 }
 
 - (void)dealloc {

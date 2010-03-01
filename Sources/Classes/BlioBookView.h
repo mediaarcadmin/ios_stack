@@ -8,6 +8,7 @@
  */
 
 #import "BlioBookmark.h"
+#import "BlioWebToolsViewController.h"
 
 #pragma mark -
 @protocol BlioBookDelegate <NSObject>
@@ -23,9 +24,8 @@
 
 - (void)copyWithRange:(BlioBookmarkRange *)range;
 
-- (void)openWebToolDictionaryWithRange:(BlioBookmarkRange *)range;
-- (void)openWebToolTranslateWithRange:(BlioBookmarkRange *)range;
-- (void)openWebToolSearchWithRange:(BlioBookmarkRange *)range;
+//- (void)openWebToolDictionaryWithRange:(BlioBookmarkRange *)range;
+- (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type;
 
 - (void)hideToolbars;
 - (void)toggleToolbars;
