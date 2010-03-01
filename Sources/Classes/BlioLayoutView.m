@@ -842,12 +842,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphID {    
     if (!paragraphID) {
-        NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:0];
-        
-        if (![pageParagraphs count])
-            return nil;
-        else
-            return (id)[[pageParagraphs objectAtIndex:0] paragraphID];
+        NSInteger pageIndex = -1;
+        while (++pageIndex < ([self pageCount])) {
+            NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+            if ([pageParagraphs count])
+                return (id)[[pageParagraphs objectAtIndex:0] paragraphID];
+        }
+        return nil;
     } else {
 
         NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];

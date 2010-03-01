@@ -417,3 +417,4 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 }
 
 @end
+

@@ -31,6 +31,7 @@
 @end
 
 @interface BlioTextFlowPageMarker : NSObject {
+    // NSCoding compliant
     NSUInteger pageIndex;
     NSUInteger byteIndex;
 }
@@ -40,12 +41,17 @@
 
 @end
 
-@interface BlioTextFlowSection : NSObject {
+@interface BlioTextFlowSection : NSObject <NSCoding> {
+    // NSCoding compliant
     NSInteger pageIndex;
     NSString *name;
     NSString *path;
     NSString *anchor;
     NSMutableSet *pageMarkers;
+    
+    // Transient
+    XML_Parser *currentParser;
+    NSInteger currentPageIndex;
 }
 
 @property (nonatomic) NSInteger pageIndex;
@@ -54,7 +60,6 @@
 @property (nonatomic, retain) NSString *anchor;
 @property (nonatomic, retain) NSMutableSet *pageMarkers;
 
-- (void)addPageMarker:(BlioTextFlowPageMarker *)aPageMarker;
 - (NSArray *)sortedPageMarkers;
 
 @end
@@ -85,7 +90,7 @@
 @end
 
 @interface BlioTextFlow : NSObject {
-    NSMutableSet *sections;
+    NSSet *sections;
     NSInteger currentPageIndex;
     BlioTextFlowSection *currentSection;
     BlioTextFlowParagraph *currentParagraph;
@@ -93,15 +98,9 @@
     XML_Parser currentParser;
     NSInteger cachedPageIndex;
     NSArray *cachedPageParagraphs;
-    BOOL ready;
-    NSString *basePath;
 }
 
-@property (nonatomic, retain) NSMutableSet *sections;
-@property (nonatomic, getter=isReady) BOOL ready;
-@property (nonatomic, retain) NSString *basePath;
-
-- (id)initWithPath:(NSString *)path;
+- (id)initWithSections:(NSSet *)sectionsSet;
 
 // Convenience methods
 - (NSArray *)sortedSections;
@@ -109,5 +108,7 @@
 - (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
+
++ (NSArray *)preAvailabilityOperations;
 
 @end

@@ -136,6 +136,17 @@
                 textFlowOp.cacheDirectory = cacheDir;
                 [self.preAvailabilityQueue addOperation:textFlowOp];
                 [bookOps addObject:textFlowOp];
+                
+                NSArray *textFlowPreAvailOps = [BlioTextFlow preAvailabilityOperations];
+                for (BlioProcessingOperation *preAvailOp in textFlowPreAvailOps) {
+                    preAvailOp.bookID = bookID;
+                    preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
+                    preAvailOp.cacheDirectory = cacheDir;
+                    [preAvailOp addDependency:textFlowOp];
+                    [self.preAvailabilityQueue addOperation:preAvailOp];
+                    [bookOps addObject:preAvailOp];
+                }
+                
                 [textFlowOp release];
             }
             
@@ -152,6 +163,7 @@
             BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];
             completeOp.bookID = bookID;
             completeOp.storeCoordinator = [moc persistentStoreCoordinator];
+            
             
             for (NSOperation *op in bookOps) {
                 [completeOp addDependency:op];

@@ -133,13 +133,21 @@
 }
 
 - (BlioTextFlow *)textFlow {
+        
     if (nil == textFlow) {
-        textFlow = [[BlioTextFlow alloc] initWithPath:[self textflowPath]];
+        NSSet *sections = [self valueForKey:@"textFlowSections"];
+        if (nil != sections) textFlow = [[BlioTextFlow alloc] initWithSections:sections];
     }
-    if (textFlow.ready)
-        return textFlow;
-    else
-        return nil;
+    
+    return textFlow;
+        
+//    if (nil == textFlow) {
+//        textFlow = [[BlioTextFlow alloc] initWithPath:[self textflowPath]];
+//    }
+//    if (textFlow.ready)
+//        return textFlow;
+//    else
+//        return nil;
 }
 
 - (NSArray *)sortedBookmarks {
@@ -325,7 +333,7 @@
 #pragma mark BlioBookText
 
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range {
-    if ((nil != self.textFlow) && ([self.textFlow isReady])) {
+    if (nil != self.textFlow) {
         return [self.textFlow wordStringsForBookmarkRange:range];
     }
     return nil;

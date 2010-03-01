@@ -733,6 +733,17 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
+    // Fault in all updated objects
+	NSArray* updates = [[notification.userInfo objectForKey:NSUpdatedObjectsKey] allObjects];
+    for (NSManagedObject *object in updates) {
+        [[self.managedObjectContext objectWithID:[object objectID]] willAccessValueForKey:nil];
+    }
+//	for (NSInteger i = [updates count]-1; i >= 0; i--)
+//	{
+//		[[managedObjectContext objectWithID:[[updates objectAtIndex:i] objectID]] willAccessValueForKey:nil];
+//	}
+    
+	// Merge
 	[[self managedObjectContext] mergeChangesFromContextDidSaveNotification:notification];
 //    NSArray *updatedObjects = [[notification userInfo] valueForKey:NSUpdatedObjectsKey];
 //    if ([updatedObjects count]) {

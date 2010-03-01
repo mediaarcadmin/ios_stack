@@ -7,6 +7,10 @@
 //
 
 #import "BlioTextFlow.h"
+#import "BlioProcessing.h"
+
+@interface BlioTextFlowPreParseOperation : BlioProcessingOperation
+@end
 
 @implementation BlioTextFlowPositionedWord
 
@@ -44,9 +48,16 @@
 
 @end
 
+@interface BlioTextFlowSection()
+@property (nonatomic, assign) XML_Parser *currentParser;
+@property (nonatomic) NSInteger currentPageIndex;
+@end
+
+
 @implementation BlioTextFlowSection
 
 @synthesize pageIndex, name, path, anchor, pageMarkers;
+@synthesize currentParser, currentPageIndex;
 
 - (id)init {
     if ((self = [super init])) {
@@ -55,16 +66,32 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)coder {
+    if ((self = [super init])) {
+        self.pageIndex = [coder decodeIntegerForKey:@"BlioTextFlowSectionPageIndex"];
+        self.name = [coder decodeObjectForKey:@"BlioTextFlowSectionPageName"];
+        self.path = [coder decodeObjectForKey:@"BlioTextFlowSectionPagePath"];
+        self.anchor = [coder decodeObjectForKey:@"BlioTextFlowSectionPageAnchor"];
+        self.pageMarkers = [NSMutableSet setWithSet:[coder decodeObjectForKey:@"BlioTextFlowSectionImmutablePageMarkers"]];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeInteger:self.pageIndex forKey:@"BlioTextFlowSectionPageIndex"];
+    [coder encodeObject:self.name forKey:@"BlioTextFlowSectionPageName"];
+    [coder encodeObject:self.path forKey:@"BlioTextFlowSectionPagePath"];
+    [coder encodeObject:self.anchor forKey:@"BlioTextFlowSectionPageAnchor"];
+    [coder encodeObject:[NSSet setWithSet:self.pageMarkers] forKey:@"BlioTextFlowSectionImmutablePageMarkers"];
+}
+
 - (void)dealloc {
     self.name = nil;
     self.path = nil;
     self.anchor = nil;
     self.pageMarkers = nil;
+    self.currentParser = nil;
     [super dealloc];
-}
-
-- (void)addPageMarker:(BlioTextFlowPageMarker *)aPageMarker {
-    [self.pageMarkers addObject:aPageMarker];
 }
 
 - (NSArray *)sortedPageMarkers {
@@ -80,8 +107,20 @@
 
 @synthesize pageIndex, byteIndex;
 
-@end
+- (id)initWithCoder:(NSCoder *)coder {
+    if ((self = [super init])) {
+        self.pageIndex = [coder decodeIntegerForKey:@"BlioTextFlowPageMarkerPageIndex"];
+        self.byteIndex = [coder decodeIntegerForKey:@"BlioTextFlowPageMarkerByteIndex"];
+    }
+    return self;
+}
 
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeInteger:self.pageIndex forKey:@"BlioTextFlowPageMarkerPageIndex"];
+    [coder encodeInteger:self.byteIndex forKey:@"BlioTextFlowPageMarkerByteIndex"];
+}
+
+@end
 
 @implementation BlioTextFlowParagraph
 
@@ -152,9 +191,8 @@
 @property (nonatomic, readonly) XML_Parser currentParser;
 @property (nonatomic) NSInteger cachedPageIndex;
 @property (nonatomic, retain) NSArray *cachedPageParagraphs;
+@property (nonatomic, retain) NSSet *sections;
 
-- (void)parseSectionsFileAtPath:(NSString *)path;
-- (void)parseSection:(BlioTextFlowSection *)section;
 - (NSArray *)paragraphsForPage:(NSInteger)pageIndex inSection:(BlioTextFlowSection *)section targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker;
 
 
@@ -166,8 +204,6 @@
 @synthesize currentSection, currentParagraph;
 @synthesize currentPageIndex, currentParagraphArray, currentParser;
 @synthesize cachedPageIndex, cachedPageParagraphs;
-@synthesize basePath;
-@synthesize ready;
 
 - (void)dealloc {
     self.sections = nil;
@@ -175,7 +211,6 @@
     self.currentParagraph = nil;
     self.currentParagraphArray = nil;
     self.cachedPageParagraphs = nil;
-    self.basePath = nil;
     if (nil != self.currentParser) {
         enum XML_Status status = XML_StopParser(currentParser, false);
         if (status == XML_STATUS_OK) {
@@ -187,165 +222,12 @@
     [super dealloc];
 }
 
-- (id)initWithPath:(NSString *)path {    
+- (id)initWithSections:(NSSet *)sectionsSet {
     if ((self = [super init])) {
-        self.sections = [NSMutableSet set];
-        self.ready = NO;
-        [self performSelectorInBackground:@selector(parseSectionsFileAtPath:) withObject:path];
+        self.sections = sectionsSet;
     }
     return self;
-}
-
-- (void)addSection:(BlioTextFlowSection *)section {
-    if (nil != section)
-        [self.sections addObject:section];
-}
-
-- (void)parseSectionsFileComplete {
-    [self performSelectorInBackground:@selector(parseSections:) withObject:self.sections];
-}
-
-- (void)parseSectionsComplete {
-    //NSLog(@"TextFlow pageMarkers created");
-    self.ready = YES;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioTextFlowReady" object:self];
-}
-
-#pragma mark -
-#pragma mark Split XML (sections file) parsing
-
-static void splitXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
-    
-    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
-    
-    if(strcmp("Section", name) == 0) {
-        BlioTextFlowSection *aSection = [[BlioTextFlowSection alloc] init];
-        
-        for(int i = 0; atts[i]; i+=2) {
-            if (strcmp("PageIndex", atts[i]) == 0) {
-                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
-                if (nil != pageIndexString) {
-                    NSInteger newIndex = [pageIndexString integerValue];
-                    [pageIndexString release];
-                    [aSection setPageIndex:newIndex];
-                }
-            } else if (strcmp("Name", atts[i]) == 0) {
-                NSString *nameString = [[NSString alloc] initWithUTF8String:atts[i+1]];
-                if (nil != nameString) {
-                    [aSection setName:nameString];
-                    [nameString release];
-                }
-            } else if (strcmp("Source", atts[i]) == 0) {
-                NSString *sourceString = [[NSString alloc] initWithUTF8String:atts[i+1]];
-                if (nil != sourceString) {
-                    NSArray *sectionArray = [sourceString componentsSeparatedByString:@"#"];
-                    [aSection setPath:[[textFlow basePath] stringByAppendingPathComponent:[sectionArray objectAtIndex:0]]];
-                    if ([sectionArray count] > 1) [aSection setAnchor:[sectionArray objectAtIndex:1]];
-                    [sourceString release];
-                }
-            }
-        }
-        
-        if (nil != aSection) {
-            [textFlow performSelectorOnMainThread:@selector(addSection:) withObject:aSection waitUntilDone:NO];
-            [aSection release];
-        }
-    }
-    
-}   
-
-- (void)parseSectionsFileAtPath:(NSString *)path {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
-    
-    if (nil == data) return;
-    
-    self.basePath = [path stringByDeletingLastPathComponent];
-    currentParser = XML_ParserCreate(NULL);
-    XML_SetStartElementHandler(currentParser, splitXMLParsingStartElementHandler);
-    XML_SetUserData(currentParser, (void *)self);    
-    if (!XML_Parse(currentParser, [data bytes], [data length], XML_TRUE)) {
-        char *error = (char *)XML_ErrorString(XML_GetErrorCode(currentParser));
-        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
-    }
-    XML_ParserFree(currentParser);
-    [data release];
-    
-    [self performSelectorOnMainThread:@selector(parseSectionsFileComplete) withObject:nil waitUntilDone:NO];
-
-    [pool drain];
-}
-
-- (void)parseSections:(NSArray *)sectionsArray {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    for (BlioTextFlowSection *section in sectionsArray) {
-        [self parseSection:section];
-    }
-    
-    [self performSelectorOnMainThread:@selector(parseSectionsComplete) withObject:nil waitUntilDone:NO];
-    [pool drain];
 } 
-
-#pragma mark -
-#pragma mark Flow XML (contents file) parsing
-
-static void flowXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
-    
-    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
-    NSInteger newPageIndex = -1;
-    
-    if(strcmp("TextGroup", name) == 0) {
-        
-        NSUInteger currentByteIndex = (NSUInteger)(XML_GetCurrentByteIndex([textFlow currentParser]));
-        
-        for(int i = 0; atts[i]; i+=2) {
-            if (strcmp("PageIndex", atts[i]) == 0) {
-                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
-                if (nil != pageIndexString) {
-                    newPageIndex = [pageIndexString integerValue];
-                    [pageIndexString release];
-                }
-            } 
-        }
-        
-        if ((newPageIndex >= 0) && (newPageIndex != [textFlow currentPageIndex])) {
-            BlioTextFlowPageMarker *newPageMarker = [[BlioTextFlowPageMarker alloc] init];
-            [newPageMarker setPageIndex:newPageIndex];
-            [newPageMarker setByteIndex:currentByteIndex];
-            [[textFlow currentSection] performSelectorOnMainThread:@selector(addPageMarker:) withObject:newPageMarker waitUntilDone:NO];
-            [newPageMarker release];
-            [textFlow setCurrentPageIndex:newPageIndex];
-        }
-    }
-    
-}   
-
-- (void)parseSection:(BlioTextFlowSection *)section {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    NSString *path = [section path];
-    NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
-    
-    if (!data) return;
-    
-    [self setCurrentPageIndex:-1];
-    [self setCurrentSection:section];
-    
-    currentParser = XML_ParserCreate(NULL);
-    XML_SetStartElementHandler(currentParser, flowXMLParsingStartElementHandler);
-    XML_SetUserData(currentParser, (void *)self);    
-    if (!XML_Parse(currentParser, [data bytes], [data length], XML_TRUE)) {
-        char *error = (char *)XML_ErrorString(XML_GetErrorCode(currentParser));
-        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
-    }
-    XML_ParserFree(currentParser);
-    [data release];
-        
-    [pool drain];
-}
-
 
 #pragma mark -
 #pragma mark Fragment XML (paragraph) parsing
@@ -637,4 +519,156 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
     return pageString;
 }
 
++ (NSArray *)preAvailabilityOperations {
+    BlioTextFlowPreParseOperation *preParseOp = [[BlioTextFlowPreParseOperation alloc] init];
+    NSArray *operations = [NSArray arrayWithObject:preParseOp];
+    [preParseOp release];
+    return operations;
+}
+
 @end
+
+#pragma mark -
+@implementation BlioTextFlowPreParseOperation
+
+static void sectionFileXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
+    
+    NSMutableArray *sectionsArray = (NSMutableArray *)ctx;
+    
+    if(strcmp("Section", name) == 0) {
+        BlioTextFlowSection *aSection = [[BlioTextFlowSection alloc] init];
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageIndex", atts[i]) == 0) {
+                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != pageIndexString) {
+                    NSInteger newIndex = [pageIndexString integerValue];
+                    [pageIndexString release];
+                    [aSection setPageIndex:newIndex];
+                }
+            } else if (strcmp("Name", atts[i]) == 0) {
+                NSString *nameString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != nameString) {
+                    [aSection setName:nameString];
+                    [nameString release];
+                }
+            } else if (strcmp("Source", atts[i]) == 0) {
+                NSString *sourceString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != sourceString) {
+                    NSArray *sectionArray = [sourceString componentsSeparatedByString:@"#"];
+                    [aSection setPath:[sectionArray objectAtIndex:0]];
+                    if ([sectionArray count] > 1) [aSection setAnchor:[sectionArray objectAtIndex:1]];
+                    [sourceString release];
+                }
+            }
+        }
+        
+        if (nil != aSection) {
+            [sectionsArray addObject:aSection];
+            [aSection release];
+        }
+    }
+    
+}   
+
+static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
+    
+    BlioTextFlowSection *section = (BlioTextFlowSection *)ctx;
+    NSInteger newPageIndex = -1;
+    
+    if(strcmp("TextGroup", name) == 0) {
+        
+        NSUInteger currentByteIndex = (NSUInteger)(XML_GetCurrentByteIndex(*[section currentParser]));
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageIndex", atts[i]) == 0) {
+                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != pageIndexString) {
+                    newPageIndex = [pageIndexString integerValue];
+                    [pageIndexString release];
+                }
+            } 
+        }
+        
+        if ((newPageIndex >= 0) && (newPageIndex != [section currentPageIndex])) {
+            BlioTextFlowPageMarker *newPageMarker = [[BlioTextFlowPageMarker alloc] init];
+            [newPageMarker setPageIndex:newPageIndex];
+            [newPageMarker setByteIndex:currentByteIndex];
+            [section.pageMarkers addObject:newPageMarker];
+            [newPageMarker release];
+            [section setCurrentPageIndex:newPageIndex];
+        }
+    }
+    
+} 
+
+- (void)main {
+    if ([self isCancelled]) return;
+    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSString *filename = [self getBookValueForKey:@"textflowFilename"];
+    NSString *path = [[self.cacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:filename];
+    
+    if (!filename || ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist at path: %@.", path);
+        [pool drain];
+        return;
+    }
+    
+    NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
+    
+    if (nil == data) {
+        NSLog(@"Could not create TextFlow data file.");
+        [pool drain];
+        return;
+    }
+    
+    NSString *basePath = [path stringByDeletingLastPathComponent];
+    NSMutableSet *sectionsSet = [NSMutableSet set];
+    
+    // Parse section file
+    XML_Parser sectionFileParser = XML_ParserCreate(NULL);
+    XML_SetStartElementHandler(sectionFileParser, sectionFileXMLParsingStartElementHandler);
+    XML_SetUserData(sectionFileParser, (void *)sectionsSet);    
+    if (!XML_Parse(sectionFileParser, [data bytes], [data length], XML_TRUE)) {
+        char *error = (char *)XML_ErrorString(XML_GetErrorCode(sectionFileParser));
+        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
+    }
+    XML_ParserFree(sectionFileParser);
+    [data release];
+    
+    for (BlioTextFlowSection *section in sectionsSet) {
+        NSString *path = [basePath stringByAppendingPathComponent:[section path]];
+        [section setPath:path];
+        
+        NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
+            
+        if (!data) {
+            NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist at path: %@.", path);
+            [pool drain];
+            return;
+        }
+            
+        XML_Parser flowParser = XML_ParserCreate(NULL);
+        XML_SetStartElementHandler(flowParser, flowFileXMLParsingStartElementHandler);
+        section.currentPageIndex = -1;
+        section.currentParser = &flowParser;
+        XML_SetUserData(flowParser, (void *)section);    
+        if (!XML_Parse(flowParser, [data bytes], [data length], XML_TRUE)) {
+            char *error = (char *)XML_ErrorString(XML_GetErrorCode(flowParser));
+            NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
+        }
+        XML_ParserFree(flowParser);
+        [data release];
+        
+    }
+    
+    [self setBookValue:[NSSet setWithSet:sectionsSet] forKey:@"textFlowSections"];
+    
+    [pool drain];
+}
+
+
+@end
+
