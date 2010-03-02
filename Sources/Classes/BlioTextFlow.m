@@ -632,8 +632,8 @@ static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     XML_SetStartElementHandler(sectionFileParser, sectionFileXMLParsingStartElementHandler);
     XML_SetUserData(sectionFileParser, (void *)sectionsSet);    
     if (!XML_Parse(sectionFileParser, [data bytes], [data length], XML_TRUE)) {
-        char *error = (char *)XML_ErrorString(XML_GetErrorCode(sectionFileParser));
-        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
+        char *anError = (char *)XML_ErrorString(XML_GetErrorCode(sectionFileParser));
+        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", anError, path);
     }
     XML_ParserFree(sectionFileParser);
     [data release];
@@ -656,8 +656,8 @@ static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         section.currentParser = &flowParser;
         XML_SetUserData(flowParser, (void *)section);    
         if (!XML_Parse(flowParser, [data bytes], [data length], XML_TRUE)) {
-            char *error = (char *)XML_ErrorString(XML_GetErrorCode(flowParser));
-            NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
+            char *anError = (char *)XML_ErrorString(XML_GetErrorCode(flowParser));
+            NSLog(@"TextFlow parsing error: '%s' in file: '%@'", anError, path);
         }
         XML_ParserFree(flowParser);
         [data release];

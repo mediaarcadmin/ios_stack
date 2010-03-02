@@ -31,9 +31,9 @@
     else
         [book setValue:value forKey:key];
     
-    NSError *error;
-    if (![moc save:&error]) {
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+    NSError *anError;
+    if (![moc save:&anError]) {
+        NSLog(@"Save failed with error: %@, %@", anError, [anError userInfo]);
     }
     
     [moc release];
@@ -50,6 +50,7 @@
     
     if (nil == book) {
         NSLog(@"Failed to retrieve book");
+        [moc release];
         [pool drain];
         return nil;
     } 
@@ -69,32 +70,34 @@
     NSManagedObject *book = [moc objectWithID:self.bookID];
     
     if (nil == book) {
+        [moc release];
         NSLog(@"Failed to retrieve book");
         return;
     }
     
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithBool:YES]]];
+    NSFetchRequest *aRequest = [[NSFetchRequest alloc] init];
+    [aRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+    [aRequest setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithBool:YES]]];
     
     // Block whilst we calculate the position so that other threads don't perform the same
     // check at the same time
-    NSError *error;
+    NSError *anError;
     @synchronized (self.storeCoordinator) {
-        NSUInteger count = [moc countForFetchRequest:request error:&error];
+        NSUInteger count = [moc countForFetchRequest:aRequest error:&anError];
         if (count == NSNotFound) {
-            NSLog(@"Failed to retrieve book count with error: %@, %@", error, [error userInfo]);
+            NSLog(@"Failed to retrieve book count with error: %@, %@", anError, [anError userInfo]);
         } else {
             [book setValue:[NSNumber numberWithInt:count] forKey:@"position"];
             [book setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
         }
         
-        NSError *error;
-        if (![moc save:&error]) {
-            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        NSError *anError;
+        if (![moc save:&anError]) {
+            NSLog(@"Save failed with error: %@, %@", anError, [anError userInfo]);
         }
     }
     
+    [aRequest release];
     [moc release];
     
     [pool drain];

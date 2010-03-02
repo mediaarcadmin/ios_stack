@@ -127,6 +127,12 @@
 		C9726489111C7B0E001BCC0B /* BlioStoreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */; };
 		C972648E111C7B8C001BCC0B /* BlioStoreMyVaultController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */; };
 		C9726493111C7C94001BCC0B /* BlioStoreDownloadsController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726492111C7C94001BCC0B /* BlioStoreDownloadsController.m */; };
+		C974F1F5113C19CC007B5868 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = C974F1E9113C19CC007B5868 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		C974F1F7113C19CC007B5868 /* ASIHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C974F1ED113C19CC007B5868 /* ASIHTTPRequest.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		C974F1F8113C19CC007B5868 /* ASIInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = C974F1F0113C19CC007B5868 /* ASIInputStream.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		C974F1FE113C1A00007B5868 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = C974F1FD113C1A00007B5868 /* Reachability.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
+		C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F225113C1AB1007B5868 /* SystemConfiguration.framework */; };
 		C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
 		C9775EA510DFE1C3005E0E2B /* MockCovers in Resources */ = {isa = PBXBuildFile; fileRef = C9775E9A10DFE1C3005E0E2B /* MockCovers */; };
 		C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
@@ -423,6 +429,17 @@
 		C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreMyVaultController.m; sourceTree = "<group>"; };
 		C9726491111C7C94001BCC0B /* BlioStoreDownloadsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreDownloadsController.h; sourceTree = "<group>"; };
 		C9726492111C7C94001BCC0B /* BlioStoreDownloadsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreDownloadsController.m; sourceTree = "<group>"; };
+		C974F1E8113C19CC007B5868 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
+		C974F1E9113C19CC007B5868 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIAuthenticationDialog.m; sourceTree = "<group>"; };
+		C974F1EC113C19CC007B5868 /* ASIHTTPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIHTTPRequest.h; sourceTree = "<group>"; };
+		C974F1ED113C19CC007B5868 /* ASIHTTPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIHTTPRequest.m; sourceTree = "<group>"; };
+		C974F1EE113C19CC007B5868 /* ASIHTTPRequestConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIHTTPRequestConfig.h; sourceTree = "<group>"; };
+		C974F1EF113C19CC007B5868 /* ASIInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIInputStream.h; sourceTree = "<group>"; };
+		C974F1F0113C19CC007B5868 /* ASIInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIInputStream.m; sourceTree = "<group>"; };
+		C974F1FC113C1A00007B5868 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		C974F1FD113C1A00007B5868 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		C974F221113C1AA0007B5868 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		C974F225113C1AB1007B5868 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C9775AF410DFD728005E0E2B /* BlioMockBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMockBook.h; sourceTree = "<group>"; };
 		C9775AF510DFD728005E0E2B /* BlioMockBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMockBook.m; sourceTree = "<group>"; };
 		C9775E9A10DFE1C3005E0E2B /* MockCovers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MockCovers; sourceTree = "<group>"; };
@@ -506,6 +523,8 @@
 				A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */,
 				A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */,
 				C9B61FF51137AF840012CE7E /* libz.dylib in Frameworks */,
+				C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */,
+				C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -679,6 +698,8 @@
 				7D381B9210D92F14008D34E2 /* AudioToolbox.framework */,
 				7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */,
 				C9B61FF41137AF840012CE7E /* libz.dylib */,
+				C974F221113C1AA0007B5868 /* CFNetwork.framework */,
+				C974F225113C1AB1007B5868 /* SystemConfiguration.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -820,6 +841,30 @@
 			name = Store;
 			sourceTree = "<group>";
 		};
+		C974F1E7113C19CC007B5868 /* ASIHTTPRequest */ = {
+			isa = PBXGroup;
+			children = (
+				C974F1E8113C19CC007B5868 /* ASIAuthenticationDialog.h */,
+				C974F1E9113C19CC007B5868 /* ASIAuthenticationDialog.m */,
+				C974F1EC113C19CC007B5868 /* ASIHTTPRequest.h */,
+				C974F1ED113C19CC007B5868 /* ASIHTTPRequest.m */,
+				C974F1EE113C19CC007B5868 /* ASIHTTPRequestConfig.h */,
+				C974F1EF113C19CC007B5868 /* ASIInputStream.h */,
+				C974F1F0113C19CC007B5868 /* ASIInputStream.m */,
+				C974F1FB113C1A00007B5868 /* Reachability2.0 */,
+			);
+			path = ASIHTTPRequest;
+			sourceTree = "<group>";
+		};
+		C974F1FB113C1A00007B5868 /* Reachability2.0 */ = {
+			isa = PBXGroup;
+			children = (
+				C974F1FC113C1A00007B5868 /* Reachability.h */,
+				C974F1FD113C1A00007B5868 /* Reachability.m */,
+			);
+			path = Reachability2.0;
+			sourceTree = "<group>";
+		};
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -835,6 +880,7 @@
 		C9B620BD1137BDB10012CE7E /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				C974F1E7113C19CC007B5868 /* ASIHTTPRequest */,
 				C9B620BF1137BE170012CE7E /* ZipArchive */,
 			);
 			name = ThirdParty;
@@ -1179,6 +1225,10 @@
 				C9B620CF1137BE170012CE7E /* zip.c in Sources */,
 				C9B620D01137BE170012CE7E /* ZipArchive.mm in Sources */,
 				A371FDCE113AF77200E1A51C /* BlioWebToolSettingsController.m in Sources */,
+				C974F1F5113C19CC007B5868 /* ASIAuthenticationDialog.m in Sources */,
+				C974F1F7113C19CC007B5868 /* ASIHTTPRequest.m in Sources */,
+				C974F1F8113C19CC007B5868 /* ASIInputStream.m in Sources */,
+				C974F1FE113C1A00007B5868 /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

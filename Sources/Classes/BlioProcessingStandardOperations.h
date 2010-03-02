@@ -15,10 +15,20 @@
 @interface BlioProcessingDownloadOperation : BlioProcessingOperation {
     NSURL *url;
     NSString *localFilename;
+    NSString *tempFilename;
+    
+    NSURLConnection *connection;
+    NSFileHandle *downloadFile;
+    
+    BOOL executing;
+    BOOL finished;
 }
 
-@property (nonatomic, retain) NSURL* url;
-@property (nonatomic, retain) NSString* localFilename;
+@property (nonatomic, retain) NSURL *url;
+@property (nonatomic, retain) NSString *localFilename;
+@property (nonatomic, retain) NSString *tempFilename;
+@property (nonatomic, retain) NSURLConnection *connection;
+@property (nonatomic, retain) NSFileHandle *downloadFile;
 
 - (id)initWithUrl:(NSURL *)aURL;
 - (void)downloadDidFinishSuccessfully:(BOOL)success;
