@@ -2028,10 +2028,21 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	switch (type) {
 		case dictionaryTool:
 			// TODO: get from preference
+			queryString = [NSString stringWithFormat: @"http://dictionary.reference.com/browse/%@", encodedParam];
 			titleString = [NSString stringWithString:@"Dictionary"];
 			break;
-		case wikipediaTool:
-			titleString = [NSString stringWithString:@"Wikipedia"];
+		case encyclopediaTool:
+			switch ((BlioEncyclopediaOption)[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastEncyclopediaDefaultsKey]) {
+				case wikipediaOption:
+					queryString = [NSString stringWithFormat:@"http://en.wikipedia.org/wiki/%@", encodedParam];
+					break;
+				case britannicaOption:
+					queryString = [NSString stringWithFormat: @"http://www.britannica.com/bps/search?query=%@", encodedParam];
+					break;
+				default:
+					break;
+			}  
+			titleString = [NSString stringWithString:@"Encyclopedia"];
 			break;			
 		case searchTool:
 			switch ((BlioSearchEngineOption)[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastSearchEngineDefaultsKey]) {
@@ -2039,10 +2050,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 					queryString = [NSString stringWithFormat: @"http://www.google.com/search?hl=en&source=hp&q=%@", encodedParam];
 					break;
 				case yahooOption:
-					queryString = [NSString stringWithFormat: @"http://www.yahoo.com", encodedParam];
+					queryString = [NSString stringWithFormat: @"http://search.yahoo.com/search?p=%@", encodedParam];
 					break;
 				case bingOption:
-					queryString = [NSString stringWithFormat: @"http://www.bing.com", encodedParam];
+					queryString = [NSString stringWithFormat: @"http://www.bing.com/search?q=%@", encodedParam];
 					break;
 				default:
 					break;
@@ -2058,7 +2069,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         aWebToolController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissWebTool:)];                                                 
         aWebToolController.topViewController.navigationItem.title = titleString;
 		
-		NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", nil]; // until there's icons...
+		//NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", nil]; // until there's icons...
+		NSArray *buttonNames = [NSArray arrayWithObjects:[UIImage imageNamed:@"back-gray.png"], [UIImage imageNamed:@"forward-gray.png"], nil]; // until there's icons...
 		UISegmentedControl* segmentedControl = [[UISegmentedControl alloc] initWithItems:buttonNames];
 		segmentedControl.momentary = YES;
 		segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;

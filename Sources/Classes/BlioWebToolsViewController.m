@@ -12,6 +12,7 @@
 @implementation BlioWebToolsViewController
 
 - (id)initWithURL:(NSURL *)url {
+	
     
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     UIWebView *aWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0,0,320,480)];
@@ -56,17 +57,6 @@
 - (void)loadView {
 }
 */
-
--(void)webViewDidStartLoad:(UIWebView*)webView {
-	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
-	[activityIndicator startAnimating];
-}
-
--(void)webViewDidFinishLoad:(UIWebView*)webView {
-	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
-	[activityIndicator stopAnimating];
-}
-
                  
 - (void)viewWillAppear:(BOOL)animated {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
@@ -113,5 +103,48 @@
     [super dealloc];
 }
 
+
+
+-(void)webViewDidStartLoad:(UIWebView*)webView {
+	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
+	[activityIndicator startAnimating];
+}
+
+-(void)webViewDidFinishLoad:(UIWebView*)webView {
+	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
+	[activityIndicator stopAnimating];
+	// Update navigation buttons
+	if ( [(UIWebView*)self.topViewController.view canGoBack] ) 
+		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
+			setImage:[UIImage imageNamed:@"back-black.png"] forSegmentAtIndex:0];		
+	else 
+		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
+			setImage:[UIImage imageNamed:@"back-gray.png"] forSegmentAtIndex:0];		
+	if ( [(UIWebView*)self.topViewController.view canGoForward] ) 
+		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
+			setImage:[UIImage imageNamed:@"forward-black.png"] forSegmentAtIndex:1];	
+	else 
+		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
+			setImage:[UIImage imageNamed:@"forward-gray.png"] forSegmentAtIndex:1];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	// reintstate if we want to quit the webview when there's a loading error.
+	//[self.visibleViewController dismissModalViewControllerAnimated:YES];
+	[alertView release];
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
+	[activityIndicator stopAnimating];
+	NSString* errorMsg = [error localizedDescription];
+	NSLog(@"Error loading web page: %@",errorMsg);
+	UIAlertView *errorAlert = [[UIAlertView alloc] 
+							  initWithTitle:@"" message:errorMsg 
+							  delegate:self cancelButtonTitle:nil
+							  otherButtonTitles:@"OK", nil];
+	[errorAlert show];
+}
 
 @end

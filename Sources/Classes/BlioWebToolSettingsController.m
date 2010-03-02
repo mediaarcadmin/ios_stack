@@ -39,15 +39,15 @@
 
 - (void)createControls
 {
-	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Google", @"Yahoo", @"Bing", nil];
+	NSArray *searchOptions = [NSArray arrayWithObjects: @"Google", @"Yahoo", @"Bing", nil];
 	
-	// Voice control
+	// Search engine control
 	CGFloat yPlacement = kTopMargin;
 	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
 	[self.view addSubview:[BlioWebToolSettingsController labelWithFrame:frame title:@"Search"]];
 	
 	yPlacement += kTweenMargin + kLabelHeight;
-	searchControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+	searchControl = [[UISegmentedControl alloc] initWithItems:searchOptions];
 	frame = CGRectMake(	kLeftMargin,
 					   yPlacement,
 					   self.view.bounds.size.width - (kRightMargin * 2.0),
@@ -59,6 +59,25 @@
 	[searchControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastSearchEngineDefaultsKey]];
 	[self.view addSubview:searchControl];
 	[searchControl release];
+	
+	// Encyclopedia control
+	NSArray *encyclopediaOptions = [NSArray arrayWithObjects: @"Wikipedia", @"Britannica", nil];
+	yPlacement += (kTweenMargin * 2.0) + kSegmentedControlHeight;
+	frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
+	[self.view addSubview:[BlioWebToolSettingsController labelWithFrame:frame title:@"Encyclopedia"]];
+	yPlacement += kTweenMargin + kLabelHeight;
+	encyclopediaControl = [[UISegmentedControl alloc] initWithItems:encyclopediaOptions];
+	frame = CGRectMake(	kLeftMargin,
+					   yPlacement,
+					   self.view.bounds.size.width - (kRightMargin * 2.0),
+					   kSegmentedControlHeight);
+	encyclopediaControl.frame = frame;
+	[encyclopediaControl addTarget:self action:@selector(changeEncyclopedia:) forControlEvents:UIControlEventValueChanged];
+	encyclopediaControl.segmentedControlStyle = UISegmentedControlStyleBar;
+	// If no encyclopedia has previously been set, set to the first encyclopedia.
+	[encyclopediaControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastEncyclopediaDefaultsKey]];
+	[self.view addSubview:encyclopediaControl];
+	[encyclopediaControl release];
 	
 }
 
@@ -79,6 +98,13 @@
 	UISegmentedControl* ctl = (UISegmentedControl*)sender;
 	if ( ctl == searchControl )
 		[[NSUserDefaults standardUserDefaults] setInteger:[sender selectedSegmentIndex] forKey:kBlioLastSearchEngineDefaultsKey];
+}
+
+- (void)changeEncyclopedia:(id)sender
+{
+	UISegmentedControl* ctl = (UISegmentedControl*)sender;
+	if ( ctl == encyclopediaControl )
+		[[NSUserDefaults standardUserDefaults] setInteger:[sender selectedSegmentIndex] forKey:kBlioLastEncyclopediaDefaultsKey];
 }
 
 

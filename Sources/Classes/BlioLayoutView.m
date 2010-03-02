@@ -567,8 +567,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     //EucMenuItem *thesaurusItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Thesaurus", "\"Thesaurus\" option in popup menu in layout view")
     //                                                          action:@selector(thesaurus:)] autorelease];
     
-    EucMenuItem *wikipediaItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Wikipedia", "\"Wikipedia\" option in popup menu in layout view")
-                                                              action:@selector(wikipedia:)] autorelease];
+    EucMenuItem *wikipediaItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Encyclopedia", "\"Encyclopedia\" option in popup menu in layout view")
+                                                              action:@selector(encyclopedia:)] autorelease];
     
     EucMenuItem *searchItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Search", "\"Search\" option in popup menu in layout view")
                                                            action:@selector(search:)] autorelease];
@@ -811,10 +811,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 }
  */
 
-- (void)wikipedia:(id)sender {
+- (void)encyclopedia:(id)sender {
     BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
     if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
-        [self.delegate openWebToolWithRange:webToolRange toolType:wikipediaTool];
+        [self.delegate openWebToolWithRange:webToolRange toolType:encyclopediaTool];
         [self.selector setSelectedRange:nil];
     }
 }
