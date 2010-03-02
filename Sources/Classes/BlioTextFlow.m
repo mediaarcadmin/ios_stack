@@ -236,6 +236,7 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     
     BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
 
+    // TODO - remove this when it is no longer needed
     if (strcmp("TextGroup", name) == 0) {    
 
         NSInteger targetIndex = [textFlow currentPageIndex];
@@ -291,6 +292,66 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             [textFlow setCurrentParagraph:nil];
         }
 
+    } else if (strcmp("Page", name) == 0) {
+        NSInteger targetIndex = [textFlow currentPageIndex];
+        NSMutableArray *paragraphArray = [textFlow currentParagraphArray];
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageIndex", atts[i]) == 0) {
+                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != pageIndexString) {
+                    NSInteger newIndex = [pageIndexString integerValue];
+                    [pageIndexString release];
+                    if (newIndex == targetIndex) {
+                        if (nil == paragraphArray) {
+                            paragraphArray = [NSMutableArray array];
+                            [textFlow setCurrentParagraphArray:paragraphArray];
+                        }
+                    } else if (newIndex > targetIndex) {
+                        XML_StopParser([textFlow currentParser], false);
+                        return;
+                    } else {
+                        return;
+                    }
+                }
+            }
+        }
+                
+    } else if (strcmp("Block", name) == 0) {
+        BOOL folio = NO;
+        NSString *newBlockIDString = nil;
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("ID", atts[i]) == 0) {
+                newBlockIDString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+            } else if (strcmp("Folio", atts[i]) == 0) {
+                NSString *folioString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != folioString) {
+                    if ([folioString isEqualToString:@"True"]) folio = YES;
+                    [folioString release];
+                }
+            }
+        }
+        
+        NSInteger targetIndex = [textFlow currentPageIndex];
+        NSMutableArray *paragraphArray = [textFlow currentParagraphArray];
+        
+        if (!folio) {
+            BlioTextFlowParagraph *paragraph = [[BlioTextFlowParagraph alloc] init];
+            [paragraph setPageIndex:targetIndex];
+            NSUInteger newParagraphIndex = [paragraphArray count];
+            [paragraph setParagraphIndex:newParagraphIndex];
+            NSIndexPath *paragraphID = [BlioTextFlowParagraph paragraphIDForPageIndex:targetIndex paragraphIndex:newParagraphIndex];
+            [paragraph setParagraphID:paragraphID];
+            [paragraphArray addObject:paragraph];
+            [textFlow setCurrentParagraph:paragraph];
+            [paragraph release];
+        } else {
+            [textFlow setCurrentParagraph:nil];
+        }
+        
+        if (nil != newBlockIDString) [newBlockIDString release];
+        
     } else if (strcmp("Word", name) == 0) {
         NSString *textString = nil;
         NSArray *rectArray = nil;
@@ -535,6 +596,39 @@ static void sectionFileXMLParsingStartElementHandler(void *ctx, const XML_Char *
     
     NSMutableArray *sectionsArray = (NSMutableArray *)ctx;
     
+    if(strcmp("PageRange", name) == 0) {
+        BlioTextFlowSection *aSection = [[BlioTextFlowSection alloc] init];
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("Start", atts[i]) == 0) {
+                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != pageIndexString) {
+                    NSInteger newIndex = [pageIndexString integerValue];
+                    [pageIndexString release];
+                    [aSection setPageIndex:newIndex];
+                }
+            } else if (strcmp("Source", atts[i]) == 0) {
+                NSString *sourceString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != sourceString) {
+                    [aSection setPath:sourceString];
+                    [sourceString release];
+                }
+            }
+        }
+        
+        if (nil != aSection) {
+            [sectionsArray addObject:aSection];
+            [aSection release];
+        }
+    }
+    
+}
+
+// TODO - remove this when it is no longer required
+static void sectionFileXMLParsingStartElementHandlerV1(void *ctx, const XML_Char *name, const XML_Char **atts)  {
+    
+    NSMutableArray *sectionsArray = (NSMutableArray *)ctx;
+    
     if(strcmp("Section", name) == 0) {
         BlioTextFlowSection *aSection = [[BlioTextFlowSection alloc] init];
         
@@ -571,6 +665,38 @@ static void sectionFileXMLParsingStartElementHandler(void *ctx, const XML_Char *
     
 }   
 
+static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
+    
+    BlioTextFlowSection *section = (BlioTextFlowSection *)ctx;
+    NSInteger newPageIndex = -1;
+    
+    if(strcmp("Page", name) == 0) {
+        
+        NSUInteger currentByteIndex = (NSUInteger)(XML_GetCurrentByteIndex(*[section currentParser]));
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageIndex", atts[i]) == 0) {
+                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != pageIndexString) {
+                    newPageIndex = [pageIndexString integerValue];
+                    [pageIndexString release];
+                }
+            } 
+        }
+        
+        if ((newPageIndex >= 0) && (newPageIndex != [section currentPageIndex])) {
+            BlioTextFlowPageMarker *newPageMarker = [[BlioTextFlowPageMarker alloc] init];
+            [newPageMarker setPageIndex:newPageIndex];
+            [newPageMarker setByteIndex:currentByteIndex];
+            [section.pageMarkers addObject:newPageMarker];
+            [newPageMarker release];
+            [section setCurrentPageIndex:newPageIndex];
+        }
+    }
+    
+}
+
+// TODO - remove this when it is no longer required
 static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
     
     BlioTextFlowSection *section = (BlioTextFlowSection *)ctx;
@@ -629,7 +755,12 @@ static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     
     // Parse section file
     XML_Parser sectionFileParser = XML_ParserCreate(NULL);
-    XML_SetStartElementHandler(sectionFileParser, sectionFileXMLParsingStartElementHandler);
+    
+    if ([filename isEqualToString:@"Sections.xml"])
+        XML_SetStartElementHandler(sectionFileParser, sectionFileXMLParsingStartElementHandler);
+    else
+        XML_SetStartElementHandler(sectionFileParser, sectionFileXMLParsingStartElementHandlerV1);
+
     XML_SetUserData(sectionFileParser, (void *)sectionsSet);    
     if (!XML_Parse(sectionFileParser, [data bytes], [data length], XML_TRUE)) {
         char *anError = (char *)XML_ErrorString(XML_GetErrorCode(sectionFileParser));
@@ -651,7 +782,11 @@ static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         }
             
         XML_Parser flowParser = XML_ParserCreate(NULL);
-        XML_SetStartElementHandler(flowParser, flowFileXMLParsingStartElementHandler);
+        if ([filename isEqualToString:@"Sections.xml"])
+            XML_SetStartElementHandler(flowParser, pageFileXMLParsingStartElementHandler);
+        else
+            XML_SetStartElementHandler(flowParser, flowFileXMLParsingStartElementHandler);
+        
         section.currentPageIndex = -1;
         section.currentParser = &flowParser;
         XML_SetUserData(flowParser, (void *)section);    

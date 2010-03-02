@@ -417,10 +417,16 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         
         NSString *rootFile = nil;
         for (NSString *textFlowFile in textFlowFiles) {
-            NSRange rootIDRange = [textFlowFile rangeOfString:@"_split.xml"];
-            if (rootIDRange.location != NSNotFound) {
+            if ([textFlowFile isEqualToString:@"Sections.xml"]) {
                 rootFile = textFlowFile;
                 break;
+            } else {
+                // TODO - remove this when it is no longer needed
+                NSRange rootIDRange = [textFlowFile rangeOfString:@"_split.xml"];
+                if (rootIDRange.location != NSNotFound) {
+                    rootFile = textFlowFile;
+                    break;
+                }
             }
         }
         

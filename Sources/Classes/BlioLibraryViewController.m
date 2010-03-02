@@ -330,7 +330,29 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
         
+        [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
+                                              authors:[NSArray arrayWithObject:@"Bruce Degen"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
         
+        [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
+                                              authors:[NSArray arrayWithObject:@"Christoph Niemann"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"ChristophNiemann" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
+                                              authors:[NSArray arrayWithObject:@"Neil Gaiman"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"NeilGaiman" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
         
         
         /*
