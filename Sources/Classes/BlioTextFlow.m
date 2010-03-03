@@ -192,6 +192,7 @@
 @property (nonatomic) NSInteger cachedPageIndex;
 @property (nonatomic, retain) NSArray *cachedPageParagraphs;
 @property (nonatomic, retain) NSSet *sections;
+@property (nonatomic, retain) NSString *basePath;
 
 - (NSArray *)paragraphsForPage:(NSInteger)pageIndex inSection:(BlioTextFlowSection *)section targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker;
 
@@ -200,7 +201,7 @@
 
 @implementation BlioTextFlow
 
-@synthesize sections;
+@synthesize sections, basePath;
 @synthesize currentSection, currentParagraph;
 @synthesize currentPageIndex, currentParagraphArray, currentParser;
 @synthesize cachedPageIndex, cachedPageParagraphs;
@@ -211,6 +212,7 @@
     self.currentParagraph = nil;
     self.currentParagraphArray = nil;
     self.cachedPageParagraphs = nil;
+    self.basePath = nil;
     if (nil != self.currentParser) {
         enum XML_Status status = XML_StopParser(currentParser, false);
         if (status == XML_STATUS_OK) {
@@ -222,9 +224,10 @@
     [super dealloc];
 }
 
-- (id)initWithSections:(NSSet *)sectionsSet {
+- (id)initWithSections:(NSSet *)sectionsSet basePath:(NSString *)aBasePath {
     if ((self = [super init])) {
         self.sections = sectionsSet;
+        self.basePath = aBasePath;
     }
     return self;
 } 
@@ -397,7 +400,7 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
 - (NSArray *)paragraphsForPage:(NSInteger)pageIndex inSection:(BlioTextFlowSection *)section targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker {
     
     self.currentParagraphArray = nil;
-    NSString *path = [section path];
+    NSString *path = [self.basePath stringByAppendingPathComponent:[section path]];
     
     if (nil != path) {
         NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
@@ -770,9 +773,7 @@ static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     [data release];
     
     for (BlioTextFlowSection *section in sectionsSet) {
-        NSString *path = [basePath stringByAppendingPathComponent:[section path]];
-        [section setPath:path];
-        
+        NSString *path = [basePath stringByAppendingPathComponent:[section path]];        
         NSData *data = [[NSData alloc] initWithContentsOfMappedFile:path];
             
         if (!data) {

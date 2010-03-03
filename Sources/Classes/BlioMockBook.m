@@ -136,7 +136,7 @@
         
     if (nil == textFlow) {
         NSSet *sections = [self valueForKey:@"textFlowSections"];
-        if (nil != sections) textFlow = [[BlioTextFlow alloc] initWithSections:sections];
+        if (nil != sections) textFlow = [[BlioTextFlow alloc] initWithSections:sections basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
     }
     
     return textFlow;
