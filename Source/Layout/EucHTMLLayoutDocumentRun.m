@@ -103,7 +103,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                 // Open this node.
                 EucHTMLLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
                 [self _addComponent:[EucHTMLLayoutDocumentRun openNodeMarker] isWord:NO info:&info];
-                if(inlineNode.childrenCount > 0) {
+                if(inlineNode.childrenCount == 0) {
                     [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
                 }
             }
@@ -123,7 +123,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                 inlineNode = nextNode;
                 inlineNodeStyle = inlineNode.computedStyle;
             } else {
-                inlineNode = [inlineNode nextUnder:[inlineNode.document body]];
+                inlineNode = inlineNode.next;
                 reachedLimit = YES;
             }
         }    

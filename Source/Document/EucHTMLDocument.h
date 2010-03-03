@@ -30,10 +30,6 @@ CGFloat EucHTMLLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed 
     lwc_context *_lwcContext;
     
     EucHTMLDBNodeManager *_manager;
-    EucHTMLDBNode *_rootDBNode;
-    EucHTMLDBNode *_bodyDBNode;
-    
-    EucHTMLDocumentConcreteNode *_body;
     
     css_select_ctx *_selectCtx;
     
@@ -43,12 +39,11 @@ CGFloat EucHTMLLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed 
     CFMutableDictionaryRef _keyToExtantNode;
 }
 
-@property (nonatomic, readonly) EucHTMLDocumentConcreteNode *body;
 
 - (id)initWithPath:(NSString *)path;
 - (EucHTMLDocumentNode *)nodeForKey:(uint32_t)key;
 
-- (BOOL)nodeIsBody:(EucHTMLDocumentNode *)node;
+@property (nonatomic, retain, readonly) EucHTMLDocumentConcreteNode *rootNode;
 
 // Logically package-scope propeties.
 @property (nonatomic, readonly) EucHTMLDBNodeManager *htmlDBNodeManager;

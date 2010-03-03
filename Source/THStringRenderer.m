@@ -168,11 +168,11 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                                 NSUInteger specificFontIndex = 0;
                                 for(NSString *specificFontName in specificFontNames) {
                                     if([specificFontName rangeOfString:@"bold" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                                        points[specificFontIndex] += styleFlags & THStringRendererFontStyleFlagBold ? 1 : -1;
+                                        points[specificFontIndex] += (styleFlags & THStringRendererFontStyleFlagBold) ? 1 : -1;
                                     }
                                     if([specificFontName rangeOfString:@"italic" options:NSCaseInsensitiveSearch].location != NSNotFound ||
                                        [specificFontName rangeOfString:@"oblique" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                                        points[specificFontIndex] += styleFlags & THStringRendererFontStyleFlagItalic ? 1 : -1;
+                                        points[specificFontIndex] += (styleFlags & THStringRendererFontStyleFlagItalic) ? 1 : -1;
                                     }
                                     ++specificFontIndex;
                                 }
@@ -210,7 +210,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                                 uint16_t platformId = CFSwapInt16BigToHost(*((uint16_t *)(subtableCursor)));
                                 uint16_t platformSpecificID = CFSwapInt16BigToHost(*((uint16_t *)(subtableCursor + 2)));
                                 if((platformId == 0 && platformSpecificID == 3)
-                                   //|| (platformId == 3 && encodingId == 1)
+                                   || (platformId == 3 && platformSpecificID == 1)
                                     ) {
                                     // Mac Unicode
                                     offset = CFSwapInt32BigToHost(*((uint32_t *)(subtableCursor + 4)));

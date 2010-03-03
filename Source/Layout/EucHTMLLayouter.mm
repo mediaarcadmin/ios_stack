@@ -45,9 +45,10 @@ Block completion status.
     EucHTMLLayoutPositionedBlock *newContainer;
     EucHTMLLayoutPositionedBlock *outermost;
     
-    if(![node.document nodeIsBody:node]) {
+    EucHTMLDocumentNode *blockLevelParent = node.blockLevelParent;
+    if(blockLevelParent) {
         EucHTMLLayoutPositionedBlock *parentContainer = nil;
-        outermost = [self _constructBlockAndAncestorsForNode:node.blockLevelParent
+        outermost = [self _constructBlockAndAncestorsForNode:blockLevelParent
                                           returningInnermost:&parentContainer
                                                      inFrame:frame
                                       afterInternalPageBreak:YES];
@@ -256,8 +257,13 @@ pageBreaksDisallowedByRuleD:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedBy
     uint32_t elementOffset = point.element;
     
     EucHTMLDocument *document = self.document;
-    EucHTMLDocumentNode* currentDocumentNode = [document nodeForKey:nodeKey];
-    
+    EucHTMLDocumentNode* currentDocumentNode;
+    if(!point.nodeKey) {
+        currentDocumentNode = document.rootNode;
+    } else {
+        currentDocumentNode = [document nodeForKey:nodeKey];
+    }
+                                                
     if(currentDocumentNode) {
         css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
 
@@ -289,6 +295,8 @@ pageBreaksDisallowedByRuleD:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedBy
             
             css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
             if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                //THLog(@"Inline: %@", [currentDocumentNode name]);
+                
                 // This is an inline element - start a run.
                 EucHTMLLayoutDocumentRun *documentRun = [[EucHTMLLayoutDocumentRun alloc] initWithNode:currentDocumentNode
                                                                                         underLimitNode:currentDocumentNode.parent
@@ -332,6 +340,8 @@ pageBreaksDisallowedByRuleD:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedBy
                 }
                 [documentRun release];
             } else {
+                //THLog(@"Block: %@", [currentDocumentNode name]);
+                
                 // This is a block-level element.
 
                 // Find the block's parent, closing open nodes until we reach it.

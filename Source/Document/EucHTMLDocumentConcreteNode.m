@@ -163,11 +163,9 @@
         }
         
         const css_computed_style *parentStyle = nil;
-        if(self != _document.body) {
-            EucHTMLDocumentConcreteNode *parent = (EucHTMLDocumentConcreteNode *)self.parent;
-            if(parent) {
-                parentStyle = parent.computedStyle;
-            }
+        EucHTMLDocumentConcreteNode *parent = (EucHTMLDocumentConcreteNode *)self.parent;
+        if(parent) {
+            parentStyle = parent.computedStyle;
         }
         
         _computedStyle = [self _createComputedStyleForPseudoElement:CSS_PSEUDO_ELEMENT_NONE usingInlineStyle:inlineStyle usingParentStyle:parentStyle];

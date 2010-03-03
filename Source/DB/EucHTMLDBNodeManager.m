@@ -12,6 +12,8 @@
 
 @implementation EucHTMLDBNodeManager
 
+@synthesize htmlRootKey = _htmlRootKey;
+
 - (id)initWithHTMLDB:(EucHTMLDB *)htmlDb lwcContext:(lwc_context *)lwcContext;
 {
     if((self = [super init])){
@@ -30,9 +32,20 @@
 
 - (void)dealloc
 {
-    [_bodyNode release];
     lwc_context_unref(_lwcContext);
     [super dealloc];
+}
+
+
+- (EucHTMLDBNode *)rootNode
+{
+    if(!_htmlRootKey) {
+        lwc_string *htmlString;
+        lwc_context_intern(_lwcContext, "html", 4, &htmlString);
+        _htmlRootKey = [[self nodeForKey:_htmlDb->rootNodeKey] nextNodeWithName:htmlString].key;
+        lwc_context_string_unref(_lwcContext, htmlString);
+    }
+    return [self nodeForKey:_htmlRootKey];
 }
 
 - (EucHTMLDBNode *)nodeForKey:(uint32_t)key
@@ -40,31 +53,11 @@
     EucHTMLDBNode *node = (EucHTMLDBNode *)CFDictionaryGetValue(_keyToExtantNode, (void *)(uintptr_t)key);
     if(!node) {
         node = [[[EucHTMLDBNode alloc] initWithManager:self HTMLDB:_htmlDb key:key lwcContext:_lwcContext] autorelease];
-        CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
+        if(node) {
+            CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
+        }
     }
     return node;
-}
-
-- (BOOL)nodeIsBody:(EucHTMLDBNode *)node
-{
-    if(!_bodyNode) {
-        if(node.kind == nodeKindElement) {
-            lwc_string *bodyString;
-            lwc_context_intern(_lwcContext, "body", 4, &bodyString);
-            lwc_string *nodeName = node.name;
-            bool isEqual = false;
-            lwc_error err = lwc_context_string_caseless_isequal(_lwcContext,
-                                                                nodeName, 
-                                                                bodyString,
-                                                                &isEqual);
-            if(err == CSS_OK && isEqual) {
-                _bodyNode = [node retain];
-            }
-            
-            lwc_context_string_unref(_lwcContext, bodyString);            
-        }                                          
-    }        
-    return node == _bodyNode;
 }
 
 - (void)notifyOfDealloc:(EucHTMLDBNode *)node

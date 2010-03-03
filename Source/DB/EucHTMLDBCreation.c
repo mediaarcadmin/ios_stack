@@ -1035,12 +1035,10 @@ EucHTMLDB *EucHTMLDBCreateWithHTMLAtPath(const char* htmlPath, const char* dbPat
         }
 	}
     
-    hubbub_charset_source cssource = 0;
-	const char *charset = hubbub_parser_read_charset(parser, &cssource);
-
-    
-	printf("Parsed!  Charset: %s (from %d)\n", charset, cssource);    
-    Traverse(context);
+    //hubbub_charset_source cssource = 0;
+	//const char *charset = hubbub_parser_read_charset(parser, &cssource);
+	//printf("Parsed!  Charset: %s (from %d)\n", charset, cssource);    
+    //Traverse(context);
 
 bail:
     if(fp) {

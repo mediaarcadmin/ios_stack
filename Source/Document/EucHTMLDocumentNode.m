@@ -70,6 +70,17 @@
     return [self nextUnder:nil];
 }
 
+- (EucHTMLDocumentNode *)nextDisregardingChildren
+{
+    return [self.parent _nodeAfter:self under:nil];
+}
+
+- (EucHTMLDocumentNode *)nextDisregardingChildrenUnder:(EucHTMLDocumentNode *)under
+{
+    return [self.parent _nodeAfter:self under:under];
+}
+
+
 - (THStringRenderer *)stringRenderer
 {
     if(!_stringRenderer) {
@@ -111,7 +122,7 @@
             }
             
             if(!_stringRenderer) {
-                NSString *fontName = @"LinuxLibertine";
+                NSString *fontName = @"Georgia";
                 if(!names) {
                     switch(family) {
                         case CSS_FONT_FAMILY_SANS_SERIF:

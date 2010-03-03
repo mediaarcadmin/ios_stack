@@ -154,7 +154,7 @@ hubbub_error EucHTMLDBCopyNode(EucHTMLDB *context, uint32_t key, uint32_t **node
 {
     uint32_t count;
     hubbub_error ret = EucHTMLDBCopyUint32Array(context, key, node, &count);
-    assert(count == sNodeElementCounts[(*node)[kindPosition]]);
+
     return ret;
 }
 

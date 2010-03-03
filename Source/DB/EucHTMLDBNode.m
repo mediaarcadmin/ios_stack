@@ -232,15 +232,17 @@ css_error EucHTMLDBNodeID(void *pw, void *node, lwc_context *dict, lwc_string **
 
 - (EucHTMLDBNode *)_ancestorWithName:(lwc_string *)name chaining:(BOOL)chaining
 {
-    uint32_t parentKey = _rawNode[parentPosition];
-    if(parentKey) {
-        EucHTMLDBNode *parent = [_manager nodeForKey:parentKey];
-        if(parent.kind == nodeKindElement) {
-            bool equal;
-            if(lwc_context_string_caseless_isequal(_lwcContext, name, parent.name, &equal) == lwc_error_ok && equal) {
-                return parent;
-            } else if(chaining) {
-                return [self _ancestorWithName:name chaining:chaining];
+    if(self.key != _manager.htmlRootKey) {
+        uint32_t parentKey = _rawNode[parentPosition];
+        if(parentKey) {
+            EucHTMLDBNode *parent = [_manager nodeForKey:parentKey];
+            if(parent.kind == nodeKindElement) {
+                bool equal;
+                if(lwc_context_string_caseless_isequal(_lwcContext, name, parent.name, &equal) == lwc_error_ok && equal) {
+                    return parent;
+                } else if(chaining) {
+                    return [self _ancestorWithName:name chaining:chaining];
+                }
             }
         }
     }
@@ -307,10 +309,12 @@ css_error EucHTMLDBNodeID(void *pw, void *node, lwc_context *dict, lwc_string **
 
 - (EucHTMLDBNode *)parentNode
 {
-    uint32_t parentKey = _rawNode[parentPosition];
-    if(parentKey) {
-        return [_manager nodeForKey:parentKey];
-    } 
+    if(_key != _manager.htmlRootKey) {
+        uint32_t parentKey = _rawNode[parentPosition];
+        if(parentKey) {
+            return [_manager nodeForKey:parentKey];
+        } 
+    }
     return nil;
 }
     
@@ -422,11 +426,7 @@ css_error EucHTMLDBParentNode(void *pw, void *node, void **parent)
     EucHTMLDBNodeManager *manager = (EucHTMLDBNodeManager *)pw;
     uint32_t key = (uint32_t)(intptr_t)node;
     
-    if([[NSString stringWithLWCString:[manager nodeForKey:key].name] caseInsensitiveCompare:@"body"] == NSOrderedSame) {
-        *parent = NULL;
-    } else {
-        *parent = (void *)(intptr_t)[[manager nodeForKey:key] parentNode].key;
-    }
+    *parent = (void *)(intptr_t)[[manager nodeForKey:key] parentNode].key;
     
     return CSS_OK;    
 }

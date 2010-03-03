@@ -94,7 +94,6 @@ CGFloat EucHTMLLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed 
 
 @implementation EucHTMLDocument
 
-@synthesize body = _body;
 @synthesize selectContext = _selectCtx;
 @synthesize lwcContext = _lwcContext;
 @synthesize htmlDBNodeManager = _manager;
@@ -141,7 +140,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     lwc_string *styleString;
     lwc_context_intern(_lwcContext, "style", 5, &styleString);
     
-    EucHTMLDBNode *headNode = [_rootDBNode nextNodeWithName:headString];    
+    EucHTMLDBNode *headNode = [_manager.rootNode nextNodeWithName:headString];    
     EucHTMLDBNode *examiningNode = headNode;
     while((examiningNode = [examiningNode nextNodeUnder:headNode])) {        
         lwc_string *name = examiningNode.name;
@@ -202,19 +201,9 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                 _manager = [[EucHTMLDBNodeManager alloc] initWithHTMLDB:_db
                                                              lwcContext:_lwcContext];
                 if(_manager) {
-                    _rootDBNode = [[_manager nodeForKey:1] retain];
-                    if(_rootDBNode) {
-                        lwc_string *bodyString;
-                        lwc_context_intern(_lwcContext, "body", 4, &bodyString);
-                        _bodyDBNode = [[_rootDBNode nextNodeWithName:bodyString] retain];
-                        lwc_context_string_unref(_lwcContext, bodyString);
-                        if(_bodyDBNode) {
-                            if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
-                                [self _setupStylesheets:@"/Users/jamie/Development/LibCSSTest/Resources/EPubDefault.css"];
-                                _body = [[[EucHTMLDocumentConcreteNode alloc] initWithHTMLDBNode:_bodyDBNode inDocument:self] retain];
-                                success = YES;
-                            }
-                        }
+                    if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
+                        [self _setupStylesheets:@"/Users/jamie/Development/LibCSSTest/Resources/EPubDefault.css"];
+                        success = YES;
                     }
                 }
             }
@@ -229,10 +218,14 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                                          0,
                                                          &keyCallbacks,
                                                          &valueCallbacks);
-            CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)_body.key, _body);
         }
     }
     return self;
+}
+
+- (EucHTMLDocumentConcreteNode *)rootNode
+{
+    return (EucHTMLDocumentConcreteNode *)[self nodeForKey:_manager.rootNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
 }
 
 - (EucHTMLDocumentNode *)nodeForKey:(uint32_t)key
@@ -251,21 +244,17 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                                                         parentKey:key ^ EucHTMLDocumentNodeKeyFlagGeneratedTextNode];
             }
         } else {
-            node = [[EucHTMLDocumentConcreteNode alloc] initWithHTMLDBNode:[_manager nodeForKey:key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS] inDocument:self];
+            EucHTMLDBNode *dbNode = [_manager nodeForKey:key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
+            if(dbNode) {
+                node = [[EucHTMLDocumentConcreteNode alloc] initWithHTMLDBNode:dbNode inDocument:self];
+            }
         }
-        CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
+        if(node) {
+            CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
+        }
         [node autorelease];
     }
     return node;
-}
-
-- (BOOL)nodeIsBody:(EucHTMLDocumentNode *)node
-{
-    if([node isKindOfClass:[EucHTMLDocumentConcreteNode class]]) {
-        return [_manager nodeIsBody:((EucHTMLDocumentConcreteNode *)node).dbNode];
-    } else {
-        return NO;
-    }
 }
 
 - (void)notifyOfDealloc:(EucHTMLDocumentNode *)node
@@ -292,12 +281,6 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         lwc_context_unref(_lwcContext);
         _lwcContext = NULL;
     }
-    [_rootDBNode release];
-    _rootDBNode = nil;
-    [_bodyDBNode release];
-    _bodyDBNode = nil;
-    [_body release];
-    _body = nil;
     
     [_manager release];    
 }

@@ -17,15 +17,16 @@
     lwc_context *_lwcContext;
     CFMutableDictionaryRef _keyToExtantNode;
     
-    EucHTMLDBNode *_bodyNode;
+    uint32_t _htmlRootKey;
 }
 
 - (id)initWithHTMLDB:(EucHTMLDB *)htmlDb lwcContext:(lwc_context *)lwcContext;
 - (EucHTMLDBNode *)nodeForKey:(uint32_t)key;
 
-- (BOOL)nodeIsBody:(EucHTMLDBNode *)node;
+@property (nonatomic, retain, readonly) EucHTMLDBNode *rootNode;
 
 // Private - used by EucHTMLDBNode.
+@property (nonatomic, assign, readonly) uint32_t htmlRootKey;
 - (void)notifyOfDealloc:(EucHTMLDBNode *)node;
 
 @end

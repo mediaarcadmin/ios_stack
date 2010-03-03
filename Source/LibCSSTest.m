@@ -41,7 +41,7 @@ int main (int argc, const char * argv[]) {
     EucHTMLLayouter *layouter = [[EucHTMLLayouter alloc] init];
     layouter.document = document;
     CGRect frame = CGRectMake(0, 0, 320, 480);
-    EucHTMLLayoutPoint layoutPoint = { document.body.key, 0, 0 };
+    EucHTMLLayoutPoint layoutPoint = { 0, 0, 0 };
     BOOL completed = NO;
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
