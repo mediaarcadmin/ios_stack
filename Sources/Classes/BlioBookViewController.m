@@ -405,6 +405,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
         
+        if (![newBook pdfPath] && (lastLayout == kBlioPageLayoutPageLayout)) {
+            lastLayout = kBlioPageLayoutPlainText;
+        } else if (![newBook ePubPath] && (lastLayout == kBlioPageLayoutPlainText)) {
+            lastLayout = kBlioPageLayoutPageLayout;
+        }
+
         switch (lastLayout) {
             case kBlioPageLayoutPageLayout: {
                 if ([newBook pdfPath]) {

@@ -347,26 +347,24 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         return;
     }
     
-    NSString *gridThumbFilename = @"gridThumb.png";
     UIImage *gridThumb = [self createThumbFromImage:cover forSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
-    NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:gridThumbFilename];
+    NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"gridThumb.png"];
     [gridData writeToFile:gridThumbPath atomically:YES];
     [gridThumb release];
-    [self setBookValue:gridThumbFilename forKey:@"gridThumbFilename"];
+    [self setBookValue:@"gridThumb.png" forKey:@"gridThumbFilename"];
     
     if ([self isCancelled]) {
         [pool drain];
         return;
     }
     
-    NSString *listThumbFilename = @"listThumb.png";
     UIImage *listThumb = [self createThumbFromImage:cover forSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
     NSData *listData = UIImagePNGRepresentation(listThumb);
     NSString *listThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"listThumb.png"];
     [listData writeToFile:listThumbPath atomically:YES];
     [listThumb release];
-    [self setBookValue:listThumbFilename forKey:@"listThumbFilename"];
+    [self setBookValue:@"listThumb.png" forKey:@"listThumbFilename"];
     
     // The above operations will erroneously report a malloc error in the 3.0 Simulator
     // This appears to be a simulator-only bug in Apple's framework as described here:

@@ -98,9 +98,10 @@
     XML_Parser currentParser;
     NSInteger cachedPageIndex;
     NSArray *cachedPageParagraphs;
+    NSString *basePath;
 }
 
-- (id)initWithSections:(NSSet *)sectionsSet;
+- (id)initWithSections:(NSSet *)sectionsSet basePath:(NSString *)aBasePath;
 
 // Convenience methods
 - (NSArray *)sortedSections;
