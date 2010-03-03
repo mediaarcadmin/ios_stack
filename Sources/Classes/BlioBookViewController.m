@@ -569,6 +569,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		[self stopAudio];
 		self.audioPlaying = NO;  
 	}
+	if ( ![self.book audioRights] )
+		[_acapelaTTS setPageChanged:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -1713,6 +1715,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 				[_audioBookManager playAudio];
 			}
+			// TODO: else need alert:  no rights to play TTS
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
 		}
 		self.audioPlaying = !self.audioPlaying;  
