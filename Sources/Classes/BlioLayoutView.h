@@ -41,6 +41,7 @@
     EucSelector *selector;
     UIColor *lastHighlightColor;
     NSOperationQueue *fetchHighlightsQueue;
+    NSString *pdfPath;
 }
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;
@@ -58,5 +59,6 @@
 @property (nonatomic, retain) EucSelector *selector;
 @property (nonatomic, retain) UIColor *lastHighlightColor;
 @property (nonatomic, retain) NSOperationQueue *fetchHighlightsQueue;
+@property (nonatomic, retain) NSString *pdfPath;
 
 @end
