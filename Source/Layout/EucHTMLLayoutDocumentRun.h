@@ -68,7 +68,6 @@ struct EucHTMLLayoutDocumentRunBreakInfo;
 
 - (EucHTMLLayoutPositionedRun *)positionedRunForFrame:(CGRect)bounds
                                            wordOffset:(uint32_t)wordOffset 
-                                        elementOffset:(uint32_t)elementOffset
-                                   returningCompleted:(BOOL *)returningCompleted;
+                                        elementOffset:(uint32_t)elementOffset;
 
 @end

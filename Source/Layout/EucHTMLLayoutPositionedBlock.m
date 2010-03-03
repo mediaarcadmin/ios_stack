@@ -7,6 +7,7 @@
 //
 
 #import "EucHTMLLayoutPositionedBlock.h"
+#import "EucHTMLLayoutPositionedRun.h"
 #import "EucHTMLDocument.h"
 #import "EucHTMLDocumentNode.h"
 #import <libcss/libcss.h>
@@ -104,6 +105,10 @@
     if(frame.size.height != CGFLOAT_MAX) {
         [self closeBottomFromYPoint:frame.size.height atInternalPageBreak:NO];
     }
+    
+    if(_frame.size.height < 0) {
+        NSLog(@"fdsfds");
+    }
 }
 
 static inline CGFloat collapse(CGFloat one, CGFloat two) 
@@ -182,6 +187,9 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
         EucHTMLLayoutPositionedBlock *subBlock = (EucHTMLLayoutPositionedBlock *)subEntity;
         subBlock.parent = self;
         [subBlock _collapseTopMarginUpwards];
+    } else if([subEntity isKindOfClass:[EucHTMLLayoutPositionedRun class]]) {
+        EucHTMLLayoutPositionedRun *positionedRun = (EucHTMLLayoutPositionedRun *)subEntity;
+        positionedRun.containingBlock = self;
     }
 }
 

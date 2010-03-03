@@ -353,6 +353,9 @@ css_error EucHTMLDBNodeID(void *pw, void *node, lwc_context *dict, lwc_string **
     EucHTMLDBNode *candidate = self;
     while((candidate = [candidate nextNode])) {
         lwc_string *candidateName = candidate.name;
+        if(candidateName) {
+            NSLog(@"%@", [NSString stringWithLWCString:candidateName]);
+        }
         bool equal;
         if(candidateName && lwc_context_string_caseless_isequal(_lwcContext, name, candidateName, &equal) == lwc_error_ok && equal) {
             return candidate;

@@ -8,20 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
-@class EucHTMLLayoutDocumentRun;
+@class EucHTMLLayoutDocumentRun, EucHTMLLayoutPositionedBlock;
 
 @interface EucHTMLLayoutPositionedRun : NSObject {
     EucHTMLLayoutDocumentRun *_documentRun;
+    EucHTMLLayoutPositionedBlock *_containingBlock;
     NSArray *_lines;
     CGRect _frame;
 }
 
-@property (nonatomic, readonly) EucHTMLLayoutDocumentRun *documentRun;
-@property (nonatomic, readonly) NSArray *lines;
-@property (nonatomic, readonly) CGRect frame;
+@property (nonatomic, retain, readonly) EucHTMLLayoutDocumentRun *documentRun;
+@property (nonatomic, assign) EucHTMLLayoutPositionedBlock *containingBlock;
+@property (nonatomic, retain) NSArray *lines;
+@property (nonatomic, assign) CGRect frame;
 
-- (id)initWithDocumentRun:(EucHTMLLayoutDocumentRun *)documentRun
-                    lines:(NSArray *)lines
-                    frame:(CGRect)frame;
+- (id)initWithDocumentRun:(EucHTMLLayoutDocumentRun *)documentRun;
 
 @end

@@ -117,10 +117,12 @@
                         case CSS_FONT_FAMILY_SANS_SERIF:
                             fontName = @"Helvetica";
                             break;
+                        case CSS_FONT_FAMILY_MONOSPACE:
+                            fontName = @"Courier";
+                            break;
                         case CSS_FONT_FAMILY_SERIF:
                         case CSS_FONT_FAMILY_CURSIVE:
                         case CSS_FONT_FAMILY_FANTASY:
-                        case CSS_FONT_FAMILY_MONOSPACE:
                             break;
                     }
                 }

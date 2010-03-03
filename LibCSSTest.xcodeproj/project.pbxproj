@@ -23,7 +23,7 @@
 		7D22476710FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475A10FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m */; };
 		7D22476810FD00D200CFD8B5 /* EucHTMLLayoutLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475C10FD00D200CFD8B5 /* EucHTMLLayoutLine.m */; };
 		7D22476910FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475E10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m */; };
-		7D2247CA10FD025A00CFD8B5 /* EucHTMLLayouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */; };
+		7D2247CA10FD025A00CFD8B5 /* EucHTMLLayouter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.mm */; };
 		7D22481810FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22481710FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m */; };
 		7D396936113586AC006ECF7B /* EucHTMLDocumentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D396935113586AC006ECF7B /* EucHTMLDocumentNode.m */; };
 		7D396A601135A51B006ECF7B /* EucHTMLDocumentGeneratedContainerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D39680B113540E0006ECF7B /* EucHTMLDocumentGeneratedContainerNode.m */; };
@@ -199,7 +199,7 @@
 		7D22475D10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutDocumentRun.h; sourceTree = "<group>"; };
 		7D22475E10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutDocumentRun.m; sourceTree = "<group>"; };
 		7D2247C810FD025A00CFD8B5 /* EucHTMLLayouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayouter.h; sourceTree = "<group>"; };
-		7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayouter.m; sourceTree = "<group>"; };
+		7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucHTMLLayouter.mm; sourceTree = "<group>"; };
 		7D22481610FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLLayoutPositionedRun.h; sourceTree = "<group>"; };
 		7D22481710FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLLayoutPositionedRun.m; sourceTree = "<group>"; };
 		7D39680A113540E0006ECF7B /* EucHTMLDocumentGeneratedContainerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDocumentGeneratedContainerNode.h; sourceTree = "<group>"; };
@@ -793,7 +793,7 @@
 			children = (
 				7D03FED41136F6B20050F515 /* EucHTMLLayoutDocumentRun_Package.h */,
 				7D2247C810FD025A00CFD8B5 /* EucHTMLLayouter.h */,
-				7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.m */,
+				7D2247C910FD025A00CFD8B5 /* EucHTMLLayouter.mm */,
 				7D22475910FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.h */,
 				7D22475A10FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m */,
 				7D22475D10FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.h */,
@@ -2154,7 +2154,7 @@
 				7D22476710FD00D200CFD8B5 /* EucHTMLLayoutPositionedBlock.m in Sources */,
 				7D22476810FD00D200CFD8B5 /* EucHTMLLayoutLine.m in Sources */,
 				7D22476910FD00D200CFD8B5 /* EucHTMLLayoutDocumentRun.m in Sources */,
-				7D2247CA10FD025A00CFD8B5 /* EucHTMLLayouter.m in Sources */,
+				7D2247CA10FD025A00CFD8B5 /* EucHTMLLayouter.mm in Sources */,
 				7D22481810FDE4E300CFD8B5 /* EucHTMLLayoutPositionedRun.m in Sources */,
 				7D9059481123063E00167D20 /* EucHTMLRenderer.m in Sources */,
 				7D396936113586AC006ECF7B /* EucHTMLDocumentNode.m in Sources */,

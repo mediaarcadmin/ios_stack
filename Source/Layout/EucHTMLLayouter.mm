@@ -18,9 +18,12 @@
 #import "EucHTMLLayoutLine.h"
 
 #import "THStringRenderer.h"
+#import "THLog.h"
 #import "thjust.h"
 
-#import <parserutils/utils/stack.h>
+#import <vector>
+#import <utility>
+using namespace std;
 
 @implementation EucHTMLLayouter
 
@@ -39,19 +42,26 @@ Block completion status.
                                                              inFrame:(CGRect)frame
                                               afterInternalPageBreak:(BOOL)afterInternalPageBreak
 {
-    EucHTMLLayoutPositionedBlock *newContainer = [[[EucHTMLLayoutPositionedBlock alloc] initWithDocumentNode:node] autorelease];
-    newContainer.documentNode = node;
-    [newContainer positionInFrame:frame afterInternalPageBreak:afterInternalPageBreak];
+    EucHTMLLayoutPositionedBlock *newContainer;
+    EucHTMLLayoutPositionedBlock *outermost;
     
-    EucHTMLLayoutPositionedBlock *outermost = nil;
     if(![node.document nodeIsBody:node]) {
         EucHTMLLayoutPositionedBlock *parentContainer = nil;
-        outermost = [self _constructBlockAndAncestorsForNode:node.parent
+        outermost = [self _constructBlockAndAncestorsForNode:node.blockLevelParent
                                           returningInnermost:&parentContainer
-                                                     inFrame:newContainer.contentRect
+                                                     inFrame:frame
                                       afterInternalPageBreak:YES];
+        
+        newContainer = [[[EucHTMLLayoutPositionedBlock alloc] initWithDocumentNode:node] autorelease];
+        newContainer.documentNode = node;
+        [newContainer positionInFrame:parentContainer.contentRect afterInternalPageBreak:afterInternalPageBreak];
+        
         [parentContainer addSubEntity:newContainer];
     } else {
+        newContainer = [[[EucHTMLLayoutPositionedBlock alloc] initWithDocumentNode:node] autorelease];
+        newContainer.documentNode = node;
+        [newContainer positionInFrame:frame afterInternalPageBreak:afterInternalPageBreak];
+        
         outermost = newContainer;
     }
     
@@ -60,9 +70,122 @@ Block completion status.
 }
 
 
-- (BOOL)_trimBlockToFrame:(CGRect)frame returningNextPoint:(EucHTMLLayoutPoint *)returningNextPoint
+-   (BOOL)_trimBlockToFrame:(CGRect)frame 
+         returningNextPoint:(EucHTMLLayoutPoint *)returningNextPoint
+                 pageBreaks:(vector< pair< EucHTMLLayoutPoint, id> > *)pageBreaks
+pageBreaksDisallowedByRuleA:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedByRuleA
+pageBreaksDisallowedByRuleB:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedByRuleB
+pageBreaksDisallowedByRuleC:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedByRuleC
+pageBreaksDisallowedByRuleD:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedByRuleD
 {
+    vector< pair< EucHTMLLayoutPoint, id> >::reverse_iterator pageBreakIt = pageBreaks->rbegin();
+    vector< pair< EucHTMLLayoutPoint, id> >::reverse_iterator pageBreakItEnd = pageBreaks->rend();
+
+    CGFloat maxY = CGRectGetMaxY(frame);
+
+    id element;
+    CGRect elementFrame;
+
+    if(THWillLogVerbose()) {
+        NSLog(@"All Breaks:");
+        while(pageBreakIt != pageBreakItEnd) {
+            EucHTMLLayoutPoint point = pageBreakIt->first;
+            element = pageBreakIt->second;
+            elementFrame = [element frame];        
+            
+            THLogVerbose(@"[%ld, %ld, %ld], %@, %@", point.nodeKey, point.word, point.element, NSStringFromRect(elementFrame),NSStringFromClass([element class]));
+            
+            ++pageBreakIt;
+        } 
+        
+        pageBreakIt = pageBreaks->rbegin();
+    }
     
+    THLogVerbose(@"Choosing:");
+    while(pageBreakIt != pageBreakItEnd) {
+        element = pageBreakIt->second;
+        elementFrame = [element frame];        
+        
+        if(THWillLogVerbose()) {
+            EucHTMLLayoutPoint point = pageBreakIt->first;
+            THLogVerbose(@"[%ld, %ld, %ld], %f, %@, %@", point.nodeKey, point.word, point.element, NSStringFromRect(elementFrame), NSStringFromClass([element class]));
+        }
+        if(elementFrame.origin.y <= maxY) {
+            // The origin of the element after the break matches is the 
+            // break's y position.  This break is the 'first' one on the page
+            // (counting backwards through the possible breaks) so we should 
+            // break at it, removing this element and all the ones after it.
+            break;
+        }
+        ++pageBreakIt;
+    } 
+    
+    if(pageBreakIt != pageBreakItEnd) {
+        EucHTMLLayoutPoint point = pageBreakIt->first;
+        id element = pageBreakIt->second;
+        
+        EucHTMLLayoutPositionedBlock *block;
+        
+        BOOL flattenBottomMargin = NO;
+        if([element isKindOfClass:[EucHTMLLayoutLine class]]) {
+            EucHTMLLayoutLine *line = (EucHTMLLayoutLine *)element;
+            EucHTMLLayoutPositionedRun *run = line.containingRun;
+            
+            block = run.containingBlock;
+
+            // Remove all the lines from this one on from this run.
+            NSArray *lines = run.lines;
+            NSUInteger lineIndex = [lines indexOfObject:line];
+            NSArray *newLines = [lines subarrayWithRange:NSMakeRange(0, lineIndex)];
+            run.lines = newLines;
+            
+            CGRect runFrame = run.frame;
+            runFrame.size.height = CGRectGetMaxY([newLines.lastObject frame]) - runFrame.origin.y;
+            run.frame = runFrame;
+            
+            // Remove all the runs after this one from the block.
+            NSArray *subEntities = block.subEntities;
+            NSUInteger runIndex = [subEntities indexOfObject:run];
+            if(runIndex < subEntities.count) {
+                block.subEntities = [subEntities subarrayWithRange:NSMakeRange(0, runIndex + 1)];
+            }
+        } else {
+            // Remove all the blocks from this one on from its parent.
+            block = (EucHTMLLayoutPositionedBlock *)element;
+
+            EucHTMLLayoutPositionedBlock *blockParent = block.parent;
+            NSArray *blockParentChildren = blockParent.subEntities;
+            NSUInteger blockIndex = [blockParentChildren indexOfObject:block];
+            blockParent.subEntities = [blockParentChildren subarrayWithRange:NSMakeRange(0, blockIndex)];
+                        
+            block = blockParent;
+        }
+        
+        // Resize and close the 'last' block (the parent of the element we just
+        // removed).
+        CGFloat pageBottom = CGRectGetMaxY(frame);
+
+        [block closeBottomFromYPoint:pageBottom atInternalPageBreak:flattenBottomMargin];
+        EucHTMLLayoutPositionedBlock *blockParent = block.parent;
+        
+        // Remove all the blocks after this one, and re-close all the parents
+        // on the way up, stretching them down to the bottom of the page.
+        while(blockParent) {
+            NSArray *blockParentChildren = blockParent.subEntities;
+            NSUInteger blockIndex = [blockParentChildren indexOfObject:block];
+            if(blockIndex < blockParentChildren.count) {
+                blockParent.subEntities = [blockParentChildren subarrayWithRange:NSMakeRange(0, blockIndex + 1)];
+            }
+            [blockParent closeBottomFromYPoint:pageBottom atInternalPageBreak:YES];
+            
+            block = blockParent;
+            blockParent = block.parent;
+        }
+        
+        *returningNextPoint = point;
+        return YES;
+    }
+    return NO;
 }
  
 
@@ -113,54 +236,21 @@ Block completion status.
                 'page-break-inside' property of the element and all its
                 ancestors is 'auto'.
 
-
-        Reformulating:
-    
-        Always: Between the content edge of a block box and the outer edges of
-                its child content (margin edges of block-level children or line
-                box edges for inline-level children) if there is a (non-zero)
-                gap between them, only if the 'page-break-inside' property of
-                the element and all its ancestors is 'auto'.
+        If the above does not provide enough break points to keep content from
+        overflowing the page boxes, then rules A, B and D are dropped in order
+        to find additional breakpoints.
      
-        Rule A: In the vertical margin between block boxes, only when at least
-                one of them have 'page-break-after' and 'page-break-before' 
-                properties of the value 'always', 'left', or 'right', or when
-                all of them are 'auto' /unless/ all of them are 'auto', and 
-                a common ancestor has a 'page-break-inside' value of 'avoid'.
-     
-        Rule B: [ Not in effect initially ].
-                In the vertical margin between block boxes, only when at all the
-                'page-break-after' and 'page-break-before' are 'auto', and 
-                a common ancestor has a 'page-break-inside' value of 'avoid'.
-     
-        Rule C: Between line boxes inside a block box, if the number of line
-                boxes between the break and the start of the enclosing block 
-                box is the value of 'orphans' or more, and the number of line
-                boxes between the break and the end of the box is the value of
-                'widows' or more, only if the 'page-break-inside' property of
-                the element and all its ancestors is 'auto'.
-        
-        Rule D: [ Not in effect initially ].
-                Between the content edge of a block box and the outer edges of
-                its child content (margin edges of block-level children or line
-                box edges for inline-level children) if there is a (non-zero)
-                gap between them, only if the 'page-break-inside' property of
-                the element and all its ancestors is NOT 'auto'.
-                Between line boxes inside a block box, if the number of line
-                boxes between the break and the start of the enclosing block 
-                box is the value of 'orphans' or more, and the number of line
-                boxes between the break and the end of the box is the value of
-                'widows' or more, only if the 'page-break-inside' property of
-                the element and all its ancestors is NOT 'auto'.
-     
+        If that still does not lead to sufficient break points, rule C is
+        dropped as well, to find still more break points.
+          
     */                
-    
-    parserutils_stack *aBreakpoints, *bBreakpoints, *cBreakpoints, *dBreakpoints;
-    parserutils_stack_create(sizeof(EucHTMLLayoutPoint), 64, EucRealloc, NULL, &aBreakpoints);
-    parserutils_stack_create(sizeof(EucHTMLLayoutPoint), 64, EucRealloc, NULL, &bBreakpoints);
-    parserutils_stack_create(sizeof(EucHTMLLayoutPoint), 64, EucRealloc, NULL, &cBreakpoints);
-    parserutils_stack_create(sizeof(EucHTMLLayoutPoint), 64, EucRealloc, NULL, &dBreakpoints);
-    
+
+    vector< pair< EucHTMLLayoutPoint, id> > pageBreaks;
+    vector< EucHTMLLayoutPoint > pageBreaksDisallowedByRuleA;
+    vector< EucHTMLLayoutPoint > pageBreaksDisallowedByRuleB;
+    vector< EucHTMLLayoutPoint > pageBreaksDisallowedByRuleC;
+    vector< EucHTMLLayoutPoint > pageBreaksDisallowedByRuleD;
+
     uint32_t nodeKey = point.nodeKey;
     uint32_t wordOffset = point.word;
     uint32_t elementOffset = point.element;
@@ -171,65 +261,55 @@ Block completion status.
     if(currentDocumentNode) {
         css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
 
+        CGRect bottomlessFrame = CGRectMake(frame.origin.x, frame.origin.x, frame.size.width, CGFLOAT_MAX);
         EucHTMLLayoutPositionedBlock *currentPositionedBlock = nil;
         if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-            currentDocumentNode = currentDocumentNode.blockLevelParent;
-            positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode.parent
+            positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode.blockLevelParent
                                                    returningInnermost:&currentPositionedBlock
-                                                              inFrame:frame
+                                                              inFrame:bottomlessFrame
                                                afterInternalPageBreak:YES];               
         } else {
             positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode
                                                    returningInnermost:&currentPositionedBlock
-                                                              inFrame:frame
+                                                              inFrame:bottomlessFrame
                                                afterInternalPageBreak:NO];
+            currentDocumentNode = currentDocumentNode.next;
         }
-        currentDocumentNode = currentDocumentNode.next;
-        
+                
         BOOL reachedBottomOfFrame = NO;
-        EucHTMLLayoutPoint nextPointAfterBottomOfFrame;
         
+        uint32_t nextRunNodeKey = nodeKey;
         CGFloat nextY = frame.origin.y;
-        uint32_t nextRunNodeKey = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;
+        CGFloat maxY = CGRectGetMaxY(frame);
         do {            
             CGRect potentialFrame = currentPositionedBlock.contentRect;
-            if(potentialFrame.size.height != CGFLOAT_MAX) {
-                potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
-            }
+            NSParameterAssert(potentialFrame.size.height == CGFLOAT_MAX);
+            
             potentialFrame.origin.y = nextY;
             
             css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
             if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
                 // This is an inline element - start a run.
-                
-                EucHTMLDocumentNode *underNode = currentDocumentNode.parent;
-                
-                // Get the next run.
                 EucHTMLLayoutDocumentRun *documentRun = [[EucHTMLLayoutDocumentRun alloc] initWithNode:currentDocumentNode
-                                                                                        underLimitNode:underNode
+                                                                                        underLimitNode:currentDocumentNode.parent
                                                                                                  forId:nextRunNodeKey];
                 
                 // Position it.
-                BOOL positionedRunIsComplete;
                 EucHTMLLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
                                                                                     wordOffset:wordOffset
-                                                                                 elementOffset:elementOffset
-                                                                            returningCompleted:&positionedRunIsComplete];
+                                                                                 elementOffset:elementOffset];
                 if(positionedRun) {
                     [currentPositionedBlock addSubEntity:positionedRun];
-                }
-                if(!positionedRunIsComplete) {
-                    reachedBottomOfFrame = YES;
-                    nextPointAfterBottomOfFrame.nodeKey = nextRunNodeKey;
-                    if(positionedRun) {
-                        EucHTMLLayoutLine *lastLine = positionedRun.lines.lastObject;
-                        EucHTMLLayoutDocumentRunPoint lastLineEndPoint = lastLine.endPoint;
-                        
-                        nextPointAfterBottomOfFrame.word = lastLineEndPoint.word;
-                        nextPointAfterBottomOfFrame.element = lastLineEndPoint.element;
-                    } else {
-                        nextPointAfterBottomOfFrame.word = wordOffset;
-                        nextPointAfterBottomOfFrame.element = elementOffset;
+                    
+                    BOOL first = YES; // Break before last line doesn't count.
+                    for(EucHTMLLayoutLine *line in positionedRun.lines) {
+                        if(!first) {
+                            EucHTMLLayoutDocumentRunPoint startPoint = line.startPoint;
+                            EucHTMLLayoutPoint breakPoint = { nextRunNodeKey, startPoint.word, startPoint.element };
+                            pageBreaks.push_back(make_pair(breakPoint, line));
+                        } else {
+                            first = NO;
+                        }
                     }
                 }
                              
@@ -255,59 +335,70 @@ Block completion status.
                 // This is a block-level element.
 
                 // Find the block's parent, closing open nodes until we reach it.
+                BOOL hasPreviousSibling = NO;
                 EucHTMLDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
                 while(currentPositionedBlock.documentNode != currentDocumentNodeBlockLevelParent) {
                     [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:NO];
                     nextY = NSMaxY(currentPositionedBlock.frame);
                     currentPositionedBlock = currentPositionedBlock.parent;
+                    hasPreviousSibling = YES;
                 }
                 CGRect potentialFrame = currentPositionedBlock.contentRect;
-                if(potentialFrame.size.height != CGFLOAT_MAX) {
-                    potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
-                }
+                NSParameterAssert(potentialFrame.size.height == CGFLOAT_MAX);
+
                 potentialFrame.origin.y = nextY;
-                
+                                
                 EucHTMLLayoutPositionedBlock *newBlock = [[EucHTMLLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode];
-                [newBlock positionInFrame:potentialFrame
-                            afterInternalPageBreak:NO];
+                [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
                 [currentPositionedBlock addSubEntity:newBlock];                    
                 
                 currentPositionedBlock = [newBlock autorelease];
 
                 nextY = newBlock.contentRect.origin.y;
                 
+                if(hasPreviousSibling) {
+                    EucHTMLLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
+                    pageBreaks.push_back(make_pair(breakPoint, newBlock));
+                }                
+                
                 // First run in a block has the ID of the block it's in.
                 nextRunNodeKey = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;  
                 
                 currentDocumentNode = currentDocumentNode.next;
             }
+            reachedBottomOfFrame = nextY >= maxY;
         } while(!reachedBottomOfFrame && currentDocumentNode);
         
-        while(currentPositionedBlock) {
-            [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:reachedBottomOfFrame];
-            nextY = NSMaxY(currentPositionedBlock.frame);
-            currentPositionedBlock = currentPositionedBlock.parent;
-            CGRect potentialFrame = currentPositionedBlock.frame;
-            if(potentialFrame.size.height != CGFLOAT_MAX) {
-                potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
+        if(!reachedBottomOfFrame) {
+            while(currentPositionedBlock) {
+                [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:reachedBottomOfFrame];
+                nextY = NSMaxY(currentPositionedBlock.frame);
+                currentPositionedBlock = currentPositionedBlock.parent;
+                CGRect potentialFrame = currentPositionedBlock.frame;
+                if(potentialFrame.size.height != CGFLOAT_MAX) {
+                    potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
+                }
+                potentialFrame.origin.y = nextY;
             }
-            potentialFrame.origin.y = nextY;
+            [positionedRoot closeBottomFromYPoint:nextY atInternalPageBreak:NO];
         }
+    
+        EucHTMLLayoutPoint nextPoint;
+        BOOL nextPointValid = [self _trimBlockToFrame:frame 
+                                   returningNextPoint:&nextPoint
+                                           pageBreaks:&pageBreaks
+                          pageBreaksDisallowedByRuleA:&pageBreaksDisallowedByRuleA
+                          pageBreaksDisallowedByRuleB:&pageBreaksDisallowedByRuleB
+                          pageBreaksDisallowedByRuleC:&pageBreaksDisallowedByRuleC
+                          pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
         
-        [positionedRoot closeBottomFromYPoint:nextY atInternalPageBreak:NO];
-
-        if(returningCompleted) {
-            *returningCompleted = !reachedBottomOfFrame;
-        }
-        if(!reachedBottomOfFrame && returningNextPoint) {
-            *returningNextPoint = nextPointAfterBottomOfFrame;
+        if(nextPointValid) {
+            *returningNextPoint = nextPoint;
+            *returningCompleted = NO;
+        } else {
+            *returningCompleted = YES;
         }
     }
-    
-    parserutils_stack_destroy(aBreakpoints);
-    parserutils_stack_destroy(bBreakpoints);
-    parserutils_stack_destroy(cBreakpoints);
-    parserutils_stack_destroy(dBreakpoints);
     
     return positionedRoot;
 }

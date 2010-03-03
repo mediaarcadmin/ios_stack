@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "EucHTMLLayoutDocumentRun.h"
 
-@class EucHTMLLayoutDocumentRun;
+@class EucHTMLLayoutDocumentRun, EucHTMLLayoutPositionedRun;
 
 @interface EucHTMLLayoutLine : NSObject {
-    EucHTMLLayoutDocumentRun *_documentRun;
+    EucHTMLLayoutPositionedRun *_positionedRun;
     
     EucHTMLLayoutDocumentRunPoint _startPoint;
     EucHTMLLayoutDocumentRunPoint _endPoint;
@@ -27,7 +27,7 @@
     uint8_t _align;
 }
 
-@property (nonatomic, retain) EucHTMLLayoutDocumentRun *documentRun;
+@property (nonatomic, assign) EucHTMLLayoutPositionedRun *containingRun;
 
 @property (nonatomic, assign) EucHTMLLayoutDocumentRunPoint startPoint;
 @property (nonatomic, assign) EucHTMLLayoutDocumentRunPoint endPoint;

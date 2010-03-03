@@ -29,7 +29,7 @@
 @property (nonatomic, assign) CGRect paddingRect;
 @property (nonatomic, assign) CGRect contentRect;
 
-@property (nonatomic, readonly) NSArray *subEntities;
+@property (nonatomic, retain) NSArray *subEntities;
 
 - (id)initWithDocumentNode:(EucHTMLDocumentNode *)documentNode;
 

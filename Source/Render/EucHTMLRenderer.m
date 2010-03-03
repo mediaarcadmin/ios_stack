@@ -61,7 +61,7 @@
     Class nsStringClass = [NSString class];
     id singleSpaceMarker = [EucHTMLLayoutDocumentRun singleSpaceMarker];
     
-    EucHTMLLayoutDocumentRun *documentRun = line.documentRun;
+    EucHTMLLayoutDocumentRun *documentRun = line.containingRun.documentRun;
     
     size_t componentsCount = documentRun.componentsCount;
     id *components = documentRun.components;

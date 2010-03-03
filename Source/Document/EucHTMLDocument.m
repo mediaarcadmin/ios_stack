@@ -304,7 +304,9 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (void)dealloc
 {
-    CFRelease(_keyToExtantNode);
+    if(_keyToExtantNode) {
+        CFRelease(_keyToExtantNode);
+    }
     [self close];
     
     [super dealloc];

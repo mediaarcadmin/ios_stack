@@ -12,17 +12,14 @@
 @implementation EucHTMLLayoutPositionedRun
 
 @synthesize documentRun = _documentRun;
+@synthesize containingBlock = _containingBlock;
 @synthesize frame = _frame;
 @synthesize lines = _lines;
 
 - (id)initWithDocumentRun:(EucHTMLLayoutDocumentRun *)documentRun
-                    lines:(NSArray *)lines
-                    frame:(CGRect)frame
 {
     if(self = [super init]) {
         _documentRun = [documentRun retain];
-        _lines = [lines retain];
-        _frame = frame;
     }
     return self;
 }

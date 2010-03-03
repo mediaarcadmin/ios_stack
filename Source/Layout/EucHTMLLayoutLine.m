@@ -8,13 +8,14 @@
 
 #import "EucHTMLLayoutLine.h"
 #import "EucHTMLDocumentNode.h"
+#import "EucHTMLLayoutPositionedRun.h"
 #import "EucHTMLLayoutDocumentRun.h"
 #import "EucHTMLLayoutDocumentRun_Package.h"
 #import "THLog.h"
 
 @implementation EucHTMLLayoutLine
 
-@synthesize documentRun = _documentRun;
+@synthesize containingRun = _positionedRun;
 
 @synthesize startPoint = _startPoint;
 @synthesize endPoint = _endPoint;
@@ -35,11 +36,12 @@
     id spaceMarker = [EucHTMLLayoutDocumentRun singleSpaceMarker];
     Class NSStringClass = [NSString class];
     
-    size_t componentsCount = _documentRun.componentsCount;
-    id *components = _documentRun.components;
-    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = _documentRun.componentInfos;
+    EucHTMLLayoutDocumentRun *documentRun = self.containingRun.documentRun;
+    size_t componentsCount = documentRun.componentsCount;
+    id *components = documentRun.components;
+    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = documentRun.componentInfos;
     
-    uint32_t startComponentOffset = _documentRun.wordToComponent[_startPoint.word] + _startPoint.element;
+    uint32_t startComponentOffset = documentRun.wordToComponent[_startPoint.word] + _startPoint.element;
     for(uint32_t i = startComponentOffset;
         i < componentsCount &&
         !(componentInfos[i].point.word == _endPoint.word && componentInfos[i].point.element == _endPoint.element); 

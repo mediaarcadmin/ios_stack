@@ -426,25 +426,31 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
 
 - (uint32_t)_pointToComponentOffset:(EucHTMLLayoutDocumentRunPoint)point
 {
-    uint32_t component = _wordToComponent[point.word] + point.element;
-    return component;
+    if(point.word > _wordsCount) {
+        // This is an 'off the end' marker (i.e. an endpoint to line that
+        // is 'after' the last word).
+        return _componentsCount;
+    } else {
+        return _wordToComponent[point.word] + point.element;
+    }
 }
 
 - (EucHTMLLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
                                            wordOffset:(uint32_t)wordOffset 
                                         elementOffset:(uint32_t)elementOffset
-                                   returningCompleted:(BOOL *)returningCompleted
 {
     if(_wordsCount == 0) {
         return nil;
     }    
+    
+    EucHTMLLayoutPositionedRun *ret = [[EucHTMLLayoutPositionedRun alloc] initWithDocumentRun:self];
     
     [self potentialBreaks];
     
     size_t startBreakOffset = 0;
     for(;;) {
         EucHTMLLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
-        if(point.element < wordOffset || point.element < elementOffset) {
+        if(point.word < wordOffset || point.element < elementOffset) {
             ++startBreakOffset;
         } else {
             break;
@@ -458,42 +464,43 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
         textIndent = 0.0f;
     }
     
-    int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
-    int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
-    CGFloat indentationOffset = 0;
+    CGFloat indentationOffset;
+    uint32_t lineStartComponent;
     if(startBreakOffset) {
         indentationOffset = -_potentialBreaks[startBreakOffset].x1;
+        
+        EucHTMLLayoutDocumentRunPoint point = { wordOffset, elementOffset };
+        lineStartComponent = [self _pointToComponentOffset:point];
+        uint32_t firstBreakComponent = [self _pointToComponentOffset:_potentialBreakInfos[startBreakOffset].point];
+        for(uint32_t i = lineStartComponent; i < firstBreakComponent; ++i) {
+            indentationOffset += _componentInfos[i].width;
+        }
+    } else {
+        lineStartComponent = 0;
+        indentationOffset += textIndent;
     }
-    indentationOffset += textIndent;
+    
+    int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
+    int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
     int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, frame.size.width, 0, usedBreakIndexes);
 
     CGPoint lineOrigin = frame.origin;
 
     uint8_t textAlign = [self _textAlign];
     
-    BOOL completed = YES;
-
-    CGFloat maxY = CGRectGetMaxY(frame);
-    CGFloat lastLineMaxY = maxY;
+    CGFloat lastLineMaxY = frame.origin.y;
     
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
-    EucHTMLLayoutDocumentRunBreakInfo lastLineBreakInfo;
-    if(startBreakOffset) {
-        lastLineBreakInfo = _potentialBreakInfos[startBreakOffset];
-    } else {
-        EucHTMLLayoutDocumentRunBreakInfo zeroBreakInfo = { { 0, 0 }, NO };
-        lastLineBreakInfo = zeroBreakInfo;
-    }
-    
+    EucHTMLLayoutDocumentRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
     for(int i = 0; i < usedBreakCount; ++i) {
         EucHTMLLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
         EucHTMLLayoutLine *newLine = [[EucHTMLLayoutLine alloc] init];
-        newLine.documentRun = self;
+        newLine.containingRun = ret;
         if(lastLineBreakInfo.isComponent) {
             EucHTMLLayoutDocumentRunPoint point = lastLineBreakInfo.point;
             uint32_t componentOffset = [self _pointToComponentOffset:point];
             ++componentOffset;
-            if(componentOffset == _componentsCount) {
+            if(componentOffset >= _componentsCount) {
                 // This is off the end of the components array.
                 // This must be an empty line at the end of a run.
                 // We remove this - the only way it can happen is if the last
@@ -505,7 +512,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                 newLine.startPoint = _componentInfos[componentOffset].point;
             }
         } else {
-            newLine.startPoint = lastLineBreakInfo.point; // Do something to skip the space!
+            newLine.startPoint = lastLineBreakInfo.point;
         }
         newLine.endPoint = thisLineBreakInfo.point;
 
@@ -524,33 +531,23 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
         [newLine sizeToFitInWidth:frame.size.width];
 
         CGFloat newLineMaxY = lineOrigin.y + newLine.size.height;
-        if(newLineMaxY > maxY) {
-            completed = NO;
-            [newLine release];        
-            break;
-        } else  {
-            lastLineMaxY = newLineMaxY;
-            [lines addObject:newLine];
-            [newLine release];        
-        }
-        
+        lastLineMaxY = newLineMaxY;
+        [lines addObject:newLine];
+        [newLine release];        
+    
         lineOrigin.y = lastLineMaxY;
-        lastLineBreakInfo = thisLineBreakInfo; 
+        lastLineBreakInfo = thisLineBreakInfo;
     }
     
-    EucHTMLLayoutPositionedRun *ret = nil;
     if(lines.count) {
-        CGRect positionedRunFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY - frame.origin.y);
-        ret = [[EucHTMLLayoutPositionedRun alloc] initWithDocumentRun:self 
-                                                                lines:lines
-                                                                frame:positionedRunFrame];
+        ret.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY - frame.origin.y);
+        ret.lines = lines;
+    } else {
+        [ret release];
+        ret = nil;
     }
     free(usedBreakIndexes);
-    
-    if(returningCompleted) {
-        *returningCompleted = completed;
-    }
-    
+        
     return [ret autorelease];
 }
 
