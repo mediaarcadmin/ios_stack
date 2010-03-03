@@ -83,9 +83,15 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @end
 
 @interface BlioPDFShadowLayerDelegate : NSObject {
+    BOOL preloadPage;
     CGRect pageRect;
+    NSString *pdfPath;
+    NSInteger pageNumber;
 }
 
+@property(nonatomic) BOOL preloadPage;
+@property(nonatomic, retain) NSString *pdfPath;
+@property(nonatomic) NSInteger pageNumber;
 @property(nonatomic) CGRect pageRect;
 
 @end
@@ -148,7 +154,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 @property (nonatomic, readonly) CGAffineTransform viewTransform;
 @property (nonatomic, retain) NSOperationQueue *renderQueue;
 
-- (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber;
+- (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber pdfPath:(NSString *)aPdfPath;
 - (void)setPageNumber:(NSInteger)newPageNumber forPdfPath:(NSString *)newPath;
 - (void)setHighlights:(NSArray *)newHighlights;
 - (CGPDFPageRef)page;
@@ -1207,7 +1213,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
     if(nil == pageView || reload) {
         if (viewCacheCount < kBlioLayoutMaxViews) {
-            BlioPDFDrawingView *pdfView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.bounds document:pdf page:aPageNumber];
+            BlioPDFDrawingView *pdfView = [[BlioPDFDrawingView alloc] initWithFrame:self.scrollView.bounds document:pdf page:aPageNumber pdfPath:self.pdfPath];
+
             pageView = [[BlioPDFPageView alloc] initWithView:pdfView andPageRef:pdfPageRef];
             [pdfView release];
             [self.pageViews addObject:pageView];
@@ -1221,7 +1228,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
             [pageView release];
             //[(BlioPDFDrawingView *)[pageView view] setPageNumber:aPageNumber];
         }
-        
+                
         newFrame = self.scrollView.frame;
         newFrame.origin.x = newFrame.size.width * (aPageNumber - 1);
         newFrame.origin.y = 0;
@@ -1242,7 +1249,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     [pageView setPreload:preload];
     [pageView setCover:(aPageNumber == 1)];
     [pageView setValid:YES];
-        
+            
     return pageView;
 }
 
@@ -1699,10 +1706,10 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 - (void)setPreload:(BOOL)preload {
     // Clear the contents if previously preloaded
-    //if ([[self.view shadowLayerDelegate] preloadPage])
+    if ([[self.view shadowLayerDelegate] preloadPage])
         [[self.view shadowLayer] setContents:nil];
     
-    //[[self.view shadowLayerDelegate] setPreloadPage:preload];
+    [[self.view shadowLayerDelegate] setPreloadPage:preload];
     [[self.view shadowLayer] setNeedsDisplay];
 }
 
@@ -1936,7 +1943,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     NSLog(@"Contents updated");
 }
 
-- (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber {
+- (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber pdfPath:(NSString *)aPdfPath {
 	self = [super initWithFrame:frame];
 	if(self != nil) {
         document = aDocument;
@@ -1954,6 +1961,11 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         viewTransform = CGAffineTransformIdentity;
         
         [self configureLayers];
+        
+        [tiledLayerDelegate setPageNumber:aPageNumber];
+        [tiledLayerDelegate setPdfPath:aPdfPath];
+        [shadowLayerDelegate setPageNumber:aPageNumber];
+        [shadowLayerDelegate setPdfPath:aPdfPath];
 	}
 	return self;
 }
@@ -1989,6 +2001,8 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         
         [tiledLayerDelegate setPageNumber:newPageNumber];
         [tiledLayerDelegate setPdfPath:newPath];
+        [shadowLayerDelegate setPageNumber:newPageNumber];
+        [shadowLayerDelegate setPdfPath:newPath];
     } else {
 //        [sharpLayerDelegate setPage:page];
 //        sharpLayer.opacity = 0;
@@ -1996,7 +2010,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 //        [sharpLayer setNeedsDisplay];
         
         //[shadowLayerDelegate setPage:page];
-        [shadowLayer setNeedsDisplay];
+        //[shadowLayer setNeedsDisplay];
         if (nil == self.renderQueue) {
             NSOperationQueue* aQueue = [[NSOperationQueue alloc] init];
             self.renderQueue = aQueue;
@@ -2009,6 +2023,12 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
         BlioPDFShadowLayerRenderOperation *anOperation = [[BlioPDFShadowLayerRenderOperation alloc] initWithPageRef:page size:shadowContentsRect.size target:self action:@selector(updateShadowLayerContents:)];
         [self.renderQueue addOperation:anOperation];
         [anOperation release];
+        
+        // Force the shadow layer to discard it's tile caches
+        [shadowLayerDelegate setPageNumber:newPageNumber];
+        [shadowLayerDelegate setPdfPath:newPath];
+        [shadowLayer setContents:nil];
+        [shadowLayer setNeedsDisplay];
         
         [highlightLayerDelegate setPage:page];
         [highlightLayerDelegate setHighlights:nil];
@@ -2093,7 +2113,13 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
 
 @implementation BlioPDFShadowLayerDelegate
 
-@synthesize pageRect;
+@synthesize pageRect, preloadPage;
+@synthesize pdfPath, pageNumber;
+
+- (void)dealloc {
+    self.pdfPath = nil;
+    [super dealloc];
+}
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
     
@@ -2104,7 +2130,20 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     CGContextFillRect(ctx, insetRect);
     //CGContextRestoreGState(ctx);
     
-
+    if (preloadPage) {
+        CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
+        CGContextClipToRect(ctx, insetRect);
+        
+        NSData *pdfData = [[NSData alloc] initWithContentsOfMappedFile:self.pdfPath];
+        CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);
+        CGPDFDocumentRef pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
+        CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, self.pageNumber);
+        CGContextConcatCTM(ctx, CGPDFPageGetDrawingTransform(aPage, kCGPDFCropBox, insetRect, 0, true));
+        CGContextDrawPDFPage(ctx, aPage);
+        CGPDFDocumentRelease(pdf);
+        CGDataProviderRelease(pdfProvider);
+        [pdfData release];
+    }
     
     
     
