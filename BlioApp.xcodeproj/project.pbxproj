@@ -154,6 +154,7 @@
 		C9867DE61127164F0070A03E /* BlioStoreBookView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9867DE51127164F0070A03E /* BlioStoreBookView.xib */; };
 		C9867F6C112964A70070A03E /* BlioStoreFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867F6B112964A70070A03E /* BlioStoreFeed.m */; };
 		C990F9C6110065CB00C82CA8 /* BlioContentsTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */; };
+		C9985C03113E84E9009E5263 /* BlioLayoutScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9985C02113E84E9009E5263 /* BlioLayoutScrollView.m */; };
 		C9B61CC21136BA620012CE7E /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
 		C9B61CC71136BAA80012CE7E /* BlioProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC61136BAA80012CE7E /* BlioProcessing.m */; };
 		C9B61FF51137AF840012CE7E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B61FF41137AF840012CE7E /* libz.dylib */; };
@@ -464,6 +465,8 @@
 		C9867F6B112964A70070A03E /* BlioStoreFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFeed.m; sourceTree = "<group>"; };
 		C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioContentsTabViewController.h; sourceTree = "<group>"; };
 		C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioContentsTabViewController.m; sourceTree = "<group>"; };
+		C9985C01113E84E9009E5263 /* BlioLayoutScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutScrollView.h; sourceTree = "<group>"; };
+		C9985C02113E84E9009E5263 /* BlioLayoutScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutScrollView.m; sourceTree = "<group>"; };
 		C9B61CC01136BA620012CE7E /* BlioProcessingStandardOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioProcessingStandardOperations.h; sourceTree = "<group>"; };
 		C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioProcessingStandardOperations.m; sourceTree = "<group>"; };
 		C9B61CC51136BAA80012CE7E /* BlioProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioProcessing.h; sourceTree = "<group>"; };
@@ -529,6 +532,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C9985BF8113E8286009E5263 /* LayoutView */,
 				C9F936EB113530020047B985 /* Processing */,
 				C972639A111C6063001BCC0B /* Store */,
 				A37FC33210EA783700F3DC5A /* TTS */,
@@ -547,8 +551,6 @@
 				C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */,
 				7D79183410F2257C00C4D839 /* BlioEPubView.h */,
 				7D79183510F2257C00C4D839 /* BlioEPubView.m */,
-				C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */,
-				C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */,
 				C9E1FA23110EE4D500999587 /* BlioTextFlow.h */,
 				C9E1FA24110EE4D500999587 /* BlioTextFlow.m */,
 				553E98FF1107B8F200FB309D /* BlioSpeedReadView.h */,
@@ -850,6 +852,17 @@
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C9985BF8113E8286009E5263 /* LayoutView */ = {
+			isa = PBXGroup;
+			children = (
+				C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */,
+				C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */,
+				C9985C01113E84E9009E5263 /* BlioLayoutScrollView.h */,
+				C9985C02113E84E9009E5263 /* BlioLayoutScrollView.m */,
+			);
+			name = LayoutView;
 			sourceTree = "<group>";
 		};
 		C9B620BD1137BDB10012CE7E /* ThirdParty */ = {
@@ -1203,6 +1216,7 @@
 				C9B620CF1137BE170012CE7E /* zip.c in Sources */,
 				C9B620D01137BE170012CE7E /* ZipArchive.mm in Sources */,
 				A371FDCE113AF77200E1A51C /* BlioWebToolSettingsController.m in Sources */,
+				C9985C03113E84E9009E5263 /* BlioLayoutScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

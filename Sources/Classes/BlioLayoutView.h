@@ -17,13 +17,13 @@
 @class BlioPDFParsedPage;
 @class BlioPDFDebugView;
 @class BlioPDFPageView;
-@class BlioPDFContainerScrollView;
+@class BlioLayoutScrollView;
 
 @interface BlioLayoutView : UIView <UIScrollViewDelegate, BlioBookView, BlioTTSDataSource, EucBookContentsTableViewControllerDataSource, EucSelectorDataSource, EucSelectorDelegate> {
     id<BlioBookDelegate> delegate;
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
-    BlioPDFContainerScrollView *scrollView;
+    BlioLayoutScrollView *scrollView;
     UIView *containerView;
     NSMutableArray *pageViews;
     NSInteger visiblePageIndex;
@@ -46,7 +46,7 @@
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;
 @property (nonatomic, retain) BlioMockBook *book;
-@property (nonatomic, retain) BlioPDFContainerScrollView *scrollView;
+@property (nonatomic, retain) BlioLayoutScrollView *scrollView;
 @property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) NSMutableArray *pageViews;
 @property (nonatomic, retain) BlioPDFPageView *currentPageView;
