@@ -325,7 +325,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 @synthesize currentPageColor = _currentPageColor;
 
 @synthesize audioPlaying = _audioPlaying;
-@synthesize ttsPlayed = _ttsPlayed;
 @synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize tiltScroller, tapDetector, motionControlsEnabled;
@@ -372,8 +371,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (id)initWithBook:(BlioMockBook *)newBook {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         self.audioPlaying = NO;
-        self.ttsPlayed = NO;
         self.wantsFullScreenLayout = YES;
+		_acapelaTTS = *[BlioBookViewController getTTSEngine];
+		if ( _acapelaTTS != nil )  {
+			[_acapelaTTS setPageChanged:YES];
+			[_acapelaTTS setDelegate:self];
+		} 
         
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
         [backArrow addTarget:self
@@ -569,8 +572,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		[self stopAudio];
 		self.audioPlaying = NO;  
 	}
-	if ( ![self.book audioRights] )
-		[_acapelaTTS setPageChanged:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -1656,16 +1657,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	if (*[BlioBookViewController getTTSEngine] == nil) {
 		*[BlioBookViewController getTTSEngine] = [[AcapelaTTS alloc] init];
 		[*[BlioBookViewController getTTSEngine] setEngineWithPreferences:YES];  
+		_acapelaTTS = *[BlioBookViewController getTTSEngine]; 
+		[_acapelaTTS setDelegate:self];
 	}
 	else
 		[*[BlioBookViewController getTTSEngine] setEngineWithPreferences:[*[BlioBookViewController getTTSEngine] voiceHasChanged]]; 
-	if (!self.ttsPlayed) {
-		// This isn't part of initialization because that can happen in the settings page
-		// when the BookViewController doesn't exist.
-		self.ttsPlayed = YES;
-		_acapelaTTS = *[BlioBookViewController getTTSEngine]; 
-		[_acapelaTTS setDelegate:self]; 
-	} 
 }
 
 - (void)toggleAudio:(id)sender {
@@ -1715,12 +1711,35 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 				[_audioBookManager playAudio];
 			}
-			// TODO: else need alert:  no rights to play TTS
+			else {
+				UIAlertView *errorAlert = [[UIAlertView alloc] 
+										   initWithTitle:@"" message:@"No audio is permitted for this book." // TODO: try Voiceover; how to word?
+										   delegate:self cancelButtonTitle:nil
+										   otherButtonTitles:@"OK", nil];
+				[errorAlert show];
+			}
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
 		}
 		self.audioPlaying = !self.audioPlaying;  
 		[item setImage:audioImage];
 	} 
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	[alertView release];
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
+	[activityIndicator stopAnimating];
+	NSString* errorMsg = [error localizedDescription];
+	NSLog(@"Error loading web page: %@",errorMsg);
+	UIAlertView *errorAlert = [[UIAlertView alloc] 
+							   initWithTitle:@"" message:errorMsg 
+							   delegate:self cancelButtonTitle:nil
+							   otherButtonTitles:@"OK", nil];
+	[errorAlert show];
 }
 
 
