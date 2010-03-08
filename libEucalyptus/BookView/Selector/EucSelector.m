@@ -99,6 +99,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @synthesize loupeContentsLayer = _loupeContentsLayer;
 @synthesize loupeContentsImageFactory = _loupeContentsImageFactory;
 
+@synthesize loupeBackgroundColor = _loupeBackgroundColor;
+
 @synthesize highlightLayers = _highlightLayers;
 @synthesize highlightEndLayers = _highlightEndLayers;
 @synthesize highlightKnobLayers = _highlightKnobLayers;
@@ -504,7 +506,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     CGContextRef context = loupeContentsImageFactory.CGContext;
     CGContextSaveGState(context);
     
-    CGContextClearRect(context, magnificationLoupeRect);
+    UIColor *backgroundColor = self.loupeBackgroundColor;
+    if(backgroundColor) {
+        CGContextSaveGState(context);
+        CGContextSetFillColorWithColor(context, backgroundColor.CGColor);
+        CGContextFillRect(context, magnificationLoupeRect);
+        CGContextRestoreGState(context);
+    } else {
+        CGContextClearRect(context, magnificationLoupeRect);
+    }
     
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     
@@ -656,6 +666,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 
                 CALayer *snapshotLayer = [CALayer layer];
                 snapshotLayer.contents = (id)([self.delegate viewSnapshotImageForEucSelector:self].CGImage);
+                snapshotLayer.opaque = YES;
                 
                 if(self.highlightLayers.count) {
                     [attachedLayer insertSublayer:snapshotLayer below:[self.highlightLayers objectAtIndex:0]];
