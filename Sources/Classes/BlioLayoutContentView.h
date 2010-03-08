@@ -21,6 +21,8 @@
 }
 
 @property (nonatomic) NSInteger pageNumber;
+@property (nonatomic, assign) BlioLayoutTiledLayer *tiledLayer;
+@property (nonatomic, assign) BlioLayoutShadowLayer *shadowLayer;
 
 @end
 

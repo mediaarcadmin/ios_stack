@@ -40,9 +40,7 @@
 @end
 
 @interface BlioLayoutPageLayer()
-@property (nonatomic, assign) BlioLayoutTiledLayer *tiledLayer;
 @property (nonatomic, assign) BlioLayoutThumbLayer *thumbLayer;
-@property (nonatomic, assign) BlioLayoutShadowLayer *shadowLayer;
 
 @end
 

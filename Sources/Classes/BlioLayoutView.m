@@ -324,6 +324,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         [aSelector setShouldSniffTouches:NO];
         aSelector.dataSource = self;
         aSelector.delegate =  self;
+        aSelector.loupeBackgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
         self.selector = aSelector;
         [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         [aSelector addObserver:self forKeyPath:@"trackingStage" options:0 context:NULL];
@@ -499,21 +500,38 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
     
-    CGFloat inset = -kBlioLayoutShadow;
+//    CGFloat inset = -kBlioLayoutShadow;
     CGRect layerBounds = aLayer.bounds;
     
     CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
 	CGContextScaleCTM(ctx, 1, -1);
     
-    CGRect insetBounds = UIEdgeInsetsInsetRect(layerBounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-        
+    //NSLog(@"clipRect %@", NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+    
+    CGRect scaledCropRect = [self cropForPage:aPageNumber];
+    //CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:arc4random() % 1000 / 1000.0f green:arc4random() % 1000 / 1000.0f blue:arc4random() % 1000 / 1000.0f alpha:1].CGColor);
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+
+    CGContextFillRect(ctx, scaledCropRect);
+    CGContextClipToRect(ctx, scaledCropRect);
+    
+//    CGRect insetBounds = UIEdgeInsetsInsetRect(layerBounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+    
     CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.pdfData);
     CGPDFDocumentRef aPdf = CGPDFDocumentCreateWithProvider(pdfProvider);
     CGPDFPageRef aPage = CGPDFDocumentGetPage(aPdf, aPageNumber);
-    CGContextConcatCTM(ctx, CGPDFPageGetDrawingTransform(aPage, kCGPDFCropBox, insetBounds, 0, true));
-    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:arc4random() % 1000 / 1000.0f green:arc4random() % 1000 / 1000.0f blue:arc4random() % 1000 / 1000.0f alpha:1].CGColor);
-    CGContextFillRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
-    CGContextClipToRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
+    
+    //CGContextConcatCTM(ctx, CGPDFPageGetDrawingTransform(aPage, kCGPDFCropBox, insetBounds, 0, true));
+    
+    
+    CGRect unscaledCropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
+    CGAffineTransform pdfTransform = transformRectToFitRect(unscaledCropRect, scaledCropRect);
+    
+    CGContextConcatCTM(ctx, pdfTransform);
+    
+//    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:arc4random() % 1000 / 1000.0f green:arc4random() % 1000 / 1000.0f blue:arc4random() % 1000 / 1000.0f alpha:1].CGColor);
+//    CGContextFillRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
+//    CGContextClipToRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
     // Lock around the drawing so we limit the memory footprint
     @synchronized ([[UIApplication sharedApplication] delegate]) {
         CGContextDrawPDFPage(ctx, aPage);
@@ -561,6 +579,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     CGContextSaveGState(ctx);
     CGContextClipToRect(ctx, cropRect);
     CGContextDrawTiledImage(ctx, CGRectMake(0,0,10,10), checkerBoard.CGImage);
+    
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.57f alpha:1.0f].CGColor);
+    CGContextSetLineWidth(ctx, 2);
+    CGContextStrokeRect(ctx, cropRect);
     CGContextRestoreGState(ctx);
     
     CGRect leftShadowRect = CGRectMake(cropRect.origin.x-kBlioLayoutShadow, cropRect.origin.y - shadowBottom.size.height, shadowLeft.size.width, cropRect.size.height + 2*kBlioLayoutShadow);
@@ -619,19 +641,24 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
     NSLog(@"requesting snapshot");
-    CALayer *snapLayer = self.currentPageLayer;
+    BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
     if (nil == snapLayer) return nil;
     
     CGFloat scale = self.scrollView.zoomScale;
     
-    UIGraphicsBeginImageContext(snapLayer.bounds.size);
+    CGSize snapSize = snapLayer.bounds.size;
+    
+    // Increase snapshot height by 78 to allow for an overlap below the bottom of the page;
+    //    snapSize.height += 78; 
+    
+    UIGraphicsBeginImageContext(snapSize);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
     CGContextScaleCTM(ctx, scale, scale);
     CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
-
     
-    [snapLayer renderInContext:ctx];
+    [[snapLayer shadowLayer] renderInContext:ctx];
+    [[snapLayer tiledLayer] renderInContext:ctx];
     UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
@@ -764,9 +791,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
     
     if ([pageParagraphs count] > currentIndex) {
-        //CGRect blockRect = [[pageParagraphs objectAtIndex:currentIndex] rect];
+        CGRect blockRect = [[pageParagraphs objectAtIndex:currentIndex] rect];
 //        CGAffineTransform viewTransform = [[self.currentPageLayer view] viewTransform];
-//        pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
+        CGAffineTransform viewTransform = [self viewTransformForPage:[self.currentPageLayer pageNumber]];
+        pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
     }
     
     return pageRect;
@@ -799,9 +827,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         NSArray *words = [[pageParagraphs objectAtIndex:currentIndex] words];
         NSInteger offset = [wordID integerValue];
         if (offset < [words count]) {
-            //CGRect wordRect = [[words objectAtIndex:offset] rect];
+            CGRect wordRect = [[words objectAtIndex:offset] rect];
 //            CGAffineTransform viewTransform = [[self.currentPageLayer view] viewTransform];
-//            pageRect = CGRectApplyAffineTransform(wordRect, viewTransform);
+            CGAffineTransform viewTransform = [self viewTransformForPage:[self.currentPageLayer pageNumber]];
+            pageRect = CGRectApplyAffineTransform(wordRect, viewTransform);
         }
     }
     
