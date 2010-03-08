@@ -277,8 +277,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, i);
             CGRect cropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
             CGAffineTransform pdfTransform = transformRectToFitRect(cropRect, insetBounds);
-            cropRect = CGRectApplyAffineTransform(cropRect, pdfTransform);
-            [aPageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:i]];
+            CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pdfTransform);
+            [aPageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:i]];
             
             CGRect mediaRect = CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox);
             CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
@@ -470,6 +470,19 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         return NO;
 }
 
+- (CGRect)cropForPage:(NSInteger)page {
+    if (nil == pageCropsCache) return CGRectZero;
+    NSValue *pageCropValue;
+    
+    @synchronized (pageCropsCache) {
+        pageCropValue = [pageCropsCache objectForKey:[NSNumber numberWithInt:page]];
+    }
+    
+    if (nil == pageCropValue) return CGRectZero;
+    
+    return [pageCropValue CGRectValue];
+}
+
 - (CGAffineTransform)viewTransformForPage:(NSInteger)page {
     if (nil == viewTransformsCache) return CGAffineTransformIdentity;
     NSValue *viewTransformValue;
@@ -517,15 +530,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)drawThumbInContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
     
-    if (nil == pageCropsCache) return;
-    NSValue *cropRectValue;
-    
-    @synchronized (pageCropsCache) {
-        cropRectValue = [pageCropsCache objectForKey:[NSNumber numberWithInt:aPageNumber]];
-    }
-    
-    if (nil == cropRectValue) return;
-    CGRect cropRect = [cropRectValue CGRectValue];
+    CGRect cropRect = [self cropForPage:aPageNumber];
+    if (CGRectEqualToRect(cropRect, CGRectZero)) return;
     
     CGRect layerBounds = CGContextGetClipBoundingBox(ctx);
     
@@ -544,21 +550,13 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)drawShadowInContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
     
-    if (nil == pageCropsCache) return;
-    
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.8f alpha:1.0f].CGColor);
     CGRect layerBounds = CGContextGetClipBoundingBox(ctx);
     CGContextFillRect(ctx, layerBounds);
     
-    NSValue *cropRectValue;
-    
-    @synchronized (pageCropsCache) {
-        cropRectValue = [pageCropsCache objectForKey:[NSNumber numberWithInt:aPageNumber]];
-    }
-    
-    if (nil == cropRectValue) return;
-    CGRect cropRect = [cropRectValue CGRectValue];
-    
+    CGRect cropRect = [self cropForPage:aPageNumber];
+    if (CGRectEqualToRect(cropRect, CGRectZero)) return;
+        
     CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
 	CGContextScaleCTM(ctx, 1, -1);
     
@@ -1609,7 +1607,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         CGPoint viewOrigin = CGPointMake((self.pageNumber - 1) * pageWidth, 0);
         
         //CGRect pageRect = CGRectApplyAffineTransform([[[self.currentPageLayer view] shadowLayerDelegate] pageRect], CATransform3DGetAffineTransform([[[self.currentPageLayer view] shadowLayer] transform]));
-        CGRect pageRect = CGRectZero;
+        CGRect pageRect = CGRectApplyAffineTransform([self cropForPage:[self.currentPageLayer pageNumber]], CATransform3DGetAffineTransform([self.currentPageLayer transform]));
+        
         CGFloat maxYOffset = ((CGRectGetMaxY(pageRect) * zoomScale) - self.scrollView.frame.size.height) / zoomScale;
         CGFloat yDiff = targetRect.origin.y - maxYOffset;
         
