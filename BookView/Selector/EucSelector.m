@@ -14,6 +14,7 @@
 
 #import "THGeometryUtils.h"
 #import "THEventCapturingWindow.h"
+#import "THCALayerAdditions.h"
 #import "THUIViewAdditions.h"
 #import "THPair.h"
 #import "THImageFactory.h"
@@ -25,6 +26,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @interface EucSelector ()
 
 @property (nonatomic, retain) UIView *attachedView;
+@property (nonatomic, retain) CALayer *attachedLayer;
+@property (nonatomic, retain) CALayer *snapshotLayer;
 
 @property (nonatomic, retain) NSMutableArray *temporaryHighlightLayers;
 
@@ -37,8 +40,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @property (nonatomic, assign) EucSelectorTrackingStage trackingStage;
 
 @property (nonatomic, retain) UIColor *selectionColor;
-
-@property (nonatomic, retain) UIView *viewWithSelection;
 
 @property (nonatomic, retain) NSString *currentLoupeKind;
 @property (nonatomic, retain) CALayer *loupeLayer;
@@ -76,6 +77,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @synthesize delegate = _delegate;
 
 @synthesize attachedView = _attachedView;
+@synthesize attachedLayer = _attachedLayer;
+@synthesize snapshotLayer = _snapshotLayer;
 
 @synthesize selectedRange = _selectedRange;
 
@@ -90,8 +93,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @synthesize trackingStage = _trackingStage;
 
 @synthesize selectionColor = _selectionColor;
-
-@synthesize viewWithSelection = _viewWithSelection;
 
 @synthesize currentLoupeKind = _currentLoupeKind;
 @synthesize loupeLayer = _loupeLayer;
@@ -125,29 +126,37 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         THWarn(@"Highlighter released with temporary highlight displayed.");
         [self removeTemporaryHighlight];
     }    
-    if(self.attachedView) {
+    if(self.attachedLayer) {
         THWarn(@"Highlighter released while still attached to view.");
-        [self detatchFromView];
+        [self detatch];
     }
     [_trackingTouch release];
     
     [super dealloc];
 }
 
+- (void)attachToLayer:(CALayer *)layer
+{
+    if(self.attachedLayer) {
+        [self detatch];
+    }
+    self.attachedLayer = layer;
+}
+
 - (void)attachToView:(UIView *)view
 {
-    if(self.attachedView) {
-        [self detatchFromView];
-    }
-    for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
-        if(self.shouldSniffTouches && [window isKindOfClass:[THEventCapturingWindow class]]) {
-            [window addTouchObserver:self forView:view];
+    [self attachToLayer:view.layer];
+    if(self.shouldSniffTouches) {
+        for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
+            if([window isKindOfClass:[THEventCapturingWindow class]]) {
+                [window addTouchObserver:self forView:view];
+            }
         }
     }
     self.attachedView = view;
 }
 
-- (void)detatchFromView
+- (void)detatch
 {
     self.selectedRange = nil;
     if(self.temporaryHighlightLayers) {
@@ -158,11 +167,12 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     self.menuController = nil;
     UIView *attachedView = self.attachedView;
     for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
-        if(self.shouldSniffTouches && [window isKindOfClass:[THEventCapturingWindow class]]) {
+        if([window isKindOfClass:[THEventCapturingWindow class]]) {
             [window removeTouchObserver:self forView:attachedView];
         }
     }
     self.attachedView = nil;
+    self.attachedLayer = nil;
 }
 
 #pragma mark -
@@ -191,7 +201,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     NSMutableArray *temporaryHilightLayers = self.temporaryHighlightLayers;
     NSMutableArray *newTemporaryHighlightLayers = [[NSMutableArray alloc] initWithCapacity:2];
     
-    CALayer *attachedViewLayer = self.attachedView.layer;
+    CALayer *attachedLayer = self.attachedLayer;
     
     for(NSValue *rectValue in rects) {
         CGRect rect = [rectValue CGRectValue];
@@ -222,7 +232,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             layer.backgroundColor = [[[UIColor blueColor] colorWithAlphaComponent:0.25f] CGColor];
             layer.position = CGPointMake(newCenter.x - rect.size.width / 2.0f + 1.0f, newCenter.y);
             layer.bounds = CGRectMake(0, 0, 1, rect.size.height);
-            [attachedViewLayer addSublayer:layer];              
+            [attachedLayer addSublayer:layer];              
         }
         
         CGRect newBounds = CGRectMake(0, 0, rect.size.width, rect.size.height);
@@ -344,8 +354,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
 
     // We scale the layers we're adding or apply transforms to ensure they appear
-    // at the correct size on screen even if the view they're part of is zoomed.
-    CGSize scaleFactors = [self.attachedView screenScaleFactors];
+    // at the correct size on screen even if the layer they're part of is zoomed.
+    CGSize scaleFactors = [self.attachedLayer screenScaleFactors];
     CGSize inverseScaleFactors = CGSizeMake(1.0f / scaleFactors.width, 1.0f / scaleFactors.height);
     CATransform3D knobTransform = CATransform3DMakeScale(inverseScaleFactors.width, inverseScaleFactors.height, 1);
     
@@ -408,7 +418,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                                                    CGImageGetHeight(highImage));
         CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
         
-        UIWindow *window = self.viewWithSelection.window;
+        CALayer *windowLayer = self.attachedLayer.windowLayer;
         CALayer *loupeContentsLayer = self.loupeContentsLayer;
         THImageFactory *loupeContentsImageFactory;
         CALayer *loupeLayer;
@@ -447,7 +457,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             
             // Don't add it to self.viewWithSelection - we're using renderInContext:
             // below, so the effect would be an infinite tunnel after a few moves.
-            [window.layer addSublayer:loupeLayer];
+            [windowLayer addSublayer:loupeLayer];
             
             CABasicAnimation *loupePopUp = [[CABasicAnimation alloc] init];
             loupePopUp.keyPath = @"transform";
@@ -480,11 +490,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     CGRect magnificationLoupeRect = loupeLayer.bounds;
     CGSize magnificationLoupeSize = magnificationLoupeRect.size;
 
-    UIView *viewToMagnify = self.viewWithSelection;
-    CGSize viewToMagnifySize = viewToMagnify.bounds.size;
+    CALayer *layerToMagnify = self.attachedLayer;
+    CGSize layerToMagnifySize = layerToMagnify.bounds.size;
     
-    UIWindow *window = viewToMagnify.window;
-    CGSize screenScaleFactors = [viewToMagnify screenScaleFactors];
+    CALayer *windowLayer = layerToMagnify.windowLayer;
+    CGSize screenScaleFactors = [layerToMagnify screenScaleFactors];
     
     // We want 1.25 * bigger.
     CGFloat scaleFactorX = screenScaleFactors.width * 1.25f;
@@ -507,14 +517,14 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                                            -point.y - magnificationLoupeSize.height * (0.5f * (1.0f / scaleFactorY)));
     
     // Don't show blank area off the bottom of the view.
-    translationPoint.y = MAX(-viewToMagnifySize.height, translationPoint.y); 
+    translationPoint.y = MAX(-layerToMagnifySize.height, translationPoint.y); 
     
     CGContextTranslateCTM(context, 
                           translationPoint.x,
                           translationPoint.y);
     
     // Draw the view. 
-    [[viewToMagnify layer] renderInContext:context];
+    [layerToMagnify renderInContext:context];
     
     CGContextRestoreGState(context);
     
@@ -525,7 +535,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     // We draw the layer content in the -drawLayer:inContext: delegate method.
     loupeContentsLayer.contents = (id)loupeContentsImageFactory.snapshotCGImage;
     
-    CGPoint windowPoint = [self.viewWithSelection convertPoint:point toView:window];
+    CGPoint windowPoint = [layerToMagnify convertPoint:point toLayer:windowLayer];
 
     // Position the loupe.
     CGRect frame = magnificationLoupeRect;
@@ -586,14 +596,19 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)_positionMenu
 {
+    UIView *viewForMenu = self.attachedView;
+    if(!viewForMenu || [self.delegate respondsToSelector:@selector(viewForMenuForEucSelector:)]) {
+        viewForMenu = [self.delegate viewForMenuForEucSelector:self];
+    }
+    
     CGRect targetRect = [[[self highlightLayers] objectAtIndex:0] frame];
     for(CALayer *layer in self.highlightLayers) {
         if(!layer.isHidden) {
             targetRect = CGRectUnion(targetRect, layer.frame);
         }
     }
-    [self.menuController setTargetRect:targetRect inView:self.viewWithSelection];
-    
+    [self.menuController setTargetRect:[viewForMenu.layer convertRect:targetRect fromLayer:self.attachedLayer]
+                                inView:viewForMenu];
 }
 
 - (void)setTrackingStage:(EucSelectorTrackingStage)stage;
@@ -624,14 +639,38 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             self.selectionColor = nil;
         }
         
+        if(previousStage == EucSelectorTrackingStageFirstSelection || 
+           previousStage == EucSelectorTrackingStageChangingSelection) {
+            CALayer *snapshotLayer = self.snapshotLayer;
+            if(snapshotLayer) {
+                [snapshotLayer removeFromSuperlayer];
+                self.snapshotLayer = nil;
+            }
+        }
+        
+        if(stage == EucSelectorTrackingStageFirstSelection || stage == EucSelectorTrackingStageChangingSelection) {
+            if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
+                CALayer *attachedLayer = self.attachedLayer;
+                CALayer *windowLayer = attachedLayer.windowLayer;                        
+                CGRect windowFrame = [windowLayer convertRect:windowLayer.bounds toLayer:attachedLayer];
+                
+                CALayer *snapshotLayer = [CALayer layer];
+                snapshotLayer.contents = (id)([self.delegate viewSnapshotImageForEucSelector:self].CGImage);
+                
+                if(self.highlightLayers.count) {
+                    [attachedLayer insertSublayer:snapshotLayer below:[self.highlightLayers objectAtIndex:0]];
+                } else {
+                    [attachedLayer addSublayer:snapshotLayer];
+                }
+                snapshotLayer.frame = windowFrame;
+                
+                self.snapshotLayer = snapshotLayer;
+            }            
+        }
+        
         switch(stage) {
             case EucSelectorTrackingStageNone:
             {
-                if(self.viewWithSelection != self.attachedView) {
-                    [(THEventCapturingWindow *)self.viewWithSelection.window removeTouchObserver:self forView:self.viewWithSelection];
-                    [self.viewWithSelection removeFromSuperview];
-                    self.viewWithSelection = nil;
-                }
                 [self _removeAllHighlightLayers];
                 [self _clearSelectionCaches];
                 self.tracking = NO;
@@ -640,17 +679,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             case EucSelectorTrackingStageFirstSelection:
             {
                 if(previousStage == EucSelectorTrackingStageNone) {
-                    if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
-                        UIView *attachedView = self.attachedView;
-                        UIImageView *dummySelectionView = [[UIImageView alloc] initWithImage:[self.dataSource viewSnapshotImageForEucSelector:self]];
-                        dummySelectionView.frame = attachedView.frame;
-                        [attachedView.superview insertSubview:dummySelectionView aboveSubview:attachedView];
-                        [(THEventCapturingWindow *)dummySelectionView.window addTouchObserver:self forView:dummySelectionView];
-                        self.viewWithSelection = dummySelectionView;
-                        [dummySelectionView release];
-                    } else {
-                        self.viewWithSelection = self.attachedView;
-                    }
                     self.tracking = YES;
                 } else {
                     [self _removeAllHighlightLayers];
@@ -947,7 +975,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     
     // We'll scale the rects to make sure they will be on pixl boundies
     // on screen even if the layer they're in has a scale transform applied.
-    CGSize screenScaleFactors = [self.attachedView screenScaleFactors];
+    CGSize screenScaleFactors = [self.attachedLayer screenScaleFactors];
     
     NSMutableArray *ret = [NSMutableArray arrayWithCapacity:coalescedRects.count];
     for(NSValue *rectValue in coalescedRects) {
@@ -964,7 +992,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         NSArray *highlightRects = [self highlightRectsForRange:selectedRange];
         
         // Highlight them, reusing the current highlight layers if possible.
-        UIView *viewWithSelection = self.viewWithSelection;
+        CALayer *attachedLayer = self.attachedLayer;
         NSMutableArray *highlightLayers = self.highlightLayers;
         
         [CATransaction begin];
@@ -986,7 +1014,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                     [highlightLayers addObject:layer];
                     ++unusedHighlightLayersCount;
                     [layer release];
-                    [viewWithSelection.layer addSublayer:layer];
+                    [attachedLayer addSublayer:layer];
                 }
             }
         } 
@@ -1038,9 +1066,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)_trackTouch:(UITouch *)touch
 {       
-    UIView *viewWithSelection = self.viewWithSelection;
-    CGPoint location = [touch locationInView:viewWithSelection];
-
+    CALayer *attachedLayer = self.attachedLayer;
+    CGPoint location = [attachedLayer convertPoint:[touch locationInView:nil] fromLayer:attachedLayer.windowLayer];
+    
     if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {
         EucSelectorRange *newSelectedRange = nil;
         BOOL newSelectedRangeIsHighlight = NO;
@@ -1125,8 +1153,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             }
             
             CALayer *endLayer = left ? self.highlightEndLayers.first : self.highlightEndLayers.second;
-            CGRect endLayerFrame = [endLayer convertRect:endLayer.bounds toLayer:viewWithSelection.layer];
-            CGRect endLayerScreenBounds = [viewWithSelection convertRect:endLayerFrame toView:viewWithSelection.window];
+            CGRect endLayerFrame = [endLayer convertRect:endLayer.bounds toLayer:attachedLayer];
+            CGRect endLayerScreenBounds = [attachedLayer convertRect:endLayerFrame toLayer:attachedLayer.windowLayer];
             CGFloat yOffset = - roundf(endLayerScreenBounds.size.height * 0.5f) + (left ? -13.0f : -1.0f);
             [self _loupeToPoint:CGPointMake(roundf(endLayerFrame.origin.x + endLayerFrame.size.width * 0.5f),
                                             roundf(endLayerFrame.origin.y + endLayerFrame.size.height * 0.5f))
@@ -1152,24 +1180,23 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     if(highlightKnobLayers) {
         CALayer *leftKnobLayer = self.highlightKnobLayers.first;
         if(!leftKnobLayer.hidden) {
-            UIView *viewWithSelection = self.viewWithSelection;
-            CALayer *viewWithSelectionLayer = viewWithSelection.layer;
+            CALayer *attachedLayer = self.attachedLayer;
             
-            CGPoint touchPoint = [touch locationInView:viewWithSelection];
-            CGRect leftKnobRect = [leftKnobLayer convertRect:CGRectInset(leftKnobLayer.bounds, -8.0f, -8.0f) toLayer:viewWithSelectionLayer];
+            CGPoint touchPoint = [attachedLayer convertPoint:[touch locationInView:nil] fromLayer:attachedLayer.windowLayer];
+            CGRect leftKnobRect = [leftKnobLayer convertRect:CGRectInset(leftKnobLayer.bounds, -8.0f, -8.0f) toLayer:attachedLayer];
 
             if(CGRectContainsPoint(leftKnobRect, touchPoint)) {
                 draggingKnob = leftKnobLayer;
                 CALayer *endLayer = self.highlightEndLayers.first;
-                CGPoint endLayerCenter = [endLayer convertPoint:endLayer.position toLayer:viewWithSelectionLayer];
+                CGPoint endLayerCenter = [endLayer convertPoint:endLayer.position toLayer:attachedLayer];
                 draggingKnobVerticalOffset = endLayerCenter.y - touchPoint.y;
             } else {
                 CALayer *rightKnobLayer = self.highlightKnobLayers.second;
-                CGRect rightKnobRect = [rightKnobLayer convertRect:CGRectInset(rightKnobLayer.bounds, -8.0f, -8.0f) toLayer:viewWithSelectionLayer];
+                CGRect rightKnobRect = [rightKnobLayer convertRect:CGRectInset(rightKnobLayer.bounds, -8.0f, -8.0f) toLayer:attachedLayer];
                 if(CGRectContainsPoint(rightKnobRect, touchPoint)) {
                     draggingKnob = rightKnobLayer;
                     CALayer *endLayer = self.highlightEndLayers.second;
-                    CGPoint endLayerCenter = [endLayer convertPoint:endLayer.position toLayer:viewWithSelectionLayer];
+                    CGPoint endLayerCenter = [endLayer convertPoint:endLayer.position toLayer:attachedLayer];
                     draggingKnobVerticalOffset = endLayerCenter.y - touchPoint.y;                    
                 }
             }
