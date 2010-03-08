@@ -46,6 +46,7 @@ typedef enum EucSelectorTrackingStage {
     CALayer *_loupeLayer;
     CALayer *_loupeContentsLayer;
     THImageFactory *_loupeContentsImageFactory;
+    UIColor *_loupeBackgroundColor;
     
     NSMutableArray *_highlightLayers;
     THPair *_highlightEndLayers;
@@ -75,6 +76,7 @@ typedef enum EucSelectorTrackingStage {
 @property (nonatomic, assign, readonly) BOOL selectedRangeIsHighlight;
 @property (nonatomic, retain, readonly) EucSelectorRange *selectedRangeOriginalHighlightRange;
 
+@property (nonatomic, retain) UIColor *loupeBackgroundColor;
 
 @property (nonatomic, assign, readonly, getter=isTracking) BOOL tracking;
 @property (nonatomic, assign, readonly) EucSelectorTrackingStage trackingStage;
