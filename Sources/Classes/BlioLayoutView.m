@@ -224,7 +224,7 @@ static const NSUInteger kBlioLayoutMaxViews = 6; // Must be at least 6 for the g
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
     [self.selector removeObserver:self forKeyPath:@"trackingStage"];
-    [self.selector detatchFromView];
+    [self.selector detatch];
     self.selector = nil;
 
     [super dealloc];

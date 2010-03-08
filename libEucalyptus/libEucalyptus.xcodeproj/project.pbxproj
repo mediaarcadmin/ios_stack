@@ -259,6 +259,8 @@
 		7DABAD25112C9A640036BA8D /* MagnificationLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD22112C9A640036BA8D /* MagnificationLoupeHigh.png */; };
 		7DABAD26112C9A640036BA8D /* MagnificationLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD23112C9A640036BA8D /* MagnificationLoupeLow.png */; };
 		7DABAD27112C9A640036BA8D /* MagnificationLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD24112C9A640036BA8D /* MagnificationLoupeMask.png */; };
+		7DB0412411452788000C2980 /* THCALayerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB0409E11451687000C2980 /* THCALayerAdditions.m */; };
+		7DB041251145278F000C2980 /* THCALayerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB0409D11451687000C2980 /* THCALayerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */; };
 		7DB0901E1110C76B00CC5694 /* EucSelectorRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
@@ -651,6 +653,8 @@
 		7DABAD22112C9A640036BA8D /* MagnificationLoupeHigh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeHigh.png; sourceTree = "<group>"; };
 		7DABAD23112C9A640036BA8D /* MagnificationLoupeLow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeLow.png; sourceTree = "<group>"; };
 		7DABAD24112C9A640036BA8D /* MagnificationLoupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeMask.png; sourceTree = "<group>"; };
+		7DB0409D11451687000C2980 /* THCALayerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THCALayerAdditions.h; sourceTree = "<group>"; };
+		7DB0409E11451687000C2980 /* THCALayerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCALayerAdditions.m; sourceTree = "<group>"; };
 		7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorRange.h; sourceTree = "<group>"; };
 		7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorRange.m; sourceTree = "<group>"; };
 		7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
@@ -947,6 +951,8 @@
 				7D516E72102874E4005F3C46 /* THAlertViewWithUserInfo.m */,
 				7D516E5B10287486005F3C46 /* THUIViewAdditions.h */,
 				7D516E5C10287486005F3C46 /* THUIViewAdditions.m */,
+				7DB0409D11451687000C2980 /* THCALayerAdditions.h */,
+				7DB0409E11451687000C2980 /* THCALayerAdditions.m */,
 				7D516E62102874A6005F3C46 /* THUIImageAdditions.h */,
 				7D516E63102874A6005F3C46 /* THUIImageAdditions.m */,
 				7D516E4E10287458005F3C46 /* THNavigationButton.h */,
@@ -1501,6 +1507,7 @@
 				7D883FA0111C640C009669A8 /* EucMenuItem.h in Headers */,
 				7D883FA2111C640C009669A8 /* EucMenuController.h in Headers */,
 				7D35ADAF1121739B00A7AC62 /* EucMenuView.h in Headers */,
+				7DB041251145278F000C2980 /* THCALayerAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1885,6 +1892,7 @@
 				7D883FA1111C640C009669A8 /* EucMenuItem.m in Sources */,
 				7D883FA3111C640C009669A8 /* EucMenuController.m in Sources */,
 				7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */,
+				7DB0412411452788000C2980 /* THCALayerAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

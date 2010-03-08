@@ -2051,8 +2051,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type { 
 	NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
     NSString *encodedParam = [[wordStrings componentsJoinedByString:@" "] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-	NSString *queryString;
-	NSString* titleString;
+	NSString *queryString = nil;
+	NSString *titleString = nil;
 	switch (type) {
 		case dictionaryTool:
 			// TODO: get from preference
