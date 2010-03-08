@@ -232,7 +232,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     self.shadowLeft = nil;
     self.shadowRight = nil;
     
-    [self.selector detatchFromView];
+    [self.selector detatch];
     self.selector = nil;
 
     [super dealloc];

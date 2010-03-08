@@ -70,7 +70,6 @@ typedef enum {
 	AcapelaTTS* _acapelaTTS;
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
-    BOOL _ttsPlayed;
     
     BlioMockBook *_book;
 
@@ -104,7 +103,6 @@ typedef enum {
 
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic, assign) BOOL audioPlaying;
-@property (nonatomic, assign) BOOL ttsPlayed;
 
 @property (nonatomic, retain) MSTiltScroller *tiltScroller;
 @property (nonatomic, retain) MSTapDetector *tapDetector;

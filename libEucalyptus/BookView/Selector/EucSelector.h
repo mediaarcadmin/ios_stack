@@ -27,7 +27,9 @@ typedef enum EucSelectorTrackingStage {
     id<EucSelectorDelegate> _delegate;
     
     UIView *_attachedView;
-    
+    CALayer *_attachedLayer;
+    CALayer *_snapshotLayer;
+     
     NSMutableArray *_temporaryHighlightLayers;
 
     UITouch *_trackingTouch;
@@ -39,8 +41,6 @@ typedef enum EucSelectorTrackingStage {
     EucSelectorRange *_selectedRangeOriginalHighlightRange;
     BOOL _selectedRangeIsHighlight;
     UIColor *_selectionColor;
-
-    UIView *_viewWithSelection;
     
     NSString *_currentLoupeKind;
     CALayer *_loupeLayer;
@@ -80,7 +80,8 @@ typedef enum EucSelectorTrackingStage {
 @property (nonatomic, assign, readonly) EucSelectorTrackingStage trackingStage;
 
 - (void)attachToView:(UIView *)view;
-- (void)detatchFromView;
+- (void)attachToLayer:(CALayer *)view;
+- (void)detatch;
 
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 - (void)removeTemporaryHighlight;
@@ -126,6 +127,17 @@ typedef enum EucSelectorTrackingStage {
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange;
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)selectedRange movedToRange:(EucSelectorRange *)selectedRange;
 
+// Data source can supply an image that will be used to replace the view while
+// selection is taking place.  This is uesful if he view's layer would otherwise
+// not respond to renderInContext: 'correctly' (for example, it's an OpenGL
+// backed view), or if rendering the view is too expensive to be performed
+// quickly when rendering the magnified view in the loupe.
+- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector;
+
+// Should be implemented if the selector is attached to a layer (will cause a 
+// crash if not!).  Can optionally be implemented otherwise.
+- (UIView *)viewForMenuForEucSelector:(EucSelector *)selector;
+
 @end
 
 
@@ -138,12 +150,6 @@ typedef enum EucSelectorTrackingStage {
 - (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 
 @optional
-// Data source can supply an image that will be used to replace the view while
-// selection is taking place.  This is uesful if he view's layer would otherwise
-// not respond to renderInContext: 'correctly' (for example, it's an OpenGL
-// backed view.
-- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector;
-
 // Should return an array of EucSelectorRanges.
 // These are used to tell if the user has tapped in an already-highlighted
 // area.

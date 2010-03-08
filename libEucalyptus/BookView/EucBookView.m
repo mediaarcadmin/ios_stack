@@ -110,7 +110,7 @@
     if(_selector) {
         [_selector removeObserver:self
                           forKeyPath:@"tracking"];
-        [_selector detatchFromView];
+        [_selector detatch];
         [_selector release];
     }
     [self _removeHighlights];
@@ -163,7 +163,7 @@
     if(_selector) {
         [_selector removeObserver:self
                           forKeyPath:@"tracking"];
-        [_selector detatchFromView];
+        [_selector detatch];
         [_selector release];
         _selector = nil;
     }
