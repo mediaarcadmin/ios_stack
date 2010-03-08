@@ -27,10 +27,10 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
 @optional
 - (BOOL)dataSourceContainsPage:(NSInteger)page;
 - (CGAffineTransform)viewTransformForPage:(NSInteger)page;
-- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
-- (void)drawInContext:(CGContextRef)ctx forPage:(NSInteger)page;
-- (void)drawThumbInContext:(CGContextRef)ctx forPage:(NSInteger)page;
-- (void)drawShadowInContext:(CGContextRef)ctx forPage:(NSInteger)page;
+//- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
+- (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber;
+- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
+- (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawHighlightsInContext:(CGContextRef)ctx forPage:(NSInteger)page;
 
 @end

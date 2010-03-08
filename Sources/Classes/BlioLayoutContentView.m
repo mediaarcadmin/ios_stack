@@ -197,7 +197,7 @@
 - (void)drawInContext:(CGContextRef)ctx {
     NSLog(@"Draw tiled layer for page %d", self.pageNumber);
 
-    [self.dataSource drawInContext:ctx forPage:self.pageNumber];
+    [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber];
     
     if (pageNumber == 1) 
         [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
@@ -215,7 +215,7 @@
 @synthesize pageNumber, dataSource;
 
 - (void)drawInContext:(CGContextRef)ctx {
-    [self.dataSource drawThumbInContext:ctx forPage:self.pageNumber];    
+    [self.dataSource drawThumbLayer:self inContext:ctx forPage:self.pageNumber];    
 }
 
 @end
@@ -226,7 +226,7 @@
 
 - (void)drawInContext:(CGContextRef)ctx {
     NSLog(@"Draw shadow for page %d", self.pageNumber);
-    [self.dataSource drawShadowInContext:ctx forPage:self.pageNumber];    
+    [self.dataSource drawShadowLayer:self inContext:ctx forPage:self.pageNumber];    
 }
 
 @end

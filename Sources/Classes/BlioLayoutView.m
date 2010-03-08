@@ -327,8 +327,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         self.selector = aSelector;
         [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         [aSelector addObserver:self forKeyPath:@"trackingStage" options:0 context:NULL];
-        [self.selector setSelectedRange:nil];
-        [self.selector attachToView:self];
         [self.scrollView setSelector:aSelector];
         [aSelector release];
         
@@ -499,10 +497,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark Tile Rendering
 
-- (void)drawInContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
+- (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
     
     CGFloat inset = -kBlioLayoutShadow;
-    CGRect layerBounds = CGContextGetClipBoundingBox(ctx);
+    CGRect layerBounds = aLayer.bounds;
     
     CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
 	CGContextScaleCTM(ctx, 1, -1);
@@ -528,12 +526,12 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark Thumb Rendering
 
-- (void)drawThumbInContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
+- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
     
     CGRect cropRect = [self cropForPage:aPageNumber];
     if (CGRectEqualToRect(cropRect, CGRectZero)) return;
     
-    CGRect layerBounds = CGContextGetClipBoundingBox(ctx);
+    CGRect layerBounds = aLayer.bounds;
     
     CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
 	CGContextScaleCTM(ctx, 1, -1);
@@ -548,10 +546,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark Shadow Rendering
 
-- (void)drawShadowInContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
+- (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
     
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.8f alpha:1.0f].CGColor);
-    CGRect layerBounds = CGContextGetClipBoundingBox(ctx);
+    CGRect layerBounds = aLayer.bounds;
     CGContextFillRect(ctx, layerBounds);
     
     CGRect cropRect = [self cropForPage:aPageNumber];
@@ -618,6 +616,31 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 #pragma mark -
 #pragma mark Selector
+
+- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
+    NSLog(@"requesting snapshot");
+    CALayer *snapLayer = self.currentPageLayer;
+    if (nil == snapLayer) return nil;
+    
+    CGFloat scale = self.scrollView.zoomScale;
+    
+    UIGraphicsBeginImageContext(snapLayer.bounds.size);
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
+    CGContextScaleCTM(ctx, scale, scale);
+    CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
+
+    
+    [snapLayer renderInContext:ctx];
+    UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return snapshot;
+}
+
+- (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
+    return self.contentView;
+}
 
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range {
     NSInteger pageIndex = self.pageNumber - 1;
@@ -902,7 +925,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         if ([keyPath isEqualToString:@"currentPageLayer"]) {
             NSLog(@"pageLayerChanged");
             [self.selector setSelectedRange:nil];
-            // [self.selector attachToView:pageView];
+            [self.selector setSelectedRange:nil];
+            [self.selector attachToLayer:self.currentPageLayer];
             //[self displayHighlightsForPage:aPageNumber inLayer:self.currentPageLayer excluding:nil];
             
         }
