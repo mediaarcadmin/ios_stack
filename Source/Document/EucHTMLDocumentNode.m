@@ -70,14 +70,52 @@
     return [self nextUnder:nil];
 }
 
-- (EucHTMLDocumentNode *)nextDisregardingChildren
+- (EucHTMLDocumentNode *)_displayableNodeAfter:(EucHTMLDocumentNode *)child under:(EucHTMLDocumentNode *)under
 {
-    return [self.parent _nodeAfter:self under:nil];
+    NSUInteger childrenCount =  self.childrenCount;
+    if(childrenCount) {
+        NSArray *children = self.children;
+        NSUInteger i = 0;
+        if(child) {
+            for(; i < childrenCount; ++i) {
+                if([children objectAtIndex:i] == child) {
+                    ++i;
+                    break;
+                }
+            }
+        }
+        for(; i < childrenCount; ++i) {
+            EucHTMLDocumentNode *prospectiveNextNode = [children objectAtIndex:i];
+            css_computed_style *style = [prospectiveNextNode computedStyle];
+            if(!style || css_computed_display(style, false) != CSS_DISPLAY_NONE) {
+                return prospectiveNextNode;
+            } 
+        }
+    }
+    if(self == under) {
+        return nil;
+    }
+    return [self.parent _displayableNodeAfter:self under:under];
 }
 
-- (EucHTMLDocumentNode *)nextDisregardingChildrenUnder:(EucHTMLDocumentNode *)under
+- (EucHTMLDocumentNode *)nextDisplayableUnder:(EucHTMLDocumentNode *)under {
+    EucHTMLDocumentNode *nextNode = nil;
+    
+    NSArray *children = self.children;
+    if(children) {
+        nextNode = [self _displayableNodeAfter:nil under:under];
+    }
+    if(!nextNode) {
+        if(self != under){
+            nextNode = [self.parent _displayableNodeAfter:self under:under];
+        } 
+    }
+    return nextNode;
+}
+
+- (EucHTMLDocumentNode *)nextDisplayable
 {
-    return [self.parent _nodeAfter:self under:under];
+    return [self nextDisplayableUnder:nil];
 }
 
 

@@ -26,9 +26,11 @@
 @property (nonatomic, readonly) EucHTMLDocumentNode *blockLevelParent;
 
 @property (nonatomic, readonly) EucHTMLDocumentNode *next;
-@property (nonatomic, readonly) EucHTMLDocumentNode *nextDisregardingChildren;
 - (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under;
-- (EucHTMLDocumentNode *)nextDisregardingChildrenUnder:(EucHTMLDocumentNode *)under;
+
+@property (nonatomic, readonly) EucHTMLDocumentNode *nextDisplayable;
+- (EucHTMLDocumentNode *)nextDisplayableUnder:(EucHTMLDocumentNode *)under;
+
 
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 

@@ -108,7 +108,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                 }
             }
             
-            EucHTMLDocumentNode *nextNode = [inlineNode nextUnder:inlineNode.parent];
+            EucHTMLDocumentNode *nextNode = [inlineNode nextDisplayableUnder:inlineNode.parent];
             if(!nextNode) {
                 // Close this node.
                 if(!inlineNode.isTextNode && inlineNode.childrenCount > 0) {
@@ -117,13 +117,13 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                     EucHTMLLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
                     [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
                 }
-                nextNode = [inlineNode nextUnder:underNode];
+                nextNode = [inlineNode nextDisplayableUnder:underNode];
             }
             if(nextNode) {
                 inlineNode = nextNode;
                 inlineNodeStyle = inlineNode.computedStyle;
             } else {
-                inlineNode = inlineNode.next;
+                inlineNode = inlineNode.nextDisplayable;
                 reachedLimit = YES;
             }
         }    

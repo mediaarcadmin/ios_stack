@@ -279,7 +279,7 @@ pageBreaksDisallowedByRuleD:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedBy
                                                    returningInnermost:&currentPositionedBlock
                                                               inFrame:bottomlessFrame
                                                afterInternalPageBreak:NO];
-            currentDocumentNode = currentDocumentNode.next;
+            currentDocumentNode = currentDocumentNode.nextDisplayable;
         }
                 
         BOOL reachedBottomOfFrame = NO;
@@ -287,7 +287,7 @@ pageBreaksDisallowedByRuleD:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedBy
         uint32_t nextRunNodeKey = nodeKey;
         CGFloat nextY = frame.origin.y;
         CGFloat maxY = CGRectGetMaxY(frame);
-        do {            
+        do {
             CGRect potentialFrame = currentPositionedBlock.contentRect;
             NSParameterAssert(potentialFrame.size.height == CGFLOAT_MAX);
             
@@ -374,7 +374,7 @@ pageBreaksDisallowedByRuleD:(vector<EucHTMLLayoutPoint> *)pageBreaksDisallowedBy
                 // First run in a block has the ID of the block it's in.
                 nextRunNodeKey = ((EucHTMLDocumentConcreteNode *)currentDocumentNode).key;  
                 
-                currentDocumentNode = currentDocumentNode.next;
+                currentDocumentNode = currentDocumentNode.nextDisplayable;
             }
             reachedBottomOfFrame = nextY >= maxY;
         } while(!reachedBottomOfFrame && currentDocumentNode);
