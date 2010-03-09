@@ -27,6 +27,9 @@
 @property (nonatomic, assign) BlioLayoutShadowLayer *shadowLayer;
 @property (nonatomic, assign) BlioLayoutHighlightsLayer *highlightsLayer;
 
+- (void)setExcludedHighlight:(BlioBookmarkRange *)excludedHighlight;
+- (void)refreshHighlights;
+
 @end
 
 @interface BlioLayoutContentView : UIView {

@@ -42,10 +42,12 @@
 @interface BlioLayoutHighlightsLayer : CATiledLayer {
     NSInteger pageNumber;
     id <BlioLayoutDataSource> dataSource;
+    BlioBookmarkRange *excludedHighlight;
 }
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, assign) id <BlioLayoutDataSource> dataSource;
+@property (nonatomic, retain) BlioBookmarkRange *excludedHighlight;
 
 @end
 
@@ -207,13 +209,15 @@
     [self.highlightsLayer setNeedsDisplay];
 }
 
-- (void)setHighlights:(NSArray *)newHighlights {
+- (void)setExcludedHighlight:(BlioBookmarkRange *)excludedHighlight {
+    [self.highlightsLayer setExcludedHighlight:excludedHighlight];
+}
+
+- (void)refreshHighlights {
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-    
-    //[highlightLayerDelegate setHighlights:newHighlights];
-    //[highlightLayer setNeedsDisplay];
-    
+    [self.highlightsLayer setContents:nil];
+    [self.highlightsLayer setNeedsDisplay];
     [CATransaction commit];
 }
 
@@ -262,11 +266,23 @@
 
 @implementation BlioLayoutHighlightsLayer
 
-@synthesize pageNumber, dataSource;
+@synthesize pageNumber, dataSource, excludedHighlight;
+
+- (void)dealloc {
+    self.excludedHighlight = nil;
+    [super dealloc];
+}
 
 - (void)drawInContext:(CGContextRef)ctx {
+    [CATransaction begin];
+    [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
     NSLog(@"Draw highlights for page %d", self.pageNumber);
-    [self.dataSource drawHighlightsLayer:self inContext:ctx forPage:self.pageNumber];    
+    [self.dataSource drawHighlightsLayer:self inContext:ctx forPage:self.pageNumber excluding:self.excludedHighlight];
+    [CATransaction commit];
+}
+
++ (CFTimeInterval)fadeDuration {
+    return 0.0;
 }
 
 @end

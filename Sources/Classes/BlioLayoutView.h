@@ -15,10 +15,6 @@
 
 static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the go to animations to look right
 
-@class BlioPDFFontList;
-@class BlioPDFParsedPage;
-@class BlioPDFDebugView;
-@class BlioPDFPageView;
 @class BlioLayoutScrollView;
 @class BlioLayoutContentView;
 @class BlioLayoutPageLayer;
@@ -31,7 +27,7 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber;
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
-- (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
+- (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page excluding:(BlioBookmarkRange *)excludedBookmark;
 
 @end
 

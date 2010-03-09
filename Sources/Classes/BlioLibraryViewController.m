@@ -354,8 +354,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
         
-        [self.processingDelegate enqueueBookWithTitle:@"Marths Stewart's Cookies" 
-                                              authors:[NSArray arrayWithObject:@"Marth Stewart"]
+        [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
+                                              authors:[NSArray arrayWithObject:@"Martha Stewart"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
                                               ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"pdf" inDirectory:@"PDFs"]]

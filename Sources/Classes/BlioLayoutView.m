@@ -512,11 +512,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark Highlights
 
-- (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
-    //CGRect layerBounds = aLayer.bounds;
-    
-//    CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
-//	CGContextScaleCTM(ctx, 1, -1);
+- (NSArray *)highlightRectsForPage:(NSInteger)aPageNumber excluding:(BlioBookmarkRange *)excludedBookmark {
     
     NSInteger pageIndex = aPageNumber - 1;
     NSMutableArray *allHighlights = [NSMutableArray array];
@@ -525,9 +521,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         
-        //if (![highlightRange isEqual:self.excludedBookmark]) {
-        if (true) {
-              
+        if (![highlightRange isEqual:excludedBookmark]) {
+                        
             NSMutableArray *highlightRects = [NSMutableArray array];
             
             for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
@@ -579,42 +574,35 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
                 [coloredRect release];
             }
         }
-        
+    
     }
+    
+    return allHighlights;
+}
+        
+
+- (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber excluding:(BlioBookmarkRange *)excludedBookmark {
     
     CGAffineTransform viewTransform = [self viewTransformForPage:aPageNumber];
     
-    for (BlioLayoutViewColoredRect *coloredRect in allHighlights) {
+    for (BlioLayoutViewColoredRect *coloredRect in [self highlightRectsForPage:aPageNumber excluding:excludedBookmark]) {
         UIColor *highlightColor = [coloredRect color];
         CGContextSetFillColorWithColor(ctx, [highlightColor colorWithAlphaComponent:0.3f].CGColor);
-        //CGContextSetStrokeColorWithColor(ctx, [highlightColor colorWithAlphaComponent:1.0f].CGColor);
-        //CGContextSetLineWidth(ctx, 1.0f);
-        
         CGRect adjustedRect = CGRectApplyAffineTransform([coloredRect rect], viewTransform);
-        //CGContextClearRect(ctx, CGRectInset(adjustedRect, -1, -1));
         CGContextFillRect(ctx, adjustedRect);
-        //CGContextStrokeRect(ctx, adjustedRect);
     }
 }
 
-- (void)displayHighlightsForLayer:(BlioLayoutPageLayer *)aLayer excluding:(BlioBookmarkRange *)excludedBookmark {    
-    [[aLayer highlightsLayer] setNeedsDisplay];
+- (void)displayHighlightsForLayer:(BlioLayoutPageLayer *)aLayer excluding:(BlioBookmarkRange *)excludedBookmark {  
+    [aLayer setExcludedHighlight:excludedBookmark];
+    [aLayer refreshHighlights];
 }
 
 - (void)refreshHighlights {
     EucSelectorRange *selectedRange = [self.selector selectedRange];
+    BlioBookmarkRange *excludedRange = [self bookmarkRangeFromSelectorRange:selectedRange];
     
-    if (nil != selectedRange) {
-        for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
-            EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
-            if ([selectedRange isEqual:range]) {
-                [self displayHighlightsForLayer:self.currentPageLayer excluding:highlightRange];
-                return;
-            }
-        }
-    } else {
-        [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
-    }
+    [self displayHighlightsForLayer:self.currentPageLayer excluding:excludedRange];
 }
 
 #pragma mark -
@@ -629,6 +617,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     CGSize snapSize = snapLayer.bounds.size;
     
+ //   CGImageRef imageRef = (CGImageRef)[[snapLayer presentationLayer] contents];
+//    UIImage *image = [UIImage imageWithCGImage:imageRef];
+//    NSLog(@"got snapshot");
+//    return image;
+    
     // Increase snapshot height by 78 to allow for an overlap below the bottom of the page;
     //    snapSize.height += 78; 
     
@@ -640,9 +633,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     [[snapLayer shadowLayer] renderInContext:ctx];
     [[snapLayer tiledLayer] renderInContext:ctx];
+    [[snapLayer highlightsLayer] renderInContext:ctx];
     UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
+    NSLog(@"got snapshot");
+
     return snapshot;
 }
 
@@ -651,6 +646,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range {
+    if (nil == range) return nil;
+    
     NSInteger pageIndex = self.pageNumber - 1;
     
     EucSelectorRange *selectorRange = [[EucSelectorRange alloc] init];
@@ -663,6 +660,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range {
+    
+    if (nil == range) return nil;
+    
     NSInteger currentPage = self.pageNumber;
     
     BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
