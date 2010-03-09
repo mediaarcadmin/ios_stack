@@ -726,7 +726,7 @@
 				32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* LibCSSTest.m */,
 				7D22474610FD00D200CFD8B5 /* HTMLDB */,
-				7D22474F10FD00D200CFD8B5 /* Document */,
+				7D22474F10FD00D200CFD8B5 /* IntermediateDocument */,
 				7D22475810FD00D200CFD8B5 /* Layout */,
 				7D90593C1123034600167D20 /* Render */,
 			);
@@ -771,7 +771,7 @@
 			path = HTMLDB;
 			sourceTree = "<group>";
 		};
-		7D22474F10FD00D200CFD8B5 /* Document */ = {
+		7D22474F10FD00D200CFD8B5 /* IntermediateDocument */ = {
 			isa = PBXGroup;
 			children = (
 				7D22475010FD00D200CFD8B5 /* EucCSSIntermediateDocument.h */,
@@ -785,7 +785,7 @@
 				7D396B441135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.h */,
 				7D396B451135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.m */,
 			);
-			path = Document;
+			path = IntermediateDocument;
 			sourceTree = "<group>";
 		};
 		7D22475810FD00D200CFD8B5 /* Layout */ = {
