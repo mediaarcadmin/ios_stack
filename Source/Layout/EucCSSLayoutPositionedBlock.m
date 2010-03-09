@@ -8,8 +8,8 @@
 
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
-#import "EucCSSDocument.h"
-#import "EucCSSDocumentNode.h"
+#import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocumentNode.h"
 #import <libcss/libcss.h>
 
 @interface EucCSSLayoutPositionedBlock ()
@@ -35,7 +35,7 @@
     return [super init];
 }
 
-- (id)initWithDocumentNode:(EucCSSDocumentNode *)documentNode
+- (id)initWithDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode
 {
     if((self = [super init])) {
         _subEntities = [[NSMutableArray alloc] init];

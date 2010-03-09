@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@class EucCSSDocumentNode;
+@class EucCSSIntermediateDocumentNode;
 
 @interface EucCSSLayoutPositionedBlock : NSObject {
-    EucCSSDocumentNode *_documentNode;
+    EucCSSIntermediateDocumentNode *_documentNode;
 
     CGRect _frame;
     CGRect _borderRect;
@@ -21,7 +21,7 @@
     NSMutableArray *_subEntities;
 }
 
-@property (nonatomic, retain) EucCSSDocumentNode *documentNode;
+@property (nonatomic, retain) EucCSSIntermediateDocumentNode *documentNode;
 @property (nonatomic, assign) EucCSSLayoutPositionedBlock *parent;
 
 @property (nonatomic, assign) CGRect frame;
@@ -31,7 +31,7 @@
 
 @property (nonatomic, retain) NSArray *subEntities;
 
-- (id)initWithDocumentNode:(EucCSSDocumentNode *)documentNode;
+- (id)initWithDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode;
 
 - (void)positionInFrame:(CGRect)frame afterInternalPageBreak:(BOOL)afterInternalPageBreak;
 - (void)closeBottomFromYPoint:(CGFloat)point atInternalPageBreak:(BOOL)atInternalPageBreak;

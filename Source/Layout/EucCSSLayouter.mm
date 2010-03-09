@@ -8,9 +8,9 @@
 
 #import "EucCSSLayouter.h"
 
-#import "EucCSSDocument.h"
-#import "EucCSSDocumentNode.h"
-#import "EucCSSDocumentConcreteNode.h"
+#import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocumentNode.h"
+#import "EucCSSIntermediateDocumentConcreteNode.h"
 
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
@@ -37,7 +37,7 @@ Block contents x/y position.
 Block completion status.
 */
 
-- (EucCSSLayoutPositionedBlock *)_constructBlockAndAncestorsForNode:(EucCSSDocumentNode *)node
+- (EucCSSLayoutPositionedBlock *)_constructBlockAndAncestorsForNode:(EucCSSIntermediateDocumentNode *)node
                                                   returningInnermost:(EucCSSLayoutPositionedBlock **)innermost
                                                              inFrame:(CGRect)frame
                                               afterInternalPageBreak:(BOOL)afterInternalPageBreak
@@ -45,7 +45,7 @@ Block completion status.
     EucCSSLayoutPositionedBlock *newContainer;
     EucCSSLayoutPositionedBlock *outermost;
     
-    EucCSSDocumentNode *blockLevelParent = node.blockLevelParent;
+    EucCSSIntermediateDocumentNode *blockLevelParent = node.blockLevelParent;
     if(blockLevelParent) {
         EucCSSLayoutPositionedBlock *parentContainer = nil;
         outermost = [self _constructBlockAndAncestorsForNode:blockLevelParent
@@ -256,8 +256,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     uint32_t wordOffset = point.word;
     uint32_t elementOffset = point.element;
     
-    EucCSSDocument *document = self.document;
-    EucCSSDocumentNode* currentDocumentNode;
+    EucCSSIntermediateDocument *document = self.document;
+    EucCSSIntermediateDocumentNode* currentDocumentNode;
     if(!point.nodeKey) {
         currentDocumentNode = document.rootNode;
     } else {
@@ -330,11 +330,11 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 
                 nextY = CGRectGetMaxY(positionedRun.frame);
                 
-                EucCSSDocumentNode *runsNextNode = documentRun.nextNodeUnderLimitNode;
+                EucCSSIntermediateDocumentNode *runsNextNode = documentRun.nextNodeUnderLimitNode;
                 if(runsNextNode) {
                     // Non-first run in a block has the ID of its first element.
                     currentDocumentNode = runsNextNode;
-                    nextRunNodeKey = ((EucCSSDocumentConcreteNode *)currentDocumentNode).key;
+                    nextRunNodeKey = ((EucCSSIntermediateDocumentConcreteNode *)currentDocumentNode).key;
                 } else {
                     currentDocumentNode = documentRun.nextNodeInDocument;
                 }
@@ -346,7 +346,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 
                 // Find the block's parent, closing open nodes until we reach it.
                 BOOL hasPreviousSibling = NO;
-                EucCSSDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
+                EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
                 while(currentPositionedBlock.documentNode != currentDocumentNodeBlockLevelParent) {
                     [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:NO];
                     nextY = NSMaxY(currentPositionedBlock.frame);
@@ -372,7 +372,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 }                
                 
                 // First run in a block has the ID of the block it's in.
-                nextRunNodeKey = ((EucCSSDocumentConcreteNode *)currentDocumentNode).key;  
+                nextRunNodeKey = ((EucCSSIntermediateDocumentConcreteNode *)currentDocumentNode).key;  
                 
                 currentDocumentNode = currentDocumentNode.nextDisplayable;
             }

@@ -10,10 +10,10 @@
 #import "EucCSSLayoutDocumentRun_Package.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutLine.h"
-#import "EucCSSDocument.h"
-#import "EucCSSDocumentConcreteNode.h"
-#import "EucCSSDocumentGeneratedTextNode.h"
-#import "EucCSSDocumentNode.h"
+#import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocumentConcreteNode.h"
+#import "EucCSSIntermediateDocumentGeneratedTextNode.h"
+#import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
 #import "thjust.h"
 
@@ -31,7 +31,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 
 @interface EucCSSLayoutDocumentRun ()
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucCSSLayoutDocumentRunComponentInfo *)size;
-- (void)_accumulateTextNode:(EucCSSDocumentNode *)subnode;
+- (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (CGFloat)_textIndentInWidth:(CGFloat)width;
 @end 
 
@@ -74,8 +74,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 @synthesize nextNodeUnderLimitNode = _nextNodeUnderLimitNode;
 @synthesize nextNodeInDocument = _nextNodeInDocument;
 
-- (id)initWithNode:(EucCSSDocumentNode *)inlineNode 
-    underLimitNode:(EucCSSDocumentNode *)underNode
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
+    underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
              forId:(uint32_t)id
 {
     if(self = [super init]) {
@@ -108,7 +108,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                 }
             }
             
-            EucCSSDocumentNode *nextNode = [inlineNode nextDisplayableUnder:inlineNode.parent];
+            EucCSSIntermediateDocumentNode *nextNode = [inlineNode nextDisplayableUnder:inlineNode.parent];
             if(!nextNode) {
                 // Close this node.
                 if(!inlineNode.isTextNode && inlineNode.childrenCount > 0) {
@@ -211,7 +211,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     ++_currentWordElementCount;
 }
 
-- (void)_accumulateTextNode:(EucCSSDocumentNode *)subnode 
+- (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode 
 {
     css_computed_style *subnodeStyle;
     subnodeStyle = [subnode.parent computedStyle];
@@ -357,7 +357,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         EucCSSLayoutDocumentRunBreakInfo *breakInfos = malloc(breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
         int breaksCount = 0;
         
-        EucCSSDocumentNode *currentInlineNodeWithStyle = _startNode;
+        EucCSSIntermediateDocumentNode *currentInlineNodeWithStyle = _startNode;
         if(currentInlineNodeWithStyle.isTextNode) {
             currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
         }

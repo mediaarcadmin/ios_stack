@@ -7,7 +7,7 @@
 //
 
 #import "EucCSSRenderer.h"
-#import "EucCSSDocumentNode.h"
+#import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutDocumentRun_Package.h"

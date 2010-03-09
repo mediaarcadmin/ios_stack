@@ -1,5 +1,5 @@
 //
-//  EucCSSDocumentConcreteNode.h
+//  EucCSSIntermediateDocumentConcreteNode.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 10/12/2009.
@@ -9,11 +9,11 @@
 #import <Cocoa/Cocoa.h>
 #import <libcss/libcss.h>
 
-#import "EucCSSDocumentNode.h"
+#import "EucCSSIntermediateDocumentNode.h"
 
-@class EucHTMLDBNode, EucCSSDocument, THStringRenderer;
+@class EucHTMLDBNode, EucCSSIntermediateDocument, THStringRenderer;
 
-@interface EucCSSDocumentConcreteNode : EucCSSDocumentNode {
+@interface EucCSSIntermediateDocumentConcreteNode : EucCSSIntermediateDocumentNode {
     EucHTMLDBNode *_dbNode;
     
     NSArray *_children;
@@ -30,7 +30,7 @@
 
 @property (nonatomic, readonly) NSString *name;
 
-- (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucCSSDocument *)document;
+- (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucCSSIntermediateDocument *)document;
 
 @property (nonatomic, readonly) css_computed_style *computedBeforeStyle;
 @property (nonatomic, readonly) css_computed_style *computedAfterStyle;

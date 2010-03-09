@@ -3,9 +3,9 @@
 #include <hubbub/hubbub.h>
 #include <libcss/libcss.h>
 
-#include "EucCSSDocument.h"
-#include "EucCSSDocumentNode.h"
-#include "EucCSSDocumentConcreteNode.h"
+#include "EucCSSIntermediateDocument.h"
+#include "EucCSSIntermediateDocumentNode.h"
+#include "EucCSSIntermediateDocumentConcreteNode.h"
 #include "EucCSSLayouter.h"
 #include "EucCSSRenderer.h"
 #include "EucCSSLayoutPositionedBlock.h"
@@ -36,7 +36,7 @@ int main (int argc, const char * argv[]) {
         hubbubInitialised = true;
     }
 
-    EucCSSDocument *document = [[EucCSSDocument alloc] initWithPath:[NSString stringWithUTF8String:argv[2]]];
+    EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithPath:[NSString stringWithUTF8String:argv[2]]];
         
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     layouter.document = document;

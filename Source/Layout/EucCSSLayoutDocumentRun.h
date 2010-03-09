@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class EucCSSDocumentNode, EucCSSLayoutPositionedRun;
+@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedRun;
 struct THBreak;
 
 typedef struct EucCSSLayoutDocumentRunPoint {
@@ -22,7 +22,7 @@ typedef struct EucCSSLayoutDocumentRunComponentInfo {
     CGFloat ascender;
     CGFloat descender;
     CGFloat pointSize;
-    EucCSSDocumentNode *documentNode;
+    EucCSSIntermediateDocumentNode *documentNode;
     EucCSSLayoutDocumentRunPoint point;
 } EucCSSLayoutDocumentRunComponentInfo;
 
@@ -30,9 +30,9 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 
 @interface EucCSSLayoutDocumentRun : NSObject {
     uint32_t _id;
-    EucCSSDocumentNode *_startNode;
-    EucCSSDocumentNode *_nextNodeUnderLimitNode;
-    EucCSSDocumentNode *_nextNodeInDocument;
+    EucCSSIntermediateDocumentNode *_startNode;
+    EucCSSIntermediateDocumentNode *_nextNodeUnderLimitNode;
+    EucCSSIntermediateDocumentNode *_nextNodeInDocument;
 
     size_t _componentsCount;
     size_t _componentsCapacity;
@@ -59,11 +59,11 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 + (id)hardBreakMarker;
 
 @property (nonatomic, readonly) uint32_t id;
-@property (nonatomic, readonly) EucCSSDocumentNode *nextNodeUnderLimitNode;
-@property (nonatomic, readonly) EucCSSDocumentNode *nextNodeInDocument;
+@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextNodeUnderLimitNode;
+@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextNodeInDocument;
 
-- (id)initWithNode:(EucCSSDocumentNode *)node 
-    underLimitNode:(EucCSSDocumentNode *)underNode
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node 
+    underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
              forId:(uint32_t)id;
 
 - (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)bounds

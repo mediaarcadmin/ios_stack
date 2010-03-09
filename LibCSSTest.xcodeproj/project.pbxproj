@@ -18,16 +18,16 @@
 		7D22476010FD00D200CFD8B5 /* EucHTMLDBCreation.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D22474910FD00D200CFD8B5 /* EucHTMLDBCreation.c */; };
 		7D22476110FD00D200CFD8B5 /* EucHTMLDBNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22474C10FD00D200CFD8B5 /* EucHTMLDBNode.m */; };
 		7D22476210FD00D200CFD8B5 /* EucHTMLDBNodeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22474E10FD00D200CFD8B5 /* EucHTMLDBNodeManager.m */; };
-		7D22476310FD00D200CFD8B5 /* EucCSSDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475110FD00D200CFD8B5 /* EucCSSDocument.m */; };
-		7D22476410FD00D200CFD8B5 /* EucCSSDocumentConcreteNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475310FD00D200CFD8B5 /* EucCSSDocumentConcreteNode.m */; };
+		7D22476310FD00D200CFD8B5 /* EucCSSIntermediateDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475110FD00D200CFD8B5 /* EucCSSIntermediateDocument.m */; };
+		7D22476410FD00D200CFD8B5 /* EucCSSIntermediateDocumentConcreteNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475310FD00D200CFD8B5 /* EucCSSIntermediateDocumentConcreteNode.m */; };
 		7D22476710FD00D200CFD8B5 /* EucCSSLayoutPositionedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475A10FD00D200CFD8B5 /* EucCSSLayoutPositionedBlock.m */; };
 		7D22476810FD00D200CFD8B5 /* EucCSSLayoutLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475C10FD00D200CFD8B5 /* EucCSSLayoutLine.m */; };
 		7D22476910FD00D200CFD8B5 /* EucCSSLayoutDocumentRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22475E10FD00D200CFD8B5 /* EucCSSLayoutDocumentRun.m */; };
 		7D2247CA10FD025A00CFD8B5 /* EucCSSLayouter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D2247C910FD025A00CFD8B5 /* EucCSSLayouter.mm */; };
 		7D22481810FDE4E300CFD8B5 /* EucCSSLayoutPositionedRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22481710FDE4E300CFD8B5 /* EucCSSLayoutPositionedRun.m */; };
-		7D396936113586AC006ECF7B /* EucCSSDocumentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D396935113586AC006ECF7B /* EucCSSDocumentNode.m */; };
-		7D396A601135A51B006ECF7B /* EucCSSDocumentGeneratedContainerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D39680B113540E0006ECF7B /* EucCSSDocumentGeneratedContainerNode.m */; };
-		7D396B461135C7E7006ECF7B /* EucCSSDocumentGeneratedTextNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D396B451135C7E7006ECF7B /* EucCSSDocumentGeneratedTextNode.m */; };
+		7D396936113586AC006ECF7B /* EucCSSIntermediateDocumentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D396935113586AC006ECF7B /* EucCSSIntermediateDocumentNode.m */; };
+		7D396A601135A51B006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D39680B113540E0006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.m */; };
+		7D396B461135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D396B451135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.m */; };
 		7D6A856D10C42D9C0024B8D6 /* detect.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0410C41CEA00D8A42E /* detect.c */; };
 		7D6A856E10C42DB70024B8D6 /* hubbub.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0710C41CEA00D8A42E /* hubbub.c */; };
 		7D6A856F10C42DB70024B8D6 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D6A5A0910C41CEA00D8A42E /* parser.c */; };
@@ -188,10 +188,10 @@
 		7D22474C10FD00D200CFD8B5 /* EucHTMLDBNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDBNode.m; sourceTree = "<group>"; };
 		7D22474D10FD00D200CFD8B5 /* EucHTMLDBNodeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDBNodeManager.h; sourceTree = "<group>"; };
 		7D22474E10FD00D200CFD8B5 /* EucHTMLDBNodeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDBNodeManager.m; sourceTree = "<group>"; };
-		7D22475010FD00D200CFD8B5 /* EucCSSDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocument.h; sourceTree = "<group>"; };
-		7D22475110FD00D200CFD8B5 /* EucCSSDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSDocument.m; sourceTree = "<group>"; };
-		7D22475210FD00D200CFD8B5 /* EucCSSDocumentConcreteNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentConcreteNode.h; sourceTree = "<group>"; };
-		7D22475310FD00D200CFD8B5 /* EucCSSDocumentConcreteNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSDocumentConcreteNode.m; sourceTree = "<group>"; };
+		7D22475010FD00D200CFD8B5 /* EucCSSIntermediateDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocument.h; sourceTree = "<group>"; };
+		7D22475110FD00D200CFD8B5 /* EucCSSIntermediateDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocument.m; sourceTree = "<group>"; };
+		7D22475210FD00D200CFD8B5 /* EucCSSIntermediateDocumentConcreteNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentConcreteNode.h; sourceTree = "<group>"; };
+		7D22475310FD00D200CFD8B5 /* EucCSSIntermediateDocumentConcreteNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentConcreteNode.m; sourceTree = "<group>"; };
 		7D22475910FD00D200CFD8B5 /* EucCSSLayoutPositionedBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutPositionedBlock.h; sourceTree = "<group>"; };
 		7D22475A10FD00D200CFD8B5 /* EucCSSLayoutPositionedBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutPositionedBlock.m; sourceTree = "<group>"; };
 		7D22475B10FD00D200CFD8B5 /* EucCSSLayoutLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutLine.h; sourceTree = "<group>"; };
@@ -202,12 +202,12 @@
 		7D2247C910FD025A00CFD8B5 /* EucCSSLayouter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucCSSLayouter.mm; sourceTree = "<group>"; };
 		7D22481610FDE4E300CFD8B5 /* EucCSSLayoutPositionedRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutPositionedRun.h; sourceTree = "<group>"; };
 		7D22481710FDE4E300CFD8B5 /* EucCSSLayoutPositionedRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutPositionedRun.m; sourceTree = "<group>"; };
-		7D39680A113540E0006ECF7B /* EucCSSDocumentGeneratedContainerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentGeneratedContainerNode.h; sourceTree = "<group>"; };
-		7D39680B113540E0006ECF7B /* EucCSSDocumentGeneratedContainerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSDocumentGeneratedContainerNode.m; sourceTree = "<group>"; };
-		7D396934113586AC006ECF7B /* EucCSSDocumentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentNode.h; sourceTree = "<group>"; };
-		7D396935113586AC006ECF7B /* EucCSSDocumentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSDocumentNode.m; sourceTree = "<group>"; };
-		7D396B441135C7E7006ECF7B /* EucCSSDocumentGeneratedTextNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentGeneratedTextNode.h; sourceTree = "<group>"; };
-		7D396B451135C7E7006ECF7B /* EucCSSDocumentGeneratedTextNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSDocumentGeneratedTextNode.m; sourceTree = "<group>"; };
+		7D39680A113540E0006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentGeneratedContainerNode.h; sourceTree = "<group>"; };
+		7D39680B113540E0006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentGeneratedContainerNode.m; sourceTree = "<group>"; };
+		7D396934113586AC006ECF7B /* EucCSSIntermediateDocumentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentNode.h; sourceTree = "<group>"; };
+		7D396935113586AC006ECF7B /* EucCSSIntermediateDocumentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentNode.m; sourceTree = "<group>"; };
+		7D396B441135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentGeneratedTextNode.h; sourceTree = "<group>"; };
+		7D396B451135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentGeneratedTextNode.m; sourceTree = "<group>"; };
 		7D6A59DB10C41CEA00D8A42E /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		7D6A59DD10C41CEA00D8A42E /* entities.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = entities.xslt; sourceTree = "<group>"; };
 		7D6A59DE10C41CEA00D8A42E /* get_entities */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = get_entities; sourceTree = "<group>"; };
@@ -774,16 +774,16 @@
 		7D22474F10FD00D200CFD8B5 /* Document */ = {
 			isa = PBXGroup;
 			children = (
-				7D22475010FD00D200CFD8B5 /* EucCSSDocument.h */,
-				7D22475110FD00D200CFD8B5 /* EucCSSDocument.m */,
-				7D396934113586AC006ECF7B /* EucCSSDocumentNode.h */,
-				7D396935113586AC006ECF7B /* EucCSSDocumentNode.m */,
-				7D22475210FD00D200CFD8B5 /* EucCSSDocumentConcreteNode.h */,
-				7D22475310FD00D200CFD8B5 /* EucCSSDocumentConcreteNode.m */,
-				7D39680A113540E0006ECF7B /* EucCSSDocumentGeneratedContainerNode.h */,
-				7D39680B113540E0006ECF7B /* EucCSSDocumentGeneratedContainerNode.m */,
-				7D396B441135C7E7006ECF7B /* EucCSSDocumentGeneratedTextNode.h */,
-				7D396B451135C7E7006ECF7B /* EucCSSDocumentGeneratedTextNode.m */,
+				7D22475010FD00D200CFD8B5 /* EucCSSIntermediateDocument.h */,
+				7D22475110FD00D200CFD8B5 /* EucCSSIntermediateDocument.m */,
+				7D396934113586AC006ECF7B /* EucCSSIntermediateDocumentNode.h */,
+				7D396935113586AC006ECF7B /* EucCSSIntermediateDocumentNode.m */,
+				7D22475210FD00D200CFD8B5 /* EucCSSIntermediateDocumentConcreteNode.h */,
+				7D22475310FD00D200CFD8B5 /* EucCSSIntermediateDocumentConcreteNode.m */,
+				7D39680A113540E0006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.h */,
+				7D39680B113540E0006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.m */,
+				7D396B441135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.h */,
+				7D396B451135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.m */,
 			);
 			path = Document;
 			sourceTree = "<group>";
@@ -2149,17 +2149,17 @@
 				7D22476010FD00D200CFD8B5 /* EucHTMLDBCreation.c in Sources */,
 				7D22476110FD00D200CFD8B5 /* EucHTMLDBNode.m in Sources */,
 				7D22476210FD00D200CFD8B5 /* EucHTMLDBNodeManager.m in Sources */,
-				7D22476310FD00D200CFD8B5 /* EucCSSDocument.m in Sources */,
-				7D22476410FD00D200CFD8B5 /* EucCSSDocumentConcreteNode.m in Sources */,
+				7D22476310FD00D200CFD8B5 /* EucCSSIntermediateDocument.m in Sources */,
+				7D22476410FD00D200CFD8B5 /* EucCSSIntermediateDocumentConcreteNode.m in Sources */,
 				7D22476710FD00D200CFD8B5 /* EucCSSLayoutPositionedBlock.m in Sources */,
 				7D22476810FD00D200CFD8B5 /* EucCSSLayoutLine.m in Sources */,
 				7D22476910FD00D200CFD8B5 /* EucCSSLayoutDocumentRun.m in Sources */,
 				7D2247CA10FD025A00CFD8B5 /* EucCSSLayouter.mm in Sources */,
 				7D22481810FDE4E300CFD8B5 /* EucCSSLayoutPositionedRun.m in Sources */,
 				7D9059481123063E00167D20 /* EucCSSRenderer.m in Sources */,
-				7D396936113586AC006ECF7B /* EucCSSDocumentNode.m in Sources */,
-				7D396A601135A51B006ECF7B /* EucCSSDocumentGeneratedContainerNode.m in Sources */,
-				7D396B461135C7E7006ECF7B /* EucCSSDocumentGeneratedTextNode.m in Sources */,
+				7D396936113586AC006ECF7B /* EucCSSIntermediateDocumentNode.m in Sources */,
+				7D396A601135A51B006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.m in Sources */,
+				7D396B461135C7E7006ECF7B /* EucCSSIntermediateDocumentGeneratedTextNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

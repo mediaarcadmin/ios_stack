@@ -1,5 +1,5 @@
 //
-//  EucCSSDocumentConcreteNode.m
+//  EucCSSIntermediateDocumentConcreteNode.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 10/12/2009.
@@ -10,18 +10,18 @@
 #import <libcss/properties.h>
 
 #import "EucHTMLDBNode.h"
-#import "EucCSSDocument.h"
-#import "EucCSSDocumentConcreteNode.h"
-#import "EucCSSDocumentGeneratedContainerNode.h"
+#import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocumentConcreteNode.h"
+#import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
 #import "LWCNSStringAdditions.h"
 #import "THStringRenderer.h"
 #import "THLog.h"
 
-@implementation EucCSSDocumentConcreteNode
+@implementation EucCSSIntermediateDocumentConcreteNode
 
 @synthesize dbNode = _dbNode;
 
-- (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucCSSDocument *)document;
+- (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucCSSIntermediateDocument *)document;
 {
     if((self = [super init])) {
         _dbNode = [dbNode retain];
@@ -163,7 +163,7 @@
         }
         
         const css_computed_style *parentStyle = nil;
-        EucCSSDocumentConcreteNode *parent = (EucCSSDocumentConcreteNode *)self.parent;
+        EucCSSIntermediateDocumentConcreteNode *parent = (EucCSSIntermediateDocumentConcreteNode *)self.parent;
         if(parent) {
             parentStyle = parent.computedStyle;
         }
@@ -205,7 +205,7 @@
     return _computedAfterStyle;
 }
 
-- (EucCSSDocumentNode *)parent
+- (EucCSSIntermediateDocumentNode *)parent
 {
     EucHTMLDBNode *parentDBNode = _dbNode.parentNode;
     if(parentDBNode) {
@@ -235,7 +235,7 @@
             NSMutableArray *children = [[NSMutableArray alloc] initWithCapacity:childrenCount];
             
             if(self.computedBeforeStyle) {
-                [children addObject:[_document nodeForKey:self.key | EucCSSDocumentNodeKeyFlagBeforeContainerNode]];
+                [children addObject:[_document nodeForKey:self.key | EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode]];
             }
             
             uint32_t dbNodeChildrenCount = _dbNode.childrenKeysCount;
@@ -245,7 +245,7 @@
             }
 
             if(self.computedAfterStyle) {
-                [children addObject:[_document nodeForKey:self.key | EucCSSDocumentNodeKeyFlagAfterContainerNode]];
+                [children addObject:[_document nodeForKey:self.key | EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode]];
             }
             
             _children = children;

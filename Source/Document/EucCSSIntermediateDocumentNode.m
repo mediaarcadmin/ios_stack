@@ -1,17 +1,17 @@
 //
-//  EucCSSDocumentNode.m
+//  EucCSSIntermediateDocumentNode.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 24/02/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucCSSDocument.h"
-#import "EucCSSDocumentNode.h"
+#import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
 #import "LWCNSStringAdditions.h"
 
-@implementation EucCSSDocumentNode
+@implementation EucCSSIntermediateDocumentNode
 
 @dynamic parent;
 
@@ -34,7 +34,7 @@
     [super dealloc];
 }
 
-- (EucCSSDocumentNode *)_nodeAfter:(EucCSSDocumentNode *)child under:(EucCSSDocumentNode *)under
+- (EucCSSIntermediateDocumentNode *)_nodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
 {
     NSUInteger childrenCount =  self.childrenCount;
     if(childrenCount > 1) {
@@ -54,7 +54,7 @@
     return [self.parent _nodeAfter:self under:under];
 }
 
-- (EucCSSDocumentNode *)nextUnder:(EucCSSDocumentNode *)under {
+- (EucCSSIntermediateDocumentNode *)nextUnder:(EucCSSIntermediateDocumentNode *)under {
     NSArray *children = self.children;
     if(children) {
         return [children objectAtIndex:0];
@@ -65,12 +65,12 @@
     } 
 }
 
-- (EucCSSDocumentNode *)next
+- (EucCSSIntermediateDocumentNode *)next
 {
     return [self nextUnder:nil];
 }
 
-- (EucCSSDocumentNode *)_displayableNodeAfter:(EucCSSDocumentNode *)child under:(EucCSSDocumentNode *)under
+- (EucCSSIntermediateDocumentNode *)_displayableNodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
 {
     NSUInteger childrenCount =  self.childrenCount;
     if(childrenCount) {
@@ -85,7 +85,7 @@
             }
         }
         for(; i < childrenCount; ++i) {
-            EucCSSDocumentNode *prospectiveNextNode = [children objectAtIndex:i];
+            EucCSSIntermediateDocumentNode *prospectiveNextNode = [children objectAtIndex:i];
             css_computed_style *style = [prospectiveNextNode computedStyle];
             if(!style || css_computed_display(style, false) != CSS_DISPLAY_NONE) {
                 return prospectiveNextNode;
@@ -98,8 +98,8 @@
     return [self.parent _displayableNodeAfter:self under:under];
 }
 
-- (EucCSSDocumentNode *)nextDisplayableUnder:(EucCSSDocumentNode *)under {
-    EucCSSDocumentNode *nextNode = nil;
+- (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under {
+    EucCSSIntermediateDocumentNode *nextNode = nil;
     
     NSArray *children = self.children;
     if(children) {
@@ -113,7 +113,7 @@
     return nextNode;
 }
 
-- (EucCSSDocumentNode *)nextDisplayable
+- (EucCSSIntermediateDocumentNode *)nextDisplayable
 {
     return [self nextDisplayableUnder:nil];
 }
@@ -183,9 +183,9 @@
     return _stringRenderer;
 }
 
-- (EucCSSDocumentNode *)blockLevelNode
+- (EucCSSIntermediateDocumentNode *)blockLevelNode
 {
-    EucCSSDocumentNode *prospectiveNode = self;
+    EucCSSIntermediateDocumentNode *prospectiveNode = self;
     css_computed_style *currentNodeStyle = self.computedStyle;
     while(prospectiveNode && (!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK)) {
         prospectiveNode = prospectiveNode.parent;
@@ -194,7 +194,7 @@
     return prospectiveNode;    
 }
 
-- (EucCSSDocumentNode *)blockLevelParent
+- (EucCSSIntermediateDocumentNode *)blockLevelParent
 {
     return self.parent.blockLevelNode;
 }

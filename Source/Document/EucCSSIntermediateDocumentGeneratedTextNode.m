@@ -1,29 +1,29 @@
 //
-//  EucCSSDocumentGeneratedTextNode.m
+//  EucCSSIntermediateDocumentGeneratedTextNode.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 24/02/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucCSSDocumentGeneratedTextNode.h"
-#import "EucCSSDocument.h"
+#import "EucCSSIntermediateDocumentGeneratedTextNode.h"
+#import "EucCSSIntermediateDocument.h"
 #import "LWCNSStringAdditions.h"
 
-@implementation EucCSSDocumentGeneratedTextNode
+@implementation EucCSSIntermediateDocumentGeneratedTextNode
 
-- (id)initWithDocument:(EucCSSDocument *)document 
+- (id)initWithDocument:(EucCSSIntermediateDocument *)document 
              parentKey:(uint32_t)parentKey
 {
     if((self = [super init])) {
         self.document = document;
-        self.key = parentKey | EucCSSDocumentNodeKeyFlagGeneratedTextNode;
+        self.key = parentKey | EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode;
         _parentKey = parentKey;
     }
     return self;
 }
 
-- (EucCSSDocumentNode *)parent
+- (EucCSSIntermediateDocumentNode *)parent
 {
     return [self.document nodeForKey:_parentKey];
 }

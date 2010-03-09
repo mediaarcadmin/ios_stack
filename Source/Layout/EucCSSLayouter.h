@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class EucCSSDocument, EucCSSLayoutPositionedBlock;
+@class EucCSSIntermediateDocument, EucCSSLayoutPositionedBlock;
 
 typedef struct EucCSSLayoutPoint
 {
@@ -18,10 +18,10 @@ typedef struct EucCSSLayoutPoint
 } EucCSSLayoutPoint;
 
 @interface EucCSSLayouter : NSObject {
-    EucCSSDocument *_document;
+    EucCSSIntermediateDocument *_document;
 }
 
-@property (nonatomic, retain) EucCSSDocument *document;
+@property (nonatomic, retain) EucCSSIntermediateDocument *document;
 
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                           inFrame:(CGRect)frame
