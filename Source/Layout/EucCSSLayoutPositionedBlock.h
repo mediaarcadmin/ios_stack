@@ -1,5 +1,5 @@
 //
-//  EucHTMLLayoutPositionedBlock.h
+//  EucCSSLayoutPositionedBlock.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@class EucHTMLDocumentNode;
+@class EucCSSDocumentNode;
 
-@interface EucHTMLLayoutPositionedBlock : NSObject {
-    EucHTMLDocumentNode *_documentNode;
+@interface EucCSSLayoutPositionedBlock : NSObject {
+    EucCSSDocumentNode *_documentNode;
 
     CGRect _frame;
     CGRect _borderRect;
@@ -21,8 +21,8 @@
     NSMutableArray *_subEntities;
 }
 
-@property (nonatomic, retain) EucHTMLDocumentNode *documentNode;
-@property (nonatomic, assign) EucHTMLLayoutPositionedBlock *parent;
+@property (nonatomic, retain) EucCSSDocumentNode *documentNode;
+@property (nonatomic, assign) EucCSSLayoutPositionedBlock *parent;
 
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, assign) CGRect borderRect;
@@ -31,7 +31,7 @@
 
 @property (nonatomic, retain) NSArray *subEntities;
 
-- (id)initWithDocumentNode:(EucHTMLDocumentNode *)documentNode;
+- (id)initWithDocumentNode:(EucCSSDocumentNode *)documentNode;
 
 - (void)positionInFrame:(CGRect)frame afterInternalPageBreak:(BOOL)afterInternalPageBreak;
 - (void)closeBottomFromYPoint:(CGFloat)point atInternalPageBreak:(BOOL)atInternalPageBreak;

@@ -1,5 +1,5 @@
 //
-//  EucHTMLDocumentNode.h
+//  EucCSSDocumentNode.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 24/02/2010.
@@ -9,27 +9,27 @@
 #import <Foundation/Foundation.h>
 #import <libcss/libcss.h>
 
-@class EucHTMLDocument, THStringRenderer;
+@class EucCSSDocument, THStringRenderer;
 
-@interface EucHTMLDocumentNode : NSObject {
-    EucHTMLDocument *_document;
+@interface EucCSSDocumentNode : NSObject {
+    EucCSSDocument *_document;
     
     THStringRenderer *_stringRenderer;
 }
 
 // Concrete:
 
-@property (nonatomic, assign) EucHTMLDocument *document;
+@property (nonatomic, assign) EucCSSDocument *document;
 @property (nonatomic, assign) uint32_t key;
 
-@property (nonatomic, readonly) EucHTMLDocumentNode *blockLevelNode;
-@property (nonatomic, readonly) EucHTMLDocumentNode *blockLevelParent;
+@property (nonatomic, readonly) EucCSSDocumentNode *blockLevelNode;
+@property (nonatomic, readonly) EucCSSDocumentNode *blockLevelParent;
 
-@property (nonatomic, readonly) EucHTMLDocumentNode *next;
-- (EucHTMLDocumentNode *)nextUnder:(EucHTMLDocumentNode *)under;
+@property (nonatomic, readonly) EucCSSDocumentNode *next;
+- (EucCSSDocumentNode *)nextUnder:(EucCSSDocumentNode *)under;
 
-@property (nonatomic, readonly) EucHTMLDocumentNode *nextDisplayable;
-- (EucHTMLDocumentNode *)nextDisplayableUnder:(EucHTMLDocumentNode *)under;
+@property (nonatomic, readonly) EucCSSDocumentNode *nextDisplayable;
+- (EucCSSDocumentNode *)nextDisplayableUnder:(EucCSSDocumentNode *)under;
 
 
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
@@ -40,7 +40,7 @@
 
 // Abstract:
 
-@property (nonatomic, readonly) EucHTMLDocumentNode *parent;
+@property (nonatomic, readonly) EucCSSDocumentNode *parent;
 @property (nonatomic, readonly) NSUInteger childrenCount;
 @property (nonatomic, readonly) NSArray *children;
 

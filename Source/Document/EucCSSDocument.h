@@ -1,5 +1,5 @@
 //
-//  EucHTMLDocument.h
+//  EucCSSDocument.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 09/12/2009.
@@ -12,20 +12,20 @@
 #import "EucHTMLDB.h"
 
 #define EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS 3
-typedef enum EucHTMLDocumentNodeKeyFlags
+typedef enum EucCSSDocumentNodeKeyFlags
 {
-    EucHTMLDocumentNodeKeyFlagBeforeContainerNode = 0x1,
-    EucHTMLDocumentNodeKeyFlagAfterContainerNode  = 0x2,
-    EucHTMLDocumentNodeKeyFlagGeneratedTextNode   = 0x4,
+    EucCSSDocumentNodeKeyFlagBeforeContainerNode = 0x1,
+    EucCSSDocumentNodeKeyFlagAfterContainerNode  = 0x2,
+    EucCSSDocumentNodeKeyFlagGeneratedTextNode   = 0x4,
     
-    EucHTMLDocumentNodeKeyFlagMask                = 0x7
-} EucHTMLDocumentNodeKeyFlags;
+    EucCSSDocumentNodeKeyFlagMask                = 0x7
+} EucCSSDocumentNodeKeyFlags;
 
-CGFloat EucHTMLLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase);
+CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase);
 
-@class EucHTMLDocumentNode, EucHTMLDocumentConcreteNode, EucHTMLDBNodeManager, EucHTMLDBNode;
+@class EucCSSDocumentNode, EucCSSDocumentConcreteNode, EucHTMLDBNodeManager, EucHTMLDBNode;
 
-@interface EucHTMLDocument : NSObject {
+@interface EucCSSDocument : NSObject {
     EucHTMLDB *_db;
     lwc_context *_lwcContext;
     
@@ -41,9 +41,9 @@ CGFloat EucHTMLLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed 
 
 
 - (id)initWithPath:(NSString *)path;
-- (EucHTMLDocumentNode *)nodeForKey:(uint32_t)key;
+- (EucCSSDocumentNode *)nodeForKey:(uint32_t)key;
 
-@property (nonatomic, retain, readonly) EucHTMLDocumentConcreteNode *rootNode;
+@property (nonatomic, retain, readonly) EucCSSDocumentConcreteNode *rootNode;
 
 // Logically package-scope propeties.
 @property (nonatomic, readonly) EucHTMLDBNodeManager *htmlDBNodeManager;
@@ -53,6 +53,6 @@ CGFloat EucHTMLLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed 
 css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_string *rel, lwc_string **abs);
 
 // Private - used by EucHTMLDBNode.
-- (void)notifyOfDealloc:(EucHTMLDocumentNode *)node;
+- (void)notifyOfDealloc:(EucCSSDocumentNode *)node;
 
 @end

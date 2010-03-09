@@ -1,5 +1,5 @@
 //
-//  EucHTMLDocumentGeneratedTextNode.h
+//  EucCSSDocumentGeneratedTextNode.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 24/02/2010.
@@ -7,15 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EucHTMLDocumentNode.h"
+#import "EucCSSDocumentNode.h"
 
-@class EucHTMLDocument;
+@class EucCSSDocument;
 
-@interface EucHTMLDocumentGeneratedTextNode : EucHTMLDocumentNode {
+@interface EucCSSDocumentGeneratedTextNode : EucCSSDocumentNode {
     uint32_t _parentKey;    
 }
 
-- (id)initWithDocument:(EucHTMLDocument *)document 
+- (id)initWithDocument:(EucCSSDocument *)document 
              parentKey:(uint32_t)parentKey;
 
 @end

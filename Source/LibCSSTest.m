@@ -3,12 +3,12 @@
 #include <hubbub/hubbub.h>
 #include <libcss/libcss.h>
 
-#include "EucHTMLDocument.h"
-#include "EucHTMLDocumentNode.h"
-#include "EucHTMLDocumentConcreteNode.h"
-#include "EucHTMLLayouter.h"
-#include "EucHTMLRenderer.h"
-#include "EucHTMLLayoutPositionedBlock.h"
+#include "EucCSSDocument.h"
+#include "EucCSSDocumentNode.h"
+#include "EucCSSDocumentConcreteNode.h"
+#include "EucCSSLayouter.h"
+#include "EucCSSRenderer.h"
+#include "EucCSSLayoutPositionedBlock.h"
 
 #include "THLog.h"
 
@@ -36,12 +36,12 @@ int main (int argc, const char * argv[]) {
         hubbubInitialised = true;
     }
 
-    EucHTMLDocument *document = [[EucHTMLDocument alloc] initWithPath:[NSString stringWithUTF8String:argv[2]]];
+    EucCSSDocument *document = [[EucCSSDocument alloc] initWithPath:[NSString stringWithUTF8String:argv[2]]];
         
-    EucHTMLLayouter *layouter = [[EucHTMLLayouter alloc] init];
+    EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     layouter.document = document;
     CGRect frame = CGRectMake(0, 0, 320, 480);
-    EucHTMLLayoutPoint layoutPoint = { 0, 0, 0 };
+    EucCSSLayoutPoint layoutPoint = { 0, 0, 0 };
     BOOL completed = NO;
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
@@ -56,7 +56,7 @@ int main (int argc, const char * argv[]) {
     CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, frame.size.height);
     CGContextConcatCTM(renderingContext, flipVertical);    
     
-    EucHTMLRenderer *renderer = [[EucHTMLRenderer alloc] init];
+    EucCSSRenderer *renderer = [[EucCSSRenderer alloc] init];
     renderer.cgContext = renderingContext;
 
     NSUInteger pageCount = 0;
@@ -65,7 +65,7 @@ int main (int argc, const char * argv[]) {
         
         ++pageCount;
         THLog(@"Page %ld", pageCount);
-        EucHTMLLayoutPositionedBlock *positionedBlock = [layouter layoutFromPoint:layoutPoint
+        EucCSSLayoutPositionedBlock *positionedBlock = [layouter layoutFromPoint:layoutPoint
                                                                           inFrame:frame
                                                                returningNextPoint:&layoutPoint
                                                                returningCompleted:&completed];

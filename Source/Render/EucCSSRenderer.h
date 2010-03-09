@@ -1,5 +1,5 @@
 //
-//  EucHTMLRenderer.h
+//  EucCSSRenderer.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 10/02/2010.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface EucHTMLRenderer : NSObject {
+@interface EucCSSRenderer : NSObject {
     CGContextRef _cgContext;
 }
 

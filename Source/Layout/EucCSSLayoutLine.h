@@ -1,5 +1,5 @@
 //
-//  EucHTMLLayoutLine.h
+//  EucCSSLayoutLine.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
@@ -7,15 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EucHTMLLayoutDocumentRun.h"
+#import "EucCSSLayoutDocumentRun.h"
 
-@class EucHTMLLayoutDocumentRun, EucHTMLLayoutPositionedRun;
+@class EucCSSLayoutDocumentRun, EucCSSLayoutPositionedRun;
 
-@interface EucHTMLLayoutLine : NSObject {
-    EucHTMLLayoutPositionedRun *_positionedRun;
+@interface EucCSSLayoutLine : NSObject {
+    EucCSSLayoutPositionedRun *_positionedRun;
     
-    EucHTMLLayoutDocumentRunPoint _startPoint;
-    EucHTMLLayoutDocumentRunPoint _endPoint;
+    EucCSSLayoutDocumentRunPoint _startPoint;
+    EucCSSLayoutDocumentRunPoint _endPoint;
 
     CGPoint _origin; 
     CGSize _size;
@@ -27,10 +27,10 @@
     uint8_t _align;
 }
 
-@property (nonatomic, assign) EucHTMLLayoutPositionedRun *containingRun;
+@property (nonatomic, assign) EucCSSLayoutPositionedRun *containingRun;
 
-@property (nonatomic, assign) EucHTMLLayoutDocumentRunPoint startPoint;
-@property (nonatomic, assign) EucHTMLLayoutDocumentRunPoint endPoint;
+@property (nonatomic, assign) EucCSSLayoutDocumentRunPoint startPoint;
+@property (nonatomic, assign) EucCSSLayoutDocumentRunPoint endPoint;
 
 @property (nonatomic, assign) CGPoint origin;
 @property (nonatomic, assign) CGSize size;

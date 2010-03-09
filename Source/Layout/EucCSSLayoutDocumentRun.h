@@ -1,5 +1,5 @@
 //
-//  EucHTMLLayoutDocumentRun.h
+//  EucCSSLayoutDocumentRun.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
@@ -8,36 +8,36 @@
 
 #import <Foundation/Foundation.h>
 
-@class EucHTMLDocumentNode, EucHTMLLayoutPositionedRun;
+@class EucCSSDocumentNode, EucCSSLayoutPositionedRun;
 struct THBreak;
 
-typedef struct EucHTMLLayoutDocumentRunPoint {
+typedef struct EucCSSLayoutDocumentRunPoint {
     uint32_t word;
     uint32_t element;
-} EucHTMLLayoutDocumentRunPoint;
+} EucCSSLayoutDocumentRunPoint;
 
-typedef struct EucHTMLLayoutDocumentRunComponentInfo {
+typedef struct EucCSSLayoutDocumentRunComponentInfo {
     CGFloat width;
     CGFloat lineHeight;
     CGFloat ascender;
     CGFloat descender;
     CGFloat pointSize;
-    EucHTMLDocumentNode *documentNode;
-    EucHTMLLayoutDocumentRunPoint point;
-} EucHTMLLayoutDocumentRunComponentInfo;
+    EucCSSDocumentNode *documentNode;
+    EucCSSLayoutDocumentRunPoint point;
+} EucCSSLayoutDocumentRunComponentInfo;
 
-struct EucHTMLLayoutDocumentRunBreakInfo;
+struct EucCSSLayoutDocumentRunBreakInfo;
 
-@interface EucHTMLLayoutDocumentRun : NSObject {
+@interface EucCSSLayoutDocumentRun : NSObject {
     uint32_t _id;
-    EucHTMLDocumentNode *_startNode;
-    EucHTMLDocumentNode *_nextNodeUnderLimitNode;
-    EucHTMLDocumentNode *_nextNodeInDocument;
+    EucCSSDocumentNode *_startNode;
+    EucCSSDocumentNode *_nextNodeUnderLimitNode;
+    EucCSSDocumentNode *_nextNodeInDocument;
 
     size_t _componentsCount;
     size_t _componentsCapacity;
     id *_components;
-    EucHTMLLayoutDocumentRunComponentInfo *_componentInfos;
+    EucCSSLayoutDocumentRunComponentInfo *_componentInfos;
 
     size_t _wordsCount;
     size_t _wordToComponentCapacity;
@@ -49,7 +49,7 @@ struct EucHTMLLayoutDocumentRunBreakInfo;
     BOOL _alreadyInsertedNewline;
     
     struct THBreak *_potentialBreaks;
-    struct EucHTMLLayoutDocumentRunBreakInfo *_potentialBreakInfos;
+    struct EucCSSLayoutDocumentRunBreakInfo *_potentialBreakInfos;
     int _potentialBreaksCount;
 }
 
@@ -59,14 +59,14 @@ struct EucHTMLLayoutDocumentRunBreakInfo;
 + (id)hardBreakMarker;
 
 @property (nonatomic, readonly) uint32_t id;
-@property (nonatomic, readonly) EucHTMLDocumentNode *nextNodeUnderLimitNode;
-@property (nonatomic, readonly) EucHTMLDocumentNode *nextNodeInDocument;
+@property (nonatomic, readonly) EucCSSDocumentNode *nextNodeUnderLimitNode;
+@property (nonatomic, readonly) EucCSSDocumentNode *nextNodeInDocument;
 
-- (id)initWithNode:(EucHTMLDocumentNode *)node 
-    underLimitNode:(EucHTMLDocumentNode *)underNode
+- (id)initWithNode:(EucCSSDocumentNode *)node 
+    underLimitNode:(EucCSSDocumentNode *)underNode
              forId:(uint32_t)id;
 
-- (EucHTMLLayoutPositionedRun *)positionedRunForFrame:(CGRect)bounds
+- (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)bounds
                                            wordOffset:(uint32_t)wordOffset 
                                         elementOffset:(uint32_t)elementOffset;
 

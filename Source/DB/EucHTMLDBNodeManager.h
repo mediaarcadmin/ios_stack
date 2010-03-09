@@ -1,5 +1,5 @@
 //
-//  EucHTMLNodeManager.h
+//  EucCSSNodeManager.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 08/12/2009.

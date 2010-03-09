@@ -1,19 +1,19 @@
 //
-//  EucHTMLLayoutDocumentRun.m
+//  EucCSSLayoutDocumentRun.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucHTMLLayoutDocumentRun.h"
-#import "EucHTMLLayoutDocumentRun_Package.h"
-#import "EucHTMLLayoutPositionedRun.h"
-#import "EucHTMLLayoutLine.h"
-#import "EucHTMLDocument.h"
-#import "EucHTMLDocumentConcreteNode.h"
-#import "EucHTMLDocumentGeneratedTextNode.h"
-#import "EucHTMLDocumentNode.h"
+#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutDocumentRun_Package.h"
+#import "EucCSSLayoutPositionedRun.h"
+#import "EucCSSLayoutLine.h"
+#import "EucCSSDocument.h"
+#import "EucCSSDocumentConcreteNode.h"
+#import "EucCSSDocumentGeneratedTextNode.h"
+#import "EucCSSDocumentNode.h"
 #import "THStringRenderer.h"
 #import "thjust.h"
 
@@ -24,18 +24,18 @@ static id sOpenNodeMarker;
 static id sCloseNodeMarker;
 static id sHardBreakMarker;
 
-typedef struct EucHTMLLayoutDocumentRunBreakInfo {
-    EucHTMLLayoutDocumentRunPoint point;
+typedef struct EucCSSLayoutDocumentRunBreakInfo {
+    EucCSSLayoutDocumentRunPoint point;
     BOOL isComponent;
-} EucHTMLLayoutDocumentRunBreakInfo;
+} EucCSSLayoutDocumentRunBreakInfo;
 
-@interface EucHTMLLayoutDocumentRun ()
-- (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)size;
-- (void)_accumulateTextNode:(EucHTMLDocumentNode *)subnode;
+@interface EucCSSLayoutDocumentRun ()
+- (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucCSSLayoutDocumentRunComponentInfo *)size;
+- (void)_accumulateTextNode:(EucCSSDocumentNode *)subnode;
 - (CGFloat)_textIndentInWidth:(CGFloat)width;
 @end 
 
-@implementation EucHTMLLayoutDocumentRun
+@implementation EucCSSLayoutDocumentRun
 
 @synthesize components = _components;
 @synthesize componentInfos = _componentInfos;
@@ -74,8 +74,8 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
 @synthesize nextNodeUnderLimitNode = _nextNodeUnderLimitNode;
 @synthesize nextNodeInDocument = _nextNodeInDocument;
 
-- (id)initWithNode:(EucHTMLDocumentNode *)inlineNode 
-    underLimitNode:(EucHTMLDocumentNode *)underNode
+- (id)initWithNode:(EucCSSDocumentNode *)inlineNode 
+    underLimitNode:(EucCSSDocumentNode *)underNode
              forId:(uint32_t)id
 {
     if(self = [super init]) {
@@ -101,21 +101,21 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                 [self _accumulateTextNode:inlineNode];
             } else {
                 // Open this node.
-                EucHTMLLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
-                [self _addComponent:[EucHTMLLayoutDocumentRun openNodeMarker] isWord:NO info:&info];
+                EucCSSLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
+                [self _addComponent:[EucCSSLayoutDocumentRun openNodeMarker] isWord:NO info:&info];
                 if(inlineNode.childrenCount == 0) {
-                    [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
+                    [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
                 }
             }
             
-            EucHTMLDocumentNode *nextNode = [inlineNode nextDisplayableUnder:inlineNode.parent];
+            EucCSSDocumentNode *nextNode = [inlineNode nextDisplayableUnder:inlineNode.parent];
             if(!nextNode) {
                 // Close this node.
                 if(!inlineNode.isTextNode && inlineNode.childrenCount > 0) {
                     // If the node /doesn't/ have children, it's already closed,
                     // above.
-                    EucHTMLLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
-                    [self _addComponent:[EucHTMLLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
+                    EucCSSLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
+                    [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
                 }
                 nextNode = [inlineNode nextDisplayableUnder:underNode];
             }
@@ -164,7 +164,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
         css_fixed length;
         css_unit unit;
         css_computed_text_indent(style, &length, &unit);
-        ret = EucHTMLLibCSSSizeToPixels(style, length, unit, width);
+        ret = EucCSSLibCSSSizeToPixels(style, length, unit, width);
     }
     return ret;
 }
@@ -181,7 +181,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
 }
 
 
-- (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucHTMLLayoutDocumentRunComponentInfo *)info
+- (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucCSSLayoutDocumentRunComponentInfo *)info
 {
 
     if(isWord) {
@@ -197,7 +197,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
     if(_componentsCapacity == _componentsCount) {
         _componentsCapacity += 128;
         _components = realloc(_components, _componentsCapacity * sizeof(id));
-        _componentInfos = realloc(_componentInfos, _componentsCapacity * sizeof(EucHTMLLayoutDocumentRunComponentInfo));
+        _componentInfos = realloc(_componentInfos, _componentsCapacity * sizeof(EucCSSLayoutDocumentRunComponentInfo));
     }
     
     info->point.word = _wordsCount;
@@ -211,7 +211,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
     ++_currentWordElementCount;
 }
 
-- (void)_accumulateTextNode:(EucHTMLDocumentNode *)subnode 
+- (void)_accumulateTextNode:(EucCSSDocumentNode *)subnode 
 {
     css_computed_style *subnodeStyle;
     subnodeStyle = [subnode.parent computedStyle];
@@ -225,11 +225,11 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
     css_computed_font_size(subnodeStyle, &length, &unit);
     
     // The font size percentages should already be fully resolved.
-    CGFloat fontPixelSize = EucHTMLLibCSSSizeToPixels(subnodeStyle, length, unit, 0);             
+    CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0);             
     CGFloat lineSpacing = [stringRenderer lineSpacingForPointSize:fontPixelSize];
     CGFloat ascender = [stringRenderer ascenderForPointSize:fontPixelSize];
     CGFloat descender = [stringRenderer descenderForPointSize:fontPixelSize];
-    EucHTMLLayoutDocumentRunComponentInfo spaceInfo = { [stringRenderer widthOfString:@" " pointSize:fontPixelSize],
+    EucCSSLayoutDocumentRunComponentInfo spaceInfo = { [stringRenderer widthOfString:@" " pointSize:fontPixelSize],
                                                         lineSpacing,
                                                         ascender,
                                                         descender,
@@ -274,7 +274,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                                                                               wordStart, 
                                                                               cursor - wordStart);
                             if(string) {
-                                EucHTMLLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
+                                EucCSSLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
                                     lineSpacing,
                                     ascender,
                                     descender,
@@ -289,20 +289,20 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                        (whiteSpaceModel == CSS_WHITE_SPACE_PRE_LINE ||
                         whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
                         whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP)) {
-                        EucHTMLLayoutDocumentRunComponentInfo hardBreakInfo = { 0,
+                        EucCSSLayoutDocumentRunComponentInfo hardBreakInfo = { 0,
                            lineSpacing,
                            ascender,
                            descender,
                            fontPixelSize,
                            subnode };
-                        [self _addComponent:[EucHTMLLayoutDocumentRun hardBreakMarker] isWord:NO info:&hardBreakInfo];
+                        [self _addComponent:[EucCSSLayoutDocumentRun hardBreakMarker] isWord:NO info:&hardBreakInfo];
                         _alreadyInsertedNewline = YES;
                     }
                     break;
                 default:
                     if(_previousInlineCharacterWasSpace) {
                         if(!_alreadyInsertedNewline) {
-                            [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                            [self _addComponent:[EucCSSLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
                         } else {
                             _alreadyInsertedNewline = NO;
                         }
@@ -317,7 +317,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                                                               wordStart, 
                                                               cursor - wordStart);
             if(string) {
-                EucHTMLLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
+                EucCSSLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
                                                                lineSpacing,
                                                                ascender,
                                                                descender,
@@ -336,7 +336,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
                 // generate any anonymous inline boxes."
             } else {
                 if(!_alreadyInsertedNewline) {
-                    [self _addComponent:[EucHTMLLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                    [self _addComponent:[EucCSSLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
                 } else {
                     _alreadyInsertedNewline = NO;
                 }
@@ -354,10 +354,10 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
     if(!_potentialBreaks) {
         int breaksCapacity = _componentsCount;
         THBreak *breaks = malloc(breaksCapacity * sizeof(THBreak));
-        EucHTMLLayoutDocumentRunBreakInfo *breakInfos = malloc(breaksCapacity * sizeof(EucHTMLLayoutDocumentRunBreakInfo));
+        EucCSSLayoutDocumentRunBreakInfo *breakInfos = malloc(breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
         int breaksCount = 0;
         
-        EucHTMLDocumentNode *currentInlineNodeWithStyle = _startNode;
+        EucCSSDocumentNode *currentInlineNodeWithStyle = _startNode;
         if(currentInlineNodeWithStyle.isTextNode) {
             currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
         }
@@ -397,7 +397,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
             if(breaksCount >= breaksCapacity) {
                 breaksCapacity += _componentsCount;
                 breaks = realloc(breaks, breaksCapacity * sizeof(THBreak));
-                breakInfos = realloc(breakInfos, breaksCapacity * sizeof(EucHTMLLayoutDocumentRunBreakInfo));
+                breakInfos = realloc(breakInfos, breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
             }                                            
         }
         breaks[breaksCount].x0 = lineSoFarWidth;
@@ -424,7 +424,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
     return _potentialBreaksCount;
 }
 
-- (uint32_t)_pointToComponentOffset:(EucHTMLLayoutDocumentRunPoint)point
+- (uint32_t)_pointToComponentOffset:(EucCSSLayoutDocumentRunPoint)point
 {
     if(point.word > _wordsCount) {
         // This is an 'off the end' marker (i.e. an endpoint to line that
@@ -435,7 +435,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
     }
 }
 
-- (EucHTMLLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
+- (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
                                            wordOffset:(uint32_t)wordOffset 
                                         elementOffset:(uint32_t)elementOffset
 {
@@ -443,13 +443,13 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
         return nil;
     }    
     
-    EucHTMLLayoutPositionedRun *ret = [[EucHTMLLayoutPositionedRun alloc] initWithDocumentRun:self];
+    EucCSSLayoutPositionedRun *ret = [[EucCSSLayoutPositionedRun alloc] initWithDocumentRun:self];
     
     [self potentialBreaks];
     
     size_t startBreakOffset = 0;
     for(;;) {
-        EucHTMLLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
+        EucCSSLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
         if(point.word < wordOffset || point.element < elementOffset) {
             ++startBreakOffset;
         } else {
@@ -469,7 +469,7 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
     if(startBreakOffset) {
         indentationOffset = -_potentialBreaks[startBreakOffset].x1;
         
-        EucHTMLLayoutDocumentRunPoint point = { wordOffset, elementOffset };
+        EucCSSLayoutDocumentRunPoint point = { wordOffset, elementOffset };
         lineStartComponent = [self _pointToComponentOffset:point];
         uint32_t firstBreakComponent = [self _pointToComponentOffset:_potentialBreakInfos[startBreakOffset].point];
         for(uint32_t i = lineStartComponent; i < firstBreakComponent; ++i) {
@@ -491,13 +491,13 @@ typedef struct EucHTMLLayoutDocumentRunBreakInfo {
     CGFloat lastLineMaxY = frame.origin.y;
     
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
-    EucHTMLLayoutDocumentRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
+    EucCSSLayoutDocumentRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
     for(int i = 0; i < usedBreakCount; ++i) {
-        EucHTMLLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
-        EucHTMLLayoutLine *newLine = [[EucHTMLLayoutLine alloc] init];
+        EucCSSLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
+        EucCSSLayoutLine *newLine = [[EucCSSLayoutLine alloc] init];
         newLine.containingRun = ret;
         if(lastLineBreakInfo.isComponent) {
-            EucHTMLLayoutDocumentRunPoint point = lastLineBreakInfo.point;
+            EucCSSLayoutDocumentRunPoint point = lastLineBreakInfo.point;
             uint32_t componentOffset = [self _pointToComponentOffset:point];
             ++componentOffset;
             if(componentOffset >= _componentsCount) {

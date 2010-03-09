@@ -1,19 +1,19 @@
 //
-//  EucHTMLLayoutLine.m
+//  EucCSSLayoutLine.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucHTMLLayoutLine.h"
-#import "EucHTMLDocumentNode.h"
-#import "EucHTMLLayoutPositionedRun.h"
-#import "EucHTMLLayoutDocumentRun.h"
-#import "EucHTMLLayoutDocumentRun_Package.h"
+#import "EucCSSLayoutLine.h"
+#import "EucCSSDocumentNode.h"
+#import "EucCSSLayoutPositionedRun.h"
+#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutDocumentRun_Package.h"
 #import "THLog.h"
 
-@implementation EucHTMLLayoutLine
+@implementation EucCSSLayoutLine
 
 @synthesize containingRun = _positionedRun;
 
@@ -33,13 +33,13 @@
     CGFloat maxAscender = 0;
     CGFloat maxDescenderAndLineHeightAddition = 0;
     
-    id spaceMarker = [EucHTMLLayoutDocumentRun singleSpaceMarker];
+    id spaceMarker = [EucCSSLayoutDocumentRun singleSpaceMarker];
     Class NSStringClass = [NSString class];
     
-    EucHTMLLayoutDocumentRun *documentRun = self.containingRun.documentRun;
+    EucCSSLayoutDocumentRun *documentRun = self.containingRun.documentRun;
     size_t componentsCount = documentRun.componentsCount;
     id *components = documentRun.components;
-    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = documentRun.componentInfos;
+    EucCSSLayoutDocumentRunComponentInfo *componentInfos = documentRun.componentInfos;
     
     uint32_t startComponentOffset = documentRun.wordToComponent[_startPoint.word] + _startPoint.element;
     for(uint32_t i = startComponentOffset;
@@ -47,7 +47,7 @@
         !(componentInfos[i].point.word == _endPoint.word && componentInfos[i].point.element == _endPoint.element); 
         ++i) {
         id component = components[i];
-        EucHTMLLayoutDocumentRunComponentInfo *info =  componentInfos + i;
+        EucCSSLayoutDocumentRunComponentInfo *info =  componentInfos + i;
         BOOL isWord = [component isKindOfClass:NSStringClass];
         if(isWord ||
            component == spaceMarker) {

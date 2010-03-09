@@ -1,24 +1,24 @@
 //
-//  EucHTMLRenderer.m
+//  EucCSSRenderer.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 10/02/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucHTMLRenderer.h"
-#import "EucHTMLDocumentNode.h"
-#import "EucHTMLLayoutPositionedBlock.h"
-#import "EucHTMLLayoutDocumentRun.h"
-#import "EucHTMLLayoutDocumentRun_Package.h"
-#import "EucHTMLLayoutPositionedRun.h"
-#import "EucHTMLLayoutLine.h"
-#import "EucHTMLRenderer.h"
+#import "EucCSSRenderer.h"
+#import "EucCSSDocumentNode.h"
+#import "EucCSSLayoutPositionedBlock.h"
+#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutDocumentRun_Package.h"
+#import "EucCSSLayoutPositionedRun.h"
+#import "EucCSSLayoutLine.h"
+#import "EucCSSRenderer.h"
 #import "THStringRenderer.h"
 #import "THLog.h"
 
 
-@implementation EucHTMLRenderer
+@implementation EucCSSRenderer
 
 @synthesize cgContext = _cgContext;
 
@@ -28,7 +28,7 @@
     // entity of this class.
     
     NSString *entityClassName = NSStringFromClass([layoutEntity class]);
-    if([entityClassName hasPrefix:@"EucHTMLLayout"]) {
+    if([entityClassName hasPrefix:@"EucCSSLayout"]) {
         entityClassName = [entityClassName substringFromIndex:13];
         SEL selector = NSSelectorFromString([NSString stringWithFormat:@"_render%@:", entityClassName]);
         [self performSelector:selector withObject:layoutEntity];
@@ -37,7 +37,7 @@
     }
 }
 
-- (void)_renderPositionedBlock:(EucHTMLLayoutPositionedBlock *)block
+- (void)_renderPositionedBlock:(EucCSSLayoutPositionedBlock *)block
 {
     NSLog(@"Positioned Block: %@", NSStringFromRect(NSRectFromCGRect(block.frame)));
     for(id subEntity in block.subEntities) {
@@ -47,28 +47,28 @@
 }
 
 
-- (void)_renderPositionedRun:(EucHTMLLayoutPositionedRun *)run
+- (void)_renderPositionedRun:(EucCSSLayoutPositionedRun *)run
 {
     NSLog(@"Positioned Run: %@", NSStringFromRect(NSRectFromCGRect(run.frame)));
-    for(EucHTMLLayoutLine *line in run.lines) {
+    for(EucCSSLayoutLine *line in run.lines) {
         [self render:line];
     }
     NSLog(@"Positioned Run End");
 }
 
-- (void)_renderLine:(EucHTMLLayoutLine *)line
+- (void)_renderLine:(EucCSSLayoutLine *)line
 {
     Class nsStringClass = [NSString class];
-    id singleSpaceMarker = [EucHTMLLayoutDocumentRun singleSpaceMarker];
+    id singleSpaceMarker = [EucCSSLayoutDocumentRun singleSpaceMarker];
     
-    EucHTMLLayoutDocumentRun *documentRun = line.containingRun.documentRun;
+    EucCSSLayoutDocumentRun *documentRun = line.containingRun.documentRun;
     
     size_t componentsCount = documentRun.componentsCount;
     id *components = documentRun.components;
-    EucHTMLLayoutDocumentRunComponentInfo *componentInfos = documentRun.componentInfos;
+    EucCSSLayoutDocumentRunComponentInfo *componentInfos = documentRun.componentInfos;
     
-    EucHTMLLayoutDocumentRunPoint startPoint = line.startPoint;
-    EucHTMLLayoutDocumentRunPoint endPoint = line.endPoint;
+    EucCSSLayoutDocumentRunPoint startPoint = line.startPoint;
+    EucCSSLayoutDocumentRunPoint endPoint = line.endPoint;
         
     CGRect lineFrame = line.frame;
     CGFloat xPosition = lineFrame.origin.x;
@@ -82,7 +82,7 @@
                     !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
                     ++i) {
                     id component = components[i];
-                    EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
+                    EucCSSLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
                     if([component isKindOfClass:nsStringClass]) {
                         xPosition -= componentInfo->width;
                         THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
@@ -114,7 +114,7 @@
                     !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
                     ++i) {
                     id component = components[i];
-                    EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
+                    EucCSSLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
                     if([component isKindOfClass:nsStringClass]) {
                         THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
                         [stringRenderer drawString:component
@@ -142,7 +142,7 @@
                     !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
                     ++i) {
                     id component = components[i];
-                    EucHTMLLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
+                    EucCSSLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
                     if([component isKindOfClass:nsStringClass]) {
                         THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
                         [stringRenderer drawString:component

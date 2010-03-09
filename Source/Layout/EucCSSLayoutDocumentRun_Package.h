@@ -1,5 +1,5 @@
 /*
- *  EucHTMLLayoutDocumentRun_Package.h
+ *  EucCSSLayoutDocumentRun_Package.h
  *  LibCSSTest
  *
  *  Created by James Montgomerie on 25/02/2010.
@@ -7,13 +7,13 @@
  *
  */
 
-// 'Package scope' accessors for EucHTMLLayoutDocumentRun.
+// 'Package scope' accessors for EucCSSLayoutDocumentRun.
 
-@interface EucHTMLLayoutDocumentRun ()
+@interface EucCSSLayoutDocumentRun ()
 
 @property (nonatomic, readonly) size_t componentsCount;
 @property (nonatomic, readonly) id *components;
-@property (nonatomic, readonly) EucHTMLLayoutDocumentRunComponentInfo *componentInfos;
+@property (nonatomic, readonly) EucCSSLayoutDocumentRunComponentInfo *componentInfos;
 @property (nonatomic, readonly) uint32_t *wordToComponent;
 
 @end

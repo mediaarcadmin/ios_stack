@@ -1,5 +1,5 @@
 //
-//  EucHTMLDocumentGeneratedContainerNode.h
+//  EucCSSDocumentGeneratedContainerNode.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 24/02/2010.
@@ -9,16 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <libcss/libcss.h>
 
-#import "EucHTMLDocumentNode.h"
+#import "EucCSSDocumentNode.h"
 
-@class EucHTMLDocument, EucHTMLDocumentConcreteNode;
+@class EucCSSDocument, EucCSSDocumentConcreteNode;
 
-@interface EucHTMLDocumentGeneratedContainerNode : EucHTMLDocumentNode {
+@interface EucCSSDocumentGeneratedContainerNode : EucCSSDocumentNode {
     uint32_t _parentKey;    
     BOOL _beforeParent;
 }
 
-- (id)initWithDocument:(EucHTMLDocument *)document 
+- (id)initWithDocument:(EucCSSDocument *)document 
              parentKey:(uint32_t)parentKey
         isBeforeParent:(BOOL)beforeParent;
 

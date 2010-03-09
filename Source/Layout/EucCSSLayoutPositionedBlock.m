@@ -1,22 +1,22 @@
 //
-//  EucHTMLLayoutPositionedBlock.m
+//  EucCSSLayoutPositionedBlock.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucHTMLLayoutPositionedBlock.h"
-#import "EucHTMLLayoutPositionedRun.h"
-#import "EucHTMLDocument.h"
-#import "EucHTMLDocumentNode.h"
+#import "EucCSSLayoutPositionedBlock.h"
+#import "EucCSSLayoutPositionedRun.h"
+#import "EucCSSDocument.h"
+#import "EucCSSDocumentNode.h"
 #import <libcss/libcss.h>
 
-@interface EucHTMLLayoutPositionedBlock ()
+@interface EucCSSLayoutPositionedBlock ()
 - (void)_collapseTopMarginUpwards;
 @end
 
-@implementation EucHTMLLayoutPositionedBlock
+@implementation EucCSSLayoutPositionedBlock
 
 @synthesize documentNode = _documentNode;
 @synthesize parent = _parent;
@@ -35,7 +35,7 @@
     return [super init];
 }
 
-- (id)initWithDocumentNode:(EucHTMLDocumentNode *)documentNode
+- (id)initWithDocumentNode:(EucCSSDocumentNode *)documentNode
 {
     if((self = [super init])) {
         _subEntities = [[NSMutableArray alloc] init];
@@ -65,12 +65,12 @@
         borderRect.origin.y = frame.origin.y;
     } else {
         css_computed_margin_top(computedStyle, &fixed, &unit);
-        borderRect.origin.y = frame.origin.y + EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
+        borderRect.origin.y = frame.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
     }
     css_computed_margin_left(computedStyle, &fixed, &unit);
-    borderRect.origin.x = frame.origin.x + EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
+    borderRect.origin.x = frame.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
     css_computed_margin_right(computedStyle, &fixed, &unit);
-    borderRect.size.width = CGRectGetMaxX(frame) - EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width) - borderRect.origin.x;
+    borderRect.size.width = CGRectGetMaxX(frame) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width) - borderRect.origin.x;
     borderRect.size.height = CGFLOAT_MAX;
     _borderRect = borderRect;
     
@@ -79,12 +79,12 @@
         paddingRect.origin.y = borderRect.origin.y;
     } else {
         css_computed_border_top_width(computedStyle, &fixed, &unit);
-        paddingRect.origin.y = borderRect.origin.y + EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
+        paddingRect.origin.y = borderRect.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
     }
     css_computed_border_left_width(computedStyle, &fixed, &unit);
-    paddingRect.origin.x = borderRect.origin.x + EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
+    paddingRect.origin.x = borderRect.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
     css_computed_border_right_width(computedStyle, &fixed, &unit);
-    paddingRect.size.width = CGRectGetMaxX(borderRect) - EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, 0) - paddingRect.origin.x;
+    paddingRect.size.width = CGRectGetMaxX(borderRect) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0) - paddingRect.origin.x;
     paddingRect.size.height = CGFLOAT_MAX;
     _paddingRect = paddingRect;
     
@@ -93,12 +93,12 @@
         contentRect.origin.y = paddingRect.origin.y;
     } else {
         css_computed_padding_top(computedStyle, &fixed, &unit);
-        contentRect.origin.y = paddingRect.origin.y + EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
+        contentRect.origin.y = paddingRect.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
     }    
     css_computed_padding_left(computedStyle, &fixed, &unit);
-    contentRect.origin.x = paddingRect.origin.x + EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
+    contentRect.origin.x = paddingRect.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
     css_computed_padding_right(computedStyle, &fixed, &unit);
-    contentRect.size.width = CGRectGetMaxX(paddingRect) - EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width) - contentRect.origin.x;
+    contentRect.size.width = CGRectGetMaxX(paddingRect) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width) - contentRect.origin.x;
     contentRect.size.height = CGFLOAT_MAX;
     _contentRect = contentRect;    
     
@@ -143,15 +143,15 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
         
         CGFloat width = self.frame.size.width;
         css_computed_padding_bottom(computedStyle, &fixed, &unit);
-        point += EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, width);
+        point += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width);
         _paddingRect.size.height = point - _paddingRect.origin.y;
         
         css_computed_border_bottom_width(computedStyle, &fixed, &unit);
-        point += EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
+        point += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
         _borderRect.size.height = point - _borderRect.origin.y;
         
         css_computed_margin_bottom(computedStyle, &fixed, &unit);
-        CGFloat bottomMarginHeight = EucHTMLLibCSSSizeToPixels(computedStyle, fixed, unit, width);
+        CGFloat bottomMarginHeight = EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width);
         
         // If we have a bottom margin, and the box is otherwise empty, the margin
         // should collapse upwards.
@@ -183,12 +183,12 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
 {
     [_subEntities addObject:subEntity];
     
-    if([subEntity isKindOfClass:[EucHTMLLayoutPositionedBlock class]]) {
-        EucHTMLLayoutPositionedBlock *subBlock = (EucHTMLLayoutPositionedBlock *)subEntity;
+    if([subEntity isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
+        EucCSSLayoutPositionedBlock *subBlock = (EucCSSLayoutPositionedBlock *)subEntity;
         subBlock.parent = self;
         [subBlock _collapseTopMarginUpwards];
-    } else if([subEntity isKindOfClass:[EucHTMLLayoutPositionedRun class]]) {
-        EucHTMLLayoutPositionedRun *positionedRun = (EucHTMLLayoutPositionedRun *)subEntity;
+    } else if([subEntity isKindOfClass:[EucCSSLayoutPositionedRun class]]) {
+        EucCSSLayoutPositionedRun *positionedRun = (EucCSSLayoutPositionedRun *)subEntity;
         positionedRun.containingBlock = self;
     }
 }
@@ -215,13 +215,13 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
         CGFloat adjustBy = 0.0f;
         BOOL didCollapse = NO;
         
-        EucHTMLLayoutPositionedBlock *previouslyExamining = self;
-        EucHTMLLayoutPositionedBlock *potentiallyCollapseInto = nil;
+        EucCSSLayoutPositionedBlock *previouslyExamining = self;
+        EucCSSLayoutPositionedBlock *potentiallyCollapseInto = nil;
 
-        Class eucHTMLLayoutPositionedBlockClass = [EucHTMLLayoutPositionedBlock class];
+        Class EucCSSLayoutPositionedBlockClass = [EucCSSLayoutPositionedBlock class];
         while(previouslyExamining) {
             potentiallyCollapseInto = previouslyExamining._previousSibling;
-            if(![potentiallyCollapseInto isKindOfClass:eucHTMLLayoutPositionedBlockClass]) {
+            if(![potentiallyCollapseInto isKindOfClass:EucCSSLayoutPositionedBlockClass]) {
                 potentiallyCollapseInto = nil;
                 break;
             }
@@ -293,7 +293,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
             // Move ourselves, and any intervening empty blocks, to adjust
             // for the moved margin.
             if(adjustBy != 0.0f) {
-                for(EucHTMLLayoutPositionedBlock *block in blocksToAdjust) {
+                for(EucCSSLayoutPositionedBlock *block in blocksToAdjust) {
                     CGRect rect = block.frame;
                     rect.origin.y += adjustBy;
                     block.frame = rect;
