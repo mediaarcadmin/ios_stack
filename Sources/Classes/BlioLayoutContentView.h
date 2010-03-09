@@ -12,17 +12,20 @@
 @class BlioLayoutTiledLayer;
 @class BlioLayoutThumbLayer;
 @class BlioLayoutShadowLayer;
+@class BlioLayoutHighlightsLayer;
 
 @interface BlioLayoutPageLayer : CALayer {
     NSInteger pageNumber;
     BlioLayoutTiledLayer *tiledLayer;
     BlioLayoutThumbLayer *thumbLayer;
     BlioLayoutShadowLayer *shadowLayer;
+    BlioLayoutHighlightsLayer *highlightsLayer;
 }
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, assign) BlioLayoutTiledLayer *tiledLayer;
 @property (nonatomic, assign) BlioLayoutShadowLayer *shadowLayer;
+@property (nonatomic, assign) BlioLayoutHighlightsLayer *highlightsLayer;
 
 @end
 

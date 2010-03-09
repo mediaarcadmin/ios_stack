@@ -39,6 +39,16 @@
 
 @end
 
+@interface BlioLayoutHighlightsLayer : CATiledLayer {
+    NSInteger pageNumber;
+    id <BlioLayoutDataSource> dataSource;
+}
+
+@property (nonatomic) NSInteger pageNumber;
+@property (nonatomic, assign) id <BlioLayoutDataSource> dataSource;
+
+@end
+
 @interface BlioLayoutPageLayer()
 @property (nonatomic, assign) BlioLayoutThumbLayer *thumbLayer;
 
@@ -131,6 +141,15 @@
             [pageLayer addSublayer:tiledLayer];
             [pageLayer setTiledLayer:tiledLayer];
             
+            BlioLayoutHighlightsLayer *highlightsLayer = [BlioLayoutHighlightsLayer layer];
+            highlightsLayer.dataSource = self.dataSource;
+            highlightsLayer.pageNumber = aPageNumber;
+            highlightsLayer.frame = self.bounds;
+            highlightsLayer.levelsOfDetail = 1;
+            highlightsLayer.tileSize = CGSizeMake(1024, 1024);
+            [pageLayer addSublayer:highlightsLayer];
+            [pageLayer setHighlightsLayer:highlightsLayer];
+            
             [self.pageLayers addObject:pageLayer];
             [self.layer addSublayer:pageLayer];
         } else {
@@ -160,10 +179,22 @@
 
 @implementation BlioLayoutPageLayer
 
-@synthesize pageNumber, tiledLayer, thumbLayer, shadowLayer;
+@synthesize pageNumber, tiledLayer, thumbLayer, shadowLayer, highlightsLayer;
+
+- (void)dealloc {
+    self.tiledLayer = nil;
+    self.thumbLayer = nil;
+    self.shadowLayer = nil;
+    self.highlightsLayer = nil;
+    [super dealloc];
+}
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
     pageNumber = newPageNumber;
+    [self.tiledLayer setPageNumber:newPageNumber];
+    [self.tiledLayer setContents:nil];
+    [self.tiledLayer setNeedsDisplay];
+    
     [self.shadowLayer setPageNumber:newPageNumber];
     [self.shadowLayer setNeedsDisplay];
     
@@ -171,9 +202,9 @@
     [self.thumbLayer setContents:nil];
     [self.thumbLayer setNeedsDisplay];
     
-    [self.tiledLayer setPageNumber:newPageNumber];
-    [self.tiledLayer setContents:nil];
-    [self.tiledLayer setNeedsDisplay];
+    [self.highlightsLayer setPageNumber:newPageNumber];
+    [self.highlightsLayer setContents:nil];
+    [self.highlightsLayer setNeedsDisplay];
 }
 
 - (void)setHighlights:(NSArray *)newHighlights {
@@ -225,6 +256,17 @@
 - (void)drawInContext:(CGContextRef)ctx {
     NSLog(@"Draw shadow for page %d", self.pageNumber);
     [self.dataSource drawShadowLayer:self inContext:ctx forPage:self.pageNumber];    
+}
+
+@end
+
+@implementation BlioLayoutHighlightsLayer
+
+@synthesize pageNumber, dataSource;
+
+- (void)drawInContext:(CGContextRef)ctx {
+    NSLog(@"Draw highlights for page %d", self.pageNumber);
+    [self.dataSource drawHighlightsLayer:self inContext:ctx forPage:self.pageNumber];    
 }
 
 @end

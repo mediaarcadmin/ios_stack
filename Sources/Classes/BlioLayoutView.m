@@ -49,9 +49,6 @@ static const CGFloat kBlioPDFGoToZoomScale = 0.7f;
 
 @end
 
-@interface BlioFastCATiledLayer : CATiledLayer
-@end
-
 static const CGFloat kBlioLayoutMaxZoom = 4.0f;
 static const CGFloat kBlioLayoutShadow = 16.0f;
 
@@ -62,37 +59,6 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 
 @property (nonatomic) CGRect rect;
 @property (nonatomic, retain) UIColor *color;
-
-@end
-
-@interface BlioPDFTiledLayerDelegate : NSObject {
-    NSString *pdfPath;
-    NSInteger pageNumber;
-    CGPDFPageRef page;
-    CGAffineTransform fitTransform;
-    CGRect pageRect;
-    BOOL cover;
-}
-
-@property(nonatomic, retain) NSString *pdfPath;
-@property(nonatomic) NSInteger pageNumber;
-@property(nonatomic) CGPDFPageRef page;
-@property(nonatomic) CGAffineTransform fitTransform;
-@property(nonatomic) BOOL cover;
-
-@end
-
-@interface BlioPDFShadowLayerDelegate : NSObject {
-    BOOL preloadPage;
-    CGRect pageRect;
-    NSString *pdfPath;
-    NSInteger pageNumber;
-}
-
-@property(nonatomic) BOOL preloadPage;
-@property(nonatomic, retain) NSString *pdfPath;
-@property(nonatomic) NSInteger pageNumber;
-@property(nonatomic) CGRect pageRect;
 
 @end
 
@@ -111,41 +77,6 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 
 @end
 
-@interface BlioPDFDrawingView : UIView {
-    CGPDFDocumentRef document;
-    CGPDFPageRef page;
-    id layoutView;
-    BlioFastCATiledLayer *tiledLayer;
-    CALayer *shadowLayer;
-    CALayer *highlightLayer;
-    BlioPDFTiledLayerDelegate *tiledLayerDelegate;
-    BlioPDFShadowLayerDelegate *shadowLayerDelegate;
-    BlioPDFHighlightLayerDelegate *highlightLayerDelegate;
-    CGAffineTransform textFlowTransform;
-    CGAffineTransform fitTransform;
-    CGAffineTransform viewTransform;
-    NSOperationQueue *renderQueue;
-}
-
-@property (nonatomic, assign) id layoutView;
-@property (nonatomic, retain) BlioFastCATiledLayer *tiledLayer;
-@property (nonatomic, retain) CALayer *shadowLayer;
-@property (nonatomic, retain) CALayer *highlightLayer;
-@property (nonatomic, retain) BlioPDFTiledLayerDelegate *tiledLayerDelegate;
-@property (nonatomic, retain) BlioPDFShadowLayerDelegate *shadowLayerDelegate;
-@property (nonatomic, retain) BlioPDFHighlightLayerDelegate *highlightLayerDelegate;
-@property (nonatomic, readonly) CGAffineTransform textFlowTransform;
-@property (nonatomic, readonly) CGAffineTransform fitTransform;
-@property (nonatomic, readonly) CGAffineTransform viewTransform;
-@property (nonatomic, retain) NSOperationQueue *renderQueue;
-
-- (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber pdfPath:(NSString *)aPdfPath;
-- (void)setPageNumber:(NSInteger)newPageNumber forPdfPath:(NSString *)newPath;
-- (void)setHighlights:(NSArray *)newHighlights;
-- (CGPDFPageRef)page;
-
-@end
-
 @interface BlioLayoutView()
 
 - (NSArray *)bookmarkRangesForCurrentPage;
@@ -158,27 +89,6 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 
 @end
 
-
-
-@interface BlioPDFPageView : UIView {
-    BlioPDFDrawingView *view;
-    CGPDFPageRef page;
-    BOOL valid;
-}
-
-@property (nonatomic, retain) BlioPDFDrawingView *view;
-@property (nonatomic, readonly) CGPDFPageRef page;
-@property (nonatomic, getter=isValid) BOOL valid;
-
-- (id)initWithView:(BlioPDFDrawingView *)view andPageRef:(CGPDFPageRef)newPage;
-- (void)setPreload:(BOOL)preload;
-- (void)setCover:(BOOL)cover;
-- (CGPoint)convertPointToPDFPage:(CGPoint)point;
-- (CGRect)convertRectFromPDFPage:(CGRect)rect;
-- (void)setHighlights:(NSArray *)newHighlights;
-- (void)setPage:(CGPDFPageRef)newPage forPDFPath:(NSString *)newPath;
-
-@end
 
 @implementation BlioLayoutView
 
@@ -602,18 +512,93 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark Highlights
 
-- (void)drawHighlightsInContext:(CGContextRef)ctx forPage:(NSInteger)page {
+- (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
+    //CGRect layerBounds = aLayer.bounds;
     
+//    CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
+//	CGContextScaleCTM(ctx, 1, -1);
+    
+    NSInteger pageIndex = aPageNumber - 1;
+    NSMutableArray *allHighlights = [NSMutableArray array];
+    NSArray *highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
+    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    
+    for (BlioBookmarkRange *highlightRange in highlightRanges) {
+        
+        //if (![highlightRange isEqual:self.excludedBookmark]) {
+        if (true) {
+              
+            NSMutableArray *highlightRects = [NSMutableArray array];
+            
+            for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
+                
+                for (BlioTextFlowPositionedWord *word in [paragraph words]) {
+                    if ((highlightRange.startPoint.layoutPage < aPageNumber) &&
+                        (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
+                        (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
+                        
+                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        
+                    } else if ((highlightRange.endPoint.layoutPage > aPageNumber) &&
+                               (paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
+                               (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
+                        
+                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        
+                    } else if ((highlightRange.startPoint.layoutPage == aPageNumber) &&
+                               (paragraph.paragraphIndex == highlightRange.startPoint.paragraphOffset) &&
+                               (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
+                        
+                        if ((paragraph.paragraphIndex == highlightRange.endPoint.paragraphOffset) &&
+                            (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
+                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        } else if (paragraph.paragraphIndex < highlightRange.endPoint.paragraphOffset) {
+                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        }
+                        
+                    } else if ((highlightRange.startPoint.layoutPage == aPageNumber) &&
+                               (paragraph.paragraphIndex > highlightRange.startPoint.paragraphOffset)) {
+                        
+                        if ((paragraph.paragraphIndex == highlightRange.endPoint.paragraphOffset) &&
+                            (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
+                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        } else if (paragraph.paragraphIndex < highlightRange.endPoint.paragraphOffset) {
+                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+                        }
+                    }
+                }
+            }
+            
+            NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
+            
+            for (NSValue *rectValue in coalescedRects) {
+                BlioLayoutViewColoredRect *coloredRect = [[BlioLayoutViewColoredRect alloc] init];
+                coloredRect.color = highlightRange.color;
+                coloredRect.rect = [rectValue CGRectValue];
+                [allHighlights addObject:coloredRect];
+                [coloredRect release];
+            }
+        }
+        
+    }
+    
+    CGAffineTransform viewTransform = [self viewTransformForPage:aPageNumber];
+    
+    for (BlioLayoutViewColoredRect *coloredRect in allHighlights) {
+        UIColor *highlightColor = [coloredRect color];
+        CGContextSetFillColorWithColor(ctx, [highlightColor colorWithAlphaComponent:0.3f].CGColor);
+        //CGContextSetStrokeColorWithColor(ctx, [highlightColor colorWithAlphaComponent:1.0f].CGColor);
+        //CGContextSetLineWidth(ctx, 1.0f);
+        
+        CGRect adjustedRect = CGRectApplyAffineTransform([coloredRect rect], viewTransform);
+        //CGContextClearRect(ctx, CGRectInset(adjustedRect, -1, -1));
+        CGContextFillRect(ctx, adjustedRect);
+        //CGContextStrokeRect(ctx, adjustedRect);
+    }
 }
 
-- (void)displayHighlightsForPage:(NSInteger)aPageNumber inLayer:(CALayer *)aLayer excluding:(BlioBookmarkRange *)excludedBookmark {    
-    
-    NSArray *highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
-    
-    BlioLayoutHighlightsOperation *anOperation = [[BlioLayoutHighlightsOperation alloc] initWithPage:aPageNumber layer:aLayer exclusion:excludedBookmark highlights:highlightRanges textFlow:[self.book textFlow]];
-    [self.fetchHighlightsQueue cancelAllOperations];
-    [self.fetchHighlightsQueue addOperation:anOperation];
-    [anOperation release];
+- (void)displayHighlightsForLayer:(BlioLayoutPageLayer *)aLayer excluding:(BlioBookmarkRange *)excludedBookmark {    
+    [[aLayer highlightsLayer] setNeedsDisplay];
 }
 
 - (void)refreshHighlights {
@@ -623,17 +608,13 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
             EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
             if ([selectedRange isEqual:range]) {
-                [self displayHighlightsForPage:self.pageNumber inLayer:self.currentPageLayer excluding:highlightRange];
+                [self displayHighlightsForLayer:self.currentPageLayer excluding:highlightRange];
                 return;
             }
         }
     } else {
-        [self displayHighlightsForPage:self.pageNumber inLayer:self.currentPageLayer excluding:nil];
+        [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
     }
-}
-
-- (void)textFlowIsReady:(NSNotification *)notification {
-    [self refreshHighlights];
 }
 
 #pragma mark -
@@ -748,7 +729,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
         if ([selectedRange isEqual:range]) {
-            [self displayHighlightsForPage:self.pageNumber inLayer:self.currentPageLayer excluding:highlightRange];
+            [self displayHighlightsForLayer:self.currentPageLayer excluding:highlightRange];
             return [highlightRange.color colorWithAlphaComponent:0.3f];
         }
     }
@@ -956,7 +937,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             [self.selector setSelectedRange:nil];
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
-            //[self displayHighlightsForPage:aPageNumber inLayer:self.currentPageLayer excluding:nil];
+            [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
             
         }
     }
@@ -1761,8 +1742,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
                                                     name:@"blioCoverPageDidFinishRender" 
                                                   object:nil];
     
-    // Register for when the textFlow is done so we can refresh highlights
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFlowIsReady:) name:@"BlioTextFlowReady" object:nil];
 }
 
 - (void)blioCoverPageDidFinishRenderOnMainThread:(NSNotification *)notification {
@@ -1777,465 +1756,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 @end
 
-@implementation BlioPDFPageView
 
-@synthesize view, page, valid;        
-
-- (void)dealloc {
-    CGPDFPageRelease(page);
-    self.view = nil;
-    [super dealloc];
-}
-
-- (id)initWithView:(BlioPDFDrawingView *)newView andPageRef:(CGPDFPageRef)newPage {
-    NSAssert1(kBlioLayoutMaxPages >= 3, @"Error: kBlioLayoutMaxViews is %d. This must be 3 or greater.", kBlioLayoutMaxPages);
-
-	self = [super initWithFrame:newView.frame];
-	if(self != nil) {
-        page = newPage;
-        CGPDFPageRetain(page);
-        
-        [self addSubview:newView];
-        [newView setFrame:newView.bounds];
-        self.view = newView;
-        self.userInteractionEnabled = NO;
-        self.backgroundColor = [UIColor clearColor];
-        self.clipsToBounds = NO;
-        self.valid = YES;
-    }
-    return self;
-}
-
-- (void)setPage:(CGPDFPageRef)newPage forPDFPath:(NSString *)newPath {
-    CGPDFPageRetain(newPage);
-    CGPDFPageRelease(page);
-    page = newPage;
-    [self.view setPageNumber:CGPDFPageGetPageNumber(newPage) forPdfPath:newPath];
-}
-
-- (void)setHighlights:(NSArray *)newHighlights {
-    [self.view setHighlights:newHighlights];
-}
-
-- (CGPoint)convertPointToPDFPage:(CGPoint)point {
-    CGPoint invertedViewPoint = CGPointMake(point.x, CGRectGetHeight(self.bounds) - point.y);
-    
-    CGFloat inset = -kBlioLayoutShadow;
-    CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-    CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-    CGAffineTransform inverseTransform = CGAffineTransformInvert(fitTransform);
-    CGPoint invertedPDFPoint = CGPointApplyAffineTransform(invertedViewPoint, inverseTransform);
-    
-    return invertedPDFPoint;
-}
-
-- (CGRect)convertRectFromPDFPage:(CGRect)rect {
-    CGFloat inset = -kBlioLayoutShadow;
-    CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-    CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-    CGRect fittedRect = CGRectApplyAffineTransform(rect, fitTransform);
-    
-    //CGRect invertedRect = CGRectMake(fittedRect.origin.x, CGRectGetHeight(self.bounds) - CGRectGetMaxY(fittedRect), fittedRect.size.width, fittedRect.size.height);
-
-    return fittedRect;
-}
-
-- (void)setPreload:(BOOL)preload {
-    // Clear the contents if previously preloaded
-    if ([[self.view shadowLayerDelegate] preloadPage])
-        [[self.view shadowLayer] setContents:nil];
-    
-    [[self.view shadowLayerDelegate] setPreloadPage:preload];
-    [[self.view shadowLayer] setNeedsDisplay];
-}
-
-- (void)setCover:(BOOL)cover {
-    [[self.view tiledLayerDelegate] setCover:cover];
-}
-
-@end
-
-
-@implementation BlioPDFDrawingView
-
-@synthesize layoutView, tiledLayer, shadowLayer, highlightLayer, tiledLayerDelegate, shadowLayerDelegate, highlightLayerDelegate;
-@synthesize renderQueue;
-
-- (void)dealloc {
-    [self.renderQueue cancelAllOperations];
-    self.renderQueue = nil;
-    self.layoutView = nil;
-    [self.tiledLayer setDelegate:nil];
-    [self.shadowLayer setDelegate:nil];
-    [self.highlightLayer setDelegate:nil];
-    self.tiledLayerDelegate = nil;
-    self.shadowLayerDelegate = nil;
-    self.highlightLayerDelegate = nil;
-    self.tiledLayer = nil;
-    self.shadowLayer = nil;
-    self.highlightLayer = nil;
-    CGPDFDocumentRelease(document);
-	[super dealloc];
-}
-
-- (CGAffineTransform)textFlowTransform {
-    if (CGAffineTransformIsIdentity(textFlowTransform)) {
-        CGRect cropRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-        CGRect mediaRect = CGPDFPageGetBoxRect(page, kCGPDFMediaBox);
-        CGAffineTransform dpiScale = CGAffineTransformMakeScale(72/96.0f, 72/96.0f);
-        CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
-        textFlowTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
-    }
-    return textFlowTransform;
-}
-
-- (CGAffineTransform)fitTransform {
-    if (CGAffineTransformIsIdentity(fitTransform)) {
-        CGFloat inset = -kBlioLayoutShadow;
-        CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-        fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-    }
-    return fitTransform;
-}
-
-- (CGAffineTransform)viewTransform {
-    if (CGAffineTransformIsIdentity(viewTransform)) {
-        viewTransform = CGAffineTransformConcat(self.textFlowTransform, self.fitTransform);
-    }
-    return viewTransform;
-}
-
-- (void)configureLayers {
-    self.tiledLayer = [BlioFastCATiledLayer layer];
-    
-    CGRect pageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-    CGFloat inset = -kBlioLayoutShadow;
-    CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-    
-//    CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-    //CGPDFPageRef firstPage = CGPDFDocumentGetPage(document, 1);
-    //CGAffineTransform firstTransform = CGPDFPageGetDrawingTransform(firstPage, kCGPDFArtBox, insetBounds, 0, true);
-    //CGAffineTransform highlightsTransform = fitTransform;
-    CGRect fittedPageRect = CGRectApplyAffineTransform(pageRect, self.fitTransform);     
-    
-    int w = pageRect.size.width;
-    int h = pageRect.size.height;
-    
-    int levels = 1;
-    while (w > 1 && h > 1) {
-        levels++;
-        w = w >> 1;
-        h = h >> 1;
-    }
-    
-    tiledLayer.levelsOfDetail = levels + 4;
-    tiledLayer.levelsOfDetailBias = levels;
-    tiledLayer.tileSize = CGSizeMake(2048, 2048);
-    //tiledLayer.transform = CATransform3DMakeAffineTransform(CGAffineTransformMakeScale(2.0f, 2.0f));
-    //tiledLayer.transform = CATransform3DMakeAffineTransform(CGAffineTransformMakeScale(0.5/fitTransform.a, 0.5/fitTransform.a));
-    
-    CGRect origBounds = self.bounds;
-    CGRect newBounds = self.bounds;
-    
-    // Stretch the layer so that it overlaps with prev and next layers forcing a draw
-    newBounds.size.width = origBounds.size.width*2;
-    insetBounds.origin.x += (newBounds.size.width - origBounds.size.width)/2.0f;
-    
-    tiledLayer.bounds = newBounds;
-    CGAffineTransform offsetFitTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, insetBounds, 0, true);
-    
-//    CGRect offsetFittedPageRect = CGRectApplyAffineTransform(pageRect, fitTransform);     
-//    fitTransform = CGAffineTransformMake(fitTransform.a, 
-//                                         fitTransform.b, 
-//                                         fitTransform.c, 
-//                                         fitTransform.d, 
-//                                         fitTransform.tx - (offsetFittedPageRect.origin.x - (int)offsetFittedPageRect.origin.x),
-//                                         fitTransform.ty - (offsetFittedPageRect.origin.y - (int)offsetFittedPageRect.origin.y));
-    
-    BlioPDFTiledLayerDelegate *aTileDelegate = [[BlioPDFTiledLayerDelegate alloc] init];
-    [aTileDelegate setPage:page];
-    [aTileDelegate setFitTransform:offsetFitTransform];
-    tiledLayer.delegate = aTileDelegate;
-    self.tiledLayerDelegate = aTileDelegate;
-    [aTileDelegate release];
-    
-    tiledLayer.position = CGPointMake(self.layer.bounds.size.width/2.0f, self.layer.bounds.size.height/2.0f);  
-    
-    // transform the super layer so things draw 'right side up'
-    CATransform3D superTransform = CATransform3DMakeTranslation(0.0f, self.bounds.size.height, 0.0f);
-    self.layer.transform = CATransform3DScale(superTransform, 1.0, -1.0f, 1.0f);
-    [self.layer addSublayer:tiledLayer];
-    
-    [tiledLayer setNeedsDisplay];
-    
-    self.shadowLayer = [CALayer layer];
-    CGAffineTransform zoomScale = CGAffineTransformMakeScale(kBlioPDFShadowShrinkScale, kBlioPDFShadowShrinkScale);
-    CGAffineTransform shrinkScale = CGAffineTransformInvert(zoomScale);
-    shadowLayer.transform = CATransform3DMakeAffineTransform(zoomScale);
-    shadowLayer.bounds = CGRectApplyAffineTransform(self.bounds, shrinkScale);
-    //shadowLayer.bounds = self.bounds;
-    shadowLayer.position = tiledLayer.position;
-    
-    BlioPDFShadowLayerDelegate *aShadowDelegate = [[BlioPDFShadowLayerDelegate alloc] init];
-    //[aShadowDelegate setPageRect:fittedPageRect];
-    [aShadowDelegate setPageRect:CGRectApplyAffineTransform(fittedPageRect, shrinkScale)];
-    ///[aShadowDelegate setPage:page];
-    shadowLayer.delegate = aShadowDelegate;
-    self.shadowLayerDelegate = aShadowDelegate;
-    [aShadowDelegate release];
-    
-    [self.layer insertSublayer:shadowLayer below:tiledLayer];
-    [shadowLayer setNeedsDisplay];
-    
-    if (nil == self.renderQueue) {
-        NSOperationQueue* aQueue = [[NSOperationQueue alloc] init];
-        self.renderQueue = aQueue;
-        [aQueue release];
-    }
-        
-    self.highlightLayer = [CALayer layer];
-    BlioPDFHighlightLayerDelegate *aHighlightDelegate = [[BlioPDFHighlightLayerDelegate alloc] init];
-    [aHighlightDelegate setFitTransform:self.fitTransform];
-    // TODO - change teh way we are getting this transform
-    [aHighlightDelegate setHighlightsTransform:self.textFlowTransform];
-
-    [aHighlightDelegate setPage:page];
-    highlightLayer.delegate = aHighlightDelegate;
-    self.highlightLayerDelegate = aHighlightDelegate;
-    [aHighlightDelegate release];
-    
-    highlightLayer.bounds = self.bounds;
-    highlightLayer.position = tiledLayer.position;
-    [self.layer addSublayer:highlightLayer]; 
-    
-//    self.sharpLayer = [CALayer layer];
-//    BlioPDFSharpLayerDelegate *aSharpDelegate = [[BlioPDFSharpLayerDelegate alloc] init];
-//    [aSharpDelegate setZoomScale:1];
-//    [aSharpDelegate setPageRect:fittedPageRect];
-//    [aSharpDelegate setPage:page];
-//    sharpLayer.delegate = aSharpDelegate;
-//    self.sharpLayerDelegate = aSharpDelegate;
-//    [aSharpDelegate release];
-//    
-//    sharpLayer.bounds = self.bounds;
-//    sharpLayer.position = tiledLayer.position;
-//    sharpLayer.opacity = 0;
-    //[self.layer insertSublayer:sharpLayer below:tiledLayer];    
-}
-
-- (void)updateShadowLayerContents:(id)image {
-    self.shadowLayer.contentsGravity = kCAGravityResizeAspectFill;
-    self.shadowLayer.contents = image;
-    [self.shadowLayer setNeedsDisplay];
-    NSLog(@"Contents updated");
-}
-
-- (id)initWithFrame:(CGRect)frame document:(CGPDFDocumentRef)aDocument page:(NSInteger)aPageNumber pdfPath:(NSString *)aPdfPath {
-	self = [super initWithFrame:frame];
-	if(self != nil) {
-        document = aDocument;
-        CGPDFDocumentRetain(document);
-        page = CGPDFDocumentGetPage(document, aPageNumber);
-        
-        if (!page) {
-            NSLog(@"Unable to retrieve page %d from document", aPageNumber);
-            return nil;
-        }
-        
-        self.backgroundColor = [UIColor clearColor];
-        textFlowTransform = CGAffineTransformIdentity;
-        fitTransform = CGAffineTransformIdentity;
-        viewTransform = CGAffineTransformIdentity;
-        
-        [self configureLayers];
-        
-        [tiledLayerDelegate setPageNumber:aPageNumber];
-        [tiledLayerDelegate setPdfPath:aPdfPath];
-        [shadowLayerDelegate setPageNumber:aPageNumber];
-        [shadowLayerDelegate setPdfPath:aPdfPath];
-	}
-	return self;
-}
-
-- (CGPDFPageRef)page {
-    return page;
-}
-
-- (void)setPageNumber:(NSInteger)newPageNumber forPdfPath:(NSString *)newPath {
-    CGRect currentPageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-
-    page = CGPDFDocumentGetPage(document, newPageNumber);
-    CGRect newPageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-    textFlowTransform = CGAffineTransformIdentity;
-    fitTransform = CGAffineTransformIdentity;
-    viewTransform = CGAffineTransformIdentity;
-    
-    if (!CGRectEqualToRect(CGRectIntegral(currentPageRect), CGRectIntegral(newPageRect))) {
-        [tiledLayer setDelegate:nil];
-        [shadowLayer setDelegate:nil];
-        [highlightLayer setDelegate:nil];
-        [tiledLayer removeFromSuperlayer];
-        [shadowLayer removeFromSuperlayer];
-        [highlightLayer removeFromSuperlayer];
-        self.tiledLayerDelegate = nil;
-        self.shadowLayerDelegate = nil;
-        self.highlightLayerDelegate = nil;
-        
-        [self configureLayers];
-        
-        [tiledLayerDelegate setPageNumber:newPageNumber];
-        [tiledLayerDelegate setPdfPath:newPath];
-        [shadowLayerDelegate setPageNumber:newPageNumber];
-        [shadowLayerDelegate setPdfPath:newPath];
-    } else {
-//        [sharpLayerDelegate setPage:page];
-//        sharpLayer.opacity = 0;
-//        sharpLayer.zPosition = 0;        
-//        [sharpLayer setNeedsDisplay];
-        
-        //[shadowLayerDelegate setPage:page];
-        //[shadowLayer setNeedsDisplay];
-                
-        // Force the shadow layer to discard it's tile caches
-        [shadowLayerDelegate setPageNumber:newPageNumber];
-        [shadowLayerDelegate setPdfPath:newPath];
-        [shadowLayer setContents:nil];
-        [shadowLayer setNeedsDisplay];
-        
-        [highlightLayerDelegate setPage:page];
-        [highlightLayerDelegate setHighlights:nil];
-        [highlightLayerDelegate setHighlightsTransform:self.textFlowTransform];
-        [highlightLayer setNeedsDisplay];
-        
-        // Force the tiled layer to discard it's tile caches
-        [tiledLayerDelegate setPage:page];
-        [tiledLayerDelegate setPageNumber:newPageNumber];
-        [tiledLayerDelegate setPdfPath:newPath];
-        [tiledLayer setContents:nil];
-        [tiledLayer setNeedsDisplay];
-        
-    }
-}
-
-- (void)setHighlights:(NSArray *)newHighlights {
-    [CATransaction begin];
-    [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-    
-    [highlightLayerDelegate setHighlights:newHighlights];
-    [highlightLayer setNeedsDisplay];
-    
-    [CATransaction commit];
-}
-
-@end
-
-
-@implementation BlioPDFTiledLayerDelegate
-
-@synthesize page, fitTransform, cover;
-@synthesize pdfPath, pageNumber;
-
-- (void)dealloc {
-    self.pdfPath = nil;
-    [super dealloc];
-}
-
-- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    
-    CGContextConcatCTM(ctx, fitTransform);
-    CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
-    
-    CGRect compareRect = pageRect;
-    CGRect originRect = CGRectApplyAffineTransform(compareRect, CGContextGetCTM(ctx));
-    
-    CGFloat integralHeight = roundf(CGRectGetHeight(originRect));
-    CGFloat integralWidth = roundf(CGRectGetWidth(originRect));
-    CGFloat yScale = integralHeight/CGRectGetHeight(originRect);
-    CGFloat xScale = integralWidth/CGRectGetWidth(originRect);
-    CGContextScaleCTM(ctx, xScale, yScale);
-    CGRect scaledRect = CGRectApplyAffineTransform(compareRect, CGContextGetCTM(ctx));
-    
-    CGAffineTransform current = CGContextGetCTM(ctx);
-    CGAffineTransform integral = CGAffineTransformMakeTranslation(-(scaledRect.origin.x - roundf(scaledRect.origin.x)) / current.a, -(scaledRect.origin.y - roundf(scaledRect.origin.y)) / current.d);
-    CGContextConcatCTM(ctx, integral);
-    
-    CGContextClipToRect(ctx, pageRect);
-    CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);
-    CGContextFillRect(ctx, pageRect);
-    
-    NSData *pdfData = [[NSData alloc] initWithContentsOfMappedFile:self.pdfPath];
-    CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);
-    CGPDFDocumentRef pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, self.pageNumber);
-    @synchronized ([[UIApplication sharedApplication] delegate]) {
-    CGContextDrawPDFPage(ctx, aPage);
-    }
-    CGPDFDocumentRelease(pdf);
-    CGDataProviderRelease(pdfProvider);
-    [pdfData release];
-    
-    //if (page) CGContextDrawPDFPage(ctx, page);
-    if (cover) [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
-}
-
-- (void)setPage:(CGPDFPageRef)newPage {
-    page = newPage;
-    pageRect = CGPDFPageGetBoxRect(page, kCGPDFCropBox);
-}
-
-@end
-
-@implementation BlioPDFShadowLayerDelegate
-
-@synthesize pageRect, preloadPage;
-@synthesize pdfPath, pageNumber;
-
-- (void)dealloc {
-    self.pdfPath = nil;
-    [super dealloc];
-}
-
-- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    
-    CGRect insetRect = CGRectInset(pageRect, 1.0f/kBlioPDFShadowShrinkScale, 1.0f/kBlioPDFShadowShrinkScale);
-    //CGContextSaveGState(ctx);
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, (kBlioLayoutShadow/2.0f)), kBlioLayoutShadow, [UIColor colorWithWhite:0.3f alpha:1.0f].CGColor);
-    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-    CGContextFillRect(ctx, insetRect);
-    //CGContextRestoreGState(ctx);
-    
-    if (preloadPage) {
-        CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
-        CGContextClipToRect(ctx, insetRect);
-        
-        NSData *pdfData = [[NSData alloc] initWithContentsOfMappedFile:self.pdfPath];
-        CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);
-        CGPDFDocumentRef pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-        CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, self.pageNumber);
-        CGContextConcatCTM(ctx, CGPDFPageGetDrawingTransform(aPage, kCGPDFCropBox, insetRect, 0, true));
-        @synchronized ([[UIApplication sharedApplication] delegate]) {
-        CGContextDrawPDFPage(ctx, aPage);
-        }
-        CGPDFDocumentRelease(pdf);
-        CGDataProviderRelease(pdfProvider);
-        [pdfData release];
-    }
-    
-    
-    
-    //CGContextClipToRect(ctx, insetRect);
-    
-//    if (preloadPage && page) {
-//        NSLog(@"Start preload render");
-//        CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
-//        CGContextConcatCTM(ctx, CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, pageRect, 0, true));
-//        //CGContextClipToRect(ctx, pageRect);
-//        CGContextDrawPDFPage(ctx, page);
-//        NSLog(@"End preload render");
-//    }
-}
-
-@end
 
 @implementation BlioLayoutRenderThumbsOperation
 
@@ -2390,13 +1911,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 @end
 
-@implementation BlioFastCATiledLayer
-
-+ (CFTimeInterval)fadeDuration {
-    return 0.0;
-}
-
-@end
 
 @implementation BlioLayoutViewColoredRect
 
