@@ -725,7 +725,7 @@
 				7DC9542010FA744C00A89585 /* LWCNSStringAdditions.m */,
 				32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* LibCSSTest.m */,
-				7D22474610FD00D200CFD8B5 /* DB */,
+				7D22474610FD00D200CFD8B5 /* HTMLDB */,
 				7D22474F10FD00D200CFD8B5 /* Document */,
 				7D22475810FD00D200CFD8B5 /* Layout */,
 				7D90593C1123034600167D20 /* Render */,
@@ -756,7 +756,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7D22474610FD00D200CFD8B5 /* DB */ = {
+		7D22474610FD00D200CFD8B5 /* HTMLDB */ = {
 			isa = PBXGroup;
 			children = (
 				7D22474810FD00D200CFD8B5 /* EucHTMLDB.h */,
@@ -768,7 +768,7 @@
 				7D22474D10FD00D200CFD8B5 /* EucHTMLDBNodeManager.h */,
 				7D22474E10FD00D200CFD8B5 /* EucHTMLDBNodeManager.m */,
 			);
-			path = DB;
+			path = HTMLDB;
 			sourceTree = "<group>";
 		};
 		7D22474F10FD00D200CFD8B5 /* Document */ = {
