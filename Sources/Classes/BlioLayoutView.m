@@ -14,11 +14,12 @@
 #import "BlioLayoutScrollView.h"
 #import "BlioLayoutContentView.h"
 
-static const CGFloat kBlioPDFBlockMinimumWidth = 50;
 static const CGFloat kBlioPDFBlockInsetX = 6;
 static const CGFloat kBlioPDFBlockInsetY = 10;
 static const CGFloat kBlioPDFShadowShrinkScale = 2;
 static const CGFloat kBlioPDFGoToZoomScale = 0.7f;
+
+static const int kBlioLayoutMaxThumbCacheSize = 2088960; // 2BM in bytes
 
 @interface BlioLayoutRenderThumbsOperation : NSOperation {
     NSString *pdfPath;
@@ -82,7 +83,6 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 - (NSArray *)bookmarkRangesForCurrentPage;
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
-- (void)addPagesToThumbsQueue:(NSInteger)startPage;
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic) CGFloat lastZoomScale;
 @property (nonatomic, retain) NSData *pdfData;
@@ -109,7 +109,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 @synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor, fetchHighlightsQueue;
 @synthesize pdfPath, pdfData, lastZoomScale;
-@synthesize renderThumbsQueue, thumbCache, pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
+@synthesize renderThumbsQueue, thumbCache, thumbCacheSize, pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -255,8 +255,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         NSNumber *savedPage = [aBook layoutPageNumber];
         NSInteger page = (nil != savedPage) ? [savedPage intValue] : 1;
         
-        self.thumbCache = [NSMutableDictionary dictionary];
-        //[self addPagesToThumbsQueue:page];
+        //self.thumbCache = [NSMutableDictionary dictionary];
+        self.thumbCache = nil;
+        self.thumbCacheSize = 0;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
@@ -300,73 +303,87 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     [tiltScroller setScrollView:self.scrollView];
 }
 
-#pragma mark -
-#pragma mark Thumb Rendering
-
-- (void)addPagesToThumbsQueue:(NSInteger)startPage {
-    // Thumb rendering priority:
-    // 1. Page 1
-    // 2. Start page
-    // 3. Page 2
-    // 4. Start Page - 1
-    // 5. The rest
-    CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);
-    CGPDFDocumentRef aPdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-    NSInteger pdfPageCount = CGPDFDocumentGetNumberOfPages(aPdf);
-    CGPDFDocumentRelease(aPdf);
-    CGDataProviderRelease(pdfProvider);
-    
-    NSArray *priorityPages = [NSArray arrayWithObjects:
-                              [NSNumber numberWithInt:1], 
-                              [NSNumber numberWithInt:startPage], 
-                              [NSNumber numberWithInt:2], 
-                              [NSNumber numberWithInt:startPage - 1], 
-                              nil];
-    
-    for (NSNumber *priorityPage in priorityPages) {
-        BlioLayoutRenderThumbsOperation* thumbOp = [[BlioLayoutRenderThumbsOperation alloc] initWithPDFPath:self.pdfPath pageNumber:[priorityPage intValue] target:self action:@selector(renderThumbComplete:)];
-        [thumbOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
-        [self.renderThumbsQueue addOperation:thumbOp];
-        [thumbOp release];
-    }
-    
-    for (int i = 3; i <= pdfPageCount ; i++) {
-        if ((i != startPage) && (i != (startPage - 1))) {
-            BlioLayoutRenderThumbsOperation* thumbOp = [[BlioLayoutRenderThumbsOperation alloc] initWithPDFPath:self.pdfPath pageNumber:i target:self action:@selector(renderThumbComplete:)];
-            [self.renderThumbsQueue addOperation:thumbOp];
-            [thumbOp release];
-        }
-    }
+- (void)didReceiveMemoryWarning:(NSNotification *)notification {
+    NSLog(@"Did receive memory warning - PURGING THUMB CACHE");
+    self.thumbCache = [NSMutableDictionary dictionary];
+    self.thumbCacheSize = 0;
 }
+
+#pragma mark -
+#pragma mark Thumb Cache Methods
 
 - (CGImageRef)createThumbImageForPage:(NSInteger)page {
     if (nil == self.thumbCache) return nil;
     
-    NSData *compressedData = nil;
-    NSLog(@"Waiting for lock");
-    @synchronized (self.thumbCache) {
-        compressedData = [self.thumbCache objectForKey:[NSNumber numberWithInteger:page]];
+    NSMutableDictionary *thumbCacheDictionary = [self.thumbCache objectForKey:[NSNumber numberWithInteger:page]];
+    if (nil == thumbCacheDictionary) {
+        NSLog(@"THUMB CACHE MISS FOR PAGE %d", page);
+        return nil;
     }
-    NSLog(@"Done Waiting for lock");
+    
+    NSDate *start = [NSDate date];
+    NSData *compressedData = [thumbCacheDictionary valueForKey:@"compressedData"];
     if (nil == compressedData) return nil;
-    NSLog(@"start decompress");
+    
     CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)compressedData);
     CGImageRef thumb = CGImageCreateWithPNGDataProvider(provider, NULL, NO, kCGRenderingIntentDefault);
     CGDataProviderRelease(provider);
-    NSLog(@"end decompress");
+    
+    // Update accessedDate
+    [thumbCacheDictionary setValue:[NSDate date] forKey:@"accessedDate"];
+
+    NSLog(@"THUMB CACHE HIT FOR PAGE %d", page);
+    NSLog(@"It took %.3f seconds to decompress image", -[start timeIntervalSinceNow]);
+
     return thumb;
 }
 
-- (void)renderThumbComplete:(NSDictionary *)thumbDictionary {
-    NSData *compressedData = [thumbDictionary valueForKey:@"compressedData"];
-    NSNumber *thumbPage = [thumbDictionary valueForKey:@"pageNumber"];
-    if (compressedData && thumbPage && self.thumbCache) {
-        NSLog(@"acquired locked for write");
-        @synchronized (self.thumbCache) {
-            [self.thumbCache setObject:compressedData forKey:thumbPage];
-        }
-        NSLog(@"released locked for write");
+- (void)addThumbDataToCache:(NSMutableDictionary *)thumbCacheDictionary {
+    NSNumber *thumbPage = [thumbCacheDictionary valueForKey:@"pageNumber"];
+    NSData *compressedData = [thumbCacheDictionary valueForKey:@"compressedData"];
+    NSDate *accessedDate = [thumbCacheDictionary valueForKey:@"accessedDate"];
+    
+    self.thumbCacheSize += [compressedData length];
+    
+    if (thumbPage && compressedData && accessedDate) {
+        if (nil == [self.thumbCache objectForKey:thumbPage])
+            [self.thumbCache setObject:thumbCacheDictionary forKey:thumbPage];
     }
+    
+    if (self.thumbCacheSize > kBlioLayoutMaxThumbCacheSize) {
+        NSSortDescriptor *dateSort = [[[NSSortDescriptor alloc] initWithKey:@"accessedDate" ascending:YES] autorelease];
+        NSArray *sortedItems = [[self.thumbCache allValues] sortedArrayUsingDescriptors:[NSArray arrayWithObject:dateSort]];
+        
+        if ([sortedItems count]) {
+            id oldestItem = [sortedItems objectAtIndex:0];        
+            NSData *compressedData = [oldestItem valueForKey:@"compressedData"];
+            NSLog(@"Page %@ purged from cache. Cache size dropped from %d to %d", [oldestItem valueForKey:@"pageNumber"], self.thumbCacheSize, self.thumbCacheSize - [compressedData length]); 
+            self.thumbCacheSize -= [compressedData length];
+            NSArray *keys = [self.thumbCache allKeysForObject:oldestItem];
+            [self.thumbCache removeObjectsForKeys:keys];
+        }
+    }
+}
+
+- (void)cacheThumbImage:(NSDictionary *)thumbDictionary {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    CGImageRef thumbImage = (CGImageRef)[thumbDictionary valueForKey:@"thumbImage"];
+    
+    NSNumber *thumbPage = [thumbDictionary valueForKey:@"pageNumber"];
+    UIImage *image = [[UIImage alloc] initWithCGImage:thumbImage];
+    
+    NSData *compressedData = UIImagePNGRepresentation(image);
+    if (compressedData && thumbPage) {
+        NSMutableDictionary *thumbCacheDictionary = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+                                                     compressedData, @"compressedData", 
+                                                     thumbPage, @"pageNumber", 
+                                                     [NSDate date], @"accessedDate", nil];
+        
+        [self performSelectorOnMainThread:@selector(addThumbDataToCache:) withObject:thumbCacheDictionary waitUntilDone:NO];
+        [thumbCacheDictionary release];
+    }
+    [image release];
+    [pool drain];
 }
 
 #pragma mark -
@@ -409,9 +426,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark Tile Rendering
 
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
-    
+     //NSLog(@"Tiled rendering started");
 //    CGFloat inset = -kBlioLayoutShadow;
     CGRect layerBounds = aLayer.bounds;
+    
+    CGAffineTransform layerContext = CGContextGetCTM(ctx);
     
     CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
 	CGContextScaleCTM(ctx, 1, -1);
@@ -438,37 +457,37 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     CGAffineTransform pdfTransform = transformRectToFitRect(unscaledCropRect, scaledCropRect);
     
     CGContextConcatCTM(ctx, pdfTransform);
-    
+    BOOL createSnapshot = NO;
 //    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:arc4random() % 1000 / 1000.0f green:arc4random() % 1000 / 1000.0f blue:arc4random() % 1000 / 1000.0f alpha:1].CGColor);
 //    CGContextFillRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
 //    CGContextClipToRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
     // Lock around the drawing so we limit the memory footprint
+    NSDate *start = [NSDate date];
     @synchronized ([[UIApplication sharedApplication] delegate]) {
         CGContextDrawPDFPage(ctx, aPage);
         CGPDFDocumentRelease(aPdf);
+        //if (self.scrollView.zoomScale = 1) createSnapshot = YES;
     }
+    NSLog(@"It took %.3f seconds to draw page %d", -[start timeIntervalSinceNow], aPageNumber);
     CGDataProviderRelease(pdfProvider);
-     
-}
-
-#pragma mark -
-#pragma mark Thumb Rendering
-
-- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
     
-    CGRect cropRect = [self cropForPage:aPageNumber];
-    if (CGRectEqualToRect(cropRect, CGRectZero)) return;
+    // Don't create a thumb when we are zoomed in, we want to limit the size of the cached image
+    if (layerContext.a == 1) createSnapshot = YES;
     
-    CGRect layerBounds = aLayer.bounds;
-    
-    CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
-	CGContextScaleCTM(ctx, 1, -1);
-    
-    CGImageRef thumbImage = [self createThumbImageForPage:aPageNumber];
-    if (nil != thumbImage) {
-        CGContextDrawImage(ctx, cropRect, thumbImage);
-        CGImageRelease(thumbImage);
+    if (createSnapshot) {
+        start = [NSDate date];
+        CGImageRef imageRef = CGBitmapContextCreateImage(ctx);
+        NSDictionary *thumbDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                         (id)imageRef, @"thumbImage", 
+                                         [NSNumber numberWithInteger:aPageNumber], @"pageNumber", nil];
+        [self performSelectorInBackground:@selector(cacheThumbImage:) withObject:thumbDictionary];
+        
+        
+        CGImageRelease(imageRef);
+        [thumbDictionary release];
+        NSLog(@"It took %.3f seconds to create the cache snapshot", -[start timeIntervalSinceNow]);
     }
+    
 }
 
 #pragma mark -
@@ -933,7 +952,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         }
     } else if (object == self) {
         if ([keyPath isEqualToString:@"currentPageLayer"]) {
-            NSLog(@"pageLayerChanged");
+            NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
             [self.selector setSelectedRange:nil];
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
@@ -1544,13 +1563,14 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         currentPageNumber = self.pageNumber;
     } else {
         CGFloat pageWidth = sender.contentSize.width / pageCount;
-        currentPageNumber = floor((sender.contentOffset.x - pageWidth / 2) / pageWidth) + 2;   
+        currentPageNumber = floor((sender.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
     }
     
     
     if (currentPageNumber != self.pageNumber) {
         
-        self.currentPageLayer = [self.contentView addPage:currentPageNumber retainPages:nil];
+        BlioLayoutPageLayer *aLayer = [self.contentView addPage:currentPageNumber retainPages:nil];
+        
         if (!self.scrollToPageInProgress) {
             if (currentPageNumber < self.pageNumber) {
                 [self.contentView addPage:currentPageNumber - 1 retainPages:nil];
@@ -1559,6 +1579,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
                 [self.contentView addPage:currentPageNumber + 1 retainPages:nil];
             }
             self.pageNumber = currentPageNumber;
+            self.currentPageLayer = aLayer;
         }
 
     }
@@ -1620,17 +1641,19 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         CGRect targetRect = CGRectApplyAffineTransform([targetParagraph rect], viewTransform);
         targetRect = CGRectInset(targetRect, -kBlioPDFBlockInsetX, -kBlioPDFBlockInsetY);
         
-        if (CGRectGetWidth(targetRect) < kBlioPDFBlockMinimumWidth) {
-            targetRect.origin.x -= ((kBlioPDFBlockMinimumWidth - CGRectGetWidth(targetRect)))/2.0f;
-            targetRect.size.width += (kBlioPDFBlockMinimumWidth - CGRectGetWidth(targetRect));
+        CGFloat blockMinimumWidth = self.bounds.size.width / kBlioLayoutMaxZoom;
+        
+        if (CGRectGetWidth(targetRect) < blockMinimumWidth) {
+            targetRect.origin.x -= ((blockMinimumWidth - CGRectGetWidth(targetRect)))/2.0f;
+            targetRect.size.width += (blockMinimumWidth - CGRectGetWidth(targetRect));
             
             if (targetRect.origin.x < 0) {
                 targetRect.origin.x = 0;
-                targetRect.size.width += (kBlioPDFBlockMinimumWidth - CGRectGetWidth(targetRect));
+                targetRect.size.width += (blockMinimumWidth - CGRectGetWidth(targetRect));
             }
             
             if (CGRectGetMaxX(targetRect) > CGRectGetWidth(self.scrollView.bounds)) {
-                targetRect.origin.x = CGRectGetWidth(targetRect) - kBlioPDFBlockMinimumWidth;
+                targetRect.origin.x = CGRectGetWidth(targetRect) - blockMinimumWidth;
             }
         }
         

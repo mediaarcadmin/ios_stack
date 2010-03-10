@@ -25,9 +25,11 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
 - (CGAffineTransform)viewTransformForPage:(NSInteger)page;
 
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber;
-- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
+//- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page excluding:(BlioBookmarkRange *)excludedBookmark;
+
+- (CGImageRef)createThumbImageForPage:(NSInteger)page;
 
 @end
 
@@ -51,6 +53,7 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
     NSOperationQueue *fetchHighlightsQueue;
     NSOperationQueue *renderThumbsQueue;
     NSMutableDictionary *thumbCache;
+    NSInteger thumbCacheSize;
     NSString *pdfPath;
     NSData *pdfData;
     NSDictionary *pageCropsCache;
@@ -76,6 +79,7 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
 @property (nonatomic, retain) NSOperationQueue *fetchHighlightsQueue;
 @property (nonatomic, retain) NSOperationQueue *renderThumbsQueue;
 @property (nonatomic, retain) NSMutableDictionary *thumbCache;
+@property (nonatomic) NSInteger thumbCacheSize;
 @property (nonatomic, retain) NSDictionary *pageCropsCache;
 @property (nonatomic, retain) NSDictionary *viewTransformsCache;
 @property (nonatomic, retain) NSString *pdfPath;

@@ -19,7 +19,7 @@
 
 @end
 
-@interface BlioLayoutThumbLayer : CATiledLayer {
+@interface BlioLayoutThumbLayer : CALayer {
     NSInteger pageNumber;
     id <BlioLayoutDataSource> dataSource;
 }
@@ -75,9 +75,8 @@
 }
 
 - (CALayer *)addPage:(NSInteger)aPageNumber retainPages:(NSSet *)pages {
-    NSLog(@"Add page %d", aPageNumber);
+   // NSLog(@"Add page %d", aPageNumber);
     if (![self.dataSource dataSourceContainsPage:aPageNumber]) {
-        NSLog(@"add Page out of rage");
         return nil;
     }
     
@@ -96,7 +95,7 @@
         BlioLayoutPageLayer *cachedLayer = [cachedLayers objectAtIndex:i];
         NSInteger cachedPageNumber = cachedLayer.pageNumber;
         if(cachedPageNumber == aPageNumber) {
-            NSLog(@"Cache hit for page %d", aPageNumber);
+            //NSLog(@"Cache hit for page %d", aPageNumber);
             pageLayer = cachedLayer;
             break;
         } else {
@@ -111,9 +110,9 @@
     }
     
     if(nil == pageLayer) {
-         NSLog(@"Add page no cached version");
+         //NSLog(@"Add page no cached version");
         if (layerCacheCount < kBlioLayoutMaxPages) {
-            NSLog(@"Add new layer to cache");
+            //NSLog(@"Add new layer to cache");
             pageLayer = [BlioLayoutPageLayer layer];
             
             BlioLayoutShadowLayer *shadowLayer = [BlioLayoutShadowLayer layer];
@@ -125,11 +124,16 @@
             [pageLayer setShadowLayer:shadowLayer];
             
             BlioLayoutThumbLayer *thumbLayer = [BlioLayoutThumbLayer layer];
+            CGImageRef thumbImage = [self.dataSource createThumbImageForPage:aPageNumber];
+            if (thumbImage) {
+                [thumbLayer setContents:(id)thumbImage];
+                CGImageRelease(thumbImage);
+            }
             thumbLayer.dataSource = self.dataSource;
-            thumbLayer.pageNumber = aPageNumber;
+//            thumbLayer.pageNumber = aPageNumber;
             thumbLayer.frame = self.bounds;
-            thumbLayer.levelsOfDetail = 1;
-            thumbLayer.tileSize = CGSizeMake(1024, 1024);
+//            thumbLayer.levelsOfDetail = 1;
+//            thumbLayer.tileSize = CGSizeMake(1024, 1024);
             [pageLayer addSublayer:thumbLayer];
             [pageLayer setThumbLayer:thumbLayer];
             
@@ -155,7 +159,7 @@
             [self.pageLayers addObject:pageLayer];
             [self.layer addSublayer:pageLayer];
         } else {
-            NSLog(@"using the furthest page index %d", furthestPageIndex);
+            //NSLog(@"using the furthest page index %d", furthestPageIndex);
             pageLayer = [cachedLayers objectAtIndex:furthestPageIndex];
         }
         
@@ -200,9 +204,16 @@
     [self.shadowLayer setPageNumber:newPageNumber];
     [self.shadowLayer setNeedsDisplay];
     
-    [self.thumbLayer setPageNumber:newPageNumber];
-    [self.thumbLayer setContents:nil];
-    [self.thumbLayer setNeedsDisplay];
+//    [self.thumbLayer setPageNumber:newPageNumber];
+//    [self.thumbLayer setContents:nil];
+//    [self.thumbLayer setNeedsDisplay];
+    CGImageRef thumbImage = [self.thumbLayer.dataSource createThumbImageForPage:newPageNumber];
+    if (thumbImage) {
+        [self.thumbLayer setContents:(id)thumbImage];
+        CGImageRelease(thumbImage);
+    } else {
+        [self.thumbLayer setContents:nil];
+    }
     
     [self.highlightsLayer setPageNumber:newPageNumber];
     [self.highlightsLayer setContents:nil];
@@ -228,7 +239,7 @@
 @synthesize pageNumber, dataSource;
 
 - (void)drawInContext:(CGContextRef)ctx {
-    NSLog(@"Draw tiled layer for page %d", self.pageNumber);
+    //NSLog(@"Draw tiled layer for page %d", self.pageNumber);
 
     [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber];
     
@@ -247,9 +258,9 @@
 
 @synthesize pageNumber, dataSource;
 
-- (void)drawInContext:(CGContextRef)ctx {
-    [self.dataSource drawThumbLayer:self inContext:ctx forPage:self.pageNumber];    
-}
+//- (void)drawInContext:(CGContextRef)ctx {
+//    [self.dataSource drawThumbLayer:self inContext:ctx forPage:self.pageNumber];    
+//}
 
 @end
 
@@ -258,7 +269,7 @@
 @synthesize pageNumber, dataSource;
 
 - (void)drawInContext:(CGContextRef)ctx {
-    NSLog(@"Draw shadow for page %d", self.pageNumber);
+    //NSLog(@"Draw shadow for page %d", self.pageNumber);
     [self.dataSource drawShadowLayer:self inContext:ctx forPage:self.pageNumber];    
 }
 
@@ -276,7 +287,7 @@
 - (void)drawInContext:(CGContextRef)ctx {
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-    NSLog(@"Draw highlights for page %d", self.pageNumber);
+    //NSLog(@"Draw highlights for page %d", self.pageNumber);
     [self.dataSource drawHighlightsLayer:self inContext:ctx forPage:self.pageNumber excluding:self.excludedHighlight];
     [CATransaction commit];
 }
