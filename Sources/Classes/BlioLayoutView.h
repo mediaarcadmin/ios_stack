@@ -25,11 +25,10 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
 - (CGAffineTransform)viewTransformForPage:(NSInteger)page;
 
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber;
-//- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page excluding:(BlioBookmarkRange *)excludedBookmark;
 
-- (CGImageRef)createThumbImageForPage:(NSInteger)page;
+- (void)requestThumbImageForPage:(NSInteger)page;
 
 @end
 

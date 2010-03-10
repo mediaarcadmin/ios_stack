@@ -115,31 +115,21 @@
             //NSLog(@"Add new layer to cache");
             pageLayer = [BlioLayoutPageLayer layer];
             
+            BlioLayoutThumbLayer *thumbLayer = [BlioLayoutThumbLayer layer];
+            thumbLayer.dataSource = self.dataSource;
+            thumbLayer.frame = self.bounds;
+            [pageLayer addSublayer:thumbLayer];
+            [pageLayer setThumbLayer:thumbLayer];
+            
             BlioLayoutShadowLayer *shadowLayer = [BlioLayoutShadowLayer layer];
             shadowLayer.dataSource = self.dataSource;
-            shadowLayer.pageNumber = aPageNumber;
             shadowLayer.frame = self.bounds;
             shadowLayer.opaque = YES;
             [pageLayer addSublayer:shadowLayer];
             [pageLayer setShadowLayer:shadowLayer];
             
-            BlioLayoutThumbLayer *thumbLayer = [BlioLayoutThumbLayer layer];
-            CGImageRef thumbImage = [self.dataSource createThumbImageForPage:aPageNumber];
-            if (thumbImage) {
-                [thumbLayer setContents:(id)thumbImage];
-                CGImageRelease(thumbImage);
-            }
-            thumbLayer.dataSource = self.dataSource;
-//            thumbLayer.pageNumber = aPageNumber;
-            thumbLayer.frame = self.bounds;
-//            thumbLayer.levelsOfDetail = 1;
-//            thumbLayer.tileSize = CGSizeMake(1024, 1024);
-            [pageLayer addSublayer:thumbLayer];
-            [pageLayer setThumbLayer:thumbLayer];
-            
             BlioLayoutTiledLayer *tiledLayer = [BlioLayoutTiledLayer layer];
             tiledLayer.dataSource = self.dataSource;
-            tiledLayer.pageNumber = aPageNumber;
             tiledLayer.frame = self.bounds;
             tiledLayer.levelsOfDetail = 7;
             tiledLayer.levelsOfDetailBias = 5;
@@ -149,7 +139,6 @@
             
             BlioLayoutHighlightsLayer *highlightsLayer = [BlioLayoutHighlightsLayer layer];
             highlightsLayer.dataSource = self.dataSource;
-            highlightsLayer.pageNumber = aPageNumber;
             highlightsLayer.frame = self.bounds;
             highlightsLayer.levelsOfDetail = 1;
             highlightsLayer.tileSize = CGSizeMake(1024, 1024);
@@ -197,23 +186,13 @@
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
     pageNumber = newPageNumber;
+    [self.thumbLayer setPageNumber:newPageNumber];
+    
     [self.tiledLayer setPageNumber:newPageNumber];
-    [self.tiledLayer setContents:nil];
     [self.tiledLayer setNeedsDisplay];
     
     [self.shadowLayer setPageNumber:newPageNumber];
     [self.shadowLayer setNeedsDisplay];
-    
-//    [self.thumbLayer setPageNumber:newPageNumber];
-//    [self.thumbLayer setContents:nil];
-//    [self.thumbLayer setNeedsDisplay];
-    CGImageRef thumbImage = [self.thumbLayer.dataSource createThumbImageForPage:newPageNumber];
-    if (thumbImage) {
-        [self.thumbLayer setContents:(id)thumbImage];
-        CGImageRelease(thumbImage);
-    } else {
-        [self.thumbLayer setContents:nil];
-    }
     
     [self.highlightsLayer setPageNumber:newPageNumber];
     [self.highlightsLayer setContents:nil];
@@ -238,6 +217,11 @@
 
 @synthesize pageNumber, dataSource;
 
+- (void)setPageNumber:(NSInteger)aPageNumber {
+    self.contents = nil;
+    pageNumber = aPageNumber;
+}
+
 - (void)drawInContext:(CGContextRef)ctx {
     //NSLog(@"Draw tiled layer for page %d", self.pageNumber);
 
@@ -258,15 +242,52 @@
 
 @synthesize pageNumber, dataSource;
 
-//- (void)drawInContext:(CGContextRef)ctx {
-//    [self.dataSource drawThumbLayer:self inContext:ctx forPage:self.pageNumber];    
-//}
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
+
+- (void)setPageNumber:(NSInteger)aPageNumber {
+    //NSLog(@"Updating layer from page %d to %d", pageNumber, aPageNumber);
+    self.contents = nil;
+    pageNumber = aPageNumber;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateContents:) name:@"BlioLayoutThumbLayerContentsAvailable" object:nil];
+    [self.dataSource requestThumbImageForPage:aPageNumber];
+}
+
+- (void)updateContents:(NSNotification *)notification {
+    if ([[notification object] integerValue] == self.pageNumber) {
+        //NSLog(@"updateContents notification received on page %d for page %@", self.pageNumber, [notification object]);
+        if (nil == self.contents) {
+            NSDictionary *thumbDictionary = [notification userInfo];
+            if (nil != thumbDictionary) {
+                CGImageRef thumbImage = (CGImageRef)[thumbDictionary valueForKey:@"thumbImage"];
+                NSNumber *thumbPage = [thumbDictionary valueForKey:@"pageNumber"];
+                
+                if (thumbImage && thumbPage) {
+                    if ([thumbPage integerValue] == self.pageNumber) {
+                        
+                        self.contents = (id)thumbImage;
+                        [self setNeedsDisplay];
+                        NSLog(@"Set thumbLayer contents for page %d", self.pageNumber);
+                    }
+                }
+            }
+        }
+    }
+}
 
 @end
 
 @implementation BlioLayoutShadowLayer
 
 @synthesize pageNumber, dataSource;
+
+- (void)setPageNumber:(NSInteger)aPageNumber {
+    self.contents = nil;
+    pageNumber = aPageNumber;
+}
 
 - (void)drawInContext:(CGContextRef)ctx {
     //NSLog(@"Draw shadow for page %d", self.pageNumber);
