@@ -112,6 +112,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 @synthesize renderThumbsQueue, thumbCache, thumbCacheSize, pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 
 - (void)dealloc {
+    isCancelled = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     CGPDFDocumentRelease(pdf);
@@ -149,7 +150,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
-    
+
     self.pdfPath = [aBook pdfPath];
     
     self.pdfData = [[NSData alloc] initWithContentsOfMappedFile:[aBook pdfPath]];
@@ -161,6 +162,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {
         // Initialization code
+        isCancelled = NO;
         self.book = aBook;
         self.clearsContextBeforeDrawing = NO; // Performance optimisation;
         self.scrollToPageInProgress = NO;
@@ -428,6 +430,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
      //NSLog(@"Tiled rendering started");
 //    CGFloat inset = -kBlioLayoutShadow;
+    
+    // Because this occurs on a background thread but accesses self, we must check whether we have been cancelled
+    
     CGRect layerBounds = aLayer.bounds;
     
     CGAffineTransform layerContext = CGContextGetCTM(ctx);
@@ -436,7 +441,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 	CGContextScaleCTM(ctx, 1, -1);
     
     //NSLog(@"clipRect %@", NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
-    
+    if (isCancelled) return;
     CGRect scaledCropRect = [self cropForPage:aPageNumber];
     //CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:arc4random() % 1000 / 1000.0f green:arc4random() % 1000 / 1000.0f blue:arc4random() % 1000 / 1000.0f alpha:1].CGColor);
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
@@ -445,7 +450,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     CGContextClipToRect(ctx, scaledCropRect);
     
 //    CGRect insetBounds = UIEdgeInsetsInsetRect(layerBounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-    
+    if (isCancelled) return;
     CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.pdfData);
     CGPDFDocumentRef aPdf = CGPDFDocumentCreateWithProvider(pdfProvider);
     CGPDFPageRef aPage = CGPDFDocumentGetPage(aPdf, aPageNumber);
@@ -480,8 +485,13 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         NSDictionary *thumbDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
                                          (id)imageRef, @"thumbImage", 
                                          [NSNumber numberWithInteger:aPageNumber], @"pageNumber", nil];
-        [self performSelectorInBackground:@selector(cacheThumbImage:) withObject:thumbDictionary];
         
+        if (isCancelled) {
+            CGImageRelease(imageRef);
+            [thumbDictionary release];
+            return;
+        }
+        [self performSelectorInBackground:@selector(cacheThumbImage:) withObject:thumbDictionary];
         
         CGImageRelease(imageRef);
         [thumbDictionary release];
@@ -1250,7 +1260,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         
         // 1. Move the current page and its adjacent pages next to the target page's adjacent pages
         CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
-        NSInteger startPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
+        //NSInteger startPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
+        NSInteger startPage = floor((self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
         if (startPage == targetPage) return;
         
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
@@ -1286,7 +1297,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             if ([prevLayerSet count]) {
                 CALayer *prevLayer = [[prevLayerSet allObjects] objectAtIndex:0];
                 CGRect newFrame = self.currentPageLayer.frame;
-                newFrame.origin.x -= pageWidth;
+                newFrame.origin.x -= CGRectGetWidth(self.currentPageLayer.frame);
                 prevLayer.frame = newFrame;
                 [pageLayersToPreserve addObject:prevLayer];
             } else {
@@ -1297,7 +1308,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             if ([nextLayerSet count]) {
                 CALayer *nextLayer = [[nextLayerSet allObjects] objectAtIndex:0];
                 CGRect newFrame = self.currentPageLayer.frame;
-                newFrame.origin.x += pageWidth;
+                newFrame.origin.x += CGRectGetWidth(self.currentPageLayer.frame);
                 nextLayer.frame = newFrame;
                 [pageLayersToPreserve addObject:nextLayer];
             } else {
