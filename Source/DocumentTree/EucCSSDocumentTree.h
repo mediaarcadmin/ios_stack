@@ -7,11 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <libcss/libcss.h>
 
 #import "EucCSSDocumentTreeNode.h"
-
-extern css_select_handler EucCSSDocumentTreeSelectHandler;
 
 @protocol EucCSSDocumentTree <NSObject>
 

@@ -9,24 +9,30 @@
 #import <libcss/libcss.h>
 #import <libcss/properties.h>
 
-#import "EucHTMLDBNode.h"
+#import "EucCSSInternal.h"
+
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
+
+#import "EucCSSDocumentTree.h"
+#import "EucCSSDocumentTree_Package.h"
+#import "EucCSSDocumentTreeNode.h"
+
 #import "LWCNSStringAdditions.h"
 #import "THStringRenderer.h"
 #import "THLog.h"
 
 @implementation EucCSSIntermediateDocumentConcreteNode
 
-@synthesize dbNode = _dbNode;
+@synthesize documentTreeNode = _documentTreeNode;
 
-- (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucCSSIntermediateDocument *)document;
+- (id)initWithDocumentTreeNode:(id<EucCSSDocumentTreeNode>)documentTreeNode inDocument:(EucCSSIntermediateDocument *)document;
 {
     if((self = [super init])) {
-        _dbNode = [dbNode retain];
+        _documentTreeNode = [documentTreeNode retain];
         self.document = document;
-        self.key = _dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+        self.key = _documentTreeNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
     }
     return self;
 }
@@ -47,32 +53,27 @@
     
     [_text release];
         
-    [_dbNode release];
+    [_documentTreeNode release];
     
     [super dealloc];
 }
 
 - (BOOL)isTextNode
 {
-    return _dbNode.kind == nodeKindText;
+    return _documentTreeNode.kind == EucCSSDocumentTreeNodeKindText;
 }
 
 - (NSString *)name
 {
-    lwc_string *name = _dbNode.name;
-    if(name) {
-        return [NSString stringWithLWCString:name];
-    } else {
-        return nil;
-    }
+    return _documentTreeNode.name;
 }
 
 - (NSString *)text
 {
     if(!_text) {
-        char *contents;
+        const char *contents;
         size_t length = 0;
-        if([_dbNode getCharacterContents:&contents length:&length]) {
+        if([_documentTreeNode getCharacterContents:&contents length:&length]) {
             _text = (NSString *)CFStringCreateWithBytes(kCFAllocatorDefault,
                                                         (const UInt8 *)contents, 
                                                         length, 
@@ -91,15 +92,15 @@
     css_computed_style *ret;
     
     css_computed_style_create(EucRealloc, NULL, &ret);
-    css_select_handler *selectHandler = [EucHTMLDBNode selectHandler];
+    css_select_handler *selectHandler = &EucCSSDocumentTreeSelectHandler;
     err = css_select_style(_document.selectContext, 
-                           (void *)(uintptr_t)_dbNode.key,
+                           (void *)(uintptr_t)_documentTreeNode.key,
                            pseudoElement, 
                            CSS_MEDIA_PRINT, 
                            inlineStyle, 
                            ret,
                            selectHandler,
-                           _document.htmlDBNodeManager);
+                           _document.documentTree);
         
     if(err == CSS_OK) {
         if(pseudoElement != CSS_PSEUDO_ELEMENT_NONE) {
@@ -117,7 +118,7 @@
                 err = css_computed_style_compose(parentStyle, 
                                                  ret,
                                                  selectHandler->compute_font_size,
-                                                 _document.htmlDBNodeManager,
+                                                 NULL,
                                                  ret);
                 if(err != CSS_OK) {
                     THWarn(@"Error %ld composing style", (long)err);
@@ -133,12 +134,12 @@
 
 - (void)_computeStyles
 {
-    if(_dbNode.kind == nodeKindElement) {
+    if(_documentTreeNode.kind == EucCSSDocumentTreeNodeKindText) {
         css_error err;
         
         css_stylesheet *inlineStyle = NULL;
-        hubbub_string inlineStyleString = [_dbNode copyHubbubAttributeForName:"style"];
-        if(inlineStyleString.len) {
+        NSString *inlineStyleString = [_documentTreeNode attributeWithName:@"style"];
+        if(inlineStyleString) {
             err = css_stylesheet_create(CSS_LEVEL_21, "UTF-8",
                                         "", "", CSS_ORIGIN_AUTHOR, 
                                         CSS_MEDIA_ALL, false,
@@ -149,7 +150,8 @@
             if(err != CSS_OK) {
                 THWarn(@"Error %ld creating inline style", (long)err);
             } else {
-                err = css_stylesheet_append_data(inlineStyle, inlineStyleString.ptr, inlineStyleString.len);
+                const char *utf8StyleString = [inlineStyleString UTF8String];
+                err = css_stylesheet_append_data(inlineStyle, (const uint8_t *)utf8StyleString, strlen(utf8StyleString));
                 if(err == CSS_NEEDDATA) {
                     err = css_stylesheet_data_done(inlineStyle);
                 }
@@ -159,7 +161,6 @@
                     inlineStyle = NULL;
                 }
             }
-            free((void *)inlineStyleString.ptr);
         }
         
         const css_computed_style *parentStyle = nil;
@@ -207,7 +208,7 @@
 
 - (EucCSSIntermediateDocumentNode *)parent
 {
-    EucHTMLDBNode *parentDBNode = _dbNode.parentNode;
+    id<EucCSSDocumentTreeNode> parentDBNode = _documentTreeNode.parent;
     if(parentDBNode) {
         return [_document nodeForKey:parentDBNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
     } else {
@@ -217,7 +218,7 @@
 
 - (NSUInteger)childrenCount;
 {
-    NSUInteger childrenCount = _dbNode.childrenKeysCount;
+    NSUInteger childrenCount = _documentTreeNode.childCount;
     if(self.computedBeforeStyle) {
         childrenCount++;
     }
@@ -238,10 +239,10 @@
                 [children addObject:[_document nodeForKey:self.key | EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode]];
             }
             
-            uint32_t dbNodeChildrenCount = _dbNode.childrenKeysCount;
-            uint32_t *childrenKeys = _dbNode.childrenKeys;
-            for(uint32_t i = 0; i < dbNodeChildrenCount; ++i) {
-                [children addObject:[_document nodeForKey:childrenKeys[i] << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS]];
+            id<EucCSSDocumentTreeNode> child = _documentTreeNode.firstChild;
+            while(child) {
+                [children addObject:[_document nodeForKey:child.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS]];
+                child = child.nextSibling;
             }
 
             if(self.computedAfterStyle) {

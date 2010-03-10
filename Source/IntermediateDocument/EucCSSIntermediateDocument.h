@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <libwapcaplet/libwapcaplet.h>
 #import <libcss/libcss.h>
-#import "EucHTMLDB.h"
 
 #define EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS 3
 typedef enum EucCSSIntermediateDocumentNodeKeyFlags
@@ -23,13 +22,12 @@ typedef enum EucCSSIntermediateDocumentNodeKeyFlags
 
 CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase);
 
-@class EucCSSIntermediateDocumentNode, EucCSSIntermediateDocumentConcreteNode, EucHTMLDBNodeManager, EucHTMLDBNode;
+@class EucCSSIntermediateDocumentNode, EucCSSIntermediateDocumentConcreteNode;
+@protocol EucCSSDocumentTree;
 
 @interface EucCSSIntermediateDocument : NSObject {
-    EucHTMLDB *_db;
+    id<EucCSSDocumentTree> _documentTree;
     lwc_context *_lwcContext;
-    
-    EucHTMLDBNodeManager *_manager;
     
     css_select_ctx *_selectCtx;
     
@@ -40,13 +38,13 @@ CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed s
 }
 
 
-- (id)initWithPath:(NSString *)path;
+- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree;
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key;
 
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentConcreteNode *rootNode;
 
 // Logically package-scope propeties.
-@property (nonatomic, readonly) EucHTMLDBNodeManager *htmlDBNodeManager;
+@property (nonatomic, readonly) id<EucCSSDocumentTree> documentTree;
 @property (nonatomic, readonly) css_select_ctx *selectContext;
 @property (nonatomic, readonly) lwc_context *lwcContext;
 

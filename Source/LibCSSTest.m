@@ -3,6 +3,8 @@
 #include <hubbub/hubbub.h>
 #include <libcss/libcss.h>
 
+#include "EucCSSInternal.h"
+
 #include "EucCSSIntermediateDocument.h"
 #include "EucCSSIntermediateDocumentNode.h"
 #include "EucCSSIntermediateDocumentConcreteNode.h"

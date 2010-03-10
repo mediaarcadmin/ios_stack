@@ -65,8 +65,6 @@ typedef struct EucHTMLDB
     uint32_t rootNodeKey;
 } EucHTMLDB;
 
-void *EucRealloc(void *ptr, size_t len, void *pw);
-
 // 'flags' are flags ass pased to open().
 // e.g. O_CREAT | O_RDWR | O_TRUNC to create a new HTDP to write into.
 //      O_RDONLY to read an existing tree.

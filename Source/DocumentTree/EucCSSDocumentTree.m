@@ -8,6 +8,7 @@
  */
 
 #import "EucCSSDocumentTree.h"
+#import "EucCSSDocumentTree_Package.h"
 
 #import <libwapcaplet/libwapcaplet.h>
 #import "LWCNSStringAdditions.h"

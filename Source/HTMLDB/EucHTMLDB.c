@@ -8,6 +8,7 @@
  */
 
 #include "EucHTMLDB.h"
+#include "EucCSSInternal.h"
 #include <CoreFoundation/CoreFoundation.h>
 
 size_t sNodeElementCounts[] = 
@@ -216,11 +217,6 @@ hubbub_error DBRemoveAttribute(EucHTMLDB *context, uint32_t key)
         free(attributeArray);
     }        
     return ret;
-}
-
-void *EucRealloc(void *ptr, size_t len, void *pw)
-{
-	return realloc(ptr, len);
 }
 
 

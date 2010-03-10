@@ -11,10 +11,11 @@
 
 #import "EucCSSIntermediateDocumentNode.h"
 
-@class EucHTMLDBNode, EucCSSIntermediateDocument, THStringRenderer;
+@class EucCSSIntermediateDocument, THStringRenderer;
+@protocol EucCSSDocumentTreeNode;
 
 @interface EucCSSIntermediateDocumentConcreteNode : EucCSSIntermediateDocumentNode {
-    EucHTMLDBNode *_dbNode;
+    id<EucCSSDocumentTreeNode> _documentTreeNode;
     
     NSArray *_children;
     
@@ -26,11 +27,11 @@
     NSString *_text;
 }
 
-@property (nonatomic, readonly) EucHTMLDBNode *dbNode;
+@property (nonatomic, readonly) id<EucCSSDocumentTreeNode> documentTreeNode;
 
 @property (nonatomic, readonly) NSString *name;
 
-- (id)initWithHTMLDBNode:(EucHTMLDBNode *)dbNode inDocument:(EucCSSIntermediateDocument *)document;
+- (id)initWithDocumentTreeNode:(id<EucCSSDocumentTreeNode>)documentTreeNode inDocument:(EucCSSIntermediateDocument *)document;
 
 @property (nonatomic, readonly) css_computed_style *computedBeforeStyle;
 @property (nonatomic, readonly) css_computed_style *computedAfterStyle;

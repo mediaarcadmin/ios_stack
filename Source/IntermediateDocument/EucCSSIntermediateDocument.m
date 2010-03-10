@@ -14,9 +14,10 @@
 #import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 
-#import "EucHTMLDBCreation.h"
-#import "EucHTMLDBNode.h"
-#import "EucHTMLDBNodeManager.h"
+#import "EucCSSDocumentTree.h"
+#import "EucCSSDocumentTreeNode.h"
+
+#import "EucCSSInternal.h"
 
 #import "THLog.h"
 
@@ -96,7 +97,7 @@ CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed s
 
 @synthesize selectContext = _selectCtx;
 @synthesize lwcContext = _lwcContext;
-@synthesize htmlDBNodeManager = _manager;
+@synthesize documentTree = _documentTree;
 
 css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_string *rel, lwc_string **abs)
 {    
@@ -135,79 +136,89 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         }
     }        
     
-    lwc_string *headString;
-    lwc_context_intern(_lwcContext, "head", 4, &headString);
-    lwc_string *styleString;
-    lwc_context_intern(_lwcContext, "style", 5, &styleString);
-    
-    EucHTMLDBNode *headNode = [_manager.rootNode nextNodeWithName:headString];    
-    EucHTMLDBNode *examiningNode = headNode;
-    while((examiningNode = [examiningNode nextNodeUnder:headNode])) {        
-        lwc_string *name = examiningNode.name;
-        bool equal;
-        if(name &&
-           lwc_context_string_caseless_isequal(_lwcContext, name, styleString, &equal) == lwc_error_ok && equal) {
-            char *styleChars;
-            size_t styleLength;
-            if([[examiningNode firstChild] getCharacterContents:&styleChars length:&styleLength]) {
-                css_stylesheet *stylesheet;
-                if(css_stylesheet_create(CSS_LEVEL_21, "UTF-8",
-                                         "", "", CSS_ORIGIN_AUTHOR, 
-                                         CSS_MEDIA_ALL, false,
-                                         false, _lwcContext,
-                                         EucRealloc, NULL,
-                                         EucResolveURL, NULL,
-                                         &stylesheet) == CSS_OK) {
-                    
-                    css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)styleChars, styleLength);
-                    if(err == CSS_NEEDDATA) {
-                        err = css_stylesheet_data_done(stylesheet);
-                    }
-                    if (err == CSS_OK) {
-                        ++_stylesheetsCount;
-                        _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
-                        _stylesheets[_stylesheetsCount-1] = stylesheet;
+    // Find the <head> node.
+    id<EucCSSDocumentTreeNode> examiningNode = _documentTree.root;
+    while(examiningNode && [examiningNode.name caseInsensitiveCompare:@"head"] != NSOrderedSame) {
+        examiningNode = examiningNode.firstChild;
+        if(!examiningNode) {
+            examiningNode = examiningNode.nextSibling;
+        }
+        if(!examiningNode) {
+            examiningNode = examiningNode.parent.nextSibling;
+        }
+    }
+
+    if(examiningNode) {
+        uint32_t headNodeKey = examiningNode.key;
+
+        // Look through under the head node to find <style> nodes.
+        do {
+            examiningNode = examiningNode.firstChild;
+            if(!examiningNode) {
+                examiningNode = examiningNode.nextSibling;
+            }
+            if(!examiningNode) {
+                id<EucCSSDocumentTreeNode> parent = examiningNode.parent;
+                if(parent.key == headNodeKey) {
+                    examiningNode = nil;   
+                } else {
+                    examiningNode = parent.nextSibling;
+                }
+            }
+            
+            if(examiningNode && [examiningNode.name caseInsensitiveCompare:@"style"] == NSOrderedSame) {
+                const char *styleChars;
+                size_t styleLength;
+                if([[examiningNode firstChild] getCharacterContents:&styleChars length:&styleLength]) {
+                    css_stylesheet *stylesheet;
+                    if(css_stylesheet_create(CSS_LEVEL_21, "UTF-8",
+                                             "", "", CSS_ORIGIN_AUTHOR, 
+                                             CSS_MEDIA_ALL, false,
+                                             false, _lwcContext,
+                                             EucRealloc, NULL,
+                                             EucResolveURL, NULL,
+                                             &stylesheet) == CSS_OK) {
                         
-                        css_select_ctx_append_sheet(_selectCtx, stylesheet);
-                        
-                        /*char buf[8192];
-                        size_t len = 8192;
-                        dump_sheet(stylesheet, buf, &len);
-                        
-                        NSLog(@"%s", buf);   */                     
-                    } else {
-                        css_stylesheet_destroy(stylesheet);
-                        NSLog(@"Error %ld parsing stylesheet", (long)err);
+                        css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)styleChars, styleLength);
+                        if(err == CSS_NEEDDATA) {
+                            err = css_stylesheet_data_done(stylesheet);
+                        }
+                        if (err == CSS_OK) {
+                            ++_stylesheetsCount;
+                            _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
+                            _stylesheets[_stylesheetsCount-1] = stylesheet;
+                            
+                            css_select_ctx_append_sheet(_selectCtx, stylesheet);
+                            
+                            /*char buf[8192];
+                             size_t len = 8192;
+                             dump_sheet(stylesheet, buf, &len);
+                             
+                             NSLog(@"%s", buf);   */                     
+                        } else {
+                            css_stylesheet_destroy(stylesheet);
+                            NSLog(@"Error %ld parsing stylesheet", (long)err);
+                        }
                     }
                 }
             }
-        }
+        } while(examiningNode);
     }
-    
-    
-    lwc_context_string_unref(_lwcContext, headString);
-    lwc_context_string_unref(_lwcContext, styleString);
 }
 
-- (id)initWithPath:(NSString *)path
+- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree;
 {
     if((self = [super init])) {
         BOOL success = NO;
-        _db = EucHTMLDBCreateWithHTMLAtPath([path fileSystemRepresentation],
-                                            NULL);
-        if(_db) {
-             if(lwc_create_context(EucRealloc, NULL, &_lwcContext) == lwc_error_ok) {
-                lwc_context_ref(_lwcContext);
-                _manager = [[EucHTMLDBNodeManager alloc] initWithHTMLDB:_db
-                                                             lwcContext:_lwcContext];
-                if(_manager) {
-                    if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
-                        [self _setupStylesheets:@"/Users/jamie/Development/LibCSSTest/Resources/EPubDefault.css"];
-                        success = YES;
-                    }
-                }
+        _documentTree = [documentTree retain];
+         if(lwc_create_context(EucRealloc, NULL, &_lwcContext) == lwc_error_ok) {
+            lwc_context_ref(_lwcContext);
+            if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
+                [self _setupStylesheets:@"/Users/jamie/Development/LibCSSTest/Resources/EPubDefault.css"];
+                success = YES;
             }
         }
+        
         if(!success) {
             [self release]; 
             self = nil;
@@ -225,7 +236,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (EucCSSIntermediateDocumentConcreteNode *)rootNode
 {
-    return (EucCSSIntermediateDocumentConcreteNode *)[self nodeForKey:_manager.rootNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
+    return (EucCSSIntermediateDocumentConcreteNode *)[self nodeForKey:_documentTree.root.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
 }
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key
@@ -244,9 +255,9 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                                                         parentKey:key ^ EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode];
             }
         } else {
-            EucHTMLDBNode *dbNode = [_manager nodeForKey:key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
+            id<EucCSSDocumentTreeNode> dbNode = [_documentTree nodeForKey:key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
             if(dbNode) {
-                node = [[EucCSSIntermediateDocumentConcreteNode alloc] initWithHTMLDBNode:dbNode inDocument:self];
+                node = [[EucCSSIntermediateDocumentConcreteNode alloc] initWithDocumentTreeNode:dbNode inDocument:self];
             }
         }
         if(node) {
@@ -264,10 +275,6 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (void)close
 {
-    if(_db) {
-        EucHTMLDBClose(_db);
-        _db = NULL;
-    }
     if(_selectCtx) {
         css_select_ctx_destroy(_selectCtx);
         _selectCtx = NULL;
@@ -281,8 +288,8 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         lwc_context_unref(_lwcContext);
         _lwcContext = NULL;
     }
-    
-    [_manager release];    
+    [_documentTree release];
+    _documentTree = nil;
 }
 
 - (void)dealloc

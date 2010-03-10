@@ -24,6 +24,7 @@
 
 #include <libcss/libcss.h>
 
+#include "EucCSSInternal.h"
 #include "EucHTMLDBCreation.h"
 
 hubbub_error EucHTMLDBCreateRoot(void *ctx, void **result)

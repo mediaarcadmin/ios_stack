@@ -8,6 +8,15 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef enum EucCSSDocumentTreeNodeKind
+{
+    EucCSSDocumentTreeNodeKindDoctype,
+    EucCSSDocumentTreeNodeKindComment,
+    EucCSSDocumentTreeNodeKindElement,
+    EucCSSDocumentTreeNodeKindText
+} EucCSSDocumentTreeNodeKind;
+
+@protocol EucCSSDocumentTree;
 
 @protocol EucCSSDocumentTreeNode <NSObject>
 
@@ -18,7 +27,12 @@
 @property (nonatomic, readonly) id<EucCSSDocumentTreeNode> nextSibling;
 @property (nonatomic, readonly) id<EucCSSDocumentTreeNode> previousSibling;
 
+@property (nonatomic, readonly) uint32_t childCount;
+
+@property (nonatomic, readonly) EucCSSDocumentTreeNodeKind kind;
 @property (nonatomic, readonly) NSString *name;
 - (NSString *)attributeWithName:(NSString *)attributeName;
+
+- (BOOL)getCharacterContents:(const char **)contents length:(size_t *)length;
 
 @end
