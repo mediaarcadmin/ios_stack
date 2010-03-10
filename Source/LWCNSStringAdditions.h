@@ -12,5 +12,6 @@
 @interface NSString (LWCAdditions) 
 
 + (id)stringWithLWCString:(lwc_string *)lwcString;
+- (lwc_string *)lwcStringInContext:(lwc_context *)context;
 
 @end

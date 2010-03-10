@@ -17,4 +17,12 @@
                                    encoding:NSUTF8StringEncoding] autorelease];
 }
 
+- (lwc_string *)lwcStringInContext:(lwc_context *)context
+{
+    lwc_string *ret;
+    const char *utf8String = [self UTF8String];
+    lwc_context_intern(context, utf8String, strlen(utf8String), &ret);
+    return ret;
+}
+
 @end
