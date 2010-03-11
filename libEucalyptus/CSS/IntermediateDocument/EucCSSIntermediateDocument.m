@@ -210,18 +210,21 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     }
 }
 
-- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree;
+- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
+               baseCSSPath:(NSString *)baseCSSPath
 {
     lwc_context *lwcContext;
     if(lwc_create_context(EucRealloc, NULL, &lwcContext) == lwc_error_ok) {
-        return [self initWithDocumentTree:documentTree lwcContext:lwcContext];
+        return [self initWithDocumentTree:documentTree baseCSSPath:baseCSSPath lwcContext:lwcContext];
     } else {
         [self release];
         return nil;
     }
 }
 
-- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree lwcContext:(lwc_context *)lwcContext;
+- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
+               baseCSSPath:(NSString *)baseCSSPath
+                lwcContext:(lwc_context *)lwcContext;
 {
     if((self = [super init])) {
         BOOL success = NO;
@@ -229,7 +232,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         _lwcContext = lwcContext;
         lwc_context_ref(_lwcContext);
         if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
-            [self _setupStylesheets:@"/Users/jamie/Development/LibCSSTest/Resources/EPubDefault.css"];
+            [self _setupStylesheets:baseCSSPath];
             success = YES;
         }
         

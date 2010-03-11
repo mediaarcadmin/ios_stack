@@ -43,8 +43,11 @@ CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed s
 }
 
 
-- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree;
-- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree lwcContext:(lwc_context *)lwcContext;
+- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
+               baseCSSPath:(NSString *)baseCSSPath;
+- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree 
+               baseCSSPath:(NSString *)baseCSSPath
+                lwcContext:(lwc_context *)lwcContext;
 
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key;
