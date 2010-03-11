@@ -14,6 +14,7 @@
 @interface EucCSSIntermediateDocumentNode : NSObject {
     EucCSSIntermediateDocument *_document;
     
+    uint32_t _key;
     THStringRenderer *_stringRenderer;
 }
 

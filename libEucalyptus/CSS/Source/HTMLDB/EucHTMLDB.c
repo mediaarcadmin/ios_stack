@@ -232,7 +232,7 @@ EucHTMLDB *EucHTMLDBOpen(const char *path, int flags)
      HASHINFO openInfo = { 0 };
      openInfo.lorder = 1234;
      */
-    context->db = dbopen(path, flags, 0644, DB_BTREE, &openInfo);
+    context->db = dbopen(path, flags, 0644, DB_HASH, &openInfo);
     if(!context->db) {
         err = HUBBUB_UNKNOWN;
         fprintf(stderr, "Error \"%ld\" opening database at \"%s\"\n", (long)errno, path);

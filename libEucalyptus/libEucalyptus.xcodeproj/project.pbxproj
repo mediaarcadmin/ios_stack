@@ -167,6 +167,53 @@
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
 		7D35ADAF1121739B00A7AC62 /* EucMenuView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883FCA111C7735009669A8 /* EucMenuView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D3AED52114963560059C5B6 /* EucCSSInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341471149602300C318E7 /* EucCSSInternal.h */; };
+		7D3AED53114963560059C5B6 /* EucCSSInternal.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341461149602300C318E7 /* EucCSSInternal.c */; };
+		7D3AED54114963560059C5B6 /* LWCNSStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */; };
+		7D3AED55114963560059C5B6 /* LWCNSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23416B1149602300C318E7 /* LWCNSStringAdditions.m */; };
+		7D3AED56114963560059C5B6 /* EucHTMLDB.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341491149602300C318E7 /* EucHTMLDB.c */; };
+		7D3AED57114963560059C5B6 /* EucHTMLDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23414A1149602300C318E7 /* EucHTMLDB.h */; };
+		7D3AED58114963560059C5B6 /* EucHTMLDBCreation.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D23414B1149602300C318E7 /* EucHTMLDBCreation.c */; };
+		7D3AED59114963560059C5B6 /* EucHTMLDBCreation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23414C1149602300C318E7 /* EucHTMLDBCreation.h */; };
+		7D3AED5A114963560059C5B6 /* EucHTMLDBNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23414D1149602300C318E7 /* EucHTMLDBNode.h */; };
+		7D3AED5B114963560059C5B6 /* EucHTMLDBNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23414E1149602300C318E7 /* EucHTMLDBNode.m */; };
+		7D3AED5C114963560059C5B6 /* EucHTMLDBNodeManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23414F1149602300C318E7 /* EucHTMLDBNodeManager.h */; };
+		7D3AED5D114963560059C5B6 /* EucHTMLDBNodeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341501149602300C318E7 /* EucHTMLDBNodeManager.m */; };
+		7D3AED5E114963560059C5B6 /* EucCSSDocumentTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341411149602300C318E7 /* EucCSSDocumentTree.h */; };
+		7D3AED5F114963560059C5B6 /* EucCSSDocumentTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341421149602300C318E7 /* EucCSSDocumentTree.m */; };
+		7D3AED60114963560059C5B6 /* EucCSSDocumentTree_Package.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341431149602300C318E7 /* EucCSSDocumentTree_Package.h */; };
+		7D3AED61114963560059C5B6 /* EucCSSDocumentTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341441149602300C318E7 /* EucCSSDocumentTreeNode.h */; };
+		7D3AED62114963560059C5B6 /* EucCSSDocumentTreeNodeKind.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341451149602300C318E7 /* EucCSSDocumentTreeNodeKind.h */; };
+		7D3AED63114963560059C5B6 /* EucCSSIntermediateDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341521149602300C318E7 /* EucCSSIntermediateDocument.h */; };
+		7D3AED64114963560059C5B6 /* EucCSSIntermediateDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341531149602300C318E7 /* EucCSSIntermediateDocument.m */; };
+		7D3AED65114963560059C5B6 /* EucCSSIntermediateDocumentConcreteNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341541149602300C318E7 /* EucCSSIntermediateDocumentConcreteNode.h */; };
+		7D3AED66114963560059C5B6 /* EucCSSIntermediateDocumentConcreteNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341551149602300C318E7 /* EucCSSIntermediateDocumentConcreteNode.m */; };
+		7D3AED67114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedContainerNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341561149602300C318E7 /* EucCSSIntermediateDocumentGeneratedContainerNode.h */; };
+		7D3AED68114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedContainerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341571149602300C318E7 /* EucCSSIntermediateDocumentGeneratedContainerNode.m */; };
+		7D3AED69114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedTextNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341581149602300C318E7 /* EucCSSIntermediateDocumentGeneratedTextNode.h */; };
+		7D3AED6A114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedTextNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341591149602300C318E7 /* EucCSSIntermediateDocumentGeneratedTextNode.m */; };
+		7D3AED6B114963560059C5B6 /* EucCSSIntermediateDocumentNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415A1149602300C318E7 /* EucCSSIntermediateDocumentNode.h */; };
+		7D3AED6C114963560059C5B6 /* EucCSSIntermediateDocumentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23415B1149602300C318E7 /* EucCSSIntermediateDocumentNode.m */; };
+		7D3AED6D114963560059C5B6 /* EucCSSLayoutDocumentRun.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */; };
+		7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */; };
+		7D3AED6F114963560059C5B6 /* EucCSSLayoutDocumentRun_Package.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */; };
+		7D3AED70114963560059C5B6 /* EucCSSLayouter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341601149602300C318E7 /* EucCSSLayouter.h */; };
+		7D3AED71114963560059C5B6 /* EucCSSLayouter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341611149602300C318E7 /* EucCSSLayouter.mm */; };
+		7D3AED72114963560059C5B6 /* EucCSSLayoutLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341621149602300C318E7 /* EucCSSLayoutLine.h */; };
+		7D3AED73114963560059C5B6 /* EucCSSLayoutLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341631149602300C318E7 /* EucCSSLayoutLine.m */; };
+		7D3AED74114963560059C5B6 /* EucCSSLayoutPositionedBlock.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */; };
+		7D3AED75114963560059C5B6 /* EucCSSLayoutPositionedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341651149602300C318E7 /* EucCSSLayoutPositionedBlock.m */; };
+		7D3AED76114963560059C5B6 /* EucCSSLayoutPositionedRun.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341661149602300C318E7 /* EucCSSLayoutPositionedRun.h */; };
+		7D3AED77114963560059C5B6 /* EucCSSLayoutPositionedRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341671149602300C318E7 /* EucCSSLayoutPositionedRun.m */; };
+		7D3AED78114963560059C5B6 /* EucCSSRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23416D1149602300C318E7 /* EucCSSRenderer.h */; };
+		7D3AED79114963560059C5B6 /* EucCSSRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23416E1149602300C318E7 /* EucCSSRenderer.m */; };
+		7D412B251149660F00C003BB /* EucCSSTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341681149602300C318E7 /* EucCSSTest.m */; };
+		7D412B261149664C00C003BB /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2341981149614F00C318E7 /* libEucalyptusCSS.a */; };
+		7D412B271149664C00C003BB /* libcss.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D19025211494BE800375803 /* libcss.a */; };
+		7D412B281149664C00C003BB /* libhubbub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1904AF11494F6500375803 /* libhubbub.a */; };
+		7D412B291149664C00C003BB /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900CD11494A0C00375803 /* libparserutils.a */; };
+		7D412B2A1149664C00C003BB /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900981149490E00375803 /* libwapcaplet.a */; };
+		7D412B2E1149666C00C003BB /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2D1149666C00C003BB /* ApplicationServices.framework */; };
 		7D516E02102872AC005F3C46 /* EucBookViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E00102872AC005F3C46 /* EucBookViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E03102872AC005F3C46 /* EucBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E01102872AC005F3C46 /* EucBookViewController.m */; };
 		7D516E0D102872DB005F3C46 /* EucPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E05102872DB005F3C46 /* EucPageView.m */; };
@@ -425,6 +472,15 @@
 		7DBE059F1110416600DE22DC /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059D1110416600DE22DC /* SelectionKnob.png */; };
 		7DBE05A01110416600DE22DC /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059C1110416600DE22DC /* SelectionEnd.png */; };
 		7DBE05A11110416600DE22DC /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059D1110416600DE22DC /* SelectionKnob.png */; };
+		7DCA57B2114981FC007EDB15 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA57B1114981FC007EDB15 /* libiconv.dylib */; };
+		7DCA57B51149822C007EDB15 /* THStringRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51703E102884F1005F3C46 /* THStringRenderer.m */; };
+		7DCA57B61149822C007EDB15 /* THLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E241028735A005F3C46 /* THLog.m */; };
+		7DCA57B71149822C007EDB15 /* THTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E551028746B005F3C46 /* THTimer.m */; };
+		7DCA57B81149822C007EDB15 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1906641149599F00375803 /* th_just_with_floats.c */; };
+		7DCA57C31149829A007EDB15 /* THPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E6B102874C0005F3C46 /* THPair.m */; };
+		7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
+		7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		7DCA57DC11498328007EDB15 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2F1149667300C003BB /* Cocoa.framework */; };
 		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
 		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
 		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
@@ -483,6 +539,76 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		7D23417E1149602300C318E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DD76FA10486AA7600D96B5E;
+			remoteInfo = LibCSSTest;
+		};
+		7D2341801149602300C318E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7DC26D5D10C4241A00248A49;
+			remoteInfo = libwapcaplet;
+		};
+		7D2341821149602300C318E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7DC26D8710C4260E00248A49;
+			remoteInfo = libparserutils;
+		};
+		7D2341841149602300C318E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7DC26DE410C427D900248A49;
+			remoteInfo = libcss;
+		};
+		7D2341861149602300C318E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D6A856910C42D4A0024B8D6;
+			remoteInfo = hubbub;
+		};
+		7D412B0E114965E100C003BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D1904AE11494F6500375803;
+			remoteInfo = hubbub;
+		};
+		7D412B10114965E100C003BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D19025111494BE800375803;
+			remoteInfo = libcss;
+		};
+		7D412B12114965E100C003BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D1900CC11494A0C00375803;
+			remoteInfo = libparserutils;
+		};
+		7D412B14114965E100C003BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D1900971149490E00375803;
+			remoteInfo = libwapcaplet;
+		};
+		7D412B16114965E400C003BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D2341971149614F00C318E7;
+			remoteInfo = libEucalyptusCSS;
+		};
 		7D5170CF1028AD46005F3C46 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -967,8 +1093,53 @@
 		7D19056711494FB900375803 /* tree2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tree2.c; sourceTree = "<group>"; };
 		7D1906641149599F00375803 /* th_just_with_floats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = th_just_with_floats.c; sourceTree = "<group>"; };
 		7D1906651149599F00375803 /* th_just_with_floats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = th_just_with_floats.h; sourceTree = "<group>"; };
+		7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LibCSSTest.xcodeproj; sourceTree = "<group>"; };
+		7D2341411149602300C318E7 /* EucCSSDocumentTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTree.h; sourceTree = "<group>"; };
+		7D2341421149602300C318E7 /* EucCSSDocumentTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSDocumentTree.m; sourceTree = "<group>"; };
+		7D2341431149602300C318E7 /* EucCSSDocumentTree_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTree_Package.h; sourceTree = "<group>"; };
+		7D2341441149602300C318E7 /* EucCSSDocumentTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTreeNode.h; sourceTree = "<group>"; };
+		7D2341451149602300C318E7 /* EucCSSDocumentTreeNodeKind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTreeNodeKind.h; sourceTree = "<group>"; };
+		7D2341461149602300C318E7 /* EucCSSInternal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucCSSInternal.c; sourceTree = "<group>"; };
+		7D2341471149602300C318E7 /* EucCSSInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSInternal.h; sourceTree = "<group>"; };
+		7D2341491149602300C318E7 /* EucHTMLDB.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucHTMLDB.c; sourceTree = "<group>"; };
+		7D23414A1149602300C318E7 /* EucHTMLDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDB.h; sourceTree = "<group>"; };
+		7D23414B1149602300C318E7 /* EucHTMLDBCreation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucHTMLDBCreation.c; sourceTree = "<group>"; };
+		7D23414C1149602300C318E7 /* EucHTMLDBCreation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDBCreation.h; sourceTree = "<group>"; };
+		7D23414D1149602300C318E7 /* EucHTMLDBNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDBNode.h; sourceTree = "<group>"; };
+		7D23414E1149602300C318E7 /* EucHTMLDBNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDBNode.m; sourceTree = "<group>"; };
+		7D23414F1149602300C318E7 /* EucHTMLDBNodeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHTMLDBNodeManager.h; sourceTree = "<group>"; };
+		7D2341501149602300C318E7 /* EucHTMLDBNodeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHTMLDBNodeManager.m; sourceTree = "<group>"; };
+		7D2341521149602300C318E7 /* EucCSSIntermediateDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocument.h; sourceTree = "<group>"; };
+		7D2341531149602300C318E7 /* EucCSSIntermediateDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocument.m; sourceTree = "<group>"; };
+		7D2341541149602300C318E7 /* EucCSSIntermediateDocumentConcreteNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentConcreteNode.h; sourceTree = "<group>"; };
+		7D2341551149602300C318E7 /* EucCSSIntermediateDocumentConcreteNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentConcreteNode.m; sourceTree = "<group>"; };
+		7D2341561149602300C318E7 /* EucCSSIntermediateDocumentGeneratedContainerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentGeneratedContainerNode.h; sourceTree = "<group>"; };
+		7D2341571149602300C318E7 /* EucCSSIntermediateDocumentGeneratedContainerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentGeneratedContainerNode.m; sourceTree = "<group>"; };
+		7D2341581149602300C318E7 /* EucCSSIntermediateDocumentGeneratedTextNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentGeneratedTextNode.h; sourceTree = "<group>"; };
+		7D2341591149602300C318E7 /* EucCSSIntermediateDocumentGeneratedTextNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentGeneratedTextNode.m; sourceTree = "<group>"; };
+		7D23415A1149602300C318E7 /* EucCSSIntermediateDocumentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentNode.h; sourceTree = "<group>"; };
+		7D23415B1149602300C318E7 /* EucCSSIntermediateDocumentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentNode.m; sourceTree = "<group>"; };
+		7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutDocumentRun.h; sourceTree = "<group>"; };
+		7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutDocumentRun.m; sourceTree = "<group>"; };
+		7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutDocumentRun_Package.h; sourceTree = "<group>"; };
+		7D2341601149602300C318E7 /* EucCSSLayouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayouter.h; sourceTree = "<group>"; };
+		7D2341611149602300C318E7 /* EucCSSLayouter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucCSSLayouter.mm; sourceTree = "<group>"; };
+		7D2341621149602300C318E7 /* EucCSSLayoutLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutLine.h; sourceTree = "<group>"; };
+		7D2341631149602300C318E7 /* EucCSSLayoutLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutLine.m; sourceTree = "<group>"; };
+		7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutPositionedBlock.h; sourceTree = "<group>"; };
+		7D2341651149602300C318E7 /* EucCSSLayoutPositionedBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutPositionedBlock.m; sourceTree = "<group>"; };
+		7D2341661149602300C318E7 /* EucCSSLayoutPositionedRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutPositionedRun.h; sourceTree = "<group>"; };
+		7D2341671149602300C318E7 /* EucCSSLayoutPositionedRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutPositionedRun.m; sourceTree = "<group>"; };
+		7D2341681149602300C318E7 /* EucCSSTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSTest.m; sourceTree = "<group>"; };
+		7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LWCNSStringAdditions.h; sourceTree = "<group>"; };
+		7D23416B1149602300C318E7 /* LWCNSStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LWCNSStringAdditions.m; sourceTree = "<group>"; };
+		7D23416D1149602300C318E7 /* EucCSSRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSRenderer.h; sourceTree = "<group>"; };
+		7D23416E1149602300C318E7 /* EucCSSRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSRenderer.m; sourceTree = "<group>"; };
+		7D2341981149614F00C318E7 /* libEucalyptusCSS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusCSS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
+		7D412B2D1149666C00C003BB /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		7D412B2F1149667300C003BB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7D516E00102872AC005F3C46 /* EucBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookViewController.h; sourceTree = "<group>"; };
 		7D516E01102872AC005F3C46 /* EucBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookViewController.m; sourceTree = "<group>"; };
 		7D516E05102872DB005F3C46 /* EucPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageView.m; sourceTree = "<group>"; };
@@ -1241,6 +1412,8 @@
 		7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DBE059C1110416600DE22DC /* SelectionEnd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionEnd.png; sourceTree = "<group>"; };
 		7DBE059D1110416600DE22DC /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionKnob.png; sourceTree = "<group>"; };
+		7DCA57B1114981FC007EDB15 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		7DCA5804114985C7007EDB15 /* pg103.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pg103.epub; sourceTree = "<group>"; };
 		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7DD48E5410C2E42C0001203D /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin9/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7DD48E5810C2E44F0001203D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1300,6 +1473,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D2341961149614F00C318E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D412B08114965C700C003BB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D412B261149664C00C003BB /* libEucalyptusCSS.a in Frameworks */,
+				7D412B271149664C00C003BB /* libcss.a in Frameworks */,
+				7D412B281149664C00C003BB /* libhubbub.a in Frameworks */,
+				7D412B291149664C00C003BB /* libparserutils.a in Frameworks */,
+				7D412B2A1149664C00C003BB /* libwapcaplet.a in Frameworks */,
+				7D412B2E1149666C00C003BB /* ApplicationServices.framework in Frameworks */,
+				7DCA57B2114981FC007EDB15 /* libiconv.dylib in Frameworks */,
+				7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */,
+				7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */,
+				7DCA57DC11498328007EDB15 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7D9A96D010D7E41100C2E00A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1344,6 +1541,7 @@
 				7D1900CD11494A0C00375803 /* libparserutils.a */,
 				7D19025211494BE800375803 /* libcss.a */,
 				7D1904AF11494F6500375803 /* libhubbub.a */,
+				7D2341981149614F00C318E7 /* libEucalyptusCSS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1355,6 +1553,7 @@
 				7D516E42102873FA005F3C46 /* Model */,
 				7D516E221028734C005F3C46 /* Utils */,
 				7D5171751028B470005F3C46 /* ePub */,
+				7D2340F51149602200C318E7 /* CSS */,
 				7D516E1710287300005F3C46 /* ThirdParty */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				7D53F30910C2CBD70042215C /* TransitionTest */,
@@ -1376,7 +1575,10 @@
 				7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */,
 				7DD48E6010C2E46C0001203D /* QuartzCore.framework */,
 				7DD48E7B10C2E5780001203D /* AudioToolbox.framework */,
+				7DCA57B1114981FC007EDB15 /* libiconv.dylib */,
 				7DD48E5410C2E42C0001203D /* libstdc++.dylib */,
+				7D412B2D1149666C00C003BB /* ApplicationServices.framework */,
+				7D412B2F1149667300C003BB /* Cocoa.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2492,6 +2694,115 @@
 			path = regression;
 			sourceTree = "<group>";
 		};
+		7D2340F51149602200C318E7 /* CSS */ = {
+			isa = PBXGroup;
+			children = (
+				7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */,
+				7D23413F1149602300C318E7 /* Source */,
+			);
+			path = CSS;
+			sourceTree = "<group>";
+		};
+		7D2341311149602300C318E7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7D23417F1149602300C318E7 /* LibCSSTest */,
+				7D2341811149602300C318E7 /* libwapcaplet.a */,
+				7D2341831149602300C318E7 /* libparserutils.a */,
+				7D2341851149602300C318E7 /* libcss.a */,
+				7D2341871149602300C318E7 /* libhubbub.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7D23413F1149602300C318E7 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				7D2341471149602300C318E7 /* EucCSSInternal.h */,
+				7D2341461149602300C318E7 /* EucCSSInternal.c */,
+				7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */,
+				7D23416B1149602300C318E7 /* LWCNSStringAdditions.m */,
+				7D2341481149602300C318E7 /* HTMLDB */,
+				7D2341401149602300C318E7 /* DocumentTree */,
+				7D2341511149602300C318E7 /* IntermediateDocument */,
+				7D23415C1149602300C318E7 /* Layout */,
+				7D23416C1149602300C318E7 /* Render */,
+				7D2341681149602300C318E7 /* EucCSSTest.m */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		7D2341401149602300C318E7 /* DocumentTree */ = {
+			isa = PBXGroup;
+			children = (
+				7D2341411149602300C318E7 /* EucCSSDocumentTree.h */,
+				7D2341421149602300C318E7 /* EucCSSDocumentTree.m */,
+				7D2341431149602300C318E7 /* EucCSSDocumentTree_Package.h */,
+				7D2341441149602300C318E7 /* EucCSSDocumentTreeNode.h */,
+				7D2341451149602300C318E7 /* EucCSSDocumentTreeNodeKind.h */,
+			);
+			path = DocumentTree;
+			sourceTree = "<group>";
+		};
+		7D2341481149602300C318E7 /* HTMLDB */ = {
+			isa = PBXGroup;
+			children = (
+				7D23414A1149602300C318E7 /* EucHTMLDB.h */,
+				7D2341491149602300C318E7 /* EucHTMLDB.c */,
+				7D23414C1149602300C318E7 /* EucHTMLDBCreation.h */,
+				7D23414B1149602300C318E7 /* EucHTMLDBCreation.c */,
+				7D23414D1149602300C318E7 /* EucHTMLDBNode.h */,
+				7D23414E1149602300C318E7 /* EucHTMLDBNode.m */,
+				7D23414F1149602300C318E7 /* EucHTMLDBNodeManager.h */,
+				7D2341501149602300C318E7 /* EucHTMLDBNodeManager.m */,
+			);
+			path = HTMLDB;
+			sourceTree = "<group>";
+		};
+		7D2341511149602300C318E7 /* IntermediateDocument */ = {
+			isa = PBXGroup;
+			children = (
+				7D2341521149602300C318E7 /* EucCSSIntermediateDocument.h */,
+				7D2341531149602300C318E7 /* EucCSSIntermediateDocument.m */,
+				7D2341541149602300C318E7 /* EucCSSIntermediateDocumentConcreteNode.h */,
+				7D2341551149602300C318E7 /* EucCSSIntermediateDocumentConcreteNode.m */,
+				7D2341561149602300C318E7 /* EucCSSIntermediateDocumentGeneratedContainerNode.h */,
+				7D2341571149602300C318E7 /* EucCSSIntermediateDocumentGeneratedContainerNode.m */,
+				7D2341581149602300C318E7 /* EucCSSIntermediateDocumentGeneratedTextNode.h */,
+				7D2341591149602300C318E7 /* EucCSSIntermediateDocumentGeneratedTextNode.m */,
+				7D23415A1149602300C318E7 /* EucCSSIntermediateDocumentNode.h */,
+				7D23415B1149602300C318E7 /* EucCSSIntermediateDocumentNode.m */,
+			);
+			path = IntermediateDocument;
+			sourceTree = "<group>";
+		};
+		7D23415C1149602300C318E7 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */,
+				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */,
+				7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */,
+				7D2341601149602300C318E7 /* EucCSSLayouter.h */,
+				7D2341611149602300C318E7 /* EucCSSLayouter.mm */,
+				7D2341621149602300C318E7 /* EucCSSLayoutLine.h */,
+				7D2341631149602300C318E7 /* EucCSSLayoutLine.m */,
+				7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */,
+				7D2341651149602300C318E7 /* EucCSSLayoutPositionedBlock.m */,
+				7D2341661149602300C318E7 /* EucCSSLayoutPositionedRun.h */,
+				7D2341671149602300C318E7 /* EucCSSLayoutPositionedRun.m */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		7D23416C1149602300C318E7 /* Render */ = {
+			isa = PBXGroup;
+			children = (
+				7D23416D1149602300C318E7 /* EucCSSRenderer.h */,
+				7D23416E1149602300C318E7 /* EucCSSRenderer.m */,
+			);
+			path = Render;
+			sourceTree = "<group>";
+		};
 		7D516DFF102872A5005F3C46 /* BookView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2578,8 +2889,8 @@
 				7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */,
 				7D6AAD581028E774006289E6 /* thjust.h */,
 				7D6AAD5B1028E774006289E6 /* thjust.c */,
-				7D1906641149599F00375803 /* th_just_with_floats.c */,
 				7D1906651149599F00375803 /* th_just_with_floats.h */,
+				7D1906641149599F00375803 /* th_just_with_floats.c */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2943,6 +3254,7 @@
 			isa = PBXGroup;
 			children = (
 				7D9A979210D7E48E00C2E00A /* book */,
+				7DCA5804114985C7007EDB15 /* pg103.epub */,
 			);
 			path = TestResources;
 			sourceTree = "<group>";
@@ -3103,6 +3415,35 @@
 				7D19059E11494FB900375803 /* parserutilserror.h in Headers */,
 				7D1905A011494FB900375803 /* string.h in Headers */,
 				7D1905A111494FB900375803 /* utils.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D2341941149614F00C318E7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D3AED52114963560059C5B6 /* EucCSSInternal.h in Headers */,
+				7D3AED54114963560059C5B6 /* LWCNSStringAdditions.h in Headers */,
+				7D3AED57114963560059C5B6 /* EucHTMLDB.h in Headers */,
+				7D3AED59114963560059C5B6 /* EucHTMLDBCreation.h in Headers */,
+				7D3AED5A114963560059C5B6 /* EucHTMLDBNode.h in Headers */,
+				7D3AED5C114963560059C5B6 /* EucHTMLDBNodeManager.h in Headers */,
+				7D3AED5E114963560059C5B6 /* EucCSSDocumentTree.h in Headers */,
+				7D3AED60114963560059C5B6 /* EucCSSDocumentTree_Package.h in Headers */,
+				7D3AED61114963560059C5B6 /* EucCSSDocumentTreeNode.h in Headers */,
+				7D3AED62114963560059C5B6 /* EucCSSDocumentTreeNodeKind.h in Headers */,
+				7D3AED63114963560059C5B6 /* EucCSSIntermediateDocument.h in Headers */,
+				7D3AED65114963560059C5B6 /* EucCSSIntermediateDocumentConcreteNode.h in Headers */,
+				7D3AED67114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedContainerNode.h in Headers */,
+				7D3AED69114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedTextNode.h in Headers */,
+				7D3AED6B114963560059C5B6 /* EucCSSIntermediateDocumentNode.h in Headers */,
+				7D3AED6D114963560059C5B6 /* EucCSSLayoutDocumentRun.h in Headers */,
+				7D3AED6F114963560059C5B6 /* EucCSSLayoutDocumentRun_Package.h in Headers */,
+				7D3AED70114963560059C5B6 /* EucCSSLayouter.h in Headers */,
+				7D3AED72114963560059C5B6 /* EucCSSLayoutLine.h in Headers */,
+				7D3AED74114963560059C5B6 /* EucCSSLayoutPositionedBlock.h in Headers */,
+				7D3AED76114963560059C5B6 /* EucCSSLayoutPositionedRun.h in Headers */,
+				7D3AED78114963560059C5B6 /* EucCSSRenderer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3339,6 +3680,43 @@
 			productReference = 7D1904AF11494F6500375803 /* libhubbub.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		7D2341971149614F00C318E7 /* libEucalyptusCSS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D23419D1149617900C318E7 /* Build configuration list for PBXNativeTarget "libEucalyptusCSS" */;
+			buildPhases = (
+				7D2341941149614F00C318E7 /* Headers */,
+				7D2341951149614F00C318E7 /* Sources */,
+				7D2341961149614F00C318E7 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7D412B15114965E100C003BB /* PBXTargetDependency */,
+				7D412B13114965E100C003BB /* PBXTargetDependency */,
+				7D412B11114965E100C003BB /* PBXTargetDependency */,
+				7D412B0F114965E100C003BB /* PBXTargetDependency */,
+			);
+			name = libEucalyptusCSS;
+			productName = libEucalyptusCSS;
+			productReference = 7D2341981149614F00C318E7 /* libEucalyptusCSS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		7D412B09114965C700C003BB /* CSSTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D412B241149660200C003BB /* Build configuration list for PBXNativeTarget "CSSTest" */;
+			buildPhases = (
+				7D412B07114965C700C003BB /* Sources */,
+				7D412B08114965C700C003BB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7D412B17114965E400C003BB /* PBXTargetDependency */,
+			);
+			name = CSSTest;
+			productName = CSSTest;
+			productType = "com.apple.product-type.tool";
+		};
 		7D5170771028AD1B005F3C46 /* libhyphenate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7D5170CB1028AD1B005F3C46 /* Build configuration list for PBXNativeTarget "libhyphenate" */;
@@ -3454,11 +3832,18 @@
 			mainGroup = 0867D691FE84028FC02AAC07 /* libEucalyptus */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 7D2341311149602300C318E7 /* Products */;
+					ProjectRef = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				D2AAC07D0554694100DB518D /* libEucalyptus */,
 				7D5170771028AD1B005F3C46 /* libhyphenate */,
 				7D51717A1028B4A4005F3C46 /* libEucalyptusEPub */,
+				7D2341971149614F00C318E7 /* libEucalyptusCSS */,
 				7D5171BC1028B6AE005F3C46 /* expat */,
 				7D5171CB1028B6B9005F3C46 /* libantlr */,
 				7D034F8810C2CCBE0085778B /* TransitionTest */,
@@ -3467,9 +3852,48 @@
 				7D1900CC11494A0C00375803 /* libparserutils */,
 				7D19025111494BE800375803 /* libcss */,
 				7D1904AE11494F6500375803 /* hubbub */,
+				7D412B09114965C700C003BB /* CSSTest */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		7D23417F1149602300C318E7 /* LibCSSTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = LibCSSTest;
+			remoteRef = 7D23417E1149602300C318E7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D2341811149602300C318E7 /* libwapcaplet.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libwapcaplet.a;
+			remoteRef = 7D2341801149602300C318E7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D2341831149602300C318E7 /* libparserutils.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libparserutils.a;
+			remoteRef = 7D2341821149602300C318E7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D2341851149602300C318E7 /* libcss.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libcss.a;
+			remoteRef = 7D2341841149602300C318E7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D2341871149602300C318E7 /* libhubbub.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libhubbub.a;
+			remoteRef = 7D2341861149602300C318E7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		7D034F8510C2CCBE0085778B /* Resources */ = {
@@ -3678,6 +4102,44 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D2341951149614F00C318E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D3AED53114963560059C5B6 /* EucCSSInternal.c in Sources */,
+				7D3AED55114963560059C5B6 /* LWCNSStringAdditions.m in Sources */,
+				7D3AED56114963560059C5B6 /* EucHTMLDB.c in Sources */,
+				7D3AED58114963560059C5B6 /* EucHTMLDBCreation.c in Sources */,
+				7D3AED5B114963560059C5B6 /* EucHTMLDBNode.m in Sources */,
+				7D3AED5D114963560059C5B6 /* EucHTMLDBNodeManager.m in Sources */,
+				7D3AED5F114963560059C5B6 /* EucCSSDocumentTree.m in Sources */,
+				7D3AED64114963560059C5B6 /* EucCSSIntermediateDocument.m in Sources */,
+				7D3AED66114963560059C5B6 /* EucCSSIntermediateDocumentConcreteNode.m in Sources */,
+				7D3AED68114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedContainerNode.m in Sources */,
+				7D3AED6A114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedTextNode.m in Sources */,
+				7D3AED6C114963560059C5B6 /* EucCSSIntermediateDocumentNode.m in Sources */,
+				7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.m in Sources */,
+				7D3AED71114963560059C5B6 /* EucCSSLayouter.mm in Sources */,
+				7D3AED73114963560059C5B6 /* EucCSSLayoutLine.m in Sources */,
+				7D3AED75114963560059C5B6 /* EucCSSLayoutPositionedBlock.m in Sources */,
+				7D3AED77114963560059C5B6 /* EucCSSLayoutPositionedRun.m in Sources */,
+				7D3AED79114963560059C5B6 /* EucCSSRenderer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7D412B07114965C700C003BB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D412B251149660F00C003BB /* EucCSSTest.m in Sources */,
+				7DCA57B51149822C007EDB15 /* THStringRenderer.m in Sources */,
+				7DCA57B61149822C007EDB15 /* THLog.m in Sources */,
+				7DCA57B71149822C007EDB15 /* THTimer.m in Sources */,
+				7DCA57B81149822C007EDB15 /* th_just_with_floats.c in Sources */,
+				7DCA57C31149829A007EDB15 /* THPair.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7D5170A21028AD1B005F3C46 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3819,6 +4281,31 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		7D412B0F114965E100C003BB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D1904AE11494F6500375803 /* hubbub */;
+			targetProxy = 7D412B0E114965E100C003BB /* PBXContainerItemProxy */;
+		};
+		7D412B11114965E100C003BB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D19025111494BE800375803 /* libcss */;
+			targetProxy = 7D412B10114965E100C003BB /* PBXContainerItemProxy */;
+		};
+		7D412B13114965E100C003BB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D1900CC11494A0C00375803 /* libparserutils */;
+			targetProxy = 7D412B12114965E100C003BB /* PBXContainerItemProxy */;
+		};
+		7D412B15114965E100C003BB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D1900971149490E00375803 /* libwapcaplet */;
+			targetProxy = 7D412B14114965E100C003BB /* PBXContainerItemProxy */;
+		};
+		7D412B17114965E400C003BB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D2341971149614F00C318E7 /* libEucalyptusCSS */;
+			targetProxy = 7D412B16114965E400C003BB /* PBXContainerItemProxy */;
+		};
 		7D5170D01028AD46005F3C46 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7D5170771028AD1B005F3C46 /* libhyphenate */;
@@ -3931,7 +4418,6 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
 				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -3955,7 +4441,6 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
 				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -3977,7 +4462,6 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
 				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -3998,7 +4482,6 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
 				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -4281,6 +4764,162 @@
 			};
 			name = AppStore;
 		};
+		7D2341991149615000C318E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = EucalyptusCSS;
+			};
+			name = Debug;
+		};
+		7D23419A1149615000C318E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = EucalyptusCSS;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		7D23419B1149615000C318E7 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = EucalyptusCSS;
+			};
+			name = Beta;
+		};
+		7D23419C1149615000C318E7 /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = EucalyptusCSS;
+			};
+			name = AppStore;
+		};
+		7D412B0A114965C800C003BB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = CSSTest;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		7D412B0B114965C800C003BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = CSSTest;
+				SDKROOT = macosx10.6;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		7D412B0C114965C800C003BB /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = CSSTest;
+				SDKROOT = macosx10.6;
+			};
+			name = Beta;
+		};
+		7D412B0D114965C800C003BB /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = CSSTest;
+				SDKROOT = macosx10.6;
+			};
+			name = AppStore;
+		};
 		7D5170CC1028AD1B005F3C46 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4447,7 +5086,6 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -4470,7 +5108,6 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -4491,7 +5128,6 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -4511,7 +5147,6 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -4798,6 +5433,28 @@
 				7D1904B111494F6500375803 /* Release */,
 				7D1904B211494F6500375803 /* Beta */,
 				7D1904B311494F6500375803 /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D23419D1149617900C318E7 /* Build configuration list for PBXNativeTarget "libEucalyptusCSS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D2341991149615000C318E7 /* Debug */,
+				7D23419A1149615000C318E7 /* Release */,
+				7D23419B1149615000C318E7 /* Beta */,
+				7D23419C1149615000C318E7 /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D412B241149660200C003BB /* Build configuration list for PBXNativeTarget "CSSTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D412B0A114965C800C003BB /* Debug */,
+				7D412B0B114965C800C003BB /* Release */,
+				7D412B0C114965C800C003BB /* Beta */,
+				7D412B0D114965C800C003BB /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

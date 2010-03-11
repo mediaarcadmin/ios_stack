@@ -44,6 +44,8 @@ int main (int argc, const char * argv[]) {
     
     EucHTMLDB *htmlDb = EucHTMLDBCreateWithHTMLAtPath(argv[2], NULL);
 
+    Traverse(htmlDb);
+    
     lwc_context *lwcContext;
     lwc_create_context(EucRealloc, NULL, &lwcContext);
     lwc_context_ref(lwcContext);

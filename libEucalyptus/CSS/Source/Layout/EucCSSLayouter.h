@@ -6,7 +6,12 @@
 //  Copyright 2009 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
 
 @class EucCSSIntermediateDocument, EucCSSLayoutPositionedBlock;
 

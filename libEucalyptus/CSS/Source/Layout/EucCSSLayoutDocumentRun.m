@@ -78,7 +78,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
              forId:(uint32_t)id
 {
-    if(self = [super init]) {
+    if((self = [super init])) {
         _id = id;
         
         _startNode = [inlineNode retain];

@@ -148,9 +148,9 @@ static hubbub_error EucHTMLDBCreateElement(void *ctx,
     if(nodeElements[elementNamePosition]) {
         hubbub_error innerRet = HUBBUB_OK;
         uint32_t attributeCount = tag->n_attributes;
+        nodeElements[elementAttributesPosition] = 0;
         if(attributeCount) {
             uint32_t attributes[attributeCount];
-            
             
             for(uint32_t i = 0; innerRet == HUBBUB_OK && i < attributeCount; ++i) {
                 uint32_t newAttributeKey = EucHTMLDBPutAttribute(context, 0, tag->attributes[i].ns, &(tag->attributes[i].name),  &(tag->attributes[i].value));
@@ -248,7 +248,7 @@ static hubbub_error EucHTMLDBCloneNodeWithNewRefCount(void *ctx,
                     if(innerRet == HUBBUB_OK) {
                         nodeElements[childrenPosition] = EucHTMLDBPutUint32Array(context, 0, childKeys, childCount);
                         if(!nodeElements[childrenPosition]) {
-                            innerRet == HUBBUB_UNKNOWN;
+                            innerRet = HUBBUB_UNKNOWN;
                         }
                     }
                     free(childKeys);
@@ -620,7 +620,7 @@ static hubbub_error EucHTMLDBRemoveChild(void *ctx, void *parent, void *child, v
                     }
                 }
                 for(; i < newChildrenCount; ++i) {
-                    childrenArray[i] == childrenArray[i + 1];
+                    childrenArray[i] = childrenArray[i + 1];
                 }
                 if(!EucHTMLDBPutUint32Array(context, parentElements[childrenPosition], childrenArray, newChildrenCount)) {
                     ret = HUBBUB_UNKNOWN;
@@ -846,7 +846,7 @@ static hubbub_error EucHTMLDBSetQuirksMode(void *ctx, hubbub_quirks_mode mode)
     return HUBBUB_OK;
 }
 
-static void printBuffer(uint8_t *buffer, int length) 
+static void printBuffer(const uint8_t *buffer, int length) 
 {
     // Tried to use a %*s argument to printf, but it still runs strlen on the
     // string, so we have to copy it into a null-terminated buffer.
@@ -908,6 +908,27 @@ static void TraverseNode(EucHTMLDB *context, uint32_t key, uint32_t indent)
             EucHTMLDBCopyUTF8(context, node[elementNamePosition], &text, &textLength);
             printf(": <");
             printBuffer(text, textLength);
+            
+            if(node[elementAttributesPosition]) {
+                uint32_t attributeCount;
+                uint32_t *attributeKeys;
+                EucHTMLDBCopyUint32Array(context, node[elementAttributesPosition], &attributeKeys, &attributeCount);
+                for(uint32_t i = 0; i < attributeCount; ++i) {
+                    hubbub_ns ns;
+                    hubbub_string thisName;
+                    hubbub_string thisValue;                    
+                    EucHTMLDBCopyAttribute(context, attributeKeys[i], &ns, &thisName, &thisValue);
+
+                    printf(" ");
+                    printBuffer(thisName.ptr, thisName.len);
+                    printf("=\"");
+                    printBuffer(thisValue.ptr, thisValue.len);
+                    printf("\"");
+                    
+                    free((void *)thisName.ptr);
+                    free((void *)thisValue.ptr);
+                }
+            }
             printf(">");
             free(text);
         }

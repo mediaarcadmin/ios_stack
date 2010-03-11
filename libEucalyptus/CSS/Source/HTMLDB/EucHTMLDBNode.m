@@ -145,11 +145,11 @@
     return _name;
 }
 
-
-
 - (uint32_t *)attributeArray
 {
-    if(!_attributeArray && _rawNode[elementAttributesPosition]) {        
+    if(!_attributeArray &&
+       _rawNode[kindPosition] == EucCSSDocumentTreeNodeKindElement &&
+       _rawNode[elementAttributesPosition]) {        
         EucHTMLDBCopyUint32Array(_htmlDb, _rawNode[elementAttributesPosition], &_attributeArray, &_attributeArrayCount);
     }    
     return _attributeArray;
@@ -157,7 +157,9 @@
 
 - (uint32_t)attributeArrayCount
 {
-    if(!_attributeArrayCount && _rawNode[elementAttributesPosition]) {        
+    if(!_attributeArrayCount &&
+       _rawNode[kindPosition] == EucCSSDocumentTreeNodeKindElement &&
+       _rawNode[elementAttributesPosition]) {        
         [self attributeArray];
     }
     return _attributeArrayCount;
@@ -172,24 +174,22 @@
         uint32_t *attributeArray = self.attributeArray;
         size_t utf8AttributeNameLength = strlen(utf8AttributeName);
         
-        if(EucHTMLDBCopyUint32Array(self->_htmlDb, self->_rawNode[elementAttributesPosition], &attributeArray, &attributeArrayCount) == HUBBUB_OK) {
-            for(uint32_t i = 0; i < attributeArrayCount; ++i) {
-                hubbub_ns ns;
-                hubbub_string thisName;
-                hubbub_string thisValue;
-                EucHTMLDBCopyAttribute(self->_htmlDb, attributeArray[i], &ns, &thisName, &thisValue);
-                if(/*ns == HUBBUB_NS_HTML &&*/
-                   utf8AttributeNameLength == thisName.len && 
-                   strncasecmp(utf8AttributeName, (const char *)thisName.ptr, utf8AttributeNameLength) == 0 && thisValue.len) {
-                    free((void *)thisName.ptr);
-                    return [[NSString alloc] initWithBytesNoCopy:(void *)thisValue.ptr
-                                                          length:thisValue.len
-                                                        encoding:NSUTF8StringEncoding
-                                                    freeWhenDone:YES];
-                }
+        for(uint32_t i = 0; i < attributeArrayCount; ++i) {
+            hubbub_ns ns;
+            hubbub_string thisName;
+            hubbub_string thisValue;
+            EucHTMLDBCopyAttribute(self->_htmlDb, attributeArray[i], &ns, &thisName, &thisValue);
+            if(/*ns == HUBBUB_NS_HTML &&*/
+               utf8AttributeNameLength == thisName.len && 
+               strncasecmp(utf8AttributeName, (const char *)thisName.ptr, utf8AttributeNameLength) == 0 && thisValue.len) {
                 free((void *)thisName.ptr);
-                free((void *)thisValue.ptr);
+                return [[NSString alloc] initWithBytesNoCopy:(void *)thisValue.ptr
+                                                      length:thisValue.len
+                                                    encoding:NSUTF8StringEncoding
+                                                freeWhenDone:YES];
             }
+            free((void *)thisName.ptr);
+            free((void *)thisValue.ptr);
         }
     }
     return nil;
