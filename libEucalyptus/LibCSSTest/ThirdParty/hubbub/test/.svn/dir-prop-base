@@ -1,0 +1,24 @@
+K 10
+svn:ignore
+V 146
+*.d
+tree2
+dict
+tokeniser2
+tokeniser3
+csdetect
+parser-utf16
+tree
+tokeniser
+hubbub
+inputstream
+aliases
+log
+entities
+filter
+parser
+cscodec
+tree-buf
+
+
+END

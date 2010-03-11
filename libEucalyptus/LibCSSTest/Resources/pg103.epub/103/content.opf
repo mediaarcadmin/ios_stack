@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<package xmlns="http://www.idpf.org/2007/opf"
+         version="2.0"
+         unique-identifier="etextno">
+
+<metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:publisher>Project Gutenberg</dc:publisher>
+  <dc:rights>Public domain in the USA.</dc:rights>
+  <dc:identifier id="etextno" opf:scheme="URI">http://www.gutenberg.org/ebooks/103</dc:identifier>
+  <dc:creator opf:file-as="Verne, Jules">Jules Verne</dc:creator>
+  <dc:title>Around the World in 80 Days</dc:title>
+  <dc:language xsi:type="dcterms:RFC4646">en</dc:language>
+  <dc:subject>Adventure stories</dc:subject>
+  <dc:subject>Voyages around the world -- Fiction</dc:subject>
+  <dc:date opf:event="publication">1994-01-01</dc:date>
+  <dc:date opf:event="conversion">2009-09-28T22:35:25.035872+00:00</dc:date>
+  <dc:source>http://www.gutenberg.org/files/103/103-h/103-h.htm</dc:source>
+</metadata>
+
+  <manifest>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="item1" href="0.html" media-type="application/xhtml+xml" />
+    <item id="item2" href="1.html" media-type="application/xhtml+xml" />
+    <item id="item3" href="2.html" media-type="application/xhtml+xml" />
+  </manifest>
+
+  <spine toc="ncx">
+    <itemref idref="item1" linear="yes" />
+    <itemref idref="item2" linear="yes" />
+    <itemref idref="item3" linear="yes" />
+  </spine>
+
+  <guide>
+    <reference type="text" title="Top" href="0.html#pgepubid00000" />
+  </guide>
+
+</package>
