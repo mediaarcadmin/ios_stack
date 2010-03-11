@@ -1,5 +1,5 @@
 /*
- *  thjust.h
+ *  th_just_with_floats.h
  *  Eucalyptus
  *
  *  Created by James Montgomerie on 01/10/2008.
@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __THJUST_H__
-#define __THJUST_H__
+#ifndef __TH_JUST_WITH_FLOATS_H__
+#define __TH_JUST_WITH_FLOATS_H__
 
 #include <CoreGraphics/CGBase.h>
 
@@ -30,11 +30,11 @@ extern "C" {
 
     
 // These are here mostly for informational purposes.  At the moment, the
-// only one actually used by the justifier logic is TH_JUST_FLAG_ISHARDBREAK.
-#define TH_JUST_FLAG_ISSPACE     0x01
-#define TH_JUST_FLAG_ISHYPHEN    0x02
-#define TH_JUST_FLAG_ISTAB       0x04    
-#define TH_JUST_FLAG_ISHARDBREAK 0x08
+// only one actually used by the justifier logic is TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK.
+#define TH_JUST_WITH_FLOATS_FLAG_ISSPACE     0x01
+#define TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN    0x02
+#define TH_JUST_WITH_FLOATS_FLAG_ISTAB       0x04    
+#define TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK 0x08
 
     
 // A break is a point where the line could potentially break (space, hyphen 
@@ -70,13 +70,13 @@ typedef struct THBreak {
 // point), and calculates which points to use to make lines up to ideal_width
 // in length.  The indexes of the breaks used are placed into the use-supplied
 // result array.  The return value is number of used breaks.
-// Note that the last break must have the flag TH_JUST_FLAG_ISHARDBREAK set,
+// Note that the last break must have the flag TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK set,
 // otherwise it will be used in the justification calculations (i.e. the 
 // justifier will attempt to make it the same length as the other lines).
-int th_just(const THBreak *breaks, int break_count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result);
+int th_just_with_floats(const THBreak *breaks, int break_count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result);
 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
 
-#endif // __THJUST_H__
+#endif // __TH_JUST_WITH_FLOATS_H__

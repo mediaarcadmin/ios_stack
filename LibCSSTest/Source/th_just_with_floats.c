@@ -1,5 +1,5 @@
 /*
- *  thjust.c
+ *  th_just_with_floats.c
  *  Eucalyptus
  *
  *  Created by James Montgomerie on 01/10/2008.
@@ -7,7 +7,7 @@
  *
  */
 
-#include "thjust.h"
+#include "th_just_with_floats.h"
 #include "stdlib.h"
 #include "stdbool.h"
 #include "limits.h"
@@ -69,13 +69,13 @@ static CGFloat calculate_weight(int from_break_index, int to_break_index, const 
     
     CGFloat width_difference = ideal_width - line_width;
     if(width_difference >= 0) {
-        if((breaks[to_break_index].flags & TH_JUST_FLAG_ISHARDBREAK) != 0) {
+        if((breaks[to_break_index].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) != 0) {
             weight = 0.0f;
         } else {
             weight = width_difference + breaks[to_break_index].penalty;
             if(from_break_index != -1 &&
-               (breaks[from_break_index].flags & TH_JUST_FLAG_ISHYPHEN) != 0 &&
-               (breaks[to_break_index].flags & TH_JUST_FLAG_ISHYPHEN) != 0) {
+               (breaks[from_break_index].flags & TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN) != 0 &&
+               (breaks[to_break_index].flags & TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN) != 0) {
                 weight += two_hyphen_penalty;
             }
             weight *= weight;
@@ -118,7 +118,7 @@ static void relax_reachable_from(int break_u, const THBreak *breaks, struct Esti
     }
 }
 
-int th_just(const THBreak *breaks, int break_count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result) 
+int th_just_with_floats(const THBreak *breaks, int break_count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result) 
 {
     struct Estimates *estimates = malloc(sizeof(struct Estimates) * (break_count));
     for(int i = 0; i < break_count; ++i) {

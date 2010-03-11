@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7D019EC410E7607900119926 /* thjust.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D019EC310E7607900119926 /* thjust.c */; };
+		7D019EC410E7607900119926 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D019EC310E7607900119926 /* th_just_with_floats.c */; };
 		7D019EC710E7608500119926 /* THStringRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D019EC610E7608500119926 /* THStringRenderer.m */; };
 		7D019F5810E7614E00119926 /* THLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D019F5510E7614E00119926 /* THLog.m */; };
 		7D019F5910E7614E00119926 /* THPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D019F5710E7614E00119926 /* THPair.m */; };
@@ -168,8 +168,8 @@
 		08FB7796FE84155DC02AAC07 /* LibCSSTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibCSSTest.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibCSSTest_Prefix.pch; sourceTree = "<group>"; };
-		7D019EC210E7607900119926 /* thjust.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thjust.h; sourceTree = "<group>"; };
-		7D019EC310E7607900119926 /* thjust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thjust.c; sourceTree = "<group>"; };
+		7D019EC210E7607900119926 /* th_just_with_floats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = th_just_with_floats.h; sourceTree = "<group>"; };
+		7D019EC310E7607900119926 /* th_just_with_floats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = th_just_with_floats.c; sourceTree = "<group>"; };
 		7D019EC510E7608500119926 /* THStringRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THStringRenderer.h; sourceTree = "<group>"; };
 		7D019EC610E7608500119926 /* THStringRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THStringRenderer.m; sourceTree = "<group>"; };
 		7D019F5410E7614E00119926 /* THLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLog.h; sourceTree = "<group>"; };
@@ -730,8 +730,8 @@
 				7D019F5710E7614E00119926 /* THPair.m */,
 				7D019EC510E7608500119926 /* THStringRenderer.h */,
 				7D019EC610E7608500119926 /* THStringRenderer.m */,
-				7D019EC210E7607900119926 /* thjust.h */,
-				7D019EC310E7607900119926 /* thjust.c */,
+				7D019EC210E7607900119926 /* th_just_with_floats.h */,
+				7D019EC310E7607900119926 /* th_just_with_floats.c */,
 				7D38912C1147BF0E008E6714 /* EucCSSInternal.h */,
 				7D38912D1147BF0E008E6714 /* EucCSSInternal.c */,
 				7DC9541F10FA744C00A89585 /* LWCNSStringAdditions.h */,
@@ -2163,7 +2163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9A0486AA7600D96B5E /* LibCSSTest.m in Sources */,
-				7D019EC410E7607900119926 /* thjust.c in Sources */,
+				7D019EC410E7607900119926 /* th_just_with_floats.c in Sources */,
 				7D019EC710E7608500119926 /* THStringRenderer.m in Sources */,
 				7D019F5810E7614E00119926 /* THLog.m in Sources */,
 				7D019F5910E7614E00119926 /* THPair.m in Sources */,
