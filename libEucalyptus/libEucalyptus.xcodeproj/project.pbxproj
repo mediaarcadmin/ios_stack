@@ -162,6 +162,8 @@
 		7D19059F11494FB900375803 /* string.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D19051311494FB900375803 /* string.c */; };
 		7D1905A011494FB900375803 /* string.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D19051411494FB900375803 /* string.h */; };
 		7D1905A111494FB900375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D19051511494FB900375803 /* utils.h */; };
+		7D1906661149599F00375803 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1906641149599F00375803 /* th_just_with_floats.c */; };
+		7D1906671149599F00375803 /* th_just_with_floats.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1906651149599F00375803 /* th_just_with_floats.h */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
 		7D35ADAF1121739B00A7AC62 /* EucMenuView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883FCA111C7735009669A8 /* EucMenuView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -963,6 +965,8 @@
 		7D19056511494FB900375803 /* tree-buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "tree-buf.c"; sourceTree = "<group>"; };
 		7D19056611494FB900375803 /* tree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tree.c; sourceTree = "<group>"; };
 		7D19056711494FB900375803 /* tree2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tree2.c; sourceTree = "<group>"; };
+		7D1906641149599F00375803 /* th_just_with_floats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = th_just_with_floats.c; sourceTree = "<group>"; };
+		7D1906651149599F00375803 /* th_just_with_floats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = th_just_with_floats.h; sourceTree = "<group>"; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
 		7D516E00102872AC005F3C46 /* EucBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookViewController.h; sourceTree = "<group>"; };
@@ -2514,8 +2518,6 @@
 				7D516E7E1028750A005F3C46 /* EucBookTitleView.m */,
 				7D6AAD591028E774006289E6 /* EucSharedHyphenator.h */,
 				7D6AAD5A1028E774006289E6 /* EucSharedHyphenator.mm */,
-				7D6AAD581028E774006289E6 /* thjust.h */,
-				7D6AAD5B1028E774006289E6 /* thjust.c */,
 				7D51702310287A0D005F3C46 /* EucPageLayoutController.h */,
 			);
 			path = BookView;
@@ -2574,6 +2576,10 @@
 				7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */,
 				7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */,
 				7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */,
+				7D6AAD581028E774006289E6 /* thjust.h */,
+				7D6AAD5B1028E774006289E6 /* thjust.c */,
+				7D1906641149599F00375803 /* th_just_with_floats.c */,
+				7D1906651149599F00375803 /* th_just_with_floats.h */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -3244,6 +3250,7 @@
 				7D883FA2111C640C009669A8 /* EucMenuController.h in Headers */,
 				7D35ADAF1121739B00A7AC62 /* EucMenuView.h in Headers */,
 				7DB041251145278F000C2980 /* THCALayerAdditions.h in Headers */,
+				7D1906671149599F00375803 /* th_just_with_floats.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3805,6 +3812,7 @@
 				7D883FA3111C640C009669A8 /* EucMenuController.m in Sources */,
 				7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */,
 				7DB0412411452788000C2980 /* THCALayerAdditions.m in Sources */,
+				7D1906661149599F00375803 /* th_just_with_floats.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
