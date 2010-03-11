@@ -6,6 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucCSSInternal.h"
 #import "EucCSSRenderer.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayoutPositionedBlock.h"
@@ -39,7 +40,7 @@
 
 - (void)_renderPositionedBlock:(EucCSSLayoutPositionedBlock *)block
 {
-    NSLog(@"Positioned Block: %@", NSStringFromRect(NSRectFromCGRect(block.frame)));
+    NSLog(@"Positioned Block: %@", NSStringFromCGRect(block.frame));
     for(id subEntity in block.subEntities) {
         [self render:subEntity];
     }    
@@ -49,7 +50,7 @@
 
 - (void)_renderPositionedRun:(EucCSSLayoutPositionedRun *)run
 {
-    NSLog(@"Positioned Run: %@", NSStringFromRect(NSRectFromCGRect(run.frame)));
+    NSLog(@"Positioned Run: %@", NSStringFromCGRect(run.frame));
     for(EucCSSLayoutLine *line in run.lines) {
         [self render:line];
     }

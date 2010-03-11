@@ -6,7 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 #import "EucCSSDocumentTreeNode.h"
 

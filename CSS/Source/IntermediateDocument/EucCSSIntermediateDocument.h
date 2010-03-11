@@ -7,6 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
 #import <libwapcaplet/libwapcaplet.h>
 #import <libcss/libcss.h>
 

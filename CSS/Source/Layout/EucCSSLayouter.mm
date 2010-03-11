@@ -6,6 +6,7 @@
 //  Copyright 2009 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucCSSInternal.h"
 #import "EucCSSLayouter.h"
 
 #import "EucCSSIntermediateDocument.h"
@@ -94,7 +95,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             element = pageBreakIt->second;
             elementFrame = [element frame];        
             
-            THLogVerbose(@"[%ld, %ld, %ld], %@, %@", point.nodeKey, point.word, point.element, NSStringFromRect(elementFrame),NSStringFromClass([element class]));
+            THLogVerbose(@"[%ld, %ld, %ld], %@, %@", point.nodeKey, point.word, point.element, NSStringFromCGRect(elementFrame), NSStringFromClass([element class]));
             
             ++pageBreakIt;
         } 
@@ -109,7 +110,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         
         if(THWillLogVerbose()) {
             EucCSSLayoutPoint point = pageBreakIt->first;
-            THLogVerbose(@"[%ld, %ld, %ld], %f, %@, %@", point.nodeKey, point.word, point.element, NSStringFromRect(elementFrame), NSStringFromClass([element class]));
+            THLogVerbose(@"[%ld, %ld, %ld], %f, %@, %@", point.nodeKey, point.word, point.element, maxY, NSStringFromCGRect(elementFrame), NSStringFromClass([element class]));
         }
         if(elementFrame.origin.y <= maxY) {
             // The origin of the element after the break matches is the 
@@ -349,7 +350,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
                 while(currentPositionedBlock.documentNode != currentDocumentNodeBlockLevelParent) {
                     [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:NO];
-                    nextY = NSMaxY(currentPositionedBlock.frame);
+                    nextY = CGRectGetMaxY(currentPositionedBlock.frame);
                     currentPositionedBlock = currentPositionedBlock.parent;
                     hasPreviousSibling = YES;
                 }
@@ -382,7 +383,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         if(!reachedBottomOfFrame) {
             while(currentPositionedBlock) {
                 [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:reachedBottomOfFrame];
-                nextY = NSMaxY(currentPositionedBlock.frame);
+                nextY = CGRectGetMaxY(currentPositionedBlock.frame);
                 currentPositionedBlock = currentPositionedBlock.parent;
                 CGRect potentialFrame = currentPositionedBlock.frame;
                 if(potentialFrame.size.height != CGFLOAT_MAX) {

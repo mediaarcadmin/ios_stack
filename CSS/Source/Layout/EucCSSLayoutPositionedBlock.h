@@ -7,12 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
 
 @class EucCSSIntermediateDocumentNode;
 
 @interface EucCSSLayoutPositionedBlock : NSObject {
     EucCSSIntermediateDocumentNode *_documentNode;
-
+    EucCSSLayoutPositionedBlock *_parent;
+    
     CGRect _frame;
     CGRect _borderRect;
     CGRect _paddingRect;

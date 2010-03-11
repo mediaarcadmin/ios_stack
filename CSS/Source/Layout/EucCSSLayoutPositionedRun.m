@@ -18,7 +18,7 @@
 
 - (id)initWithDocumentRun:(EucCSSLayoutDocumentRun *)documentRun
 {
-    if(self = [super init]) {
+    if((self = [super init])) {
         _documentRun = [documentRun retain];
     }
     return self;
