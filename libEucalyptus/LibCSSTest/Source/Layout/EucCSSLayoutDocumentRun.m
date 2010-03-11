@@ -15,7 +15,7 @@
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
-#import "thjust.h"
+#import "th_just_with_floats.h"
 
 #import <libcss/libcss.h>
 
@@ -370,7 +370,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                 lineSoFarWidth += _componentInfos[i].width;
                 breaks[breaksCount].x1 = lineSoFarWidth;
                 breaks[breaksCount].penalty = 0;
-                breaks[breaksCount].flags = TH_JUST_FLAG_ISSPACE;
+                breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
                 breakInfos[breaksCount].point = _componentInfos[i].point;
                 breakInfos[breaksCount].isComponent = YES;
                 ++breaksCount;
@@ -386,7 +386,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                 lineSoFarWidth += _componentInfos[i].width;
                 breaks[breaksCount].x1 = lineSoFarWidth;
                 breaks[breaksCount].penalty = 0;
-                breaks[breaksCount].flags = TH_JUST_FLAG_ISHARDBREAK;
+                breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
                 breakInfos[breaksCount].point = _componentInfos[i].point;
                 breakInfos[breaksCount].isComponent = YES;
                 ++breaksCount;                
@@ -403,7 +403,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         breaks[breaksCount].x0 = lineSoFarWidth;
         breaks[breaksCount].x1 = lineSoFarWidth;
         breaks[breaksCount].penalty = 0;
-        breaks[breaksCount].flags = TH_JUST_FLAG_ISHARDBREAK;
+        breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
         breakInfos[breaksCount].point.word = _wordsCount + 1;
         breakInfos[breaksCount].point.element = 0;
         breakInfos[breaksCount].isComponent = NO;
@@ -482,7 +482,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     
     int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
     int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
-    int usedBreakCount = th_just(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, frame.size.width, 0, usedBreakIndexes);
+    int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, frame.size.width, 0, usedBreakIndexes);
 
     CGPoint lineOrigin = frame.origin;
 
@@ -523,7 +523,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
             textIndent = 0.0f;
         }
         if(textAlign == CSS_TEXT_ALIGN_JUSTIFY &&
-           (_potentialBreaks[usedBreakIndexes[i] + startBreakOffset].flags & TH_JUST_FLAG_ISHARDBREAK) == TH_JUST_FLAG_ISHARDBREAK) {
+           (_potentialBreaks[usedBreakIndexes[i] + startBreakOffset].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) {
             newLine.align = CSS_TEXT_ALIGN_DEFAULT;
         } else {
             newLine.align = textAlign;

@@ -19,7 +19,7 @@
 
 #import "THStringRenderer.h"
 #import "THLog.h"
-#import "thjust.h"
+#import "th_just_with_floats.h"
 
 #import <vector>
 #import <utility>

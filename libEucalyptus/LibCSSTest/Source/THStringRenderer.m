@@ -10,7 +10,7 @@
 #import "THLog.h"
 #import "THPair.h"
 #import "THTimer.h"
-#import "thjust.h"
+#import "th_just_with_floats.h"
 
 #import <pthread.h>
 
@@ -529,12 +529,12 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
             
             breakAt->x1 = lineSoFarWidth;
             breakAt->penalty = 0;
-            breakAt->flags = TH_JUST_FLAG_ISSPACE;
+            breakAt->flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
             
             ++breakAt;
             ++lastEncodedWordsAt;
         }
-        (breakAt - 1)->flags |= TH_JUST_FLAG_ISHARDBREAK;
+        (breakAt - 1)->flags |= TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
     }
     [wordsByLine release];
     if(intermediateBuffer) {
@@ -546,11 +546,11 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     if((flags & THStringRendererFlagFairlySpaceLastLine) != 0) {
         // Remove the hard break from the end to make the justifier
         // justify fully all the lines equally.
-        _lastBreaks[_lastBreakCount - 1].flags &= (!TH_JUST_FLAG_ISHARDBREAK); // Remove the hard break 
+        _lastBreaks[_lastBreakCount - 1].flags &= (!TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK); // Remove the hard break 
     }
     
     _lastUsedBreaksIndexes = malloc(_lastBreakCount * sizeof(int));
-    _lastUsedBreakCount = th_just(_lastBreaks, _lastBreakCount, 0, floorf(maxWidth), 0, _lastUsedBreaksIndexes);
+    _lastUsedBreakCount = th_just_with_floats(_lastBreaks, _lastBreakCount, 0, floorf(maxWidth), 0, _lastUsedBreaksIndexes);
     
     int longestLineLength = 0;
     int previousLineStart = 0;
@@ -566,7 +566,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         }
         previousLineStart = _lastBreaks[index].x1;
         
-        if((_lastBreaks[index].flags & TH_JUST_FLAG_ISHARDBREAK) == TH_JUST_FLAG_ISHARDBREAK &&
+        if((_lastBreaks[index].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK &&
            _lastBreaks[index].x1 - _lastBreaks[index].x0 == 0 &&
            index >= 1 && index < _lastBreakCount - 1 ) {
             // This is a blank line.
