@@ -20,15 +20,6 @@
 #include <hubbub/hubbub.h>
 #include <hubbub/parser.h>
 
-enum EucHTMLDBNodeKinds
-{
-    nodeKindRoot = 0,
-    nodeKindDoctype,
-    nodeKindComment,
-    nodeKindElement,
-    nodeKindText
-};
-
 enum EucHTMLDBNodeArrayPositions
 {
     kindPosition = 0,

@@ -37,13 +37,23 @@
 }
 
 
-- (EucHTMLDBNode *)rootNode
+- (EucHTMLDBNode *)root
 {
     if(!_htmlRootKey) {
-        lwc_string *htmlString;
-        lwc_context_intern(_lwcContext, "html", 4, &htmlString);
-        _htmlRootKey = [[self nodeForKey:_htmlDb->rootNodeKey] nextNodeWithName:htmlString].key;
-        lwc_context_string_unref(_lwcContext, htmlString);
+        id<EucCSSDocumentTreeNode> examiningNode = [self nodeForKey:_htmlDb->rootNodeKey];
+        while(examiningNode && [@"html" caseInsensitiveCompare:examiningNode.name] != NSOrderedSame) {
+            id<EucCSSDocumentTreeNode> oldExaminingNode = examiningNode;
+            examiningNode = oldExaminingNode.firstChild;
+            if(!examiningNode) {
+                examiningNode = oldExaminingNode.nextSibling;
+            }
+            if(!examiningNode) {
+                examiningNode = oldExaminingNode.parent.nextSibling;
+            }
+        }
+        if(examiningNode) {
+            _htmlRootKey = examiningNode.key;
+        }
     }
     return [self nodeForKey:_htmlRootKey];
 }

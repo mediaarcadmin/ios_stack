@@ -87,9 +87,10 @@ static css_error EucCSSDocumentTreeNodeID(void *pw, void *node, lwc_context *dic
     NSString *idAttribute = [[tree nodeForKey:key] attributeWithName:@"id"];
     if(idAttribute) {
         *idOut = [idAttribute lwcStringInContext:dict];
-        return CSS_OK;
+    } else {
+        *idOut = nil;
     }
-    return CSS_INVALID;    
+    return CSS_OK;    
 }
 
 static css_error EucCSSDocumentTreeNamedAncestorNode(void *pw, void *node, lwc_string *name, void **ancestor)
@@ -99,9 +100,11 @@ static css_error EucCSSDocumentTreeNamedAncestorNode(void *pw, void *node, lwc_s
     
     NSString *nsName = [NSString stringWithLWCString:name];
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
+    NSString *treeNodeName;
     do {
         treeNode = treeNode.parent;
-    } while(treeNode && !([treeNode.name caseInsensitiveCompare:nsName] == NSOrderedSame));
+        treeNodeName = treeNode.name;
+    } while(treeNode && (!treeNodeName || ([treeNode.name caseInsensitiveCompare:nsName] != NSOrderedSame)));
     
     if(treeNode) {
         *ancestor = (void *)((intptr_t)treeNode.key);
@@ -119,7 +122,7 @@ static css_error EucCSSDocumentTreeNamedParentNode(void *pw, void *node, lwc_str
     
     id<EucCSSDocumentTreeNode> parentNode = [tree nodeForKey:key].parent;
         
-    if(parentNode && ([parentNode.name caseInsensitiveCompare:[NSString stringWithLWCString:name]] == NSOrderedSame)) {
+    if(parentNode && ([[NSString stringWithLWCString:name] caseInsensitiveCompare:parentNode.name] == NSOrderedSame)) {
         *parent = (void *)((intptr_t)parentNode.key);
     } else {
         *parent = NULL;
@@ -135,7 +138,7 @@ static css_error EucCSSDocumentTreeNamedSiblingNode(void *pw, void *node, lwc_st
     
     id<EucCSSDocumentTreeNode> previousSiblingNode = [tree nodeForKey:key].previousSibling;
 
-    if(previousSiblingNode && ([previousSiblingNode.name caseInsensitiveCompare:[NSString stringWithLWCString:name]] == NSOrderedSame)) {
+    if(previousSiblingNode && ([[NSString stringWithLWCString:name] caseInsensitiveCompare:previousSiblingNode.name] == NSOrderedSame)) {
         *sibling = (void *)((intptr_t)previousSiblingNode.key);
     } else {
         *sibling = NULL;
@@ -170,7 +173,8 @@ static css_error EucCSSDocumentTreeNodeHasName(void *pw, void *node, lwc_string 
     uint32_t key = (uint32_t)((intptr_t)node);
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
 
-    *match = ([treeNode.name caseInsensitiveCompare:[NSString stringWithLWCString:name]] == NSOrderedSame);
+    NSString *treeNodeName = treeNode.name;
+    *match = (treeNodeName != nil && [treeNodeName caseInsensitiveCompare:[NSString stringWithLWCString:name]] == NSOrderedSame);
     
     return CSS_OK;        
 }
@@ -286,8 +290,10 @@ static css_error EucCSSDocumentTreeNodeIsLink(void *pw, void *node, bool *match)
     uint32_t key = (uint32_t)((intptr_t)node);
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
     
-    *match = ([treeNode.name caseInsensitiveCompare:@"a"] == NSOrderedSame) && 
-             [treeNode attributeWithName:@"href"] != nil;
+    NSString *name = treeNode.name;
+    *match = (name &&
+              [@"a" caseInsensitiveCompare:name] == NSOrderedSame && 
+              [treeNode attributeWithName:@"href"] != nil);
         
     return CSS_OK;
 }

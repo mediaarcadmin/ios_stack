@@ -29,7 +29,7 @@
     
     NSString *entityClassName = NSStringFromClass([layoutEntity class]);
     if([entityClassName hasPrefix:@"EucCSSLayout"]) {
-        entityClassName = [entityClassName substringFromIndex:13];
+        entityClassName = [entityClassName substringFromIndex:12];
         SEL selector = NSSelectorFromString([NSString stringWithFormat:@"_render%@:", entityClassName]);
         [self performSelector:selector withObject:layoutEntity];
     } else {

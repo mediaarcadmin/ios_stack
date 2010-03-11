@@ -1,18 +1,22 @@
 #import <Foundation/Foundation.h>
 
-#include <hubbub/hubbub.h>
-#include <libcss/libcss.h>
+#import <hubbub/hubbub.h>
+#import <libcss/libcss.h>
 
-#include "EucCSSInternal.h"
+#import "EucCSSInternal.h"
 
-#include "EucCSSIntermediateDocument.h"
-#include "EucCSSIntermediateDocumentNode.h"
-#include "EucCSSIntermediateDocumentConcreteNode.h"
-#include "EucCSSLayouter.h"
-#include "EucCSSRenderer.h"
-#include "EucCSSLayoutPositionedBlock.h"
+#import "EucHTMLDB.h"
+#import "EucHTMLDBCreation.h"
+#import "EucHTMLDBNodeManager.h"
 
-#include "THLog.h"
+#import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocumentNode.h"
+#import "EucCSSIntermediateDocumentConcreteNode.h"
+#import "EucCSSLayouter.h"
+#import "EucCSSRenderer.h"
+#import "EucCSSLayoutPositionedBlock.h"
+
+#import "THLog.h"
 
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -37,8 +41,19 @@ int main (int argc, const char * argv[]) {
     } else {
         hubbubInitialised = true;
     }
+    
+    EucHTMLDB *htmlDb = EucHTMLDBCreateWithHTMLAtPath(argv[2], NULL);
 
-    EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithPath:[NSString stringWithUTF8String:argv[2]]];
+    lwc_context *lwcContext;
+    lwc_create_context(EucRealloc, NULL, &lwcContext);
+    lwc_context_ref(lwcContext);
+    
+    EucHTMLDBNodeManager *htmlDbManager = [[EucHTMLDBNodeManager alloc] initWithHTMLDB:htmlDb
+                                                                           lwcContext:lwcContext];
+    
+    EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:htmlDbManager
+                                                                                         lwcContext:lwcContext];
+
         
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     layouter.document = document;
@@ -97,6 +112,9 @@ int main (int argc, const char * argv[]) {
     CGContextRelease(renderingContext);
     [layouter release];
     [document release];
+    [htmlDbManager release];
+    lwc_context_unref(lwcContext);
+    EucHTMLDBClose(htmlDb);
     
 bail:
     if(cssInitialised) {

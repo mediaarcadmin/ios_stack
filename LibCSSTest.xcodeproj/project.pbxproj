@@ -210,6 +210,7 @@
 		7D38912C1147BF0E008E6714 /* EucCSSInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSInternal.h; sourceTree = "<group>"; };
 		7D38912D1147BF0E008E6714 /* EucCSSInternal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucCSSInternal.c; sourceTree = "<group>"; };
 		7D3891701147C37C008E6714 /* EucCSSDocumentTree_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTree_Package.h; sourceTree = "<group>"; };
+		7D38924B1147DC57008E6714 /* EucCSSDocumentTreeNodeKind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTreeNodeKind.h; sourceTree = "<group>"; };
 		7D39680A113540E0006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentGeneratedContainerNode.h; sourceTree = "<group>"; };
 		7D39680B113540E0006ECF7B /* EucCSSIntermediateDocumentGeneratedContainerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentGeneratedContainerNode.m; sourceTree = "<group>"; };
 		7D396934113586AC006ECF7B /* EucCSSIntermediateDocumentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentNode.h; sourceTree = "<group>"; };
@@ -719,6 +720,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				08FB7796FE84155DC02AAC07 /* LibCSSTest.m */,
+				32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */,
 				7D019F5410E7614E00119926 /* THLog.h */,
 				7D019F5510E7614E00119926 /* THLog.m */,
 				7D019FC910E7617200119926 /* THTimer.h */,
@@ -729,12 +732,10 @@
 				7D019EC610E7608500119926 /* THStringRenderer.m */,
 				7D019EC210E7607900119926 /* thjust.h */,
 				7D019EC310E7607900119926 /* thjust.c */,
-				7DC9541F10FA744C00A89585 /* LWCNSStringAdditions.h */,
 				7D38912C1147BF0E008E6714 /* EucCSSInternal.h */,
 				7D38912D1147BF0E008E6714 /* EucCSSInternal.c */,
+				7DC9541F10FA744C00A89585 /* LWCNSStringAdditions.h */,
 				7DC9542010FA744C00A89585 /* LWCNSStringAdditions.m */,
-				32A70AAB03705E1F00C91783 /* LibCSSTest_Prefix.pch */,
-				08FB7796FE84155DC02AAC07 /* LibCSSTest.m */,
 				7D22474610FD00D200CFD8B5 /* HTMLDB */,
 				7D388FFD1146F84D008E6714 /* DocumentTree */,
 				7D22474F10FD00D200CFD8B5 /* IntermediateDocument */,
@@ -824,6 +825,7 @@
 				7D3890121146F8E8008E6714 /* EucCSSDocumentTree.m */,
 				7D3891701147C37C008E6714 /* EucCSSDocumentTree_Package.h */,
 				7D38900C1146F896008E6714 /* EucCSSDocumentTreeNode.h */,
+				7D38924B1147DC57008E6714 /* EucCSSDocumentTreeNodeKind.h */,
 			);
 			path = DocumentTree;
 			sourceTree = "<group>";

@@ -25,6 +25,7 @@
 #include <libcss/libcss.h>
 
 #include "EucCSSInternal.h"
+#include "EucCSSDocumentTreeNodeKind.h"
 #include "EucHTMLDBCreation.h"
 
 hubbub_error EucHTMLDBCreateRoot(void *ctx, void **result)
@@ -36,7 +37,7 @@ hubbub_error EucHTMLDBCreateRoot(void *ctx, void **result)
     hubbub_error ret = HUBBUB_UNKNOWN;
     
     uint32_t nodeElements[rootElementCount];
-    nodeElements[kindPosition] = nodeKindRoot;
+    nodeElements[kindPosition] =  EucCSSDocumentTreeNodeKindRoot;
     nodeElements[refcountPosition] = 0;
     
     nodeElements[parentPosition] = 0;
@@ -64,7 +65,7 @@ static hubbub_error EucHTMLDBCreateComment(void *ctx,
     hubbub_error ret = HUBBUB_UNKNOWN;
     
     uint32_t nodeElements[commentElementCount];
-    nodeElements[kindPosition] = nodeKindComment;
+    nodeElements[kindPosition] =  EucCSSDocumentTreeNodeKindComment;
     nodeElements[refcountPosition] = 1;
     
     nodeElements[parentPosition] = 0;
@@ -92,7 +93,7 @@ static hubbub_error EucHTMLDBCreateDoctype(void *ctx,
     hubbub_error ret = HUBBUB_UNKNOWN;
     
     uint32_t nodeElements[doctypeElementCount];
-    nodeElements[kindPosition] = nodeKindDoctype;
+    nodeElements[kindPosition] =  EucCSSDocumentTreeNodeKindDoctype;
     nodeElements[refcountPosition] = 1;
     
     nodeElements[parentPosition] = 0;
@@ -136,7 +137,7 @@ static hubbub_error EucHTMLDBCreateElement(void *ctx,
     hubbub_error ret = HUBBUB_UNKNOWN;
     
     uint32_t nodeElements[elementElementCount];
-    nodeElements[kindPosition] = nodeKindElement;
+    nodeElements[kindPosition] =  EucCSSDocumentTreeNodeKindElement;
     nodeElements[refcountPosition] = 1;
     
     nodeElements[parentPosition] = 0;
@@ -189,7 +190,7 @@ static hubbub_error EucHTMLDBCreateText(void *ctx,
     hubbub_error ret = HUBBUB_UNKNOWN;
     
     uint32_t nodeElements[textElementCount];
-    nodeElements[kindPosition] = nodeKindText;
+    nodeElements[kindPosition] =  EucCSSDocumentTreeNodeKindText;
     nodeElements[refcountPosition] = 1;
     
     nodeElements[parentPosition] = 0;
@@ -326,10 +327,10 @@ static hubbub_error EucHTMLDBRecursiveDeleteNode(void *ctx, uint32_t key, uint32
     ret = DBDeleteValueForKey(context, key);
     
     switch(nodeElements[kindPosition]) {
-        case nodeKindDoctype:
+        case  EucCSSDocumentTreeNodeKindDoctype:
             DBDeleteValueForKey(context, nodeElements[doctypeNamePosition]);
             break;
-        case nodeKindComment:
+        case  EucCSSDocumentTreeNodeKindComment:
             DBDeleteValueForKey(context, nodeElements[commentTextPosition]);
             if(nodeElements[doctypePublicIdPosition]) {
                 DBDeleteValueForKey(context, nodeElements[doctypePublicIdPosition]);
@@ -338,7 +339,7 @@ static hubbub_error EucHTMLDBRecursiveDeleteNode(void *ctx, uint32_t key, uint32
                 DBDeleteValueForKey(context, nodeElements[doctypeSystemIdPosition]);
             }
             break;
-        case nodeKindElement:
+        case  EucCSSDocumentTreeNodeKindElement:
             DBDeleteValueForKey(context, nodeElements[elementNamePosition]);
             if(nodeElements[elementAttributesPosition]) {
                 uint32_t *attributeKeys;
@@ -352,7 +353,7 @@ static hubbub_error EucHTMLDBRecursiveDeleteNode(void *ctx, uint32_t key, uint32
                 DBDeleteValueForKey(context, nodeElements[elementAttributesPosition]);
             }
             break;
-        case nodeKindText:
+        case  EucCSSDocumentTreeNodeKindText:
             DBDeleteValueForKey(context, nodeElements[textTextPosition]);
             break;
         default:
@@ -392,7 +393,7 @@ static hubbub_error EucHTMLDBUnrefNode(void *ctx, void *node)
     uint32_t *nodeElements;
     ret = EucHTMLDBCopyNode(context, key, &nodeElements);
     if(ret == HUBBUB_OK) {
-        if(nodeElements[kindPosition] != nodeKindRoot) {
+        if(nodeElements[kindPosition] !=  EucCSSDocumentTreeNodeKindRoot) {
             --nodeElements[refcountPosition];
             if(nodeElements[refcountPosition] == 0 && 
                !nodeElements[parentPosition]) {
@@ -453,11 +454,11 @@ static hubbub_error EucHTMLDBInsertBefore(void *ctx, void *parent, void *child, 
             
             if(!resultKey && ret == HUBBUB_OK) {
                 // Can we just prepend our text to the node we're to go before?
-                if(childToGoBeforeKey && childElements[kindPosition] == nodeKindText) {
+                if(childToGoBeforeKey && childElements[kindPosition] ==  EucCSSDocumentTreeNodeKindText) {
                     uint32_t *childToGoBeforeElements;
                     ret = EucHTMLDBCopyNode(context, childToGoBeforeKey, &childToGoBeforeElements);
                     if(ret == HUBBUB_OK) {
-                        if(childToGoBeforeElements[kindPosition] == nodeKindText) {
+                        if(childToGoBeforeElements[kindPosition] ==  EucCSSDocumentTreeNodeKindText) {
                             uint8_t *childToGoBeforeString;
                             size_t childToGoBeforeStringLength;
                             ret = EucHTMLDBCopyUTF8(context, childToGoBeforeElements[textTextPosition], &childToGoBeforeString, &childToGoBeforeStringLength);
@@ -506,12 +507,12 @@ static hubbub_error EucHTMLDBInsertBefore(void *ctx, void *parent, void *child, 
                         }
                         
                         // Can we append our text to the preceeding node?
-                        if(insertionIndex > 0 && childElements[kindPosition] == nodeKindText) {
+                        if(insertionIndex > 0 && childElements[kindPosition] ==  EucCSSDocumentTreeNodeKindText) {
                             uint32_t childToGoAfterKey = childrenArray[insertionIndex - 1];
                             uint32_t *childToGoAfterElements;
                             ret = EucHTMLDBCopyNode(context, childToGoAfterKey, &childToGoAfterElements);
                             if(ret == HUBBUB_OK) {
-                                if(childToGoAfterElements[kindPosition] == nodeKindText) {
+                                if(childToGoAfterElements[kindPosition] ==  EucCSSDocumentTreeNodeKindText) {
                                     uint8_t *childToGoAfterString;
                                     size_t childToGoAfterStringLength;
                                     ret = EucHTMLDBCopyUTF8(context, childToGoAfterElements[textTextPosition], &childToGoAfterString, &childToGoAfterStringLength);
@@ -726,7 +727,7 @@ static hubbub_error EucHTMLDBGetParent(void *ctx, void *node, bool element_only,
     uint32_t *nodeElements;
     ret = EucHTMLDBCopyNode(context, nodeKey, &nodeElements);
     if(ret == HUBBUB_OK) {
-        if(!element_only || nodeElements[kindPosition] == nodeKindElement) {
+        if(!element_only || nodeElements[kindPosition] ==  EucCSSDocumentTreeNodeKindElement) {
             resultKey = nodeElements[parentPosition];
             if(resultKey) {
                 ret = EucHTMLDBRefNode(ctx, (void *)(intptr_t)resultKey);
@@ -782,7 +783,7 @@ static hubbub_error EucHTMLDBAddAttributes(void *ctx,
     uint32_t *nodeElements;
     ret = EucHTMLDBCopyNode(context, nodeKey, &nodeElements);
     if(ret == HUBBUB_OK) {
-        assert(nodeElements[kindPosition] == nodeKindElement);
+        assert(nodeElements[kindPosition] ==  EucCSSDocumentTreeNodeKindElement);
         
         uint32_t oldAttributeCount = 0;
         uint32_t *attributeArray = NULL;
@@ -862,16 +863,16 @@ static void TraverseNode(EucHTMLDB *context, uint32_t key, uint32_t indent)
     
     char *name;
     switch(node[kindPosition]) {
-        case nodeKindRoot:
+        case  EucCSSDocumentTreeNodeKindRoot:
             name = "root";
             break;
-        case nodeKindComment:
+        case  EucCSSDocumentTreeNodeKindComment:
             name = "comment";
             break;
-        case nodeKindDoctype:
+        case  EucCSSDocumentTreeNodeKindDoctype:
             name = "doctype";
             break;
-        case nodeKindElement:
+        case  EucCSSDocumentTreeNodeKindElement:
             name = "element";
             break;
         default:
@@ -883,9 +884,9 @@ static void TraverseNode(EucHTMLDB *context, uint32_t key, uint32_t indent)
     uint32_t childrenKey = node[childrenPosition];
     
     switch(node[kindPosition]) {
-        case nodeKindRoot:
+        case  EucCSSDocumentTreeNodeKindRoot:
             break;
-        case nodeKindComment:
+        case  EucCSSDocumentTreeNodeKindComment:
         {
             uint8_t* text;
             size_t textLength;
@@ -896,11 +897,11 @@ static void TraverseNode(EucHTMLDB *context, uint32_t key, uint32_t indent)
             free(text);
         }
             break;
-        case nodeKindDoctype:
+        case  EucCSSDocumentTreeNodeKindDoctype:
         {
         }
             break;
-        case nodeKindElement:
+        case  EucCSSDocumentTreeNodeKindElement:
         {
             uint8_t* text;
             size_t textLength;
@@ -911,7 +912,7 @@ static void TraverseNode(EucHTMLDB *context, uint32_t key, uint32_t indent)
             free(text);
         }
             break;
-        case nodeKindText:          
+        case  EucCSSDocumentTreeNodeKindText:          
         {
             uint8_t* text;
             size_t textLength;
@@ -978,7 +979,6 @@ hubbub_tree_handler *EucHTMLDBHubbubTreeHandlerCreateWithContext(EucHTMLDB *cont
     
     return ret;
 }
-
 
 EucHTMLDB *EucHTMLDBCreateWithHTMLAtPath(const char* htmlPath, const char* dbPath)
 {

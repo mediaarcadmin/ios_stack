@@ -6,15 +6,8 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-
-typedef enum EucCSSDocumentTreeNodeKind
-{
-    EucCSSDocumentTreeNodeKindDoctype,
-    EucCSSDocumentTreeNodeKindComment,
-    EucCSSDocumentTreeNodeKindElement,
-    EucCSSDocumentTreeNodeKindText
-} EucCSSDocumentTreeNodeKind;
+#import <Foundation/Foundation.h>
+#import "EucCSSDocumentTreeNodeKind.h";
 
 @protocol EucCSSDocumentTree;
 
@@ -24,8 +17,8 @@ typedef enum EucCSSDocumentTreeNodeKind
 
 @property (nonatomic, readonly) id<EucCSSDocumentTreeNode> parent;
 @property (nonatomic, readonly) id<EucCSSDocumentTreeNode> firstChild;
-@property (nonatomic, readonly) id<EucCSSDocumentTreeNode> nextSibling;
 @property (nonatomic, readonly) id<EucCSSDocumentTreeNode> previousSibling;
+@property (nonatomic, readonly) id<EucCSSDocumentTreeNode> nextSibling;
 
 @property (nonatomic, readonly) uint32_t childCount;
 

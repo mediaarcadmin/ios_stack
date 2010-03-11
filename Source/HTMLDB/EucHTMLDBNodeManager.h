@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <libwapcaplet/libwapcaplet.h>
+#import "EucCSSDocumentTree.h"
+#import "EucHTMLDBNode.h"
 #import "EucHTMLDB.h"
 
-@class EucHTMLDBNode;
-
-@interface EucHTMLDBNodeManager : NSObject {
+@interface EucHTMLDBNodeManager : NSObject <EucCSSDocumentTree> {
     EucHTMLDB *_htmlDb;
     lwc_context *_lwcContext;
     CFMutableDictionaryRef _keyToExtantNode;
@@ -21,9 +21,6 @@
 }
 
 - (id)initWithHTMLDB:(EucHTMLDB *)htmlDb lwcContext:(lwc_context *)lwcContext;
-- (EucHTMLDBNode *)nodeForKey:(uint32_t)key;
-
-@property (nonatomic, retain, readonly) EucHTMLDBNode *rootNode;
 
 // Private - used by EucHTMLDBNode.
 @property (nonatomic, assign, readonly) uint32_t htmlRootKey;
