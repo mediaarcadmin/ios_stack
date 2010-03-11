@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" 
+                     "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" 
+     version="2005-1" xml:lang="en">
+
+  <head>
+    <meta name="dtb:uid"            
+          content="http://www.gutenberg.org/ebooks/103" />
+    <meta name="dtb:depth"          content="4" />
+    <meta name="dtb:generator"      content="Project Gutenberg EPUB-Maker v0.01 by Marcello Perathoner" />
+    <meta name="dtb:totalPageCount" content="0" />
+    <meta name="dtb:maxPageNumber"  content="0" />
+  </head>
+
+  <docTitle>
+    <text>Around the World in 80 Days</text>
+  </docTitle>
+
+<navMap>
+  <navPoint id="np-1" playOrder="1">
+    <navLabel>
+      <text>Top</text>
+    </navLabel>
+    <content src="0.html#pgepubid00000"/>
+  </navPoint>
+  <navPoint id="np-2" playOrder="2">
+    <navLabel>
+      <text>AROUND THE WORLD IN EIGHTY DAYS</text>
+    </navLabel>
+    <content src="0.html#pgepubid00001"/>
+    <navPoint id="np-3" playOrder="3">
+      <navLabel>
+        <text>By</text>
+      </navLabel>
+      <content src="0.html#pgepubid00002"/>
+    </navPoint>
+    <navPoint id="np-4" playOrder="4">
+      <navLabel>
+        <text>Jules Verne</text>
+      </navLabel>
+      <content src="0.html#pgepubid00003"/>
+    </navPoint>
+    <navPoint id="np-5" playOrder="5">
+      <navLabel>
+        <text>CONTENTS</text>
+      </navLabel>
+      <content src="0.html#pgepubid00004"/>
+      <navPoint id="np-6" playOrder="6">
+        <navLabel>
+          <text>Chapter I</text>
+        </navLabel>
+        <content src="0.html#pgepubid00005"/>
+        <navPoint id="np-7" playOrder="7">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG AND PASSEPARTOUT ACCEPT EACH OTHER, THE ONE AS MASTER, THE OTHER AS MAN</text>
+          </navLabel>
+          <content src="0.html#pgepubid00006"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-8" playOrder="8">
+        <navLabel>
+          <text>Chapter II</text>
+        </navLabel>
+        <content src="0.html#pgepubid00007"/>
+        <navPoint id="np-9" playOrder="9">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT IS CONVINCED THAT HE HAS AT LAST FOUND HIS IDEAL</text>
+          </navLabel>
+          <content src="0.html#pgepubid00008"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-10" playOrder="10">
+        <navLabel>
+          <text>Chapter III</text>
+        </navLabel>
+        <content src="0.html#pgepubid00009"/>
+        <navPoint id="np-11" playOrder="11">
+          <navLabel>
+            <text>IN WHICH A CONVERSATION TAKES PLACE WHICH SEEMS LIKELY TO COST PHILEAS FOGG DEAR</text>
+          </navLabel>
+          <content src="0.html#pgepubid00010"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-12" playOrder="12">
+        <navLabel>
+          <text>Chapter IV</text>
+        </navLabel>
+        <content src="0.html#pgepubid00011"/>
+        <navPoint id="np-13" playOrder="13">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG ASTOUNDS PASSEPARTOUT, HIS SERVANT</text>
+          </navLabel>
+          <content src="0.html#pgepubid00012"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-14" playOrder="14">
+        <navLabel>
+          <text>Chapter V</text>
+        </navLabel>
+        <content src="0.html#pgepubid00013"/>
+        <navPoint id="np-15" playOrder="15">
+          <navLabel>
+            <text>IN WHICH A NEW SPECIES OF FUNDS, UNKNOWN TO THE MONEYED MEN, APPEARS ON 'CHANGE</text>
+          </navLabel>
+          <content src="0.html#pgepubid00014"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-16" playOrder="16">
+        <navLabel>
+          <text>Chapter VI</text>
+        </navLabel>
+        <content src="0.html#pgepubid00015"/>
+        <navPoint id="np-17" playOrder="17">
+          <navLabel>
+            <text>IN WHICH FIX, THE DETECTIVE, BETRAYS A VERY NATURAL IMPATIENCE</text>
+          </navLabel>
+          <content src="0.html#pgepubid00016"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-18" playOrder="18">
+        <navLabel>
+          <text>Chapter VII</text>
+        </navLabel>
+        <content src="0.html#pgepubid00017"/>
+        <navPoint id="np-19" playOrder="19">
+          <navLabel>
+            <text>WHICH ONCE MORE DEMONSTRATES THE USELESSNESS OF PASSPORTS AS AIDS TO DETECTIVES</text>
+          </navLabel>
+          <content src="0.html#pgepubid00018"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-20" playOrder="20">
+        <navLabel>
+          <text>Chapter VIII</text>
+        </navLabel>
+        <content src="0.html#pgepubid00019"/>
+        <navPoint id="np-21" playOrder="21">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT TALKS RATHER MORE, PERHAPS, THAN IS PRUDENT</text>
+          </navLabel>
+          <content src="0.html#pgepubid00020"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-22" playOrder="22">
+        <navLabel>
+          <text>Chapter IX</text>
+        </navLabel>
+        <content src="0.html#pgepubid00021"/>
+        <navPoint id="np-23" playOrder="23">
+          <navLabel>
+            <text>IN WHICH THE RED SEA AND THE INDIAN OCEAN PROVE PROPITIOUS TO THE DESIGNS OF PHILEAS FOGG</text>
+          </navLabel>
+          <content src="0.html#pgepubid00022"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-24" playOrder="24">
+        <navLabel>
+          <text>Chapter X</text>
+        </navLabel>
+        <content src="0.html#pgepubid00023"/>
+        <navPoint id="np-25" playOrder="25">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT IS ONLY TOO GLAD TO GET OFF WITH THE LOSS OF HIS SHOES</text>
+          </navLabel>
+          <content src="0.html#pgepubid00024"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-26" playOrder="26">
+        <navLabel>
+          <text>Chapter XI</text>
+        </navLabel>
+        <content src="0.html#pgepubid00025"/>
+        <navPoint id="np-27" playOrder="27">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG SECURES A CURIOUS MEANS OF CONVEYANCE AT A FABULOUS PRICE</text>
+          </navLabel>
+          <content src="0.html#pgepubid00026"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-28" playOrder="28">
+        <navLabel>
+          <text>Chapter XII</text>
+        </navLabel>
+        <content src="0.html#pgepubid00027"/>
+        <navPoint id="np-29" playOrder="29">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG AND HIS COMPANIONS VENTURE ACROSS THE INDIAN FORESTS, AND WHAT ENSUED</text>
+          </navLabel>
+          <content src="0.html#pgepubid00028"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-30" playOrder="30">
+        <navLabel>
+          <text>Chapter XIII</text>
+        </navLabel>
+        <content src="0.html#pgepubid00029"/>
+        <navPoint id="np-31" playOrder="31">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT RECEIVES A NEW PROOF THAT FORTUNE FAVORS THE BRAVE</text>
+          </navLabel>
+          <content src="0.html#pgepubid00030"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-32" playOrder="32">
+        <navLabel>
+          <text>Chapter XIV</text>
+        </navLabel>
+        <content src="0.html#pgepubid00031"/>
+        <navPoint id="np-33" playOrder="33">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG DESCENDS THE WHOLE LENGTH OF THE BEAUTIFUL VALLEY OF THE GANGES WITHOUT EVER THINKING OF SEEING IT</text>
+          </navLabel>
+          <content src="0.html#pgepubid00032"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-34" playOrder="34">
+        <navLabel>
+          <text>Chapter XV</text>
+        </navLabel>
+        <content src="0.html#pgepubid00033"/>
+        <navPoint id="np-35" playOrder="35">
+          <navLabel>
+            <text>IN WHICH THE BAG OF BANKNOTES DISGORGES SOME THOUSANDS OF POUNDS MORE</text>
+          </navLabel>
+          <content src="0.html#pgepubid00034"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-36" playOrder="36">
+        <navLabel>
+          <text>Chapter XVI</text>
+        </navLabel>
+        <content src="0.html#pgepubid00035"/>
+        <navPoint id="np-37" playOrder="37">
+          <navLabel>
+            <text>IN WHICH FIX DOES NOT SEEM TO UNDERSTAND IN THE LEAST WHAT IS SAID TO HIM</text>
+          </navLabel>
+          <content src="0.html#pgepubid00036"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-38" playOrder="38">
+        <navLabel>
+          <text>Chapter XVII</text>
+        </navLabel>
+        <content src="0.html#pgepubid00037"/>
+        <navPoint id="np-39" playOrder="39">
+          <navLabel>
+            <text>SHOWING WHAT HAPPENED ON THE VOYAGE FROM SINGAPORE TO HONG KONG</text>
+          </navLabel>
+          <content src="0.html#pgepubid00038"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-40" playOrder="40">
+        <navLabel>
+          <text>Chapter XVIII</text>
+        </navLabel>
+        <content src="0.html#pgepubid00039"/>
+        <navPoint id="np-41" playOrder="41">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG, PASSEPARTOUT, AND FIX GO EACH ABOUT HIS BUSINESS</text>
+          </navLabel>
+          <content src="0.html#pgepubid00040"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-42" playOrder="42">
+        <navLabel>
+          <text>Chapter XIX</text>
+        </navLabel>
+        <content src="0.html#pgepubid00041"/>
+        <navPoint id="np-43" playOrder="43">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT TAKES A TOO GREAT INTEREST IN HIS MASTER, AND WHAT COMES OF IT</text>
+          </navLabel>
+          <content src="0.html#pgepubid00042"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-44" playOrder="44">
+        <navLabel>
+          <text>Chapter XX</text>
+        </navLabel>
+        <content src="0.html#pgepubid00043"/>
+        <navPoint id="np-45" playOrder="45">
+          <navLabel>
+            <text>IN WHICH FIX COMES FACE TO FACE WITH PHILEAS FOGG</text>
+          </navLabel>
+          <content src="0.html#pgepubid00044"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-46" playOrder="46">
+        <navLabel>
+          <text>Chapter XXI</text>
+        </navLabel>
+        <content src="1.html#pgepubid00045"/>
+        <navPoint id="np-47" playOrder="47">
+          <navLabel>
+            <text>IN WHICH THE MASTER OF THE "TANKADERE" RUNS GREAT RISK OF LOSING A REWARD OF TWO HUNDRED POUNDS</text>
+          </navLabel>
+          <content src="1.html#pgepubid00046"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-48" playOrder="48">
+        <navLabel>
+          <text>Chapter XXII</text>
+        </navLabel>
+        <content src="1.html#pgepubid00047"/>
+        <navPoint id="np-49" playOrder="49">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT FINDS OUT THAT, EVEN AT THE ANTIPODES, IT IS CONVENIENT TO HAVE SOME MONEY IN ONE'S POCKET</text>
+          </navLabel>
+          <content src="1.html#pgepubid00048"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-50" playOrder="50">
+        <navLabel>
+          <text>Chapter XXIII</text>
+        </navLabel>
+        <content src="1.html#pgepubid00049"/>
+        <navPoint id="np-51" playOrder="51">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT'S NOSE BECOMES OUTRAGEOUSLY LONG</text>
+          </navLabel>
+          <content src="1.html#pgepubid00050"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-52" playOrder="52">
+        <navLabel>
+          <text>Chapter XXIV</text>
+        </navLabel>
+        <content src="1.html#pgepubid00051"/>
+        <navPoint id="np-53" playOrder="53">
+          <navLabel>
+            <text>DURING WHICH MR. FOGG AND PARTY CROSS THE PACIFIC OCEAN</text>
+          </navLabel>
+          <content src="1.html#pgepubid00052"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-54" playOrder="54">
+        <navLabel>
+          <text>Chapter XXV</text>
+        </navLabel>
+        <content src="1.html#pgepubid00053"/>
+        <navPoint id="np-55" playOrder="55">
+          <navLabel>
+            <text>IN WHICH A SLIGHT GLIMPSE IS HAD OF SAN FRANCISCO</text>
+          </navLabel>
+          <content src="1.html#pgepubid00054"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-56" playOrder="56">
+        <navLabel>
+          <text>Chapter XXVI</text>
+        </navLabel>
+        <content src="1.html#pgepubid00055"/>
+        <navPoint id="np-57" playOrder="57">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG AND PARTY TRAVEL BY THE PACIFIC RAILROAD</text>
+          </navLabel>
+          <content src="1.html#pgepubid00056"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-58" playOrder="58">
+        <navLabel>
+          <text>Chapter XXVII</text>
+        </navLabel>
+        <content src="1.html#pgepubid00057"/>
+        <navPoint id="np-59" playOrder="59">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT UNDERGOES, AT A SPEED OF TWENTY MILES AN HOUR, A COURSE OF MORMON HISTORY</text>
+          </navLabel>
+          <content src="1.html#pgepubid00058"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-60" playOrder="60">
+        <navLabel>
+          <text>Chapter XXVIII</text>
+        </navLabel>
+        <content src="1.html#pgepubid00059"/>
+        <navPoint id="np-61" playOrder="61">
+          <navLabel>
+            <text>IN WHICH PASSEPARTOUT DOES NOT SUCCEED IN MAKING ANYBODY LISTEN TO REASON</text>
+          </navLabel>
+          <content src="1.html#pgepubid00060"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-62" playOrder="62">
+        <navLabel>
+          <text>Chapter XXIX</text>
+        </navLabel>
+        <content src="1.html#pgepubid00061"/>
+        <navPoint id="np-63" playOrder="63">
+          <navLabel>
+            <text>IN WHICH CERTAIN INCIDENTS ARE NARRATED WHICH ARE ONLY TO BE MET WITH ON AMERICAN RAILROADS</text>
+          </navLabel>
+          <content src="1.html#pgepubid00062"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-64" playOrder="64">
+        <navLabel>
+          <text>Chapter XXX</text>
+        </navLabel>
+        <content src="1.html#pgepubid00063"/>
+        <navPoint id="np-65" playOrder="65">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG SIMPLY DOES HIS DUTY</text>
+          </navLabel>
+          <content src="1.html#pgepubid00064"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-66" playOrder="66">
+        <navLabel>
+          <text>Chapter XXXI</text>
+        </navLabel>
+        <content src="1.html#pgepubid00065"/>
+        <navPoint id="np-67" playOrder="67">
+          <navLabel>
+            <text>IN WHICH FIX, THE DETECTIVE, CONSIDERABLY FURTHERS THE INTERESTS OF PHILEAS FOGG</text>
+          </navLabel>
+          <content src="1.html#pgepubid00066"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-68" playOrder="68">
+        <navLabel>
+          <text>Chapter XXXII</text>
+        </navLabel>
+        <content src="1.html#pgepubid00067"/>
+        <navPoint id="np-69" playOrder="69">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG ENGAGES IN A DIRECT STRUGGLE WITH BAD FORTUNE</text>
+          </navLabel>
+          <content src="1.html#pgepubid00068"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-70" playOrder="70">
+        <navLabel>
+          <text>Chapter XXXIII</text>
+        </navLabel>
+        <content src="1.html#pgepubid00069"/>
+        <navPoint id="np-71" playOrder="71">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG SHOWS HIMSELF EQUAL TO THE OCCASION</text>
+          </navLabel>
+          <content src="1.html#pgepubid00070"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-72" playOrder="72">
+        <navLabel>
+          <text>Chapter XXXIV</text>
+        </navLabel>
+        <content src="1.html#pgepubid00071"/>
+        <navPoint id="np-73" playOrder="73">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG AT LAST REACHES LONDON</text>
+          </navLabel>
+          <content src="1.html#pgepubid00072"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-74" playOrder="74">
+        <navLabel>
+          <text>Chapter XXXV</text>
+        </navLabel>
+        <content src="1.html#pgepubid00073"/>
+        <navPoint id="np-75" playOrder="75">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG DOES NOT HAVE TO REPEAT HIS ORDERS TO PASSEPARTOUT TWICE</text>
+          </navLabel>
+          <content src="1.html#pgepubid00074"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-76" playOrder="76">
+        <navLabel>
+          <text>Chapter XXXVI</text>
+        </navLabel>
+        <content src="1.html#pgepubid00075"/>
+        <navPoint id="np-77" playOrder="77">
+          <navLabel>
+            <text>IN WHICH PHILEAS FOGG'S NAME IS ONCE MORE AT A PREMIUM ON 'CHANGE</text>
+          </navLabel>
+          <content src="1.html#pgepubid00076"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np-78" playOrder="78">
+        <navLabel>
+          <text>Chapter XXXVII</text>
+        </navLabel>
+        <content src="1.html#pgepubid00077"/>
+        <navPoint id="np-79" playOrder="79">
+          <navLabel>
+            <text>IN WHICH IT IS SHOWN THAT PHILEAS FOGG GAINED NOTHING BY HIS TOUR AROUND THE WORLD, UNLESS IT WERE HAPPINESS</text>
+          </navLabel>
+          <content src="1.html#pgepubid00078"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+  </navPoint>
+</navMap>
+
+
+</ncx>
