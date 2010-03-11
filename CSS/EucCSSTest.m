@@ -42,7 +42,7 @@ int main (int argc, const char * argv[]) {
         hubbubInitialised = true;
     }
     
-    EucHTMLDB *htmlDb = EucHTMLDBCreateWithHTMLAtPath(argv[2], NULL);
+    EucHTMLDB *htmlDb = EucHTMLDBCreateWithHTMLAtPath(argv[3], NULL);
 
     Traverse(htmlDb);
     
@@ -54,6 +54,7 @@ int main (int argc, const char * argv[]) {
                                                                            lwcContext:lwcContext];
     
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:htmlDbManager
+                                                                                        baseCSSPath:[NSString stringWithUTF8String:argv[2]]
                                                                                          lwcContext:lwcContext];
 
         
