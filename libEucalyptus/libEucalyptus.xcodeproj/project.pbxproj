@@ -539,41 +539,6 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
-		7D23417E1149602300C318E7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DD76FA10486AA7600D96B5E;
-			remoteInfo = LibCSSTest;
-		};
-		7D2341801149602300C318E7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7DC26D5D10C4241A00248A49;
-			remoteInfo = libwapcaplet;
-		};
-		7D2341821149602300C318E7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7DC26D8710C4260E00248A49;
-			remoteInfo = libparserutils;
-		};
-		7D2341841149602300C318E7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7DC26DE410C427D900248A49;
-			remoteInfo = libcss;
-		};
-		7D2341861149602300C318E7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7D6A856910C42D4A0024B8D6;
-			remoteInfo = hubbub;
-		};
 		7D412B0E114965E100C003BB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -1093,7 +1058,6 @@
 		7D19056711494FB900375803 /* tree2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tree2.c; sourceTree = "<group>"; };
 		7D1906641149599F00375803 /* th_just_with_floats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = th_just_with_floats.c; sourceTree = "<group>"; };
 		7D1906651149599F00375803 /* th_just_with_floats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = th_just_with_floats.h; sourceTree = "<group>"; };
-		7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LibCSSTest.xcodeproj; sourceTree = "<group>"; };
 		7D2341411149602300C318E7 /* EucCSSDocumentTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTree.h; sourceTree = "<group>"; };
 		7D2341421149602300C318E7 /* EucCSSDocumentTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSDocumentTree.m; sourceTree = "<group>"; };
 		7D2341431149602300C318E7 /* EucCSSDocumentTree_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTree_Package.h; sourceTree = "<group>"; };
@@ -2697,27 +2661,6 @@
 		7D2340F51149602200C318E7 /* CSS */ = {
 			isa = PBXGroup;
 			children = (
-				7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */,
-				7D23413F1149602300C318E7 /* Source */,
-			);
-			path = CSS;
-			sourceTree = "<group>";
-		};
-		7D2341311149602300C318E7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				7D23417F1149602300C318E7 /* LibCSSTest */,
-				7D2341811149602300C318E7 /* libwapcaplet.a */,
-				7D2341831149602300C318E7 /* libparserutils.a */,
-				7D2341851149602300C318E7 /* libcss.a */,
-				7D2341871149602300C318E7 /* libhubbub.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		7D23413F1149602300C318E7 /* Source */ = {
-			isa = PBXGroup;
-			children = (
 				7D2341471149602300C318E7 /* EucCSSInternal.h */,
 				7D2341461149602300C318E7 /* EucCSSInternal.c */,
 				7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */,
@@ -2729,7 +2672,7 @@
 				7D23416C1149602300C318E7 /* Render */,
 				7D2341681149602300C318E7 /* EucCSSTest.m */,
 			);
-			path = Source;
+			path = CSS;
 			sourceTree = "<group>";
 		};
 		7D2341401149602300C318E7 /* DocumentTree */ = {
@@ -3832,12 +3775,6 @@
 			mainGroup = 0867D691FE84028FC02AAC07 /* libEucalyptus */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 7D2341311149602300C318E7 /* Products */;
-					ProjectRef = 7D2341301149602300C318E7 /* LibCSSTest.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				D2AAC07D0554694100DB518D /* libEucalyptus */,
@@ -3856,44 +3793,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		7D23417F1149602300C318E7 /* LibCSSTest */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = LibCSSTest;
-			remoteRef = 7D23417E1149602300C318E7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7D2341811149602300C318E7 /* libwapcaplet.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libwapcaplet.a;
-			remoteRef = 7D2341801149602300C318E7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7D2341831149602300C318E7 /* libparserutils.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libparserutils.a;
-			remoteRef = 7D2341821149602300C318E7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7D2341851149602300C318E7 /* libcss.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libcss.a;
-			remoteRef = 7D2341841149602300C318E7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7D2341871149602300C318E7 /* libhubbub.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libhubbub.a;
-			remoteRef = 7D2341861149602300C318E7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		7D034F8510C2CCBE0085778B /* Resources */ = {
