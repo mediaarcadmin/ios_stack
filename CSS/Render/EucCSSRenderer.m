@@ -40,21 +40,21 @@
 
 - (void)_renderPositionedBlock:(EucCSSLayoutPositionedBlock *)block
 {
-    NSLog(@"Positioned Block: %@", NSStringFromCGRect(block.frame));
+    THLog(@"Positioned Block: %@", NSStringFromCGRect(block.frame));
     for(id subEntity in block.subEntities) {
         [self render:subEntity];
     }    
-    NSLog(@"Positioned Block End");
+    THLog(@"Positioned Block End");
 }
 
 
 - (void)_renderPositionedRun:(EucCSSLayoutPositionedRun *)run
 {
-    NSLog(@"Positioned Run: %@", NSStringFromCGRect(run.frame));
+    THLog(@"Positioned Run: %@", NSStringFromCGRect(run.frame));
     for(EucCSSLayoutLine *line in run.lines) {
         [self render:line];
     }
-    NSLog(@"Positioned Run End");
+    THLog(@"Positioned Run End");
 }
 
 - (void)_renderLine:(EucCSSLayoutLine *)line

@@ -10,7 +10,7 @@
 #ifndef __TH_JUST_WITH_FLOATS_H__
 #define __TH_JUST_WITH_FLOATS_H__
 
-#ifdef IPHONE_SDK
+#ifs TARGET_OS_IPHONE
 #import <CoreGraphics/CoreGraphics.h>
 #else
 #import <ApplicationServices/ApplicationServices.h>

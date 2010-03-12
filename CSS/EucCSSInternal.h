@@ -11,7 +11,7 @@
 
 void *EucRealloc(void *ptr, size_t len, void *pw);
 
-#if !TARGET_OS_IPHONE
+#if TARGET_OS_MAC
 
 #define NSStringFromCGRect(x) NSStringFromRect(NSRectFromCGRect(x))
 

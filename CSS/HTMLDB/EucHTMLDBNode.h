@@ -43,8 +43,6 @@
                   key:(uint32_t)key 
            lwcContext:(lwc_context *)lwcContext;
 
-@property (nonatomic, readonly) uint32_t kind;
-
-@property (nonatomic, readonly) lwc_context *lwcContext;
+@property (nonatomic, assign, readonly) lwc_context *lwcContext;
 
 @end

@@ -13,19 +13,17 @@
 
 @protocol EucCSSDocumentTreeNode <NSObject>
 
-@property (nonatomic, readonly) uint32_t key;
+- (uint32_t)key;
+- (EucCSSDocumentTreeNodeKind)kind;
+- (NSString *)name;
 
-@property (nonatomic, readonly) id<EucCSSDocumentTreeNode> parent;
-@property (nonatomic, readonly) id<EucCSSDocumentTreeNode> firstChild;
-@property (nonatomic, readonly) id<EucCSSDocumentTreeNode> previousSibling;
-@property (nonatomic, readonly) id<EucCSSDocumentTreeNode> nextSibling;
+- (uint32_t)childCount;
+- (id<EucCSSDocumentTreeNode>)firstChild;
+- (id<EucCSSDocumentTreeNode>)previousSibling;
+- (id<EucCSSDocumentTreeNode>)nextSibling;
+- (id<EucCSSDocumentTreeNode>)parent;
 
-@property (nonatomic, readonly) uint32_t childCount;
-
-@property (nonatomic, readonly) EucCSSDocumentTreeNodeKind kind;
-@property (nonatomic, readonly) NSString *name;
 - (NSString *)attributeWithName:(NSString *)attributeName;
-
 - (BOOL)getCharacterContents:(const char **)contents length:(size_t *)length;
 
 @end
