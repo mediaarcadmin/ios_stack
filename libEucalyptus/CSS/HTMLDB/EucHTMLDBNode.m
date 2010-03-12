@@ -14,9 +14,12 @@
 
 @interface EucHTMLDBNode ()
 
-@property (nonatomic, readonly) uint32_t *childKeys;
-@property (nonatomic, readonly) uint32_t *attributeArray;
-@property (nonatomic, readonly) uint32_t attributeArrayCount;
+@property (nonatomic, assign, readonly) uint32_t *childKeys;
+@property (nonatomic, assign, readonly) uint32_t *attributeArray;
+@property (nonatomic, assign, readonly) uint32_t attributeArrayCount;
+
+@property (nonatomic, assign, readonly) uint32_t key;
+@property (nonatomic, assign, readonly) EucCSSDocumentTreeNodeKind kind;
 
 @end
 
@@ -129,9 +132,9 @@
     return ret;
 }
 
-- (uint32_t)kind
+- (EucCSSDocumentTreeNodeKind)kind
 {
-    return _rawNode[kindPosition];
+    return (EucCSSDocumentTreeNodeKind)(_rawNode[kindPosition]);
 }
 
 - (NSString *)name

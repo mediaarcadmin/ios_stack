@@ -9,6 +9,8 @@
 #import "EucHTMLDBCreation.h"
 #import "EucHTMLDBNodeManager.h"
 
+#import "EucCSSXMLTree.h"
+
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
@@ -17,6 +19,9 @@
 #import "EucCSSLayoutPositionedBlock.h"
 
 #import "THLog.h"
+#import "THTimer.h"
+
+#define HTMLPARSER
 
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -42,9 +47,8 @@ int main (int argc, const char * argv[]) {
         hubbubInitialised = true;
     }
     
+#ifdef HTMLPARSER
     EucHTMLDB *htmlDb = EucHTMLDBCreateWithHTMLAtPath(argv[3], NULL);
-
-    Traverse(htmlDb);
     
     lwc_context *lwcContext;
     lwc_create_context(EucRealloc, NULL, &lwcContext);
@@ -56,8 +60,15 @@ int main (int argc, const char * argv[]) {
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:htmlDbManager
                                                                                         baseCSSPath:[NSString stringWithUTF8String:argv[2]]
                                                                                          lwcContext:lwcContext];
-
-        
+#else
+    NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:[NSString stringWithUTF8String:argv[3]]];
+    EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData];
+    [xmlData release];
+    
+    EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:xmlTree
+                                                                                        baseCSSPath:[NSString stringWithUTF8String:argv[2]]];
+#endif
+    
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     layouter.document = document;
     CGRect frame = CGRectMake(0, 0, 320, 480);
@@ -115,9 +126,14 @@ int main (int argc, const char * argv[]) {
     CGContextRelease(renderingContext);
     [layouter release];
     [document release];
+    
+#ifdef HTMLPARSER
     [htmlDbManager release];
     lwc_context_unref(lwcContext);
     EucHTMLDBClose(htmlDb);
+#else
+    [xmlTree release];
+#endif
     
 bail:
     if(cssInitialised) {

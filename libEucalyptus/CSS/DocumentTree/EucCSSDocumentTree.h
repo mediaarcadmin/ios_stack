@@ -12,8 +12,7 @@
 
 @protocol EucCSSDocumentTree <NSObject>
 
-@property (nonatomic, retain, readonly) id<EucCSSDocumentTreeNode> root;
-
+- (id<EucCSSDocumentTreeNode>)root;
 - (id<EucCSSDocumentTreeNode>)nodeForKey:(uint32_t)key;
 
 @end
