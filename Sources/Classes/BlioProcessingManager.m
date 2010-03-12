@@ -94,6 +94,7 @@
                 coverOp.bookID = bookID;
                 coverOp.storeCoordinator = [moc persistentStoreCoordinator];
                 coverOp.cacheDirectory = cacheDir;
+                [coverOp setQueuePriority:NSOperationQueuePriorityHigh];
                 [self.preAvailabilityQueue addOperation:coverOp];
                 [bookOps addObject:coverOp];
                 
@@ -102,6 +103,7 @@
                 thumbsOp.storeCoordinator = [moc persistentStoreCoordinator];
                 thumbsOp.cacheDirectory = cacheDir;
                 [thumbsOp addDependency:coverOp];
+                [thumbsOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
                 [self.preAvailabilityQueue addOperation:thumbsOp];
                 [bookOps addObject:thumbsOp];
                 
