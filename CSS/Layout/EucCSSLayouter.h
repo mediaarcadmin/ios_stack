@@ -24,9 +24,14 @@ typedef struct EucCSSLayoutPoint
 
 @interface EucCSSLayouter : NSObject {
     EucCSSIntermediateDocument *_document;
+    CGFloat _scaleFactor;
 }
 
 @property (nonatomic, retain) EucCSSIntermediateDocument *document;
+@property (nonatomic, assign) CGFloat scaleFactor;
+
+- (id)initWithDocument:(EucCSSIntermediateDocument *)document
+           scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                          inFrame:(CGRect)frame

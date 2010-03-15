@@ -11,6 +11,7 @@
 
 #import "EucBookPageIndexPoint.h"
 
+#import "EucCSS.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayouter.h"
@@ -62,8 +63,8 @@
         layoutPoint.word = point.word;
         layoutPoint.element = point.element;
         
-        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
-        layouter.document = document;
+        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] initWithDocument:document
+                                                                scaleFactor:_pointSize / EUC_CSS_DEFAULT_POINT_SIZE];
         
         BOOL isComplete = NO;
         self.positionedBlock = [layouter layoutFromPoint:layoutPoint

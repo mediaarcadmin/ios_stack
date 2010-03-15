@@ -6,6 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucCSSLayouter_Package.h"
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutDocumentRun_Package.h"
 #import "EucCSSLayoutPositionedRun.h"
@@ -78,9 +79,12 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
              forId:(uint32_t)id
+       scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {
         _id = id;
+        
+        _scaleFactor = scaleFactor;
         
         _startNode = [inlineNode retain];
         css_computed_style *inlineNodeStyle = inlineNode.computedStyle;
@@ -165,7 +169,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         css_fixed length = 0;
         css_unit unit = 0;
         css_computed_text_indent(style, &length, &unit);
-        ret = EucCSSLibCSSSizeToPixels(style, length, unit, width);
+        ret = EucCSSLibCSSSizeToPixels(style, length, unit, width, _scaleFactor);
     }
     return ret;
 }
@@ -226,7 +230,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     css_computed_font_size(subnodeStyle, &length, &unit);
     
     // The font size percentages should already be fully resolved.
-    CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0);             
+    CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);             
     CGFloat lineSpacing = [stringRenderer lineSpacingForPointSize:fontPixelSize];
     CGFloat ascender = [stringRenderer ascenderForPointSize:fontPixelSize];
     CGFloat descender = [stringRenderer descenderForPointSize:fontPixelSize];

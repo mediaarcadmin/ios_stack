@@ -12,7 +12,6 @@
 
 @interface EucCSSIntermediateDocument ()
 
-CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed size, css_unit units, CGFloat percentageBase);
 css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_string *rel, lwc_string **abs);
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree 

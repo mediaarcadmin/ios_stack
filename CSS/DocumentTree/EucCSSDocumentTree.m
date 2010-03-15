@@ -7,6 +7,8 @@
  *
  */
 
+#import "EucCSS.h"
+
 #import "EucCSSDocumentTree.h"
 #import "EucCSSDocumentTree_Package.h"
 
@@ -358,13 +360,13 @@ static css_error EucCSSDocumentTreeUADefaultForProperty(void *pw, uint32_t prope
 static css_error EucCSSDocumentTreeComputeFontSize(void *pw, const css_hint *parent, css_hint *size)
 {
 	static css_hint_length sizes[] = {
-		{ FLTTOFIX(18.0f / 1.2f / 1.2f / 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(18.0f / 1.2f / 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(18.0f / 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(18.0f), CSS_UNIT_PT },
-		{ FLTTOFIX(18.0f * 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(18.0f * 1.2f * 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(18.0f * 1.2f * 1.2f * 1.2f), CSS_UNIT_PT }
+		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE / 1.2f / 1.2f / 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE / 1.2f / 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE / 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE), CSS_UNIT_PT },
+		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE * 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE * 1.2f * 1.2f), CSS_UNIT_PT },
+		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE * 1.2f * 1.2f * 1.2f), CSS_UNIT_PT }
 	};
 	const css_hint_length *parent_size;
     

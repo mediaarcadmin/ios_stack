@@ -696,6 +696,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             }
             
             // The point is dependent on the layout algorithm.
+            // (It depends on how the text is split into runs).
             EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
             layouter.document = document;
             EucCSSLayoutPoint layoutPoint = [layouter layoutPointForNode:node];

@@ -6,6 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucCSSLayouter_Package.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSIntermediateDocument.h"
@@ -37,10 +38,12 @@
 }
 
 - (id)initWithDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode
+               scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {
         _subEntities = [[NSMutableArray alloc] init];
         _documentNode = [documentNode retain];
+        _scaleFactor = scaleFactor;
     }
     return self;
 }
@@ -53,7 +56,8 @@
     [super dealloc];
 }
 
-- (void)positionInFrame:(CGRect)frame afterInternalPageBreak:(BOOL)afterInternalPageBreak
+- (void)positionInFrame:(CGRect)frame 
+ afterInternalPageBreak:(BOOL)afterInternalPageBreak
 {
     _frame = frame;
     
@@ -66,12 +70,12 @@
         borderRect.origin.y = frame.origin.y;
     } else {
         css_computed_margin_top(computedStyle, &fixed, &unit);
-        borderRect.origin.y = frame.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
+        borderRect.origin.y = frame.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor);
     }
     css_computed_margin_left(computedStyle, &fixed, &unit);
-    borderRect.origin.x = frame.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
+    borderRect.origin.x = frame.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor);
     css_computed_margin_right(computedStyle, &fixed, &unit);
-    borderRect.size.width = CGRectGetMaxX(frame) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width) - borderRect.origin.x;
+    borderRect.size.width = CGRectGetMaxX(frame) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor) - borderRect.origin.x;
     borderRect.size.height = CGFLOAT_MAX;
     _borderRect = borderRect;
     
@@ -80,12 +84,12 @@
         paddingRect.origin.y = borderRect.origin.y;
     } else {
         css_computed_border_top_width(computedStyle, &fixed, &unit);
-        paddingRect.origin.y = borderRect.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
+        paddingRect.origin.y = borderRect.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, _scaleFactor);
     }
     css_computed_border_left_width(computedStyle, &fixed, &unit);
-    paddingRect.origin.x = borderRect.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
+    paddingRect.origin.x = borderRect.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, _scaleFactor);
     css_computed_border_right_width(computedStyle, &fixed, &unit);
-    paddingRect.size.width = CGRectGetMaxX(borderRect) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0) - paddingRect.origin.x;
+    paddingRect.size.width = CGRectGetMaxX(borderRect) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, _scaleFactor) - paddingRect.origin.x;
     paddingRect.size.height = CGFLOAT_MAX;
     _paddingRect = paddingRect;
     
@@ -94,12 +98,12 @@
         contentRect.origin.y = paddingRect.origin.y;
     } else {
         css_computed_padding_top(computedStyle, &fixed, &unit);
-        contentRect.origin.y = paddingRect.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
+        contentRect.origin.y = paddingRect.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor);
     }    
     css_computed_padding_left(computedStyle, &fixed, &unit);
-    contentRect.origin.x = paddingRect.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width);
+    contentRect.origin.x = paddingRect.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor);
     css_computed_padding_right(computedStyle, &fixed, &unit);
-    contentRect.size.width = CGRectGetMaxX(paddingRect) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width) - contentRect.origin.x;
+    contentRect.size.width = CGRectGetMaxX(paddingRect) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor) - contentRect.origin.x;
     contentRect.size.height = CGFLOAT_MAX;
     _contentRect = contentRect;    
     
@@ -144,15 +148,15 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
         
         CGFloat width = self.frame.size.width;
         css_computed_padding_bottom(computedStyle, &fixed, &unit);
-        point += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width);
+        point += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width, _scaleFactor);
         _paddingRect.size.height = point - _paddingRect.origin.y;
         
         css_computed_border_bottom_width(computedStyle, &fixed, &unit);
-        point += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0);
+        point += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, _scaleFactor);
         _borderRect.size.height = point - _borderRect.origin.y;
         
         css_computed_margin_bottom(computedStyle, &fixed, &unit);
-        CGFloat bottomMarginHeight = EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width);
+        CGFloat bottomMarginHeight = EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width, _scaleFactor);
         
         // If we have a bottom margin, and the box is otherwise empty, the margin
         // should collapse upwards.

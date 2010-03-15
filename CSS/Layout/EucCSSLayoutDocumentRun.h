@@ -39,6 +39,8 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     EucCSSIntermediateDocumentNode *_nextNodeUnderLimitNode;
     EucCSSIntermediateDocumentNode *_nextNodeInDocument;
 
+    CGFloat _scaleFactor;
+    
     size_t _componentsCount;
     size_t _componentsCapacity;
     id *_components;
@@ -69,11 +71,12 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)node 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
-             forId:(uint32_t)id;
+             forId:(uint32_t)id
+       scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)bounds
-                                           wordOffset:(uint32_t)wordOffset 
-                                        elementOffset:(uint32_t)elementOffset;
+                                          wordOffset:(uint32_t)wordOffset 
+                                       elementOffset:(uint32_t)elementOffset;
 
 - (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
 

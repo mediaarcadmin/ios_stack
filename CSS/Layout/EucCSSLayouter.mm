@@ -13,6 +13,7 @@
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 
+#import "EucCSSLayouter_Package.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutDocumentRun.h"
@@ -22,13 +23,87 @@
 #import "THLog.h"
 #import "th_just_with_floats.h"
 
+#import <libcss/libcss.h>
+
 #import <vector>
 #import <utility>
 using namespace std;
 
+extern "C" {
+    
+CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, 
+                                 css_fixed size, 
+                                 css_unit units, 
+                                 CGFloat percentageBase,
+                                 CGFloat scaleFactor)
+{
+    CGFloat ret = FIXTOFLT(size);
+ 
+    switch(units) {
+        case CSS_UNIT_EX:
+            NSCParameterAssert(units != CSS_UNIT_EX);
+            break;
+        case CSS_UNIT_EM:
+        {
+            css_fixed fontSize = css_fixed();
+            css_unit fontUnit = css_unit();
+            css_computed_font_size(computed_style, &fontSize, &fontUnit);
+            NSCParameterAssert(fontUnit == CSS_UNIT_PX || fontUnit == CSS_UNIT_PT);
+            ret = FIXTOFLT(FMUL(size, fontSize));
+        }
+            break;
+        case CSS_UNIT_IN:
+            ret *= 2.54f;        // Convert to cm.
+        case CSS_UNIT_CM:  
+            ret *= 10.0f;          // Convert to mm.
+        case CSS_UNIT_MM:
+            ret *= 0.155828221f; // mm per dot on an iPhone screen.
+            break;
+        case CSS_UNIT_PC:
+            ret *= 12.0f;
+            break;
+        case CSS_UNIT_PX:
+        case CSS_UNIT_PT:
+            break;
+        case CSS_UNIT_PCT:
+            ret = percentageBase * (ret * 0.01f);
+            break;
+        default:
+            THWarn(@"Unexpected unit %ld (%f size) - not converting.", (long)units, (double)ret);
+            break;
+    }
+    
+    return roundf(ret * scaleFactor);
+}
+
+}
+
 @implementation EucCSSLayouter
 
 @synthesize document = _document;
+@synthesize scaleFactor = _scaleFactor;
+
+- (id)initWithDocument:(EucCSSIntermediateDocument *)document
+           scaleFactor:(CGFloat)scaleFactor
+{
+    if((self = [super init])) {
+        _document = [document retain];
+        _scaleFactor = scaleFactor;
+    }
+    return self;
+}
+
+- (id)init
+{
+    return [self initWithDocument:nil scaleFactor:1.0f];
+}
+
+- (void)dealloc
+{
+    [_document release];
+    
+    [super dealloc];
+}
 
 /*
 Return words, 
@@ -54,13 +129,13 @@ Block completion status.
                                                      inFrame:frame
                                       afterInternalPageBreak:YES];
         
-        newContainer = [[[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node] autorelease];
+        newContainer = [[[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:_scaleFactor] autorelease];
         newContainer.documentNode = node;
         [newContainer positionInFrame:parentContainer.contentRect afterInternalPageBreak:afterInternalPageBreak];
         
         [parentContainer addSubEntity:newContainer];
     } else {
-        newContainer = [[[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node] autorelease];
+        newContainer = [[[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:_scaleFactor] autorelease];
         newContainer.documentNode = node;
         [newContainer positionInFrame:frame afterInternalPageBreak:afterInternalPageBreak];
         
@@ -204,7 +279,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             if(previousSiblingStyle && (css_computed_display(previousSiblingStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
                 documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentNode
                                                              underLimitNode:currentNode.blockLevelParent
-                                                                      forId:currentNode.key];
+                                                                      forId:currentNode.key
+                                                                scaleFactor:_scaleFactor];
             } else {
                 currentNode = previousSiblingNode;
             }
@@ -214,7 +290,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             if(parentStyle && (css_computed_display(parentStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
                 documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentNode
                                                              underLimitNode:parentNode
-                                                                      forId:parentNode.key];
+                                                                      forId:parentNode.key
+                                                                scaleFactor:_scaleFactor];
             } else {
                 currentNode = parentNode;
             }
@@ -341,7 +418,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 // This is an inline element - start a run.
                 EucCSSLayoutDocumentRun *documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentDocumentNode
                                                                                       underLimitNode:currentDocumentNode.blockLevelParent
-                                                                                               forId:nextRunNodeKey];
+                                                                                               forId:nextRunNodeKey
+                                                                                         scaleFactor:_scaleFactor];
                 
                 // Position it.
                 EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
@@ -399,7 +477,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 
                 potentialFrame.origin.y = nextY;
                                 
-                EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode];
+                EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
                 [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
                 [currentPositionedBlock addSubEntity:newBlock];                    
                 
