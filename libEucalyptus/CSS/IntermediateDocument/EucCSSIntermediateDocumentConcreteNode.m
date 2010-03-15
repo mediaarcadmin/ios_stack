@@ -12,6 +12,7 @@
 #import "EucCSSInternal.h"
 
 #import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
 

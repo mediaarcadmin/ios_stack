@@ -191,6 +191,46 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 }
  
 
+- (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node
+{
+    EucCSSLayoutPoint ret = {0};
+    EucCSSIntermediateDocumentNode *currentNode = node;
+    EucCSSLayoutDocumentRun *documentRun = nil;
+    
+    while(currentNode && !documentRun) {
+        EucCSSIntermediateDocumentNode *previousSiblingNode = currentNode.previousDisplayableSibling;
+        if(previousSiblingNode) {
+            css_computed_style *previousSiblingStyle = previousSiblingNode.computedStyle;
+            if(previousSiblingStyle && (css_computed_display(previousSiblingStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentNode
+                                                             underLimitNode:currentNode.blockLevelParent
+                                                                      forId:currentNode.key];
+            } else {
+                currentNode = previousSiblingNode;
+            }
+        } else {
+            EucCSSIntermediateDocumentNode *parentNode = currentNode.parent;
+            css_computed_style *parentStyle = parentNode.computedStyle;
+            if(parentStyle && (css_computed_display(parentStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentNode
+                                                             underLimitNode:parentNode
+                                                                      forId:parentNode.key];
+            } else {
+                currentNode = parentNode;
+            }
+        }
+    }
+    
+    if(documentRun) {
+        EucCSSLayoutDocumentRunPoint documentRunPoint = [documentRun pointForNode:node];
+        ret.nodeKey = documentRun.id;
+        ret.word = documentRunPoint.word;
+        ret.element = documentRunPoint.element;
+    }   
+        
+    return ret;
+}
+
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                           inFrame:(CGRect)frame
                                returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
@@ -300,13 +340,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 
                 // This is an inline element - start a run.
                 EucCSSLayoutDocumentRun *documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentDocumentNode
-                                                                                        underLimitNode:currentDocumentNode.parent
-                                                                                                 forId:nextRunNodeKey];
+                                                                                      underLimitNode:currentDocumentNode.blockLevelParent
+                                                                                               forId:nextRunNodeKey];
                 
                 // Position it.
                 EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
-                                                                                    wordOffset:wordOffset
-                                                                                 elementOffset:elementOffset];
+                                                                                   wordOffset:wordOffset
+                                                                                elementOffset:elementOffset];
                 if(positionedRun) {
                     [currentPositionedBlock addSubEntity:positionedRun];
                     
@@ -320,6 +360,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                             first = NO;
                         }
                     }
+                    nextY = CGRectGetMaxY(positionedRun.frame);
                 }
                              
                 if(elementOffset) {
@@ -329,7 +370,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     wordOffset = 0;
                 }
                 
-                nextY = CGRectGetMaxY(positionedRun.frame);
                 
                 EucCSSIntermediateDocumentNode *runsNextNode = documentRun.nextNodeUnderLimitNode;
                 if(runsNextNode) {

@@ -293,7 +293,7 @@
 
 - (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 {
-    if(paragraphId == 0) {
+ /*   if(paragraphId == 0) {
         _highlightPage = 0;
         _highlightParagraph = 0;
         _highlightWordOffset = 0;        
@@ -317,7 +317,7 @@
                 [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
             }
         }
-    }
+    }*/
 }
 
 - (void)setHighlighterDelegate:(id <EucSelectorDelegate>)selectorDelegate
@@ -809,30 +809,28 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    EucPageTextView *pageTextView = pageView.bookTextView;
-    return [pageTextView paragraphIds];
+    return [pageView.bookTextView blockIdentifiers];
 }
 
 - (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)id
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    EucPageTextView *pageTextView = pageView.bookTextView;
-    return [pageView convertRect:[pageTextView frameOfParagraphWithId:[id intValue]] fromView:pageTextView];    
+    return [pageView convertRect:[pageView.bookTextView frameOfBlockWithIdentifier:id] fromView:pageView.bookTextView];    
 }
 
 - (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)id;
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    EucPageTextView *pageTextView = pageView.bookTextView;
-    return [pageTextView wordOffsetsForParagraphWithId:[id intValue]];
+    return [pageView.bookTextView identifiersForElementsOfBlockWithIdentifier:id];
 }
 
 - (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    EucPageTextView *pageTextView = pageView.bookTextView;
+    UIView<EucPageTextView> *pageTextView = pageView.bookTextView;
     
-    NSArray *rects = [pageTextView rectsForWordAtParagraphId:[blockId intValue] wordOffset:[elementId intValue]];
+    NSArray *rects = [pageTextView rectsForElementWithIdentifier:elementId
+                                           ofBlockWithIdentifier:blockId];
     NSUInteger rectsCount = rects.count;
     if(rectsCount) {
         NSMutableArray *ret = [NSMutableArray arrayWithCapacity:rectsCount];

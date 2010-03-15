@@ -75,4 +75,6 @@ struct EucCSSLayoutDocumentRunBreakInfo;
                                            wordOffset:(uint32_t)wordOffset 
                                         elementOffset:(uint32_t)elementOffset;
 
+- (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
+
 @end

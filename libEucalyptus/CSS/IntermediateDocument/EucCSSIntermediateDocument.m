@@ -9,6 +9,7 @@
 #import <libcss/libcss.h>
 
 #import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
@@ -62,8 +63,8 @@ CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed s
             break;
         case CSS_UNIT_EM:
             {
-                css_fixed fontSize;
-                css_unit fontUnit;
+                css_fixed fontSize = 0;
+                css_unit fontUnit = 0;
                 css_computed_font_size(computed_style, &fontSize, &fontUnit);
                 NSCParameterAssert(fontUnit == CSS_UNIT_PX || fontUnit == CSS_UNIT_PT);
                 ret = FIXTOFLT(FMUL(size, fontSize));
@@ -94,6 +95,11 @@ CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, css_fixed s
 }
 
 @implementation EucCSSIntermediateDocument
+
++ (void)initialize
+{
+    css_initialise([[NSBundle mainBundle] pathForResource:@"Aliases" ofType:@""].fileSystemRepresentation, EucRealloc, NULL);
+}
 
 @synthesize selectContext = _selectCtx;
 @synthesize lwcContext = _lwcContext;
@@ -257,9 +263,9 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     return self;    
 }
 
-- (EucCSSIntermediateDocumentConcreteNode *)rootNode
+- (EucCSSIntermediateDocumentNode *)rootNode
 {
-    return (EucCSSIntermediateDocumentConcreteNode *)[self nodeForKey:_documentTree.root.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
+    return [self nodeForKey:_documentTree.root.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
 }
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key
@@ -289,6 +295,32 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         [node autorelease];
     }
     return node;
+}
+
+- (uint32_t)nodeKeyForId:(NSString *)identifier
+{
+    id<EucCSSDocumentTreeNode> dbNode = nil;
+    if([_documentTree respondsToSelector:@selector(nodeWithId:)]) {
+        dbNode = [_documentTree nodeWithId:identifier];
+    } else {
+        // Perform the search manually.
+        dbNode = _documentTree.root;
+        NSString *dbNodeId = [dbNode attributeWithName:@"id"];
+        while(dbNode && (!dbNodeId || ![dbNodeId isEqualToString:identifier])) {
+            id<EucCSSDocumentTreeNode> oldExaminingNode = dbNode;
+            
+            dbNode = oldExaminingNode.firstChild;
+            if(!dbNode) {
+                dbNode = oldExaminingNode.nextSibling;
+            }
+            if(!dbNode) {
+                dbNode = oldExaminingNode.parent.nextSibling;
+            }
+            
+            dbNodeId = [dbNode attributeWithName:@"id"];
+        }
+    }
+    return dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
 }
 
 - (void)notifyOfDealloc:(EucCSSIntermediateDocumentNode *)node

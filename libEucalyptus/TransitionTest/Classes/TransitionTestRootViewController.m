@@ -7,7 +7,7 @@
 //
 
 #import "TransitionTestRootViewController.h"
-#import <libEucalyptus/EucEPubBook.h>
+#import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookViewController.h>
 
 @implementation TransitionTestRootViewController
@@ -114,7 +114,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger row = indexPath.row;
     if(row < 2) {
-        EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[[NSBundle mainBundle] pathForResource:@"book" ofType:nil]];
+        EucBUpeBook *book = [[EucBUpeBook alloc] initWithPath:[[NSBundle mainBundle] pathForResource:@"book" ofType:nil]];
         EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
         [book release];
         

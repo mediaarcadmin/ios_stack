@@ -17,12 +17,11 @@
 }
 
 // NSArray of NSValues of NSRanges.
-@property (nonatomic, assign) NSArray *filteredByteRanges;
+/*@property (nonatomic, assign) NSArray *filteredByteRanges;*/
 
 @property (nonatomic, readonly) NSUInteger filteredLastPageNumber;
 
 - (EucBookPageIndexPoint *)filteredIndexPointForPage:(NSUInteger)pageNumber;
 - (NSUInteger)filteredPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
-- (NSUInteger)filteredPageForByteOffset:(NSUInteger)byteOffset;
 
 @end

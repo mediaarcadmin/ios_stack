@@ -45,12 +45,8 @@
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
-+ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture;
-
-+ (EucBookPageIndexPoint *)layoutPageFromBookReader:(id <EucBookReader>)reader
-                                    startingAtPoint:(EucBookPageIndexPoint *)indexPoint
-                                       intoPageView:(EucPageView *)view;
-
 - (BOOL)viewShouldBeRigid:(UIView *)view;
+
++ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture;
 
 @end

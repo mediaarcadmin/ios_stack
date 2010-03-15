@@ -18,6 +18,7 @@
 #import "THStringRenderer.h"
 #import "THLog.h"
 
+#import <libcss/libcss.h>
 
 @implementation EucCSSRenderer
 
