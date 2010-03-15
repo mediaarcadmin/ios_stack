@@ -10,6 +10,8 @@
 #import "EucCSSIntermediateDocument.h"
 #import "LWCNSStringAdditions.h"
 
+#import <libcss/libcss.h>
+
 @implementation EucCSSIntermediateDocumentGeneratedTextNode
 
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document 

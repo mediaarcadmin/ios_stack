@@ -13,7 +13,6 @@
 
 @interface EucBookPageIndex : NSObject {
     id<EucBook> _book;
-    NSString *_fontFamily;
     NSUInteger _pointSize;
     
     int _fd;
@@ -24,24 +23,21 @@
 }
 
 + (NSUInteger)indexVersion;
-+ (NSString *)filenameForPageIndexForFontFamily:(NSString *)fontFamilyName pointSize:(NSUInteger)fontSize;
-+ (NSString *)constructionFilenameForPageIndexForFontFamily:(NSString *)fontFamilyName pointSize:(NSUInteger)fontSize;
++ (NSString *)filenameForPageIndexForPointSize:(NSUInteger)fontSize;
++ (NSString *)constructionFilenameForPageIndexForPointSize:(NSUInteger)fontSize;
 + (void)markBookBundleAsIndexConstructed:(NSString *)bundlePath;
 
-+ (id)bookPageIndexForIndexInBook:(id<EucBook>)path forFontFamily:(NSString *)fontFamily pointSize:(NSUInteger)pointSize;
-+ (NSArray *)bookPageIndexesForBook:(id<EucBook>)book forFontFamily:(NSString *)fontFamily;
++ (id)bookPageIndexForIndexInBook:(id<EucBook>)path forPointSize:(NSUInteger)pointSize;
++ (NSArray *)bookPageIndexesForBook:(id<EucBook>)book;
 
 @property (nonatomic, readonly) id<EucBook> book;
-@property (nonatomic, readonly) NSString *fontFamily;
 @property (nonatomic, readonly) NSUInteger pointSize;
 
 @property (nonatomic, readonly) NSUInteger lastPageNumber;
 @property (nonatomic, readonly) BOOL isFinal;
-@property (nonatomic, readonly) off_t lastOffset;
 
 - (EucBookPageIndexPoint *)indexPointForPage:(NSUInteger)pageNumber;
 - (NSUInteger)pageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
-- (NSUInteger)pageForByteOffset:(NSUInteger)byteOffset;
 - (void)closeIndex;
 
 - (NSComparisonResult)compare:(EucBookPageIndex *)rhs;

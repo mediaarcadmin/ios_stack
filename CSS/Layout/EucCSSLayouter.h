@@ -13,7 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSIntermediateDocument, EucCSSLayoutPositionedBlock;
+@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock;
 
 typedef struct EucCSSLayoutPoint
 {
@@ -29,8 +29,10 @@ typedef struct EucCSSLayoutPoint
 @property (nonatomic, retain) EucCSSIntermediateDocument *document;
 
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
-                                          inFrame:(CGRect)frame
-                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                               returningCompleted:(BOOL *)returningCompleted;
+                                         inFrame:(CGRect)frame
+                              returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
+                              returningCompleted:(BOOL *)returningCompleted;
+
+- (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;
 
 @end

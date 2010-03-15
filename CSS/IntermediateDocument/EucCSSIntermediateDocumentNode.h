@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <libcss/libcss.h>
+
+struct css_computed_style;
 
 @class EucCSSIntermediateDocument, THStringRenderer;
 
@@ -32,6 +33,7 @@
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextDisplayable;
 - (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under;
 
+@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *previousDisplayableSibling;
 
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 
@@ -45,6 +47,6 @@
 @property (nonatomic, readonly) NSUInteger childrenCount;
 @property (nonatomic, readonly) NSArray *children;
 
-@property (nonatomic, readonly) css_computed_style *computedStyle;
+@property (nonatomic, readonly) struct css_computed_style *computedStyle;
 
 @end

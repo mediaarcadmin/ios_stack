@@ -9,6 +9,7 @@
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import <libcss/libcss.h>
 
@@ -57,8 +58,8 @@
     _frame = frame;
     
     css_computed_style *computedStyle = self.documentNode.computedStyle;
-    css_fixed fixed;
-    css_unit unit;
+    css_fixed fixed = 0;
+    css_unit unit = 0;
     
     CGRect borderRect;
     if(afterInternalPageBreak) {
@@ -138,8 +139,8 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
         _frame.size.height = point - _frame.origin.y;
     } else {
         css_computed_style *computedStyle = self.documentNode.computedStyle;
-        css_fixed fixed;
-        css_unit unit;
+        css_fixed fixed = 0;
+        css_unit unit = 0;
         
         CGFloat width = self.frame.size.width;
         css_computed_padding_bottom(computedStyle, &fixed, &unit);

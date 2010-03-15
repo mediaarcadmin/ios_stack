@@ -7,9 +7,11 @@
 //
 
 #import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
 #import "LWCNSStringAdditions.h"
+#import <libcss/libcss.h>
 
 @implementation EucCSSIntermediateDocumentNode
 
@@ -117,6 +119,21 @@
 {
     return [self nextDisplayableUnder:nil];
 }
+
+
+- (EucCSSIntermediateDocumentNode *)previousDisplayableSibling
+{
+    EucCSSIntermediateDocumentNode *parent = self.parent;
+    NSArray *parentChildren = parent.children;
+    if(parentChildren.count > 1) {
+        NSUInteger myIndex = [parentChildren indexOfObject:self];
+        if(myIndex >= 1) {
+            return [parentChildren objectAtIndex:myIndex - 1];
+        }
+    }
+    return nil;
+}
+
 
 
 - (THStringRenderer *)stringRenderer

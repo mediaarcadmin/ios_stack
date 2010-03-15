@@ -11,6 +11,7 @@
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutLine.h"
 #import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocumentNode.h"
@@ -161,8 +162,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     
     css_computed_style *style = _startNode.blockLevelNode.computedStyle;
     if(style) {
-        css_fixed length;
-        css_unit unit;
+        css_fixed length = 0;
+        css_unit unit = 0;
         css_computed_text_indent(style, &length, &unit);
         ret = EucCSSLibCSSSizeToPixels(style, length, unit, width);
     }
@@ -220,8 +221,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     
     THStringRenderer *stringRenderer = subnode.stringRenderer;
     
-    css_fixed length;
-    css_unit unit;
+    css_fixed length = 0;
+    css_unit unit = 0;
     css_computed_font_size(subnodeStyle, &length, &unit);
     
     // The font size percentages should already be fully resolved.
@@ -281,6 +282,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                                     fontPixelSize,
                                     subnode };
                                 [self _addComponent:(id)string isWord:YES info:&info];
+                                CFRelease(string);
                             }
                         }
                         _previousInlineCharacterWasSpace = YES;
@@ -324,6 +326,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                                                                fontPixelSize,
                                                                subnode };
                 [self _addComponent:(id)string isWord:YES info:&info];
+                CFRelease(string);
             }
         } /*else {
             if(wordStart == characters && sawNewline) {
@@ -477,7 +480,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         }
     } else {
         lineStartComponent = 0;
-        indentationOffset += textIndent;
+        indentationOffset = textIndent;
     }
     
     int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
@@ -549,6 +552,17 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     free(usedBreakIndexes);
         
     return [ret autorelease];
+}
+
+- (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node
+{
+    for(size_t i = 0; i < _componentsCount; ++i) {
+        if(_componentInfos[i].documentNode == node) {
+            return _componentInfos[i].point;
+        }
+    }
+    EucCSSLayoutDocumentRunPoint ret = {0};
+    return ret;
 }
 
 @end

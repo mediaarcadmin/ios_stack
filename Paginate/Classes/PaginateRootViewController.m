@@ -7,7 +7,7 @@
 //
 
 #import "PaginateRootViewController.h"
-#import <libEucalyptus/EucEPubBook.h>
+#import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndex.h>
 #import <libEucalyptus/EucBookTextStyle.h>
 #import <libEucalyptus/EucBookPaginator.h>
@@ -150,8 +150,8 @@
         [self removeFilesMatchingPattern:@"*.v*index*" fromPath:path];
         [self removeFilesMatchingPattern:@"chapterOffsets.plist" fromPath:path];
         
-        EucEPubBook *testBook = [[EucEPubBook alloc] initWithPath:moveTo];    
-        [paginator paginateBookInBackground:testBook forForFontFamily:[EucBookTextStyle defaultFontFamilyName] saveImagesTo:saveImages ? images : nil];
+        EucBUpeBook *testBook = [[EucBUpeBook alloc] initWithPath:moveTo];    
+        [paginator paginateBookInBackground:testBook saveImagesTo:saveImages ? images : nil];
         [testBook release];
         return YES;
     }

@@ -16,6 +16,7 @@
 typedef struct EucCSSXMLTreeContext
 {
     NSMutableArray *nodes;
+    NSMutableDictionary *idToNode;
     EucCSSXMLTreeNode *currentNode;
 } EucCSSXMLTreeContext;
 
@@ -33,8 +34,13 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
     if(*atts) {
         NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
         for(int i = 0; atts[i]; i+=2) {
-            [attributes setObject:[NSString stringWithUTF8String:atts[i+1]]
-                           forKey:[NSString stringWithUTF8String:atts[i]]];
+            NSString *name = [NSString stringWithUTF8String:atts[i]];
+            NSString *value = [NSString stringWithUTF8String:atts[i+1]];
+            [attributes setObject:value
+                           forKey:name];
+            if(strcasecmp("id", atts[i]) == 0) {
+                [context->idToNode setValue:newNode forKey:value];
+            }
         }
         newNode.attributes = attributes;
         [attributes release];
@@ -79,7 +85,8 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
 {
     if((self = [super init])) {
         NSMutableArray *buildNodes = [[NSMutableArray alloc] init];
-        EucCSSXMLTreeContext context = { buildNodes, NULL };
+        NSMutableDictionary *buildIdToNodes = [[NSMutableDictionary alloc] init];
+        EucCSSXMLTreeContext context = { buildNodes, buildIdToNodes, NULL };
         
         XML_Parser parser = XML_ParserCreate("UTF-8");
         XML_SetUserData(parser, &context);    
@@ -102,6 +109,7 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
 
 - (void)dealloc
 {
+    [_idToNode release];
     [_nodes release];
     [super dealloc];
 }
@@ -113,7 +121,15 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
 
 - (EucCSSXMLTreeNode *)nodeForKey:(uint32_t)key
 {
-    return [_nodes objectAtIndex:key-1];
+    if(key > 0) { 
+        return [_nodes objectAtIndex:key-1];
+    } else {
+        return nil;
+    }
 }
 
+- (id<EucCSSDocumentTreeNode>)nodeWithId:(NSString *)identifier;
+{
+    return [_idToNode objectForKey:identifier];
+}
 @end

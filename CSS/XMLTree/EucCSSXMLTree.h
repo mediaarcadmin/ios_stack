@@ -13,6 +13,7 @@
 
 @interface EucCSSXMLTree : NSObject <EucCSSDocumentTree> {
     NSArray *_nodes;
+    NSDictionary *_idToNode;
 }
 
 - (id)initWithData:(NSData *)xmlData;
