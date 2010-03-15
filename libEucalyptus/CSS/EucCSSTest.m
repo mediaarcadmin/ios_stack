@@ -31,11 +31,13 @@ int main (int argc, const char * argv[]) {
        cssInitialised = YES;
     }    
         
-    NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:[NSString stringWithUTF8String:argv[3]]];
+    NSString xmlPath = [NSString stringWithUTF8String:argv[3]];
+    NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:xmlPath];
     EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData];
     [xmlData release];
     
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:xmlTree
+                                                                                             forURL:[NSURL fileURLWithPath:xmlPath]
                                                                                         baseCSSPath:[NSString stringWithUTF8String:argv[2]]];
     
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];

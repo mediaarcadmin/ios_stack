@@ -17,7 +17,6 @@ struct lwc_context_s;
 struct css_select_ctx;
 struct css_stylesheet;
 
-#define EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS 3
 typedef enum EucCSSIntermediateDocumentNodeKeyFlags
 {
     EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode = 0x1,
@@ -28,10 +27,13 @@ typedef enum EucCSSIntermediateDocumentNodeKeyFlags
 } EucCSSIntermediateDocumentNodeKeyFlags;
 
 @class EucCSSIntermediateDocumentNode, EucCSSIntermediateDocumentConcreteNode;
-@protocol EucCSSDocumentTree;
+@protocol EucCSSDocumentTree, EucCSSIntermediateDocumentDataSource;
 
 @interface EucCSSIntermediateDocument : NSObject {
     id<EucCSSDocumentTree> _documentTree;
+    NSURL *_url;
+    id<EucCSSIntermediateDocumentDataSource> _dataSource;
+    
     struct lwc_context_s *_lwcContext;
     
     struct css_select_ctx *_selectCtx;
@@ -44,11 +46,21 @@ typedef enum EucCSSIntermediateDocumentNodeKeyFlags
 
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
+                    forURL:(NSURL *)url
+                dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
                baseCSSPath:(NSString *)baseCSSPath;
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key;
 - (uint32_t)nodeKeyForId:(NSString *)identifier;
 
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *rootNode;
+@property (nonatomic, retain, readonly) NSURL *url;
+@property (nonatomic, assign, readonly) id<EucCSSIntermediateDocumentDataSource> dataSource;
+
+@end
+
+@protocol EucCSSIntermediateDocumentDataSource
+
+- (NSData *)dataForURL:(NSURL *)url;
 
 @end

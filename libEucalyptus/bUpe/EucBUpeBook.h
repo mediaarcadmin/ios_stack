@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "EucBook.h"
 #import "EucBUpeLocalBookReference.h"
+#import "EucCSSIntermediateDocument.h"
 
 @class EucBookPageIndexPoint, EucCSSIntermediateDocument;
 @protocol EucCSSDocumentTree;
 
-@interface EucBUpeBook : EucBUpeLocalBookReference <EucBook> {
+@interface EucBUpeBook : EucBUpeLocalBookReference <EucBook, EucCSSIntermediateDocumentDataSource> {
     NSURL *_root;            // Root of the bundle.
     NSString *_tocNcxId;
         
