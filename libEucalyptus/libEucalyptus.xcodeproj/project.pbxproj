@@ -921,7 +921,6 @@
 		7D51710D1028AF47005F3C46 /* EucBookPaginator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookPaginator.m; sourceTree = "<group>"; };
 		7D51711C1028AF94005F3C46 /* EucBookReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookReader.h; sourceTree = "<group>"; };
 		7D5171CA1028B6AE005F3C46 /* libexpat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libexpat.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		7D5171D91028B6B9005F3C46 /* libantlr.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libantlr.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5172A51028B771005F3C46 /* EucBookParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookParagraph.h; sourceTree = "<group>"; };
 		7D51739A1028BA14005F3C46 /* ascii.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ascii.h; sourceTree = "<group>"; };
 		7D51739B1028BA14005F3C46 /* asciitab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asciitab.h; sourceTree = "<group>"; };
@@ -1142,7 +1141,6 @@
 				D2AAC07E0554694100DB518D /* libEucalyptus.a */,
 				7D5170CE1028AD1B005F3C46 /* libhyphenate.a */,
 				7D5171CA1028B6AE005F3C46 /* libexpat.a */,
-				7D5171D91028B6B9005F3C46 /* libantlr.a */,
 				7D034F8910C2CCBE0085778B /* TransitionTest.app */,
 				7D9A96D210D7E41100C2E00A /* Paginate.app */,
 				7D1900981149490E00375803 /* libwapcaplet.a */,
@@ -2563,13 +2561,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7D5171CC1028B6B9005F3C46 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7D9AA9C5114A8F6A0055C381 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -2785,22 +2776,6 @@
 			productReference = 7D5171CA1028B6AE005F3C46 /* libexpat.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		7D5171CB1028B6B9005F3C46 /* libantlr */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7D5171D61028B6B9005F3C46 /* Build configuration list for PBXNativeTarget "libantlr" */;
-			buildPhases = (
-				7D5171CC1028B6B9005F3C46 /* Headers */,
-				7D5171D11028B6B9005F3C46 /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = libantlr;
-			productName = libEucalyptus;
-			productReference = 7D5171D91028B6B9005F3C46 /* libantlr.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		7D9A96D110D7E41100C2E00A /* Paginate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7D9A96D910D7E41100C2E00A /* Build configuration list for PBXNativeTarget "Paginate" */;
@@ -2873,7 +2848,6 @@
 				7D9AA9C8114A8F6A0055C381 /* libEucalyptusBUpe */,
 				7D2341971149614F00C318E7 /* libEucalyptusCSS */,
 				7D5171BC1028B6AE005F3C46 /* expat */,
-				7D5171CB1028B6B9005F3C46 /* libantlr */,
 				7D034F8810C2CCBE0085778B /* TransitionTest */,
 				7D9A96D110D7E41100C2E00A /* Paginate */,
 				7D1900971149490E00375803 /* libwapcaplet */,
@@ -3112,13 +3086,6 @@
 				7D5174011028BA14005F3C46 /* xmltok.c in Sources */,
 				7D5174031028BA14005F3C46 /* xmltok_impl.c in Sources */,
 				7D5174051028BA14005F3C46 /* xmltok_ns.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7D5171D11028B6B9005F3C46 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3848,44 +3815,6 @@
 			};
 			name = Release;
 		};
-		7D5171D71028B6B9005F3C46 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				DSTROOT = /tmp/libEucalyptus.dst;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
-				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = antlr;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wno-unused",
-				);
-			};
-			name = Debug;
-		};
-		7D5171D81028B6B9005F3C46 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DSTROOT = /tmp/libEucalyptus.dst;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
-				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = antlr;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wno-unused",
-				);
-			};
-			name = Release;
-		};
 		7D9A96D510D7E41100C2E00A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4083,23 +4012,6 @@
 			};
 			name = Beta;
 		};
-		7DA921F910C1861700F18134 /* Beta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DSTROOT = /tmp/libEucalyptus.dst;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
-				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = antlr;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wno-unused",
-				);
-			};
-			name = Beta;
-		};
 		7DA921FA10C1861800F18134 /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4160,23 +4072,6 @@
 				PRODUCT_NAME = expat;
 				PUBLIC_HEADERS_FOLDER_PATH = include/expat;
 				USE_HEADERMAP = NO;
-			};
-			name = AppStore;
-		};
-		7DA921FF10C1861800F18134 /* AppStore */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DSTROOT = /tmp/libEucalyptus.dst;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
-				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = antlr;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wno-unused",
-				);
 			};
 			name = AppStore;
 		};
@@ -4289,17 +4184,6 @@
 				7D5171C91028B6AE005F3C46 /* Release */,
 				7DA921F810C1861700F18134 /* Beta */,
 				7DA921FE10C1861800F18134 /* AppStore */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7D5171D61028B6B9005F3C46 /* Build configuration list for PBXNativeTarget "libantlr" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7D5171D71028B6B9005F3C46 /* Debug */,
-				7D5171D81028B6B9005F3C46 /* Release */,
-				7DA921F910C1861700F18134 /* Beta */,
-				7DA921FF10C1861800F18134 /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
