@@ -1,13 +1,8 @@
 #import <Foundation/Foundation.h>
 
-#import <hubbub/hubbub.h>
 #import <libcss/libcss.h>
 
 #import "EucCSSInternal.h"
-
-#import "EucHTMLDB.h"
-#import "EucHTMLDBCreation.h"
-#import "EucHTMLDBNodeManager.h"
 
 #import "EucCSSXMLTree.h"
 
@@ -21,15 +16,12 @@
 #import "THLog.h"
 #import "THTimer.h"
 
-#define HTMLPARSER
-
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
     THProcessLoggingDefaults();
     
     bool cssInitialised = false;
-    bool hubbubInitialised = false;
 
     css_error cssErr = css_initialise(argv[1], EucRealloc, NULL);
     if(cssErr != CSS_OK) {
@@ -38,36 +30,13 @@ int main (int argc, const char * argv[]) {
     } else {
        cssInitialised = YES;
     }    
-    
-    hubbub_error hubbubErr = hubbub_initialise(argv[1], EucRealloc, NULL);
-    if(hubbubErr != HUBBUB_OK) {
-        fprintf(stderr, "Error \"%s\" setting up hubbub\n", hubbub_error_to_string(hubbubErr));
-        goto bail;
-    } else {
-        hubbubInitialised = true;
-    }
-    
-#ifdef HTMLPARSER
-    EucHTMLDB *htmlDb = EucHTMLDBCreateWithHTMLAtPath(argv[3], NULL);
-    
-    lwc_context *lwcContext;
-    lwc_create_context(EucRealloc, NULL, &lwcContext);
-    lwc_context_ref(lwcContext);
-    
-    EucHTMLDBNodeManager *htmlDbManager = [[EucHTMLDBNodeManager alloc] initWithHTMLDB:htmlDb
-                                                                           lwcContext:lwcContext];
-    
-    EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:htmlDbManager
-                                                                                        baseCSSPath:[NSString stringWithUTF8String:argv[2]]
-                                                                                         lwcContext:lwcContext];
-#else
+        
     NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:[NSString stringWithUTF8String:argv[3]]];
     EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData];
     [xmlData release];
     
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:xmlTree
                                                                                         baseCSSPath:[NSString stringWithUTF8String:argv[2]]];
-#endif
     
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     layouter.document = document;
@@ -127,20 +96,11 @@ int main (int argc, const char * argv[]) {
     [layouter release];
     [document release];
     
-#ifdef HTMLPARSER
-    [htmlDbManager release];
-    lwc_context_unref(lwcContext);
-    EucHTMLDBClose(htmlDb);
-#else
     [xmlTree release];
-#endif
-    
+
 bail:
     if(cssInitialised) {
         css_finalise(EucRealloc, NULL);
-    }
-    if(hubbubInitialised) {
-        hubbub_finalise(EucRealloc, NULL);
     }
     
     [pool drain];

@@ -7,11 +7,12 @@
  *
  */
 
+#include <TargetConditionals.h>
 #include <memory.h>
 
 void *EucRealloc(void *ptr, size_t len, void *pw);
 
-#if TARGET_OS_MAC
+#if !TARGET_OS_IPHONE
 
 #define NSStringFromCGRect(x) NSStringFromRect(NSRectFromCGRect(x))
 
