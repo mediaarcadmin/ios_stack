@@ -16,6 +16,7 @@
     id<EucPageTextViewDelegate> _delegate;
     
     CGFloat _pointSize;
+    CGFloat _scaleFactor;
     BOOL _allowScaledImageDistortion;
     BOOL _backgroundIsDark;
     

@@ -39,6 +39,7 @@
 {
     if((self = [super initWithFrame:frame])) {
         _pointSize = pointSize;
+        _scaleFactor = pointSize / EUC_CSS_DEFAULT_POINT_SIZE;
     }
     return self;
 }
@@ -47,6 +48,12 @@
 {
     [_positionedBlock release];
     [super dealloc];
+}
+
+- (void)setPointSize:(CGFloat)pointSize
+{
+    _pointSize = pointSize;
+    _scaleFactor = pointSize / EUC_CSS_DEFAULT_POINT_SIZE;
 }
 
 - (EucBookPageIndexPoint *)layoutPageFromPoint:(EucBookPageIndexPoint *)point
@@ -64,7 +71,7 @@
         layoutPoint.element = point.element;
         
         EucCSSLayouter *layouter = [[EucCSSLayouter alloc] initWithDocument:document
-                                                                scaleFactor:_pointSize / EUC_CSS_DEFAULT_POINT_SIZE];
+                                                                scaleFactor:_scaleFactor];
         
         BOOL isComplete = NO;
         self.positionedBlock = [layouter layoutFromPoint:layoutPoint

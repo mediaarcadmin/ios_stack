@@ -166,25 +166,27 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
         nextPoint = [pageViews[currentPointIndex].bookTextView layoutPageFromPoint:currentPoints[currentPointIndex] 
                                                                             inBook:_book];
         
-        if(nextPoint) {
-            NSLog(@"%f: [%ld, %ld, %ld, %ld] -> [%ld, %ld, %ld, %ld]", 
-                  pageViews[currentPointIndex].bookTextView.pointSize,
-                  (long)currentPoints[currentPointIndex].source, 
-                  (long)currentPoints[currentPointIndex].block, 
-                  (long)currentPoints[currentPointIndex].word, 
-                  (long)currentPoints[currentPointIndex].element, 
-                  (long)nextPoint.source, 
-                  (long)nextPoint.block, 
-                  (long)nextPoint.word, 
-                  (long)nextPoint.element);
-        } else {
-            NSLog(@"%f: [%ld, %ld, %ld, %ld] -> NULL", 
-                  pageViews[currentPointIndex].bookTextView.pointSize,
-                  (long)currentPoints[currentPointIndex].source, 
-                  (long)currentPoints[currentPointIndex].block, 
-                  (long)currentPoints[currentPointIndex].word, 
-                  (long)currentPoints[currentPointIndex].element);
-        }  
+        if(THWillLogVerbose()) {
+            if(nextPoint) {
+                THLogVerbose(@"%f: [%ld, %ld, %ld, %ld] -> [%ld, %ld, %ld, %ld]", 
+                             pageViews[currentPointIndex].bookTextView.pointSize,
+                             (long)currentPoints[currentPointIndex].source, 
+                             (long)currentPoints[currentPointIndex].block, 
+                             (long)currentPoints[currentPointIndex].word, 
+                             (long)currentPoints[currentPointIndex].element, 
+                             (long)nextPoint.source, 
+                             (long)nextPoint.block, 
+                             (long)nextPoint.word, 
+                             (long)nextPoint.element);
+            } else {
+                THLogVerbose(@"%f: [%ld, %ld, %ld, %ld] -> NULL", 
+                             pageViews[currentPointIndex].bookTextView.pointSize,
+                             (long)currentPoints[currentPointIndex].source, 
+                             (long)currentPoints[currentPointIndex].block, 
+                             (long)currentPoints[currentPointIndex].word, 
+                             (long)currentPoints[currentPointIndex].element);
+            }
+        }
               
         
         //NSParameterAssert(nextPoint.startOfParagraphByteOffset >= currentPoints[currentPointIndex].startOfParagraphByteOffset || !nextPoint);
