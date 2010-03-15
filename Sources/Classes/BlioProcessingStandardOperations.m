@@ -459,28 +459,27 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         if (nil == audioFiles)
             NSLog(@"Error whilst enumerating Audiobook directory %@: %@, %@", targetFilename, anError, [anError userInfo]);
         
-        NSString *audiobookFilename = nil;
-        NSString *timingIndicesFilename = nil;
-        NSUInteger rtxFilenameLength = 100000;
+		// There can be multiple mp3 files as well as multiple rtx files.  
+		// The metadata xml file has metadata that maps mp3-rtx pairs to fixed pages.
+		// The references xml file has the pairs.  We don't know till we parse it 
+		// if we have the required mp3 and rtx files.
+        NSString *audioMetadataFilename = nil;
+        NSString *audioReferencesFilename = nil;
         for (NSString *audioFile in audioFiles) {
-            NSRange mp3Range = [audioFile rangeOfString:@".mp3"];
-            if (mp3Range.location != NSNotFound) {
-                audiobookFilename = audioFile;
+			NSRange audioXmlRange = [audioFile rangeOfString:@"Audio.xml"];
+            if (audioXmlRange.location != NSNotFound) {
+				audioMetadataFilename = audioFile;
             }
-            NSRange rtxRange = [audioFile rangeOfString:@".rtx"];
-            if (rtxRange.location != NSNotFound) {
-                NSUInteger filenameLength = [audioFile length];
-                if (filenameLength < rtxFilenameLength) {
-                    timingIndicesFilename = audioFile;
-                    rtxFilenameLength = filenameLength;
-                }
+			NSRange refsXmlRange = [audioFile rangeOfString:@"References.xml"];
+            if (refsXmlRange.location != NSNotFound) {
+				audioReferencesFilename = audioFile;
             }
         }
-        
-        if (audiobookFilename && timingIndicesFilename) {
-            [self setBookValue:audiobookFilename forKey:@"audiobookFilename"];
-            [self setBookValue:timingIndicesFilename forKey:@"timingIndicesFilename"];
-            [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudioRights"];
+		// For now keep the old key names.
+        if (audioMetadataFilename && audioReferencesFilename) {
+            [self setBookValue:audioMetadataFilename forKey:@"audiobookFilename"];
+            [self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"];
+            [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudioRights"]; 
         } else {
             NSLog(@"Could not find required audiobook files in AudioBook directory %@", cachedFilename);
         }        
