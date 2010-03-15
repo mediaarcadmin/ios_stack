@@ -1883,9 +1883,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
     CGFloat zoomScale = CGRectGetWidth(self.bounds) / CGRectGetWidth(pageRect);
     CGFloat pageWidth = CGRectGetWidth(self.bounds) * zoomScale;
-    CGFloat pageHeight = CGRectGetHeight(self.bounds) * zoomScale;
-    CGFloat yOffset = (pageHeight - CGRectGetHeight(self.bounds))/2.0f;
-    if (yOffset < 0) yOffset = 0;
+    CGFloat yOffset = (CGRectGetHeight(self.bounds) - CGRectGetHeight(pageRect))/2.0f;
+    pageRect.origin.y = yOffset;
     CGPoint viewOrigin = CGPointMake((targetPageNumber - 1) * pageWidth, 0);    
     CGPoint newContentOffset = CGPointMake(round(viewOrigin.x + pageRect.origin.x * zoomScale), round(viewOrigin.y + pageRect.origin.y * zoomScale));
 
