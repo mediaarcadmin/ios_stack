@@ -314,63 +314,6 @@
 		7D51710F1028AF47005F3C46 /* EucBookPaginator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51710D1028AF47005F3C46 /* EucBookPaginator.m */; };
 		7D51711D1028AF94005F3C46 /* EucBookReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51711C1028AF94005F3C46 /* EucBookReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D5172A61028B771005F3C46 /* EucBookParagraph.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172A51028B771005F3C46 /* EucBookParagraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D5173101028B98A005F3C46 /* antlr3config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172BB1028B989005F3C46 /* antlr3config.h */; };
-		7D5173111028B98A005F3C46 /* antlr3.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CA1028B989005F3C46 /* antlr3.h */; };
-		7D5173121028B98A005F3C46 /* antlr3baserecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CB1028B989005F3C46 /* antlr3baserecognizer.h */; };
-		7D5173131028B98A005F3C46 /* antlr3basetree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CC1028B989005F3C46 /* antlr3basetree.h */; };
-		7D5173141028B98A005F3C46 /* antlr3basetreeadaptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CD1028B989005F3C46 /* antlr3basetreeadaptor.h */; };
-		7D5173151028B98A005F3C46 /* antlr3bitset.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CE1028B989005F3C46 /* antlr3bitset.h */; };
-		7D5173161028B98A005F3C46 /* antlr3collections.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172CF1028B989005F3C46 /* antlr3collections.h */; };
-		7D5173171028B98A005F3C46 /* antlr3commontoken.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D01028B989005F3C46 /* antlr3commontoken.h */; };
-		7D5173181028B98A005F3C46 /* antlr3commontree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D11028B989005F3C46 /* antlr3commontree.h */; };
-		7D5173191028B98A005F3C46 /* antlr3commontreeadaptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D21028B989005F3C46 /* antlr3commontreeadaptor.h */; };
-		7D51731A1028B98A005F3C46 /* antlr3commontreenodestream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D31028B989005F3C46 /* antlr3commontreenodestream.h */; };
-		7D51731B1028B98A005F3C46 /* antlr3convertutf.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D41028B989005F3C46 /* antlr3convertutf.h */; };
-		7D51731C1028B98A005F3C46 /* antlr3cyclicdfa.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D51028B989005F3C46 /* antlr3cyclicdfa.h */; };
-		7D51731D1028B98A005F3C46 /* antlr3debugeventlistener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D61028B989005F3C46 /* antlr3debugeventlistener.h */; };
-		7D51731E1028B98A005F3C46 /* antlr3defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D71028B989005F3C46 /* antlr3defs.h */; };
-		7D51731F1028B98A005F3C46 /* antlr3encodings.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D81028B989005F3C46 /* antlr3encodings.h */; };
-		7D5173201028B98A005F3C46 /* antlr3errors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172D91028B989005F3C46 /* antlr3errors.h */; };
-		7D5173211028B98A005F3C46 /* antlr3exception.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DA1028B989005F3C46 /* antlr3exception.h */; };
-		7D5173221028B98A005F3C46 /* antlr3filestream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DB1028B989005F3C46 /* antlr3filestream.h */; };
-		7D5173231028B98A005F3C46 /* antlr3input.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DC1028B989005F3C46 /* antlr3input.h */; };
-		7D5173241028B98A005F3C46 /* antlr3interfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DD1028B989005F3C46 /* antlr3interfaces.h */; };
-		7D5173251028B98A005F3C46 /* antlr3intstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DE1028B989005F3C46 /* antlr3intstream.h */; };
-		7D5173261028B98A005F3C46 /* antlr3lexer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172DF1028B989005F3C46 /* antlr3lexer.h */; };
-		7D5173271028B98A005F3C46 /* antlr3memory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E01028B989005F3C46 /* antlr3memory.h */; };
-		7D5173281028B98A005F3C46 /* antlr3parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E11028B989005F3C46 /* antlr3parser.h */; };
-		7D5173291028B98A005F3C46 /* antlr3parsetree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E21028B989005F3C46 /* antlr3parsetree.h */; };
-		7D51732A1028B98A005F3C46 /* antlr3recognizersharedstate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E31028B989005F3C46 /* antlr3recognizersharedstate.h */; };
-		7D51732B1028B98A005F3C46 /* antlr3rewritestreams.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E41028B989005F3C46 /* antlr3rewritestreams.h */; };
-		7D51732C1028B98A005F3C46 /* antlr3string.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E51028B989005F3C46 /* antlr3string.h */; };
-		7D51732D1028B98A005F3C46 /* antlr3stringstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E61028B989005F3C46 /* antlr3stringstream.h */; };
-		7D51732E1028B98A005F3C46 /* antlr3tokenstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E71028B989005F3C46 /* antlr3tokenstream.h */; };
-		7D51732F1028B98A005F3C46 /* antlr3treeparser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5172E81028B989005F3C46 /* antlr3treeparser.h */; };
-		7D5173301028B98A005F3C46 /* antlr3baserecognizer.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F21028B989005F3C46 /* antlr3baserecognizer.c */; };
-		7D5173311028B98A005F3C46 /* antlr3basetree.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F31028B989005F3C46 /* antlr3basetree.c */; };
-		7D5173321028B98A005F3C46 /* antlr3basetreeadaptor.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F41028B989005F3C46 /* antlr3basetreeadaptor.c */; };
-		7D5173331028B98A005F3C46 /* antlr3bitset.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F51028B989005F3C46 /* antlr3bitset.c */; };
-		7D5173341028B98A005F3C46 /* antlr3collections.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F61028B989005F3C46 /* antlr3collections.c */; };
-		7D5173351028B98A005F3C46 /* antlr3commontoken.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F71028B989005F3C46 /* antlr3commontoken.c */; };
-		7D5173361028B98A005F3C46 /* antlr3commontree.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F81028B989005F3C46 /* antlr3commontree.c */; };
-		7D5173371028B98A005F3C46 /* antlr3commontreeadaptor.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172F91028B989005F3C46 /* antlr3commontreeadaptor.c */; };
-		7D5173381028B98A005F3C46 /* antlr3commontreenodestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FA1028B989005F3C46 /* antlr3commontreenodestream.c */; };
-		7D5173391028B98A005F3C46 /* antlr3convertutf.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FB1028B989005F3C46 /* antlr3convertutf.c */; };
-		7D51733A1028B98A005F3C46 /* antlr3cyclicdfa.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FC1028B989005F3C46 /* antlr3cyclicdfa.c */; };
-		7D51733B1028B98A005F3C46 /* antlr3debughandlers.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FD1028B989005F3C46 /* antlr3debughandlers.c */; };
-		7D51733C1028B98A005F3C46 /* antlr3encodings.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FE1028B989005F3C46 /* antlr3encodings.c */; };
-		7D51733D1028B98A005F3C46 /* antlr3exception.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5172FF1028B989005F3C46 /* antlr3exception.c */; };
-		7D51733E1028B98A005F3C46 /* antlr3filestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173001028B989005F3C46 /* antlr3filestream.c */; };
-		7D51733F1028B98A005F3C46 /* antlr3inputstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173011028B989005F3C46 /* antlr3inputstream.c */; };
-		7D5173401028B98A005F3C46 /* antlr3intstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173021028B989005F3C46 /* antlr3intstream.c */; };
-		7D5173411028B98A005F3C46 /* antlr3lexer.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173031028B989005F3C46 /* antlr3lexer.c */; };
-		7D5173421028B98A005F3C46 /* antlr3parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173041028B989005F3C46 /* antlr3parser.c */; };
-		7D5173431028B98A005F3C46 /* antlr3rewritestreams.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173051028B989005F3C46 /* antlr3rewritestreams.c */; };
-		7D5173441028B98A005F3C46 /* antlr3string.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173061028B98A005F3C46 /* antlr3string.c */; };
-		7D5173451028B98A005F3C46 /* antlr3stringstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173071028B98A005F3C46 /* antlr3stringstream.c */; };
-		7D5173461028B98A005F3C46 /* antlr3tokenstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173081028B98A005F3C46 /* antlr3tokenstream.c */; };
-		7D5173471028B98A005F3C46 /* antlr3treeparser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173091028B98A005F3C46 /* antlr3treeparser.c */; };
-		7D5173481028B98A005F3C46 /* antlr3ucs2inputstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D51730A1028B98A005F3C46 /* antlr3ucs2inputstream.c */; };
 		7D5173F31028BA14005F3C46 /* ascii.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739A1028BA14005F3C46 /* ascii.h */; };
 		7D5173F41028BA14005F3C46 /* asciitab.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739B1028BA14005F3C46 /* asciitab.h */; };
 		7D5173F51028BA14005F3C46 /* expat.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51739D1028BA14005F3C46 /* expat.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1136,106 +1079,9 @@
 		7D51710C1028AF47005F3C46 /* EucBookPaginator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookPaginator.h; sourceTree = "<group>"; };
 		7D51710D1028AF47005F3C46 /* EucBookPaginator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookPaginator.m; sourceTree = "<group>"; };
 		7D51711C1028AF94005F3C46 /* EucBookReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookReader.h; sourceTree = "<group>"; };
-		7D5171891028B53C005F3C46 /* EucEPubPageLayoutController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubPageLayoutController.h; sourceTree = "<group>"; };
-		7D51718A1028B53C005F3C46 /* EucEPubPageLayoutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubPageLayoutController.m; sourceTree = "<group>"; };
-		7D51718E1028B553005F3C46 /* css21.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = css21.g; sourceTree = "<group>"; };
-		7D5171941028B554005F3C46 /* EucEPubStyleStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubStyleStore.h; sourceTree = "<group>"; };
-		7D5171951028B554005F3C46 /* EucEPubStyleStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubStyleStore.m; sourceTree = "<group>"; };
-		7D5171961028B554005F3C46 /* EucEPubBookReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubBookReader.h; sourceTree = "<group>"; };
-		7D5171971028B554005F3C46 /* EucEPubBookReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubBookReader.m; sourceTree = "<group>"; };
-		7D5171981028B554005F3C46 /* EucEPubBookParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubBookParagraph.h; sourceTree = "<group>"; };
-		7D5171991028B554005F3C46 /* EucEPubBookParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubBookParagraph.m; sourceTree = "<group>"; };
-		7D51719A1028B554005F3C46 /* EucEPubLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubLocalBookReference.h; sourceTree = "<group>"; };
-		7D51719B1028B554005F3C46 /* EucEPubLocalBookReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubLocalBookReference.m; sourceTree = "<group>"; };
-		7D51719C1028B554005F3C46 /* EucEPubBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucEPubBook.h; sourceTree = "<group>"; };
-		7D51719D1028B554005F3C46 /* EucEPubBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucEPubBook.m; sourceTree = "<group>"; };
-		7D5171AE1028B59C005F3C46 /* antlr-3.2.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = "antlr-3.2.jar"; sourceTree = "<group>"; };
 		7D5171CA1028B6AE005F3C46 /* libexpat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libexpat.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5171D91028B6B9005F3C46 /* libantlr.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libantlr.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5172A51028B771005F3C46 /* EucBookParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookParagraph.h; sourceTree = "<group>"; };
-		7D5172BA1028B989005F3C46 /* aclocal.m4 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = aclocal.m4; sourceTree = "<group>"; };
-		7D5172BB1028B989005F3C46 /* antlr3config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3config.h; sourceTree = "<group>"; };
-		7D5172BC1028B989005F3C46 /* antlr3config.h.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = antlr3config.h.in; sourceTree = "<group>"; };
-		7D5172BD1028B989005F3C46 /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AUTHORS; sourceTree = "<group>"; };
-		7D5172BE1028B989005F3C46 /* C.sln */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = C.sln; sourceTree = "<group>"; };
-		7D5172BF1028B989005F3C46 /* C.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = C.vcproj; sourceTree = "<group>"; };
-		7D5172C01028B989005F3C46 /* C.vcproj.vspscc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = C.vcproj.vspscc; sourceTree = "<group>"; };
-		7D5172C11028B989005F3C46 /* C.vssscc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = C.vssscc; sourceTree = "<group>"; };
-		7D5172C21028B989005F3C46 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
-		7D5172C31028B989005F3C46 /* config.guess */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = config.guess; sourceTree = "<group>"; };
-		7D5172C41028B989005F3C46 /* config.sub */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = config.sub; sourceTree = "<group>"; };
-		7D5172C51028B989005F3C46 /* configure */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = configure; sourceTree = "<group>"; };
-		7D5172C61028B989005F3C46 /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = configure.ac; sourceTree = "<group>"; };
-		7D5172C71028B989005F3C46 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
-		7D5172C81028B989005F3C46 /* depcomp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = depcomp; sourceTree = "<group>"; };
-		7D5172CA1028B989005F3C46 /* antlr3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3.h; sourceTree = "<group>"; };
-		7D5172CB1028B989005F3C46 /* antlr3baserecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3baserecognizer.h; sourceTree = "<group>"; };
-		7D5172CC1028B989005F3C46 /* antlr3basetree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3basetree.h; sourceTree = "<group>"; };
-		7D5172CD1028B989005F3C46 /* antlr3basetreeadaptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3basetreeadaptor.h; sourceTree = "<group>"; };
-		7D5172CE1028B989005F3C46 /* antlr3bitset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3bitset.h; sourceTree = "<group>"; };
-		7D5172CF1028B989005F3C46 /* antlr3collections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3collections.h; sourceTree = "<group>"; };
-		7D5172D01028B989005F3C46 /* antlr3commontoken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3commontoken.h; sourceTree = "<group>"; };
-		7D5172D11028B989005F3C46 /* antlr3commontree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3commontree.h; sourceTree = "<group>"; };
-		7D5172D21028B989005F3C46 /* antlr3commontreeadaptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3commontreeadaptor.h; sourceTree = "<group>"; };
-		7D5172D31028B989005F3C46 /* antlr3commontreenodestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3commontreenodestream.h; sourceTree = "<group>"; };
-		7D5172D41028B989005F3C46 /* antlr3convertutf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3convertutf.h; sourceTree = "<group>"; };
-		7D5172D51028B989005F3C46 /* antlr3cyclicdfa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3cyclicdfa.h; sourceTree = "<group>"; };
-		7D5172D61028B989005F3C46 /* antlr3debugeventlistener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3debugeventlistener.h; sourceTree = "<group>"; };
-		7D5172D71028B989005F3C46 /* antlr3defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3defs.h; sourceTree = "<group>"; };
-		7D5172D81028B989005F3C46 /* antlr3encodings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3encodings.h; sourceTree = "<group>"; };
-		7D5172D91028B989005F3C46 /* antlr3errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3errors.h; sourceTree = "<group>"; };
-		7D5172DA1028B989005F3C46 /* antlr3exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3exception.h; sourceTree = "<group>"; };
-		7D5172DB1028B989005F3C46 /* antlr3filestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3filestream.h; sourceTree = "<group>"; };
-		7D5172DC1028B989005F3C46 /* antlr3input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3input.h; sourceTree = "<group>"; };
-		7D5172DD1028B989005F3C46 /* antlr3interfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3interfaces.h; sourceTree = "<group>"; };
-		7D5172DE1028B989005F3C46 /* antlr3intstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3intstream.h; sourceTree = "<group>"; };
-		7D5172DF1028B989005F3C46 /* antlr3lexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3lexer.h; sourceTree = "<group>"; };
-		7D5172E01028B989005F3C46 /* antlr3memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3memory.h; sourceTree = "<group>"; };
-		7D5172E11028B989005F3C46 /* antlr3parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3parser.h; sourceTree = "<group>"; };
-		7D5172E21028B989005F3C46 /* antlr3parsetree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3parsetree.h; sourceTree = "<group>"; };
-		7D5172E31028B989005F3C46 /* antlr3recognizersharedstate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3recognizersharedstate.h; sourceTree = "<group>"; };
-		7D5172E41028B989005F3C46 /* antlr3rewritestreams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3rewritestreams.h; sourceTree = "<group>"; };
-		7D5172E51028B989005F3C46 /* antlr3string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3string.h; sourceTree = "<group>"; };
-		7D5172E61028B989005F3C46 /* antlr3stringstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3stringstream.h; sourceTree = "<group>"; };
-		7D5172E71028B989005F3C46 /* antlr3tokenstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3tokenstream.h; sourceTree = "<group>"; };
-		7D5172E81028B989005F3C46 /* antlr3treeparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = antlr3treeparser.h; sourceTree = "<group>"; };
-		7D5172E91028B989005F3C46 /* INSTALL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = INSTALL; sourceTree = "<group>"; };
-		7D5172EA1028B989005F3C46 /* install-sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "install-sh"; sourceTree = "<group>"; };
-		7D5172EB1028B989005F3C46 /* ltmain.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = ltmain.sh; sourceTree = "<group>"; };
-		7D5172EC1028B989005F3C46 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		7D5172ED1028B989005F3C46 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
-		7D5172EE1028B989005F3C46 /* missing */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = missing; sourceTree = "<group>"; };
-		7D5172EF1028B989005F3C46 /* NEWS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NEWS; sourceTree = "<group>"; };
-		7D5172F01028B989005F3C46 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		7D5172F21028B989005F3C46 /* antlr3baserecognizer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3baserecognizer.c; sourceTree = "<group>"; };
-		7D5172F31028B989005F3C46 /* antlr3basetree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3basetree.c; sourceTree = "<group>"; };
-		7D5172F41028B989005F3C46 /* antlr3basetreeadaptor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3basetreeadaptor.c; sourceTree = "<group>"; };
-		7D5172F51028B989005F3C46 /* antlr3bitset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3bitset.c; sourceTree = "<group>"; };
-		7D5172F61028B989005F3C46 /* antlr3collections.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3collections.c; sourceTree = "<group>"; };
-		7D5172F71028B989005F3C46 /* antlr3commontoken.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3commontoken.c; sourceTree = "<group>"; };
-		7D5172F81028B989005F3C46 /* antlr3commontree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3commontree.c; sourceTree = "<group>"; };
-		7D5172F91028B989005F3C46 /* antlr3commontreeadaptor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3commontreeadaptor.c; sourceTree = "<group>"; };
-		7D5172FA1028B989005F3C46 /* antlr3commontreenodestream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3commontreenodestream.c; sourceTree = "<group>"; };
-		7D5172FB1028B989005F3C46 /* antlr3convertutf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3convertutf.c; sourceTree = "<group>"; };
-		7D5172FC1028B989005F3C46 /* antlr3cyclicdfa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3cyclicdfa.c; sourceTree = "<group>"; };
-		7D5172FD1028B989005F3C46 /* antlr3debughandlers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3debughandlers.c; sourceTree = "<group>"; };
-		7D5172FE1028B989005F3C46 /* antlr3encodings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3encodings.c; sourceTree = "<group>"; };
-		7D5172FF1028B989005F3C46 /* antlr3exception.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3exception.c; sourceTree = "<group>"; };
-		7D5173001028B989005F3C46 /* antlr3filestream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3filestream.c; sourceTree = "<group>"; };
-		7D5173011028B989005F3C46 /* antlr3inputstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3inputstream.c; sourceTree = "<group>"; };
-		7D5173021028B989005F3C46 /* antlr3intstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3intstream.c; sourceTree = "<group>"; };
-		7D5173031028B989005F3C46 /* antlr3lexer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3lexer.c; sourceTree = "<group>"; };
-		7D5173041028B989005F3C46 /* antlr3parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3parser.c; sourceTree = "<group>"; };
-		7D5173051028B989005F3C46 /* antlr3rewritestreams.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3rewritestreams.c; sourceTree = "<group>"; };
-		7D5173061028B98A005F3C46 /* antlr3string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3string.c; sourceTree = "<group>"; };
-		7D5173071028B98A005F3C46 /* antlr3stringstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3stringstream.c; sourceTree = "<group>"; };
-		7D5173081028B98A005F3C46 /* antlr3tokenstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3tokenstream.c; sourceTree = "<group>"; };
-		7D5173091028B98A005F3C46 /* antlr3treeparser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3treeparser.c; sourceTree = "<group>"; };
-		7D51730A1028B98A005F3C46 /* antlr3ucs2inputstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = antlr3ucs2inputstream.c; sourceTree = "<group>"; };
-		7D51730C1028B98A005F3C46 /* antlr3lexer.rules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = antlr3lexer.rules; sourceTree = "<group>"; };
-		7D51730D1028B98A005F3C46 /* antlr3lexerandparser.rules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = antlr3lexerandparser.rules; sourceTree = "<group>"; };
-		7D51730E1028B98A005F3C46 /* antlr3parser.rules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = antlr3parser.rules; sourceTree = "<group>"; };
-		7D51730F1028B98A005F3C46 /* antlr3treeparser.rules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = antlr3treeparser.rules; sourceTree = "<group>"; };
 		7D51739A1028BA14005F3C46 /* ascii.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ascii.h; sourceTree = "<group>"; };
 		7D51739B1028BA14005F3C46 /* asciitab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asciitab.h; sourceTree = "<group>"; };
 		7D51739D1028BA14005F3C46 /* expat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expat.h; sourceTree = "<group>"; };
@@ -1473,7 +1319,6 @@
 				7D516DFF102872A5005F3C46 /* BookView */,
 				7D516E42102873FA005F3C46 /* Model */,
 				7D516E221028734C005F3C46 /* Utils */,
-				7D5171751028B470005F3C46 /* ePub */,
 				7D9AA999114A8EB60055C381 /* bUpe */,
 				7D2340F51149602200C318E7 /* CSS */,
 				7D516E1710287300005F3C46 /* ThirdParty */,
@@ -2632,13 +2477,11 @@
 		7D516E1710287300005F3C46 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				7D5171AE1028B59C005F3C46 /* antlr-3.2.jar */,
 				7D516E1810287300005F3C46 /* Apple */,
 				7D51700C10287987005F3C46 /* VCTitleCase */,
 				7D5170D11028ADD6005F3C46 /* libhyphenate */,
 				7D51734D1028BA13005F3C46 /* expat */,
 				7D5173DE1028BA14005F3C46 /* expat_config.h */,
-				7D5172B91028B989005F3C46 /* libantlr */,
 				7D1900A01149498500375803 /* libwapcaplet */,
 				7D1900D711494A5800375803 /* libparserutils */,
 				7D19038711494CE900375803 /* libcss */,
@@ -2816,164 +2659,6 @@
 				7D51710D1028AF47005F3C46 /* EucBookPaginator.m */,
 			);
 			path = BookPaginator;
-			sourceTree = "<group>";
-		};
-		7D5171751028B470005F3C46 /* ePub */ = {
-			isa = PBXGroup;
-			children = (
-				7D5171781028B493005F3C46 /* BookView */,
-				7D5171771028B493005F3C46 /* Model */,
-			);
-			path = ePub;
-			sourceTree = "<group>";
-		};
-		7D5171771028B493005F3C46 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				7D51718D1028B553005F3C46 /* CSSParser */,
-				7D5171941028B554005F3C46 /* EucEPubStyleStore.h */,
-				7D5171951028B554005F3C46 /* EucEPubStyleStore.m */,
-				7D5171961028B554005F3C46 /* EucEPubBookReader.h */,
-				7D5171971028B554005F3C46 /* EucEPubBookReader.m */,
-				7D5171981028B554005F3C46 /* EucEPubBookParagraph.h */,
-				7D5171991028B554005F3C46 /* EucEPubBookParagraph.m */,
-				7D51719A1028B554005F3C46 /* EucEPubLocalBookReference.h */,
-				7D51719B1028B554005F3C46 /* EucEPubLocalBookReference.m */,
-				7D51719C1028B554005F3C46 /* EucEPubBook.h */,
-				7D51719D1028B554005F3C46 /* EucEPubBook.m */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		7D5171781028B493005F3C46 /* BookView */ = {
-			isa = PBXGroup;
-			children = (
-				7D5171891028B53C005F3C46 /* EucEPubPageLayoutController.h */,
-				7D51718A1028B53C005F3C46 /* EucEPubPageLayoutController.m */,
-			);
-			path = BookView;
-			sourceTree = "<group>";
-		};
-		7D51718D1028B553005F3C46 /* CSSParser */ = {
-			isa = PBXGroup;
-			children = (
-				7D51718E1028B553005F3C46 /* css21.g */,
-			);
-			path = CSSParser;
-			sourceTree = "<group>";
-		};
-		7D5172B91028B989005F3C46 /* libantlr */ = {
-			isa = PBXGroup;
-			children = (
-				7D5172BA1028B989005F3C46 /* aclocal.m4 */,
-				7D5172BB1028B989005F3C46 /* antlr3config.h */,
-				7D5172BC1028B989005F3C46 /* antlr3config.h.in */,
-				7D5172BD1028B989005F3C46 /* AUTHORS */,
-				7D5172BE1028B989005F3C46 /* C.sln */,
-				7D5172BF1028B989005F3C46 /* C.vcproj */,
-				7D5172C01028B989005F3C46 /* C.vcproj.vspscc */,
-				7D5172C11028B989005F3C46 /* C.vssscc */,
-				7D5172C21028B989005F3C46 /* ChangeLog */,
-				7D5172C31028B989005F3C46 /* config.guess */,
-				7D5172C41028B989005F3C46 /* config.sub */,
-				7D5172C51028B989005F3C46 /* configure */,
-				7D5172C61028B989005F3C46 /* configure.ac */,
-				7D5172C71028B989005F3C46 /* COPYING */,
-				7D5172C81028B989005F3C46 /* depcomp */,
-				7D5172C91028B989005F3C46 /* include */,
-				7D5172E91028B989005F3C46 /* INSTALL */,
-				7D5172EA1028B989005F3C46 /* install-sh */,
-				7D5172EB1028B989005F3C46 /* ltmain.sh */,
-				7D5172EC1028B989005F3C46 /* Makefile.am */,
-				7D5172ED1028B989005F3C46 /* Makefile.in */,
-				7D5172EE1028B989005F3C46 /* missing */,
-				7D5172EF1028B989005F3C46 /* NEWS */,
-				7D5172F01028B989005F3C46 /* README */,
-				7D5172F11028B989005F3C46 /* src */,
-				7D51730B1028B98A005F3C46 /* vsrulefiles */,
-			);
-			path = libantlr;
-			sourceTree = "<group>";
-		};
-		7D5172C91028B989005F3C46 /* include */ = {
-			isa = PBXGroup;
-			children = (
-				7D5172CA1028B989005F3C46 /* antlr3.h */,
-				7D5172CB1028B989005F3C46 /* antlr3baserecognizer.h */,
-				7D5172CC1028B989005F3C46 /* antlr3basetree.h */,
-				7D5172CD1028B989005F3C46 /* antlr3basetreeadaptor.h */,
-				7D5172CE1028B989005F3C46 /* antlr3bitset.h */,
-				7D5172CF1028B989005F3C46 /* antlr3collections.h */,
-				7D5172D01028B989005F3C46 /* antlr3commontoken.h */,
-				7D5172D11028B989005F3C46 /* antlr3commontree.h */,
-				7D5172D21028B989005F3C46 /* antlr3commontreeadaptor.h */,
-				7D5172D31028B989005F3C46 /* antlr3commontreenodestream.h */,
-				7D5172D41028B989005F3C46 /* antlr3convertutf.h */,
-				7D5172D51028B989005F3C46 /* antlr3cyclicdfa.h */,
-				7D5172D61028B989005F3C46 /* antlr3debugeventlistener.h */,
-				7D5172D71028B989005F3C46 /* antlr3defs.h */,
-				7D5172D81028B989005F3C46 /* antlr3encodings.h */,
-				7D5172D91028B989005F3C46 /* antlr3errors.h */,
-				7D5172DA1028B989005F3C46 /* antlr3exception.h */,
-				7D5172DB1028B989005F3C46 /* antlr3filestream.h */,
-				7D5172DC1028B989005F3C46 /* antlr3input.h */,
-				7D5172DD1028B989005F3C46 /* antlr3interfaces.h */,
-				7D5172DE1028B989005F3C46 /* antlr3intstream.h */,
-				7D5172DF1028B989005F3C46 /* antlr3lexer.h */,
-				7D5172E01028B989005F3C46 /* antlr3memory.h */,
-				7D5172E11028B989005F3C46 /* antlr3parser.h */,
-				7D5172E21028B989005F3C46 /* antlr3parsetree.h */,
-				7D5172E31028B989005F3C46 /* antlr3recognizersharedstate.h */,
-				7D5172E41028B989005F3C46 /* antlr3rewritestreams.h */,
-				7D5172E51028B989005F3C46 /* antlr3string.h */,
-				7D5172E61028B989005F3C46 /* antlr3stringstream.h */,
-				7D5172E71028B989005F3C46 /* antlr3tokenstream.h */,
-				7D5172E81028B989005F3C46 /* antlr3treeparser.h */,
-			);
-			path = include;
-			sourceTree = "<group>";
-		};
-		7D5172F11028B989005F3C46 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				7D5172F21028B989005F3C46 /* antlr3baserecognizer.c */,
-				7D5172F31028B989005F3C46 /* antlr3basetree.c */,
-				7D5172F41028B989005F3C46 /* antlr3basetreeadaptor.c */,
-				7D5172F51028B989005F3C46 /* antlr3bitset.c */,
-				7D5172F61028B989005F3C46 /* antlr3collections.c */,
-				7D5172F71028B989005F3C46 /* antlr3commontoken.c */,
-				7D5172F81028B989005F3C46 /* antlr3commontree.c */,
-				7D5172F91028B989005F3C46 /* antlr3commontreeadaptor.c */,
-				7D5172FA1028B989005F3C46 /* antlr3commontreenodestream.c */,
-				7D5172FB1028B989005F3C46 /* antlr3convertutf.c */,
-				7D5172FC1028B989005F3C46 /* antlr3cyclicdfa.c */,
-				7D5172FD1028B989005F3C46 /* antlr3debughandlers.c */,
-				7D5172FE1028B989005F3C46 /* antlr3encodings.c */,
-				7D5172FF1028B989005F3C46 /* antlr3exception.c */,
-				7D5173001028B989005F3C46 /* antlr3filestream.c */,
-				7D5173011028B989005F3C46 /* antlr3inputstream.c */,
-				7D5173021028B989005F3C46 /* antlr3intstream.c */,
-				7D5173031028B989005F3C46 /* antlr3lexer.c */,
-				7D5173041028B989005F3C46 /* antlr3parser.c */,
-				7D5173051028B989005F3C46 /* antlr3rewritestreams.c */,
-				7D5173061028B98A005F3C46 /* antlr3string.c */,
-				7D5173071028B98A005F3C46 /* antlr3stringstream.c */,
-				7D5173081028B98A005F3C46 /* antlr3tokenstream.c */,
-				7D5173091028B98A005F3C46 /* antlr3treeparser.c */,
-				7D51730A1028B98A005F3C46 /* antlr3ucs2inputstream.c */,
-			);
-			path = src;
-			sourceTree = "<group>";
-		};
-		7D51730B1028B98A005F3C46 /* vsrulefiles */ = {
-			isa = PBXGroup;
-			children = (
-				7D51730C1028B98A005F3C46 /* antlr3lexer.rules */,
-				7D51730D1028B98A005F3C46 /* antlr3lexerandparser.rules */,
-				7D51730E1028B98A005F3C46 /* antlr3parser.rules */,
-				7D51730F1028B98A005F3C46 /* antlr3treeparser.rules */,
-			);
-			path = vsrulefiles;
 			sourceTree = "<group>";
 		};
 		7D51734D1028BA13005F3C46 /* expat */ = {
@@ -3309,38 +2994,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D5173101028B98A005F3C46 /* antlr3config.h in Headers */,
-				7D5173111028B98A005F3C46 /* antlr3.h in Headers */,
-				7D5173121028B98A005F3C46 /* antlr3baserecognizer.h in Headers */,
-				7D5173131028B98A005F3C46 /* antlr3basetree.h in Headers */,
-				7D5173141028B98A005F3C46 /* antlr3basetreeadaptor.h in Headers */,
-				7D5173151028B98A005F3C46 /* antlr3bitset.h in Headers */,
-				7D5173161028B98A005F3C46 /* antlr3collections.h in Headers */,
-				7D5173171028B98A005F3C46 /* antlr3commontoken.h in Headers */,
-				7D5173181028B98A005F3C46 /* antlr3commontree.h in Headers */,
-				7D5173191028B98A005F3C46 /* antlr3commontreeadaptor.h in Headers */,
-				7D51731A1028B98A005F3C46 /* antlr3commontreenodestream.h in Headers */,
-				7D51731B1028B98A005F3C46 /* antlr3convertutf.h in Headers */,
-				7D51731C1028B98A005F3C46 /* antlr3cyclicdfa.h in Headers */,
-				7D51731D1028B98A005F3C46 /* antlr3debugeventlistener.h in Headers */,
-				7D51731E1028B98A005F3C46 /* antlr3defs.h in Headers */,
-				7D51731F1028B98A005F3C46 /* antlr3encodings.h in Headers */,
-				7D5173201028B98A005F3C46 /* antlr3errors.h in Headers */,
-				7D5173211028B98A005F3C46 /* antlr3exception.h in Headers */,
-				7D5173221028B98A005F3C46 /* antlr3filestream.h in Headers */,
-				7D5173231028B98A005F3C46 /* antlr3input.h in Headers */,
-				7D5173241028B98A005F3C46 /* antlr3interfaces.h in Headers */,
-				7D5173251028B98A005F3C46 /* antlr3intstream.h in Headers */,
-				7D5173261028B98A005F3C46 /* antlr3lexer.h in Headers */,
-				7D5173271028B98A005F3C46 /* antlr3memory.h in Headers */,
-				7D5173281028B98A005F3C46 /* antlr3parser.h in Headers */,
-				7D5173291028B98A005F3C46 /* antlr3parsetree.h in Headers */,
-				7D51732A1028B98A005F3C46 /* antlr3recognizersharedstate.h in Headers */,
-				7D51732B1028B98A005F3C46 /* antlr3rewritestreams.h in Headers */,
-				7D51732C1028B98A005F3C46 /* antlr3string.h in Headers */,
-				7D51732D1028B98A005F3C46 /* antlr3stringstream.h in Headers */,
-				7D51732E1028B98A005F3C46 /* antlr3tokenstream.h in Headers */,
-				7D51732F1028B98A005F3C46 /* antlr3treeparser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3949,31 +3602,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D5173301028B98A005F3C46 /* antlr3baserecognizer.c in Sources */,
-				7D5173311028B98A005F3C46 /* antlr3basetree.c in Sources */,
-				7D5173321028B98A005F3C46 /* antlr3basetreeadaptor.c in Sources */,
-				7D5173331028B98A005F3C46 /* antlr3bitset.c in Sources */,
-				7D5173341028B98A005F3C46 /* antlr3collections.c in Sources */,
-				7D5173351028B98A005F3C46 /* antlr3commontoken.c in Sources */,
-				7D5173361028B98A005F3C46 /* antlr3commontree.c in Sources */,
-				7D5173371028B98A005F3C46 /* antlr3commontreeadaptor.c in Sources */,
-				7D5173381028B98A005F3C46 /* antlr3commontreenodestream.c in Sources */,
-				7D5173391028B98A005F3C46 /* antlr3convertutf.c in Sources */,
-				7D51733A1028B98A005F3C46 /* antlr3cyclicdfa.c in Sources */,
-				7D51733B1028B98A005F3C46 /* antlr3debughandlers.c in Sources */,
-				7D51733C1028B98A005F3C46 /* antlr3encodings.c in Sources */,
-				7D51733D1028B98A005F3C46 /* antlr3exception.c in Sources */,
-				7D51733E1028B98A005F3C46 /* antlr3filestream.c in Sources */,
-				7D51733F1028B98A005F3C46 /* antlr3inputstream.c in Sources */,
-				7D5173401028B98A005F3C46 /* antlr3intstream.c in Sources */,
-				7D5173411028B98A005F3C46 /* antlr3lexer.c in Sources */,
-				7D5173421028B98A005F3C46 /* antlr3parser.c in Sources */,
-				7D5173431028B98A005F3C46 /* antlr3rewritestreams.c in Sources */,
-				7D5173441028B98A005F3C46 /* antlr3string.c in Sources */,
-				7D5173451028B98A005F3C46 /* antlr3stringstream.c in Sources */,
-				7D5173461028B98A005F3C46 /* antlr3tokenstream.c in Sources */,
-				7D5173471028B98A005F3C46 /* antlr3treeparser.c in Sources */,
-				7D5173481028B98A005F3C46 /* antlr3ucs2inputstream.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
