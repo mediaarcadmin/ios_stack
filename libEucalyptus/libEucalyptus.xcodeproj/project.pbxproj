@@ -381,6 +381,7 @@
 		7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		7DCA57DC11498328007EDB15 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2F1149667300C003BB /* Cocoa.framework */; };
+		7DCF831B114E64A400603379 /* EucCSS.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DCF8314114E646C00603379 /* EucCSS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
 		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
 		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
@@ -1012,6 +1013,8 @@
 		7DBE059D1110416600DE22DC /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionKnob.png; sourceTree = "<group>"; };
 		7DCA57B1114981FC007EDB15 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		7DCA5804114985C7007EDB15 /* pg103.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pg103.epub; sourceTree = "<group>"; };
+		7DCF826E114E5D0800603379 /* EucCSSLayouter_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayouter_Package.h; sourceTree = "<group>"; };
+		7DCF8314114E646C00603379 /* EucCSS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSS.h; sourceTree = "<group>"; };
 		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7DD48E5410C2E42C0001203D /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin9/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7DD48E5810C2E44F0001203D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1968,6 +1971,7 @@
 		7D2340F51149602200C318E7 /* CSS */ = {
 			isa = PBXGroup;
 			children = (
+				7DCF8314114E646C00603379 /* EucCSS.h */,
 				7D2341471149602300C318E7 /* EucCSSInternal.h */,
 				7D2341461149602300C318E7 /* EucCSSInternal.c */,
 				7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */,
@@ -2015,11 +2019,12 @@
 		7D23415C1149602300C318E7 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
-				7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */,
-				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */,
-				7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */,
 				7D2341601149602300C318E7 /* EucCSSLayouter.h */,
+				7DCF826E114E5D0800603379 /* EucCSSLayouter_Package.h */,
 				7D2341611149602300C318E7 /* EucCSSLayouter.mm */,
+				7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */,
+				7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */,
+				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */,
 				7D2341621149602300C318E7 /* EucCSSLayoutLine.h */,
 				7D2341631149602300C318E7 /* EucCSSLayoutLine.m */,
 				7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */,
@@ -2522,6 +2527,7 @@
 				7D3AED78114963560059C5B6 /* EucCSSRenderer.h in Headers */,
 				7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */,
 				7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */,
+				7DCF831B114E64A400603379 /* EucCSS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

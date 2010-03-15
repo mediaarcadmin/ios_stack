@@ -19,6 +19,8 @@
     EucCSSIntermediateDocumentNode *_documentNode;
     EucCSSLayoutPositionedBlock *_parent;
     
+    CGFloat _scaleFactor;
+    
     CGRect _frame;
     CGRect _borderRect;
     CGRect _paddingRect;
@@ -37,9 +39,12 @@
 
 @property (nonatomic, retain) NSArray *subEntities;
 
-- (id)initWithDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode;
+- (id)initWithDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode
+               scaleFactor:(CGFloat)scaleFactor;
 
-- (void)positionInFrame:(CGRect)frame afterInternalPageBreak:(BOOL)afterInternalPageBreak;
+- (void)positionInFrame:(CGRect)frame
+ afterInternalPageBreak:(BOOL)afterInternalPageBreak;
+
 - (void)closeBottomFromYPoint:(CGFloat)point atInternalPageBreak:(BOOL)atInternalPageBreak;
 
 - (void)addSubEntity:(id)subEntity;
