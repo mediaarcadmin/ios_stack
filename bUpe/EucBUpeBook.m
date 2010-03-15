@@ -774,11 +774,14 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         EucCSSXMLTree *documentTree = [self documentTreeForURL:url];
         if(documentTree) {
             document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
+                                                                         forURL:url
+                                                                     dataSource:self
                                                                     baseCSSPath:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];            
             if(!_documentCache) {
                 _documentCache = [[NSMutableDictionary alloc] init];
             }
             [_documentCache setObject:document forKey:url];
+            
             [document release];
         }
     }
