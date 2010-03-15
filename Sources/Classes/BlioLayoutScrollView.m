@@ -16,6 +16,8 @@
 
 @end
 
+static const CGFloat kBlioLayoutLHSHotZone = 1.0f / 3 * 1;
+static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 
 @implementation BlioLayoutScrollView
 
@@ -60,11 +62,11 @@
     }
     
     UITouch * t = [touches anyObject];
-
+    touchesBeginPoint = [t locationInView:(UIView *)self.delegate];
+    
     if([t tapCount] == 2) {
-        CGPoint point = [t locationInView:(UIView *)self.delegate];
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomAtPoint:)])
-            [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(point)];  
+            [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(touchesBeginPoint)];  
     } else {
         [self.selector touchesBegan:touches];
         self.forwardingState = BlioLayoutTouchForwardingStateForwardedBegin;
@@ -139,8 +141,25 @@
         [self.selector touchesCancelled:touches];
     } else {
         UITouch * t = [touches anyObject];
-        if ((![self.selector isTracking]) && ([t tapCount] == 1))
-            [self.bookDelegate toggleToolbars];        
+        if ((![self.selector isTracking]) && ([t tapCount] == 1)) {
+            CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] bounds]);
+            CGFloat leftHandHotZone = screenWidth * kBlioLayoutLHSHotZone;
+            CGFloat rightHandHotZone = screenWidth * kBlioLayoutRHSHotZone;
+            
+            if (touchesBeginPoint.x <= leftHandHotZone) {
+                if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToPreviousBlock)])
+                    [(NSObject *)self.delegate performSelector:@selector(zoomToPreviousBlock) withObject:nil];
+                
+                [self.bookDelegate hideToolbars];
+            } else if (touchesBeginPoint.x >= rightHandHotZone) {
+                if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToNextBlock)])
+                    [(NSObject *)self.delegate performSelector:@selector(zoomToNextBlock) withObject:nil]; 
+                
+                [self.bookDelegate hideToolbars];
+            } else {
+                [self.bookDelegate toggleToolbars]; 
+            }
+        }
         
         [self.selector touchesEnded:touches];
     }

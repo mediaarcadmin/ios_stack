@@ -48,7 +48,7 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
     CGFloat lastZoomScale;
     CGFloat targetZoomScale;
     CGPoint targetContentOffset;
-    CGFloat animatedZoomScale;
+    BOOL shouldZoomOut;
     CALayer *sharpLayer;
     EucSelector *selector;
     UIColor *lastHighlightColor;
