@@ -512,21 +512,37 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             [positionedRoot closeBottomFromYPoint:nextY atInternalPageBreak:NO];
         }
     
-        EucCSSLayoutPoint nextPoint;
-        BOOL nextPointValid = [self _trimBlockToFrame:frame 
-                                   returningNextPoint:&nextPoint
-                                           pageBreaks:&pageBreaks
-                          pageBreaksDisallowedByRuleA:&pageBreaksDisallowedByRuleA
-                          pageBreaksDisallowedByRuleB:&pageBreaksDisallowedByRuleB
-                          pageBreaksDisallowedByRuleC:&pageBreaksDisallowedByRuleC
-                          pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
-        
-        if(nextPointValid) {
-            *returningNextPoint = nextPoint;
+        CGFloat bottomY = positionedRoot.frame.size.height;
+        if(bottomY != CGFLOAT_MAX) {
+            bottomY += positionedRoot.frame.origin.y;
+        }
+        if(bottomY > maxY) {
             *returningCompleted = NO;
+            EucCSSLayoutPoint nextPoint;
+            BOOL nextPointValid = [self _trimBlockToFrame:frame 
+                                       returningNextPoint:&nextPoint
+                                               pageBreaks:&pageBreaks
+                              pageBreaksDisallowedByRuleA:&pageBreaksDisallowedByRuleA
+                              pageBreaksDisallowedByRuleB:&pageBreaksDisallowedByRuleB
+                              pageBreaksDisallowedByRuleC:&pageBreaksDisallowedByRuleC
+                              pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
+            if(nextPointValid) {
+                *returningNextPoint = nextPoint;
+            } else if(currentDocumentNode) {
+                // Couldn't find a break.
+                // Not entirely sure of the best thing to do here - for now
+                // just return the next node.
+                if(nextRunNodeKey) {
+                    EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
+                    *returningNextPoint = fakeNextPoint;
+                } else {
+                    *returningCompleted = YES;
+                }
+            }
         } else {
             *returningCompleted = YES;
         }
+        
     }
     
     return positionedRoot;
