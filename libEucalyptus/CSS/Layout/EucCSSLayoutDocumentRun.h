@@ -22,11 +22,10 @@ typedef struct EucCSSLayoutDocumentRunPoint {
 } EucCSSLayoutDocumentRunPoint;
 
 typedef struct EucCSSLayoutDocumentRunComponentInfo {
-    CGFloat width;
-    CGFloat lineHeight;
-    CGFloat ascender;
-    CGFloat descender;
     CGFloat pointSize;
+    CGFloat ascender;
+    CGFloat lineHeight;
+    CGFloat width;
     EucCSSIntermediateDocumentNode *documentNode;
     EucCSSLayoutDocumentRunPoint point;
 } EucCSSLayoutDocumentRunComponentInfo;
@@ -35,6 +34,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 
 @interface EucCSSLayoutDocumentRun : NSObject {
     uint32_t _id;
+    
     EucCSSIntermediateDocumentNode *_startNode;
     EucCSSIntermediateDocumentNode *_nextNodeUnderLimitNode;
     EucCSSIntermediateDocumentNode *_nextNodeInDocument;
@@ -53,7 +53,9 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     uint32_t _currentWordElementCount;
    
     BOOL _previousInlineCharacterWasSpace;
-    BOOL _alreadyInsertedNewline;
+    BOOL _alreadyInsertedSpace;
+    
+    NSMutableArray *_sizeDependentComponentIndexes;
     
     struct THBreak *_potentialBreaks;
     struct EucCSSLayoutDocumentRunBreakInfo *_potentialBreakInfos;

@@ -226,4 +226,14 @@
     return nil;
 }
 
+- (BOOL)isImageNode
+{
+    return NO;
+}
+
+- (NSURL *)imageSrc
+{
+    return nil;
+}
+
 @end

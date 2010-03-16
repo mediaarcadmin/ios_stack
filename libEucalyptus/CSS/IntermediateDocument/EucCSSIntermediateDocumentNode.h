@@ -41,6 +41,9 @@ struct css_computed_style;
 @property (nonatomic, readonly) BOOL isTextNode;  // Default: NO
 @property (nonatomic, readonly) NSString *text;   // Default: nil;
 
+@property (nonatomic, readonly) BOOL isImageNode;
+@property (nonatomic, readonly) NSURL *imageSrc;
+
 // Abstract:
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *parent;

@@ -73,7 +73,10 @@ CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style,
             break;
     }
     
-    return roundf(ret * scaleFactor);
+    if(units != CSS_UNIT_PCT) {
+        ret *= scaleFactor;
+    }
+    return roundf(ret);
 }
 
 }
@@ -477,6 +480,9 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 
                 potentialFrame.origin.y = nextY;
                                 
+                if(currentDocumentNode.isImageNode) {
+                    THLog(@"Image: %@", [currentDocumentNode.imageSrc absoluteString]);
+                }
                 EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
                 [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
                 [currentPositionedBlock addSubEntity:newBlock];                    
@@ -547,7 +553,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     
     return positionedRoot;
 }
-    
+  
 /*
     NSMutableArray *laidOutChildren = [[NSMutableArray alloc] init];
         
