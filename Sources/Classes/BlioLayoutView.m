@@ -511,6 +511,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     // Don't create a thumb when we are zoomed in, we want to limit the size of the cached image
     if (layerContext.a == 1) createSnapshot = YES;
+    //NSLog(@"layerContext.a %f", layerContext.a);
     
     if (createSnapshot) {
         start = [NSDate date];
@@ -1883,10 +1884,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
     CGFloat zoomScale = CGRectGetWidth(self.bounds) / CGRectGetWidth(pageRect);
     CGFloat pageWidth = CGRectGetWidth(self.bounds) * zoomScale;
-    CGFloat yOffset = (CGRectGetHeight(self.bounds) - CGRectGetHeight(pageRect))/2.0f;
-    pageRect.origin.y = yOffset;
-    CGPoint viewOrigin = CGPointMake((targetPageNumber - 1) * pageWidth, 0);    
-    CGPoint newContentOffset = CGPointMake(round(viewOrigin.x + pageRect.origin.x * zoomScale), round(viewOrigin.y + pageRect.origin.y * zoomScale));
+    CGFloat yOffset = (CGRectGetHeight(self.bounds) - (CGRectGetHeight(pageRect) * zoomScale)) / 2.0f;
+    CGPoint viewOrigin = CGPointMake((targetPageNumber - 1) * pageWidth, 0);   
+    CGPoint newContentOffset = CGPointMake(round(viewOrigin.x + pageRect.origin.x * zoomScale), (pageRect.origin.y * zoomScale) - yOffset);
 
     CGPoint currentContentOffset = [self.scrollView contentOffset];
 

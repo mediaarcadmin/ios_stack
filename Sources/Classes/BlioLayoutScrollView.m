@@ -67,6 +67,8 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     if([t tapCount] == 2) {
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomAtPoint:)])
             [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(touchesBeginPoint)];  
+        
+        [self.bookDelegate hideToolbars];
     } else {
         [self.selector touchesBegan:touches];
         self.forwardingState = BlioLayoutTouchForwardingStateForwardedBegin;
