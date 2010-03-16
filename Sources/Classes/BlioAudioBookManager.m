@@ -11,12 +11,16 @@
 
 @implementation BlioAudioBookManager
 
-@synthesize times, queuedTimes, queuedEndTimes, avPlayer, timingFiles, timeIx, queueIx, timeStarted, pausedAtTime, lastOnPageTime, wordTimes, pageSegmentVals, pageSegments, audioFiles, timeFiles, currDictKey, pagesDict;
+@synthesize avPlayer, timeIx, timeStarted, pausedAtTime, wordTimes, pageSegmentVals, pageSegments, audioFiles, timeFiles, currDictKey, pagesDict;
 
 - (BOOL)loadWordTimesFromFile:(NSString*)audioTimingPath {
-	FILE* timingFile;
+	FILE* timingFile = NULL;
 	char lineBuffer[BUFSIZ];
 	timingFile = fopen([audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding],"r");
+	if ( !timingFile ) {
+		NSLog(@"Timing file could not be opened.");
+		return NO;
+	}
 	NSMutableArray* fileTimes = [[NSMutableArray alloc] init];
 	NSString* thisTimeStr = nil;
 	int lastTime;
@@ -43,57 +47,6 @@
 	return YES;
 }
 
-/* obsolete:
-- (void)loadTimesFromFile:(NSString*)audioTimingPath {
-	FILE* timingFile;
-	char lineBuffer[BUFSIZ];
-	timingFile = fopen([audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding],"r");
-	NSMutableArray* fileTimes = [[NSMutableArray alloc] init];
-	NSString* thisTimeStr = nil;
-	int lastTime;
-	while (fgets(lineBuffer, sizeof(lineBuffer),timingFile)) {
-		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
-		NSRange initRange;
-		initRange.location = 0;
-		initRange.length = 2;
-		if ( [[thisLine substringWithRange:initRange] compare:@"05"] != NSOrderedSame )
-			continue;
-		NSRange timeRange;
-		timeRange.location = [thisLine rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location + 1;
-		timeRange.length = [[thisLine substringFromIndex:timeRange.location]  rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location;
-		thisTimeStr = [thisLine substringWithRange:timeRange];
-		lastTime = atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding]);
-		[fileTimes addObject:[[NSNumber alloc] initWithInt:lastTime]];
-	}
-	if ( thisTimeStr == nil ) {
-		NSLog(@"Empty timing file, %s", [audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding]);
-		return;
-	}
-	[self.queuedTimes addObject:fileTimes];
-	// Get duration of last word in this file
-	NSRange endTimeRange;
-	endTimeRange.location = [thisTimeStr rangeOfString:@","].location + 1;
-	endTimeRange.length = [[thisTimeStr substringFromIndex:endTimeRange.location]  rangeOfString:@","].location;
-	NSString* endTimeStr = [thisTimeStr substringWithRange:endTimeRange];
-	[self.queuedEndTimes addObject:[[NSNumber alloc] initWithInt:atoi([endTimeStr cStringUsingEncoding:NSASCIIStringEncoding])]];
-	NSLog(@"Adding end time: %d",[[[NSNumber alloc] initWithInt:atoi([endTimeStr cStringUsingEncoding:NSASCIIStringEncoding])] intValue]);
-	fclose(timingFile);
-}
-
-- (void)fillTimingQueue:(NSString*)indexTimingPath {
-	NSString* fileSuffix;
-	for ( int i=0; i<[self.timingFiles count] ; ++i ) {
-		fileSuffix = (NSString*)[self.timingFiles objectAtIndex:i];
-		NSRange numRange;
-		numRange.location = 1;
-		numRange.length = [fileSuffix length] -1;
-		NSRange extRange = [indexTimingPath rangeOfString:@".rtx"];
-		NSString* timingPath = [[indexTimingPath substringToIndex:extRange.location] stringByAppendingString:[[@" " stringByAppendingString:fileSuffix] stringByAppendingString:@".rtx"]];
-		[self loadTimesFromFile:timingPath];
-	}
-}
- */
-
 - (void)parseData:(NSString*)path  {
 	// Prepare to parse the xml file.
 	NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
@@ -111,11 +64,6 @@
 
 - (id)initWithPath:(NSString*)referencesPath metadataPath:(NSString*)metadataPath{
 	if ( (self = [super init]) ) {
-		[self setTimingFiles:[[NSMutableArray alloc] init]];
-		[self setTimes:[[NSMutableArray alloc] init]];
-		[self setQueuedTimes:[[NSMutableArray alloc] init]];
-		[self setQueuedEndTimes:[[NSMutableArray alloc] init]];
-		
 		[self setAvPlayer:nil]; 
 		[self setWordTimes:[[NSMutableArray alloc] init]];
 		[self setTimeFiles:[[NSMutableArray alloc] init]];
@@ -123,11 +71,8 @@
 		[self setPagesDict:[[NSMutableDictionary alloc] init]];
 		[self parseData:referencesPath];
 		[self parseData:metadataPath];
-		//[self retrieveTimingIndices:referencesPath];
-		//[self fillTimingQueue:referencesPath];
 		[self setStartedPlaying:NO]; 
 		[self setPausedAtTime:0]; 
-		[self setLastOnPageTime:0];
 		[self setPageChanged:YES];
 	}
 	return self;
@@ -146,6 +91,7 @@
 	return NO;
 }
 
+/*
 - (void)retrieveTimingIndices:(NSString*)timingIndicesFile {	
 	FILE* indexFile;
 	char lineBuffer[BUFSIZ];
@@ -159,6 +105,7 @@
 	}
 	fclose(indexFile);
 }
+ */
 
 - (void)playAudio {
 	[self setTimeStarted:[avPlayer currentTime]];
@@ -175,15 +122,16 @@
 - (void)pauseAudio {
 	[avPlayer pause];
 	[self.speakingTimer invalidate];
-	int i;
+	/*int i;
 	// The timer doesn't stop as quickly as the audio stops, so timeIx 
 	// gets a little bit ahead.  Use currentTime to reset it.
 	for ( i=0;i<[times count];++i) {
-		if ( [[self.times objectAtIndex:i] intValue] + self.lastOnPageTime > [avPlayer currentTime]*1000 )
+		if ( [[self.wordTimes objectAtIndex:i] intValue] + self.lastOnPageTime > [avPlayer currentTime]*1000 )
 			break;
 	}
 	self.timeIx = i-1;
-	self.pausedAtTime = [[self.times objectAtIndex:self.timeIx] intValue] + self.lastOnPageTime;
+	*/
+	self.pausedAtTime = [[self.wordTimes objectAtIndex:self.timeIx] intValue];// + self.lastOnPageTime;
 	NSLog(@"Pausing audio, timeIx is %d, pausedAtTime is %d",self.timeIx,self.pausedAtTime);
 }
 
@@ -191,7 +139,8 @@
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
 	NSString* audioPath;
 	if ( [elementName isEqualToString:@"Audio"] ) {
-		// Kluge, change this 
+		// Kluge, change this - just add filename here, make into a path in bookview ctlr.
+		//[book.bookCacheDirectory stringByAppendingPathComponent:filename];
 		audioPath = [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/AudioBooks/Graveyard Book/"] stringByAppendingString:[attributeDict objectForKey:@"src"]];
 		[self.audioFiles addObject:audioPath];
 	}
@@ -206,8 +155,8 @@
 	}
 	else if ( [elementName isEqualToString:@"AudioSegment"] ) {
 		pageSegmentVals = [[NSMutableArray alloc] initWithCapacity:3];
-		[pageSegmentVals addObject:[attributeDict objectForKey:@"TimeOffset"]];
 		[pageSegmentVals addObject:[attributeDict objectForKey:@"TimeIndex"]];
+		[pageSegmentVals addObject:[attributeDict objectForKey:@"TimeOffset"]];
 	}
 	else if ( [elementName isEqualToString:@"AudioRef"] ) {
 		[pageSegmentVals addObject:[attributeDict objectForKey:@"AudioRefIndex"]];
