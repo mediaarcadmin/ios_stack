@@ -59,14 +59,14 @@
     [super dealloc];
 }
 
-- (BOOL)isTextNode
-{
-    return _documentTreeNode.kind == EucCSSDocumentTreeNodeKindText;
-}
-
 - (NSString *)name
 {
     return _documentTreeNode.name;
+}
+
+- (BOOL)isTextNode
+{
+    return _documentTreeNode.kind == EucCSSDocumentTreeNodeKindText;
 }
 
 - (NSString *)text
@@ -83,6 +83,20 @@
         }
     }
     return _text;
+}
+
+- (BOOL)isImageNode
+{
+    return [@"img" caseInsensitiveCompare:_documentTreeNode.name] == NSOrderedSame;
+}
+
+- (NSURL *)imageSrc
+{
+    NSString *src = [_documentTreeNode attributeWithName:@"src"];
+    if(src) {
+        return [NSURL URLWithString:src relativeToURL:_document.url];
+    }
+    return nil;
 }
 
 - (css_computed_style *)_createComputedStyleForPseudoElement:(enum css_pseudo_element)pseudoElement

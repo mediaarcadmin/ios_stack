@@ -13,6 +13,8 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+#import "EucCSSLayoutDocumentRun.h"
+
 @class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock;
 
 typedef struct EucCSSLayoutPoint

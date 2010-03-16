@@ -17,6 +17,7 @@
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
+#import "THLog.h"
 #import "th_just_with_floats.h"
 
 #import <libcss/libcss.h>
@@ -32,8 +33,11 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 } EucCSSLayoutDocumentRunBreakInfo;
 
 @interface EucCSSLayoutDocumentRun ()
+- (void)_populateComponentInfo:(EucCSSLayoutDocumentRunComponentInfo *)info 
+                       forNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucCSSLayoutDocumentRunComponentInfo *)size;
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode;
+- (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (CGFloat)_textIndentInWidth:(CGFloat)width;
 @end 
 
@@ -97,6 +101,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         
         BOOL reachedLimit = NO;
         
+        EucCSSLayoutDocumentRunComponentInfo currentComponentInfo = {0};
+        
         while (!reachedLimit && 
                inlineNode && 
                (inlineNode.isTextNode || (inlineNodeStyle &&
@@ -104,12 +110,14 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                                           (css_computed_display(inlineNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK))) {
             if(inlineNode.isTextNode) {
                 [self _accumulateTextNode:inlineNode];
+            } else if(inlineNode.isImageNode) {
+                [self _accumulateImageNode:inlineNode];
             } else {
                 // Open this node.
-                EucCSSLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
-                [self _addComponent:[EucCSSLayoutDocumentRun openNodeMarker] isWord:NO info:&info];
+                [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
+                [self _addComponent:[EucCSSLayoutDocumentRun openNodeMarker] isWord:NO info:&currentComponentInfo];
                 if(inlineNode.childrenCount == 0) {
-                    [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
+                    [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&currentComponentInfo];
                 }
             }
             
@@ -119,8 +127,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                 if(!inlineNode.isTextNode && inlineNode.childrenCount > 0) {
                     // If the node /doesn't/ have children, it's already closed,
                     // above.
-                    EucCSSLayoutDocumentRunComponentInfo info = { 0, 0, 0, 0, 0, inlineNode };
-                    [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&info];
+                    [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&currentComponentInfo];
+                    [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
                 }
                 nextNode = [inlineNode nextDisplayableUnder:underNode];
             }
@@ -157,6 +165,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     [_nextNodeUnderLimitNode release];
     [_nextNodeInDocument release];
 
+    [_sizeDependentComponentIndexes release];
+    
     [super dealloc];
 }
 
@@ -184,7 +194,6 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     }
     return ret;
 }
-
 
 - (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucCSSLayoutDocumentRunComponentInfo *)info
 {
@@ -216,6 +225,207 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     ++_currentWordElementCount;
 }
 
+- (CGSize)_computedSizeForImage:(UIImage *)image
+                 specifiedWidth:(CGFloat)specifiedWidth
+                specifiedHeight:(CGFloat)specifiedHeight
+                       maxWidth:(CGFloat)maxWidth
+                       minWidth:(CGFloat)minWidth
+                      maxHeight:(CGFloat)maxHeight
+                      minHeight:(CGFloat)minHeight
+{
+    CGSize imageSize = image.size;
+
+    // Sanitise the input.
+    if(minHeight > maxHeight) {
+        maxHeight = minHeight;
+    }
+    if(minWidth > maxWidth) {
+        maxWidth = minWidth;
+    }
+    
+    // Work out the size.
+    CGSize computedSize;
+    if(specifiedWidth != CGFLOAT_MAX && 
+       specifiedHeight != CGFLOAT_MAX) {
+        computedSize.width = specifiedWidth;
+        computedSize.height = specifiedHeight;
+    } else if(specifiedWidth == CGFLOAT_MAX && specifiedHeight != CGFLOAT_MAX) {
+        computedSize.height = specifiedHeight;
+        computedSize.width = specifiedHeight * (imageSize.width / imageSize.height);
+    } else if(specifiedWidth != CGFLOAT_MAX && specifiedHeight == CGFLOAT_MAX){
+        computedSize.width = specifiedWidth;
+        computedSize.height = specifiedWidth * (imageSize.height / imageSize.width);
+    } else {
+        computedSize = imageSize;
+    }
+           
+    computedSize.width = roundf(computedSize.width);
+    computedSize.height = roundf(computedSize.height);
+    
+    // Re-run to work out conflicts.
+    if(computedSize.width > maxWidth) {
+        return [self _computedSizeForImage:image
+                            specifiedWidth:maxWidth
+                           specifiedHeight:specifiedHeight 
+                                  maxWidth:maxWidth
+                                  minWidth:minWidth 
+                                 maxHeight:maxHeight
+                                 minHeight:minHeight];
+    }
+    
+    if(computedSize.width < minWidth) {
+        return [self _computedSizeForImage:image
+                            specifiedWidth:minWidth
+                           specifiedHeight:specifiedHeight 
+                                  maxWidth:maxWidth
+                                  minWidth:minWidth 
+                                 maxHeight:maxHeight
+                                 minHeight:minHeight];
+    }
+    
+    if(computedSize.height > maxHeight) {
+        return [self _computedSizeForImage:image
+                            specifiedWidth:specifiedHeight
+                           specifiedHeight:maxHeight 
+                                  maxWidth:maxWidth
+                                  minWidth:minWidth 
+                                 maxHeight:maxHeight
+                                 minHeight:minHeight];
+    }
+    
+    if(computedSize.height < minHeight) {
+        return [self _computedSizeForImage:image
+                            specifiedWidth:specifiedHeight
+                           specifiedHeight:minHeight 
+                                  maxWidth:maxWidth
+                                  minWidth:minWidth 
+                                 maxHeight:maxHeight
+                                 minHeight:minHeight];
+    }
+    
+    return computedSize;
+}
+
+- (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode
+{
+    NSData *imageData = [subnode.document.dataSource dataForURL:[subnode imageSrc]];
+
+    if(imageData) {
+        UIImage *image = [[UIImage alloc] initWithData:imageData];
+        
+        if(image) {
+            EucCSSLayoutDocumentRunComponentInfo info = { 0 };
+            info.documentNode = subnode;
+            
+            [self _addComponent:image isWord:NO info:&info];
+            
+            if(!_sizeDependentComponentIndexes) {
+                _sizeDependentComponentIndexes = [[NSMutableArray alloc] init];
+            }
+            [_sizeDependentComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];
+            
+            _previousInlineCharacterWasSpace = NO;
+        }
+    }
+}
+
+- (void)_recalculateSizeDependentComponentSizesForFrame:(CGRect)frame
+{
+    for(NSNumber *indexNumber in _sizeDependentComponentIndexes) {
+        size_t offset = [indexNumber integerValue];
+        
+        UIImage *image = _components[offset];
+        EucCSSIntermediateDocumentNode *subnode = _componentInfos[offset].documentNode;
+        
+        CGFloat specifiedWidth = CGFLOAT_MAX;
+        CGFloat specifiedHeight = CGFLOAT_MAX;
+        
+        CGFloat maxWidth = CGFLOAT_MAX;
+        CGFloat maxHeight = CGFLOAT_MAX;
+        
+        CGFloat minWidth = 1;
+        CGFloat minHeight = 1;
+        
+        css_fixed length = 0;
+        css_unit unit = 0;
+        css_computed_style *nodeStyle = subnode.computedStyle;
+        if(nodeStyle) {
+            uint8_t widthKind = css_computed_width(nodeStyle, &length, &unit);
+            if(widthKind == CSS_WIDTH_SET) {
+                specifiedWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
+            }
+            
+            uint8_t maxWidthKind = css_computed_max_width(nodeStyle, &length, &unit);
+            if (maxWidthKind == CSS_MAX_WIDTH_SET) {
+                maxWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
+            } 
+            
+            uint8_t heightKind = css_computed_height(nodeStyle, &length, &unit);
+            if (heightKind == CSS_HEIGHT_SET) {
+                if(unit == CSS_UNIT_PCT) {
+                    // Assume no intrinsic height;
+                } else {
+                    specifiedHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, 0, _scaleFactor);
+                }
+            } 
+        
+            uint8_t maxHeightKind = css_computed_max_height(nodeStyle, &length, &unit);
+            if (maxHeightKind == CSS_MAX_HEIGHT_SET) {
+                if(unit == CSS_UNIT_PCT) {
+                    // Assume no max height;
+                } else {
+                    maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, 0, _scaleFactor);
+                }
+            } 
+        }
+        
+        CGSize calculatedSize = [self _computedSizeForImage:image
+                                             specifiedWidth:specifiedWidth
+                                            specifiedHeight:specifiedHeight
+                                                   maxWidth:maxWidth
+                                                   minWidth:minWidth
+                                                  maxHeight:maxHeight
+                                                  minHeight:minHeight];
+        
+        _componentInfos[offset].width = calculatedSize.width;
+        _componentInfos[offset].ascender = calculatedSize.height;
+        _componentInfos[offset].pointSize = calculatedSize.height;
+        
+        if(css_computed_line_height(nodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
+            _componentInfos[offset].lineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, _scaleFactor);
+        } else {
+            _componentInfos[offset].lineHeight = calculatedSize.height;
+        }            
+    }
+}
+
+- (void)_populateComponentInfo:(EucCSSLayoutDocumentRunComponentInfo *)info 
+                       forNode:(EucCSSIntermediateDocumentNode *)subnode 
+{
+    css_computed_style *subnodeStyle = subnode.computedStyle;
+    if(!subnodeStyle) {
+        subnodeStyle = [subnode.parent computedStyle];
+    }
+    THStringRenderer *stringRenderer = subnode.stringRenderer;
+
+    css_fixed length = 0;
+    css_unit unit = 0;
+    css_computed_font_size(subnodeStyle, &length, &unit);
+    CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);    
+    
+    info->pointSize = fontPixelSize;
+    info->ascender = [stringRenderer ascenderForPointSize:fontPixelSize];
+
+    if(css_computed_line_height(subnodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
+        info->lineHeight = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, fontPixelSize, _scaleFactor);
+    } else {
+        info->lineHeight = [stringRenderer lineSpacingForPointSize:fontPixelSize];
+    }
+    info->width = 0;
+    info->documentNode = subnode;
+}
+
+
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode 
 {
     css_computed_style *subnodeStyle;
@@ -231,15 +441,11 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     
     // The font size percentages should already be fully resolved.
     CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);             
-    CGFloat lineSpacing = [stringRenderer lineSpacingForPointSize:fontPixelSize];
-    CGFloat ascender = [stringRenderer ascenderForPointSize:fontPixelSize];
-    CGFloat descender = [stringRenderer descenderForPointSize:fontPixelSize];
-    EucCSSLayoutDocumentRunComponentInfo spaceInfo = { [stringRenderer widthOfString:@" " pointSize:fontPixelSize],
-                                                        lineSpacing,
-                                                        ascender,
-                                                        descender,
-                                                        fontPixelSize,
-                                                        subnode };
+
+    EucCSSLayoutDocumentRunComponentInfo spaceInfo = { 0 };
+    [self _populateComponentInfo:&spaceInfo forNode:subnode];
+    spaceInfo.width = [stringRenderer widthOfString:@" " pointSize:fontPixelSize];
+    
     
     CFStringRef text = (CFStringRef)subnode.text;
     CFIndex textLength = CFStringGetLength(text);
@@ -279,12 +485,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                                                                               wordStart, 
                                                                               cursor - wordStart);
                             if(string) {
-                                EucCSSLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
-                                    lineSpacing,
-                                    ascender,
-                                    descender,
-                                    fontPixelSize,
-                                    subnode };
+                                EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                                info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                                 [self _addComponent:(id)string isWord:YES info:&info];
                                 CFRelease(string);
                             }
@@ -295,22 +497,18 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                        (whiteSpaceModel == CSS_WHITE_SPACE_PRE_LINE ||
                         whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
                         whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP)) {
-                        EucCSSLayoutDocumentRunComponentInfo hardBreakInfo = { 0,
-                           lineSpacing,
-                           ascender,
-                           descender,
-                           fontPixelSize,
-                           subnode };
-                        [self _addComponent:[EucCSSLayoutDocumentRun hardBreakMarker] isWord:NO info:&hardBreakInfo];
-                        _alreadyInsertedNewline = YES;
+                           EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                           info.width = 0;
+                           [self _addComponent:[EucCSSLayoutDocumentRun hardBreakMarker] isWord:NO info:&info];
+                           _alreadyInsertedSpace = YES;
                     }
                     break;
                 default:
                     if(_previousInlineCharacterWasSpace) {
-                        if(!_alreadyInsertedNewline) {
+                        if(!_alreadyInsertedSpace) {
                             [self _addComponent:[EucCSSLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
                         } else {
-                            _alreadyInsertedNewline = NO;
+                            _alreadyInsertedSpace = NO;
                         }
                         wordStart = cursor;
                         _previousInlineCharacterWasSpace = NO;
@@ -323,32 +521,18 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                                                               wordStart, 
                                                               cursor - wordStart);
             if(string) {
-                EucCSSLayoutDocumentRunComponentInfo info = { [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize],
-                                                               lineSpacing,
-                                                               ascender,
-                                                               descender,
-                                                               fontPixelSize,
-                                                               subnode };
+                EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                 [self _addComponent:(id)string isWord:YES info:&info];
                 CFRelease(string);
             }
-        } /*else {
-            if(wordStart == characters && sawNewline) {
-                // Don't do anything - we collapse the spaces around the newline, 
-                // then remove the newline, leaving an empty run.
-                // See http://www.w3.org/TR/2009/CR-CSS2-20090908/visuren.html
-                // Section 9.2.2.1:
-                // "White space content that would subsequently be collapsed 
-                // away according to the 'white-space' property does not 
-                // generate any anonymous inline boxes."
-            } else {
-                if(!_alreadyInsertedNewline) {
-                    [self _addComponent:[EucCSSLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
-                } else {
-                    _alreadyInsertedNewline = NO;
-                }
+        } 
+        if(_previousInlineCharacterWasSpace) {
+            if(!_alreadyInsertedSpace) {
+                [self _addComponent:[EucCSSLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                _alreadyInsertedSpace = YES;
             }
-        }*/
+        }
         
         if(charactersToFree) {
             free(charactersToFree);
@@ -356,7 +540,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     }
 }
 
-- (THBreak *)potentialBreaks
+- (void)_ensurePotentialBreaksCalculated
 {
     if(!_potentialBreaks) {
         int breaksCapacity = _componentsCount;
@@ -420,15 +604,6 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         _potentialBreaksCount = breaksCount;
         _potentialBreakInfos = breakInfos;
     }
-    return _potentialBreaks;
-}
-
-- (int)potentialBreaksCount
-{
-    if(_potentialBreaksCount == 0) {
-        [self potentialBreaks];
-    }
-    return _potentialBreaksCount;
 }
 
 - (uint32_t)_pointToComponentOffset:(EucCSSLayoutDocumentRunPoint)point
@@ -443,16 +618,23 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 }
 
 - (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
-                                           wordOffset:(uint32_t)wordOffset 
-                                        elementOffset:(uint32_t)elementOffset
+                                          wordOffset:(uint32_t)wordOffset 
+                                       elementOffset:(uint32_t)elementOffset
 {
-    if(_wordsCount == 0) {
+    if(_componentsCount == 1 && _components[0] == sSingleSpaceMarker) {
         return nil;
     }    
     
     EucCSSLayoutPositionedRun *ret = [[EucCSSLayoutPositionedRun alloc] initWithDocumentRun:self];
     
-    [self potentialBreaks];
+    if(_sizeDependentComponentIndexes) {
+        free(_potentialBreaks);
+        _potentialBreaks = NULL;
+        free(_potentialBreakInfos);
+        _potentialBreakInfos = NULL;
+        [self _recalculateSizeDependentComponentSizesForFrame:frame];
+    }
+    [self _ensurePotentialBreaksCalculated];
     
     size_t startBreakOffset = 0;
     for(;;) {

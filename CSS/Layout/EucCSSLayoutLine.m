@@ -26,51 +26,48 @@
 @synthesize componentWidth = _componentWidth;
 
 @synthesize indent = _indent;
+@synthesize baseline = _baseline;
+
 @synthesize align = _align;
 
 - (void)sizeToFitInWidth:(CGFloat)width;
 {
-    CGFloat maxAscender = 0;
-    CGFloat maxDescenderAndLineHeightAddition = 0;
-    
-    id spaceMarker = [EucCSSLayoutDocumentRun singleSpaceMarker];
-    Class NSStringClass = [NSString class];
-    
     EucCSSLayoutDocumentRun *documentRun = self.containingRun.documentRun;
-    size_t componentsCount = documentRun.componentsCount;
-    id *components = documentRun.components;
-    EucCSSLayoutDocumentRunComponentInfo *componentInfos = documentRun.componentInfos;
+
+    CGFloat lineBoxHeight = 0;
+    CGFloat currentBaseline = 0;
     
+    size_t componentsCount = documentRun.componentsCount;
     uint32_t startComponentOffset = documentRun.wordToComponent[_startPoint.word] + _startPoint.element;
-    for(uint32_t i = startComponentOffset;
-        i < componentsCount &&
-        !(componentInfos[i].point.word == _endPoint.word && componentInfos[i].point.element == _endPoint.element); 
-        ++i) {
-        id component = components[i];
-        EucCSSLayoutDocumentRunComponentInfo *info =  componentInfos + i;
-        BOOL isWord = [component isKindOfClass:NSStringClass];
-        if(isWord ||
-           component == spaceMarker) {
-            CGFloat ascender = info->ascender;
-            if(ascender > maxAscender) {
-                maxAscender = ascender;
+
+    EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
+    id *component;
+    EucCSSLayoutDocumentRunComponentInfo *info;
+    uint32_t i;
+    for(i = startComponentOffset, component = &(documentRun.components[i]), info = &(documentRun.componentInfos[i]);
+        i < componentsCount && !(info->point.word == _endPoint.word && info->point.element == _endPoint.element); 
+        ++i, ++component, ++info) {
+        if(info->documentNode != currentDocumentNode) {
+            CGFloat emBoxHeight = info->pointSize;
+            CGFloat halfLeading = (info->lineHeight - emBoxHeight) * 0.5f;
+            
+            CGFloat inlineBoxHeight = info->lineHeight;
+            
+            CGFloat baseline = info->ascender + halfLeading;
+            CGFloat descenderAndLineHeightAddition = inlineBoxHeight - baseline;
+            if(baseline > currentBaseline) {
+                currentBaseline = baseline;
             }
-            CGFloat descenderAndLineHeightAddition = info->lineHeight - info->ascender;
-            if(descenderAndLineHeightAddition > maxDescenderAndLineHeightAddition) {
-                maxDescenderAndLineHeightAddition = descenderAndLineHeightAddition;
+            CGFloat baselineAdjustedLineHeight = currentBaseline + descenderAndLineHeightAddition;
+            if(baselineAdjustedLineHeight > lineBoxHeight) {
+                lineBoxHeight = baselineAdjustedLineHeight;
             }
         }
         _componentWidth += info->width;
     }
-
-    _baseline = maxAscender;
-    _size = CGSizeMake(width, maxAscender + maxDescenderAndLineHeightAddition);
     
-    // TODO: Properly respect line height.
-    // This is a hack to make newlines work...
-    if(_size.height == 0) {
-        _size.height = 16;
-    }
+    _baseline = currentBaseline;
+    _size = CGSizeMake(width, lineBoxHeight);
 }
 
 - (CGRect)frame
