@@ -123,7 +123,6 @@
 		7D2CC989114D92F8007FDEAF /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900CD11494A0C00375803 /* libparserutils.a */; };
 		7D2CC98A114D92FB007FDEAF /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900981149490E00375803 /* libwapcaplet.a */; };
 		7D2CC98F114D9322007FDEAF /* libcss.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D19025211494BE800375803 /* libcss.a */; };
-		7D2CC9B0114D93D0007FDEAF /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
 		7D2CC9B4114D93E9007FDEAF /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA57B1114981FC007EDB15 /* libiconv.dylib */; };
 		7D2CC9B5114D93EA007FDEAF /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA57B1114981FC007EDB15 /* libiconv.dylib */; };
 		7D2CCB09114DA3A2007FDEAF /* Aliases in Resources */ = {isa = PBXBuildFile; fileRef = 7D2CCB08114DA3A2007FDEAF /* Aliases */; };
@@ -368,6 +367,8 @@
 		7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
 		7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
+		7DBBC891114FACF500225E51 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
+		7DBBC892114FACF500225E51 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
 		7DBE059E1110416600DE22DC /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059C1110416600DE22DC /* SelectionEnd.png */; };
 		7DBE059F1110416600DE22DC /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059D1110416600DE22DC /* SelectionKnob.png */; };
 		7DBE05A01110416600DE22DC /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059C1110416600DE22DC /* SelectionEnd.png */; };
@@ -417,7 +418,6 @@
 		7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */; };
 		7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF58B5D10DA9005004E3DBB /* EucBookView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF58B6010DA9005004E3DBB /* EucBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF58B5E10DA9005004E3DBB /* EucBookView.m */; };
-		7DF58D7210DAA02F004E3DBB /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
 		AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */; settings = {ATTRIBUTES = (); }; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -1008,6 +1008,7 @@
 		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
 		7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
+		7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Down and out in the Magic Kingdom"; sourceTree = "<group>"; };
 		7DBE059C1110416600DE22DC /* SelectionEnd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionEnd.png; sourceTree = "<group>"; };
 		7DBE059D1110416600DE22DC /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionKnob.png; sourceTree = "<group>"; };
 		7DCA57B1114981FC007EDB15 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
@@ -2343,6 +2344,7 @@
 		7D9A96F810D7E48200C2E00A /* TestResources */ = {
 			isa = PBXGroup;
 			children = (
+				7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */,
 				7D9A979210D7E48E00C2E00A /* book */,
 				7DCA5804114985C7007EDB15 /* pg103.epub */,
 			);
@@ -2888,7 +2890,6 @@
 				7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */,
 				7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */,
 				7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */,
-				7DF58D7210DAA02F004E3DBB /* book in Resources */,
 				7DB9F8ED10F394930010DF0B /* LinuxLibertine-Bold.otf in Resources */,
 				7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */,
@@ -2912,6 +2913,7 @@
 				7D5EC952113196380054F657 /* LineLoupeLow.png in Resources */,
 				7D5EC953113196380054F657 /* LineLoupeMask.png in Resources */,
 				7D2CCB09114DA3A2007FDEAF /* Aliases in Resources */,
+				7DBBC891114FACF500225E51 /* Down and out in the Magic Kingdom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2942,8 +2944,8 @@
 				7D7E2200111F227E00F7F585 /* MenuArrowBottomHighlighted.png in Resources */,
 				7D7E2201111F227E00F7F585 /* MenuArrowTop.png in Resources */,
 				7D7E2202111F227E00F7F585 /* MenuArrowTopHighlighted.png in Resources */,
-				7D2CC9B0114D93D0007FDEAF /* book in Resources */,
 				7D2CCB0A114DA3A2007FDEAF /* Aliases in Resources */,
+				7DBBC892114FACF500225E51 /* Down and out in the Magic Kingdom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
