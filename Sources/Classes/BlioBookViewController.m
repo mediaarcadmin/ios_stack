@@ -1500,6 +1500,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	if ( !(segmentInfo = [(NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]] objectAtIndex:segmentIx]) )
 		return NO;
 	NSString* audiobooksPath = [self.book.bookCacheDirectory stringByAppendingPathComponent:@"/AudioBook/"];
+	// For testing
+	//NSString* audiobooksPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/AudioBooks/Graveyard Book/"];
 	NSString* timingPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.timeFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
 	if ( ![_audioBookManager loadWordTimesFromFile:timingPath] )  {
 		NSLog(@"Timing file could not be initialized.");
