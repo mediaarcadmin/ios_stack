@@ -215,7 +215,7 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
     }
     
     if(_continueParsing) {
-        _percentagePaginated = 1.0f;
+        _percentagePaginated = 100.0f;
         [self performSelectorOnMainThread:@selector(_paginationThreadComplete) withObject:nil  waitUntilDone:NO];
     }
     

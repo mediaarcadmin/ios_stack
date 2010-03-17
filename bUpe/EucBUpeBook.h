@@ -29,7 +29,7 @@
     // Pairs of name, path relative to _root, including URL fragment.
     NSArray *_navPoints; 
     
-    NSMutableDictionary *_documentCache;
+    NSMutableArray *_documentCache;
     
     int _currentPageIndexPointFD;
 }

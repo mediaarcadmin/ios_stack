@@ -12,5 +12,10 @@
 
 void *EucRealloc(void *ptr, size_t len, void *pw)
 {
-	return realloc(ptr, len);
+    if(len == 0) {
+        free(ptr);
+        return NULL;
+    } else {
+        return realloc(ptr, len);
+    }
 }

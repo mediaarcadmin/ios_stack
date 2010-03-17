@@ -103,6 +103,7 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
         XML_ParserFree(parser);
         
         _nodes = buildNodes;
+        _idToNode = buildIdToNodes;
     }
     return self;
 }

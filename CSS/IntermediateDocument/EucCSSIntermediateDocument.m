@@ -406,6 +406,8 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         css_stylesheet_destroy(_stylesheets[i]);
     }
     
+    free(_stylesheets);
+    
     if(_lwcContext) {
         lwc_context_unref(_lwcContext);
     }

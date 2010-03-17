@@ -67,7 +67,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                     if(styleFlags & THStringRendererFontStyleFlagItalic) {
                         [mutableBundleFontName appendString:@"Italic"];
                     }    
-                    fullBundleFontName = mutableBundleFontName;
+                    fullBundleFontName = [mutableBundleFontName autorelease];
                 } else {
                     fullBundleFontName = fontName;
                 }

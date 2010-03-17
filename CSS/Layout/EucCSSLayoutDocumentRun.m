@@ -325,6 +325,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
             [_sizeDependentComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];
             
             _previousInlineCharacterWasSpace = NO;
+            
+            [image release];
         }
     }
 }
@@ -639,7 +641,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     size_t startBreakOffset = 0;
     for(;;) {
         EucCSSLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
-        if(point.word < wordOffset || point.element < elementOffset) {
+        if(point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset)) {
             ++startBreakOffset;
         } else {
             break;
