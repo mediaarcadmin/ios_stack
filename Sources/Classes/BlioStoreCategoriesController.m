@@ -28,8 +28,8 @@
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
         
         self.title = @"Categories";
-        
-        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"Categories" image:nil tag:kBlioStoreCategoriesTag];
+
+        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"Categories" image:[UIImage imageNamed:@"icon-categories.png"] tag:kBlioStoreCategoriesTag];
         self.tabBarItem = theItem;
         [theItem release];
     }
@@ -122,8 +122,12 @@
 	// e.g. self.myOutlet = nil;
 }
 
+- (NSString *)getMoreCellLabelForSection:(NSUInteger) section {
+	return [[self.feeds objectAtIndex:section] title];
+}
 
-#pragma mark Table view methods
+#pragma mark -
+#pragma mark UITableViewDataSource Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     NSUInteger sections = 0;
@@ -138,39 +142,85 @@
 	return [[self.feeds objectAtIndex:section] title];
 }
 
+
+
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
-    return [feed.categories count] + [feed.entities count];
+	NSUInteger getMoreResultsCell = 0;
+	if (([feed.categories count] + [feed.entities count]) < feed.totalResults) getMoreResultsCell = 1; // our data is less than the totalResults, so we need a "Get More Results" option.
+    return [feed.categories count] + [feed.entities count] + getMoreResultsCell;
 }
-
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSUInteger row = [indexPath row];
     NSUInteger section = [indexPath section];
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
-    
+	
     BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
-    if (row < [feed.categories count]) {
+	
+    static NSString *MoreResultsCellIdentifier = @"MoreResultsCell";
+	static NSString *CategoryCellIdentifier = @"CategoryCell";
+	static NSString *EntityCellIdentifier = @"EntityCell";
+
+    UITableViewCell *cell;
+	
+	// for More Results
+    if (row == ([feed.categories count]+[feed.entities count])) { // one row beyond categories/entities was selected
+		cell = [tableView dequeueReusableCellWithIdentifier:MoreResultsCellIdentifier];
+		if (cell == nil) {
+			// create cell
+			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MoreResultsCellIdentifier] autorelease];
+			cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
+			cell.textLabel.textColor = [UIColor colorWithRed:36.0/255 green:112.0/255 blue:216.0/255 alpha:1];
+			cell.detailTextLabel.font = [UIFont systemFontOfSize:12.5];
+
+			// add activity indicator
+			UIActivityIndicatorView * activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+			activityIndicatorView.frame = CGRectMake(-kBlioMoreResultsCellActivityIndicatorViewWidth/3,-kBlioMoreResultsCellActivityIndicatorViewWidth/2,kBlioMoreResultsCellActivityIndicatorViewWidth,kBlioMoreResultsCellActivityIndicatorViewWidth);
+			activityIndicatorView.hidden = YES;
+
+			activityIndicatorView.hidesWhenStopped = YES;
+			activityIndicatorView.tag = kBlioMoreResultsCellActivityIndicatorViewTag;
+			[cell.imageView addSubview:activityIndicatorView];
+		}		
+		// populate cell with content
+		
+		
+		[(UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag] stopAnimating];
+
+		cell.textLabel.text = [NSString stringWithFormat:@"See More %@...", [self getMoreCellLabelForSection:section]];
+		cell.detailTextLabel.text = [NSString stringWithFormat:@"%i shown out of %i total", ([feed.categories count]+[feed.entities count]),feed.totalResults];
+		cell.imageView.image = nil;
+	}
+	else if (row < [feed.categories count]) { // category cell is needed
+		cell = [tableView dequeueReusableCellWithIdentifier:CategoryCellIdentifier];
+		if (cell == nil) {
+			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CategoryCellIdentifier] autorelease];
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//			cell.textLabel.font = [UIFont boldSystemFontOfSize:12.0]; // we'll use default size
+		}
         cell.textLabel.text = [[feed.categories objectAtIndex:indexPath.row] title];
-    } else {
+    } else { // entity cell is needed
+		cell = [tableView dequeueReusableCellWithIdentifier:EntityCellIdentifier];
+		if (cell == nil) {
+			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:EntityCellIdentifier] autorelease];
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
+			cell.detailTextLabel.font = [UIFont systemFontOfSize:12.5];
+		}		
         row -= [feed.categories count];
         if (row < [feed.entities count]) {
-            cell.textLabel.text = [[feed.entities objectAtIndex:indexPath.row] title];
-        }                
+			cell.textLabel.text = [[feed.entities objectAtIndex:indexPath.row] title];
+			cell.detailTextLabel.text = [[feed.entities objectAtIndex:indexPath.row] author];
+        }               
     }
-    
-    
-    return cell;
+	return cell;
 }
+
+#pragma mark -
+#pragma mark UITableViewController Delegate Methods
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -179,13 +229,26 @@
     NSUInteger section = [indexPath section];
 
     BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
-    if (row < [feed.categories count]) {
+	if (row == ([feed.categories count]+[feed.entities count])) { // More Results option chosen
+		// reveal activity indicator
+		UIActivityIndicatorView * activityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag];
+		activityIndicatorView.hidden = NO;
+		[activityIndicatorView startAnimating];
+		UIImage * emptyImage = [[UIImage alloc] init];
+		[tableView cellForRowAtIndexPath:indexPath].imageView.image = emptyImage;  // setting a UIImage object allows the view (and activity indicator subview) to show up
+		[tableView cellForRowAtIndexPath:indexPath].imageView.frame = CGRectMake(0, 0, kBlioMoreResultsCellActivityIndicatorViewWidth * 1.5, kBlioMoreResultsCellActivityIndicatorViewWidth);
+		[emptyImage release];
+		//download and parse "next page" feed URL
+		[feed.parser startWithURL:feed.nextURL];
+	}
+    else if (row < [feed.categories count]) { // Category cell selected
         BlioStoreParsedCategory *category = [feed.categories objectAtIndex:[indexPath row]];
         BlioStoreCategoriesController *aCategoriesController = [[BlioStoreCategoriesController alloc] init];
         [aCategoriesController setTitle:[category title]];
         NSURL *targetFeedURL = [category url];
         BlioStoreFeed *aFeed = [[BlioStoreFeed alloc] init];
-        [aFeed setFeedURL:targetFeedURL];
+		[aFeed setTitle:[category title]];
+		[aFeed setFeedURL:targetFeedURL];
         [aFeed setParser:feed.parser];
         [aFeed setParserClass:[category classForType]];
         [aCategoriesController setFeeds:[NSArray arrayWithObject:aFeed]];
@@ -196,7 +259,7 @@
         [aCategoriesController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
         [self.navigationController pushViewController:aCategoriesController animated:YES];
         [aCategoriesController release];
-    } else {
+    } else { // Entity cell selected
         row -= [feed.categories count];
         if (row < [feed.entities count]) {
             BlioStoreParsedEntity *entity = [feed.entities objectAtIndex:[indexPath row]];
@@ -260,6 +323,27 @@
 - (void)parserDidEndParsingData:(BlioStoreBooksSourceParser *)parser {
     [self.tableView reloadData];
 }
+
+- (void)parser:(BlioStoreBooksSourceParser *)parser didParseTotalResults:(NSNumber *)volumeTotalResults {
+    
+    for (BlioStoreFeed *feed in self.feeds) {
+        if ([feed.parser isEqual:parser])
+            if (volumeTotalResults) feed.totalResults = [volumeTotalResults unsignedIntegerValue];
+    }
+    // table reloading will be handled when the categories and/or entities are parsed
+}
+
+- (void)parser:(BlioStoreBooksSourceParser *)parser didParseNextLink:(NSURL *)nextLink {
+    
+    for (BlioStoreFeed *feed in self.feeds) {
+        if ([feed.parser isEqual:parser]) {
+            feed.nextURL = nextLink;
+			NSLog(@"feed: %@ nextLink: %@", feed.title, [nextLink absoluteString]); 
+		}
+    }
+    // table reloading will be handled when the categories and/or entities are parsed
+}
+
 
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseCategories:(NSArray *)parsedCategories {
     

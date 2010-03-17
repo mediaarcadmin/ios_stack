@@ -10,6 +10,8 @@
 #import "BlioStoreFeed.h"
 
 static const NSInteger kBlioStoreCategoriesTag = 1;
+static const NSInteger kBlioMoreResultsCellActivityIndicatorViewTag = 99;
+static const NSInteger kBlioMoreResultsCellActivityIndicatorViewWidth = 16;
 
 @protocol BlioProcessingDelegate;
 

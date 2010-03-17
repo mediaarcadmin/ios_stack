@@ -16,7 +16,11 @@
     
     // transfer the feed source to a property in the feed object
     if (error == nil) {
-        GDataLink *selfLink = [object selfLink];
+		[self.delegate parser:self didParseTotalResults:[object totalResults]]; // pass over the total results number to the BlioStoreCategoriesController, so that it can assign the number to the respective feed.
+		// if nextLink is not nil, then send it back to the delegate in NSURL form
+		if ([object nextLink] != nil) [self.delegate parser:self didParseNextLink:[[object nextLink] URL]];
+
+		GDataLink *selfLink = [object selfLink];
         NSURL *baseURL = selfLink ? [NSURL URLWithString:[selfLink href]] : nil;
         
         for (GDataEntryBase *entry in [object entries]) {

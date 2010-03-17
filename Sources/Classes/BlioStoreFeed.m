@@ -11,12 +11,13 @@
 
 @implementation BlioStoreFeed
 
-@synthesize parserClass, parser, title, categories, entities, feedURL;
+@synthesize parserClass, parser, title, categories, entities, feedURL, nextURL, totalResults;
 
 - (id)init {
     if ((self = [super init])) {
         self.categories = [NSMutableArray array];
         self.entities = [NSMutableArray array];
+		totalResults = 0;
     }
     return self;
 }
@@ -29,6 +30,7 @@
     self.categories = nil;
     self.entities = nil;
     self.feedURL = nil;
+    self.nextURL = nil;
     [super dealloc];
 }
 

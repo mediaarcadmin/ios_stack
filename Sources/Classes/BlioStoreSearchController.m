@@ -147,10 +147,67 @@
     }    
 }
 
+- (NSString *)getMoreCellLabelForSection:(NSUInteger) section {
+	return [NSString stringWithFormat:@"%@ Results",[[self.feeds objectAtIndex:section] title]];
+}
+
+#pragma mark -
+#pragma mark UITableViewDelegate Methods
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSUInteger row = [indexPath row];
+	if (row%2 == 1) cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
+	else cell.backgroundColor = [UIColor whiteColor];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	return 62;
+}
 
 
 #pragma mark -
+#pragma mark UITableViewDataSource Methods
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	UITableViewCell * cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+	
+	// customize its appearance some before returning it to the tableView
+	
+	// cell background
+	if (cell.backgroundView == nil) { // if no existing divider image, add one
+		NSLog(@"background!");
+		cell.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,2)];
+		UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
+		[cell.backgroundView addSubview:backgroundImageView];
+		backgroundImageView.frame = CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,1);
+		[backgroundImageView release];
+
+		// label styling
+		CGRect f = cell.textLabel.frame; 
+		NSLog(@"rect: %f,%f,%f,%f", f.origin.x, f.origin.y, f.size.width, f.size.height);
+		cell.textLabel.contentMode = UIViewContentModeRedraw;
+		cell.textLabel.frame = CGRectMake(f.origin.x, f.origin.y + 30, f.size.width, f.size.height);
+	}
+	cell.textLabel.font = [UIFont boldSystemFontOfSize:16.0];
+	cell.detailTextLabel.font = [UIFont boldSystemFontOfSize:12.0];
+	cell.detailTextLabel.text = [cell.detailTextLabel.text uppercaseString];
+	
+	
+	return cell;
+}
+
+// Customize the number of rows in the table view.
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	NSInteger getMoreResultsCell = 0;
+	if ([feed.entities count] < feed.totalResults) getMoreResultsCell = 1; // our data is less than the totalResults, so we need a "Get More Results" option.
+    return [feed.categories count] + [feed.entities count] + getMoreResultsCell;
+}
+
+#pragma mark -
 #pragma mark UISearch Delegate Methods
+
+
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     self.doneButton = self.navigationItem.rightBarButtonItem;

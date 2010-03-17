@@ -19,6 +19,8 @@
     NSMutableArray *categories;
     NSMutableArray *entities;
     NSURL *feedURL;
+	NSURL * nextURL;
+	NSUInteger totalResults;
 }
 
 @property (nonatomic) Class parserClass;
@@ -27,5 +29,7 @@
 @property (nonatomic, retain) NSMutableArray *categories;
 @property (nonatomic, retain) NSMutableArray *entities;
 @property (nonatomic, retain) NSURL *feedURL;
+@property (nonatomic, retain) NSURL *nextURL;
+@property (nonatomic, assign) NSUInteger totalResults;
 
 @end
