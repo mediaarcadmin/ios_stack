@@ -36,7 +36,6 @@
 		55822F2410F2891B008614FD /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1E10F2891B008614FD /* icon-search.png */; };
 		5590D2F1111C8C7F00CE0C4F /* speedread-background-light-portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 5590D2F0111C8C7F00CE0C4F /* speedread-background-light-portrait.png */; };
 		5590D317111C8E7D00CE0C4F /* roundedcorners.png in Resources */ = {isa = PBXBuildFile; fileRef = 5590D316111C8E7D00CE0C4F /* roundedcorners.png */; };
-		7D03EB9810EA724C00430295 /* BlioTestParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D03EB9710EA724C00430295 /* BlioTestParagraphWords.m */; };
 		7D35ADF411217AD200A7AC62 /* MenuArrowBottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D35ADEA11217AD200A7AC62 /* MenuArrowBottom.png */; };
 		7D35ADF511217AD200A7AC62 /* MenuArrowBottomHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D35ADEB11217AD200A7AC62 /* MenuArrowBottomHighlighted.png */; };
 		7D35ADF611217AD200A7AC62 /* MenuArrowTop.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D35ADEC11217AD200A7AC62 /* MenuArrowTop.png */; };
@@ -49,9 +48,7 @@
 		7D35ADFD11217AD200A7AC62 /* MenuRidge.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D35ADF311217AD200A7AC62 /* MenuRidge.png */; };
 		7D381B5C10D92E86008D34E2 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
 		7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
-		7D381B5E10D92E86008D34E2 /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4F10D92E81008D34E2 /* libEucalyptusEPub.a */; };
 		7D381B5F10D92E86008D34E2 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
-		7D381B6010D92E86008D34E2 /* libantlr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5310D92E81008D34E2 /* libantlr.a */; };
 		7D381B9310D92F14008D34E2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9210D92F14008D34E2 /* AudioToolbox.framework */; };
 		7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
@@ -85,6 +82,18 @@
 		7D81ED2810E90C220016D44A /* paper-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2510E90C220016D44A /* paper-white.png */; };
 		7D981E2211123DA600827E55 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB27110F662600403651 /* SelectionKnob.png */; };
 		7D981E2311123DAB00827E55 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB26110F662600403651 /* SelectionEnd.png */; };
+		7DAA2FF011512A8D006634CC /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
+		7DAA2FF111512A8D006634CC /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
+		7DAA2FF211512A8D006634CC /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
+		7DAA2FF311512A8D006634CC /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4E1150F39A00430710 /* libparserutils.a */; };
+		7DAA2FF411512A8D006634CC /* libcss.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF501150F39A00430710 /* libcss.a */; };
+		7DAA2FF511512A91006634CC /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
+		7DAA2FF611512A91006634CC /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
+		7DAA2FF711512A91006634CC /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
+		7DAA2FF811512A91006634CC /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4E1150F39A00430710 /* libparserutils.a */; };
+		7DAA2FF911512A91006634CC /* libcss.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF501150F39A00430710 /* libcss.a */; };
+		7DAA30C411512B1C006634CC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
+		7DAA30C511512B1C006634CC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
 		7DABAD2C112C9A7F0036BA8D /* MagnificationLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD29112C9A7F0036BA8D /* MagnificationLoupeHigh.png */; };
 		7DABAD2D112C9A7F0036BA8D /* MagnificationLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD2A112C9A7F0036BA8D /* MagnificationLoupeLow.png */; };
 		7DABAD2E112C9A7F0036BA8D /* MagnificationLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD2B112C9A7F0036BA8D /* MagnificationLoupeMask.png */; };
@@ -257,7 +266,6 @@
 		C9AF1A331147A772007D7AFC /* BlioLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */; };
 		C9AF1A341147A772007D7AFC /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		C9AF1A351147A772007D7AFC /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
-		C9AF1A361147A772007D7AFC /* BlioTestParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D03EB9710EA724C00430295 /* BlioTestParagraphWords.m */; };
 		C9AF1A371147A772007D7AFC /* AcapelaTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */; };
 		C9AF1A381147A772007D7AFC /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
 		C9AF1A391147A772007D7AFC /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
@@ -307,9 +315,7 @@
 		C9AF1A661147A772007D7AFC /* libGDataTouchStaticLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C986765D112411060070A03E /* libGDataTouchStaticLib.a */; };
 		C9AF1A671147A772007D7AFC /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
 		C9AF1A681147A772007D7AFC /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
-		C9AF1A691147A772007D7AFC /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4F10D92E81008D34E2 /* libEucalyptusEPub.a */; };
 		C9AF1A6A1147A772007D7AFC /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
-		C9AF1A6B1147A772007D7AFC /* libantlr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5310D92E81008D34E2 /* libantlr.a */; };
 		C9AF1A6C1147A772007D7AFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		C9AF1A6D1147A772007D7AFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		C9AF1A6E1147A772007D7AFC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
@@ -363,26 +369,12 @@
 			remoteGlobalIDString = 7D5170CE1028AD1B005F3C46;
 			remoteInfo = libhyphenate;
 		};
-		7D381B4E10D92E81008D34E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7D5171881028B4A4005F3C46;
-			remoteInfo = libEucalyptusEPub;
-		};
 		7D381B5010D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 7D5171CA1028B6AE005F3C46;
 			remoteInfo = libexpat;
-		};
-		7D381B5210D92E81008D34E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7D5171D91028B6B9005F3C46;
-			remoteInfo = libantlr;
 		};
 		7D381B5410D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -404,6 +396,41 @@
 			proxyType = 1;
 			remoteGlobalIDString = D2AAC07D0554694100DB518D;
 			remoteInfo = libEucalyptus;
+		};
+		7D68AF471150F39A00430710 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D9AA9C9114A8F6A0055C381;
+			remoteInfo = libEucalyptusBUpe;
+		};
+		7D68AF491150F39A00430710 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D2341981149614F00C318E7;
+			remoteInfo = libEucalyptusCSS;
+		};
+		7D68AF4B1150F39A00430710 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D1900981149490E00375803;
+			remoteInfo = libwapcaplet;
+		};
+		7D68AF4D1150F39A00430710 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D1900CD11494A0C00375803;
+			remoteInfo = libparserutils;
+		};
+		7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D19025211494BE800375803;
+			remoteInfo = libcss;
 		};
 		C986765A112411060070A03E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -502,8 +529,6 @@
 		5590D2F0111C8C7F00CE0C4F /* speedread-background-light-portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "speedread-background-light-portrait.png"; sourceTree = "<group>"; };
 		5590D316111C8E7D00CE0C4F /* roundedcorners.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = roundedcorners.png; sourceTree = "<group>"; };
 		7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libEucalyptus.xcodeproj; path = libEucalyptus/libEucalyptus.xcodeproj; sourceTree = "<group>"; };
-		7D03EB9610EA724C00430295 /* BlioTestParagraphWords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTestParagraphWords.h; sourceTree = "<group>"; };
-		7D03EB9710EA724C00430295 /* BlioTestParagraphWords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTestParagraphWords.m; sourceTree = "<group>"; };
 		7D35ADEA11217AD200A7AC62 /* MenuArrowBottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MenuArrowBottom.png; sourceTree = "<group>"; };
 		7D35ADEB11217AD200A7AC62 /* MenuArrowBottomHighlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MenuArrowBottomHighlighted.png; sourceTree = "<group>"; };
 		7D35ADEC11217AD200A7AC62 /* MenuArrowTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MenuArrowTop.png; sourceTree = "<group>"; };
@@ -548,6 +573,7 @@
 		7D81ED2310E90C220016D44A /* paper-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-black.png"; sourceTree = "<group>"; };
 		7D81ED2410E90C220016D44A /* paper-neutral.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-neutral.png"; sourceTree = "<group>"; };
 		7D81ED2510E90C220016D44A /* paper-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white.png"; sourceTree = "<group>"; };
+		7DAA30C311512B1C006634CC /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		7DABAD29112C9A7F0036BA8D /* MagnificationLoupeHigh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeHigh.png; sourceTree = "<group>"; };
 		7DABAD2A112C9A7F0036BA8D /* MagnificationLoupeLow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeLow.png; sourceTree = "<group>"; };
 		7DABAD2B112C9A7F0036BA8D /* MagnificationLoupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeMask.png; sourceTree = "<group>"; };
@@ -698,12 +724,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C98678DD112424F90070A03E /* libGDataTouchStaticLib.a in Frameworks */,
 				7D381B5C10D92E86008D34E2 /* libEucalyptus.a in Frameworks */,
 				7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */,
-				7D381B5E10D92E86008D34E2 /* libEucalyptusEPub.a in Frameworks */,
+				7DAA2FF011512A8D006634CC /* libEucalyptusBUpe.a in Frameworks */,
+				7DAA2FF111512A8D006634CC /* libEucalyptusCSS.a in Frameworks */,
 				7D381B5F10D92E86008D34E2 /* libexpat.a in Frameworks */,
-				7D381B6010D92E86008D34E2 /* libantlr.a in Frameworks */,
+				7DAA2FF211512A8D006634CC /* libwapcaplet.a in Frameworks */,
+				7DAA2FF311512A8D006634CC /* libparserutils.a in Frameworks */,
+				7DAA2FF411512A8D006634CC /* libcss.a in Frameworks */,
+				C98678DD112424F90070A03E /* libGDataTouchStaticLib.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
@@ -718,6 +747,7 @@
 				C9B61FF51137AF840012CE7E /* libz.dylib in Frameworks */,
 				C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */,
 				C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */,
+				7DAA30C411512B1C006634CC /* libiconv.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,12 +755,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9AF1A661147A772007D7AFC /* libGDataTouchStaticLib.a in Frameworks */,
 				C9AF1A671147A772007D7AFC /* libEucalyptus.a in Frameworks */,
 				C9AF1A681147A772007D7AFC /* libhyphenate.a in Frameworks */,
-				C9AF1A691147A772007D7AFC /* libEucalyptusEPub.a in Frameworks */,
+				7DAA2FF511512A91006634CC /* libEucalyptusBUpe.a in Frameworks */,
+				7DAA2FF611512A91006634CC /* libEucalyptusCSS.a in Frameworks */,
 				C9AF1A6A1147A772007D7AFC /* libexpat.a in Frameworks */,
-				C9AF1A6B1147A772007D7AFC /* libantlr.a in Frameworks */,
+				7DAA2FF711512A91006634CC /* libwapcaplet.a in Frameworks */,
+				7DAA2FF811512A91006634CC /* libparserutils.a in Frameworks */,
+				7DAA2FF911512A91006634CC /* libcss.a in Frameworks */,
+				C9AF1A661147A772007D7AFC /* libGDataTouchStaticLib.a in Frameworks */,
 				C9AF1A6C1147A772007D7AFC /* Foundation.framework in Frameworks */,
 				C9AF1A6D1147A772007D7AFC /* UIKit.framework in Frameworks */,
 				C9AF1A6E1147A772007D7AFC /* CoreGraphics.framework in Frameworks */,
@@ -745,6 +778,7 @@
 				C9AF1A771147A772007D7AFC /* libz.dylib in Frameworks */,
 				C9AF1A781147A772007D7AFC /* CFNetwork.framework in Frameworks */,
 				C9AF1A791147A772007D7AFC /* SystemConfiguration.framework in Frameworks */,
+				7DAA30C511512B1C006634CC /* libiconv.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -781,8 +815,6 @@
 				C9775AF510DFD728005E0E2B /* BlioMockBook.m */,
 				7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */,
 				7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */,
-				7D03EB9610EA724C00430295 /* BlioTestParagraphWords.h */,
-				7D03EB9710EA724C00430295 /* BlioTestParagraphWords.m */,
 				C932B03910ECBC6000B8286A /* BlioNotesView.h */,
 				C932B03A10ECBC6000B8286A /* BlioNotesView.m */,
 				C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */,
@@ -917,18 +949,19 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A349F11B110E34DE009A8F89 /* AVFoundation.framework */,
-				C9C5467510F77EDD00ECE126 /* CoreData.framework */,
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				C9C5467510F77EDD00ECE126 /* CoreData.framework */,
+				C974F221113C1AA0007B5868 /* CFNetwork.framework */,
+				C974F225113C1AB1007B5868 /* SystemConfiguration.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
 				7D381B9610D92F14008D34E2 /* QuartzCore.framework */,
 				7D381B9410D92F14008D34E2 /* OpenGLES.framework */,
+				A349F11B110E34DE009A8F89 /* AVFoundation.framework */,
 				7D381B9210D92F14008D34E2 /* AudioToolbox.framework */,
 				7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */,
 				C9B61FF41137AF840012CE7E /* libz.dylib */,
-				C974F221113C1AA0007B5868 /* CFNetwork.framework */,
-				C974F225113C1AB1007B5868 /* SystemConfiguration.framework */,
+				7DAA30C311512B1C006634CC /* libiconv.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -938,11 +971,14 @@
 			children = (
 				7D381B4B10D92E81008D34E2 /* libEucalyptus.a */,
 				7D381B4D10D92E81008D34E2 /* libhyphenate.a */,
-				7D381B4F10D92E81008D34E2 /* libEucalyptusEPub.a */,
+				7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */,
+				7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */,
 				7D381B5110D92E81008D34E2 /* libexpat.a */,
-				7D381B5310D92E81008D34E2 /* libantlr.a */,
 				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
 				7D381B5710D92E81008D34E2 /* Paginate.app */,
+				7D68AF4C1150F39A00430710 /* libwapcaplet.a */,
+				7D68AF4E1150F39A00430710 /* libparserutils.a */,
+				7D68AF501150F39A00430710 /* libcss.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1234,25 +1270,11 @@
 			remoteRef = 7D381B4C10D92E81008D34E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7D381B4F10D92E81008D34E2 /* libEucalyptusEPub.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libEucalyptusEPub.a;
-			remoteRef = 7D381B4E10D92E81008D34E2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		7D381B5110D92E81008D34E2 /* libexpat.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libexpat.a;
 			remoteRef = 7D381B5010D92E81008D34E2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7D381B5310D92E81008D34E2 /* libantlr.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libantlr.a;
-			remoteRef = 7D381B5210D92E81008D34E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		7D381B5510D92E81008D34E2 /* TransitionTest.app */ = {
@@ -1267,6 +1289,41 @@
 			fileType = wrapper.application;
 			path = Paginate.app;
 			remoteRef = 7D381B5610D92E81008D34E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libEucalyptusBUpe.a;
+			remoteRef = 7D68AF471150F39A00430710 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libEucalyptusCSS.a;
+			remoteRef = 7D68AF491150F39A00430710 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D68AF4C1150F39A00430710 /* libwapcaplet.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libwapcaplet.a;
+			remoteRef = 7D68AF4B1150F39A00430710 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D68AF4E1150F39A00430710 /* libparserutils.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libparserutils.a;
+			remoteRef = 7D68AF4D1150F39A00430710 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D68AF501150F39A00430710 /* libcss.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libcss.a;
+			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		C986765B112411060070A03E /* GData.framework */ = {
@@ -1528,7 +1585,6 @@
 				28C286E10D94DF7D0034E888 /* BlioLibraryViewController.m in Sources */,
 				C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */,
 				C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */,
-				7D03EB9810EA724C00430295 /* BlioTestParagraphWords.m in Sources */,
 				A37FC33610EA785F00F3DC5A /* AcapelaTTS.m in Sources */,
 				A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */,
 				A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */,
@@ -1587,7 +1643,6 @@
 				C9AF1A331147A772007D7AFC /* BlioLibraryViewController.m in Sources */,
 				C9AF1A341147A772007D7AFC /* BlioLayoutView.m in Sources */,
 				C9AF1A351147A772007D7AFC /* BlioMockBook.m in Sources */,
-				C9AF1A361147A772007D7AFC /* BlioTestParagraphWords.m in Sources */,
 				C9AF1A371147A772007D7AFC /* AcapelaTTS.m in Sources */,
 				C9AF1A381147A772007D7AFC /* force_cpp.cpp in Sources */,
 				C9AF1A391147A772007D7AFC /* setupTTS.m in Sources */,
