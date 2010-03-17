@@ -9,6 +9,7 @@
 #import "BlioProcessingManager.h"
 #import "BlioProcessingStandardOperations.h"
 #import "BlioMockBook.h"
+#import "BlioEPubView.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -119,6 +120,16 @@
                 [self.preAvailabilityQueue addOperation:ePubOp];
                 [bookOps addObject:ePubOp];
                 [ePubOp release];
+                
+                NSArray *ePubPreAvailOps = [BlioEPubView preAvailabilityOperations];
+                for (BlioProcessingOperation *preAvailOp in ePubPreAvailOps) {
+                    preAvailOp.bookID = bookID;
+                    preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
+                    preAvailOp.cacheDirectory = cacheDir;
+                    [preAvailOp addDependency:ePubOp];
+                    [self.preAvailabilityQueue addOperation:preAvailOp];
+                    [bookOps addObject:preAvailOp];
+                }                    
             }
             
             if (nil != pdfURL) {
@@ -133,7 +144,7 @@
             
             if (nil != textFlowURL) {
                 BlioProcessingDownloadTextFlowOperation *textFlowOp = [[BlioProcessingDownloadTextFlowOperation alloc] initWithUrl:textFlowURL];
-                textFlowOp.bookID = bookID;
+                textFlowOp.bookID = bookID; 
                 textFlowOp.storeCoordinator = [moc persistentStoreCoordinator];
                 textFlowOp.cacheDirectory = cacheDir;
                 [self.preAvailabilityQueue addOperation:textFlowOp];

@@ -132,17 +132,18 @@ Block completion status.
                                                      inFrame:frame
                                       afterInternalPageBreak:YES];
         
-        newContainer = [[[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:_scaleFactor] autorelease];
+        newContainer = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:_scaleFactor];
         newContainer.documentNode = node;
         [newContainer positionInFrame:parentContainer.contentRect afterInternalPageBreak:afterInternalPageBreak];
         
         [parentContainer addSubEntity:newContainer];
+        [newContainer release];
     } else {
-        newContainer = [[[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:_scaleFactor] autorelease];
+        newContainer = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:_scaleFactor];
         newContainer.documentNode = node;
         [newContainer positionInFrame:frame afterInternalPageBreak:afterInternalPageBreak];
         
-        outermost = newContainer;
+        outermost = [newContainer autorelease];
     }
     
     *innermost = newContainer;
@@ -306,8 +307,9 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         ret.nodeKey = documentRun.id;
         ret.word = documentRunPoint.word;
         ret.element = documentRunPoint.element;
+        [documentRun release];
     }   
-        
+
     return ret;
 }
 

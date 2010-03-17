@@ -126,6 +126,11 @@ css_error css_computed_style_destroy(css_computed_style *style)
 		if (style->uncommon->cursor != NULL)
 			style->alloc(style->uncommon->cursor, 0, style->pw);
 
+		if (style->uncommon->content != NULL) {
+			style->alloc(style->uncommon->content, 0,
+					style->pw);
+		}
+        
 		style->alloc(style->uncommon, 0, style->pw);
 	}
 

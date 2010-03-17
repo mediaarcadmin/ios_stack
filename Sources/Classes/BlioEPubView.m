@@ -7,6 +7,7 @@
 //
 
 #import "BlioEPubView.h"
+#import "BlioEPubPaginateOperation.h"
 #import "BlioBookmark.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
@@ -25,6 +26,8 @@
         [self release];
         return nil;
     }
+    
+    aEPubBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"ePubPaginationIndexes"];
     
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:aEPubBook])) {
         self.allowsSelection = YES;
@@ -105,6 +108,13 @@
     [showWebToolsItem release];
     
     return ret;
+}
+
++ (NSArray *)preAvailabilityOperations {
+    BlioEPubPaginateOperation *preParseOp = [[BlioEPubPaginateOperation alloc] init];
+    NSArray *operations = [NSArray arrayWithObject:preParseOp];
+    [preParseOp release];
+    return operations;
 }
 
 @end

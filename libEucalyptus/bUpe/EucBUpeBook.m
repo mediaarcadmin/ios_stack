@@ -27,6 +27,8 @@
 #import <sys/stat.h>
 #import <sys/mman.h>
 
+#define kMaxCachedDocuments 3
+
 @interface EucBUpeBook ()
 @property (nonatomic, retain) NSDictionary *manifestOverrides;
 @end
@@ -497,6 +499,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         close(_currentPageIndexPointFD);
     }
     
+    [_documentCache release];
+    
     [_root release];
     [_tocNcxId release];
     
@@ -753,29 +757,45 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 {
     NSData *data = [self dataForURL:url];
     if(data) {
-        return  [[[EucCSSXMLTree alloc] initWithData:data] autorelease];
+        return [[[EucCSSXMLTree alloc] initWithData:data] autorelease];
     }
     return nil;
 }
 
 - (EucCSSIntermediateDocument *)intermediateDocumentForURL:(NSURL *)url
 {
-    EucCSSIntermediateDocument *document = [_documentCache objectForKey:url];
-    if(!document) {
-        EucCSSXMLTree *documentTree = [self documentTreeForURL:url];
-        if(documentTree) {
-            document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
-                                                                         forURL:url
-                                                                     dataSource:self
-                                                                    baseCSSPath:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];            
-            if(!_documentCache) {
-                _documentCache = [[NSMutableDictionary alloc] init];
-            }
-            [_documentCache setObject:document forKey:url];
-            
-            [document release];
-        }
+    if(!_documentCache) {
+        _documentCache = [[NSMutableArray alloc] init];
     }
+    
+    EucCSSIntermediateDocument *document = nil;
+    NSUInteger cacheIndex = 0;
+    for(THPair *urlAndDocument in _documentCache) {
+        if([url isEqual:urlAndDocument.first]) {
+            document = urlAndDocument.second;
+            break;
+        }
+        ++cacheIndex;
+    }
+    
+    if(document) {
+        [document retain];
+        [_documentCache removeObjectAtIndex:cacheIndex];
+    } else {
+        if(_documentCache.count > kMaxCachedDocuments) {
+            // Remove the least recently used document.
+            [_documentCache removeObjectAtIndex:0];
+        }
+        id<EucCSSDocumentTree> documentTree = [self documentTreeForURL:url];
+        document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
+                                                                     forURL:url
+                                                                 dataSource:self
+                                                                baseCSSPath:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];            
+    }
+    
+    [_documentCache addPairWithFirst:url second:document];
+    [document release];
+    
     return document;
 }
 
