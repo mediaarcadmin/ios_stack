@@ -373,10 +373,41 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 - (void)cacheThumbImageInBackground:(NSDictionary *)thumbDictionary {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     //NSLog(@"cacheThumbImageInBackground");
-    CGImageRef thumbImage = (CGImageRef)[thumbDictionary valueForKey:@"thumbImage"];
+    CGImageRef imageRef = (CGImageRef)[thumbDictionary valueForKey:@"thumbImage"];
+    CGFloat scaleFactor = CGImageGetWidth(imageRef) / 160.0f;
+    // BEGIN
     
+    CGRect newRect = CGRectIntegral(CGRectMake(0, 0, CGImageGetWidth(imageRef) * scaleFactor, CGImageGetHeight(imageRef) * scaleFactor));
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef bitmap = CGBitmapContextCreate(NULL,
+                                                newRect.size.width,
+                                                newRect.size.height,
+                                                8,
+                                                0,
+                                                colorSpace,
+                                                kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedFirst);
+    
+    // Set the quality level to use when rescaling
+    CGContextSetInterpolationQuality(bitmap, kCGInterpolationHigh);
+    
+    // Draw into the context; this scales the image
+    CGContextDrawImage(bitmap, newRect, imageRef);
+    
+    // Get the resized image from the context and a UIImage
+    CGImageRef newImageRef = CGBitmapContextCreateImage(bitmap);
+    UIImage *image = [[UIImage alloc] initWithCGImage:newImageRef];
+    
+    // Clean up
+    CGImageRelease(newImageRef);
+    CGContextRelease(bitmap);
+    CGColorSpaceRelease(colorSpace);
+    
+    // END
+    
+    //CGImageRef smallImage = CGImageCreateWithImageInRect(thumbImage, CGRectMake(0,0,160,480));
     NSNumber *thumbPage = [thumbDictionary valueForKey:@"pageNumber"];
-    UIImage *image = [[UIImage alloc] initWithCGImage:thumbImage];
+    //UIImage *image = [[UIImage alloc] initWithCGImage:newThumb];
     
     NSData *compressedData = UIImagePNGRepresentation(image);
     if (compressedData && thumbPage) {
@@ -460,7 +491,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark Tile Rendering
 
-- (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
+- (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheLayer:(CGLayerRef)cacheLayer cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector {
      //NSLog(@"Tiled rendering started");
 //    CGFloat inset = -kBlioLayoutShadow;
     
@@ -468,7 +499,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     CGRect layerBounds = aLayer.bounds;
     
-    CGAffineTransform layerContext = CGContextGetCTM(ctx);
+    //CGAffineTransform layerContext = CGContextGetCTM(ctx);
     
     CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
 	CGContextScaleCTM(ctx, 1, -1);
@@ -495,43 +526,78 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     CGAffineTransform pdfTransform = transformRectToFitRect(unscaledCropRect, scaledCropRect);
     
     CGContextConcatCTM(ctx, pdfTransform);
-    BOOL createSnapshot = NO;
+    //BOOL createSnapshot = NO;
+    //BOOL createSnapshot = YES;
 //    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:arc4random() % 1000 / 1000.0f green:arc4random() % 1000 / 1000.0f blue:arc4random() % 1000 / 1000.0f alpha:1].CGColor);
 //    CGContextFillRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
 //    CGContextClipToRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
     // Lock around the drawing so we limit the memory footprint
-    NSDate *start = [NSDate date];
+   // NSDate *start = [NSDate date];
     @synchronized ([[UIApplication sharedApplication] delegate]) {
+        if (nil != cacheLayer) {
+            CGContextRef cacheCtx = CGLayerGetContext(cacheLayer);
+            CGContextTranslateCTM(cacheCtx, 0, layerBounds.size.height/2.0f);
+            CGContextScaleCTM(cacheCtx, 1, -1);
+            CGRect halfScaledCropRect = CGRectApplyAffineTransform(scaledCropRect, CGAffineTransformMakeScale(0.5f, 0.5f));
+            CGAffineTransform cacheTransform = transformRectToFitRect(unscaledCropRect, halfScaledCropRect);
+            CGContextConcatCTM(cacheCtx, cacheTransform);
+            CGContextSetFillColorWithColor(cacheCtx, [UIColor whiteColor].CGColor);
+            CGContextClipToRect(cacheCtx, unscaledCropRect);
+            CGContextFillRect(cacheCtx, unscaledCropRect);
+            CGContextDrawPDFPage(cacheCtx, aPage);
+
+            //NSLog(@"It took %.3f seconds to draw cache page %d", -[start timeIntervalSinceNow], aPageNumber);
+            if ([target respondsToSelector:readySelector])
+                [target performSelectorOnMainThread:readySelector withObject:(id)cacheLayer waitUntilDone:YES];
+        }
+        //start = [NSDate date];
         CGContextDrawPDFPage(ctx, aPage);
+        //NSLog(@"It took %.3f seconds to draw 2 page %d", -[start timeIntervalSinceNow], aPageNumber);
         CGPDFDocumentRelease(aPdf);
         //if (self.scrollView.zoomScale = 1) createSnapshot = YES;
     }
-    NSLog(@"It took %.3f seconds to draw page %d", -[start timeIntervalSinceNow], aPageNumber);
+    //NSLog(@"It took %.3f seconds to draw page %d", -[start timeIntervalSinceNow], aPageNumber);
     CGDataProviderRelease(pdfProvider);
     
     // Don't create a thumb when we are zoomed in, we want to limit the size of the cached image
-    if (layerContext.a == 1) createSnapshot = YES;
+    //if (layerContext.a == 1) createSnapshot = YES;
     //NSLog(@"layerContext.a %f", layerContext.a);
     
-    if (createSnapshot) {
-        start = [NSDate date];
-        CGImageRef imageRef = CGBitmapContextCreateImage(ctx);
-        NSDictionary *thumbDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                         (id)imageRef, @"thumbImage", 
-                                         [NSNumber numberWithInteger:aPageNumber], @"pageNumber", nil];
+    //if (createSnapshot) {
         
-        if (isCancelled) {
-            CGImageRelease(imageRef);
-            [thumbDictionary release];
-            return;
-        }
+    
+        //CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, imageBuffer, rowBytes * height, NULL);
+        //CGContextSaveGState(ctx);
+        //NSLog(@"Clip bounds before: %@", NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+        //NSLog(@"Context before: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
+        //CGContextScaleCTM(ctx, 1/layerContext.a, 1/layerContext.a);
+        //CGContextClipToRect(ctx, CGRectMake(0,0,320,480));
+        //NSLog(@"Context after: %@", NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
+       // NSLog(@"Clip bounds after: %@", NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+        //CGContextBeginTransparencyLayerWithRect(ctx, CGRectMake(0,0,160,240), NULL);
+        //start = [NSDate date];
+        //CGLayerRef aLayer = CGLayerCreateWithContext(ctx, CGSizeMake(160,240), NULL);
+    
+        //CGImageRef imageRef = CGBitmapContextCreateImage(ctx);
+        //CGContextEndTransparencyLayer(ctx);
+        //CGContextRestoreGState(ctx);
+        //NSLog(@"Image is size %d x %d", CGImageGetWidth(imageRef), CGImageGetHeight(imageRef));
+        //NSDictionary *thumbDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
+         //                                (id)imageRef, @"thumbImage", 
+        //                                 [NSNumber numberWithInteger:aPageNumber], @"pageNumber", nil];
+        
+        //if (isCancelled) {
+        //    CGImageRelease(imageRef);
+         //   [thumbDictionary release];
+        //    return;
+        //}
         //[self performSelectorInBackground:@selector(cacheThumbImage:) withObject:thumbDictionary];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"BlioLayoutThumbLayerContentsAvailable" object:[NSNumber numberWithInteger:aPageNumber] userInfo:thumbDictionary];
+        //[[NSNotificationCenter defaultCenter] postNotificationName:@"BlioLayoutThumbLayerContentsAvailable" object:[NSNumber numberWithInteger:aPageNumber] userInfo:thumbDictionary];
         
-        CGImageRelease(imageRef);
-        [thumbDictionary release];
+        //CGImageRelease(imageRef);
+        //[thumbDictionary release];
         //NSLog(@"It took %.3f seconds to create the cache snapshot", -[start timeIntervalSinceNow]);
-    }
+    //}
     
 }
 
@@ -1281,6 +1347,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset {
+    NSLog(@"Goto page %d", targetPage);
     if (targetPage < 1 )
         targetPage = 1;
     else if (targetPage > pageCount)
@@ -1339,9 +1406,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
                 newFrame.origin.x -= CGRectGetWidth(self.currentPageLayer.frame);
                 prevLayer.frame = newFrame;
                 [pageLayersToPreserve addObject:prevLayer];
-            } else {
-                NSLog(@"No prev found");
-            }
+            } //else {
+//                NSLog(@"No prev found");
+//            }
             
             NSSet *nextLayerSet = [[self.contentView pageLayers] filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"pageNumber==%d", startPage + 1]];
             if ([nextLayerSet count]) {
@@ -1350,31 +1417,46 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
                 newFrame.origin.x += CGRectGetWidth(self.currentPageLayer.frame);
                 nextLayer.frame = newFrame;
                 [pageLayersToPreserve addObject:nextLayer];
-            } else {
-                NSLog(@"No next found");
-            }
+            } //else {
+//                NSLog(@"No next found");
+//            }
 
-            [CATransaction commit];
+            
             
             currentOffset = CGPointMake(currentOffset.x + frameOffset*self.scrollView.zoomScale, currentOffset.y);
             [self.scrollView setContentOffset:currentOffset animated:NO];
+            
+            [CATransaction commit];
         }
         
+        // TODO -remove these checks
         if ([pageLayersToPreserve count] > 3) {
             NSLog(@"WARNING: more than 3 pages found to preserve during go to animation: %@", [pageLayersToPreserve description]); 
-        } else if ([pageLayersToPreserve count] < 3) {
-            NSLog(@"Less than 3");
-        }
+        } //else if ([pageLayersToPreserve count] < 3) {
+//            NSLog(@"Less than 3");
+//        }
         
         // 2. Load the target page and its adjacent pages
         BlioLayoutPageLayer *aLayer = [self.contentView addPage:targetPage retainPages:pageLayersToPreserve];
         if (aLayer) {
             [pageLayersToPreserve addObject:aLayer];
             self.currentPageLayer = aLayer;
+            [aLayer performSelector:@selector(forceThumbCache) withObject:nil];
+            //[self performSelectorInBackground:@selector(forceCacheForLayer:) withObject:aLayer];
+                        //UIGraphicsBeginImageContext(CGSizeMake(0.1,0.1));
+//                        CGContextRef ctx = UIGraphicsGetCurrentContext();
+//                        [aLayer renderInContext:ctx];
+//                        UIGraphicsEndImageContext();
         }
         aLayer = [self.contentView addPage:targetPage - 1 retainPages:pageLayersToPreserve];
-        if (aLayer) [pageLayersToPreserve addObject:aLayer];
+        if (aLayer) { 
+            [pageLayersToPreserve addObject:aLayer];
+            //[aLayer performSelector:@selector(forceThumbCache) withObject:nil];
+        }
         [self.contentView addPage:targetPage + 1 retainPages:pageLayersToPreserve];
+        //if (aLayer) { 
+//            [aLayer performSelector:@selector(forceThumbCache) withObject:nil];
+//        }
         
         // The rest of the steps are performed after the animation thread has been run
         NSInteger fromPage = startPage + pagesToOffset;
@@ -1397,6 +1479,39 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     }
 }
 
+/*
+- (void)forceCacheForLayer:(CALayer *)aLayer {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSLog(@"Start forceCacheForLayer");
+    //            UIGraphicsBeginImageContext(CGSizeMake(1,1));
+    //            CGContextRef ctx = UIGraphicsGetCurrentContext();
+    //            [aLayer renderInContext:ctx];
+    //            UIGraphicsEndImageContext();
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef bitmap = CGBitmapContextCreate(NULL,
+                                                1,
+                                                1,
+                                                8,
+                                                0,
+                                                colorSpace,
+                                                kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedFirst);
+    
+    // Set the quality level to use when rescaling
+    CGContextSetInterpolationQuality(bitmap, kCGInterpolationHigh);
+    
+    // Draw into the context; this force the caching
+    [aLayer renderInContext:bitmap];
+    
+    // Clean up
+    CGContextRelease(bitmap);
+    CGColorSpaceRelease(colorSpace);
+    
+    NSLog(@"End forceCacheForLayer");
+    
+    [pool drain];
+}
+*/
 - (void)performGoToPageStep1FromPage:(NSInteger)fromPage {
 
     [self.scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * self.scrollView.zoomScale, CGRectGetHeight(self.bounds) * self.scrollView.zoomScale)];
@@ -1407,6 +1522,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+    //[UIView setAnimationWillStartSelector:@selector(animationWillStart:context:)];
     [UIView setAnimationDuration:shrinkDuration];
     [UIView setAnimationBeginsFromCurrentState:YES];
     if (shouldZoomOut) {
@@ -1485,6 +1601,12 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
     return self;
 }
+
+//- (void)animationWillStart:(NSString *)animationID context:(void *)context {
+//    if ([animationID isEqualToString:@"BlioLayoutGoToPageStep1"]) {
+//        [self.currentPageLayer performSelectorOnMainThread:@selector(forceThumbCache) withObject:nil waitUntilDone:NO];
+//    }
+//}
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     if (finished) {
@@ -1776,90 +1898,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     }
     
     self.lastParagraph = nil;
-}
-
-- (void)zoomAtPointOld:(NSString *)pointString {
-    if ([self.scrollView isDecelerating]) return;
-    
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    CGPoint point = CGPointFromString(pointString);
-    
-    BlioLayoutPageLayer *targetLayer = nil;
-    CGPoint pointInTargetPage;
-    
-    for (BlioLayoutPageLayer *pageLayer in [self.contentView pageLayers]) {
-        pointInTargetPage = [pageLayer convertPoint:point fromLayer:self.layer];
-        if ([pageLayer containsPoint:pointInTargetPage]) {
-            targetLayer = pageLayer;
-            break;
-        }
-    }
-    
-    if (nil == targetLayer) {
-        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        return;
-    }
-    
-    NSInteger targetPage = [targetLayer pageNumber];
-    NSInteger pageIndex = targetPage - 1;
-     
-    self.disableScrollUpdating = YES;
-    NSArray *paragraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    
-    [self.scrollView setPagingEnabled:NO];
-    [self.scrollView setBounces:NO];
-    
-    BlioTextFlowParagraph *targetParagraph = nil;
-    CGAffineTransform viewTransform = [self viewTransformForPage:targetPage];
-    
-    NSUInteger count = [paragraphs count];
-    NSUInteger targetIndex;
-    
-    if (count > 0) { 
-        for (NSUInteger index = 0; index < count; index++) {
-            BlioTextFlowParagraph *paragraph = [paragraphs objectAtIndex:index];
-            CGRect blockRect = [paragraph rect];
-            CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
-            if (CGRectContainsPoint(pageRect, pointInTargetPage)) {
-                targetParagraph = paragraph;
-                targetIndex = index;
-                break;
-            }
-        }
-    }
-    
-    BlioTextFlowParagraph *newParagraph = nil;
-    BOOL jumpToNextParagraph = (nil != self.lastParagraph && [self.lastParagraph isEqual:targetParagraph]);
-    
-    if (jumpToNextParagraph) {
-        id nextParagraphID = [self paragraphIdForParagraphAfterParagraphWithId:[targetParagraph paragraphID]];
-        if (nil != nextParagraphID) {
-            NSInteger newPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:nextParagraphID];
-            NSInteger newParagraphIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:nextParagraphID];
-            NSArray *newPageParagraphs;
-            
-            if (newPageIndex == pageIndex)
-                newPageParagraphs = paragraphs;
-            else
-                newPageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:newPageIndex];
-
-            if ([newPageParagraphs count] > newParagraphIndex)
-                newParagraph = [newPageParagraphs objectAtIndex:newParagraphIndex];
-        }
-    }
-        
-    if (nil != newParagraph) {
-        targetParagraph = newParagraph;
-        [self zoomToBlock:targetParagraph];
-    } else if (nil != targetParagraph && !jumpToNextParagraph) {  
-        [self zoomToBlock:targetParagraph];
-    } else if (self.scrollView.zoomScale > 1.0f) {
-        [self zoomOut];
-    } else {
-        [self zoomOutsideBlockAtPoint:point];
-    }
-    
-    self.lastParagraph = targetParagraph;
 }
 
 - (void)zoomToPage:(NSInteger)targetPageNumber {
