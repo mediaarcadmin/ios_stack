@@ -20,6 +20,7 @@
 - (NSString *)title;
 - (NSString *)author;
 - (NSString *)path;
+- (NSString *)cacheDirectoryPath;
 
 - (Class)pageLayoutControllerClass;
 - (NSArray *)bookPageIndexes;

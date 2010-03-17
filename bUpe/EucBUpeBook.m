@@ -12,7 +12,6 @@
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
-#import "EucBookReader.h"
 #import "EucBookParagraph.h"
 #import "EucBookSection.h"
 #import "THPair.h"
@@ -222,31 +221,23 @@ static void contentOpfCharacterDataHandler(void *ctx, const XML_Char *chars, int
                                                     length:len
                                                   encoding:NSUTF8StringEncoding];
         
-        // The following is a bit messy...
-        // Could rewrite using properties, in retrospect.
         if(context->inTitle) {
-            if(!context->self->_title) {
-                context->self->_title = [string retain];
+            if(!context->self.title) {
+                context->self.title = string;
             } else {
-                NSString *newString = [context->self->_title stringByAppendingString:string];
-                [context->self->_title release];
-                context->self->_title = [newString retain];
+                context->self.title = [context->self.title stringByAppendingString:string];
             }
         } else if(context->inCreator) {
-            if(!context->self->_author) {
-                context->self->_author  = [string retain];
+            if(!context->self.author) {
+                context->self.author  = string;
             } else {
-                NSString *newString = [context->self->_author stringByAppendingString:string];
-                [context->self->_author release];
-                context->self->_author = [newString retain];
+                context->self.author = [context->self.author stringByAppendingString:string];
             }            
         } else if(context->inIdentifier) {
-            if(!context->self->_etextNumber) {
-                context->self->_etextNumber  = [string retain];
+            if(!context->self.etextNumber) {
+                context->self.etextNumber  = string;
             } else {
-                NSString *newString = [context->self->_etextNumber stringByAppendingString:string];
-                [context->self->_etextNumber release];
-                context->self->_etextNumber = [newString retain];
+                context->self.etextNumber = [context->self.etextNumber stringByAppendingString:string];
             }            
         }
         [string release];
