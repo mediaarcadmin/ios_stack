@@ -7,6 +7,7 @@
 //
 
 #import "EucBUpeLocalBookReference.h"
+#import "EucBookPageIndex.h"
 #import "THNSFileManagerAdditions.h"
 
 
@@ -16,6 +17,12 @@
 @synthesize author = _author;
 @synthesize path = _path;
 @synthesize etextNumber = _etextNumber;
+@synthesize cacheDirectoryPath = _cacheDirectoryPath;
+
+- (NSString *)cacheDirectoryPath
+{
+    return _cacheDirectoryPath ?: self.path;
+}
 
 - (id)initWithTitle:(NSString *)title author:(NSString *)author etextNumber:(NSString *)etextNumber path:(NSString *)path
 {
@@ -28,34 +35,9 @@
     return self;
 }
 
-- (NSInteger)indexVersion
-{
-    return [[NSFileManager defaultManager] uint64ExtendedAttributeWithName:kXAttrIndexVersion ofItemAtPath:self.path];
-}
-
-- (void)setIndexVersion:(NSInteger)indexVersion
-{
-    [[NSFileManager defaultManager] setUint64ExtendedAttributeWithName:kXAttrIndexVersion ofItemAtPath:self.path to:indexVersion];
-}
-
-- (NSInteger)parserVersion
-{
-    return [[NSFileManager defaultManager] uint64ExtendedAttributeWithName:kXAttrParserVersion ofItemAtPath:self.path];
-}
-
-- (void)setParserVersion:(NSInteger)parserVersion
-{
-    [[NSFileManager defaultManager] setUint64ExtendedAttributeWithName:kXAttrParserVersion ofItemAtPath:self.path to:parserVersion];
-}
-
-- (BOOL)parsingIsComplete
-{
-    return YES;
-}
-
 - (BOOL)paginationIsComplete
 {
-    return NO;
+    return [EucBookPageIndex indexesAreConstructedForBookBundle:self.cacheDirectoryPath];
 }
 
 - (CGFloat)percentThroughBook
@@ -63,18 +45,14 @@
     return 0;
 }
 
-
 - (CGFloat)percentPaginated
 {
-    return 0;
+    if(self.paginationIsComplete) {
+        return 100;
+    } else {
+        return 0;
+    }
 }
-
-
-- (CGFloat)percentAnalysed
-{
-    return 100;
-}
-
 
 - (void)dealloc
 {

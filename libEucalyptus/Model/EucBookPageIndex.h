@@ -25,7 +25,9 @@
 + (NSUInteger)indexVersion;
 + (NSString *)filenameForPageIndexForPointSize:(NSUInteger)fontSize;
 + (NSString *)constructionFilenameForPageIndexForPointSize:(NSUInteger)fontSize;
-+ (void)markBookBundleAsIndexConstructed:(NSString *)bundlePath;
+
++ (void)markBookBundleAsIndexesConstructed:(NSString *)bundlePath;
++ (BOOL)indexesAreConstructedForBookBundle:(NSString *)bundlePath;
 
 + (id)bookPageIndexForIndexInBook:(id<EucBook>)path forPointSize:(NSUInteger)pointSize;
 + (NSArray *)bookPageIndexesForBook:(id<EucBook>)book;

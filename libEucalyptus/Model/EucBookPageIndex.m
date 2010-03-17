@@ -38,7 +38,12 @@
     return [NSString stringWithFormat:@"%lu.v%luindexConstruction", (unsigned long)fontSize, (unsigned long)[EucBookPageIndex indexVersion]];
 }
 
-+ (void)markBookBundleAsIndexConstructed:(NSString *)bundlePath
++ (NSString *)constructionFlagFilename
+{
+    return [NSString stringWithFormat:@"constructed.v%luindexes", (unsigned long)[EucBookPageIndex indexVersion]];
+}
+
++ (void)markBookBundleAsIndexesConstructed:(NSString *)bundlePath
 {
     NSString *globPath = [bundlePath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luindexConstruction", (unsigned long)[EucBookPageIndex indexVersion]]];
     glob_t globValue;
@@ -64,6 +69,21 @@
         }
         globfree(&globValue);
     }
+    
+    int flagFd = open([[bundlePath stringByAppendingPathComponent:[[self class] constructionFlagFilename]] fileSystemRepresentation],
+                      O_WRONLY | O_TRUNC | O_CREAT, 
+                      S_IRUSR | S_IWUSR);
+    if(flagFd != -1) {
+        close(flagFd);
+    } else {
+        THWarn(@"Error marking indexes in %@ as constructed%s), error %d [\"%s\"]", bundlePath, errno, strerror(errno));  
+    }
+}
+
++ (BOOL)indexesAreConstructedForBookBundle:(NSString *)bundlePath
+{
+    return access([[bundlePath stringByAppendingPathComponent:[[self class] constructionFlagFilename]] fileSystemRepresentation],
+                  F_OK) == 0;
 }
 
 @synthesize book = _book;
@@ -78,17 +98,17 @@
         _book = [book retain];
         _pointSize = pointSize;
         
-        NSString *path = book.path;
+        NSString *indexDirectoryPath = book.cacheDirectoryPath;
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *indexPath = [path stringByAppendingPathComponent:[[self class] filenameForPageIndexForPointSize:pointSize]];
+        NSString *indexPath = [indexDirectoryPath stringByAppendingPathComponent:[[self class] filenameForPageIndexForPointSize:pointSize]];
         if(![fileManager fileExistsAtPath:indexPath]) {
-            indexPath =  [path stringByAppendingPathComponent:[[self class] constructionFilenameForPageIndexForPointSize:pointSize]];
+            indexPath =  [indexDirectoryPath stringByAppendingPathComponent:[[self class] constructionFilenameForPageIndexForPointSize:pointSize]];
         } else {
             _isFinal = YES;
         }
         
-        _fd = open([indexPath fileSystemRepresentation], O_RDONLY, 0644);
+        _fd = open([indexPath fileSystemRepresentation], O_RDONLY);
         if(_fd == -1) {
             THWarn(@"Could not turn open index at %@, error %d [\"%s\"]", indexPath, errno, strerror(errno));
             [self dealloc];
@@ -165,17 +185,17 @@
 {
     NSMutableArray *indexes = [NSMutableArray array];
     
-    NSString *bundlePath = [book path];
-    NSString *globPath = [bundlePath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luindex*", (unsigned long)[EucBookPageIndex indexVersion]]];
+    NSString *indexDirectoryPath = [book cacheDirectoryPath];
+    NSString *globPath = [indexDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luindex*", (unsigned long)[EucBookPageIndex indexVersion]]];
     glob_t globValue;
     int err = glob([globPath fileSystemRepresentation],
                    0,
                    NULL,
                    &globValue);
     if(err != 0) {
-        THWarn(@"Globbing failed when attempting to find indexes in book bundle %@", bundlePath);
+        THWarn(@"Globbing failed when attempting to find indexes in book bundle %@", indexDirectoryPath);
     } else if(globValue.gl_pathc <= 0) {
-        THWarn(@"Could not find indexes in book bundle %@", bundlePath);
+        THWarn(@"Could not find indexes in book bundle %@", indexDirectoryPath);
     } else {
         THRegex *indexRegex = [THRegex regexWithPOSIXRegex:[NSString stringWithFormat:@"([[:digit:]]+).v%luindex(Construction)?$", (unsigned long)[EucBookPageIndex indexVersion]]];
         
