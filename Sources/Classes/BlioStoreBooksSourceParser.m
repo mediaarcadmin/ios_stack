@@ -48,8 +48,8 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 - (void)startWithURL:(NSURL *)url {
     if (nil == url) return;
-
-    self.parsedCategories = [NSMutableArray array];
+    NSLog(@"startWithURL: %@", [url absoluteString]);
+	self.parsedCategories = [NSMutableArray array];
     self.parsedEntities = [NSMutableArray array];
     
     [self.service fetchFeedWithURL:url

@@ -17,7 +17,7 @@
     self.parsedEntities = [NSMutableArray array];
     
     GDataQueryBooks *query = [GDataQueryBooks booksQueryWithFeedURL:url];
-    [query setMinimumViewability:kGDataGoogleBooksMinViewabilityFull];
+    if ([[url absoluteString] rangeOfString:@"min-viewability=full"].location == NSNotFound) [query setMinimumViewability:kGDataGoogleBooksMinViewabilityFull];
     
     [self.service fetchFeedWithQuery:query
                             delegate:self
@@ -29,7 +29,11 @@
 - (void)volumeListFetchTicket:(GDataServiceTicket *)ticket finishedWithFeed:(GDataFeedVolume *)object error:(NSError *)error {
     
     if (error == nil) {        
-        for (GDataEntryBase *entry in [object entries]) {
+		[self.delegate parser:self didParseTotalResults:[object totalResults]]; // pass over the total results number to the BlioStoreCategoriesController, so that it can assign the number to the respective feed.
+		// if nextLink is not nil, then send it back to the delegate in NSURL form
+		if ([object nextLink] != nil) [self.delegate parser:self didParseNextLink:[[object nextLink] URL]];
+		
+		for (GDataEntryBase *entry in [object entries]) {
             NSURL *idUrl = [NSURL URLWithString:[entry identifier]];
             if (nil != idUrl) {
                 GDataQueryBooks *query = [GDataQueryBooks booksQueryWithFeedURL:idUrl];            

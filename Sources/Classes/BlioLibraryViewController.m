@@ -217,78 +217,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     if (![[aFetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
         
-        [self.processingDelegate enqueueBookWithTitle:@"The Oz Principle" 
-                                              authors:[NSArray arrayWithObject:@"Roger Conners"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"RogerConnors" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"How To Be A Movie Star" 
-                                              authors:[NSArray arrayWithObject:@"William Mann"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"WilliamMann" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Her Fearful Symmetry" 
-                                              authors:[NSArray arrayWithObject:@"Audrey Niffenegger"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"AudreyNiffenegger" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"The Lost Symbol" 
-                                              authors:[NSArray arrayWithObject:@"Dan Brown"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"DanBrown" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Hostage" 
-                                              authors:[NSArray arrayWithObject:@"Don Brown"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"DonBrown" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"I, Alex Cross" 
-                                              authors:[NSArray arrayWithObject:@"James Patterson"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"JamesPatterson" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Diary of a Wimpy Kid, Dog Days" 
-                                              authors:[NSArray arrayWithObject:@"Jeff Kinney"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"JeffKinney" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Pirate Latitudes" 
-                                              authors:[NSArray arrayWithObject:@"Michael Crichton"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"MichaelCrichton" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"The Girl With The Dragon Tatoo" 
-                                              authors:[NSArray arrayWithObject:@"Stieg Larsson"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"StiegLarsson" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Bill Willingham"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"FablesLegendsInExile" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -308,7 +236,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
                                               authors:[NSArray arrayWithObject:@"David J. Hunter"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"epub" inDirectory:@"ePubs"]]
+                                              ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:nil
                                          audiobookURL:nil];
@@ -351,8 +279,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                               ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
+										 audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"AudioBooks"]]];
+		
         [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
                                               authors:[NSArray arrayWithObject:@"Martha Stewart"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -400,152 +328,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
-        
-        
-        /*
-        
-        BlioMockBook *aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Dead Is So Last Year"];
-        [aBook setAuthor:@"Marlene Perez"];
-        [aBook setCoverFilename:@"ePubs/Dead Is So Last Year.epub/OPS/cover.png"];
-        [aBook setEpubFilename:@"Dead Is So Last Year"];
-        [aBook setPdfFilename:@"Dead Is So Last Year"];
-        [aBook setTextflowFilename:@"Dead Is So Last Year_split"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.8f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.3f]];
-        [aBook setPosition:[NSNumber numberWithInt:12]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Exiles In The Garden"];
-        [aBook setAuthor:@"Ward Just"];
-        [aBook setCoverFilename:@"ePubs/Exiles In The Garden.epub/OPS/cover.png"];
-        [aBook setEpubFilename:@"Exiles In The Garden"];
-        [aBook setPdfFilename:@"Exiles In The Garden"];
-        [aBook setTextflowFilename:@"ExilesInTheGarden_split"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.3f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.6f]];
-        [aBook setPosition:[NSNumber numberWithInt:12]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-         
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Essentials Of Discrete Mathematics"];
-        [aBook setAuthor:@"David J. Hunter"];
-        [aBook setCoverFilename:@"MockCovers/Essentials_of_Discrete_Mathematics.png"];
-        [aBook setEpubFilename:@"Essentials_of_Discrete_Mathematics"];
-        [aBook setPdfFilename:@"Essentials_of_Discrete_Mathematics"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.2f]];
-        [aBook setPosition:[NSNumber numberWithInt:11]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Three Little Pigs"];
-        [aBook setAuthor:@"Stella Blackstone"];
-        [aBook setCoverFilename:@"MockCovers/Three_Little_Pigs.png"];
-        [aBook setEpubFilename:@"Three Little Pigs"];
-        [aBook setPdfFilename:@"Three Little Pigs"];
-        [aBook setAudiobookFilename:@"Three Little Pigs"];
-        [aBook setTimingIndicesFilename:@"Three Little Pigs"];
-        [aBook setHasAudioRights:[NSNumber numberWithBool:YES]];
-        [aBook setTextflowFilename:@"Three Little Pigs_split"];
-        [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
-        [aBook setPosition:[NSNumber numberWithInt:10]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Fables: Legends In Exile"];
-        [aBook setAuthor:@"Bill Willingham"];
-        [aBook setCoverFilename:@"MockCovers/FablesLegendsInExile.png"];
-        [aBook setEpubFilename:nil];
-        [aBook setPdfFilename:@"Legends"];
-        [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.05f]];
-        [aBook setPosition:[NSNumber numberWithInt:9]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"The Oz Principle"];
-        [aBook setAuthor:@"Roger Conners"];
-        [aBook setCoverFilename:@"MockCovers/RogerConnors.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.7f]];
-        [aBook setPosition:[NSNumber numberWithInt:8]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"How To Be A Movie Star"];
-        [aBook setAuthor:@"William Mann"];
-        [aBook setCoverFilename:@"MockCovers/WilliamMann.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
-        [aBook setPosition:[NSNumber numberWithInt:7]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Her Fearful Symmetry"];
-        [aBook setAuthor:@"Audrey Niffenegger"];
-        [aBook setCoverFilename:@"MockCovers/AudreyNiffenegger.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
-        [aBook setPosition:[NSNumber numberWithInt:6]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"The Lost Symbol"];
-        [aBook setAuthor:@"Dan Brown"];
-        [aBook setCoverFilename:@"MockCovers/DanBrown.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.53f]];
-        [aBook setPosition:[NSNumber numberWithInt:5]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Hostage"];
-        [aBook setAuthor:@"Don Brown"];
-        [aBook setCoverFilename:@"MockCovers/DonBrown.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.41f]];
-        [aBook setPosition:[NSNumber numberWithInt:4]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"I, Alex Cross"];
-        [aBook setAuthor:@"James Patterson"];
-        [aBook setCoverFilename:@"MockCovers/JamesPatterson.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.65f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.67f]];
-        [aBook setPosition:[NSNumber numberWithInt:3]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Diary of a Wimpy Kid, Dog Days"];
-        [aBook setAuthor:@"Jeff Kinney"];
-        [aBook setCoverFilename:@"MockCovers/JeffKinney.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.45f]];
-        [aBook setPosition:[NSNumber numberWithInt:2]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"Pirate Latitudes"];
-        [aBook setAuthor:@"Michael Crichton"];
-        [aBook setCoverFilename:@"MockCovers/MichaelCrichton.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:0.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.54f]];
-        [aBook setPosition:[NSNumber numberWithInt:1]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        
-        aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioMockBook" inManagedObjectContext:moc];
-        [aBook setTitle:@"The Girl With The Dragon Tatoo"];
-        [aBook setAuthor:@"Stieg Larsson"];
-        [aBook setCoverFilename:@"MockCovers/StiegLarsson.png"];
-        [aBook setProgress:[NSNumber numberWithFloat:1.0f]];
-        [aBook setProportionateSize:[NSNumber numberWithFloat:0.62f]];
-        [aBook setPosition:[NSNumber numberWithInt:0]];
-        [aBook setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-        */
+      
     }
     
     self.fetchedResultsController = aFetchedResultsController;

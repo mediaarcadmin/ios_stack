@@ -371,12 +371,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         self.audioPlaying = NO;
         self.wantsFullScreenLayout = YES;
-		_acapelaTTS = *[BlioBookViewController getTTSEngine];
-		if ( _acapelaTTS != nil )  {
-			[_acapelaTTS setPageChanged:YES];
-			[_acapelaTTS setDelegate:self];
-		} 
-        
+		if (![self.book audioRights]) {
+			_acapelaTTS = *[BlioBookViewController getTTSEngine];
+			if ( _acapelaTTS != nil )  {
+				[_acapelaTTS setPageChanged:YES];
+				[_acapelaTTS setDelegate:self];
+			} 
+		}
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
         [backArrow addTarget:self
                       action:@selector(_backButtonTapped) 
@@ -442,7 +443,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		
 		if ([self.book audiobookFilename] != nil) 
 			// We need to do this here instead of lazily when the play button is pushed because it takes too long.
-			_audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath]];        
+			_audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
     }
     return self;
 }
@@ -1460,7 +1461,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			[audioMgr adjustParagraphWords];
 	}
 	else {
-		paragraphId = [self getCurrentParagraph:pageType wordOffset:&wordOffset];
+		paragraphId = [self getCurrentParagraph:pageType wordOffset:&wordOffset]; 
 		// Play button has just been pushed.
 		if ( audioMgr.pageChanged ) {  
 			// Page has changed since the stop button was last pushed (and pageChanged is initialized to true).
@@ -1490,6 +1491,32 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	}
 	[audioMgr setStartedPlaying:YES];
 	[audioMgr setTextToSpeakChanged:YES];
+}
+
+- (BOOL)loadAudioFiles:(NSInteger)layoutPage segmentIndex:(NSInteger)segmentIx {
+	NSMutableArray* segmentInfo;
+	// Subtract 1 for now from page to match Blio layout page. Can't we have them match?
+	if ( !(segmentInfo = [(NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]] objectAtIndex:segmentIx]) )
+		return NO;
+	NSString* audiobooksPath = [self.book.bookCacheDirectory stringByAppendingPathComponent:@"/AudioBook/"];
+	NSString* timingPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.timeFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
+	if ( ![_audioBookManager loadWordTimesFromFile:timingPath] )  {
+		NSLog(@"Timing file could not be initialized.");
+		return NO;
+	}
+	NSString* audioPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.audioFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
+	if ( ![_audioBookManager initAudioWithBook:audioPath] ) {
+		NSLog(@"Audio player could not be initialized.");
+		return NO;
+	}
+	_audioBookManager.avPlayer.delegate = self;
+	// Cue up the audio player to where it starts for this page.
+	// In future, could get this from TimeIndex.
+	NSTimeInterval timeOffset = [[segmentInfo objectAtIndex:kTimeOffset] intValue]/1000.0;
+	[_audioBookManager.avPlayer setCurrentTime:timeOffset];
+	// Set the timing file index for this page.
+	_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue]; // need to subtract one...
+	return YES;
 }
 
 - (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
@@ -1560,12 +1587,43 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark AVAudioPlayer Delegate Methods 
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag { 
-	// Not getting here at end of audio for some reason.
-	UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-	[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-	self.audioPlaying = NO;
-	if (!flag)
+	if (!flag) {
+		UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
+		[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+		self.audioPlaying = NO;
 		NSLog(@"Audio player terminated because of error.");
+		return;
+	}
+	[_audioBookManager.speakingTimer invalidate];
+	NSInteger layoutPage = [self.bookView.pageBookmarkPoint layoutPage];
+	// Subtract 1 to match Blio layout page number.  
+	NSMutableArray* pageSegments = (NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]];
+	if ([pageSegments count] == 1 ) {
+		// Stopped at the exact end of the page.
+		BOOL loadedFilesAhead = NO;
+		for ( int i=[self.bookView.pageBookmarkPoint layoutPage]+1;i<=[self.bookView pageCount];++i ) {  
+			if ( [self loadAudioFiles:i segmentIndex:0] ) {
+				loadedFilesAhead = YES;
+				[self.bookView goToPageNumber:i animated:YES];
+				break;
+			}
+		}
+		if ( !loadedFilesAhead ) {
+			// End of book.
+			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
+			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+			self.audioPlaying = NO;
+		}
+	}
+	else {
+		// Stopped in the middle of the page.
+		// Kluge: assume there won't be more than two segments on a page.
+		if ( [self loadAudioFiles:layoutPage segmentIndex:1] ) {
+			[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+			[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
+			[_audioBookManager playAudio];
+		}
+	}
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer*)player error:(NSError*)error { 
@@ -1579,6 +1637,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark -
 #pragma mark Audiobook and General Audio Handling 
 
+/* obsolete
 - (BOOL)findTimes:(NSInteger)layoutPage {
 	NSString* fileSuffix;
 	for ( int i=0; i<[_audioBookManager.timingFiles count] ; ++i ) {
@@ -1594,31 +1653,23 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	}
 	return NO;
 }
+ */
+
 
 - (void)checkHighlightTime:(NSTimer*)timer {	
-	if ( _audioBookManager.timeIx == [_audioBookManager.times count] ) {
-		// End of times for this page, get next page's times if any.
-		if ( _audioBookManager.queueIx + 1 < [_audioBookManager.queuedTimes count] ) {
-			[_audioBookManager setLastOnPageTime:(_audioBookManager.lastOnPageTime + [(NSNumber*)[_audioBookManager.queuedEndTimes objectAtIndex:_audioBookManager.queueIx] intValue] + PAGE_TIMING_DELTA)];  
-			_audioBookManager.timeIx = 0;
-			_audioBookManager.times = [_audioBookManager.queuedTimes objectAtIndex:++_audioBookManager.queueIx];
-		}
-		else {
-			// Audio will end.	
-			// I'd rather this happen in audioDidFinishPlaying, but not getting into that for some reason.
-			// As a result, this button toggling is happening too soon, before the audio really ends.
-			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-			self.audioPlaying = NO;
-			return;
-		}
-	}
-	if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) 
+	if ( _audioBookManager.timeIx >= [_audioBookManager.wordTimes count] )
+		// can get here ahead of audioPlayerDidFinishPlaying
+		return;
+	if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) {
 		// Last word of paragraph, get more words.  
+		//NSLog(@"Reached end of paragraph, getting more words.");
 		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
-	
-	int timeElapsed = (int) (([_audioBookManager.avPlayer currentTime] - _audioBookManager.timeStarted) * 1000.0);
-	if ( (timeElapsed + _audioBookManager.pausedAtTime) >= ([[_audioBookManager.times objectAtIndex:_audioBookManager.timeIx] intValue] + _audioBookManager.lastOnPageTime) ) {
+	}
+	//int timeElapsed = (int) (([_audioBookManager.avPlayer currentTime] - _audioBookManager.timeStarted) * 1000.0);
+	//int timeElapsed = [_audioBookManager.avPlayer currentTime] * 1000;
+	//NSLog(@"Elapsed time %d",timeElapsed);
+	if ( ([_audioBookManager.avPlayer currentTime] * 1000 ) >= ([[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]) ) {
+		//NSLog(@"Passed time %d",[[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]);
 		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
 			[(BlioLayoutView *)self.bookView highlightWordAtParagraphId:(id)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
 		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
@@ -1629,8 +1680,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		}
 		++_audioBookManager.currentWordOffset;
 		++_audioBookManager.timeIx;
-		
-		//[_audioBookManager setCurrentWord:[string substringWithRange:characterRange]];
 	}
 }
 
@@ -1681,30 +1730,23 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			}
 			else if ([self.book audiobookFilename] != nil) {
 				if ( _audioBookManager.startedPlaying == NO ) { 
-					if ( ![_audioBookManager initAudioWithBook:[self.book audiobookPath]] ) {
-						NSLog(@"Audio player could not be initialized.");
-						return;
-					}
 					// So far this only would work for fixed view.
-					if ( ![self findTimes:[self.bookView.pageBookmarkPoint layoutPage]] < 0 )  
-						// No timing file for this page.
-						// Instead of returning, look for next page with a timing file?
-						return;
-					if ( _audioBookManager.queueIx > 0 ) {
-						// Not starting audio at the beginning, so figure out how far in to start.
-						//int lastWordTimes = 0;
-						int endWordTime, endWordTimes = 0;
-						for ( int i=0;i<_audioBookManager.queueIx;++i ) {  
-							endWordTime = [(NSNumber*)[_audioBookManager.queuedEndTimes objectAtIndex:i] intValue];
-							endWordTimes += endWordTime;
+					//if ( ![self findTimes:[self.bookView.pageBookmarkPoint layoutPage]] < 0 ) 
+					if ( ![self loadAudioFiles:[self.bookView.pageBookmarkPoint layoutPage] segmentIndex:0] ) {
+						// No audio files for this page.
+						// Look for next page with files.
+						BOOL loadedFilesAhead = NO;
+						for ( int i=[self.bookView.pageBookmarkPoint layoutPage]+1;;++i ) {
+							if ( [self loadAudioFiles:i segmentIndex:0] ) {
+								loadedFilesAhead = YES;
+								[self.bookView goToPageNumber:i animated:YES];
+								break;
+							}
 						}
-						// Inconsistent requirements here.  Sometimes and sometimes not it's necessary to add the offset of the first word on this page.
-						// Even after it's added the total offset still is too low after a certain number of pages.  I'm guessing the problem is a
-						// vestige of how the timing files are split up.
-						NSTimeInterval playerOffset = (endWordTimes + [(NSNumber*)[_audioBookManager.times objectAtIndex:0] intValue] + PAGE_TIMING_DELTA)/1000.0;  
-						// Cue up the player for the first word of this page.  OR: to end of last word of last page
-						[_audioBookManager.avPlayer setCurrentTime:playerOffset];
+						if ( !loadedFilesAhead )
+							return;
 					}
+					
 					[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
 				}
 				[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
