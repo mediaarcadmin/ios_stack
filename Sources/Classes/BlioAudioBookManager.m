@@ -109,7 +109,6 @@
 
 - (void)playAudio {
 	[self setTimeStarted:[avPlayer currentTime]];
-	//[self setTimeStarted:[[NSDate date] timeIntervalSince1970]];
 	[avPlayer play];
 }
 
@@ -139,19 +138,16 @@
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
 	NSString* audioPath;
 	if ( [elementName isEqualToString:@"Audio"] ) {
-		// Kluge, change this - just add filename here, make into a path in bookview ctlr.
-		//[book.bookCacheDirectory stringByAppendingPathComponent:filename];
-		audioPath = [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/AudioBooks/Graveyard Book/"] stringByAppendingString:[attributeDict objectForKey:@"src"]];
+		audioPath = [attributeDict objectForKey:@"src"];
 		[self.audioFiles addObject:audioPath];
 	}
 	else if ( [elementName isEqualToString:@"Timing"] ) {
-		// Kluge, change this
-		audioPath = [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/AudioBooks/Graveyard Book/"] stringByAppendingString:[attributeDict objectForKey:@"src"]];
+		audioPath = [attributeDict objectForKey:@"src"];
 		[self.timeFiles addObject:audioPath];
 	}
 	else if ( [elementName isEqualToString:@"Page"] ) {
 		pageSegments = [[NSMutableArray alloc] init];
-		[self setCurrDictKey:[attributeDict objectForKey:@"PageIndex"]];
+		[self setCurrDictKey:[attributeDict objectForKey:@"PageIndex"]];  // TODO: add one to match Blio layout pages
 	}
 	else if ( [elementName isEqualToString:@"AudioSegment"] ) {
 		pageSegmentVals = [[NSMutableArray alloc] initWithCapacity:3];

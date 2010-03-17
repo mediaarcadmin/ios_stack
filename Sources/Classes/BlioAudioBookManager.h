@@ -22,7 +22,7 @@ typedef enum {
 	NSMutableArray* wordTimes;
 	NSInteger timeStarted;
 	NSInteger timeIx;
-	NSInteger pausedAtTime;
+	NSInteger pausedAtTime; // currently unused
 	AVAudioPlayer* avPlayer;
 	NSMutableArray* audioFiles;
 	NSMutableArray* timeFiles;

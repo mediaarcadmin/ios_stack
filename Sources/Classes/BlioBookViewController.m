@@ -1462,7 +1462,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			[audioMgr adjustParagraphWords];
 	}
 	else {
-		paragraphId = [self getCurrentParagraph:pageType wordOffset:&wordOffset];  // No textflow, so no paragraph id !!!
+		paragraphId = [self getCurrentParagraph:pageType wordOffset:&wordOffset]; 
 		// Play button has just been pushed.
 		if ( audioMgr.pageChanged ) {  
 			// Page has changed since the stop button was last pushed (and pageChanged is initialized to true).
@@ -1496,16 +1496,17 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (BOOL)loadAudioFiles:(NSInteger)layoutPage segmentIndex:(NSInteger)segmentIx {
 	NSMutableArray* segmentInfo;
-	// Subtract 1 for now from page because I messed up in Audio.xml.
+	// Subtract 1 for now from page to match Blio layout page. Can't we have them match?
 	if ( !(segmentInfo = [(NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]] objectAtIndex:segmentIx]) )
 		return NO;
-	NSString* timingPath = [_audioBookManager.timeFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]];
+	NSString* audiobooksPath = [self.book.bookCacheDirectory stringByAppendingPathComponent:@"/AudioBook/"];
+	NSString* timingPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.timeFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
 	if ( ![_audioBookManager loadWordTimesFromFile:timingPath] )  {
 		NSLog(@"Timing file could not be initialized.");
 		return NO;
 	}
-	NSString* audiobookPath = [_audioBookManager.audioFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]];
-	if ( ![_audioBookManager initAudioWithBook:audiobookPath] ) {
+	NSString* audioPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.audioFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
+	if ( ![_audioBookManager initAudioWithBook:audioPath] ) {
 		NSLog(@"Audio player could not be initialized.");
 		return NO;
 	}
@@ -1515,7 +1516,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	NSTimeInterval timeOffset = [[segmentInfo objectAtIndex:kTimeOffset] intValue]/1000.0;
 	[_audioBookManager.avPlayer setCurrentTime:timeOffset];
 	// Set the timing file index for this page.
-	_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue];
+	_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue]; // need to subtract one...
 	return YES;
 }
 
@@ -1596,13 +1597,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	}
 	[_audioBookManager.speakingTimer invalidate];
 	NSInteger layoutPage = [self.bookView.pageBookmarkPoint layoutPage];
-	// Subtract 1 for now from page because I messed up in Audio.xml.
+	// Subtract 1 to match Blio layout page number.  
 	NSMutableArray* pageSegments = (NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]];
 	if ([pageSegments count] == 1 ) {
 		// Stopped at the exact end of the page.
 		BOOL loadedFilesAhead = NO;
-		// Need total number of fixed pages for end condition! Or else index into audio/rtx files array
-		for ( int i=[self.bookView.pageBookmarkPoint layoutPage]+1; ;++i ) {  
+		for ( int i=[self.bookView.pageBookmarkPoint layoutPage]+1;i<=[self.bookView pageCount];++i ) {  
 			if ( [self loadAudioFiles:i segmentIndex:0] ) {
 				loadedFilesAhead = YES;
 				[self.bookView goToPageNumber:i animated:YES];
@@ -1661,12 +1661,16 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	if ( _audioBookManager.timeIx >= [_audioBookManager.wordTimes count] )
 		// can get here ahead of audioPlayerDidFinishPlaying
 		return;
-	if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) 
+	if ( _audioBookManager.currentWordOffset == [_audioBookManager.paragraphWords count] ) {
 		// Last word of paragraph, get more words.  
+		//NSLog(@"Reached end of paragraph, getting more words.");
 		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+	}
 	//int timeElapsed = (int) (([_audioBookManager.avPlayer currentTime] - _audioBookManager.timeStarted) * 1000.0);
-	int timeElapsed = [_audioBookManager.avPlayer currentTime] * 1000;
-	if ( (timeElapsed + _audioBookManager.pausedAtTime) >= ([[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]) ) {
+	//int timeElapsed = [_audioBookManager.avPlayer currentTime] * 1000;
+	//NSLog(@"Elapsed time %d",timeElapsed);
+	if ( ([_audioBookManager.avPlayer currentTime] * 1000 ) >= ([[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]) ) {
+		//NSLog(@"Passed time %d",[[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]);
 		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
 			[(BlioLayoutView *)self.bookView highlightWordAtParagraphId:(id)_audioBookManager.currentParagraph wordOffset:_audioBookManager.currentWordOffset];
 		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
