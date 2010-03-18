@@ -342,7 +342,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"png" inDirectory:@"MockCovers"]]
                                               ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                          textFlowURL:nil
                                          audiobookURL:nil];
       
         [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 

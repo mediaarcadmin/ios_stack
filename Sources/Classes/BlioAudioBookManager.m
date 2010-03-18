@@ -120,7 +120,7 @@
 
 - (void)pauseAudio {
 	[self.speakingTimer invalidate];
-	[self setStartedPlaying:NO];
+	//[self setStartedPlaying:NO];
 	[avPlayer pause];
 	/*int i;
 	// The timer doesn't stop as quickly as the audio stops, so timeIx 
