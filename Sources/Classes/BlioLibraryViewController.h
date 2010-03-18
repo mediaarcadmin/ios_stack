@@ -8,7 +8,7 @@
 
 #import <CoreData/CoreData.h>
 
-@class BlioTestParagraphWords;
+@class BlioTestBlockWords;
 
 typedef enum {
     kBlioLibraryLayoutGrid = 0,
@@ -27,7 +27,7 @@ typedef enum {
     NSArray *_books;
     BlioLibraryLayout _libraryLayout;
     
-    BlioTestParagraphWords *_testParagraphWords;
+    BlioTestBlockWords *_testBlockWords;
     NSManagedObjectContext *_managedObjectContext;
     id<BlioProcessingDelegate> _processingDelegate;
     

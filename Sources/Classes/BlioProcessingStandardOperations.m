@@ -444,7 +444,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         }
         
         if (nil != rootFile)
-            [self setBookValue:rootFile forKey:@"textflowFilename"];
+            [self setBookValue:rootFile forKey:@"textFlowFilename"];
         else
             NSLog(@"Could not find root file in Textflow directory %@", cachedFilename);
     }

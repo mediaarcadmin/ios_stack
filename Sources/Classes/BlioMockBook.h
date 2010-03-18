@@ -33,7 +33,7 @@
 @property (nonatomic, retain) NSNumber *hasAudioRights;
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
-@property (nonatomic, retain) NSString *textflowFilename;
+@property (nonatomic, retain) NSString *textFlowFilename;
 
 - (NSString *)bookCacheDirectory;
 - (UIImage *)coverImage;

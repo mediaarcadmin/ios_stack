@@ -9,6 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "BlioStoreBooksSourceParser.h"
 
+static const CGFloat kBlioBookDetailFieldYMargin = 20;
+static const NSUInteger kBlioStoreDownloadButtonStateInitial = 0;
+static const NSUInteger kBlioStoreDownloadButtonStateConfirm = 1;
+static const NSUInteger kBlioStoreDownloadButtonStateInProcess = 2;
+static const NSUInteger kBlioStoreDownloadButtonStateDone = 3;
+static const NSUInteger kBlioStoreDownloadButtonStateNoDownload = 4;
+extern NSString * const kBlioStoreDownloadButtonStateLabelInitial;
+extern NSString * const kBlioStoreDownloadButtonStateLabelConfirm;
+extern NSString * const kBlioStoreDownloadButtonStateLabelInProcess;
+extern NSString * const kBlioStoreDownloadButtonStateLabelDone;
+extern NSString * const kBlioStoreDownloadButtonStateLabelNoDownload;
+
 @protocol BlioProcessingDelegate;
 
 @interface BlioStoreBookViewController : UIViewController {
@@ -16,6 +28,8 @@
     BlioStoreParsedEntity *entity;
     UIScrollView *scroller;
     UIView *container;
+    UIView *downloadButtonContainer;
+    UIImageView *downloadButtonBackgroundView;
     UIImageView *bookThumb;
     UIImageView *bookShadow;
     UIView *bookPlaceholder;
@@ -28,7 +42,13 @@
     UILabel *publicationDate;
     UILabel *pages;
     UILabel *publisher;
-    
+    IBOutlet UILabel *releaseDateLabel;
+    IBOutlet UILabel *publicationDateLabel;
+    IBOutlet UILabel *pagesLabel;
+    IBOutlet UILabel *publisherLabel;
+    NSUInteger downloadState;
+	NSArray * downloadStateLabels;
+	
     id <BlioProcessingDelegate> processingDelegate;
 }
 
@@ -36,6 +56,8 @@
 @property (nonatomic, retain) BlioStoreParsedEntity *entity;
 @property (nonatomic, retain) IBOutlet UIScrollView *scroller;
 @property (nonatomic, retain) IBOutlet UIView *container;
+@property (nonatomic, retain) IBOutlet UIView *downloadButtonContainer;
+@property (nonatomic, retain) IBOutlet UIImageView *downloadButtonBackgroundView;
 @property (nonatomic, retain) IBOutlet UIImageView *bookThumb;
 @property (nonatomic, retain) IBOutlet UIImageView *bookShadow;
 @property (nonatomic, retain) IBOutlet UIView *bookPlaceholder;
@@ -48,9 +70,15 @@
 @property (nonatomic, retain) IBOutlet UILabel *publicationDate;
 @property (nonatomic, retain) IBOutlet UILabel *pages;
 @property (nonatomic, retain) IBOutlet UILabel *publisher;
+@property (nonatomic, retain) IBOutlet UILabel *releaseDateLabel;
+@property (nonatomic, retain) IBOutlet UILabel *publicationDateLabel;
+@property (nonatomic, retain) IBOutlet UILabel *pagesLabel;
+@property (nonatomic, retain) IBOutlet UILabel *publisherLabel;
+@property (nonatomic, retain) NSArray *downloadStateLabels;
 
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
 
 - (IBAction)downloadButtonPressed:(id)sender;
+- (void) setDownloadState:(NSUInteger)state animated:(BOOL)animationStatus;
 
 @end

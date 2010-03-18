@@ -66,7 +66,7 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
     UIImage *shadowLeft;
     UIImage *shadowRight;
     BOOL isCancelled;
-    BlioTextFlowParagraph *lastParagraph;
+    BlioTextFlowBlock *lastBlock;
 }
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;

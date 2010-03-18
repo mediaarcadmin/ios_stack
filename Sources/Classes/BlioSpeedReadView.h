@@ -21,7 +21,7 @@
     NSInteger pageNumber;
     NSInteger pageCount;
     
-    uint32_t currentParagraph;
+    uint32_t currentBlock;
 	uint32_t currentWordOffset;
 	uint32_t currentPage;
     
@@ -67,7 +67,7 @@
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 @property (nonatomic, readonly) CGRect firstPageRect;
 
-@property (nonatomic) uint32_t currentParagraph;
+@property (nonatomic) uint32_t currentBlock;
 @property (nonatomic) uint32_t currentWordOffset;
 @property (nonatomic) uint32_t currentPage;
 
@@ -79,8 +79,8 @@
 
 - (float)speedForYValue:(float)y;
 - (float)calculateFingerXValueFromY:(float)y;
-- (void)fillArrayWithNextParagraph;
-- (void)fillArrayWithCurrentParagraph;
+- (void)fillArrayWithNextBlock;
+- (void)fillArrayWithCurrentBlock;
 
 @property (nonatomic) float speed;
 
