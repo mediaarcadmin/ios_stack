@@ -14,6 +14,8 @@
 @property (nonatomic, retain) NSTimer *doubleTapEndTimer;
 @property (nonatomic) BlioLayoutTouchForwardingState forwardingState;
 
+- (void)handleSingleTouch;
+
 @end
 
 static const CGFloat kBlioLayoutLHSHotZone = 1.0f / 3 * 1;
@@ -41,7 +43,6 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
     
@@ -126,10 +127,16 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
             break;
         case BlioLayoutTouchForwardingStateForwardedBegin:
             self.doubleTapEndTimer = [NSTimer scheduledTimerWithTimeInterval:0.35f target:self selector:@selector(delayedTouchesEnded:) userInfo:touches repeats:NO];
+            [self.selector touchesEnded:touches];
             break;
         case BlioLayoutTouchForwardingStateForwardedBeginTimerExpired:
             self.forwardingState = BlioLayoutTouchForwardingStateNone;
-            [self.selector touchesEnded:touches];
+            if (![self.selector isTracking]) {
+                [self.selector touchesEnded:touches];
+                [self handleSingleTouch];
+            } else {
+                [self.selector touchesEnded:touches];
+            }
             break;
         default:
             break;
@@ -139,36 +146,42 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 - (void)delayedTouchesEnded:(NSTimer *)timer {
     NSSet *touches = (NSSet *)[timer userInfo];
     
-    if (self.forwardingState == BlioLayoutTouchForwardingStateCancelled) {
-        [self.selector touchesCancelled:touches];
-    } else {
+    //if (self.forwardingState == BlioLayoutTouchForwardingStateCancelled) {
+//        [self.selector touchesCancelled:touches];
+//    } else {
         UITouch * t = [touches anyObject];
         if ((![self.selector isTracking]) && ([t tapCount] == 1)) {
-            CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] bounds]);
-            CGFloat leftHandHotZone = screenWidth * kBlioLayoutLHSHotZone;
-            CGFloat rightHandHotZone = screenWidth * kBlioLayoutRHSHotZone;
+            //[self.selector touchesEnded:touches];
+            [self handleSingleTouch];
             
-            if (touchesBeginPoint.x <= leftHandHotZone) {
-                if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToPreviousBlock)])
-                    [(NSObject *)self.delegate performSelector:@selector(zoomToPreviousBlock) withObject:nil];
-                
-                [self.bookDelegate hideToolbars];
-            } else if (touchesBeginPoint.x >= rightHandHotZone) {
-                if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToNextBlock)])
-                    [(NSObject *)self.delegate performSelector:@selector(zoomToNextBlock) withObject:nil]; 
-                
-                [self.bookDelegate hideToolbars];
-            } else {
-                [self.bookDelegate toggleToolbars]; 
-            }
-        }
-        
-        [self.selector touchesEnded:touches];
-    }
+        } //else {
+//            [self.selector touchesEnded:touches];
+//        }
+    //}
     
     self.forwardingState = BlioLayoutTouchForwardingStateNone;
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
+}
+
+- (void)handleSingleTouch {
+    CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] bounds]);
+    CGFloat leftHandHotZone = screenWidth * kBlioLayoutLHSHotZone;
+    CGFloat rightHandHotZone = screenWidth * kBlioLayoutRHSHotZone;
+    
+    if (touchesBeginPoint.x <= leftHandHotZone) {
+        if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToPreviousBlock)])
+            [(NSObject *)self.delegate performSelector:@selector(zoomToPreviousBlock) withObject:nil];
+        
+        [self.bookDelegate hideToolbars];
+    } else if (touchesBeginPoint.x >= rightHandHotZone) {
+        if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToNextBlock)])
+            [(NSObject *)self.delegate performSelector:@selector(zoomToNextBlock) withObject:nil]; 
+        
+        [self.bookDelegate hideToolbars];
+    } else {
+        [self.bookDelegate toggleToolbars]; 
+    }    
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
