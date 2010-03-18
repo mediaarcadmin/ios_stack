@@ -126,10 +126,14 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
 
     if([self.url isFileURL]) {
-        // Just hard link the local files to save time
+        // Just copy the local files to save time
+        NSError *error;
         NSString *fromPath = [[[self.url absoluteURL] path] stringByStandardizingPath];
         NSString *toPath = [cachedPath stringByStandardizingPath];
-        link([fromPath fileSystemRepresentation], [toPath fileSystemRepresentation]);
+        
+        if (![[NSFileManager defaultManager] copyItemAtPath:fromPath toPath:toPath error:&error]) {
+            NSLog(@"Failed to copy file from %@ to %@ with error %@ : %@", fromPath, toPath, error, [error userInfo]);
+        }
         
         [self downloadDidFinishSuccessfully:YES];
         [self finish];
