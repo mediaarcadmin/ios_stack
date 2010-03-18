@@ -304,6 +304,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             [self release]; 
             self = nil;
         } else {
+            // We MUST not retain any nodes - they will retain us.
             static const CFDictionaryKeyCallBacks keyCallbacks = {0};
             static const CFDictionaryValueCallBacks valueCallbacks = {0};
             _keyToExtantNode = CFDictionaryCreateMutable(kCFAllocatorDefault,
