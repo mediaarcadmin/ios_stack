@@ -84,26 +84,34 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
 - (id)initWithData:(NSData *)xmlData
 {
     if((self = [super init])) {
-        NSMutableArray *buildNodes = [[NSMutableArray alloc] init];
-        NSMutableDictionary *buildIdToNodes = [[NSMutableDictionary alloc] init];
-        EucCSSXMLTreeContext context = { buildNodes, buildIdToNodes, NULL };
-        
-        XML_Parser parser = XML_ParserCreate("UTF-8");
-        XML_SetUserData(parser, &context);    
-        XML_UseForeignDTD(parser, XML_TRUE);
-        
-       /* XML_SetDoctypeDeclHander(parser, XML_StartDoctypeDeclHandler start, XML_EndDoctypeDeclHandler end);        
-        XML_SetCommentHandler(parser, XML_CommentHandler handler)
-       */ XML_SetElementHandler(parser, EucCSSXMLTreeStartElementHandler, EucCSSXMLTreeEndElementHandler);
-        XML_SetCharacterDataHandler(parser, EucCSSXMLTreeCharactersHandler);
-       // XML_SetSkippedEntityHandler(parser, paragraphBuildingSkippedEntityHandler);
-        
-        XML_Parse(parser, [xmlData bytes], [xmlData length], XML_FALSE);
-        
-        XML_ParserFree(parser);
-        
-        _nodes = buildNodes;
-        _idToNode = buildIdToNodes;
+        NSUInteger xmlLength = xmlData.length;
+        if(xmlLength) {
+            NSMutableArray *buildNodes = [[NSMutableArray alloc] init];
+            NSMutableDictionary *buildIdToNodes = [[NSMutableDictionary alloc] init];
+            EucCSSXMLTreeContext context = { buildNodes, buildIdToNodes, NULL };
+            
+            XML_Parser parser = XML_ParserCreate("UTF-8");
+            XML_SetUserData(parser, &context);    
+            XML_UseForeignDTD(parser, XML_TRUE);
+            
+           /* XML_SetDoctypeDeclHander(parser, XML_StartDoctypeDeclHandler start, XML_EndDoctypeDeclHandler end);        
+            XML_SetCommentHandler(parser, XML_CommentHandler handler)
+           */ XML_SetElementHandler(parser, EucCSSXMLTreeStartElementHandler, EucCSSXMLTreeEndElementHandler);
+            XML_SetCharacterDataHandler(parser, EucCSSXMLTreeCharactersHandler);
+           // XML_SetSkippedEntityHandler(parser, paragraphBuildingSkippedEntityHandler);
+            
+            XML_Parse(parser, [xmlData bytes], xmlLength, XML_FALSE);
+            
+            XML_ParserFree(parser);
+            
+            if(buildNodes.count) {
+                _nodes = buildNodes;
+                _idToNode = buildIdToNodes;
+            } else {
+                [buildNodes release];
+                [_idToNode release];
+            }
+        }
     }
     return self;
 }

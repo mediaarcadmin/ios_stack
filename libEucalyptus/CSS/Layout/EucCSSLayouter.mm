@@ -433,7 +433,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 if(positionedRun) {
                     [currentPositionedBlock addSubEntity:positionedRun];
                     
-                    BOOL first = YES; // Break before last line doesn't count.
+                    BOOL first = YES; // Break before first line doesn't count.
                     for(EucCSSLayoutLine *line in positionedRun.lines) {
                         if(!first) {
                             EucCSSLayoutDocumentRunPoint startPoint = line.startPoint;
@@ -454,6 +454,10 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 }
                 
                 
+                currentDocumentNode = documentRun.nextNodeInDocument;
+                nextRunNodeKey = ((EucCSSIntermediateDocumentConcreteNode *)currentDocumentNode).key;
+
+                /*
                 EucCSSIntermediateDocumentNode *runsNextNode = documentRun.nextNodeUnderLimitNode;
                 if(runsNextNode) {
                     // Non-first run in a block has the ID of its first element.
@@ -461,7 +465,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     nextRunNodeKey = ((EucCSSIntermediateDocumentConcreteNode *)currentDocumentNode).key;
                 } else {
                     currentDocumentNode = documentRun.nextNodeInDocument;
-                }
+                }*/
                 [documentRun release];
             } else {
                 //THLog(@"Block: %@", [currentDocumentNode name]);
@@ -550,7 +554,9 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         } else {
             *returningCompleted = YES;
         }
-        
+    } else {
+        *returningNextPoint = point;
+        *returningCompleted = YES;
     }
     
     return positionedRoot;

@@ -257,6 +257,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         computedSize.height = specifiedWidth * (imageSize.height / imageSize.width);
     } else {
         computedSize = imageSize;
+        computedSize.width *= _scaleFactor;
+        computedSize.height *= _scaleFactor;
     }
            
     computedSize.width = roundf(computedSize.width);
@@ -325,6 +327,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
             [_sizeDependentComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];
             
             _previousInlineCharacterWasSpace = NO;
+            _seenNonSpace = YES;
             
             [image release];
         }
@@ -514,6 +517,9 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                         }
                         wordStart = cursor;
                         _previousInlineCharacterWasSpace = NO;
+                        if(!_seenNonSpace) {
+                            _seenNonSpace = YES;
+                        }
                     }
             }
             ++cursor;
@@ -530,7 +536,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
             }
         } 
         if(_previousInlineCharacterWasSpace) {
-            if(!_alreadyInsertedSpace) {
+            if(!_alreadyInsertedSpace && _seenNonSpace) {
+                // Check _seenNonSpace because we're not supposed to add spaces at the /start/ of lines.
                 [self _addComponent:[EucCSSLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
                 _alreadyInsertedSpace = YES;
             }
@@ -623,7 +630,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                                           wordOffset:(uint32_t)wordOffset 
                                        elementOffset:(uint32_t)elementOffset
 {
-    if(_componentsCount == 1 && _components[0] == sSingleSpaceMarker) {
+    if(_componentsCount == 0) {
         return nil;
     }    
     

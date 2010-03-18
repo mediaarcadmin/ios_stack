@@ -54,6 +54,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
    
     BOOL _previousInlineCharacterWasSpace;
     BOOL _alreadyInsertedSpace;
+    BOOL _seenNonSpace;
     
     NSMutableArray *_sizeDependentComponentIndexes;
     
