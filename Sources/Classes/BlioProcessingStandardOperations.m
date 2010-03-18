@@ -19,6 +19,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 - (void)main {
     if ([self isCancelled]) return;
     [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
+    NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
 }
 
 @end
@@ -125,30 +126,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
 
     if([self.url isFileURL]) {
-        // Just symlink it to save time.
-        
+        // Just hard link the local files to save time
         NSString *fromPath = [[[self.url absoluteURL] path] stringByStandardizingPath];
         NSString *toPath = [cachedPath stringByStandardizingPath];
-        
-        NSArray *fromComponents = [fromPath pathComponents];
-        NSArray *toComponents = [toPath pathComponents];
-        
-        NSUInteger i = 0;
-        for(; 
-            i < fromComponents.count && i < toComponents.count &&
-            [[fromComponents objectAtIndex:i] isEqualToString:[toComponents objectAtIndex:i]];
-            ++i) {
-        }
-        NSMutableArray *relativeComponents = [NSMutableArray array];
-        for(NSUInteger j = i; j < (toComponents.count - 1); ++j) {
-            [relativeComponents addObject:@".."];
-        }
-        [relativeComponents addObjectsFromArray:[fromComponents subarrayWithRange:NSMakeRange(i, fromComponents.count - i)]];
-            
-        NSString *relativePath = [relativeComponents componentsJoinedByString:@"/"];
-        symlink([relativePath fileSystemRepresentation], [toPath fileSystemRepresentation]);
-        
-        NSLog(@"Symlinking from \"%@\" to \"%@\" as \"%@\" instead of downloading", fromPath, toPath, relativePath); 
+        link([fromPath fileSystemRepresentation], [toPath fileSystemRepresentation]);
         
         [self downloadDidFinishSuccessfully:YES];
         [self finish];
