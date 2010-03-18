@@ -759,7 +759,7 @@ static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     // Parse pageRange file
     XML_Parser pageRangeFileParser = XML_ParserCreate(NULL);
     
-    if ([filename isEqualToString:@"PageRanges.xml"])
+    if ([filename isEqualToString:@"Sections.xml"])
         XML_SetStartElementHandler(pageRangeFileParser, pageRangeFileXMLParsingStartElementHandler);
     else
         XML_SetStartElementHandler(pageRangeFileParser, pageRangeFileXMLParsingStartElementHandlerV1);
@@ -783,7 +783,7 @@ static void flowFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         }
             
         XML_Parser flowParser = XML_ParserCreate(NULL);
-        if ([filename isEqualToString:@"PageRanges.xml"])
+        if ([filename isEqualToString:@"Sections.xml"])
             XML_SetStartElementHandler(flowParser, pageFileXMLParsingStartElementHandler);
         else
             XML_SetStartElementHandler(flowParser, flowFileXMLParsingStartElementHandler);

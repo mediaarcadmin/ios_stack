@@ -445,7 +445,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         
         NSString *rootFile = nil;
         for (NSString *textFlowFile in textFlowFiles) {
-            if ([textFlowFile isEqualToString:@"PageRanges.xml"]) {
+            if ([textFlowFile isEqualToString:@"Sections.xml"]) {
                 rootFile = textFlowFile;
                 break;
             } else {
