@@ -1603,7 +1603,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	if ([pageSegments count] == 1 ) {
 		// Stopped at the exact end of the page.
 		BOOL loadedFilesAhead = NO;
-		for ( int i=[self.bookView.pageBookmarkPoint layoutPage]+1;i<=[self.bookView pageCount];++i ) {  
+		for ( int i=layoutPage+1;i<=[self.bookView pageCount];++i ) {  
 			if ( [self loadAudioFiles:i segmentIndex:0] ) {
 				loadedFilesAhead = YES;
 				[self.bookView goToPageNumber:i animated:YES];
@@ -1615,6 +1615,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
 			self.audioPlaying = NO;
+		}
+		else {
+			[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+			[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
+			[_audioBookManager playAudio];
 		}
 	}
 	else {
@@ -1731,7 +1736,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
 			}
 			else if ([self.book audiobookFilename] != nil) {
-				if ( _audioBookManager.startedPlaying == NO ) { 
+				if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
 					// So far this only would work for fixed view.
 					//if ( ![self findTimes:[self.bookView.pageBookmarkPoint layoutPage]] < 0 ) 
 					if ( ![self loadAudioFiles:[self.bookView.pageBookmarkPoint layoutPage] segmentIndex:0] ) {
