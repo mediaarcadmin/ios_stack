@@ -224,7 +224,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"No!";
 	else if (downloadState == kBlioStoreDownloadButtonStateConfirm) {
 //		NSLog(@"button pressed while in Confirm state");
 		// start processing download decision
-		/*
+		
 		[self.processingDelegate enqueueBookWithTitle:self.entity.title 
 											  authors:[NSArray arrayWithObject:self.entity.author]
 											 coverURL:self.entity.coverUrl ? [NSURL URLWithString:self.entity.coverUrl] : nil
@@ -232,7 +232,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"No!";
 											   pdfURL:self.entity.pdfUrl ? [NSURL URLWithString:self.entity.pdfUrl] : nil
 										  textFlowURL:nil
 										 audiobookURL:nil];
-		*/
+		
 		// register as listener, possibly set graphic state to kBlioStoreDownloadButtonStateInProcess
 		[self setDownloadState:kBlioStoreDownloadButtonStateInProcess animated:YES];
 	}
