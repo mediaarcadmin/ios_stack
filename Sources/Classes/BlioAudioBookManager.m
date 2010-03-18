@@ -119,8 +119,9 @@
 }
 
 - (void)pauseAudio {
-	[avPlayer pause];
 	[self.speakingTimer invalidate];
+	[self setStartedPlaying:NO];
+	[avPlayer pause];
 	/*int i;
 	// The timer doesn't stop as quickly as the audio stops, so timeIx 
 	// gets a little bit ahead.  Use currentTime to reset it.
@@ -130,8 +131,8 @@
 	}
 	self.timeIx = i-1;
 	*/
-	self.pausedAtTime = [[self.wordTimes objectAtIndex:self.timeIx] intValue];// + self.lastOnPageTime;
-	NSLog(@"Pausing audio, timeIx is %d, pausedAtTime is %d",self.timeIx,self.pausedAtTime);
+	//self.pausedAtTime = [[self.wordTimes objectAtIndex:self.timeIx] intValue];
+	//NSLog(@"Pausing audio, timeIx is %d, pausedAtTime is %d",self.timeIx,self.pausedAtTime);
 }
 
 
