@@ -54,10 +54,7 @@ static void *PaginationThread(void *self)
     return NULL;
 }
 
-//static const NSUInteger sDesiredPointSizes[] = { 14, 16, 18, 20, 22 };
-//static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / sizeof(sDesiredPointSizes[0]));
-
-static const NSUInteger sDesiredPointSizes[] = { /*14, 16,*/ 18, /*20, 22*/ };
+static const NSUInteger sDesiredPointSizes[] = { 14, 16, 18, 20, 22 };
 static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / sizeof(sDesiredPointSizes[0]));
 
 - (void)_paginationThread
