@@ -1361,7 +1361,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset {
-    NSLog(@"Goto page %d", targetPage);
+    //NSLog(@"Goto page %d", targetPage);
     if (targetPage < 1 )
         targetPage = 1;
     else if (targetPage > pageCount)
@@ -1642,6 +1642,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         } else if ([animationID isEqualToString:@"BlioZoomPage"]) {
             [self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
             [self performSelector:@selector(enableInteractions) withObject:nil afterDelay:0.1f];
+        } else if ([animationID isEqualToString:@"BlioZoomToBlock"]) {
+            [self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
+            self.disableScrollUpdating = NO;
         }
     }
 } 
@@ -2025,7 +2028,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         } else {
-            [UIView beginAnimations:@"BlioZoomPage" context:nil];
+            [UIView beginAnimations:@"BlioZoomToBlock" context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationBeginsFromCurrentState:YES];
             [UIView setAnimationDuration:0.35f];
@@ -2037,6 +2040,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             [self.scrollView setContentOffset:newContentOffset];
             self.lastZoomScale = self.scrollView.zoomScale;
             [UIView commitAnimations];
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }
     } else {
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];

@@ -269,7 +269,7 @@
 }
 
 - (void)cacheReady:(id)aCacheLayer {
-    NSLog(@"Cache ready for page %d", pageNumber);
+    //NSLog(@"Cache ready for page %d", pageNumber);
     [self.thumbLayer setCacheLayer:(CGLayerRef)aCacheLayer];
     [self.thumbLayer setNeedsDisplay];
 }
@@ -281,7 +281,7 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    NSLog(@"Draw tiled layer for page %d with transform %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
+    //NSLog(@"Draw tiled layer for page %d with transform %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     
     if (!self.cached) {
         self.cached = YES;
