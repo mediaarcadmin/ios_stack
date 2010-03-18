@@ -7,7 +7,7 @@
 //
 
 #import "TransitionTestRootViewController.h"
-#import <libEucalyptus/EucEPubBook.h>
+#import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookViewController.h>
 
 @implementation TransitionTestRootViewController
@@ -114,14 +114,26 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger row = indexPath.row;
     if(row < 2) {
-        EucEPubBook *book = [[EucEPubBook alloc] initWithPath:[[NSBundle mainBundle] pathForResource:@"book" ofType:nil]];
-        EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
-        [book release];
-        
-        bookViewController.toolbarsVisibleAfterAppearance = (row == 0);
-        
-        [self.navigationController pushViewController:bookViewController animated:YES];
-        [bookViewController release];
+        NSString *bookPath = nil;
+        NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
+        for(NSString *resource in [[NSFileManager defaultManager] directoryContentsAtPath:resourcePath]) {
+            NSString *fullPath = [resourcePath stringByAppendingPathComponent:resource];
+            BOOL isDirectory = YES;
+            if([[NSFileManager defaultManager] fileExistsAtPath:[fullPath stringByAppendingPathComponent:@"META-INF"] isDirectory:&isDirectory] && isDirectory) {
+                bookPath = fullPath;
+                break;
+            }
+        }        
+        if(bookPath) {
+            EucBUpeBook *book = [[EucBUpeBook alloc] initWithPath:bookPath];
+            EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
+            [book release];
+            
+            bookViewController.toolbarsVisibleAfterAppearance = (row == 0);
+            
+            [self.navigationController pushViewController:bookViewController animated:YES];
+            [bookViewController release];
+        }
     } else {
         [self.navigationController setNavigationBarHidden:!self.navigationController.isNavigationBarHidden
                                                  animated:YES];

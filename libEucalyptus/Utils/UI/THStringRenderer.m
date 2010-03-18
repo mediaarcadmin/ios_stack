@@ -10,7 +10,7 @@
 #import "THLog.h"
 #import "THPair.h"
 #import "THTimer.h"
-#import "thjust.h"
+#import "th_just_with_floats.h"
 
 #import <pthread.h>
 
@@ -53,13 +53,13 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
             mapAndFont = [sFontNamesAndFlagsToMapsAndFonts objectForKey:fontKey];
             
             if(!mapAndFont) {
-				//THTimer *timer = [THTimer timerWithName:[NSString stringWithFormat:@"Create %@ renderer", fontName]];
+				THTimer *timer = [THTimer timerWithName:[NSString stringWithFormat:@"Create %@ renderer", fontName]];
 				
                 // Look up the font in the bundle, and cache it.
                 NSString *fullBundleFontName;;
                 
                 if(styleFlags) {
-                    NSMutableString *mutableBundleFontName = [[fontName mutableCopy] autorelease];
+                    NSMutableString *mutableBundleFontName = [fontName mutableCopy];
                     [mutableBundleFontName appendString:@"-"];
                     if(styleFlags & THStringRendererFontStyleFlagBold) {
                         [mutableBundleFontName appendString:@"Bold"];
@@ -67,7 +67,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                     if(styleFlags & THStringRendererFontStyleFlagItalic) {
                         [mutableBundleFontName appendString:@"Italic"];
                     }    
-                    fullBundleFontName = mutableBundleFontName;
+                    fullBundleFontName = [mutableBundleFontName autorelease];
                 } else {
                     fullBundleFontName = fontName;
                 }
@@ -147,7 +147,14 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 #if TARGET_OS_IPHONE
                             specificFontNames = [UIFont fontNamesForFamilyName:fontName];
 #else
-                            specificFontNames = [[NSFontManager sharedFontManager] availableMembersOfFontFamily:fontName];
+                            {
+                                NSArray *specifics = [[NSFontManager sharedFontManager] availableMembersOfFontFamily:fontName];
+                                NSMutableArray *buildSpecificFontNames = [NSMutableArray arrayWithCapacity:specifics.count];
+                                for(NSArray *specific in specifics) {
+                                    [buildSpecificFontNames addObject:[specific objectAtIndex:0]];
+                                }
+                                specificFontNames = buildSpecificFontNames;
+                            }
 #endif
                             NSInteger specificFontCount = specificFontNames.count;
                             if(specificFontCount) {
@@ -161,11 +168,11 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                                 NSUInteger specificFontIndex = 0;
                                 for(NSString *specificFontName in specificFontNames) {
                                     if([specificFontName rangeOfString:@"bold" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                                        points[specificFontIndex] += styleFlags & THStringRendererFontStyleFlagBold ? 1 : -1;
+                                        points[specificFontIndex] += (styleFlags & THStringRendererFontStyleFlagBold) ? 1 : -1;
                                     }
                                     if([specificFontName rangeOfString:@"italic" options:NSCaseInsensitiveSearch].location != NSNotFound ||
                                        [specificFontName rangeOfString:@"oblique" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                                        points[specificFontIndex] += styleFlags & THStringRendererFontStyleFlagItalic ? 1 : -1;
+                                        points[specificFontIndex] += (styleFlags & THStringRendererFontStyleFlagItalic) ? 1 : -1;
                                     }
                                     ++specificFontIndex;
                                 }
@@ -203,7 +210,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                                 uint16_t platformId = CFSwapInt16BigToHost(*((uint16_t *)(subtableCursor)));
                                 uint16_t platformSpecificID = CFSwapInt16BigToHost(*((uint16_t *)(subtableCursor + 2)));
                                 if((platformId == 0 && platformSpecificID == 3)
-                                   //|| (platformId == 3 && encodingId == 1)
+                                   || (platformId == 3 && platformSpecificID == 1)
                                     ) {
                                     // Mac Unicode
                                     offset = CFSwapInt32BigToHost(*((uint32_t *)(subtableCursor + 4)));
@@ -267,7 +274,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                         CGFontRelease(font);
                     }
                 }
-				//[timer report];
+				[timer report];
             }
         }
         pthread_mutex_unlock(&sFontCacheMutex);
@@ -522,12 +529,12 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
             
             breakAt->x1 = lineSoFarWidth;
             breakAt->penalty = 0;
-            breakAt->flags = TH_JUST_FLAG_ISSPACE;
+            breakAt->flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
             
             ++breakAt;
             ++lastEncodedWordsAt;
         }
-        (breakAt - 1)->flags |= TH_JUST_FLAG_ISHARDBREAK;
+        (breakAt - 1)->flags |= TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
     }
     [wordsByLine release];
     if(intermediateBuffer) {
@@ -539,11 +546,11 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     if((flags & THStringRendererFlagFairlySpaceLastLine) != 0) {
         // Remove the hard break from the end to make the justifier
         // justify fully all the lines equally.
-        _lastBreaks[_lastBreakCount - 1].flags &= (!TH_JUST_FLAG_ISHARDBREAK); // Remove the hard break 
+        _lastBreaks[_lastBreakCount - 1].flags &= (!TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK); // Remove the hard break 
     }
     
     _lastUsedBreaksIndexes = malloc(_lastBreakCount * sizeof(int));
-    _lastUsedBreakCount = th_just(_lastBreaks, _lastBreakCount, floorf(maxWidth), 0, _lastUsedBreaksIndexes);
+    _lastUsedBreakCount = th_just_with_floats(_lastBreaks, _lastBreakCount, 0, floorf(maxWidth), 0, _lastUsedBreaksIndexes);
     
     int longestLineLength = 0;
     int previousLineStart = 0;
@@ -559,7 +566,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         }
         previousLineStart = _lastBreaks[index].x1;
         
-        if((_lastBreaks[index].flags & TH_JUST_FLAG_ISHARDBREAK) == TH_JUST_FLAG_ISHARDBREAK &&
+        if((_lastBreaks[index].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK &&
            _lastBreaks[index].x1 - _lastBreaks[index].x0 == 0 &&
            index >= 1 && index < _lastBreakCount - 1 ) {
             // This is a blank line.

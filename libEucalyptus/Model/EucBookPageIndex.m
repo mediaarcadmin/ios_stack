@@ -25,20 +25,25 @@
 
 + (NSUInteger)indexVersion
 {
-    return 19;
+    return 1;
 }
 
-+ (NSString *)filenameForPageIndexForFontFamily:(NSString *)fontFamilyName pointSize:(NSUInteger)fontSize
++ (NSString *)filenameForPageIndexForPointSize:(NSUInteger)fontSize
 {
-    return [NSString stringWithFormat:@"%@-%lu.v%luindex", fontFamilyName, (unsigned long)fontSize, (unsigned long)[EucBookPageIndex indexVersion]];
+    return [NSString stringWithFormat:@"%lu.v%luindex", (unsigned long)fontSize, (unsigned long)[EucBookPageIndex indexVersion]];
 }
 
-+ (NSString *)constructionFilenameForPageIndexForFontFamily:(NSString *)fontFamilyName pointSize:(NSUInteger)fontSize
++ (NSString *)constructionFilenameForPageIndexForPointSize:(NSUInteger)fontSize
 {
-    return [NSString stringWithFormat:@"%@-%lu.v%luindexConstruction", fontFamilyName, (unsigned long)fontSize, (unsigned long)[EucBookPageIndex indexVersion]];
+    return [NSString stringWithFormat:@"%lu.v%luindexConstruction", (unsigned long)fontSize, (unsigned long)[EucBookPageIndex indexVersion]];
 }
 
-+ (void)markBookBundleAsIndexConstructed:(NSString *)bundlePath
++ (NSString *)constructionFlagFilename
+{
+    return [NSString stringWithFormat:@"constructed.v%luindexes", (unsigned long)[EucBookPageIndex indexVersion]];
+}
+
++ (void)markBookBundleAsIndexesConstructed:(NSString *)bundlePath
 {
     NSString *globPath = [bundlePath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luindexConstruction", (unsigned long)[EucBookPageIndex indexVersion]]];
     glob_t globValue;
@@ -64,33 +69,46 @@
         }
         globfree(&globValue);
     }
+    
+    int flagFd = open([[bundlePath stringByAppendingPathComponent:[[self class] constructionFlagFilename]] fileSystemRepresentation],
+                      O_WRONLY | O_TRUNC | O_CREAT, 
+                      S_IRUSR | S_IWUSR);
+    if(flagFd != -1) {
+        close(flagFd);
+    } else {
+        THWarn(@"Error marking indexes in %@ as constructed%s), error %d [\"%s\"]", bundlePath, errno, strerror(errno));  
+    }
+}
+
++ (BOOL)indexesAreConstructedForBookBundle:(NSString *)bundlePath
+{
+    return access([[bundlePath stringByAppendingPathComponent:[[self class] constructionFlagFilename]] fileSystemRepresentation],
+                  F_OK) == 0;
 }
 
 @synthesize book = _book;
-@synthesize fontFamily = _fontFamily;
 @synthesize pointSize = _pointSize;
 
 @synthesize isFinal = _isFinal;
-@synthesize lastOffset = _lastOffset;
+//@synthesize lastOffset = _lastOffset;
 
-- (id)_initForIndexInBook:(id<EucBook>)book forFontFamily:(NSString *)fontFamily pointSize:(NSUInteger)pointSize
+- (id)_initForIndexInBook:(id<EucBook>)book pointSize:(NSUInteger)pointSize
 {
     if((self = [super init])) {
         _book = [book retain];
-        _fontFamily = [fontFamily retain];
         _pointSize = pointSize;
         
-        NSString *path = book.path;
+        NSString *indexDirectoryPath = book.cacheDirectoryPath;
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *indexPath = [path stringByAppendingPathComponent:[[self class] filenameForPageIndexForFontFamily:fontFamily pointSize:pointSize]];
+        NSString *indexPath = [indexDirectoryPath stringByAppendingPathComponent:[[self class] filenameForPageIndexForPointSize:pointSize]];
         if(![fileManager fileExistsAtPath:indexPath]) {
-            indexPath =  [path stringByAppendingPathComponent:[[self class] constructionFilenameForPageIndexForFontFamily:fontFamily pointSize:pointSize]];
+            indexPath =  [indexDirectoryPath stringByAppendingPathComponent:[[self class] constructionFilenameForPageIndexForPointSize:pointSize]];
         } else {
             _isFinal = YES;
         }
         
-        _fd = open([indexPath fileSystemRepresentation], O_RDONLY, 0644);
+        _fd = open([indexPath fileSystemRepresentation], O_RDONLY);
         if(_fd == -1) {
             THWarn(@"Could not turn open index at %@, error %d [\"%s\"]", indexPath, errno, strerror(errno));
             [self dealloc];
@@ -105,12 +123,12 @@
         
         struct stat stat;
         fstat(_fd, &stat);
-        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 3);   
+        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 4);   
         
        // if(_isFinal) {
        //     _lastOffset = _book.bookFileSize;
        // } else {
-            _lastOffset = [self indexPointForPage:self.lastPageNumber].startOfParagraphByteOffset;
+         //   _lastOffset = [self indexPointForPage:self.lastPageNumber].startOfParagraphByteOffset;
        /*     [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(_bookPaginationProgress:)
                                                          name:BookPaginationProgressNotification
@@ -127,25 +145,25 @@
 
 - (void)_bookPaginationProgress:(NSNotification *)notification
 {
-    NSDictionary *userInfo = [notification userInfo];
+ /*   NSDictionary *userInfo = [notification userInfo];
     id<EucBook> book = [userInfo objectForKey:BookPaginationBookKey];
     if(book.etextNumber == _book.etextNumber) {
         struct stat stat;
         fstat(_fd, &stat);
-        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 3);   
-        _lastOffset = [self indexPointForPage:_lastPageNumber].startOfParagraphByteOffset;;
-    }
+        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 4);   
+        _lastOffset = [self indexPointForPage:_lastPageNumber].startOfParagraphByteOffset;
+    }*/
 }
 
 
 - (void)_bookPaginationComplete:(NSNotification *)notification
 {
-    NSDictionary *userInfo = [notification userInfo];
+ /*   NSDictionary *userInfo = [notification userInfo];
     id<EucBook> book = [userInfo objectForKey:BookPaginationBookKey];
     if(book.etextNumber == _book.etextNumber) {
         struct stat stat;
         fstat(_fd, &stat);
-        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 3);   
+        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 4);   
         //_lastOffset = _book.bookFileSize;
         _isFinal = YES;
         [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -154,30 +172,30 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:BookPaginationCompleteNotification
                                                       object:nil];        
-    }
+    }*/
 }
 
 
-+ (id)bookPageIndexForIndexInBook:(id<EucBook>)book forFontFamily:(NSString *)fontFamily pointSize:(NSUInteger)pointSize
++ (id)bookPageIndexForIndexInBook:(id<EucBook>)book forPointSize:(NSUInteger)pointSize
 {
-    return [[[self alloc] _initForIndexInBook:book forFontFamily:fontFamily pointSize:pointSize] autorelease];
+    return [[[self alloc] _initForIndexInBook:book pointSize:pointSize] autorelease];
 }
 
-+ (NSArray *)bookPageIndexesForBook:(id<EucBook>)book forFontFamily:(NSString *)fontFamily
++ (NSArray *)bookPageIndexesForBook:(id<EucBook>)book
 {
     NSMutableArray *indexes = [NSMutableArray array];
     
-    NSString *bundlePath = [book path];
-    NSString *globPath = [bundlePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-*.v%luindex*", fontFamily, (unsigned long)[EucBookPageIndex indexVersion]]];
+    NSString *indexDirectoryPath = [book cacheDirectoryPath];
+    NSString *globPath = [indexDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luindex*", (unsigned long)[EucBookPageIndex indexVersion]]];
     glob_t globValue;
     int err = glob([globPath fileSystemRepresentation],
                    0,
                    NULL,
                    &globValue);
     if(err != 0) {
-        THWarn(@"Globbing failed when attempting to find indexes in book bundle %@", bundlePath);
+        THWarn(@"Globbing failed when attempting to find indexes in book bundle %@", indexDirectoryPath);
     } else if(globValue.gl_pathc <= 0) {
-        THWarn(@"Could not find indexes in book bundle %@", bundlePath);
+        THWarn(@"Could not find indexes in book bundle %@", indexDirectoryPath);
     } else {
         THRegex *indexRegex = [THRegex regexWithPOSIXRegex:[NSString stringWithFormat:@"([[:digit:]]+).v%luindex(Construction)?$", (unsigned long)[EucBookPageIndex indexVersion]]];
         
@@ -185,7 +203,7 @@
             NSString *path = [NSString stringWithUTF8String:globValue.gl_pathv[i]];
             if([indexRegex matchString:path]) {
                 NSUInteger pointSize = [[indexRegex match:1] integerValue];
-                EucBookPageIndex *index = [self bookPageIndexForIndexInBook:book forFontFamily:fontFamily pointSize:pointSize];
+                EucBookPageIndex *index = [self bookPageIndexForIndexInBook:book forPointSize:pointSize];
                 if(index) {
                     [indexes addObject:index];
                 }
@@ -217,7 +235,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self closeIndex];
     [_book release];
-    [_fontFamily release];
     
     [super dealloc];
 }
@@ -229,7 +246,7 @@
 
     NSUInteger lastPageNumber = self.lastPageNumber;
     if(pageNumber <= lastPageNumber) {
-        off_t seekTo = (pageNumber - 1) * 3 * sizeof(uint32_t);
+        off_t seekTo = (pageNumber - 1) * 4 * sizeof(uint32_t);
         if(lseek(_fd, seekTo, SEEK_SET) == seekTo) {
             return [EucBookPageIndexPoint bookPageIndexPointFromOpenFD:_fd];
         } else {
@@ -238,7 +255,6 @@
     } else if(lastPageNumber == 0) {
         // Book is completly unpaginated.  Fake out the first page.
         ret = [[[EucBookPageIndexPoint alloc] init] autorelease];
-        ret.startOfParagraphByteOffset = _book.startOffset;
     }
     return ret;
 }
@@ -246,16 +262,18 @@
 
 - (NSUInteger)pageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    uint32_t startOfParagraphByteOffset = indexPoint.startOfParagraphByteOffset;
-    uint32_t startOfPageParagraphWordOffset = indexPoint.startOfPageParagraphWordOffset;
-    uint32_t startOfPageWordHyphenOffset = indexPoint.startOfParagraphByteOffset;
+    uint32_t source = indexPoint.source;
+    uint32_t block = indexPoint.block;
+    uint32_t word = indexPoint.word;
+    uint32_t element = indexPoint.element;
 
-    uint32_t data[3];
+    uint32_t data[4];
     size_t size = sizeof(data);
 
-    uint32_t candidateStartOfParagraphByteOffset;
-    uint32_t candidateStartOfParagraphWordOffset;
-    uint32_t candidateStartOfParagraphWordHyphenOffset;
+    uint32_t candidateSource;
+    uint32_t candidateBlock;
+    uint32_t candidateWord;
+    uint32_t candidateElement;
     
     NSUInteger lowerBound = 0;
     NSUInteger upperBound = self.lastPageNumber;
@@ -265,9 +283,10 @@
         off_t seekTo = candidatePage * size;
         if(lseek(_fd, seekTo, SEEK_SET) == seekTo) {
             if(read(_fd, data, size) == size) {
-                candidateStartOfParagraphByteOffset = CFSwapInt32LittleToHost(data[0]);
-                candidateStartOfParagraphWordOffset = CFSwapInt32LittleToHost(data[1]);
-                candidateStartOfParagraphWordHyphenOffset = CFSwapInt32LittleToHost(data[2]);
+                candidateSource = CFSwapInt32LittleToHost(data[0]);
+                candidateBlock = CFSwapInt32LittleToHost(data[1]);
+                candidateWord = CFSwapInt32LittleToHost(data[2]);
+                candidateElement = CFSwapInt32LittleToHost(data[3]);
             } else {
                 THWarn(@"Could not read index point for page %lu during search, error %d [\"%s\"]", (unsigned long)candidatePage + 1, errno, strerror(errno));
                 break;
@@ -276,9 +295,10 @@
             THWarn(@"Could not seek to index point for page %lu during search, error %d [\"%s\"]", (unsigned long)candidatePage + 1, errno, strerror(errno));
             break;
         }
-        if((candidateStartOfParagraphByteOffset > startOfParagraphByteOffset) ||
-           (candidateStartOfParagraphByteOffset == startOfParagraphByteOffset && candidateStartOfParagraphWordOffset > startOfPageParagraphWordOffset) ||
-           (candidateStartOfParagraphByteOffset == startOfParagraphByteOffset && candidateStartOfParagraphWordOffset == startOfPageParagraphWordOffset && candidateStartOfParagraphWordHyphenOffset > startOfPageWordHyphenOffset)) {
+        if((candidateSource > source) ||
+           (candidateSource == source && candidateBlock > block) ||
+           (candidateSource == source && candidateBlock == block && candidateWord > word) ||
+           (candidateSource == source && candidateBlock == block && candidateWord == word && candidateElement > element)) {
             upperBound = candidatePage;
         } else {
             lowerBound = candidatePage;
@@ -288,15 +308,6 @@
     return lowerBound + 1;
 }
 
-- (NSUInteger)pageForByteOffset:(NSUInteger)byteOffset
-{
-    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-    indexPoint.startOfParagraphByteOffset = byteOffset;
-    NSUInteger ret = [self pageForIndexPoint:indexPoint];
-    [indexPoint release];
-    return ret;
-}
-    
 - (NSComparisonResult)compare:(EucBookPageIndex *)rhs
 {
     NSInteger comparison = (NSInteger)self.pointSize - (NSInteger)rhs.pointSize;
@@ -308,6 +319,5 @@
         return NSOrderedSame;
     }
 }
-
 
 @end

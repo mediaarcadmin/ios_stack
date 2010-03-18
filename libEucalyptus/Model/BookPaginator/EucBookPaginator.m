@@ -20,15 +20,14 @@
 #import "THBackgroundProcessingMediator.h"
 #import "THImageFactory.h"
 
-#import "EucBookReader.h"
 #import <fcntl.h>
 #import <sys/stat.h>
 
-NSString * const BookPaginationProgressNotification = @"BookPaginationProgressNotification";
-NSString * const BookPaginationCompleteNotification = @"BookPaginationCompleteNotification";
+NSString * const EucBookBookPaginatorProgressNotification = @"BookPaginationProgressNotification";
+NSString * const EucBookPaginatorCompleteNotification = @"BookPaginationCompleteNotification";
 
-NSString * const BookPaginationBookKey = @"BookPaginationBookKey";
-NSString * const BookPaginationBytesPaginatedKey = @"BookPaginationBytesPaginated";
+NSString * const EucBookPaginatorNotificationBookKey = @"BookPaginationBookKey";
+NSString * const EucBookPaginatorNotificationPercentagePaginatedKey = @"BookPaginationBytesPaginated";
 
 #define kThreadedProgressPollingDelay (1.0 / 10.0)
 
@@ -43,12 +42,13 @@ NSString * const BookPaginationBytesPaginatedKey = @"BookPaginationBytesPaginate
 
 @implementation EucBookPaginator
 
-@synthesize bytesProcessed = _bytesProcessed;
+@synthesize percentagePaginated = _percentagePaginated;
 @synthesize isPaginating = _continueParsing;
 
 static void *PaginationThread(void *self) 
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
     [(id)self _paginationThread];
     [pool drain];
     return NULL;
@@ -60,7 +60,6 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
 - (void)_paginationThread
 {
     THImageFactory *imageFactory = nil;
-    id<EucBookReader> bookReader = nil;
     
     [UIApplication sharedApplication].idleTimerDisabled = YES;
     
@@ -68,7 +67,7 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
     BOOL unlocked = NO;
     [_paginationStartedLock lockWhenCondition:0];
     off_t indexPointSize = [EucBookPageIndexPoint sizeOnDisk];
-    NSString *bundlePath = _book.path;
+    NSString *indexDirectoryPath = _book.cacheDirectoryPath;
     
     int pageIndexFDs[sDesiredPointSizesCount];
     memset(pageIndexFDs, 0, sizeof(pageIndexFDs));
@@ -79,11 +78,11 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
         
     // Open raw index files.
     for(NSUInteger i = 0; i < sDesiredPointSizesCount; ++i) {
-        NSString *path = [bundlePath stringByAppendingPathComponent:[EucBookPageIndex constructionFilenameForPageIndexForFontFamily:_fontFamilyName pointSize:sDesiredPointSizes[i]]];
+        NSString *path = [indexDirectoryPath stringByAppendingPathComponent:[EucBookPageIndex constructionFilenameForPageIndexForPointSize:sDesiredPointSizes[i]]];
         if([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-            pageIndexFDs[i] = open([path fileSystemRepresentation], O_RDWR, 0644);
+            pageIndexFDs[i] = open([path fileSystemRepresentation], O_RDWR, S_IRUSR | S_IWUSR);
         } else {
-            pageIndexFDs[i] = open([path fileSystemRepresentation], O_WRONLY | O_TRUNC | O_CREAT, 0644);        
+            pageIndexFDs[i] = open([path fileSystemRepresentation], O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR);        
         }
         if(pageIndexFDs[i] <= 0) {
             THWarn(@"Error %d attempting to open index file at \"%@\"", errno, path);
@@ -112,7 +111,6 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
                 // We'll overwrite this point, below.
             } else {
                 currentPoints[i] = [[EucBookPageIndexPoint alloc] init];
-                currentPoints[i].startOfParagraphByteOffset = _book.startOffset;                    
             }
         }
     }    
@@ -120,14 +118,9 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
     [_paginationStartedLock unlockWithCondition:1];
     unlocked = YES;
         
-    bookReader = [[_book reader] retain];
-    if([bookReader respondsToSelector:@selector(setShouldCollectPaginationData:)]) {
-        [bookReader setShouldCollectPaginationData:YES];
-    }
-    
     // Create the text views we'll use for layout.
     for(NSUInteger i = 0; i < sDesiredPointSizesCount; ++i) {
-        pageViews[i] = [[bookReader.book.pageLayoutControllerClass blankPageViewForPointSize:sDesiredPointSizes[i] withPageTexture:nil] retain];
+        pageViews[i] = [[_book.pageLayoutControllerClass blankPageViewForPointSize:sDesiredPointSizes[i] withPageTexture:nil] retain];
         if(!pageViews[i]) {
             THWarn(@"Could not create book text view for point size %lu", (unsigned long)sDesiredPointSizes[i]);
             goto abandon;
@@ -162,15 +155,37 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
         
         
         // Update the _bytesProcessed variable.
-        _bytesProcessed = currentPoints[currentPointIndex].startOfParagraphByteOffset;
+        //_bytesProcessed = currentPoints[currentPointIndex].startOfParagraphByteOffset;
         
 #if TARGET_IPHONE_SIMULATOR
 //         usleep(100000);
 #endif            
         
-        nextPoint = [bookReader.book.pageLayoutControllerClass layoutPageFromBookReader:bookReader
-                                                                        startingAtPoint:currentPoints[currentPointIndex] 
-                                                                           intoPageView:pageViews[currentPointIndex]];
+        nextPoint = [pageViews[currentPointIndex].bookTextView layoutPageFromPoint:currentPoints[currentPointIndex] 
+                                                                            inBook:_book];
+        
+        if(THWillLogVerbose()) {
+            if(nextPoint) {
+                THLogVerbose(@"%f: [%ld, %ld, %ld, %ld] -> [%ld, %ld, %ld, %ld]", 
+                             pageViews[currentPointIndex].bookTextView.pointSize,
+                             (long)currentPoints[currentPointIndex].source, 
+                             (long)currentPoints[currentPointIndex].block, 
+                             (long)currentPoints[currentPointIndex].word, 
+                             (long)currentPoints[currentPointIndex].element, 
+                             (long)nextPoint.source, 
+                             (long)nextPoint.block, 
+                             (long)nextPoint.word, 
+                             (long)nextPoint.element);
+            } else {
+                THLogVerbose(@"%f: [%ld, %ld, %ld, %ld] -> NULL", 
+                             pageViews[currentPointIndex].bookTextView.pointSize,
+                             (long)currentPoints[currentPointIndex].source, 
+                             (long)currentPoints[currentPointIndex].block, 
+                             (long)currentPoints[currentPointIndex].word, 
+                             (long)currentPoints[currentPointIndex].element);
+            }
+        }
+              
         
         //NSParameterAssert(nextPoint.startOfParagraphByteOffset >= currentPoints[currentPointIndex].startOfParagraphByteOffset || !nextPoint);
         
@@ -200,21 +215,15 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
     }
     
     if(_continueParsing) {
-        // Update the bytesProcessed variable.
-        //_bytesProcessed = _book.bookFileSize;
+        _percentagePaginated = 100.0f;
         [self performSelectorOnMainThread:@selector(_paginationThreadComplete) withObject:nil  waitUntilDone:NO];
     }
-    
-    if([bookReader respondsToSelector:@selector(savePaginationDataToDirectoryAt:)]) {
-        [bookReader savePaginationDataToDirectoryAt:bundlePath];
-    }
-    
     
 abandon:
     if(!unlocked) {
         [_paginationStartedLock unlockWithCondition:1];
     }
-    [bookReader release];
+
     for(NSUInteger i = 0; i < sDesiredPointSizesCount; ++i) {
         [currentPoints[i] release]; 
         [pageViews[i] release];
@@ -229,12 +238,11 @@ abandon:
     [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
-- (void)_paginateBook:(id<EucBook>)book inBackground:(BOOL)inBackground forForFontFamily:(NSString *)fontFamilyName saveImagesTo:(NSString *)saveImagesTo
+- (void)_paginateBook:(id<EucBook>)book inBackground:(BOOL)inBackground saveImagesTo:(NSString *)saveImagesTo
 {
     THLog(@"Pagination of %@ beginning!", _book.title);
 
     _book = [book retain];
-    _fontFamilyName = [fontFamilyName copy];
     _saveImagesTo = [[saveImagesTo stringByAppendingPathComponent:@"PageImages"] retain];
     _continueParsing = YES;
     
@@ -265,25 +273,25 @@ abandon:
 }
 
 
-- (void)paginateBookInBackground:(id<EucBook>)book forForFontFamily:(NSString *)fontFamilyName saveImagesTo:(NSString *)saveImagesTo
+- (void)paginateBookInBackground:(id<EucBook>)book saveImagesTo:(NSString *)saveImagesTo
 {
-    [self _paginateBook:book inBackground:YES forForFontFamily:fontFamilyName saveImagesTo:saveImagesTo];
+    [self _paginateBook:book inBackground:YES saveImagesTo:saveImagesTo];
 }
 
-- (void)testPaginateBook:(id<EucBook>)book forForFontFamily:(NSString *)fontFamilyName
+- (void)testPaginateBook:(id<EucBook>)book
 {
-    [self _paginateBook:book inBackground:NO forForFontFamily:fontFamilyName saveImagesTo:nil];
+    [self _paginateBook:book inBackground:NO saveImagesTo:nil];
 }
 
 
 - (void)_sendPeriodicPaginationUpdate
 {
-    if(_bytesProcessed) {
+    if(_percentagePaginated) {
         NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                  _book, BookPaginationBookKey,
-                                  [NSNumber numberWithInteger:_bytesProcessed], BookPaginationBytesPaginatedKey, 
+                                  _book, EucBookPaginatorNotificationBookKey,
+                                  [NSNumber numberWithFloat:_percentagePaginated], EucBookPaginatorNotificationPercentagePaginatedKey, 
                                   nil];    
-        [[NSNotificationCenter defaultCenter] postNotificationName:BookPaginationProgressNotification
+        [[NSNotificationCenter defaultCenter] postNotificationName:EucBookBookPaginatorProgressNotification
                                                             object:self
                                                           userInfo:userInfo];
         [userInfo release];
@@ -302,9 +310,7 @@ abandon:
     _book = nil;
     [_saveImagesTo release];
     _saveImagesTo = nil;
-    [_fontFamilyName release];
-    _fontFamilyName = nil;
-    _bytesProcessed = 0;
+    _percentagePaginated = 0.0f;
     _continueParsing = NO;
 }
 
@@ -323,18 +329,19 @@ abandon:
 {
     [self _sendPeriodicPaginationUpdate];
     
+    [EucBookPageIndex markBookBundleAsIndexesConstructed:[_book cacheDirectoryPath]];
+    
     // Retain what we need then clear the ivars to support
     // allowing calls to start pagination in the completion
     // callback.
     id<EucBook> book = [_book retain];
-    size_t bytesProcessed = _bytesProcessed;
     [self _releasePaginationIvars]; 
 
     NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
-                              book, BookPaginationBookKey,
-                              [NSNumber numberWithInteger:bytesProcessed], BookPaginationBytesPaginatedKey, 
+                              book, EucBookPaginatorNotificationBookKey,
+                              [NSNumber numberWithFloat:1.0f], EucBookPaginatorNotificationPercentagePaginatedKey, 
                               nil];    
-    [[NSNotificationCenter defaultCenter] postNotificationName:BookPaginationCompleteNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:EucBookPaginatorCompleteNotification
                                                         object:self
                                                       userInfo:userInfo];
     [userInfo release];

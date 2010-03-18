@@ -13,7 +13,6 @@
 #import "BlioLayoutView.h"
 #import "BlioMockBook.h"
 #import "BlioUIImageAdditions.h"
-#import "BlioTestParagraphWords.h"
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
 

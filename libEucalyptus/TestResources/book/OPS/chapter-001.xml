@@ -4,7 +4,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
    <head>
       <title>I&#8212;DOWN THE RABBIT&#8211;HOLE | Alice in Wonderland</title>
-      <link rel="stylesheet" href="css/book.css" type="text/css"/>
+      
+      <style type="text/css">
+          @import url(css/book.css);
+      </style>
+      <!--<link rel="stylesheet" href="css/book.css" type="text/css"/>-->
+      
       <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
       <meta name="EPB-UUID" content="19c2b129-40b2-40f4-88e3-59d12871da25"/>
    </head>

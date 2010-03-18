@@ -10,9 +10,9 @@
 
 
 @implementation EucFilteredBookPageIndex
-
+/*
 @synthesize filteredByteRanges = _filteredByteRanges;
-
+*/
 - (void)dealloc
 {
     [_filteredByteRanges release];
@@ -20,7 +20,7 @@
     
     [super dealloc];
 }
-
+/*
 - (void)setFilteredByteRanges:(NSArray *)filteredByteRanges
 {
     if(filteredByteRanges != _filteredByteRanges) {
@@ -52,7 +52,7 @@
             }
         }
     }
-}
+}*/
                         
 - (NSUInteger)filteredLastPageNumber
 {
@@ -104,11 +104,6 @@
 - (NSUInteger)filteredPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
     return [self _pageToFilteredPage:[self pageForIndexPoint:indexPoint]];
-}
-
-- (NSUInteger)filteredPageForByteOffset:(NSUInteger)byteOffset
-{
-    return [self _pageToFilteredPage:[self pageForByteOffset:byteOffset]];
 }
 
 @end

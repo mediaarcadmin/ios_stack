@@ -12,7 +12,6 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
-#import <libEucalyptus/EucEPubBook.h>
 #import "BlioViewSettingsSheet.h"
 #import "BlioEPubView.h"
 #import "BlioLayoutView.h"
@@ -1370,13 +1369,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (id)getParagraphId:(BlioPageLayout)pagetype currentParagraph:(id)paragraph {
 	if ( pagetype==kBlioPageLayoutPageLayout ) 
 		return [(BlioLayoutView *)self.bookView paragraphIdForParagraphAfterParagraphWithId:paragraph];
-	else if ( pagetype==kBlioPageLayoutPlainText ) {
+	else/* if ( pagetype==kBlioPageLayoutPlainText ) {
         BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
         BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
         EucEPubBook *book = (EucEPubBook*)bookView.book;
 		return [[NSNumber alloc] initWithInteger:[book paragraphIdForParagraphAfterParagraphWithId:[paragraph integerValue]]];
 	}
-	else
+	else*/
 		return nil;
 }
 
@@ -1384,13 +1383,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	if ( pagetype==kBlioPageLayoutPageLayout ) {
 		return [(BlioLayoutView *)self.bookView paragraphWordsForParagraphWithId:paragraph];
 	}
-	else if ( pagetype==kBlioPageLayoutPlainText ) {
+	else/* if ( pagetype==kBlioPageLayoutPlainText ) {
 		BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
 		BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
 		EucEPubBook *book = (EucEPubBook*)bookView.book;
 		return [book paragraphWordsForParagraphWithId:[paragraph integerValue]];
 	}
-	else
+	else*/
 		return nil;
 }
 
@@ -1412,7 +1411,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		*offset = [(BlioLayoutView *)self.bookView getCurrentWordOffset];
 		return [(BlioLayoutView *)self.bookView getCurrentParagraphId];
 	}
-	else if ( pageType==kBlioPageLayoutPlainText ) {
+	else /*if ( pageType==kBlioPageLayoutPlainText ) {
 		BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
 		BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
 		EucEPubBook *book = (EucEPubBook*)bookView.book;
@@ -1422,7 +1421,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		*offset = tempOffset;
 		return [[NSNumber alloc] initWithInteger:tempParagraph]; // static NSNumber creation leads to crash
 	}
-	else
+	else*/
 		return nil;
 }
 
@@ -1849,10 +1848,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         // TODO clean this up to consolodate Bookmark range and getCurrentParagraphId
         NSString *bookmarkText = nil;
         if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-            EucEPubBook *book = (EucEPubBook*)[(BlioEPubView *)self.bookView book];
+          /*  EucEPubBook *book = (EucEPubBook*)[(BlioEPubView *)self.bookView book];
             uint32_t paragraphId, wordOffset;
             [book getCurrentParagraphId:&paragraphId wordOffset:&wordOffset];
             bookmarkText = [[book paragraphWordsForParagraphWithId:paragraphId] componentsJoinedByString:@" "];
+           */
         } else if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
             NSInteger pageIndex = self.bookView.pageNumber - 1;
             bookmarkText = [[self.book textFlow] stringForPageAtIndex:pageIndex];

@@ -14,24 +14,24 @@
 
 @implementation EucBookPageIndexPoint
 
-@synthesize startOfParagraphByteOffset = _startOfParagraphByteOffset;
-@synthesize startOfPageParagraphWordOffset = _startOfPageParagraphWordOffset;
-@synthesize startOfPageWordHyphenOffset = _startOfPageWordHyphenOffset;
 @synthesize source = _source;
+@synthesize block = _block;
+@synthesize word = _word;
+@synthesize element = _element;
 
 + (off_t)sizeOnDisk
 {
-    return sizeof(int32_t) * 3;
+    return sizeof(int32_t) * 4;
 }
 
 - (BOOL)writeToOpenFD:(int)fd
 {
-    int32_t data[3];
-    data[0] = CFSwapInt32HostToLittle(_startOfParagraphByteOffset);
-    data[1] = CFSwapInt32HostToLittle(_startOfPageParagraphWordOffset);
+    int32_t data[4];
+    data[0] = CFSwapInt32HostToLittle(_source);
+    data[1] = CFSwapInt32HostToLittle(_block);
+    data[2] = CFSwapInt32HostToLittle(_word);
+    data[3] = CFSwapInt32HostToLittle(_element);
     
-    // These are packed into one 32-bit int for backward compatibility.
-    data[2] = CFSwapInt32HostToLittle(((uint32_t)_startOfPageWordHyphenOffset) | ((uint32_t)_source) << 16);
     size_t size = sizeof(data);
     if(write(fd, data, size) == size) {
         return YES;
@@ -43,18 +43,15 @@
 
 + (EucBookPageIndexPoint *)bookPageIndexPointFromOpenFD:(int)fd
 {
-    int32_t data[3];
+    int32_t data[4];
     size_t size = sizeof(data);
     EucBookPageIndexPoint *ret = nil;
     if(read(fd, data, size) == size) {
         ret = [[[EucBookPageIndexPoint alloc] init] autorelease];
-        ret.startOfParagraphByteOffset = CFSwapInt32LittleToHost(data[0]);
-        ret.startOfPageParagraphWordOffset = CFSwapInt32LittleToHost(data[1]);
-        
-        // These are packed into one 32-bit int for backward compatibility.
-        uint32_t hyphenOffsetAndSource = CFSwapInt32LittleToHost(data[2]);
-        ret.startOfPageWordHyphenOffset = (hyphenOffsetAndSource & 0xffff);
-        ret.source = (hyphenOffsetAndSource & 0xffff0000) >> 16;
+        ret.source = CFSwapInt32LittleToHost(data[0]);
+        ret.block = CFSwapInt32LittleToHost(data[1]);
+        ret.word = CFSwapInt32LittleToHost(data[2]);
+        ret.element = CFSwapInt32LittleToHost(data[3]);
     } else {
         THWarn(@"Could not read index point from file, error %d [\"%s\"]", errno, strerror(errno));
     }
@@ -93,27 +90,34 @@
 
 - (NSComparisonResult)compare:(EucBookPageIndexPoint *)rhs
 {
-    int32_t comparison = self.startOfParagraphByteOffset - rhs.startOfParagraphByteOffset;
+    int32_t comparison = self.source - rhs.source;
     if(comparison < 0) {
         return NSOrderedDescending;
     } else if (comparison > 0) {
         return NSOrderedAscending;
-    } else {
-        comparison = self.startOfPageParagraphWordOffset - rhs.startOfPageParagraphWordOffset;
+    } else {            
+        comparison = self.block - rhs.block;
         if(comparison < 0) {
             return NSOrderedDescending;
         } else if (comparison > 0) {
             return NSOrderedAscending;
         } else {
-            comparison = self.startOfPageWordHyphenOffset - rhs.startOfPageWordHyphenOffset;
+            comparison = self.word - rhs.word;
             if(comparison < 0) {
                 return NSOrderedDescending;
             } else if (comparison > 0) {
                 return NSOrderedAscending;
             } else {
-                return NSOrderedSame;
-            }
-        }        
+                comparison = self.element - rhs.element;
+                if(comparison < 0) {
+                    return NSOrderedDescending;
+                } else if (comparison > 0) {
+                    return NSOrderedAscending;
+                } else {
+                    return NSOrderedSame;
+                }
+            }        
+        }
     }
 }
 

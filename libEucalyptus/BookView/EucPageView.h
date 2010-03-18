@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "EucPageTextView.h"
 
-@protocol EucPageViewDelegate;
+@protocol EucPageViewDelegate, EucPageTextView;
 
-@class EucPageTextView, THStringRenderer;
+@class THStringRenderer;
 
 typedef enum EucPageViewTitleLinePosition
 {
@@ -40,7 +40,7 @@ typedef enum EucPageViewTitleLineContents
 
     CGSize _margins;
     
-    EucPageTextView *_bookTextView;
+    UIView<EucPageTextView> *_bookTextView;
     EucPageViewTitleLinePosition _titleLinePosition;
     EucPageViewTitleLineContents _titleLineContents;
     BOOL _fullBleed;
@@ -51,7 +51,7 @@ typedef enum EucPageViewTitleLineContents
 @property (nonatomic, assign) id<EucPageViewDelegate> delegate;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *pageNumber;
-@property (nonatomic, readonly) EucPageTextView *bookTextView;
+@property (nonatomic, readonly) UIView<EucPageTextView> *bookTextView;
 @property (nonatomic, assign) EucPageViewTitleLinePosition titleLinePosition;
 @property (nonatomic, assign) EucPageViewTitleLineContents titleLineContents;
 @property (nonatomic, assign) BOOL fullBleed;
@@ -59,12 +59,15 @@ typedef enum EucPageViewTitleLineContents
 + (CGRect)bookTextViewFrameForPointSize:(CGFloat)pointSize;
 
 - (id)initWithPointSize:(CGFloat)pointSize 
-              titleFont:(NSString *)titleFont
+              titleFont:(NSString *)titleFont 
          pageNumberFont:(NSString *)pageNumberFont 
-         titlePointSize:(CGFloat)titlePointSize 
-             pageTexture:(UIImage*)pageTexture;
+         titlePointSize:(CGFloat)titlePointSize
+            pageTexture:(UIImage *)pageTexture
+          textViewClass:(Class)textViewClass;
 
-- (id)initWithPointSize:(CGFloat)pointSize pageTexture:(UIImage *)pageTexture;
+- (id)initWithPointSize:(CGFloat)pointSize 
+            pageTexture:(UIImage *)pageTexture
+          textViewClass:(Class)textViewClass;
 
 @end
 
