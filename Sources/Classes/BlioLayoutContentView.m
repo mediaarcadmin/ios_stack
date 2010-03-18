@@ -192,6 +192,8 @@
 @synthesize pageNumber, tiledLayer, thumbLayer, shadowLayer, highlightsLayer, cacheQueue;
 
 - (void)dealloc {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
+
     self.tiledLayer = nil;
     self.thumbLayer = nil;
     self.shadowLayer = nil;
@@ -203,6 +205,7 @@
 }
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
     [self.cacheQueue cancelAllOperations];
     
     pageNumber = newPageNumber;
@@ -230,6 +233,11 @@
     [self.highlightsLayer setContents:nil];
     [self.highlightsLayer setNeedsDisplay];
     [CATransaction commit];
+}
+
+- (void)forceThumbCacheAfterDelay:(NSTimeInterval)delay {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
+    [self performSelector:@selector(forceThumbCache) withObject:nil afterDelay:delay];
 }
 
 - (void)forceThumbCache {
@@ -261,7 +269,7 @@
 }
 
 - (void)cacheReady:(id)aCacheLayer {
-    //NSLog(@"Cache ready for page %d", pageNumber);
+    NSLog(@"Cache ready for page %d", pageNumber);
     [self.thumbLayer setCacheLayer:(CGLayerRef)aCacheLayer];
     [self.thumbLayer setNeedsDisplay];
 }

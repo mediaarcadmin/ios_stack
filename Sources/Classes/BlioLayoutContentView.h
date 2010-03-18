@@ -31,7 +31,7 @@
 
 - (void)setExcludedHighlight:(BlioBookmarkRange *)excludedHighlight;
 - (void)refreshHighlights;
-- (void)forceThumbCache;
+- (void)forceThumbCacheAfterDelay:(NSTimeInterval)delay;
 
 @end
 

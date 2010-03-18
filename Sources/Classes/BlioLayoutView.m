@@ -533,9 +533,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 //    CGContextClipToRect(ctx, CGPDFPageGetBoxRect(aPage, kCGPDFCropBox));
     // Lock around the drawing so we limit the memory footprint
    // NSDate *start = [NSDate date];
-    @synchronized ([[UIApplication sharedApplication] delegate]) {
+    CGContextRef cacheCtx;
+    
         if (nil != cacheLayer) {
-            CGContextRef cacheCtx = CGLayerGetContext(cacheLayer);
+            cacheCtx = CGLayerGetContext(cacheLayer);
             CGContextTranslateCTM(cacheCtx, 0, layerBounds.size.height/2.0f);
             CGContextScaleCTM(cacheCtx, 1, -1);
             CGRect halfScaledCropRect = CGRectApplyAffineTransform(scaledCropRect, CGAffineTransformMakeScale(0.5f, 0.5f));
@@ -544,18 +545,31 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             CGContextSetFillColorWithColor(cacheCtx, [UIColor whiteColor].CGColor);
             CGContextClipToRect(cacheCtx, unscaledCropRect);
             CGContextFillRect(cacheCtx, unscaledCropRect);
-            CGContextDrawPDFPage(cacheCtx, aPage);
-
-            //NSLog(@"It took %.3f seconds to draw cache page %d", -[start timeIntervalSinceNow], aPageNumber);
-            if ([target respondsToSelector:readySelector])
-                [target performSelectorOnMainThread:readySelector withObject:(id)cacheLayer waitUntilDone:YES];
         }
-        //start = [NSDate date];
-        CGContextDrawPDFPage(ctx, aPage);
-        //NSLog(@"It took %.3f seconds to draw 2 page %d", -[start timeIntervalSinceNow], aPageNumber);
-        CGPDFDocumentRelease(aPdf);
+        if (nil != cacheLayer) {
+            @synchronized ([[UIApplication sharedApplication] delegate]) {
+                CGContextDrawPDFPage(cacheCtx, aPage);
+            //NSLog(@"It took %.3f seconds to draw cache page %d", -[start timeIntervalSinceNow], aPageNumber);
+                if ([target respondsToSelector:readySelector])
+                    [target performSelectorOnMainThread:readySelector withObject:(id)cacheLayer waitUntilDone:NO];
+                
+                if (isCancelled) {
+                    CGDataProviderRelease(pdfProvider);
+                    return;
+                }
+                
+                CGContextDrawPDFPage(ctx, aPage);
+                CGPDFDocumentRelease(aPdf);
+            }
+        } else {
+            @synchronized ([[UIApplication sharedApplication] delegate]) {
+                //start = [NSDate date];
+                CGContextDrawPDFPage(ctx, aPage);
+                //NSLog(@"It took %.3f seconds to draw 2 page %d", -[start timeIntervalSinceNow], aPageNumber);
+                CGPDFDocumentRelease(aPdf);
+            }
         //if (self.scrollView.zoomScale = 1) createSnapshot = YES;
-    }
+        }
     //NSLog(@"It took %.3f seconds to draw page %d", -[start timeIntervalSinceNow], aPageNumber);
     CGDataProviderRelease(pdfProvider);
     
@@ -1441,22 +1455,27 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         if (aLayer) {
             [pageLayersToPreserve addObject:aLayer];
             self.currentPageLayer = aLayer;
-            [aLayer performSelector:@selector(forceThumbCache) withObject:nil];
+            [aLayer forceThumbCacheAfterDelay:0];
             //[self performSelectorInBackground:@selector(forceCacheForLayer:) withObject:aLayer];
                         //UIGraphicsBeginImageContext(CGSizeMake(0.1,0.1));
 //                        CGContextRef ctx = UIGraphicsGetCurrentContext();
 //                        [aLayer renderInContext:ctx];
 //                        UIGraphicsEndImageContext();
         }
-        aLayer = [self.contentView addPage:targetPage - 1 retainPages:pageLayersToPreserve];
-        if (aLayer) { 
-            [pageLayersToPreserve addObject:aLayer];
-            //[aLayer performSelector:@selector(forceThumbCache) withObject:nil];
+        BlioLayoutPageLayer *prevLayer = [self.contentView addPage:targetPage - 1 retainPages:pageLayersToPreserve];
+        if (prevLayer) { 
+            [pageLayersToPreserve addObject:prevLayer];
         }
-        [self.contentView addPage:targetPage + 1 retainPages:pageLayersToPreserve];
+        BlioLayoutPageLayer *nextLayer = [self.contentView addPage:targetPage + 1 retainPages:pageLayersToPreserve];
         //if (aLayer) { 
 //            [aLayer performSelector:@selector(forceThumbCache) withObject:nil];
 //        }
+        
+        if (startPage > targetPage) {
+            [prevLayer forceThumbCacheAfterDelay:0.85f];
+        } else {
+            [nextLayer forceThumbCacheAfterDelay:0.85f];
+        }
         
         // The rest of the steps are performed after the animation thread has been run
         NSInteger fromPage = startPage + pagesToOffset;
@@ -1735,10 +1754,12 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         
         if (!self.scrollToPageInProgress) {
             if (currentPageNumber < self.pageNumber) {
-                [self.contentView addPage:currentPageNumber - 1 retainPages:nil];
+                BlioLayoutPageLayer *prevLayer = [self.contentView addPage:currentPageNumber - 1 retainPages:nil];
+                [prevLayer forceThumbCacheAfterDelay:0.75f];
             }
             if (currentPageNumber > self.pageNumber) {
-                [self.contentView addPage:currentPageNumber + 1 retainPages:nil];
+                BlioLayoutPageLayer *nextLayer = [self.contentView addPage:currentPageNumber + 1 retainPages:nil];
+                [nextLayer forceThumbCacheAfterDelay:0.75f];
             }
             self.pageNumber = currentPageNumber;
             self.currentPageLayer = aLayer;

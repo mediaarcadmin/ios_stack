@@ -339,7 +339,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                          audiobookURL:nil];
         
         [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
-                                              authors:[NSArray arrayWithObjects:@"Bill Martin Jr", @"Joan ArchamBault", nil]
+                                              authors:[NSArray arrayWithObjects:@"Bill Martin Jr", @"Joan Archambault", nil]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"png" inDirectory:@"MockCovers"]]
                                               ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"pdf" inDirectory:@"PDFs"]]
