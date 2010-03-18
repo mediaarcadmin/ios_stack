@@ -124,22 +124,52 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     
     NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
 
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if(![fileManager createFileAtPath:cachedPath contents:nil attributes:nil]) {
-        NSLog(@"Could not create file to hold download");
-    } else {
-        self.downloadFile = [NSFileHandle fileHandleForWritingAtPath:cachedPath];
-    }
-
-    NSURLRequest *aRequest = [[NSURLRequest alloc] initWithURL:self.url];
-    NSURLConnection *aConnection = [[NSURLConnection alloc] initWithRequest:aRequest delegate:self];
-    [aRequest release];
-    
-    if (nil == aConnection) {
+    if([self.url isFileURL]) {
+        // Just symlink it to save time.
+        
+        NSString *fromPath = [[[self.url absoluteURL] path] stringByStandardizingPath];
+        NSString *toPath = [cachedPath stringByStandardizingPath];
+        
+        NSArray *fromComponents = [fromPath pathComponents];
+        NSArray *toComponents = [toPath pathComponents];
+        
+        NSUInteger i = 0;
+        for(; 
+            i < fromComponents.count && i < toComponents.count &&
+            [[fromComponents objectAtIndex:i] isEqualToString:[toComponents objectAtIndex:i]];
+            ++i) {
+        }
+        NSMutableArray *relativeComponents = [NSMutableArray array];
+        for(NSUInteger j = i; j < (toComponents.count - 1); ++j) {
+            [relativeComponents addObject:@".."];
+        }
+        [relativeComponents addObjectsFromArray:[fromComponents subarrayWithRange:NSMakeRange(i, fromComponents.count - i)]];
+            
+        NSString *relativePath = [relativeComponents componentsJoinedByString:@"/"];
+        symlink([relativePath fileSystemRepresentation], [toPath fileSystemRepresentation]);
+        
+        NSLog(@"Symlinking from \"%@\" to \"%@\" as \"%@\" instead of downloading", fromPath, toPath, relativePath); 
+        
+        [self downloadDidFinishSuccessfully:YES];
         [self finish];
     } else {
-        self.connection = aConnection;
-        [aConnection release];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if(![fileManager createFileAtPath:cachedPath contents:nil attributes:nil]) {
+            NSLog(@"Could not create file to hold download");
+        } else {
+            self.downloadFile = [NSFileHandle fileHandleForWritingAtPath:cachedPath];
+        }
+
+        NSURLRequest *aRequest = [[NSURLRequest alloc] initWithURL:self.url];
+        NSURLConnection *aConnection = [[NSURLConnection alloc] initWithRequest:aRequest delegate:self];
+        [aRequest release];
+        
+        if (nil == aConnection) {
+            [self finish];
+        } else {
+            self.connection = aConnection;
+            [aConnection release];
+        }
     }
 }
 
