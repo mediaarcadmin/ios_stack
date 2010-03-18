@@ -1,0 +1,17 @@
+K 10
+svn:ignore
+V 91
+*.d
+parse-auto
+select-auto
+number
+css21
+csdetect
+lex-auto
+parse2-auto
+parse
+libcss
+log
+lex
+
+END

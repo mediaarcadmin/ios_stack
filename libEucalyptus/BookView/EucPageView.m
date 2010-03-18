@@ -42,7 +42,8 @@
               titleFont:(NSString *)titleFont 
          pageNumberFont:(NSString *)pageNumberFont 
          titlePointSize:(CGFloat)titlePointSize
-             pageTexture:(UIImage *)pageTexture
+            pageTexture:(UIImage *)pageTexture
+          textViewClass:(Class)textViewClass
 {
     CGRect frame = [[UIScreen mainScreen] bounds];
 	if((self = [super initWithFrame:frame])) {
@@ -61,8 +62,8 @@
         _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont];
         _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont];
 
-        _bookTextView = [[EucPageTextView alloc] initWithFrame:[[self class] bookTextViewFrameForPointSize:_titlePointSize] 
-                                                  pointSize:pointSize];
+        _bookTextView = [[textViewClass alloc] initWithFrame:[[self class] bookTextViewFrameForPointSize:_titlePointSize] 
+                                                   pointSize:pointSize];
 
         _bookTextView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _bookTextView.backgroundColor = [UIColor clearColor];
@@ -77,7 +78,10 @@
 	return self;
 }
 
-- (id)initWithPointSize:(CGFloat)pointSize pageTexture:(UIImage *)pageTexture
+- (id)initWithPointSize:(CGFloat)pointSize 
+            pageTexture:(UIImage *)pageTexture  
+          textViewClass:(Class)textViewClass;
+
 {
     static UIImage *sPaperImage = nil;
     if(!sPaperImage) {
@@ -85,7 +89,12 @@
     }
     NSString *pageNumberFont = [EucBookTextStyle defaultFontFamilyName];
     NSString *titleFont = [pageNumberFont stringByAppendingString:@"-Italic"];
-	return [self initWithPointSize:pointSize titleFont:titleFont pageNumberFont:pageNumberFont titlePointSize:pointSize pageTexture:sPaperImage];
+	return [self initWithPointSize:pointSize 
+                         titleFont:titleFont 
+                    pageNumberFont:pageNumberFont
+                    titlePointSize:pointSize 
+                       pageTexture:sPaperImage
+                     textViewClass:(Class)textViewClass];
 }
 
 - (id)initWithFrame:(CGRect)frame 
@@ -368,7 +377,7 @@
     }
 }
 
-- (void)bookTextView:(EucPageTextView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
+- (void)bookTextView:(UIView<EucPageTextView> *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
 {
     if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapOnHyperlinkWithAttributes:)]) {
         [_delegate pageView:self didReceiveTapOnHyperlinkWithAttributes:attributes];

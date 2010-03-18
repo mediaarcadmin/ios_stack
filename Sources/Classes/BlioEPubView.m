@@ -7,10 +7,10 @@
 //
 
 #import "BlioEPubView.h"
+#import "BlioEPubPaginateOperation.h"
 #import "BlioBookmark.h"
-#import <libEucalyptus/EucEPubBook.h>
+#import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
-#import <libEucalyptus/EucEPubPageLayoutController.h>
 #import <libEucalyptus/EucMenuItem.h>
 
 @implementation BlioEPubView
@@ -21,11 +21,13 @@
 @dynamic contentsDataSource;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
-    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook ePubPath]];
+    EucBUpeBook *aEPubBook = [[EucBUpeBook alloc] initWithPath:[aBook ePubPath]];
     if(nil == aEPubBook) {
         [self release];
         return nil;
     }
+    
+    aEPubBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"ePubPaginationIndexes"];
     
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:aEPubBook])) {
         self.allowsSelection = YES;
@@ -46,111 +48,26 @@
     return [[UIScreen mainScreen] bounds];
 }
 
-- (NSString *)_bookUuidFromEPubBook:(EucEPubBook *)book forLayoutPageNumber:(NSInteger)currentPage 
-{
-    // Check for suffix, because the UUIDs also include the filename
-    // that the anchor is in (in ePub, multiple XHTML files can
-    // be in one book).
-    NSInteger bestPageNumber = 0;
-    NSString *bestPageUuid = nil;
-    for(NSString *prospectiveUuid in book.allUuids) {
-        NSRange markerRange = [prospectiveUuid rangeOfString:@"#bliopage" options:NSBackwardsSearch];
-        if(markerRange.location != NSNotFound) {
-            NSUInteger startsAt = markerRange.location + markerRange.length;
-            if(startsAt < prospectiveUuid.length) {
-                NSString *pageNumberString = [prospectiveUuid substringFromIndex:markerRange.location + markerRange.length];
-                NSInteger prospectivePageNumber = [pageNumberString integerValue];
-                if(prospectivePageNumber <= currentPage && 
-                   prospectivePageNumber > bestPageNumber) {
-                    bestPageNumber = prospectivePageNumber;
-                    bestPageUuid = prospectiveUuid;
-                }
-            }
-        }
-    }
-    return bestPageUuid;
-}
-
-
-- (NSInteger)_bestLayoutPageNumber
-{
-    // Wow, this is pretty horrible.
-    // The idea is to find either the first layout page anchor that falls
-    // on the currently displayed page or, if there are none on the currently
-    // displayed page, the most recent one.
-    
-    EucEPubBook *book = (EucEPubBook *)self.book;
-
-    NSInteger currentPageNumber = self.pageNumber;
-    NSString *bestUuid = nil;
-    NSUInteger bestUuidOffset = 0;
-    NSInteger bestEPubPageNumber = 0;
-    
-    for(NSString *prospectiveUuid in book.allUuids) {
-        NSRange markerRange = [prospectiveUuid rangeOfString:@"#bliopage" options:NSBackwardsSearch];
-        if(markerRange.location != NSNotFound) {
-            NSUInteger thisByteOffset = [book byteOffsetForUuid:prospectiveUuid];
-            
-            if(bestEPubPageNumber == currentPageNumber) {
-                if(bestUuidOffset > thisByteOffset && 
-                   [_pageLayoutController pageNumberForSectionUuid:prospectiveUuid] == currentPageNumber) {
-                    bestUuidOffset = thisByteOffset;
-                    bestUuid = prospectiveUuid;
-                }
-            } else {
-                if(bestUuidOffset < thisByteOffset) {
-                    NSInteger prospectiveEPubPageNumber = [_pageLayoutController pageNumberForSectionUuid:prospectiveUuid];
-                    if(prospectiveEPubPageNumber <= currentPageNumber && 
-                       prospectiveEPubPageNumber > bestEPubPageNumber) {
-                        bestEPubPageNumber = prospectiveEPubPageNumber;
-                        bestUuidOffset = thisByteOffset;
-                        bestUuid = prospectiveUuid;
-                    }
-                }
-            }
-        }
-    }
-    
-    NSInteger bestPageNumber = 0;
-    if(bestUuid) {
-        NSRange markerRange = [bestUuid rangeOfString:@"#bliopage" options:NSBackwardsSearch];
-        NSUInteger startsAt = markerRange.location + markerRange.length;
-        if(startsAt < bestUuid.length) {
-            NSString *pageNumberString = [bestUuid substringFromIndex:markerRange.location + markerRange.length];
-            bestPageNumber = [pageNumberString integerValue];
-        }
-    }
-    
-    return bestPageNumber;
-}
-
 - (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
 {
     BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
     
-    EucBookPageIndexPoint *eucIndexPoint = ((EucEPubBook *)self.book).currentPageIndexPoint;
-    ret.ePubParagraphId = eucIndexPoint.startOfParagraphByteOffset;
-    ret.ePubWordOffset = eucIndexPoint.startOfPageParagraphWordOffset;
-    ret.ePubHyphenOffset = eucIndexPoint.startOfPageWordHyphenOffset;
-    
-    ret.layoutPage = [self _bestLayoutPageNumber];
-    
+    EucBookPageIndexPoint *eucIndexPoint = ((EucBUpeBook *)self.book).currentPageIndexPoint;
+    ret.layoutPage = eucIndexPoint.source;
+    ret.ePubParagraphId = eucIndexPoint.block;
+    ret.ePubWordOffset = eucIndexPoint.word;
+    ret.ePubHyphenOffset = eucIndexPoint.element;
+        
     return [ret autorelease];
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
-    if(bookmarkPoint.layoutPage && !bookmarkPoint.ePubWordOffset) {
-        NSString *bestPageUuid = [self _bookUuidFromEPubBook:((EucEPubBook *)self.book)
-                                         forLayoutPageNumber:bookmarkPoint.layoutPage];
-        if(bestPageUuid) {
-            return [self goToUuid:bestPageUuid animated:animated];
-        }
-    }
     EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
-    eucIndexPoint.startOfParagraphByteOffset = bookmarkPoint.ePubParagraphId;
-    eucIndexPoint.startOfPageParagraphWordOffset = bookmarkPoint.ePubWordOffset;
-    eucIndexPoint.startOfPageWordHyphenOffset = bookmarkPoint.ePubHyphenOffset;
+    eucIndexPoint.source = bookmarkPoint.layoutPage;
+    eucIndexPoint.block = bookmarkPoint.ePubParagraphId;
+    eucIndexPoint.word = bookmarkPoint.ePubWordOffset;
+    eucIndexPoint.element = bookmarkPoint.ePubHyphenOffset;
     
     [self goToIndexPoint:eucIndexPoint animated:animated];
     
@@ -159,17 +76,11 @@
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint
 {
-    if(bookmarkPoint.layoutPage && !bookmarkPoint.ePubWordOffset) {
-        NSString *bestPageUuid = [self _bookUuidFromEPubBook:((EucEPubBook *)self.book)
-                                         forLayoutPageNumber:bookmarkPoint.layoutPage];
-        if(bestPageUuid) {
-            return [self pageNumberForUuid:bestPageUuid];
-        }
-    }
     EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
-    eucIndexPoint.startOfParagraphByteOffset = bookmarkPoint.ePubParagraphId;
-    eucIndexPoint.startOfPageParagraphWordOffset = bookmarkPoint.ePubWordOffset;
-    eucIndexPoint.startOfPageWordHyphenOffset = bookmarkPoint.ePubHyphenOffset;
+    eucIndexPoint.source = bookmarkPoint.layoutPage;
+    eucIndexPoint.block = bookmarkPoint.ePubParagraphId;
+    eucIndexPoint.word = bookmarkPoint.ePubWordOffset;
+    eucIndexPoint.element = bookmarkPoint.ePubHyphenOffset;
     
     NSInteger ret = [self pageNumberForIndexPoint:eucIndexPoint];
     
@@ -177,7 +88,6 @@
     
     return ret;
 }
-
 
 - (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter
 {
@@ -198,6 +108,13 @@
     [showWebToolsItem release];
     
     return ret;
+}
+
++ (NSArray *)preAvailabilityOperations {
+    BlioEPubPaginateOperation *preParseOp = [[BlioEPubPaginateOperation alloc] init];
+    NSArray *operations = [NSArray arrayWithObject:preParseOp];
+    [preParseOp release];
+    return operations;
 }
 
 @end

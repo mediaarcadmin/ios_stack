@@ -11,7 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <QuartzCore/CALayer.h>
 #import <QuartzCore/CATransaction.h>
-#import <libEucalyptus/EucEPubBook.h>
+#import <libEucalyptus/EucBUpeBook.h>
 #import "BlioMockBook.h"
 
 @implementation BlioSpeedReadView
@@ -19,7 +19,7 @@
 @synthesize pageCount, pageNumber, currentWordOffset, currentParagraph, currentPage, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
-    EucEPubBook *aEPubBook = [[EucEPubBook alloc] initWithPath:[aBook ePubPath]];
+    EucBUpeBook *aEPubBook = [[EucBUpeBook alloc] initWithPath:[aBook ePubPath]];
     if (nil == aEPubBook) return nil;
     
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
@@ -103,25 +103,25 @@
         textArray = nil;
     }
     
-    currentParagraph = [(EucEPubBook *)book paragraphIdForParagraphAfterParagraphWithId:currentParagraph];
+    /*currentParagraph = [(EucBUpeBook *)book paragraphIdForParagraphAfterParagraphWithId:currentParagraph];
     if (currentParagraph) {
         textArray  = [[NSMutableArray alloc] initWithArray:[(EucEPubBook *)book paragraphWordsForParagraphWithId:currentParagraph]];
         if ([textArray count] == 0) {
             [self fillArrayWithNextParagraph];
         }
-    }
+    }*/
     
     
 }
 
 - (void)fillArrayWithCurrentParagraph {
-    [(EucEPubBook*)book getCurrentParagraphId:&currentParagraph wordOffset:&currentWordOffset];
+    //[(EucBUpeBook*)book getCurrentParagraphId:&currentParagraph wordOffset:&currentWordOffset];
     if (currentParagraph) {
         if (textArray) {
             [textArray release];
             textArray = nil;
         }
-        textArray  = [[NSMutableArray alloc] initWithArray:[(EucEPubBook *)book paragraphWordsForParagraphWithId:currentParagraph]];
+        //textArray  = [[NSMutableArray alloc] initWithArray:[(EucEPubBook *)book paragraphWordsForParagraphWithId:currentParagraph]];
         if ([textArray count] == 0) {
             [self fillArrayWithNextParagraph];
         }
@@ -407,7 +407,7 @@
 
 
 - (void)dealloc {
-    [(EucEPubBook*)book setCurrentParagraphId:currentParagraph wordOffset:currentWordOffset];    
+    //[(EucBUpeBook*)book setCurrentParagraphId:currentParagraph wordOffset:currentWordOffset];    
     [textArray release];
     [sampleTextLabel release];
     [bigTextLabel release];

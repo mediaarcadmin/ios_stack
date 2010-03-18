@@ -7,7 +7,7 @@
 //
 
 #import "PaginateRootViewController.h"
-#import <libEucalyptus/EucEPubBook.h>
+#import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndex.h>
 #import <libEucalyptus/EucBookTextStyle.h>
 #import <libEucalyptus/EucBookPaginator.h>
@@ -150,8 +150,8 @@
         [self removeFilesMatchingPattern:@"*.v*index*" fromPath:path];
         [self removeFilesMatchingPattern:@"chapterOffsets.plist" fromPath:path];
         
-        EucEPubBook *testBook = [[EucEPubBook alloc] initWithPath:moveTo];    
-        [paginator paginateBookInBackground:testBook forForFontFamily:[EucBookTextStyle defaultFontFamilyName] saveImagesTo:saveImages ? images : nil];
+        EucBUpeBook *testBook = [[EucBUpeBook alloc] initWithPath:moveTo];    
+        [paginator paginateBookInBackground:testBook saveImagesTo:saveImages ? images : nil];
         [testBook release];
         return YES;
     }
@@ -161,7 +161,6 @@
 - (void)paginationComplete:(NSNotification *)notification
 {
     NSString *path = [toPaginate objectAtIndex:0];
-    [EucBookPageIndex markBookBundleAsIndexConstructed:path];
     NSLog(@"Pagination complete for %@", path);
     
     [toPaginate removeObjectAtIndex:0];
@@ -169,7 +168,7 @@
     if(![self paginateNextBook]) {
         NSLog(@"Pagination done!");
         [toPaginate release];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:BookPaginationCompleteNotification object:paginator];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:EucBookPaginatorCompleteNotification object:paginator];
         [paginator release];
         self.paginationUnderway = NO;
         [self.tableView reloadData];
@@ -195,7 +194,7 @@
         paginator = [[EucBookPaginator alloc] init];        
         [[NSNotificationCenter defaultCenter] addObserver:self 
                                                  selector:@selector(paginationComplete:)
-                                                     name:BookPaginationCompleteNotification
+                                                     name:EucBookPaginatorCompleteNotification
                                                    object:paginator];
         
         [[NSFileManager defaultManager] removeItemAtPath:PAGINATION_PATH error:nil];
@@ -205,7 +204,7 @@
             self.paginationUnderway = YES;
         } else {
             [toPaginate release];
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:BookPaginationCompleteNotification object:paginator];
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:EucBookPaginatorCompleteNotification object:paginator];
             [paginator release];
             self.paginationUnderway = NO;            
         }

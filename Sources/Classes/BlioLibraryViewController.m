@@ -13,7 +13,6 @@
 #import "BlioLayoutView.h"
 #import "BlioMockBook.h"
 #import "BlioUIImageAdditions.h"
-#import "BlioTestParagraphWords.h"
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
 
@@ -329,7 +328,38 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
+                                              authors:[NSArray arrayWithObjects:@"Shirley O. Corriher", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
+                                              authors:[NSArray arrayWithObjects:@"Bill Martin Jr", @"Joan Archambault", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
       
+        [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
+                                              authors:[NSArray arrayWithObjects:@"Matthew Reilly", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
+                                              authors:[NSArray arrayWithObjects:@"Lisa Wheeler", @"Sophie Blackall", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
     }
     
     self.fetchedResultsController = aFetchedResultsController;

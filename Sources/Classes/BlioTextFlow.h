@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <expat/expat.h>
 #import "BlioBookmark.h"
+#import "BlioProcessingManager.h"
 
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
@@ -89,7 +90,7 @@
 
 @end
 
-@interface BlioTextFlow : NSObject {
+@interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider> {
     NSSet *sections;
     NSInteger currentPageIndex;
     BlioTextFlowSection *currentSection;
@@ -109,7 +110,5 @@
 - (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
-
-+ (NSArray *)preAvailabilityOperations;
 
 @end

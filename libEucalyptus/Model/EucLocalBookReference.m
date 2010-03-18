@@ -8,4 +8,3 @@
 
 NSString* const kXAttrBookTextFileName = @"gs.ingsmadeoutofotherthin.th.BookTextFileName";
 NSString* const kXAttrIndexVersion = @"gs.ingsmadeoutofotherthin.th.IndexVersion";
-NSString* const kXAttrParserVersion = @"gs.ingsmadeoutofotherthin.th.ParserVersion";

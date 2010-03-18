@@ -9,24 +9,17 @@
 #import <Foundation/Foundation.h>
 #import <stdint.h>
 
-typedef enum BookPageIndexPointSource {
-    BookPageIndexPointSourceCoverPage = 1,
-    BookPageIndexPointSourceCopyrightPage = 2,
-    BookPageIndexPointSourceBook = 0,
-    BookPageIndexPointSourceLicenceAppendix = 3,
-} BookPageIndexPointSource; 
-
 @interface EucBookPageIndexPoint : NSObject {
-    uint32_t _startOfParagraphByteOffset;
-    uint32_t _startOfPageParagraphWordOffset;
-    uint16_t _startOfPageWordHyphenOffset;
-    uint16_t _source;
+    uint32_t _source;
+    uint32_t _block;
+    uint32_t _word;
+    uint32_t _element;
 }
 
-@property (nonatomic, assign) uint32_t startOfParagraphByteOffset;
-@property (nonatomic, assign) uint32_t startOfPageParagraphWordOffset;
-@property (nonatomic, assign) uint16_t startOfPageWordHyphenOffset;
-@property (nonatomic, assign) uint16_t source;
+@property (nonatomic, assign) uint32_t source;
+@property (nonatomic, assign) uint32_t block;
+@property (nonatomic, assign) uint32_t word;
+@property (nonatomic, assign) uint32_t element;
 
 + (off_t)sizeOnDisk;
 

@@ -21,3 +21,8 @@
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext;
 
 @end
+
+
+@protocol BlioProcessingManagerOperationProvider
++ (NSArray *)preAvailabilityOperations;
+@end

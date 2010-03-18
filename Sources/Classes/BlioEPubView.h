@@ -9,7 +9,9 @@
 #import <libEucalyptus/EucBookView.h>
 #import <libEucalyptus/EucSelector.h>
 #import "BlioBookViewController.h"
+#import "BlioProcessingManager.h"
 
-@interface BlioEPubView : EucBookView <BlioBookView, EucSelectorDelegate> {}
+@interface BlioEPubView : EucBookView <BlioBookView, EucSelectorDelegate, BlioProcessingManagerOperationProvider> {}
+
 
 @end

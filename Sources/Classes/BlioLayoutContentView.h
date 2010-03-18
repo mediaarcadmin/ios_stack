@@ -20,15 +20,18 @@
     BlioLayoutThumbLayer *thumbLayer;
     BlioLayoutShadowLayer *shadowLayer;
     BlioLayoutHighlightsLayer *highlightsLayer;
+    NSOperationQueue *cacheQueue;
 }
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, assign) BlioLayoutTiledLayer *tiledLayer;
 @property (nonatomic, assign) BlioLayoutShadowLayer *shadowLayer;
 @property (nonatomic, assign) BlioLayoutHighlightsLayer *highlightsLayer;
+@property (nonatomic, retain) NSOperationQueue *cacheQueue;
 
 - (void)setExcludedHighlight:(BlioBookmarkRange *)excludedHighlight;
 - (void)refreshHighlights;
+- (void)forceThumbCacheAfterDelay:(NSTimeInterval)delay;
 
 @end
 
