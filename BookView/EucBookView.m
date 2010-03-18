@@ -291,7 +291,7 @@
                                                   animated:YES];
 }
 
-- (void)highlightWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+- (void)highlightWordAtBlockId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
 {
  /*   if(paragraphId == 0) {
         _highlightPage = 0;
