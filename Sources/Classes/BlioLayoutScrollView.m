@@ -41,7 +41,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+    NSLog(@"touchesBegan");
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
     
@@ -77,6 +77,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (void)delayedTouchesBegan:(NSTimer *)timer {
+    NSLog(@"delayedTouchesBegan");
     self.forwardingState = BlioLayoutTouchForwardingStateForwardedBeginTimerExpired;
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
@@ -108,6 +109,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"touchesEnded");
     if (self.forwardingState == BlioLayoutTouchForwardingStateMultiTouchBegin) {
         NSSet *allTouches = [event touchesForView:self];
         if ([allTouches count] <= 1) self.forwardingState = BlioLayoutTouchForwardingStateNone;
@@ -121,6 +123,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     
     switch (self.forwardingState) {
         case BlioLayoutTouchForwardingStateCancelled:
+            NSLog(@"selector touchesCancelled");
             [self.selector touchesCancelled:touches];
             self.forwardingState = BlioLayoutTouchForwardingStateNone;
             break;
@@ -129,6 +132,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
             break;
         case BlioLayoutTouchForwardingStateForwardedBeginTimerExpired:
             self.forwardingState = BlioLayoutTouchForwardingStateNone;
+            NSLog(@"selector touchesEnded");
             [self.selector touchesEnded:touches];
             break;
         default:
@@ -137,6 +141,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (void)delayedTouchesEnded:(NSTimer *)timer {
+    NSLog(@"delayedTouchesEnded");
     NSSet *touches = (NSSet *)[timer userInfo];
     
     if (self.forwardingState == BlioLayoutTouchForwardingStateCancelled) {
@@ -144,6 +149,8 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     } else {
         UITouch * t = [touches anyObject];
         if ((![self.selector isTracking]) && ([t tapCount] == 1)) {
+            [self.selector touchesEnded:touches];
+            
             CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] bounds]);
             CGFloat leftHandHotZone = screenWidth * kBlioLayoutLHSHotZone;
             CGFloat rightHandHotZone = screenWidth * kBlioLayoutRHSHotZone;
@@ -161,9 +168,9 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
             } else {
                 [self.bookDelegate toggleToolbars]; 
             }
+        } else {
+            [self.selector touchesEnded:touches];
         }
-        
-        [self.selector touchesEnded:touches];
     }
     
     self.forwardingState = BlioLayoutTouchForwardingStateNone;

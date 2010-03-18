@@ -492,7 +492,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark Tile Rendering
 
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheLayer:(CGLayerRef)cacheLayer cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector {
-     //NSLog(@"Tiled rendering started");
+    //NSLog(@"Tiled rendering started");
 //    CGFloat inset = -kBlioLayoutShadow;
     
     // Because this occurs on a background thread but accesses self, we must check whether we have been cancelled
@@ -1581,6 +1581,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     } else {
         [UIView setAnimationDuration:0.75f];
     }
+    
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [self.scrollView setMinimumZoomScale:1];
@@ -1589,7 +1590,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     CGPoint newContentOffset = CGPointEqualToPoint(targetContentOffset, CGPointZero) ? CGPointMake((self.pageNumber - 1) * CGRectGetWidth(self.bounds), 0) : targetContentOffset;
     [self.scrollView setContentOffset:newContentOffset];
     [UIView commitAnimations];
-    [self didChangeValueForKey:@"pageNumber"];
+    [self didChangeValueForKey:@"pageNumber"];    
 }
 
 - (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
@@ -1694,7 +1695,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
-
+        
     if([self.selector isTracking])
         [self.selector redisplaySelectedRange];
     
@@ -1826,7 +1827,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     // Work out targetParagrgraph on the current page
     if (count > 0) {
         if (nil == self.lastParagraph) {
-            targetParagraph = [paragraphs objectAtIndex:0];
+            if (!reversed)
+                targetParagraph = [paragraphs objectAtIndex:0];
         } else if (reversed) {
             NSInteger prevIndex = [self.lastParagraph paragraphIndex] - 1;
             if (prevIndex >= 0)
@@ -1847,16 +1849,19 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
                 return;
             }
             
-            NSInteger newPageIndex = pageIndex + 1;
-            NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:newPageIndex];
+            //NSInteger newPageIndex = pageIndex + 1;
+            //NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:newPageIndex];
             
-            if ([pageParagraphs count] > 0) {
-                targetParagraph = [pageParagraphs objectAtIndex:0];
-            } else {
-                // If the next page has no blocks, zoom to page
-                [self zoomToPage:targetPage + 1];
-                return;
-            }
+            // Always zoom to the next page (rather than to the first block on it)
+            [self zoomToPage:targetPage + 1];
+            //                return;
+            //if ([pageParagraphs count] > 0) {
+//                targetParagraph = [pageParagraphs objectAtIndex:0];
+//            } else {
+//                // If the next page has no blocks, zoom to page
+//                [self zoomToPage:targetPage + 1];
+//                return;
+//            }
         } else {
             if (pageIndex <= 0) {
                 // If we are already at the first page, zoom to page
@@ -1867,6 +1872,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             NSInteger newPageIndex = pageIndex - 1;
             NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:newPageIndex];
             
+            // Always zoom to the previous page (rather than to the last block on it)
+            //[self zoomToPage:targetPage - 1];
             if ([pageParagraphs count] > 0) {
                 targetParagraph = [pageParagraphs lastObject];
             } else {
