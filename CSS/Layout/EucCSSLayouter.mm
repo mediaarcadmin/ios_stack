@@ -540,7 +540,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                               pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
             if(nextPointValid) {
                 *returningNextPoint = nextPoint;
-            } else if(currentDocumentNode) {
+            } else {
                 // Couldn't find a break.
                 // Not entirely sure of the best thing to do here - for now
                 // just return the next node.
