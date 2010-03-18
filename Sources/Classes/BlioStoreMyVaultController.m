@@ -15,7 +15,7 @@
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         self.title = @"My Vault";
         
-        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"My Vault" image:nil tag:kBlioStoreMyVaultTag];
+        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"My Vault" image:[UIImage imageNamed:@"icon-vault.png"] tag:kBlioStoreMyVaultTag];
         self.tabBarItem = theItem;
         [theItem release];
     }

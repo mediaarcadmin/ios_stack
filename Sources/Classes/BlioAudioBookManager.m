@@ -109,7 +109,6 @@
 
 - (void)playAudio {
 	[self setTimeStarted:[avPlayer currentTime]];
-	//[self setTimeStarted:[[NSDate date] timeIntervalSince1970]];
 	[avPlayer play];
 }
 
@@ -120,8 +119,9 @@
 }
 
 - (void)pauseAudio {
-	[avPlayer pause];
 	[self.speakingTimer invalidate];
+	[self setStartedPlaying:NO];
+	[avPlayer pause];
 	/*int i;
 	// The timer doesn't stop as quickly as the audio stops, so timeIx 
 	// gets a little bit ahead.  Use currentTime to reset it.
@@ -131,27 +131,24 @@
 	}
 	self.timeIx = i-1;
 	*/
-	self.pausedAtTime = [[self.wordTimes objectAtIndex:self.timeIx] intValue];// + self.lastOnPageTime;
-	NSLog(@"Pausing audio, timeIx is %d, pausedAtTime is %d",self.timeIx,self.pausedAtTime);
+	//self.pausedAtTime = [[self.wordTimes objectAtIndex:self.timeIx] intValue];
+	//NSLog(@"Pausing audio, timeIx is %d, pausedAtTime is %d",self.timeIx,self.pausedAtTime);
 }
 
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
 	NSString* audioPath;
 	if ( [elementName isEqualToString:@"Audio"] ) {
-		// Kluge, change this - just add filename here, make into a path in bookview ctlr.
-		//[book.bookCacheDirectory stringByAppendingPathComponent:filename];
-		audioPath = [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/AudioBooks/Graveyard Book/"] stringByAppendingString:[attributeDict objectForKey:@"src"]];
+		audioPath = [attributeDict objectForKey:@"src"];
 		[self.audioFiles addObject:audioPath];
 	}
 	else if ( [elementName isEqualToString:@"Timing"] ) {
-		// Kluge, change this
-		audioPath = [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/AudioBooks/Graveyard Book/"] stringByAppendingString:[attributeDict objectForKey:@"src"]];
+		audioPath = [attributeDict objectForKey:@"src"];
 		[self.timeFiles addObject:audioPath];
 	}
 	else if ( [elementName isEqualToString:@"Page"] ) {
 		pageSegments = [[NSMutableArray alloc] init];
-		[self setCurrDictKey:[attributeDict objectForKey:@"PageIndex"]];
+		[self setCurrDictKey:[attributeDict objectForKey:@"PageIndex"]];  // TODO: add one to match Blio layout pages
 	}
 	else if ( [elementName isEqualToString:@"AudioSegment"] ) {
 		pageSegmentVals = [[NSMutableArray alloc] initWithCapacity:3];

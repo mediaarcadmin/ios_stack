@@ -61,6 +61,8 @@
 @optional
 - (void)parserDidEndParsingData:(BlioStoreBooksSourceParser *)parser;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didFailWithError:(NSError *)error;
+- (void)parser:(BlioStoreBooksSourceParser *)parser didParseTotalResults:(NSNumber *)volumeTotalResults;
+- (void)parser:(BlioStoreBooksSourceParser *)parser didParseNextLink:(NSURL *)nextLink;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseCategories:(NSArray *)parsedCategories;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseEntities:(NSArray *)parsedEntities;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseEntity:(BlioStoreParsedEntity *)parsedEntity;
