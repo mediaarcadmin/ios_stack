@@ -1919,33 +1919,33 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     NSInteger pageIndex = targetPage - 1;
     
     self.disableScrollUpdating = YES;
-    NSArray *paragraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSArray *blocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
 
     [self.scrollView setPagingEnabled:NO];
     [self.scrollView setBounces:NO];
     
-    BlioTextFlowParagraph *targetParagraph = nil;
+    BlioTextFlowBlock *targetBlock = nil;
     CGAffineTransform viewTransform = [self viewTransformForPage:targetPage];
     
-    NSUInteger count = [paragraphs count];
+    NSUInteger count = [blocks count];
     NSUInteger targetIndex;
     
     if (count > 0) { 
         for (NSUInteger index = 0; index < count; index++) {
-            BlioTextFlowParagraph *paragraph = [paragraphs objectAtIndex:index];
-            CGRect blockRect = [paragraph rect];
+            BlioTextFlowBlock *block = [blocks objectAtIndex:index];
+            CGRect blockRect = [block rect];
             CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
             if (CGRectContainsPoint(pageRect, pointInTargetPage)) {
-                targetParagraph = paragraph;
+                targetBlock = block;
                 targetIndex = index;
                 break;
             }
         }
     }
     
-    if (nil != targetParagraph) {
-        [self zoomToBlock:targetParagraph];
-        self.lastParagraph = targetParagraph;
+    if (nil != targetBlock) {
+        [self zoomToBlock:targetBlock];
+        self.lastBlock = targetBlock;
         return;
     } else if (self.scrollView.zoomScale > 1) {
         [self zoomOut];
