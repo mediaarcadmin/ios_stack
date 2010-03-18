@@ -184,6 +184,7 @@
 			activityIndicatorView.hidesWhenStopped = YES;
 			activityIndicatorView.tag = kBlioMoreResultsCellActivityIndicatorViewTag;
 			[cell.imageView addSubview:activityIndicatorView];
+			[activityIndicatorView release];
 		}		
 		// populate cell with content
 		
@@ -338,7 +339,7 @@
     for (BlioStoreFeed *feed in self.feeds) {
         if ([feed.parser isEqual:parser]) {
             feed.nextURL = nextLink;
-			NSLog(@"feed: %@ nextLink: %@", feed.title, [nextLink absoluteString]); 
+//			NSLog(@"feed: %@ nextLink: %@", feed.title, [nextLink absoluteString]); 
 		}
     }
     // table reloading will be handled when the categories and/or entities are parsed

@@ -48,7 +48,7 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 - (void)startWithURL:(NSURL *)url {
     if (nil == url) return;
-    NSLog(@"startWithURL: %@", [url absoluteString]);
+//    NSLog(@"BlioStoreBooksSourceParser startWithURL: %@", [url absoluteString]);
 	self.parsedCategories = [NSMutableArray array];
     self.parsedEntities = [NSMutableArray array];
     
