@@ -29,8 +29,9 @@
 
 - (void)dealloc
 {
-    [self.document notifyOfDealloc:self];
-
+    [_document notifyOfDealloc:self];
+    [_document release];
+    
     [_stringRenderer release];
     
     [super dealloc];

@@ -20,9 +20,8 @@ struct css_computed_style;
 }
 
 // Concrete:
-
-@property (nonatomic, assign) EucCSSIntermediateDocument *document;
 @property (nonatomic, assign) uint32_t key;
+@property (nonatomic, retain) EucCSSIntermediateDocument *document;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *blockLevelNode;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *blockLevelParent;
