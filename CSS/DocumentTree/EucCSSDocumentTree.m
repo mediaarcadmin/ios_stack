@@ -396,17 +396,14 @@ static css_error EucCSSDocumentTreeComputeFontSize(void *pw, const css_hint *par
 	assert(size->status != CSS_FONT_SIZE_INHERIT);
     
 	if (size->status < CSS_FONT_SIZE_LARGER) {
-		/* Keyword -- simple */
 		size->data.length = sizes[size->status - 1];
 	} else if (size->status == CSS_FONT_SIZE_LARGER) {
-		/** \todo Step within table, if appropriate */
 		size->data.length.value = 
         FMUL(parent_size->value, FLTTOFIX(1.2));
 		size->data.length.unit = parent_size->unit;
 	} else if (size->status == CSS_FONT_SIZE_SMALLER) {
-		/** \todo Step within table, if appropriate */
 		size->data.length.value = 
-        FMUL(parent_size->value, FLTTOFIX(1.2));
+        FDIV(parent_size->value, FLTTOFIX(1.2));
 		size->data.length.unit = parent_size->unit;
 	} else if (size->data.length.unit == CSS_UNIT_EM ||
                size->data.length.unit == CSS_UNIT_EX) {
