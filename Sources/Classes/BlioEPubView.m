@@ -54,7 +54,7 @@
     
     EucBookPageIndexPoint *eucIndexPoint = ((EucBUpeBook *)self.book).currentPageIndexPoint;
     ret.layoutPage = eucIndexPoint.source;
-    ret.ePubParagraphId = eucIndexPoint.block;
+    ret.ePubBlockId = eucIndexPoint.block;
     ret.ePubWordOffset = eucIndexPoint.word;
     ret.ePubHyphenOffset = eucIndexPoint.element;
         
@@ -65,7 +65,7 @@
 {
     EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
     eucIndexPoint.source = bookmarkPoint.layoutPage;
-    eucIndexPoint.block = bookmarkPoint.ePubParagraphId;
+    eucIndexPoint.block = bookmarkPoint.ePubBlockId;
     eucIndexPoint.word = bookmarkPoint.ePubWordOffset;
     eucIndexPoint.element = bookmarkPoint.ePubHyphenOffset;
     
@@ -78,7 +78,7 @@
 {
     EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
     eucIndexPoint.source = bookmarkPoint.layoutPage;
-    eucIndexPoint.block = bookmarkPoint.ePubParagraphId;
+    eucIndexPoint.block = bookmarkPoint.ePubBlockId;
     eucIndexPoint.word = bookmarkPoint.ePubWordOffset;
     eucIndexPoint.element = bookmarkPoint.ePubHyphenOffset;
     

@@ -14,14 +14,14 @@
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
     CGRect rect;
-    NSIndexPath *paragraphID;
+    NSIndexPath *blockID;
     NSInteger wordIndex;
     NSNumber *wordID;
 }
 
 @property (nonatomic, retain) NSString *string;
 @property (nonatomic) CGRect rect;
-@property (nonatomic, retain) NSIndexPath *paragraphID;
+@property (nonatomic, retain) NSIndexPath *blockID;
 @property (nonatomic) NSInteger wordIndex;
 @property (nonatomic, retain) NSNumber *wordID;
 
@@ -42,7 +42,7 @@
 
 @end
 
-@interface BlioTextFlowSection : NSObject <NSCoding> {
+@interface BlioTextFlowPageRange : NSObject <NSCoding> {
     // NSCoding compliant
     NSInteger pageIndex;
     NSString *name;
@@ -65,48 +65,48 @@
 
 @end
 
-@interface BlioTextFlowParagraph : NSObject {
+@interface BlioTextFlowBlock : NSObject {
     NSInteger pageIndex;
-    NSInteger paragraphIndex;
-    NSIndexPath *paragraphID;
+    NSInteger blockIndex;
+    NSIndexPath *blockID;
     NSMutableArray *words;
     CGRect rect;
     BOOL folio;
 }
 
 @property (nonatomic) NSInteger pageIndex;
-@property (nonatomic) NSInteger paragraphIndex;
-@property (nonatomic, retain) NSIndexPath *paragraphID;
+@property (nonatomic) NSInteger blockIndex;
+@property (nonatomic, retain) NSIndexPath *blockID;
 @property (nonatomic, retain) NSMutableArray *words;
 @property (nonatomic, readonly) CGRect rect;
 @property (nonatomic) BOOL folio;
 
 - (NSString *)string;
 - (NSArray *)wordsArray;
-- (NSComparisonResult)compare:(BlioTextFlowParagraph *)rhs;
-+ (NSInteger)pageIndexForParagraphID:(id)aParagraphID;
-+ (NSInteger)paragraphIndexForParagraphID:(id)aParagraphID;
-+ (id)paragraphIDForPageIndex:(NSInteger)aPageIndex paragraphIndex:(NSInteger)aParagraphIndex;
+- (NSComparisonResult)compare:(BlioTextFlowBlock *)rhs;
++ (NSInteger)pageIndexForBlockID:(id)aBlockID;
++ (NSInteger)blockIndexForBlockID:(id)aBlockID;
++ (id)blockIDForPageIndex:(NSInteger)aPageIndex blockIndex:(NSInteger)aBlockIndex;
 
 @end
 
 @interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider> {
-    NSSet *sections;
+    NSSet *pageRanges;
     NSInteger currentPageIndex;
-    BlioTextFlowSection *currentSection;
-    BlioTextFlowParagraph *currentParagraph;
-    NSMutableArray *currentParagraphArray;
+    BlioTextFlowPageRange *currentPageRange;
+    BlioTextFlowBlock *currentBlock;
+    NSMutableArray *currentBlockArray;
     XML_Parser currentParser;
     NSInteger cachedPageIndex;
-    NSArray *cachedPageParagraphs;
+    NSArray *cachedPageBlocks;
     NSString *basePath;
 }
 
-- (id)initWithSections:(NSSet *)sectionsSet basePath:(NSString *)aBasePath;
+- (id)initWithPageRanges:(NSSet *)pageRangesSet basePath:(NSString *)aBasePath;
 
 // Convenience methods
-- (NSArray *)sortedSections;
-- (NSArray *)paragraphsForPageAtIndex:(NSInteger)pageIndex;
+- (NSArray *)sortedPageRanges;
+- (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;

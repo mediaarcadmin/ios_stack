@@ -10,11 +10,11 @@
 
 
 @interface BlioAudioManager : NSObject {
-	id currentParagraph;
+	id currentBlock;
 	uint32_t currentWordOffset;
 	uint32_t adjustedWordOffset;
 	uint32_t currentPage;
-	NSArray* paragraphWords;
+	NSArray* blockWords;
 	NSTimer* speakingTimer;
 	BOOL startedPlaying;
 	BOOL pageChanged;  // This means page has changed since the stop button was last pressed.
@@ -23,10 +23,10 @@
 	NSString* currentWord;
 }
 
-@property (nonatomic, retain) NSArray* paragraphWords;
+@property (nonatomic, retain) NSArray* blockWords;
 @property (nonatomic, retain) NSString* currentWord;
 @property (nonatomic, retain) NSTimer* speakingTimer;
-@property (nonatomic, retain) id currentParagraph;
+@property (nonatomic, retain) id currentBlock;
 @property (nonatomic) uint32_t currentWordOffset;
 @property (nonatomic) uint32_t adjustedWordOffset;
 @property (nonatomic) uint32_t currentPage; 
@@ -34,6 +34,6 @@
 @property (nonatomic, assign) BOOL pageChanged;
 @property (nonatomic) BOOL textToSpeakChanged; 
 
-- (void)adjustParagraphWords;
+- (void)adjustBlockWords;
 
 @end

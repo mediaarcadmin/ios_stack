@@ -72,7 +72,7 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
 - (void)zoomToNextBlockReversed:(BOOL)reversed;
-- (void)zoomToBlock:(BlioTextFlowParagraph *)targetParagraph;
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock;
 - (void)zoomToPage:(NSInteger)targetPageNumber;
 - (void)zoomOut;
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point;
@@ -83,7 +83,7 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic) CGFloat lastZoomScale;
 @property (nonatomic, retain) NSData *pdfData;
-@property(nonatomic, retain) BlioTextFlowParagraph *lastParagraph;
+@property(nonatomic, retain) BlioTextFlowBlock *lastBlock;
 
 @end
 
@@ -108,7 +108,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 @synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor, fetchHighlightsQueue;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize renderThumbsQueue, thumbCache, thumbCacheSize, pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
-@synthesize lastParagraph;
+@synthesize lastBlock;
 
 - (void)dealloc {
     isCancelled = YES;
@@ -141,7 +141,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     self.shadowTop = nil;
     self.shadowLeft = nil;
     self.shadowRight = nil;
-    self.lastParagraph = nil;
+    self.lastBlock = nil;
     
     [self.selector detatch];
     self.selector = nil;
@@ -581,7 +581,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     NSInteger pageIndex = aPageNumber - 1;
     NSMutableArray *allHighlights = [NSMutableArray array];
     NSArray *highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
     
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         
@@ -589,39 +589,39 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
                         
             NSMutableArray *highlightRects = [NSMutableArray array];
             
-            for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
+            for (BlioTextFlowBlock *block in pageBlocks) {
                 
-                for (BlioTextFlowPositionedWord *word in [paragraph words]) {
+                for (BlioTextFlowPositionedWord *word in [block words]) {
                     if ((highlightRange.startPoint.layoutPage < aPageNumber) &&
-                        (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
+                        (block.blockIndex <= highlightRange.endPoint.blockOffset) &&
                         (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
                         
                         [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         
                     } else if ((highlightRange.endPoint.layoutPage > aPageNumber) &&
-                               (paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
+                               (block.blockIndex >= highlightRange.startPoint.blockOffset) &&
                                (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
                         
                         [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         
                     } else if ((highlightRange.startPoint.layoutPage == aPageNumber) &&
-                               (paragraph.paragraphIndex == highlightRange.startPoint.paragraphOffset) &&
+                               (block.blockIndex == highlightRange.startPoint.blockOffset) &&
                                (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
                         
-                        if ((paragraph.paragraphIndex == highlightRange.endPoint.paragraphOffset) &&
+                        if ((block.blockIndex == highlightRange.endPoint.blockOffset) &&
                             (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        } else if (paragraph.paragraphIndex < highlightRange.endPoint.paragraphOffset) {
+                        } else if (block.blockIndex < highlightRange.endPoint.blockOffset) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         }
                         
                     } else if ((highlightRange.startPoint.layoutPage == aPageNumber) &&
-                               (paragraph.paragraphIndex > highlightRange.startPoint.paragraphOffset)) {
+                               (block.blockIndex > highlightRange.startPoint.blockOffset)) {
                         
-                        if ((paragraph.paragraphIndex == highlightRange.endPoint.paragraphOffset) &&
+                        if ((block.blockIndex == highlightRange.endPoint.blockOffset) &&
                             (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        } else if (paragraph.paragraphIndex < highlightRange.endPoint.paragraphOffset) {
+                        } else if (block.blockIndex < highlightRange.endPoint.blockOffset) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         }
                     }
@@ -715,9 +715,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     NSInteger pageIndex = self.pageNumber - 1;
     
     EucSelectorRange *selectorRange = [[EucSelectorRange alloc] init];
-    selectorRange.startBlockId = [BlioTextFlowParagraph paragraphIDForPageIndex:pageIndex paragraphIndex:range.startPoint.paragraphOffset];
+    selectorRange.startBlockId = [BlioTextFlowBlock blockIDForPageIndex:pageIndex blockIndex:range.startPoint.blockOffset];
     selectorRange.startElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:range.startPoint.wordOffset];
-    selectorRange.endBlockId = [BlioTextFlowParagraph paragraphIDForPageIndex:pageIndex paragraphIndex:range.endPoint.paragraphOffset];
+    selectorRange.endBlockId = [BlioTextFlowBlock blockIDForPageIndex:pageIndex blockIndex:range.endPoint.blockOffset];
     selectorRange.endElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:range.endPoint.wordOffset];
     
     return [selectorRange autorelease];
@@ -731,12 +731,12 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
     startPoint.layoutPage = currentPage;
-    startPoint.paragraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:range.startBlockId];
+    startPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:range.startBlockId];
     startPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:range.startElementId];
     
     BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
     endPoint.layoutPage = currentPage;
-    endPoint.paragraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:range.endBlockId];
+    endPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:range.endBlockId];
     endPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:range.endElementId];
     
     BlioBookmarkRange *bookmarkRange = [[BlioBookmarkRange alloc] init];
@@ -751,16 +751,16 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (NSArray *)bookmarkRangesForCurrentPage {
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    NSUInteger maxOffset = [pageParagraphs count];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+    NSUInteger maxOffset = [pageBlocks count];
     
     BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
     startPoint.layoutPage = self.pageNumber;
-    startPoint.paragraphOffset = 0;
+    startPoint.blockOffset = 0;
     
     BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
     endPoint.layoutPage = self.pageNumber;
-    endPoint.paragraphOffset = maxOffset;
+    endPoint.blockOffset = maxOffset;
     
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
     range.startPoint = startPoint;
@@ -820,23 +820,23 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
     NSMutableArray *identifiers = [NSMutableArray array];
-    for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
-        [identifiers addObject:[paragraph paragraphID]];
+    for (BlioTextFlowBlock *block in pageBlocks) {
+        [identifiers addObject:[block blockID]];
     }
     return identifiers;
 }
 
-- (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)paragraphID {
+- (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)blockID {
     CGRect pageRect = CGRectZero;
     
-    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
     
-    if ([pageParagraphs count] > currentIndex) {
-        CGRect blockRect = [[pageParagraphs objectAtIndex:currentIndex] rect];
+    if ([pageBlocks count] > currentIndex) {
+        CGRect blockRect = [[pageBlocks objectAtIndex:currentIndex] rect];
 //        CGAffineTransform viewTransform = [[self.currentPageLayer view] viewTransform];
         CGAffineTransform viewTransform = [self viewTransformForPage:[self.currentPageLayer pageNumber]];
         pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
@@ -845,14 +845,14 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     return pageRect;
 }
 
-- (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)paragraphID; {
-    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+- (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)blockID; {
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
     
-    if ([pageParagraphs count] > currentIndex) {
+    if ([pageBlocks count] > currentIndex) {
         NSMutableArray *identifiers = [NSMutableArray array];
-        for (BlioTextFlowPositionedWord *word in [[pageParagraphs objectAtIndex:currentIndex] words]) {
+        for (BlioTextFlowPositionedWord *word in [[pageBlocks objectAtIndex:currentIndex] words]) {
             [identifiers addObject:[word wordID]];
         }
         return identifiers;
@@ -861,15 +861,15 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     }
 }
 
-- (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)paragraphID {    
+- (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)blockID {    
     CGRect pageRect = CGRectZero;
     
-    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
     
-    if ([pageParagraphs count] > currentIndex) {
-        NSArray *words = [[pageParagraphs objectAtIndex:currentIndex] words];
+    if ([pageBlocks count] > currentIndex) {
+        NSArray *words = [[pageBlocks objectAtIndex:currentIndex] words];
         NSInteger offset = [wordID integerValue];
         if (offset < [words count]) {
             CGRect wordRect = [[words objectAtIndex:offset] rect];
@@ -1014,20 +1014,20 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];;
 
     if (nil != highlighterRange) {        
-        NSInteger startPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:[highlighterRange startBlockId]];
-        NSInteger endPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:[highlighterRange endBlockId]];
-        NSInteger startParagraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:[highlighterRange startBlockId]];
-        NSInteger endParagraphOffset = [BlioTextFlowParagraph paragraphIndexForParagraphID:[highlighterRange endBlockId]];
+        NSInteger startPageIndex = [BlioTextFlowBlock pageIndexForBlockID:[highlighterRange startBlockId]];
+        NSInteger endPageIndex = [BlioTextFlowBlock pageIndexForBlockID:[highlighterRange endBlockId]];
+        NSInteger startBlockOffset = [BlioTextFlowBlock blockIndexForBlockID:[highlighterRange startBlockId]];
+        NSInteger endBlockOffset = [BlioTextFlowBlock blockIndexForBlockID:[highlighterRange endBlockId]];
         NSInteger startWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange startElementId]];
         NSInteger endWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange endElementId]];
         
         
         [startPoint setLayoutPage:startPageIndex + 1];
-        [startPoint setParagraphOffset:startParagraphOffset];
+        [startPoint setBlockOffset:startBlockOffset];
         [startPoint setWordOffset:startWordOffset];
         
         [endPoint setLayoutPage:endPageIndex + 1];
-        [endPoint setParagraphOffset:endParagraphOffset];
+        [endPoint setBlockOffset:endBlockOffset];
         [endPoint setWordOffset:endWordOffset];
     } else {
         [startPoint setLayoutPage:self.pageNumber];
@@ -1188,42 +1188,42 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark TTS
 
-- (id)getCurrentParagraphId {
+- (id)getCurrentBlockId {
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
 
-    if (![pageParagraphs count])
+    if (![pageBlocks count])
         return nil;
     else
-        return [[pageParagraphs objectAtIndex:0] paragraphID];
+        return [[pageBlocks objectAtIndex:0] blockID];
 }
 
 - (uint32_t)getCurrentWordOffset {
     return 0;
 }
 
-- (id)paragraphIdForParagraphAfterParagraphWithId:(id)paragraphID {    
-    if (!paragraphID) {
+- (id)blockIdForBlockAfterBlockWithId:(id)blockID {    
+    if (!blockID) {
         NSInteger pageIndex = -1;
         while (++pageIndex < ([self pageCount])) {
-            NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-            if ([pageParagraphs count])
-                return (id)[[pageParagraphs objectAtIndex:0] paragraphID];
+            NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+            if ([pageBlocks count])
+                return (id)[[pageBlocks objectAtIndex:0] blockID];
         }
         return nil;
     } else {
 
-        NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
-        NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-        NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+        NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+        NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+        NSInteger currentIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
         
-            if (++currentIndex < [pageParagraphs count]) {
-                return (id)[[pageParagraphs objectAtIndex:currentIndex] paragraphID];
+            if (++currentIndex < [pageBlocks count]) {
+                return (id)[[pageBlocks objectAtIndex:currentIndex] blockID];
             } else {
                 while (++pageIndex < ([self pageCount])) {
-                    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-                    if ([pageParagraphs count])
-                        return (id)[[pageParagraphs objectAtIndex:0] paragraphID];
+                    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+                    if ([pageBlocks count])
+                        return (id)[[pageBlocks objectAtIndex:0] blockID];
                 }
             }
         
@@ -1231,34 +1231,34 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     return nil;
 }
 
-- (NSArray *)paragraphWordsForParagraphWithId:(id)paragraphID {
-    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+- (NSArray *)blockWordsForBlockWithId:(id)blockID {
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
     
-    if ([pageParagraphs count] > currentIndex)
-        return [[pageParagraphs objectAtIndex:currentIndex] wordsArray];
+    if ([pageBlocks count] > currentIndex)
+        return [[pageBlocks objectAtIndex:currentIndex] wordsArray];
     else
         return nil;
     
 }
 
-- (void)highlightWordAtParagraphId:(id)paragraphID wordOffset:(uint32_t)wordOffset {
-    NSInteger pageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:paragraphID];
-    NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
-    NSInteger currentIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:paragraphID];
+- (void)highlightWordAtBlockId:(id)blockID wordOffset:(uint32_t)wordOffset {
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
+    NSInteger currentIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
     
-    if ([pageParagraphs count] > currentIndex) {
-        BlioTextFlowParagraph *currentParagraph = [pageParagraphs objectAtIndex:currentIndex];
+    if ([pageBlocks count] > currentIndex) {
+        BlioTextFlowBlock *currentBlock = [pageBlocks objectAtIndex:currentIndex];
         NSInteger targetPageNumber = ++pageIndex;
         if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
             [self goToPageNumber:targetPageNumber animated:YES];
         }
         
-        NSArray *words = [currentParagraph words];
+        NSArray *words = [currentBlock words];
         if ([words count] > wordOffset) {
             BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
-            [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:paragraphID animated:YES];
+            [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:blockID animated:YES];
         }
                                                    
     }
@@ -1620,7 +1620,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             }
             self.pageNumber = currentPageNumber;
             self.currentPageLayer = aLayer;
-            self.lastParagraph = nil;
+            self.lastBlock = nil;
         }
 
     }
@@ -1666,37 +1666,37 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     NSInteger targetPage = [currentPageLayer pageNumber];
     NSInteger pageIndex = targetPage - 1;
-    if ([self.lastParagraph pageIndex] != pageIndex) self.lastParagraph = nil;
+    if ([self.lastBlock pageIndex] != pageIndex) self.lastBlock = nil;
     
     self.disableScrollUpdating = YES;
-    NSArray *paragraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSArray *blocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
     
     [self.scrollView setPagingEnabled:NO];
     [self.scrollView setBounces:NO];
     
-    BlioTextFlowParagraph *targetParagraph = nil;
+    BlioTextFlowBlock *targetBlock = nil;
     //CGAffineTransform viewTransform = [self viewTransformForPage:targetPage];
     
-    NSUInteger count = [paragraphs count];
+    NSUInteger count = [blocks count];
    // NSUInteger targetIndex;
     
     // Work out targetParagrgraph on the current page
     if (count > 0) {
-        if (nil == self.lastParagraph) {
-            targetParagraph = [paragraphs objectAtIndex:0];
+        if (nil == self.lastBlock) {
+            targetBlock = [blocks objectAtIndex:0];
         } else if (reversed) {
-            NSInteger prevIndex = [self.lastParagraph paragraphIndex] - 1;
+            NSInteger prevIndex = [self.lastBlock blockIndex] - 1;
             if (prevIndex >= 0)
-                targetParagraph = [paragraphs objectAtIndex:prevIndex];
+                targetBlock = [blocks objectAtIndex:prevIndex];
         } else {
-            NSInteger nextIndex = [self.lastParagraph paragraphIndex] + 1;
+            NSInteger nextIndex = [self.lastBlock blockIndex] + 1;
             if (nextIndex < count)
-                targetParagraph = [paragraphs objectAtIndex:nextIndex];
+                targetBlock = [blocks objectAtIndex:nextIndex];
         }
     }
     
-    // Work out targetParagraph on an adjacent page 
-    if (nil == targetParagraph) {
+    // Work out targetBlock on an adjacent page 
+    if (nil == targetBlock) {
         if (!reversed) {
             if (pageIndex >= ([self pageCount] - 1)) {
                 // If we are already at the last page, zoom to page
@@ -1705,10 +1705,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             }
             
             NSInteger newPageIndex = pageIndex + 1;
-            NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:newPageIndex];
+            NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:newPageIndex];
             
-            if ([pageParagraphs count] > 0) {
-                targetParagraph = [pageParagraphs objectAtIndex:0];
+            if ([pageBlocks count] > 0) {
+                targetBlock = [pageBlocks objectAtIndex:0];
             } else {
                 // If the next page has no blocks, zoom to page
                 [self zoomToPage:targetPage + 1];
@@ -1722,10 +1722,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             }
             
             NSInteger newPageIndex = pageIndex - 1;
-            NSArray *pageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:newPageIndex];
+            NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:newPageIndex];
             
-            if ([pageParagraphs count] > 0) {
-                targetParagraph = [pageParagraphs lastObject];
+            if ([pageBlocks count] > 0) {
+                targetBlock = [pageBlocks lastObject];
             } else {
                 // If the previous page has no blocks, zoom to page
                 [self zoomToPage:targetPage - 1];
@@ -1734,10 +1734,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         }
     }
     
-    if (nil != targetParagraph)
-        [self zoomToBlock:targetParagraph];
+    if (nil != targetBlock)
+        [self zoomToBlock:targetBlock];
     
-    self.lastParagraph = targetParagraph;
+    self.lastBlock = targetBlock;
 }
 
 - (void)zoomAtPoint:(NSString *)pointString {
@@ -1775,7 +1775,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         [self zoomToPage:targetPage];
     }
     
-    self.lastParagraph = nil;
+    self.lastBlock = nil;
 }
 
 - (void)zoomAtPointOld:(NSString *)pointString {
@@ -1804,62 +1804,62 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     NSInteger pageIndex = targetPage - 1;
      
     self.disableScrollUpdating = YES;
-    NSArray *paragraphs = [[self.book textFlow] paragraphsForPageAtIndex:pageIndex];
+    NSArray *blocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
     
     [self.scrollView setPagingEnabled:NO];
     [self.scrollView setBounces:NO];
     
-    BlioTextFlowParagraph *targetParagraph = nil;
+    BlioTextFlowBlock *targetBlock = nil;
     CGAffineTransform viewTransform = [self viewTransformForPage:targetPage];
     
-    NSUInteger count = [paragraphs count];
+    NSUInteger count = [blocks count];
     NSUInteger targetIndex;
     
     if (count > 0) { 
         for (NSUInteger index = 0; index < count; index++) {
-            BlioTextFlowParagraph *paragraph = [paragraphs objectAtIndex:index];
-            CGRect blockRect = [paragraph rect];
+            BlioTextFlowBlock *block = [blocks objectAtIndex:index];
+            CGRect blockRect = [block rect];
             CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
             if (CGRectContainsPoint(pageRect, pointInTargetPage)) {
-                targetParagraph = paragraph;
+                targetBlock = block;
                 targetIndex = index;
                 break;
             }
         }
     }
     
-    BlioTextFlowParagraph *newParagraph = nil;
-    BOOL jumpToNextParagraph = (nil != self.lastParagraph && [self.lastParagraph isEqual:targetParagraph]);
+    BlioTextFlowBlock *newBlock = nil;
+    BOOL jumpToNextBlock = (nil != self.lastBlock && [self.lastBlock isEqual:targetBlock]);
     
-    if (jumpToNextParagraph) {
-        id nextParagraphID = [self paragraphIdForParagraphAfterParagraphWithId:[targetParagraph paragraphID]];
-        if (nil != nextParagraphID) {
-            NSInteger newPageIndex = [BlioTextFlowParagraph pageIndexForParagraphID:nextParagraphID];
-            NSInteger newParagraphIndex = [BlioTextFlowParagraph paragraphIndexForParagraphID:nextParagraphID];
-            NSArray *newPageParagraphs;
+    if (jumpToNextBlock) {
+        id nextBlockID = [self blockIdForBlockAfterBlockWithId:[targetBlock blockID]];
+        if (nil != nextBlockID) {
+            NSInteger newPageIndex = [BlioTextFlowBlock pageIndexForBlockID:nextBlockID];
+            NSInteger newBlockIndex = [BlioTextFlowBlock blockIndexForBlockID:nextBlockID];
+            NSArray *newPageBlocks;
             
             if (newPageIndex == pageIndex)
-                newPageParagraphs = paragraphs;
+                newPageBlocks = blocks;
             else
-                newPageParagraphs = [[self.book textFlow] paragraphsForPageAtIndex:newPageIndex];
+                newPageBlocks = [[self.book textFlow] blocksForPageAtIndex:newPageIndex];
 
-            if ([newPageParagraphs count] > newParagraphIndex)
-                newParagraph = [newPageParagraphs objectAtIndex:newParagraphIndex];
+            if ([newPageBlocks count] > newBlockIndex)
+                newBlock = [newPageBlocks objectAtIndex:newBlockIndex];
         }
     }
         
-    if (nil != newParagraph) {
-        targetParagraph = newParagraph;
-        [self zoomToBlock:targetParagraph];
-    } else if (nil != targetParagraph && !jumpToNextParagraph) {  
-        [self zoomToBlock:targetParagraph];
+    if (nil != newBlock) {
+        targetBlock = newBlock;
+        [self zoomToBlock:targetBlock];
+    } else if (nil != targetBlock && !jumpToNextBlock) {  
+        [self zoomToBlock:targetBlock];
     } else if (self.scrollView.zoomScale > 1.0f) {
         [self zoomOut];
     } else {
         [self zoomOutsideBlockAtPoint:point];
     }
     
-    self.lastParagraph = targetParagraph;
+    self.lastBlock = targetBlock;
 }
 
 - (void)zoomToPage:(NSInteger)targetPageNumber {
@@ -1914,11 +1914,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
 }
 
-- (void)zoomToBlock:(BlioTextFlowParagraph *)targetParagraph {
-    NSInteger targetPageNumber = [targetParagraph pageIndex] + 1;
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock {
+    NSInteger targetPageNumber = [targetBlock pageIndex] + 1;
     
     CGAffineTransform viewTransform = [self viewTransformForPage:targetPageNumber];
-    CGRect targetRect = CGRectApplyAffineTransform([targetParagraph rect], viewTransform);
+    CGRect targetRect = CGRectApplyAffineTransform([targetBlock rect], viewTransform);
     targetRect = CGRectInset(targetRect, -kBlioPDFBlockInsetX, -kBlioPDFBlockInsetY);
     
     CGFloat blockMinimumWidth = self.bounds.size.width / self.scrollView.maximumZoomScale;
@@ -2142,7 +2142,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageParagraphs = [self.textFlow paragraphsForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex];
     
     if ([self isCancelled]) return;
     
@@ -2154,40 +2154,40 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             
             NSMutableArray *highlightRects = [NSMutableArray array];
             
-            for (BlioTextFlowParagraph *paragraph in pageParagraphs) {
+            for (BlioTextFlowBlock *block in pageBlocks) {
                 if ([self isCancelled]) return;
                 
-                for (BlioTextFlowPositionedWord *word in [paragraph words]) {
+                for (BlioTextFlowPositionedWord *word in [block words]) {
                     if ((highlightRange.startPoint.layoutPage < self.pageNumber) &&
-                        (paragraph.paragraphIndex <= highlightRange.endPoint.paragraphOffset) &&
+                        (block.blockIndex <= highlightRange.endPoint.blockOffset) &&
                         (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
                         
                         [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         
                     } else if ((highlightRange.endPoint.layoutPage > self.pageNumber) &&
-                               (paragraph.paragraphIndex >= highlightRange.startPoint.paragraphOffset) &&
+                               (block.blockIndex >= highlightRange.startPoint.blockOffset) &&
                                (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
                         
                         [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         
                     } else if ((highlightRange.startPoint.layoutPage == self.pageNumber) &&
-                               (paragraph.paragraphIndex == highlightRange.startPoint.paragraphOffset) &&
+                               (block.blockIndex == highlightRange.startPoint.blockOffset) &&
                                (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
                         
-                        if ((paragraph.paragraphIndex == highlightRange.endPoint.paragraphOffset) &&
+                        if ((block.blockIndex == highlightRange.endPoint.blockOffset) &&
                             (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        } else if (paragraph.paragraphIndex < highlightRange.endPoint.paragraphOffset) {
+                        } else if (block.blockIndex < highlightRange.endPoint.blockOffset) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         }
                         
                     } else if ((highlightRange.startPoint.layoutPage == self.pageNumber) &&
-                               (paragraph.paragraphIndex > highlightRange.startPoint.paragraphOffset)) {
+                               (block.blockIndex > highlightRange.startPoint.blockOffset)) {
                         
-                        if ((paragraph.paragraphIndex == highlightRange.endPoint.paragraphOffset) &&
+                        if ((block.blockIndex == highlightRange.endPoint.blockOffset) &&
                             (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        } else if (paragraph.paragraphIndex < highlightRange.endPoint.paragraphOffset) {
+                        } else if (block.blockIndex < highlightRange.endPoint.blockOffset) {
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
                         }
                     }

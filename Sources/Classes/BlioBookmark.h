@@ -12,13 +12,13 @@
 
 @interface BlioBookmarkAbsolutePoint : NSObject {
     NSInteger layoutPage;
-    uint32_t ePubParagraphId;
+    uint32_t ePubBlockId;
     uint32_t ePubWordOffset;
     uint32_t ePubHyphenOffset;
 }
 
 @property (nonatomic, assign) NSInteger layoutPage;
-@property (nonatomic, assign) uint32_t ePubParagraphId;
+@property (nonatomic, assign) uint32_t ePubBlockId;
 @property (nonatomic, assign) uint32_t ePubWordOffset;
 @property (nonatomic, assign) uint32_t ePubHyphenOffset;
 
@@ -28,15 +28,15 @@
 
 @interface BlioBookmarkPoint : NSObject {
     NSInteger layoutPage;
-    uint32_t paragraphOffset;
+    uint32_t blockOffset;
     uint32_t wordOffset;
-    uint32_t hyphenOffset;
+    uint32_t elementOffset;
 }
 
 @property (nonatomic, assign) NSInteger layoutPage;
-@property (nonatomic, assign) uint32_t paragraphOffset;
+@property (nonatomic, assign) uint32_t blockOffset;
 @property (nonatomic, assign) uint32_t wordOffset;
-@property (nonatomic, assign) uint32_t hyphenOffset;
+@property (nonatomic, assign) uint32_t elementOffset;
 
 - (NSManagedObject *)persistentBookmarkPointInContext:(NSManagedObjectContext *)moc;
 + (BlioBookmarkPoint *)bookmarkPointWithAbsolutePoint:(BlioBookmarkAbsolutePoint *)absolutePoint;

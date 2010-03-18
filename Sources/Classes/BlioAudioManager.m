@@ -11,19 +11,19 @@
 
 @implementation BlioAudioManager
 
-@synthesize currentWordOffset, adjustedWordOffset, currentParagraph, currentWord, currentPage, startedPlaying, pageChanged, textToSpeakChanged, paragraphWords, speakingTimer;
+@synthesize currentWordOffset, adjustedWordOffset, currentBlock, currentWord, currentPage, startedPlaying, pageChanged, textToSpeakChanged, blockWords, speakingTimer;
 
 - (void)dealloc {
-    self.currentParagraph = nil;
+    self.currentBlock = nil;
     [super dealloc];
 }
 
-- (void)adjustParagraphWords {
+- (void)adjustBlockWords {
 	NSRange pageRange;
 	pageRange.location = self.currentWordOffset - self.adjustedWordOffset;
-	pageRange.length = [self.paragraphWords count] - (self.currentWordOffset- self.adjustedWordOffset);
-	NSArray* subParagraph = [self.paragraphWords subarrayWithRange:pageRange];
-	[self setParagraphWords:subParagraph];
+	pageRange.length = [self.blockWords count] - (self.currentWordOffset- self.adjustedWordOffset);
+	NSArray* subBlock = [self.blockWords subarrayWithRange:pageRange];
+	[self setBlockWords:subBlock];
 	[self setAdjustedWordOffset:self.currentWordOffset];
 }
 

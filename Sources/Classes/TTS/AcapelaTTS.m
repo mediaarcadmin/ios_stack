@@ -22,7 +22,7 @@
 		[self setSetupData:[setupTTS alloc]];
 		[self setEngine:[[AcapelaSpeech alloc] autorelease]];
 		[self setCurrentPage:-1];
-		[self setParagraphWords:nil];
+		[self setBlockWords:nil];
 		[self setTextToSpeakChanged:NO];
 		[self setStartedPlaying:NO];
 		[self setPageChanged:YES];
@@ -39,7 +39,7 @@
 	[self setEngine:[[AcapelaSpeech alloc] autorelease]];
 	[self setPreferences];
 	[self setCurrentPage:-1];
-	[self setParagraphWords:nil];
+	[self setBlockWords:nil];
 	[self setTextToSpeakChanged:NO];
 	[self setStartedPlaying:NO];
 	[self setPageChanged:YES];  

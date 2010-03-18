@@ -22,7 +22,7 @@
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
-@dynamic textflowFilename;
+@dynamic textFlowFilename;
 
 - (void)dealloc {
     if (coverThumb) [coverThumb release];
@@ -105,7 +105,7 @@
 }
 
 - (NSString *)textflowPath {
-    NSString *filename = [self valueForKey:@"textflowFilename"];
+    NSString *filename = [self valueForKey:@"textFlowFilename"];
     if (filename) {
         NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:filename];
         if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
@@ -135,8 +135,8 @@
 - (BlioTextFlow *)textFlow {
         
     if (nil == textFlow) {
-        NSSet *sections = [self valueForKey:@"textFlowSections"];
-        if (nil != sections) textFlow = [[BlioTextFlow alloc] initWithSections:sections basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
+        NSSet *pageRanges = [self valueForKey:@"textFlowPageRanges"];
+        if (nil != pageRanges) textFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
     }
     
     return textFlow;
@@ -152,9 +152,9 @@
 
 - (NSArray *)sortedBookmarks {
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
-    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.blockOffset" ascending:YES] autorelease];
     NSSortDescriptor *sortWordDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.wordOffset" ascending:YES] autorelease];
-    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.hyphenOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.elementOffset" ascending:YES] autorelease];
     
     NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, sortWordDescriptor, sortHyphenDescriptor, nil];
     return [[[self valueForKey:@"bookmarks"] allObjects] sortedArrayUsingDescriptors:sortDescriptors];
@@ -162,9 +162,9 @@
 
 - (NSArray *)sortedNotes {
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
-    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.blockOffset" ascending:YES] autorelease];
     NSSortDescriptor *sortWordDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.wordOffset" ascending:YES] autorelease];
-    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.hyphenOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.elementOffset" ascending:YES] autorelease];
     
     NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, sortWordDescriptor, sortHyphenDescriptor, nil];
     return [[[self valueForKey:@"notes"] allObjects] sortedArrayUsingDescriptors:sortDescriptors];
@@ -172,9 +172,9 @@
 
 - (NSArray *)sortedHighlights {
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
-    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.blockOffset" ascending:YES] autorelease];
     NSSortDescriptor *sortWordDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.wordOffset" ascending:YES] autorelease];
-    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.hyphenOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.elementOffset" ascending:YES] autorelease];
     
     NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, sortWordDescriptor, sortHyphenDescriptor, nil];
     
@@ -200,9 +200,9 @@
     [request setPredicate:predicate];
     
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
-    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.blockOffset" ascending:YES] autorelease];
     NSSortDescriptor *sortWordDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.wordOffset" ascending:YES] autorelease];
-    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.hyphenOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.elementOffset" ascending:YES] autorelease];
     
     NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, sortWordDescriptor, sortHyphenDescriptor, nil];
     [request setSortDescriptors:sortDescriptors];
@@ -232,35 +232,35 @@
     [request setEntity:[NSEntityDescription entityForName:@"BlioHighlight" inManagedObjectContext:moc]];
     
     NSNumber *minPageLayout = [NSNumber numberWithInteger:range.startPoint.layoutPage];
-    NSNumber *minParagraphOffset = [NSNumber numberWithInteger:range.startPoint.paragraphOffset];
+    NSNumber *minBlockOffset = [NSNumber numberWithInteger:range.startPoint.blockOffset];
     NSNumber *minWordOffset = [NSNumber numberWithInteger:range.startPoint.wordOffset];
 
     NSNumber *maxPageLayout = [NSNumber numberWithInteger:range.endPoint.layoutPage];
-    NSNumber *maxParagraphOffset = [NSNumber numberWithInteger:range.endPoint.paragraphOffset];
+    NSNumber *maxBlockOffset = [NSNumber numberWithInteger:range.endPoint.blockOffset];
     NSNumber *maxWordOffset = [NSNumber numberWithInteger:range.endPoint.wordOffset];
     
     NSPredicate *doesNotEndBeforeStartPage =      [NSPredicate predicateWithFormat:@"NOT  (range.endPoint.layoutPage < %@)", minPageLayout];                                 
-    NSPredicate *doesNotEndBeforeStartParagraph = [NSPredicate predicateWithFormat:@"NOT ((range.endPoint.layoutPage == %@) && (range.endPoint.paragraphOffset < %@))", minPageLayout, minParagraphOffset]; 
-    NSPredicate *doesNotEndBeforeStartWord =      [NSPredicate predicateWithFormat:@"NOT ((range.endPoint.layoutPage == %@) && (range.endPoint.paragraphOffset == %@) && (range.endPoint.wordOffset < %@))", minPageLayout, minParagraphOffset, minWordOffset]; 
+    NSPredicate *doesNotEndBeforeStartBlock = [NSPredicate predicateWithFormat:@"NOT ((range.endPoint.layoutPage == %@) && (range.endPoint.blockOffset < %@))", minPageLayout, minBlockOffset]; 
+    NSPredicate *doesNotEndBeforeStartWord =      [NSPredicate predicateWithFormat:@"NOT ((range.endPoint.layoutPage == %@) && (range.endPoint.blockOffset == %@) && (range.endPoint.wordOffset < %@))", minPageLayout, minBlockOffset, minWordOffset]; 
     NSPredicate *doesNotStartAfterEndPage =       [NSPredicate predicateWithFormat:@"NOT  (range.startPoint.layoutPage > %@)", maxPageLayout];                                 
-    NSPredicate *doesNotStartAfterEndParagraph =  [NSPredicate predicateWithFormat:@"NOT ((range.startPoint.layoutPage == %@) && (range.startPoint.paragraphOffset > %@))", maxPageLayout, maxParagraphOffset]; 
-    NSPredicate *doesNotStartAfterEndWord =       [NSPredicate predicateWithFormat:@"NOT ((range.startPoint.layoutPage == %@) && (range.startPoint.paragraphOffset == %@) && (range.startPoint.wordOffset > %@))", maxPageLayout, maxParagraphOffset, maxWordOffset]; 
+    NSPredicate *doesNotStartAfterEndBlock =  [NSPredicate predicateWithFormat:@"NOT ((range.startPoint.layoutPage == %@) && (range.startPoint.blockOffset > %@))", maxPageLayout, maxBlockOffset]; 
+    NSPredicate *doesNotStartAfterEndWord =       [NSPredicate predicateWithFormat:@"NOT ((range.startPoint.layoutPage == %@) && (range.startPoint.blockOffset == %@) && (range.startPoint.wordOffset > %@))", maxPageLayout, maxBlockOffset, maxWordOffset]; 
     
     NSPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:
                                doesNotEndBeforeStartPage, 
-                               doesNotEndBeforeStartParagraph,
+                               doesNotEndBeforeStartBlock,
                                doesNotEndBeforeStartWord,
                                doesNotStartAfterEndPage,
-                               doesNotStartAfterEndParagraph,
+                               doesNotStartAfterEndBlock,
                                doesNotStartAfterEndWord,
                                nil]];
     
     [request setPredicate:predicate];
     
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
-    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.paragraphOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.blockOffset" ascending:YES] autorelease];
     NSSortDescriptor *sortWordDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.wordOffset" ascending:YES] autorelease];
-    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.hyphenOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.elementOffset" ascending:YES] autorelease];
 
     NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, sortWordDescriptor, sortHyphenDescriptor, nil];
     [request setSortDescriptors:sortDescriptors];
@@ -288,16 +288,16 @@
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
     [request setEntity:[NSEntityDescription entityForName:@"BlioHighlight" inManagedObjectContext:moc]];
         
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(book == %@) AND (range.startPoint.layoutPage == %@) AND (range.startPoint.paragraphOffset == %@) AND (range.startPoint.wordOffset == %@) AND (range.startPoint.hyphenOffset == %@) AND (range.endPoint.layoutPage == %@) AND (range.endPoint.paragraphOffset == %@) AND (range.endPoint.wordOffset == %@) AND (range.endPoint.hyphenOffset == %@)",
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(book == %@) AND (range.startPoint.layoutPage == %@) AND (range.startPoint.blockOffset == %@) AND (range.startPoint.wordOffset == %@) AND (range.startPoint.elementOffset == %@) AND (range.endPoint.layoutPage == %@) AND (range.endPoint.blockOffset == %@) AND (range.endPoint.wordOffset == %@) AND (range.endPoint.elementOffset == %@)",
                               self,
                               [NSNumber numberWithInteger:range.startPoint.layoutPage],
-                              [NSNumber numberWithInteger:range.startPoint.paragraphOffset],
+                              [NSNumber numberWithInteger:range.startPoint.blockOffset],
                               [NSNumber numberWithInteger:range.startPoint.wordOffset],
-                              [NSNumber numberWithInteger:range.startPoint.hyphenOffset],
+                              [NSNumber numberWithInteger:range.startPoint.elementOffset],
                               [NSNumber numberWithInteger:range.endPoint.layoutPage],
-                              [NSNumber numberWithInteger:range.endPoint.paragraphOffset],
+                              [NSNumber numberWithInteger:range.endPoint.blockOffset],
                               [NSNumber numberWithInteger:range.endPoint.wordOffset],
-                              [NSNumber numberWithInteger:range.endPoint.hyphenOffset]
+                              [NSNumber numberWithInteger:range.endPoint.elementOffset]
                               ];
         
     [request setPredicate:predicate];
