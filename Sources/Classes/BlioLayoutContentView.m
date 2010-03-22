@@ -176,6 +176,7 @@
     newFrame.origin.y = 0;
     
     [pageLayer setFrame:newFrame];
+    [self.layer insertSublayer:pageLayer above:[[self.layer sublayers] lastObject]]; 
     
     [CATransaction commit];
     
