@@ -48,7 +48,8 @@ typedef enum EucCSSIntermediateDocumentNodeKeyFlags
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
-               baseCSSPath:(NSString *)baseCSSPath;
+               baseCSSPath:(NSString *)baseCSSPath
+                    isHTML:(BOOL)isHTML;
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key;
 - (uint32_t)nodeKeyForId:(NSString *)identifier;

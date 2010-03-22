@@ -31,12 +31,16 @@
 
 @interface EucBUpeBook ()
 @property (nonatomic, retain) NSDictionary *manifestOverrides;
+
+- (EucCSSIntermediateDocument *)_intermediateDocumentForURL:(NSURL *)url;
+
 @end
 
 @implementation EucBUpeBook
 
 @synthesize navPoints = _navPoints;
 @synthesize manifestOverrides = _manifestOverrides;
+@synthesize persistsPositionAutomatically = _persistsPositionAutomatically;
 
 static inline const XML_Char* unqualifiedName(const XML_Char *name) {
     const XML_Char *offset = strrchr(name, ':');
@@ -495,6 +499,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (void)dealloc 
 {        
+    [_currentPageIndexPoint release];
     if(_currentPageIndexPointFD) {
         close(_currentPageIndexPointFD);
     }
@@ -514,6 +519,16 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [_manifestUrlsToOverriddenUrls release];
     
     [super dealloc];
+}
+
+- (BOOL)documentsAreHTML
+{
+    return YES;
+}
+
+- (NSString *)baseCSSPath
+{
+    return [[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"];
 }
 
 - (NSString *)coverPath
@@ -605,45 +620,52 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (EucBookPageIndexPoint *)currentPageIndexPoint
 {
-    if(_currentPageIndexPointFD) {
-        lseek(_currentPageIndexPointFD, SEEK_SET, 0); 
-    } else {
-        NSString *indexPointsFolderPath;
-        indexPointsFolderPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        indexPointsFolderPath = [indexPointsFolderPath stringByAppendingPathComponent:@"gs.ingsmadeoutofotherthin.th"];
-        indexPointsFolderPath = [indexPointsFolderPath stringByAppendingPathComponent:@"bookPositions"];
-        
-        NSError *dirCreationError = nil;
-        [[NSFileManager defaultManager] createDirectoryAtPath:indexPointsFolderPath
-                                  withIntermediateDirectories:YES
-                                                   attributes:NULL 
-                                                        error:&dirCreationError];
-        if(dirCreationError) {
-            THWarn(@"Could not create directory at %@, error %@", indexPointsFolderPath, dirCreationError);
+    if(_persistsPositionAutomatically) {
+        if(_currentPageIndexPointFD) {
+            lseek(_currentPageIndexPointFD, SEEK_SET, 0); 
         } else {
-            NSString *path = [indexPointsFolderPath stringByAppendingPathComponent:self.etextNumber];
-            path = [path stringByAppendingPathExtension:@"currentIndexPoint"];
+            NSString *indexPointsFolderPath;
+            indexPointsFolderPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            indexPointsFolderPath = [indexPointsFolderPath stringByAppendingPathComponent:@"gs.ingsmadeoutofotherthin.th"];
+            indexPointsFolderPath = [indexPointsFolderPath stringByAppendingPathComponent:@"bookPositions"];
             
-            _currentPageIndexPointFD = open([path fileSystemRepresentation], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
-            if(_currentPageIndexPointFD != -1) {
-                struct stat statResult;
-                if(fstat(_currentPageIndexPointFD, &statResult) != -1) {
-                    if(statResult.st_size == 0) {
-                        EucBookPageIndexPoint *cover = [[EucBookPageIndexPoint alloc] init];
-                        [self setCurrentPageIndexPoint:cover];
-                        return [cover autorelease]; 
+            NSError *dirCreationError = nil;
+            [[NSFileManager defaultManager] createDirectoryAtPath:indexPointsFolderPath
+                                      withIntermediateDirectories:YES
+                                                       attributes:NULL 
+                                                            error:&dirCreationError];
+            if(dirCreationError) {
+                THWarn(@"Could not create directory at %@, error %@", indexPointsFolderPath, dirCreationError);
+            } else {
+                NSString *path = [indexPointsFolderPath stringByAppendingPathComponent:self.etextNumber];
+                path = [path stringByAppendingPathExtension:@"currentIndexPoint"];
+                
+                _currentPageIndexPointFD = open([path fileSystemRepresentation], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+                if(_currentPageIndexPointFD != -1) {
+                    struct stat statResult;
+                    if(fstat(_currentPageIndexPointFD, &statResult) != -1) {
+                        if(statResult.st_size == 0) {
+                            EucBookPageIndexPoint *cover = [[EucBookPageIndexPoint alloc] init];
+                            [self setCurrentPageIndexPoint:cover];
+                            return [cover autorelease]; 
+                        }
+                    } else {
+                        THWarn(@"Could not stat file at %@, error %d", path, errno);
                     }
                 } else {
-                    THWarn(@"Could not stat file at %@, error %d", path, errno);
+                    _currentPageIndexPointFD = 0;
+                    THWarn(@"Could not open file at %@, error %d", path, errno);
                 }
-            } else {
-                _currentPageIndexPointFD = 0;
-                THWarn(@"Could not open file at %@, error %d", path, errno);
             }
         }
+        
+        return [EucBookPageIndexPoint bookPageIndexPointFromOpenFD:_currentPageIndexPointFD];
+    } else {
+        if(!_currentPageIndexPoint) {
+            _currentPageIndexPoint = [[EucBookPageIndexPoint alloc] init];
+        }
+        return _currentPageIndexPoint;
     }
-    
-    return [EucBookPageIndexPoint bookPageIndexPointFromOpenFD:_currentPageIndexPointFD];
 }
 
 - (void)setCurrentPageIndexPointForId:(NSString *)anchor
@@ -653,11 +675,18 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (void)setCurrentPageIndexPoint:(EucBookPageIndexPoint *)currentPage
 {
-    if(! _currentPageIndexPointFD) {
-        [self currentPageIndexPoint]; // Will create a file if necessary.
+    if(_persistsPositionAutomatically) {
+        if(!_currentPageIndexPointFD) {
+            [self currentPageIndexPoint]; // Will create a file if necessary.
+        }
+        lseek(_currentPageIndexPointFD, SEEK_SET, 0); 
+        [currentPage writeToOpenFD:_currentPageIndexPointFD];
+    } else {
+        if(currentPage != _currentPageIndexPoint) {
+            [_currentPageIndexPoint release];
+            _currentPageIndexPoint = [currentPage retain];
+        }
     }
-    lseek(_currentPageIndexPointFD, SEEK_SET, 0); 
-    [currentPage writeToOpenFD:_currentPageIndexPointFD];
 }
 
 - (Class)pageLayoutControllerClass
@@ -684,7 +713,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         NSString *path = [_manifest objectForKey:identifier];
         if([path isEqualToString:file] && [_spine containsObject:identifier]) {
             NSURL *url = [NSURL URLWithString:path relativeToURL:_root];
-            EucCSSIntermediateDocument *document = [self intermediateDocumentForURL:url];
+            EucCSSIntermediateDocument *document = [self _intermediateDocumentForURL:url];
             EucCSSIntermediateDocumentNode *node = fragment ? [document nodeForKey:[document nodeKeyForId:fragment]] : document.rootNode;
             if(!node) {
                 node = document.rootNode;
@@ -762,7 +791,20 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return nil;
 }
 
-- (EucCSSIntermediateDocument *)intermediateDocumentForURL:(NSURL *)url
+- (NSURL *)documentURLForIndexPoint:(EucBookPageIndexPoint *)point
+{
+    NSUInteger spineIndex = point.source;
+    if(spineIndex < _spine.count) {
+        NSString *spineId = [_spine objectAtIndex:point.source];
+        NSString *manifestPath = [_manifest objectForKey:spineId];
+        if(manifestPath) {
+            return [NSURL URLWithString:manifestPath relativeToURL:_root];
+        }
+    }
+    return nil;
+}
+
+- (EucCSSIntermediateDocument *)_intermediateDocumentForURL:(NSURL *)url
 {
     if(!_documentCache) {
         _documentCache = [[NSMutableArray alloc] init];
@@ -787,32 +829,31 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             [_documentCache removeObjectAtIndex:0];
         }
         id<EucCSSDocumentTree> documentTree = [self documentTreeForURL:url];
-        document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
-                                                                     forURL:url
-                                                                 dataSource:self
-                                                                baseCSSPath:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];            
+        if(documentTree) {
+            document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
+                                                                         forURL:url
+                                                                     dataSource:self
+                                                                    baseCSSPath:self.baseCSSPath
+                                                                         isHTML:self.documentsAreHTML];
+        }
     }
     
-    [_documentCache addPairWithFirst:url second:document];
-    [document release];
+    if(document) {
+        [_documentCache addPairWithFirst:url second:document];
+        [document release];
+    }
     
     return document;
 }
 
 - (EucCSSIntermediateDocument *)intermediateDocumentForIndexPoint:(EucBookPageIndexPoint *)point
 {
-    NSUInteger spineIndex = point.source;
-    if(spineIndex < _spine.count) {
-        NSString *spineId = [_spine objectAtIndex:point.source];
-        NSString *manifestPath = [_manifest objectForKey:spineId];
-        if(manifestPath) {
-            NSURL *url = [NSURL URLWithString:manifestPath relativeToURL:_root];
-            if(url) {
-                return [self intermediateDocumentForURL:url];
-            }
-        }
+    NSURL *url = [self documentURLForIndexPoint:point];
+    if(url) {
+        return [self _intermediateDocumentForURL:url];
     }
     return nil;
 }
+
 
 @end
