@@ -1498,7 +1498,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	// Subtract 1 for now from page to match Blio layout page. Can't we have them match?
 	if ( !(segmentInfo = [(NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]] objectAtIndex:segmentIx]) )
 		return NO;
-	NSString* audiobooksPath = [self.book.bookCacheDirectory stringByAppendingPathComponent:@"/AudioBook/"];
+	NSString* audiobooksPath = [self.book.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"];
 	// For testing
 	//NSString* audiobooksPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/AudioBooks/Graveyard Book/"];
 	NSString* timingPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.timeFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
