@@ -1,5 +1,5 @@
 //
-//  BlioTextFlowSection.h
+//  BlioTextFlowFlowTree.h
 //  BlioApp
 //
 //  Created by James Montgomerie on 18/03/2010.
@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <libEucalyptus/EucCSSDocumentTree.h>
 
-
-@interface BlioTextFlowSection : NSObject {
-
+@interface BlioTextFlowFlowTree : NSObject {
+    NSArray *_nodes;
 }
 
 @end
