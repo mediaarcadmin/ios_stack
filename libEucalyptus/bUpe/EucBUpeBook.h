@@ -31,7 +31,11 @@
     
     NSMutableArray *_documentCache;
     
+    
+    BOOL _persistsPositionAutomatically;
     int _currentPageIndexPointFD;
+ 
+    EucBookPageIndexPoint *_currentPageIndexPoint;
 }
 
 @property (nonatomic, retain) NSString *coverPath;
@@ -43,13 +47,22 @@
 
 // Takes fragment IDs as paths relative to _root URL.
 - (void)setCurrentPageIndexPointForId:(NSString *)uuid;
-- (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier;
 
+- (EucCSSIntermediateDocument *)intermediateDocumentForIndexPoint:(EucBookPageIndexPoint *)point;
+
+// Set to NO to not save the index point internally.
+@property (nonatomic, assign) BOOL persistsPositionAutomatically; // default: YES;
 
 // Override points.
+
+// Default is YES.  Controls whether to look for a HEAD element in the supplied
+// document trees to parse for CSS etc.
+@property (nonatomic, assign, readonly) BOOL documentsAreHTML;  
+@property (nonatomic, retain, readonly) NSString *baseCSSPath;
+
 - (NSData *)dataForURL:(NSURL *)url;
 - (id<EucCSSDocumentTree>)documentTreeForURL:(NSURL *)url;
-- (EucCSSIntermediateDocument *)intermediateDocumentForURL:(NSURL *)url;
-- (EucCSSIntermediateDocument *)intermediateDocumentForIndexPoint:(EucBookPageIndexPoint *)point;
+- (NSURL *)documentURLForIndexPoint:(EucBookPageIndexPoint *)point;
+- (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier;
 
 @end
