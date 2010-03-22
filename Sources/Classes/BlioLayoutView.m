@@ -83,8 +83,8 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic) CGFloat lastZoomScale;
 @property (nonatomic, retain) NSData *pdfData;
-@property(nonatomic, retain) BlioTextFlowBlock *lastBlock;
-
+@property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
+@property (nonatomic, retain) UIImage *snapshot;
 @end
 
 
@@ -108,7 +108,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 @synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor, fetchHighlightsQueue;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize renderThumbsQueue, thumbCache, thumbCacheSize, pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
-@synthesize lastBlock;
+@synthesize lastBlock, snapshot;
 
 - (void)dealloc {
     isCancelled = YES;
@@ -140,7 +140,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     self.shadowBottom = nil;
     self.shadowTop = nil;
     self.shadowLeft = nil;
+    self.snapshot = nil;
     self.shadowRight = nil;
+    
     self.lastBlock = nil;
     
     [self.selector detatch];
@@ -753,36 +755,38 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark Selector
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
-    NSLog(@"requesting snapshot");
-    BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
-    if (nil == snapLayer) return nil;
+    if (nil == self.snapshot) {
+        NSLog(@"requesting snapshot");
+        BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
+        if (nil == snapLayer) return nil;
+        
+        CGFloat scale = self.scrollView.zoomScale;
+        
+        CGSize snapSize = snapLayer.bounds.size;
+        
+        //   CGImageRef imageRef = (CGImageRef)[[snapLayer presentationLayer] contents];
+        //    UIImage *image = [UIImage imageWithCGImage:imageRef];
+        //    NSLog(@"got snapshot");
+        //    return image;
+        
+        // Increase snapshot height by 78 to allow for an overlap below the bottom of the page;
+        //    snapSize.height += 78; 
+        
+        UIGraphicsBeginImageContext(snapSize);
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
+        CGContextScaleCTM(ctx, scale, scale);
+        CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
+        
+        [[snapLayer shadowLayer] renderInContext:ctx];
+        [[snapLayer tiledLayer] renderInContext:ctx];
+        [[snapLayer highlightsLayer] renderInContext:ctx];
+        self.snapshot = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        NSLog(@"got snapshot");
+    }
     
-    CGFloat scale = self.scrollView.zoomScale;
-    
-    CGSize snapSize = snapLayer.bounds.size;
-    
- //   CGImageRef imageRef = (CGImageRef)[[snapLayer presentationLayer] contents];
-//    UIImage *image = [UIImage imageWithCGImage:imageRef];
-//    NSLog(@"got snapshot");
-//    return image;
-    
-    // Increase snapshot height by 78 to allow for an overlap below the bottom of the page;
-    //    snapSize.height += 78; 
-    
-    UIGraphicsBeginImageContext(snapSize);
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
-    CGContextScaleCTM(ctx, scale, scale);
-    CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
-    
-    [[snapLayer shadowLayer] renderInContext:ctx];
-    [[snapLayer tiledLayer] renderInContext:ctx];
-    [[snapLayer highlightsLayer] renderInContext:ctx];
-    UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    NSLog(@"got snapshot");
-
-    return snapshot;
+    return self.snapshot;
 }
 
 - (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
@@ -1060,6 +1064,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             switch ([(EucSelector *)object trackingStage]) {
                 case EucSelectorTrackingStageNone:
                     [self.scrollView setScrollEnabled:YES];
+                    self.snapshot = nil;
                     break;
                 case EucSelectorTrackingStageFirstSelection:
                     [self.scrollView setScrollEnabled:NO];
@@ -1699,6 +1704,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
 
+    self.snapshot = nil;
+    
     if([self.selector isTracking])
         [self.selector redisplaySelectedRange];
     
@@ -1728,6 +1735,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
+        self.snapshot = nil;
         [self.selector setShouldHideMenu:NO];
     }
     if (tiltScroller) [tiltScroller resetAngle];
@@ -1776,6 +1784,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)updateAfterScroll {
+    self.snapshot = nil;
     [self.selector setShouldHideMenu:NO];
     if (self.disableScrollUpdating) return;
     
