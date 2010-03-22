@@ -6,14 +6,16 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "BlioEPubPaginateOperation.h"
+#import "BlioFlowPaginateOperation.h"
 #import "BlioProcessing.h"
+
+#import "BlioMockBook.h"
+#import "BlioFlowEucBook.h"
 
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPaginator.h>
 
-
-@implementation BlioEPubPaginateOperation
+@implementation BlioFlowPaginateOperation
 
 - (BOOL)isConcurrent {
     return YES;
@@ -62,14 +64,16 @@
     [self didChangeValueForKey:@"isExecuting"];
     
     NSString *epubPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"epubFilename"]];
-    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"ePubPaginationIndexes"];
+    NSString *textflowPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"textFlowFilename"]];
+   
+    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusPageIndexes"];
     
-    NSString *cannedPaginationPath = [epubPath stringByAppendingPathComponent:@"ePubPaginationIndexes"];
+    NSString *cannedPaginationPath = [textflowPath ?: epubPath stringByAppendingPathComponent:@"libEucalyptusPageIndexes"];
     
     BOOL isDirectory = YES;
 
     if([[NSFileManager defaultManager] fileExistsAtPath:cannedPaginationPath isDirectory:&isDirectory] && isDirectory) {       
-        NSLog(@"Using pre-canned indexes for %@", self.bookID);
+        NSLog(@"Using pre-canned indexes for %@", [self getBookValueForKey:@"title"]);
 
         [[NSFileManager defaultManager] copyItemAtPath:cannedPaginationPath
                                                 toPath:paginationPath 
@@ -88,8 +92,24 @@
                 NSLog(@"Failed to create book cache directory in processing manager with error: %@, %@", error, [error userInfo]);
             }
         }
-        EucBUpeBook *book = [[EucBUpeBook alloc] initWithPath:epubPath];
-        book.cacheDirectoryPath = paginationPath;
+        
+        
+        EucBUpeLocalBookReference<EucBook> *eucBook = nil;
+        if(textflowPath) {
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+            NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+            [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
+            
+            eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:(BlioMockBook *)[moc objectWithID:self.bookID]];
+            [moc release];
+            
+            [pool drain];
+        } else if(epubPath) {
+            eucBook = [[EucBUpeBook alloc] initWithPath:epubPath];
+        }
+        
+        eucBook.cacheDirectoryPath = paginationPath;
 
         paginator = [[EucBookPaginator alloc] init];
         
@@ -103,10 +123,10 @@
                                                    object:paginator];
             
         
-        NSLog(@"Begining pagination for %@", book.title);
-        [paginator paginateBookInBackground:book saveImagesTo:nil];
+        NSLog(@"Begining pagination for %@", eucBook.title);
+        [paginator paginateBookInBackground:eucBook saveImagesTo:nil];
         
-        [book release];
+        [eucBook release];
     }
     
     [pool drain];

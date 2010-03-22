@@ -11,16 +11,16 @@
 @implementation BlioBookmarkAbsolutePoint
  
 @synthesize layoutPage;
-@synthesize ePubBlockId;
-@synthesize ePubWordOffset;
-@synthesize ePubHyphenOffset;
+@synthesize blockOffset;
+@synthesize wordOffset;
+@synthesize elementOffset;
 
 + (BlioBookmarkAbsolutePoint *)bookmarkAbsolutePointWithBookmarkPoint:(BlioBookmarkPoint *)point {
     BlioBookmarkAbsolutePoint *absolutePoint = [[BlioBookmarkAbsolutePoint alloc] init];
     absolutePoint.layoutPage = point.layoutPage;
-    absolutePoint.ePubBlockId = point.blockOffset;
-    absolutePoint.ePubWordOffset = point.wordOffset;
-    absolutePoint.ePubHyphenOffset = point.elementOffset;
+    absolutePoint.blockOffset = point.blockOffset;
+    absolutePoint.wordOffset = point.wordOffset;
+    absolutePoint.elementOffset = point.elementOffset;
     
     return [absolutePoint autorelease];
 }
@@ -50,9 +50,9 @@
 + (BlioBookmarkPoint *)bookmarkPointWithAbsolutePoint:(BlioBookmarkAbsolutePoint *)absolutePoint {
     BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
     point.layoutPage = absolutePoint.layoutPage;
-    point.blockOffset = absolutePoint.ePubBlockId;
-    point.wordOffset = absolutePoint.ePubWordOffset;
-    point.elementOffset = absolutePoint.ePubHyphenOffset;
+    point.blockOffset = absolutePoint.blockOffset;
+    point.wordOffset = absolutePoint.wordOffset;
+    point.elementOffset = absolutePoint.elementOffset;
     
     return [point autorelease];
 }

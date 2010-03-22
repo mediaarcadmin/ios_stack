@@ -9,7 +9,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLibraryViewController.h"
 #import "BlioBookViewController.h"
-#import "BlioEPubView.h"
 #import "BlioLayoutView.h"
 #import "BlioMockBook.h"
 #import "BlioUIImageAdditions.h"
@@ -217,7 +216,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     if (![[aFetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
         
-        [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
+   /*     [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Bill Willingham"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"FablesLegendsInExile" ofType:@"png" inDirectory:@"MockCovers"]]
                                               ePubURL:nil
@@ -272,7 +271,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
-        
+        */
         [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
                                               authors:[NSArray arrayWithObject:@"Neil Gaiman"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"NeilGaiman" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -280,7 +279,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
 										 audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"AudioBooks"]]];
-		
+		/*
         [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
                                               authors:[NSArray arrayWithObject:@"Martha Stewart"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -359,7 +358,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                               ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
+                                         audiobookURL:nil];*/
     }
     
     self.fetchedResultsController = aFetchedResultsController;

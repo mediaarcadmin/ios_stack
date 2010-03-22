@@ -137,7 +137,7 @@
 
 - (BOOL)getCharacterContents:(const char **)contents length:(size_t *)length
 {
-    NSString *string = [[self words] componentsJoinedByString:@" "];
+    NSString *string = [[self wordStrings] componentsJoinedByString:@" "];
     *contents = [string UTF8String];
     *length = strlen(*contents);
     return YES;

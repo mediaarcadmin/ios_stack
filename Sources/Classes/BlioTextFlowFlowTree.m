@@ -21,7 +21,7 @@ typedef struct BlioTextFlowFlowTreeContext
     BlioTextFlow *textFlow;
     NSMutableArray *nodes;
     id<EucCSSDocumentTreeNode> currentNode;
-    BlioTextFlowParagraph *currentParagraph;
+    BlioTextFlowParagraph *lastOpenedParagraph;
     uint32_t paragraphCount;
     NSMutableArray *wordRangeAccumulator;
 }  BlioTextFlowFlowTreeContext;
@@ -36,7 +36,7 @@ static void BlioTextFlowFlowTreeStartElementHandler(void *ctx, const XML_Char *n
     if(strcmp("Flow", name) == 0) {
         if(currentNode == NULL) {
             BlioTextFlowFlow *flowNode = [[BlioTextFlowFlow alloc] initWithTextFlow:textFlow 
-                                                                                key:nodes.count];
+                                                                                key:nodes.count + 1];
             [nodes addObject:flowNode];
             context->currentNode = flowNode;
             [flowNode release];
@@ -49,11 +49,11 @@ static void BlioTextFlowFlowTreeStartElementHandler(void *ctx, const XML_Char *n
             
             BlioTextFlowParagraph *paragraphNode = [[BlioTextFlowParagraph alloc] initWithTextFlow:textFlow
                                                                                           flowNode:flowNode
-                                                                                               key:nodes.count];
+                                                                                               key:nodes.count + 1];
             
-            paragraphNode.previousSibling = context->currentParagraph;
-            context->currentParagraph.nextSibling = paragraphNode;
-            context->currentParagraph = paragraphNode;
+            paragraphNode.previousSibling = context->lastOpenedParagraph;
+            context->lastOpenedParagraph.nextSibling = paragraphNode;
+            context->lastOpenedParagraph = paragraphNode;
             
             [nodes addObject:paragraphNode];
             context->currentNode = paragraphNode;
@@ -70,13 +70,13 @@ static void BlioTextFlowFlowTreeStartElementHandler(void *ctx, const XML_Char *n
             uint32_t page = 0;
             for(int i = 0; atts[i]; i+=2) {
                 if(strcmp("Start", atts[i]) == 0) {
-                    start = atoi(atts[i+i]);
+                    start = atoi(atts[i+1]);
                 } else if (strcmp("End", atts[i]) == 0) {
-                    end = atoi(atts[i+i]);
+                    end = atoi(atts[i+1]);
                 } else if (strcmp("Block", atts[i]) == 0) {
-                    block = atoi(atts[i+i]);
+                    block = atoi(atts[i+1]);
                 } else if (strcmp("Page", atts[i]) == 0) {
-                    page = atoi(atts[i+i]);
+                    page = atoi(atts[i+1]);
                 }
             }
 
@@ -85,14 +85,14 @@ static void BlioTextFlowFlowTreeStartElementHandler(void *ctx, const XML_Char *n
             }
             
             BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-            startPoint.layoutPage = page;
+            startPoint.layoutPage = page + 1;
             startPoint.blockOffset = block;
             startPoint.wordOffset = start;
 
             BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
-            startPoint.layoutPage = page;
-            startPoint.blockOffset = block;
-            startPoint.wordOffset = end;
+            endPoint.layoutPage = page + 1;
+            endPoint.blockOffset = block;
+            endPoint.wordOffset = end;
             
             BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
             range.startPoint = startPoint;
@@ -124,12 +124,13 @@ static void BlioTextFlowFlowTreeEndElementHandler(void *ctx, const XML_Char *nam
             BlioTextFlowParagraphWords *words = [[BlioTextFlowParagraphWords alloc] initWithTextFlow:context->textFlow 
                                                                                            paragraph:paragraphNode 
                                                                                               ranges:context->wordRangeAccumulator
-                                                                                                 key:nodes.count];
+                                                                                                 key:nodes.count + 1];
+            paragraphNode.paragraphWords = words;
             [context->wordRangeAccumulator release];
+            context->wordRangeAccumulator = nil;
+            
             [nodes addObject:words];
             [words release];
-            
-            context->currentParagraph = nil;
         }
 
         id<EucCSSDocumentTreeNode> parent = currentNode.parent;
@@ -139,7 +140,7 @@ static void BlioTextFlowFlowTreeEndElementHandler(void *ctx, const XML_Char *nam
     }
 }
 
-- (id)initWithTextFlow:(BlioTextFlow *)textFlow Data:(NSData *)xmlData
+- (id)initWithTextFlow:(BlioTextFlow *)textFlow data:(NSData *)xmlData
 {
     if((self = [super init])) {
         NSUInteger xmlLength = xmlData.length;

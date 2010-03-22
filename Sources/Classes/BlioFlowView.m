@@ -1,19 +1,20 @@
 //
-//  BlioEPubView.m
+//  BlioFlowView.m
 //  BlioApp
 //
 //  Created by James Montgomerie on 04/01/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "BlioEPubView.h"
-#import "BlioEPubPaginateOperation.h"
+#import "BlioFlowView.h"
+#import "BlioFlowPaginateOperation.h"
+#import "BlioFlowEucBook.h"
 #import "BlioBookmark.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucMenuItem.h>
 
-@implementation BlioEPubView
+@implementation BlioFlowView
 
 // Supplied by the libEucalyptus superclass.
 @dynamic pageNumber;
@@ -21,20 +22,27 @@
 @dynamic contentsDataSource;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
-    EucBUpeBook *aEPubBook = [[EucBUpeBook alloc] initWithPath:[aBook ePubPath]];
-    if(nil == aEPubBook) {
+    EucBUpeLocalBookReference<EucBook> *eucBook = nil;
+    
+    if([aBook textFlowFilename]) {
+        eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:aBook];
+    } else if([aBook epubFilename]) {
+        eucBook = [[EucBUpeBook alloc] initWithPath:[aBook ePubPath]];
+    }
+    
+    if(!eucBook) {
         [self release];
         return nil;
     }
+        
+    [eucBook setCacheDirectoryPath:[aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusPageIndexes"]];
     
-    aEPubBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"ePubPaginationIndexes"];
-    
-    if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:aEPubBook])) {
+    if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:eucBook])) {
         self.allowsSelection = YES;
         self.selectorDelegate = self;
         if (animated) self.appearAtCoverThenOpen = YES;
     }
-    [aEPubBook release];
+    [eucBook release];
     
     return self;
 }
@@ -54,9 +62,9 @@
     
     EucBookPageIndexPoint *eucIndexPoint = ((EucBUpeBook *)self.book).currentPageIndexPoint;
     ret.layoutPage = eucIndexPoint.source;
-    ret.ePubBlockId = eucIndexPoint.block;
-    ret.ePubWordOffset = eucIndexPoint.word;
-    ret.ePubHyphenOffset = eucIndexPoint.element;
+    ret.blockOffset = eucIndexPoint.block;
+    ret.wordOffset = eucIndexPoint.word;
+    ret.elementOffset = eucIndexPoint.element;
         
     return [ret autorelease];
 }
@@ -65,9 +73,9 @@
 {
     EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
     eucIndexPoint.source = bookmarkPoint.layoutPage;
-    eucIndexPoint.block = bookmarkPoint.ePubBlockId;
-    eucIndexPoint.word = bookmarkPoint.ePubWordOffset;
-    eucIndexPoint.element = bookmarkPoint.ePubHyphenOffset;
+    eucIndexPoint.block = bookmarkPoint.blockOffset;
+    eucIndexPoint.word = bookmarkPoint.wordOffset;
+    eucIndexPoint.element = bookmarkPoint.elementOffset;
     
     [self goToIndexPoint:eucIndexPoint animated:animated];
     
@@ -78,9 +86,9 @@
 {
     EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
     eucIndexPoint.source = bookmarkPoint.layoutPage;
-    eucIndexPoint.block = bookmarkPoint.ePubBlockId;
-    eucIndexPoint.word = bookmarkPoint.ePubWordOffset;
-    eucIndexPoint.element = bookmarkPoint.ePubHyphenOffset;
+    eucIndexPoint.block = bookmarkPoint.blockOffset;
+    eucIndexPoint.word = bookmarkPoint.wordOffset;
+    eucIndexPoint.element = bookmarkPoint.elementOffset;
     
     NSInteger ret = [self pageNumberForIndexPoint:eucIndexPoint];
     
@@ -111,7 +119,7 @@
 }
 
 + (NSArray *)preAvailabilityOperations {
-    BlioEPubPaginateOperation *preParseOp = [[BlioEPubPaginateOperation alloc] init];
+    BlioFlowPaginateOperation *preParseOp = [[BlioFlowPaginateOperation alloc] init];
     NSArray *operations = [NSArray arrayWithObject:preParseOp];
     [preParseOp release];
     return operations;

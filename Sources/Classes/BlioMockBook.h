@@ -44,7 +44,7 @@
 - (NSString *)audiobookPath;
 - (NSString *)timingIndicesPath;
 - (BOOL)audioRights;
-- (NSString *)textflowPath;
+- (NSString *)textFlowPath;
 - (BlioTextFlow *)textFlow;
 
 - (NSArray *)sortedBookmarks;
