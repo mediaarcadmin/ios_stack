@@ -652,6 +652,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [self.delegate eucSelector:self 
            didEndEditingHighlightWithRange:self.selectedRangeOriginalHighlightRange
                               movedToRange:self.selectedRange];
+                
+                // The view may change its highlight ranges in response to our callback.
+                [_cachedHighlightRanges release];
+                _cachedHighlightRanges = nil;                
             }
             self.selectedRangeOriginalHighlightRange = nil;
             self.selectionColor = nil;
