@@ -21,6 +21,7 @@
     NSDictionary *_meta;
     NSArray *_spine;
     NSDictionary *_manifest; // id -> file, path relative to root.
+    NSString *_coverPath;
     
     NSDictionary *_manifestOverrides; // id -> file, path relative to root.
     NSDictionary *_manifestUrlsToOverriddenUrls; // Full URL from manifest -> full URL in overrides.
@@ -55,14 +56,20 @@
 
 // Override points.
 
-// Default is YES.  Controls whether to look for a HEAD element in the supplied
-// document trees to parse for CSS etc.
-@property (nonatomic, assign, readonly) BOOL documentsAreHTML;  
-@property (nonatomic, retain, readonly) NSString *baseCSSPath;
-
+// This class will try to be intelligent about caching document trees, data etc.
 - (NSData *)dataForURL:(NSURL *)url;
 - (id<EucCSSDocumentTree>)documentTreeForURL:(NSURL *)url;
 - (NSURL *)documentURLForIndexPoint:(EucBookPageIndexPoint *)point;
 - (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier;
+
+// Default is YES.  Controls whether to look for a HEAD element in the supplied
+// document trees to parse for CSS etc.
+- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree;
+- (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
+
+// From the EucBook protocol - included here because it's useful for overriding
+// for covers etc.
+- (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
+
 
 @end

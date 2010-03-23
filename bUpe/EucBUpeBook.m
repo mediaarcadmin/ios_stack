@@ -517,16 +517,17 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [_manifest release];
     [_manifestOverrides release];
     [_manifestUrlsToOverriddenUrls release];
+    [_coverPath release];
     
     [super dealloc];
 }
 
-- (BOOL)documentsAreHTML
+- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree
 {
     return YES;
 }
 
-- (NSString *)baseCSSPath
+- (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     return [[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"];
 }
@@ -544,6 +545,10 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         } else {
             ret = [[_manifest objectForKey:manifestKey] path];
         }
+    } 
+    
+    if(!ret) {
+        ret = _coverPath;
     }
     
     return ret;
@@ -570,6 +575,10 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];  
             self.manifestOverrides = nil;
         }
+    } 
+    if(_coverPath != coverPath) {
+        [_coverPath release];
+        _coverPath = [coverPath retain];
     }
 }
 
@@ -833,8 +842,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
                                                                          forURL:url
                                                                      dataSource:self
-                                                                    baseCSSPath:self.baseCSSPath
-                                                                         isHTML:self.documentsAreHTML];
+                                                                    baseCSSPath:[self baseCSSPathForDocumentTree:documentTree]
+                                                                         isHTML:[self documentTreeIsHTML:documentTree]];
         }
     }
     
@@ -855,5 +864,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return nil;
 }
 
+- (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
+{
+    return NO;
+}
 
 @end
