@@ -13,7 +13,7 @@
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import "BlioViewSettingsSheet.h"
-#import "BlioEPubView.h"
+#import "BlioFlowView.h"
 #import "BlioLayoutView.h"
 #import "BlioSpeedReadView.h"
 #import "BlioContentsTabViewController.h"
@@ -410,7 +410,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         if (![newBook pdfPath] && (lastLayout == kBlioPageLayoutPageLayout)) {
             lastLayout = kBlioPageLayoutPlainText;
-        } else if (![newBook ePubPath] && (lastLayout == kBlioPageLayoutPlainText)) {
+        } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
         }
 
@@ -428,8 +428,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             }
                 break;
             default: {
-                if ([newBook ePubPath]) {
-                    BlioEPubView *aBookView = [[BlioEPubView alloc] initWithBook:newBook animated:YES];
+                if ([newBook ePubPath] || [newBook textFlowPath]) {
+                    BlioFlowView *aBookView = [[BlioFlowView alloc] initWithBook:newBook animated:YES];
                     self.book = newBook;
                     self.bookView = aBookView;
                     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
@@ -1118,7 +1118,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)tapToNextPage {
-    if ([self.bookView isKindOfClass:[BlioEPubView class]]) {
+    if ([self.bookView isKindOfClass:[BlioFlowView class]]) {
         int currentPage = [self.bookView pageNumber] + 1;
         if (currentPage >= [self.bookView pageCount]) currentPage = [self.bookView pageCount];
 
@@ -1161,8 +1161,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			[self stopAudio];
 			self.audioPlaying = NO;  
 		}
-        if (newLayout == kBlioPageLayoutPlainText && [self.book ePubPath]) {
-            BlioEPubView *ePubView = [[BlioEPubView alloc] initWithBook:self.book animated:NO];
+        if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
+            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithBook:self.book animated:NO];
             [ePubView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
@@ -1175,12 +1175,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
-        } else if (newLayout == kBlioPageLayoutSpeedRead && [self.book ePubPath]) {
+        } /*else if (newLayout == kBlioPageLayoutSpeedRead && [self.book ePubPath]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithBook:self.book animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
-        }
+        }*/
     }
 }
 
@@ -1576,7 +1576,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				[(BlioLayoutView *)self.bookView  highlightWordAtBlockId:(id)(_acapelaTTS.currentBlock) wordOffset:_acapelaTTS.currentWordOffset];
 			else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 				BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-				BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
+				BlioFlowView *bookView = (BlioFlowView *)bookViewController.bookView;
 				[bookView highlightWordAtBlockId:[_acapelaTTS.currentBlock integerValue] wordOffset:_acapelaTTS.currentWordOffset];
 			}
             [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
@@ -1682,7 +1682,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 			// Problem: if just switching here from Fixed view, then prepareTextForSpeaking would not have been called for flowview
 			BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-			BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
+			BlioFlowView *bookView = (BlioFlowView *)bookViewController.bookView;
 			[bookView highlightWordAtBlockId:[_audioBookManager.currentBlock integerValue] wordOffset:_audioBookManager.currentWordOffset];	
 		}
 		++_audioBookManager.currentWordOffset;
@@ -1812,7 +1812,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     } else {
         BlioLightSettingsViewController *controller = [[BlioLightSettingsViewController alloc] initWithNibName:@"Lighting"
                                                                                                         bundle:[NSBundle mainBundle]];
-        controller.pageTurningView = [(BlioEPubView *)self.bookView pageTurningView];
+        controller.pageTurningView = [(BlioFlowView *)self.bookView pageTurningView];
         [self.navigationController presentModalViewController:controller animated:YES];
         [controller release];
     }

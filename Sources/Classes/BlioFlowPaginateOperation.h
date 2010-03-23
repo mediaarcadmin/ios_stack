@@ -11,7 +11,7 @@
 
 @class EucBookPaginator;
 
-@interface BlioEPubPaginateOperation : BlioProcessingOperation {
+@interface BlioFlowPaginateOperation : BlioProcessingOperation {
     BOOL executing;
     BOOL finished;
     

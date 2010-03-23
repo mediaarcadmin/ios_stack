@@ -149,7 +149,8 @@
 
 - (void)_computeStyles
 {
-    if(_documentTreeNode.kind == EucCSSDocumentTreeNodeKindElement) {
+    if(_documentTreeNode.kind == EucCSSDocumentTreeNodeKindElement || 
+       _documentTreeNode.kind == EucCSSDocumentTreeNodeKindRoot) {
         css_error err;
         
         css_stylesheet *inlineStyle = NULL;

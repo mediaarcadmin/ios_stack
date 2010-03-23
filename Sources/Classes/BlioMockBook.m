@@ -104,7 +104,7 @@
     return [[self valueForKey:@"hasAudioRights"] boolValue];
 }
 
-- (NSString *)textflowPath {
+- (NSString *)textFlowPath {
     NSString *filename = [self valueForKey:@"textFlowFilename"];
     if (filename) {
         NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:filename];

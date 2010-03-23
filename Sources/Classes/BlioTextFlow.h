@@ -11,6 +11,8 @@
 #import "BlioBookmark.h"
 #import "BlioProcessingManager.h"
 
+@class BlioTextFlowFlowTree;
+
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
     CGRect rect;
@@ -86,6 +88,18 @@
 
 @end
 
+@interface BlioTextFlowSection : NSObject {
+    NSString *name;
+    NSString *flowSourcePath;
+    NSUInteger startPage;
+}
+
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *flowSourcePath;
+@property (nonatomic) NSUInteger startPage;
+
+@end
+
 @interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider> {
     NSSet *pageRanges;
     NSInteger currentPageIndex;
@@ -96,9 +110,15 @@
     NSInteger cachedPageIndex;
     NSArray *cachedPageBlocks;
     NSString *basePath;
+    
+    NSMutableArray *sections;
 }
 
+@property (nonatomic, retain, readonly) NSMutableArray *sections;
+
 - (id)initWithPageRanges:(NSSet *)pageRangesSet basePath:(NSString *)aBasePath;
+
+- (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex;
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;
