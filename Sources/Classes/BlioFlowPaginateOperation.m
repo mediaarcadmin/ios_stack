@@ -68,7 +68,7 @@
    
     NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusPageIndexes"];
     
-    NSString *cannedPaginationPath = [textflowPath ?: epubPath stringByAppendingPathComponent:@"libEucalyptusPageIndexes"];
+    NSString *cannedPaginationPath = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"PageIndexes"] stringByAppendingPathComponent:[[self getBookValueForKey:@"title"] stringByAppendingPathExtension:@"libEucalyptusPageIndexes"]];
     
     BOOL isDirectory = YES;
 
