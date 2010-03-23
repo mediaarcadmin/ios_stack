@@ -107,7 +107,7 @@
             ++pageNumber;
         }
         blocks = [book.textFlow blocksForPageAtIndex:pageNumber];
-    } while([[blocks objectAtIndex:currentBlock] folio]);
+    } while([[blocks objectAtIndex:currentBlock] isFolio]);
     
     [self fillArrayWithCurrentBlock];
 }
