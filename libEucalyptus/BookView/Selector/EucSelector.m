@@ -662,7 +662,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             CALayer *snapshotLayer = self.snapshotLayer;
             if(snapshotLayer) {
                 [CATransaction begin];
-                [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+                [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 
                 if(self.highlightLayers.count) {
                     CALayer *attachedLayer = self.attachedLayer;
@@ -683,6 +683,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         
         if(stage == EucSelectorTrackingStageFirstSelection || stage == EucSelectorTrackingStageChangingSelection) {
             if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
+                                [CATransaction begin];
+                [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+
                 CALayer *attachedLayer = self.attachedLayer;
                 CALayer *windowLayer = attachedLayer.windowLayer;                        
                 CGRect windowFrame = [windowLayer convertRect:windowLayer.bounds toLayer:attachedLayer];
@@ -690,24 +693,20 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 CALayer *snapshotLayer = [CALayer layer];
                 snapshotLayer.contents = (id)([self.delegate viewSnapshotImageForEucSelector:self].CGImage);
                 snapshotLayer.opaque = YES;
+                snapshotLayer.frame = windowFrame;
                 [attachedLayer addSublayer:snapshotLayer];
+                self.snapshotLayer = snapshotLayer;
 
                 if(self.highlightLayers.count) {
-                    [CATransaction begin];
-                    [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-
                     for(CALayer *layer in self.highlightLayers) {
                         [layer removeFromSuperlayer];
                         CGRect frame = layer.frame;
                         layer.frame = [snapshotLayer convertRect:frame fromLayer:attachedLayer];
                         [snapshotLayer addSublayer:layer];
                     }
-                    
-                    [CATransaction commit];
                 }
-                snapshotLayer.frame = windowFrame;
                 
-                self.snapshotLayer = snapshotLayer;
+                [CATransaction commit];
             }            
         }
         
