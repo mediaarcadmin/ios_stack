@@ -1345,7 +1345,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     NSInteger currentIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
     
     if ([pageBlocks count] > currentIndex)
-        return [[pageBlocks objectAtIndex:currentIndex] wordsArray];
+        return [[pageBlocks objectAtIndex:currentIndex] wordStrings];
     else
         return nil;
     

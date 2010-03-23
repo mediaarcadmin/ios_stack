@@ -45,9 +45,7 @@
 @interface BlioTextFlowPageRange : NSObject <NSCoding> {
     // NSCoding compliant
     NSInteger pageIndex;
-    NSString *name;
     NSString *path;
-    NSString *anchor;
     NSMutableSet *pageMarkers;
     
     // Transient
@@ -56,9 +54,7 @@
 }
 
 @property (nonatomic) NSInteger pageIndex;
-@property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *path;
-@property (nonatomic, retain) NSString *anchor;
 @property (nonatomic, retain) NSMutableSet *pageMarkers;
 
 - (NSArray *)sortedPageMarkers;
@@ -82,7 +78,7 @@
 @property (nonatomic) BOOL folio;
 
 - (NSString *)string;
-- (NSArray *)wordsArray;
+- (NSArray *)wordStrings;
 - (NSComparisonResult)compare:(BlioTextFlowBlock *)rhs;
 + (NSInteger)pageIndexForBlockID:(id)aBlockID;
 + (NSInteger)blockIndexForBlockID:(id)aBlockID;
@@ -107,7 +103,8 @@
 // Convenience methods
 - (NSArray *)sortedPageRanges;
 - (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex;
-- (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex;
+- (NSArray *)wordStringsForPageAtIndex:(NSInteger)pageIndex;
+- (NSArray *)wordsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
 
