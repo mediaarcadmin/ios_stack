@@ -2,6 +2,8 @@ body            { text-align: justify }
 h1, h2, h3,
 h4, h5, h6      { text-align: left }
 
+* { border: 0 }
+
 html, address,
 blockquote,
 body, dd, div,
@@ -46,8 +48,8 @@ kbd, samp       { font-family: monospace }
 pre             { white-space: pre }
 button, textarea,
 input, select   { display: inline-block }
-/*big             { font-size: 1.17em }
-small, sub, sup { font-size: .83em }*/
+big             { font-size: 1.17em }
+small, sub, sup { font-size: .83em }
 sub             { vertical-align: sub }
 sup             { vertical-align: super }
 table           { border-spacing: 2px; }

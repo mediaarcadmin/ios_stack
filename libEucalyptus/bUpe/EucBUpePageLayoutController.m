@@ -171,10 +171,15 @@
         pageView.titleLinePosition = EucPageViewTitleLinePositionTop;
         pageView.titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
         pageView.bookTextView.backgroundIsDark = dark;
-        [pageView.bookTextView layoutPageFromPoint:indexPoint
-                                            inBook:_book];
         pageView.pageNumber = [self displayPageNumberForPageNumber:pageNumber];
         pageView.title = _book.title;
+        if([_book respondsToSelector:@selector(fullBleedPageForIndexPoint:)]) {
+            pageView.fullBleed = [_book fullBleedPageForIndexPoint:indexPoint];
+        }
+        
+        [pageView.bookTextView layoutPageFromPoint:indexPoint
+                                            inBook:_book];
+
         return  [THPair pairWithFirst:pageView second:indexPoint];
     } else {
         return nil;
@@ -201,8 +206,10 @@
     }
     
     return [[[EucPageView alloc] initWithPointSize:pointSize 
-                                         titleFont:@"LinuxLibertine-Italic" 
-                                    pageNumberFont:@"LinuxLibertine"
+                                         titleFont:@"Georgia" 
+                               titleFontStyleFlags:THStringRendererFontStyleFlagItalic
+                                    pageNumberFont:@"Georgia"
+                          pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
                                     titlePointSize:pointSize
                                        pageTexture:pageTexture
                                      textViewClass:[EucBUpePageTextView class]] autorelease];
