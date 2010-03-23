@@ -16,14 +16,11 @@
 
 @implementation BlioSpeedReadView
 
-@synthesize pageCount, pageNumber, currentWordOffset, currentBlock, currentPage, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize pageCount, pageNumber, currentWordOffset, currentBlock, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
-- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
-    EucBUpeBook *aEPubBook = [[EucBUpeBook alloc] initWithPath:[aBook ePubPath]];
-    if (nil == aEPubBook) return nil;
-    
+- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {    
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
-        book = [aEPubBook retain];
+        book = [aBook retain];
         
         [self setMultipleTouchEnabled:YES];
         [self setBackgroundColor:[UIColor whiteColor]];
@@ -82,7 +79,7 @@
         [sampleTextLabel setFont:font];        
         
         
-        
+        pageNumber = 1;
         
         [self fillArrayWithCurrentBlock];	
         [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
@@ -90,43 +87,45 @@
         initialTouchDifference = 0;
         
         zooming = NO;
-    }
-    
-    [aEPubBook release];
+    }    
     return self;
 }
 
+
+
 - (void)fillArrayWithNextBlock {
-    
     if (textArray) {
         [textArray release];
         textArray = nil;
     }
     
-    /*currentBlock = [(EucBUpeBook *)book blockIdForBlockAfterBlockWithId:currentBlock];
-    if (currentBlock) {
-        textArray  = [[NSMutableArray alloc] initWithArray:[(EucEPubBook *)book blockWordsForBlockWithId:currentBlock]];
-        if ([textArray count] == 0) {
-            [self fillArrayWithNextBlock];
+    NSArray *blocks = nil;
+    do {
+        ++currentBlock;
+        while([[book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0)] count] <= currentBlock) {
+            currentBlock = 0;
+            ++pageNumber;
         }
-    }*/
+        blocks = [book.textFlow blocksForPageAtIndex:pageNumber];
+    } while([[blocks objectAtIndex:currentBlock] folio]);
     
-    
+    [self fillArrayWithCurrentBlock];
 }
 
 - (void)fillArrayWithCurrentBlock {
-    //[(EucBUpeBook*)book getCurrentBlockId:&currentBlock wordOffset:&currentWordOffset];
-    if (currentBlock) {
-        if (textArray) {
-            [textArray release];
-            textArray = nil;
-        }
-        //textArray  = [[NSMutableArray alloc] initWithArray:[(EucEPubBook *)book blockWordsForBlockWithId:currentBlock]];
-        if ([textArray count] == 0) {
-            [self fillArrayWithNextBlock];
-        }
+    if (textArray) {
+        [textArray release];
+        textArray = nil;
     }
-    
+
+    NSArray *blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0)];
+    if ([blocks count] != 0) {
+        BlioTextFlowBlock *block = [blocks objectAtIndex:currentBlock];
+        textArray = [[block wordStrings] mutableCopy];
+    }
+    if ([textArray count] == 0) {
+        [self fillArrayWithNextBlock];
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -382,6 +381,7 @@
 
 - (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
+    pageNumber = bookmarkPoint.layoutPage;
     currentBlock = bookmarkPoint.blockOffset;
     currentWordOffset = bookmarkPoint.wordOffset;
     [self fillArrayWithCurrentBlock];
@@ -407,7 +407,7 @@
 
 
 - (void)dealloc {
-    //[(EucBUpeBook*)book setCurrentBlockId:currentBlock wordOffset:currentWordOffset];    
+    [book release];
     [textArray release];
     [sampleTextLabel release];
     [bigTextLabel release];

@@ -59,41 +59,45 @@
 - (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
 {
     BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
-    
-    EucBookPageIndexPoint *eucIndexPoint = ((EucBUpeBook *)self.book).currentPageIndexPoint;
-    ret.layoutPage = eucIndexPoint.source;
-    ret.blockOffset = eucIndexPoint.block;
-    ret.wordOffset = eucIndexPoint.word;
-    ret.elementOffset = eucIndexPoint.element;
-        
+    if(![self.book isKindOfClass:[BlioFlowEucBook class]]) {
+        EucBookPageIndexPoint *eucIndexPoint = ((EucBUpeBook *)self.book).currentPageIndexPoint;
+        ret.layoutPage = eucIndexPoint.source;
+        ret.blockOffset = eucIndexPoint.block;
+        ret.wordOffset = eucIndexPoint.word;
+        ret.elementOffset = eucIndexPoint.element;
+    }
     return [ret autorelease];
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
-    EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
-    eucIndexPoint.source = bookmarkPoint.layoutPage;
-    eucIndexPoint.block = bookmarkPoint.blockOffset;
-    eucIndexPoint.word = bookmarkPoint.wordOffset;
-    eucIndexPoint.element = bookmarkPoint.elementOffset;
-    
-    [self goToIndexPoint:eucIndexPoint animated:animated];
-    
-    [eucIndexPoint release];
+    if(![self.book isKindOfClass:[BlioFlowEucBook class]]) {
+        EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
+        eucIndexPoint.source = bookmarkPoint.layoutPage;
+        eucIndexPoint.block = bookmarkPoint.blockOffset;
+        eucIndexPoint.word = bookmarkPoint.wordOffset;
+        eucIndexPoint.element = bookmarkPoint.elementOffset;
+        
+        [self goToIndexPoint:eucIndexPoint animated:animated];
+        
+        [eucIndexPoint release];
+    }
 }
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint
 {
-    EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
-    eucIndexPoint.source = bookmarkPoint.layoutPage;
-    eucIndexPoint.block = bookmarkPoint.blockOffset;
-    eucIndexPoint.word = bookmarkPoint.wordOffset;
-    eucIndexPoint.element = bookmarkPoint.elementOffset;
-    
-    NSInteger ret = [self pageNumberForIndexPoint:eucIndexPoint];
-    
-    [eucIndexPoint release];
-    
+    NSInteger ret = 0;
+    if(![self.book isKindOfClass:[BlioFlowEucBook class]]) {
+        EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
+        eucIndexPoint.source = bookmarkPoint.layoutPage;
+        eucIndexPoint.block = bookmarkPoint.blockOffset;
+        eucIndexPoint.word = bookmarkPoint.wordOffset;
+        eucIndexPoint.element = bookmarkPoint.elementOffset;
+        
+        ret = [self pageNumberForIndexPoint:eucIndexPoint];
+        
+        [eucIndexPoint release];
+    }
     return ret;
 }
 

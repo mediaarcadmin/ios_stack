@@ -1175,12 +1175,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
-        } /*else if (newLayout == kBlioPageLayoutSpeedRead && [self.book ePubPath]) {
+        } else if (newLayout == kBlioPageLayoutSpeedRead && [self.book textFlowPath]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithBook:self.book animated:NO];
+            [speedReadView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
-        }*/
+        }
     }
 }
 
