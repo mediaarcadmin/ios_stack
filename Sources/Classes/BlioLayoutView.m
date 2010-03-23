@@ -80,11 +80,16 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 - (NSArray *)bookmarkRangesForCurrentPage;
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
+
+- (void)clearSnapshots;
+- (void)clearHighlightsSnapshot;
+        
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic) CGFloat lastZoomScale;
 @property (nonatomic, retain) NSData *pdfData;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
-@property (nonatomic, retain) UIImage *snapshot;
+@property (nonatomic, retain) UIImage *pageSnapshot;
+@property (nonatomic, retain) UIImage *highlightsSnapshot;
 @end
 
 
@@ -108,7 +113,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 @synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor, fetchHighlightsQueue;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize renderThumbsQueue, thumbCache, thumbCacheSize, pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
-@synthesize lastBlock, snapshot;
+@synthesize lastBlock, pageSnapshot, highlightsSnapshot;
 
 - (void)dealloc {
     isCancelled = YES;
@@ -140,7 +145,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     self.shadowBottom = nil;
     self.shadowTop = nil;
     self.shadowLeft = nil;
-    self.snapshot = nil;
+    self.pageSnapshot = nil;
+    self.highlightsSnapshot = nil;
     self.shadowRight = nil;
     
     self.lastBlock = nil;
@@ -308,9 +314,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)didReceiveMemoryWarning:(NSNotification *)notification {
-    NSLog(@"Did receive memory warning - PURGING THUMB CACHE");
+    NSLog(@"Did receive memory warning");
     self.thumbCache = [NSMutableDictionary dictionary];
     self.thumbCacheSize = 0;
+    
+    [self clearSnapshots];
 }
 
 #pragma mark -
@@ -754,31 +762,51 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark Selector
 
+- (void)clearSnapshots {
+    self.pageSnapshot = nil;
+    self.highlightsSnapshot = nil; 
+}
+
+- (void)clearHighlightsSnapshot {
+    self.highlightsSnapshot = nil; 
+}
+
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
-    if (nil == self.snapshot) {
-        BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
-        if (nil == snapLayer) return nil;
-        
-        CGFloat scale = self.scrollView.zoomScale * 1.2f;
-        
-        CGSize snapSize = snapLayer.bounds.size;
-        snapSize.width *= 1.2f;
-        snapSize.height *= 1.2f;
-        
+    BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
+    if (nil == snapLayer) return nil;
+    
+    CGFloat scale = self.scrollView.zoomScale * 1.2f;
+    CGSize snapSize = snapLayer.bounds.size;
+    snapSize.width *= 1.2f;
+    snapSize.height *= 1.2f;
+    
+    if (nil == self.pageSnapshot) {
+        NSLog(@"Regenerating pageSnapshot");
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
         CGContextScaleCTM(ctx, scale, scale);
         CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
-        
         [[snapLayer shadowLayer] renderInContext:ctx];
         [[snapLayer tiledLayer] renderInContext:ctx];
-        [[snapLayer highlightsLayer] renderInContext:ctx];
-        self.snapshot = UIGraphicsGetImageFromCurrentImageContext();
+        self.pageSnapshot = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
     }
     
-    return self.snapshot;
+    if (nil == self.highlightsSnapshot) {
+        NSLog(@"Regenerating highlightsSnapshot");
+        UIGraphicsBeginImageContext(snapSize);
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        [self.pageSnapshot drawAtPoint:CGPointZero];
+        CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
+        CGContextScaleCTM(ctx, scale, scale);
+        CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
+        [[snapLayer highlightsLayer] renderInContext:ctx];
+        self.highlightsSnapshot = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
+    
+    return self.highlightsSnapshot;
 }
 
 - (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
@@ -865,7 +893,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (UIColor *)eucSelector:(EucSelector *)aSelector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange {
     
-    self.snapshot = nil;
+    [self clearHighlightsSnapshot];
     
     for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
@@ -1057,7 +1085,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             switch ([(EucSelector *)object trackingStage]) {
                 case EucSelectorTrackingStageNone:
                     [self.scrollView setScrollEnabled:YES];
-                    self.snapshot = nil;
+                    [self clearSnapshots];
                     break;
                 case EucSelectorTrackingStageFirstSelection:
                     [self.scrollView setScrollEnabled:NO];
@@ -1697,7 +1725,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
 
-    self.snapshot = nil;
+    [self clearSnapshots];
     
     if([self.selector isTracking])
         [self.selector redisplaySelectedRange];
@@ -1728,7 +1756,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
-        self.snapshot = nil;
+        [self clearSnapshots];
         [self.selector setShouldHideMenu:NO];
     }
     if (tiltScroller) [tiltScroller resetAngle];
@@ -1777,7 +1805,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)updateAfterScroll {
-    self.snapshot = nil;
+    [self clearSnapshots];
     [self.selector setShouldHideMenu:NO];
     if (self.disableScrollUpdating) return;
     
