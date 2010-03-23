@@ -760,9 +760,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
         if (nil == snapLayer) return nil;
         
-        CGFloat scale = self.scrollView.zoomScale;
+        CGFloat scale = self.scrollView.zoomScale * 1.2f;
         
         CGSize snapSize = snapLayer.bounds.size;
+        snapSize.width *= 1.2f;
+        snapSize.height *= 1.2f;
         
         //   CGImageRef imageRef = (CGImageRef)[[snapLayer presentationLayer] contents];
         //    UIImage *image = [UIImage imageWithCGImage:imageRef];
@@ -873,6 +875,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (UIColor *)eucSelector:(EucSelector *)aSelector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange {
     
+    self.snapshot = nil;
     
     for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
