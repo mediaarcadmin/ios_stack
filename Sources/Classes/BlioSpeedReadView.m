@@ -102,11 +102,12 @@
     NSArray *blocks = nil;
     do {
         ++currentBlock;
-        while([[book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0)] count] <= currentBlock) {
+        blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0)];
+        while(blocks.count <= currentBlock) {
             currentBlock = 0;
             ++pageNumber;
+            blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0)];
         }
-        blocks = [book.textFlow blocksForPageAtIndex:pageNumber];
     } while([[blocks objectAtIndex:currentBlock] isFolio]);
     
     [self fillArrayWithCurrentBlock];
