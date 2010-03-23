@@ -77,7 +77,7 @@
 @property (nonatomic, retain) NSIndexPath *blockID;
 @property (nonatomic, retain) NSMutableArray *words;
 @property (nonatomic, readonly) CGRect rect;
-@property (nonatomic) BOOL folio;
+@property (nonatomic, getter=isFolio) BOOL folio;
 
 - (NSString *)string;
 - (NSArray *)wordStrings;
@@ -122,6 +122,7 @@
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;
+- (NSArray *)nonFolioBlocksForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)wordStringsForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)wordsForBookmarkRange:(BlioBookmarkRange *)range;

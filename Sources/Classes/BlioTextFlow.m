@@ -509,6 +509,17 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return [[self.pageRanges allObjects] sortedArrayUsingDescriptors:sortDescriptors];
 }
 
+- (NSArray *)nonFolioBlocksForPageAtIndex:(NSInteger)pageIndex {
+    NSMutableArray *nonFolioBlocks = [NSMutableArray array];
+    
+    for (BlioTextFlowBlock *block in [self blocksForPageAtIndex:pageIndex]) {
+        if (![block isFolio]) 
+            [nonFolioBlocks addObject:block];
+    }
+    
+    return nonFolioBlocks;
+}
+
 - (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex {
     if (self.cachedPageBlocks && (self.cachedPageIndex == pageIndex))
         return self.cachedPageBlocks;
@@ -569,7 +580,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         NSInteger pageIndex = pageNumber - 1;
         
         for (BlioTextFlowBlock *block in [self blocksForPageAtIndex:pageIndex]) {
-            if (!block.folio) {
+            if (![block isFolio]) {
                 for (BlioTextFlowPositionedWord *word in [block words]) {
                     if ((range.startPoint.layoutPage < pageNumber) &&
                         (block.blockIndex <= range.endPoint.blockOffset) &&

@@ -230,7 +230,7 @@
 - (void)refreshHighlights {
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-    [self.highlightsLayer setContents:nil];
+    //[self.highlightsLayer setContents:nil];
     [self.highlightsLayer setNeedsDisplay];
     [CATransaction commit];
 }
