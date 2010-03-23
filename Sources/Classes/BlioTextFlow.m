@@ -415,6 +415,10 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
     return [NSArray arrayWithArray:self.currentBlockArray];
 }
 
+
+#pragma mark -
+#pragma mark Sections XML (block) parsing
+
 static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) {
     BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
     
@@ -427,7 +431,9 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             } else if (strcmp("Name", atts[i]) == 0) {
                 NSString *nameString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != nameString) {
-                    newSection.name = nameString;
+                    if(nameString.length) {
+                        newSection.name = nameString;
+                    }
                     [nameString release];
                 }
             }
