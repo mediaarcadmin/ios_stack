@@ -138,11 +138,11 @@
 		7D3AED53114963560059C5B6 /* EucCSSInternal.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341461149602300C318E7 /* EucCSSInternal.c */; };
 		7D3AED54114963560059C5B6 /* LWCNSStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */; };
 		7D3AED55114963560059C5B6 /* LWCNSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23416B1149602300C318E7 /* LWCNSStringAdditions.m */; };
-		7D3AED5E114963560059C5B6 /* EucCSSDocumentTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341411149602300C318E7 /* EucCSSDocumentTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D3AED5E114963560059C5B6 /* EucCSSDocumentTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341411149602300C318E7 /* EucCSSDocumentTree.h */; };
 		7D3AED5F114963560059C5B6 /* EucCSSDocumentTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341421149602300C318E7 /* EucCSSDocumentTree.m */; };
 		7D3AED60114963560059C5B6 /* EucCSSDocumentTree_Package.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341431149602300C318E7 /* EucCSSDocumentTree_Package.h */; };
-		7D3AED61114963560059C5B6 /* EucCSSDocumentTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341441149602300C318E7 /* EucCSSDocumentTreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D3AED62114963560059C5B6 /* EucCSSDocumentTreeNodeKind.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341451149602300C318E7 /* EucCSSDocumentTreeNodeKind.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D3AED61114963560059C5B6 /* EucCSSDocumentTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341441149602300C318E7 /* EucCSSDocumentTreeNode.h */; };
+		7D3AED62114963560059C5B6 /* EucCSSDocumentTreeNodeKind.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341451149602300C318E7 /* EucCSSDocumentTreeNodeKind.h */; };
 		7D3AED63114963560059C5B6 /* EucCSSIntermediateDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341521149602300C318E7 /* EucCSSIntermediateDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3AED64114963560059C5B6 /* EucCSSIntermediateDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341531149602300C318E7 /* EucCSSIntermediateDocument.m */; };
 		7D3AED65114963560059C5B6 /* EucCSSIntermediateDocumentConcreteNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341541149602300C318E7 /* EucCSSIntermediateDocumentConcreteNode.h */; };
@@ -279,9 +279,9 @@
 		7D5174041028BA14005F3C46 /* xmltok_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173B21028BA14005F3C46 /* xmltok_impl.h */; };
 		7D5174051028BA14005F3C46 /* xmltok_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173B31028BA14005F3C46 /* xmltok_ns.c */; };
 		7D51741D1028BA14005F3C46 /* expat_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173DE1028BA14005F3C46 /* expat_config.h */; };
-		7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9711499DC0004F64DC /* EucCSSXMLTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9711499DC0004F64DC /* EucCSSXMLTree.h */; };
 		7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D53BD9811499DC0004F64DC /* EucCSSXMLTree.m */; };
-		7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9F11499DCE004F64DC /* EucCSSXMLTreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9F11499DCE004F64DC /* EucCSSXMLTreeNode.h */; };
 		7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D53BDA011499DCE004F64DC /* EucCSSXMLTreeNode.m */; };
 		7D53BE301149AE6D004F64DC /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D5D69C410C2D33200BBF826 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libEucalyptus.a */; };
