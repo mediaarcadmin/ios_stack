@@ -22,24 +22,6 @@ static const CGFloat kBlioPDFGoToZoomScale = 0.7f;
 
 static const int kBlioLayoutMaxThumbCacheSize = 2088960; // 2BM in bytes
 
-@interface BlioLayoutHighlightsOperation : NSOperation {
-    NSInteger pageNumber;
-    CALayer *layer;
-    BlioBookmarkRange *excludedBookmark;
-    NSArray *highlightRanges;
-    BlioTextFlow *textFlow;
-}
-
-- (id)initWithPage:(NSInteger)aPageNumber layer:(CALayer *)aLayer exclusion:(BlioBookmarkRange *)aExcludedBookmark highlights:(NSArray *)aHighlightRanges textFlow:(BlioTextFlow *)aTextFlow;
-
-@property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, retain) CALayer *layer;
-@property (nonatomic, retain) BlioBookmarkRange *excludedBookmark;
-@property (nonatomic, retain) NSArray *highlightRanges;
-@property (nonatomic, retain) BlioTextFlow *textFlow;
-
-@end
-
 static const CGFloat kBlioLayoutShadow = 16.0f;
 
 @interface BlioLayoutViewColoredRect : NSObject {
@@ -49,21 +31,6 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 
 @property (nonatomic) CGRect rect;
 @property (nonatomic, retain) UIColor *color;
-
-@end
-
-
-@interface BlioPDFHighlightLayerDelegate : CALayer {
-    CGAffineTransform fitTransform;
-    NSArray *highlights;
-    CGPDFPageRef page;
-    CGAffineTransform highlightsTransform;
-}
-
-@property(nonatomic) CGAffineTransform fitTransform;
-@property(nonatomic) CGAffineTransform highlightsTransform;
-@property(nonatomic, retain) NSArray* highlights;
-@property(nonatomic) CGPDFPageRef page;
 
 @end
 
@@ -110,9 +77,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     return transform;
 }
 
-@synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor, fetchHighlightsQueue;
+@synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor;
 @synthesize pdfPath, pdfData, lastZoomScale;
-@synthesize renderThumbsQueue, thumbCache, thumbCacheSize, pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
+@synthesize thumbCache, thumbCacheSize, pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
 
 - (void)dealloc {
@@ -121,10 +88,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     
     CGPDFDocumentRelease(pdf);
     
-    [self.fetchHighlightsQueue cancelAllOperations];
-    self.fetchHighlightsQueue = nil;
-    [self.renderThumbsQueue cancelAllOperations];
-    self.renderThumbsQueue = nil;
     self.thumbCache = nil;
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
@@ -251,16 +214,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         [self.scrollView setSelector:aSelector];
         [aSelector release];
         
-        NSOperationQueue* aHighlightsQueue = [[NSOperationQueue alloc] init];
-        self.fetchHighlightsQueue = aHighlightsQueue;
-        [aHighlightsQueue release];
-        
         [self addObserver:self forKeyPath:@"currentPageLayer" options:0 context:NULL];
-        
-        NSOperationQueue* aThumbsQueue = [[NSOperationQueue alloc] init];
-        [aThumbsQueue setMaxConcurrentOperationCount:1];
-        self.renderThumbsQueue = aThumbsQueue;
-        [aThumbsQueue release];
         
         NSNumber *savedPage = [aBook layoutPageNumber];
         NSInteger page = (nil != savedPage) ? [savedPage intValue] : 1;
@@ -736,7 +690,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         
 
 - (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber excluding:(BlioBookmarkRange *)excludedBookmark {
-    
     CGAffineTransform viewTransform = [self viewTransformForPage:aPageNumber];
     
     for (BlioLayoutViewColoredRect *coloredRect in [self highlightRectsForPage:aPageNumber excluding:excludedBookmark]) {
@@ -768,7 +721,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)clearHighlightsSnapshot {
-    //NSLog(@"Clearing highlightsSnapshot");
     self.highlightsSnapshot = nil; 
 }
 
@@ -782,7 +734,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     snapSize.height *= 1.2f;
     
     if (nil == self.pageSnapshot) {
-        //NSLog(@"Regenerating pageSnapshot");
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
@@ -795,7 +746,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     }
     
     if (nil == self.highlightsSnapshot) {
-        //NSLog(@"Regenerating highlightsSnapshot");
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [self.pageSnapshot drawAtPoint:CGPointZero];
@@ -2212,44 +2162,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 @end
 
-@implementation BlioPDFHighlightLayerDelegate
-
-
-@synthesize page, fitTransform, highlights, highlightsTransform;
-
-- (void)dealloc {
-    self.highlights = nil;
-    [super dealloc];
-}
-
-- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
-    CGRect boundingRect = CGContextGetClipBoundingBox(ctx);
-    CGContextScaleCTM(ctx, 1, -1);
-    CGContextTranslateCTM(ctx, 0, -CGRectGetHeight(boundingRect));
-    
-    //CGContextSetRGBFillColor(ctx, 1, 1, 0, 0.3f);
-//    CGFloat dash[2]={0.5f,1.5f};
-//    CGContextSetLineDash (ctx, 0, dash, 2);
-    
-    CGContextConcatCTM(ctx, fitTransform);
-        
-    for (BlioLayoutViewColoredRect *coloredRect in self.highlights) {
-        UIColor *highlightColor = [coloredRect color];
-        CGContextSetFillColorWithColor(ctx, [highlightColor colorWithAlphaComponent:0.3f].CGColor);
-        //CGContextSetStrokeColorWithColor(ctx, [highlightColor colorWithAlphaComponent:1.0f].CGColor);
-        //CGContextSetLineWidth(ctx, 1.0f);
-        
-        CGRect highlightRect = [coloredRect rect];
-        CGRect adjustedRect = CGRectApplyAffineTransform(highlightRect, highlightsTransform);
-        //CGContextClearRect(ctx, CGRectInset(adjustedRect, -1, -1));
-        CGContextFillRect(ctx, adjustedRect);
-        //CGContextStrokeRect(ctx, adjustedRect);
-    }
-}
-
-@end
-
-
 @implementation BlioLayoutViewColoredRect
 
 @synthesize rect, color;
@@ -2257,110 +2169,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 - (void)dealloc {
     self.color = nil;
     [super dealloc];
-}
-
-@end
-
-@implementation BlioLayoutHighlightsOperation
-
-@synthesize pageNumber, layer, excludedBookmark, highlightRanges, textFlow;
-
-- (void)dealloc {
-    self.layer = nil;
-    self.excludedBookmark = nil;
-    self.highlightRanges = nil;
-    self.textFlow = nil;
-    [super dealloc];
-}
-
-- (id)initWithPage:(NSInteger)aPageNumber layer:(CALayer *)aLayer exclusion:(BlioBookmarkRange *)aExcludedBookmark highlights:(NSArray *)aHighlightRanges textFlow:(BlioTextFlow *)aTextFlow {
-    if((self = [super init])) {
-        
-        self.pageNumber = aPageNumber;
-        self.layer = aLayer;
-        self.excludedBookmark = aExcludedBookmark;
-        self.highlightRanges = aHighlightRanges;
-        self.textFlow = aTextFlow;
-    }
-    
-    return self;
-}
-
-- (void)main {
-    if ([self isCancelled]) return;
-        
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex];
-    
-    if ([self isCancelled]) return;
-    
-    NSMutableArray *allHighlights = [NSMutableArray array];
-    for (BlioBookmarkRange *highlightRange in self.highlightRanges) {
-        if ([self isCancelled]) return;
-        
-        if (![highlightRange isEqual:self.excludedBookmark]) {
-            
-            NSMutableArray *highlightRects = [NSMutableArray array];
-            
-            for (BlioTextFlowBlock *block in pageBlocks) {
-                if ([self isCancelled]) return;
-                
-                for (BlioTextFlowPositionedWord *word in [block words]) {
-                    if ((highlightRange.startPoint.layoutPage < self.pageNumber) &&
-                        (block.blockIndex <= highlightRange.endPoint.blockOffset) &&
-                        (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
-                        
-                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        
-                    } else if ((highlightRange.endPoint.layoutPage > self.pageNumber) &&
-                               (block.blockIndex >= highlightRange.startPoint.blockOffset) &&
-                               (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
-                        
-                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        
-                    } else if ((highlightRange.startPoint.layoutPage == self.pageNumber) &&
-                               (block.blockIndex == highlightRange.startPoint.blockOffset) &&
-                               (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
-                        
-                        if ((block.blockIndex == highlightRange.endPoint.blockOffset) &&
-                            (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
-                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        } else if (block.blockIndex < highlightRange.endPoint.blockOffset) {
-                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        }
-                        
-                    } else if ((highlightRange.startPoint.layoutPage == self.pageNumber) &&
-                               (block.blockIndex > highlightRange.startPoint.blockOffset)) {
-                        
-                        if ((block.blockIndex == highlightRange.endPoint.blockOffset) &&
-                            (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
-                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        } else if (block.blockIndex < highlightRange.endPoint.blockOffset) {
-                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        }
-                    }
-                }
-            }
-            
-            if ([self isCancelled]) return;
-            NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
-            
-            for (NSValue *rectValue in coalescedRects) {
-                BlioLayoutViewColoredRect *coloredRect = [[BlioLayoutViewColoredRect alloc] init];
-                coloredRect.color = highlightRange.color;
-                coloredRect.rect = [rectValue CGRectValue];
-                [allHighlights addObject:coloredRect];
-                [coloredRect release];
-            }
-        }
-        
-    }
-    if ([self isCancelled]) return;
-    [self.layer performSelectorOnMainThread:@selector(setHighlights:) withObject:allHighlights waitUntilDone:NO];
-    
-    [pool drain];
 }
 
 @end
