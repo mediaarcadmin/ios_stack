@@ -768,6 +768,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)clearHighlightsSnapshot {
+    //NSLog(@"Clearing highlightsSnapshot");
     self.highlightsSnapshot = nil; 
 }
 
@@ -781,7 +782,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     snapSize.height *= 1.2f;
     
     if (nil == self.pageSnapshot) {
-        NSLog(@"Regenerating pageSnapshot");
+        //NSLog(@"Regenerating pageSnapshot");
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
@@ -794,7 +795,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     }
     
     if (nil == self.highlightsSnapshot) {
-        NSLog(@"Regenerating highlightsSnapshot");
+        //NSLog(@"Regenerating highlightsSnapshot");
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [self.pageSnapshot drawAtPoint:CGPointZero];
@@ -880,7 +881,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (NSArray *)highlightRangesForEucSelector:(EucSelector *)aSelector {
-       
     NSMutableArray *selectorRanges = [NSMutableArray array];
     
     for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
@@ -907,6 +907,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange {
+    [self clearHighlightsSnapshot];
     
     if ((nil != toRange) && ![fromRange isEqual:toRange]) {
     
@@ -1085,7 +1086,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             switch ([(EucSelector *)object trackingStage]) {
                 case EucSelectorTrackingStageNone:
                     [self.scrollView setScrollEnabled:YES];
-                    [self clearSnapshots];
+                    //[self clearSnapshots];
                     break;
                 case EucSelectorTrackingStageFirstSelection:
                     [self.scrollView setScrollEnabled:NO];
@@ -1170,6 +1171,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         if ([self.delegate respondsToSelector:@selector(addHighlightWithColor:)])
             [self.delegate addHighlightWithColor:color];
         
+        [self clearHighlightsSnapshot];
         // Set this to nil now because the refresh depends on it
         [self.selector setSelectedRange:nil];
         [self refreshHighlights];
