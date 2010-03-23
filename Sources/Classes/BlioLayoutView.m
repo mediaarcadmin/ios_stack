@@ -756,7 +756,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
     if (nil == self.snapshot) {
-        NSLog(@"requesting snapshot");
         BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
         if (nil == snapLayer) return nil;
         
@@ -765,14 +764,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         CGSize snapSize = snapLayer.bounds.size;
         snapSize.width *= 1.2f;
         snapSize.height *= 1.2f;
-        
-        //   CGImageRef imageRef = (CGImageRef)[[snapLayer presentationLayer] contents];
-        //    UIImage *image = [UIImage imageWithCGImage:imageRef];
-        //    NSLog(@"got snapshot");
-        //    return image;
-        
-        // Increase snapshot height by 78 to allow for an overlap below the bottom of the page;
-        //    snapSize.height += 78; 
         
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
@@ -785,7 +776,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         [[snapLayer highlightsLayer] renderInContext:ctx];
         self.snapshot = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
-        NSLog(@"got snapshot");
     }
     
     return self.snapshot;
