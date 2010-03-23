@@ -16,7 +16,7 @@
 
 + (NSString *)defaultFontFamilyName
 {
-    return @"LinuxLibertine";
+    return @"Georgia";
 }
 
 + (CGFloat)defaultFontPointSize
@@ -185,7 +185,7 @@
             }
         }
         if(!_cachedRenderer) {
-            _cachedRenderer = [[self bestRendererForFontWithFamily:@"LinuxLibertine" style:style weight:weight] retain];
+            _cachedRenderer = [[self bestRendererForFontWithFamily:@"Georgia" style:style weight:weight] retain];
         }
     }
     return _cachedRenderer;

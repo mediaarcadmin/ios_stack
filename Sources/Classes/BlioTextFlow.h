@@ -11,6 +11,8 @@
 #import "BlioBookmark.h"
 #import "BlioProcessingManager.h"
 
+@class BlioTextFlowFlowTree;
+
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
     CGRect rect;
@@ -45,9 +47,7 @@
 @interface BlioTextFlowPageRange : NSObject <NSCoding> {
     // NSCoding compliant
     NSInteger pageIndex;
-    NSString *name;
     NSString *path;
-    NSString *anchor;
     NSMutableSet *pageMarkers;
     
     // Transient
@@ -56,9 +56,7 @@
 }
 
 @property (nonatomic) NSInteger pageIndex;
-@property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *path;
-@property (nonatomic, retain) NSString *anchor;
 @property (nonatomic, retain) NSMutableSet *pageMarkers;
 
 - (NSArray *)sortedPageMarkers;
@@ -82,11 +80,23 @@
 @property (nonatomic) BOOL folio;
 
 - (NSString *)string;
-- (NSArray *)wordsArray;
+- (NSArray *)wordStrings;
 - (NSComparisonResult)compare:(BlioTextFlowBlock *)rhs;
 + (NSInteger)pageIndexForBlockID:(id)aBlockID;
 + (NSInteger)blockIndexForBlockID:(id)aBlockID;
 + (id)blockIDForPageIndex:(NSInteger)aPageIndex blockIndex:(NSInteger)aBlockIndex;
+
+@end
+
+@interface BlioTextFlowSection : NSObject {
+    NSString *name;
+    NSString *flowSourcePath;
+    NSUInteger startPage;
+}
+
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *flowSourcePath;
+@property (nonatomic) NSUInteger startPage;
 
 @end
 
@@ -100,14 +110,21 @@
     NSInteger cachedPageIndex;
     NSArray *cachedPageBlocks;
     NSString *basePath;
+    
+    NSMutableArray *sections;
 }
 
+@property (nonatomic, retain, readonly) NSMutableArray *sections;
+
 - (id)initWithPageRanges:(NSSet *)pageRangesSet basePath:(NSString *)aBasePath;
+
+- (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex;
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;
 - (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex;
-- (NSArray *)wordsForPageAtIndex:(NSInteger)pageIndex;
+- (NSArray *)wordStringsForPageAtIndex:(NSInteger)pageIndex;
+- (NSArray *)wordsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
 

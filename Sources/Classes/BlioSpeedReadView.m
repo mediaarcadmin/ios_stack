@@ -382,8 +382,8 @@
 
 - (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
-    currentBlock = bookmarkPoint.ePubBlockId;
-    currentWordOffset = bookmarkPoint.ePubWordOffset;
+    currentBlock = bookmarkPoint.blockOffset;
+    currentWordOffset = bookmarkPoint.wordOffset;
     [self fillArrayWithCurrentBlock];
     [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
 }

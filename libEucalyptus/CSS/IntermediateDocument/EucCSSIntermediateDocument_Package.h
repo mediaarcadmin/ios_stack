@@ -20,6 +20,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                baseCSSPath:(NSString *)baseCSSPath
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
+                    isHTML:(BOOL)isHTML
                 lwcContext:(lwc_context *)lwcContext;
 
 @property (nonatomic, readonly) id<EucCSSDocumentTree> documentTree;

@@ -110,10 +110,6 @@
     if(frame.size.height != CGFLOAT_MAX) {
         [self closeBottomFromYPoint:frame.size.height atInternalPageBreak:NO];
     }
-    
-    if(_frame.size.height < 0) {
-        NSLog(@"fdsfds");
-    }
 }
 
 static inline CGFloat collapse(CGFloat one, CGFloat two) 
