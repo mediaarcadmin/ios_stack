@@ -61,8 +61,8 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         
         _margins = [[self class] _marginsForPointSize:pointSize];
 
-        _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont styleFlags:titleFontStyleFlags];
-        _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont styleFlags:pageNumberFontStyleFlags];
+        _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont styleFlags:pageNumberFontStyleFlags];
+        _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont styleFlags:titleFontStyleFlags];
 
         _bookTextView = [[textViewClass alloc] initWithFrame:[[self class] bookTextViewFrameForPointSize:_titlePointSize] 
                                                    pointSize:pointSize];
