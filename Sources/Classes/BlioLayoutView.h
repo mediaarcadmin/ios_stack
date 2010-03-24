@@ -52,8 +52,6 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
     CALayer *sharpLayer;
     EucSelector *selector;
     UIColor *lastHighlightColor;
-    NSOperationQueue *fetchHighlightsQueue;
-    NSOperationQueue *renderThumbsQueue;
     NSMutableDictionary *thumbCache;
     NSInteger thumbCacheSize;
     NSString *pdfPath;
@@ -65,6 +63,8 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
     UIImage *shadowTop;
     UIImage *shadowLeft;
     UIImage *shadowRight;
+    UIImage *pageSnapshot;
+    UIImage *highlightsSnapshot;
     BOOL isCancelled;
     BlioTextFlowBlock *lastBlock;
 }
@@ -80,8 +80,6 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
 @property (nonatomic, retain) UIColor *lastHighlightColor;
-@property (nonatomic, retain) NSOperationQueue *fetchHighlightsQueue;
-@property (nonatomic, retain) NSOperationQueue *renderThumbsQueue;
 @property (nonatomic, retain) NSMutableDictionary *thumbCache;
 @property (nonatomic) NSInteger thumbCacheSize;
 @property (nonatomic, retain) NSDictionary *pageCropsCache;

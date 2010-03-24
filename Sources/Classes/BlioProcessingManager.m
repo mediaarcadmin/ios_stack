@@ -9,7 +9,7 @@
 #import "BlioProcessingManager.h"
 #import "BlioProcessingStandardOperations.h"
 #import "BlioMockBook.h"
-#import "BlioEPubView.h"
+#import "BlioFlowView.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -158,7 +158,7 @@
                 [thumbsOp release];
             }
             
-            if (nil != ePubURL) {
+            if (nil != ePubURL && nil == textFlowURL) {
                 BlioProcessingDownloadEPubOperation *ePubOp = [[BlioProcessingDownloadEPubOperation alloc] initWithUrl:ePubURL];
                 ePubOp.bookID = bookID;
 				ePubOp.sourceID = sourceID;
@@ -170,7 +170,7 @@
                 [bookOps addObject:ePubOp];
                 [ePubOp release];
                 
-                NSArray *ePubPreAvailOps = [BlioEPubView preAvailabilityOperations];
+                NSArray *ePubPreAvailOps = [BlioFlowView preAvailabilityOperations];
                 for (BlioProcessingOperation *preAvailOp in ePubPreAvailOps) {
                     preAvailOp.bookID = bookID;
 					preAvailOp.sourceID = sourceID;
@@ -218,6 +218,18 @@
                     [self.preAvailabilityQueue addOperation:preAvailOp];
                     [bookOps addObject:preAvailOp];
                 }
+                
+                NSArray *flowViewPreAvailOps = [BlioFlowView preAvailabilityOperations];
+                for (BlioProcessingOperation *preAvailOp in flowViewPreAvailOps) {
+                    preAvailOp.bookID = bookID;
+                    preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
+                    preAvailOp.cacheDirectory = cacheDir;
+                    for(BlioProcessingOperation *beforeOp in textFlowPreAvailOps) {
+                        [preAvailOp addDependency:beforeOp];
+                    }
+                    [self.preAvailabilityQueue addOperation:preAvailOp];
+                    [bookOps addObject:preAvailOp];
+                }                    
                 
                 [textFlowOp release];
             }

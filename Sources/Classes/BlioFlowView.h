@@ -1,5 +1,5 @@
 //
-//  BlioEPubView.h
+//  BlioFlowView.h
 //  BlioApp
 //
 //  Created by James Montgomerie on 04/01/2010.
@@ -11,7 +11,7 @@
 #import "BlioBookViewController.h"
 #import "BlioProcessingManager.h"
 
-@interface BlioEPubView : EucBookView <BlioBookView, EucSelectorDelegate, BlioProcessingManagerOperationProvider> {}
+@interface BlioFlowView : EucBookView <BlioBookView, EucSelectorDelegate, BlioProcessingManagerOperationProvider> {}
 
 
 @end

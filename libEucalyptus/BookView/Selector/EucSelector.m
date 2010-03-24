@@ -492,7 +492,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     CGRect magnificationLoupeRect = loupeLayer.bounds;
     CGSize magnificationLoupeSize = magnificationLoupeRect.size;
 
-    CALayer *layerToMagnify = self.attachedLayer;
+    CALayer *layerToMagnify;
+    CALayer *snapshotLayer = self.snapshotLayer;
+    if(snapshotLayer) {
+        layerToMagnify = snapshotLayer;
+        point = [snapshotLayer convertPoint:point fromLayer:self.attachedLayer];
+    } else {
+        layerToMagnify = self.attachedLayer;
+    }
+    
     CGSize layerToMagnifySize = layerToMagnify.bounds.size;
     
     CALayer *windowLayer = layerToMagnify.windowLayer;
@@ -644,6 +652,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [self.delegate eucSelector:self 
            didEndEditingHighlightWithRange:self.selectedRangeOriginalHighlightRange
                               movedToRange:self.selectedRange];
+                
+                // The view may change its highlight ranges in response to our callback.
+                [_cachedHighlightRanges release];
+                _cachedHighlightRanges = nil;                
             }
             self.selectedRangeOriginalHighlightRange = nil;
             self.selectionColor = nil;
@@ -653,13 +665,31 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
            previousStage == EucSelectorTrackingStageChangingSelection) {
             CALayer *snapshotLayer = self.snapshotLayer;
             if(snapshotLayer) {
+                [CATransaction begin];
+                [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+
+                if(self.highlightLayers.count) {
+                    CALayer *attachedLayer = self.attachedLayer;
+                    for(CALayer *layer in self.highlightLayers) {
+                        [layer removeFromSuperlayer];
+                        CGRect frame = layer.frame;
+                        layer.frame = [attachedLayer convertRect:frame fromLayer:snapshotLayer];
+                        [attachedLayer addSublayer:layer];
+                    }
+                }
+                
                 [snapshotLayer removeFromSuperlayer];
                 self.snapshotLayer = nil;
+                
+                [CATransaction commit];
             }
         }
         
         if(stage == EucSelectorTrackingStageFirstSelection || stage == EucSelectorTrackingStageChangingSelection) {
             if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
+                                [CATransaction begin];
+                [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+
                 CALayer *attachedLayer = self.attachedLayer;
                 CALayer *windowLayer = attachedLayer.windowLayer;                        
                 CGRect windowFrame = [windowLayer convertRect:windowLayer.bounds toLayer:attachedLayer];
@@ -667,15 +697,20 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 CALayer *snapshotLayer = [CALayer layer];
                 snapshotLayer.contents = (id)([self.delegate viewSnapshotImageForEucSelector:self].CGImage);
                 snapshotLayer.opaque = YES;
-                
-                if(self.highlightLayers.count) {
-                    [attachedLayer insertSublayer:snapshotLayer below:[self.highlightLayers objectAtIndex:0]];
-                } else {
-                    [attachedLayer addSublayer:snapshotLayer];
-                }
                 snapshotLayer.frame = windowFrame;
-                
+                [attachedLayer addSublayer:snapshotLayer];
                 self.snapshotLayer = snapshotLayer;
+
+                if(self.highlightLayers.count) {
+                    for(CALayer *layer in self.highlightLayers) {
+                        [layer removeFromSuperlayer];
+                        CGRect frame = layer.frame;
+                        layer.frame = [snapshotLayer convertRect:frame fromLayer:attachedLayer];
+                        [snapshotLayer addSublayer:layer];
+                    }
+                }
+                
+                [CATransaction commit];
             }            
         }
         
@@ -1019,21 +1054,32 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 }
                 UIColor *highlightUIColor = self.selectionColor ?: [UIColor colorWithRed:47.0f/255.0f green:102.0f/255.0f blue:179.0f/255.0f alpha:0.2f];
                 CGColorRef highlightColor = highlightUIColor.CGColor;
+
                 for(NSUInteger i = unusedHighlightLayersCount; i < highlightRectsCount; ++i) {
                     CALayer *layer = [[CALayer alloc] init];
                     layer.backgroundColor = highlightColor;
                     [highlightLayers addObject:layer];
                     ++unusedHighlightLayersCount;
                     [layer release];
-                    [attachedLayer addSublayer:layer];
+                
+                    [self.snapshotLayer ?: attachedLayer addSublayer:layer];
                 }
             }
         } 
+        
+        CALayer *snapshotLayer = self.snapshotLayer;
+        CGPoint translation = [snapshotLayer convertPoint:CGPointZero fromLayer:attachedLayer];
                 
         for(NSUInteger i = 0; i < highlightRectsCount; ++i) {
             CALayer *layer = [highlightLayers objectAtIndex:i];
             NSValue *rectValue = [highlightRects objectAtIndex:i];
             layer.frame = [rectValue CGRectValue];
+            
+            CGPoint position = layer.position;
+            position.x += translation.x;
+            position.y += translation.y;
+            layer.position = position;
+            
             layer.hidden = NO;
             --unusedHighlightLayersCount;
         }

@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class BlioMockBook;
+
 @interface BlioProcessingOperation : NSOperation {
     NSManagedObjectID *bookID;
     NSString *sourceID;

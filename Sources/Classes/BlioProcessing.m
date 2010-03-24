@@ -7,6 +7,7 @@
 //
 
 #import "BlioProcessing.h"
+#import "BlioMockBook.h"
 
 
 @implementation BlioProcessingOperation

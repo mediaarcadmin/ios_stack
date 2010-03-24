@@ -23,9 +23,8 @@
     
     uint32_t currentBlock;
 	uint32_t currentWordOffset;
-	uint32_t currentPage;
     
-    EucBookReference<EucBook> *book;
+    BlioMockBook *book;
     
     UIView *fingerImageHolder;
     CALayer *fingerImage;
@@ -69,9 +68,8 @@
 
 @property (nonatomic) uint32_t currentBlock;
 @property (nonatomic) uint32_t currentWordOffset;
-@property (nonatomic) uint32_t currentPage;
 
-@property (nonatomic, retain) EucBookReference<EucBook> *book;
+@property (nonatomic, retain) BlioMockBook *book;
 
 @property (nonatomic, retain) UIView *fingerImageHolder;
 @property (nonatomic, retain) CALayer *fingerImage;

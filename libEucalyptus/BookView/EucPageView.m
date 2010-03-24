@@ -40,7 +40,9 @@
 
 - (id)initWithPointSize:(CGFloat)pointSize 
               titleFont:(NSString *)titleFont 
+    titleFontStyleFlags:(THStringRendererFontStyleFlags)titleFontStyleFlags
          pageNumberFont:(NSString *)pageNumberFont 
+pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlags
          titlePointSize:(CGFloat)titlePointSize
             pageTexture:(UIImage *)pageTexture
           textViewClass:(Class)textViewClass
@@ -59,8 +61,8 @@
         
         _margins = [[self class] _marginsForPointSize:pointSize];
 
-        _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont];
-        _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont];
+        _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont styleFlags:pageNumberFontStyleFlags];
+        _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont styleFlags:titleFontStyleFlags];
 
         _bookTextView = [[textViewClass alloc] initWithFrame:[[self class] bookTextViewFrameForPointSize:_titlePointSize] 
                                                    pointSize:pointSize];
@@ -87,11 +89,12 @@
     if(!sPaperImage) {
         sPaperImage = [[UIImage imageNamed:@"BookPaper.png"] retain];
     }
-    NSString *pageNumberFont = [EucBookTextStyle defaultFontFamilyName];
-    NSString *titleFont = [pageNumberFont stringByAppendingString:@"-Italic"];
+    NSString *font = [EucBookTextStyle defaultFontFamilyName];
 	return [self initWithPointSize:pointSize 
-                         titleFont:titleFont 
-                    pageNumberFont:pageNumberFont
+                         titleFont:font 
+               titleFontStyleFlags:THStringRendererFontStyleFlagItalic
+                    pageNumberFont:font
+          pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
                     titlePointSize:pointSize 
                        pageTexture:sPaperImage
                      textViewClass:(Class)textViewClass];

@@ -219,9 +219,8 @@
     [self.shadowLayer setPageNumber:newPageNumber];
     [self.shadowLayer setNeedsDisplay];
     
+    // To minimise load, Highlights are not fetched & rendered until the page becomes current
     [self.highlightsLayer setPageNumber:newPageNumber];
-    [self.highlightsLayer setContents:nil];
-    [self.highlightsLayer setNeedsDisplay];
 }
 
 - (void)setExcludedHighlight:(BlioBookmarkRange *)excludedHighlight {
@@ -231,7 +230,7 @@
 - (void)refreshHighlights {
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-    [self.highlightsLayer setContents:nil];
+    //[self.highlightsLayer setContents:nil];
     [self.highlightsLayer setNeedsDisplay];
     [CATransaction commit];
 }
@@ -302,8 +301,7 @@
         
         CGLayerRef aCGLayer = CGLayerCreateWithContext(ctx, cacheRect.size, NULL);
         [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheLayer:aCGLayer cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
-        //CGContextDrawLayerAtPoint(ctx, CGPointZero, aCGLayer);
-        //self.CGLayer = (id)aCGLayer;
+
         // Clean up
         CGLayerRelease(aCGLayer);
         CGContextRelease(bitmap);
@@ -407,6 +405,11 @@
     [super dealloc];
 }
 
+- (void)setPageNumber:(NSInteger)aPageNumber {
+    self.contents = nil;
+    pageNumber = aPageNumber;
+}
+
 - (void)drawInContext:(CGContextRef)ctx {
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
@@ -465,7 +468,6 @@
     CGContextRelease(bitmap);
     CGColorSpaceRelease(colorSpace);
     
-    //NSLog(@"End forceCacheForLayer");
     [pool drain];
 }
 

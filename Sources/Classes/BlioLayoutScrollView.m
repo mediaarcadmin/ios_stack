@@ -130,7 +130,8 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
             break;
         case BlioLayoutTouchForwardingStateForwardedBegin:
             self.doubleTapEndTimer = [NSTimer scheduledTimerWithTimeInterval:0.35f target:self selector:@selector(delayedTouchesEnded:) userInfo:touches repeats:NO];
-            [self.selector touchesEnded:touches];
+            //[self.selector touchesEnded:touches];
+            [self.selector touchesCancelled:touches];
             break;
         case BlioLayoutTouchForwardingStateForwardedBeginTimerExpired:
             self.forwardingState = BlioLayoutTouchForwardingStateNone;
@@ -154,12 +155,14 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 //    } else {
         UITouch * t = [touches anyObject];
         if ((![self.selector isTracking]) && ([t tapCount] == 1)) {
+        //if ([t tapCount] == 1) {   
             //[self.selector touchesEnded:touches];
             [self handleSingleTouch];
             
-        } //else {
-//            [self.selector touchesEnded:touches];
-//        }
+        } else {
+            //[self.selector touchesEnded:touches];
+            [self.selector setSelectedRange:nil];
+        }
     //}
     
     self.forwardingState = BlioLayoutTouchForwardingStateNone;

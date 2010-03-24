@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "EucPageTextView.h"
+#import "THStringRenderer.h"
 
 @protocol EucPageViewDelegate, EucPageTextView;
-
-@class THStringRenderer;
 
 typedef enum EucPageViewTitleLinePosition
 {
@@ -60,7 +59,9 @@ typedef enum EucPageViewTitleLineContents
 
 - (id)initWithPointSize:(CGFloat)pointSize 
               titleFont:(NSString *)titleFont 
+    titleFontStyleFlags:(THStringRendererFontStyleFlags)titleFontStyleFlags
          pageNumberFont:(NSString *)pageNumberFont 
+pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlags
          titlePointSize:(CGFloat)titlePointSize
             pageTexture:(UIImage *)pageTexture
           textViewClass:(Class)textViewClass;
