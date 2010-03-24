@@ -8,11 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioProcessing.h"
+#import <CoreData/CoreData.h>
 
 @interface BlioStoreTabViewController : UITabBarController <UITabBarControllerDelegate> {
     id <BlioProcessingDelegate> processingDelegate;
+	NSManagedObjectContext *managedObjectContext;
 }
 
-- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+
+- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate managedObjectContext:(NSManagedObjectContext*)moc;
 
 @end

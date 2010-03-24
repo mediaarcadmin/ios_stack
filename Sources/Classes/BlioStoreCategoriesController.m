@@ -16,7 +16,7 @@
 
 @implementation BlioStoreCategoriesController
 
-@synthesize feeds, processingDelegate;
+@synthesize feeds, processingDelegate, managedObjectContext;
 
 - (void)dealloc {
     self.feeds = nil;
@@ -245,6 +245,7 @@
     else if (row < [feed.categories count]) { // Category cell selected
         BlioStoreParsedCategory *category = [feed.categories objectAtIndex:[indexPath row]];
         BlioStoreCategoriesController *aCategoriesController = [[BlioStoreCategoriesController alloc] init];
+		[aCategoriesController setManagedObjectContext:self.managedObjectContext];
         [aCategoriesController setTitle:[category title]];
         NSURL *targetFeedURL = [category url];
         BlioStoreFeed *aFeed = [[BlioStoreFeed alloc] init];
@@ -267,8 +268,10 @@
             BlioStoreBookViewController *aEntityController = [[BlioStoreBookViewController alloc] initWithNibName:@"BlioStoreBookView"
                                                                                                        bundle:[NSBundle mainBundle]];
             [aEntityController setProcessingDelegate:self.processingDelegate];
+			[aEntityController setManagedObjectContext:self.managedObjectContext];
             [aEntityController setTitle:[entity title]];
             [aEntityController setEntity:entity];
+            [aEntityController setFeed:feed];
             [aEntityController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
             
             [self.navigationController pushViewController:aEntityController animated:YES];
@@ -339,7 +342,15 @@
     for (BlioStoreFeed *feed in self.feeds) {
         if ([feed.parser isEqual:parser]) {
             feed.nextURL = nextLink;
-//			NSLog(@"feed: %@ nextLink: %@", feed.title, [nextLink absoluteString]); 
+		}
+    }
+    // table reloading will be handled when the categories and/or entities are parsed
+}
+- (void)parser:(BlioStoreBooksSourceParser *)parser didParseIdentifier:(NSString *)identifier {
+    
+    for (BlioStoreFeed *feed in self.feeds) {
+        if ([feed.parser isEqual:parser]) {
+            feed.id = identifier;
 		}
     }
     // table reloading will be handled when the categories and/or entities are parsed

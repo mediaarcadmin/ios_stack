@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioStoreBooksSourceParser.h"
+#import "BlioStoreFeed.h"
+#import <CoreData/CoreData.h>
 
 static const CGFloat kBlioBookDetailFieldYMargin = 20;
+static const CGFloat kBlioStoreDisabledButtonAlpha = .66;
 static const NSUInteger kBlioStoreDownloadButtonStateInitial = 0;
 static const NSUInteger kBlioStoreDownloadButtonStateConfirm = 1;
 static const NSUInteger kBlioStoreDownloadButtonStateInProcess = 2;
@@ -20,11 +23,13 @@ extern NSString * const kBlioStoreDownloadButtonStateLabelConfirm;
 extern NSString * const kBlioStoreDownloadButtonStateLabelInProcess;
 extern NSString * const kBlioStoreDownloadButtonStateLabelDone;
 extern NSString * const kBlioStoreDownloadButtonStateLabelNoDownload;
+extern NSString * const BlioProcessingCompleteOperationFinishedNotification;
 
 @protocol BlioProcessingDelegate;
 
 @interface BlioStoreBookViewController : UIViewController {
     NSOperationQueue *fetchThumbQueue;
+	BlioStoreFeed *feed;
     BlioStoreParsedEntity *entity;
     UIScrollView *scroller;
     UIView *container;
@@ -50,9 +55,12 @@ extern NSString * const kBlioStoreDownloadButtonStateLabelNoDownload;
 	NSArray * downloadStateLabels;
 	
     id <BlioProcessingDelegate> processingDelegate;
+	NSManagedObjectContext *managedObjectContext;
+
 }
 
 @property (nonatomic, retain) NSOperationQueue *fetchThumbQueue;
+@property (nonatomic, retain) BlioStoreFeed *feed;
 @property (nonatomic, retain) BlioStoreParsedEntity *entity;
 @property (nonatomic, retain) IBOutlet UIScrollView *scroller;
 @property (nonatomic, retain) IBOutlet UIView *container;
@@ -77,6 +85,7 @@ extern NSString * const kBlioStoreDownloadButtonStateLabelNoDownload;
 @property (nonatomic, retain) NSArray *downloadStateLabels;
 
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 - (IBAction)downloadButtonPressed:(id)sender;
 - (void) setDownloadState:(NSUInteger)state animated:(BOOL)animationStatus;

@@ -14,12 +14,17 @@ static const CGFloat kBlioCoverListThumbWidth = 53;
 static const CGFloat kBlioCoverGridThumbHeight = 140;
 static const CGFloat kBlioCoverGridThumbWidth = 102;
 
+NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioProcessingCompleteOperationFinishedNotification";
+
+
 @implementation BlioProcessingCompleteOperation
 
 - (void)main {
     if ([self isCancelled]) return;
     [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
     NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
+//    NSLog(@"sourceID:%@ sourceSpecificID:%@", [self getBookValueForKey:@"sourceID"],[self getBookValueForKey:@"sourceSpecificID"]);
+	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingCompleteOperationFinishedNotification object:self];
 }
 
 @end
@@ -27,13 +32,15 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 #pragma mark -
 @implementation BlioProcessingDownloadOperation
 
-@synthesize url, localFilename, tempFilename, connection, downloadFile;
+@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength;
 
 - (void) dealloc {
     self.url = nil;
+    self.filenameKey = nil;
     self.localFilename = nil;
     self.tempFilename = nil;
     self.connection = nil;
+    self.headConnection = nil;
     self.downloadFile = nil;
     [super dealloc];
 }
@@ -55,15 +62,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     
     if((self = [super init])) {
         self.url = aURL;
-        // Generate a random filename
-        CFUUIDRef theUUID = CFUUIDCreate(NULL);
-        CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
-        CFRelease(theUUID);
-        self.tempFilename = [NSString stringWithString:(NSString *)uniqueString];
-        CFRelease(uniqueString);
-        
+		expectedContentLength = NSURLResponseUnknownLength;
+		        
         executing = NO;
         finished = NO;
+		resume = NO;
     }
     
     return self;
@@ -113,15 +116,20 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     [self willChangeValueForKey:@"isExecuting"];
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
-    
-    if (nil == self.localFilename) {
-        // Generate a random filename
+
+	// localFilename should've been set in ProcessingManager
+//    NSLog(@"self.url: %@",[self.url absoluteString]);
+ //   NSLog(@"self.localFilename: %@",self.localFilename);
+	if (self.localFilename == nil || [self.localFilename isEqualToString:@""]) {
+        // Processing manager did not set localFilename from context. Therefore generate a random filename
         CFUUIDRef theUUID = CFUUIDCreate(NULL);
         CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
         CFRelease(theUUID);
         self.localFilename = [NSString stringWithString:(NSString *)uniqueString];
         CFRelease(uniqueString);
+		[self setBookValue:self.localFilename forKey:self.filenameKey];
     }
+	else resume = YES;
     
     NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
 
@@ -138,42 +146,166 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         [self downloadDidFinishSuccessfully:YES];
         [self finish];
     } else {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        if(![fileManager createFileAtPath:cachedPath contents:nil attributes:nil]) {
-            NSLog(@"Could not create file to hold download");
-        } else {
-            self.downloadFile = [NSFileHandle fileHandleForWritingAtPath:cachedPath];
-        }
-
-        NSURLRequest *aRequest = [[NSURLRequest alloc] initWithURL:self.url];
-        NSURLConnection *aConnection = [[NSURLConnection alloc] initWithRequest:aRequest delegate:self];
-        [aRequest release];
-        
-        if (nil == aConnection) {
-            [self finish];
-        } else {
-            self.connection = aConnection;
-            [aConnection release];
-        }
+		// net URL
+		
+		if (resume) {
+			// downloadHead first
+			[self headDownload];			
+		}
+		else {
+			[self startDownload];
+		}
     }
+}
+- (void)startDownload {
+    NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	if (resume == NO) {
+		// if not resuming, delete whatever is in place
+		if ([NSFileHandle fileHandleForWritingAtPath:cachedPath] != nil) [fileManager removeItemAtPath:cachedPath error:NULL];
+	}
+	// ensure there is a file in place
+	if ([NSFileHandle fileHandleForWritingAtPath:cachedPath] == nil) {
+		if (![fileManager createFileAtPath:cachedPath contents:nil attributes:nil]) {
+			NSLog(@"Could not create file to hold download");
+			[self downloadDidFinishSuccessfully:NO];
+			[self finish];
+		}
+	}
+	self.downloadFile = [NSFileHandle fileHandleForWritingAtPath:cachedPath];
+	NSMutableURLRequest *aRequest = [[NSMutableURLRequest alloc] initWithURL:self.url];
+//	NSLog(@"about to start connection to URL: %@",[self.url absoluteString]);
+	if (resume) {
+		// add range header
+		NSError * error = nil;
+		NSDictionary * fileAttributes = [fileManager attributesOfItemAtPath:cachedPath error:&error];
+		if (error != nil) {
+            NSLog(@"Failed to retrieve file attributes from path:%@ with error %@ : %@", cachedPath, error, [error userInfo]);
+		}
+		NSNumber * bytesAlreadyDownloaded = [fileAttributes valueForKey:NSFileSize];
+//		NSLog(@"bytesAlreadyDownloaded: %@",[bytesAlreadyDownloaded stringValue]);
+		// TODO: add support for etag in header. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27
+		if ([bytesAlreadyDownloaded longValue] != 0)
+		{
+			NSString * rangeString = [NSString stringWithFormat:@"bytes=%@-",[bytesAlreadyDownloaded stringValue]];
+			NSLog(@"rangeString: %@",rangeString);
+			[aRequest addValue:rangeString forHTTPHeaderField:@"Range"];
+		}
+		else resume = NO;
+	}
+	NSURLConnection *aConnection = [[NSURLConnection alloc] initWithRequest:aRequest delegate:self];
+	[aRequest release];
+	
+	if (nil == aConnection) {
+		[self finish];
+	} else {
+		self.connection = aConnection;
+		[aConnection release];
+	}	
+}
+- (void)headDownload {
+	// make HEAD HTTP method call to see if server supports Accept-Ranges header
+	NSMutableURLRequest *headRequest = [[NSMutableURLRequest alloc] initWithURL:self.url];
+	[headRequest setHTTPMethod:@"HEAD"];
+	NSURLConnection *hConnection = [[NSURLConnection alloc] initWithRequest:headRequest delegate:self];
+	[headRequest release];
+	if (nil == hConnection) {
+		[self finish];
+	} else {
+		self.headConnection = hConnection;
+		[hConnection release];
+	}	
+}
+- (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
+//	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
+	self.expectedContentLength = [response expectedContentLength];
+	NSHTTPURLResponse * httpResponse;
+	
+	httpResponse = (NSHTTPURLResponse *) response;
+	assert( [httpResponse isKindOfClass:[NSHTTPURLResponse class]] );
+//	NSLog(@"response connection httpResponse.statusCode:%i",httpResponse.statusCode);
+	
+	if (theConnection == headConnection) {		
+		if (httpResponse.statusCode/100 != 2) {
+			// we are not getting valid response; try again from scratch.
+			resume = NO;
+			[theConnection cancel];
+			[self startDownload];
+		}
+		else {
+			NSString * acceptRanges = [httpResponse.allHeaderFields objectForKey:@"Accept-Ranges"];
+			if (acceptRanges == nil) {
+//				NSLog(@"No Accept-Ranges available.");
+				//  most servers accept byte ranges without explicitly saying so- will try partial download.
+				resume = YES;
+				[theConnection cancel];
+				[self startDownload];
+			}
+			else if ([acceptRanges isEqualToString:@"none"]) {
+				// server definitely does not support accept ranges
+				resume = NO;
+				[theConnection cancel];
+				[self startDownload];
+			}
+			else if ([acceptRanges isEqualToString:@"bytes"]) {
+				// explicitly supports byte ranges
+				resume = YES;
+				[theConnection cancel];
+				[self startDownload];
+			} else { // alternative unit
+				// if Accept-Ranges is present but not "none", it will most likely accept byte ranges without explicitly saying so- will try partial download.
+				resume = YES;
+				[theConnection cancel];
+				[self startDownload];
+			}
+		}
+	}
+	else if (theConnection == connection) {
+		if (httpResponse.statusCode != 206 && resume == YES) {
+			// we are not getting partial content; try again from scratch.
+			// TODO: just erase previous progress and keep using this connection instead of starting from scratch
+			resume = NO;
+			[theConnection cancel];
+			[self startDownload];
+		}		
+	}
 }
 
 - (void)connection:(NSURLConnection *)aConnection didReceiveData:(NSData *)data {
-     [self.downloadFile writeData:data];
+    if (self.connection == aConnection) {
+//		NSLog(@"connection didReceiveData");
+		[self.downloadFile writeData:data];
+	}
+	else {
+		
+	}
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
-    [self downloadDidFinishSuccessfully:YES];
-    [self finish];
+    if (self.connection == aConnection) {
+//		NSLog(@"Finished downloading URL: %@",[self.url absoluteString]);
+		[self downloadDidFinishSuccessfully:YES];
+		[self finish];		
+	}
 }
-
 - (void)connection:(NSURLConnection *)aConnection didFailWithError:(NSError *)error {
-    [self downloadDidFinishSuccessfully:NO];
-    [self finish];
+    if (self.connection == aConnection) {
+		[self downloadDidFinishSuccessfully:NO];
+		[self finish];
+	}
+	else {
+		self.resume = NO;
+		[self startDownload];
+	}
 }
 
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
-    if (!success) NSLog(@"Download did not finish successfully");
+//	if (success) NSLog(@"Download finished successfully"); 
+	if (!success) {
+		NSLog(@"Download did not finish successfully");
+		NSLog(@"for url: %@",[self.url absoluteString]);
+	}
+	// NOTE: setting localFilename of book is now done immediately upon generating new uuid, so as to accommodate resuming downloads.
 }
 
 @end
@@ -188,9 +320,12 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     
     if (!success) {
         NSLog(@"Download did not finish successfully");
+		NSLog(@"for url: %@",[self.url absoluteString]);
         [pool drain];
         return;
     }
+//	NSLog(@"Download finished successfully"); 
+//	NSLog(@"for url: %@",[self.url absoluteString]);
     
     NSString *unzippedFilename = [self.localFilename stringByDeletingPathExtension];
     if ([unzippedFilename isEqualToString:self.localFilename]) {
@@ -230,7 +365,8 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 }
 
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
-    if (!success) NSLog(@"Unzip did not finish successfully");
+    if (success) [self setBookValue:self.localFilename forKey:self.filenameKey];
+    else NSLog(@"Unzip did not finish successfully");
 }
 
 @end
@@ -242,12 +378,9 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
         self.localFilename = @"cover";
+		self.filenameKey = @"coverFilename";
     }
     return self;
-}
-
-- (void)downloadDidFinishSuccessfully:(BOOL)success {
-    if (success) [self setBookValue:self.localFilename forKey:@"coverFilename"];    
 }
 
 @end
@@ -366,7 +499,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
     NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"gridThumb.png"];
     [gridData writeToFile:gridThumbPath atomically:YES];
-    [gridThumb release];
+    [gridThumb release]; // this is giving an ERROR (TODO)
     [self setBookValue:@"gridThumb.png" forKey:@"gridThumbFilename"];
     
     if ([self isCancelled]) {
@@ -391,9 +524,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 
 #pragma mark -
 @implementation BlioProcessingDownloadEPubOperation
-
-- (void)unzipDidFinishSuccessfully:(BOOL)success {
-    if (success) [self setBookValue:self.localFilename forKey:@"epubFilename"];
+- (id)initWithUrl:(NSURL *)aURL {
+    if ((self = [super initWithUrl:aURL])) {
+		self.filenameKey = @"epubFilename";
+    }
+    return self;
 }
 
 @end
@@ -401,15 +536,23 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 #pragma mark -
 @implementation BlioProcessingDownloadPdfOperation
 
-- (void)downloadDidFinishSuccessfully:(BOOL)success {
-    if (success) [self setBookValue:self.localFilename forKey:@"pdfFilename"];    
+- (id)initWithUrl:(NSURL *)aURL {
+    if ((self = [super initWithUrl:aURL])) {
+		self.filenameKey = @"pdfFilename";
+    }
+    return self;
 }
 
 @end
 
 #pragma mark -
 @implementation BlioProcessingDownloadTextFlowOperation
-
+- (id)initWithUrl:(NSURL *)aURL {
+    if ((self = [super initWithUrl:aURL])) {
+		self.filenameKey = @"textFlowFilename";
+    }
+    return self;
+}
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
     if (success) {
         NSError *anError;
@@ -444,7 +587,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         }
         
         if (nil != rootFile)
-            [self setBookValue:rootFile forKey:@"textFlowFilename"];
+            [self setBookValue:rootFile forKey:self.filenameKey];
         else
             NSLog(@"Could not find root file in Textflow directory %@", cachedFilename);
     }
@@ -454,7 +597,12 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 
 #pragma mark -
 @implementation BlioProcessingDownloadAudiobookOperation
-
+- (id)initWithUrl:(NSURL *)aURL {
+    if ((self = [super initWithUrl:aURL])) {
+		self.filenameKey = @"audiobookFilename";
+    }
+    return self;
+}
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
     if (success) {
         NSError *anError;
@@ -492,7 +640,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         }
 		// For now keep the old key names.
         if (audioMetadataFilename && audioReferencesFilename) {
-            [self setBookValue:audioMetadataFilename forKey:@"audiobookFilename"];
+            [self setBookValue:audioMetadataFilename forKey:self.filenameKey];
             [self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"];
             [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudioRights"]; 
         } else {

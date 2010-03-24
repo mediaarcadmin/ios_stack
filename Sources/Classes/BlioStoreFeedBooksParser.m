@@ -19,6 +19,7 @@
 		[self.delegate parser:self didParseTotalResults:[object totalResults]]; // pass over the total results number to the BlioStoreCategoriesController, so that it can assign the number to the respective feed.
 		// if nextLink is not nil, then send it back to the delegate in NSURL form
 		if ([object nextLink] != nil) [self.delegate parser:self didParseNextLink:[[object nextLink] URL]];
+		if ([object identifier] != nil) [self.delegate parser:self didParseIdentifier:[object identifier]];
 
 		GDataLink *selfLink = [object selfLink];
         NSURL *baseURL = selfLink ? [NSURL URLWithString:[selfLink href]] : nil;
@@ -38,6 +39,7 @@
                 [aEntity setTitle:[[entry title] stringValue]];
                 NSURL *absoluteURL = [NSURL URLWithString:[bookLink href] relativeToURL:baseURL];
                 [aEntity setUrl:absoluteURL];
+                aEntity.id = [entry identifier];
                 [aEntity setSummary:[[entry summary] stringValue]];
                 [aEntity setAuthor:[[[entry authors] lastObject] name]];
                 [aEntity setEPubUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/acquisition" type:@"application/epub+zip" fromLinks:[entry links]] href]];
