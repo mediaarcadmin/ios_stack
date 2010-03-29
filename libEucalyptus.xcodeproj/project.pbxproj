@@ -247,8 +247,6 @@
 		7D51706110288585005F3C46 /* THRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51705F10288585005F3C46 /* THRegex.m */; };
 		7D5170681028876D005F3C46 /* THIntegerCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170641028876D005F3C46 /* THIntegerCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D5170691028876D005F3C46 /* THIntegerCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170651028876D005F3C46 /* THIntegerCache.m */; };
-		7D51706A1028876D005F3C46 /* THLowMemoryDictionaryEmptier.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D51706B1028876D005F3C46 /* THLowMemoryDictionaryEmptier.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */; };
 		7D5170E81028ADD6005F3C46 /* HyphenationRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E01028ADD6005F3C46 /* HyphenationRule.cpp */; };
 		7D5170E91028ADD6005F3C46 /* HyphenationRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170E11028ADD6005F3C46 /* HyphenationRule.h */; };
 		7D5170EA1028ADD6005F3C46 /* HyphenationTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E21028ADD6005F3C46 /* HyphenationTree.cpp */; };
@@ -894,8 +892,6 @@
 		7D51705F10288585005F3C46 /* THRegex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THRegex.m; sourceTree = "<group>"; };
 		7D5170641028876D005F3C46 /* THIntegerCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THIntegerCache.h; sourceTree = "<group>"; };
 		7D5170651028876D005F3C46 /* THIntegerCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THIntegerCache.m; sourceTree = "<group>"; };
-		7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLowMemoryDictionaryEmptier.h; sourceTree = "<group>"; };
-		7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLowMemoryDictionaryEmptier.m; sourceTree = "<group>"; };
 		7D5170CE1028AD1B005F3C46 /* libhyphenate.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhyphenate.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5170D21028ADD6005F3C46 /* BUGS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BUGS; sourceTree = "<group>"; };
 		7D5170D31028ADD6005F3C46 /* CHANGELOG */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG; sourceTree = "<group>"; };
@@ -2117,8 +2113,6 @@
 				7D5170471028852B005F3C46 /* THBackgroundProcessingMediator.m */,
 				7D5170641028876D005F3C46 /* THIntegerCache.h */,
 				7D5170651028876D005F3C46 /* THIntegerCache.m */,
-				7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */,
-				7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */,
 				7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */,
 				7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */,
 				7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */,
@@ -2608,7 +2602,6 @@
 				7D51705A10288579005F3C46 /* THNSStringAdditions.h in Headers */,
 				7D51706010288585005F3C46 /* THRegex.h in Headers */,
 				7D5170681028876D005F3C46 /* THIntegerCache.h in Headers */,
-				7D51706A1028876D005F3C46 /* THLowMemoryDictionaryEmptier.h in Headers */,
 				7D51710E1028AF47005F3C46 /* EucBookPaginator.h in Headers */,
 				7D5172A61028B771005F3C46 /* EucBookParagraph.h in Headers */,
 				7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */,
@@ -3143,7 +3136,6 @@
 				7D51705B10288579005F3C46 /* THNSStringAdditions.m in Sources */,
 				7D51706110288585005F3C46 /* THRegex.m in Sources */,
 				7D5170691028876D005F3C46 /* THIntegerCache.m in Sources */,
-				7D51706B1028876D005F3C46 /* THLowMemoryDictionaryEmptier.m in Sources */,
 				7D51710F1028AF47005F3C46 /* EucBookPaginator.m in Sources */,
 				7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */,
 				7D6AAD5E1028E774006289E6 /* EucSharedHyphenator.mm in Sources */,
