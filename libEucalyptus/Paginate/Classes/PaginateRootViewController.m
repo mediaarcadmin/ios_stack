@@ -138,8 +138,14 @@
         NSString *path = [toPaginate objectAtIndex:0];
         
         NSString *lastPathComponent = [path lastPathComponent];
-        NSString *moveTo = [PAGINATION_PATH stringByAppendingPathComponent:lastPathComponent];
-        NSString *images = [[PAGINATION_PATH stringByAppendingPathComponent:@"/Images"] stringByAppendingPathComponent:lastPathComponent];
+        
+#if TARGET_IPHONE_SIMULATOR
+        NSString *paginationPath = PAGINATION_PATH;
+#else
+        NSString *paginationPath = NSTemporaryDirectory();
+#endif
+        NSString *moveTo = [paginationPath stringByAppendingPathComponent:lastPathComponent];
+        NSString *images = [[paginationPath stringByAppendingPathComponent:@"/Images"] stringByAppendingPathComponent:lastPathComponent];
         [[NSFileManager defaultManager] copyItemAtPath:path toPath:moveTo error:nil];
         
         path = moveTo;
@@ -148,7 +154,6 @@
         
         // Remove old indexes.
         [self removeFilesMatchingPattern:@"*.v*index*" fromPath:path];
-        [self removeFilesMatchingPattern:@"chapterOffsets.plist" fromPath:path];
         
         EucBUpeBook *testBook = [[EucBUpeBook alloc] initWithPath:moveTo];    
         [paginator paginateBookInBackground:testBook saveImagesTo:saveImages ? images : nil];
