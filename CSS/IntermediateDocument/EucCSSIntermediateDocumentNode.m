@@ -10,8 +10,12 @@
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
+#import "THPair.h"
+#import "THCache.h"
 #import "LWCNSStringAdditions.h"
 #import <libcss/libcss.h>
+
+#import <pthread.h>
 
 @implementation EucCSSIntermediateDocumentNode
 
@@ -26,10 +30,30 @@
 @synthesize document = _document;
 @synthesize key = _key;
 
+static pthread_mutex_t sInitializationMutex = PTHREAD_MUTEX_INITIALIZER;
+static THCache *sStringRenderersCache = nil;
+
+- (id)init
+{
+    if((self == [super init])) {
+        pthread_mutex_lock(&sInitializationMutex);
+        if(!sStringRenderersCache) {
+            sStringRenderersCache = [[THCache alloc] init];
+        } else {
+            [sStringRenderersCache retain];
+        }
+        pthread_mutex_unlock(&sInitializationMutex);
+    }
+    return self;
+}
 
 - (void)dealloc
 {    
     [_stringRenderer release];
+    
+    pthread_mutex_lock(&sInitializationMutex);
+    [sStringRenderersCache release];
+    pthread_mutex_unlock(&sInitializationMutex);
     
     [super dealloc];
 }
@@ -137,6 +161,31 @@
     return nil;
 }
 
+- (THStringRenderer *)_cachedStringRendererWithFontName:(NSString *)fontName
+                                             styleFlags:(THStringRendererFontStyleFlags)styleFlags
+{
+    THStringRenderer *stringRenderer;
+    
+    THPair *key = [THPair pairWithFirst:fontName second:[NSNumber numberWithInt:styleFlags]];
+    stringRenderer = [sStringRenderersCache objectForKey:key];
+    if(!stringRenderer) {
+        stringRenderer = [[THStringRenderer alloc] initWithFontName:fontName
+                                                         styleFlags:styleFlags];
+        if(stringRenderer) {
+            [sStringRenderersCache cacheObject:stringRenderer forKey:key];
+            [stringRenderer autorelease];
+        } else {
+            [sStringRenderersCache cacheObject:[NSNull null] forKey:key];
+        }
+    } else {
+        if((id)stringRenderer == [NSNull null]) {
+            stringRenderer = nil;
+        } 
+    }  
+    
+    return stringRenderer;
+}
+
 - (THStringRenderer *)stringRenderer
 {
     if(!_stringRenderer) {
@@ -172,8 +221,9 @@
             if(names) {
                 for(; *names && !_stringRenderer; ++names) {
                     NSString *fontName = [NSString stringWithLWCString:*names];
-                    _stringRenderer = [[THStringRenderer alloc] initWithFontName:fontName
-                                                                      styleFlags:styleFlags];
+                    
+                    _stringRenderer = [self _cachedStringRendererWithFontName:fontName
+                                                                   styleFlags:styleFlags];
                 }
             }
             
@@ -193,9 +243,11 @@
                             break;
                     }
                 }
-                _stringRenderer = [[THStringRenderer alloc] initWithFontName:fontName
-                                                                  styleFlags:styleFlags];
+                _stringRenderer = [self _cachedStringRendererWithFontName:fontName
+                                                               styleFlags:styleFlags];
             }
+            
+            [_stringRenderer retain];
         }
     }
     return _stringRenderer;

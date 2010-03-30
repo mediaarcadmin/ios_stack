@@ -50,10 +50,12 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 
 + (void)initialize
 {
-    sSingleSpaceMarker = (id)kCFNull;
-    sOpenNodeMarker = [[NSObject alloc] init];
-    sCloseNodeMarker = [[NSObject alloc] init];
-    sHardBreakMarker = [[NSObject alloc] init];
+    if(self == [EucCSSLayoutDocumentRun class]) {
+        sSingleSpaceMarker = (id)kCFNull;
+        sOpenNodeMarker = [[NSObject alloc] init];
+        sCloseNodeMarker = [[NSObject alloc] init];
+        sHardBreakMarker = [[NSObject alloc] init];
+    }
 }
 
 + (id)singleSpaceMarker

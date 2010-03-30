@@ -27,7 +27,9 @@
 
 + (void)initialize
 {
-    css_initialise([[NSBundle mainBundle] pathForResource:@"Aliases" ofType:@""].fileSystemRepresentation, EucRealloc, NULL);
+    if (self == [EucCSSIntermediateDocument class]) {
+        css_initialise([[NSBundle mainBundle] pathForResource:@"Aliases" ofType:@""].fileSystemRepresentation, EucRealloc, NULL);
+    }
 }
 
 @synthesize url = _url;

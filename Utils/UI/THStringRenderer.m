@@ -39,7 +39,9 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 
 + (void)initialize
 {
-    pthread_key_create(&sGraphicsContextKey, (void (*)(void *))CFRelease);
+    if(self == [THStringRenderer class]) {
+        pthread_key_create(&sGraphicsContextKey, (void (*)(void *))CFRelease);
+    }
 }
 
 - (id)initWithFontName:(NSString *)fontName styleFlags:(THStringRendererFontStyleFlags)styleFlags lineSpacingScaling:(CGFloat)lineSpacing
