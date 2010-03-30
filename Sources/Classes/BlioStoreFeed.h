@@ -20,6 +20,7 @@
     NSMutableArray *entities;
     NSURL *feedURL;
 	NSURL * nextURL;
+	NSString * id;
 	NSUInteger totalResults;
 }
 
@@ -30,6 +31,7 @@
 @property (nonatomic, retain) NSMutableArray *entities;
 @property (nonatomic, retain) NSURL *feedURL;
 @property (nonatomic, retain) NSURL *nextURL;
+@property (nonatomic, retain) NSString *id;
 @property (nonatomic, assign) NSUInteger totalResults;
 
 @end

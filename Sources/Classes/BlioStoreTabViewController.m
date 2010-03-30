@@ -19,7 +19,7 @@
 
 @implementation BlioStoreTabViewController
 
-@synthesize processingDelegate;
+@synthesize processingDelegate, managedObjectContext;
 
 - (void)dealloc {
     self.processingDelegate = nil;
@@ -36,12 +36,13 @@
 }
 */
 - (id)init {
-    return [self initWithProcessingDelegate:nil];
+    return [self initWithProcessingDelegate:nil managedObjectContext:nil];
 }
 
-- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate {
+- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate managedObjectContext:(NSManagedObjectContext*)moc {
     if ((self = [super init])) {
         self.processingDelegate = aProcessingDelegate;
+		self.managedObjectContext = moc;
         self.delegate = self;
         
         UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(dismissTabView:)];        
@@ -52,6 +53,7 @@
         [vc1 release];
         
         BlioStoreCategoriesController* vc2 = [[BlioStoreCategoriesController alloc] init];
+		[vc2 setManagedObjectContext:self.managedObjectContext];
         NSURL *feedbooksFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"feedbooks" ofType:@"atom" inDirectory:@"Feeds"]];
         BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
         [feedBooksFeed setTitle:@"Feedbooks"];

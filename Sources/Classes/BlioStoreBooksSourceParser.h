@@ -25,6 +25,7 @@
 
 @interface BlioStoreParsedEntity : NSObject {
     NSString *title;
+    NSString *id;
     NSString *author;
     NSURL *url;
     NSString *summary;
@@ -39,6 +40,7 @@
 }
 
 @property (nonatomic, retain) NSString *title;
+@property (nonatomic, retain) NSString *id;
 @property (nonatomic, retain) NSString *author;
 @property (nonatomic, retain) NSURL *url;
 @property (nonatomic, retain) NSString *summary;
@@ -63,6 +65,7 @@
 - (void)parser:(BlioStoreBooksSourceParser *)parser didFailWithError:(NSError *)error;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseTotalResults:(NSNumber *)volumeTotalResults;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseNextLink:(NSURL *)nextLink;
+- (void)parser:(BlioStoreBooksSourceParser *)parser didParseIdentifier:(NSString *)identifier;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseCategories:(NSArray *)parsedCategories;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseEntities:(NSArray *)parsedEntities;
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseEntity:(BlioStoreParsedEntity *)parsedEntity;

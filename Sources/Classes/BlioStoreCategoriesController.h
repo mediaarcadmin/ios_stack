@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioStoreFeed.h"
+#import <CoreData/CoreData.h>
 
 static const NSInteger kBlioStoreCategoriesTag = 1;
 static const NSInteger kBlioMoreResultsCellActivityIndicatorViewTag = 99;
@@ -18,9 +19,11 @@ static const NSInteger kBlioMoreResultsCellActivityIndicatorViewWidth = 16;
 @interface BlioStoreCategoriesController : UITableViewController <BlioStoreBooksSourceParserDelegate> {
     NSMutableArray *feeds;
     id <BlioProcessingDelegate> processingDelegate;
+	NSManagedObjectContext *managedObjectContext;
 }
 
 @property (nonatomic, retain) NSMutableArray *feeds;
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @end

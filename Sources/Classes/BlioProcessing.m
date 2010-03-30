@@ -12,10 +12,12 @@
 
 @implementation BlioProcessingOperation
 
-@synthesize bookID, storeCoordinator, forceReprocess, percentageComplete, cacheDirectory;
+@synthesize bookID, sourceID, sourceSpecificID, storeCoordinator, forceReprocess, percentageComplete, cacheDirectory;
 
 - (void)dealloc {
     self.bookID = nil;
+	self.sourceID = nil;
+	self.sourceSpecificID = nil;
     self.storeCoordinator = nil;
     self.cacheDirectory = nil;
     [super dealloc];
@@ -82,7 +84,7 @@
     
     // Block whilst we calculate the position so that other threads don't perform the same
     // check at the same time
-    NSError *anError;
+        NSError *anError;
     @synchronized (self.storeCoordinator) {
         NSUInteger count = [moc countForFetchRequest:aRequest error:&anError];
         if (count == NSNotFound) {
@@ -100,7 +102,7 @@
     
     [aRequest release];
     [moc release];
-    
+
     [pool drain];
 }
 

@@ -361,6 +361,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                          audiobookURL:nil];
     }
     
+	
     self.fetchedResultsController = aFetchedResultsController;
     [aFetchedResultsController release];
     
@@ -639,8 +640,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark Toolbar Actions
 
 - (void)showStore:(id)sender {    
-    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate];
-    [self presentModalViewController:aStoreController animated:YES];
+    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];
+	[self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
 }
 

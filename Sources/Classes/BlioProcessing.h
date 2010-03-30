@@ -13,6 +13,8 @@
 
 @interface BlioProcessingOperation : NSOperation {
     NSManagedObjectID *bookID;
+    NSString *sourceID;
+    NSString *sourceSpecificID;
     NSPersistentStoreCoordinator *storeCoordinator;
     BOOL forceReprocess;
     NSUInteger percentageComplete;
@@ -20,6 +22,8 @@
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, copy) NSString *sourceID;
+@property (nonatomic, copy) NSString *sourceSpecificID;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *storeCoordinator;
 @property (nonatomic) BOOL forceReprocess;
 @property (nonatomic) NSUInteger percentageComplete;
@@ -35,4 +39,8 @@
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
                      ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL;
+- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                audiobookURL:(NSURL *)audiobookURL sourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+- (BlioProcessingOperation *)processingCompleteOperationForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 @end

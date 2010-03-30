@@ -1889,6 +1889,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         }
     }
     
+    self.lastBlock = targetBlock;
+    
     if (nil != targetBlock) {
         NSMethodSignature * zoomToNextBlockSig = [BlioLayoutView instanceMethodSignatureForSelector:@selector(zoomToNextBlockReversed:)];
         NSInvocation * zoomToNextBlockInv = [NSInvocation invocationWithMethodSignature:zoomToNextBlockSig];    
@@ -1897,8 +1899,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         [zoomToNextBlockInv setArgument:&reversed atIndex:2];
         [self zoomToBlock:targetBlock context:zoomToNextBlockInv];
     }
-    
-    self.lastBlock = targetBlock;
 }
 
 - (void)zoomAtPoint:(NSString *)pointString {
@@ -2021,7 +2021,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock context:(void *)context {
-    //NSLog(@"zoomToBlock %@", targetBlock);
     NSInteger targetPageNumber = [targetBlock pageIndex] + 1;
     
     CGAffineTransform viewTransform = [self viewTransformForPage:targetPageNumber];
@@ -2057,8 +2056,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         targetRect.origin.y -= yDiff;
         targetRect.size.height += yDiff;
     }
-    CGPoint newContentOffset = CGPointMake(round(viewOrigin.x + targetRect.origin.x * zoomScale), round(viewOrigin.y + targetRect.origin.y * zoomScale));
     
+    CGPoint newContentOffset = CGPointMake(round(viewOrigin.x + targetRect.origin.x * zoomScale), round(viewOrigin.y + targetRect.origin.y * zoomScale));
     CGPoint currentContentOffset = [self.scrollView contentOffset];
     
     if (!CGPointEqualToPoint(newContentOffset, currentContentOffset)) {
@@ -2081,7 +2080,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }
     } else {
+        
         if (nil != context) {
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
             NSInvocation *nextInvocation = (NSInvocation *)context;
             [nextInvocation invoke];
         } else {
@@ -2090,7 +2091,7 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         }
 
         //[self zoomOut];
-        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        //[[UIApplication sharedApplication] endIgnoringInteractionEvents];
     }
 }
 
