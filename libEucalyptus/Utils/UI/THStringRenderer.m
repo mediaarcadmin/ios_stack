@@ -10,11 +10,12 @@
 #import "THLog.h"
 #import "THPair.h"
 #import "THTimer.h"
+#import "THCache.h"
 #import "th_just_with_floats.h"
 
 #import <pthread.h>
 
-static NSMutableDictionary *sFontNamesAndFlagsToMapsAndFonts = nil;
+static THCache *sFontNamesAndFlagsToMapsAndFonts = nil;
 static pthread_mutex_t sFontCacheMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_key_t sGraphicsContextKey;
 
@@ -54,7 +55,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         pthread_mutex_lock(&sFontCacheMutex);
         {
             if(!sFontNamesAndFlagsToMapsAndFonts) {
-                sFontNamesAndFlagsToMapsAndFonts = [[NSMutableDictionary alloc] init];
+                sFontNamesAndFlagsToMapsAndFonts = [[THCache alloc] init];
             }
             
             NSUInteger glyphMapLength = (UINT16_MAX + 1) * sizeof(uint16_t);
@@ -114,7 +115,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                             CFRelease(table);
                             */
                             mapAndFont = [THPair pairWithFirst:fontData second:(id)font];
-                            [sFontNamesAndFlagsToMapsAndFonts setObject:mapAndFont forKey:fontKey];
+                            [sFontNamesAndFlagsToMapsAndFonts cacheObject:mapAndFont forKey:fontKey];
                             CGFontRelease(font);
                         }
                         [fontData release];
@@ -270,7 +271,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
                                         }
                                         
                                         mapAndFont = [THPair pairWithFirst:glyphMapData second:(id)font];
-                                        [sFontNamesAndFlagsToMapsAndFonts setObject:mapAndFont forKey:fontKey];
+                                        [sFontNamesAndFlagsToMapsAndFonts cacheObject:mapAndFont forKey:fontKey];
                                             
                                     }
                                     [glyphMapData release];
