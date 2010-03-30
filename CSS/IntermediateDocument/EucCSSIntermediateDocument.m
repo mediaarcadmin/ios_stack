@@ -20,7 +20,7 @@
 
 #import "EucCSSInternal.h"
 
-#import "THCache.h"
+#import "THIntegerKeysCache.h"
 #import "THLog.h"
 
 @implementation EucCSSIntermediateDocument
@@ -308,7 +308,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             [self release]; 
             self = nil;
         } else {
-            _keyToExtantNode = [[THCache alloc] init];
+            _keyToExtantNode = [[THIntegerKeysCache alloc] init];
         }
     }
     return self;    
@@ -336,8 +336,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key
 {
-    NSNumber *keyObject = [NSNumber numberWithInt:key];
-    EucCSSIntermediateDocumentNode *node = [_keyToExtantNode objectForKey:keyObject];;
+    EucCSSIntermediateDocumentNode *node = [_keyToExtantNode objectForKey:key];
     if(!node) {
         uint32_t keyKind = key & EucCSSIntermediateDocumentNodeKeyFlagMask;
         if(keyKind != 0) {
@@ -357,7 +356,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             }
         }
         if(node) {
-            [_keyToExtantNode cacheObject:node forKey:keyObject];
+            [_keyToExtantNode cacheObject:node forKey:key];
         }
         [node autorelease];
     }
