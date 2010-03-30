@@ -26,7 +26,7 @@ typedef enum EucCSSIntermediateDocumentNodeKeyFlags
     EucCSSIntermediateDocumentNodeKeyFlagMask                = 0x7
 } EucCSSIntermediateDocumentNodeKeyFlags;
 
-@class EucCSSIntermediateDocumentNode, EucCSSIntermediateDocumentConcreteNode, THCache;
+@class EucCSSIntermediateDocumentNode, EucCSSIntermediateDocumentConcreteNode, THIntegerKeysCache;
 @protocol EucCSSDocumentTree, EucCSSIntermediateDocumentDataSource;
 
 @interface EucCSSIntermediateDocument : NSObject {
@@ -41,7 +41,7 @@ typedef enum EucCSSIntermediateDocumentNodeKeyFlags
     struct css_stylesheet **_stylesheets;
     NSInteger _stylesheetsCount;
     
-    THCache *_keyToExtantNode;
+    THIntegerKeysCache *_keyToExtantNode;
 }
 
 
