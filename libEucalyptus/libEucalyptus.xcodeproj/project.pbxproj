@@ -115,7 +115,7 @@
 		7D19047711494CEA00375803 /* parserutilserror.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903E811494CEA00375803 /* parserutilserror.h */; };
 		7D19047811494CEA00375803 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1903E911494CEA00375803 /* utils.c */; };
 		7D19047911494CEA00375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903EA11494CEA00375803 /* utils.h */; };
-		7D1906661149599F00375803 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1906641149599F00375803 /* th_just_with_floats.c */; };
+		7D1906661149599F00375803 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1906641149599F00375803 /* th_just_with_floats.c */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
 		7D1906671149599F00375803 /* th_just_with_floats.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1906651149599F00375803 /* th_just_with_floats.h */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
@@ -358,6 +358,7 @@
 		7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */; };
 		7DB0901E1110C76B00CC5694 /* EucSelectorRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB145D31162301800596813 /* THCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB145D21162301800596813 /* THCache.m */; };
+		7DB146E311624FA600596813 /* THIntegerKeysCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB146E211624FA600596813 /* THIntegerKeysCache.m */; };
 		7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
 		7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
@@ -1001,6 +1002,8 @@
 		7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorRange.m; sourceTree = "<group>"; };
 		7DB145D11162301800596813 /* THCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THCache.h; sourceTree = "<group>"; };
 		7DB145D21162301800596813 /* THCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCache.m; sourceTree = "<group>"; };
+		7DB146E111624FA600596813 /* THIntegerKeysCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THIntegerKeysCache.h; sourceTree = "<group>"; };
+		7DB146E211624FA600596813 /* THIntegerKeysCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THIntegerKeysCache.m; sourceTree = "<group>"; };
 		7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
 		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
@@ -2114,6 +2117,10 @@
 				7D516FFD10287922005F3C46 /* THCopyWithCoder.m */,
 				7D5170461028852B005F3C46 /* THBackgroundProcessingMediator.h */,
 				7D5170471028852B005F3C46 /* THBackgroundProcessingMediator.m */,
+				7DB145D11162301800596813 /* THCache.h */,
+				7DB145D21162301800596813 /* THCache.m */,
+				7DB146E111624FA600596813 /* THIntegerKeysCache.h */,
+				7DB146E211624FA600596813 /* THIntegerKeysCache.m */,
 				7D5170641028876D005F3C46 /* THIntegerCache.h */,
 				7D5170651028876D005F3C46 /* THIntegerCache.m */,
 				7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */,
@@ -2124,8 +2131,6 @@
 				7D6AAD5B1028E774006289E6 /* thjust.c */,
 				7D1906651149599F00375803 /* th_just_with_floats.h */,
 				7D1906641149599F00375803 /* th_just_with_floats.c */,
-				7DB145D11162301800596813 /* THCache.h */,
-				7DB145D21162301800596813 /* THCache.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -3093,6 +3098,7 @@
 				7D9A96E510D7E42A00C2E00A /* PaginateRootViewController.m in Sources */,
 				7D9A96E710D7E42A00C2E00A /* PaginateMain.m in Sources */,
 				7DB145D31162301800596813 /* THCache.m in Sources */,
+				7DB146E311624FA600596813 /* THIntegerKeysCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
