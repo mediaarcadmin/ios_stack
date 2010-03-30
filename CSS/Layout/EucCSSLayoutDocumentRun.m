@@ -116,7 +116,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                 // Open this node.
                 [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
                 [self _addComponent:[EucCSSLayoutDocumentRun openNodeMarker] isWord:NO info:&currentComponentInfo];
-                if(inlineNode.childrenCount == 0) {
+                if(inlineNode.childCount == 0) {
                     [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&currentComponentInfo];
                 }
             }
@@ -124,7 +124,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
             EucCSSIntermediateDocumentNode *nextNode = [inlineNode nextDisplayableUnder:inlineNode.parent];
             if(!nextNode) {
                 // Close this node.
-                if(!inlineNode.isTextNode && inlineNode.childrenCount > 0) {
+                if(!inlineNode.isTextNode && inlineNode.childCount > 0) {
                     // If the node /doesn't/ have children, it's already closed,
                     // above.
                     [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&currentComponentInfo];

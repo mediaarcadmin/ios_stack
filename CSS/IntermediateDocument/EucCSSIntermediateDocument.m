@@ -20,6 +20,7 @@
 
 #import "EucCSSInternal.h"
 
+#import "THCache.h"
 #import "THLog.h"
 
 @implementation EucCSSIntermediateDocument
@@ -307,13 +308,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             [self release]; 
             self = nil;
         } else {
-            // We MUST not retain any nodes - they will retain us.
-            static const CFDictionaryKeyCallBacks keyCallbacks = {0};
-            static const CFDictionaryValueCallBacks valueCallbacks = {0};
-            _keyToExtantNode = CFDictionaryCreateMutable(kCFAllocatorDefault,
-                                                         0,
-                                                         &keyCallbacks,
-                                                         &valueCallbacks);
+            _keyToExtantNode = [[THCache alloc] init];
         }
     }
     return self;    
@@ -341,7 +336,8 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key
 {
-    EucCSSIntermediateDocumentNode *node = (EucCSSIntermediateDocumentNode *)CFDictionaryGetValue(_keyToExtantNode, (void *)(uintptr_t)key);
+    NSNumber *keyObject = [NSNumber numberWithInt:key];
+    EucCSSIntermediateDocumentNode *node = [_keyToExtantNode objectForKey:keyObject];;
     if(!node) {
         uint32_t keyKind = key & EucCSSIntermediateDocumentNodeKeyFlagMask;
         if(keyKind != 0) {
@@ -361,7 +357,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             }
         }
         if(node) {
-            CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
+            [_keyToExtantNode cacheObject:node forKey:keyObject];
         }
         [node autorelease];
     }
@@ -394,17 +390,10 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     return dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
 }
 
-- (void)notifyOfDealloc:(EucCSSIntermediateDocumentNode *)node
-{
-    CFDictionaryRemoveValue(_keyToExtantNode, (void *)(uintptr_t)node.key);
-}
-
 - (void)dealloc
-{
-    if(_keyToExtantNode) {
-        CFRelease(_keyToExtantNode);
-    }
-    
+{        
+    [_keyToExtantNode release];
+
     css_select_ctx_destroy(_selectCtx);
 
     for(NSUInteger i = 0; i < _stylesheetsCount; ++i) {
@@ -419,7 +408,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     
     [_documentTree release];    
     [_url release];
-    
+
     [super dealloc];
 }
 

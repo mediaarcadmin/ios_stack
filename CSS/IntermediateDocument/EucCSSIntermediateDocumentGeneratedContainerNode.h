@@ -16,6 +16,7 @@
 @interface EucCSSIntermediateDocumentGeneratedContainerNode : EucCSSIntermediateDocumentNode {
     uint32_t _parentKey;    
     BOOL _beforeParent;
+    uint32_t _childKey;
 }
 
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document 

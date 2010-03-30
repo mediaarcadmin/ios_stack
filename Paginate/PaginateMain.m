@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "THLog.h"
 
 int main(int argc, char *argv[]) {
-    
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    THProcessLoggingDefaults();
     int retVal = UIApplicationMain(argc, argv, nil, nil);
     [pool release];
     return retVal;
