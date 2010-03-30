@@ -53,6 +53,7 @@ static THCache *sStringRenderersCache = nil;
     
     pthread_mutex_lock(&sInitializationMutex);
     [sStringRenderersCache release];
+    sStringRenderersCache = nil;
     pthread_mutex_unlock(&sInitializationMutex);
     
     [super dealloc];
