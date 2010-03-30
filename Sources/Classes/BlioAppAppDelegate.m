@@ -102,7 +102,37 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
-    NSManagedObjectContext *moc = [self managedObjectContext]; 
+    NSManagedObjectContext *moc = [self managedObjectContext];
+	
+	// resume previous processing operations
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+	
+    if (errorExecute) {
+        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found non-paused incomplete book results, will resume..."); 
+			for (BlioMockBook * book in results) {
+//				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
+				[[self processingManager] enqueueBook:book];
+			}
+		}
+		else {
+//			NSLog(@"No incomplete book results to resume."); 
+		}
+	}
+    [fetchRequest release];
+	
+	// end resume previous processing operations
+	
     [libraryController setManagedObjectContext:moc];
     [libraryController setProcessingDelegate:[self processingManager]];
     

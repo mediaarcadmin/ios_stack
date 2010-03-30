@@ -43,6 +43,8 @@
 
 - (void)start 
 {
+//	NSLog(@"BlioFlowPaginateOperation start entered"); 
+
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     // Must be performed on main thread
     // See http://www.dribin.org/dave/blog/archives/2009/05/05/concurrent_operations/
@@ -50,10 +52,17 @@
         [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
         return;
     }
-    
+	for (BlioProcessingOperation * blioOp in [self dependencies]) {
+		if (!blioOp.operationSuccess) {
+			NSLog(@"failed dependency found!");
+			[self cancel];
+			break;
+		}
+	}
     if ([self isCancelled]) {
         [self willChangeValueForKey:@"isFinished"];
         finished = YES;
+		NSLog(@"Operation cancelled, will prematurely abort start");
         [self didChangeValueForKey:@"isFinished"];
         [pool drain];
         return;
@@ -62,14 +71,21 @@
     [self willChangeValueForKey:@"isExecuting"];
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
-    
+    // NSLog(@"self.cacheDirectory: %@",self.cacheDirectory);
+	
     NSString *epubPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"epubFilename"]];
-    NSString *textflowPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"textFlowFilename"]];
+
+//	NSString *textflowPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"textFlowFilename"]];
    
     NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusPageIndexes"];
     
     NSString *cannedPaginationPath = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"PageIndexes"] stringByAppendingPathComponent:[[self getBookValueForKey:@"title"] stringByAppendingPathExtension:@"libEucalyptusPageIndexes"]];
-    
+    // NSLog(@"epubFilename: %@",[self getBookValueForKey:@"epubFilename"]);
+	// NSLog(@"epubPath: %@",epubPath);
+    // NSLog(@"textFlowFilename: %@",[self getBookValueForKey:@"textFlowFilename"]);
+	// NSLog(@"textflowPath: %@",textflowPath);
+	// NSLog(@"paginationPath: %@",paginationPath);
+
     BOOL isDirectory = YES;
 
     if([[NSFileManager defaultManager] fileExistsAtPath:cannedPaginationPath isDirectory:&isDirectory] && isDirectory) {       
@@ -78,8 +94,9 @@
         [[NSFileManager defaultManager] copyItemAtPath:cannedPaginationPath
                                                 toPath:paginationPath 
                                                  error:NULL];
-        
+		self.operationSuccess = YES;
         [self finish];
+		return;
     } else {
         if(self.forceReprocess) {
             // Best effort - ignore errors.
@@ -95,7 +112,7 @@
         
         
         EucBUpeLocalBookReference<EucBook> *eucBook = nil;
-        if(textflowPath) {
+        if([self getBookValueForKey:@"textFlowFilename"]) {
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
             NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
@@ -105,7 +122,7 @@
             [moc release];
             
             [pool drain];
-        } else if(epubPath) {
+        } else if([self getBookValueForKey:@"epubFilename"]) {
             eucBook = [[EucBUpeBook alloc] initWithPath:epubPath];
         }
         
@@ -138,9 +155,9 @@
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
     EucBUpeBook *book = [userInfo objectForKey:EucBookPaginatorNotificationBookKey];
     
-    NSLog(@"Pagination compete (%@, %f%%)!", book.title, (double)percentagePaginated);
+    NSLog(@"Pagination complete (%@, %f%%)!", book.title, (double)percentagePaginated);
     self.percentageComplete = 100;
-    
+    self.operationSuccess = YES;
     [self finish];
 }
 

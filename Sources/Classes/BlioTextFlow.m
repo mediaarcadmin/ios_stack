@@ -716,8 +716,18 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 }
 
 - (void)main {
-    if ([self isCancelled]) return;
-    
+    NSLog(@"BlioTextFlowPreParseOperation main entered");
+	for (BlioProcessingOperation * blioOp in [self dependencies]) {
+		if (!blioOp.operationSuccess) {
+			NSLog(@"failed dependency found!");
+			[self cancel];
+			break;
+		}
+	}	
+    if ([self isCancelled]) {
+		NSLog(@"Operation cancelled, will prematurely abort start");	
+		return;
+	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSString *filename = [self getBookValueForKey:@"textFlowFilename"];
@@ -779,7 +789,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     }
     
     [self setBookValue:[NSSet setWithSet:pageRangesSet] forKey:@"textFlowPageRanges"];
-    
+    self.operationSuccess = YES;
     [pool drain];
 }
 
