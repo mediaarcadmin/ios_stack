@@ -17,8 +17,8 @@
 
 @dynamic parent;
 
-@dynamic childrenCount;
-@dynamic children;
+@dynamic childCount;
+@dynamic childKeys;
 
 @dynamic computedStyle;
 
@@ -28,10 +28,7 @@
 
 
 - (void)dealloc
-{
-    [_document notifyOfDealloc:self];
-    [_document release];
-    
+{    
     [_stringRenderer release];
     
     [super dealloc];
@@ -39,14 +36,15 @@
 
 - (EucCSSIntermediateDocumentNode *)_nodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
 {
-    NSUInteger childrenCount =  self.childrenCount;
-    if(childrenCount > 1) {
-        NSArray *children = self.children;
+    uint32_t childCount =  self.childCount;
+    if(childCount > 1) {
+        uint32_t beforeKey = child.key;
+        uint32_t *childKeys = self.childKeys;
         NSUInteger i = 0;
-        NSUInteger maxChildBeforeEnd = childrenCount - 1;
+        NSUInteger maxChildBeforeEnd = childCount - 1;
         for(; i < maxChildBeforeEnd; ++i) {
-            if([children objectAtIndex:i] == child) {
-                return [children objectAtIndex:i + 1];
+            if(childKeys[i] == beforeKey) {
+                return [_document nodeForKey:childKeys[i+1]];
             }
         }
     }
@@ -58,9 +56,9 @@
 }
 
 - (EucCSSIntermediateDocumentNode *)nextUnder:(EucCSSIntermediateDocumentNode *)under {
-    NSArray *children = self.children;
-    if(children) {
-        return [children objectAtIndex:0];
+    uint32_t *childKeys = self.childKeys;
+    if(childKeys) {
+        return [_document nodeForKey:childKeys[0]];
     } else if(self != under){
         return [self.parent _nodeAfter:self under:under];
     } else {
@@ -75,20 +73,21 @@
 
 - (EucCSSIntermediateDocumentNode *)_displayableNodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
 {
-    NSUInteger childrenCount =  self.childrenCount;
-    if(childrenCount) {
-        NSArray *children = self.children;
-        NSUInteger i = 0;
+    uint32_t childCount =  self.childCount;
+    if(childCount) {
+        uint32_t beforeKey = child.key;
+        uint32_t *childKeys = self.childKeys;
+        uint32_t i = 0;
         if(child) {
-            for(; i < childrenCount; ++i) {
-                if([children objectAtIndex:i] == child) {
+            for(; i < childCount; ++i) {
+                if(childKeys[i] == beforeKey) {
                     ++i;
                     break;
                 }
             }
         }
-        for(; i < childrenCount; ++i) {
-            EucCSSIntermediateDocumentNode *prospectiveNextNode = [children objectAtIndex:i];
+        for(; i < childCount; ++i) {
+            EucCSSIntermediateDocumentNode *prospectiveNextNode = [_document nodeForKey:childKeys[i]];
             css_computed_style *style = [prospectiveNextNode computedStyle];
             if(!style || css_computed_display(style, false) != CSS_DISPLAY_NONE) {
                 return prospectiveNextNode;
@@ -101,8 +100,9 @@
     return [self.parent _displayableNodeAfter:self under:under];
 }
 
-- (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under {
-    EucCSSIntermediateDocumentNode *nextNode = nil;
+- (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under \
+{
+   /* EucCSSIntermediateDocumentNode *nextNode = nil;
     
     NSArray *children = self.children;
     if(children) {
@@ -112,8 +112,8 @@
         if(self != under){
             nextNode = [self.parent _displayableNodeAfter:self under:under];
         } 
-    }
-    return nextNode;
+    }*/
+    return [self _displayableNodeAfter:nil under:under];
 }
 
 - (EucCSSIntermediateDocumentNode *)nextDisplayable
@@ -121,21 +121,21 @@
     return [self nextDisplayableUnder:nil];
 }
 
-
 - (EucCSSIntermediateDocumentNode *)previousDisplayableSibling
 {
     EucCSSIntermediateDocumentNode *parent = self.parent;
-    NSArray *parentChildren = parent.children;
-    if(parentChildren.count > 1) {
-        NSUInteger myIndex = [parentChildren indexOfObject:self];
-        if(myIndex >= 1) {
-            return [parentChildren objectAtIndex:myIndex - 1];
+    uint32_t parentChildCount = parent.childCount;
+    if(parentChildCount > 1) {
+        uint32_t myKey = self.key;
+        uint32_t *parentChildKeys = parent.childKeys;
+        for(uint32_t i = 1; i < parentChildCount; ++i) {
+            if(parentChildKeys[i] == myKey) {
+                return [_document nodeForKey:parentChildKeys[i-1]];
+            }
         }
     }
     return nil;
 }
-
-
 
 - (THStringRenderer *)stringRenderer
 {

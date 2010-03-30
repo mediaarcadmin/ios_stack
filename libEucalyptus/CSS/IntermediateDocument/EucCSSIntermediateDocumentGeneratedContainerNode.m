@@ -22,6 +22,7 @@
         self.key = parentKey | (beforeParent ? EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode : EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode);
         _parentKey = parentKey;
         _beforeParent = beforeParent;
+        _childKey = self.key | EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode;
     }
     return self;
 }
@@ -31,14 +32,14 @@
     return [self.document nodeForKey:_parentKey];
 }
 
-- (NSUInteger)childrenCount
+- (uint32_t)childCount
 {
     return 1;
 }
 
-- (NSArray *)children
+- (uint32_t *)childKeys
 {
-    return [NSArray arrayWithObject:[self.document nodeForKey:self.key | EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode]];
+    return &_childKey;
 }
 
 - (css_computed_style *)computedStyle

@@ -40,7 +40,7 @@
 
 - (void)dealloc
 { 
-    [_children release];
+    free(_childKeys);
     
     if(_computedStyle) {
         css_computed_style_destroy(_computedStyle);
@@ -232,43 +232,53 @@
     }    
 }
 
-- (NSUInteger)childrenCount;
+- (void)_computeChildren
 {
-    NSUInteger childrenCount = _documentTreeNode.childCount;
+    uint32_t childCount = _documentTreeNode.childCount;
     if(self.computedBeforeStyle) {
-        childrenCount++;
+        childCount++;
     }
     if(self.computedAfterStyle) {
-        childrenCount++;
+        childCount++;
     }
-    return childrenCount;
+    _childCount = childCount;
+    
+    uint32_t *children = malloc(childCount * sizeof(uint32_t));
+    uint32_t *child = children;
+    
+    if(self.computedBeforeStyle) {
+        *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode;
+    }
+    
+    id<EucCSSDocumentTreeNode> documentChild = _documentTreeNode.firstChild;
+    while(documentChild) {
+         *(child++) = documentChild.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+        documentChild = documentChild.nextSibling;
+    }
+    
+    if(self.computedAfterStyle) {
+        *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode;
+    }
+    
+    _childKeys = children;
+    
+    _childrenComputed = YES;
 }
 
-- (NSArray *)children
+- (uint32_t)childCount;
 {
-    if(!_children) { 
-        NSUInteger childrenCount = self.childrenCount;
-        if(childrenCount) {
-            NSMutableArray *children = [[NSMutableArray alloc] initWithCapacity:childrenCount];
-            
-            if(self.computedBeforeStyle) {
-                [children addObject:[_document nodeForKey:self.key | EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode]];
-            }
-            
-            id<EucCSSDocumentTreeNode> child = _documentTreeNode.firstChild;
-            while(child) {
-                [children addObject:[_document nodeForKey:child.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS]];
-                child = child.nextSibling;
-            }
-
-            if(self.computedAfterStyle) {
-                [children addObject:[_document nodeForKey:self.key | EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode]];
-            }
-            
-            _children = children;
-        }
+    if(!_childrenComputed) {
+        [self _computeChildren];
     }
-    return _children;
+    return _childCount;
+}
+
+- (uint32_t *)childKeys
+{
+    if(!_childrenComputed) {
+        [self _computeChildren];
+    }
+    return _childKeys;    
 }
 
 

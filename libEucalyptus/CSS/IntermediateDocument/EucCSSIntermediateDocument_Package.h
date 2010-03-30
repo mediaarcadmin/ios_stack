@@ -27,7 +27,4 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 @property (nonatomic, readonly) css_select_ctx *selectContext;
 @property (nonatomic, readonly) lwc_context *lwcContext;
 
-// Private - used by EucHTMLDBNode.
-- (void)notifyOfDealloc:(EucCSSIntermediateDocumentNode *)node;
-
 @end
