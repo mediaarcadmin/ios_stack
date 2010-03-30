@@ -78,7 +78,7 @@ static void UsedCacheItemsAccumulator(const void *key, const void *value, void *
     id value = nil;
     
     pthread_mutex_lock(&_cacheMutex);
-    value = (id)CFDictionaryGetValue(_cacheDictionary, ((intptr_t)key));
+    value = (id)CFDictionaryGetValue(_cacheDictionary, (void *)((intptr_t)key));
     [[value retain] autorelease];
     pthread_mutex_unlock(&_cacheMutex);
     
