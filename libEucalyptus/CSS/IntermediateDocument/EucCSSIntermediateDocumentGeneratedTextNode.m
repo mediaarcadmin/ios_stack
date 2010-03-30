@@ -30,14 +30,14 @@
     return [self.document nodeForKey:_parentKey];
 }
 
-- (NSUInteger)childrenCount
+- (uint32_t)childCount
 {
     return 0;
 }
 
-- (NSArray *)children
+- (uint32_t *)childKeys
 {
-    return nil;
+    return NULL;
 }
 
 - (BOOL)isTextNode

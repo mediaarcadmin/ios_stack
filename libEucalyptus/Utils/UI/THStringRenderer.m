@@ -16,6 +16,7 @@
 
 static NSMutableDictionary *sFontNamesAndFlagsToMapsAndFonts = nil;
 static pthread_mutex_t sFontCacheMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_key_t sGraphicsContextKey;
 
 @implementation THStringRenderer
 
@@ -34,6 +35,13 @@ static inline CGFloat GlyphSpaceToPixels(CGFloat glyphSize, CGFloat pointSize, C
 static void _NSDataReleaseCallback(void *info, const void *data, size_t size) 
 {
     [(NSData *)info release];
+}
+
++ (void)initialize
+{
+    if(self == [THStringRenderer class]) {
+        pthread_key_create(&sGraphicsContextKey, (void (*)(void *))CFRelease);
+    }
 }
 
 - (id)initWithFontName:(NSString *)fontName styleFlags:(THStringRendererFontStyleFlags)styleFlags lineSpacingScaling:(CGFloat)lineSpacing
@@ -133,7 +141,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 						[fontData release];
 					}
 					if(!font) {
-						// See if we can use a system font.            CTFont            
+						// See if we can use a system font.            
                         NSArray *familyNames;
                         
 #if TARGET_OS_IPHONE
@@ -301,23 +309,8 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         
         _fauxBoldStrokeWidth = 0.5f;
         
-        // Set up a dummy context to do measuring in.
-        CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();
-        _measuringContext = CGBitmapContextCreate(&_measuringContextData, 1, 1, 8, 4, colorspace, 0);
-        CGColorSpaceRelease(colorspace);
-        
-        if(_glyphMap) {
-            CGContextSetFont(_measuringContext, _font);
-        } else {
-            CGContextSelectFont(_measuringContext,
-                                [_fontName UTF8String],
-                                1, kCGEncodingMacRoman);  
-        }
-        CGContextSetTextDrawingMode(_measuringContext, kCGTextInvisible);
-        
         _textTransform = CGAffineTransformMakeRotation(M_PI); // 8
         _textTransform = CGAffineTransformScale(_textTransform, -1, 1);
-        CGContextSetTextMatrix(_measuringContext, _textTransform);             
     }
     
     return self;
@@ -351,6 +344,29 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 - (CGFloat)descenderForPointSize:(CGFloat)pointSize
 {
     return roundf(GlyphSpaceToPixels(CGFontGetDescent(_font), pointSize, _unitsPerEm));
+}
+
+- (CGContextRef)measuringContext
+{
+    CGContextRef measuringContext = (CGContextRef)pthread_getspecific(sGraphicsContextKey);
+    if(!measuringContext) {
+        CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();
+        measuringContext = CGBitmapContextCreate(NULL, 1, 1, 8, 4, colorspace, 0);
+        CGColorSpaceRelease(colorspace);
+        pthread_setspecific(sGraphicsContextKey, measuringContext);
+        // Context will be released on thread destruction.
+        
+        CGContextSetTextDrawingMode(measuringContext, kCGTextInvisible);
+        CGContextSetTextMatrix(measuringContext, _textTransform);             
+    }
+    if(_glyphMap) {
+        CGContextSetFont(measuringContext, _font);
+    } else {
+        CGContextSelectFont(measuringContext,
+                            [_fontName UTF8String],
+                            1, kCGEncodingMacRoman);  
+    }    
+    return measuringContext;
 }
 
 - (void)_clearCachedArrays
@@ -396,9 +412,6 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     }
     [_fontMap release];
     [_fontName release];
-    if(_measuringContext) {
-        CGContextRelease(_measuringContext);
-    }        
     [super dealloc];
 }
 
@@ -588,7 +601,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 
 - (CGSize)sizeForString:(NSString *)string pointSize:(CGFloat)pointSize maxWidth:(CGFloat)maxWidth flags:(THStringRendererFlags)flags
 {
-    return [self sizeForString:string inContext:_measuringContext pointSize:pointSize maxWidth:maxWidth flags:flags];
+    return [self sizeForString:string inContext:[self measuringContext] pointSize:pointSize maxWidth:maxWidth flags:flags];
 }
 
 
@@ -667,7 +680,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 
 - (CGFloat)widthOfString:(NSString *)string pointSize:(CGFloat)pointSize
 {
-    CGContextRef context = _measuringContext;
+    CGContextRef context = [self measuringContext];
     
     CGContextSetFontSize(context, PointsToPixels(pointSize));
 

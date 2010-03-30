@@ -17,7 +17,9 @@
 @interface EucCSSIntermediateDocumentConcreteNode : EucCSSIntermediateDocumentNode {
     id<EucCSSDocumentTreeNode> _documentTreeNode;
     
-    NSArray *_children;
+    BOOL _childrenComputed;
+    uint32_t _childCount;
+    uint32_t *_childKeys;
     
     BOOL _stylesComputed;
     css_computed_style *_computedStyle;
