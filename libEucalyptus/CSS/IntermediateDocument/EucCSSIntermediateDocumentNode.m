@@ -11,7 +11,7 @@
 #import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
 #import "THPair.h"
-#import "THCache.h"
+#import "THTreeCache.h"
 #import "LWCNSStringAdditions.h"
 #import <libcss/libcss.h>
 
@@ -30,12 +30,12 @@
 @synthesize document = _document;
 @synthesize key = _key;
 
-static THCache *sStringRenderersCache = nil;
+static THTreeCache *sStringRenderersCache = nil;
 
 + (void)initialize
 {
     if (self == [EucCSSIntermediateDocumentNode class]) {
-        sStringRenderersCache = [[THCache alloc] init];
+        sStringRenderersCache = [[THTreeCache alloc] init];
     }
 }
 

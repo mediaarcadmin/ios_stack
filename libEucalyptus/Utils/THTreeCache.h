@@ -9,14 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "pthread.h"
 
-struct TreeItem;
-
-@interface THCache : NSObject {
+@interface THTreeCache : NSObject {
     void *_cacheTree;
     size_t _count;
     pthread_mutex_t _cacheMutex;
     
-    struct TreeItem **_deletionAccumulator;
+    void **_deletionAccumulator;
     size_t _deletionAccumulatorCount;
 }
 
@@ -27,7 +25,7 @@ struct TreeItem;
 @end
 
 
-@interface THIntegerKeyedCache : THCache {}
+@interface THIntegerKeyedTreeCache : THTreeCache {}
 
 - (void)cacheObject:(id)value forKey:(uint32_t)key;
 - (id)objectForKey:(uint32_t)key;

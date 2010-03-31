@@ -10,12 +10,12 @@
 #import "THLog.h"
 #import "THPair.h"
 #import "THTimer.h"
-#import "THCache.h"
+#import "THTreeCache.h"
 #import "th_just_with_floats.h"
 
 #import <pthread.h>
 
-static THCache *sFontNamesAndFlagsToMapsAndFonts = nil;
+static THTreeCache *sFontNamesAndFlagsToMapsAndFonts = nil;
 static pthread_mutex_t sFontCacheMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_key_t sGraphicsContextKey;
 
@@ -55,7 +55,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         pthread_mutex_lock(&sFontCacheMutex);
         {
             if(!sFontNamesAndFlagsToMapsAndFonts) {
-                sFontNamesAndFlagsToMapsAndFonts = [[THCache alloc] init];
+                sFontNamesAndFlagsToMapsAndFonts = [[THTreeCache alloc] init];
             }
             
             NSUInteger glyphMapLength = (UINT16_MAX + 1) * sizeof(uint16_t);
