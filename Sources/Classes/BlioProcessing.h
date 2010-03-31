@@ -19,6 +19,8 @@
     BOOL forceReprocess;
     NSUInteger percentageComplete;
     NSString *cacheDirectory;
+    NSString *tempDirectory;
+    BOOL operationSuccess;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -28,6 +30,8 @@
 @property (nonatomic) BOOL forceReprocess;
 @property (nonatomic) NSUInteger percentageComplete;
 @property (nonatomic, retain) NSString *cacheDirectory;
+@property (nonatomic, retain) NSString *tempDirectory;
+@property (nonatomic) BOOL operationSuccess;
 
 - (void)setBookValue:(id)value forKey:(NSString *)key;
 - (id)getBookValueForKey:(NSString *)key;
@@ -42,5 +46,8 @@
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
                      ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+-(void) enqueueBook:(BlioMockBook*)aBook;
+-(void) pauseProcessingForBook:(BlioMockBook*) aBook;
 - (BlioProcessingOperation *)processingCompleteOperationForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+- (NSArray *)processingOperationsForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 @end

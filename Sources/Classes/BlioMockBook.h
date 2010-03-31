@@ -11,6 +11,10 @@
 #import "BlioTextFlow.h"
 #import "BlioBookmark.h"
 
+static const NSInteger kBlioMockBookProcessingStateIncomplete = 0;
+static const NSInteger kBlioMockBookProcessingStatePaused = 1;
+static const NSInteger kBlioMockBookProcessingStateComplete = 2;
+
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end
@@ -34,8 +38,12 @@
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 @property (nonatomic, retain) NSString *textFlowFilename;
+@property (nonatomic, retain) NSString *sourceID;
+@property (nonatomic, retain) NSString *sourceSpecificID;
+
 
 - (NSString *)bookCacheDirectory;
+- (NSString *)bookTempDirectory;
 - (UIImage *)coverImage;
 - (UIImage *)coverThumbForGrid;
 - (UIImage *)coverThumbForList;

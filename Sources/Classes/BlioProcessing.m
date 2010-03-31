@@ -12,14 +12,21 @@
 
 @implementation BlioProcessingOperation
 
-@synthesize bookID, sourceID, sourceSpecificID, storeCoordinator, forceReprocess, percentageComplete, cacheDirectory;
-
+@synthesize bookID, sourceID, sourceSpecificID, storeCoordinator, forceReprocess, percentageComplete, cacheDirectory,tempDirectory,operationSuccess;
+- (id) init {
+	if((self = [super init])) {
+		operationSuccess = NO;
+		forceReprocess = NO;
+	}
+	return self;
+}
 - (void)dealloc {
     self.bookID = nil;
 	self.sourceID = nil;
 	self.sourceSpecificID = nil;
     self.storeCoordinator = nil;
     self.cacheDirectory = nil;
+    self.tempDirectory = nil;
     [super dealloc];
 }
 
@@ -80,7 +87,7 @@
     
     NSFetchRequest *aRequest = [[NSFetchRequest alloc] init];
     [aRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-    [aRequest setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithBool:YES]]];
+    [aRequest setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]];
     
     // Block whilst we calculate the position so that other threads don't perform the same
     // check at the same time
@@ -91,7 +98,7 @@
             NSLog(@"Failed to retrieve book count with error: %@, %@", anError, [anError userInfo]);
         } else {
             [book setValue:[NSNumber numberWithInt:count] forKey:@"position"];
-            [book setValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
+            [book setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateComplete] forKey:@"processingComplete"];
         }
         
         NSError *anError;

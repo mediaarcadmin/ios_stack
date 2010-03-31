@@ -23,6 +23,8 @@
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
 @dynamic textFlowFilename;
+@dynamic sourceID;
+@dynamic sourceSpecificID;
 
 - (void)dealloc {
     if (coverThumb) [coverThumb release];
@@ -348,7 +350,13 @@
     NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
     return bookPath;
 }
-         
+- (NSString *)bookTempDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
+    return bookPath;
+}
+
 #pragma mark -
 #pragma mark BlioBookText
 

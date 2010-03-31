@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "BlioProcessing.h"
+#import "BlioMockBook.h"
 
 extern NSString * const BlioProcessingCompleteOperationFinishedNotification;
+extern NSString * const BlioProcessingCompleteOperationFailedNotification;
 @interface BlioProcessingCompleteOperation : BlioProcessingOperation
 @end
 

@@ -10,6 +10,7 @@
 #import "BlioStoreBookViewController.h"
 #import "BlioProcessing.h"
 #import <libEucalyptus/THUIImageAdditions.h>
+#import "BlioMockBook.h"
 
 #define AUTHORPADDINGABOVE 4
 #define AUTHORPADDINGBELOW 9
@@ -72,7 +73,6 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-	downloadState = kBlioStoreDownloadButtonStateConfirm; // make initial state match the XIB file text
 	self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
 
 	NSMutableArray * validFieldViews = [NSMutableArray array];
@@ -159,11 +159,6 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 	self.download.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	self.downloadButtonBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	self.downloadButtonContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	
-    if (![self.entity ePubUrl] && ![self.entity pdfUrl]) {
-        [self setDownloadState:kBlioStoreDownloadButtonStateNoDownload animated:NO];
-
-    }
     
     // Layout views
     CGRect bookTitleFrame = self.bookTitle.frame;
@@ -229,8 +224,8 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
 			}
 			NSManagedObject * resultBook = [results objectAtIndex:0];
-			if ([resultBook valueForKey:@"processingComplete"] == [NSNumber numberWithBool:YES]) {
-				NSLog(@"and processComplete is YES."); 
+			if ([resultBook valueForKey:@"processingComplete"] == [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]) {
+				NSLog(@"and processingComplete is YES."); 
 				
 				[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
 			}
@@ -241,26 +236,29 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 				NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:feed.id sourceSpecificID:entity.id];
 				if (completeOperation == nil) {
 					// for now, treat as incomplete - redownload completely. TODO: processing manager should scan for pre-existing entity in context and append to it instead of creating new one.
-					NSLog(@"but not processComplete and could not find completeOperation."); 
+					NSLog(@"but not processingComplete and could not find completeOperation."); 
 					[self setDownloadState:kBlioStoreDownloadButtonStateConfirm animated:NO];
 				}
 				else {
-					NSLog(@"but not processComplete. However, completeOperation is present and will become listener."); 
+					NSLog(@"but not processingComplete. However, completeOperation is present and will become listener."); 
 					[self setDownloadState:kBlioStoreDownloadButtonStateInProcess animated:NO];
 					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioProcessingCompleteOperationFinishedNotification) name:BlioProcessingCompleteOperationFinishedNotification object:completeOperation];
 				}
 			}
 		}
 		else {
-			NSLog(@"executeFetchRequest results are emtpy."); 
-			[self setDownloadState:kBlioStoreDownloadButtonStateConfirm animated:NO];
+			NSLog(@"book is not already present in the library."); 
+			if (![self.entity ePubUrl] && ![self.entity pdfUrl]) {
+				[self setDownloadState:kBlioStoreDownloadButtonStateNoDownload animated:NO];
+				
+			} else [self setDownloadState:kBlioStoreDownloadButtonStateConfirm animated:NO]; // make initial state match the XIB file text
 		}
 	}
     [fetchRequest release];
 }
 
 - (void)didReceiveBlioProcessingCompleteOperationFinishedNotification {
-	NSLog(@"BlioStoreBookViewController didReceiveBlioProcessingCompleteOperationFinishedNotification entered");
+	// NSLog(@"BlioStoreBookViewController didReceiveBlioProcessingCompleteOperationFinishedNotification entered");
 	[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:YES];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingCompleteOperationFinishedNotification object:self];
 
@@ -321,7 +319,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 }
 			 
 - (void) setDownloadState:(NSUInteger)state animated:(BOOL)animationStatus {
-//	NSLog(@"BlioStoreBookViewController setDownloadState:%i entered",state);
+	// NSLog(@"BlioStoreBookViewController setDownloadState:%i entered",state);
 
 	if (downloadState != state) {
 		downloadState = state;
@@ -350,6 +348,10 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 		if (state == kBlioStoreDownloadButtonStateInProcess || state == kBlioStoreDownloadButtonStateDone || state == kBlioStoreDownloadButtonStateNoDownload) { // special cases - disable button
 			[self.download setEnabled:NO];
 			downloadButtonContainer.alpha = kBlioStoreDisabledButtonAlpha;
+		}
+		else {
+			[self.download setEnabled:YES];
+			downloadButtonContainer.alpha = 1;
 		}
 		if (!animationStatus)
 		{

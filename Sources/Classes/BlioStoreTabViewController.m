@@ -75,6 +75,7 @@
         [vc2 release];
         
         BlioStoreSearchController* vc3 = [[BlioStoreSearchController alloc] init];
+		[vc3 setManagedObjectContext:self.managedObjectContext];
         [vc3 setProcessingDelegate:self.processingDelegate];
         
         UINavigationController* nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];

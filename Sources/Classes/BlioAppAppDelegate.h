@@ -8,6 +8,7 @@
 
 #import <CoreData/CoreData.h>
 #import "BlioProcessingManager.h"
+#import "BlioMockBook.h"
 
 @class BlioLibraryViewController;
 

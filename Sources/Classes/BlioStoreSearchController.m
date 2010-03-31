@@ -101,6 +101,16 @@
     self.tableView = aTableView;
     self.dimmableTableView = aTableView;
     [aTableView release];
+	activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+	[self.view addSubview:activityIndicatorView];
+	activityIndicatorView.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+	activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin|
+											  UIViewAutoresizingFlexibleRightMargin|
+											  UIViewAutoresizingFlexibleTopMargin|
+											  UIViewAutoresizingFlexibleBottomMargin);
+	[activityIndicatorView stopAnimating];
+	activityIndicatorView.hidden = YES;
+	[activityIndicatorView release];
 }
 
 - (void)viewDidLoad
@@ -125,6 +135,9 @@
 
 - (void)performSearch {
     if (![self.feeds count]) return;
+
+	[activityIndicatorView startAnimating];
+	activityIndicatorView.hidden = NO;
         
     for (BlioStoreFeed *feed in self.feeds) {
         if (nil != feed.parserClass) {

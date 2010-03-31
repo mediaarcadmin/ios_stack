@@ -16,7 +16,7 @@
 
 @implementation BlioStoreCategoriesController
 
-@synthesize feeds, processingDelegate, managedObjectContext;
+@synthesize feeds, processingDelegate, managedObjectContext,activityIndicatorView;
 
 - (void)dealloc {
     self.feeds = nil;
@@ -45,7 +45,20 @@
 }
 */
 
-
+- (void)loadView {
+    [super loadView];
+	self.view.autoresizesSubviews =	YES;
+	activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+	[self.view addSubview:activityIndicatorView];
+	activityIndicatorView.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+	activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin|
+										   UIViewAutoresizingFlexibleRightMargin|
+										   UIViewAutoresizingFlexibleTopMargin|
+										   UIViewAutoresizingFlexibleBottomMargin);
+	[activityIndicatorView startAnimating];
+	activityIndicatorView.hidden = NO;
+	[activityIndicatorView release];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -177,14 +190,14 @@
 			cell.detailTextLabel.font = [UIFont systemFontOfSize:12.5];
 
 			// add activity indicator
-			UIActivityIndicatorView * activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-			activityIndicatorView.frame = CGRectMake(-kBlioMoreResultsCellActivityIndicatorViewWidth/3,-kBlioMoreResultsCellActivityIndicatorViewWidth/2,kBlioMoreResultsCellActivityIndicatorViewWidth,kBlioMoreResultsCellActivityIndicatorViewWidth);
-			activityIndicatorView.hidden = YES;
+			UIActivityIndicatorView * cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+			cellActivityIndicatorView.frame = CGRectMake(-kBlioMoreResultsCellActivityIndicatorViewWidth/3,-kBlioMoreResultsCellActivityIndicatorViewWidth/2,kBlioMoreResultsCellActivityIndicatorViewWidth,kBlioMoreResultsCellActivityIndicatorViewWidth);
+			cellActivityIndicatorView.hidden = YES;
 
-			activityIndicatorView.hidesWhenStopped = YES;
-			activityIndicatorView.tag = kBlioMoreResultsCellActivityIndicatorViewTag;
-			[cell.imageView addSubview:activityIndicatorView];
-			[activityIndicatorView release];
+			cellActivityIndicatorView.hidesWhenStopped = YES;
+			cellActivityIndicatorView.tag = kBlioMoreResultsCellActivityIndicatorViewTag;
+			[cell.imageView addSubview:cellActivityIndicatorView];
+			[cellActivityIndicatorView release];
 		}		
 		// populate cell with content
 		
@@ -232,9 +245,9 @@
     BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
 	if (row == ([feed.categories count]+[feed.entities count])) { // More Results option chosen
 		// reveal activity indicator
-		UIActivityIndicatorView * activityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag];
-		activityIndicatorView.hidden = NO;
-		[activityIndicatorView startAnimating];
+		UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag];
+		cellActivityIndicatorView.hidden = NO;
+		[cellActivityIndicatorView startAnimating];
 		UIImage * emptyImage = [[UIImage alloc] init];
 		[tableView cellForRowAtIndexPath:indexPath].imageView.image = emptyImage;  // setting a UIImage object allows the view (and activity indicator subview) to show up
 		[tableView cellForRowAtIndexPath:indexPath].imageView.frame = CGRectMake(0, 0, kBlioMoreResultsCellActivityIndicatorViewWidth * 1.5, kBlioMoreResultsCellActivityIndicatorViewWidth);
@@ -325,7 +338,11 @@
 #pragma mark <BlioStoreFeedBooksParserDelegate> Implementation
 
 - (void)parserDidEndParsingData:(BlioStoreBooksSourceParser *)parser {
-    [self.tableView reloadData];
+    // hide UIActivityIndicator
+	[activityIndicatorView stopAnimating];
+	activityIndicatorView.hidden = YES;
+	
+	[self.tableView reloadData];
 }
 
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseTotalResults:(NSNumber *)volumeTotalResults {
