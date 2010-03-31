@@ -63,7 +63,7 @@
         [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];        
         
         NSError *error;
-        BlioMockBook *aBook;
+        BlioMockBook *aBook = nil;
         
         NSUInteger count = [moc countForFetchRequest:request error:&error];
         [request release];
