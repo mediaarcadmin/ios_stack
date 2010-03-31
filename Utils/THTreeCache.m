@@ -6,12 +6,12 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "THCache.h"
+#import "THTreeCache.h"
 #import "THLog.h"
 
 #import <search.h>
 
-@implementation THCache
+@implementation THTreeCache
 
 - (id)init
 {
@@ -42,7 +42,7 @@
 typedef struct TreeItem {
     void *key;
     void *value;
-    THCache *self;
+    THTreeCache *self;
 } TreeItem;
 
 - (NSComparisonResult)compareItem:(const void *)item1 toItem:(const void *)item2
@@ -74,7 +74,7 @@ static void Accumulate(const void *pNode, const VISIT which, const int depth)
 - (void)flushCache:(BOOL)force
 {
     pthread_mutex_lock(&_cacheMutex);
-    _deletionAccumulator = malloc(sizeof(TreeItem *) * _count);
+    _deletionAccumulator = malloc(sizeof(void *) * _count);
     twalk(_cacheTree, Accumulate);
     
     for(size_t i = 0; i < _deletionAccumulatorCount; ++i) {
@@ -153,8 +153,7 @@ static void Accumulate(const void *pNode, const VISIT which, const int depth)
 
 @end
 
-
-@implementation THIntegerKeyedCache
+@implementation THIntegerKeyedTreeCache
 
 - (NSComparisonResult)compareItem:(const void *)item1 toItem:(const void *)item2
 {
@@ -170,7 +169,7 @@ static void Accumulate(const void *pNode, const VISIT which, const int depth)
 - (void)cacheObject:(id)value forKey:(uint32_t)key
 {    
     pthread_mutex_lock(&_cacheMutex);
-
+    
     TreeItem *item = malloc(sizeof(TreeItem));
     item->key = (void *)((intptr_t)(key));
     item->value = [value retain];
@@ -199,11 +198,11 @@ static void Accumulate(const void *pNode, const VISIT which, const int depth)
 - (id)objectForKey:(uint32_t)key
 {
     id ret;
-        
+    
     TreeItem findItem;
     findItem.key = (void *)((intptr_t)key);
     findItem.self = self;
-
+    
     pthread_mutex_lock(&_cacheMutex);
     TreeItem **item = tfind(&findItem, &_cacheTree, CompareKeys);
     if(item) {
