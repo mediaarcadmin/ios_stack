@@ -325,6 +325,8 @@
 		7D7E2202111F227E00F7F585 /* MenuArrowTopHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7E21FA111F227E00F7F585 /* MenuArrowTopHighlighted.png */; };
 		7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883FCB111C7735009669A8 /* EucMenuView.m */; };
 		7D81C2301151BAAC008248F1 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
+		7D8454DD1163C4EC003F1D1C /* THIntegerKeysCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB146E211624FA600596813 /* THIntegerKeysCache.m */; };
+		7D8454DF1163C4F3003F1D1C /* THTreeCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB145D21162301800596813 /* THTreeCache.m */; };
 		7D883FA0111C640C009669A8 /* EucMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F5D111C5862009669A8 /* EucMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D883FA1111C640C009669A8 /* EucMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883F5E111C5862009669A8 /* EucMenuItem.m */; };
 		7D883FA2111C640C009669A8 /* EucMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F63111C586F009669A8 /* EucMenuController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -357,8 +359,6 @@
 		7DB041251145278F000C2980 /* THCALayerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB0409D11451687000C2980 /* THCALayerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */; };
 		7DB0901E1110C76B00CC5694 /* EucSelectorRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7DB145D31162301800596813 /* THTreeCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB145D21162301800596813 /* THTreeCache.m */; };
-		7DB146E311624FA600596813 /* THIntegerKeysCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB146E211624FA600596813 /* THIntegerKeysCache.m */; };
 		7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
 		7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
@@ -3051,6 +3051,8 @@
 				7D3AED79114963560059C5B6 /* EucCSSRenderer.m in Sources */,
 				7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */,
 				7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */,
+				7D8454DD1163C4EC003F1D1C /* THIntegerKeysCache.m in Sources */,
+				7D8454DF1163C4F3003F1D1C /* THTreeCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3097,8 +3099,6 @@
 				7D9A96E410D7E42A00C2E00A /* PaginateAppDelegate.m in Sources */,
 				7D9A96E510D7E42A00C2E00A /* PaginateRootViewController.m in Sources */,
 				7D9A96E710D7E42A00C2E00A /* PaginateMain.m in Sources */,
-				7DB145D31162301800596813 /* THTreeCache.m in Sources */,
-				7DB146E311624FA600596813 /* THIntegerKeysCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
