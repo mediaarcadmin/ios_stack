@@ -30,32 +30,19 @@
 @synthesize document = _document;
 @synthesize key = _key;
 
-static pthread_mutex_t sInitializationMutex = PTHREAD_MUTEX_INITIALIZER;
 static THCache *sStringRenderersCache = nil;
 
-- (id)init
++ (void)initialize
 {
-    if((self == [super init])) {
-        pthread_mutex_lock(&sInitializationMutex);
-        if(!sStringRenderersCache) {
-            sStringRenderersCache = [[THCache alloc] init];
-        } else {
-            [sStringRenderersCache retain];
-        }
-        pthread_mutex_unlock(&sInitializationMutex);
+    if (self == [EucCSSIntermediateDocumentNode class]) {
+        sStringRenderersCache = [[THCache alloc] init];
     }
-    return self;
 }
 
 - (void)dealloc
 {    
     [_stringRenderer release];
-    
-    pthread_mutex_lock(&sInitializationMutex);
-    [sStringRenderersCache release];
-    sStringRenderersCache = nil;
-    pthread_mutex_unlock(&sInitializationMutex);
-    
+
     [super dealloc];
 }
 
