@@ -10,12 +10,12 @@
 #import "THLog.h"
 #import "THPair.h"
 #import "THTimer.h"
-#import "THTreeCache.h"
+#import "THCache.h"
 #import "th_just_with_floats.h"
 
 #import <pthread.h>
 
-static THTreeCache *sFontNamesAndFlagsToMapsAndFonts = nil;
+static THCache *sFontNamesAndFlagsToMapsAndFonts = nil;
 static pthread_mutex_t sFontCacheMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_key_t sGraphicsContextKey;
 
@@ -55,7 +55,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         pthread_mutex_lock(&sFontCacheMutex);
         {
             if(!sFontNamesAndFlagsToMapsAndFonts) {
-                sFontNamesAndFlagsToMapsAndFonts = [[THTreeCache alloc] init];
+                sFontNamesAndFlagsToMapsAndFonts = [[THCache alloc] init];
             }
             
             NSUInteger glyphMapLength = (UINT16_MAX + 1) * sizeof(uint16_t);
@@ -413,6 +413,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     }
     [_fontMap release];
     [_fontName release];
+    [_widthCache release];
     [super dealloc];
 }
 
@@ -681,67 +682,76 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 
 - (CGFloat)widthOfString:(NSString *)string pointSize:(CGFloat)pointSize
 {
-    CGContextRef context = [self measuringContext];
-    
-    CGContextSetFontSize(context, PointsToPixels(pointSize));
+    if(!_widthCache) {
+        _widthCache = [[THStringAndFloatToCGFloatCache alloc] init];
+    }
+    CGFloat ret = [_widthCache cgFloatForStringKey:string cgFloatKet:pointSize];
+    if(!ret) {
+        CGContextRef context = [self measuringContext];
+        
+        CGContextSetFontSize(context, PointsToPixels(pointSize));
 
-    CGContextSetTextPosition(context, 0, 0);
-    
-    CFIndex length = CFStringGetLength((CFStringRef)string);
-    
-    if(_glyphMap) {
-        CGGlyph glyphs[length];
+        CGContextSetTextPosition(context, 0, 0);
         
-        const UniChar *stringBuffer = CFStringGetCharactersPtr((CFStringRef)string);        
-        if(!stringBuffer) {
-            stringBuffer = alloca(sizeof(UniChar) * length);
-            CFStringGetCharacters((CFStringRef)string, CFRangeMake(0, length), (UniChar *)stringBuffer);
-        }
-/*        
-        CFIndex glyphLength = 0;
-        int i = 0;
-        for(; i < length; ++i) {
-            if(stringBuffer[i] == 'f' && i < length - 1) {
-                if(stringBuffer[i+1] == 'i') {
-                    CGGlyph fi = _glyphMap[0xFB01];
-                    if(fi) {
-                        glyphs[glyphLength++] = fi;
-                        ++i;
-                        continue;
-                    }
-                } else if(stringBuffer[i+1] == 'f' && 
-                          i < length - 2 && stringBuffer[i+2] == 'i') {
-                    CGGlyph fi = _glyphMap[0xFB03];
-                    if(fi) {
-                        glyphs[glyphLength++] = fi;
-                        i+= 2;
-                        continue;
-                    }                    
-                }
+        CFIndex length = CFStringGetLength((CFStringRef)string);
+        
+        if(_glyphMap) {
+            CGGlyph glyphs[length];
+            
+            const UniChar *stringBuffer = CFStringGetCharactersPtr((CFStringRef)string);        
+            if(!stringBuffer) {
+                stringBuffer = alloca(sizeof(UniChar) * length);
+                CFStringGetCharacters((CFStringRef)string, CFRangeMake(0, length), (UniChar *)stringBuffer);
             }
-            glyphs[glyphLength++] = _glyphMap[stringBuffer[i]];
-        }
+    /*        
+            CFIndex glyphLength = 0;
+            int i = 0;
+            for(; i < length; ++i) {
+                if(stringBuffer[i] == 'f' && i < length - 1) {
+                    if(stringBuffer[i+1] == 'i') {
+                        CGGlyph fi = _glyphMap[0xFB01];
+                        if(fi) {
+                            glyphs[glyphLength++] = fi;
+                            ++i;
+                            continue;
+                        }
+                    } else if(stringBuffer[i+1] == 'f' && 
+                              i < length - 2 && stringBuffer[i+2] == 'i') {
+                        CGGlyph fi = _glyphMap[0xFB03];
+                        if(fi) {
+                            glyphs[glyphLength++] = fi;
+                            i+= 2;
+                            continue;
+                        }                    
+                    }
+                }
+                glyphs[glyphLength++] = _glyphMap[stringBuffer[i]];
+            }
+            
+            CGContextShowGlyphs(context, glyphs, glyphLength);
+    */
+            for(int i = 0; i < length; ++i) {
+                glyphs[i] = CFSwapInt16LittleToHost(_glyphMap[stringBuffer[i]]); 
+            }
+            
+            CGContextShowGlyphs(context, glyphs, length);
+        } else {
+            CFIndex maxMacRomanByteLength = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingMacRoman);
+            CFIndex usedMacRomanByteLength = 0;
+            UInt8 macRomanString[maxMacRomanByteLength];
+            
+            CFStringGetBytes((CFStringRef)string, CFRangeMake(0, length), kCFStringEncodingMacRoman, '_', FALSE, macRomanString, maxMacRomanByteLength, &usedMacRomanByteLength);
+            
+            CGContextShowText(context, (const char *)macRomanString, usedMacRomanByteLength);
+        }   
         
-        CGContextShowGlyphs(context, glyphs, glyphLength);
-*/
-        for(int i = 0; i < length; ++i) {
-            glyphs[i] = CFSwapInt16LittleToHost(_glyphMap[stringBuffer[i]]); 
-        }
+        CGPoint point = CGContextGetTextPosition(context);
+            
+        ret = point.x;
         
-        CGContextShowGlyphs(context, glyphs, length);
-    } else {
-        CFIndex maxMacRomanByteLength = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingMacRoman);
-        CFIndex usedMacRomanByteLength = 0;
-        UInt8 macRomanString[maxMacRomanByteLength];
-        
-        CFStringGetBytes((CFStringRef)string, CFRangeMake(0, length), kCFStringEncodingMacRoman, '_', FALSE, macRomanString, maxMacRomanByteLength, &usedMacRomanByteLength);
-        
-        CGContextShowText(context, (const char *)macRomanString, usedMacRomanByteLength);
-    }   
-    
-    CGPoint point = CGContextGetTextPosition(context);
-        
-    return point.x;
+        [_widthCache cacheCGFloat:ret forStringKey:string cgFloatKet:pointSize];
+    }
+    return ret;
 }    
 
 - (CGFloat)roundedWidthOfString:(NSString *)string pointSize:(CGFloat)pointSize

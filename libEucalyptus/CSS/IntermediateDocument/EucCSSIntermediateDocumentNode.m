@@ -11,7 +11,7 @@
 #import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
 #import "THPair.h"
-#import "THTreeCache.h"
+#import "THCache.h"
 #import "LWCNSStringAdditions.h"
 #import <libcss/libcss.h>
 
@@ -30,12 +30,12 @@
 @synthesize document = _document;
 @synthesize key = _key;
 
-static THTreeCache *sStringRenderersCache = nil;
+static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 
 + (void)initialize
 {
     if (self == [EucCSSIntermediateDocumentNode class]) {
-        sStringRenderersCache = [[THTreeCache alloc] init];
+        sStringRenderersCache = [[THStringAndIntegerToObjectCache alloc] init];
     }
 }
 
@@ -154,16 +154,15 @@ static THTreeCache *sStringRenderersCache = nil;
 {
     THStringRenderer *stringRenderer;
     
-    THPair *key = [THPair pairWithFirst:fontName second:[NSNumber numberWithInt:styleFlags]];
-    stringRenderer = [sStringRenderersCache objectForKey:key];
+    stringRenderer = [sStringRenderersCache objectForStringKey:fontName integerKey:styleFlags];
     if(!stringRenderer) {
         stringRenderer = [[THStringRenderer alloc] initWithFontName:fontName
                                                          styleFlags:styleFlags];
         if(stringRenderer) {
-            [sStringRenderersCache cacheObject:stringRenderer forKey:key];
+            [sStringRenderersCache cacheObject:stringRenderer forStringKey:fontName integerKey:styleFlags];
             [stringRenderer autorelease];
         } else {
-            [sStringRenderersCache cacheObject:[NSNull null] forKey:key];
+            [sStringRenderersCache cacheObject:[NSNull null] forStringKey:fontName integerKey:styleFlags];
         }
     } else {
         if((id)stringRenderer == [NSNull null]) {
