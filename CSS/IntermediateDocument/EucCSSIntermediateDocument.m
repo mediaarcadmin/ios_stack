@@ -20,7 +20,7 @@
 
 #import "EucCSSInternal.h"
 
-#import "THIntegerKeysCache.h"
+#import "THCache.h"
 #import "THLog.h"
 
 @implementation EucCSSIntermediateDocument
@@ -310,7 +310,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             [self release]; 
             self = nil;
         } else {
-            _keyToExtantNode = [[THIntegerKeysCache alloc] init];
+            _keyToExtantNode = [[THIntegerToObjectCache alloc] init];
         }
     }
     return self;    
