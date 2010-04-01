@@ -67,12 +67,15 @@
 
 @interface BlioLayoutPageLayer()
 @property (nonatomic, assign) BlioLayoutThumbLayer *thumbLayer;
-
 @end
+
+//@interface BlioLayoutContentView()
+//- (BlioLayoutPageMode)layoutMode;
+//@end
 
 @implementation BlioLayoutContentView
 
-@synthesize dataSource, pageLayers;
+@synthesize dataSource, pageLayers, layoutMode;
 
 - (void)dealloc {
     self.dataSource = nil;
@@ -84,8 +87,18 @@
     if ((self = [super initWithFrame:frame])) {
         // Initialization code
         self.pageLayers = [NSMutableSet setWithCapacity:kBlioLayoutMaxPages];
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.backgroundColor = [UIColor greenColor];
+        self.layer.backgroundColor = [UIColor purpleColor].CGColor;
     }
     return self;
+}
+
+- (BlioLayoutPageMode)layoutMode {
+    if (self.bounds.size.width > self.bounds.size.height)
+        return BlioLayoutPageModeLandscape;
+    else
+        return BlioLayoutPageModePortrait;
 }
 
 - (CALayer *)addPage:(NSInteger)aPageNumber retainPages:(NSSet *)pages {
@@ -128,17 +141,22 @@
         if (layerCacheCount < kBlioLayoutMaxPages) {
             //NSLog(@"Add new layer to cache");
             pageLayer = [BlioLayoutPageLayer layer];
+            pageLayer.backgroundColor = [UIColor yellowColor].CGColor;
+            //[pageLayer setNeedsDisplayOnBoundsChange:YES];
+            
             
             BlioLayoutShadowLayer *shadowLayer = [BlioLayoutShadowLayer layer];
             shadowLayer.dataSource = self.dataSource;
             shadowLayer.frame = self.bounds;
             shadowLayer.opaque = YES;
+            [shadowLayer setNeedsDisplayOnBoundsChange:YES];
             [pageLayer addSublayer:shadowLayer];
             [pageLayer setShadowLayer:shadowLayer];
             
             BlioLayoutThumbLayer *thumbLayer = [BlioLayoutThumbLayer layer];
             thumbLayer.dataSource = self.dataSource;
             thumbLayer.frame = self.bounds;
+            [thumbLayer setNeedsDisplayOnBoundsChange:YES];
             [pageLayer addSublayer:thumbLayer];
             [pageLayer setThumbLayer:thumbLayer];
             
@@ -149,6 +167,7 @@
             tiledLayer.levelsOfDetailBias = 5;
             tiledLayer.tileSize = CGSizeMake(2048, 2048);
             tiledLayer.thumbLayer = (id)thumbLayer;
+            //[tiledLayer setNeedsDisplayOnBoundsChange:YES];
             [pageLayer addSublayer:tiledLayer];
             [pageLayer setTiledLayer:tiledLayer];
             
@@ -157,6 +176,7 @@
             highlightsLayer.frame = self.bounds;
             highlightsLayer.levelsOfDetail = 1;
             highlightsLayer.tileSize = CGSizeMake(1024, 1024);
+            //[highlightsLayer setNeedsDisplayOnBoundsChange:YES];
             [pageLayer addSublayer:highlightsLayer];
             [pageLayer setHighlightsLayer:highlightsLayer];
             
@@ -176,7 +196,10 @@
     newFrame.origin.y = 0;
     
     [pageLayer setFrame:newFrame];
-    [self.layer insertSublayer:pageLayer above:[[self.layer sublayers] lastObject]]; 
+
+    // Adjust the zPosition to ensure this layer is in front of any previous layers at the same position
+    // We use zPosition instead of reordering the sublayers array to avoid layoutSubviews being called on the view
+    [pageLayer setZPosition:pageLayer.zPosition + [self.pageLayers count]]; 
     
     [CATransaction commit];
     
@@ -184,6 +207,20 @@
         NSLog(@"Warning: no pageLayer for page %d", aPageNumber);
     }
     return pageLayer;
+}
+
+- (void)layoutSubviews {
+    NSLog(@"Laying out contentView subviews");
+    CGRect newFrame = self.bounds;
+    
+    [CATransaction begin];
+    [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+    
+    for (BlioLayoutPageLayer *pageLayer in self.pageLayers) {
+        newFrame.origin.x = newFrame.size.width * ([pageLayer pageNumber] - 1);
+        [pageLayer setFrame:newFrame];
+    }
+    [CATransaction commit];
 }
 
 @end
@@ -205,13 +242,27 @@
     [super dealloc];
 }
 
+- (void)layoutSublayers {
+    NSLog(@"Laying out pageLayer sublayers");
+    CGRect layerBounds = self.bounds;
+    
+    for (CALayer *subLayer in self.sublayers) {
+        subLayer.frame = layerBounds;
+    }
+    
+    //[self setNeedsDisplay];
+    //[self.shadowLayer setNeedsDisplay];
+    [self.tiledLayer setContents:nil];
+    [self.tiledLayer setNeedsDisplay];
+}
+
 - (void)setPageNumber:(NSInteger)newPageNumber {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
     [self.cacheQueue cancelAllOperations];
     
     pageNumber = newPageNumber;
     [self.thumbLayer setPageNumber:newPageNumber];
-    [self.tiledLayer setNeedsDisplay];
+    [self.thumbLayer setNeedsDisplay];
     
     [self.tiledLayer setPageNumber:newPageNumber];
     [self.tiledLayer setNeedsDisplay];
@@ -281,33 +332,13 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    //NSLog(@"Draw tiled layer for page %d with transform %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
+    NSLog(@"Draw tiled layer for page %d with transform %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     
     if (!self.cached) {
         self.cached = YES;
-        CGRect cacheRect = CGRectIntegral(CGRectMake(0, 0, 160, 240));
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CGContextRef bitmap = CGBitmapContextCreate(NULL,
-                                                    cacheRect.size.width,
-                                                    cacheRect.size.height,
-                                                    8,
-                                                    0,
-                                                    colorSpace,
-                                                    kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedFirst);
-        
-        // Set the quality level to use when rescaling
-        CGContextSetInterpolationQuality(bitmap, kCGInterpolationHigh);
-        
-        
-        CGLayerRef aCGLayer = CGLayerCreateWithContext(ctx, cacheRect.size, NULL);
-        [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheLayer:aCGLayer cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
-
-        // Clean up
-        CGLayerRelease(aCGLayer);
-        CGContextRelease(bitmap);
-        CGColorSpaceRelease(colorSpace);
+        [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
     } else {
-        [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheLayer:nil cacheReadyTarget:nil cacheReadySelector:nil];
+        [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:nil cacheReadySelector:nil];
     }
     
     if (pageNumber == 1) 
@@ -372,10 +403,22 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    CGRect ctxBounds = CGContextGetClipBoundingBox(ctx);
-    CGContextClearRect(ctx, ctxBounds);
-    if (nil != cacheLayer)
-        CGContextDrawLayerInRect(ctx, ctxBounds, cacheLayer);
+    //CGRect ctxBounds = CGContextGetClipBoundingBox(ctx);
+//    CGContextClearRect(ctx, ctxBounds);
+    
+//    CGAffineTransform boundsTransform;
+//    CGRect insetBounds = UIEdgeInsetsInsetRect(ctxBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
+//    if (layerBounds.size.width < layerBounds.size.height)
+//        ctxBounds = transformRectToFitRect(cropRect, insetBounds);
+//    else
+//        boundsTransform = transformRectToFillRect(cropRect, insetBounds);
+//    cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+    
+    //NSLog(@"Drawing thumb in %@ %@", NSStringFromCGRect(ctxBounds), NSStringFromCGRect(self.bounds));
+    if (nil != cacheLayer) {
+        [self.dataSource drawThumbLayer:self inContext:ctx forPage:self.pageNumber withCacheLayer:cacheLayer];  
+        //CGContextDrawLayerInRect(ctx, ctxBounds, cacheLayer);
+    }
 }
 
 @end

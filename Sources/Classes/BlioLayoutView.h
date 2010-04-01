@@ -19,12 +19,18 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
 @class BlioLayoutContentView;
 @class BlioLayoutPageLayer;
 
+typedef enum BlioLayoutPageMode {
+    BlioLayoutPageModePortrait,
+    BlioLayoutPageModeLandscape
+} BlioLayoutPageMode;
+
 @protocol BlioLayoutDataSource
 @optional
 - (BOOL)dataSourceContainsPage:(NSInteger)page;
 - (CGAffineTransform)viewTransformForPage:(NSInteger)page;
 
-- (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheLayer:(CGLayerRef)cacheLayer cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector;
+- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer;
+- (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector;
 - (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page excluding:(BlioBookmarkRange *)excludedBookmark;
 
@@ -67,6 +73,7 @@ static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the g
     UIImage *highlightsSnapshot;
     BOOL isCancelled;
     BlioTextFlowBlock *lastBlock;
+    BlioLayoutPageMode layoutMode;
 }
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;

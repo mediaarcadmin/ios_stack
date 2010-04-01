@@ -28,6 +28,8 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.autoresizesSubviews = YES;
     }
     return self;
 }
@@ -171,7 +173,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (void)handleSingleTouch {
-    CGFloat screenWidth = CGRectGetWidth([[UIScreen mainScreen] bounds]);
+    CGFloat screenWidth = CGRectGetWidth(self.bounds);
     CGFloat leftHandHotZone = screenWidth * kBlioLayoutLHSHotZone;
     CGFloat rightHandHotZone = screenWidth * kBlioLayoutRHSHotZone;
     
