@@ -14,6 +14,8 @@
 #import "BlioUIImageAdditions.h"
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
+#import "BlioLoginView.h"
+
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -129,7 +131,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
-                                           action:nil];
+                                           action:@selector(showLogin:)];
     [libraryItems addObject:item];
     [item release];
     
@@ -638,6 +640,18 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 #pragma mark -
 #pragma mark Toolbar Actions
+
+- (void)showLogin:(id)sender {    
+	BlioLoginView* loginView = [[BlioLoginView alloc] initWithTitle: @"Sign in to Blio" 
+															message:@""
+														   delegate:nil
+												  cancelButtonTitle:@"Cancel"
+												  otherButtonTitles:@"OK", nil]; 
+	loginView.delegate = loginView;
+	[loginView display];
+	[loginView release];
+}
+
 
 - (void)showStore:(id)sender {    
     BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];
