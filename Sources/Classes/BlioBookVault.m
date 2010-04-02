@@ -2296,12 +2296,14 @@
 }
 - (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
 {
-	xmlNodePtr root = xmlDocGetRootElement(doc);
+	//xmlNodePtr root = xmlDocGetRootElement(doc);
 	
-	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+	//xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
 	
 	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
-	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"BookVault:Login");
+	// originally
+	//xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"BookVault:Login");
+	xmlSetNsProp(node, nil, (const xmlChar*)"xmlns", (const xmlChar*)"BlioBookVault");
 	
 	[self addAttributesToNode:node];
 	
@@ -2969,7 +2971,9 @@
 	}
 	[request setValue:@"wsdl2objc" forHTTPHeaderField:@"User-Agent"];
 	[request setValue:soapAction forHTTPHeaderField:@"SOAPAction"];
-	[request setValue:@"application/soap+xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+	// originallly:
+	//[request setValue:@"application/soap+xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+	[request setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
 	[request setValue:[NSString stringWithFormat:@"%u", [bodyData length]] forHTTPHeaderField:@"Content-Length"];
 	[request setValue:self.address.host forHTTPHeaderField:@"Host"];
 	[request setHTTPMethod: @"POST"];
@@ -3870,7 +3874,9 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	}
 	[request setValue:@"wsdl2objc" forHTTPHeaderField:@"User-Agent"];
 	[request setValue:soapAction forHTTPHeaderField:@"SOAPAction"];
-	[request setValue:@"application/soap+xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+	// originally:
+	//[request setValue:@"application/soap+xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+	[request setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
 	[request setValue:[NSString stringWithFormat:@"%u", [bodyData length]] forHTTPHeaderField:@"Content-Length"];
 	[request setValue:self.address.host forHTTPHeaderField:@"Host"];
 	[request setHTTPMethod: @"POST"];
@@ -4580,7 +4586,8 @@ static BookVaultSoap12_envelope *BookVaultSoap12SharedEnvelopeInstance = nil;
 	xmlNewNsProp(root, xslNs, (const xmlChar*)"version", (const xmlChar*)"1.0");
 	
 	xmlNewNs(root, (const xmlChar*)"http://www.w3.org/2001/XMLSchema", (const xmlChar*)"xsd");
-	xmlNewNs(root, (const xmlChar*)"BlioBookVault", (const xmlChar*)"BookVault");
+	// In wrong place:
+	//xmlNewNs(root, (const xmlChar*)"BlioBookVault", (const xmlChar*)"BookVault");
 	
 	if((headerElements != nil) && ([headerElements count] > 0)) {
 		xmlNodePtr headerNode = xmlNewDocNode(doc, soapEnvelopeNs, (const xmlChar*)"Header", NULL);

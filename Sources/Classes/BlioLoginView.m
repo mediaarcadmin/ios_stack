@@ -34,6 +34,7 @@
 	tf.keyboardAppearance = UIKeyboardAppearanceAlert;
 	tf.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	tf.autocorrectionType = UITextAutocorrectionTypeNo;
+	tf.secureTextEntry = YES;
 	
 	[self show];
 }
@@ -43,7 +44,7 @@
 	if ( buttonIndex != 1 )
 		return;
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	//vaultBinding.logXMLInOut = YES;
+	vaultBinding.logXMLInOut = YES;
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
 	loginRequest.username = @"gordonfrog@gmail.com"; //  account for testing
 	loginRequest.password = @"Gumby01";  
