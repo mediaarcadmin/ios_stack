@@ -38,12 +38,10 @@
 @interface BlioLayoutContentView : UIView {
     id <BlioLayoutDataSource> dataSource;
     NSMutableSet *pageLayers;
-    BlioLayoutPageMode layoutMode;
 }
 
 @property (nonatomic, assign) id <BlioLayoutDataSource> dataSource;
 @property (nonatomic, retain) NSMutableSet *pageLayers;
-@property (nonatomic) BlioLayoutPageMode layoutMode;
 
 - (BlioLayoutPageLayer *)addPage:(int)aPageNumber retainPages:(NSSet *)pages;
 

@@ -69,13 +69,9 @@
 @property (nonatomic, assign) BlioLayoutThumbLayer *thumbLayer;
 @end
 
-//@interface BlioLayoutContentView()
-//- (BlioLayoutPageMode)layoutMode;
-//@end
-
 @implementation BlioLayoutContentView
 
-@synthesize dataSource, pageLayers, layoutMode;
+@synthesize dataSource, pageLayers;
 
 - (void)dealloc {
     self.dataSource = nil;
@@ -92,13 +88,6 @@
         self.layer.backgroundColor = [UIColor purpleColor].CGColor;
     }
     return self;
-}
-
-- (BlioLayoutPageMode)layoutMode {
-    if (self.bounds.size.width > self.bounds.size.height)
-        return BlioLayoutPageModeLandscape;
-    else
-        return BlioLayoutPageModePortrait;
 }
 
 - (CALayer *)addPage:(NSInteger)aPageNumber retainPages:(NSSet *)pages {
@@ -141,7 +130,6 @@
         if (layerCacheCount < kBlioLayoutMaxPages) {
             //NSLog(@"Add new layer to cache");
             pageLayer = [BlioLayoutPageLayer layer];
-            pageLayer.backgroundColor = [UIColor yellowColor].CGColor;
             //[pageLayer setNeedsDisplayOnBoundsChange:YES];
             
             
@@ -167,7 +155,7 @@
             tiledLayer.levelsOfDetailBias = 5;
             tiledLayer.tileSize = CGSizeMake(2048, 2048);
             tiledLayer.thumbLayer = (id)thumbLayer;
-            //[tiledLayer setNeedsDisplayOnBoundsChange:YES];
+            [tiledLayer setNeedsDisplayOnBoundsChange:YES];
             [pageLayer addSublayer:tiledLayer];
             [pageLayer setTiledLayer:tiledLayer];
             
@@ -243,7 +231,7 @@
 }
 
 - (void)layoutSublayers {
-    NSLog(@"Laying out pageLayer sublayers");
+    //NSLog(@"Laying out pageLayer sublayers");
     CGRect layerBounds = self.bounds;
     
     for (CALayer *subLayer in self.sublayers) {
@@ -252,8 +240,8 @@
     
     //[self setNeedsDisplay];
     //[self.shadowLayer setNeedsDisplay];
-    [self.tiledLayer setContents:nil];
-    [self.tiledLayer setNeedsDisplay];
+//    [self.tiledLayer setContents:nil];
+//    [self.tiledLayer setNeedsDisplay];
 }
 
 - (void)setPageNumber:(NSInteger)newPageNumber {

@@ -218,14 +218,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.contentView = aContentView;
         [aContentView release];
         
-        // Set the layoutMode after the scrollView and contentView have been created
-        BlioLayoutPageMode newLayoutMode;
-        if (self.frame.size.width > self.frame.size.height)
-            newLayoutMode = BlioLayoutPageModeLandscape;
-        else
-            newLayoutMode = BlioLayoutPageModePortrait;
-        [self setLayoutMode:newLayoutMode animated:NO];
-        
         EucSelector *aSelector = [[EucSelector alloc] init];
         [aSelector setShouldSniffTouches:NO];
         aSelector.dataSource = self;
@@ -250,6 +242,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
+        
+        // Set the layoutMode after the scrollView, contentView and pageNumber
+        BlioLayoutPageMode newLayoutMode;
+        if (self.frame.size.width > self.frame.size.height)
+            newLayoutMode = BlioLayoutPageModeLandscape;
+        else
+            newLayoutMode = BlioLayoutPageModePortrait;
+        [self setLayoutMode:newLayoutMode animated:NO];
         
         if (animated) {
             self.currentPageLayer = [self.contentView addPage:1 retainPages:nil];
@@ -302,7 +302,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
     CGFloat pageOffset = ((self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
-    NSLog(@"pageOffset = %f", pageOffset);
+    NSLog(@"pageOffset = %f pageWidth: %f", pageOffset, pageWidth);
     
     //    CGFloat zoomScale = [self.scrollView zoomScale];
     //    CGFloat pageWidth = CGRectGetWidth(self.bounds) * zoomScale;
@@ -319,22 +319,32 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             break;
     }
     
-
+    
+    
     if (animated) {
         [UIView beginAnimations:@"rotateLayoutView" context:nil];
         [UIView setAnimationDuration:0.5f];
     }
     
-    [self.contentView setLayoutMode:newLayoutMode];
     [self setFrame:newFrame];
+    [self.scrollView setZoomScale:1.0f];
+    
     CGSize newContentSize = [self currentContentSize];
-    [self.scrollView setContentSize:newContentSize];
     [self.contentView setFrame:CGRectMake(0,0, newFrame.size.width, newContentSize.height)];
-    //[self.scrollView setContentOffset:newContentOffset];
+    [self.scrollView setContentSize:newContentSize];
+    [self.scrollView setContentOffset:CGPointMake((self.pageNumber - 1) * CGRectGetWidth(newFrame), 0)];
+    
+    //NSLog(@"pageNum: %d. width %f ContentOffset set to %@", self.pageNumber, CGRectGetWidth(newFrame), NSStringFromCGPoint(self.scrollView.contentOffset));
+
+    //[self.contentView setFrame:CGRectMake(0,0, newFrame.size.width, newContentSize.height)];
+//    [self.scrollView setContentOffset:CGPointZero];
     
     if (animated) {
         [UIView commitAnimations];
     }
+    
+    
+    
 }
      
 - (CGSize)currentContentSize {
@@ -358,6 +368,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     NSLog(@"will rotate");
     
+    self.disableScrollUpdating = YES;
+    
     BlioLayoutPageMode newLayoutMode;
     
     if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
@@ -366,10 +378,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         newLayoutMode = BlioLayoutPageModeLandscape;
     }
     
-    //[CATransaction begin];
-    //[CATransaction setValue:[NSNumber numberWithFloat:duration] forKey:kCATransactionAnimationDuration];
+    [CATransaction begin];
+    [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
     [self setLayoutMode:newLayoutMode animated:NO];
-    //[CATransaction commit];
+    [CATransaction commit];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    self.disableScrollUpdating = NO;
 }
 
 - (void)didReceiveMemoryWarning:(NSNotification *)notification {
@@ -1851,7 +1867,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
-
+    NSLog(@"scrollViewDidEndZooming");
     [self clearSnapshots];
     
     if([self.selector isTracking])
@@ -1890,6 +1906,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
+    //NSLog(@"scrollViewDidScroll");
     [self.selector setShouldHideMenu:YES];
 
     if (self.disableScrollUpdating) return;
@@ -1933,6 +1950,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)updateAfterScroll {
+    NSLog(@"updateAfterScroll");
     [self clearSnapshots];
     [self.selector setShouldHideMenu:NO];
     if (self.disableScrollUpdating) return;

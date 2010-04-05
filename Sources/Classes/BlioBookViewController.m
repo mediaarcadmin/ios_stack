@@ -1951,7 +1951,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    
+    if ([self.bookView respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
+        [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 #pragma mark -
