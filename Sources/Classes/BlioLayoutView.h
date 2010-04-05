@@ -25,9 +25,10 @@ typedef enum BlioLayoutPageMode {
 } BlioLayoutPageMode;
 
 @protocol BlioLayoutDataSource
-@optional
+@required
 - (BOOL)dataSourceContainsPage:(NSInteger)page;
 - (CGAffineTransform)viewTransformForPage:(NSInteger)page;
+- (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale;
 
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer;
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector;
