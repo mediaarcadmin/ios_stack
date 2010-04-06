@@ -7,12 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "BlioLoginManager.h"
 
 @interface BlioLoginView : UIAlertView {
+	BlioLoginManager* loginManager;
 }
 
-//- (id)init;
+@property (nonatomic,retain) BlioLoginManager* loginManager;
+
 - (void)display;
 
 @end

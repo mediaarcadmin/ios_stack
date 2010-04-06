@@ -15,7 +15,7 @@
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
 #import "BlioLoginView.h"
-
+#import "BlioLoginManager.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -102,6 +102,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate = _processingDelegate;
 @synthesize fetchedResultsController = _fetchedResultsController;
+@synthesize loginManager = _loginManager;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -162,6 +163,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [item release];  
     
     [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
+	
+	self.loginManager = [[BlioLoginManager alloc] init];
 }
 
 - (void)viewDidLoad {
@@ -648,6 +651,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 												  cancelButtonTitle:@"Cancel"
 												  otherButtonTitles:@"OK", nil]; 
 	loginView.delegate = loginView;
+	loginView.loginManager = self.loginManager;
 	[loginView display];
 	[loginView release];
 }

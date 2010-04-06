@@ -127,6 +127,7 @@
 		A3169289111488C9005AAE5E /* BlioAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3169288111488C9005AAE5E /* BlioAudioManager.m */; };
 		A349F06B110E31CC009A8F89 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A349F067110E31CC009A8F89 /* AudioBooks */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
+		A368C69E116A3A52008653CF /* BlioLoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioLoginManager.m */; };
 		A371FDCE113AF77200E1A51C /* BlioWebToolSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */; };
 		A37A584B113C36EF0003CCFF /* back-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A584A113C36EF0003CCFF /* back-black.png */; };
 		A37A586C113C45640003CCFF /* back-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A5869113C45640003CCFF /* back-gray.png */; };
@@ -644,6 +645,8 @@
 		A3169288111488C9005AAE5E /* BlioAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioManager.m; sourceTree = "<group>"; };
 		A349F067110E31CC009A8F89 /* AudioBooks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AudioBooks; sourceTree = "<group>"; };
 		A349F11B110E34DE009A8F89 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A368C69C116A3A52008653CF /* BlioLoginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLoginManager.h; sourceTree = "<group>"; };
+		A368C69D116A3A52008653CF /* BlioLoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLoginManager.m; sourceTree = "<group>"; };
 		A371FDCC113AF77200E1A51C /* BlioWebToolSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioWebToolSettingsController.h; sourceTree = "<group>"; };
 		A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioWebToolSettingsController.m; sourceTree = "<group>"; };
 		A37A584A113C36EF0003CCFF /* back-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-black.png"; sourceTree = "<group>"; };
@@ -855,6 +858,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A368C69C116A3A52008653CF /* BlioLoginManager.h */,
+				A368C69D116A3A52008653CF /* BlioLoginManager.m */,
 				A3892C1D1164331A006D8DF4 /* BookVault */,
 				C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */,
 				C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */,
@@ -899,8 +904,8 @@
 				A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */,
 				A3169287111488C9005AAE5E /* BlioAudioManager.h */,
 				A3169288111488C9005AAE5E /* BlioAudioManager.m */,
-				A3A672B411304D7700138097 /* BlioAppSettingsController.h */,
 				A3A672B511304D7700138097 /* BlioAppSettingsController.m */,
+				A3A672B411304D7700138097 /* BlioAppSettingsController.h */,
 				A3A67374113078E300138097 /* BlioAudioSettingsController.h */,
 				A3A67375113078E300138097 /* BlioAudioSettingsController.m */,
 				A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */,
@@ -1782,6 +1787,7 @@
 				A38161641164FB3E003A9709 /* USGlobals.m in Sources */,
 				A38161651164FB3E003A9709 /* xsd.m in Sources */,
 				A38161961165494D003A9709 /* BlioLoginView.m in Sources */,
+				A368C69E116A3A52008653CF /* BlioLoginManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
