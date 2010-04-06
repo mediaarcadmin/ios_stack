@@ -115,7 +115,7 @@
 		7D19047711494CEA00375803 /* parserutilserror.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903E811494CEA00375803 /* parserutilserror.h */; };
 		7D19047811494CEA00375803 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1903E911494CEA00375803 /* utils.c */; };
 		7D19047911494CEA00375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903EA11494CEA00375803 /* utils.h */; };
-		7D1906661149599F00375803 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1906641149599F00375803 /* th_just_with_floats.c */; };
+		7D1906661149599F00375803 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1906641149599F00375803 /* th_just_with_floats.c */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
 		7D1906671149599F00375803 /* th_just_with_floats.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1906651149599F00375803 /* th_just_with_floats.h */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
@@ -247,8 +247,6 @@
 		7D51706110288585005F3C46 /* THRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51705F10288585005F3C46 /* THRegex.m */; };
 		7D5170681028876D005F3C46 /* THIntegerCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170641028876D005F3C46 /* THIntegerCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D5170691028876D005F3C46 /* THIntegerCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170651028876D005F3C46 /* THIntegerCache.m */; };
-		7D51706A1028876D005F3C46 /* THLowMemoryDictionaryEmptier.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D51706B1028876D005F3C46 /* THLowMemoryDictionaryEmptier.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */; };
 		7D5170E81028ADD6005F3C46 /* HyphenationRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E01028ADD6005F3C46 /* HyphenationRule.cpp */; };
 		7D5170E91028ADD6005F3C46 /* HyphenationRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170E11028ADD6005F3C46 /* HyphenationRule.h */; };
 		7D5170EA1028ADD6005F3C46 /* HyphenationTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E21028ADD6005F3C46 /* HyphenationTree.cpp */; };
@@ -327,6 +325,8 @@
 		7D7E2202111F227E00F7F585 /* MenuArrowTopHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7E21FA111F227E00F7F585 /* MenuArrowTopHighlighted.png */; };
 		7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883FCB111C7735009669A8 /* EucMenuView.m */; };
 		7D81C2301151BAAC008248F1 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
+		7D8454DD1163C4EC003F1D1C /* THIntegerKeysCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB146E211624FA600596813 /* THIntegerKeysCache.m */; };
+		7D8454DF1163C4F3003F1D1C /* THTreeCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB145D21162301800596813 /* THTreeCache.m */; };
 		7D883FA0111C640C009669A8 /* EucMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F5D111C5862009669A8 /* EucMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D883FA1111C640C009669A8 /* EucMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883F5E111C5862009669A8 /* EucMenuItem.m */; };
 		7D883FA2111C640C009669A8 /* EucMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F63111C586F009669A8 /* EucMenuController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -894,8 +894,6 @@
 		7D51705F10288585005F3C46 /* THRegex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THRegex.m; sourceTree = "<group>"; };
 		7D5170641028876D005F3C46 /* THIntegerCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THIntegerCache.h; sourceTree = "<group>"; };
 		7D5170651028876D005F3C46 /* THIntegerCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THIntegerCache.m; sourceTree = "<group>"; };
-		7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLowMemoryDictionaryEmptier.h; sourceTree = "<group>"; };
-		7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLowMemoryDictionaryEmptier.m; sourceTree = "<group>"; };
 		7D5170CE1028AD1B005F3C46 /* libhyphenate.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhyphenate.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5170D21028ADD6005F3C46 /* BUGS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BUGS; sourceTree = "<group>"; };
 		7D5170D31028ADD6005F3C46 /* CHANGELOG */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG; sourceTree = "<group>"; };
@@ -1002,6 +1000,10 @@
 		7DB0409E11451687000C2980 /* THCALayerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCALayerAdditions.m; sourceTree = "<group>"; };
 		7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorRange.h; sourceTree = "<group>"; };
 		7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorRange.m; sourceTree = "<group>"; };
+		7DB145D11162301800596813 /* THTreeCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTreeCache.h; sourceTree = "<group>"; };
+		7DB145D21162301800596813 /* THTreeCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTreeCache.m; sourceTree = "<group>"; };
+		7DB146E111624FA600596813 /* THIntegerKeysCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THIntegerKeysCache.h; sourceTree = "<group>"; };
+		7DB146E211624FA600596813 /* THIntegerKeysCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THIntegerKeysCache.m; sourceTree = "<group>"; };
 		7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
 		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
@@ -1156,9 +1158,9 @@
 			children = (
 				7D516DFF102872A5005F3C46 /* BookView */,
 				7D516E42102873FA005F3C46 /* Model */,
-				7D516E221028734C005F3C46 /* Utils */,
 				7D9AA999114A8EB60055C381 /* bUpe */,
 				7D2340F51149602200C318E7 /* CSS */,
+				7D516E221028734C005F3C46 /* Utils */,
 				7D516E1710287300005F3C46 /* ThirdParty */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				7D53F30910C2CBD70042215C /* TransitionTest */,
@@ -2115,10 +2117,12 @@
 				7D516FFD10287922005F3C46 /* THCopyWithCoder.m */,
 				7D5170461028852B005F3C46 /* THBackgroundProcessingMediator.h */,
 				7D5170471028852B005F3C46 /* THBackgroundProcessingMediator.m */,
+				7DB145D11162301800596813 /* THTreeCache.h */,
+				7DB145D21162301800596813 /* THTreeCache.m */,
+				7DB146E111624FA600596813 /* THIntegerKeysCache.h */,
+				7DB146E211624FA600596813 /* THIntegerKeysCache.m */,
 				7D5170641028876D005F3C46 /* THIntegerCache.h */,
 				7D5170651028876D005F3C46 /* THIntegerCache.m */,
-				7D5170661028876D005F3C46 /* THLowMemoryDictionaryEmptier.h */,
-				7D5170671028876D005F3C46 /* THLowMemoryDictionaryEmptier.m */,
 				7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */,
 				7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */,
 				7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */,
@@ -2608,7 +2612,6 @@
 				7D51705A10288579005F3C46 /* THNSStringAdditions.h in Headers */,
 				7D51706010288585005F3C46 /* THRegex.h in Headers */,
 				7D5170681028876D005F3C46 /* THIntegerCache.h in Headers */,
-				7D51706A1028876D005F3C46 /* THLowMemoryDictionaryEmptier.h in Headers */,
 				7D51710E1028AF47005F3C46 /* EucBookPaginator.h in Headers */,
 				7D5172A61028B771005F3C46 /* EucBookParagraph.h in Headers */,
 				7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */,
@@ -3048,6 +3051,8 @@
 				7D3AED79114963560059C5B6 /* EucCSSRenderer.m in Sources */,
 				7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */,
 				7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */,
+				7D8454DD1163C4EC003F1D1C /* THIntegerKeysCache.m in Sources */,
+				7D8454DF1163C4F3003F1D1C /* THTreeCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3143,7 +3148,6 @@
 				7D51705B10288579005F3C46 /* THNSStringAdditions.m in Sources */,
 				7D51706110288585005F3C46 /* THRegex.m in Sources */,
 				7D5170691028876D005F3C46 /* THIntegerCache.m in Sources */,
-				7D51706B1028876D005F3C46 /* THLowMemoryDictionaryEmptier.m in Sources */,
 				7D51710F1028AF47005F3C46 /* EucBookPaginator.m in Sources */,
 				7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */,
 				7D6AAD5E1028E774006289E6 /* EucSharedHyphenator.mm in Sources */,

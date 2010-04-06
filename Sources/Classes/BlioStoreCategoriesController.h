@@ -20,10 +20,12 @@ static const NSInteger kBlioMoreResultsCellActivityIndicatorViewWidth = 16;
     NSMutableArray *feeds;
     id <BlioProcessingDelegate> processingDelegate;
 	NSManagedObjectContext *managedObjectContext;
+	UIActivityIndicatorView * activityIndicatorView;
 }
 
 @property (nonatomic, retain) NSMutableArray *feeds;
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicatorView;
 
 @end

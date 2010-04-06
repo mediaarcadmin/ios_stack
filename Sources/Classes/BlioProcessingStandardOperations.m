@@ -15,15 +15,35 @@ static const CGFloat kBlioCoverGridThumbHeight = 140;
 static const CGFloat kBlioCoverGridThumbWidth = 102;
 
 NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioProcessingCompleteOperationFinishedNotification";
+NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProcessingCompleteOperationFailedNotification";
 
 
 @implementation BlioProcessingCompleteOperation
 
 - (void)main {
-    if ([self isCancelled]) return;
-    [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"processingComplete"];
-    NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
-//    NSLog(@"sourceID:%@ sourceSpecificID:%@", [self getBookValueForKey:@"sourceID"],[self getBookValueForKey:@"sourceSpecificID"]);
+    if ([self isCancelled]) {
+		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause)");
+		return;
+	}
+	for (BlioProcessingOperation * blioOp in [self dependencies]) {
+		if (!blioOp.operationSuccess) {
+			NSLog(@"failed dependency found! Sending Failed Notification...");
+			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingCompleteOperationFailedNotification object:self];
+			[self cancel];
+			return;
+		}
+	}	
+	// delete temp download dir
+	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
+	NSError * downloadDirError;
+	if (![[NSFileManager defaultManager] removeItemAtPath:dirPath error:&downloadDirError]) {
+		NSLog(@"Failed to delete download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
+	}
+	
+    [self setBookValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateComplete] forKey:@"processingComplete"];
+    // The following condition is done in order to prevent a thread's first-time access to [self getBookValueForKey:@"title"] (which happens when there are no dependencies- theoretically that should never happen, but a crash would occur in artificial tests so a safeguard is warranted)... could also be avoided by simply not accessing the MOC in this method for the NSLog.
+    if ([NSThread isMainThread]) NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
+	else NSLog(@"Processing complete for book with sourceID:%@ sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingCompleteOperationFinishedNotification object:self];
 }
 
@@ -63,7 +83,6 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
     if((self = [super init])) {
         self.url = aURL;
 		expectedContentLength = NSURLResponseUnknownLength;
-		        
         executing = NO;
         finished = NO;
 		resume = NO;
@@ -105,9 +124,17 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
         [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
         return;
     }
-    
+	for (BlioProcessingOperation * blioOp in [self dependencies]) {
+		if (!blioOp.operationSuccess) {
+			NSLog(@"failed dependency found!");
+			[self cancel];
+			break;
+		}
+	}
+	
     if ([self isCancelled]) {
         [self willChangeValueForKey:@"isFinished"];
+		NSLog(@"Operation cancelled, will prematurely abort start");
         finished = YES;
         [self didChangeValueForKey:@"isFinished"];
         return;
@@ -117,24 +144,22 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
 
-	// localFilename should've been set in ProcessingManager
-//    NSLog(@"self.url: %@",[self.url absoluteString]);
- //   NSLog(@"self.localFilename: %@",self.localFilename);
-	if (self.localFilename == nil || [self.localFilename isEqualToString:@""]) {
-        // Processing manager did not set localFilename from context. Therefore generate a random filename
-        CFUUIDRef theUUID = CFUUIDCreate(NULL);
-        CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
-        CFRelease(theUUID);
-        self.localFilename = [NSString stringWithString:(NSString *)uniqueString];
-        CFRelease(uniqueString);
-		[self setBookValue:self.localFilename forKey:self.filenameKey];
-    }
-	else resume = YES;
-    
-    NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
-
+    // create temp download dir
+	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
+	NSError * downloadDirError;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath]) {
+		if (![[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:&downloadDirError]) {
+			NSLog(@"Failed to create download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
+		}
+	}
+//	NSLog(@"self.url: %@",[self.url absoluteString]);
     if([self.url isFileURL]) {
-        // Just copy the local files to save time
+		//   NSLog(@"self.localFilename: %@",self.localFilename);
+
+		
+		NSString *cachedPath = [self.tempDirectory stringByAppendingPathComponent:self.filenameKey];
+        
+		// Just copy the local files to save time
         NSError *error;
         NSString *fromPath = [[[self.url absoluteURL] path] stringByStandardizingPath];
         NSString *toPath = [cachedPath stringByStandardizingPath];
@@ -142,6 +167,8 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
         if (![[NSFileManager defaultManager] copyItemAtPath:fromPath toPath:toPath error:&error]) {
             NSLog(@"Failed to copy file from %@ to %@ with error %@ : %@", fromPath, toPath, error, [error userInfo]);
         }
+
+
         
         [self downloadDidFinishSuccessfully:YES];
         [self finish];
@@ -158,29 +185,39 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
     }
 }
 - (void)startDownload {
-    NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
+    NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	if (resume == NO) {
+	/*
+    NSString *cachedPath = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
+	// see if there is no need to downlaod (asset is already present at cachedPath
+	if ([fileManager fileExistsAtPath:cachedPath]) {
+		[self downloadDidFinishSuccessfully:NO];
+		[self finish];
+		return;
+	}
+	*/
+	
+	if (resume == NO || forceReprocess == YES) {
 		// if not resuming, delete whatever is in place
-		if ([NSFileHandle fileHandleForWritingAtPath:cachedPath] != nil) [fileManager removeItemAtPath:cachedPath error:NULL];
+		if ([NSFileHandle fileHandleForWritingAtPath:temporaryPath] != nil) [fileManager removeItemAtPath:temporaryPath error:NULL];
 	}
 	// ensure there is a file in place
-	if ([NSFileHandle fileHandleForWritingAtPath:cachedPath] == nil) {
-		if (![fileManager createFileAtPath:cachedPath contents:nil attributes:nil]) {
-			NSLog(@"Could not create file to hold download");
+	if ([NSFileHandle fileHandleForWritingAtPath:temporaryPath] == nil) {
+		if (![fileManager createFileAtPath:temporaryPath contents:nil attributes:nil]) {
+			NSLog(@"Could not create file to hold download at location: %@",temporaryPath);
 			[self downloadDidFinishSuccessfully:NO];
 			[self finish];
 		}
 	}
-	self.downloadFile = [NSFileHandle fileHandleForWritingAtPath:cachedPath];
+	self.downloadFile = [NSFileHandle fileHandleForWritingAtPath:temporaryPath];
 	NSMutableURLRequest *aRequest = [[NSMutableURLRequest alloc] initWithURL:self.url];
 //	NSLog(@"about to start connection to URL: %@",[self.url absoluteString]);
-	if (resume) {
+	if (resume && forceReprocess == NO) {
 		// add range header
 		NSError * error = nil;
-		NSDictionary * fileAttributes = [fileManager attributesOfItemAtPath:cachedPath error:&error];
+		NSDictionary * fileAttributes = [fileManager attributesOfItemAtPath:temporaryPath error:&error];
 		if (error != nil) {
-            NSLog(@"Failed to retrieve file attributes from path:%@ with error %@ : %@", cachedPath, error, [error userInfo]);
+            NSLog(@"Failed to retrieve file attributes from path:%@ with error %@ : %@", temporaryPath, error, [error userInfo]);
 		}
 		NSNumber * bytesAlreadyDownloaded = [fileAttributes valueForKey:NSFileSize];
 //		NSLog(@"bytesAlreadyDownloaded: %@",[bytesAlreadyDownloaded stringValue]);
@@ -203,7 +240,7 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
 		[aConnection release];
 	}	
 }
-- (void)headDownload {
+- (void)headDownload {	
 	// make HEAD HTTP method call to see if server supports Accept-Ranges header
 	NSMutableURLRequest *headRequest = [[NSMutableURLRequest alloc] initWithURL:self.url];
 	[headRequest setHTTPMethod:@"HEAD"];
@@ -261,7 +298,7 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
 		}
 	}
 	else if (theConnection == connection) {
-		if (httpResponse.statusCode != 206 && resume == YES) {
+		if (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO) {
 			// we are not getting partial content; try again from scratch.
 			// TODO: just erase previous progress and keep using this connection instead of starting from scratch
 			resume = NO;
@@ -279,6 +316,21 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
 	else {
 		
 	}
+	if ([self isCancelled]) {
+		if (self.headConnection) {
+			[self.headConnection cancel];
+			self.headConnection = nil;
+		}
+		if (self.connection) {
+			[self.connection cancel];
+			self.connection = nil;
+		}
+		[self willChangeValueForKey:@"isFinished"];
+        finished = YES;
+		NSLog(@"DownloadOperation cancelled, will prematurely abort NSURLConnection");
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }	
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
@@ -302,10 +354,30 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
 //	if (success) NSLog(@"Download finished successfully"); 
 	if (!success) {
-		NSLog(@"Download did not finish successfully");
+		NSLog(@"BlioProcessingDownloadOperation: Download did not finish successfully");
 		NSLog(@"for url: %@",[self.url absoluteString]);
 	}
-	// NOTE: setting localFilename of book is now done immediately upon generating new uuid, so as to accommodate resuming downloads.
+	else {
+		// generate new filename
+		CFUUIDRef theUUID = CFUUIDCreate(NULL);
+		CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
+		CFRelease(theUUID);
+		
+		NSString *temporaryPath = [self.tempDirectory stringByAppendingPathComponent:self.filenameKey];
+		NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:[NSString stringWithString:(NSString *)uniqueString]];
+		// copy file to final location (cachedPath)
+		NSError * error;
+		if (![[NSFileManager defaultManager] moveItemAtPath:temporaryPath toPath:cachedPath error:&error]) {
+            NSLog(@"Failed to move file from download cache %@ to final location %@ with error %@ : %@", temporaryPath, cachedPath, error, [error userInfo]);
+
+        }
+		else {
+			[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+			operationSuccess = YES;
+		}
+		CFRelease(uniqueString);
+
+	}
 }
 
 @end
@@ -319,54 +391,67 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     if (!success) {
-        NSLog(@"Download did not finish successfully");
+        NSLog(@"BlioProcessingDownloadAndUnzipOperation: Download did not finish successfully");
 		NSLog(@"for url: %@",[self.url absoluteString]);
         [pool drain];
         return;
     }
 //	NSLog(@"Download finished successfully"); 
 //	NSLog(@"for url: %@",[self.url absoluteString]);
-    
-    NSString *unzippedFilename = [self.localFilename stringByDeletingPathExtension];
-    if ([unzippedFilename isEqualToString:self.localFilename]) {
-        // Generate a random filename
-        CFUUIDRef theUUID = CFUUIDCreate(NULL);
-        CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
-        CFRelease(theUUID);
-        unzippedFilename = [NSString stringWithString:(NSString *)uniqueString];
-        CFRelease(uniqueString);
-    }
-        
+
+
+	// Generate a random filename
+	CFUUIDRef theUUID = CFUUIDCreate(NULL);
+	CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
+	CFRelease(theUUID);
+	NSString *unzippedFilename = unzippedFilename = [NSString stringWithString:(NSString *)uniqueString];
+	CFRelease(uniqueString);
+	
+	
+    NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
+    NSString *temporaryPath2 = [[self.tempDirectory stringByAppendingPathComponent:unzippedFilename] stringByStandardizingPath];
+
     BOOL unzipSuccess = NO;
     ZipArchive* aZipArchive = [[ZipArchive alloc] init];
-	if([aZipArchive UnzipOpenFile:[self.cacheDirectory stringByAppendingPathComponent:self.localFilename]] ) {
-		if (![aZipArchive UnzipFileTo:[self.cacheDirectory stringByAppendingPathComponent:unzippedFilename] overWrite:YES]) {
-            NSLog(@"Failed to unzip file from %@ to %@", self.localFilename, unzippedFilename);
+	if([aZipArchive UnzipOpenFile:temporaryPath] ) {
+		if (![aZipArchive UnzipFileTo:temporaryPath2 overWrite:YES]) {
+            NSLog(@"Failed to unzip file from %@ to %@", temporaryPath, temporaryPath2);
         } else {
             unzipSuccess = YES;
         }
 
 		[aZipArchive UnzipCloseFile];
 	} else {
-        NSLog(@"Failed to open zipfile at path: %@", [self.cacheDirectory stringByAppendingPathComponent:self.localFilename]);
+        NSLog(@"Failed to open zipfile at path: %@", temporaryPath);
     }
     
 	[aZipArchive release];
 
     NSError *anError;
-    if (![[NSFileManager defaultManager] removeItemAtPath:[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] error:&anError])
-        NSLog(@"Failed to delete zip file at path %@ with error: %@, %@", [self.cacheDirectory stringByAppendingPathComponent:self.localFilename], anError, [anError userInfo]);
+    if (![[NSFileManager defaultManager] removeItemAtPath:temporaryPath error:&anError])
+        NSLog(@"Failed to delete zip file at path %@ with error: %@, %@", temporaryPath, anError, [anError userInfo]);
 
     self.localFilename = unzippedFilename;
-    
+     
     [self unzipDidFinishSuccessfully:unzipSuccess];    
     
     [pool drain];
 }
 
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
-    if (success) [self setBookValue:self.localFilename forKey:self.filenameKey];
-    else NSLog(@"Unzip did not finish successfully");
+    if (success) {
+		NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
+		NSString *targetFilename = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
+		NSError *anError;
+        if (![[NSFileManager defaultManager] moveItemAtPath:temporaryPath toPath:targetFilename error:&anError]) {
+            NSLog(@"Error whilst attempting to move file %@ to %@", temporaryPath, targetFilename);
+            return;
+        }
+		else {
+			[self setBookValue:self.localFilename forKey:self.filenameKey];
+			operationSuccess = YES;
+		}
+	} else NSLog(@"Unzip did not finish successfully");
 }
 
 @end
@@ -469,8 +554,17 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
 }
 
 - (void)main {
-    if ([self isCancelled]) return;
-    
+	for (BlioProcessingOperation * blioOp in [self dependencies]) {
+		if (!blioOp.operationSuccess) {
+			NSLog(@"failed dependency found!");
+			[self cancel];
+			break;
+		}
+	}	
+    if ([self isCancelled]) {
+		NSLog(@"Operation cancelled, will prematurely abort start");
+		return;
+    }
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSString *coverFile = [self getBookValueForKey:@"coverFilename"]; 
@@ -501,7 +595,7 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
     [gridData writeToFile:gridThumbPath atomically:YES];
     [gridThumb release]; // this is giving an ERROR (TODO)
     [self setBookValue:@"gridThumb.png" forKey:@"gridThumbFilename"];
-    
+
     if ([self isCancelled]) {
         [pool drain];
         return;
@@ -513,6 +607,8 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
     [listData writeToFile:listThumbPath atomically:YES];
     [listThumb release];
     [self setBookValue:@"listThumb.png" forKey:@"listThumbFilename"];
+	operationSuccess = YES;
+
     
     // The above operations will erroneously report a malloc error in the 3.0 Simulator
     // This appears to be a simulator-only bug in Apple's framework as described here:
@@ -558,16 +654,11 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
         NSError *anError;
         
         // Rename the unzipped folder to be TextFlow
-        NSString *cachedFilename = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
+        NSString *cachedFilename = [self.tempDirectory stringByAppendingPathComponent:self.localFilename];
         NSString *targetFilename = [self.cacheDirectory stringByAppendingPathComponent:@"TextFlow"];
         
-        if (![[NSFileManager defaultManager] moveItemAtPath:cachedFilename toPath:targetFilename error:&anError]) {
-            NSLog(@"Error whilst attempting to move file %@ to %@", cachedFilename, targetFilename);
-            return;
-        }
-        
         // Identify textFlow root file
-        NSArray *textFlowFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:targetFilename error:&anError];
+        NSArray *textFlowFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:cachedFilename error:&anError];
         if (nil == textFlowFiles)
             NSLog(@"Error whilst enumerating Textflow directory %@: %@, %@", targetFilename, anError, [anError userInfo]);
         
@@ -586,8 +677,17 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
             }
         }
         
-        if (nil != rootFile)
-            [self setBookValue:rootFile forKey:self.filenameKey];
+        if (nil != rootFile) {
+			if (![[NSFileManager defaultManager] moveItemAtPath:cachedFilename toPath:targetFilename error:&anError]) {
+				NSLog(@"Error whilst attempting to move file %@ to %@", cachedFilename, targetFilename);
+				
+				return;
+			}			
+            else {
+				[self setBookValue:rootFile forKey:self.filenameKey];
+				self.operationSuccess = YES;
+			}
+		}
         else
             NSLog(@"Could not find root file in Textflow directory %@", cachedFilename);
     }
@@ -608,19 +708,14 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
         NSError *anError;
         
         // Rename the unzipped folder to be Audiobook
-        NSString *cachedFilename = [self.cacheDirectory stringByAppendingPathComponent:self.localFilename];
+        NSString *temporaryPath = [self.tempDirectory stringByAppendingPathComponent:self.localFilename];
         NSString *targetFilename = [self.cacheDirectory stringByAppendingPathComponent:@"Audiobook"];
-        
-        if (![[NSFileManager defaultManager] moveItemAtPath:cachedFilename toPath:targetFilename error:&anError]) {
-            NSLog(@"Error whilst attempting to move file %@ to %@", cachedFilename, targetFilename);
-            return;
-        }
-        
+                
         // Identify Audiobook root files        
         // TODO These checks (especially for the root rtx file) are not robust
-        NSArray *audioFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:targetFilename error:&anError];
+        NSArray *audioFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:temporaryPath error:&anError];
         if (nil == audioFiles)
-            NSLog(@"Error whilst enumerating Audiobook directory %@: %@, %@", targetFilename, anError, [anError userInfo]);
+            NSLog(@"Error whilst enumerating Audiobook directory %@: %@, %@", temporaryPath, anError, [anError userInfo]);
         
 		// There can be multiple mp3 files as well as multiple rtx files.  
 		// The metadata xml file has metadata that maps mp3-rtx pairs to fixed pages.
@@ -640,11 +735,18 @@ NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioPro
         }
 		// For now keep the old key names.
         if (audioMetadataFilename && audioReferencesFilename) {
-            [self setBookValue:audioMetadataFilename forKey:self.filenameKey];
-            [self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"];
-            [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudioRights"]; 
+			if (![[NSFileManager defaultManager] moveItemAtPath:temporaryPath toPath:targetFilename error:&anError]) {
+				NSLog(@"Error whilst attempting to move file %@ to %@", temporaryPath, targetFilename);
+				return;
+			}
+			else {
+				[self setBookValue:audioMetadataFilename forKey:self.filenameKey];
+				[self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"];
+				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudioRights"]; 
+				operationSuccess = YES;
+			}
         } else {
-            NSLog(@"Could not find required audiobook files in AudioBook directory %@", cachedFilename);
+            NSLog(@"Could not find required audiobook files in AudioBook directory %@", temporaryPath);
         }        
     }
 }

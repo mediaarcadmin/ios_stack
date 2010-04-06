@@ -55,8 +55,6 @@ typedef enum THStringRendererFontStyleFlags {
     THStringRendererFlags _lastFlags;
     CGFloat _fauxBoldStrokeWidth;
     
-    uint32_t _measuringContextData;
-    CGContextRef _measuringContext;
     CGAffineTransform _textTransform;
 }
 

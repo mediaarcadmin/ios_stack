@@ -64,6 +64,15 @@
     return [NSString stringWithFormat:@"( %@, %@ )", first, second];
 }
 
+- (NSComparisonResult)compare:(THPair *)anObject
+{
+    NSComparisonResult result = [first compare:anObject->first];
+    if(result == NSOrderedSame) {
+        return [second compare:anObject->second];
+    }
+    return result;
+}
+
 @end
 
 

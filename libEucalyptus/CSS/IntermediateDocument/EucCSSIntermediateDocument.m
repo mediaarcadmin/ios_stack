@@ -20,13 +20,16 @@
 
 #import "EucCSSInternal.h"
 
+#import "THIntegerKeysCache.h"
 #import "THLog.h"
 
 @implementation EucCSSIntermediateDocument
 
 + (void)initialize
 {
-    css_initialise([[NSBundle mainBundle] pathForResource:@"Aliases" ofType:@""].fileSystemRepresentation, EucRealloc, NULL);
+    if (self == [EucCSSIntermediateDocument class]) {
+        css_initialise([[NSBundle mainBundle] pathForResource:@"Aliases" ofType:@""].fileSystemRepresentation, EucRealloc, NULL);
+    }
 }
 
 @synthesize url = _url;
@@ -307,13 +310,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             [self release]; 
             self = nil;
         } else {
-            // We MUST not retain any nodes - they will retain us.
-            static const CFDictionaryKeyCallBacks keyCallbacks = {0};
-            static const CFDictionaryValueCallBacks valueCallbacks = {0};
-            _keyToExtantNode = CFDictionaryCreateMutable(kCFAllocatorDefault,
-                                                         0,
-                                                         &keyCallbacks,
-                                                         &valueCallbacks);
+            _keyToExtantNode = [[THIntegerKeysCache alloc] init];
         }
     }
     return self;    
@@ -341,7 +338,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key
 {
-    EucCSSIntermediateDocumentNode *node = (EucCSSIntermediateDocumentNode *)CFDictionaryGetValue(_keyToExtantNode, (void *)(uintptr_t)key);
+    EucCSSIntermediateDocumentNode *node = [_keyToExtantNode objectForKey:key];
     if(!node) {
         uint32_t keyKind = key & EucCSSIntermediateDocumentNodeKeyFlagMask;
         if(keyKind != 0) {
@@ -361,7 +358,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             }
         }
         if(node) {
-            CFDictionarySetValue(_keyToExtantNode, (void *)(uintptr_t)key, node);
+            [_keyToExtantNode cacheObject:node forKey:key];
         }
         [node autorelease];
     }
@@ -394,17 +391,10 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     return dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
 }
 
-- (void)notifyOfDealloc:(EucCSSIntermediateDocumentNode *)node
-{
-    CFDictionaryRemoveValue(_keyToExtantNode, (void *)(uintptr_t)node.key);
-}
-
 - (void)dealloc
-{
-    if(_keyToExtantNode) {
-        CFRelease(_keyToExtantNode);
-    }
-    
+{        
+    [_keyToExtantNode release];
+
     css_select_ctx_destroy(_selectCtx);
 
     for(NSUInteger i = 0; i < _stylesheetsCount; ++i) {
@@ -419,7 +409,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     
     [_documentTree release];    
     [_url release];
-    
+
     [super dealloc];
 }
 

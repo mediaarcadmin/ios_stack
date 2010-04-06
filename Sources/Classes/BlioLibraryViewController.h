@@ -8,6 +8,7 @@
 
 #import <CoreData/CoreData.h>
 
+
 @class BlioTestBlockWords;
 
 typedef enum {
@@ -15,6 +16,7 @@ typedef enum {
     kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
+@class BlioLoginManager;
 @class BlioLibraryBookView;
 @protocol BlioProcessingDelegate;
 
@@ -32,6 +34,8 @@ typedef enum {
     id<BlioProcessingDelegate> _processingDelegate;
     
     NSFetchedResultsController *_fetchedResultsController;
+	
+	BlioLoginManager* _loginManager;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -44,5 +48,6 @@ typedef enum {
 @property (nonatomic) BlioLibraryLayout libraryLayout;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) BlioLoginManager *loginManager;
 
 @end

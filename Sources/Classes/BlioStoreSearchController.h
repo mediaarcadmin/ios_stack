@@ -22,6 +22,7 @@ static const NSInteger kBlioStoreSearchTag = 2;
     UIBarButtonItem *doneButton;
     UIBarButtonItem *fillerButton;
     BlioStoreSearchTableView *dimmableTableView;
+
 }
 
 @property (nonatomic, retain) NSString *savedSearchTerm;
