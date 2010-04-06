@@ -16,26 +16,31 @@
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocumentNode.h"
+#import "THLowMemoryDictionaryEmptier.h"
 #import "THStringRenderer.h"
 #import "THLog.h"
 #import "th_just_with_floats.h"
 
-#import <libcss/libcss.h>
+#import "EucSharedHyphenator.h"
 
-static id sSingleSpaceMarker;
-static id sOpenNodeMarker;
-static id sCloseNodeMarker;
-static id sHardBreakMarker;
+#import <libcss/libcss.h>
+#import <pthread.h>
+
+#import <memory>
+#import <vector>
+
+using namespace std;
+using namespace Hyphenate;
 
 typedef struct EucCSSLayoutDocumentRunBreakInfo {
     EucCSSLayoutDocumentRunPoint point;
-    BOOL isComponent;
+    BOOL consumesComponent;
 } EucCSSLayoutDocumentRunBreakInfo;
 
 @interface EucCSSLayoutDocumentRun ()
 - (void)_populateComponentInfo:(EucCSSLayoutDocumentRunComponentInfo *)info 
                        forNode:(EucCSSIntermediateDocumentNode *)subnode;
-- (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucCSSLayoutDocumentRunComponentInfo *)size;
+- (void)_addComponent:(EucCSSLayoutDocumentRunComponentInfo *)info;
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (CGFloat)_textIndentInWidth:(CGFloat)width;
@@ -43,40 +48,9 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 
 @implementation EucCSSLayoutDocumentRun
 
-@synthesize components = _components;
 @synthesize componentInfos = _componentInfos;
 @synthesize componentsCount = _componentsCount;
 @synthesize wordToComponent = _wordToComponent;
-
-+ (void)initialize
-{
-    if(self == [EucCSSLayoutDocumentRun class]) {
-        sSingleSpaceMarker = (id)kCFNull;
-        sOpenNodeMarker = [[NSObject alloc] init];
-        sCloseNodeMarker = [[NSObject alloc] init];
-        sHardBreakMarker = [[NSObject alloc] init];
-    }
-}
-
-+ (id)singleSpaceMarker
-{
-    return sSingleSpaceMarker;
-}
-
-+ (id)openNodeMarker
-{
-    return sOpenNodeMarker;
-}
-
-+ (id)closeNodeMarker
-{
-    return sCloseNodeMarker;
-}
-
-+ (id)hardBreakMarker
-{
-    return sHardBreakMarker;
-}
 
 @synthesize id = _id;
 @synthesize nextNodeUnderLimitNode = _nextNodeUnderLimitNode;
@@ -88,6 +62,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
        scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {
+        _sharedHyphenator = (void *)SharedHyphenator::sharedHyphenator();
+
         _id = id;
         
         _scaleFactor = scaleFactor;
@@ -98,12 +74,12 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         // _wordToComponent is 1-indexed for words - word '0' is the start of 
         // this run - so set that up now.
         _wordToComponentCapacity = 128;
-        _wordToComponent = malloc(_wordToComponentCapacity * sizeof(uint32_t));
+        _wordToComponent = (uint32_t *)malloc(_wordToComponentCapacity * sizeof(uint32_t));
         _wordToComponent[0] = 0;         
         
         BOOL reachedLimit = NO;
         
-        EucCSSLayoutDocumentRunComponentInfo currentComponentInfo = {0};
+        EucCSSLayoutDocumentRunComponentInfo currentComponentInfo = { EucCSSLayoutDocumentRunComponentKindNone };
         
         while (!reachedLimit && 
                inlineNode && 
@@ -117,9 +93,11 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
             } else {
                 // Open this node.
                 [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
-                [self _addComponent:[EucCSSLayoutDocumentRun openNodeMarker] isWord:NO info:&currentComponentInfo];
+                currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
+                [self _addComponent:&currentComponentInfo];
                 if(inlineNode.childCount == 0) {
-                    [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&currentComponentInfo];
+                    currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
+                    [self _addComponent:&currentComponentInfo];
                 }
             }
             
@@ -129,7 +107,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                 if(!inlineNode.isTextNode && inlineNode.childCount > 0) {
                     // If the node /doesn't/ have children, it's already closed,
                     // above.
-                    [self _addComponent:[EucCSSLayoutDocumentRun closeNodeMarker] isWord:NO info:&currentComponentInfo];
+                    currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
+                    [self _addComponent:&currentComponentInfo];
                     [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
                 }
                 nextNode = [inlineNode nextDisplayableUnder:underNode];
@@ -153,10 +132,15 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 
 - (void)dealloc
 {
-    for(int i = 0; i < _componentsCount; ++i) {
-        [_components[i] release];
+    for(uint32_t i = 0; i < _componentsCount; ++i) {
+        EucCSSLayoutDocumentRunComponentKind kind = _componentInfos[i].kind;
+        if(kind == EucCSSLayoutDocumentRunComponentKindWord || kind == EucCSSLayoutDocumentRunComponentKindImage) { 
+            [(id)(_componentInfos[i].component) release];
+        } else if(kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+            [(id)(_componentInfos[i].component) release];
+            [(id)(_componentInfos[i].component2) release];
+        }
     }
-    free(_components);
     free(_componentInfos);
     free(_wordToComponent);
     
@@ -172,6 +156,43 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     [super dealloc];
 }
 
+static CFMutableDictionaryRef sHyphenationPointCache = nil;
+static pthread_mutex_t sHyphenationPointCacheMutex = PTHREAD_MUTEX_INITIALIZER;
+static THLowMemoryDictionaryEmptier *sHyphenationPointCacheLowMemoryEmptier;
+
+static void _DeleteVectorCallback(CFAllocatorRef allocator, const void *value)
+{
+    delete (vector<const HyphenationRule*> *)value;
+}
+
+// The sHyphenationPointCacheMutex mutex MUST be locked before a call to 
+// this method, and MUST NOT be released until after the caller has finished
+// using the returned vector.
+- (vector<const HyphenationRule*> *)_hyphenationPointsForWord:(NSString *)word
+{    
+    if(!sHyphenationPointCache) {
+        CFDictionaryValueCallBacks vectorDeleteCallbacks;
+        vectorDeleteCallbacks.version = 0;
+        vectorDeleteCallbacks.retain = NULL;
+        vectorDeleteCallbacks.release = _DeleteVectorCallback;
+        vectorDeleteCallbacks.copyDescription = NULL;
+        vectorDeleteCallbacks.equal = NULL;
+        sHyphenationPointCache = CFDictionaryCreateMutable(kCFAllocatorDefault, 
+                                                           256, 
+                                                           &kCFCopyStringDictionaryKeyCallBacks, 
+                                                           &vectorDeleteCallbacks);
+        sHyphenationPointCacheLowMemoryEmptier = [[THLowMemoryDictionaryEmptier alloc] initWithDictionary:sHyphenationPointCache
+                                                                                                    mutex:&sHyphenationPointCacheMutex];
+    }
+    vector<const HyphenationRule*> *ret = (vector<const HyphenationRule*> *)CFDictionaryGetValue(sHyphenationPointCache, word);
+    if(!ret) {
+        ret = ((SharedHyphenator *)_sharedHyphenator)->applyHyphenationRules((CFStringRef)word).release();
+        CFDictionarySetValue(sHyphenationPointCache, word, (void *)ret);
+    }
+    
+    return ret;
+}
+
 - (CGFloat)_textIndentInWidth:(CGFloat)width;
 {
     CGFloat ret = 0.0f;
@@ -179,7 +200,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     css_computed_style *style = _startNode.blockLevelNode.computedStyle;
     if(style) {
         css_fixed length = 0;
-        css_unit unit = 0;
+        css_unit unit = (css_unit)0;
         css_computed_text_indent(style, &length, &unit);
         ret = EucCSSLibCSSSizeToPixels(style, length, unit, width, _scaleFactor);
     }
@@ -197,31 +218,34 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     return ret;
 }
 
-- (void)_addComponent:(id)component isWord:(BOOL)isWord info:(EucCSSLayoutDocumentRunComponentInfo *)info
+- (void)_addComponent:(EucCSSLayoutDocumentRunComponentInfo *)info
 {
-
-    if(isWord) {
+    if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
         ++_wordsCount;
         if(_wordToComponentCapacity == _wordsCount) {
             _wordToComponentCapacity += 128;
-            _wordToComponent = realloc(_wordToComponent, _wordToComponentCapacity * sizeof(uint32_t));
+            _wordToComponent = (uint32_t *)realloc(_wordToComponent, _wordToComponentCapacity * sizeof(uint32_t));
         }
         _wordToComponent[_wordsCount] = _componentsCount;
         _currentWordElementCount = 0;
+        
+        [(id)info->component retain];
+    } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
+        [(id)info->component retain];
+    } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+        [(id)info->component retain];
+        [(id)info->component2 retain];
     }
     
     if(_componentsCapacity == _componentsCount) {
         _componentsCapacity += 128;
-        _components = realloc(_components, _componentsCapacity * sizeof(id));
-        _componentInfos = realloc(_componentInfos, _componentsCapacity * sizeof(EucCSSLayoutDocumentRunComponentInfo));
+        _componentInfos = (EucCSSLayoutDocumentRunComponentInfo *)realloc(_componentInfos, _componentsCapacity * sizeof(EucCSSLayoutDocumentRunComponentInfo));
     }
     
     info->point.word = _wordsCount;
     info->point.element = _currentWordElementCount;
-    
-    _components[_componentsCount] = [component retain];
+        
     _componentInfos[_componentsCount] = *info;
-    
     
     ++_componentsCount;
     ++_currentWordElementCount;
@@ -318,10 +342,11 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         UIImage *image = [[UIImage alloc] initWithData:imageData];
         
         if(image) {
-            EucCSSLayoutDocumentRunComponentInfo info = { 0 };
+            EucCSSLayoutDocumentRunComponentInfo info = { EucCSSLayoutDocumentRunComponentKindNone };
             info.documentNode = subnode;
-            
-            [self _addComponent:image isWord:NO info:&info];
+            info.kind = EucCSSLayoutDocumentRunComponentKindImage;
+            info.component = (void *)image;
+            [self _addComponent:&info];
             
             if(!_sizeDependentComponentIndexes) {
                 _sizeDependentComponentIndexes = [[NSMutableArray alloc] init];
@@ -341,7 +366,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     for(NSNumber *indexNumber in _sizeDependentComponentIndexes) {
         size_t offset = [indexNumber integerValue];
         
-        UIImage *image = _components[offset];
+        UIImage *image = (UIImage *)(_componentInfos[offset].component);
         EucCSSIntermediateDocumentNode *subnode = _componentInfos[offset].documentNode;
         
         CGFloat specifiedWidth = CGFLOAT_MAX;
@@ -354,7 +379,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         CGFloat minHeight = 1;
         
         css_fixed length = 0;
-        css_unit unit = 0;
+        css_unit unit = (css_unit)0;
         css_computed_style *nodeStyle = subnode.computedStyle;
         if(nodeStyle) {
             uint8_t widthKind = css_computed_width(nodeStyle, &length, &unit);
@@ -416,7 +441,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     THStringRenderer *stringRenderer = subnode.stringRenderer;
 
     css_fixed length = 0;
-    css_unit unit = 0;
+    css_unit unit = (css_unit)0;
     css_computed_font_size(subnodeStyle, &length, &unit);
     CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);    
     
@@ -438,31 +463,34 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     css_computed_style *subnodeStyle;
     subnodeStyle = [subnode.parent computedStyle];
     
-    enum css_white_space_e whiteSpaceModel = css_computed_white_space(subnodeStyle);
+    css_white_space_e whiteSpaceModel = (css_white_space_e)css_computed_white_space(subnodeStyle);
     
     THStringRenderer *stringRenderer = subnode.stringRenderer;
     
     css_fixed length = 0;
-    css_unit unit = 0;
+    css_unit unit = (css_unit)0;
     css_computed_font_size(subnodeStyle, &length, &unit);
     
     // The font size percentages should already be fully resolved.
     CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);             
 
-    EucCSSLayoutDocumentRunComponentInfo spaceInfo = { 0 };
+    EucCSSLayoutDocumentRunComponentInfo spaceInfo = { EucCSSLayoutDocumentRunComponentKindSpace };
     [self _populateComponentInfo:&spaceInfo forNode:subnode];
     spaceInfo.width = [stringRenderer widthOfString:@" " pointSize:fontPixelSize];
     
-    
     CFStringRef text = (CFStringRef)subnode.text;
     CFIndex textLength = CFStringGetLength(text);
+    
+    // CSS3 may have a way of specifying this.
+    uint8_t textAlign = [self _textAlign];
+    BOOL shouldHyphenate =  (textAlign == CSS_TEXT_ALIGN_LEFT || textAlign == CSS_TEXT_ALIGN_JUSTIFY);
     
     if(textLength) {
         UniChar *charactersToFree = NULL;
         const UniChar *characters = CFStringGetCharactersPtr(text);
         if(characters == NULL) {
             // CFStringGetCharactersPtr may return NULL at any time.
-            charactersToFree = malloc(sizeof(UniChar) * textLength);
+            charactersToFree = (UniChar *)malloc(sizeof(UniChar) * textLength);
             CFStringGetCharacters(text,
                                   CFRangeMake(0, textLength),
                                   charactersToFree);
@@ -488,13 +516,55 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                 case 0x0020: // Space
                     if(!_previousInlineCharacterWasSpace) {
                         if(wordStart != cursor) {
+                            CFIndex wordLength = cursor - wordStart;
                             CFStringRef string = CFStringCreateWithCharacters(kCFAllocatorDefault,
                                                                               wordStart, 
-                                                                              cursor - wordStart);
+                                                                              wordLength);
                             if(string) {
                                 EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                                info.kind = EucCSSLayoutDocumentRunComponentKindWord;
+                                info.component = (void *)string;
                                 info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
-                                [self _addComponent:(id)string isWord:YES info:&info];
+                                [self _addComponent:&info];
+                                
+                                if(shouldHyphenate && wordLength > 4) {
+                                    vector<const HyphenationRule*> *hyphenationPoints = [self _hyphenationPointsForWord:(NSString *)string];
+                                    
+                                    vector<const HyphenationRule*>::const_iterator endAt = hyphenationPoints->end();
+                                    NSUInteger strPos = 0;
+                                    EucCSSLayoutDocumentRunComponentInfo hyphenInfo = info;
+                                    hyphenInfo.kind = EucCSSLayoutDocumentRunComponentKindHyphenationRule;
+                                    
+                                    for(vector<const HyphenationRule*>::const_iterator it = hyphenationPoints->begin();
+                                        it != endAt;
+                                        ++it, ++strPos) {
+                                        // If there's a possible hyphenation at this point in the word.
+                                        const HyphenationRule *rule = *it;
+                                        if(rule != NULL) {
+                                            NSString *beforeBreak = (NSString *)rule->create_applied_string_first((CFStringRef)[(NSString *)string substringToIndex:strPos], CFSTR("-"));
+
+                                            std::pair<CFStringRef, int> applied = rule->create_applied_string_second(NULL);
+                                            NSUInteger skip = applied.second;
+                                            NSString *afterBreak;
+                                            if(applied.first) {
+                                                NSString *afterBreakStart = (NSString *)applied.first;
+                                                afterBreak = [afterBreakStart stringByAppendingString:[(NSString *)string substringFromIndex:strPos + skip]];
+                                                [afterBreakStart release];
+                                            } else {
+                                                afterBreak = [(NSString *)string substringFromIndex:strPos + skip];
+                                            }
+                                            
+                                            hyphenInfo.component = beforeBreak;
+                                            hyphenInfo.component2 = afterBreak;
+                                            hyphenInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
+                                            hyphenInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
+                                            
+                                            [self _addComponent:&hyphenInfo];
+                                            
+                                            [beforeBreak release];
+                                        }
+                                    }
+                                }
                                 CFRelease(string);
                             }
                         }
@@ -505,15 +575,16 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                         whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
                         whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP)) {
                            EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                           info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
                            info.width = 0;
-                           [self _addComponent:[EucCSSLayoutDocumentRun hardBreakMarker] isWord:NO info:&info];
+                           [self _addComponent:&info];
                            _alreadyInsertedSpace = YES;
                     }
                     break;
                 default:
                     if(_previousInlineCharacterWasSpace) {
                         if(!_alreadyInsertedSpace) {
-                            [self _addComponent:[EucCSSLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                            [self _addComponent:&spaceInfo];
                         } else {
                             _alreadyInsertedSpace = NO;
                         }
@@ -532,15 +603,17 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
                                                               cursor - wordStart);
             if(string) {
                 EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                info.kind = EucCSSLayoutDocumentRunComponentKindWord;
+                info.component = (void *)string;
                 info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
-                [self _addComponent:(id)string isWord:YES info:&info];
+                [self _addComponent:&info];
                 CFRelease(string);
             }
         } 
         if(_previousInlineCharacterWasSpace) {
             if(!_alreadyInsertedSpace && _seenNonSpace) {
                 // Check _seenNonSpace because we're not supposed to add spaces at the /start/ of lines.
-                [self _addComponent:[EucCSSLayoutDocumentRun singleSpaceMarker] isWord:NO info:&spaceInfo];
+                [self _addComponent:&spaceInfo];
                 _alreadyInsertedSpace = YES;
             }
         }
@@ -555,8 +628,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 {
     if(!_potentialBreaks) {
         int breaksCapacity = _componentsCount;
-        THBreak *breaks = malloc(breaksCapacity * sizeof(THBreak));
-        EucCSSLayoutDocumentRunBreakInfo *breakInfos = malloc(breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
+        THBreak *breaks = (THBreak *)malloc(breaksCapacity * sizeof(THBreak));
+        EucCSSLayoutDocumentRunBreakInfo *breakInfos = (EucCSSLayoutDocumentRunBreakInfo *)malloc(breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
         int breaksCount = 0;
         
         EucCSSIntermediateDocumentNode *currentInlineNodeWithStyle = _startNode;
@@ -565,41 +638,70 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         }
         
         CGFloat lineSoFarWidth = 0.0f;
+        CGFloat lastWordWidth = 0.0f;
         for(NSUInteger i = 0; i < _componentsCount; ++i) {
-            id component = _components[i];
-            if(component == sSingleSpaceMarker) {
-                breaks[breaksCount].x0 = lineSoFarWidth;
-                lineSoFarWidth += _componentInfos[i].width;
-                breaks[breaksCount].x1 = lineSoFarWidth;
-                breaks[breaksCount].penalty = 0;
-                breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
-                breakInfos[breaksCount].point = _componentInfos[i].point;
-                breakInfos[breaksCount].isComponent = YES;
-                ++breaksCount;
-            } else if(component == sOpenNodeMarker) {
-                currentInlineNodeWithStyle = _componentInfos[i].documentNode;
-                // Take account of margins etc.
-            } else if(component == sCloseNodeMarker) {
-                NSParameterAssert(_componentInfos[i].documentNode == currentInlineNodeWithStyle);
-                currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
-                // Take account of margins etc.
-            } else if(component == sHardBreakMarker) {
-                breaks[breaksCount].x0 = lineSoFarWidth;
-                lineSoFarWidth += _componentInfos[i].width;
-                breaks[breaksCount].x1 = lineSoFarWidth;
-                breaks[breaksCount].penalty = 0;
-                breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
-                breakInfos[breaksCount].point = _componentInfos[i].point;
-                breakInfos[breaksCount].isComponent = YES;
-                ++breaksCount;                
-            } else {            
-                lineSoFarWidth += _componentInfos[i].width;
+            EucCSSLayoutDocumentRunComponentInfo componentInfo = _componentInfos[i];
+            switch(componentInfo.kind) {
+                case EucCSSLayoutDocumentRunComponentKindSpace:
+                    {
+                        breaks[breaksCount].x0 = lineSoFarWidth;
+                        lineSoFarWidth += _componentInfos[i].width;
+                        breaks[breaksCount].x1 = lineSoFarWidth;
+                        breaks[breaksCount].penalty = 0;
+                        breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
+                        breakInfos[breaksCount].point = _componentInfos[i].point;
+                        breakInfos[breaksCount].consumesComponent = YES;
+                        ++breaksCount;
+                    }
+                    break;
+                case EucCSSLayoutDocumentRunComponentKindHardBreak:
+                    {
+                        breaks[breaksCount].x0 = lineSoFarWidth;
+                        lineSoFarWidth += _componentInfos[i].width;
+                        breaks[breaksCount].x1 = lineSoFarWidth;
+                        breaks[breaksCount].penalty = 0;
+                        breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
+                        breakInfos[breaksCount].point = _componentInfos[i].point;
+                        breakInfos[breaksCount].consumesComponent = YES;
+                        ++breaksCount;                                        
+                    }
+                    break;
+                case EucCSSLayoutDocumentRunComponentKindOpenNode:
+                    {
+                        currentInlineNodeWithStyle = _componentInfos[i].documentNode;
+                    }
+                    break;
+                case EucCSSLayoutDocumentRunComponentKindCloseNode:
+                    {
+                        NSParameterAssert(_componentInfos[i].documentNode == currentInlineNodeWithStyle);
+                        currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
+                    }
+                    break;
+                case EucCSSLayoutDocumentRunComponentKindWord:
+                    {
+                        lastWordWidth = _componentInfos[i].width;
+                        lineSoFarWidth += lastWordWidth;
+                    }
+                    break;
+                case EucCSSLayoutDocumentRunComponentKindHyphenationRule:
+                    {
+                        breaks[breaksCount].x0 = lineSoFarWidth + _componentInfos[i].widthBeforeHyphen - _componentInfos[i].width;
+                        breaks[breaksCount].x1 = lineSoFarWidth - _componentInfos[i].widthAfterHyphen;
+                        breaks[breaksCount].penalty = 0;
+                        breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN;
+                        breakInfos[breaksCount].point = _componentInfos[i].point;
+                        breakInfos[breaksCount].consumesComponent = NO;
+                        ++breaksCount;                                                                
+                    }
+                    break;
+                default:
+                    lineSoFarWidth += _componentInfos[i].width;
             }
             
             if(breaksCount >= breaksCapacity) {
                 breaksCapacity += _componentsCount;
-                breaks = realloc(breaks, breaksCapacity * sizeof(THBreak));
-                breakInfos = realloc(breakInfos, breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
+                breaks = (THBreak *)realloc(breaks, breaksCapacity * sizeof(THBreak));
+                breakInfos = (EucCSSLayoutDocumentRunBreakInfo *)realloc(breakInfos, breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
             }                                            
         }
         breaks[breaksCount].x0 = lineSoFarWidth;
@@ -608,7 +710,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
         breakInfos[breaksCount].point.word = _wordsCount + 1;
         breakInfos[breaksCount].point.element = 0;
-        breakInfos[breaksCount].isComponent = NO;
+        breakInfos[breaksCount].consumesComponent = NO;
         ++breaksCount;
         
         _potentialBreaks = breaks;
@@ -617,7 +719,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     }
 }
 
-- (uint32_t)_pointToComponentOffset:(EucCSSLayoutDocumentRunPoint)point
+- (uint32_t)pointToComponentOffset:(EucCSSLayoutDocumentRunPoint)point
 {
     if(point.word > _wordsCount) {
         // This is an 'off the end' marker (i.e. an endpoint to line that
@@ -670,8 +772,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         indentationOffset = -_potentialBreaks[startBreakOffset].x1;
         
         EucCSSLayoutDocumentRunPoint point = { wordOffset, elementOffset };
-        lineStartComponent = [self _pointToComponentOffset:point];
-        uint32_t firstBreakComponent = [self _pointToComponentOffset:_potentialBreakInfos[startBreakOffset].point];
+        lineStartComponent = [self pointToComponentOffset:point];
+        uint32_t firstBreakComponent = [self pointToComponentOffset:_potentialBreakInfos[startBreakOffset].point];
         for(uint32_t i = lineStartComponent; i < firstBreakComponent; ++i) {
             indentationOffset += _componentInfos[i].width;
         }
@@ -696,9 +798,9 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         EucCSSLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
         EucCSSLayoutLine *newLine = [[EucCSSLayoutLine alloc] init];
         newLine.containingRun = ret;
-        if(lastLineBreakInfo.isComponent) {
+        if(lastLineBreakInfo.consumesComponent) {
             EucCSSLayoutDocumentRunPoint point = lastLineBreakInfo.point;
-            uint32_t componentOffset = [self _pointToComponentOffset:point];
+            uint32_t componentOffset = [self pointToComponentOffset:point];
             ++componentOffset;
             if(componentOffset >= _componentsCount) {
                 // This is off the end of the components array.

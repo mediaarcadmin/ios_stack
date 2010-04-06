@@ -154,7 +154,7 @@
 		7D3AED6B114963560059C5B6 /* EucCSSIntermediateDocumentNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415A1149602300C318E7 /* EucCSSIntermediateDocumentNode.h */; };
 		7D3AED6C114963560059C5B6 /* EucCSSIntermediateDocumentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23415B1149602300C318E7 /* EucCSSIntermediateDocumentNode.m */; };
 		7D3AED6D114963560059C5B6 /* EucCSSLayoutDocumentRun.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */; };
-		7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */; };
+		7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.mm */; };
 		7D3AED6F114963560059C5B6 /* EucCSSLayoutDocumentRun_Package.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */; };
 		7D3AED70114963560059C5B6 /* EucCSSLayouter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341601149602300C318E7 /* EucCSSLayouter.h */; };
 		7D3AED71114963560059C5B6 /* EucCSSLayouter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341611149602300C318E7 /* EucCSSLayouter.mm */; };
@@ -172,6 +172,8 @@
 		7D412B291149664C00C003BB /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900CD11494A0C00375803 /* libparserutils.a */; };
 		7D412B2A1149664C00C003BB /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900981149490E00375803 /* libwapcaplet.a */; };
 		7D412B2E1149666C00C003BB /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2D1149666C00C003BB /* ApplicationServices.framework */; };
+		7D4E5B221169FD250073ED72 /* THLowMemoryDictionaryEmptier.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D4E5B201169FD250073ED72 /* THLowMemoryDictionaryEmptier.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D4E5B231169FD250073ED72 /* THLowMemoryDictionaryEmptier.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4E5B211169FD250073ED72 /* THLowMemoryDictionaryEmptier.m */; };
 		7D4E97B6114A94740044C513 /* EucBUpeBook.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D9AA9E4114A90620055C381 /* EucBUpeBook.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D4E97B7114A94740044C513 /* EucBUpeBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9AA9E5114A90620055C381 /* EucBUpeBook.m */; };
 		7D4E999D114AC4350044C513 /* EucBUpePageTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D4E9977114AB2520044C513 /* EucBUpePageTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -799,7 +801,7 @@
 		7D23415A1149602300C318E7 /* EucCSSIntermediateDocumentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentNode.h; sourceTree = "<group>"; };
 		7D23415B1149602300C318E7 /* EucCSSIntermediateDocumentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentNode.m; sourceTree = "<group>"; };
 		7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutDocumentRun.h; sourceTree = "<group>"; };
-		7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutDocumentRun.m; sourceTree = "<group>"; };
+		7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucCSSLayoutDocumentRun.mm; sourceTree = "<group>"; };
 		7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutDocumentRun_Package.h; sourceTree = "<group>"; };
 		7D2341601149602300C318E7 /* EucCSSLayouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayouter.h; sourceTree = "<group>"; };
 		7D2341611149602300C318E7 /* EucCSSLayouter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucCSSLayouter.mm; sourceTree = "<group>"; };
@@ -820,6 +822,8 @@
 		7D2CCB08114DA3A2007FDEAF /* Aliases */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Aliases; sourceTree = "<group>"; };
 		7D412B2D1149666C00C003BB /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		7D412B2F1149667300C003BB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		7D4E5B201169FD250073ED72 /* THLowMemoryDictionaryEmptier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLowMemoryDictionaryEmptier.h; sourceTree = "<group>"; };
+		7D4E5B211169FD250073ED72 /* THLowMemoryDictionaryEmptier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLowMemoryDictionaryEmptier.m; sourceTree = "<group>"; };
 		7D4E9977114AB2520044C513 /* EucBUpePageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpePageTextView.h; sourceTree = "<group>"; };
 		7D4E9978114AB2520044C513 /* EucBUpePageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBUpePageTextView.m; sourceTree = "<group>"; };
 		7D4E9AAE114D33910044C513 /* THNSURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSURLAdditions.h; sourceTree = "<group>"; };
@@ -2020,7 +2024,7 @@
 				7D2341611149602300C318E7 /* EucCSSLayouter.mm */,
 				7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */,
 				7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */,
-				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */,
+				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.mm */,
 				7D2341621149602300C318E7 /* EucCSSLayoutLine.h */,
 				7D2341631149602300C318E7 /* EucCSSLayoutLine.m */,
 				7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */,
@@ -2118,6 +2122,8 @@
 				7D9683DE11649C29003AA505 /* THCacheBase.m */,
 				7DB145D11162301800596813 /* THCache.h */,
 				7DB145D21162301800596813 /* THCache.m */,
+				7D4E5B201169FD250073ED72 /* THLowMemoryDictionaryEmptier.h */,
+				7D4E5B211169FD250073ED72 /* THLowMemoryDictionaryEmptier.m */,
 				7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */,
 				7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */,
 				7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */,
@@ -2524,6 +2530,7 @@
 				7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */,
 				7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */,
 				7DCF831B114E64A400603379 /* EucCSS.h in Headers */,
+				7D4E5B221169FD250073ED72 /* THLowMemoryDictionaryEmptier.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3038,7 +3045,7 @@
 				7D3AED68114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedContainerNode.m in Sources */,
 				7D3AED6A114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedTextNode.m in Sources */,
 				7D3AED6C114963560059C5B6 /* EucCSSIntermediateDocumentNode.m in Sources */,
-				7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.m in Sources */,
+				7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.mm in Sources */,
 				7D3AED71114963560059C5B6 /* EucCSSLayouter.mm in Sources */,
 				7D3AED73114963560059C5B6 /* EucCSSLayoutLine.m in Sources */,
 				7D3AED75114963560059C5B6 /* EucCSSLayoutPositionedBlock.m in Sources */,
@@ -3047,6 +3054,7 @@
 				7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */,
 				7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */,
 				7D8454DF1163C4F3003F1D1C /* THCache.m in Sources */,
+				7D4E5B231169FD250073ED72 /* THLowMemoryDictionaryEmptier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
