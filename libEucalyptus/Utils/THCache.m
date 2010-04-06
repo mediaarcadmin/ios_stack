@@ -301,7 +301,7 @@ typedef struct THStringAndFloatToCGFloatCacheItem {
     THStringAndFloatToCGFloatCacheItem probeItem = { self, stringKey, { cgFloatKey } } ;
     const THStringAndFloatToCGFloatCacheItem *item = [self retrieveItem:&probeItem];
     if(item) {
-        ret = item->numberKey.cgFloatKey;
+        ret = item->value;
     } else {
         ret = 0.0f;
     }
