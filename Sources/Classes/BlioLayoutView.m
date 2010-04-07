@@ -62,11 +62,9 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 
 @end
 
-
 @implementation BlioLayoutView
 
 static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect) {
-    
     CGFloat xScale = targetRect.size.width / sourceRect.size.width;
     CGFloat yScale = targetRect.size.height / sourceRect.size.height;
     CGFloat scale = xScale < yScale ? xScale : yScale;
@@ -75,13 +73,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     CGFloat xOffset = (targetRect.size.width - scaledRect.size.width);
     CGFloat yOffset = (targetRect.size.height - scaledRect.size.height);
     CGAffineTransform offsetTransform = CGAffineTransformMakeTranslation((targetRect.origin.x - scaledRect.origin.x) + xOffset/2.0f, (targetRect.origin.y - scaledRect.origin.y) + yOffset/2.0f);
-    //CGAffineTransform transform = CGAffineTransformConcat(offsetTransform, scaleTransform);
     CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, offsetTransform);
     return transform;
 }
 
 static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect targetRect) {
-    
     CGFloat scale = targetRect.size.width / sourceRect.size.width;
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
     CGRect scaledRect = CGRectApplyAffineTransform(sourceRect, scaleTransform);
@@ -132,6 +128,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
     [super dealloc];
 }
+
+- (void)didReceiveMemoryWarning:(NSNotification *)notification {
+    NSLog(@"Did receive memory warning");
+    [self clearSnapshots];
+}
+
+#pragma mark -
+#pragma mark BlioBookView
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
 
@@ -276,27 +280,56 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return NO;
 }
 
+- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
+    return;
+}
+
+- (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
+    [self goToPageNumber:targetPage animated:animated shouldZoomOut:YES targetZoomScale:kBlioPDFGoToZoomTargetScale targetContentOffset:CGPointZero];
+}
+
+- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint {
+    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
+    ret.layoutPage = self.pageNumber;
+    return [ret autorelease];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated {
+    [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
+}
+
+- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
+    [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
+}
+
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint {
+    return bookmarkPoint.layoutPage;
+}
+
+- (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
+    return bookmarkRange.startPoint.layoutPage;
+}
+
+#pragma mark -
+#pragma mark BlioBookDelegate
+
 - (void)setDelegate:(id<BlioBookDelegate>)newDelegate {
     delegate = newDelegate;
     [self.scrollView setBookDelegate:newDelegate];
 }
+
+#pragma mark -
+#pragma mark Tilt Scroller
 
 - (void)setTiltScroller:(MSTiltScroller*)ts {
     tiltScroller = ts;
     [tiltScroller setScrollView:self.scrollView];
 }
 
-- (void)didReceiveMemoryWarning:(NSNotification *)notification {
-    NSLog(@"Did receive memory warning");
-    [self clearSnapshots];
-}
-
 #pragma mark -
 #pragma mark Rotation
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    NSLog(@"will rotate");
-    
     self.disableScrollUpdating = YES;
     self.lastBlock = nil;
     
@@ -321,63 +354,40 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 #pragma mark -
-#pragma mark Layout
+#pragma mark Layout Methods
 
 - (void)setLayoutMode:(BlioLayoutPageMode)newLayoutMode animated:(BOOL)animated {
     
     layoutMode = newLayoutMode;
     
-    CGRect newFrame;
-    //CGSize newContentSize;
-    //CGRect newContentFrame;
-    //    CGSize newContentSize = [self.scrollView contentSize];
-    //    CGPoint newContentOffset = [self.scrollView contentOffset];
-    
-    CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
-    CGFloat pageOffset = ((self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
-    NSLog(@"pageOffset = %f pageWidth: %f", pageOffset, pageWidth);
-    
-    //    CGFloat zoomScale = [self.scrollView zoomScale];
-    //    CGFloat pageWidth = CGRectGetWidth(self.bounds) * zoomScale;
-    //    CGFloat yOffset = (CGRectGetHeight(self.bounds) - (CGRectGetHeight(pageRect) * zoomScale)) / 2.0f;
-    //    CGPoint viewOrigin = CGPointMake((targetPageNumber - 1) * pageWidth, 0);   
-    //    CGPoint newContentOffset = CGPointMake(round(viewOrigin.x + pageRect.origin.x * zoomScale), round((pageRect.origin.y * zoomScale) - yOffset));
-    
+    CGRect newFrame = [[UIScreen mainScreen] bounds];    
     switch (newLayoutMode) {
         case BlioLayoutPageModeLandscape:
-            newFrame = CGRectMake(0,0,480,320);
+            if (newFrame.size.width < newFrame.size.height)
+                newFrame.size = CGSizeMake(newFrame.size.height, newFrame.size.width);
             break;
         default: // BlioLayoutPageModePortrait
-            newFrame = CGRectMake(0,0,320,480);
+            if (newFrame.size.width > newFrame.size.height)
+                newFrame.size = CGSizeMake(newFrame.size.height, newFrame.size.width);
             break;
     }
-    
-    
-    
+
     if (animated) {
-        [UIView beginAnimations:@"rotateLayoutView" context:nil];
+        [UIView beginAnimations:@"SetBlioLayoutMode" context:nil];
         [UIView setAnimationDuration:0.5f];
     }
     
     [self setFrame:newFrame];
-    [self.scrollView setZoomScale:1.0f];
+    [self.scrollView setZoomScale:1];
     
     CGSize newContentSize = [self currentContentSize];
     [self.contentView setFrame:CGRectMake(0,0, newFrame.size.width, newContentSize.height)];
     [self.scrollView setContentSize:newContentSize];
-    [self.scrollView setContentOffset:CGPointMake((self.pageNumber - 1) * CGRectGetWidth(newFrame), 0)];
-    
-    //NSLog(@"pageNum: %d. width %f ContentOffset set to %@", self.pageNumber, CGRectGetWidth(newFrame), NSStringFromCGPoint(self.scrollView.contentOffset));
-    
-    //[self.contentView setFrame:CGRectMake(0,0, newFrame.size.width, newContentSize.height)];
-    //    [self.scrollView setContentOffset:CGPointZero];
+    [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:1]];
     
     if (animated) {
         [UIView commitAnimations];
     }
-    
-    
-    
 }
 
 - (CGSize)currentContentSize {
@@ -1429,18 +1439,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 #pragma mark -
-#pragma mark BlioBookView Protocol Methods
+#pragma mark Goto Animations
 
-- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    return;
-}
 
 - (void)gotoCurrentPageAnimated {
     [self goToPageNumber:self.pageNumber animated:YES];
-}
-
-- (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
-    [self goToPageNumber:targetPage animated:animated shouldZoomOut:YES targetZoomScale:kBlioPDFGoToZoomTargetScale targetContentOffset:CGPointZero];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset {
@@ -1487,14 +1490,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             NSInteger pagesToOffset = pagesToGo - (3 * (pagesToGo/abs(pagesToGo)));
             CGFloat frameOffset = pagesToOffset * CGRectGetWidth(self.bounds);
             fromPage = startPage + pagesToOffset;
-            
-            CGPoint currentOffset   = [self.scrollView contentOffset];
-            CGPoint newOffset       = CGPointMake(currentOffset.x + frameOffset*self.scrollView.zoomScale, currentOffset.y);
-            
+                        
             [CATransaction begin];
             [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
                         
-            [self.scrollView setContentOffset:newOffset];
+            // The current offset and pageFrames are translated to move the next to the targetPage's adjacent page
+            [self.scrollView setContentOffset:CGPointApplyAffineTransform([self.scrollView contentOffset], CGAffineTransformMakeTranslation(frameOffset*self.scrollView.zoomScale, 0))];
             
             if (self.currentPageLayer) {
                 CGRect newFrame = self.currentPageLayer.frame;
@@ -1510,9 +1511,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 newFrame.origin.x -= CGRectGetWidth(self.currentPageLayer.frame);
                 prevLayer.frame = newFrame;
                 [pageLayersToPreserve addObject:prevLayer];
-            } //else {
-//                NSLog(@"No prev found");
-//            }
+            }
             
             NSSet *nextLayerSet = [[self.contentView pageLayers] filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"pageNumber==%d", startPage + 1]];
             if ([nextLayerSet count]) {
@@ -1521,21 +1520,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 newFrame.origin.x += CGRectGetWidth(self.currentPageLayer.frame);
                 nextLayer.frame = newFrame;
                 [pageLayersToPreserve addObject:nextLayer];
-            } //else {
-//                NSLog(@"No next found");
-//            }
-
+            }
             
-            
-
-            
-            //[self.scrollView setContentOffset:[self contentOffsetToCenterPage:fromPage zoomScale:self.scrollView.zoomScale]];
-            //[self.scrollView setContentOffset:[self contentOffsetToCenterPage:2 zoomScale:self.scrollView.zoomScale]];
             // Shift all the other layers offscreen so that they don't appear in the wrong place (e.g. to the left of the first page)
             NSMutableSet *nonPreserved = [NSMutableSet setWithSet:[self.contentView pageLayers]];
             [nonPreserved minusSet:pageLayersToPreserve];
             for (CALayer *layer in nonPreserved) {
-                [layer setPosition:CGPointMake(-10000, -100000)];
+                [layer setPosition:CGPointMake(-10000, -10000)];
             }
             
             [CATransaction commit];
@@ -1544,9 +1535,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         // TODO -remove these checks
         if ([pageLayersToPreserve count] > 3) {
             NSLog(@"WARNING: more than 3 pages found to preserve during go to animation: %@", [pageLayersToPreserve description]); 
-        } //else if ([pageLayersToPreserve count] < 3) {
-//            NSLog(@"Less than 3");
-//        }
+        }
         
         // 2. Load the target page and its adjacent pages
         BlioLayoutPageLayer *aLayer = [self.contentView addPage:targetPage retainPages:pageLayersToPreserve];
@@ -1554,20 +1543,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [pageLayersToPreserve addObject:aLayer];
             self.currentPageLayer = aLayer;
             [aLayer forceThumbCacheAfterDelay:0];
-            //[self performSelectorInBackground:@selector(forceCacheForLayer:) withObject:aLayer];
-                        //UIGraphicsBeginImageContext(CGSizeMake(0.1,0.1));
-//                        CGContextRef ctx = UIGraphicsGetCurrentContext();
-//                        [aLayer renderInContext:ctx];
-//                        UIGraphicsEndImageContext();
         }
+        
         BlioLayoutPageLayer *prevLayer = [self.contentView addPage:targetPage - 1 retainPages:pageLayersToPreserve];
         if (prevLayer) { 
             [pageLayersToPreserve addObject:prevLayer];
         }
+        
         BlioLayoutPageLayer *nextLayer = [self.contentView addPage:targetPage + 1 retainPages:pageLayersToPreserve];
-        //if (aLayer) { 
-//            [aLayer performSelector:@selector(forceThumbCache) withObject:nil];
-//        }
         
         if (startPage > targetPage) {
             [prevLayer forceThumbCacheAfterDelay:0.85f];
@@ -1576,7 +1559,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
         
         // The rest of the steps are performed after the animation thread has been run
-        
         NSMethodSignature * mySignature = [BlioLayoutView instanceMethodSignatureForSelector:@selector(performGoToPageStep1FromPage:)];
         NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
         [myInvocation setTarget:self];    
@@ -1588,56 +1570,20 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [self.contentView addPage:targetPage - 1 retainPages:nil];
         [self.contentView addPage:targetPage + 1 retainPages:nil];
 
-        [self.scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * self.scrollView.zoomScale, CGRectGetHeight(self.bounds) * self.scrollView.zoomScale)];
-        [self.scrollView setContentOffset:CGPointMake((targetPage - 1) * CGRectGetWidth(self.bounds) * self.scrollView.zoomScale, 0)];
+        [self.scrollView setContentSize:[self currentContentSize]];
+        [self.scrollView setContentOffset:[self contentOffsetToCenterPage:targetPage zoomScale:self.scrollView.zoomScale]]; 
         self.pageNumber = targetPage;
         [self didChangeValueForKey:@"pageNumber"];
     }
 }
 
-/*
-- (void)forceCacheForLayer:(CALayer *)aLayer {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSLog(@"Start forceCacheForLayer");
-    //            UIGraphicsBeginImageContext(CGSizeMake(1,1));
-    //            CGContextRef ctx = UIGraphicsGetCurrentContext();
-    //            [aLayer renderInContext:ctx];
-    //            UIGraphicsEndImageContext();
-    
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef bitmap = CGBitmapContextCreate(NULL,
-                                                1,
-                                                1,
-                                                8,
-                                                0,
-                                                colorSpace,
-                                                kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedFirst);
-    
-    // Set the quality level to use when rescaling
-    CGContextSetInterpolationQuality(bitmap, kCGInterpolationHigh);
-    
-    // Draw into the context; this force the caching
-    [aLayer renderInContext:bitmap];
-    
-    // Clean up
-    CGContextRelease(bitmap);
-    CGColorSpaceRelease(colorSpace);
-    
-    NSLog(@"End forceCacheForLayer");
-    
-    [pool drain];
-}
-*/
 - (void)performGoToPageStep1FromPage:(NSInteger)fromPage {
 
-    //[self.scrollView setContentSize:[self currentContentSize]];
-    //[self.scrollView setContentOffset:[self contentOffsetToCenterPage:fromPage zoomScale:kBlioPDFGoToZoomTransitionScale]]; 
     CFTimeInterval shrinkDuration = 0.25f + (0.5f * (self.scrollView.zoomScale / self.scrollView.maximumZoomScale));
     [UIView beginAnimations:@"BlioLayoutGoToPageStep1" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-    //[UIView setAnimationWillStartSelector:@selector(animationWillStart:context:)];
     [UIView setAnimationDuration:shrinkDuration];
     [UIView setAnimationBeginsFromCurrentState:YES];
     if (shouldZoomOut) {
@@ -1660,9 +1606,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [UIView setAnimationDuration:scrollDuration];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     if (shouldZoomOut) {
-        //[self.scrollView setContentOffset:CGPointMake(((self.pageNumber - 1) * CGRectGetWidth(self.bounds) * kBlioPDFGoToZoomScale) - (CGRectGetWidth(self.bounds) * ((1-kBlioPDFGoToZoomScale)/2.0f)), CGRectGetHeight(self.bounds) * ((1-kBlioPDFGoToZoomScale)/-2.0f))];
         [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:kBlioPDFGoToZoomTransitionScale]]; 
-
     } else {
          [UIView setAnimationDuration:0.0f];
     }
@@ -1685,8 +1629,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.scrollView setMinimumZoomScale:1];
     [self.scrollView setZoomScale:targetZoomScale];
     [self.scrollView setContentSize:[self currentContentSize]];
-    //CGPoint newContentOffset = CGPointEqualToPoint(targetContentOffset, CGPointZero) ? CGPointMake((self.pageNumber - 1) * CGRectGetWidth(self.bounds), 0) : targetContentOffset;
-    //[self.scrollView setContentOffset:newContentOffset];
     if (CGPointEqualToPoint(targetContentOffset, CGPointZero))
         [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale]]; 
     else
@@ -1696,44 +1638,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self didChangeValueForKey:@"pageNumber"];    
 }
 
-- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
-{
-    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
-    ret.layoutPage = self.pageNumber;
-    return [ret autorelease];
-}
-
-- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
-{
-    [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
-}
-
-- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
-    [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
-}
-
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint
-{
-    return bookmarkPoint.layoutPage;
-}
-
-- (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
-    return bookmarkRange.startPoint.layoutPage;
-}
-
-- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
-    return self;
-}
-
-//- (void)animationWillStart:(NSString *)animationID context:(void *)context {
-//    if ([animationID isEqualToString:@"BlioLayoutGoToPageStep1"]) {
-//        [self.currentPageLayer performSelectorOnMainThread:@selector(forceThumbCache) withObject:nil waitUntilDone:NO];
-//    }
-//}
-
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     if (finished) {
-        //NSLog(@"Animation: %@ did finish", animationID);
         if ([animationID isEqualToString:@"BlioLayoutGoToPageStep1"]) {
             [self performSelector:@selector(performGoToPageStep2)];
         } else if ([animationID isEqualToString:@"BlioLayoutGoToPageStep2"]) {
@@ -1754,6 +1660,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 #pragma mark -
 #pragma mark Contents Data Source protocol methods
+
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
+    return self;
+}
 
 - (NSArray *)sectionUuids
 {
@@ -1849,7 +1759,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     if (sender.zoomScale != lastZoomScale) {
         [sender setContentSize:[self currentContentSize]];
-        //[sender setContentSize:CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * sender.zoomScale, CGRectGetHeight(self.bounds) * sender.zoomScale)];
         self.lastZoomScale = sender.zoomScale;
         
         // If we are zooming, don't update the page number - (contentOffset gets set to zero so it wouldn't work)
@@ -2099,14 +2008,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             
             [self.scrollView setZoomScale:zoomScale];
             [self.scrollView setContentSize:[self currentContentSize]];
-            //[self.scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * self.scrollView.zoomScale, CGRectGetHeight(self.bounds) * self.scrollView.zoomScale)];
             [self.scrollView setContentOffset:newContentOffset];
             self.lastZoomScale = self.scrollView.zoomScale;
             [UIView commitAnimations];
         }
     } else {
         [self zoomOut];
-        //[[UIApplication sharedApplication] endIgnoringInteractionEvents];
     }
     
 }
@@ -2165,7 +2072,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             
             [self.scrollView setZoomScale:zoomScale];
             [self.scrollView setContentSize:[self currentContentSize]];
-            //[self.scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * self.scrollView.zoomScale, CGRectGetHeight(self.bounds) * self.scrollView.zoomScale)];
             [self.scrollView setContentOffset:newContentOffset];
             self.lastZoomScale = self.scrollView.zoomScale;
             [UIView commitAnimations];
@@ -2194,11 +2100,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [UIView setAnimationDuration:0.35f];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-    [self.scrollView setZoomScale:1.0f];
+    [self.scrollView setZoomScale:1];
     [self.scrollView setContentSize:[self currentContentSize]];
-    //[self.scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * self.scrollView.zoomScale, CGRectGetHeight(self.bounds) * self.scrollView.zoomScale)];
-    [self.scrollView setContentOffset:CGPointMake((self.pageNumber - 1) * CGRectGetWidth(self.bounds), 0)];
-    self.lastZoomScale = self.scrollView.zoomScale;
+    [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:1]]; 
+    self.lastZoomScale = 1;
     [UIView commitAnimations];
     self.lastBlock = nil;
 }
@@ -2212,7 +2117,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [self.scrollView setZoomScale:2.0f];
     [self.scrollView setContentSize:[self currentContentSize]];
-    //[self.scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * self.scrollView.zoomScale, CGRectGetHeight(self.bounds) * self.scrollView.zoomScale)];
     
     CGFloat pageWidth = CGRectGetWidth(self.bounds) * self.scrollView.zoomScale;
     CGFloat pageWidthExpansion = pageWidth - CGRectGetWidth(self.bounds);
