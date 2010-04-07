@@ -16,7 +16,6 @@
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocumentNode.h"
-#import "THLowMemoryDictionaryEmptier.h"
 #import "THStringRenderer.h"
 #import "THPair.h"
 #import "THLog.h"
@@ -157,43 +156,6 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     [_sharedHyphenator release];
     
     [super dealloc];
-}
-
-static CFMutableDictionaryRef sHyphenationPointCache = nil;
-static pthread_mutex_t sHyphenationPointCacheMutex = PTHREAD_MUTEX_INITIALIZER;
-static THLowMemoryDictionaryEmptier *sHyphenationPointCacheLowMemoryEmptier;
-
-static void _DeleteVectorCallback(CFAllocatorRef allocator, const void *value)
-{
-    delete (vector<const HyphenationRule*> *)value;
-}
-
-// The sHyphenationPointCacheMutex mutex MUST be locked before a call to 
-// this method, and MUST NOT be released until after the caller has finished
-// using the returned vector.
-- (vector<const HyphenationRule*> *)_hyphenationPointsForWord:(NSString *)word
-{    
-    if(!sHyphenationPointCache) {
-        CFDictionaryValueCallBacks vectorDeleteCallbacks;
-        vectorDeleteCallbacks.version = 0;
-        vectorDeleteCallbacks.retain = NULL;
-        vectorDeleteCallbacks.release = _DeleteVectorCallback;
-        vectorDeleteCallbacks.copyDescription = NULL;
-        vectorDeleteCallbacks.equal = NULL;
-        sHyphenationPointCache = CFDictionaryCreateMutable(kCFAllocatorDefault, 
-                                                           256, 
-                                                           &kCFCopyStringDictionaryKeyCallBacks, 
-                                                           &vectorDeleteCallbacks);
-        sHyphenationPointCacheLowMemoryEmptier = [[THLowMemoryDictionaryEmptier alloc] initWithDictionary:sHyphenationPointCache
-                                                                                                    mutex:&sHyphenationPointCacheMutex];
-    }
-    vector<const HyphenationRule*> *ret = (vector<const HyphenationRule*> *)CFDictionaryGetValue(sHyphenationPointCache, word);
-    if(!ret) {
-        ret = ((SharedHyphenator *)_sharedHyphenator)->applyHyphenationRules((CFStringRef)word).release();
-        CFDictionarySetValue(sHyphenationPointCache, word, (void *)ret);
-    }
-    
-    return ret;
 }
 
 - (CGFloat)_textIndentInWidth:(CGFloat)width;

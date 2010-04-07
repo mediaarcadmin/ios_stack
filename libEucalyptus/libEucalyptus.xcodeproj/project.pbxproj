@@ -172,8 +172,6 @@
 		7D412B291149664C00C003BB /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900CD11494A0C00375803 /* libparserutils.a */; };
 		7D412B2A1149664C00C003BB /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900981149490E00375803 /* libwapcaplet.a */; };
 		7D412B2E1149666C00C003BB /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2D1149666C00C003BB /* ApplicationServices.framework */; };
-		7D4E5B221169FD250073ED72 /* THLowMemoryDictionaryEmptier.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D4E5B201169FD250073ED72 /* THLowMemoryDictionaryEmptier.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D4E5B231169FD250073ED72 /* THLowMemoryDictionaryEmptier.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4E5B211169FD250073ED72 /* THLowMemoryDictionaryEmptier.m */; };
 		7D4E97B6114A94740044C513 /* EucBUpeBook.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D9AA9E4114A90620055C381 /* EucBUpeBook.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D4E97B7114A94740044C513 /* EucBUpeBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9AA9E5114A90620055C381 /* EucBUpeBook.m */; };
 		7D4E999D114AC4350044C513 /* EucBUpePageTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D4E9977114AB2520044C513 /* EucBUpePageTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -325,12 +323,11 @@
 		7D7E2202111F227E00F7F585 /* MenuArrowTopHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7E21FA111F227E00F7F585 /* MenuArrowTopHighlighted.png */; };
 		7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883FCB111C7735009669A8 /* EucMenuView.m */; };
 		7D81C2301151BAAC008248F1 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
-		7D8454DF1163C4F3003F1D1C /* THCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB145D21162301800596813 /* THCache.m */; };
 		7D883FA0111C640C009669A8 /* EucMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F5D111C5862009669A8 /* EucMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D883FA1111C640C009669A8 /* EucMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883F5E111C5862009669A8 /* EucMenuItem.m */; };
 		7D883FA2111C640C009669A8 /* EucMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F63111C586F009669A8 /* EucMenuController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D883FA3111C640C009669A8 /* EucMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883F64111C586F009669A8 /* EucMenuController.m */; };
-		7D9683DF11649C29003AA505 /* THCacheBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D9683DD11649C29003AA505 /* THCacheBase.h */; };
+		7D9683DF11649C29003AA505 /* THCacheBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D9683DD11649C29003AA505 /* THCacheBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D9683E011649C29003AA505 /* THCacheBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9683DE11649C29003AA505 /* THCacheBase.m */; };
 		7D9A96E410D7E42A00C2E00A /* PaginateAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A96DD10D7E42A00C2E00A /* PaginateAppDelegate.m */; };
 		7D9A96E510D7E42A00C2E00A /* PaginateRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A96DF10D7E42A00C2E00A /* PaginateRootViewController.m */; };
@@ -368,6 +365,8 @@
 		7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
 		7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
+		7DBAA08A116CF33C00471C75 /* THCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB145D11162301800596813 /* THCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DBAA08B116CF34100471C75 /* THCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB145D21162301800596813 /* THCache.m */; };
 		7DBBC892114FACF500225E51 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
 		7DBE059E1110416600DE22DC /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059C1110416600DE22DC /* SelectionEnd.png */; };
 		7DBE059F1110416600DE22DC /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059D1110416600DE22DC /* SelectionKnob.png */; };
@@ -822,8 +821,6 @@
 		7D2CCB08114DA3A2007FDEAF /* Aliases */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Aliases; sourceTree = "<group>"; };
 		7D412B2D1149666C00C003BB /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		7D412B2F1149667300C003BB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		7D4E5B201169FD250073ED72 /* THLowMemoryDictionaryEmptier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLowMemoryDictionaryEmptier.h; sourceTree = "<group>"; };
-		7D4E5B211169FD250073ED72 /* THLowMemoryDictionaryEmptier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLowMemoryDictionaryEmptier.m; sourceTree = "<group>"; };
 		7D4E9977114AB2520044C513 /* EucBUpePageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpePageTextView.h; sourceTree = "<group>"; };
 		7D4E9978114AB2520044C513 /* EucBUpePageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBUpePageTextView.m; sourceTree = "<group>"; };
 		7D4E9AAE114D33910044C513 /* THNSURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSURLAdditions.h; sourceTree = "<group>"; };
@@ -2122,8 +2119,6 @@
 				7D9683DE11649C29003AA505 /* THCacheBase.m */,
 				7DB145D11162301800596813 /* THCache.h */,
 				7DB145D21162301800596813 /* THCache.m */,
-				7D4E5B201169FD250073ED72 /* THLowMemoryDictionaryEmptier.h */,
-				7D4E5B211169FD250073ED72 /* THLowMemoryDictionaryEmptier.m */,
 				7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */,
 				7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */,
 				7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */,
@@ -2530,7 +2525,6 @@
 				7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */,
 				7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */,
 				7DCF831B114E64A400603379 /* EucCSS.h in Headers */,
-				7D4E5B221169FD250073ED72 /* THLowMemoryDictionaryEmptier.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2638,6 +2632,7 @@
 				7D4E9AEC114D3B200044C513 /* EucCSSIntermediateDocument_Package.h in Headers */,
 				7D4E9BFC114D86B00044C513 /* EucPageTextView.h in Headers */,
 				7D9683DF11649C29003AA505 /* THCacheBase.h in Headers */,
+				7DBAA08A116CF33C00471C75 /* THCache.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3053,8 +3048,6 @@
 				7D3AED79114963560059C5B6 /* EucCSSRenderer.m in Sources */,
 				7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */,
 				7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */,
-				7D8454DF1163C4F3003F1D1C /* THCache.m in Sources */,
-				7D4E5B231169FD250073ED72 /* THLowMemoryDictionaryEmptier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3170,6 +3163,7 @@
 				7D1906661149599F00375803 /* th_just_with_floats.c in Sources */,
 				7D4E9AB1114D33910044C513 /* THNSURLAdditions.m in Sources */,
 				7D9683E011649C29003AA505 /* THCacheBase.m in Sources */,
+				7DBAA08B116CF34100471C75 /* THCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
