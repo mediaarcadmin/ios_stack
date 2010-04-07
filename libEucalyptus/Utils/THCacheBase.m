@@ -9,7 +9,15 @@
 #import "THCacheBase.h"
 #import "THLog.h"
 
+static BOOL sDontReallyCache;
+static pthread_once_t sDontReallyCacheOnceControl = PTHREAD_ONCE_INIT;
+
 @implementation THCacheBase
+
+static void readDontReallyCacheDefault()
+{
+    sDontReallyCache = [[NSUserDefaults standardUserDefaults] boolForKey:@"THCacheDontReallyCache"];
+}
 
 static const void *THCacheItemRetain(CFAllocatorRef allocator, const void *item)
 {
@@ -49,6 +57,7 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 - (id)init
 {
     if((self = [super init])) {
+        pthread_once(&sDontReallyCacheOnceControl, readDontReallyCacheDefault);
         pthread_mutex_init(&_cacheMutex, NULL);
         [[NSNotificationCenter defaultCenter] addObserver:self 
                                                  selector:@selector(_didReceiveMemoryWarning)
@@ -112,7 +121,9 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 
 - (void)cacheItem:(void *)item
 {
-    CFSetSetValue(_cacheSet, item); 
+    if(!sDontReallyCache) {
+        CFSetSetValue(_cacheSet, item);
+    }
 }
 
 - (const void *)retrieveItem:(void *)probeItem
