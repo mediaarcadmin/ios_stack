@@ -18,6 +18,7 @@
 #import "EucCSSIntermediateDocumentNode.h"
 #import "THLowMemoryDictionaryEmptier.h"
 #import "THStringRenderer.h"
+#import "THPair.h"
 #import "THLog.h"
 #import "th_just_with_floats.h"
 
@@ -62,7 +63,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
        scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {
-        _sharedHyphenator = (void *)SharedHyphenator::sharedHyphenator();
+        _sharedHyphenator = [[EucSharedHyphenator sharedHyphenator] retain];
 
         _id = id;
         
@@ -152,6 +153,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     [_nextNodeInDocument release];
 
     [_sizeDependentComponentIndexes release];
+    
+    [_sharedHyphenator release];
     
     [super dealloc];
 }
@@ -528,41 +531,21 @@ static void _DeleteVectorCallback(CFAllocatorRef allocator, const void *value)
                                 [self _addComponent:&info];
                                 
                                 if(shouldHyphenate && wordLength > 4) {
-                                    vector<const HyphenationRule*> *hyphenationPoints = [self _hyphenationPointsForWord:(NSString *)string];
+                                    NSArray *hyphenations = [_sharedHyphenator hyphenationsForWord:(NSString *)string];
                                     
-                                    vector<const HyphenationRule*>::const_iterator endAt = hyphenationPoints->end();
-                                    NSUInteger strPos = 0;
                                     EucCSSLayoutDocumentRunComponentInfo hyphenInfo = info;
                                     hyphenInfo.kind = EucCSSLayoutDocumentRunComponentKindHyphenationRule;
                                     
-                                    for(vector<const HyphenationRule*>::const_iterator it = hyphenationPoints->begin();
-                                        it != endAt;
-                                        ++it, ++strPos) {
-                                        // If there's a possible hyphenation at this point in the word.
-                                        const HyphenationRule *rule = *it;
-                                        if(rule != NULL) {
-                                            NSString *beforeBreak = (NSString *)rule->create_applied_string_first((CFStringRef)[(NSString *)string substringToIndex:strPos], CFSTR("-"));
-
-                                            std::pair<CFStringRef, int> applied = rule->create_applied_string_second(NULL);
-                                            NSUInteger skip = applied.second;
-                                            NSString *afterBreak;
-                                            if(applied.first) {
-                                                NSString *afterBreakStart = (NSString *)applied.first;
-                                                afterBreak = [afterBreakStart stringByAppendingString:[(NSString *)string substringFromIndex:strPos + skip]];
-                                                [afterBreakStart release];
-                                            } else {
-                                                afterBreak = [(NSString *)string substringFromIndex:strPos + skip];
-                                            }
-                                            
-                                            hyphenInfo.component = beforeBreak;
-                                            hyphenInfo.component2 = afterBreak;
-                                            hyphenInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
-                                            hyphenInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
-                                            
-                                            [self _addComponent:&hyphenInfo];
-                                            
-                                            [beforeBreak release];
-                                        }
+                                    for(THPair *hyphenatedPair in hyphenations) {
+                                        NSString *beforeBreak = hyphenatedPair.first;
+                                        hyphenInfo.component = beforeBreak;
+                                        hyphenInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
+                                        
+                                        NSString *afterBreak = hyphenatedPair.second;
+                                        hyphenInfo.component2 = afterBreak;
+                                        hyphenInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
+                                        
+                                        [self _addComponent:&hyphenInfo];
                                     }
                                 }
                                 CFRelease(string);

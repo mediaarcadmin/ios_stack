@@ -13,7 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedRun;
+@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedRun, EucSharedHyphenator;
 struct THBreak;
 
 typedef struct EucCSSLayoutDocumentRunPoint {
@@ -77,7 +77,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     struct EucCSSLayoutDocumentRunBreakInfo *_potentialBreakInfos;
     int _potentialBreaksCount;
     
-    void *_sharedHyphenator;
+    EucSharedHyphenator *_sharedHyphenator;
 }
 
 @property (nonatomic, readonly) uint32_t id;
