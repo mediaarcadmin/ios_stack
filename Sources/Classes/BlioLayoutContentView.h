@@ -44,5 +44,6 @@
 @property (nonatomic, retain) NSMutableSet *pageLayers;
 
 - (BlioLayoutPageLayer *)addPage:(int)aPageNumber retainPages:(NSSet *)pages;
+- (void)layoutSubviewsAfterBoundsChange;
 
 @end

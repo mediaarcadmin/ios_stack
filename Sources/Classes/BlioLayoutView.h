@@ -27,15 +27,15 @@ typedef enum BlioLayoutPageMode {
 @protocol BlioLayoutDataSource
 @required
 - (BOOL)dataSourceContainsPage:(NSInteger)page;
+- (CGRect)cropForPage:(NSInteger)page;
 - (CGAffineTransform)viewTransformForPage:(NSInteger)page;
+- (CGPoint)contentOffsetToCenterPage:(NSInteger)aPageNumber zoomScale:(CGFloat)zoomScale;
 - (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale;
 
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer;
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector;
 - (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page excluding:(BlioBookmarkRange *)excludedBookmark;
-
-- (void)requestThumbImageForPage:(NSInteger)page;
 
 @end
 
@@ -59,8 +59,6 @@ typedef enum BlioLayoutPageMode {
     CALayer *sharpLayer;
     EucSelector *selector;
     UIColor *lastHighlightColor;
-    NSMutableDictionary *thumbCache;
-    NSInteger thumbCacheSize;
     NSString *pdfPath;
     NSData *pdfData;
     NSDictionary *pageCropsCache;
@@ -88,8 +86,6 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
 @property (nonatomic, retain) UIColor *lastHighlightColor;
-@property (nonatomic, retain) NSMutableDictionary *thumbCache;
-@property (nonatomic) NSInteger thumbCacheSize;
 @property (nonatomic, retain) NSDictionary *pageCropsCache;
 @property (nonatomic, retain) NSDictionary *viewTransformsCache;
 @property (nonatomic, retain) NSString *pdfPath;

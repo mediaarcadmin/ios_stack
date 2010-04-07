@@ -197,7 +197,7 @@
     return pageLayer;
 }
 
-- (void)layoutSubviews {
+- (void)layoutSubviewsAfterBoundsChange {
     NSLog(@"Laying out contentView subviews");
     CGRect newFrame = self.bounds;
     
@@ -209,6 +209,7 @@
         [pageLayer setFrame:newFrame];
     }
     [CATransaction commit];
+    NSLog(@"Laying out contentView subviews done");
 }
 
 @end
@@ -231,17 +232,20 @@
 }
 
 - (void)layoutSublayers {
-    //NSLog(@"Laying out pageLayer sublayers");
-    CGRect layerBounds = self.bounds;
     
+    CGRect layerBounds = self.bounds;
+    //NSLog(@"Laying out pageLayer sublayers at %@", NSStringFromCGRect(layerBounds));
     for (CALayer *subLayer in self.sublayers) {
         subLayer.frame = layerBounds;
     }
     
     //[self setNeedsDisplay];
     //[self.shadowLayer setNeedsDisplay];
-//    [self.tiledLayer setContents:nil];
-//    [self.tiledLayer setNeedsDisplay];
+    [self.tiledLayer setContents:nil];
+    [self.tiledLayer setNeedsDisplay];
+    
+    [self.highlightsLayer setContents:nil];
+    NSLog(@"Laying out pageLayer sublayers done");
 }
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
@@ -320,7 +324,7 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    NSLog(@"Draw tiled layer for page %d with transform %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
+    //NSLog(@"Draw tiled layer for page %d with transform %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     
     if (!self.cached) {
         self.cached = YES;
@@ -357,9 +361,6 @@
     [self setCacheLayer:nil];
     self.contents = nil;
     pageNumber = aPageNumber;
-    //[[NSNotificationCenter defaultCenter] removeObserver:self];
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateContents:) name:@"BlioLayoutThumbLayerContentsAvailable" object:nil];
-    //[self.dataSource requestThumbImageForPage:aPageNumber];
 }
 
 - (void)setCacheLayer:(CGLayerRef)aNewLayer {
