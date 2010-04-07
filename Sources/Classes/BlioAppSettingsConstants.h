@@ -19,7 +19,10 @@
 #define kStdButtonHeight		40.0
 #define kSegmentedControlHeight 40.0
 #define kLabelHeight			20.0
+#define kTextFieldHeight		30.0
 #define kSliderHeight			7.0
+#define kCellLeftOffset			8.0
+#define kCellTopOffset			12.0
 
 // NSUserDefaults keys
 static NSString * const kBlioLastVoiceDefaultsKey = @"lastVoice";
