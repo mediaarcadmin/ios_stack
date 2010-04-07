@@ -14,6 +14,8 @@
 #import "BlioUIImageAdditions.h"
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
+#import "BlioLoginViewController.h"
+#import "BlioLoginManager.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -100,6 +102,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate = _processingDelegate;
 @synthesize fetchedResultsController = _fetchedResultsController;
+@synthesize loginManager = _loginManager;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -129,7 +132,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
-                                           action:nil];
+                                           action:@selector(showLogin:)];
     [libraryItems addObject:item];
     [item release];
     
@@ -160,6 +163,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [item release];  
     
     [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
+	
+	self.loginManager = [[BlioLoginManager alloc] init];
 }
 
 - (void)viewDidLoad {
@@ -638,6 +643,25 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 #pragma mark -
 #pragma mark Toolbar Actions
+
+- (void)showLogin:(id)sender {     
+	BlioLoginViewController *loginController = [[BlioLoginViewController alloc] init];
+    loginController.loginManager = self.loginManager;
+	[self presentModalViewController:[[UINavigationController alloc] initWithRootViewController:loginController] animated:YES];
+    [loginController release]; 
+	/*
+	BlioLoginView* loginView = [[BlioLoginView alloc] initWithTitle: @"Sign in to Blio" 
+															message:@"\n\n\n"
+														   delegate:nil
+												  cancelButtonTitle:@"Cancel"
+												  otherButtonTitles:@"Log In", nil]; 
+	loginView.delegate = loginView;
+	loginView.loginManager = self.loginManager;
+	[loginView display];
+	[loginView release];
+	 */
+}
+
 
 - (void)showStore:(id)sender {    
     BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];
