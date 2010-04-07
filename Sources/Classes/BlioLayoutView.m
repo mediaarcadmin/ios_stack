@@ -350,7 +350,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     self.disableScrollUpdating = NO;
-    [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
+    
+    // Force the highlights to redraw and the selector to reattach
+    self.currentPageLayer = self.currentPageLayer;
+    [self clearSnapshots];
+//    [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
 }
 
 #pragma mark -
@@ -408,6 +412,16 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return contentSize;
 }
 
+- (CGAffineTransform)boundsTransformForPage:(NSInteger)aPageNumber cropRect:(CGRect *)cropRect {
+    CGRect pageCropRect = [self cropForPage:aPageNumber];
+    *cropRect = pageCropRect;
+    //CGRect viewBounds = self.bounds;
+    CGRect contentBounds = self.contentView.bounds;
+    CGRect insetBounds = UIEdgeInsetsInsetRect(contentBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
+    CGAffineTransform boundsTransform = transformRectToFitRectWidth(pageCropRect, insetBounds); 
+    return boundsTransform;
+}
+
 - (CGPoint)contentOffsetToCenterPage:(NSInteger)aPageNumber zoomScale:(CGFloat)zoomScale {
     CGRect viewBounds = self.bounds;
     return  CGPointMake(((aPageNumber - 1) * CGRectGetWidth(viewBounds) * zoomScale) - (CGRectGetWidth(viewBounds) * ((1-zoomScale)/2.0f)), CGRectGetHeight(viewBounds) * ((1-zoomScale)/-2.0f));
@@ -415,15 +429,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale {
     
-    CGRect cropRect = [self cropForPage:aPageNumber];
-    if (CGRectEqualToRect(cropRect, CGRectZero)) return CGPointZero;
-    
-    CGRect viewBounds = self.bounds;
-    CGRect contentBounds = self.contentView.bounds;
-    CGRect insetBounds = UIEdgeInsetsInsetRect(contentBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
-    CGAffineTransform boundsTransform = transformRectToFitRectWidth(cropRect, insetBounds);    
+    CGRect cropRect;
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    if (CGRectEqualToRect(cropRect, CGRectZero)) return CGPointZero;   
     CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
+    CGRect viewBounds = self.contentView.bounds;
     CGFloat blockMinimumWidth = CGRectGetWidth(viewBounds) / self.scrollView.maximumZoomScale;
     
     if (CGRectGetWidth(pageRect) < blockMinimumWidth) {
@@ -483,7 +494,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (CGAffineTransform)viewTransformForPage:(NSInteger)aPageNumber {
-    
+    NSLog(@"View transform for page");
     if (nil == viewTransformsCache) return CGAffineTransformIdentity;
     NSValue *viewTransformValue;
     
@@ -495,14 +506,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     CGAffineTransform viewTransform = [viewTransformValue CGAffineTransformValue];
     
-    //CGRect cropRect = [self cropForPage:aPageNumber];
-    //if (CGRectEqualToRect(cropRect, CGRectZero)) return CGAffineTransformIdentity;
-    
-    //CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
-    //CGAffineTransform boundsTransform = transformRectToFitRect(cropRect, insetBounds);
-    CGAffineTransform boundsTransform = transformRectToFitRect(CGRectMake(0,0,320,480), self.contentView.bounds);
+    CGRect cropRect;
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];  
     CGAffineTransform concatTransform = CGAffineTransformConcat(viewTransform, boundsTransform);
-    NSLog(@"orig: %@, new: %@, concat: %@", NSStringFromCGAffineTransform(viewTransform), NSStringFromCGAffineTransform(boundsTransform), NSStringFromCGAffineTransform(concatTransform));
     
     return concatTransform;
 }
@@ -511,12 +517,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Rendering
 
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx  forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer {
-    CGRect layerBounds = aLayer.bounds;
-    CGRect cropRect = [self cropForPage:aPageNumber];
+    //CGRect layerBounds = aLayer.bounds;
+    CGRect cropRect;
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    //CGRect cropRect = [self cropForPage:aPageNumber];
     if (CGRectEqualToRect(cropRect, CGRectZero)) return;
     
-    CGRect insetBounds = UIEdgeInsetsInsetRect(layerBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
-    CGAffineTransform boundsTransform = transformRectToFitRect(cropRect, insetBounds);
+    //CGRect insetBounds = UIEdgeInsetsInsetRect(layerBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
+//    CGAffineTransform boundsTransform = transformRectToFitRect(cropRect, insetBounds);
     cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     CGContextFillRect(ctx, cropRect);
@@ -833,7 +841,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (nil == self.pageSnapshot) {
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
-        CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
+        CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:[self.scrollView.layer superlayer]];
+        //CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:self.window.layer];
+
         CGContextScaleCTM(ctx, scale, scale);
         CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
         [[snapLayer shadowLayer] renderInContext:ctx];
@@ -846,7 +856,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [self.pageSnapshot drawAtPoint:CGPointZero];
-        CGPoint translatePoint = [self.window.layer convertPoint:CGPointZero toLayer:snapLayer];
+        CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:[self.scrollView.layer superlayer]];
         CGContextScaleCTM(ctx, scale, scale);
         CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
         [[snapLayer highlightsLayer] renderInContext:ctx];
@@ -1692,12 +1702,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (CGRect)firstPageRect {
     if ([self pageCount] > 0) {
-        CGPDFPageRef firstPage = CGPDFDocumentGetPage(pdf, 1);
-        CGFloat inset = -kBlioLayoutShadow;
-        CGRect insetBounds = UIEdgeInsetsInsetRect([[UIScreen mainScreen] bounds], UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-        CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(firstPage, kCGPDFCropBox, insetBounds, 0, true);
-        CGRect coverRect = CGPDFPageGetBoxRect(firstPage, kCGPDFCropBox);
-        return CGRectApplyAffineTransform(coverRect, fitTransform);
+        return [self cropForPage:1];
+        //NSLog(@"Crprect %@", NSStringFromCGRect(cropRect));
+//        CGPDFPageRef firstPage = CGPDFDocumentGetPage(pdf, 1);
+//        CGFloat inset = -kBlioLayoutShadow;
+//        CGRect insetBounds = UIEdgeInsetsInsetRect([[UIScreen mainScreen] bounds], UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+//        CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(firstPage, kCGPDFCropBox, insetBounds, 0, true);
+//        CGRect coverRect = CGPDFPageGetBoxRect(firstPage, kCGPDFCropBox);
+//        CGRect fittedRect = CGRectApplyAffineTransform(coverRect, fitTransform);
+//        return fittedRect;
     } else {
         return [[UIScreen mainScreen] bounds];
     }

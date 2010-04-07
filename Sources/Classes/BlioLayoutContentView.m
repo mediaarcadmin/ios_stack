@@ -67,6 +67,7 @@
 
 @interface BlioLayoutPageLayer()
 @property (nonatomic, assign) BlioLayoutThumbLayer *thumbLayer;
+- (void)layoutSublayersAfterBoundsChange;
 @end
 
 @implementation BlioLayoutContentView
@@ -207,6 +208,7 @@
     for (BlioLayoutPageLayer *pageLayer in self.pageLayers) {
         newFrame.origin.x = newFrame.size.width * ([pageLayer pageNumber] - 1);
         [pageLayer setFrame:newFrame];
+        [pageLayer layoutSublayersAfterBoundsChange];
     }
     [CATransaction commit];
     NSLog(@"Laying out contentView subviews done");
@@ -231,10 +233,10 @@
     [super dealloc];
 }
 
-- (void)layoutSublayers {
-    
+- (void)layoutSublayersAfterBoundsChange {
+
     CGRect layerBounds = self.bounds;
-    //NSLog(@"Laying out pageLayer sublayers at %@", NSStringFromCGRect(layerBounds));
+    NSLog(@"Laying out pageLayer sublayers at %@", NSStringFromCGRect(layerBounds));
     for (CALayer *subLayer in self.sublayers) {
         subLayer.frame = layerBounds;
     }
