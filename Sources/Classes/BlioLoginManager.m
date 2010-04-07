@@ -13,7 +13,7 @@
 
 @synthesize timeout, username, token, isLoggedIn;
 
-- (void)login:(NSString*)user password:(NSString*)passwd {
+- (BlioLoginResult)login:(NSString*)user password:(NSString*)passwd {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	vaultBinding.logXMLInOut = YES;
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
@@ -26,26 +26,26 @@
 	for(id bodyPart in responseBodyParts) {
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			// TODO: show message
 			NSLog(@"SOAP error: %s",err);
-			return;
+			return error;
 		}
 		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
 			self.isLoggedIn = YES;
 			self.username = user;
 			self.token = [bodyPart LoginResult].Token;
 			self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
+			return success;
 		}
 		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 203 ) {
-			// TODO: show message
 			NSLog(@"Invalid password");
+			return invalidPassword;
 		}
 		else {
-			// TODO: show message
 			NSLog(@"Login error: %s",[bodyPart LoginResult].Message);
+			return error;
 		}
-	
 	}
+	return error;
 }
 
 - (void)logout {

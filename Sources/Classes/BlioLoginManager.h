@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-//typedef enum  {
-//    invalidPassword = 0,
-//    other = 1,
-//} BlioLoginError;
+typedef enum  {
+	success = 0,
+    invalidPassword,
+    error,
+} BlioLoginResult;
 
 @interface BlioLoginManager : NSObject {
 	BOOL isLoggedIn;
@@ -25,7 +26,7 @@
 @property (nonatomic, retain) NSString *token;
 @property (nonatomic) BOOL isLoggedIn;
 
-- (void)login:(NSString*)user password:(NSString*)passwd;
+- (BlioLoginResult)login:(NSString*)user password:(NSString*)passwd;
 - (void)logout;
 
 @end

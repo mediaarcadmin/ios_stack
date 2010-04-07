@@ -14,7 +14,7 @@
 #import "BlioUIImageAdditions.h"
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
-#import "BlioLoginView.h"
+#import "BlioLoginViewController.h"
 #import "BlioLoginManager.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
@@ -644,16 +644,22 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark -
 #pragma mark Toolbar Actions
 
-- (void)showLogin:(id)sender {    
+- (void)showLogin:(id)sender {     
+	BlioLoginViewController *loginController = [[BlioLoginViewController alloc] init];
+    loginController.loginManager = self.loginManager;
+	[self presentModalViewController:[[UINavigationController alloc] initWithRootViewController:loginController] animated:YES];
+    [loginController release]; 
+	/*
 	BlioLoginView* loginView = [[BlioLoginView alloc] initWithTitle: @"Sign in to Blio" 
-															message:@""
+															message:@"\n\n\n"
 														   delegate:nil
 												  cancelButtonTitle:@"Cancel"
-												  otherButtonTitles:@"OK", nil]; 
+												  otherButtonTitles:@"Log In", nil]; 
 	loginView.delegate = loginView;
 	loginView.loginManager = self.loginManager;
 	[loginView display];
 	[loginView release];
+	 */
 }
 
 
