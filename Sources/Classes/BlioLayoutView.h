@@ -27,10 +27,6 @@ typedef enum BlioLayoutPageMode {
 @protocol BlioLayoutDataSource
 @required
 - (BOOL)dataSourceContainsPage:(NSInteger)page;
-- (CGRect)cropForPage:(NSInteger)page;
-- (CGAffineTransform)viewTransformForPage:(NSInteger)page;
-- (CGPoint)contentOffsetToCenterPage:(NSInteger)aPageNumber zoomScale:(CGFloat)zoomScale;
-- (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale;
 
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer;
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector;
@@ -73,6 +69,8 @@ typedef enum BlioLayoutPageMode {
     BOOL isCancelled;
     BlioTextFlowBlock *lastBlock;
     BlioLayoutPageMode layoutMode;
+    CGAffineTransform cachedViewTransform;
+    NSInteger cachedViewTransformPage;
 }
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;
