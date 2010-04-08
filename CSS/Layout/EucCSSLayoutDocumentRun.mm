@@ -453,10 +453,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         if(preprocessedWords.count) {
             for(NSString *word in preprocessedWords) {
                 if(_previousInlineCharacterWasSpace && _seenNonSpace && !_alreadyInsertedSpace) {
-                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                    info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
-                    info.width = 0;
-                    [self _addComponent:&info];                                    
+                    [self _addComponent:&spaceInfo];                                    
                 }
                 
                 EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
