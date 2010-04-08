@@ -1311,6 +1311,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [self updatePieButtonAnimated:YES];
         
         // This should be more generally handled for both types of bookview
+        // TODO - change this. Also, is it even thread-safe?
         if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
             [self.book setLayoutPageNumber:[change objectForKey:NSKeyValueChangeNewKey]];
         }    
@@ -1936,7 +1937,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    //return (interfaceOrientation == UIInterfaceOrientationPortrait);
 	// Return YES for supported orientations
     if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
         return YES;
@@ -1945,14 +1946,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    [UIView beginAnimations:@"rotateBookView" context:nil];
-    [UIView setAnimationDuration:duration];
-    if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
-        [self.bookView setFrame:CGRectMake(0,0,320,480)];
-    } else {
-        [self.bookView setFrame:CGRectMake(0,0,480,320)];
-    }
-    [UIView commitAnimations];
+    if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
+        [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if ([self.bookView respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
+        [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 #pragma mark -
