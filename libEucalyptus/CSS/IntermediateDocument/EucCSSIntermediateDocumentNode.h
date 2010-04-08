@@ -39,6 +39,7 @@ struct css_computed_style;
 // Overridable:
 @property (nonatomic, readonly) BOOL isTextNode;  // Default: NO
 @property (nonatomic, readonly) NSString *text;   // Default: nil;
+@property (nonatomic, readonly) NSArray *preprocessedWords; // Default: nil - optional.
 
 @property (nonatomic, readonly) BOOL isImageNode;
 @property (nonatomic, readonly) NSURL *imageSrc;
