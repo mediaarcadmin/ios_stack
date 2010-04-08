@@ -266,6 +266,11 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return nil;
 }
 
+- (NSArray *)preprocessedWords
+{
+    return nil;
+}
+
 - (BOOL)isImageNode
 {
     return NO;

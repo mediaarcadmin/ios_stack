@@ -443,128 +443,177 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     [self _populateComponentInfo:&spaceInfo forNode:subnode];
     spaceInfo.width = [stringRenderer widthOfString:@" " pointSize:fontPixelSize];
     
-    CFStringRef text = (CFStringRef)subnode.text;
-    CFIndex textLength = CFStringGetLength(text);
+    uint8_t textAlign = [self _textAlign];
     
     // CSS3 may have a way of specifying this.
-    uint8_t textAlign = [self _textAlign];
     BOOL shouldHyphenate =  (textAlign == CSS_TEXT_ALIGN_LEFT || textAlign == CSS_TEXT_ALIGN_JUSTIFY);
     
-    if(textLength) {
-        UniChar *charactersToFree = NULL;
-        const UniChar *characters = CFStringGetCharactersPtr(text);
-        if(characters == NULL) {
-            // CFStringGetCharactersPtr may return NULL at any time.
-            charactersToFree = (UniChar *)malloc(sizeof(UniChar) * textLength);
-            CFStringGetCharacters(text,
-                                  CFRangeMake(0, textLength),
-                                  charactersToFree);
-            characters = charactersToFree;
-        }
-        
-        const UniChar *cursor = characters;
-        const UniChar *end = characters + textLength;
-        
-        const UniChar *wordStart = cursor;
-        
-        BOOL sawNewline = NO;
-        while(cursor < end) {
-            UniChar ch = *cursor;
-            switch(ch) {
-                case 0x000A: // LF
-                case 0x000D: // CR
-                    if(!sawNewline) {
-                        sawNewline = YES;
-                    }
-                    // No break - fall through.
-                case 0x0009: // tab
-                case 0x0020: // Space
-                    if(!_previousInlineCharacterWasSpace) {
-                        if(wordStart != cursor) {
-                            CFIndex wordLength = cursor - wordStart;
-                            CFStringRef string = CFStringCreateWithCharacters(kCFAllocatorDefault,
-                                                                              wordStart, 
-                                                                              wordLength);
-                            if(string) {
-                                EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                                info.kind = EucCSSLayoutDocumentRunComponentKindWord;
-                                info.component = (void *)string;
-                                info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
-                                [self _addComponent:&info];
-                                
-                                if(shouldHyphenate && wordLength > 4) {
-                                    NSArray *hyphenations = [_sharedHyphenator hyphenationsForWord:(NSString *)string];
-                                    
-                                    EucCSSLayoutDocumentRunComponentInfo hyphenInfo = info;
-                                    hyphenInfo.kind = EucCSSLayoutDocumentRunComponentKindHyphenationRule;
-                                    
-                                    for(THPair *hyphenatedPair in hyphenations) {
-                                        NSString *beforeBreak = hyphenatedPair.first;
-                                        hyphenInfo.component = beforeBreak;
-                                        hyphenInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
-                                        
-                                        NSString *afterBreak = hyphenatedPair.second;
-                                        hyphenInfo.component2 = afterBreak;
-                                        hyphenInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
-                                        
-                                        [self _addComponent:&hyphenInfo];
-                                    }
-                                }
-                                CFRelease(string);
-                            }
-                        }
-                        _previousInlineCharacterWasSpace = YES;
-                    }
-                    if(ch == 0x000A && 
-                       (whiteSpaceModel == CSS_WHITE_SPACE_PRE_LINE ||
-                        whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
-                        whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP)) {
-                           EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                           info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
-                           info.width = 0;
-                           [self _addComponent:&info];
-                           _alreadyInsertedSpace = YES;
-                    }
-                    break;
-                default:
-                    if(_previousInlineCharacterWasSpace) {
-                        if(!_alreadyInsertedSpace) {
-                            [self _addComponent:&spaceInfo];
-                        } else {
-                            _alreadyInsertedSpace = NO;
-                        }
-                        wordStart = cursor;
-                        _previousInlineCharacterWasSpace = NO;
-                        if(!_seenNonSpace) {
-                            _seenNonSpace = YES;
-                        }
-                    }
-            }
-            ++cursor;
-        }
-        if(!_previousInlineCharacterWasSpace) {
-            CFStringRef string = CFStringCreateWithCharacters(kCFAllocatorDefault,
-                                                              wordStart, 
-                                                              cursor - wordStart);
-            if(string) {
+    NSArray *preprocessedWords = subnode.preprocessedWords;
+    if(preprocessedWords) {
+        if(preprocessedWords.count) {
+            for(NSString *word in preprocessedWords) {
+                if(_previousInlineCharacterWasSpace && _seenNonSpace && !_alreadyInsertedSpace) {
+                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                    info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
+                    info.width = 0;
+                    [self _addComponent:&info];                                    
+                }
+                
                 EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                 info.kind = EucCSSLayoutDocumentRunComponentKindWord;
-                info.component = (void *)string;
-                info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
+                info.component = (void *)word;
+                info.width = [stringRenderer widthOfString:word pointSize:fontPixelSize];
                 [self _addComponent:&info];
-                CFRelease(string);
-            }
-        } 
-        if(_previousInlineCharacterWasSpace) {
-            if(!_alreadyInsertedSpace && _seenNonSpace) {
-                // Check _seenNonSpace because we're not supposed to add spaces at the /start/ of lines.
-                [self _addComponent:&spaceInfo];
-                _alreadyInsertedSpace = YES;
-            }
+                
+                if(shouldHyphenate && word.length > 4) {
+                    NSArray *hyphenations = [_sharedHyphenator hyphenationsForWord:word];
+                    
+                    EucCSSLayoutDocumentRunComponentInfo hyphenInfo = info;
+                    hyphenInfo.kind = EucCSSLayoutDocumentRunComponentKindHyphenationRule;
+                    
+                    for(THPair *hyphenatedPair in hyphenations) {
+                        NSString *beforeBreak = hyphenatedPair.first;
+                        hyphenInfo.component = beforeBreak;
+                        hyphenInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
+                        
+                        NSString *afterBreak = hyphenatedPair.second;
+                        hyphenInfo.component2 = afterBreak;
+                        hyphenInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
+                        
+                        [self _addComponent:&hyphenInfo];
+                    }
+                }
+                
+                if(!_seenNonSpace) {
+                    _seenNonSpace = YES;
+                }
+                if(_alreadyInsertedSpace) {
+                    _alreadyInsertedSpace = NO;
+                }
+                if(!_previousInlineCharacterWasSpace) {
+                    _previousInlineCharacterWasSpace = YES;
+                }
+            }            
         }
-        
-        if(charactersToFree) {
-            free(charactersToFree);
+    } else {
+        CFStringRef text = (CFStringRef)subnode.text;
+        CFIndex textLength = CFStringGetLength(text);
+        if(textLength) {
+            UniChar *charactersToFree = NULL;
+            const UniChar *characters = CFStringGetCharactersPtr(text);
+            if(characters == NULL) {
+                // CFStringGetCharactersPtr may return NULL at any time.
+                charactersToFree = (UniChar *)malloc(sizeof(UniChar) * textLength);
+                CFStringGetCharacters(text,
+                                      CFRangeMake(0, textLength),
+                                      charactersToFree);
+                characters = charactersToFree;
+            }
+            
+            const UniChar *cursor = characters;
+            const UniChar *end = characters + textLength;
+            
+            const UniChar *wordStart = cursor;
+            
+            BOOL sawNewline = NO;
+            while(cursor < end) {
+                UniChar ch = *cursor;
+                switch(ch) {
+                    case 0x000A: // LF
+                    case 0x000D: // CR
+                        if(!sawNewline) {
+                            sawNewline = YES;
+                        }
+                        // No break - fall through.
+                    case 0x0009: // tab
+                    case 0x0020: // Space
+                        if(!_previousInlineCharacterWasSpace) {
+                            if(wordStart != cursor) {
+                                CFIndex wordLength = cursor - wordStart;
+                                CFStringRef string = CFStringCreateWithCharacters(kCFAllocatorDefault,
+                                                                                  wordStart, 
+                                                                                  wordLength);
+                                if(string) {
+                                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                                    info.kind = EucCSSLayoutDocumentRunComponentKindWord;
+                                    info.component = (void *)string;
+                                    info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
+                                    [self _addComponent:&info];
+                                    
+                                    if(shouldHyphenate && wordLength > 4) {
+                                        NSArray *hyphenations = [_sharedHyphenator hyphenationsForWord:(NSString *)string];
+                                        
+                                        EucCSSLayoutDocumentRunComponentInfo hyphenInfo = info;
+                                        hyphenInfo.kind = EucCSSLayoutDocumentRunComponentKindHyphenationRule;
+                                        
+                                        for(THPair *hyphenatedPair in hyphenations) {
+                                            NSString *beforeBreak = hyphenatedPair.first;
+                                            hyphenInfo.component = beforeBreak;
+                                            hyphenInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
+                                            
+                                            NSString *afterBreak = hyphenatedPair.second;
+                                            hyphenInfo.component2 = afterBreak;
+                                            hyphenInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
+                                            
+                                            [self _addComponent:&hyphenInfo];
+                                        }
+                                    }
+                                    CFRelease(string);
+                                }
+                            }
+                            _previousInlineCharacterWasSpace = YES;
+                        }
+                        if(ch == 0x000A && 
+                           (whiteSpaceModel == CSS_WHITE_SPACE_PRE_LINE ||
+                            whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
+                            whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP)) {
+                               EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                               info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
+                               info.width = 0;
+                               [self _addComponent:&info];
+                               _alreadyInsertedSpace = YES;
+                        }
+                        break;
+                    default:
+                        if(_previousInlineCharacterWasSpace) {
+                            if(!_alreadyInsertedSpace) {
+                                [self _addComponent:&spaceInfo];
+                            } else {
+                                _alreadyInsertedSpace = NO;
+                            }
+                            wordStart = cursor;
+                            _previousInlineCharacterWasSpace = NO;
+                            if(!_seenNonSpace) {
+                                _seenNonSpace = YES;
+                            }
+                        }
+                }
+                ++cursor;
+            }
+            if(!_previousInlineCharacterWasSpace) {
+                CFStringRef string = CFStringCreateWithCharacters(kCFAllocatorDefault,
+                                                                  wordStart, 
+                                                                  cursor - wordStart);
+                if(string) {
+                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                    info.kind = EucCSSLayoutDocumentRunComponentKindWord;
+                    info.component = (void *)string;
+                    info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
+                    [self _addComponent:&info];
+                    CFRelease(string);
+                }
+            } 
+            if(_previousInlineCharacterWasSpace) {
+                if(!_alreadyInsertedSpace && _seenNonSpace) {
+                    // Check _seenNonSpace because we're not supposed to add spaces at the /start/ of lines.
+                    [self _addComponent:&spaceInfo];
+                    _alreadyInsertedSpace = YES;
+                }
+            }
+            
+            if(charactersToFree) {
+                free(charactersToFree);
+            }
         }
     }
 }

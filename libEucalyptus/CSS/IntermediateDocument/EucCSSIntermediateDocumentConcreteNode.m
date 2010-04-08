@@ -85,6 +85,15 @@
     return _text;
 }
 
+- (NSArray *)preprocessedWords
+{
+    if([_documentTreeNode respondsToSelector:@selector(preprocessedWordStrings)]) {
+        return [_documentTreeNode performSelector:@selector(preprocessedWordStrings)];
+    } else {
+        return nil;
+    }
+}
+
 - (BOOL)isImageNode
 {
     return [@"img" caseInsensitiveCompare:_documentTreeNode.name] == NSOrderedSame;
