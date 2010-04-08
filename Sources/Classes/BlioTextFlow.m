@@ -310,36 +310,33 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         [newBlockIDString release];
     } else if (strcmp("Word", name) == 0) {
         NSString *textString = nil;
-        NSArray *rectArray = nil;
+        long rect[4];
+        BOOL rectFound = NO;
         
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("Text", atts[i]) == 0) {
                 textString = [[NSString alloc] initWithUTF8String:atts[i+1]];
             } else if (strcmp("Rect", atts[i]) == 0) {
-                NSString *rectString = [[NSString alloc] initWithUTF8String:atts[i+1]];
-                if (nil != rectString) {
-                    rectArray = [rectString componentsSeparatedByString:@","];
-                    [rectString release];
+                if (4 == sscanf(atts[i+1], " %ld , %ld , %ld , %ld ", &rect[0], &rect[1], &rect[2], &rect[3])) {
+                    rectFound = YES; 
                 }
             }
         }
                 
-        if ((nil != textString) && ([rectArray count] == 4)) {
-            BlioTextFlowBlock *block = [textFlow currentBlock];
-            BlioTextFlowPositionedWord *newWord = [[BlioTextFlowPositionedWord alloc] init];
-            [newWord setString:textString];
-            [newWord setRect:CGRectMake([[rectArray objectAtIndex:0] intValue], 
-                                        [[rectArray objectAtIndex:1] intValue],
-                                        [[rectArray objectAtIndex:2] intValue],
-                                        [[rectArray objectAtIndex:3] intValue])];
-            
-            [newWord setBlockID:[block blockID]];
-            NSInteger index = [[block words] count];
-            [newWord setWordIndex:index];
-            [newWord setWordID:[NSNumber numberWithInteger:index]];
-            [[block words] addObject:newWord];
-            [newWord release];
-            
+        if (nil != textString) {
+            if(rectFound) {
+                BlioTextFlowBlock *block = [textFlow currentBlock];
+                BlioTextFlowPositionedWord *newWord = [[BlioTextFlowPositionedWord alloc] init];
+                [newWord setString:textString];
+                [newWord setRect:CGRectMake(rect[0], rect[1], rect[2], rect[3])];
+                
+                [newWord setBlockID:[block blockID]];
+                NSInteger index = [[block words] count];
+                [newWord setWordIndex:index];
+                [newWord setWordID:[NSNumber numberWithInteger:index]];
+                [[block words] addObject:newWord];
+                [newWord release];
+            }                
             [textString release];
         }
     }
@@ -556,7 +553,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 
     }
     
-    //NSLog(@"Blocks retrieved from disk");
+    //NSLog(@"Blocks retrieved from disk for page %ld", (long)pageIndex);
     self.cachedPageBlocks = pageBlocks;
     self.cachedPageIndex = pageIndex;
     
