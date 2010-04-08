@@ -199,7 +199,7 @@
 }
 
 - (void)layoutSubviewsAfterBoundsChange {
-    NSLog(@"Laying out contentView subviews");
+    //NSLog(@"Laying out contentView subviews");
     CGRect newFrame = self.bounds;
     
     [CATransaction begin];
@@ -211,7 +211,7 @@
         [pageLayer layoutSublayersAfterBoundsChange];
     }
     [CATransaction commit];
-    NSLog(@"Laying out contentView subviews done");
+    //NSLog(@"Laying out contentView subviews done");
 }
 
 @end
@@ -236,7 +236,7 @@
 - (void)layoutSublayersAfterBoundsChange {
 
     CGRect layerBounds = self.bounds;
-    NSLog(@"Laying out pageLayer sublayers at %@", NSStringFromCGRect(layerBounds));
+    //NSLog(@"Laying out pageLayer sublayers at %@", NSStringFromCGRect(layerBounds));
     for (CALayer *subLayer in self.sublayers) {
         subLayer.frame = layerBounds;
     }
@@ -247,7 +247,7 @@
     [self.tiledLayer setNeedsDisplay];
     
     [self.highlightsLayer setContents:nil];
-    NSLog(@"Laying out pageLayer sublayers done");
+    //NSLog(@"Laying out pageLayer sublayers done");
 }
 
 - (void)setPageNumber:(NSInteger)newPageNumber {

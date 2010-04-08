@@ -43,11 +43,12 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
 - (CGRect)cropForPage:(NSInteger)page;
-- (CGAffineTransform)viewTransformForPage:(NSInteger)page;
+- (CGAffineTransform)blockTransformForPage:(NSInteger)page;
 - (CGSize)currentContentSize;
 - (void)setLayoutMode:(BlioLayoutPageMode)newLayoutMode animated:(BOOL)animated;
 - (CGPoint)contentOffsetToCenterPage:(NSInteger)aPageNumber zoomScale:(CGFloat)zoomScale;
 - (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale;
+- (CGPoint)contentOffsetToFitRect:(CGRect)rect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale;
 
 - (void)zoomToNextBlockReversed:(BOOL)reversed;
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock context:(void *)context;
@@ -434,48 +435,93 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return  CGPointMake(((aPageNumber - 1) * CGRectGetWidth(viewBounds) * zoomScale) - (CGRectGetWidth(viewBounds) * ((1-zoomScale)/2.0f)), CGRectGetHeight(viewBounds) * ((1-zoomScale)/-2.0f));
 }
 
+- (CGRect)fitRectToContentView:(CGRect)aRect {
+    CGRect viewBounds = self.contentView.bounds;
+    CGFloat blockMinimumWidth = CGRectGetWidth(viewBounds) / self.scrollView.maximumZoomScale;
+    
+    if (CGRectGetWidth(aRect) < blockMinimumWidth) {
+        aRect.origin.x -= ((blockMinimumWidth - CGRectGetWidth(aRect)))/2.0f;
+        aRect.size.width += (blockMinimumWidth - CGRectGetWidth(aRect));
+        
+        if (aRect.origin.x < 0) {
+            aRect.origin.x = 0;
+            aRect.size.width += (blockMinimumWidth - CGRectGetWidth(aRect));
+        }
+        
+        if (CGRectGetMaxX(aRect) > CGRectGetWidth(viewBounds)) {
+            aRect.origin.x = CGRectGetWidth(viewBounds) - CGRectGetWidth(aRect);
+        }
+    }
+    
+    return aRect;
+}
+
 - (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale {
     
     CGRect cropRect;
     CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
     if (CGRectEqualToRect(cropRect, CGRectZero)) return CGPointZero;   
     CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
-    
+    pageRect = [self fitRectToContentView:pageRect];
+        
     CGRect viewBounds = self.contentView.bounds;
-    CGFloat blockMinimumWidth = CGRectGetWidth(viewBounds) / self.scrollView.maximumZoomScale;
-    
-    if (CGRectGetWidth(pageRect) < blockMinimumWidth) {
-        pageRect.origin.x -= ((blockMinimumWidth - CGRectGetWidth(pageRect)))/2.0f;
-        pageRect.size.width += (blockMinimumWidth - CGRectGetWidth(pageRect));
-        
-        if (pageRect.origin.x < 0) {
-            pageRect.origin.x = 0;
-            pageRect.size.width += (blockMinimumWidth - CGRectGetWidth(pageRect));
-        }
-        
-        if (CGRectGetMaxX(pageRect) > CGRectGetWidth(viewBounds)) {
-            pageRect.origin.x = CGRectGetWidth(viewBounds) - CGRectGetWidth(pageRect);
-        }
-    }
-    
     CGFloat scale = CGRectGetWidth(viewBounds) / CGRectGetWidth(pageRect);
     *zoomScale = scale;
     
     CGFloat pageWidth = CGRectGetWidth(viewBounds) * scale;
-    CGFloat cropHeight = CGRectGetHeight(pageRect) * scale;
     CGPoint viewOrigin = CGPointMake((aPageNumber - 1) * pageWidth, 0); 
     
     CGFloat contentOffsetX = round(viewOrigin.x + (pageRect.origin.x * scale));
     CGFloat contentOffsetY;
-    if (cropHeight < CGRectGetHeight(viewBounds)) {
-        CGFloat yOffset = (CGRectGetHeight(viewBounds) - cropHeight) / 2.0f;
+    
+    // Vertically center if smaller than height, otherwise top align
+    if ((CGRectGetHeight(pageRect) * scale) < CGRectGetHeight(viewBounds)) {
+        CGFloat yOffset = (CGRectGetHeight(viewBounds) - (CGRectGetHeight(pageRect) * scale)) / 2.0f;
         contentOffsetY = round((pageRect.origin.y * scale) - yOffset);
     } else {
         contentOffsetY = round((pageRect.origin.y * scale));
     }
-    
+
     return CGPointMake(contentOffsetX, contentOffsetY);
 }
+
+- (CGPoint)contentOffsetToFitRect:(CGRect)aRect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)scale {
+    CGAffineTransform blockTransform = [self blockTransformForPage:aPageNumber];
+    CGRect targetRect = CGRectApplyAffineTransform(aRect, blockTransform);
+    CGRect viewBounds = self.contentView.bounds;
+    CGFloat zoomScale = CGRectGetWidth(viewBounds) / CGRectGetWidth(targetRect);
+    targetRect = CGRectInset(targetRect, -kBlioPDFBlockInsetX / zoomScale, -kBlioPDFBlockInsetY / zoomScale);
+    targetRect = [self fitRectToContentView:targetRect];
+
+    // Clamp the page crop to the bottom of the layout view
+    zoomScale = CGRectGetWidth(viewBounds) / CGRectGetWidth(targetRect);
+    *scale = zoomScale;
+    
+    CGFloat pageWidth = CGRectGetWidth(viewBounds) * zoomScale;
+    CGPoint viewOrigin = CGPointMake((aPageNumber - 1) * pageWidth, 0); 
+    CGFloat contentOffsetX = round(viewOrigin.x + (targetRect.origin.x * zoomScale));
+    
+    CGRect cropRect;
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+    
+    CGFloat contentOffsetY = round(targetRect.origin.y * zoomScale);
+    // maxContentOffsetYToClampPage = A - B - C
+    // Where A = scaled content view height
+    //       B = height of layout view
+    //       C = scaled inset of page crop
+    CGFloat scaledContentViewHeight = CGRectGetHeight(viewBounds) * zoomScale;
+    CGFloat heightOfScrollView = CGRectGetHeight(self.bounds);
+    CGFloat scaledInsetOfPageCrop = CGRectGetMinY(pageRect) * zoomScale;
+    CGFloat maxContentOffsetYToClampPage = scaledContentViewHeight - heightOfScrollView - scaledInsetOfPageCrop;
+    
+    if (contentOffsetY > maxContentOffsetYToClampPage) {
+        contentOffsetY = maxContentOffsetYToClampPage;
+    }
+
+    return CGPointMake(contentOffsetX, contentOffsetY);
+}
+
 
 #pragma mark -
 #pragma mark BlioLayoutDataSource
@@ -500,7 +546,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return [pageCropValue CGRectValue];
 }
 
-- (CGAffineTransform)viewTransformForPage:(NSInteger)aPageNumber {
+- (CGAffineTransform)blockTransformForPage:(NSInteger)aPageNumber {
     if (cachedViewTransformPage != aPageNumber) {
         
         if (nil == viewTransformsCache) return CGAffineTransformIdentity;
@@ -649,7 +695,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber excluding:(BlioBookmarkRange *)excludedBookmark {
-    CGAffineTransform viewTransform = [self viewTransformForPage:aPageNumber];
+    CGAffineTransform viewTransform = [self blockTransformForPage:aPageNumber];
     
     for (BlioLayoutViewColoredRect *coloredRect in [self highlightRectsForPage:aPageNumber excluding:excludedBookmark]) {
         UIColor *highlightColor = [coloredRect color];
@@ -925,7 +971,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
     NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
     
-    CGAffineTransform viewTransform = [self viewTransformForPage:pageIndex + 1];
+    CGAffineTransform viewTransform = [self blockTransformForPage:pageIndex + 1];
     
     if ([nonFolioPageBlocks count] > currentIndex) {
         CGRect blockRect = [[nonFolioPageBlocks objectAtIndex:currentIndex] rect];        
@@ -964,7 +1010,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
     NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
     
-    CGAffineTransform viewTransform = [self viewTransformForPage:pageIndex + 1];
+    CGAffineTransform viewTransform = [self blockTransformForPage:pageIndex + 1];
     
     if ([nonFolioPageBlocks count] > currentIndex) {
         NSArray *words = [[nonFolioPageBlocks objectAtIndex:currentIndex] words];
@@ -1877,7 +1923,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.scrollView setBounces:NO];
     
     BlioTextFlowBlock *targetBlock = nil;
-    CGAffineTransform viewTransform = [self viewTransformForPage:targetPage];
+    CGAffineTransform viewTransform = [self blockTransformForPage:targetPage];
     
     NSUInteger count = [blocks count];
     NSUInteger targetIndex;
@@ -1939,42 +1985,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock context:(void *)context {
     NSInteger targetPageNumber = [targetBlock pageIndex] + 1;
-    
-    CGAffineTransform viewTransform = [self viewTransformForPage:targetPageNumber];
-    CGRect targetRect = CGRectApplyAffineTransform([targetBlock rect], viewTransform);
-    targetRect = CGRectInset(targetRect, -kBlioPDFBlockInsetX, -kBlioPDFBlockInsetY);
-    
-    CGFloat blockMinimumWidth = self.bounds.size.width / self.scrollView.maximumZoomScale;
-    
-    if (CGRectGetWidth(targetRect) < blockMinimumWidth) {
-        targetRect.origin.x -= ((blockMinimumWidth - CGRectGetWidth(targetRect)))/2.0f;
-        targetRect.size.width += (blockMinimumWidth - CGRectGetWidth(targetRect));
-        
-        if (targetRect.origin.x < 0) {
-            targetRect.origin.x = 0;
-            targetRect.size.width += (blockMinimumWidth - CGRectGetWidth(targetRect));
-        }
-        
-        if (CGRectGetMaxX(targetRect) > CGRectGetWidth(self.bounds)) {
-            targetRect.origin.x = CGRectGetWidth(self.bounds) - CGRectGetWidth(targetRect);
-        }
-    }
-    
-    CGFloat zoomScale = CGRectGetWidth(self.bounds) / CGRectGetWidth(targetRect);
-    CGFloat pageWidth = CGRectGetWidth(self.bounds) * zoomScale; 
-    CGPoint viewOrigin = CGPointMake((targetPageNumber - 1) * pageWidth, 0);
-    
-    CGRect pageRect = CGRectApplyAffineTransform([self cropForPage:targetPageNumber], CATransform3DGetAffineTransform([self.currentPageLayer transform]));
-    
-    CGFloat maxYOffset = ((CGRectGetMaxY(pageRect) * zoomScale) - CGRectGetHeight(self.bounds)) / zoomScale;
-    CGFloat yDiff = targetRect.origin.y - maxYOffset;
-    
-    if (yDiff > 0) {
-        targetRect.origin.y -= yDiff;
-        targetRect.size.height += yDiff;
-    }
-    
-    CGPoint newContentOffset = CGPointMake(round(viewOrigin.x + targetRect.origin.x * zoomScale), round(viewOrigin.y + targetRect.origin.y * zoomScale));
+    CGFloat zoomScale;
+    CGPoint newContentOffset = [self contentOffsetToFitRect:[targetBlock rect] onPage:targetPageNumber zoomScale:&zoomScale];
     CGPoint currentContentOffset = [self.scrollView contentOffset];
     
     if (!CGPointEqualToPoint(newContentOffset, currentContentOffset)) {
