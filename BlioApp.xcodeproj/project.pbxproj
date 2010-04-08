@@ -149,7 +149,6 @@
 		A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
 		C901F8B8116B816A00A1858D /* BlioLoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioLoginManager.m */; };
-		C901F8B9116B817700A1858D /* BlioLoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161951165494D003A9709 /* BlioLoginView.m */; };
 		C901F8BC116B819000A1858D /* BlioBookVault.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161551164FB3E003A9709 /* BlioBookVault.m */; };
 		C901F8BD116B819000A1858D /* NSDate+ISO8601Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161571164FB3E003A9709 /* NSDate+ISO8601Parsing.m */; };
 		C901F8BE116B819000A1858D /* NSDate+ISO8601Unparsing.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161591164FB3E003A9709 /* NSDate+ISO8601Unparsing.m */; };
@@ -158,6 +157,12 @@
 		C901F8C1116B819000A1858D /* xsd.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615F1164FB3E003A9709 /* xsd.m */; };
 		C918B6991121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */; };
 		C918B8B51122AEE1008B6ADC /* Feeds in Resources */ = {isa = PBXBuildFile; fileRef = C918B8B21122AEE1008B6ADC /* Feeds */; };
+		C926F769116E293500FCC291 /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */; };
+		C926F76A116E293500FCC291 /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */; };
+		C926F76B116E295A00FCC291 /* CellTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9387E116BD63500E53BD3 /* CellTextField.m */; };
+		C926F76C116E295A00FCC291 /* CellTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9387E116BD63500E53BD3 /* CellTextField.m */; };
+		C926F76D116E297600FCC291 /* EditableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F93880116BD63500E53BD3 /* EditableTableViewCell.m */; };
+		C926F76E116E297700FCC291 /* EditableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F93880116BD63500E53BD3 /* EditableTableViewCell.m */; };
 		C932AF9410EBCFBD00B8286A /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */; };
 		C932B03B10ECBC6000B8286A /* BlioNotesView.m in Sources */ = {isa = PBXBuildFile; fileRef = C932B03A10ECBC6000B8286A /* BlioNotesView.m */; };
 		C93E825D1134241D000117C6 /* BlioWebToolsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */; };
@@ -1802,9 +1807,9 @@
 				A38161641164FB3E003A9709 /* USGlobals.m in Sources */,
 				A38161651164FB3E003A9709 /* xsd.m in Sources */,
 				A368C69E116A3A52008653CF /* BlioLoginManager.m in Sources */,
-				A3F9385B116BC37B00E53BD3 /* BlioLoginViewController.m in Sources */,
-				A3F93881116BD63500E53BD3 /* CellTextField.m in Sources */,
-				A3F93882116BD63500E53BD3 /* EditableTableViewCell.m in Sources */,
+				C926F769116E293500FCC291 /* BlioLoginViewController.m in Sources */,
+				C926F76B116E295A00FCC291 /* CellTextField.m in Sources */,
+				C926F76D116E297600FCC291 /* EditableTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1871,13 +1876,15 @@
 				7DF2A38B1152C5F100FC2045 /* BlioTextFlowFlowTree.m in Sources */,
 				7DF2A48F11536CA100FC2045 /* BlioFlowEucBook.m in Sources */,
 				C901F8B8116B816A00A1858D /* BlioLoginManager.m in Sources */,
-				C901F8B9116B817700A1858D /* BlioLoginView.m in Sources */,
 				C901F8BC116B819000A1858D /* BlioBookVault.m in Sources */,
 				C901F8BD116B819000A1858D /* NSDate+ISO8601Parsing.m in Sources */,
 				C901F8BE116B819000A1858D /* NSDate+ISO8601Unparsing.m in Sources */,
 				C901F8BF116B819000A1858D /* USAdditions.m in Sources */,
 				C901F8C0116B819000A1858D /* USGlobals.m in Sources */,
 				C901F8C1116B819000A1858D /* xsd.m in Sources */,
+				C926F76A116E293500FCC291 /* BlioLoginViewController.m in Sources */,
+				C926F76C116E295A00FCC291 /* CellTextField.m in Sources */,
+				C926F76E116E297700FCC291 /* EditableTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
