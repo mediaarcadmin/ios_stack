@@ -11,6 +11,18 @@
 
 @implementation CALayer (THCALayerAdditions)
 
+- (CALayer *)topmostLayer
+{    
+    CALayer *windowLayer = self;
+    CALayer *superLayer;
+    CALayer *oldSuperlayer = nil;
+    while((superLayer = windowLayer.superlayer)) {
+        oldSuperlayer = windowLayer;
+        windowLayer = superLayer;
+    }
+    return oldSuperlayer ?: windowLayer;
+}
+
 - (CALayer *)windowLayer
 {    
     CALayer *windowLayer = self;
@@ -20,6 +32,7 @@
     }
     return windowLayer;
 }
+
 
 - (CGSize)screenScaleFactors
 {
