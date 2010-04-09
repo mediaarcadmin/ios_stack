@@ -153,9 +153,9 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
             break;
         }
         
-        
-        // Update the _bytesProcessed variable.
-        //_bytesProcessed = currentPoints[currentPointIndex].startOfParagraphByteOffset;
+        if((pageCount % 16) == 0) {
+            _percentagePaginated = [_book estimatedPercentageForIndexPoint:currentPoints[currentPointIndex]];
+        }
         
 #if TARGET_IPHONE_SIMULATOR
 //         usleep(100000);
@@ -339,7 +339,7 @@ abandon:
 
     NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
                               book, EucBookPaginatorNotificationBookKey,
-                              [NSNumber numberWithFloat:1.0f], EucBookPaginatorNotificationPercentagePaginatedKey, 
+                              [NSNumber numberWithFloat:100.0f], EucBookPaginatorNotificationPercentagePaginatedKey, 
                               nil];    
     [[NSNotificationCenter defaultCenter] postNotificationName:EucBookPaginatorCompleteNotification
                                                         object:self
