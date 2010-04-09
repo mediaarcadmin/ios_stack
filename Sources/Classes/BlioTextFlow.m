@@ -10,6 +10,8 @@
 #import "BlioTextFlowFlowTree.h"
 #import "BlioProcessing.h"
 
+#import <sys/stat.h>
+
 @interface BlioTextFlowPreParseOperation : BlioProcessingOperation
 @end
 
@@ -495,6 +497,20 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     }
     
     return tree;
+}
+
+- (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex
+{
+    BlioTextFlowSection *section = [self.sections objectAtIndex:sectionIndex];
+    
+    NSString *path = [self.basePath stringByAppendingPathComponent:section.flowSourcePath];
+    
+    size_t ret = 0;
+    struct stat statResult;
+    if(stat(path.fileSystemRepresentation, &statResult) == 0) {
+        ret = statResult.st_size;
+    }
+    return ret;
 }
 
 #pragma mark -

@@ -15,6 +15,8 @@
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THRegex.h>
 
+#import <sys/stat.h>
+
 @implementation BlioFlowEucBook
 
 @synthesize textFlow;
@@ -119,6 +121,35 @@
     }
     
     return [indexPoint autorelease];
+}
+
+- (float *)indexSourceScaleFactors
+{
+    if(!_indexSourceScaleFactors) {
+        NSUInteger sectionCount = textFlow.sections.count + 1;
+        size_t *sizes = malloc(sectionCount * sizeof(size_t));;
+        size_t total = 0;
+        
+        struct stat statResult;
+        if(stat([[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"].fileSystemRepresentation, &statResult) == 0) {
+            sizes[0]= statResult.st_size;
+            total += sizes[0];
+        }
+        for(NSUInteger i = 0; i < sectionCount - 1; ++i) {
+            sizes[i+1] = [textFlow sizeOfSectionWithIndex:i];
+            total += sizes[i+1];
+        }
+              
+        _indexSourceScaleFactors = malloc(sectionCount * sizeof(float));
+        
+        for(NSUInteger i = 0; i < sectionCount; ++i) {  
+            _indexSourceScaleFactors[i] = (float)sizes[i] / (float)total;
+        }
+        
+        free(sizes);
+    }
+    
+    return _indexSourceScaleFactors;
 }
 
 @end

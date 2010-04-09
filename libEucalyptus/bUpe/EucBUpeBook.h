@@ -73,5 +73,8 @@
 // for covers etc.
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
+// Provide an array of floats specifying the percentage of the book that each
+// index pont source accounts for.  Should sum to 1.
+- (float *)indexSourceScaleFactors;
 
 @end
