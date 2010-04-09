@@ -54,6 +54,8 @@ typedef enum EucCSSIntermediateDocumentNodeKeyFlags
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key;
 - (uint32_t)nodeKeyForId:(NSString *)identifier;
 
+- (float)estimatedPercentageForNodeWithKey:(uint32_t)key;
+
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *rootNode;
 @property (nonatomic, retain, readonly) NSURL *url;
 @property (nonatomic, assign, readonly) id<EucCSSIntermediateDocumentDataSource> dataSource;
