@@ -30,4 +30,5 @@ static NSString * const kBlioLastSpeedDefaultsKey = @"lastSpeed";
 static NSString * const kBlioLastVolumeDefaultsKey = @"lastVolume";
 static NSString * const kBlioLastSearchEngineDefaultsKey = @"lastSearchEngine";
 static NSString * const kBlioLastEncyclopediaDefaultsKey = @"lastEncyclopedia";
+static NSString * const kBlioWebsiteIntro = @"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will be downloaded to Blio the next time it is opened.";
 

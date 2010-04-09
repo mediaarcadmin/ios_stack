@@ -15,18 +15,18 @@
 
 - (BlioLoginResult)login:(NSString*)user password:(NSString*)passwd {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = YES;
+	//vaultBinding.logXMLInOut = YES;
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
 	loginRequest.username = user;	//@"gordonfrog@gmail.com" account for testing
 	loginRequest.password = passwd; //@"Gumby01";  
 	loginRequest.siteId =  [NSNumber numberWithInt:12151];		// hard-coded in Windows Blio
 	BookVaultSoapResponse * response = [vaultBinding LoginUsingParameters:loginRequest];
-	
+	[vaultBinding release];
 	NSArray *responseBodyParts = response.bodyParts;
 	for(id bodyPart in responseBodyParts) {
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error: %s",err);
+			NSLog(@"SOAP error for login: %s",err);
 			return error;
 		}
 		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
@@ -55,5 +55,34 @@
 	self.timeout = [NSDate distantPast];
 }
 
+// This is a separate activity from login, but want to do every time we log in.
+- (void)archiveBooks {
+	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
+	vaultBinding.logXMLInOut = YES;
+	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
+	vaultContentsRequest.token = self.token; 
+	BookVaultSoapResponse* response = [vaultBinding VaultContentsWithTokenUsingParameters:vaultContentsRequest];
+	[vaultBinding release];
+	NSArray *responseBodyParts = response.bodyParts;
+	for(id bodyPart in responseBodyParts) {
+		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
+			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
+			NSLog(@"SOAP error for VaultContents: %s",err);
+			// TODO: Message
+			return;
+		}
+		else if ( [[bodyPart VaultContentsWithTokenResult].ReturnCode intValue] == 300 ) { 
+			vaultBooks = [bodyPart VaultContentsWithTokenResult].Contents.string;
+		}
+		else {
+			NSLog(@"VaultContents error: %s",[bodyPart VaultContentsWithTokenResult].Message);
+			// TODO: Message
+			return;
+		}
+	}
+	// TODO: Remove from the isbn list the isbns that are already on the device.
+	
+	
+}
 
 @end

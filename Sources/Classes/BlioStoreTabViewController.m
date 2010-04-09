@@ -11,7 +11,8 @@
 #import "BlioStoreCategoriesController.h"
 #import "BlioStoreSearchController.h"
 #import "BlioStoreMyVaultController.h"
-#import "BlioStoreDownloadsController.h"
+//#import "BlioStoreDownloadsController.h"
+#import "BlioStoreWebsiteViewController.h"
 
 @interface BlioStoreTabViewController()
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
@@ -87,7 +88,12 @@
         [vc4.navigationItem setRightBarButtonItem:aDoneButton];
         [vc4 release];
         
-        BlioStoreDownloadsController* vc5 = [[BlioStoreDownloadsController alloc] init];
+        //BlioStoreDownloadsController* vc5 = [[BlioStoreDownloadsController alloc] init];
+        //UINavigationController* nc5 = [[UINavigationController alloc] initWithRootViewController:vc5];
+        //[vc5.navigationItem setRightBarButtonItem:aDoneButton];
+        //[vc5 release];
+        
+        BlioStoreWebsiteViewController* vc5 = [[BlioStoreWebsiteViewController alloc] init];
         UINavigationController* nc5 = [[UINavigationController alloc] initWithRootViewController:vc5];
         [vc5.navigationItem setRightBarButtonItem:aDoneButton];
         [vc5 release];
