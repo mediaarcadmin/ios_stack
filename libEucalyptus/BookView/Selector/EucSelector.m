@@ -420,7 +420,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                                                    CGImageGetHeight(highImage));
         CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
         
-        CALayer *windowLayer = self.attachedLayer.windowLayer;
+        CALayer *topmostLayer = self.attachedLayer.topmostLayer;
         CALayer *loupeContentsLayer = self.loupeContentsLayer;
         THImageFactory *loupeContentsImageFactory;
         CALayer *loupeLayer;
@@ -459,7 +459,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             
             // Don't add it to self.viewWithSelection - we're using renderInContext:
             // below, so the effect would be an infinite tunnel after a few moves.
-            [windowLayer addSublayer:loupeLayer];
+            [topmostLayer addSublayer:loupeLayer];
             
             CABasicAnimation *loupePopUp = [[CABasicAnimation alloc] init];
             loupePopUp.keyPath = @"transform";
@@ -503,7 +503,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     
     CGSize layerToMagnifySize = layerToMagnify.bounds.size;
     
-    CALayer *windowLayer = layerToMagnify.windowLayer;
+    CALayer *topmostLayer = layerToMagnify.topmostLayer;
     CGSize screenScaleFactors = [layerToMagnify screenScaleFactors];
     
     // We want 1.25 * bigger.
@@ -553,7 +553,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     // We draw the layer content in the -drawLayer:inContext: delegate method.
     loupeContentsLayer.contents = (id)loupeContentsImageFactory.snapshotCGImage;
     
-    CGPoint windowPoint = [layerToMagnify convertPoint:point toLayer:windowLayer];
+    CGPoint windowPoint = [layerToMagnify convertPoint:point toLayer:topmostLayer];
 
     // Position the loupe.
     CGRect frame = magnificationLoupeRect;
@@ -687,7 +687,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         
         if(stage == EucSelectorTrackingStageFirstSelection || stage == EucSelectorTrackingStageChangingSelection) {
             if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
-                                [CATransaction begin];
+                [CATransaction begin];
                 [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 
                 CALayer *attachedLayer = self.attachedLayer;
@@ -1211,7 +1211,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             
             CALayer *endLayer = left ? self.highlightEndLayers.first : self.highlightEndLayers.second;
             CGRect endLayerFrame = [endLayer convertRect:endLayer.bounds toLayer:attachedLayer];
-            CGRect endLayerScreenBounds = [attachedLayer convertRect:endLayerFrame toLayer:attachedLayer.windowLayer];
+            CGRect endLayerScreenBounds = [attachedLayer convertRect:endLayerFrame toLayer:attachedLayer.topmostLayer];
             CGFloat yOffset = - roundf(endLayerScreenBounds.size.height * 0.5f) + (left ? -13.0f : -1.0f);
             [self _loupeToPoint:CGPointMake(roundf(endLayerFrame.origin.x + endLayerFrame.size.width * 0.5f),
                                             roundf(endLayerFrame.origin.y + endLayerFrame.size.height * 0.5f))

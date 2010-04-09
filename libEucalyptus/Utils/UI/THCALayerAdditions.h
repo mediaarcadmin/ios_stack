@@ -10,6 +10,7 @@
 
 @interface CALayer (THCALayerAdditions)
 
+- (CALayer *)topmostLayer;
 - (CALayer *)windowLayer;
 - (CGSize)screenScaleFactors;
 
