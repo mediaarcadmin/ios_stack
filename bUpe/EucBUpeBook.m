@@ -747,7 +747,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return [indexPoint autorelease];
 }
 
-- (float *)_indexSourceScaleFactors
+- (float *)indexSourceScaleFactors
 {
     if(!_indexSourceScaleFactors) {
         NSMutableArray *sizes = [NSMutableArray array];
@@ -794,7 +794,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 {
     float ret = 0;
     
-    float *scaleFactors = self._indexSourceScaleFactors;
+    float *scaleFactors = self.indexSourceScaleFactors;
     uint32_t source = point.source;
     for(uint32_t i = 0; i < source; ++i) {
         ret += 100.0f * scaleFactors[i];
