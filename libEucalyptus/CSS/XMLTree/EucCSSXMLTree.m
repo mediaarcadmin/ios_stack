@@ -137,6 +137,11 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
     }
 }
 
+- (uint32_t)lastKey
+{
+    return _nodes.count;
+}
+
 - (id<EucCSSDocumentTreeNode>)nodeWithId:(NSString *)identifier;
 {
     return [_idToNode objectForKey:identifier];
