@@ -67,7 +67,6 @@
 	[self.view addSubview:statusField];
 	 
 	 activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((6.5)*kLeftMargin, yPlacement, 16.0f, 16.0f)];
-	 //[activityIndicator setCenter:CGPointMake(160.0f, 208.0f)];
 	 [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
 	 [self.view addSubview:activityIndicator];
  }
@@ -126,12 +125,15 @@
 	if (textField == usernameField) 
 		[passwordField becomeFirstResponder];
 	else { 
+		statusField.textColor = [UIColor colorWithRed:76.0/255.0 green:86.0/255.0 blue:108.0/255.0 alpha:1.0];
 		statusField.text = @"Signing in..."; 
 		[activityIndicator startAnimating];
 		BlioLoginResult loginStatus = [self.loginManager login:usernameField.text password:passwordField.text];
 		[activityIndicator stopAnimating];
-		if ( loginStatus == success ) 
+		if ( loginStatus == success ) {
 			[self dismissModalViewControllerAnimated:YES];
+			[self.loginManager archiveBooks];
+		}
 		else if ( loginStatus == invalidPassword ) 
 			statusField.text = @"Invalid username or password.";
 		else
