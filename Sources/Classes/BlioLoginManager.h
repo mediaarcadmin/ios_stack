@@ -19,7 +19,8 @@ typedef enum  {
 	NSString* username;
 	NSString* token;
 	NSDate* timeout;
-	NSMutableArray* vaultBooks;  // array of ISBN numbers
+	NSMutableArray* isbns; // array of ISBN numbers
+	NSMutableArray* vaultBooks;  
 }
 
 @property (nonatomic, retain) NSDate* timeout;

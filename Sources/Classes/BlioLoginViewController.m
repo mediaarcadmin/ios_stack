@@ -129,7 +129,6 @@
 		statusField.text = @"Signing in..."; 
 		[activityIndicator startAnimating];
 		BlioLoginResult loginStatus = [self.loginManager login:usernameField.text password:passwordField.text];
-		[activityIndicator stopAnimating];
 		if ( loginStatus == success ) {
 			[self dismissModalViewControllerAnimated:YES];
 			[self.loginManager archiveBooks];
@@ -138,6 +137,7 @@
 			statusField.text = @"Invalid username or password.";
 		else
 			statusField.text = @"Error signing in.";
+				[activityIndicator stopAnimating];
 		statusField.textColor = [UIColor redColor];
 		[textField resignFirstResponder];
 	}
