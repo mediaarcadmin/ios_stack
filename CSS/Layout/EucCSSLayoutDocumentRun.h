@@ -52,6 +52,8 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     uint32_t _id;
     
     EucCSSIntermediateDocumentNode *_startNode;
+    EucCSSIntermediateDocumentNode *_underNode;
+    
     EucCSSIntermediateDocumentNode *_nextNodeUnderLimitNode;
     EucCSSIntermediateDocumentNode *_nextNodeInDocument;
 
@@ -81,8 +83,18 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 }
 
 @property (nonatomic, readonly) uint32_t id;
+@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *startNode;
+@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *underNode;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextNodeUnderLimitNode;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextNodeInDocument;
+@property (nonatomic, readonly) CGFloat scaleFactor;
+
+// This convenience constructor will return a cached node if one with the same
+// attibutes was requested recently.
++ (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
+           underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
+                    forId:(uint32_t)id
+              scaleFactor:(CGFloat)scaleFactor;
 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)node 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
