@@ -207,8 +207,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
     CGContextScaleCTM(ctx, 1.0, -1.0);
     
-    CGFloat yButtonPadding = 7.0f;
-    CGFloat xButtonPadding = 7.0f;
+    CGFloat yButtonPadding = rect.size.height - 23;
+    if (yButtonPadding < 2) yButtonPadding = 2;
+    
+    CGFloat xButtonPadding = yButtonPadding;
     CGFloat wedgePadding = 2.0f;
     CGRect inRect = CGRectInset(rect, xButtonPadding, yButtonPadding);
     CGFloat insetX, insetY;
@@ -621,6 +623,29 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }    
 }
 
+- (void)setProgressButton {
+    
+    CGFloat buttonHeight = 30;
+    
+    // Toolbar buttons are 30 pixels high in portrait and 24 pixels high landscape
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
+        buttonHeight = 24;
+
+    CGRect buttonFrame = CGRectMake(0,0, 50, buttonHeight);
+    
+    BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:buttonFrame];
+    [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
+    
+    [_pageJumpButton release];
+    _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
+    
+    self.pieButton = aPieButton;
+    [aPieButton release];
+    
+    [self.navigationItem setRightBarButtonItem:_pageJumpButton];
+    [self updatePieButtonAnimated:NO];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     if(!self.modalViewController) {        
@@ -706,13 +731,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];
         
-        BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:CGRectMake(0,0, 50, 30)];
-        [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
-        _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
-        self.pieButton = aPieButton;
-        [aPieButton release];
-        
-        [self.navigationItem setRightBarButtonItem:_pageJumpButton];
+        [self setProgressButton];
     }
 }
 
@@ -2001,6 +2020,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self layoutPageJumpView];
     [self layoutPageJumpLabelText];
     [self layoutPageJumpSlider];
+    [self setProgressButton];
     
     if ([self.bookView respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
