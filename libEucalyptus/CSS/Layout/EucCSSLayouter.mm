@@ -281,10 +281,10 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         if(previousSiblingNode) {
             css_computed_style *previousSiblingStyle = previousSiblingNode.computedStyle;
             if(previousSiblingStyle && (css_computed_display(previousSiblingStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentNode
-                                                             underLimitNode:currentNode.blockLevelParent
-                                                                      forId:currentNode.key
-                                                                scaleFactor:_scaleFactor];
+                documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
+                                                            underLimitNode:currentNode.blockLevelParent
+                                                                     forId:currentNode.key
+                                                               scaleFactor:_scaleFactor];
             } else {
                 currentNode = previousSiblingNode;
             }
@@ -292,10 +292,10 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             EucCSSIntermediateDocumentNode *parentNode = currentNode.parent;
             css_computed_style *parentStyle = parentNode.computedStyle;
             if(parentStyle && (css_computed_display(parentStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentNode
-                                                             underLimitNode:parentNode
-                                                                      forId:parentNode.key
-                                                                scaleFactor:_scaleFactor];
+                documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
+                                                            underLimitNode:parentNode
+                                                                     forId:parentNode.key
+                                                               scaleFactor:_scaleFactor];
             } else {
                 currentNode = parentNode;
             }
@@ -307,7 +307,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         ret.nodeKey = documentRun.id;
         ret.word = documentRunPoint.word;
         ret.element = documentRunPoint.element;
-        [documentRun release];
     }   
 
     return ret;
@@ -425,10 +424,10 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 //THLog(@"Inline: %@", [currentDocumentNode name]);
                 
                 // This is an inline element - start a run.
-                EucCSSLayoutDocumentRun *documentRun = [[EucCSSLayoutDocumentRun alloc] initWithNode:currentDocumentNode
-                                                                                      underLimitNode:currentDocumentNode.blockLevelParent
-                                                                                               forId:nextRunNodeKey
-                                                                                         scaleFactor:_scaleFactor];
+                EucCSSLayoutDocumentRun *documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
+                                                                                     underLimitNode:currentDocumentNode.blockLevelParent
+                                                                                              forId:nextRunNodeKey
+                                                                                        scaleFactor:_scaleFactor];
                 
                 // Position it.
                 EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
@@ -460,17 +459,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 
                 currentDocumentNode = documentRun.nextNodeInDocument;
                 nextRunNodeKey = ((EucCSSIntermediateDocumentConcreteNode *)currentDocumentNode).key;
-
-                /*
-                EucCSSIntermediateDocumentNode *runsNextNode = documentRun.nextNodeUnderLimitNode;
-                if(runsNextNode) {
-                    // Non-first run in a block has the ID of its first element.
-                    currentDocumentNode = runsNextNode;
-                    nextRunNodeKey = ((EucCSSIntermediateDocumentConcreteNode *)currentDocumentNode).key;
-                } else {
-                    currentDocumentNode = documentRun.nextNodeInDocument;
-                }*/
-                [documentRun release];
             } else {
                 //THLog(@"Block: %@", [currentDocumentNode name]);
                 
