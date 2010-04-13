@@ -16,7 +16,7 @@ typedef enum {
     kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
-@class BlioLoginManager;
+@class BlioBookVaultManager;
 @class BlioLibraryBookView;
 @protocol BlioProcessingDelegate;
 
@@ -35,7 +35,7 @@ typedef enum {
     
     NSFetchedResultsController *_fetchedResultsController;
 	
-	BlioLoginManager* _loginManager;
+	BlioBookVaultManager* _vaultManager;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -48,6 +48,6 @@ typedef enum {
 @property (nonatomic) BlioLibraryLayout libraryLayout;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) BlioLoginManager *loginManager;
+@property (nonatomic, retain) BlioBookVaultManager* vaultManager;
 
 @end

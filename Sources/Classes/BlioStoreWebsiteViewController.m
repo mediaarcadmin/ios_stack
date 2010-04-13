@@ -9,6 +9,8 @@
 #import "BlioStoreWebsiteViewController.h"
 #import "BlioAppSettingsConstants.h"
 
+static NSString * const kBlioWebsiteIntro = @"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Vault for download the next time you start Blio.";
+
 @implementation BlioStoreWebsiteViewController
 
 - (id)init
@@ -40,7 +42,7 @@
 {
 	// Display instructions for website.
 	CGFloat yPlacement = kTopMargin;
-	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 4*kLabelHeight);
+	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
 	[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:kBlioWebsiteIntro]];
 	
 	// blioreader.com button.

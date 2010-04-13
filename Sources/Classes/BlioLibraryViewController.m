@@ -15,7 +15,7 @@
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
 #import "BlioLoginViewController.h"
-#import "BlioLoginManager.h"
+#import "BlioBookVaultManager.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -102,7 +102,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate = _processingDelegate;
 @synthesize fetchedResultsController = _fetchedResultsController;
-@synthesize loginManager = _loginManager;
+@synthesize vaultManager = _vaultManager;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -121,6 +121,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     BlioLibraryTableView *aTableView = [[BlioLibraryTableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStylePlain];
     self.tableView = aTableView;
     [aTableView release];
+	
+	self.vaultManager = [[BlioBookVaultManager alloc] init];
     
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
@@ -163,8 +165,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [item release];  
     
     [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
-	
-	self.loginManager = [[BlioLoginManager alloc] init];
 }
 
 - (void)viewDidLoad {
@@ -646,7 +646,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 - (void)showLogin:(id)sender {     
 	BlioLoginViewController *loginController = [[BlioLoginViewController alloc] init];
-    loginController.loginManager = self.loginManager;
+    loginController.vaultManager = self.vaultManager;
 	[self presentModalViewController:[[UINavigationController alloc] initWithRootViewController:loginController] animated:YES];
     [loginController release]; 
 	/*
