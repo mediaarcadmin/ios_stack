@@ -159,6 +159,8 @@
 		C901F8C1116B819000A1858D /* xsd.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615F1164FB3E003A9709 /* xsd.m */; };
 		C918B6991121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */; };
 		C918B8B51122AEE1008B6ADC /* Feeds in Resources */ = {isa = PBXBuildFile; fileRef = C918B8B21122AEE1008B6ADC /* Feeds */; };
+		C926A11611747578000F9CB3 /* BlioContentCafe.m in Sources */ = {isa = PBXBuildFile; fileRef = A36D809B117141DF00F93176 /* BlioContentCafe.m */; };
+		C926A1171174758E000F9CB3 /* BlioStoreWebsiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3689AF3116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m */; };
 		C926F769116E293500FCC291 /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */; };
 		C926F76A116E293500FCC291 /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */; };
 		C926F76B116E295A00FCC291 /* CellTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9387E116BD63500E53BD3 /* CellTextField.m */; };
@@ -1897,6 +1899,8 @@
 				C926F76A116E293500FCC291 /* BlioLoginViewController.m in Sources */,
 				C926F76C116E295A00FCC291 /* CellTextField.m in Sources */,
 				C926F76E116E297700FCC291 /* EditableTableViewCell.m in Sources */,
+				C926A11611747578000F9CB3 /* BlioContentCafe.m in Sources */,
+				C926A1171174758E000F9CB3 /* BlioStoreWebsiteViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

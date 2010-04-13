@@ -207,10 +207,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
     CGContextScaleCTM(ctx, 1.0, -1.0);
     
-    CGFloat yButtonPadding = rect.size.height - 23;
-    if (yButtonPadding < 2) yButtonPadding = 2;
-    
-    CGFloat xButtonPadding = yButtonPadding;
+    CGFloat yButtonPadding = rect.size.height - 19;
+    if (yButtonPadding > 7) yButtonPadding = 7;
+//    
+    //CGFloat xButtonPadding = yButtonPadding;
+    //CGFloat yButtonPadding = 7.0f;
+    CGFloat xButtonPadding = 7.0f;
     CGFloat wedgePadding = 2.0f;
     CGRect inRect = CGRectInset(rect, xButtonPadding, yButtonPadding);
     CGFloat insetX, insetY;
@@ -227,12 +229,16 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         height = height - 2 * insetY;
     }
     
+    //CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY + 1, width, height));
     CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY, width, height));
+
     CGRect innerSquare = CGRectInset(outerSquare, wedgePadding, wedgePadding);
     CGRect buttonSquare = CGRectInset(outerSquare, -xButtonPadding, -yButtonPadding);
+    //buttonSquare.origin.y -= 1;
     CGRect backgroundSquare = UIEdgeInsetsInsetRect(buttonSquare, UIEdgeInsetsMake(1, 0, 0, 0));
     
     CGContextClipToRect(ctx, buttonSquare);
+
     
     if ([self isHighlighted] || toggled) {
         CGContextSetShadowWithColor(ctx, CGSizeMake(0,-1), 0, [UIColor colorWithWhite:0.5f alpha:0.25f].CGColor);
@@ -380,14 +386,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				[_acapelaTTS setDelegate:self];
 			} 
 		}
-        UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
-        [backArrow addTarget:self
-                      action:@selector(_backButtonTapped) 
-            forControlEvents:UIControlEventTouchUpInside];
-        
-        UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
-        self.navigationItem.leftBarButtonItem = backItem;
-        [backItem release];
         
         EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
         CGRect frame = titleView.frame;
@@ -623,15 +621,25 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }    
 }
 
-- (void)setProgressButton {
+- (void)setNavigationBarButtons {
     
     CGFloat buttonHeight = 30;
-    
-    // Toolbar buttons are 30 pixels high in portrait and 24 pixels high landscape
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
-        buttonHeight = 24;
 
-    CGRect buttonFrame = CGRectMake(0,0, 50, buttonHeight);
+    // Toolbar buttons are 30 pixels high in portrait and 24 pixels high landscape
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        buttonHeight = 24;
+    }
+    
+    CGRect buttonFrame = CGRectMake(0,0, 41, buttonHeight);
+    
+    UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent frame:buttonFrame];
+    //UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
+
+    [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
+    self.navigationItem.leftBarButtonItem = backItem;
+    [backItem release];
     
     BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:buttonFrame];
     [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
@@ -731,7 +739,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];
         
-        [self setProgressButton];
+        [self setNavigationBarButtons];
     }
 }
 
@@ -2020,7 +2028,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self layoutPageJumpView];
     [self layoutPageJumpLabelText];
     [self layoutPageJumpSlider];
-    [self setProgressButton];
+    [self setNavigationBarButtons];
     
     if ([self.bookView respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
