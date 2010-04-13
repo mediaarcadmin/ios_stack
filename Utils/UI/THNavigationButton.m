@@ -116,12 +116,11 @@
     return renderedImage;
 }
 
-
-- (UIImage *)_imageForLeftNavigationButtonInBarStyle:(UIBarStyle)barStyle
+- (UIImage *)_imageForLeftNavigationButtonInBarStyle:(UIBarStyle)barStyle frame:(CGRect)frame
 {
     UIImage *buttonImage = [self _templateImageForBarStyle:barStyle];
     UIImage *stretchableImage = [buttonImage stretchableImageWithLeftCapWidth:4 topCapHeight:15];
-    CGRect frame = CGRectMake(0, 0, 41, 30);
+    CGRect imageFrame = CGRectMake(0, 0, 41, 30);
     
     // Create a bitmap to render the button image into.
     NSMutableData *bitmapData = [[NSMutableData alloc] initWithLength:4 * frame.size.width * frame.size.height];    
@@ -146,12 +145,19 @@
     // Mirror the drawing - we want a left-facing arrow.
     CGContextScaleCTM(myContext, -1, 1);
     CGContextTranslateCTM(myContext, -frame.size.width, 0);
-    [stretchableImage drawInRect:frame];
+    
+    // Push a new context to draw the image background onto and then scale to size
+    UIGraphicsBeginImageContext(imageFrame.size);
+    CGContextClearRect(UIGraphicsGetCurrentContext(), frame);
+    [stretchableImage drawInRect:imageFrame];
+    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    [scaledImage drawInRect:frame];
     CGContextScaleCTM(myContext, -1, 1);
     CGContextTranslateCTM(myContext, -frame.size.width, 0);
     
     // Draw the arrow.  Points worked out by examining screenshots.
-    // (it's a pity the iPhone has not fonts with the Unicode arrows in them).    
+    // (it's a pity the iPhone has not fonts with the Unicode arrows in them). 
     CGMutablePathRef arrowPath = CGPathCreateMutable();
     CGPathMoveToPoint(arrowPath, NULL,    -0.5,   0);
     CGPathAddLineToPoint(arrowPath, NULL, 10, -9);
@@ -164,7 +170,7 @@
     CGPathCloseSubpath(arrowPath);
     
     [[[UIColor blackColor] colorWithAlphaComponent:0.5f] set];
-    CGContextTranslateCTM(myContext, 11, 14);
+    CGContextTranslateCTM(myContext, 11, floorf(frame.size.height/2.0f)-1);
     CGContextAddPath(myContext, arrowPath);
     CGContextFillPath(myContext);
     
@@ -172,6 +178,7 @@
     CGContextTranslateCTM(myContext, 0, 1);
     CGContextAddPath(myContext, arrowPath);
     CGContextFillPath(myContext);
+    CGContextStrokePath(myContext);
     
     CFRelease(arrowPath);
     
@@ -194,26 +201,37 @@
     return renderedImage;
 }    
 
+- (UIImage *)_imageForLeftNavigationButtonInBarStyle:(UIBarStyle)barStyle
+{
+    return [self _imageForLeftNavigationButtonInBarStyle:barStyle frame:CGRectMake(0, 0, 41, 30)];
+}
 
 - (UIBarStyle)barStyle
 {
     return _barStyle;
 }
 
-
-- (void)setBarStyle:(UIBarStyle)barStyle
+- (void)setBarStyle:(UIBarStyle)barStyle frame:(CGRect)aFrame
 {
     UIImage *image;
     if(_firstLine || _secondLine) {
-        image = [self _imageForRightNavigationButtonWithFirstLine:_firstLine secondLine:_secondLine barStyle:barStyle];    
+        image = [self _imageForRightNavigationButtonWithFirstLine:_firstLine secondLine:_secondLine barStyle:barStyle];                
     } else {
-        image = [self _imageForLeftNavigationButtonInBarStyle:barStyle];
+        if (CGRectEqualToRect(aFrame, CGRectZero))
+            image = [self _imageForLeftNavigationButtonInBarStyle:barStyle];
+        else
+            image = [self _imageForLeftNavigationButtonInBarStyle:barStyle frame:aFrame];
+
     }
     [self setImage:image
           forState:UIControlStateNormal];
     _barStyle = barStyle;
 }
 
+- (void)setBarStyle:(UIBarStyle)barStyle
+{
+    [self setBarStyle:barStyle frame:CGRectZero];
+}
 
 - (id)_initRightNavigationButtonWithFirstLine:(NSString *)firstLine secondLine:(NSString *)secondLine barStyle:(UIBarStyle)barStyle
 {
@@ -233,10 +251,11 @@
 }
 
 
-- (id)_initLeftNavigationButtonWithArrowInBarStyle:(UIBarStyle)barStyle 
+- (id)_initLeftNavigationButtonWithArrowInBarStyle:(UIBarStyle)barStyle frame:(CGRect)aFrame
 {
     if((self = [super init])) {
-        self.barStyle = barStyle;
+        [self setBarStyle:barStyle frame:aFrame];
+        //self.barStyle = barStyle;
         
         self.adjustsImageWhenHighlighted = YES;
         self.showsTouchWhenHighlighted = NO;
@@ -247,6 +266,10 @@
     return self;
 }    
 
+- (id)_initLeftNavigationButtonWithArrowInBarStyle:(UIBarStyle)barStyle 
+{
+    return [self _initLeftNavigationButtonWithArrowInBarStyle:barStyle frame:CGRectZero];
+}
 
 + (id)rightNavigationButtonWithFirstLine:(NSString *)firstLine secondLine:(NSString *)secondLine
 {
@@ -269,6 +292,11 @@
 + (id)leftNavigationButtonWithArrowInBarStyle:(UIBarStyle)barStyle 
 {    
     return [[[self alloc] _initLeftNavigationButtonWithArrowInBarStyle:barStyle] autorelease];
+}
+
++ (id)leftNavigationButtonWithArrowInBarStyle:(UIBarStyle)barStyle frame:(CGRect)aFrame
+{    
+    return [[[self alloc] _initLeftNavigationButtonWithArrowInBarStyle:barStyle frame:aFrame] autorelease];
 }
 
 @end
