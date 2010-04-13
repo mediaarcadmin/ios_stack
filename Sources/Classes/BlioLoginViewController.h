@@ -8,17 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioLoginManager.h"
+#import "BlioBookVaultManager.h"
 
 @interface BlioLoginViewController : UIViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource> {
 	UITableView	*loginTableView;
-	BlioLoginManager* loginManager;
+	BlioBookVaultManager* vaultManager;
 	UITextField* usernameField;
 	UITextField* passwordField;
 	UILabel* statusField;
 	UIActivityIndicatorView* activityIndicator;
 }
 
-@property (nonatomic,retain) BlioLoginManager* loginManager;
+@property (nonatomic,retain) BlioBookVaultManager* vaultManager;
 @property (nonatomic,retain) UITableView* loginTableView;
 @property (nonatomic,retain) UITextField* usernameField;
 @property (nonatomic,retain) UITextField* passwordField;
