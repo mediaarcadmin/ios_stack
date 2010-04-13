@@ -621,6 +621,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }    
 }
 
+- (void)layoutNavigationToolbar {
+    CGRect navFrame = self.navigationController.navigationBar.frame;
+    navFrame.origin.y = 20;
+    [self.navigationController.navigationBar setFrame:navFrame];
+}
+
 - (void)setNavigationBarButtons {
     
     CGFloat buttonHeight = 30;
@@ -2032,12 +2038,13 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self layoutNavigationToolbar];
+    [self setNavigationBarButtons];
     if (_pageJumpView) {
         [self layoutPageJumpView];
         [self layoutPageJumpLabelText];
         [self layoutPageJumpSlider];
     }
-    [self setNavigationBarButtons];
     
     if ([self.bookView respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
