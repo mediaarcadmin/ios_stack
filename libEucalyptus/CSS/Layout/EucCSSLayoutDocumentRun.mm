@@ -52,16 +52,76 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 @synthesize componentsCount = _componentsCount;
 @synthesize wordToComponent = _wordToComponent;
 
+@synthesize startNode = _startNode;
+@synthesize underNode = _underNode;
 @synthesize id = _id;
 @synthesize nextNodeUnderLimitNode = _nextNodeUnderLimitNode;
 @synthesize nextNodeInDocument = _nextNodeInDocument;
+@synthesize scaleFactor = _scaleFactor;
 
+pthread_mutex_t sCachedRunsMutex = PTHREAD_MUTEX_INITIALIZER;
+static NSInteger sCachedRunsCount = 0;
+static const NSInteger sCachedRunsCapacity = 48;
+EucCSSLayoutDocumentRun **sCachedRuns = NULL;
+
++ (void)initialize
+{
+    sCachedRuns = (EucCSSLayoutDocumentRun **)malloc(sCachedRunsCapacity * sizeof(EucCSSLayoutDocumentRun *));
+}
+
++ (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
+           underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
+                    forId:(uint32_t)id
+              scaleFactor:(CGFloat)scaleFactor
+{
+    EucCSSLayoutDocumentRun *ret = nil;
+    
+    pthread_mutex_lock(&sCachedRunsMutex);
+    for(NSInteger i = sCachedRunsCount - 1; i >= 0; --i) {
+        EucCSSLayoutDocumentRun *cachedRun = sCachedRuns[i];
+        if(cachedRun->_scaleFactor == scaleFactor &&
+           cachedRun->_id == id &&
+           cachedRun->_startNode.key == inlineNode.key &&
+           cachedRun->_underNode.key == underNode.key &&
+           cachedRun->_startNode.document == inlineNode.document) {
+            ret = [cachedRun autorelease];
+            
+            size_t toMove = sCachedRunsCount - i - 1;
+            if(toMove) {
+                memmove(sCachedRuns + i, sCachedRuns + i + 1, toMove * sizeof(EucCSSLayoutDocumentRun *));
+            } 
+            sCachedRunsCount--;
+        }
+    }
+    
+    if(!ret) {
+        ret = [[[self class] alloc] initWithNode:inlineNode
+                                  underLimitNode:underNode 
+                                           forId:id 
+                                     scaleFactor:scaleFactor];
+        [ret autorelease];
+    }
+    
+    if(ret) {
+        if(sCachedRunsCount == sCachedRunsCapacity) {
+            [sCachedRuns[0] release];
+            memmove(sCachedRuns, sCachedRuns + 1, sizeof(EucCSSLayoutDocumentRun *) * (sCachedRunsCapacity - 1));
+            --sCachedRunsCount;
+        }
+        sCachedRuns[sCachedRunsCount++] = [ret retain];
+    }
+    
+    pthread_mutex_unlock(&sCachedRunsMutex);
+    
+    return ret;
+}
+        
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
              forId:(uint32_t)id
        scaleFactor:(CGFloat)scaleFactor
 {
-    if((self = [super init])) {
+    if((self = [super init])) {        
         _sharedHyphenator = [[EucSharedHyphenator sharedHyphenator] retain];
 
         _id = id;
@@ -69,6 +129,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         _scaleFactor = scaleFactor;
         
         _startNode = [inlineNode retain];
+        _underNode = [underNode retain];
         css_computed_style *inlineNodeStyle = inlineNode.computedStyle;
         
         // _wordToComponent is 1-indexed for words - word '0' is the start of 
@@ -148,6 +209,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
     free(_potentialBreakInfos);
 
     [_startNode release];
+    [_underNode release];
     [_nextNodeUnderLimitNode release];
     [_nextNodeInDocument release];
 
@@ -453,10 +515,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
         if(preprocessedWords.count) {
             for(NSString *word in preprocessedWords) {
                 if(_previousInlineCharacterWasSpace && _seenNonSpace && !_alreadyInsertedSpace) {
-                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                    info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
-                    info.width = 0;
-                    [self _addComponent:&info];                                    
+                    [self _addComponent:&spaceInfo];                                    
                 }
                 
                 EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;

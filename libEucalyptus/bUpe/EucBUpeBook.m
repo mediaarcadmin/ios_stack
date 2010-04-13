@@ -519,6 +519,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [_manifestUrlsToOverriddenUrls release];
     [_coverPath release];
     
+    free(_indexSourceScaleFactors);
+    
     [super dealloc];
 }
 
@@ -743,6 +745,64 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     }
     
     return [indexPoint autorelease];
+}
+
+- (float *)indexSourceScaleFactors
+{
+    if(!_indexSourceScaleFactors) {
+        NSMutableArray *sizes = [NSMutableArray array];
+        NSUInteger total = 0;
+        
+        EucBookPageIndexPoint *point = [[EucBookPageIndexPoint alloc] init];
+        NSUInteger i = 0;
+        BOOL existed;
+        do {
+            existed = NO;
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            point.source = i;
+            
+            NSURL *documentURL = [self documentURLForIndexPoint:point];
+            if(documentURL) {
+                NSData *data = [self dataForURL:documentURL];
+                if(data) {
+                    NSUInteger length = data.length;
+                    total += length;
+                    [sizes addObject:[NSNumber numberWithInteger:length]];
+                    existed = YES;
+                }
+            }
+            
+            ++i;
+            
+            [pool drain];
+        } while(existed);
+    
+        i = 0;
+        float *scaleFactors = malloc(sizes.count * sizeof(float));
+        for(NSNumber *size in sizes) {
+            scaleFactors[i] = size.floatValue / (float)total;
+            ++i;
+        }
+    
+        _indexSourceScaleFactors = scaleFactors;
+    }
+    
+    return _indexSourceScaleFactors;
+}
+
+- (float)estimatedPercentageForIndexPoint:(EucBookPageIndexPoint *)point
+{
+    float ret = 0;
+    
+    float *scaleFactors = self.indexSourceScaleFactors;
+    uint32_t source = point.source;
+    for(uint32_t i = 0; i < source; ++i) {
+        ret += 100.0f * scaleFactors[i];
+    }
+
+    ret += ([[self intermediateDocumentForIndexPoint:point] estimatedPercentageForNodeWithKey:point.block] * scaleFactors[source]);
+
+    return ret;
 }
 
 - (void)setManifestOverrides:(NSDictionary *)manifestOverrides 

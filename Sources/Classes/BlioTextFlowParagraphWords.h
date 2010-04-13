@@ -17,6 +17,8 @@
     
     NSArray *_ranges;
     uint32_t _key;
+    
+    NSArray *_wordStrings;
 }
 
 - (id)initWithTextFlow:(BlioTextFlow *)textFlow
@@ -25,6 +27,7 @@
                    key:(uint32_t)key;
 
 - (BlioBookmarkPoint *)wordOffsetToBookmarkPoint:(uint32_t)wordOffset;
+- (NSArray *)preprocessedWordStrings; // for the layout engine.
 - (NSArray *)wordStrings;
 - (NSArray *)words;
 

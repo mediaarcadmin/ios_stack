@@ -39,6 +39,7 @@
 
 - (void)dealloc
 {
+    [_wordStrings release];
     [_ranges release];
     
     [super dealloc];
@@ -109,6 +110,11 @@
     return [point autorelease];
 }
 
+- (NSArray *)preprocessedWordStrings
+{
+    return [self wordStrings];
+}
+
 - (NSArray *)words
 {
     if(_ranges.count == 1) {
@@ -124,15 +130,18 @@
 
 - (NSArray *)wordStrings
 {
-    if(_ranges.count == 1) {
-        return [_textFlow wordStringsForBookmarkRange:_ranges.lastObject];
-    } else {
-        NSMutableArray *words = [NSMutableArray array];
-        for(BlioBookmarkRange *range in _ranges) {
-            [words addObjectsFromArray:[_textFlow wordStringsForBookmarkRange:range]];
-        }    
-        return words;
+    if(!_wordStrings) {
+        if(_ranges.count == 1) {
+            _wordStrings = [[_textFlow wordStringsForBookmarkRange:_ranges.lastObject] retain];
+        } else {
+            NSMutableArray *words = [NSMutableArray array];
+            for(BlioBookmarkRange *range in _ranges) {
+                [words addObjectsFromArray:[_textFlow wordStringsForBookmarkRange:range]];
+            }    
+            _wordStrings = [words retain];
+        }
     }
+    return _wordStrings;
 }
 
 - (BOOL)getCharacterContents:(const char **)contents length:(size_t *)length

@@ -119,6 +119,7 @@
 - (id)initWithPageRanges:(NSSet *)pageRangesSet basePath:(NSString *)aBasePath;
 
 - (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex;
+- (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex;
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;

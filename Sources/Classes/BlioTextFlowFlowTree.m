@@ -198,4 +198,9 @@ static void BlioTextFlowFlowTreeEndElementHandler(void *ctx, const XML_Char *nam
     return nil;
 }
 
+- (uint32_t)lastKey
+{
+    return [_nodes count] + 1;
+}
+
 @end

@@ -42,7 +42,11 @@
 - (void)setTargetRect:(CGRect)targetRect inView:(UIView *)targetView
 {
     self.targetView = targetView;
-    UIWindow *targetWindow = targetView.window;
+    
+    // This is rather hacky - if we're in Landscape mode, the window isn't
+    // transformed, but the first sub-view in it is, so we use that instead
+    // of the window to attach our menu to...
+    UIWindow *targetWindow = [targetView.window.subviews lastObject];
     self.targetWindow = targetWindow;
     self.windowTargetRect = [targetView convertRect:targetRect toView:targetWindow];
 }

@@ -805,7 +805,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (nil == snapLayer) return nil;
     
     CGFloat scale = self.scrollView.zoomScale * 1.2f;
-    CGSize snapSize = snapLayer.bounds.size;
+    CGSize snapSize = self.bounds.size;
     snapSize.width *= 1.2f;
     snapSize.height *= 1.2f;
     

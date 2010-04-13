@@ -19,6 +19,8 @@ typedef enum  {
 	NSString* username;
 	NSString* token;
 	NSDate* timeout;
+	NSMutableArray* isbns; // array of ISBN numbers
+	NSMutableArray* vaultBooks;  
 }
 
 @property (nonatomic, retain) NSDate* timeout;
@@ -27,6 +29,7 @@ typedef enum  {
 @property (nonatomic) BOOL isLoggedIn;
 
 - (BlioLoginResult)login:(NSString*)user password:(NSString*)passwd;
+- (void)archiveBooks;
 - (void)logout;
 
 @end
