@@ -123,8 +123,10 @@
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;
-- (NSArray *)nonFolioBlocksForPageAtIndex:(NSInteger)pageIndex;
-- (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex;
+- (BlioTextFlowBlock *)nextBlockForBlock:(BlioTextFlowBlock *)block includingFolioBlocks:(BOOL)includingFolioBlocks onSamePage:(BOOL)onSamePage;
+- (BlioTextFlowBlock *)nextBlockForBlock:(BlioTextFlowBlock *)block includingFolioBlocks:(BOOL)includingFolioBlocks onSamePage:(BOOL)onSamePage;
+- (BlioTextFlowBlock *)previousBlockForBlock:(BlioTextFlowBlock *)block includingFolioBlocks:(BOOL)includingFolioBlocks onSamePage:(BOOL)onSamePage;
+- (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex includingFolioBlocks:(BOOL)wantFolioBlocks;
 - (NSArray *)wordStringsForPageAtIndex:(NSInteger)pageIndex;
 - (NSArray *)wordsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;

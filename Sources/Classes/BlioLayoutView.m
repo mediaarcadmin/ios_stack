@@ -713,7 +713,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = aPageNumber - 1;
     NSMutableArray *allHighlights = [NSMutableArray array];
     NSArray *highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
-    NSArray *pageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         
@@ -883,7 +883,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (NSArray *)bookmarkRangesForCurrentPage {
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     NSUInteger maxOffset = [pageBlocks count];
     
     BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
@@ -953,75 +953,74 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
-    NSMutableArray *identifiers = [NSMutableArray array];
-    for (BlioTextFlowBlock *block in pageBlocks) {
-        [identifiers addObject:[block blockID]];
-    }
-    return identifiers;
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    return [pageBlocks valueForKey:@"blockID"];
 }
 
 - (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)blockID {
-    CGRect pageRect = CGRectZero;
-    
     NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
-    NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
-    BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
-    NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
-    
-    CGAffineTransform viewTransform = [self blockTransformForPage:pageIndex + 1];
-    
-    if ([nonFolioPageBlocks count] > currentIndex) {
-        CGRect blockRect = [[nonFolioPageBlocks objectAtIndex:currentIndex] rect];        
-        pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
-    }
-    
-    return pageRect;
-}
 
-- (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)blockID; {
-    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
-    NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
-    BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
-    NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
-    
-    if ([nonFolioPageBlocks count] > currentIndex) {
-        NSMutableArray *identifiers = [NSMutableArray array];
-        for (BlioTextFlowPositionedWord *word in [[nonFolioPageBlocks objectAtIndex:currentIndex] words]) {
-            [identifiers addObject:[word wordID]];
-        }
-        return identifiers;
-    } else {
-        return [NSArray array];
-    }
-}
-
-- (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)blockID {    
-    CGRect pageRect = CGRectZero;
-    
-    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
-    NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
-    BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
-    NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
-    
-    CGAffineTransform viewTransform = [self blockTransformForPage:pageIndex + 1];
-    
-    if ([nonFolioPageBlocks count] > currentIndex) {
-        NSArray *words = [[nonFolioPageBlocks objectAtIndex:currentIndex] words];
-        NSInteger offset = [wordID integerValue];
-        if (offset < [words count]) {
-            CGRect wordRect = [[words objectAtIndex:offset] rect];            
-            pageRect = CGRectApplyAffineTransform(wordRect, viewTransform);
+    BlioTextFlowBlock *block = nil;
+    // We say "YES" to includingFolioBlocks here because we know that we're not going
+    // to be asked about a folio block anyway, and getting all the blocks is more
+    // efficient than getting just the non-folio blocks. 
+    for (BlioTextFlowBlock *candidateBlock in [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+        if (candidateBlock.blockID == blockID) {
+            block = candidateBlock;
+            break;
         }
     }
     
-    return [NSArray arrayWithObject:[NSValue valueWithCGRect:pageRect]];
+    CGAffineTransform viewTransform = [self blockTransformForPage:pageIndex + 1];
+    return block ? CGRectApplyAffineTransform([block rect], viewTransform) : CGRectZero;
+}
+
+- (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)blockID {
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    
+    BlioTextFlowBlock *block = nil;
+    for (BlioTextFlowBlock *candidateBlock in [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+        if (candidateBlock.blockID == blockID) {
+            block = candidateBlock;
+            break;
+        }
+    }
+    
+    if (block) {
+        NSArray *words = [block words];
+        if (words.count) {
+            return [words valueForKey:@"wordID"];
+	    }
+    }
+    return [NSArray array];
+}
+
+- (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)blockID { 
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    
+    BlioTextFlowBlock *block = nil;
+    for (BlioTextFlowBlock *candidateBlock in [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+        if (candidateBlock.blockID == blockID) {
+            block = candidateBlock;
+            break;
+        }
+    }
+    
+    if (block) {
+        BlioTextFlowPositionedWord *word;
+        for (BlioTextFlowPositionedWord *candidateWord in [block words]) {
+            if([[candidateWord wordID] isEqual:wordID]) {
+                word = candidateWord;
+                break;
+            }
+        }        
+        if (word) {
+            CGAffineTransform viewTransform = [self blockTransformForPage:pageIndex + 1];
+            CGRect wordRect = [[[block words] objectAtIndex:[wordID integerValue]] rect];            
+            return [NSArray arrayWithObject:[NSValue valueWithCGRect:CGRectApplyAffineTransform(wordRect, viewTransform)]];
+        }
+    } 
+    return [NSArray array];
 }
 
 - (NSArray *)colorMenuItems {    
@@ -1332,7 +1331,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (id)getCurrentBlockId {
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+    NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
 
     if (![nonFolioPageBlocks count])
         return nil;
@@ -1348,7 +1347,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (!blockID) {
         NSInteger pageIndex = -1;
         while (++pageIndex < ([self pageCount])) {
-            NSArray *pageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+            NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
             if ([pageBlocks count])
                 return (id)[[pageBlocks objectAtIndex:0] blockID];
         }
@@ -1356,8 +1355,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     } else {
 
         NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
-        NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
-        NSArray *nonFolioPageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+        NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+        NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
         NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
         BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
         NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
@@ -1366,7 +1365,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 return (id)[[nonFolioPageBlocks objectAtIndex:currentIndex] blockID];
             } else {
                 while (++pageIndex < ([self pageCount])) {
-                    NSArray *pageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+                    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
                     if ([pageBlocks count])
                         return (id)[[pageBlocks objectAtIndex:0] blockID];
                 }
@@ -1378,8 +1377,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (NSArray *)blockWordsForBlockWithId:(id)blockID {
     NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+    NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
     BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
     NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
@@ -1393,8 +1392,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (void)highlightWordAtBlockId:(id)blockID wordOffset:(uint32_t)wordOffset {
     NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex];
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+    NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
     BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
     NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
@@ -1806,32 +1805,32 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if ([self.lastBlock pageIndex] != pageIndex) self.lastBlock = nil;
     
     self.disableScrollUpdating = YES;
-    NSArray *blocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
     
     [self.scrollView setPagingEnabled:NO];
     [self.scrollView setBounces:NO];
     
     BlioTextFlowBlock *targetBlock = nil;
-    //CGAffineTransform viewTransform = [self viewTransformForPage:targetPage];
-    
-    NSUInteger count = [blocks count];
-   // NSUInteger targetIndex;
     
     // Work out targetBlock on the current page
-    if (count > 0) {
-        if (nil == self.lastBlock) {
-            if (!reversed)
-                targetBlock = [blocks objectAtIndex:0];
-        } else if (reversed) {
-            NSInteger prevIndex = [blocks indexOfObject:self.lastBlock] - 1;
-            if (prevIndex >= 0)
-                targetBlock = [blocks objectAtIndex:prevIndex];
+    if (self.lastBlock) {
+        if (!reversed) {
+            targetBlock = [self.book.textFlow nextBlockForBlock:self.lastBlock 
+                                           includingFolioBlocks:NO
+                                                     onSamePage:YES];                
         } else {
-            NSInteger nextIndex = [blocks indexOfObject:self.lastBlock] + 1;
-            if (nextIndex < count)
-                targetBlock = [blocks objectAtIndex:nextIndex];
+            targetBlock = [self.book.textFlow previousBlockForBlock:self.lastBlock 
+                                               includingFolioBlocks:NO
+                                                         onSamePage:YES];        
+        }
+    } else {
+        if (!reversed) {
+            NSArray *pageBlocks = [self.book.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+            if (pageBlocks.count > 0) {
+                targetBlock = [pageBlocks objectAtIndex:0];
+            }
         }
     }
+    
     
     // Work out targetBlock on an adjacent page 
     if (nil == targetBlock) {
@@ -1842,19 +1841,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 return;
             }
             
-            //NSInteger newPageIndex = pageIndex + 1;
-            //NSArray *pageBlocks = [[self.book textFlow] paragraphsForBlockAtIndex:newPageIndex];
-            
             // Always zoom to the next page (rather than to the first block on it)
             [self zoomToPage:targetPage + 1];
-            //                return;
-            //if ([pageBlocks count] > 0) {
-//                targetBlock = [pageBlocks objectAtIndex:0];
-//            } else {
-//                // If the next page has no blocks, zoom to page
-//                [self zoomToPage:targetPage + 1];
-//                return;
-//            }
         } else {
             if (pageIndex <= 0) {
                 // If we are already at the first page, zoom to page
@@ -1862,12 +1850,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 return;
             }
             
-            NSInteger newPageIndex = pageIndex - 1;
-            NSArray *pageBlocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:newPageIndex];
             
-            // Always zoom to the previous page (rather than to the last block on it)
-            //[self zoomToPage:targetPage - 1];
-            if ([pageBlocks count] > 0) {
+            // Zoom to the last block on the previous page, if there are any
+            // blocks on it, otherwise zoom to the page.
+            NSInteger newPageIndex = pageIndex - 1;
+            NSArray *pageBlocks = [self.book.textFlow blocksForPageAtIndex:newPageIndex includingFolioBlocks:NO];
+            
+            if (pageBlocks.count > 0) {
                 targetBlock = [pageBlocks lastObject];
             } else {
                 // If the previous page has no blocks, zoom to page
@@ -1917,7 +1906,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = targetPage - 1;
     
     self.disableScrollUpdating = YES;
-    NSArray *blocks = [[self.book textFlow] nonFolioBlocksForPageAtIndex:pageIndex];
+    NSArray *blocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
 
     [self.scrollView setPagingEnabled:NO];
     [self.scrollView setBounces:NO];

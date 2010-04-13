@@ -522,64 +522,143 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return [[self.pageRanges allObjects] sortedArrayUsingDescriptors:sortDescriptors];
 }
 
-- (NSArray *)nonFolioBlocksForPageAtIndex:(NSInteger)pageIndex {
-    NSMutableArray *nonFolioBlocks = [NSMutableArray array];
+- (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex includingFolioBlocks:(BOOL)includingFolioBlocks {
+    NSArray *pageBlocks = nil;
     
-    for (BlioTextFlowBlock *block in [self blocksForPageAtIndex:pageIndex]) {
-        if (![block isFolio]) 
-            [nonFolioBlocks addObject:block];
-    }
-    
-    return nonFolioBlocks;
-}
-
-- (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex {
-    if (self.cachedPageBlocks && (self.cachedPageIndex == pageIndex))
-        return self.cachedPageBlocks;
-    
-    NSArray *pageBlocks = [NSArray array];
-    
-    BlioTextFlowPageRange *targetPageRange = nil;
-    for (BlioTextFlowPageRange *pageRange in [self sortedPageRanges]) {
-        if ([pageRange pageIndex] > pageIndex)
-            break;
-        else
-            targetPageRange = pageRange;
-    }
-    
-    if (nil != targetPageRange) {
-        BlioTextFlowPageMarker *targetMarker = nil;
-        BlioTextFlowPageMarker *firstMarker = nil;
-        
-        NSArray *sortedPageMarkers = [targetPageRange sortedPageMarkers];
-        NSUInteger i, count = [sortedPageMarkers count];
-        for (i = 0; i < count; i++) {
-            BlioTextFlowPageMarker *pageMarker = [sortedPageMarkers objectAtIndex:i];
-            if (i == 0) firstMarker = pageMarker;
-            if ([pageMarker pageIndex] == pageIndex) targetMarker = pageMarker;
-            if ([pageMarker pageIndex] >= pageIndex) 
+    if (self.cachedPageBlocks && (self.cachedPageIndex == pageIndex)) {
+        pageBlocks = self.cachedPageBlocks;
+    } else {
+        BlioTextFlowPageRange *targetPageRange = nil;
+        NSArray *sortedPageRanges = [self sortedPageRanges];
+        NSUInteger pageRangeCount = sortedPageRanges.count;
+        NSUInteger i = 0;
+        for (; i < pageRangeCount; ++i) {
+            BlioTextFlowPageRange *pageRange = [sortedPageRanges objectAtIndex:i];
+            if ([pageRange pageIndex] > pageIndex)
                 break;
+            else
+                targetPageRange = pageRange;
         }
         
-        if ((nil != targetMarker) && (nil != firstMarker)) {
-            NSArray *pageBlocksFromDisk = [self blocksForPage:pageIndex inPageRange:targetPageRange targetMarker:targetMarker firstMarker:firstMarker];
-            if (nil != pageBlocksFromDisk) pageBlocks = pageBlocksFromDisk;
+        BOOL inLastPageRange = (i == pageRangeCount);
+        BOOL afterLastPageMarker = NO;
+        
+        if (nil != targetPageRange) {
+            BlioTextFlowPageMarker *targetMarker = nil;
+            BlioTextFlowPageMarker *firstMarker = nil;
             
+            NSArray *sortedPageMarkers = [targetPageRange sortedPageMarkers];
+            NSUInteger i = 0;
+            NSUInteger sortedPageMarkersCount = [sortedPageMarkers count];
+            for (; i < sortedPageMarkersCount; i++) {
+                BlioTextFlowPageMarker *pageMarker = [sortedPageMarkers objectAtIndex:i];
+                if (i == 0) firstMarker = pageMarker;
+                if ([pageMarker pageIndex] == pageIndex) targetMarker = pageMarker;
+                if ([pageMarker pageIndex] >= pageIndex) 
+                    break;
+            }
+            
+            if (!targetMarker && i == sortedPageMarkersCount) {
+                afterLastPageMarker = YES;
+            }
+            
+            if ((nil != targetMarker) && (nil != firstMarker)) {
+                NSArray *pageBlocksFromDisk = [self blocksForPage:pageIndex inPageRange:targetPageRange targetMarker:targetMarker firstMarker:firstMarker];
+                if (nil != pageBlocksFromDisk) pageBlocks = pageBlocksFromDisk;
+                
+            }
         }
 
+        if (!pageBlocks && (!inLastPageRange || !afterLastPageMarker)) {
+            // We haven't found blocks for this page, but we're also
+            // not past the end of the book, so return an empty array.
+            pageBlocks = [NSArray array];
+        }
+        
+        if(pageBlocks) {
+            self.cachedPageBlocks = pageBlocks;
+            self.cachedPageIndex = pageIndex;
+        }
     }
     
-    //NSLog(@"Blocks retrieved from disk for page %ld", (long)pageIndex);
-    self.cachedPageBlocks = pageBlocks;
-    self.cachedPageIndex = pageIndex;
-    
-    return pageBlocks;
+    if(includingFolioBlocks) {
+        return pageBlocks;
+    } else {
+        return [pageBlocks filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFolio == NO"]];
+    }
 }
+
+- (BlioTextFlowBlock *)nextBlockForBlock:(BlioTextFlowBlock *)block includingFolioBlocks:(BOOL)includingFolioBlocks onSamePage:(BOOL)onSamePage {
+    NSUInteger currentBlockIndex = block.blockIndex;
+    NSUInteger pageIndex = block.pageIndex;
+
+    BlioTextFlowBlock *newBlock;
+    if(onSamePage) {
+        NSArray *blocks = [self blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+        do {
+            newBlock = nil;
+            ++currentBlockIndex;
+            if(blocks.count > currentBlockIndex) {
+                newBlock = [blocks objectAtIndex:currentBlockIndex];
+            }
+        } while(newBlock && (!includingFolioBlocks && newBlock.isFolio));
+    } else {
+        do {
+            newBlock = nil;
+            ++currentBlockIndex;
+            NSArray *blocks = [self blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+            while(blocks && blocks.count < currentBlockIndex) {
+                currentBlockIndex = 0;
+                ++pageIndex;
+                blocks = [self blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+            }
+            if(blocks) {
+                newBlock = [blocks objectAtIndex:currentBlockIndex];
+            }
+        } while(newBlock && (!includingFolioBlocks && newBlock.isFolio));
+    }
+    
+    return newBlock;
+}
+
+
+- (BlioTextFlowBlock *)previousBlockForBlock:(BlioTextFlowBlock *)block includingFolioBlocks:(BOOL)includingFolioBlocks onSamePage:(BOOL)onSamePage {
+    NSUInteger currentBlockIndex = block.blockIndex;
+    NSUInteger pageIndex = block.pageIndex;
+    
+    BlioTextFlowBlock *newBlock = nil;
+    if(onSamePage) {
+        NSArray *blocks = [self blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+        while(currentBlockIndex > 0 && !newBlock) {
+            --currentBlockIndex;
+            newBlock = [blocks objectAtIndex:currentBlockIndex];
+            if(!includingFolioBlocks && newBlock.isFolio) {
+                newBlock = nil; 
+            }                
+        }
+    } else {  
+        ++pageIndex;
+        do {
+            --pageIndex;
+            NSArray *blocks = [self blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+            while(currentBlockIndex > 0 && !newBlock) {
+                --currentBlockIndex;
+                newBlock = [blocks objectAtIndex:currentBlockIndex];
+                if(!includingFolioBlocks && newBlock.isFolio) {
+                    newBlock = nil; 
+                }                
+            }
+        } while(!newBlock && pageIndex != 0);
+    }
+    
+    return newBlock;
+}
+
 
 - (NSArray *)wordStringsForPageAtIndex:(NSInteger)pageIndex {
     NSMutableArray *wordsArray = [NSMutableArray array];
     
-    for (BlioTextFlowBlock *block in [self blocksForPageAtIndex:pageIndex]) {
+    for (BlioTextFlowBlock *block in [self blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
         [wordsArray addObjectsFromArray:[block wordStrings]];
     }
     
@@ -592,7 +671,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     for (NSInteger pageNumber = range.startPoint.layoutPage; pageNumber <= range.endPoint.layoutPage; pageNumber++) {
         NSInteger pageIndex = pageNumber - 1;
         
-        for (BlioTextFlowBlock *block in [self blocksForPageAtIndex:pageIndex]) {
+        for (BlioTextFlowBlock *block in [self blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
             if (![block isFolio]) {
                 for (BlioTextFlowPositionedWord *word in [block words]) {
                     if ((range.startPoint.layoutPage < pageNumber) &&
@@ -643,7 +722,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex {
     NSMutableString *pageString = [NSMutableString string];
-    NSArray *pageBlocks = [self blocksForPageAtIndex:pageIndex];
+    NSArray *pageBlocks = [self blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
     for (BlioTextFlowBlock *block in pageBlocks) {
         if ([pageString length])
             [pageString appendFormat:@"\n\n%@", block.string];
