@@ -18,7 +18,7 @@
 
 - (void)notesViewCreateNote:(BlioNotesView *)notesView;
 - (void)notesViewUpdateNote:(BlioNotesView *)notesView;
-
+- (void)notesViewDismissed;
 @end
 
 

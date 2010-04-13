@@ -12,14 +12,15 @@
 
 @implementation BlioLoginViewController
 
-@synthesize loginTableView, loginManager, usernameField, passwordField, activityIndicator, statusField;
+@synthesize loginTableView, vaultManager, usernameField, passwordField, activityIndicator, statusField;
 
 - (id)init
 {
 	self = [super init];
 	if (self)
 	{
-		self.title = NSLocalizedString(@"Sign in to Blio", @"");
+		//self.title = NSLocalizedString(@"Sign in to Blio", @"");
+		
 	}
 	
 	return self;
@@ -66,7 +67,7 @@
 	statusField = [BlioLoginViewController labelWithFrame:frame title:@""];
 	[self.view addSubview:statusField];
 	 
-	 activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((6.5)*kLeftMargin, yPlacement, 16.0f, 16.0f)];
+	 activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(kLeftMargin, yPlacement, 16.0f, 16.0f)];
 	 [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
 	 [self.view addSubview:activityIndicator];
  }
@@ -126,18 +127,18 @@
 		[passwordField becomeFirstResponder];
 	else { 
 		statusField.textColor = [UIColor colorWithRed:76.0/255.0 green:86.0/255.0 blue:108.0/255.0 alpha:1.0];
-		statusField.text = @"Signing in..."; 
+		statusField.text = @"    Signing in..."; 
 		[activityIndicator startAnimating];
-		BlioLoginResult loginStatus = [self.loginManager login:usernameField.text password:passwordField.text];
+		BlioLoginResult loginStatus = [[self.vaultManager loginManager] login:usernameField.text password:passwordField.text];
 		if ( loginStatus == success ) {
 			[self dismissModalViewControllerAnimated:YES];
-			[self.loginManager archiveBooks];
+			[self.vaultManager archiveBooks];
 		}
 		else if ( loginStatus == invalidPassword ) 
 			statusField.text = @"Invalid username or password.";
 		else
 			statusField.text = @"Error signing in.";
-				[activityIndicator stopAnimating];
+		[activityIndicator stopAnimating];
 		statusField.textColor = [UIColor redColor];
 		[textField resignFirstResponder];
 	}

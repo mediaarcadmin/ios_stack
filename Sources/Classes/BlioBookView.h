@@ -27,6 +27,7 @@
 //- (void)openWebToolDictionaryWithRange:(BlioBookmarkRange *)range;
 - (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type;
 
+- (void)showToolbars;
 - (void)hideToolbars;
 - (void)toggleToolbars;
 

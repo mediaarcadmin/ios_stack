@@ -22,5 +22,6 @@
 
 + (id)leftNavigationButtonWithArrow;
 + (id)leftNavigationButtonWithArrowInBarStyle:(UIBarStyle)barStyle;
++ (id)leftNavigationButtonWithArrowInBarStyle:(UIBarStyle)barStyle frame:(CGRect)aFrame;
 
 @end
