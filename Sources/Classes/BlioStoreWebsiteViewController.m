@@ -13,14 +13,15 @@ static NSString * const kBlioWebsiteIntro = @"To buy books for Blio, you must vi
 
 @implementation BlioStoreWebsiteViewController
 
-- (id)init
-{
-	self = [super init];
-	if (self)
-	{
-		self.title = @"Buy Books";
-	}
-	return self;
+- (id)init {
+    if ((self = [super init])) {
+        self.title = @"Buy Books";
+        
+        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"Buy Books" image:[UIImage imageNamed:@"icon-cart.png"] tag:kBlioStoreBuyBooksTag];
+        self.tabBarItem = theItem;
+        [theItem release];
+    }
+    return self;
 }
 
 + (UILabel *)labelWithFrame:(CGRect)frame title:(NSString *)title

@@ -27,6 +27,35 @@
 	return self;
 }
 
+- (void)downloadBook:(NSString*)isbn {
+	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
+	vaultBinding.logXMLInOut = YES;
+	BookVault_RequestDownloadWithToken* downloadRequest = [[BookVault_RequestDownloadWithToken new] autorelease];
+	downloadRequest.token = [self.loginManager token]; 
+	downloadRequest.isbn = isbn;
+	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenUsingParameters:downloadRequest];
+	[vaultBinding release];
+	NSArray *responseBodyParts = response.bodyParts;
+	for(id bodyPart in responseBodyParts) {
+		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
+			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
+			NSLog(@"SOAP error for VaultContents: %s",err);
+			// TODO: Message
+			return;
+		}
+		else if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
+			NSString* url = [bodyPart RequestDownloadWithTokenResult].Url;
+			NSLog(@"Book download url is %s",url);
+		}
+		else {
+			NSLog(@"DownloadRequest error: %s",[bodyPart RequestDownloadResult].Message);
+			// cancel download
+			// TODO: Message
+			return;
+		}
+	}
+}
+
 - (void)getContent:(NSString*)isbn {
 	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
 	cafeBinding.logXMLInOut = YES;
@@ -92,6 +121,8 @@
 	// TODO: Remove from the isbn list the isbns that are already on the device.
 	for (id isbn in isbns) {
 		[self getContent:isbn];
+		// For testing
+		[self downloadBook:isbn];
 	}
 	
 	

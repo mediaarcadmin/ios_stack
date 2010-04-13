@@ -19,5 +19,6 @@
 
 - (void)getContent:(NSString*)isbn;
 - (void)archiveBooks;
+- (void)downloadBook:(NSString*)isbn;
 
 @end

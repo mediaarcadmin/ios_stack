@@ -1477,12 +1477,14 @@
 }
 - (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
 {
-	xmlNodePtr root = xmlDocGetRootElement(doc);
+	//xmlNodePtr root = xmlDocGetRootElement(doc);
 	
-	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+	//xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
 	
 	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
-	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"BookVault:RequestDownloadWithToken");
+	// Originally
+	//xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"BookVault:RequestDownloadWithToken");
+	xmlSetNsProp(node, nil, (const xmlChar*)"xmlns", (const xmlChar*)"BlioBookVault");
 	
 	[self addAttributesToNode:node];
 	
