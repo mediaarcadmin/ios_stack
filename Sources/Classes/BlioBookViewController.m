@@ -906,6 +906,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     } 
 }
 
+- (void)showToolbars
+{
+    if(self.navigationController.toolbarHidden)
+        [self toggleToolbars];
+}
+
 - (void)hideToolbars
 {
     if(!self.navigationController.toolbarHidden)
@@ -1429,6 +1435,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)showAddMenu:(id)sender {
+    [self hideToolbars];
+    
     UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
     aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     aActionSheet.delegate = self;
@@ -1438,10 +1446,18 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)showViewSettings:(id)sender {
+    // Hide toolbars so the view settings don't overlap them
+    [self hideToolbars];
+    
     BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
     UIToolbar *toolbar = self.navigationController.toolbar;
     [aSettingsSheet showFromToolbar:toolbar];
     [aSettingsSheet release];
+}
+
+- (void)dismissViewSettings:(id)sender {
+    [(BlioViewSettingsSheet *)sender dismissWithClickedButtonIndex:0 animated:YES];
+    [self showToolbars];
 }
 
 
@@ -1921,6 +1937,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [self displayNote:nil atRange:range animated:YES];
         }
     } else if (buttonIndex == kBlioLibraryAddBookmarkAction) {
+        [self showToolbars];
+        
         // TODO Clean this up to remove Abosulte points and work with BookmarkRanges directly
         BlioBookmarkAbsolutePoint *currentBookmarkAbsolutePoint = self.bookView.pageBookmarkPoint;
         BlioBookmarkPoint *currentBookmarkPoint = [BlioBookmarkPoint bookmarkPointWithAbsolutePoint:currentBookmarkAbsolutePoint];
@@ -1964,6 +1982,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         NSError *error;
         if (![[self managedObjectContext] save:&error])
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        
+    } else {
+        // Cancel
+        [self showToolbars];
     }
 }
 
@@ -2017,6 +2039,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         if (![[self managedObjectContext] save:&error])
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
     }
+}
+
+- (void)notesViewDismissed {
+    [self showToolbars];
 }
 
 #pragma mark -
