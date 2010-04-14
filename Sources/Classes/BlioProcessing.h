@@ -11,6 +11,11 @@
 
 @class BlioMockBook;
 
+extern NSString * const BlioProcessingOperationStartNotification;
+extern NSString * const BlioProcessingOperationProgressNotification;
+extern NSString * const BlioProcessingOperationCompleteNotification;
+extern NSString * const BlioProcessingOperationFailedNotification;
+
 @interface BlioProcessingOperation : NSOperation {
     NSManagedObjectID *bookID;
     NSString *sourceID;
@@ -50,4 +55,10 @@
 -(void) pauseProcessingForBook:(BlioMockBook*) aBook;
 - (BlioProcessingOperation *)processingCompleteOperationForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (NSArray *)processingOperationsForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+- (void)pauseProcessingForBook:(BlioMockBook*)aBook;
+- (void)stopProcessingForBook:(BlioMockBook*)aBook;
+- (void)stopDownloadingOperations;
+- (NSArray *)downloadOperations;
+- (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+
 @end

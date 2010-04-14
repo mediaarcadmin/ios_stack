@@ -22,6 +22,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 @synthesize window;
 @synthesize navigationController;
 @synthesize libraryController;
+@synthesize internetReach;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -102,6 +103,41 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
+	self.internetReach = [Reachability reachabilityForInternetConnection];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
+	[self.internetReach startNotifer];
+
+	NSManagedObjectContext *moc = [self managedObjectContext];
+
+    [libraryController setManagedObjectContext:moc];
+    [libraryController setProcessingDelegate:[self processingManager]];
+    
+    [window addSubview:[navigationController view]];
+    [window sendSubviewToBack:[navigationController view]];
+    window.backgroundColor = [UIColor blackColor];
+/*
+	BlioLibraryGridViewController * libraryGridViewController = [[BlioLibraryGridViewController alloc] init];
+	[libraryGridViewController setManagedObjectContext:moc];
+    [libraryGridViewController setProcessingDelegate:[self processingManager]];
+
+	[navigationController pushViewController:libraryGridViewController animated:YES];
+*/
+    
+	[UIView beginAnimations:@"FadeOutRealDefault" context:nil];
+    [UIView setAnimationDuration:1.0/5.0];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+    [UIView setAnimationDelegate:realDefaultImageView];
+    [UIView setAnimationDidStopSelector:@selector(removeFromSuperview)];
+    realDefaultImageView.alpha = 0;
+    realDefaultImageView.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
+    [UIView commitAnimations];    
+    
+    [realDefaultImageView release];
+    realDefaultImageView = nil;
+    
+    [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
+}
+- (void) resumeProcessing {
     NSManagedObjectContext *moc = [self managedObjectContext];
 	
 	// resume previous processing operations
@@ -121,40 +157,19 @@ static void *background_init_thread(void * arg) {
 		if ([results count] > 0) {
 			NSLog(@"Found non-paused incomplete book results, will resume..."); 
 			for (BlioMockBook * book in results) {
-//				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
+				//				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
 				[[self processingManager] enqueueBook:book];
 			}
 		}
 		else {
-//			NSLog(@"No incomplete book results to resume."); 
+			//			NSLog(@"No incomplete book results to resume."); 
 		}
 	}
     [fetchRequest release];
 	
 	// end resume previous processing operations
 	
-    [libraryController setManagedObjectContext:moc];
-    [libraryController setProcessingDelegate:[self processingManager]];
-    
-    [window addSubview:[navigationController view]];
-    [window sendSubviewToBack:[navigationController view]];
-    window.backgroundColor = [UIColor blackColor];
-    
-    [UIView beginAnimations:@"FadeOutRealDefault" context:nil];
-    [UIView setAnimationDuration:1.0/5.0];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-    [UIView setAnimationDelegate:realDefaultImageView];
-    [UIView setAnimationDidStopSelector:@selector(removeFromSuperview)];
-    realDefaultImageView.alpha = 0;
-    realDefaultImageView.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
-    [UIView commitAnimations];    
-    
-    [realDefaultImageView release];
-    realDefaultImageView = nil;
-    
-    [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
 }
-
 
 - (NSString *)dynamicDefaultPngPath {
     NSString *tmpDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -169,6 +184,35 @@ static void *background_init_thread(void * arg) {
         NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
 }
 
+#pragma mark -
+#pragma mark Network Reachability
+
+//Called by Reachability whenever status changes.
+- (void) reachabilityChanged: (NSNotification* )note
+{
+	Reachability* curReach = [note object];
+	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
+	NetworkStatus previousNetStatus = [self.internetReach currentReachabilityStatus];
+	NetworkStatus netStatus = [curReach currentReachabilityStatus];
+
+	if (previousNetStatus != NotReachable && netStatus == NotReachable) { // if changed from available to unavailable
+		[self.processingManager stopDownloadingOperations];
+		if ([[self.processingManager downloadOperations] count] > 0)
+		{
+			// ALERT user to what just happened.
+			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"For Your Information..."
+															message:[NSString stringWithFormat:@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored."]
+														   delegate:self
+												  cancelButtonTitle:@"OK"
+												  otherButtonTitles:nil];
+			[alert show];
+		}
+	}
+	else if (previousNetStatus == NotReachable && netStatus != NotReachable) { // if changed from unavailable to available
+		[self resumeProcessing];
+	}
+	self.internetReach = curReach;
+}
 
 #pragma mark -
 #pragma mark Memory management
@@ -181,6 +225,7 @@ static void *background_init_thread(void * arg) {
 	[navigationController release];
     [libraryController release];
 	[window release];
+	self.internetReach = nil;
 	[super dealloc];
 }
 

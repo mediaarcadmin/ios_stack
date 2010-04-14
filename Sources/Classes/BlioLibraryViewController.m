@@ -1,5 +1,5 @@
 //
-//  RootViewController.m
+//  BlioLibraryViewController.m
 //  BlioApp
 //
 //  Created by James Montgomerie on 16/12/2009.
@@ -35,7 +35,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 @end
 
-@interface BlioLibraryBookView : UIControl {
+@interface BlioLibraryBookView : UIView {
     UIImageView *imageView;
     UIImageView *textureView;
     UIView *highlightView;
@@ -51,6 +51,24 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 - (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout;
 
 @end
+
+@interface BlioLibraryGridViewCell : MRGridViewCell {
+    BlioLibraryBookView *bookView;
+    UILabel *titleLabel;
+    UILabel *authorLabel;
+    UISlider *progressSlider;
+    id delegate;
+}
+
+@property (nonatomic, retain) BlioLibraryBookView *bookView;
+@property (nonatomic, retain) UILabel *titleLabel;
+@property (nonatomic, retain) UILabel *authorLabel;
+@property (nonatomic, retain) UISlider *progressSlider;
+@property (nonatomic, assign) BlioMockBook *book;
+@property (nonatomic, assign) id delegate;
+
+@end
+
 
 @interface BlioLibraryGridCell : UITableViewCell {
     NSArray *books;
@@ -89,6 +107,11 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 @end
 
+@interface BlioLibraryViewController (PRIVATE)
+- (void)bookSelected:(BlioLibraryBookView *)bookView;
+@end
+
+
 @implementation BlioLibraryViewController
 
 @synthesize currentBookView = _currentBookView;
@@ -100,6 +123,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate = _processingDelegate;
 @synthesize fetchedResultsController = _fetchedResultsController;
+@synthesize gridView = _gridView;
+@synthesize tableView = _tableView;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -110,15 +135,35 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     self.managedObjectContext = nil;
     self.processingDelegate = nil;
     self.fetchedResultsController = nil;
+	self.gridView = nil;
+	self.tableView = nil;
     [super dealloc];
 }
 
 - (void)loadView {
-    // UITableView subclass so that custom background is only drawn here
-    BlioLibraryTableView *aTableView = [[BlioLibraryTableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStylePlain];
-    self.tableView = aTableView;
-    [aTableView release];
+	self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+	
+	UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: @"librarybackground.png"]];
+	[self.view addSubview:backgroundImageView];
+	[backgroundImageView release];
     
+	// UITableView subclass so that custom background is only drawn here
+    BlioLibraryTableView *aTableView = [[BlioLibraryTableView alloc] initWithFrame:[[UIScreen mainScreen] bounds] style:UITableViewStylePlain];
+    self.tableView = aTableView;
+	[self.view addSubview:aTableView];
+    [aTableView release];
+
+	self.tableView.delegate = self;
+	self.tableView.dataSource = self;
+	MRGridView *aGridView = [[MRGridView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.gridView = aGridView;
+	[self.gridView setCellSize:CGSizeMake(kBlioLibraryGridBookWidth,kBlioLibraryGridBookHeight) withBorderSize:0];
+	[self.view addSubview:aGridView];
+    [aGridView release];
+	self.gridView.gridDelegate = self;
+	self.gridView.gridDataSource = self;
+	
+	
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
     
@@ -166,7 +211,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [super viewDidLoad];
     
     self.libraryLayout = kBlioLibraryLayoutGrid;
-    
+    self.tableView.hidden = YES;
+	
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     UIEdgeInsets inset = UIEdgeInsetsMake(3, 0, 0, 0);
     
@@ -415,7 +461,107 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
+    [self.gridView reloadData];
 }
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+	[super setEditing:editing animated:animated];
+	[self.gridView setEditing:editing animated:animated];
+	[self.tableView setEditing:editing animated:animated];
+}
+
+#pragma mark - 
+#pragma mark MRGridViewDataSource methods
+
+-(MRGridViewCell*)gridView:(MRGridView*)gridView cellForGridIndex: (NSInteger)index{
+	NSLog(@"cellForGridIndex: %i",index);
+	static NSString* cellIdentifier = @"BlioLibraryGridViewCell";
+	BlioLibraryGridViewCell* gridCell = (BlioLibraryGridViewCell*)[gridView dequeueReusableCellWithIdentifier:cellIdentifier];
+	if (gridCell == nil) {
+		NSLog(@"creating new cell...");
+		gridCell = [[[BlioLibraryGridViewCell alloc]initWithFrame:[gridView frameForCellAtGridIndex: index] reuseIdentifier:cellIdentifier] autorelease];
+	}
+	else {
+//		NSLog(@"fetching recycled cell...");
+		gridCell.frame = [gridView frameForCellAtGridIndex: index];
+	}
+//	CGRect cellFrame = [gridView frameForCellAtGridIndex: index];
+//	NSLog(@"cellFrame: %f,%f,%f,%f",cellFrame.origin.x,cellFrame.origin.y,cellFrame.size.width,cellFrame.size.height);
+	
+	// populate gridCell
+	
+	NSIndexPath * indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+	gridCell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	//	NSLog(@"gridCell.book: %@ title: %@",gridCell.book,[gridCell.book title]);
+	gridCell.delegate = self;
+	
+	return gridCell;
+}
+
+-(NSInteger)numberOfItemsInGridView:(MRGridView*)gridView{
+    NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+	id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:0];
+	bookCount = [sectionInfo numberOfObjects];
+	return bookCount;
+}
+
+
+-(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex {
+	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
+	NSLog(@"fromIndex: %i, toIndex: %i",fromIndex,toIndex);
+	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndex];
+	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndex];
+	NSInteger fromPosition = [fromBook.position intValue];
+	NSInteger toPosition = [toBook.position intValue];
+	NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
+	
+	// tracing purposes
+	for (NSInteger i = 0; i < fetchedResultsCount; i++)
+	{
+		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+		NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
+		
+	}
+	
+	for (NSInteger i = 0; i < fetchedResultsCount; i++)
+	{
+		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+		if ([aBook.position intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"position"];
+        else {
+			NSInteger newPosition = [aBook.position intValue];
+			if (fromPosition > newPosition) newPosition++;
+			if (toPosition >= newPosition) newPosition--;
+			[aBook setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
+		}
+	}
+	
+	// tracing purposes
+	for (NSInteger i = 0; i < fetchedResultsCount; i++)
+	{
+		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+		NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
+		
+	}
+	// TODO - setup flag so that NSFetchedResultsController delegate doesn't bother updating view.
+	NSManagedObjectContext *moc = [self managedObjectContext]; 
+	NSError * error;
+	if (![moc save:&error]) {
+		NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results): %@, %@", error, [error userInfo]);
+	}
+	
+	[gridView reloadData]; // reload for now- TODO: make sure that gridview state reflects updated state already so that it can ignore upcoming reloadData
+}
+
+#pragma mark - 
+#pragma mark MRGridViewDelegate methods
+
+- (void)gridView:(MRGridView *)gridView didSelectCellAtIndex:(NSInteger)index{
+//	NSLog(@"selected cell %i",index);
+	BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:index];
+	[self bookSelected:cell.bookView];
+}
+
 
 #pragma mark Table View Methods
 
@@ -454,9 +600,10 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (self.libraryLayout) {
-        case kBlioLibraryLayoutGrid:
+/*        case kBlioLibraryLayoutGrid:
             return kBlioLibraryGridRowHeight;
             break;
+ */
         default:
             return kBlioLibraryListRowHeight;
             break;
@@ -467,6 +614,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     switch (self.libraryLayout) {
+			/*
         case kBlioLibraryLayoutGrid: {
             static NSString *GridCellIdentifier = @"BlioLibraryGridCell";
             
@@ -482,6 +630,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             
             return cell;
         } break;
+			 */
         default: {
             static NSString *ListCellOddIdentifier = @"BlioLibraryListCellOdd";
             static NSString *ListCellEvenIdentifier = @"BlioLibraryListCellEven";
@@ -530,20 +679,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.libraryLayout == kBlioLibraryLayoutList)
+//    if (self.libraryLayout == kBlioLibraryLayoutList)
         return YES;
-    else
-        return NO;
+//    else
+//        return NO;
 }
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- 
- */
 
 /*
  // Override to support editing the table view.
@@ -611,6 +752,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 */
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     [self.tableView reloadData];
+    [self.gridView reloadData];
 }
 
 #pragma mark -
@@ -663,8 +805,17 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         
         switch (newLayout) {
             case kBlioLibraryLayoutGrid:
-                [self.tableView setBackgroundColor:[UIColor clearColor]];
+				[self.view bringSubviewToFront:self.gridView];
+				[self.gridView reloadData];
+				self.gridView.hidden = NO;
+				self.tableView.hidden = YES;
+                // [self.tableView setBackgroundColor:[UIColor clearColor]];
                 break;
+            case kBlioLibraryLayoutList:
+				[self.view bringSubviewToFront:self.tableView];
+				[self.tableView reloadData];
+				self.gridView.hidden = YES;
+				self.tableView.hidden = NO;
             default:
                 if ([self.books count] % 2)
                     [self.tableView setBackgroundColor:[UIColor whiteColor]];
@@ -673,12 +824,11 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                 break;
         }
         
-        [self.tableView reloadData];
     }
     
 }
 
-- (void)bookTouched:(BlioLibraryBookView *)bookView {
+- (void)bookSelected:(BlioLibraryBookView *)bookView {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
     bookView.alpha = 0.0f;
@@ -886,7 +1036,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
         aTextureView.backgroundColor = [UIColor clearColor];
         aTextureView.alpha = 0.0f;
-        aTextureView.userInteractionEnabled = NO;
+//        aTextureView.userInteractionEnabled = NO;
         [self addSubview:aTextureView];
         self.textureView = aTextureView;
         [aTextureView release];
@@ -897,19 +1047,19 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         UIImageView *aImageView = [[UIImageView alloc] initWithFrame:insetFrame];
         aImageView.contentMode = UIViewContentModeScaleToFill;
         aImageView.backgroundColor = [UIColor clearColor];
-        aImageView.userInteractionEnabled = NO;
+//        aImageView.userInteractionEnabled = NO;
         [self insertSubview:aImageView belowSubview:self.textureView];
         self.imageView = aImageView;
         [aImageView release];
-        
+   /*     
         UIView *aHighlightView = [[UIView alloc] initWithFrame:insetFrame];
         aHighlightView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
         aHighlightView.alpha = 0.0f;
-        aHighlightView.userInteractionEnabled = NO;
+//        aHighlightView.userInteractionEnabled = NO;
         [self insertSubview:aHighlightView aboveSubview:self.imageView];
         self.highlightView = aHighlightView;
         [aHighlightView release];
-        
+      */  
     }
     return self;
 }
@@ -959,7 +1109,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     
     [[self imageView] setNeedsDisplay];
 }
-
+/*
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     self.highlightView.alpha = 1.0f;
     return YES;
@@ -968,8 +1118,64 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     self.highlightView.alpha = 0.0f;
 }
+*/
+@end
+
+@implementation BlioLibraryGridViewCell
+
+@synthesize bookView, titleLabel, authorLabel, progressSlider, delegate;
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    self.bookView = nil;
+    self.titleLabel = nil;
+    self.authorLabel = nil;
+    self.progressSlider = nil;
+    self.delegate = nil;
+    [super dealloc];
+}
+
+- (id)initWithFrame:(CGRect)frame reuseIdentifier: (NSString*) identifier{
+    if ((self = [super initWithFrame:frame reuseIdentifier:identifier])) {
+        
+        BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(8,0, kBlioLibraryGridBookWidth, kBlioLibraryGridBookHeight)];
+//        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
+//            forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:aBookView];
+        self.bookView = aBookView;
+        [aBookView release];
+        
+    }
+    return self;
+}
+
+- (BlioMockBook *)book {
+    return [(BlioLibraryBookView *)self.bookView book];
+}
+
+- (void)setBook:(BlioMockBook *)newBook {
+    [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:0];
+    self.titleLabel.text = [newBook title];
+    self.authorLabel.text = [[newBook author] uppercaseString];
+    if ([newBook audioRights]) {
+        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
+    }
+    self.progressSlider.value = [[newBook progress] floatValue];
+    CGRect progressFrame = self.progressSlider.frame;
+    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
+    [self setNeedsLayout];
+}
+- (void)setDelegate:(id)newDelegate {
+//    [self.bookView removeTarget:delegate action:@selector(bookTouched:)
+//               forControlEvents:UIControlEventTouchUpInside];
+    
+    delegate = newDelegate;
+//    [self.bookView addTarget:delegate action:@selector(bookTouched:)
+//            forControlEvents:UIControlEventTouchUpInside];
+}
 
 @end
+
 
 @implementation BlioLibraryGridCell
 
@@ -1050,8 +1256,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         
         for (NSInteger i = [self.bookViews count]; i < columnCount; ++i) {
             BlioLibraryBookView* bookView = [[[BlioLibraryBookView alloc] init] autorelease];
-            [bookView addTarget:self.delegate action:@selector(bookTouched:)
-               forControlEvents:UIControlEventTouchUpInside];
+//            [bookView addTarget:self.delegate action:@selector(bookTouched:)
+//               forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:bookView];
             [self assignBookAtIndex:(self.rowIndex*columnCount)+i toView:bookView];
             [self.bookViews addObject:bookView];
@@ -1100,8 +1306,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         self.selectionStyle = UITableViewCellSelectionStyleGray;
         
         BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(8,0, kBlioLibraryListBookWidth, kBlioLibraryListBookHeight)];
-        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
-            forControlEvents:UIControlEventTouchUpInside];
+//        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
+//            forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:aBookView];
         self.bookView = aBookView;
         [aBookView release];
@@ -1156,12 +1362,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (void)setDelegate:(id)newDelegate {
-    [self.bookView removeTarget:delegate action:@selector(bookTouched:)
-               forControlEvents:UIControlEventTouchUpInside];
+//    [self.bookView removeTarget:delegate action:@selector(bookTouched:)
+//               forControlEvents:UIControlEventTouchUpInside];
     
     delegate = newDelegate;
-    [self.bookView addTarget:delegate action:@selector(bookTouched:)
-            forControlEvents:UIControlEventTouchUpInside];
+//    [self.bookView addTarget:delegate action:@selector(bookTouched:)
+//            forControlEvents:UIControlEventTouchUpInside];
 }
 
 @end

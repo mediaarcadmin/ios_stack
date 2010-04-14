@@ -371,6 +371,14 @@
 		C9F749441140261700680E93 /* shadow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749411140261700680E93 /* shadow-left.png */; };
 		C9F749451140261700680E93 /* shadow-top.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749421140261700680E93 /* shadow-top.png */; };
 		C9F936F0113530260047B985 /* BlioProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F936EF113530260047B985 /* BlioProcessingManager.m */; };
+		DC2A3E64116C5DF80049A97E /* MRGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5D116C5DF80049A97E /* MRGridView.m */; };
+		DC2A3E65116C5DF80049A97E /* MRGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */; };
+		DC2A3E66116C5DF80049A97E /* MRGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E61116C5DF80049A97E /* MRGridViewController.m */; };
+		DC2A3E67116C5DF80049A97E /* MRGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5D116C5DF80049A97E /* MRGridView.m */; };
+		DC2A3E68116C5DF80049A97E /* MRGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */; };
+		DC2A3E69116C5DF80049A97E /* MRGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E61116C5DF80049A97E /* MRGridViewController.m */; };
+		DC5077A1116A3F2800CD40B3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DC5077A0116A3F2800CD40B3 /* Reachability.m */; };
+		DC5077A2116A3F2800CD40B3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DC5077A0116A3F2800CD40B3 /* Reachability.m */; };
 		DCA65A3A11503A4D006534F4 /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
 		DCA65A3B11503A4D006534F4 /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
 		DCA65A4711503CF6006534F4 /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
@@ -760,6 +768,16 @@
 		C9F749421140261700680E93 /* shadow-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow-top.png"; sourceTree = "<group>"; };
 		C9F936EE113530260047B985 /* BlioProcessingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioProcessingManager.h; sourceTree = "<group>"; };
 		C9F936EF113530260047B985 /* BlioProcessingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioProcessingManager.m; sourceTree = "<group>"; };
+		DC2A3E5C116C5DF80049A97E /* MRGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridView.h; sourceTree = "<group>"; };
+		DC2A3E5D116C5DF80049A97E /* MRGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRGridView.m; sourceTree = "<group>"; };
+		DC2A3E5E116C5DF80049A97E /* MRGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewCell.h; sourceTree = "<group>"; };
+		DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRGridViewCell.m; sourceTree = "<group>"; };
+		DC2A3E60116C5DF80049A97E /* MRGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewController.h; sourceTree = "<group>"; };
+		DC2A3E61116C5DF80049A97E /* MRGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRGridViewController.m; sourceTree = "<group>"; };
+		DC2A3E62116C5DF80049A97E /* MRGridViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewDataSource.h; sourceTree = "<group>"; };
+		DC2A3E63116C5DF80049A97E /* MRGridViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewDelegate.h; sourceTree = "<group>"; };
+		DC50779F116A3F2800CD40B3 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		DC5077A0116A3F2800CD40B3 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		DCA65A3911503A4D006534F4 /* SearchCellDivider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SearchCellDivider.png; sourceTree = "<group>"; };
 		DCA65A4511503CF6006534F4 /* icon-categories.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-categories.png"; sourceTree = "<group>"; };
 		DCA65A4611503CF6006534F4 /* icon-vault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-vault.png"; sourceTree = "<group>"; };
@@ -848,6 +866,14 @@
 				C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */,
 				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
 				1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */,
+				DC2A3E5C116C5DF80049A97E /* MRGridView.h */,
+				DC2A3E5D116C5DF80049A97E /* MRGridView.m */,
+				DC2A3E5E116C5DF80049A97E /* MRGridViewCell.h */,
+				DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */,
+				DC2A3E60116C5DF80049A97E /* MRGridViewController.h */,
+				DC2A3E61116C5DF80049A97E /* MRGridViewController.m */,
+				DC2A3E62116C5DF80049A97E /* MRGridViewDataSource.h */,
+				DC2A3E63116C5DF80049A97E /* MRGridViewDelegate.h */,
 				28C286DF0D94DF7D0034E888 /* BlioLibraryViewController.h */,
 				28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */,
 				7DB9F57C10F345450010DF0B /* BlioBookView.h */,
@@ -884,6 +910,8 @@
 				A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */,
 				A371FDCC113AF77200E1A51C /* BlioWebToolSettingsController.h */,
 				A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */,
+				DC50779F116A3F2800CD40B3 /* Reachability.h */,
+				DC5077A0116A3F2800CD40B3 /* Reachability.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -1732,6 +1760,10 @@
 				7DF2A3011152ABA600FC2045 /* BlioTextFlowParagraphWords.m in Sources */,
 				7DF2A38C1152C5F100FC2045 /* BlioTextFlowFlowTree.m in Sources */,
 				7DF2A49011536CA100FC2045 /* BlioFlowEucBook.m in Sources */,
+				DC5077A1116A3F2800CD40B3 /* Reachability.m in Sources */,
+				DC2A3E64116C5DF80049A97E /* MRGridView.m in Sources */,
+				DC2A3E65116C5DF80049A97E /* MRGridViewCell.m in Sources */,
+				DC2A3E66116C5DF80049A97E /* MRGridViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1797,6 +1829,10 @@
 				7DF2A3001152ABA600FC2045 /* BlioTextFlowParagraphWords.m in Sources */,
 				7DF2A38B1152C5F100FC2045 /* BlioTextFlowFlowTree.m in Sources */,
 				7DF2A48F11536CA100FC2045 /* BlioFlowEucBook.m in Sources */,
+				DC5077A2116A3F2800CD40B3 /* Reachability.m in Sources */,
+				DC2A3E67116C5DF80049A97E /* MRGridView.m in Sources */,
+				DC2A3E68116C5DF80049A97E /* MRGridViewCell.m in Sources */,
+				DC2A3E69116C5DF80049A97E /* MRGridViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -716,7 +716,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 }
 
 - (void)main {
-    NSLog(@"BlioTextFlowPreParseOperation main entered");
+    // NSLog(@"BlioTextFlowPreParseOperation main entered");
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"failed dependency found!");

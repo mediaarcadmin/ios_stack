@@ -32,6 +32,10 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 
 @end
 
+@interface BlioStoreBookViewController (PRIVATE)
+- (void)_getBook;
+@end
+
 @implementation BlioStoreBookViewController
 
 @synthesize fetchThumbQueue, feed, entity, scroller, container, bookThumb, bookTitle, bookShadow, bookPlaceholder, authors, download, summary, releaseDate, publicationDate, pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherLabel, belowSummaryDetails,downloadStateLabels,downloadButtonContainer,downloadButtonBackgroundView;
@@ -242,7 +246,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 				else {
 					NSLog(@"but not processingComplete. However, completeOperation is present and will become listener."); 
 					[self setDownloadState:kBlioStoreDownloadButtonStateInProcess animated:NO];
-					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioProcessingCompleteOperationFinishedNotification) name:BlioProcessingCompleteOperationFinishedNotification object:completeOperation];
+					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioProcessingOperationCompleteNotification) name:BlioProcessingOperationCompleteNotification object:completeOperation];
 				}
 			}
 		}
@@ -257,11 +261,11 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
     [fetchRequest release];
 }
 
-- (void)didReceiveBlioProcessingCompleteOperationFinishedNotification {
+- (void)didReceiveBlioProcessingOperationCompleteNotification {
 	// NSLog(@"BlioStoreBookViewController didReceiveBlioProcessingCompleteOperationFinishedNotification entered");
 	[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:YES];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingCompleteOperationFinishedNotification object:self];
-
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationCompleteNotification object:self];
+	[self _getBook];
 }
 - (void)updateThumb:(UIImage *)thumbImage {
     if (nil != self.bookThumb) {
@@ -302,7 +306,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 		else {
 //			NSLog(@"completeOperation found, BlioStoreBookViewController becoming listener...");
 			[self setDownloadState:kBlioStoreDownloadButtonStateInProcess animated:YES];
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioProcessingCompleteOperationFinishedNotification) name:BlioProcessingCompleteOperationFinishedNotification object:completeOperation];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioProcessingOperationCompleteNotification) name:BlioProcessingOperationCompleteNotification object:completeOperation];
 		}
 	}
 	else if (downloadState == kBlioStoreDownloadButtonStateInProcess) {
@@ -387,8 +391,138 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 	[self.download setTitle:[downloadStateLabels objectAtIndex:downloadState] forState:UIControlStateHighlighted]; // now set the button to a string that reflects its state
 	[self.download setTitle:[downloadStateLabels objectAtIndex:downloadState] forState:UIControlStateSelected]; // now set the button to a string that reflects its state
 	[self.download setTitle:[downloadStateLabels objectAtIndex:downloadState] forState:UIControlStateDisabled]; // now set the button to a string that reflects its state
-	
 }
+
+- (void)_getBook
+{
+	[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+//	UIGraphicsBeginImageContext(bookThumb.bounds.size);
+//	[bookThumb.layer renderInContext:UIGraphicsGetCurrentContext()];
+//	UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIImage *viewImage = bookThumb.image;
+//	UIGraphicsEndImageContext();
+	
+  //  CGSize viewImageSize = viewImage.size;
+	
+    _jumpingView = [[UIImageView alloc] initWithImage:viewImage];
+    CGPoint anchorPoint = CGPointMake(0.5f,0.5f);
+    _jumpingView.layer.anchorPoint = anchorPoint;
+    _jumpingView.layer.position =bookThumb.layer.position;
+    [self.view addSubview:_jumpingView];
+    
+    CGFloat animationDuration = 0.1f;
+	
+    CAKeyframeAnimation *transformAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];    
+    transformAnimation.values = [NSArray arrayWithObjects:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0f, 1.0f, 1.0f)], 
+								 [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.1f, 0.9f, 1.0f)],
+								 [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0f, 1.0f, 1.0f)],
+								 nil];
+    transformAnimation.keyTimes = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0f], 
+                                   [NSNumber numberWithFloat:0.65f],
+                                   [NSNumber numberWithFloat:1.0f],
+                                   nil];    
+    transformAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    transformAnimation.duration = animationDuration;
+    transformAnimation.delegate = self;
+    [transformAnimation setValue:@"GetBookPart1" forKey:@"THName"];
+    [_jumpingView.layer addAnimation:transformAnimation forKey:@"GetBookPart1"];
+}
+
+- (void)_getBookPart1AnimationDidStop:(CAAnimation *)anim finished:(BOOL)finished
+{
+    CGFloat animationDuration = 2.0f / 3.0f;
+    
+    UIView *window = self.view.window;
+    CGPoint bookCenter = _jumpingView.layer.position;
+    bookCenter.y -= _jumpingView.bounds.size.height / 2.0f;
+    
+    _jumpingView.layer.anchorPoint = CGPointMake(0.5f, 0.5f);
+    
+    bookCenter = [self.view convertPoint:bookCenter toView:window];
+    
+	
+    [_jumpingView removeFromSuperview];
+    _jumpingView.layer.zPosition = 0;
+    [window addSubview:_jumpingView];
+    _jumpingView.layer.position = bookCenter;
+    
+    CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];    
+    
+    CGMutablePathRef thePath = CGPathCreateMutable();
+    CGPathMoveToPoint(thePath,NULL,bookCenter.x,bookCenter.y);
+    CGPoint endCenter = [self.downloadButtonContainer convertPoint:download.center toView:window];
+    CGFloat curveTop = bookCenter.y - 104.0f;
+    CGPathAddCurveToPoint(thePath,NULL,bookCenter.x,curveTop,
+                          endCenter.x,curveTop,
+                          endCenter.x,endCenter.y);
+    positionAnimation.path=thePath;
+    positionAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    positionAnimation.duration = animationDuration;
+    positionAnimation.delegate = self;
+    [positionAnimation setValue:@"GetBookPart2" forKey:@"THName"];
+    [_jumpingView.layer addAnimation:positionAnimation forKey:@"GetBookPart2"];
+    
+    
+    CAKeyframeAnimation *transformAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    CGFloat scale = 30 / _jumpingView.bounds.size.width;
+    transformAnimation.values = [NSArray arrayWithObjects:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0f, 1.0f, 1.0f)], 
+                                 [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.00f, 1.00f, 1.0f)],
+                                 [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.05f, 1.05f, 1.0f)],
+                                 [NSValue valueWithCATransform3D:CATransform3DMakeScale(scale, scale, 1.0f)],
+                                 nil];
+    transformAnimation.keyTimes = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0f], 
+                                   [NSNumber numberWithFloat:0.25f],
+                                   [NSNumber numberWithFloat:0.5f],
+                                   [NSNumber numberWithFloat:1.0f],
+                                   nil];
+    transformAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+    transformAnimation.duration = animationDuration;
+    [_jumpingView.layer addAnimation:transformAnimation forKey:@"GetBookPart2Transform"];
+	
+    _jumpingView.layer.transform = [transformAnimation.values.lastObject CATransform3DValue];
+    _jumpingView.layer.position = endCenter;
+}
+
+- (void)_getBookPart2AnimationDidStop:(CAAnimation *)anim finished:(BOOL)finished
+{
+    [_jumpingView removeFromSuperview];
+    [_jumpingView release];
+    _jumpingView = nil;
+    
+//    [[BookObtentionController sharedBookObtentionController] obtainBookWithEtextNumber:[((EucBookReference *)[_bookReferences objectAtIndex:_indexOfPickToGet]).etextNumber integerValue]];
+//   _indexOfPickToGet = -1;
+    
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+//    if([_delegate respondsToSelector:@selector(picksViewDidEndModal:)]) {
+//        [_delegate picksViewDidEndModal:self];
+//    }
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)finished;
+{
+    NSString *name = [anim valueForKey:@"THName"];
+    
+    NSMutableString *selectorName = [NSMutableString stringWithCapacity:name.length + 28];
+    [selectorName appendString:@"_"];
+    [selectorName appendString:name];
+    [selectorName appendString:@"AnimationDidStop:finished:"];
+    unichar lowercaseFirstCharacter = tolower([name characterAtIndex:0]);
+    [selectorName replaceCharactersInRange:NSMakeRange(1, 1) withString:[NSString stringWithCharacters:&lowercaseFirstCharacter length:1]];
+	
+    SEL selector = NSSelectorFromString(selectorName);
+    if(![self respondsToSelector:selector]) {
+        selector = NSSelectorFromString([selectorName substringFromIndex:1]);
+        if(![self respondsToSelector:selector]) {
+            selector = NULL;
+        }
+    }
+    if(selector) {
+        objc_msgSend(self, selector, anim, finished);
+    } else {
+        NSLog(@"Animation \"%@\" ended with no callback defined", name);
+    }
+}
+
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
