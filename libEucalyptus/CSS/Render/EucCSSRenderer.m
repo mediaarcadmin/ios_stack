@@ -65,129 +65,26 @@
 
 - (void)_renderLine:(EucCSSLayoutLine *)line
 {
-    Class nsStringClass = [NSString class];
-    Class uiImageClass = [UIImage class];
-    id singleSpaceMarker = [EucCSSLayoutDocumentRun singleSpaceMarker];
+    EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+    size_t renderItemsCount = line.renderItemCount;
     
-    EucCSSLayoutDocumentRun *documentRun = line.containingRun.documentRun;
-    
-    size_t componentsCount = documentRun.componentsCount;
-    id *components = documentRun.components;
-    EucCSSLayoutDocumentRunComponentInfo *componentInfos = documentRun.componentInfos;
-    
-    EucCSSLayoutDocumentRunPoint startPoint = line.startPoint;
-    EucCSSLayoutDocumentRunPoint endPoint = line.endPoint;
-        
-    CGRect lineFrame = line.frame;
-    CGFloat xPosition = lineFrame.origin.x;
-    CGFloat yPosition = lineFrame.origin.y;
-    CGFloat baseline = line.baseline;
-    switch(line.align) {
-        case CSS_TEXT_ALIGN_RIGHT:
-            {
-                xPosition += lineFrame.size.width;
-                for(uint32_t i = documentRun.wordToComponent[startPoint.word] + startPoint.element;
-                    i < componentsCount &&
-                    !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
-                    ++i) {
-                    id component = components[i];
-                    EucCSSLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
-                    if([component isKindOfClass:nsStringClass]) {
-                        THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
-                        [stringRenderer drawString:component
+    EucCSSLayoutLineRenderItem* renderItem = renderItems;
+    for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
+        id item = renderItem->item;
+        if([item isKindOfClass:[NSString class]]) {
+            [renderItem->stringRenderer drawString:(NSString *)item
                                          inContext:_cgContext 
-                                           atPoint:CGPointMake(xPosition, yPosition + baseline - componentInfo->ascender)
-                                         pointSize:componentInfo->pointSize];
-                    } else if([component isKindOfClass:uiImageClass]) {
-                        CGRect rect = CGRectMake(xPosition, yPosition + baseline - componentInfo->ascender,
-                                                 componentInfo->width, componentInfo->pointSize);
-                        CGContextSaveGState(_cgContext);
-                        CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
-                        CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
-                        CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
-                        CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), [(UIImage *)component CGImage]);
-                        CGContextRestoreGState(_cgContext);
-                    }
-                    xPosition -= componentInfo->width;
-                }
-            }
-            break;            
-        case CSS_TEXT_ALIGN_JUSTIFY:
-            {
-                CGFloat extraWidthNeeded = lineFrame.size.width - line.indent - line.componentWidth;
-                CGFloat spacesRemaining = 0.0f;
-                for(uint32_t i = documentRun.wordToComponent[startPoint.word] + startPoint.element;
-                    i < componentsCount &&
-                    !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
-                    ++i) {
-                    if(components[i] == singleSpaceMarker) {
-                        spacesRemaining++;
-                    }
-                }
-                xPosition += line.indent;
-                for(uint32_t i = documentRun.wordToComponent[startPoint.word] + startPoint.element;
-                    i < componentsCount &&
-                    !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
-                    ++i) {
-                    id component = components[i];
-                    EucCSSLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
-                    if([component isKindOfClass:nsStringClass]) {
-                        THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
-                        [stringRenderer drawString:component
-                                         inContext:_cgContext 
-                                           atPoint:CGPointMake(xPosition, yPosition + baseline - componentInfo->ascender)
-                                         pointSize:componentInfo->pointSize];
-                    } else if(component == singleSpaceMarker) {
-                        CGFloat extraSpace = extraWidthNeeded / spacesRemaining;
-                        xPosition += extraSpace;
-                        extraWidthNeeded -= extraSpace;
-                        --spacesRemaining;
-                    } else if([component isKindOfClass:uiImageClass]) {
-                        CGRect rect = CGRectMake(xPosition, yPosition + baseline - componentInfo->ascender,
-                                                 componentInfo->width, componentInfo->pointSize);
-                        CGContextSaveGState(_cgContext);
-                        CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
-                        CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
-                        CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
-                        CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), [(UIImage *)component CGImage]);
-                        CGContextRestoreGState(_cgContext);
-                    }
-                    xPosition += componentInfo->width;
-                }                
-            }
-            break;
-        case CSS_TEXT_ALIGN_CENTER:
-            xPosition += (lineFrame.size.width - line.componentWidth) * 0.5f;
-            // fall through.
-        default:
-            {
-                xPosition += line.indent;
-                for(uint32_t i = documentRun.wordToComponent[startPoint.word] + startPoint.element;
-                    i < componentsCount &&
-                    !(componentInfos[i].point.word == endPoint.word && componentInfos[i].point.element == endPoint.element); 
-                    ++i) {
-                    id component = components[i];
-                    EucCSSLayoutDocumentRunComponentInfo *componentInfo = &(componentInfos[i]); 
-                    if([component isKindOfClass:nsStringClass]) {
-                        THStringRenderer *stringRenderer = componentInfo->documentNode.stringRenderer;
-                        [stringRenderer drawString:component
-                                         inContext:_cgContext 
-                                           atPoint:CGPointMake(xPosition, yPosition + baseline - componentInfo->ascender)
-                                         pointSize:componentInfo->pointSize];
-                    } else if([component isKindOfClass:uiImageClass]) {
-                        CGRect rect = CGRectMake(xPosition, yPosition + baseline - componentInfo->ascender,
-                                                 componentInfo->width, componentInfo->pointSize);
-                        CGContextSaveGState(_cgContext);
-                        CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
-                        CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
-                        CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
-                        CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), [(UIImage *)component CGImage]);
-                        CGContextRestoreGState(_cgContext);
-                    }
-                    xPosition += componentInfo->width;
-                }
-            }
-            break;
+                                           atPoint:renderItem->rect.origin
+                                         pointSize:renderItem->pointSize];
+        } else if([item isKindOfClass:[UIImage class]]) {
+            CGRect rect = renderItem->rect;
+            CGContextSaveGState(_cgContext);
+            CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
+            CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
+            CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
+            CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), [(UIImage *)item CGImage]);
+            CGContextRestoreGState(_cgContext);
+        }
     }
 }
 

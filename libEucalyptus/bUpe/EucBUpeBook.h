@@ -22,7 +22,7 @@
     NSArray *_spine;
     NSDictionary *_manifest; // id -> file, path relative to root.
     NSString *_coverPath;
-    
+        
     NSDictionary *_manifestOverrides; // id -> file, path relative to root.
     NSDictionary *_manifestUrlsToOverriddenUrls; // Full URL from manifest -> full URL in overrides.
     
@@ -37,6 +37,8 @@
     int _currentPageIndexPointFD;
  
     EucBookPageIndexPoint *_currentPageIndexPoint;
+    
+    float *_indexSourceScaleFactors;
 }
 
 @property (nonatomic, retain) NSString *coverPath;
@@ -71,5 +73,8 @@
 // for covers etc.
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
+// Provide an array of floats specifying the percentage of the book that each
+// index pont source accounts for.  Should sum to 1.
+- (float *)indexSourceScaleFactors;
 
 @end

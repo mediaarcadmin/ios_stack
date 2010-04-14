@@ -168,6 +168,7 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     self.transform = CGAffineTransformMakeTranslation(0, yOffscreen);
     [UIView commitAnimations];
+    
 }
 
 - (void)save:(id)sender {
@@ -184,6 +185,9 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
                                                   
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     [(UIView *)context removeFromSuperview];
+    
+    if ([self.delegate respondsToSelector:@selector(notesViewDismissed)])
+        [self.delegate performSelector:@selector(notesViewDismissed) withObject:nil];
 }                                                  
 
 

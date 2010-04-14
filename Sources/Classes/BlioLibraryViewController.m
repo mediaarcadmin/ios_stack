@@ -14,6 +14,8 @@
 #import "BlioUIImageAdditions.h"
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
+#import "BlioLoginViewController.h"
+#import "BlioBookVaultManager.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -125,6 +127,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize gridView = _gridView;
 @synthesize tableView = _tableView;
+@synthesize vaultManager = _vaultManager;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -163,7 +166,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	self.gridView.gridDelegate = self;
 	self.gridView.gridDataSource = self;
 	
-	
+	self.vaultManager = [[BlioBookVaultManager alloc] init];
+    
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
     
@@ -174,7 +178,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
-                                           action:nil];
+                                           action:@selector(showLogin:)];
     [libraryItems addObject:item];
     [item release];
     
@@ -261,7 +265,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     
     if (![[aFetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
-        
+
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Bill Willingham"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"FablesLegendsInExile" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -317,7 +321,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
-        
+
         [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
                                               authors:[NSArray arrayWithObject:@"Neil Gaiman"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"NeilGaiman" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -325,7 +329,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
 										 audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"AudioBooks"]]];
-		
+
         [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
                                               authors:[NSArray arrayWithObject:@"Martha Stewart"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -780,6 +784,25 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 #pragma mark -
 #pragma mark Toolbar Actions
+
+- (void)showLogin:(id)sender {     
+	BlioLoginViewController *loginController = [[BlioLoginViewController alloc] init];
+    loginController.vaultManager = self.vaultManager;
+	[self presentModalViewController:[[UINavigationController alloc] initWithRootViewController:loginController] animated:YES];
+    [loginController release]; 
+	/*
+	BlioLoginView* loginView = [[BlioLoginView alloc] initWithTitle: @"Sign in to Blio" 
+															message:@"\n\n\n"
+														   delegate:nil
+												  cancelButtonTitle:@"Cancel"
+												  otherButtonTitles:@"Log In", nil]; 
+	loginView.delegate = loginView;
+	loginView.loginManager = self.loginManager;
+	[loginView display];
+	[loginView release];
+	 */
+}
+
 
 - (void)showStore:(id)sender {    
     BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];

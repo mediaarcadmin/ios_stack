@@ -9,6 +9,7 @@
 #import "PaginateAppDelegate.h"
 #import "PaginateRootViewController.h"
 
+#import "EucSharedHyphenator.h"
 
 @implementation PaginateAppDelegate
 
@@ -22,7 +23,8 @@
 - (void)applicationDidFinishLaunching:(UIApplication *)application {    
     
     // Override point for customization after app launch    
-	
+	initialise_shared_hyphenator();
+    
 	[window addSubview:[navigationController view]];
     [window makeKeyAndVisible];
 }

@@ -25,6 +25,8 @@
 - (Class)pageLayoutControllerClass;
 - (NSArray *)bookPageIndexes;
 
+- (float)estimatedPercentageForIndexPoint:(EucBookPageIndexPoint *)point;
+
 @optional
 
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;

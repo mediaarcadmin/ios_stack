@@ -207,7 +207,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
     CGContextScaleCTM(ctx, 1.0, -1.0);
     
-    CGFloat yButtonPadding = 7.0f;
+    CGFloat yButtonPadding = rect.size.height - 19;
+    if (yButtonPadding > 7) yButtonPadding = 7;
+//    
+    //CGFloat xButtonPadding = yButtonPadding;
+    //CGFloat yButtonPadding = 7.0f;
     CGFloat xButtonPadding = 7.0f;
     CGFloat wedgePadding = 2.0f;
     CGRect inRect = CGRectInset(rect, xButtonPadding, yButtonPadding);
@@ -225,12 +229,16 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         height = height - 2 * insetY;
     }
     
+    //CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY + 1, width, height));
     CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY, width, height));
+
     CGRect innerSquare = CGRectInset(outerSquare, wedgePadding, wedgePadding);
     CGRect buttonSquare = CGRectInset(outerSquare, -xButtonPadding, -yButtonPadding);
+    //buttonSquare.origin.y -= 1;
     CGRect backgroundSquare = UIEdgeInsetsInsetRect(buttonSquare, UIEdgeInsetsMake(1, 0, 0, 0));
     
     CGContextClipToRect(ctx, buttonSquare);
+
     
     if ([self isHighlighted] || toggled) {
         CGContextSetShadowWithColor(ctx, CGSizeMake(0,-1), 0, [UIColor colorWithWhite:0.5f alpha:0.25f].CGColor);
@@ -378,14 +386,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				[_acapelaTTS setDelegate:self];
 			} 
 		}
-        UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
-        [backArrow addTarget:self
-                      action:@selector(_backButtonTapped) 
-            forControlEvents:UIControlEventTouchUpInside];
-        
-        UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
-        self.navigationItem.leftBarButtonItem = backItem;
-        [backItem release];
         
         EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
         CGRect frame = titleView.frame;
@@ -621,6 +621,45 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }    
 }
 
+- (void)layoutNavigationToolbar {
+    CGRect navFrame = self.navigationController.navigationBar.frame;
+    navFrame.origin.y = 20;
+    [self.navigationController.navigationBar setFrame:navFrame];
+}
+
+- (void)setNavigationBarButtons {
+    
+    CGFloat buttonHeight = 30;
+
+    // Toolbar buttons are 30 pixels high in portrait and 24 pixels high landscape
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        buttonHeight = 24;
+    }
+    
+    CGRect buttonFrame = CGRectMake(0,0, 41, buttonHeight);
+    
+    UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent frame:buttonFrame];
+    //UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
+
+    [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
+    self.navigationItem.leftBarButtonItem = backItem;
+    [backItem release];
+    
+    BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:buttonFrame];
+    [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
+    
+    [_pageJumpButton release];
+    _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
+    
+    self.pieButton = aPieButton;
+    [aPieButton release];
+    
+    [self.navigationItem setRightBarButtonItem:_pageJumpButton];
+    [self updatePieButtonAnimated:NO];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     if(!self.modalViewController) {        
@@ -706,13 +745,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [titleView setTitle:[self.book title]];
         [titleView setAuthor:[self.book author]];
         
-        BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:CGRectMake(0,0, 50, 30)];
-        [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
-        _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
-        self.pieButton = aPieButton;
-        [aPieButton release];
-        
-        [self.navigationItem setRightBarButtonItem:_pageJumpButton];
+        [self setNavigationBarButtons];
     }
 }
 
@@ -873,6 +906,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     } 
 }
 
+- (void)showToolbars
+{
+    if(self.navigationController.toolbarHidden)
+        [self toggleToolbars];
+}
+
 - (void)hideToolbars
 {
     if(!self.navigationController.toolbarHidden)
@@ -950,31 +989,97 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
-- (void) togglePageJumpPanel
-{ 
+- (void)layoutPageJumpView {
+    [_pageJumpView setTransform:CGAffineTransformIdentity];
+    
+    CGSize viewBounds = [self.bookView bounds].size;
     CGPoint navBarBottomLeft = CGPointMake(0.0, self.navigationController.navigationBar.frame.size.height);
     CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:self.navigationController.navigationBar];
+
+    [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, viewBounds.width, self.navigationController.navigationBar.frame.size.height)];
+    if (![_pageJumpView isHidden]) {
+        [_pageJumpView setTransform:CGAffineTransformIdentity];
+    } else {
+        [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -_pageJumpView.bounds.size.height)];
+    }
+    
+}
+
+- (void)layoutPageJumpSlider {
+    CGRect sliderBounds = [_pageJumpSlider bounds];
+    sliderBounds.size.width = CGRectGetWidth(_pageJumpView.bounds) - 8;
+    [_pageJumpSlider setBounds:sliderBounds];
+    
+    CGFloat scale = 1;
+    
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
+        scale = 0.75f;
+    
+    _pageJumpSlider.transform = CGAffineTransformMakeScale(scale, scale);
+    _pageJumpSlider.center = CGPointMake(_pageJumpView.center.x, CGRectGetHeight(_pageJumpView.frame) - ((CGRectGetHeight(sliderBounds) / 2.0f) * scale));
+
+}
+
+- (void)layoutPageJumpLabelText {
+    
+    NSInteger fontSize = 14;
+    CGSize constrainedSize = CGSizeMake(_pageJumpView.bounds.size.width, floorf(_pageJumpView.bounds.size.height / 2.0f) - 2);
+    NSString *labelText = _pageJumpLabel.text ? : @"placeholder";
+    
+    CGSize stringSize;
+    BOOL sizedToFitHeight = NO;
+    while (!sizedToFitHeight) {
+        stringSize = [labelText sizeWithFont:[UIFont boldSystemFontOfSize:fontSize] constrainedToSize:constrainedSize];
+        if (stringSize.height <= constrainedSize.height) 
+            sizedToFitHeight = YES;
+        else
+            fontSize--;
+    }
+    
+    CGRect labelFrame = _pageJumpView.bounds;
+    labelFrame.size.height = stringSize.height;
+    labelFrame.origin = CGPointMake(0, 4);
+    [_pageJumpLabel setFrame:labelFrame];
+    [_pageJumpLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
+}
+
+- (void) togglePageJumpPanel { 
     
     if(!_pageJumpView) {
         self.pageJumpView = [[UIView alloc] init];
         [self.pageJumpView release];
         
-        CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-        [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, screenSize.width, 46)];
         _pageJumpView.hidden = YES;
+        [self layoutPageJumpView];
         _pageJumpView.opaque = NO;
         _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+        _pageJumpView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        _pageJumpView.autoresizesSubviews = YES;
         
-        CGRect labelFrame = _pageJumpView.bounds;
-        labelFrame.size.height = 20;
+        // feedback label
+        _pageJumpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _pageJumpLabel.textAlignment = UITextAlignmentCenter;
+        _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
+        _pageJumpLabel.minimumFontSize = 6;
+        _pageJumpLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
+        _pageJumpLabel.shadowOffset = CGSizeMake(0, -1);
+        
+        _pageJumpLabel.backgroundColor = [UIColor clearColor];
+        _pageJumpLabel.textColor = [UIColor whiteColor];
+        _pageJumpLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
+        
+        [self layoutPageJumpLabelText];
+        [_pageJumpView addSubview:_pageJumpLabel];
+        
         CGRect sliderFrame = _pageJumpView.bounds;
-        sliderFrame.origin.y = 20;
-        sliderFrame.origin.x = 4;
-        sliderFrame.size.height = 24;
+        sliderFrame.origin.y = _pageJumpLabel.bounds.size.height + 2;
+        sliderFrame.origin.x = floorf(_pageJumpLabel.bounds.size.height / 10.0f);
+        sliderFrame.size.height = _pageJumpLabel.bounds.size.height;
         sliderFrame.size.width -= 8;
         
         // the slider
         UISlider* slider = [[UISlider alloc] initWithFrame: sliderFrame];
+        slider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         _pageJumpSlider = slider;
         
         UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
@@ -996,34 +1101,20 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [slider setValue:self.bookView.pageNumber];
         
         _pageJumpSliderTracking = NO;
-        
-        // feedback label
-        _pageJumpLabel = [[UILabel alloc] initWithFrame:labelFrame];
-        _pageJumpLabel.textAlignment = UITextAlignmentCenter;
-        _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
-        _pageJumpLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        _pageJumpLabel.minimumFontSize = 8;
-        _pageJumpLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
-        _pageJumpLabel.shadowOffset = CGSizeMake(0, -1);
-        
-        _pageJumpLabel.backgroundColor = [UIColor clearColor];
-        _pageJumpLabel.textColor = [UIColor whiteColor];
-        
-        [_pageJumpView addSubview:_pageJumpLabel];
+        [self layoutPageJumpSlider];
         [_pageJumpView addSubview:slider];
         
         [self.view addSubview:_pageJumpView];
     }
     
     CGSize sz = _pageJumpView.bounds.size;
-    BOOL hiding = !_pageJumpView.hidden;
+    BOOL hiding = ![_pageJumpView isHidden];
     [self.pieButton setToggled:!hiding];
     
     if (!hiding) {
         _pageJumpView.alpha = 0.0;
         _pageJumpView.hidden = NO;
         [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
-        [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
     }
     
     [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
@@ -1033,13 +1124,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     
     if (hiding) {
         _pageJumpView.alpha = 0.0;
-        [_pageJumpView setFrame:CGRectMake(0, xt.y - sz.height, sz.width, sz.height)];
+        [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -sz.height)];
     } else {
+        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
         _pageJumpView.alpha = 1.0;
-        [_pageJumpView setFrame:CGRectMake(0, xt.y, sz.width, sz.height)];
+        [_pageJumpView setTransform:CGAffineTransformIdentity];
     }
     
     [UIView commitAnimations];
+
 }
 
 - (void) _pageJumpPanelDidAnimate
@@ -1311,6 +1404,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [self updatePieButtonAnimated:YES];
         
         // This should be more generally handled for both types of bookview
+        // TODO - change this. Also, is it even thread-safe?
         if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
             [self.book setLayoutPageNumber:[change objectForKey:NSKeyValueChangeNewKey]];
         }    
@@ -1341,6 +1435,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)showAddMenu:(id)sender {
+    [self hideToolbars];
+    
     UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
     aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     aActionSheet.delegate = self;
@@ -1350,10 +1446,18 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)showViewSettings:(id)sender {
+    // Hide toolbars so the view settings don't overlap them
+    [self hideToolbars];
+    
     BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
     UIToolbar *toolbar = self.navigationController.toolbar;
     [aSettingsSheet showFromToolbar:toolbar];
     [aSettingsSheet release];
+}
+
+- (void)dismissViewSettings:(id)sender {
+    [(BlioViewSettingsSheet *)sender dismissWithClickedButtonIndex:0 animated:YES];
+    [self showToolbars];
 }
 
 
@@ -1833,6 +1937,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [self displayNote:nil atRange:range animated:YES];
         }
     } else if (buttonIndex == kBlioLibraryAddBookmarkAction) {
+        [self showToolbars];
+        
         // TODO Clean this up to remove Abosulte points and work with BookmarkRanges directly
         BlioBookmarkAbsolutePoint *currentBookmarkAbsolutePoint = self.bookView.pageBookmarkPoint;
         BlioBookmarkPoint *currentBookmarkPoint = [BlioBookmarkPoint bookmarkPointWithAbsolutePoint:currentBookmarkAbsolutePoint];
@@ -1876,6 +1982,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         NSError *error;
         if (![[self managedObjectContext] save:&error])
             NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        
+    } else {
+        // Cancel
+        [self showToolbars];
     }
 }
 
@@ -1931,12 +2041,16 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
 }
 
+- (void)notesViewDismissed {
+    [self showToolbars];
+}
+
 #pragma mark -
 #pragma mark Rotation Handling
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    //return (interfaceOrientation == UIInterfaceOrientationPortrait);
 	// Return YES for supported orientations
     if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
         return YES;
@@ -1945,14 +2059,21 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    [UIView beginAnimations:@"rotateBookView" context:nil];
-    [UIView setAnimationDuration:duration];
-    if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
-        [self.bookView setFrame:CGRectMake(0,0,320,480)];
-    } else {
-        [self.bookView setFrame:CGRectMake(0,0,480,320)];
+    if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
+        [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self layoutNavigationToolbar];
+    [self setNavigationBarButtons];
+    if (_pageJumpView) {
+        [self layoutPageJumpView];
+        [self layoutPageJumpLabelText];
+        [self layoutPageJumpSlider];
     }
-    [UIView commitAnimations];
+    
+    if ([self.bookView respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
+        [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 #pragma mark -
@@ -1963,7 +2084,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated {
-    if (_pageJumpView && !_pageJumpView.hidden) [self performSelector:@selector(togglePageJumpPanel)];
+    if (_pageJumpView && ![_pageJumpView isHidden]) [self performSelector:@selector(togglePageJumpPanel)];
     UIView *container = self.navigationController.visibleViewController.view;
     
     BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithRange:range note:note];

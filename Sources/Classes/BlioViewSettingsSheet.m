@@ -322,7 +322,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 
 
 - (void)dismissSheet:(id)sender {
-  [self dismissWithClickedButtonIndex:0 animated:YES];
+    if ([self.delegate respondsToSelector:@selector(dismissViewSettings:)])
+        [self.delegate performSelector:@selector(dismissViewSettings:) withObject:self];
 }
 
 

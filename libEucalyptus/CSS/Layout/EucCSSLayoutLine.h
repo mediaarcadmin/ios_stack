@@ -9,7 +9,16 @@
 #import <Foundation/Foundation.h>
 #import "EucCSSLayoutDocumentRun.h"
 
-@class EucCSSLayoutDocumentRun, EucCSSLayoutPositionedRun;
+@class EucCSSLayoutDocumentRun, EucCSSLayoutPositionedRun, THStringRenderer;
+
+typedef struct EucCSSLayoutLineRenderItem
+{
+    id item;
+    CGRect rect;
+    CGFloat pointSize;
+    EucCSSLayoutDocumentRunPoint point;
+    THStringRenderer *stringRenderer;
+} EucCSSLayoutLineRenderItem;
 
 @interface EucCSSLayoutLine : NSObject {
     EucCSSLayoutPositionedRun *_positionedRun;
@@ -25,6 +34,9 @@
     
     CGFloat _indent;
     uint8_t _align;
+    
+    EucCSSLayoutLineRenderItem *_renderItems;
+    size_t _renderItemCount;
 }
 
 @property (nonatomic, assign) EucCSSLayoutPositionedRun *containingRun;
@@ -44,5 +56,8 @@
 @property (nonatomic, readonly) CGFloat componentWidth;
 
 - (void)sizeToFitInWidth:(CGFloat)width;
+
+- (size_t)renderItemCount;
+- (EucCSSLayoutLineRenderItem *)renderItems;
 
 @end

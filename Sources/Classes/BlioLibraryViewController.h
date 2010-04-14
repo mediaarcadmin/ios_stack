@@ -8,6 +8,7 @@
 
 #import <CoreData/CoreData.h>
 #import "MRGridView.h"
+
 @class BlioTestBlockWords;
 
 typedef enum {
@@ -15,6 +16,7 @@ typedef enum {
     kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
+@class BlioBookVaultManager;
 @class BlioLibraryBookView;
 @class BlioLibraryTableView;
 
@@ -36,6 +38,8 @@ typedef enum {
     NSFetchedResultsController *_fetchedResultsController;
 	BlioLibraryTableView * _tableView;
 	MRGridView * _gridView;
+	
+	BlioBookVaultManager* _vaultManager;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -50,5 +54,6 @@ typedef enum {
 @property (nonatomic) BlioLibraryLayout libraryLayout;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) BlioBookVaultManager* vaultManager;
 
 @end

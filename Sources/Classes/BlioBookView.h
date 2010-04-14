@@ -27,6 +27,7 @@
 //- (void)openWebToolDictionaryWithRange:(BlioBookmarkRange *)range;
 - (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type;
 
+- (void)showToolbars;
 - (void)hideToolbars;
 - (void)toggleToolbars;
 
@@ -88,5 +89,8 @@
 - (BlioBookmarkRange *)selectedRange;
 - (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange;
 - (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
 
 @end

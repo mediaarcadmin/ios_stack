@@ -102,11 +102,11 @@
     NSArray *blocks = nil;
     do {
         ++currentBlock;
-        blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0)];
+        blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0) includingFolioBlocks:YES];
         while(blocks.count <= currentBlock) {
             currentBlock = 0;
             ++pageNumber;
-            blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0)];
+            blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0) includingFolioBlocks:YES];
         }
     } while([[blocks objectAtIndex:currentBlock] isFolio]);
     
@@ -119,7 +119,7 @@
         textArray = nil;
     }
 
-    NSArray *blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0)];
+    NSArray *blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0) includingFolioBlocks:YES];
     if ([blocks count] != 0) {
         BlioTextFlowBlock *block = [blocks objectAtIndex:currentBlock];
         textArray = [[block wordStrings] mutableCopy];

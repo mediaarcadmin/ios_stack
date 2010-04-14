@@ -154,7 +154,7 @@
 		7D3AED6B114963560059C5B6 /* EucCSSIntermediateDocumentNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415A1149602300C318E7 /* EucCSSIntermediateDocumentNode.h */; };
 		7D3AED6C114963560059C5B6 /* EucCSSIntermediateDocumentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23415B1149602300C318E7 /* EucCSSIntermediateDocumentNode.m */; };
 		7D3AED6D114963560059C5B6 /* EucCSSLayoutDocumentRun.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */; };
-		7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */; };
+		7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.mm */; };
 		7D3AED6F114963560059C5B6 /* EucCSSLayoutDocumentRun_Package.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */; };
 		7D3AED70114963560059C5B6 /* EucCSSLayouter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341601149602300C318E7 /* EucCSSLayouter.h */; };
 		7D3AED71114963560059C5B6 /* EucCSSLayouter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341611149602300C318E7 /* EucCSSLayouter.mm */; };
@@ -245,8 +245,6 @@
 		7D51705B10288579005F3C46 /* THNSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51705910288579005F3C46 /* THNSStringAdditions.m */; };
 		7D51706010288585005F3C46 /* THRegex.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51705E10288585005F3C46 /* THRegex.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51706110288585005F3C46 /* THRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51705F10288585005F3C46 /* THRegex.m */; };
-		7D5170681028876D005F3C46 /* THIntegerCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170641028876D005F3C46 /* THIntegerCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D5170691028876D005F3C46 /* THIntegerCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170651028876D005F3C46 /* THIntegerCache.m */; };
 		7D5170E81028ADD6005F3C46 /* HyphenationRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E01028ADD6005F3C46 /* HyphenationRule.cpp */; };
 		7D5170E91028ADD6005F3C46 /* HyphenationRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170E11028ADD6005F3C46 /* HyphenationRule.h */; };
 		7D5170EA1028ADD6005F3C46 /* HyphenationTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170E21028ADD6005F3C46 /* HyphenationTree.cpp */; };
@@ -325,12 +323,12 @@
 		7D7E2202111F227E00F7F585 /* MenuArrowTopHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D7E21FA111F227E00F7F585 /* MenuArrowTopHighlighted.png */; };
 		7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883FCB111C7735009669A8 /* EucMenuView.m */; };
 		7D81C2301151BAAC008248F1 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
-		7D8454DD1163C4EC003F1D1C /* THIntegerKeysCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB146E211624FA600596813 /* THIntegerKeysCache.m */; };
-		7D8454DF1163C4F3003F1D1C /* THTreeCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB145D21162301800596813 /* THTreeCache.m */; };
 		7D883FA0111C640C009669A8 /* EucMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F5D111C5862009669A8 /* EucMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D883FA1111C640C009669A8 /* EucMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883F5E111C5862009669A8 /* EucMenuItem.m */; };
 		7D883FA2111C640C009669A8 /* EucMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F63111C586F009669A8 /* EucMenuController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D883FA3111C640C009669A8 /* EucMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883F64111C586F009669A8 /* EucMenuController.m */; };
+		7D9683DF11649C29003AA505 /* THCacheBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D9683DD11649C29003AA505 /* THCacheBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D9683E011649C29003AA505 /* THCacheBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9683DE11649C29003AA505 /* THCacheBase.m */; };
 		7D9A96E410D7E42A00C2E00A /* PaginateAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A96DD10D7E42A00C2E00A /* PaginateAppDelegate.m */; };
 		7D9A96E510D7E42A00C2E00A /* PaginateRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A96DF10D7E42A00C2E00A /* PaginateRootViewController.m */; };
 		7D9A96E710D7E42A00C2E00A /* PaginateMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A96E110D7E42A00C2E00A /* PaginateMain.m */; };
@@ -367,6 +365,8 @@
 		7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
 		7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
+		7DBAA08A116CF33C00471C75 /* THCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB145D11162301800596813 /* THCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DBAA08B116CF34100471C75 /* THCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB145D21162301800596813 /* THCache.m */; };
 		7DBBC892114FACF500225E51 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
 		7DBE059E1110416600DE22DC /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059C1110416600DE22DC /* SelectionEnd.png */; };
 		7DBE059F1110416600DE22DC /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE059D1110416600DE22DC /* SelectionKnob.png */; };
@@ -800,7 +800,7 @@
 		7D23415A1149602300C318E7 /* EucCSSIntermediateDocumentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocumentNode.h; sourceTree = "<group>"; };
 		7D23415B1149602300C318E7 /* EucCSSIntermediateDocumentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocumentNode.m; sourceTree = "<group>"; };
 		7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutDocumentRun.h; sourceTree = "<group>"; };
-		7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutDocumentRun.m; sourceTree = "<group>"; };
+		7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucCSSLayoutDocumentRun.mm; sourceTree = "<group>"; };
 		7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutDocumentRun_Package.h; sourceTree = "<group>"; };
 		7D2341601149602300C318E7 /* EucCSSLayouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayouter.h; sourceTree = "<group>"; };
 		7D2341611149602300C318E7 /* EucCSSLayouter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EucCSSLayouter.mm; sourceTree = "<group>"; };
@@ -892,8 +892,6 @@
 		7D51705910288579005F3C46 /* THNSStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSStringAdditions.m; sourceTree = "<group>"; };
 		7D51705E10288585005F3C46 /* THRegex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THRegex.h; sourceTree = "<group>"; };
 		7D51705F10288585005F3C46 /* THRegex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THRegex.m; sourceTree = "<group>"; };
-		7D5170641028876D005F3C46 /* THIntegerCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THIntegerCache.h; sourceTree = "<group>"; };
-		7D5170651028876D005F3C46 /* THIntegerCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THIntegerCache.m; sourceTree = "<group>"; };
 		7D5170CE1028AD1B005F3C46 /* libhyphenate.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhyphenate.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5170D21028ADD6005F3C46 /* BUGS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BUGS; sourceTree = "<group>"; };
 		7D5170D31028ADD6005F3C46 /* CHANGELOG */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG; sourceTree = "<group>"; };
@@ -979,6 +977,8 @@
 		7D883F64111C586F009669A8 /* EucMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucMenuController.m; sourceTree = "<group>"; };
 		7D883FCA111C7735009669A8 /* EucMenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucMenuView.h; sourceTree = "<group>"; };
 		7D883FCB111C7735009669A8 /* EucMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucMenuView.m; sourceTree = "<group>"; };
+		7D9683DD11649C29003AA505 /* THCacheBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THCacheBase.h; sourceTree = "<group>"; };
+		7D9683DE11649C29003AA505 /* THCacheBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCacheBase.m; sourceTree = "<group>"; };
 		7D9A96D210D7E41100C2E00A /* Paginate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paginate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D9A96DC10D7E42A00C2E00A /* PaginateAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaginateAppDelegate.h; sourceTree = "<group>"; };
 		7D9A96DD10D7E42A00C2E00A /* PaginateAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaginateAppDelegate.m; sourceTree = "<group>"; };
@@ -1000,10 +1000,8 @@
 		7DB0409E11451687000C2980 /* THCALayerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCALayerAdditions.m; sourceTree = "<group>"; };
 		7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorRange.h; sourceTree = "<group>"; };
 		7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorRange.m; sourceTree = "<group>"; };
-		7DB145D11162301800596813 /* THTreeCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTreeCache.h; sourceTree = "<group>"; };
-		7DB145D21162301800596813 /* THTreeCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTreeCache.m; sourceTree = "<group>"; };
-		7DB146E111624FA600596813 /* THIntegerKeysCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THIntegerKeysCache.h; sourceTree = "<group>"; };
-		7DB146E211624FA600596813 /* THIntegerKeysCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THIntegerKeysCache.m; sourceTree = "<group>"; };
+		7DB145D11162301800596813 /* THCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THCache.h; sourceTree = "<group>"; };
+		7DB145D21162301800596813 /* THCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCache.m; sourceTree = "<group>"; };
 		7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
 		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
@@ -2023,7 +2021,7 @@
 				7D2341611149602300C318E7 /* EucCSSLayouter.mm */,
 				7D23415D1149602300C318E7 /* EucCSSLayoutDocumentRun.h */,
 				7D23415F1149602300C318E7 /* EucCSSLayoutDocumentRun_Package.h */,
-				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */,
+				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.mm */,
 				7D2341621149602300C318E7 /* EucCSSLayoutLine.h */,
 				7D2341631149602300C318E7 /* EucCSSLayoutLine.m */,
 				7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */,
@@ -2117,12 +2115,10 @@
 				7D516FFD10287922005F3C46 /* THCopyWithCoder.m */,
 				7D5170461028852B005F3C46 /* THBackgroundProcessingMediator.h */,
 				7D5170471028852B005F3C46 /* THBackgroundProcessingMediator.m */,
-				7DB145D11162301800596813 /* THTreeCache.h */,
-				7DB145D21162301800596813 /* THTreeCache.m */,
-				7DB146E111624FA600596813 /* THIntegerKeysCache.h */,
-				7DB146E211624FA600596813 /* THIntegerKeysCache.m */,
-				7D5170641028876D005F3C46 /* THIntegerCache.h */,
-				7D5170651028876D005F3C46 /* THIntegerCache.m */,
+				7D9683DD11649C29003AA505 /* THCacheBase.h */,
+				7D9683DE11649C29003AA505 /* THCacheBase.m */,
+				7DB145D11162301800596813 /* THCache.h */,
+				7DB145D21162301800596813 /* THCache.m */,
 				7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */,
 				7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */,
 				7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */,
@@ -2611,7 +2607,6 @@
 				7D51705410288562005F3C46 /* EucBookSection.h in Headers */,
 				7D51705A10288579005F3C46 /* THNSStringAdditions.h in Headers */,
 				7D51706010288585005F3C46 /* THRegex.h in Headers */,
-				7D5170681028876D005F3C46 /* THIntegerCache.h in Headers */,
 				7D51710E1028AF47005F3C46 /* EucBookPaginator.h in Headers */,
 				7D5172A61028B771005F3C46 /* EucBookParagraph.h in Headers */,
 				7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */,
@@ -2636,6 +2631,8 @@
 				7D4E9AB0114D33910044C513 /* THNSURLAdditions.h in Headers */,
 				7D4E9AEC114D3B200044C513 /* EucCSSIntermediateDocument_Package.h in Headers */,
 				7D4E9BFC114D86B00044C513 /* EucPageTextView.h in Headers */,
+				7D9683DF11649C29003AA505 /* THCacheBase.h in Headers */,
+				7DBAA08A116CF33C00471C75 /* THCache.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3043,7 +3040,7 @@
 				7D3AED68114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedContainerNode.m in Sources */,
 				7D3AED6A114963560059C5B6 /* EucCSSIntermediateDocumentGeneratedTextNode.m in Sources */,
 				7D3AED6C114963560059C5B6 /* EucCSSIntermediateDocumentNode.m in Sources */,
-				7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.m in Sources */,
+				7D3AED6E114963560059C5B6 /* EucCSSLayoutDocumentRun.mm in Sources */,
 				7D3AED71114963560059C5B6 /* EucCSSLayouter.mm in Sources */,
 				7D3AED73114963560059C5B6 /* EucCSSLayoutLine.m in Sources */,
 				7D3AED75114963560059C5B6 /* EucCSSLayoutPositionedBlock.m in Sources */,
@@ -3051,8 +3048,6 @@
 				7D3AED79114963560059C5B6 /* EucCSSRenderer.m in Sources */,
 				7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */,
 				7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */,
-				7D8454DD1163C4EC003F1D1C /* THIntegerKeysCache.m in Sources */,
-				7D8454DF1163C4F3003F1D1C /* THTreeCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3147,7 +3142,6 @@
 				7D51705510288562005F3C46 /* EucBookSection.m in Sources */,
 				7D51705B10288579005F3C46 /* THNSStringAdditions.m in Sources */,
 				7D51706110288585005F3C46 /* THRegex.m in Sources */,
-				7D5170691028876D005F3C46 /* THIntegerCache.m in Sources */,
 				7D51710F1028AF47005F3C46 /* EucBookPaginator.m in Sources */,
 				7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */,
 				7D6AAD5E1028E774006289E6 /* EucSharedHyphenator.mm in Sources */,
@@ -3168,6 +3162,8 @@
 				7DB0412411452788000C2980 /* THCALayerAdditions.m in Sources */,
 				7D1906661149599F00375803 /* th_just_with_floats.c in Sources */,
 				7D4E9AB1114D33910044C513 /* THNSURLAdditions.m in Sources */,
+				7D9683E011649C29003AA505 /* THCacheBase.m in Sources */,
+				7DBAA08B116CF34100471C75 /* THCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

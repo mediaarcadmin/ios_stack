@@ -20,7 +20,7 @@
 
 #import "EucCSSInternal.h"
 
-#import "THIntegerKeysCache.h"
+#import "THCache.h"
 #import "THLog.h"
 
 @implementation EucCSSIntermediateDocument
@@ -310,7 +310,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             [self release]; 
             self = nil;
         } else {
-            _keyToExtantNode = [[THIntegerKeysCache alloc] init];
+            _keyToExtantNode = [[THIntegerToObjectCache alloc] init];
         }
     }
     return self;    
@@ -391,7 +391,13 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     return dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
 }
 
-- (void)dealloc
+- (float)estimatedPercentageForNodeWithKey:(uint32_t)key
+{
+    uint32_t dbNodeKey = key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+    return 100.0f * ((float)dbNodeKey) / ((float)_documentTree.lastKey);
+}
+
+- (void)dealloc 
 {        
     [_keyToExtantNode release];
 

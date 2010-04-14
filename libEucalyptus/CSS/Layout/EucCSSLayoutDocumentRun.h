@@ -13,7 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedRun;
+@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedRun, EucSharedHyphenator;
 struct THBreak;
 
 typedef struct EucCSSLayoutDocumentRunPoint {
@@ -21,11 +21,27 @@ typedef struct EucCSSLayoutDocumentRunPoint {
     uint32_t element;
 } EucCSSLayoutDocumentRunPoint;
 
+typedef enum EucCSSLayoutDocumentRunComponentKind {
+    EucCSSLayoutDocumentRunComponentKindNone = 0,
+    EucCSSLayoutDocumentRunComponentKindSpace,
+    EucCSSLayoutDocumentRunComponentKindHardBreak,
+    EucCSSLayoutDocumentRunComponentKindOpenNode,
+    EucCSSLayoutDocumentRunComponentKindCloseNode,
+    EucCSSLayoutDocumentRunComponentKindWord,
+    EucCSSLayoutDocumentRunComponentKindHyphenationRule,
+    EucCSSLayoutDocumentRunComponentKindImage,
+} EucCSSLayoutDocumentRunComponentKind;
+
 typedef struct EucCSSLayoutDocumentRunComponentInfo {
+    EucCSSLayoutDocumentRunComponentKind kind;
+    void *component;
+    void *component2;
     CGFloat pointSize;
+    CGFloat width;
+    CGFloat widthBeforeHyphen;
+    CGFloat widthAfterHyphen;
     CGFloat ascender;
     CGFloat lineHeight;
-    CGFloat width;
     EucCSSIntermediateDocumentNode *documentNode;
     EucCSSLayoutDocumentRunPoint point;
 } EucCSSLayoutDocumentRunComponentInfo;
@@ -36,6 +52,8 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     uint32_t _id;
     
     EucCSSIntermediateDocumentNode *_startNode;
+    EucCSSIntermediateDocumentNode *_underNode;
+    
     EucCSSIntermediateDocumentNode *_nextNodeUnderLimitNode;
     EucCSSIntermediateDocumentNode *_nextNodeInDocument;
 
@@ -43,7 +61,6 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     
     size_t _componentsCount;
     size_t _componentsCapacity;
-    id *_components;
     EucCSSLayoutDocumentRunComponentInfo *_componentInfos;
 
     size_t _wordsCount;
@@ -61,16 +78,23 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     struct THBreak *_potentialBreaks;
     struct EucCSSLayoutDocumentRunBreakInfo *_potentialBreakInfos;
     int _potentialBreaksCount;
+    
+    EucSharedHyphenator *_sharedHyphenator;
 }
 
-+ (id)singleSpaceMarker;
-+ (id)openNodeMarker;
-+ (id)closeNodeMarker;
-+ (id)hardBreakMarker;
-
 @property (nonatomic, readonly) uint32_t id;
+@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *startNode;
+@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *underNode;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextNodeUnderLimitNode;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextNodeInDocument;
+@property (nonatomic, readonly) CGFloat scaleFactor;
+
+// This convenience constructor will return a cached node if one with the same
+// attibutes was requested recently.
++ (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
+           underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
+                    forId:(uint32_t)id
+              scaleFactor:(CGFloat)scaleFactor;
 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)node 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
