@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+static const NSInteger kBlioStoreBuyBooksTag = 4;
 
 @interface BlioStoreWebsiteViewController : UIViewController {
 	UIButton* launchButton;
