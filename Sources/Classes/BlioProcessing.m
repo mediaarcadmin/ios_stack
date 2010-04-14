@@ -9,10 +9,14 @@
 #import "BlioProcessing.h"
 #import "BlioMockBook.h"
 
+NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
+NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
+NSString * const BlioProcessingOperationCompleteNotification = @"BlioProcessingOperationCompleteNotification";
+NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOperationFailedNotification";
 
 @implementation BlioProcessingOperation
 
-@synthesize bookID, sourceID, sourceSpecificID, storeCoordinator, forceReprocess, percentageComplete, cacheDirectory,tempDirectory,operationSuccess;
+@synthesize bookID, sourceID, sourceSpecificID, storeCoordinator, forceReprocess, cacheDirectory,tempDirectory;
 - (id) init {
 	if((self = [super init])) {
 		operationSuccess = NO;
@@ -21,6 +25,7 @@
 	return self;
 }
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
     self.bookID = nil;
 	self.sourceID = nil;
 	self.sourceSpecificID = nil;
@@ -72,6 +77,21 @@
     return value;
 }
 
+-(void) setOperationSuccess:(BOOL)operationOutcome {
+	operationSuccess = operationOutcome;
+	if (operationOutcome) [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self];
+	else [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self];
+}
+-(BOOL) operationSuccess {
+	return operationSuccess;
+}
+-(void) setPercentageComplete:(NSUInteger)percentage {
+	percentageComplete = percentage;
+	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self];
+}
+-(NSUInteger) percentageComplete {
+	return percentageComplete;
+}
 - (void)setBookProcessingComplete {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     

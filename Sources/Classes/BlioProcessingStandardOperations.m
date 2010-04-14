@@ -14,21 +14,17 @@ static const CGFloat kBlioCoverListThumbWidth = 53;
 static const CGFloat kBlioCoverGridThumbHeight = 140;
 static const CGFloat kBlioCoverGridThumbWidth = 102;
 
-NSString * const BlioProcessingCompleteOperationFinishedNotification = @"BlioProcessingCompleteOperationFinishedNotification";
-NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProcessingCompleteOperationFailedNotification";
-
-
 @implementation BlioProcessingCompleteOperation
 
 - (void)main {
     if ([self isCancelled]) {
-		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause)");
+		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
 	}
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"failed dependency found! Sending Failed Notification...");
-			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingCompleteOperationFailedNotification object:self];
+			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self];
 			[self cancel];
 			return;
 		}
@@ -44,9 +40,13 @@ NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProce
     // The following condition is done in order to prevent a thread's first-time access to [self getBookValueForKey:@"title"] (which happens when there are no dependencies- theoretically that should never happen, but a crash would occur in artificial tests so a safeguard is warranted)... could also be avoided by simply not accessing the MOC in this method for the NSLog.
     if ([NSThread isMainThread]) NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
 	else NSLog(@"Processing complete for book with sourceID:%@ sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
-	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingCompleteOperationFinishedNotification object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self];
 }
 
+- (void) dealloc {
+	NSLog(@"BlioProcessingCompleteOperation dealloc entered");
+	[super dealloc];
+}
 @end
 
 #pragma mark -
@@ -55,10 +55,16 @@ NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProce
 @synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength;
 
 - (void) dealloc {
+	NSLog(@"BlioProcessingDownloadOperation %@ dealloc entered.",self);
+	NSLog(@"self.localFilename: %@",self.localFilename);
     self.url = nil;
     self.filenameKey = nil;
     self.localFilename = nil;
     self.tempFilename = nil;
+	if (self.connection) {
+		[self.connection cancel];
+	}
+	if (self.headConnection) [self.headConnection cancel];
     self.connection = nil;
     self.headConnection = nil;
     self.downloadFile = nil;
@@ -82,6 +88,8 @@ NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProce
     
     if((self = [super init])) {
         self.url = aURL;
+		self.connection = nil;
+		self.headConnection = nil;
 		expectedContentLength = NSURLResponseUnknownLength;
         executing = NO;
         finished = NO;
@@ -373,7 +381,7 @@ NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProce
         }
 		else {
 			[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
-			operationSuccess = YES;
+			self.operationSuccess = YES;
 		}
 		CFRelease(uniqueString);
 
@@ -449,7 +457,7 @@ NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProce
         }
 		else {
 			[self setBookValue:self.localFilename forKey:self.filenameKey];
-			operationSuccess = YES;
+			self.operationSuccess = YES;
 		}
 	} else NSLog(@"Unzip did not finish successfully");
 }
@@ -607,7 +615,7 @@ NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProce
     [listData writeToFile:listThumbPath atomically:YES];
     [listThumb release];
     [self setBookValue:@"listThumb.png" forKey:@"listThumbFilename"];
-	operationSuccess = YES;
+	self.operationSuccess = YES;
 
     
     // The above operations will erroneously report a malloc error in the 3.0 Simulator
@@ -743,7 +751,7 @@ NSString * const BlioProcessingCompleteOperationFailedNotification = @"BlioProce
 				[self setBookValue:audioMetadataFilename forKey:self.filenameKey];
 				[self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"];
 				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudioRights"]; 
-				operationSuccess = YES;
+				self.operationSuccess = YES;
 			}
         } else {
             NSLog(@"Could not find required audiobook files in AudioBook directory %@", temporaryPath);

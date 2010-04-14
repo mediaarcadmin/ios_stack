@@ -142,6 +142,12 @@
 	}
 	else {
 
+		NSManagedObjectID *bookID = [aBook objectID];
+		NSString *cacheDir = [aBook bookCacheDirectory];
+		NSString *tempDir = [aBook bookTempDirectory];
+		NSString *sourceID = [aBook sourceID];
+		NSString *sourceSpecificID = [aBook sourceSpecificID];
+		
 		if ([aBook valueForKey:@"processingComplete"] == [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]) {
 			NSLog(@"WARNING: enqueue method called on already complete book!");
 			NSLog(@"Aborting enqueue by prematurely returning...");
@@ -155,13 +161,12 @@
 				NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
 			}			
 		}
-		
+		else {
+			// status is incomplete; operations involved with this book may or may not be in the queue, so we'll cancel the CompleteOperation for this book if it exists and co-opt the other operations if they haven't been cancelled yet
+			BlioProcessingOperation * oldCompleteOperation = [self processingCompleteOperationForSourceID: sourceID sourceSpecificID:sourceSpecificID];
+			if (oldCompleteOperation) [oldCompleteOperation cancel];
+		}
 
-		NSManagedObjectID *bookID = [aBook objectID];
-		NSString *cacheDir = [aBook bookCacheDirectory];
-		NSString *tempDir = [aBook bookTempDirectory];
-		NSString *sourceID = [aBook sourceID];
-		NSString *sourceSpecificID = [aBook sourceSpecificID];
 		NSError * error;
 		if (![[NSFileManager defaultManager] createDirectoryAtPath:cacheDir withIntermediateDirectories:YES attributes:nil error:&error])
 			NSLog(@"Failed to create book cache directory in processing manager with error: %@, %@", error, [error userInfo]);
@@ -205,117 +210,192 @@
 		}
 		
 		stringURL = [aBook valueForKey:@"epubFilename"];
-		if (stringURL != nil && [stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-		else url = nil;
-		// if (stringURL != nil) NSLog(@"epubFilename: %@",stringURL);
+		if (stringURL && nil == [aBook valueForKey:@"textFlowFilename"]) {
+			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
+			else url = nil;
+			// if (stringURL != nil) NSLog(@"epubFilename: %@",stringURL);
+			BOOL usedPreExistingOperation = NO;
+			BlioProcessingDownloadEPubOperation * ePubOp = nil;
+			if (nil != url) {
+				// we still need to finish downloading this file
+				// so check to see if operation already exists
+				ePubOp = (BlioProcessingDownloadEPubOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadEPubOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 
-		if (nil != url && nil == [aBook valueForKey:@"textFlowFilename"]) {
-
-			BlioProcessingDownloadEPubOperation *ePubOp = [[BlioProcessingDownloadEPubOperation alloc] initWithUrl:url];
-			ePubOp.bookID = bookID;
-			ePubOp.sourceID = sourceID;
-			ePubOp.sourceSpecificID = sourceSpecificID;
-			ePubOp.localFilename = [aBook valueForKey:ePubOp.filenameKey];
-			ePubOp.storeCoordinator = [moc persistentStoreCoordinator];
-			ePubOp.cacheDirectory = cacheDir;
-			ePubOp.tempDirectory = tempDir;
-			[self.preAvailabilityQueue addOperation:ePubOp];
-			[bookOps addObject:ePubOp];
-			[ePubOp release];
-			
+				if (!ePubOp || ePubOp.isCancelled) // TODO: honor force reprocess option here
+				{
+					ePubOp = [[[BlioProcessingDownloadEPubOperation alloc] initWithUrl:url] autorelease];
+					ePubOp.bookID = bookID;
+					ePubOp.sourceID = sourceID;
+					ePubOp.sourceSpecificID = sourceSpecificID;
+					ePubOp.localFilename = [aBook valueForKey:ePubOp.filenameKey];
+					ePubOp.storeCoordinator = [moc persistentStoreCoordinator];
+					ePubOp.cacheDirectory = cacheDir;
+					ePubOp.tempDirectory = tempDir;
+					[self.preAvailabilityQueue addOperation:ePubOp];
+				}
+				else {
+					// we reuse existing one
+					usedPreExistingOperation = YES;
+				}
+				[bookOps addObject:ePubOp];
+			}
 			NSArray *ePubPreAvailOps = [BlioFlowView preAvailabilityOperations];
 			for (BlioProcessingOperation *preAvailOp in ePubPreAvailOps) {
-				preAvailOp.bookID = bookID;
-				preAvailOp.sourceID = sourceID;
-				preAvailOp.sourceSpecificID = sourceSpecificID;
-				preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
-				preAvailOp.cacheDirectory = cacheDir;
-				preAvailOp.tempDirectory = tempDir;
-				[preAvailOp addDependency:ePubOp];
-				[self.preAvailabilityQueue addOperation:preAvailOp];
-				[bookOps addObject:preAvailOp];
+				BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (!preExist || preExist.isCancelled) {
+					preAvailOp.bookID = bookID;
+					preAvailOp.sourceID = sourceID;
+					preAvailOp.sourceSpecificID = sourceSpecificID;
+					preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
+					preAvailOp.cacheDirectory = cacheDir;
+					preAvailOp.tempDirectory = tempDir;
+					if (ePubOp && usedPreExistingOperation == NO) [preAvailOp addDependency:ePubOp];
+					[self.preAvailabilityQueue addOperation:preAvailOp];
+					[bookOps addObject:preAvailOp];
+				}
+				else {
+					// if it already exists, it is dependent on a completed operation
+					[bookOps addObject:preExist];
+				}
+				
 			}                    
 		}
-		
 		stringURL = [aBook valueForKey:@"pdfFilename"];
-		if (stringURL != nil && [stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-		else url = nil;
+		if (stringURL) {
+			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
+			else url = nil;
+			
+			BOOL usedPreExistingOperation = NO;
+			BlioProcessingDownloadPdfOperation * pdfOp = nil;
 
-		if (nil != url) {
-			BlioProcessingDownloadPdfOperation *pdfOp = [[BlioProcessingDownloadPdfOperation alloc] initWithUrl:url];
-			pdfOp.bookID = bookID;
-			pdfOp.sourceID = sourceID;
-			pdfOp.sourceSpecificID = sourceSpecificID;
-			pdfOp.localFilename = [aBook valueForKey:pdfOp.filenameKey];
-			pdfOp.storeCoordinator = [moc persistentStoreCoordinator];
-			pdfOp.cacheDirectory = cacheDir;
-			pdfOp.tempDirectory = tempDir;
-			[self.preAvailabilityQueue addOperation:pdfOp];
-			[bookOps addObject:pdfOp];
-			[pdfOp release];
+			if (nil != url) {
+				// we still need to finish downloading this file
+				// so check to see if operation already exists
+				pdfOp = (BlioProcessingDownloadPdfOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadPdfOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+
+				if (!pdfOp || pdfOp.isCancelled) {
+
+					pdfOp = [[[BlioProcessingDownloadPdfOperation alloc] initWithUrl:url] autorelease];
+					pdfOp.bookID = bookID;
+					pdfOp.sourceID = sourceID;
+					pdfOp.sourceSpecificID = sourceSpecificID;
+					pdfOp.localFilename = [aBook valueForKey:pdfOp.filenameKey];
+					pdfOp.storeCoordinator = [moc persistentStoreCoordinator];
+					pdfOp.cacheDirectory = cacheDir;
+					pdfOp.tempDirectory = tempDir;
+					[self.preAvailabilityQueue addOperation:pdfOp];
+				}
+				else {
+					usedPreExistingOperation = YES; // in case we have dependent operations in the future
+				}
+				[bookOps addObject:pdfOp];
+			}
 		}
 
 		stringURL = [aBook valueForKey:@"textFlowFilename"];
-		if (stringURL != nil && [stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-		else url = nil;
-		// if (stringURL != nil) NSLog(@"textFlowFilename: %@",stringURL);
+		if (stringURL) {
+			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
+			else url = nil;
+			// if (stringURL != nil) NSLog(@"textFlowFilename: %@",stringURL);
 
-		if (nil != url) {
-			BlioProcessingDownloadTextFlowOperation *textFlowOp = [[BlioProcessingDownloadTextFlowOperation alloc] initWithUrl:url];
-			textFlowOp.bookID = bookID; 
-			textFlowOp.sourceID = sourceID;
-			textFlowOp.sourceSpecificID = sourceSpecificID;
-			textFlowOp.localFilename = [aBook valueForKey:textFlowOp.filenameKey];
-			textFlowOp.storeCoordinator = [moc persistentStoreCoordinator];
-			textFlowOp.cacheDirectory = cacheDir;
-			textFlowOp.tempDirectory = tempDir;
-			[self.preAvailabilityQueue addOperation:textFlowOp];
-			[bookOps addObject:textFlowOp];
-			
+			BOOL usedPreExistingOperation = NO;
+			BlioProcessingDownloadTextFlowOperation * textFlowOp = nil;
+
+			if (nil != url) {
+				// we still need to finish downloading this file
+				// so check to see if operation already exists
+				textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadTextFlowOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (!textFlowOp || textFlowOp.isCancelled) {
+					textFlowOp = [[[BlioProcessingDownloadTextFlowOperation alloc] initWithUrl:url] autorelease];
+					textFlowOp.bookID = bookID; 
+					textFlowOp.sourceID = sourceID;
+					textFlowOp.sourceSpecificID = sourceSpecificID;
+					textFlowOp.localFilename = [aBook valueForKey:textFlowOp.filenameKey];
+					textFlowOp.storeCoordinator = [moc persistentStoreCoordinator];
+					textFlowOp.cacheDirectory = cacheDir;
+					textFlowOp.tempDirectory = tempDir;
+					[self.preAvailabilityQueue addOperation:textFlowOp];
+				}
+				else {
+					// we reuse existing one
+					usedPreExistingOperation = YES;
+				}
+				[bookOps addObject:textFlowOp];
+			}
 			NSArray *textFlowPreAvailOps = [BlioTextFlow preAvailabilityOperations];
+			NSMutableArray * newTextFlowPreAvailOps = [NSMutableArray array];
 			for (BlioProcessingOperation *preAvailOp in textFlowPreAvailOps) {
-				preAvailOp.bookID = bookID;
-				preAvailOp.sourceID = sourceID;
-				preAvailOp.sourceSpecificID = sourceSpecificID;
-				preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
-				preAvailOp.cacheDirectory = cacheDir;
-				preAvailOp.tempDirectory = tempDir;
-				[preAvailOp addDependency:textFlowOp];
-				[self.preAvailabilityQueue addOperation:preAvailOp];
-				[bookOps addObject:preAvailOp];
+				BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (!preExist || preExist.isCancelled) {
+					
+					preAvailOp.bookID = bookID;
+					preAvailOp.sourceID = sourceID;
+					preAvailOp.sourceSpecificID = sourceSpecificID;
+					preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
+					preAvailOp.cacheDirectory = cacheDir;
+					preAvailOp.tempDirectory = tempDir;
+					[preAvailOp addDependency:textFlowOp];
+					[self.preAvailabilityQueue addOperation:preAvailOp];
+					[bookOps addObject:preAvailOp];
+					[newTextFlowPreAvailOps addObject:preAvailOp];
+				}
+				else {
+					// if it already exists, it is dependent on a completed operation
+					[bookOps addObject:preExist];
+					[newTextFlowPreAvailOps addObject:preExist];
+				}
 			}
 			
 			NSArray *flowViewPreAvailOps = [BlioFlowView preAvailabilityOperations];
 			for (BlioProcessingOperation *preAvailOp in flowViewPreAvailOps) {
-				preAvailOp.bookID = bookID;
-				preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
-				preAvailOp.cacheDirectory = cacheDir;
-				preAvailOp.tempDirectory = tempDir;
-				for(BlioProcessingOperation *beforeOp in textFlowPreAvailOps) {
-					[preAvailOp addDependency:beforeOp];
+				BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (!preExist || preExist.isCancelled) {
+					preAvailOp.bookID = bookID;
+					preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
+					preAvailOp.cacheDirectory = cacheDir;
+					preAvailOp.tempDirectory = tempDir;
+					for(BlioProcessingOperation *beforeOp in newTextFlowPreAvailOps) {
+						[preAvailOp addDependency:beforeOp];
+					}
+					[self.preAvailabilityQueue addOperation:preAvailOp];
+					[bookOps addObject:preAvailOp];
 				}
-				[self.preAvailabilityQueue addOperation:preAvailOp];
-				[bookOps addObject:preAvailOp];
-			}                    
-			
-			[textFlowOp release];
+				else {
+					// if it already exists, it is dependent on a completed operation
+					[bookOps addObject:preExist];
+				}				
+			}                    			
 		}
 		stringURL = [aBook valueForKey:@"audiobookFilename"];
-		if (stringURL != nil && [stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-		else url = nil;
-		
-		if (nil != url) {
-			BlioProcessingDownloadAudiobookOperation *audiobookOp = [[BlioProcessingDownloadAudiobookOperation alloc] initWithUrl:url];
-			audiobookOp.bookID = bookID;
-			audiobookOp.sourceID = sourceID;
-			audiobookOp.sourceSpecificID = sourceSpecificID;
-			audiobookOp.localFilename = [aBook valueForKey:audiobookOp.filenameKey];
-			audiobookOp.storeCoordinator = [moc persistentStoreCoordinator];
-			audiobookOp.cacheDirectory = cacheDir;
-			audiobookOp.tempDirectory = tempDir;
-			[self.preAvailabilityQueue addOperation:audiobookOp];
-			[bookOps addObject:audiobookOp];
-			[audiobookOp release];
+		if (stringURL) {
+
+			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
+			else url = nil;
+			
+			BOOL usedPreExistingOperation = NO;
+			BlioProcessingDownloadAudiobookOperation * audiobookOp = nil;
+			
+			if (nil != url) {
+				// we still need to finish downloading this file
+				// so check to see if operation already exists
+				audiobookOp = (BlioProcessingDownloadAudiobookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadAudiobookOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (!audiobookOp || audiobookOp.isCancelled) {
+					audiobookOp = [[[BlioProcessingDownloadAudiobookOperation alloc] initWithUrl:url] autorelease];
+					audiobookOp.bookID = bookID;
+					audiobookOp.sourceID = sourceID;
+					audiobookOp.sourceSpecificID = sourceSpecificID;
+					audiobookOp.localFilename = [aBook valueForKey:audiobookOp.filenameKey];
+					audiobookOp.storeCoordinator = [moc persistentStoreCoordinator];
+					audiobookOp.cacheDirectory = cacheDir;
+					audiobookOp.tempDirectory = tempDir;
+					[self.preAvailabilityQueue addOperation:audiobookOp];
+				}
+				else {
+					// we reuse existing one
+					usedPreExistingOperation = YES;
+				}
+				[bookOps addObject:audiobookOp];
+			}
 		}
 		
 		BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];
@@ -338,16 +418,31 @@
 - (void)pauseProcessingForBook:(BlioMockBook*)aBook {
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (moc == nil) {
-		NSLog(@"WARNING: enqueueing book attempted while Processing Manager MOC == nil!");
+		NSLog(@"WARNING: pause processing attempted while Processing Manager MOC == nil!");
 		return;
 	}
     [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStatePaused] forKey:@"processingComplete"];
+	[self stopProcessingForBook:aBook];
+}
+- (void)stopProcessingForBook:(BlioMockBook*)aBook {
+    NSManagedObjectContext *moc = self.managedObjectContext;
+    if (moc == nil) {
+		NSLog(@"WARNING: stop processing for book attempted while Processing Manager MOC == nil!");
+		return;
+	}
 	[[self processingCompleteOperationForSourceID:aBook.sourceID sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
 	NSArray * relatedOperations = [self processingOperationsForSourceID:aBook.sourceID sourceSpecificID:aBook.sourceSpecificID];
 	for (BlioProcessingOperation * op in relatedOperations) {
 		[op cancel];
 	}
+}
+- (void)stopDownloadingOperations {
+	NSArray * downloadOperations = [self downloadOperations];
+	for (BlioProcessingOperation * op in downloadOperations) {
+		[op cancel];
+	}
+	// any processing operations that are dependent on these downloads will also cancel (as intended).
 }
 - (BlioProcessingOperation *)processingCompleteOperationForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	NSArray * operations = [preAvailabilityQueue operations];
@@ -363,6 +458,27 @@
 	NSMutableArray * tempArray = [NSMutableArray array];
 	for (BlioProcessingOperation * op in operations) {
 		if ([sourceID isEqualToString:op.sourceID] && [sourceSpecificID isEqualToString:op.sourceSpecificID]) {
+			[tempArray addObject:op];
+		}
+	}
+	return tempArray;
+}
+- (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+	// helper function to search for such an operation that meets the conditions in the parameters
+	NSArray * operations = [preAvailabilityQueue operations];
+	for (BlioProcessingOperation * op in operations) {
+		if ([op isKindOfClass:targetClass] && op.sourceID == sourceID && op.sourceSpecificID == sourceSpecificID) {
+			return op;
+		}
+	}
+	return nil;
+	
+}
+- (NSArray *)downloadOperations {
+	NSArray * operations = [preAvailabilityQueue operations];
+	NSMutableArray * tempArray = [NSMutableArray array];
+	for (BlioProcessingOperation * op in operations) {
+		if ([op isKindOfClass:[BlioProcessingDownloadOperation class]]) {
 			[tempArray addObject:op];
 		}
 	}

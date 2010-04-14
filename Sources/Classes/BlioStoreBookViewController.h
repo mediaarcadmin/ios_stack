@@ -23,7 +23,7 @@ extern NSString * const kBlioStoreDownloadButtonStateLabelConfirm;
 extern NSString * const kBlioStoreDownloadButtonStateLabelInProcess;
 extern NSString * const kBlioStoreDownloadButtonStateLabelDone;
 extern NSString * const kBlioStoreDownloadButtonStateLabelNoDownload;
-extern NSString * const BlioProcessingCompleteOperationFinishedNotification;
+extern NSString * const BlioProcessingOperationCompleteNotification;
 
 @protocol BlioProcessingDelegate;
 
@@ -56,6 +56,8 @@ extern NSString * const BlioProcessingCompleteOperationFinishedNotification;
 	
     id <BlioProcessingDelegate> processingDelegate;
 	NSManagedObjectContext *managedObjectContext;
+
+	UIImageView * _jumpingView;
 
 }
 

@@ -9,6 +9,7 @@
 #import <CoreData/CoreData.h>
 #import "BlioProcessingManager.h"
 #import "BlioMockBook.h"
+#import "Reachability.h"
 
 @class BlioLibraryViewController;
 
@@ -24,6 +25,7 @@
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
     
     BlioProcessingManager *processingManager;
+	Reachability * internetReach;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
@@ -33,6 +35,7 @@
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, retain, readonly) BlioProcessingManager *processingManager;
+@property (nonatomic, retain, readwrite) Reachability *internetReach;
 
 @end
 

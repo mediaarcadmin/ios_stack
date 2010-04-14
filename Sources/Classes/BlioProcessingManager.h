@@ -25,4 +25,5 @@
 
 @protocol BlioProcessingManagerOperationProvider
 + (NSArray *)preAvailabilityOperations;
+
 @end

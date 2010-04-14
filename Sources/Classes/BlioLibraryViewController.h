@@ -7,7 +7,7 @@
 //
 
 #import <CoreData/CoreData.h>
-
+#import "MRGridView.h"
 
 @class BlioTestBlockWords;
 
@@ -18,9 +18,11 @@ typedef enum {
 
 @class BlioBookVaultManager;
 @class BlioLibraryBookView;
+@class BlioLibraryTableView;
+
 @protocol BlioProcessingDelegate;
 
-@interface BlioLibraryViewController : UITableViewController <NSFetchedResultsControllerDelegate, UIActionSheetDelegate> {
+@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource> {
     BlioLibraryBookView *_currentBookView;
     UIImageView *_currentPoppedBookCover;
     BOOL _bookCoverPopped;
@@ -34,6 +36,8 @@ typedef enum {
     id<BlioProcessingDelegate> _processingDelegate;
     
     NSFetchedResultsController *_fetchedResultsController;
+	BlioLibraryTableView * _tableView;
+	MRGridView * _gridView;
 	
 	BlioBookVaultManager* _vaultManager;
 }
@@ -44,6 +48,8 @@ typedef enum {
 @property (nonatomic) BOOL bookCoverPopped;
 @property (nonatomic) BOOL firstPageRendered;
 @property (nonatomic, retain) NSArray *books;
+@property (nonatomic, retain) BlioLibraryTableView *tableView;
+@property (nonatomic, retain) MRGridView *gridView;
 @property (nonatomic, readonly) NSInteger columnCount;
 @property (nonatomic) BlioLibraryLayout libraryLayout;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
