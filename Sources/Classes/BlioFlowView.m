@@ -65,6 +65,8 @@
         ret.blockOffset = eucIndexPoint.block;
         ret.wordOffset = eucIndexPoint.word;
         ret.elementOffset = eucIndexPoint.element;
+    } else {
+        ret.layoutPage = 1;
     }
     return [ret autorelease];
 }

@@ -21,6 +21,8 @@
     NSArray *_wordStrings;
 }
 
+@property (nonatomic, assign) NSArray *ranges;
+
 - (id)initWithTextFlow:(BlioTextFlow *)textFlow
              paragraph:(BlioTextFlowParagraph *)paragraph 
                 ranges:(NSArray *)ranges

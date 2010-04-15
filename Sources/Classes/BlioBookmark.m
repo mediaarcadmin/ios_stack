@@ -67,6 +67,39 @@
     return [point autorelease]; 
 }
 
+- (NSComparisonResult)compare:(BlioBookmarkPoint *)rhs
+{
+    NSInteger comparison = self.layoutPage - rhs.layoutPage;
+    if(comparison < 0) {
+        return NSOrderedAscending;
+    } else if (comparison > 0) {
+        return NSOrderedDescending;
+    } else {            
+        comparison = self.blockOffset - rhs.blockOffset;
+        if(comparison < 0) {
+            return NSOrderedAscending;
+        } else if (comparison > 0) {
+            return NSOrderedDescending;
+        } else {            
+            comparison = self.wordOffset - rhs.wordOffset;
+            if(comparison < 0) {
+                return NSOrderedAscending;
+            } else if (comparison > 0) {
+                return NSOrderedDescending;
+            } else {            
+                comparison = self.elementOffset - rhs.elementOffset;
+                if(comparison < 0) {
+                    return NSOrderedAscending;
+                } else if (comparison > 0) {
+                    return NSOrderedDescending;
+                } else {            
+                    return NSOrderedSame;
+                }
+            }        
+        }
+    }
+}
+
 @end
 
 @implementation BlioBookmarkRange

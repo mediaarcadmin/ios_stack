@@ -13,14 +13,24 @@
 #import <QuartzCore/CATransaction.h>
 #import <libEucalyptus/EucBUpeBook.h>
 #import "BlioMockBook.h"
+#import "BlioParagraphSource.h"
+
+@interface BlioSpeedReadView ()
+
+@property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, retain) id currentParagraphID;
+@property (nonatomic) uint32_t currentWordOffset;
+
+@end
 
 @implementation BlioSpeedReadView
 
-@synthesize pageCount, pageNumber, currentWordOffset, currentBlock, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize pageCount, pageNumber, currentWordOffset, currentParagraphID, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {    
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
         book = [aBook retain];
+        paragraphSource = [aBook.paragraphSource retain];
         
         [self setMultipleTouchEnabled:YES];
         [self setBackgroundColor:[UIColor whiteColor]];
@@ -99,17 +109,9 @@
         textArray = nil;
     }
     
-    NSArray *blocks = nil;
-    do {
-        ++currentBlock;
-        blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0) includingFolioBlocks:YES];
-        while(blocks.count <= currentBlock) {
-            currentBlock = 0;
-            ++pageNumber;
-            blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0) includingFolioBlocks:YES];
-        }
-    } while([[blocks objectAtIndex:currentBlock] isFolio]);
-    
+    self.currentParagraphID = [paragraphSource nextParagraphIdForParagraphWithID:self.currentParagraphID];
+    self.currentWordOffset = 0;
+        
     [self fillArrayWithCurrentBlock];
 }
 
@@ -119,14 +121,12 @@
         textArray = nil;
     }
 
-    NSArray *blocks = [book.textFlow blocksForPageAtIndex:MAX(pageNumber - 1, 0) includingFolioBlocks:YES];
-    if ([blocks count] != 0) {
-        BlioTextFlowBlock *block = [blocks objectAtIndex:currentBlock];
-        textArray = [[block wordStrings] mutableCopy];
-    }
-    if ([textArray count] == 0) {
+    self.textArray = [[paragraphSource wordsForParagraphWithID:self.currentParagraphID] mutableCopy];
+    if (!textArray.count) {
         [self fillArrayWithNextBlock];
-    }
+    } 
+    
+    self.pageNumber = [paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:self.currentWordOffset].layoutPage;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -326,36 +326,6 @@
     }
 }
 
-
-
-- (NSString *)extractWordFromLongString:(NSString*)currentWordToExtract withString:(NSString*)longString {
-	NSRange spaceRange = [longString rangeOfString:@" "];
-	if (spaceRange.length > 0) {
-		NSString *longerWord = [currentWordToExtract stringByAppendingString:[[longString substringToIndex:spaceRange.location] stringByAppendingString:@" "]];
-        
-		if ([longerWord sizeWithFont:font].width < 290) {
-            
-			return [self extractWordFromLongString:longerWord withString:[longString substringFromIndex:spaceRange.location+1]];
-		} else {
-            
-			return currentWordToExtract == @"" ? longerWord : currentWordToExtract;
-		}
-		
-	} else {
-        
-		return currentWordToExtract;
-	}
-}
-
-- (NSString *)checkPhraseLength:(NSString*)currentWordToExtract withArray:(NSArray*)a atIndex:(int)i {
-    
-	if (i >= [a count]-1) return currentWordToExtract;
-	NSString *longerString = [currentWordToExtract stringByAppendingString:[@" " stringByAppendingString:[a objectAtIndex:i]]];
-	if ([longerString sizeWithFont:font].width < 400) {
-		return [self checkPhraseLength:longerString withArray:a atIndex:i+1];
-	} else return currentWordToExtract;
-}
-
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
     
 }
@@ -374,17 +344,25 @@
 
 - (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
 {
+    BlioBookmarkPoint *bookmarkPoint = [paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID
+                                                                          wordOffset:self.currentWordOffset];
     BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
-    ret.layoutPage = self.pageNumber;
+    ret.layoutPage = bookmarkPoint.layoutPage;
+    ret.blockOffset = bookmarkPoint.blockOffset;
+    ret.wordOffset = bookmarkPoint.wordOffset;
+    ret.elementOffset = bookmarkPoint.elementOffset;
     return [ret autorelease];
-    
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
-    pageNumber = bookmarkPoint.layoutPage;
-    currentBlock = bookmarkPoint.blockOffset;
-    currentWordOffset = bookmarkPoint.wordOffset;
+    id paragraphId = nil;
+    uint32_t wordOffset = 0;
+    [paragraphSource bookmarkPoint:[BlioBookmarkPoint bookmarkPointWithAbsolutePoint:bookmarkPoint] toParagraphID:&paragraphId wordOffset:&wordOffset];
+    
+    self.currentParagraphID = paragraphId;
+    self.currentWordOffset = wordOffset;
+    
     [self fillArrayWithCurrentBlock];
     [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
 }
@@ -408,14 +386,15 @@
 
 
 - (void)dealloc {
-    [book release];
     [textArray release];
     [sampleTextLabel release];
     [bigTextLabel release];
     [fingerImage release];
     [fingerImageHolder release];
     [backgroundImage release];
-    [book release];
+    [currentParagraphID release];
+    [paragraphSource release];
+    [book release];    
     [super dealloc];
 }
 

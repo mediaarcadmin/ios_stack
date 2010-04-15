@@ -118,7 +118,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 @synthesize currentBookView = _currentBookView;
 @synthesize currentPoppedBookCover = _currentPoppedBookCover;
-@synthesize books = _books;
 @synthesize libraryLayout = _libraryLayout;
 @synthesize bookCoverPopped = _bookCoverPopped;
 @synthesize firstPageRendered = _firstPageRendered;
@@ -132,7 +131,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.currentBookView = nil;
-    self.books = nil;
     self.tableView = nil;
     self.currentPoppedBookCover = nil;
     self.managedObjectContext = nil;
@@ -445,7 +443,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (void)viewDidUnload {
-    self.books = nil;
 }
 
 - (NSInteger)columnCount {
@@ -839,12 +836,10 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 				[self.tableView reloadData];
 				self.gridView.hidden = YES;
 				self.tableView.hidden = NO;
-            default:
-                if ([self.books count] % 2)
-                    [self.tableView setBackgroundColor:[UIColor whiteColor]];
-                else
-                    [self.tableView setBackgroundColor:[UIColor colorWithRed:0.882f green:0.882f blue:0.906f alpha:1.0f]];
+                [self.tableView setBackgroundColor:[UIColor whiteColor]];
                 break;
+            default:
+                NSLog(@"Unexpected library layout %ld", (long)newLayout);
         }
         
     }

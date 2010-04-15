@@ -9,12 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <libEucalyptus/EucCSSDocumentTree.h>
 
-@class BlioTextFlow;
+@class BlioTextFlow, BlioTextFlowParagraph;
 
 @interface BlioTextFlowFlowTree : NSObject <EucCSSDocumentTree> {
     NSArray *_nodes;
 }
 
 - (id)initWithTextFlow:(BlioTextFlow *)textFlow data:(NSData *)xmlData;
+
+- (BlioTextFlowParagraph *)firstParagraph;
 
 @end

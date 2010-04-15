@@ -171,6 +171,10 @@ static void BlioTextFlowFlowTreeEndElementHandler(void *ctx, const XML_Char *nam
     return self;
 }
 
+- (BlioTextFlowParagraph *)firstParagraph
+{
+    return self.root.firstChild;
+}
 
 - (void)dealloc
 {
