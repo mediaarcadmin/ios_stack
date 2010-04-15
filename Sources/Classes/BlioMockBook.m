@@ -7,6 +7,7 @@
 //
 
 #import "BlioMockBook.h"
+#import "BlioTextFlowParagraphSource.h"
 
 @implementation BlioMockBook
 
@@ -27,8 +28,10 @@
 @dynamic sourceSpecificID;
 
 - (void)dealloc {
-    if (coverThumb) [coverThumb release];
-    if (textFlow) [textFlow release];
+    [coverThumb release];
+    [textFlow release];
+    [paragraphSource release];
+    
     [super dealloc];
 }
 
@@ -150,6 +153,16 @@
 //        return textFlow;
 //    else
 //        return nil;
+}
+
+- (id<BlioParagraphSource>)paragraphSource {
+    if (nil == paragraphSource) {
+        BlioTextFlow *myTextFlow = self.textFlow;
+        if(myTextFlow) {
+            paragraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
+        }
+    }
+    return paragraphSource;
 }
 
 - (NSArray *)sortedBookmarks {

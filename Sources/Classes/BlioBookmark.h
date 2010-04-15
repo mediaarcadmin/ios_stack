@@ -41,6 +41,7 @@
 - (NSManagedObject *)persistentBookmarkPointInContext:(NSManagedObjectContext *)moc;
 + (BlioBookmarkPoint *)bookmarkPointWithAbsolutePoint:(BlioBookmarkAbsolutePoint *)absolutePoint;
 + (BlioBookmarkPoint *)bookmarkPointWithPersistentBookmarkPoint:(NSManagedObject *)persistedBookmarkPoint;
+- (NSComparisonResult)compare:(BlioBookmarkPoint *)rhs;
 
 @end
 

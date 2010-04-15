@@ -10,6 +10,9 @@
 #import <libEucalyptus/EucBookView.h>
 #import "BlioBookView.h"
 
+@protocol BlioParagraphSource;
+
+
 @interface BlioSpeedReadView : UIView <BlioBookView> {
     CGPDFDocumentRef pdf;
     UIScrollView *scrollView;
@@ -21,7 +24,8 @@
     NSInteger pageNumber;
     NSInteger pageCount;
     
-    uint32_t currentBlock;
+    id<BlioParagraphSource> paragraphSource;
+    id currentParagraphID;
 	uint32_t currentWordOffset;
     
     BlioMockBook *book;
@@ -46,13 +50,7 @@
 	NSMutableArray *textArray;
 	
 	NSTimer *nextWordTimer;
-    
-    
-    
-    
 }
-
-
 
 @property (nonatomic, readonly) NSInteger pageCount;
 @property (nonatomic, readonly) NSInteger pageNumber;
@@ -65,9 +63,6 @@
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 @property (nonatomic, readonly) CGRect firstPageRect;
-
-@property (nonatomic) uint32_t currentBlock;
-@property (nonatomic) uint32_t currentWordOffset;
 
 @property (nonatomic, retain) BlioMockBook *book;
 
