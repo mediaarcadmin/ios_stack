@@ -284,7 +284,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    return;
+    [self goToPageNumber:1 animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {

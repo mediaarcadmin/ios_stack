@@ -35,7 +35,7 @@ typedef enum {
     kBlioPageColorNeutral = 2,
 } BlioPageColor;
 
-@interface BlioBookViewController : UIViewController <BlioBookDelegate, THEventCaptureObserver,EucBookContentsTableViewControllerDelegate,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, AVAudioPlayerDelegate> {
+@interface BlioBookViewController : UIViewController <BlioBookDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, AVAudioPlayerDelegate> {
     BOOL _firstAppearance;
     
     UIView<BlioBookView> *_bookView;
