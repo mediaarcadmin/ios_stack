@@ -10,6 +10,16 @@
 #import <libwapcaplet/libwapcaplet.h>
 #import <libcss/libcss.h>
 
+
+typedef enum EucCSSIntermediateDocumentNodeKeyFlags
+{
+    EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode = 0x1,
+    EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode  = 0x2,
+    EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode   = 0x4,
+    
+    EucCSSIntermediateDocumentNodeKeyFlagMask                = 0x7
+} EucCSSIntermediateDocumentNodeKeyFlags;
+
 #define EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS 3
 
 @interface EucCSSIntermediateDocument ()

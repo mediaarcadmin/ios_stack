@@ -8,6 +8,7 @@
 
 #import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
 #import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 
