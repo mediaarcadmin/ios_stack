@@ -187,7 +187,7 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     [(UIView *)context removeFromSuperview];
     
     if ([self.delegate respondsToSelector:@selector(notesViewDismissed)])
-        [self.delegate performSelector:@selector(notesViewDismissed) withObject:nil];
+        [(NSObject *)self.delegate performSelector:@selector(notesViewDismissed) withObject:nil afterDelay:0.2f];
 }                                                  
 
 

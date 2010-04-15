@@ -920,8 +920,7 @@
 				C972639A111C6063001BCC0B /* Store */,
 				7DA5664F11529F74000A849D /* TextFlow */,
 				A37FC33210EA783700F3DC5A /* TTS */,
-				C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */,
-				C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */,
+				C921763E1176FF67009AC670 /* BookViewController */,
 				C93E825B1134241D000117C6 /* BlioWebToolsViewController.h */,
 				C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */,
 				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
@@ -937,18 +936,12 @@
 				28C286DF0D94DF7D0034E888 /* BlioLibraryViewController.h */,
 				28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */,
 				7DB9F57C10F345450010DF0B /* BlioBookView.h */,
-				7D7917F410F21CD400C4D839 /* BlioBookViewController.h */,
-				7D7917F510F21CD400C4D839 /* BlioBookViewController.m */,
-				C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */,
-				C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */,
 				553E98FF1107B8F200FB309D /* BlioSpeedReadView.h */,
 				553E99001107B8F200FB309D /* BlioSpeedReadView.m */,
 				C9775AF410DFD728005E0E2B /* BlioMockBook.h */,
 				C9775AF510DFD728005E0E2B /* BlioMockBook.m */,
 				7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */,
 				7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */,
-				C932B03910ECBC6000B8286A /* BlioNotesView.h */,
-				C932B03A10ECBC6000B8286A /* BlioNotesView.m */,
 				C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */,
 				C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */,
 				7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */,
@@ -1267,6 +1260,21 @@
 				A381615F1164FB3E003A9709 /* xsd.m */,
 			);
 			name = BookVault;
+			sourceTree = "<group>";
+		};
+		C921763E1176FF67009AC670 /* BookViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */,
+				C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */,
+				7D7917F410F21CD400C4D839 /* BlioBookViewController.h */,
+				7D7917F510F21CD400C4D839 /* BlioBookViewController.m */,
+				C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */,
+				C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */,
+				C932B03910ECBC6000B8286A /* BlioNotesView.h */,
+				C932B03A10ECBC6000B8286A /* BlioNotesView.m */,
+			);
+			name = BookViewController;
 			sourceTree = "<group>";
 		};
 		C972639A111C6063001BCC0B /* Store */ = {

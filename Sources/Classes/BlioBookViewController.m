@@ -599,15 +599,16 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [self updatePageJumpPanelForPage:self.bookView.pageNumber animated:YES];
 }
 
-- (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid {
-    [self performSelector:@selector(dismissContentsTabView:)];
-}
+//- (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid {
+//    [self performSelector:@selector(dismissContentsTabView:)];
+//}
 
 
 - (void)loadView 
 {
     UIView *root = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-    root.backgroundColor = [UIColor blackColor];
+    // Changed to grey background to match Layout View surround color when rotating
+    root.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
     root.opaque = YES;
     if(_bookView) {
         [root addSubview:_bookView];
@@ -912,18 +913,14 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [self toggleToolbars];
 }
 
-- (void)hideToolbars
-{
-    if(!self.navigationController.toolbarHidden)
-        [self toggleToolbars];
-}
-
-- (void)toggleToolbars
+- (void)toggleToolbarsAndStatusBar:(BOOL)toggleStatusBar
 {
     if(_fadeState == BookViewControlleUIFadeStateNone) {
         if(self.navigationController.toolbarHidden == YES) {
-            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+            if (toggleStatusBar) {
+                [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
+                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+            }
             self.navigationController.navigationBarHidden = NO;
             self.navigationController.navigationBar.hidden = NO;
             self.navigationController.toolbarHidden = NO;
@@ -951,12 +948,27 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(_fadeDidEnd)];
-        [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
+        if (toggleStatusBar)
+            [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
         
         [UIView commitAnimations];        
     }
 }
 
+- (void)toggleToolbars
+{
+    [self toggleToolbarsAndStatusBar:YES];
+}
+
+- (void)hideToolbarsAndStatusBar:(BOOL)hidesStatusBar
+{
+    if(!self.navigationController.toolbarHidden)
+        [self toggleToolbarsAndStatusBar:hidesStatusBar];
+}
+
+- (void)hideToolbars {
+    [self hideToolbarsAndStatusBar:YES];
+}
 
 - (void)observeTouch:(UITouch *)touch
 {
@@ -992,16 +1004,19 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)layoutPageJumpView {
     [_pageJumpView setTransform:CGAffineTransformIdentity];
     
-    CGSize viewBounds = [self.bookView bounds].size;
-    CGPoint navBarBottomLeft = CGPointMake(0.0, self.navigationController.navigationBar.frame.size.height);
-    CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:self.navigationController.navigationBar];
+    ///CGSize viewBounds = [self.bookView bounds].size;
+    UINavigationBar *currentNavBar = self.navigationController.visibleViewController.navigationController.navigationBar;
+    CGPoint navBarBottomLeft = CGPointMake(0.0, 20 + currentNavBar.frame.size.height);
+    //CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:currentNavBar];
 
-    [_pageJumpView setFrame:CGRectMake(xt.x, xt.y, viewBounds.width, self.navigationController.navigationBar.frame.size.height)];
+    [_pageJumpView setFrame:CGRectMake(navBarBottomLeft.x, navBarBottomLeft.y, currentNavBar.frame.size.width, currentNavBar.frame.size.height)];
     if (![_pageJumpView isHidden]) {
         [_pageJumpView setTransform:CGAffineTransformIdentity];
     } else {
         [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -_pageJumpView.bounds.size.height)];
     }
+    
+    NSLog(@"Orientation: %d Frame: %@ transform: %@", self.interfaceOrientation, NSStringFromCGRect([_pageJumpView frame]), NSStringFromCGAffineTransform([_pageJumpView transform]));
     
 }
 
@@ -1053,9 +1068,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         [self layoutPageJumpView];
         _pageJumpView.opaque = NO;
         _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
-        _pageJumpView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _pageJumpView.autoresizesSubviews = YES;
-        
+            
         // feedback label
         _pageJumpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _pageJumpLabel.textAlignment = UITextAlignmentCenter;
@@ -1425,6 +1439,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark -
 #pragma mark Action Callback Methods
 
+- (void)setToolbarsForModalOverlayActive:(BOOL)active {
+    if (active) {
+        [self hideToolbarsAndStatusBar:NO];
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    } else {
+        [self showToolbars];
+    }
+}
+
 - (void)showContents:(id)sender {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
@@ -1435,7 +1458,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)showAddMenu:(id)sender {
-    [self hideToolbars];
+    [self setToolbarsForModalOverlayActive:YES];
     
     UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Add Bookmark", @"Add Notes", nil];
     aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
@@ -1447,7 +1470,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)showViewSettings:(id)sender {
     // Hide toolbars so the view settings don't overlap them
-    [self hideToolbars];
+    [self setToolbarsForModalOverlayActive:YES];
     
     BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
     UIToolbar *toolbar = self.navigationController.toolbar;
@@ -1457,7 +1480,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)dismissViewSettings:(id)sender {
     [(BlioViewSettingsSheet *)sender dismissWithClickedButtonIndex:0 animated:YES];
-    [self showToolbars];
+    
+    [self setToolbarsForModalOverlayActive:NO];
 }
 
 
@@ -1937,7 +1961,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             [self displayNote:nil atRange:range animated:YES];
         }
     } else if (buttonIndex == kBlioLibraryAddBookmarkAction) {
-        [self showToolbars];
+        [self setToolbarsForModalOverlayActive:NO];
         
         // TODO Clean this up to remove Abosulte points and work with BookmarkRanges directly
         BlioBookmarkAbsolutePoint *currentBookmarkAbsolutePoint = self.bookView.pageBookmarkPoint;
@@ -1985,7 +2009,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
     } else {
         // Cancel
-        [self showToolbars];
+        [self setToolbarsForModalOverlayActive:NO];
     }
 }
 
@@ -2042,7 +2066,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)notesViewDismissed {
-    [self showToolbars];
+    [self setToolbarsForModalOverlayActive:NO];
 }
 
 #pragma mark -
