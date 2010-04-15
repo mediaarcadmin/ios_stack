@@ -16,7 +16,7 @@
 @interface BlioTextFlowParagraphSource ()
 
 @property (nonatomic, assign) NSUInteger currentFlowTreeSection;
-@property (nonatomic, assign) BlioTextFlowFlowTree *currentFlowTree;
+@property (nonatomic, retain) BlioTextFlowFlowTree *currentFlowTree;
 
 @end
 
