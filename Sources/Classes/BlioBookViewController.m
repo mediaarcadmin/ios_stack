@@ -572,6 +572,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		[self stopAudio];
 		self.audioPlaying = NO;  
 	}
+    _viewIsDisappearing = YES;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -783,8 +784,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    if(!self.modalViewController) {
-        _viewIsDisappearing = YES;
+    if(_viewIsDisappearing) {
         //        if(_contentsSheet) {
         //            [self performSelector:@selector(dismissContents)];
         //        }
