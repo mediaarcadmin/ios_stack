@@ -186,8 +186,18 @@ typedef enum {
                 if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)])
                     [self.delegate goToContentsBookmarkRange:range animated:NO];
                 
-                if ([self.delegate respondsToSelector:@selector(displayNote:atRange:animated:)])
+                if ([self.delegate respondsToSelector:@selector(displayNote:atRange:animated:)]) {
                     [self.delegate displayNote:note atRange:range animated:YES];
+       //             BOOL animated = YES;
+//                    NSMethodSignature * mySignature = [[self.delegate class] instanceMethodSignatureForSelector:@selector(displayNote:atRange:animated:)];
+//                    NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
+//                    [myInvocation setTarget:self.delegate];    
+//                    [myInvocation setSelector:@selector(displayNote:atRange:animated:)];
+//                    [myInvocation setArgument:&note atIndex:2];
+//                    [myInvocation setArgument:&range atIndex:3];
+//                    [myInvocation setArgument:&animated atIndex:4];
+//                    [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:0.2f];
+                }
             }
             
         }   break;

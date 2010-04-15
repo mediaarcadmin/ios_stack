@@ -2108,8 +2108,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated {
-    if (_pageJumpView && ![_pageJumpView isHidden]) [self performSelector:@selector(togglePageJumpPanel)];
-    UIView *container = self.navigationController.visibleViewController.view;
+    //if (_pageJumpView && ![_pageJumpView isHidden]) [self performSelector:@selector(togglePageJumpPanel)];
+    [self setToolbarsForModalOverlayActive:YES];
+    //UIView *container = self.navigationController.visibleViewController.view;
+    UIView *container = self.view;
     
     BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithRange:range note:note];
     [aNotesView setDelegate:self];
