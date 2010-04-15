@@ -165,6 +165,9 @@
 		C901F8C1116B819000A1858D /* xsd.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615F1164FB3E003A9709 /* xsd.m */; };
 		C918B6991121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */; };
 		C918B8B51122AEE1008B6ADC /* Feeds in Resources */ = {isa = PBXBuildFile; fileRef = C918B8B21122AEE1008B6ADC /* Feeds */; };
+		C9217852117732A3009AC670 /* TextFlow.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DF2A589115381EF00FC2045 /* TextFlow.css */; };
+		C9217859117732C8009AC670 /* Aliases in Resources */ = {isa = PBXBuildFile; fileRef = 7D9148D3115159E400BCBB23 /* Aliases */; };
+		C921786E1177337A009AC670 /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
 		C926A3BF1174D21C000F9CB3 /* BlioBookVaultManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A383F1721174B60D0049ED3A /* BlioBookVaultManager.m */; };
 		C926F769116E293500FCC291 /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */; };
 		C926F76A116E293500FCC291 /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */; };
@@ -1697,6 +1700,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9217852117732A3009AC670 /* TextFlow.css in Resources */,
 				C9AF19CC1147A772007D7AFC /* MainWindow.xib in Resources */,
 				C9AF19CD1147A772007D7AFC /* RootViewController.xib in Resources */,
 				C9AF19CE1147A772007D7AFC /* animatedBookTurnVertices.vertexData in Resources */,
@@ -1796,6 +1800,8 @@
 				DCA65A4911503CF6006534F4 /* icon-categories.png in Resources */,
 				DCA65A4A11503CF6006534F4 /* icon-vault.png in Resources */,
 				7D529C121158DC1100548C00 /* TextFlowCover.xhtml in Resources */,
+				C9217859117732C8009AC670 /* Aliases in Resources */,
+				C921786E1177337A009AC670 /* icon-cart.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

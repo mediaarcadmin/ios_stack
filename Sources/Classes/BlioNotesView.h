@@ -24,6 +24,7 @@
 
 @interface BlioNotesView : UIView {
     UITextView *textView;
+    UILabel *toolbarLabel;
     NSString *page;
     id<BlioNotesViewDelegate> delegate;
     NSManagedObject *note;
@@ -31,6 +32,7 @@
 }
 
 @property (nonatomic, retain) UITextView *textView;
+@property (nonatomic, retain) UILabel *toolbarLabel;
 @property (nonatomic, retain) NSString *page;
 @property (nonatomic, assign) id<BlioNotesViewDelegate> delegate;
 @property (nonatomic, retain) NSManagedObject *note;

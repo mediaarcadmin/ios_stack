@@ -170,9 +170,9 @@
 
 + (BlioBookmarkRange *)bookmarkRangeWithPersistentBookmarkRange:(NSManagedObject *)persistedBookmarkRange {
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
-    range.startPoint = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"startPoint"]];
-    range.endPoint = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"endPoint"]];
-    range.color = [persistedBookmarkRange valueForKey:@"color"];
+    [range setStartPoint:[BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"startPoint"]]];
+    [range setEndPoint:[BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"endPoint"]]];
+    [range setColor:[persistedBookmarkRange valueForKey:@"color"]];
     
     return [range autorelease];
 }

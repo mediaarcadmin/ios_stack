@@ -1015,9 +1015,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     } else {
         [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -_pageJumpView.bounds.size.height)];
     }
-    
-    NSLog(@"Orientation: %d Frame: %@ transform: %@", self.interfaceOrientation, NSStringFromCGRect([_pageJumpView frame]), NSStringFromCGAffineTransform([_pageJumpView transform]));
-    
 }
 
 - (void)layoutPageJumpSlider {

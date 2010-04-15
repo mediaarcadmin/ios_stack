@@ -168,15 +168,34 @@ typedef enum {
         case kBlioContentsTabViewTabContents: {
             NSString *selectedUuid = [self.contentsController selectedUuid];
             if (nil != selectedUuid) {
-                if ([self.delegate respondsToSelector:@selector(goToContentsUuid:animated:)])
-                    [self.delegate goToContentsUuid:selectedUuid animated:YES];
+                if ([self.delegate respondsToSelector:@selector(goToContentsUuid:animated:)]) {
+                    BOOL animated = YES;
+                    NSMethodSignature * mySignature = [[self.delegate class] instanceMethodSignatureForSelector:@selector(goToContentsUuid:animated:)];
+                    NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
+                    [myInvocation setTarget:self.delegate];  
+                    [myInvocation setSelector:@selector(goToContentsUuid:animated:)];
+                    [myInvocation setArgument:&selectedUuid atIndex:2];
+                    [myInvocation setArgument:&animated atIndex:3];
+                    [myInvocation retainArguments];
+                    [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:0.2f];
+                    
+                }
             }
         }  break;
         case kBlioContentsTabViewTabBookmarks: {
             if (nil != self.bookmarksController.selectedBookmark) {
                 BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[self.bookmarksController.selectedBookmark valueForKey:@"range"]];
-                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)])
-                    [self.delegate goToContentsBookmarkRange:aBookmarkRange animated:NO];
+                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)]) {                    
+                    BOOL animated = YES;
+                    NSMethodSignature * mySignature = [[self.delegate class] instanceMethodSignatureForSelector:@selector(goToContentsBookmarkRange:animated:)];
+                    NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
+                    [myInvocation setTarget:self.delegate];  
+                    [myInvocation setSelector:@selector(goToContentsBookmarkRange:animated:)];
+                    [myInvocation setArgument:&aBookmarkRange atIndex:2];
+                    [myInvocation setArgument:&animated atIndex:3];
+                    [myInvocation retainArguments];
+                    [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:0.2f];
+                }
             }
         }  break;
         case kBlioContentsTabViewTabNotes: {
@@ -188,15 +207,6 @@ typedef enum {
                 
                 if ([self.delegate respondsToSelector:@selector(displayNote:atRange:animated:)]) {
                     [self.delegate displayNote:note atRange:range animated:YES];
-       //             BOOL animated = YES;
-//                    NSMethodSignature * mySignature = [[self.delegate class] instanceMethodSignatureForSelector:@selector(displayNote:atRange:animated:)];
-//                    NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
-//                    [myInvocation setTarget:self.delegate];    
-//                    [myInvocation setSelector:@selector(displayNote:atRange:animated:)];
-//                    [myInvocation setArgument:&note atIndex:2];
-//                    [myInvocation setArgument:&range atIndex:3];
-//                    [myInvocation setArgument:&animated atIndex:4];
-//                    [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:0.2f];
                 }
             }
             
@@ -413,7 +423,7 @@ typedef enum {
         mainLabel.backgroundColor = [UIColor clearColor];
         mainLabel.font = [UIFont systemFontOfSize:17.0f];
         mainLabel.textAlignment = UITextAlignmentRight;
-        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         [cell.contentView addSubview:mainLabel];
         
         secondLabel = [[[UILabel alloc] initWithFrame:CGRectMake(83.0, 0.0, 220.0, 44.0)] autorelease];
@@ -422,7 +432,7 @@ typedef enum {
         secondLabel.font = [UIFont systemFontOfSize:17.0];
         secondLabel.textAlignment = UITextAlignmentLeft;
         secondLabel.textColor = [UIColor blackColor];
-        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [cell.contentView addSubview:secondLabel];
     } else {
         mainLabel = (UILabel *)[cell.contentView viewWithTag:MAINLABEL_TAG];
@@ -583,7 +593,7 @@ typedef enum {
         mainLabel.backgroundColor = [UIColor clearColor];
         mainLabel.font = [UIFont systemFontOfSize:17.0f];
         mainLabel.textAlignment = UITextAlignmentRight;
-        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         [cell.contentView addSubview:mainLabel];
         
         secondLabel = [[[UILabel alloc] initWithFrame:CGRectMake(83.0, 0.0, 220.0, 44.0)] autorelease];
@@ -592,7 +602,7 @@ typedef enum {
         secondLabel.font = [UIFont boldSystemFontOfSize:17.0];
         secondLabel.textAlignment = UITextAlignmentLeft;
         secondLabel.textColor = [UIColor blackColor];
-        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [cell.contentView addSubview:secondLabel];
     } else {
         mainLabel = (UILabel *)[cell.contentView viewWithTag:MAINLABEL_TAG];
