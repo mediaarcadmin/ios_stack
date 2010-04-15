@@ -75,6 +75,7 @@
 		7D4CE4751100C64C0061BDF2 /* BlioBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */; };
 		7D529C111158DC1100548C00 /* TextFlowCover.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = 7D529C101158DC1100548C00 /* TextFlowCover.xhtml */; };
 		7D529C121158DC1100548C00 /* TextFlowCover.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = 7D529C101158DC1100548C00 /* TextFlowCover.xhtml */; };
+		7D5981D911772D990009349B /* BlioTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */; };
 		7D5EC9571131963F0054F657 /* LineLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9541131963F0054F657 /* LineLoupeHigh.png */; };
 		7D5EC9581131963F0054F657 /* LineLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9551131963F0054F657 /* LineLoupeLow.png */; };
 		7D5EC9591131963F0054F657 /* LineLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9561131963F0054F657 /* LineLoupeMask.png */; };
@@ -1955,6 +1956,7 @@
 				C926F76C116E295A00FCC291 /* CellTextField.m in Sources */,
 				C926F76E116E297700FCC291 /* EditableTableViewCell.m in Sources */,
 				C926A3BF1174D21C000F9CB3 /* BlioBookVaultManager.m in Sources */,
+				7D5981D911772D990009349B /* BlioTextFlowParagraphSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
