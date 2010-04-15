@@ -8,6 +8,7 @@
 
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocument.h"
+#import "EucCSSIntermediateDocument_Package.h"
 #import "LWCNSStringAdditions.h"
 
 #import <libcss/libcss.h>
