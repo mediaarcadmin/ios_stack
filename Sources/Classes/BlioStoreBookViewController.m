@@ -198,8 +198,9 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
 			}
 			NSManagedObject * resultBook = [results objectAtIndex:0];
-			if ([resultBook valueForKey:@"processingComplete"] == [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]) {
-				NSLog(@"and processingComplete is YES."); 
+			NSLog(@"processingStatus int: %i",[[resultBook valueForKey:@"processingComplete"] intValue]);
+				  if ([[resultBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
+				NSLog(@"and processingComplete is kBlioMockBookProcessingStateComplete."); 
 				
 				[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
 			}

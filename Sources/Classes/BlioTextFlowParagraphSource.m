@@ -59,7 +59,7 @@
     
     uint32_t key = [paragraphID indexAtPosition:1];
     if(key) {
-        return (BlioTextFlowParagraph *)[flowFlowTree nodeForKey:[paragraphID indexAtPosition:1]];
+        return (BlioTextFlowParagraph *)[flowFlowTree nodeForKey:key];
     } else {
         return flowFlowTree.firstParagraph;
     }

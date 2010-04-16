@@ -17,5 +17,6 @@
 -(MRGridViewCell*)gridView:(MRGridView*)gridView cellForGridIndex: (NSInteger)index;
 -(NSInteger)numberOfItemsInGridView:(MRGridView*)gridView;
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex;
+-(void) gridView:(MRGridView*)gridView finishedMovingCellToIndex:(NSInteger)toIndex;
 
 @end

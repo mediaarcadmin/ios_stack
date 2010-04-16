@@ -18,7 +18,6 @@ typedef enum {
 
 @class BlioBookVaultManager;
 @class BlioLibraryBookView;
-@class BlioLibraryTableView;
 
 @protocol BlioProcessingDelegate;
 
@@ -27,7 +26,7 @@ typedef enum {
     UIImageView *_currentPoppedBookCover;
     BOOL _bookCoverPopped;
     BOOL _firstPageRendered;
-    
+    BOOL _didEdit;
     BlioLibraryLayout _libraryLayout;
     
     BlioTestBlockWords *_testBlockWords;
@@ -35,7 +34,7 @@ typedef enum {
     id<BlioProcessingDelegate> _processingDelegate;
     
     NSFetchedResultsController *_fetchedResultsController;
-	BlioLibraryTableView * _tableView;
+	UITableView * _tableView;
 	MRGridView * _gridView;
 	
 	BlioBookVaultManager* _vaultManager;
@@ -46,7 +45,7 @@ typedef enum {
 @property (nonatomic, retain) UIImageView *currentPoppedBookCover;
 @property (nonatomic) BOOL bookCoverPopped;
 @property (nonatomic) BOOL firstPageRendered;
-@property (nonatomic, retain) BlioLibraryTableView *tableView;
+@property (nonatomic, retain) UITableView *tableView;
 @property (nonatomic, retain) MRGridView *gridView;
 @property (nonatomic, readonly) NSInteger columnCount;
 @property (nonatomic) BlioLibraryLayout libraryLayout;
