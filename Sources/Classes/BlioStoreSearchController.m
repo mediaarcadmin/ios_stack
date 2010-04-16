@@ -189,7 +189,7 @@
 	// cell background
 	if (cell.backgroundView == nil) { // if no existing divider image, add one
 		NSLog(@"background!");
-		cell.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,2)];
+		cell.backgroundView = [[[UIView alloc] initWithFrame:CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,2)] autorelease];
 		UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
 		[cell.backgroundView addSubview:backgroundImageView];
 		backgroundImageView.frame = CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,1);

@@ -10,6 +10,9 @@
 
 @interface MRGridView (PRIVATE)
 - (void)invalidateScrollTimer;
+- (void)invalidateEditTimer;
+-(void) resetEditTimer;
+-(void) resetScrollTimer;
 @end
 
 @implementation MRGridView
@@ -34,13 +37,21 @@
 		currDraggedCell = nil;
 		currDraggedCellIndex = -1;
 		currentHoveredIndex = -1;
-		
+		minimumBorderSize = 0;
+		cellDragging = NO;
+		scrollTimer = nil;
 	}
     return self;
 }
 - (void) addCellAtIndex:(NSInteger)cellIndex {
-	if (cellIndex >=0 && cellIndex < [gridDataSource numberOfItemsInGridView:self] && cellIndex != currDraggedCellIndex)
+//	NSLog(@"addCellAtIndex: %i",cellIndex);
+	NSInteger protectedCellIndex = currDraggedCellIndex;
+	if (moveStyle == MRGridViewMoveStyleDisplace) protectedCellIndex = currentHoveredIndex;
+	if (cellIndex >=0 && cellIndex < [gridDataSource numberOfItemsInGridView:self] && cellIndex != protectedCellIndex)
 	{
+		if ([cellIndices objectForKey:[NSNumber numberWithInt:cellIndex]]) {
+			[self removeCellAtIndex:cellIndex];
+		}
 		MRGridViewCell * gridCell = [gridDataSource gridView:self cellForGridIndex:cellIndex];
 		[cellIndices setObject:gridCell forKey:[NSNumber numberWithInt:cellIndex]];
 		[gridView addSubview:gridCell];
@@ -48,8 +59,11 @@
 	}
 }
 - (void) removeCellAtIndex:(NSInteger)cellIndex {
+//	NSLog(@"removeCellAtIndex: %i",cellIndex);
+	NSInteger protectedCellIndex = currDraggedCellIndex;
+	if (moveStyle == MRGridViewMoveStyleDisplace) protectedCellIndex = currentHoveredIndex;
 	MRGridViewCell * cell = nil;
-	if (cellIndex >=0 && cellIndex < [gridDataSource numberOfItemsInGridView:self]  && cellIndex != currDraggedCellIndex) cell = [cellIndices objectForKey:[NSNumber numberWithInt:cellIndex]];
+	if (cellIndex >=0 && cellIndex < [gridDataSource numberOfItemsInGridView:self]  && cellIndex != protectedCellIndex) cell = [cellIndices objectForKey:[NSNumber numberWithInt:cellIndex]];
 	if (cell != nil) {
 		[cell removeFromSuperview];
 		[self enqueueReusableCell:cell withIdentifier:cell.reuseIdentifier];
@@ -64,21 +78,58 @@
 	{
 		[keys addObject:key];
 	}
-	
 	for (int i = 0; i < [keys count];i++)
 	{
 		NSNumber * numberKey = [keys objectAtIndex:i];
 		[self removeCellAtIndex:[numberKey intValue]];
 		
 	}
-	NSLog(@"self bounds: %f,%f,%f,%f",[self bounds].origin.x,[self bounds].origin.y,[self bounds].size.width,[self bounds].size.height);
+//	NSLog(@"self bounds: %f,%f,%f,%f",[self bounds].origin.x,[self bounds].origin.y,[self bounds].size.width,[self bounds].size.height);
 	NSArray * cellIndexes = [self indexesForCellsInRect:[self bounds]];
 	for (NSNumber* index in cellIndexes){
-		NSLog(@"new cellIndexes: %i",[index intValue]);
+//		NSLog(@"new cellIndexes: %i",[index intValue]);
 		[self addCellAtIndex:[index intValue]];
 	}
 	[self updateSize];
 }
+
+- (void)rearrangeCells{
+	// rearranges cells that belong in the visible frame and refraining from accessing the data source as much as possible
+	NSArray * cellIndexes = [self indexesForCellsInRect:[self bounds]];
+	NSMutableArray * keys = [NSMutableArray array];
+	for (id key in cellIndices)
+	{
+		[keys addObject:key];
+	}
+	// purge cells that do not belong in the visible frame.
+	[UIView beginAnimations:@"rearrangeCells" context:nil];
+//	NSLog(@"self bounds: %f,%f,%f,%f",[self bounds].origin.x,[self bounds].origin.y,[self bounds].size.width,[self bounds].size.height);
+	for (int i = 0; i < [keys count];i++)
+	{
+		NSNumber * numberKey = [keys objectAtIndex:i];
+//		NSLog(@"[numberKey intValue]: %i",[numberKey intValue]);
+//		NSLog(@"[self frameForCellAtGridIndex:[numberKey intValue]]: %f,%f,%f,%f",[self frameForCellAtGridIndex:[numberKey intValue]].origin.x,[self frameForCellAtGridIndex:[numberKey intValue]].origin.y,[self frameForCellAtGridIndex:[numberKey intValue]].size.width,[self frameForCellAtGridIndex:[numberKey intValue]].size.height);
+		if (!CGRectIntersectsRect([self frameForCellAtGridIndex:[numberKey intValue]],[self bounds])) {
+			[self removeCellAtIndex:[numberKey intValue]];
+//			NSLog(@"did NOT intersect");
+		}
+		else {
+//			NSLog(@"DID intersect");
+			if (currentHoveredIndex != [numberKey intValue]) [self cellAtGridIndex:[numberKey intValue]].frame = [self frameForCellAtGridIndex:[numberKey intValue]];
+		}
+	}
+	for (NSNumber* index in cellIndexes){
+		//		NSLog(@"new cellIndexes: %i",[index intValue]);
+		if (![self cellAtGridIndex:[index intValue]]) {
+//			NSLog(@"adding cell for index: %i", [index intValue]);
+			[self addCellAtIndex:[index intValue]];
+			[self cellAtGridIndex:[index intValue]].frame = [self frameForCellAtGridIndex:[index intValue]];
+		}
+	}
+	[UIView commitAnimations];
+	[self updateSize];
+}
+
 
 - (void)enqueueReusableCell: (MRGridViewCell*) cell withIdentifier:(NSString *)identifier{
 	if (identifier != nil) {
@@ -163,7 +214,7 @@
 		// total refresh - create all cells
 		NSArray * cellIndexes = [self indexesForCellsInRect:[self bounds]];
 		for (NSNumber* index in cellIndexes){
-			[self addCellAtIndex:[index intValue]];
+			if (![self cellAtGridIndex:[index intValue]]) [self addCellAtIndex:[index intValue]];
 		}		
 	}
 	else if (createRowDelta > 0) {
@@ -175,7 +226,7 @@
 			{
 				// create cell # i*[self numCellsInRow]+j --- check to make sure it actually exists!!! (e.g. incomplete row)
 				// get view from datasource and add view in dictionary
-				[self addCellAtIndex:i*numCellsInRow+j];
+				if (![self cellAtGridIndex:i*numCellsInRow+j]) [self addCellAtIndex:i*numCellsInRow+j];
 			}
 		}
 	}
@@ -184,20 +235,22 @@
 
 -(void) setCellSize:(CGSize)size withBorderSize:(NSInteger) borderSize{
 	currCellSize = size;
+	minimumBorderSize = borderSize;
 	currBorderSize = borderSize;
 	[self calculateColumnCount]; 
 }
 -(void) setFrame:(CGRect)rect {
 	[super setFrame:rect];
 	[self calculateColumnCount]; 
-	[self reloadData];
+	[self rearrangeCells];
 }
 -(void) calculateColumnCount {
-	NSInteger totalWidth = gridView.frame.size.width;
-	NSInteger widthMinusBorder = totalWidth - currBorderSize;
-	NSInteger currentWidthPlusBorder = currCellSize.width + currBorderSize;
+	NSInteger totalWidth = self.frame.size.width;
+	NSInteger widthMinusBorder = totalWidth - minimumBorderSize;
+	NSInteger currentWidthPlusBorder = currCellSize.width + minimumBorderSize;
 	NSInteger numberPerRow = floor((double)widthMinusBorder/(double)currentWidthPlusBorder);
 	numCellsInRow = numberPerRow;
+	currBorderSize = floor((totalWidth - numCellsInRow*currCellSize.width)/(numCellsInRow+1));
 }
 
 -(NSInteger) heightOfGrid {
@@ -224,14 +277,28 @@
 -(NSInteger)rowCount {
 	return ceil((float)[gridDataSource numberOfItemsInGridView:self]/numCellsInRow);
 }
+-(void)activateCellDragging:(NSTimer *)aTimer {
+//	NSLog(@"activateCellDragging");
+	if (editTimer && [editTimer isValid]) [editTimer invalidate];
+	editTimer = nil;
+	cellDragging = YES;
+	[self setScrollEnabled:NO];
+	[gridView bringSubviewToFront:currDraggedCell];
+	[self animateCellPickupForCell:currDraggedCell];
+}
+
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *aTouch = [touches anyObject];
+//	NSLog(@"touchesBegan");
+	[super touchesBegan:touches withEvent:event];
+	UITouch *aTouch = [touches anyObject];
 	if (self.isEditing){
+		[self resetEditTimer];
 		CGPoint touchLoc = [aTouch locationInView:self];
 		self.currDraggedCell = (MRGridViewCell*)[self viewAtLocation:touchLoc];
 		currDraggedCellOriginalCenter = self.currDraggedCell.center;
 		currDraggedCellIndex = [self indexForTouchLocation:touchLoc];
+		currentHoveredIndex = currDraggedCellIndex;
 /*		
 		//insert shadow cell
 		CGRect shadowFrame = currDraggedCell.frame;
@@ -246,8 +313,6 @@
 		[gridView addSubview:shadowView];
 		[gridView sendSubviewToBack:shadowView];
  */
-		[gridView bringSubviewToFront:self.currDraggedCell];
-		[self animateCellPickupForCell:currDraggedCell];
 	}
 	
     if (aTouch.tapCount == 2) {
@@ -257,124 +322,165 @@
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesMoved:touches withEvent:event];
-	if (self.isEditing){
+	if (self.isEditing && cellDragging){
 		UITouch *theTouch = [touches anyObject];
 		CGPoint touchLoc = [theTouch locationInView:self];
 		if (currDraggedCell){
 			self.currDraggedCell.center = touchLoc;
+			NSInteger previousHoveredIndex = currentHoveredIndex;
 			if (self.moveStyle == MRGridViewMoveStyleMarker) [self putMarkerAtNearestSpace:touchLoc];
-			else currentHoveredIndex = [self indexForTouchLocation:touchLoc];
-//			NSLog(@"currentHoveredIndex: %i",currentHoveredIndex);
+			else {
+				currentHoveredIndex = [self indexForTouchLocation:touchLoc];
+				if (currentHoveredIndex >= [gridDataSource numberOfItemsInGridView:self]) currentHoveredIndex = [gridDataSource numberOfItemsInGridView:self] -1;
+				if (previousHoveredIndex == -1) previousHoveredIndex = currDraggedCellIndex;
+				if (previousHoveredIndex != currentHoveredIndex) {
+					// dragged cell moved to a different slot
+					[gridDataSource gridView:self moveCellAtIndex: previousHoveredIndex toIndex: currentHoveredIndex];
+
+//					NSLog(@"previousHoveredIndex,currentHoveredIndex: %i,%i",previousHoveredIndex,currentHoveredIndex);
+					NSInteger direction = -1;
+					if (currentHoveredIndex > previousHoveredIndex) direction = 1;
+					for (NSInteger i = previousHoveredIndex; i != currentHoveredIndex; i = i + direction)
+					{
+						
+						MRGridViewCell * cell = [cellIndices objectForKey:[NSNumber numberWithInt:i+direction]];
+						if (cell) {
+							[cellIndices removeObjectForKey:[NSNumber numberWithInt:i+direction]];
+							[cellIndices setObject:cell forKey:[NSNumber numberWithInt:i]];
+						}
+						
+					}
+					[cellIndices setObject:currDraggedCell forKey:[NSNumber numberWithInt:currentHoveredIndex]];
+					[self rearrangeCells];
+				}
+			}
 			lastTouchLocation = touchLoc;
-			[self scrollIfNeededAtPosition];
+			// calculate scroll intensity
+			float topOfScreen = self.contentOffset.y;
+			float bottomOfScreen = (self.contentOffset.y + self.frame.size.height);
+			float zoneHeight = 60;  //TODO: make it a constant
+			if (lastTouchLocation.y <= bottomOfScreen && lastTouchLocation.y >= (bottomOfScreen - zoneHeight))
+			{
+				NSLog(@"lastTouchLocation.y,bottomOfScreen, zoneHeight: %f,%f,%f",lastTouchLocation.y,bottomOfScreen,zoneHeight);
+				scrollIntensity = (lastTouchLocation.y - bottomOfScreen + zoneHeight)/zoneHeight;
+				scrollIntensity = scrollIntensity * 1;
+				[self resetScrollTimer];
+			}
+			else if (lastTouchLocation.y >= topOfScreen && lastTouchLocation.y <= topOfScreen+zoneHeight)
+			{
+				NSLog(@"lastTouchLocation.y,topOfScreen, zoneHeight: %f,%f,%f",lastTouchLocation.y,topOfScreen,zoneHeight);
+				scrollIntensity = 1 - (lastTouchLocation.y-topOfScreen)/zoneHeight;
+				scrollIntensity = scrollIntensity * -1;
+				[self resetScrollTimer];
+			}
+			else 
+			{
+				// kill timer
+				[self invalidateScrollTimer];
+			}
 		}
 	}
+	else [self resetEditTimer];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"touchesEnded");
-	if (scrollTimer) [self invalidateScrollTimer];
+	[super touchesEnded:touches withEvent:event];
+//	NSLog(@"touchesEnded");
+	cellDragging = NO;
+	[self setScrollEnabled:YES];
+	[self invalidateEditTimer];
+	[self invalidateScrollTimer];
     [super touchesEnded:touches withEvent:event];
 	UITouch *theTouch = [touches anyObject];
     if (self.isEditing){
 		//if there is a cell being dragged and it is being moved to another location
 		if (currDraggedCell){
 			NSInteger maxIndex = [gridDataSource numberOfItemsInGridView:self];
-			if (currDraggedCellIndex != currentHoveredIndex &&
-				currDraggedCellIndex >= 0 && currDraggedCellIndex < maxIndex &&
-				currentHoveredIndex >= 0 && currentHoveredIndex < maxIndex){
-//				if (moveStyle == MRGridViewMoveStyleDisplace) [self animateCellPutdownForCell:currDraggedCell toLocation:currentHoveredIndex];
-				//tell the datasource to update the position
-				NSInteger fromIndex = currDraggedCellIndex;
-				NSInteger toIndex = currentHoveredIndex;
-				[self cleanupAfterCellDrop];
-				[gridDataSource gridView:self moveCellAtIndex: fromIndex toIndex: toIndex];
+			if (moveStyle == MRGridViewMoveStyleDisplace) {
+				CGRect finalFrame = [self frameForCellAtGridIndex:currentHoveredIndex];
+				CGPoint finalLocation = CGPointMake(finalFrame.origin.x + (finalFrame.size.width/2), finalFrame.origin.y + (finalFrame.size.height/2));
+				[self animateCellPutdownForCell:currDraggedCell toLocation:finalLocation];
 			}
 			else {
-				[self animateCellPutdownForCell:currDraggedCell toLocation:currDraggedCellOriginalCenter];
+				if (currDraggedCellIndex != currentHoveredIndex &&
+					currDraggedCellIndex >= 0 && currDraggedCellIndex < maxIndex &&
+					currentHoveredIndex >= 0 && currentHoveredIndex < maxIndex){
+					//tell the datasource to update the position
+					NSInteger fromIndex = currDraggedCellIndex;
+					NSInteger toIndex = currentHoveredIndex;
+					[self cleanupAfterCellDrop];
+					[gridDataSource gridView:self moveCellAtIndex: fromIndex toIndex: toIndex];
+					[self reloadData];
+				}
+				else {
+					[self animateCellPutdownForCell:currDraggedCell toLocation:currDraggedCellOriginalCenter];
+				}
 			}
 		}
 	}
-	if (theTouch.tapCount == 1) {
+	else if (theTouch.tapCount == 1) {
         CGPoint touchLoc = [theTouch locationInView:self];
 		[self handleSingleTap: touchLoc];
     } 
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"touchesCancelled");
-	if (scrollTimer) [self invalidateScrollTimer];
+	[super touchesCancelled:touches withEvent:event];
+//	NSLog(@"touchesCancelled");
+	cellDragging = NO;
+	[self setScrollEnabled:YES];
+	[self invalidateEditTimer];
+	[self invalidateScrollTimer];
 	[super touchesCancelled:touches withEvent:event];
 	if (self.isEditing)
 		[self cleanupAfterCellDrop];
 }
+
+-(void) resetScrollTimer {
+	if (scrollTimer == nil) scrollTimer = [NSTimer scheduledTimerWithTimeInterval:0.02f target:self selector:@selector(scrollIfNeededAtPosition:) userInfo:nil repeats:YES];	
+}
+
 -(void) invalidateScrollTimer {
 	if (scrollTimer) {
 		NSLog(@"scrollTimer being killed");
-		[scrollTimer invalidate];
+		if ([scrollTimer isValid]) [scrollTimer invalidate];
 		scrollTimer = nil;
 	}	
 }
--(void)scrollIfNeededAtPosition {
+-(void) resetEditTimer {
+	if (editTimer && [editTimer isValid]) [editTimer invalidate];
+	editTimer = [NSTimer scheduledTimerWithTimeInterval:0.75f target:self selector:@selector(activateCellDragging:) userInfo:nil repeats:NO];	
+}
+-(void) invalidateEditTimer {
+	if (editTimer) {
+//		NSLog(@"editTimer being killed");
+		if ([editTimer isValid]) [editTimer invalidate];
+		editTimer = nil;
+		[self cleanupAfterCellDrop];
+	}	
+}
+-(void)scrollIfNeededAtPosition:(NSTimer*)aTimer {
 	if (!currDraggedCell) {
-		if (scrollTimer) [self invalidateScrollTimer];
+		NSLog(@"currDraggedCell is not available. invalidating scroll timer...");
+		[self invalidateScrollTimer];
 		return;
 	}
-	CGPoint touchLocation = lastTouchLocation;
-//	NSLog(@"lastTouchLocation.x,y: %f,%f",lastTouchLocation.x,lastTouchLocation.y);
-	float topOfScreen = self.contentOffset.y;
-	float bottomOfScreen = (self.contentOffset.y + self.frame.size.height);
-	float zoneHeight = 44;
-	float speed = 10;
-	float intensity = 0;
-	NSInteger direction = 0;
-	if (touchLocation.y <= bottomOfScreen && touchLocation.y >= (bottomOfScreen - zoneHeight))
-	{
-		intensity = (touchLocation.y - bottomOfScreen + zoneHeight)/zoneHeight;
-		direction = 1;
-	}
-	else if (touchLocation.y >= topOfScreen && touchLocation.y <= topOfScreen+zoneHeight)
-	{
-		intensity = 1 - (touchLocation.y-topOfScreen)/zoneHeight;
-		direction = -1;
-	}
-	else 
-	{
-		// kill timer
-		if (scrollTimer) [self invalidateScrollTimer];
-		return;
-	}
-	float scrollTravel = ceil(intensity * speed * direction);
+	float speed = 10; //TODO: make it a constant
+
+	float scrollTravel = ceil(scrollIntensity * speed);
 	if ((self.contentOffset.y + scrollTravel) > self.contentSize.height - self.frame.size.height) scrollTravel = self.contentSize.height - self.frame.size.height - self.contentOffset.y;
 	else if ((self.contentOffset.y + scrollTravel) < 0) scrollTravel = -self.contentOffset.y;
-//	NSLog(@"scrollTravel: %f",scrollTravel);
-//	NSLog(@"scroll contentOffset before: %f,%f",self.contentOffset.x,self.contentOffset.y);
 	self.contentOffset = CGPointMake(self.contentOffset.x,self.contentOffset.y + scrollTravel);
-//	NSLog(@"scroll contentOffset after: %f,%f",self.contentOffset.x,self.contentOffset.y);
 	currDraggedCell.center = CGPointMake(currDraggedCell.center.x,currDraggedCell.center.y+scrollTravel);
-	if (scrollTimer == nil) scrollTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(scrollIfNeededAtPosition) userInfo:nil repeats:YES];
-	/*
-	//determine content offset based on variables
-	if (touchLocation.y <= self.contentSize.height && 
-		touchLocation.y > bottomOfScreen - currCellSize.height){
-		if ((self.contentOffset.y+currCellSize.height) <= self.contentSize.height)
-			[self setContentOffset:CGPointMake(self.contentOffset.x,(self.contentOffset.y+currCellSize.height)) animated:YES];
-		else [self setContentOffset:CGPointMake(self.contentOffset.x,self.contentSize.height) animated:YES];
-	} else if (touchLocation.y >= 0.0f && 
-			   touchLocation.y < topOfScreen + currCellSize.height){
-		if ((self.contentOffset.y-currCellSize.height) >=0.0f)
-			[self setContentOffset:CGPointMake(self.contentOffset.x,(self.contentOffset.y-currCellSize.height)) animated:YES];
-		else [self setContentOffset:CGPointMake(self.contentOffset.x,0.0f) animated:YES];
-	}
-	*/
 }
 
 -(void)animateCellPickupForCell:(MRGridViewCell*)cell {
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:0.15];
-//	cell.transform = CGAffineTransformMakeScale(1.2, 1.2);
+	cell.transform = CGAffineTransformMakeScale(1.2, 1.2);
 	cell.alpha = .8f;
 	[UIView commitAnimations];
+	
 }
 
 -(void)animateCellPutdownForCell:(MRGridViewCell*)cell toLocation:(CGPoint)theLocation {
@@ -383,21 +489,22 @@
 	// Set the center to the final postion
 	cell.center = theLocation;
 	// Set the transform back to the identity, thus undoing the previous scaling effect.
-//	cell.transform = CGAffineTransformIdentity;
+	cell.transform = CGAffineTransformIdentity;
 	cell.alpha = 1.0f;
 	[UIView setAnimationDelegate:self];
 	[UIView setAnimationDidStopSelector:@selector(animateCellPutdownDidStop:finished:context:)];
 	[UIView commitAnimations];
 }
 -(void)animateCellPutdownDidStop:(NSString *)animationID finished:(BOOL)finished context:(void *)context {
-	NSLog(@"animateCellPutdownDidStop");
+//	NSLog(@"animateCellPutdownDidStop");
 	NSInteger indexOfCellToBeRemoved = currDraggedCellIndex;
 	CGRect restingRect = [self frameForCellAtGridIndex:indexOfCellToBeRemoved];
+	[gridDataSource gridView:self finishedMovingCellToIndex: currDraggedCellIndex];
 	[self cleanupAfterCellDrop];
-	NSLog(@"restingRect: %f,%f,%f,%f",restingRect.origin.x,restingRect.origin.y,restingRect.size.width,restingRect.size.height);
-	NSLog(@"visible frame: %f,%f,%f,%f",self.contentOffset.x,self.contentOffset.y,self.frame.size.width,self.frame.size.height);
+//	NSLog(@"restingRect: %f,%f,%f,%f",restingRect.origin.x,restingRect.origin.y,restingRect.size.width,restingRect.size.height);
+//	NSLog(@"visible frame: %f,%f,%f,%f",self.contentOffset.x,self.contentOffset.y,self.frame.size.width,self.frame.size.height);
 	if (!CGRectIntersectsRect(restingRect, CGRectMake(self.contentOffset.x,self.contentOffset.y,self.frame.size.width,self.frame.size.height))) {
-		NSLog(@"cell doesn't intersect current visible frame");
+//		NSLog(@"cell doesn't intersect current visible frame");
 		[self removeCellAtIndex:indexOfCellToBeRemoved];
 	}
 }
@@ -503,11 +610,11 @@
 
 - (void)setEditing:(BOOL)editingVal animated:(BOOL)animate {
 	self.editing = editingVal;
-	if (self.isEditing) {
-		[self setScrollEnabled:NO];
-	} else {
-		[self setScrollEnabled:YES];
-	}
+//	if (self.isEditing) {
+//		[self setScrollEnabled:NO];
+//	} else {
+//		[self setScrollEnabled:YES];
+//	}
 }
 
 - (void)dealloc {

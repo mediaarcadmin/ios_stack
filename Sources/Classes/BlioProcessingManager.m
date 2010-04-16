@@ -94,7 +94,7 @@
 			aBook = [results objectAtIndex:0];
 			
 			
-			if ([aBook valueForKey:@"processingComplete"] == [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]) {
+			if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
 				NSLog(@"WARNING: enqueue method called on already complete book with sourceSpecificID:%@ and sourceID:%@",sourceSpecificID,sourceID);
 				NSLog(@"Aborting enqueue by prematurely returning...");
 				return;
@@ -148,12 +148,12 @@
 		NSString *sourceID = [aBook sourceID];
 		NSString *sourceSpecificID = [aBook sourceSpecificID];
 		
-		if ([aBook valueForKey:@"processingComplete"] == [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]) {
+		if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
 			NSLog(@"WARNING: enqueue method called on already complete book!");
 			NSLog(@"Aborting enqueue by prematurely returning...");
 			return;
 		}
-		else if ([aBook valueForKey:@"processingComplete"] == [NSNumber numberWithInt:kBlioMockBookProcessingStatePaused]) {
+		else if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStatePaused]]) {
 			// if book is paused, reflect unpausing in state
 			[aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingComplete"];			
 			NSError * error;

@@ -1007,7 +1007,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     if (block) {
-        BlioTextFlowPositionedWord *word;
+        BlioTextFlowPositionedWord *word = nil;
         for (BlioTextFlowPositionedWord *candidateWord in [block words]) {
             if([[candidateWord wordID] isEqual:wordID]) {
                 word = candidateWord;

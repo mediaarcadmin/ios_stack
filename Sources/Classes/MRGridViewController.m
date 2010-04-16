@@ -63,7 +63,9 @@
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex{
 	//no implementation here, must subclass to implement this function
 }
+-(void) gridView:(MRGridView*)gridView finishedMovingCellToIndex:(NSInteger)toIndex {
 
+}
 #pragma mark - 
 #pragma mark MRGridViewDelegate methods
 
@@ -80,7 +82,7 @@
 }
 
 -(void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-	[self.gridView reloadData];
+	[self.gridView rearrangeCells];
 }
 
 - (void)didReceiveMemoryWarning {
