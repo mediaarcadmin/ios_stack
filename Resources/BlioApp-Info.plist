@@ -32,5 +32,9 @@
 	<false/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleBlackTranslucent</string>
+	<key>BlioLibraryViewDisableRotation</key>
+	<false/>
+	<key>BlioLibraryViewDisableRotation~ipad</key>
+	<false/>
 </dict>
 </plist>

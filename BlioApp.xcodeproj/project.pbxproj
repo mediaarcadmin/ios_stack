@@ -188,7 +188,6 @@
 		C9726466111C760B001BCC0B /* BlioStoreCategoriesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726465111C760B001BCC0B /* BlioStoreCategoriesController.m */; };
 		C9726489111C7B0E001BCC0B /* BlioStoreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */; };
 		C972648E111C7B8C001BCC0B /* BlioStoreMyVaultController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */; };
-		C9726493111C7C94001BCC0B /* BlioStoreDownloadsController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726492111C7C94001BCC0B /* BlioStoreDownloadsController.m */; };
 		C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
 		C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F225113C1AB1007B5868 /* SystemConfiguration.framework */; };
 		C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
@@ -339,7 +338,6 @@
 		C9AF1A4C1147A772007D7AFC /* BlioStoreCategoriesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726465111C760B001BCC0B /* BlioStoreCategoriesController.m */; };
 		C9AF1A4D1147A772007D7AFC /* BlioStoreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */; };
 		C9AF1A4E1147A772007D7AFC /* BlioStoreMyVaultController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */; };
-		C9AF1A4F1147A772007D7AFC /* BlioStoreDownloadsController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726492111C7C94001BCC0B /* BlioStoreDownloadsController.m */; };
 		C9AF1A501147A772007D7AFC /* BlioStoreFeedBooksNonGDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */; };
 		C9AF1A511147A772007D7AFC /* BlioStoreBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C98674E11122F3580070A03E /* BlioStoreBookViewController.m */; };
 		C9AF1A521147A772007D7AFC /* BlioStoreBooksSourceParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867698112413B70070A03E /* BlioStoreBooksSourceParser.m */; };
@@ -755,8 +753,6 @@
 		C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreSearchController.m; sourceTree = "<group>"; };
 		C972648C111C7B8C001BCC0B /* BlioStoreMyVaultController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreMyVaultController.h; sourceTree = "<group>"; };
 		C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreMyVaultController.m; sourceTree = "<group>"; };
-		C9726491111C7C94001BCC0B /* BlioStoreDownloadsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreDownloadsController.h; sourceTree = "<group>"; };
-		C9726492111C7C94001BCC0B /* BlioStoreDownloadsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreDownloadsController.m; sourceTree = "<group>"; };
 		C974F221113C1AA0007B5868 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		C974F225113C1AB1007B5868 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C9775AF410DFD728005E0E2B /* BlioMockBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMockBook.h; sourceTree = "<group>"; };
@@ -1305,8 +1301,6 @@
 				C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */,
 				C972648C111C7B8C001BCC0B /* BlioStoreMyVaultController.h */,
 				C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */,
-				C9726491111C7C94001BCC0B /* BlioStoreDownloadsController.h */,
-				C9726492111C7C94001BCC0B /* BlioStoreDownloadsController.m */,
 				C918B6971121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.h */,
 				C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */,
 				C9867697112413B70070A03E /* BlioStoreBooksSourceParser.h */,
@@ -1841,7 +1835,6 @@
 				C9726466111C760B001BCC0B /* BlioStoreCategoriesController.m in Sources */,
 				C9726489111C7B0E001BCC0B /* BlioStoreSearchController.m in Sources */,
 				C972648E111C7B8C001BCC0B /* BlioStoreMyVaultController.m in Sources */,
-				C9726493111C7C94001BCC0B /* BlioStoreDownloadsController.m in Sources */,
 				C918B6991121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m in Sources */,
 				C98674E21122F3580070A03E /* BlioStoreBookViewController.m in Sources */,
 				C9867699112413B70070A03E /* BlioStoreBooksSourceParser.m in Sources */,
@@ -1926,7 +1919,6 @@
 				C9AF1A4C1147A772007D7AFC /* BlioStoreCategoriesController.m in Sources */,
 				C9AF1A4D1147A772007D7AFC /* BlioStoreSearchController.m in Sources */,
 				C9AF1A4E1147A772007D7AFC /* BlioStoreMyVaultController.m in Sources */,
-				C9AF1A4F1147A772007D7AFC /* BlioStoreDownloadsController.m in Sources */,
 				C9AF1A501147A772007D7AFC /* BlioStoreFeedBooksNonGDataParser.m in Sources */,
 				C9AF1A511147A772007D7AFC /* BlioStoreBookViewController.m in Sources */,
 				C9AF1A521147A772007D7AFC /* BlioStoreBooksSourceParser.m in Sources */,

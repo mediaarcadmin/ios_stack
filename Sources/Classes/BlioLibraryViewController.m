@@ -141,11 +141,26 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [super dealloc];
 }
 
+- (void)awakeFromNib {
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationChanged:)
+                                                     name:UIDeviceOrientationDidChangeNotification
+                                                   object:nil];
+
+}
+
+- (void)orientationChanged:(NSNotification *)notification {
+    [self.view setNeedsLayout];
+}
+
 - (void)loadView {
 	self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	
 	UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: @"librarybackground.png"]];
-	[self.view addSubview:backgroundImageView];
+	backgroundImageView.frame = self.view.bounds;
+    backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:backgroundImageView];
 	[backgroundImageView release];
     
 	// UITableView subclass so that custom background is only drawn here
@@ -169,9 +184,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
     
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [libraryItems addObject:item];
-    [item release];
+//    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+//    [libraryItems addObject:item];
+//    [item release];
     
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
                                             style:UIBarButtonItemStyleBordered
@@ -202,9 +217,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [libraryItems addObject:item];
     [item release];
     
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [libraryItems addObject:item];
-    [item release];  
+//    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+//    [libraryItems addObject:item];
+//    [item release];  
     
     [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
 }
@@ -456,9 +471,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 // Override to allow orientations other than the default portrait orientation.
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-//  return YES;
-//}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
+        return NO;
+    else
+        return YES;
+}
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
@@ -892,12 +910,22 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [UIView setAnimationWillStartSelector:@selector(popBookWillStart:context:)];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     
-    CGFloat widthRatio = (targetView.frame.size.width)/aCoverImageView.frame.size.width;
-    CGFloat heightRatio = (targetView.frame.size.height)/aCoverImageView.frame.size.height;
+    CGFloat widthRatio = (targetView.bounds.size.width)/aCoverImageView.frame.size.width;
+    CGFloat heightRatio = (targetView.bounds.size.height)/aCoverImageView.frame.size.height;
+    CGRect poppedRect;
     
-    CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
-    CGRect poppedRect = CGRectIntegral(CGRectMake((targetView.frame.size.width-poppedSize.width)/2.0f, (targetView.frame.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
-    
+    // If the targetView is landscape, use the widthRatio for both and top align if necessary
+    if (targetView.bounds.size.width > targetView.bounds.size.height) {
+        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * widthRatio);
+        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
+        CGPoint topLeft = [self.view convertPoint:CGPointZero fromView:targetView];
+        poppedRect.origin.y = topLeft.y;
+    } else {
+        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
+        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
+
+    }
+
     [poppedImageView setFrame:poppedRect];
     [self.tableView setAlpha:0.0f];
     [aTextureView setAlpha:0.0f];
@@ -962,7 +990,13 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationDelegate:self];
             [UIView setAnimationDidStopSelector:@selector(shrinkBookDidStop:finished:context:)];
-            [self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
+            //[self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
+            //UIView *targetView = self.navigationController.view;
+            //CGPoint midPoint = [self.currentPoppedBookCover convertPoint:CGPointMake(CGRectGetMidX(coverRect), CGRectGetMidY(coverRect)) fromView:targetView];
+            [self.currentPoppedBookCover setBounds:coverRect];
+//            [self.currentPoppedBookCover setCenter:midPoint];
+//            [[self.currentPoppedBookCover superview] setCenter:CGPointMake(240,160)];
+            
             [UIView commitAnimations];
             
             [[NSNotificationCenter defaultCenter] addObserver:self 

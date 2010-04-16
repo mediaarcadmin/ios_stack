@@ -35,6 +35,7 @@ static NSString * const kBlioWebsiteIntro = @"To buy books for Blio, you must vi
     label.font = [UIFont boldSystemFontOfSize:14.0];
     label.textColor = [UIColor colorWithRed:76.0/255.0 green:86.0/255.0 blue:108.0/255.0 alpha:1.0];
     label.backgroundColor = [UIColor clearColor];
+    label.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	
     return label;
 }
@@ -50,6 +51,7 @@ static NSString * const kBlioWebsiteIntro = @"To buy books for Blio, you must vi
 	yPlacement += kTweenMargin + 5*kLabelHeight;
 	launchButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 	launchButton.frame = CGRectMake(kLeftMargin, yPlacement, (2.6)*kStdButtonWidth, kStdButtonHeight);
+    launchButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	[launchButton setTitle:@"Open blioreader.com in Safari" forState:UIControlStateNormal];
 	launchButton.backgroundColor = [UIColor clearColor];
 	[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
@@ -75,6 +77,12 @@ static NSString * const kBlioWebsiteIntro = @"To buy books for Blio, you must vi
 		NSURL* url = [[NSURL alloc] initWithString:@"http://knfb.theretailerplace.net/KNFB/screens/index.jsp"];
 		[[UIApplication sharedApplication] openURL:url];			  
 	}
+}
+
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations
+    return YES;
 }
 
 @end
