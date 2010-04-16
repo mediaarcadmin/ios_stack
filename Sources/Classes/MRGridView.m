@@ -64,7 +64,7 @@
 	if (moveStyle == MRGridViewMoveStyleDisplace) protectedCellIndex = currentHoveredIndex;
 	MRGridViewCell * cell = nil;
 	if (cellIndex >=0 && cellIndex < [gridDataSource numberOfItemsInGridView:self]  && cellIndex != protectedCellIndex) cell = [cellIndices objectForKey:[NSNumber numberWithInt:cellIndex]];
-	if (cell != nil) {
+	if (cell != nil && cell != currDraggedCell) {
 		[cell removeFromSuperview];
 		[self enqueueReusableCell:cell withIdentifier:cell.reuseIdentifier];
 		[cellIndices removeObjectForKey:[NSNumber numberWithInt:cellIndex]];
@@ -83,6 +83,10 @@
 		NSNumber * numberKey = [keys objectAtIndex:i];
 		[self removeCellAtIndex:[numberKey intValue]];
 		
+	}
+	for (UIView * view in [gridView subviews])
+	{
+		[view removeFromSuperview];
 	}
 //	NSLog(@"self bounds: %f,%f,%f,%f",[self bounds].origin.x,[self bounds].origin.y,[self bounds].size.width,[self bounds].size.height);
 	NSArray * cellIndexes = [self indexesForCellsInRect:[self bounds]];
@@ -115,7 +119,7 @@
 		}
 		else {
 //			NSLog(@"DID intersect");
-			if (currentHoveredIndex != [numberKey intValue]) [self cellAtGridIndex:[numberKey intValue]].frame = [self frameForCellAtGridIndex:[numberKey intValue]];
+			if (currentHoveredIndex != [numberKey intValue] && [self cellAtGridIndex:[numberKey intValue]] != currDraggedCell) [self cellAtGridIndex:[numberKey intValue]].frame = [self frameForCellAtGridIndex:[numberKey intValue]];
 		}
 	}
 	for (NSNumber* index in cellIndexes){
@@ -289,7 +293,7 @@
 
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//	NSLog(@"touchesBegan");
+	NSLog(@"touchesBegan");
 	[super touchesBegan:touches withEvent:event];
 	UITouch *aTouch = [touches anyObject];
 	if (self.isEditing){
@@ -358,18 +362,20 @@
 			// calculate scroll intensity
 			float topOfScreen = self.contentOffset.y;
 			float bottomOfScreen = (self.contentOffset.y + self.frame.size.height);
-			float zoneHeight = 60;  //TODO: make it a constant
-			if (lastTouchLocation.y <= bottomOfScreen && lastTouchLocation.y >= (bottomOfScreen - zoneHeight))
+			float zoneHeight = 44;  //TODO: make it a constant
+			if (lastTouchLocation.y >= (bottomOfScreen - zoneHeight))
 			{
-				NSLog(@"lastTouchLocation.y,bottomOfScreen, zoneHeight: %f,%f,%f",lastTouchLocation.y,bottomOfScreen,zoneHeight);
+//				NSLog(@"lastTouchLocation.y,bottomOfScreen, zoneHeight: %f,%f,%f",lastTouchLocation.y,bottomOfScreen,zoneHeight);
 				scrollIntensity = (lastTouchLocation.y - bottomOfScreen + zoneHeight)/zoneHeight;
+				if (scrollIntensity > 1) scrollIntensity = 1;
 				scrollIntensity = scrollIntensity * 1;
 				[self resetScrollTimer];
 			}
-			else if (lastTouchLocation.y >= topOfScreen && lastTouchLocation.y <= topOfScreen+zoneHeight)
+			else if (lastTouchLocation.y <= topOfScreen+zoneHeight)
 			{
-				NSLog(@"lastTouchLocation.y,topOfScreen, zoneHeight: %f,%f,%f",lastTouchLocation.y,topOfScreen,zoneHeight);
+//				NSLog(@"lastTouchLocation.y,topOfScreen, zoneHeight: %f,%f,%f",lastTouchLocation.y,topOfScreen,zoneHeight);
 				scrollIntensity = 1 - (lastTouchLocation.y-topOfScreen)/zoneHeight;
+				if (scrollIntensity > 1) scrollIntensity = 1;
 				scrollIntensity = scrollIntensity * -1;
 				[self resetScrollTimer];
 			}
@@ -385,7 +391,7 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesEnded:touches withEvent:event];
-//	NSLog(@"touchesEnded");
+	NSLog(@"touchesEnded");
 	cellDragging = NO;
 	[self setScrollEnabled:YES];
 	[self invalidateEditTimer];
@@ -426,7 +432,7 @@
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesCancelled:touches withEvent:event];
-//	NSLog(@"touchesCancelled");
+	NSLog(@"touchesCancelled");
 	cellDragging = NO;
 	[self setScrollEnabled:YES];
 	[self invalidateEditTimer];
@@ -442,7 +448,7 @@
 
 -(void) invalidateScrollTimer {
 	if (scrollTimer) {
-		NSLog(@"scrollTimer being killed");
+		// NSLog(@"scrollTimer being killed");
 		if ([scrollTimer isValid]) [scrollTimer invalidate];
 		scrollTimer = nil;
 	}	

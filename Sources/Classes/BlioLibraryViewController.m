@@ -716,13 +716,13 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	 
 	 }
 	 */
+	_didEdit = YES;
 	NSManagedObjectContext *moc = [self managedObjectContext]; 
 	NSError * error;
 	if (![moc save:&error]) {
 		NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results): %@, %@", error, [error userInfo]);
 	}
 	
-	_didEdit = YES;
 }
 
 
