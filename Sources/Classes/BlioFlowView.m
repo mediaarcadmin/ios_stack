@@ -10,9 +10,17 @@
 #import "BlioFlowPaginateOperation.h"
 #import "BlioFlowEucBook.h"
 #import "BlioBookmark.h"
+#import "BlioParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucMenuItem.h>
+#import <libEucalyptus/EucCSSIntermediateDocument.h>
+
+@interface BlioFlowView ()
+
+@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
+
+@end
 
 @implementation BlioFlowView
 
@@ -20,6 +28,9 @@
 @dynamic pageNumber;
 @dynamic pageCount;
 @dynamic contentsDataSource;
+
+@synthesize paragraphSource = _paragraphSource;
+
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
     EucBUpeLocalBookReference<EucBook> *eucBook = nil;
@@ -29,6 +40,8 @@
     } else if([aBook epubFilename]) {
         eucBook = [[EucBUpeBook alloc] initWithPath:[aBook ePubPath]];
     }
+    
+    self.paragraphSource = aBook.paragraphSource;
     
     if(!eucBook) {
         [self release];
@@ -47,6 +60,12 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [_paragraphSource release];
+    [super dealloc];
+}
+
 - (BOOL)wantsTouchesSniffed {
     return YES;
 }
@@ -59,45 +78,94 @@
 - (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
 {
     BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
+    EucBookPageIndexPoint *eucIndexPoint = ((EucBUpeBook *)self.book).currentPageIndexPoint;
     if(![self.book isKindOfClass:[BlioFlowEucBook class]]) {
-        EucBookPageIndexPoint *eucIndexPoint = ((EucBUpeBook *)self.book).currentPageIndexPoint;
         ret.layoutPage = eucIndexPoint.source;
         ret.blockOffset = eucIndexPoint.block;
         ret.wordOffset = eucIndexPoint.word;
         ret.elementOffset = eucIndexPoint.element;
+    } else {
+        if(eucIndexPoint.source == 0) {
+            // This is the cover section.
+            ret.layoutPage = 1;
+            ret.blockOffset = 0;
+            ret.wordOffset = 0;
+            ret.elementOffset = 0;
+        } else {
+            NSUInteger indexes[2] = { eucIndexPoint.source - 1, [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
+            NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
+            BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
+            [indexPath release];
+            
+            ret.layoutPage = bookmarkPoint.layoutPage;
+            ret.blockOffset = bookmarkPoint.blockOffset;
+            ret.wordOffset = bookmarkPoint.wordOffset;
+            ret.elementOffset = eucIndexPoint.element;
+        }
     }
     return [ret autorelease];
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
 {
+    EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
+
     if(![self.book isKindOfClass:[BlioFlowEucBook class]]) {
-        EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
         eucIndexPoint.source = bookmarkPoint.layoutPage;
         eucIndexPoint.block = bookmarkPoint.blockOffset;
         eucIndexPoint.word = bookmarkPoint.wordOffset;
         eucIndexPoint.element = bookmarkPoint.elementOffset;
+    } else {
+        NSIndexPath *paragraphID = nil;
+        uint32_t wordOffset = 0;
+        [self.paragraphSource bookmarkPoint:[BlioBookmarkPoint bookmarkPointWithAbsolutePoint:bookmarkPoint]
+                              toParagraphID:&paragraphID 
+                                 wordOffset:&wordOffset];
+        eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
+        eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
+        eucIndexPoint.word = wordOffset;
+        eucIndexPoint.element = bookmarkPoint.elementOffset;
         
-        [self goToIndexPoint:eucIndexPoint animated:animated];
-        
-        [eucIndexPoint release];
-    }
+        if(eucIndexPoint.source == 1 && eucIndexPoint.block == 0 && eucIndexPoint.word == 0 && eucIndexPoint.element == 0) {
+            eucIndexPoint.source = 0;
+        }
+    }    
+    
+    [self goToIndexPoint:eucIndexPoint animated:animated];
+    
+    [eucIndexPoint release];    
 }
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint
 {
     NSInteger ret = 0;
+    EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
+
     if(![self.book isKindOfClass:[BlioFlowEucBook class]]) {
-        EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
         eucIndexPoint.source = bookmarkPoint.layoutPage;
         eucIndexPoint.block = bookmarkPoint.blockOffset;
         eucIndexPoint.word = bookmarkPoint.wordOffset;
         eucIndexPoint.element = bookmarkPoint.elementOffset;
+    } else {
+        NSIndexPath *paragraphID = nil;
+        uint32_t wordOffset = 0;
+        [self.paragraphSource bookmarkPoint:[BlioBookmarkPoint bookmarkPointWithAbsolutePoint:bookmarkPoint]
+                              toParagraphID:&paragraphID 
+                                 wordOffset:&wordOffset];
+        eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
+        eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
+        eucIndexPoint.word = wordOffset;
+        eucIndexPoint.element = bookmarkPoint.elementOffset;
         
-        ret = [self pageNumberForIndexPoint:eucIndexPoint];
-        
-        [eucIndexPoint release];
+        if(eucIndexPoint.source == 1 && eucIndexPoint.block == 0 && eucIndexPoint.word == 0 && eucIndexPoint.element == 0) {
+            eucIndexPoint.source = 0;
+        }
     }
+    
+    ret = [self pageNumberForIndexPoint:eucIndexPoint];
+    
+    [eucIndexPoint release];
+    
     return ret;
 }
 

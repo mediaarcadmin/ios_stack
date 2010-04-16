@@ -17,6 +17,10 @@ typedef enum {
     kBlioContentsTabViewTabNotes = 2
 } BlioContentsTabViewTab;
 
+@interface BlioContentsTabContentsViewController : EucBookContentsTableViewController
+@end
+
+
 @interface BlioContentsTabBookmarksViewController : UITableViewController {
     BlioMockBook *book;
     NSManagedObject *selectedBookmark;
@@ -59,7 +63,9 @@ typedef enum {
 
 - (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioMockBook *)aBook {
         
-    EucBookContentsTableViewController *aContentsController = [[EucBookContentsTableViewController alloc] init];
+    UIViewController *aRootVC = [[UIViewController alloc] init];
+    
+    BlioContentsTabContentsViewController *aContentsController = [[BlioContentsTabContentsViewController alloc] init];
     aContentsController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     aContentsController.dataSource = aBookView.contentsDataSource;
     aContentsController.currentSectionUuid = [aBookView.contentsDataSource sectionUuidForPageNumber:aBookView.pageNumber];
@@ -70,10 +76,12 @@ typedef enum {
     BlioContentsTabNotesViewController *aNotesController = [[BlioContentsTabNotesViewController alloc] initWithStyle:UITableViewStylePlain];
     aNotesController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-	if ((self = [super initWithRootViewController:aContentsController])) {
+	if ((self = [super initWithRootViewController:aRootVC])) {
         self.bookView = aBookView;
         self.book = aBook;
         self.contentsController = aContentsController;
+        [self.contentsController setDelegate:self];
+        [self pushViewController:self.contentsController animated:NO];
         
         [aBookmarksController setBook:aBook];
         [aBookmarksController setBookView:aBookView]; // Needed to get display page number
@@ -129,19 +137,18 @@ typedef enum {
     return self;
 }
 
-- (void)changeTab:(id)sender {
-    
+- (void)changeTab:(id)sender {  
+    [self popToRootViewControllerAnimated:NO];
+
     BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[sender selectedSegmentIndex];
     switch (selectedTab) {
         case kBlioContentsTabViewTabContents:
-            [self popToRootViewControllerAnimated:NO];
+            [self pushViewController:self.contentsController animated:NO];
             break;
         case kBlioContentsTabViewTabBookmarks:
-            [self popToRootViewControllerAnimated:NO];
             [self pushViewController:self.bookmarksController animated:NO];
             break;
         case kBlioContentsTabViewTabNotes:
-            [self popToRootViewControllerAnimated:NO];
             [self pushViewController:self.notesController animated:NO];
             break;
     }    
@@ -149,12 +156,67 @@ typedef enum {
 
 - (void)setDelegate:(id)newDelegate {
     delegate = newDelegate;
-    [self.contentsController setDelegate:delegate];
+}
+
+- (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid {
+    [self performSelector:@selector(dismissTabView:) withObject:self];
 }
 
 - (void)dismissTabView:(id)sender {
+    BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[self.tabSegment selectedSegmentIndex];
+    switch (selectedTab) {
+        case kBlioContentsTabViewTabContents: {
+            NSString *selectedUuid = [self.contentsController selectedUuid];
+            if (nil != selectedUuid) {
+                if ([self.delegate respondsToSelector:@selector(goToContentsUuid:animated:)]) {
+                    BOOL animated = YES;
+                    NSMethodSignature * mySignature = [[self.delegate class] instanceMethodSignatureForSelector:@selector(goToContentsUuid:animated:)];
+                    NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
+                    [myInvocation setTarget:self.delegate];  
+                    [myInvocation setSelector:@selector(goToContentsUuid:animated:)];
+                    [myInvocation setArgument:&selectedUuid atIndex:2];
+                    [myInvocation setArgument:&animated atIndex:3];
+                    [myInvocation retainArguments];
+                    [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:0.2f];
+                    
+                }
+            }
+        }  break;
+        case kBlioContentsTabViewTabBookmarks: {
+            if (nil != self.bookmarksController.selectedBookmark) {
+                BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[self.bookmarksController.selectedBookmark valueForKey:@"range"]];
+                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)]) {                    
+                    BOOL animated = YES;
+                    NSMethodSignature * mySignature = [[self.delegate class] instanceMethodSignatureForSelector:@selector(goToContentsBookmarkRange:animated:)];
+                    NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
+                    [myInvocation setTarget:self.delegate];  
+                    [myInvocation setSelector:@selector(goToContentsBookmarkRange:animated:)];
+                    [myInvocation setArgument:&aBookmarkRange atIndex:2];
+                    [myInvocation setArgument:&animated atIndex:3];
+                    [myInvocation retainArguments];
+                    [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:0.2f];
+                }
+            }
+        }  break;
+        case kBlioContentsTabViewTabNotes: {
+            NSManagedObject *note = self.notesController.selectedNote;
+            if (nil != note) {
+                BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[note valueForKey:@"range"]];
+                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)])
+                    [self.delegate goToContentsBookmarkRange:range animated:NO];
+                
+                if ([self.delegate respondsToSelector:@selector(displayNote:atRange:animated:)]) {
+                    [self.delegate displayNote:note atRange:range animated:YES];
+                }
+            }
+            
+        }   break;
+    }   
+    
     if ([self.delegate respondsToSelector:@selector(dismissContentsTabView:)])
-        [self.delegate performSelector:@selector(dismissContentsTabView:) withObject:sender];
+        [self.delegate performSelector:@selector(dismissContentsTabView:) withObject:self];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
 }
 
 - (void)deleteBookmark:(NSManagedObject *)bookmark {
@@ -170,10 +232,13 @@ typedef enum {
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 
 }
 
+/*
 - (void)viewWillAppear:(BOOL)animated {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 }
@@ -182,24 +247,8 @@ typedef enum {
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
-    
-    BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[self.tabSegment selectedSegmentIndex];
-    switch (selectedTab) {
-        case kBlioContentsTabViewTabNotes: {
-            if (nil != self.notesController.selectedNote) {
-                BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[self.notesController.selectedNote valueForKey:@"range"]];
-                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)])
-                    [self.delegate goToContentsBookmarkRange:aBookmarkRange animated:NO];
-            }
-        } break;
-        default:
-            break;
-    }   
-}
-
+*/
+/*
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
@@ -223,6 +272,9 @@ typedef enum {
             NSManagedObject *note = self.notesController.selectedNote;
             if (nil != note) {
                 BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[note valueForKey:@"range"]];
+                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)])
+                    [self.delegate goToContentsBookmarkRange:range animated:NO];
+                
                 if ([self.delegate respondsToSelector:@selector(displayNote:atRange:animated:)])
                     [self.delegate displayNote:note atRange:range animated:YES];
             }
@@ -230,14 +282,25 @@ typedef enum {
         }   break;
     }   
 }
+*/
 
-/*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
+    return YES;
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
-*/
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    if ([self.delegate respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
+        [self.delegate willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if ([self.delegate respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
+        [self.delegate didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+}
+
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -246,12 +309,16 @@ typedef enum {
 	// Release any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-}
-
 @end
+
+@implementation BlioContentsTabContentsViewController
+/*
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+*/
+@end
+
 
 @implementation BlioContentsTabBookmarksViewController
 
@@ -356,7 +423,7 @@ typedef enum {
         mainLabel.backgroundColor = [UIColor clearColor];
         mainLabel.font = [UIFont systemFontOfSize:17.0f];
         mainLabel.textAlignment = UITextAlignmentRight;
-        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         [cell.contentView addSubview:mainLabel];
         
         secondLabel = [[[UILabel alloc] initWithFrame:CGRectMake(83.0, 0.0, 220.0, 44.0)] autorelease];
@@ -365,7 +432,7 @@ typedef enum {
         secondLabel.font = [UIFont systemFontOfSize:17.0];
         secondLabel.textAlignment = UITextAlignmentLeft;
         secondLabel.textColor = [UIColor blackColor];
-        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [cell.contentView addSubview:secondLabel];
     } else {
         mainLabel = (UILabel *)[cell.contentView viewWithTag:MAINLABEL_TAG];
@@ -456,6 +523,7 @@ typedef enum {
  [super viewWillAppear:animated];
  }
  */
+
 /*
  - (void)viewDidAppear:(BOOL)animated {
  [super viewDidAppear:animated];
@@ -525,7 +593,7 @@ typedef enum {
         mainLabel.backgroundColor = [UIColor clearColor];
         mainLabel.font = [UIFont systemFontOfSize:17.0f];
         mainLabel.textAlignment = UITextAlignmentRight;
-        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         [cell.contentView addSubview:mainLabel];
         
         secondLabel = [[[UILabel alloc] initWithFrame:CGRectMake(83.0, 0.0, 220.0, 44.0)] autorelease];
@@ -534,7 +602,7 @@ typedef enum {
         secondLabel.font = [UIFont boldSystemFontOfSize:17.0];
         secondLabel.textAlignment = UITextAlignmentLeft;
         secondLabel.textColor = [UIColor blackColor];
-        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [cell.contentView addSubview:secondLabel];
     } else {
         mainLabel = (UILabel *)[cell.contentView viewWithTag:MAINLABEL_TAG];

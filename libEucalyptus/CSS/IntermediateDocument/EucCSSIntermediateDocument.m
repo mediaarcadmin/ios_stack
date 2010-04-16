@@ -391,6 +391,17 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     return dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
 }
 
++ (uint32_t)documentTreeNodeKeyForKey:(uint32_t)key
+{
+    NSParameterAssert((key & EucCSSIntermediateDocumentNodeKeyFlagMask) == 0);
+    return key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+}
+
++ (uint32_t)keyForDocumentTreeNodeKey:(uint32_t)key
+{
+    return key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+}
+
 - (float)estimatedPercentageForNodeWithKey:(uint32_t)key
 {
     uint32_t dbNodeKey = key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;

@@ -13,5 +13,4 @@ static const NSInteger kBlioStoreBuyBooksTag = 5;
 @interface BlioStoreWebsiteViewController : UIViewController {
 	UIButton* launchButton;
 }
-
 @end

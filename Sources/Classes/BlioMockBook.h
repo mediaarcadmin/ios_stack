@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "BlioTextFlow.h"
+#import "BlioParagraphSource.h"
 #import "BlioBookmark.h"
 
 static const NSInteger kBlioMockBookProcessingStateIncomplete = 0;
@@ -23,6 +24,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 @interface BlioMockBook : NSManagedObject <BlioBookText> {
     UIImage *coverThumb;
     BlioTextFlow *textFlow;
+    id<BlioParagraphSource> paragraphSource;
 }
 
 @property (nonatomic, retain) NSString *title;
@@ -53,7 +55,9 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 - (NSString *)timingIndicesPath;
 - (BOOL)audioRights;
 - (NSString *)textFlowPath;
+
 - (BlioTextFlow *)textFlow;
+- (id<BlioParagraphSource>)paragraphSource;
 
 - (NSArray *)sortedBookmarks;
 - (NSArray *)sortedNotes;

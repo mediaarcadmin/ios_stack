@@ -27,7 +27,6 @@ typedef enum {
     BOOL _bookCoverPopped;
     BOOL _firstPageRendered;
     BOOL _didEdit;
-    NSArray *_books;
     BlioLibraryLayout _libraryLayout;
     
     BlioTestBlockWords *_testBlockWords;
@@ -46,7 +45,6 @@ typedef enum {
 @property (nonatomic, retain) UIImageView *currentPoppedBookCover;
 @property (nonatomic) BOOL bookCoverPopped;
 @property (nonatomic) BOOL firstPageRendered;
-@property (nonatomic, retain) NSArray *books;
 @property (nonatomic, retain) UITableView *tableView;
 @property (nonatomic, retain) MRGridView *gridView;
 @property (nonatomic, readonly) NSInteger columnCount;

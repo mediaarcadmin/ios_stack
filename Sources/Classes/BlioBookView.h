@@ -29,6 +29,7 @@
 
 - (void)showToolbars;
 - (void)hideToolbars;
+- (void)hideToolbarsAndStatusBar:(BOOL)hidesStatusBar;
 - (void)toggleToolbars;
 
 @end

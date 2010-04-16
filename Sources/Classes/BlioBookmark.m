@@ -67,6 +67,39 @@
     return [point autorelease]; 
 }
 
+- (NSComparisonResult)compare:(BlioBookmarkPoint *)rhs
+{
+    NSInteger comparison = self.layoutPage - rhs.layoutPage;
+    if(comparison < 0) {
+        return NSOrderedAscending;
+    } else if (comparison > 0) {
+        return NSOrderedDescending;
+    } else {            
+        comparison = self.blockOffset - rhs.blockOffset;
+        if(comparison < 0) {
+            return NSOrderedAscending;
+        } else if (comparison > 0) {
+            return NSOrderedDescending;
+        } else {            
+            comparison = self.wordOffset - rhs.wordOffset;
+            if(comparison < 0) {
+                return NSOrderedAscending;
+            } else if (comparison > 0) {
+                return NSOrderedDescending;
+            } else {            
+                comparison = self.elementOffset - rhs.elementOffset;
+                if(comparison < 0) {
+                    return NSOrderedAscending;
+                } else if (comparison > 0) {
+                    return NSOrderedDescending;
+                } else {            
+                    return NSOrderedSame;
+                }
+            }        
+        }
+    }
+}
+
 @end
 
 @implementation BlioBookmarkRange
@@ -137,9 +170,9 @@
 
 + (BlioBookmarkRange *)bookmarkRangeWithPersistentBookmarkRange:(NSManagedObject *)persistedBookmarkRange {
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
-    range.startPoint = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"startPoint"]];
-    range.endPoint = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"endPoint"]];
-    range.color = [persistedBookmarkRange valueForKey:@"color"];
+    [range setStartPoint:[BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"startPoint"]]];
+    [range setEndPoint:[BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[persistedBookmarkRange valueForKey:@"endPoint"]]];
+    [range setColor:[persistedBookmarkRange valueForKey:@"color"]];
     
     return [range autorelease];
 }

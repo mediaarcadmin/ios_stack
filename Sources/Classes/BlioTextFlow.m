@@ -496,7 +496,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         [data release];
     }
     
-    return tree;
+    return [tree autorelease];
 }
 
 - (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex

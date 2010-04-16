@@ -16,6 +16,8 @@
 
 @optional
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
 - (void)dismissContentsTabView:(id)sender;
 
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
@@ -26,24 +28,24 @@
 
 @end
 
-@class BlioContentsTabBookmarksViewController, BlioContentsTabNotesViewController;
+@class BlioContentsTabContentsViewController, BlioContentsTabBookmarksViewController, BlioContentsTabNotesViewController;
 
-@interface BlioContentsTabViewController : UINavigationController {
-    EucBookContentsTableViewController *contentsController;
+@interface BlioContentsTabViewController : UINavigationController <EucBookContentsTableViewControllerDelegate> {
+    BlioContentsTabContentsViewController *contentsController;
     BlioContentsTabBookmarksViewController *bookmarksController;
     BlioContentsTabNotesViewController *notesController;
     UIView<BlioBookView> *bookView;
-    id<EucBookContentsTableViewControllerDelegate, BlioContentsTabViewControllerDelegate> delegate;
+    id <BlioContentsTabViewControllerDelegate> delegate;
     UIBarButtonItem *doneButton;
     BlioMockBook *book;
     UISegmentedControl *tabSegment;
 }
 
-@property (nonatomic, retain) EucBookContentsTableViewController *contentsController;
+@property (nonatomic, retain) BlioContentsTabContentsViewController *contentsController;
 @property (nonatomic, retain) BlioContentsTabBookmarksViewController *bookmarksController;
 @property (nonatomic, retain) BlioContentsTabNotesViewController *notesController;
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
-@property (nonatomic, assign) id<EucBookContentsTableViewControllerDelegate, BlioContentsTabViewControllerDelegate> delegate;
+@property (nonatomic, assign) id <BlioContentsTabViewControllerDelegate> delegate;
 @property (nonatomic, retain) UIBarButtonItem *doneButton;
 @property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, retain) UISegmentedControl *tabSegment;

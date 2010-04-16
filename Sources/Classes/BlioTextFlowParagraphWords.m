@@ -21,6 +21,7 @@
 @implementation BlioTextFlowParagraphWords
 
 @synthesize key = _key;
+@synthesize ranges = _ranges;
 
 - (id)initWithTextFlow:(BlioTextFlow *)textFlow
              paragraph:(BlioTextFlowParagraph *)paragraph 

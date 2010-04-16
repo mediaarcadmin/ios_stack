@@ -17,15 +17,6 @@ struct lwc_context_s;
 struct css_select_ctx;
 struct css_stylesheet;
 
-typedef enum EucCSSIntermediateDocumentNodeKeyFlags
-{
-    EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode = 0x1,
-    EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode  = 0x2,
-    EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode   = 0x4,
-    
-    EucCSSIntermediateDocumentNodeKeyFlagMask                = 0x7
-} EucCSSIntermediateDocumentNodeKeyFlags;
-
 @class EucCSSIntermediateDocumentNode, EucCSSIntermediateDocumentConcreteNode, THIntegerToObjectCache;
 @protocol EucCSSDocumentTree, EucCSSIntermediateDocumentDataSource;
 
@@ -54,6 +45,8 @@ typedef enum EucCSSIntermediateDocumentNodeKeyFlags
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key;
 - (uint32_t)nodeKeyForId:(NSString *)identifier;
 
++ (uint32_t)documentTreeNodeKeyForKey:(uint32_t)key;
++ (uint32_t)keyForDocumentTreeNodeKey:(uint32_t)key;
 - (float)estimatedPercentageForNodeWithKey:(uint32_t)key;
 
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *rootNode;
