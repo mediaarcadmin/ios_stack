@@ -14,6 +14,9 @@
 	UISlider* speedControl;
 	UISlider* volumeControl;
 	UIButton* playButton;
+    UILabel *voiceLabel;
+    UILabel *speedLabel;
+    UILabel *volumeLabel;
 }
 
 @end

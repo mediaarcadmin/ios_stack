@@ -55,6 +55,7 @@
 	searchControl.frame = frame;
 	[searchControl addTarget:self action:@selector(changeSearch:) forControlEvents:UIControlEventValueChanged];
 	searchControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    searchControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	// If no engine has previously been set, set to the first engine.
 	[searchControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastSearchEngineDefaultsKey]];
 	[self.view addSubview:searchControl];
@@ -74,6 +75,7 @@
 	encyclopediaControl.frame = frame;
 	[encyclopediaControl addTarget:self action:@selector(changeEncyclopedia:) forControlEvents:UIControlEventValueChanged];
 	encyclopediaControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    encyclopediaControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	// If no encyclopedia has previously been set, set to the first encyclopedia.
 	[encyclopediaControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastEncyclopediaDefaultsKey]];
 	[self.view addSubview:encyclopediaControl];
@@ -105,6 +107,13 @@
 	UISegmentedControl* ctl = (UISegmentedControl*)sender;
 	if ( ctl == encyclopediaControl )
 		[[NSUserDefaults standardUserDefaults] setInteger:[sender selectedSegmentIndex] forKey:kBlioLastEncyclopediaDefaultsKey];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
+        return NO;
+    else
+        return YES;
 }
 
 

@@ -174,6 +174,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showLogin:)];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Sync", @"Accessibility label for Library View Sync button")];
+
     [libraryItems addObject:item];
     [item release];
     
@@ -185,6 +188,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showStore:)];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Get Books", @"Accessibility label for Library View Get Books button")];
+
     [libraryItems addObject:item];
     [item release];
     
@@ -196,6 +202,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showSettings:)];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Library View Settings button")];
+
     [libraryItems addObject:item];
     [item release];
     
@@ -224,6 +233,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     segmentedControl.frame = CGRectMake(0,0, kBlioLibraryLayoutButtonWidth, segmentedControl.frame.size.height);
     [segmentedControl addTarget:self action:@selector(changeLibraryLayout:) forControlEvents:UIControlEventValueChanged];
     [segmentedControl setSelectedSegmentIndex:self.libraryLayout];
+    
+    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
+	[[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
     
     UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
     self.navigationItem.leftBarButtonItem = libraryLayoutButton;
