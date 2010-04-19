@@ -1229,6 +1229,19 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     return self;
 }
 
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
+            [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]];
+}
+
+- (CGRect)accessibilityFrame {
+    return CGRectInset([super accessibilityFrame], CGRectGetWidth(self.bookView.bounds) * kBlioLibraryShadowXInset, CGRectGetHeight(self.bookView.bounds) * kBlioLibraryShadowYInset);
+}
+
 - (BlioMockBook *)book {
     return [(BlioLibraryBookView *)self.bookView book];
 }
@@ -1313,6 +1326,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aSlider release];
     }
     return self;
+}
+
+- (NSString *)accessibilityLabel {
+    return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
+            [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]];
+
 }
 
 - (BlioMockBook *)book {
