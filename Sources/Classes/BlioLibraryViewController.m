@@ -1020,6 +1020,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             //[self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
             //UIView *targetView = self.navigationController.view;
             //CGPoint midPoint = [self.currentPoppedBookCover convertPoint:CGPointMake(CGRectGetMidX(coverRect), CGRectGetMidY(coverRect)) fromView:targetView];
+            //CGRect viewCoverRect  = [self.currentPoppedBookCover convertRect:coverRect fromView:targetView];
             [self.currentPoppedBookCover setBounds:coverRect];
 //            [self.currentPoppedBookCover setCenter:midPoint];
 //            [[self.currentPoppedBookCover superview] setCenter:CGPointMake(240,160)];

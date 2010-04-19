@@ -156,11 +156,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGRect rotatedFrame = [UIScreen mainScreen].bounds;
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     
-    if (UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation])) {
-        if (rotatedFrame.size.width > rotatedFrame.size.height)
+    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        if (rotatedFrame.size.height > rotatedFrame.size.width)
             rotatedFrame.size = CGSizeMake(rotatedFrame.size.height, rotatedFrame.size.width);
     } else {
-        if (rotatedFrame.size.height > rotatedFrame.size.width)
+        if (rotatedFrame.size.width > rotatedFrame.size.height)
             rotatedFrame.size = CGSizeMake(rotatedFrame.size.height, rotatedFrame.size.width);
     }
     
