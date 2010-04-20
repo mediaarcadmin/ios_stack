@@ -10,6 +10,8 @@
 #import <libEucalyptus/THUIImageAdditions.h>
 #import "BlioUIImageAdditions.h"
 
+#define kBlioViewSettingsGreenButton [UIColor colorWithRed:0.053 green:0.613 blue:0.000 alpha:1.000]//[UIColor colorWithRed:0.302 green:0.613 blue:0.289 alpha:1.000]
+
 static const CGFloat kBlioViewSettingsRowSpacing = 14;
 static const CGFloat kBlioViewSettingsYInset = 22;
 static const CGFloat kBlioViewSettingsXInset = 20;
@@ -100,6 +102,14 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         UISegmentedControl *aLayoutSegmentedControl = [[UISegmentedControl alloc] initWithItems:segmentImages];
         aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aLayoutSegmentedControl.tintColor = [UIColor darkGrayColor];
+        
+        [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Flowed layout", @"Accessibility label for View Settings Flowed Layout button")];
+        [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityHint:NSLocalizedString(@"Switches to the flowed text view.", @"Accessibility hint for View Settings Flowed Layout button")];
+        [[aLayoutSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Fixed layout", @"Accessibility label for View Settings Fixed Layout button")];
+        [[aLayoutSegmentedControl imageForSegmentAtIndex:1] setAccessibilityHint:NSLocalizedString(@"Switches to the fixed layout view.", @"Accessibility hint for View Settings Fixed Layout button")];
+        [[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Fast layout", @"Accessibility label for View Settings Fast Layout button")];
+        [[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityHint:NSLocalizedString(@"Switches to the fast reading view.", @"Accessibility hint for View Settings Fast Layout button")];
+        
         [self addSubview:aLayoutSegmentedControl];
         self.pageLayoutSegment = aLayoutSegmentedControl;
         [aLayoutSegmentedControl release];
@@ -139,6 +149,12 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 0) forSegmentAtIndex:2];
         [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:3];
         
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Smallest font size", @"Accessibility label for View Settings Smallest Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Smaller font size", @"Accessibility label for View Settings Smaller Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Normal font size", @"Accessibility label for View Settings Normal Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:3] setAccessibilityLabel:NSLocalizedString(@"Larger font size", @"Accessibility label for View Settings Larger Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:4] setAccessibilityLabel:NSLocalizedString(@"Largest font size", @"Accessibility label for View Settings Largest Font Size button")];
+
         [self addSubview:aFontSizeSegmentedControl];
         self.fontSizeSegment = aFontSizeSegmentedControl;
         [aFontSizeSegmentedControl release];
@@ -166,6 +182,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         UISegmentedControl *aPageColorSegmentedControl = [[UISegmentedControl alloc] initWithItems:pageColorTitles];
         aPageColorSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aPageColorSegmentedControl.tintColor = [UIColor darkGrayColor];
+
+        [[aPageColorSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"White page color", @"Accessibility label for View Settings White Page Color button")];
+        [[aPageColorSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Black page color", @"Accessibility label for View Settings Black Page Color button")];
+        [[aPageColorSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Neutral page color", @"Accessibility label for View Settings Neutral Page Color button")];
+        
         [self addSubview:aPageColorSegmentedControl];
         self.pageColorSegment = aPageColorSegmentedControl;
         [aPageColorSegmentedControl release];
@@ -194,9 +215,14 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             NSInteger currentLock = (NSInteger)[newDelegate performSelector:@selector(currentLockRotation)];
             if (currentLock) {
                 [aLockButtonSegmentedControl setImage:self.unlockRotationImage forSegmentAtIndex:0];
-                [aLockButtonSegmentedControl setTintColor:[UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f]];
+                [aLockButtonSegmentedControl setTintColor:kBlioViewSettingsGreenButton];
+                [aLockButtonSegmentedControl setAccessibilityLabel:NSLocalizedString(@"Unlock rotation", @"Accessibility label for View Settings Unlock Rotation button")];
+                [aLockButtonSegmentedControl setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
+                
             } else {
                 [aLockButtonSegmentedControl setImage:self.lockRotationImage forSegmentAtIndex:0];
+                [aLockButtonSegmentedControl setAccessibilityLabel:NSLocalizedString(@"Lock Rotation", @"Accessibility label for View Settings Lock Rotation button")];
+                [aLockButtonSegmentedControl setAccessibilityTraits:UIAccessibilityTraitButton];
             }
         }
         
@@ -222,9 +248,13 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             NSInteger currentTapTurn = (NSInteger)[newDelegate performSelector:@selector(currentTapTurn)];
             if (!currentTapTurn) {
                 [aTapTurnButtonSegmentedControl setImage:self.tapTurnOffImage forSegmentAtIndex:0];
+                [aTapTurnButtonSegmentedControl setAccessibilityLabel:NSLocalizedString(@"Tilt advance on", @"Accessibility label for View Settings Tilt Advance On button")];
+                [aTapTurnButtonSegmentedControl setAccessibilityTraits:UIAccessibilityTraitButton];
             } else {
                 [aTapTurnButtonSegmentedControl setImage:self.tapTurnOnImage forSegmentAtIndex:0];
-                [aTapTurnButtonSegmentedControl setTintColor:[UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f]];
+                [aTapTurnButtonSegmentedControl setTintColor:kBlioViewSettingsGreenButton];
+                [aTapTurnButtonSegmentedControl setAccessibilityLabel:NSLocalizedString(@"Tilt advance off", @"Accessibility label for View Settings Tilt Advance Off button")];
+                [aTapTurnButtonSegmentedControl setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
             }
         }
         [self.tapTurnButtonSegment addTarget:self action:@selector(changeTapTurn:) forControlEvents:UIControlEventValueChanged];  
@@ -292,11 +322,16 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
      */
     if ([[sender imageForSegmentAtIndex:[sender selectedSegmentIndex]] isEqual:self.lockRotationImage]) {
         [sender setImage:self.unlockRotationImage forSegmentAtIndex:0];
-        [sender setTintColor:[UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f]];
+        [sender setTintColor:kBlioViewSettingsGreenButton];
+        [sender setAccessibilityLabel:NSLocalizedString(@"Unlock rotation", @"Accessibility label for View Settings Unlock Rotation button")];
+        [sender setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
     } else {
         [sender setImage:self.lockRotationImage forSegmentAtIndex:0];
         [sender setTintColor:[UIColor darkGrayColor]];
+        [sender setAccessibilityLabel:NSLocalizedString(@"Lock Rotation", @"Accessibility label for View Settings Lock Rotation button")];
+        [sender setAccessibilityTraits:UIAccessibilityTraitButton];
     }
+    
 }
 
 - (void)changeTapTurn:(id)sender {
@@ -313,9 +348,13 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
      */
     if ([[sender imageForSegmentAtIndex:[sender selectedSegmentIndex]] isEqual:self.tapTurnOffImage]) {
         [sender setImage:self.tapTurnOnImage forSegmentAtIndex:0];
-        [sender setTintColor:[UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f]];
+        [sender setTintColor:kBlioViewSettingsGreenButton];
+        [sender setAccessibilityLabel:NSLocalizedString(@"Tilt advance off", @"Accessibility label for View Settings Tilt Advance Off button")];
+        [sender setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
     } else {
         [sender setImage:self.tapTurnOffImage forSegmentAtIndex:0];
+        [sender setAccessibilityLabel:NSLocalizedString(@"Tilt advance on", @"Accessibility label for View Settings Tilt Advance On button")];
+        [sender setAccessibilityTraits:UIAccessibilityTraitButton];
         [sender setTintColor:[UIColor darkGrayColor]];
     }
 }

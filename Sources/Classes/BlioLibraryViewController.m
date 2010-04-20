@@ -34,7 +34,6 @@ static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
 static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
-
 @interface BlioLibraryBookView : UIView {
     UIImageView *imageView;
     UIImageView *textureView;
@@ -170,14 +169,13 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 //    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 //    [libraryItems addObject:item];
 //    [item release];
-    
+
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showLogin:)];
-    
     [item setAccessibilityLabel:NSLocalizedString(@"Sync", @"Accessibility label for Library View Sync button")];
-
+    [item setAccessibilityHint:NSLocalizedString(@"Syncs to Blio Account.", @"Accessibility label for Library View Sync hint")];
     [libraryItems addObject:item];
     [item release];
     
@@ -436,6 +434,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     
     UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white.png"]];
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:logoImage];
+    logoImageView.contentMode = UIViewContentModeScaleAspectFit;
+    logoImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    [logoImageView setIsAccessibilityElement:YES];
+    [logoImageView setAccessibilityLabel:NSLocalizedString(@"Blio", @"Accessibility label for Library View Blio label")];
+    [logoImageView setAccessibilityTraits:UIAccessibilityTraitStaticText];
+
     self.navigationItem.titleView = logoImageView;
     [logoImageView release];
     
@@ -1254,6 +1258,14 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     return CGRectInset([super accessibilityFrame], CGRectGetWidth(self.bookView.bounds) * kBlioLibraryShadowXInset, CGRectGetHeight(self.bookView.bounds) * kBlioLibraryShadowYInset);
 }
 
+- (NSString *)accessibilityHint {
+    return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    return UIAccessibilityTraitButton;
+}
+
 - (BlioMockBook *)book {
     return [(BlioLibraryBookView *)self.bookView book];
 }
@@ -1353,6 +1365,10 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
             [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]];
 
+}
+
+- (NSString *)accessibilityHint {
+    return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
 }
 
 - (BlioMockBook *)book {
