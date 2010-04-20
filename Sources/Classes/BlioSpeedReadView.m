@@ -25,7 +25,7 @@
 
 @implementation BlioSpeedReadView
 
-@synthesize pageCount, pageNumber, currentWordOffset, currentParagraphID, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize pageNumber, currentWordOffset, currentParagraphID, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {    
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
@@ -322,17 +322,28 @@
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
+    
+    
 }
 
 - (void)goToPageNumber:(NSInteger)aPageNumber animated:(BOOL)animated {
+    BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
+    point.layoutPage = aPageNumber;
+
+    [self goToBookmarkPoint:point animated:animated];
+    
+    [point release];
 }
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
     return bookmarkPoint.layoutPage;
 }
 
-- (BlioBookmarkPoint *)currentBookmarkPoint
-{
+- (NSInteger)pageCount {
+    return [self.book.textFlow lastPageIndex] + 1;
+}
+
+- (BlioBookmarkPoint *)currentBookmarkPoint {
     BlioBookmarkPoint *bookmarkPoint = [paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID
                                                                           wordOffset:self.currentWordOffset];
     BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
