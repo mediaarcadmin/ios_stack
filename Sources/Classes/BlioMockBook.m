@@ -17,6 +17,7 @@
 @dynamic epubFilename;
 @dynamic pdfFilename;
 @dynamic progress;
+@dynamic processingComplete;
 @dynamic proportionateSize;
 @dynamic position;
 @dynamic layoutPageNumber;

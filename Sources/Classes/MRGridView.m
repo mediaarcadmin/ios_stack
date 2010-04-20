@@ -40,6 +40,7 @@
 		minimumBorderSize = 0;
 		cellDragging = NO;
 		scrollTimer = nil;
+		_activeTouch = nil;
 	}
     return self;
 }
@@ -98,6 +99,7 @@
 }
 
 - (void)rearrangeCells{
+//	NSLog(@"rearrangeCells");
 	// rearranges cells that belong in the visible frame and refraining from accessing the data source as much as possible
 	NSArray * cellIndexes = [self indexesForCellsInRect:[self bounds]];
 	NSMutableArray * keys = [NSMutableArray array];
@@ -293,15 +295,24 @@
 
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"touchesBegan");
 	[super touchesBegan:touches withEvent:event];
-	UITouch *aTouch = [touches anyObject];
+//	NSLog(@"touchesBegan");
+	NSArray *touchArray = [touches allObjects];
+//	NSLog(@"touchArray count: %i",[touchArray count]);
+	if (_activeTouch == nil) {
+		_activeTouch = [touchArray objectAtIndex:0];
+		CGPoint touchLoc = [_activeTouch locationInView:self];
+		self.currDraggedCell = (MRGridViewCell*)[self viewAtLocation:touchLoc];
+		self.exclusiveTouch = YES;
+		
+	}
+	if (_activeTouch == [touchArray objectAtIndex:0])
+	{
 	if (self.isEditing){
 		[self resetEditTimer];
-		CGPoint touchLoc = [aTouch locationInView:self];
-		self.currDraggedCell = (MRGridViewCell*)[self viewAtLocation:touchLoc];
+//		NSLog(@"self.currDraggedCell: %@",self.currDraggedCell);
 		currDraggedCellOriginalCenter = self.currDraggedCell.center;
-		currDraggedCellIndex = [self indexForTouchLocation:touchLoc];
+		currDraggedCellIndex = [self indexForTouchLocation:[_activeTouch locationInView:self]];
 		currentHoveredIndex = currDraggedCellIndex;
 /*		
 		//insert shadow cell
@@ -318,15 +329,29 @@
 		[gridView sendSubviewToBack:shadowView];
  */
 	}
-	
+	/*
     if (aTouch.tapCount == 2) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self];
     }
+	 */
+	}
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesMoved:touches withEvent:event];
+	NSArray *touchArray = [touches allObjects];
+	NSLog(@"touchArray count: %i",[touchArray count]);
+	UITouch *theTouch = nil;
+
+	for (UITouch * touch in touchArray)
+	{
+		if (touch == _activeTouch) theTouch = touch;
+	}
+	if (theTouch == nil) return;
+	
 	if (self.isEditing && cellDragging){
+//		NSArray *touchArray = [touches allObjects];
+//		NSLog(@"touchArray count: %i",[touchArray count]);
 		UITouch *theTouch = [touches anyObject];
 		CGPoint touchLoc = [theTouch locationInView:self];
 		if (currDraggedCell){
@@ -334,19 +359,23 @@
 			NSInteger previousHoveredIndex = currentHoveredIndex;
 			if (self.moveStyle == MRGridViewMoveStyleMarker) [self putMarkerAtNearestSpace:touchLoc];
 			else {
-				currentHoveredIndex = [self indexForTouchLocation:touchLoc];
+				CGPoint modifiedTouchLoc = touchLoc;
+				if (modifiedTouchLoc.y <= self.contentOffset.y + 20) modifiedTouchLoc.y = self.contentOffset.y + 20;
+				if (modifiedTouchLoc.y > self.contentOffset.y + self.bounds.size.height - 20) modifiedTouchLoc.y = self.contentOffset.y + self.bounds.size.height - 20;
+				currentHoveredIndex = [self indexForTouchLocation:modifiedTouchLoc];
+				NSLog(@"currentHoveredIndex: %i",currentHoveredIndex);
 				if (currentHoveredIndex >= [gridDataSource numberOfItemsInGridView:self]) currentHoveredIndex = [gridDataSource numberOfItemsInGridView:self] -1;
 				if (previousHoveredIndex == -1) previousHoveredIndex = currDraggedCellIndex;
 				if (previousHoveredIndex != currentHoveredIndex) {
 					// dragged cell moved to a different slot
 					[gridDataSource gridView:self moveCellAtIndex: previousHoveredIndex toIndex: currentHoveredIndex];
 
-//					NSLog(@"previousHoveredIndex,currentHoveredIndex: %i,%i",previousHoveredIndex,currentHoveredIndex);
+					NSLog(@"previousHoveredIndex,currentHoveredIndex: %i,%i",previousHoveredIndex,currentHoveredIndex);
 					NSInteger direction = -1;
 					if (currentHoveredIndex > previousHoveredIndex) direction = 1;
 					for (NSInteger i = previousHoveredIndex; i != currentHoveredIndex; i = i + direction)
 					{
-						
+						NSLog(@"i+direction to i: %i%i",i+direction,i);
 						MRGridViewCell * cell = [cellIndices objectForKey:[NSNumber numberWithInt:i+direction]];
 						if (cell) {
 							[cellIndices removeObjectForKey:[NSNumber numberWithInt:i+direction]];
@@ -386,20 +415,32 @@
 			}
 		}
 	}
-	else [self resetEditTimer];
+	else if (self.isEditing) [self resetEditTimer];
 }
+	
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesEnded:touches withEvent:event];
 	NSLog(@"touchesEnded");
+	NSArray *touchArray = [touches allObjects];
+	NSLog(@"touchArray count: %i",[touchArray count]);
+	UITouch *theTouch = nil;
+	
+	for (UITouch * touch in touchArray)
+	{
+		if (touch == _activeTouch) theTouch = touch;
+	}
+	if (theTouch == nil) return;
+
+	_activeTouch = nil;
+	self.exclusiveTouch = NO;
 	cellDragging = NO;
 	[self setScrollEnabled:YES];
 	[self invalidateEditTimer];
 	[self invalidateScrollTimer];
-    [super touchesEnded:touches withEvent:event];
-	UITouch *theTouch = [touches anyObject];
     if (self.isEditing){
 		//if there is a cell being dragged and it is being moved to another location
+//		NSLog(@"currDraggedCell: %@", currDraggedCell);
 		if (currDraggedCell){
 			NSInteger maxIndex = [gridDataSource numberOfItemsInGridView:self];
 			if (moveStyle == MRGridViewMoveStyleDisplace) {
@@ -433,6 +474,18 @@
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesCancelled:touches withEvent:event];
 	NSLog(@"touchesCancelled");
+	NSArray *touchArray = [touches allObjects];
+	NSLog(@"touchArray count: %i",[touchArray count]);
+	UITouch *theTouch = nil;
+	
+	for (UITouch * touch in touchArray)
+	{
+		if (touch == _activeTouch) theTouch = touch;
+	}
+	if (theTouch == nil) return;
+
+	self.exclusiveTouch = NO;
+	_activeTouch = nil;
 	cellDragging = NO;
 	[self setScrollEnabled:YES];
 	[self invalidateEditTimer];
@@ -455,7 +508,7 @@
 }
 -(void) resetEditTimer {
 	if (editTimer && [editTimer isValid]) [editTimer invalidate];
-	editTimer = [NSTimer scheduledTimerWithTimeInterval:0.75f target:self selector:@selector(activateCellDragging:) userInfo:nil repeats:NO];	
+	editTimer = [NSTimer scheduledTimerWithTimeInterval:0.40f target:self selector:@selector(activateCellDragging:) userInfo:nil repeats:NO];	
 }
 -(void) invalidateEditTimer {
 	if (editTimer) {

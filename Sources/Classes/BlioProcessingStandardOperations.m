@@ -42,7 +42,29 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	else NSLog(@"Processing complete for book with sourceID:%@ sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self];
 }
-
+- (void)addDependency:(NSOperation *)operation {
+	[super addDependency:operation];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:operation];
+}
+- (void)removeDependency:(NSOperation *)operation {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationProgressNotification object:operation];
+	[super removeDependency:operation];
+}
+- (void)onProcessingProgressNotification:(NSNotification*)note {
+	NSInteger measurableParts = 0;
+	float collectiveProgress = 0.0f;
+	for (NSOperation* op in self.dependencies) {
+		if ([op isKindOfClass:[BlioProcessingOperation class]]) {
+			collectiveProgress = collectiveProgress + ((BlioProcessingOperation*)op).percentageComplete;
+			measurableParts++;
+		}
+		else {
+			if (op.isFinished) collectiveProgress++;
+			else if (op.isExecuting) collectiveProgress = collectiveProgress + 0.5f;
+		}
+	}
+	self.percentageComplete = (collectiveProgress/[self.dependencies count]);
+}
 - (void) dealloc {
 	NSLog(@"BlioProcessingCompleteOperation dealloc entered");
 	[super dealloc];
@@ -320,6 +342,13 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     if (self.connection == aConnection) {
 //		NSLog(@"connection didReceiveData");
 		[self.downloadFile writeData:data];
+		if (expectedContentLength != 0 && expectedContentLength != NSURLResponseUnknownLength) {
+//			NSLog(@"[self.downloadFile seekToEndOfFile]: %llu",[self.downloadFile seekToEndOfFile]);
+//			NSLog(@"expectedContentLength: %lld",expectedContentLength);
+			self.percentageComplete = [self.downloadFile seekToEndOfFile]*100/expectedContentLength;
+			NSLog(@"Download operation percentageComplete: %u",self.percentageComplete);
+		}
+		else self.percentageComplete = 50;
 	}
 	else {
 		

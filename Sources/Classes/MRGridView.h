@@ -36,6 +36,7 @@ static const NSInteger MRGridViewMoveStyleMarker = 1;
 	NSTimer * editTimer;
 	CGPoint lastTouchLocation;
 	CGFloat scrollIntensity;
+	UITouch * _activeTouch;
 
 	//this is a temporary way of keeping track of what row we are on
 	NSInteger highestCellYValue;

@@ -33,6 +33,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 @property (nonatomic, retain) NSString *epubFilename;
 @property (nonatomic, retain) NSString *pdfFilename;
 @property (nonatomic, retain) NSNumber *progress;
+@property (nonatomic, retain) NSNumber *processingComplete;
 @property (nonatomic, retain) NSNumber *proportionateSize;
 @property (nonatomic, retain) NSNumber *position;
 @property (nonatomic, retain) NSNumber *layoutPageNumber;

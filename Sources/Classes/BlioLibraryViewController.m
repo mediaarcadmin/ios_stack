@@ -16,6 +16,7 @@
 #import "BlioAppSettingsController.h"
 #import "BlioLoginViewController.h"
 #import "BlioBookVaultManager.h"
+#import "BlioProcessingStandardOperations.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -244,7 +245,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     
     NSError *error = nil; 
     NSManagedObjectContext *moc = [self managedObjectContext]; 
-    
+    NSLog(@"moc: %@",moc);
     // Load any persisted books
     // N.B. Do not set a predicate on this request, if you do there is a risk that
     // the fetchedResultsController won't auto-update correctly
@@ -502,6 +503,14 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	
 	NSIndexPath * indexPath = [NSIndexPath indexPathForRow:index inSection:0];
 	gridCell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	if ([[gridCell.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
+		NSOperation * completeOp = [[self processingDelegate] processingCompleteOperationForSourceID:[gridCell.book valueForKey:@"sourceID"] sourceSpecificID:[gridCell.book valueForKey:@"sourceSpecificID"]];
+		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
+			[[NSNotificationCenter defaultCenter] addObserver:gridCell selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:completeOp];
+			[[NSNotificationCenter defaultCenter] addObserver:gridCell selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:completeOp];
+			[[NSNotificationCenter defaultCenter] addObserver:gridCell selector:@selector(onProcessingFailedNotification:) name:BlioProcessingOperationFailedNotification object:completeOp];
+		}
+	}
 	gridCell.delegate = self;
 	
 	return gridCell;
@@ -1228,7 +1237,10 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     }
     return self;
 }
-
+-(void) prepareForReuse{
+	NSLog(@"BlioLibraryGridViewCell prepareForReuse entered");
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (BOOL)isAccessibilityElement {
     return YES;
 }
@@ -1266,7 +1278,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 //    [self.bookView addTarget:delegate action:@selector(bookTouched:)
 //            forControlEvents:UIControlEventTouchUpInside];
 }
-
+- (void)onProcessingProgressNotification:(NSNotification*)note {
+	BlioProcessingCompleteOperation * completeOp = [note object];
+	NSLog(@"BlioLibraryGridViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
+}
+- (void)onProcessingCompleteNotification:(NSNotification*)note {
+	NSLog(@"BlioLibraryGridViewCell onProcessingCompleteNotification entered");
+}
+- (void)onProcessingFailedNotification:(NSNotification*)note {
+	NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
+}
 @end
 
 @implementation BlioLibraryListCell
