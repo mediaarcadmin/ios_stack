@@ -22,6 +22,7 @@ static const NSInteger MRGridViewMoveStyleMarker = 1;
 	NSMutableDictionary* reusableCells;
 	UIView* gridView;
 	CGSize currCellSize;
+	CGFloat minimumBorderSize;
 	CGFloat currBorderSize;
 	NSInteger numCellsInRow;
 	MRGridViewCell* currDraggedCell;
@@ -32,13 +33,17 @@ static const NSInteger MRGridViewMoveStyleMarker = 1;
 	NSInteger currentHoveredIndex;
 	NSMutableDictionary * cellIndices;
 	NSTimer * scrollTimer;
+	NSTimer * editTimer;
 	CGPoint lastTouchLocation;
+	CGFloat scrollIntensity;
+	UITouch * _activeTouch;
 
 	//this is a temporary way of keeping track of what row we are on
 	NSInteger highestCellYValue;
 	NSInteger lowestCellYValue;
 	CGPoint currentScrollOffset;
 	NSInteger moveStyle;
+	BOOL cellDragging;
 	
 	BOOL editing;
 }
@@ -53,6 +58,7 @@ static const NSInteger MRGridViewMoveStyleMarker = 1;
 @property(readwrite,nonatomic, getter = isEditing) BOOL editing;
 
 - (void)reloadData;
+- (void)rearrangeCells;
 - (MRGridViewCell *)dequeueReusableCellWithIdentifier:(NSString *)identifier;
 
 -(void) updateSize;
@@ -67,7 +73,7 @@ static const NSInteger MRGridViewMoveStyleMarker = 1;
 - (void) removeCellAtIndex:(NSInteger)cellIndex;
 - (void)enqueueReusableCell: (MRGridViewCell*) cell withIdentifier:(NSString *)identifier;
 - (MRGridViewCell*)dequeueReusableCellWithIdentifier:(NSString *)identifier;
--(void)scrollIfNeededAtPosition;
+-(void)scrollIfNeededAtPosition:(NSTimer*)aTimer;
 -(void)animateCellPickupForCell:(MRGridViewCell*)cell;
 -(void)animateCellPutdownForCell:(MRGridViewCell*)cell toLocation:(CGPoint)theLocation;
 -(void)cleanupAfterCellDrop;

@@ -16,6 +16,7 @@
 #import "BlioAppSettingsController.h"
 #import "BlioLoginViewController.h"
 #import "BlioBookVaultManager.h"
+#import "BlioProcessingStandardOperations.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -26,16 +27,12 @@ static const CGFloat kBlioLibraryListContentWidth = 220;
 
 static const CGFloat kBlioLibraryGridRowHeight = 140;
 static const CGFloat kBlioLibraryGridBookHeight = 140;
-static const CGFloat kBlioLibraryGridBookWidth = 102;
+static const CGFloat kBlioLibraryGridBookWidth = 106;
 static const CGFloat kBlioLibraryGridBookSpacing = 0;
 
 static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
 static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
-
-@interface BlioLibraryTableView : UITableView
-
-@end
 
 @interface BlioLibraryBookView : UIView {
     UIImageView *imageView;
@@ -67,27 +64,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @property (nonatomic, retain) UILabel *authorLabel;
 @property (nonatomic, retain) UISlider *progressSlider;
 @property (nonatomic, assign) BlioMockBook *book;
-@property (nonatomic, assign) id delegate;
-
-@end
-
-
-@interface BlioLibraryGridCell : UITableViewCell {
-    NSArray *books;
-    NSMutableArray* bookViews;
-    NSUInteger rowIndex;
-    CGSize bookSize;
-    CGPoint bookOrigin;
-    NSInteger columnCount;
-    id delegate;
-}
-
-@property (nonatomic) NSUInteger rowIndex;
-@property (nonatomic, assign) NSArray *books;
-@property (nonatomic, retain) NSMutableArray* bookViews;
-@property (nonatomic) CGSize bookSize;
-@property (nonatomic) CGPoint bookOrigin;
-@property (nonatomic) NSInteger columnCount;
 @property (nonatomic, assign) id delegate;
 
 @end
@@ -128,6 +104,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @synthesize tableView = _tableView;
 @synthesize vaultManager = _vaultManager;
 
+- (id)init {
+	if ((self = [super init])) {
+		_didEdit = NO;
+	}
+	return self;
+}
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.currentBookView = nil;
@@ -141,15 +123,30 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [super dealloc];
 }
 
+- (void)awakeFromNib {
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationChanged:)
+                                                     name:UIDeviceOrientationDidChangeNotification
+                                                   object:nil];
+
+}
+
+- (void)orientationChanged:(NSNotification *)notification {
+    [self.view setNeedsLayout];
+}
+
 - (void)loadView {
 	self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	
 	UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: @"librarybackground.png"]];
-	[self.view addSubview:backgroundImageView];
+	backgroundImageView.frame = self.view.bounds;
+    backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:backgroundImageView];
 	[backgroundImageView release];
     
 	// UITableView subclass so that custom background is only drawn here
-    BlioLibraryTableView *aTableView = [[BlioLibraryTableView alloc] initWithFrame:[[UIScreen mainScreen] bounds] style:UITableViewStylePlain];
+    UITableView *aTableView = [[UITableView alloc] initWithFrame:[[UIScreen mainScreen] bounds] style:UITableViewStylePlain];
     self.tableView = aTableView;
 	[self.view addSubview:aTableView];
     [aTableView release];
@@ -169,14 +166,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
     
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [libraryItems addObject:item];
-    [item release];
-    
+//    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+//    [libraryItems addObject:item];
+//    [item release];
+
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showLogin:)];
+    [item setAccessibilityLabel:NSLocalizedString(@"Sync", @"Accessibility label for Library View Sync button")];
+    [item setAccessibilityHint:NSLocalizedString(@"Syncs to Blio Account.", @"Accessibility label for Library View Sync hint")];
     [libraryItems addObject:item];
     [item release];
     
@@ -188,6 +187,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showStore:)];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Get Books", @"Accessibility label for Library View Get Books button")];
+
     [libraryItems addObject:item];
     [item release];
     
@@ -199,12 +201,15 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showSettings:)];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Library View Settings button")];
+
     [libraryItems addObject:item];
     [item release];
     
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [libraryItems addObject:item];
-    [item release];  
+//    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+//    [libraryItems addObject:item];
+//    [item release];  
     
     [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
 }
@@ -228,6 +233,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [segmentedControl addTarget:self action:@selector(changeLibraryLayout:) forControlEvents:UIControlEventValueChanged];
     [segmentedControl setSelectedSegmentIndex:self.libraryLayout];
     
+    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
+	[[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
+    
     UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
     self.navigationItem.leftBarButtonItem = libraryLayoutButton;
     [libraryLayoutButton release];
@@ -235,7 +243,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     
     NSError *error = nil; 
     NSManagedObjectContext *moc = [self managedObjectContext]; 
-    
+    NSLog(@"moc: %@",moc);
     // Load any persisted books
     // N.B. Do not set a predicate on this request, if you do there is a risk that
     // the fetchedResultsController won't auto-update correctly
@@ -426,6 +434,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     
     UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white.png"]];
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:logoImage];
+    logoImageView.contentMode = UIViewContentModeScaleAspectFit;
+    logoImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    [logoImageView setIsAccessibilityElement:YES];
+    [logoImageView setAccessibilityLabel:NSLocalizedString(@"Blio", @"Accessibility label for Library View Blio label")];
+    [logoImageView setAccessibilityTraits:UIAccessibilityTraitStaticText];
+
     self.navigationItem.titleView = logoImageView;
     [logoImageView release];
     
@@ -456,13 +470,15 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 // Override to allow orientations other than the default portrait orientation.
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-//  return YES;
-//}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
+        return NO;
+    else
+        return YES;
+}
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
-    [self.gridView reloadData];
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
@@ -475,25 +491,30 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark MRGridViewDataSource methods
 
 -(MRGridViewCell*)gridView:(MRGridView*)gridView cellForGridIndex: (NSInteger)index{
-	NSLog(@"cellForGridIndex: %i",index);
+//	NSLog(@"cellForGridIndex: %i",index);
 	static NSString* cellIdentifier = @"BlioLibraryGridViewCell";
 	BlioLibraryGridViewCell* gridCell = (BlioLibraryGridViewCell*)[gridView dequeueReusableCellWithIdentifier:cellIdentifier];
 	if (gridCell == nil) {
-		NSLog(@"creating new cell...");
+//		NSLog(@"creating new cell...");
 		gridCell = [[[BlioLibraryGridViewCell alloc]initWithFrame:[gridView frameForCellAtGridIndex: index] reuseIdentifier:cellIdentifier] autorelease];
 	}
 	else {
 //		NSLog(@"fetching recycled cell...");
 		gridCell.frame = [gridView frameForCellAtGridIndex: index];
 	}
-//	CGRect cellFrame = [gridView frameForCellAtGridIndex: index];
-//	NSLog(@"cellFrame: %f,%f,%f,%f",cellFrame.origin.x,cellFrame.origin.y,cellFrame.size.width,cellFrame.size.height);
 	
 	// populate gridCell
 	
 	NSIndexPath * indexPath = [NSIndexPath indexPathForRow:index inSection:0];
 	gridCell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	//	NSLog(@"gridCell.book: %@ title: %@",gridCell.book,[gridCell.book title]);
+	if ([[gridCell.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
+		NSOperation * completeOp = [[self processingDelegate] processingCompleteOperationForSourceID:[gridCell.book valueForKey:@"sourceID"] sourceSpecificID:[gridCell.book valueForKey:@"sourceSpecificID"]];
+		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
+			[[NSNotificationCenter defaultCenter] addObserver:gridCell selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:completeOp];
+			[[NSNotificationCenter defaultCenter] addObserver:gridCell selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:completeOp];
+			[[NSNotificationCenter defaultCenter] addObserver:gridCell selector:@selector(onProcessingFailedNotification:) name:BlioProcessingOperationFailedNotification object:completeOp];
+		}
+	}
 	gridCell.delegate = self;
 	
 	return gridCell;
@@ -510,13 +531,13 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex {
 	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
-	NSLog(@"fromIndex: %i, toIndex: %i",fromIndex,toIndex);
+//	NSLog(@"fromIndex: %i, toIndex: %i",fromIndex,toIndex);
 	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndex];
 	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndex];
 	NSInteger fromPosition = [fromBook.position intValue];
 	NSInteger toPosition = [toBook.position intValue];
-	NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
-	
+//	NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
+/*	
 	// tracing purposes
 	for (NSInteger i = 0; i < fetchedResultsCount; i++)
 	{
@@ -524,7 +545,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 		NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
 		
 	}
-	
+*/	
 	for (NSInteger i = 0; i < fetchedResultsCount; i++)
 	{
 		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
@@ -536,7 +557,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 			[aBook setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
 		}
 	}
-	
+/*	
 	// tracing purposes
 	for (NSInteger i = 0; i < fetchedResultsCount; i++)
 	{
@@ -544,14 +565,18 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 		NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
 		
 	}
-	// TODO - setup flag so that NSFetchedResultsController delegate doesn't bother updating view.
+ */
+	
+	_didEdit = YES;
+}
+-(void) gridView:(MRGridView*)gridView finishedMovingCellToIndex:(NSInteger)toIndex {
 	NSManagedObjectContext *moc = [self managedObjectContext]; 
 	NSError * error;
 	if (![moc save:&error]) {
 		NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results): %@, %@", error, [error userInfo]);
 	}
 	
-	[gridView reloadData]; // reload for now- TODO: make sure that gridview state reflects updated state already so that it can ignore upcoming reloadData
+	_didEdit = YES;	
 }
 
 #pragma mark - 
@@ -610,7 +635,13 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             break;
     }
 }
-
+/*
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSUInteger row = [indexPath row];
+	if (row%2 == 1) cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
+	else cell.backgroundColor = [UIColor whiteColor];
+}
+*/
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -642,14 +673,15 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                 if (cell == nil) {
                     cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellEvenIdentifier] autorelease];
                 } 
-                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
+//                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
             } else {   
                 cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellOddIdentifier];
                 if (cell == nil) {
                     cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellOddIdentifier] autorelease];
                 } 
-                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
+//                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
             }
+
             
             cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
             cell.delegate = self;
@@ -658,7 +690,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                 cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
             else                         
                 cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
-            
+
+			cell.showsReorderControl = YES;
             return cell;
         } break;
     }
@@ -685,6 +718,55 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 //    else
 //        return NO;
 }
+- (BOOL)tableView:(UITableView *)tableview canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+	return YES;	
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
+	//	NSLog(@"fromIndex: %i, toIndex: %i",fromIndex,toIndex);
+	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndexPath.row];
+	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndexPath.row];
+	NSInteger fromPosition = [fromBook.position intValue];
+	NSInteger toPosition = [toBook.position intValue];
+	//	NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
+	/*	
+	 // tracing purposes
+	 for (NSInteger i = 0; i < fetchedResultsCount; i++)
+	 {
+	 BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+	 NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
+	 
+	 }
+	 */	
+	for (NSInteger i = 0; i < fetchedResultsCount; i++)
+	{
+		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+		if ([aBook.position intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"position"];
+        else {
+			NSInteger newPosition = [aBook.position intValue];
+			if (fromPosition > newPosition) newPosition++;
+			if (toPosition >= newPosition) newPosition--;
+			[aBook setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
+		}
+	}
+	/*	
+	 // tracing purposes
+	 for (NSInteger i = 0; i < fetchedResultsCount; i++)
+	 {
+	 BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+	 NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
+	 
+	 }
+	 */
+	_didEdit = YES;
+	NSManagedObjectContext *moc = [self managedObjectContext]; 
+	NSError * error;
+	if (![moc save:&error]) {
+		NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results): %@, %@", error, [error userInfo]);
+	}
+	
+}
 
 
 /*
@@ -701,21 +783,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
  }
  */
 
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
 
 #pragma mark -
 #pragma mark Fetched Results Controller Delegate
@@ -752,8 +819,11 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 */
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView reloadData];
-    [self.gridView reloadData];
+	if (!_didEdit) {
+		[self.tableView reloadData];
+		[self.gridView reloadData];
+	}
+	else _didEdit = NO;
 }
 
 #pragma mark -
@@ -892,12 +962,22 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     [UIView setAnimationWillStartSelector:@selector(popBookWillStart:context:)];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     
-    CGFloat widthRatio = (targetView.frame.size.width)/aCoverImageView.frame.size.width;
-    CGFloat heightRatio = (targetView.frame.size.height)/aCoverImageView.frame.size.height;
+    CGFloat widthRatio = (targetView.bounds.size.width)/aCoverImageView.frame.size.width;
+    CGFloat heightRatio = (targetView.bounds.size.height)/aCoverImageView.frame.size.height;
+    CGRect poppedRect;
     
-    CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
-    CGRect poppedRect = CGRectIntegral(CGRectMake((targetView.frame.size.width-poppedSize.width)/2.0f, (targetView.frame.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
-    
+    // If the targetView is landscape, use the widthRatio for both and top align if necessary
+    if (targetView.bounds.size.width > targetView.bounds.size.height) {
+        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * widthRatio);
+        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
+        CGPoint topLeft = [self.view convertPoint:CGPointZero fromView:targetView];
+        poppedRect.origin.y = topLeft.y;
+    } else {
+        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
+        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
+
+    }
+
     [poppedImageView setFrame:poppedRect];
     [self.tableView setAlpha:0.0f];
     [aTextureView setAlpha:0.0f];
@@ -962,7 +1042,14 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationDelegate:self];
             [UIView setAnimationDidStopSelector:@selector(shrinkBookDidStop:finished:context:)];
-            [self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
+            //[self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
+            //UIView *targetView = self.navigationController.view;
+            //CGPoint midPoint = [self.currentPoppedBookCover convertPoint:CGPointMake(CGRectGetMidX(coverRect), CGRectGetMidY(coverRect)) fromView:targetView];
+            //CGRect viewCoverRect  = [self.currentPoppedBookCover convertRect:coverRect fromView:targetView];
+            [self.currentPoppedBookCover setBounds:coverRect];
+//            [self.currentPoppedBookCover setCenter:midPoint];
+//            [[self.currentPoppedBookCover superview] setCenter:CGPointMake(240,160)];
+            
             [UIView commitAnimations];
             
             [[NSNotificationCenter defaultCenter] addObserver:self 
@@ -1024,18 +1111,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     }
 }
-
-@end
-
-@implementation BlioLibraryTableView
-
-- (void)drawRect:(CGRect)rect {
-    if ([self.backgroundColor isEqual:[UIColor clearColor]]) {
-        UIImage *image = [UIImage imageNamed: @"librarybackground.png"];
-        [image drawInRect:rect];
-    }
-}
-
 
 @end
 
@@ -1156,7 +1231,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 - (id)initWithFrame:(CGRect)frame reuseIdentifier: (NSString*) identifier{
     if ((self = [super initWithFrame:frame reuseIdentifier:identifier])) {
         
-        BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(8,0, kBlioLibraryGridBookWidth, kBlioLibraryGridBookHeight)];
+        BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(0,0, kBlioLibraryGridBookWidth, kBlioLibraryGridBookHeight)];
 //        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
 //            forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:aBookView];
@@ -1165,6 +1240,30 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         
     }
     return self;
+}
+-(void) prepareForReuse{
+	NSLog(@"BlioLibraryGridViewCell prepareForReuse entered");
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
+            [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]];
+}
+
+- (CGRect)accessibilityFrame {
+    return CGRectInset([super accessibilityFrame], CGRectGetWidth(self.bookView.bounds) * kBlioLibraryShadowXInset, CGRectGetHeight(self.bookView.bounds) * kBlioLibraryShadowYInset);
+}
+
+- (NSString *)accessibilityHint {
+    return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    return UIAccessibilityTraitButton;
 }
 
 - (BlioMockBook *)book {
@@ -1191,116 +1290,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 //    [self.bookView addTarget:delegate action:@selector(bookTouched:)
 //            forControlEvents:UIControlEventTouchUpInside];
 }
-
-@end
-
-
-@implementation BlioLibraryGridCell
-
-@synthesize rowIndex;
-@synthesize books;
-@synthesize bookViews;
-@synthesize bookSize;
-@synthesize bookOrigin;
-@synthesize columnCount;
-@synthesize delegate;
-
-- (void)dealloc {
-    self.books = nil;
-    self.bookViews = nil;
-    self.delegate = nil;
-    [super dealloc];
+- (void)onProcessingProgressNotification:(NSNotification*)note {
+	BlioProcessingCompleteOperation * completeOp = [note object];
+	NSLog(@"BlioLibraryGridViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
 }
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-        // Initialization code
-        self.bookViews = [NSMutableArray array];
-        self.bookSize = CGSizeMake(kBlioLibraryGridBookWidth, kBlioLibraryGridBookHeight);
-        self.bookOrigin = CGPointMake(kBlioLibraryGridBookSpacing, kBlioLibraryGridBookSpacing);
-        self.columnCount = 0;
-        self.rowIndex = 0;
-        self.delegate = nil;
-        self.opaque = NO;
-        self.accessoryType = UITableViewCellAccessoryNone;
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    return self;
+- (void)onProcessingCompleteNotification:(NSNotification*)note {
+	NSLog(@"BlioLibraryGridViewCell onProcessingCompleteNotification entered");
 }
-
-- (void)layoutBookViews {
-    CGRect bookFrame = CGRectMake(self.bookOrigin.x, self.bookOrigin.y,
-                                  self.bookSize.width, self.bookSize.height);
-    
-    for (UIView* bookView in self.bookViews) {
-        bookView.frame = bookFrame;
-        bookFrame.origin.x += kBlioLibraryGridBookSpacing + self.bookSize.width;
-        [bookView setNeedsDisplay];
-    }
+- (void)onProcessingFailedNotification:(NSNotification*)note {
+	NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
 }
-
-- (void)assignBookAtIndex:(NSUInteger)index toView:(BlioLibraryBookView *)bookView {
-    if (index < [self.books count]) {
-        BlioMockBook *book = [self.books objectAtIndex:index];
-        [bookView setBook:book forLayout:kBlioLibraryLayoutGrid];
-    } else {
-        [bookView setBook:nil forLayout:kBlioLibraryLayoutGrid];
-    }
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    [self layoutBookViews];
-}
-
-- (void)setBookSize:(CGSize)newBookSize {
-    bookSize = newBookSize;
-    [self setNeedsLayout];
-}
-
-- (void)setBookOrigin:(CGPoint)newBookOrigin {
-    bookOrigin = newBookOrigin;
-    [self setNeedsLayout];  
-}
-
-- (void)setColumnCount:(NSInteger)newColumnCount {
-    if (columnCount != newColumnCount) {
-        for (UIView* bookView in self.bookViews) {
-            [bookView removeFromSuperview];
-        }
-        [self.bookViews removeAllObjects];
-        
-        columnCount = newColumnCount;
-        
-        for (NSInteger i = [self.bookViews count]; i < columnCount; ++i) {
-            BlioLibraryBookView* bookView = [[[BlioLibraryBookView alloc] init] autorelease];
-//            [bookView addTarget:self.delegate action:@selector(bookTouched:)
-//               forControlEvents:UIControlEventTouchUpInside];
-            [self.contentView addSubview:bookView];
-            [self assignBookAtIndex:(self.rowIndex*columnCount)+i toView:bookView];
-            [self.bookViews addObject:bookView];
-        }
-    } else {
-        for (NSInteger i = 0; i < [self.bookViews count]; ++i) {
-            BlioLibraryBookView* bookView = [self.bookViews objectAtIndex:i];
-            [self assignBookAtIndex:(self.rowIndex*columnCount)+i toView:bookView];
-        }
-    }
-    
-    CGFloat xOrigin = (self.bounds.size.width - (columnCount * (kBlioLibraryGridBookSpacing + self.bookSize.width)))/2.0f;
-    
-    if (xOrigin < 0) {
-        CGFloat maxWidth = (self.bounds.size.width - (columnCount * kBlioLibraryGridBookSpacing))/columnCount;
-        CGFloat ratio = maxWidth / self.bookSize.width;
-        self.bookSize = CGSizeMake(self.bookSize.width * ratio, self.bookSize.height * ratio);
-        xOrigin = (self.bounds.size.width - (columnCount * (kBlioLibraryGridBookSpacing + self.bookSize.width)))/2.0f;
-    }
-    
-    CGFloat yOrigin = kBlioLibraryGridBookSpacing;
-    self.bookOrigin = CGPointMake(xOrigin, yOrigin);
-    [self setNeedsLayout];  
-}
-
 @end
 
 @implementation BlioLibraryListCell
@@ -1360,6 +1359,16 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aSlider release];
     }
     return self;
+}
+
+- (NSString *)accessibilityLabel {
+    return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
+            [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]];
+
+}
+
+- (NSString *)accessibilityHint {
+    return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
 }
 
 - (BlioMockBook *)book {

@@ -63,6 +63,7 @@
         [aSearchBar setTintColor:matchedTintColor];
         [aSearchBar setDelegate:self];
         [aSearchBar sizeToFit];
+        [aSearchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         [self.navigationItem setTitleView:aSearchBar];
         self.searchBar = aSearchBar;
         [aSearchBar release];
@@ -94,6 +95,22 @@
     return self;
 }
 */
+
+- (void)layoutSearchBar {
+    CGRect searchBounds = self.searchBar.bounds;
+    searchBounds.size.height = self.navigationController.navigationBar.frame.size.height;
+    [self.searchBar setBounds:searchBounds];
+}
+
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations
+    return YES;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self layoutSearchBar];
+}
 
 - (void)loadView {
     BlioStoreSearchTableView *aTableView = [[BlioStoreSearchTableView alloc] initWithFrame:CGRectMake(0,0,320,460)];
@@ -189,7 +206,7 @@
 	// cell background
 	if (cell.backgroundView == nil) { // if no existing divider image, add one
 		NSLog(@"background!");
-		cell.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,2)];
+		cell.backgroundView = [[[UIView alloc] initWithFrame:CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,2)] autorelease];
 		UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
 		[cell.backgroundView addSubview:backgroundImageView];
 		backgroundImageView.frame = CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,1);
@@ -240,6 +257,7 @@
     [UIView beginAnimations:@"showDoneButton" context:nil];
     [UIView setAnimationDuration:0.35f];
     [self.searchBar sizeToFit];
+    [self layoutSearchBar];
     [UIView commitAnimations];
 }
 
@@ -248,6 +266,7 @@
     [UIView setAnimationDuration:0.35f];
     [self.navigationItem setRightBarButtonItem:nil animated:NO];
     [self.searchBar sizeToFit];
+    [self layoutSearchBar];
     [UIView commitAnimations];
 }
 
@@ -270,6 +289,7 @@
     if ((self = [super initWithFrame:frame])) {
         UIView *aDimmingView = [[UIView alloc] initWithFrame:self.bounds];
         aDimmingView.backgroundColor = [UIColor darkGrayColor];
+        aDimmingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:aDimmingView];
         self.dimmingView = aDimmingView;
         [aDimmingView release];

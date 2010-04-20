@@ -115,13 +115,13 @@
 }
 */
 
-/*
+
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
-*/
+
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -207,6 +207,9 @@
 		cell.textLabel.text = [NSString stringWithFormat:@"See More %@...", [self getMoreCellLabelForSection:section]];
 		cell.detailTextLabel.text = [NSString stringWithFormat:@"%i shown out of %i total", ([feed.categories count]+[feed.entities count]),feed.totalResults];
 		cell.imageView.image = nil;
+        [cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@, %@", @"Accessibility label for Store Categories View Load More cell"), cell.textLabel.text, cell.detailTextLabel.text]];
+        [cell setAccessibilityHint:NSLocalizedString(@"Loads more results.", @"Accessibility hint for Store Categories View Load More cell")];
+
 	}
 	else if (row < [feed.categories count]) { // category cell is needed
 		cell = [tableView dequeueReusableCellWithIdentifier:CategoryCellIdentifier];
@@ -216,6 +219,9 @@
 //			cell.textLabel.font = [UIFont boldSystemFontOfSize:12.0]; // we'll use default size
 		}
         cell.textLabel.text = [[feed.categories objectAtIndex:indexPath.row] title];
+        [cell setAccessibilityLabel:cell.textLabel.text];
+        [cell setAccessibilityHint:nil];
+
     } else { // entity cell is needed
 		cell = [tableView dequeueReusableCellWithIdentifier:EntityCellIdentifier];
 		if (cell == nil) {
@@ -228,8 +234,11 @@
         if (row < [feed.entities count]) {
 			cell.textLabel.text = [[feed.entities objectAtIndex:indexPath.row] title];
 			cell.detailTextLabel.text = [[feed.entities objectAtIndex:indexPath.row] author];
+            [cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@", @"Accessibility label for Store Categories Entity cell"), cell.textLabel.text, cell.detailTextLabel.text ? : @"Anon"]];
+            [cell setAccessibilityHint:nil];
         }               
     }
+
 	return cell;
 }
 

@@ -58,7 +58,12 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     
     [window addSubview:realDefaultImageView];
     [window makeKeyAndVisible];
-        
+    
+	NSManagedObjectContext *moc = [self managedObjectContext];
+	
+    [libraryController setManagedObjectContext:moc];
+    [libraryController setProcessingDelegate:[self processingManager]];
+	
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
 
@@ -106,22 +111,10 @@ static void *background_init_thread(void * arg) {
 	self.internetReach = [Reachability reachabilityForInternetConnection];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
 	[self.internetReach startNotifer];
-
-	NSManagedObjectContext *moc = [self managedObjectContext];
-
-    [libraryController setManagedObjectContext:moc];
-    [libraryController setProcessingDelegate:[self processingManager]];
-    
+	 
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
     window.backgroundColor = [UIColor blackColor];
-/*
-	BlioLibraryGridViewController * libraryGridViewController = [[BlioLibraryGridViewController alloc] init];
-	[libraryGridViewController setManagedObjectContext:moc];
-    [libraryGridViewController setProcessingDelegate:[self processingManager]];
-
-	[navigationController pushViewController:libraryGridViewController animated:YES];
-*/
     
 	[UIView beginAnimations:@"FadeOutRealDefault" context:nil];
     [UIView setAnimationDuration:1.0/5.0];

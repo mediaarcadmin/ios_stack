@@ -153,7 +153,21 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     if (NULL == pdf) return nil;
     
-    if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {
+    CGRect rotatedFrame = [UIScreen mainScreen].bounds;
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    
+    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        if (rotatedFrame.size.height > rotatedFrame.size.width)
+            rotatedFrame.size = CGSizeMake(rotatedFrame.size.height, rotatedFrame.size.width);
+    } else {
+        if (rotatedFrame.size.width > rotatedFrame.size.height)
+            rotatedFrame.size = CGSizeMake(rotatedFrame.size.height, rotatedFrame.size.width);
+    }
+    
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+
+    
+    if ((self = [super initWithFrame:rotatedFrame])) {
         // Initialization code
         isCancelled = NO;
         self.book = aBook;
@@ -223,7 +237,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         aContentView.clipsToBounds = NO;
         self.contentView = aContentView;
         [aContentView release];
-        
+                
         EucSelector *aSelector = [[EucSelector alloc] init];
         [aSelector setShouldSniffTouches:NO];
         aSelector.dataSource = self;
@@ -1666,9 +1680,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (CGRect)firstPageRect {
     if ([self pageCount] > 0) {
-        return [self cropForPage:1];
+        CGRect cropRect;
+        CGAffineTransform boundsTransform = [self boundsTransformForPage:1 cropRect:&cropRect];
+        CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+        //return self.contentView.frame;
+        return pageRect;
     } else {
-        return [[UIScreen mainScreen] bounds];
+        return self.contentView.frame;
     }
 }
     

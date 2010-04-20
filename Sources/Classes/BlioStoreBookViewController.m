@@ -34,6 +34,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 
 @interface BlioStoreBookViewController (PRIVATE)
 - (void)_getBook;
+- (void)layoutViews;
 @end
 
 @implementation BlioStoreBookViewController
@@ -151,7 +152,8 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 
 	}
 	// END LABEL/FIELD REPOSITIONING CODE
-
+    
+    [self layoutViews];
 	
     // DOWNLOAD BUTTON SETUP
 	self.downloadButtonBackgroundView.image = [[UIImage imageNamed:@"downloadButton.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0];
@@ -159,40 +161,8 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
  //   [self.download setBackgroundImage:[UIImage midpointStretchableImageNamed:@"downloadButtonPressed.png"] forState:UIControlStateHighlighted];
  //   [self.download setBackgroundColor:[UIColor greenColor]];
     self.download.titleLabel.shadowOffset = CGSizeMake(0, -1);
-    [self.download setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];
-	self.download.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	self.downloadButtonBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	self.downloadButtonContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    
-    // Layout views
-    CGRect bookTitleFrame = self.bookTitle.frame;
-    CGRect authorsFrame = self.authors.frame;
-    CGRect downloadFrame = self.downloadButtonContainer.frame;
-    CGSize titleSize = [self.bookTitle.text sizeWithFont:self.bookTitle.font constrainedToSize:bookTitleFrame.size lineBreakMode:self.bookTitle.lineBreakMode];
-    CGSize authorsSize = [self.authors.text sizeWithFont:self.authors.font constrainedToSize:authorsFrame.size lineBreakMode:self.authors.lineBreakMode];    
-    bookTitleFrame.size = titleSize;
-    authorsFrame.size = authorsSize;
-    authorsFrame.origin.y = CGRectGetMaxY(bookTitleFrame) + AUTHORPADDINGABOVE;
-    downloadFrame.origin.y = CGRectGetMaxY(authorsFrame) + AUTHORPADDINGBELOW;
-    [self.bookTitle setFrame:bookTitleFrame];
-    [self.authors setFrame:authorsFrame];
-    [self.downloadButtonContainer setFrame:downloadFrame];
-    
-    CGRect containerFrame = self.container.frame;
-    CGRect summaryFrame = self.summary.frame;
-    summaryFrame.size.height = containerFrame.size.height;
-    CGRect belowSummaryFrame = self.belowSummaryDetails.frame;
-    CGSize summarySize = [self.summary.text sizeWithFont:self.summary.font constrainedToSize:summaryFrame.size lineBreakMode:UILineBreakModeWordWrap];
-    summaryFrame.size = summarySize;
-    belowSummaryFrame.origin.y = CGRectGetMaxY(summaryFrame);
-    [self.summary setFrame:summaryFrame];
-    [self.belowSummaryDetails setFrame:belowSummaryFrame];
-    
-    CGFloat newHeight = CGRectGetMaxY(belowSummaryFrame) > self.view.frame.size.height ? CGRectGetMaxY(belowSummaryFrame) : self.view.frame.size.height;
-    containerFrame.size.height = newHeight;
-    [self.container setFrame:containerFrame];
-    [self.scroller setContentSize:containerFrame.size];
-    
+    [self.download setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];    
+        
     // Fetch bookThumb
     if (nil != [self.entity thumbUrl]) {
         BlioStoreFetchThumbOperation *anOperation = [[BlioStoreFetchThumbOperation alloc] initWithThumbUrl:[self.entity thumbUrl] target:self action:@selector(updateThumb:)];
@@ -228,8 +198,9 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
 			}
 			NSManagedObject * resultBook = [results objectAtIndex:0];
-			if ([resultBook valueForKey:@"processingComplete"] == [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]) {
-				NSLog(@"and processingComplete is YES."); 
+			NSLog(@"processingStatus int: %i",[[resultBook valueForKey:@"processingComplete"] intValue]);
+				  if ([[resultBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
+				NSLog(@"and processingComplete is kBlioMockBookProcessingStateComplete."); 
 				
 				[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
 			}
@@ -261,12 +232,50 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
     [fetchRequest release];
 }
 
+- (void)layoutViews {    
+    // Layout views
+    CGRect containerFrame = self.container.frame;
+    CGRect bookTitleFrame = self.bookTitle.frame;
+    bookTitleFrame.size.height = 47;
+    bookTitleFrame.size.width = CGRectGetWidth(containerFrame) - 20 - CGRectGetMinX(bookTitleFrame);
+    CGRect authorsFrame = self.authors.frame;
+    authorsFrame.size.height = 68;
+    authorsFrame.size.width = bookTitleFrame.size.width;
+    CGRect downloadFrame = self.downloadButtonContainer.frame;
+    CGSize titleSize = [self.bookTitle.text sizeWithFont:self.bookTitle.font constrainedToSize:bookTitleFrame.size lineBreakMode:self.bookTitle.lineBreakMode];
+    CGSize authorsSize = [self.authors.text sizeWithFont:self.authors.font constrainedToSize:authorsFrame.size lineBreakMode:self.authors.lineBreakMode];    
+
+    bookTitleFrame.size = titleSize;
+    authorsFrame.size = authorsSize;
+    authorsFrame.origin.y = CGRectGetMaxY(bookTitleFrame) + AUTHORPADDINGABOVE;
+    downloadFrame.origin.y = CGRectGetMaxY(authorsFrame) + AUTHORPADDINGBELOW;
+    [self.bookTitle setFrame:bookTitleFrame];
+    [self.authors setFrame:authorsFrame];
+    [self.downloadButtonContainer setFrame:downloadFrame];
+    
+    CGRect summaryFrame = self.summary.frame;
+    summaryFrame.size.height = 200;
+    CGRect belowSummaryFrame = self.belowSummaryDetails.frame;
+    CGSize summarySize = [self.summary.text sizeWithFont:self.summary.font constrainedToSize:summaryFrame.size lineBreakMode:UILineBreakModeWordWrap];
+    summaryFrame.size = summarySize;
+    belowSummaryFrame.origin.y = CGRectGetMaxY(summaryFrame);
+    [self.summary setFrame:summaryFrame];
+    [self.belowSummaryDetails setFrame:belowSummaryFrame];
+
+    CGFloat newHeight = CGRectGetMaxY(belowSummaryFrame) > self.view.frame.size.height ? CGRectGetMaxY(belowSummaryFrame) : self.view.frame.size.height;
+    containerFrame.size.height = newHeight;
+    [self.container setFrame:containerFrame];
+    [self.scroller setContentSize:containerFrame.size];
+    
+}
+
 - (void)didReceiveBlioProcessingOperationCompleteNotification {
 	// NSLog(@"BlioStoreBookViewController didReceiveBlioProcessingCompleteOperationFinishedNotification entered");
 	[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:YES];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationCompleteNotification object:self];
 	[self _getBook];
 }
+
 - (void)updateThumb:(UIImage *)thumbImage {
     if (nil != self.bookThumb) {
         [self.bookThumb setImage:thumbImage];
@@ -534,6 +543,16 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+}
+
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations
+    return YES;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self layoutViews];
 }
 
 

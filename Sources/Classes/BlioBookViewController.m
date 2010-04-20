@@ -65,6 +65,7 @@ typedef enum {
     CGFloat progress;
     UIColor *tintColor;
     BOOL toggled;
+    CGRect backgroundFrame;
 }
 
 @property (nonatomic) CGFloat progress;
@@ -201,7 +202,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextFillPath(c); 
 }
 
-- (void)drawRect:(CGRect)rect {
+- (void)drawRect:(CGRect)rect {    
     // Drawing code
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
@@ -230,12 +231,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
     
     //CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY + 1, width, height));
-    CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY, width, height));
+    CGRect outerFrame = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY, width, height));
 
-    CGRect innerSquare = CGRectInset(outerSquare, wedgePadding, wedgePadding);
-    CGRect buttonSquare = CGRectInset(outerSquare, -xButtonPadding, -yButtonPadding);
+    CGRect innerSquare = CGRectInset(outerFrame, wedgePadding, wedgePadding);
+    CGRect buttonSquare = CGRectInset(outerFrame, -xButtonPadding, -yButtonPadding);
     //buttonSquare.origin.y -= 1;
-    CGRect backgroundSquare = UIEdgeInsetsInsetRect(buttonSquare, UIEdgeInsetsMake(1, 0, 0, 0));
+    backgroundFrame = UIEdgeInsetsInsetRect(buttonSquare, UIEdgeInsetsMake(1, 0, 0, 0));
     
     CGContextClipToRect(ctx, buttonSquare);
 
@@ -247,17 +248,17 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
     
     CGContextBeginTransparencyLayer(ctx, NULL);
-    addRoundedRectToPath(ctx, 6.0f, backgroundSquare);
+    addRoundedRectToPath(ctx, 6.0f, backgroundFrame);
     CGContextClip(ctx);
     
     CGContextSetFillColorWithColor(ctx, tintColor.CGColor);
-    CGContextFillRect(ctx, backgroundSquare);
-    drawGlossGradient(ctx, backgroundSquare);
+    CGContextFillRect(ctx, backgroundFrame);
+    drawGlossGradient(ctx, backgroundFrame);
     
     CGContextSetShadowWithColor(ctx, CGSizeMake(0,-0.5f), 0.5f, [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
     CGContextSetLineWidth(ctx, 1.0f);
-    addRoundedRectToPath(ctx, 6.0f, backgroundSquare);
+    addRoundedRectToPath(ctx, 6.0f, backgroundFrame);
     CGContextStrokePath(ctx);
     
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
@@ -265,7 +266,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     
     CGContextSaveGState(ctx);
     CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1.0f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
-    CGContextStrokeEllipseInRect(ctx, outerSquare);
+    CGContextStrokeEllipseInRect(ctx, outerFrame);
     CGContextRestoreGState(ctx);
     
     if (progress) {
@@ -275,10 +276,43 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     
     if ([self isHighlighted] || toggled) {
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.0f alpha:0.25f].CGColor);
-        CGContextFillRect(ctx, backgroundSquare);
+        CGContextFillRect(ctx, backgroundFrame);
     }
     
     CGContextEndTransparencyLayer(ctx);
+}
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (CGRect)accessibilityFrame {
+    CGRect accFrame = [super accessibilityFrame];
+    
+    accFrame.origin.x += CGRectGetWidth(self.bounds) - CGRectGetWidth(backgroundFrame);
+    accFrame.size.width = CGRectGetWidth(backgroundFrame);
+    
+    return accFrame;
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    UIAccessibilityTraits traits = UIAccessibilityTraitButton;
+    if ([self isHighlighted] || toggled)
+        traits |= UIAccessibilityTraitSelected;
+    
+    return traits;
+}
+
+- (NSString *)accessibilityLabel {
+    return  NSLocalizedString(@"Book position", @"Accessibility label for Book View Controller Progress button");
+}
+
+- (NSString *)accessibilityValue {
+    return  [NSString stringWithFormat:NSLocalizedString(@"%.0f%%", @"Accessibility label for Book View Controller Progress value"), self.progress * 100];
+}
+
+- (NSString *)accessibilityHint {
+    return  NSLocalizedString(@"Toggles book position slider.", @"Accessibility label for Book View Controller Progress hint");
 }
 
 @end
@@ -477,6 +511,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                                             style:UIBarButtonItemStylePlain
                                            target:self 
                                            action:@selector(showContents:)];
+    [item setAccessibilityLabel:NSLocalizedString(@"Contents", @"Accessibility label for Book View Controller Contents button")];
+    [item setAccessibilityHint:NSLocalizedString(@"Shows table of contents, bookmarks and notes.", @"Accessibility label for Book View Controller Contents hint")];
+
     [readingItems addObject:item];
     [item release];
     
@@ -488,6 +525,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                                             style:UIBarButtonItemStylePlain
                                            target:self 
                                            action:@selector(showAddMenu:)];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Add", @"Accessibility label for Book View Controller Add button")];
+    [item setAccessibilityHint:NSLocalizedString(@"Adds bookmark or note.", @"Accessibility label for Book View Controller Add hint")];
+
     [readingItems addObject:item];
     [item release];
     
@@ -499,6 +540,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                                             style:UIBarButtonItemStylePlain
                                            target:self 
                                            action:@selector(dummyShowParsedText:)];
+    [item setAccessibilityLabel:NSLocalizedString(@"Search", @"Accessibility label for Book View Controller Search button")];
+
     [readingItems addObject:item];
     [item release];
     
@@ -507,15 +550,28 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [item release];  
     
     UIImage *audioImage = nil;
-    if (self.audioPlaying)
+    if (self.audioPlaying) {
         audioImage = [UIImage imageNamed:@"icon-pause.png"];
-    else 
+    } else {
         audioImage = [UIImage imageNamed:@"icon-play.png"];
+    }
     
     item = [[UIBarButtonItem alloc] initWithImage:audioImage
                                             style:UIBarButtonItemStylePlain
                                            target:self 
                                            action:@selector(toggleAudio:)];
+    
+    if (self.audioPlaying) {
+        [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
+        [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
+        
+    } else {
+        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+        
+    }
+
     [readingItems addObject:item];
     [item release];
     
@@ -527,6 +583,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                                             style:UIBarButtonItemStylePlain
                                            target:self 
                                            action:@selector(showViewSettings:)];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Book View Controller Settings button")];
+
     [readingItems addObject:item];
     [item release];
     
@@ -666,7 +725,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     //UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
 
     [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    
+    [backArrow setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
+
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
     self.navigationItem.leftBarButtonItem = backItem;
     [backItem release];
@@ -1127,6 +1187,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         // the slider
         UISlider* slider = [[UISlider alloc] initWithFrame: sliderFrame];
         slider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        [slider setAccessibilityLabel:NSLocalizedString(@"Progress", @"Accessibility label for Book View Controller Progress slider")];
+        [slider setAccessibilityHint:NSLocalizedString(@"Jumps to new position in book.", @"Accessibility hint for Book View Controller Progress slider")];
+
         _pageJumpSlider = slider;
         
         UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
@@ -1306,7 +1369,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		if (self.audioPlaying) {
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-			[self stopAudio];
+            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+
+            [self stopAudio];
 			self.audioPlaying = NO;  
 		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
@@ -1608,6 +1675,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			// end of the book
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+
 			[self stopAudio];
 			self.audioPlaying = NO;
 			return blockId;
@@ -1762,6 +1833,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 	if (!flag) {
 		UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 		[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+
 		self.audioPlaying = NO;
 		NSLog(@"Audio player terminated because of error.");
 		return;
@@ -1784,6 +1859,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			// End of book.
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
+            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+
 			self.audioPlaying = NO;
 		}
 		else {
@@ -1896,6 +1975,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		if (self.audioPlaying) {
 			[self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
 			audioImage = [UIImage imageNamed:@"icon-play.png"];
+            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+
 		} else { 
 			if (!self.navigationController.toolbarHidden) {
                 [self toggleToolbars];
@@ -1937,6 +2020,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 				[errorAlert show];
 			}
 			audioImage = [UIImage imageNamed:@"icon-pause.png"];
+            [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
+            [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
+
 		}
 		self.audioPlaying = !self.audioPlaying;  
 		[item setImage:audioImage];
