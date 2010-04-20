@@ -182,6 +182,7 @@
         EucBookContentsTableViewCellBackground *backgroundView = [[EucBookContentsTableViewCellBackground alloc] initWithFrame:CGRectZero];
         backgroundView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         cell.backgroundView = backgroundView;
+        [cell setIsAccessibilityElement:YES];
         
         CGRect contentViewRect = cell.contentView.bounds;
         contentViewRect = CGRectInset(contentViewRect, 9, 9);
@@ -221,13 +222,31 @@
 
     nameAndPageNumberView.name = nameAndSubtitle.first;
     nameAndPageNumberView.subTitle = nameAndSubtitle.second;
+    
+    NSString *accessibilityLabel = nil;
+    if (nameAndPageNumberView.name && nameAndPageNumberView.subTitle) {
+        accessibilityLabel = [NSString stringWithFormat:@"%@, %@", nameAndPageNumberView.name, nameAndPageNumberView.subTitle];
+    } else if (nameAndPageNumberView.name) {
+        accessibilityLabel = [NSString stringWithFormat:@"%@", nameAndPageNumberView.name];
+    } else if (nameAndPageNumberView.subTitle) {
+        accessibilityLabel = [NSString stringWithFormat:@"%@", nameAndPageNumberView.subTitle];
+    }
+                              
     if(pageNumberIsValid) {
         nameAndPageNumberView.pageNumber = [_dataSource displayPageNumberForPageNumber:pageNumber];
-        nameAndPageNumberView.textColor = [UIColor blackColor]; 
+        nameAndPageNumberView.textColor = [UIColor blackColor];
     } else {
         nameAndPageNumberView.pageNumber = nil;
-        nameAndPageNumberView.textColor = [UIColor grayColor]; 
+        nameAndPageNumberView.textColor = [UIColor grayColor];
     }
+    
+    if (nil != nameAndPageNumberView.pageNumber) {
+        if (nil == accessibilityLabel)
+            accessibilityLabel = [NSString stringWithFormat:@"%@", nameAndPageNumberView.pageNumber];
+        else
+            accessibilityLabel = [NSString stringWithFormat:@"%@, %@", accessibilityLabel, nameAndPageNumberView.pageNumber];        
+    }
+    [cell setAccessibilityLabel:accessibilityLabel];
     
     UIColor *backgroundColor;
     if([_currentSectionUuid isEqualToString:uuid]) {
