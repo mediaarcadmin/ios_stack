@@ -16,6 +16,7 @@
 #import "EucPageView.h"
 
 #import "THPair.h"
+#import "THLog.h"
 #import "THNSStringAdditions.h"
 
 #import "VCTitleCase.h"
@@ -164,6 +165,7 @@
                            withPageTexture:(UIImage *)pageTexture 
                                     isDark:(BOOL)dark
 {
+    THPair *ret = nil;
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
         EucBookPageIndexPoint *indexPoint = [_bookIndex filteredIndexPointForPage:pageNumber];
         EucPageView *pageView = [[self class] blankPageViewForPointSize:_bookIndex.pointSize 
@@ -180,18 +182,23 @@
         [pageView.bookTextView layoutPageFromPoint:indexPoint
                                             inBook:_book];
 
-        return  [THPair pairWithFirst:pageView second:indexPoint];
-    } else {
-        return nil;
-    }
+        ret = [THPair pairWithFirst:pageView second:indexPoint];
+    } 
+    
+    THLog(@"Returning page %ld, %@", (long)pageNumber, ret);
+    
+    return ret;
 }
 
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
     NSUInteger ret = [_bookIndex filteredPageForIndexPoint:indexPoint];
     if(ret == 0) {
-        return 1;
+        ret = 1;
     }
+    
+    THLog(@"Looked up page number %ld for index point %@", (long)ret, indexPoint);
+    
     return ret;
 }
 
