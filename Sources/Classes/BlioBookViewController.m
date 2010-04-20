@@ -377,6 +377,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (id)initWithBook:(BlioMockBook *)newBook {
     if ((self = [super initWithNibName:nil bundle:nil])) {
+        self.book = newBook;
+
         self.audioPlaying = NO;
         self.wantsFullScreenLayout = YES;
 		if (![self.book audioRights]) {
@@ -408,21 +410,35 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
         
+        if (![newBook textFlowPath] && (lastLayout == kBlioPageLayoutSpeedRead)) {
+            lastLayout = kBlioPageLayoutPlainText;
+        }            
         if (![newBook pdfPath] && (lastLayout == kBlioPageLayoutPageLayout)) {
             lastLayout = kBlioPageLayoutPlainText;
         } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
-        }
-
+        } 
+        
         switch (lastLayout) {
+            case kBlioPageLayoutSpeedRead: {
+                if ([newBook textFlowPath]) {
+                    BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithBook:newBook animated:YES];
+                    self.bookView = aBookView; 
+                    [aBookView release];
+                } else {
+                    [self release];
+                    return nil;
+                }          
+            }
+                break;
             case kBlioPageLayoutPageLayout: {
                 if ([newBook pdfPath]) {
                     BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithBook:newBook animated:YES];
-                    self.book = newBook;
                     self.bookView = aBookView;
                     [aBookView setDelegate:self];
                     [aBookView release];
                 } else {
+                    [self release];
                     return nil;
                 }
             }
@@ -430,11 +446,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             default: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
                     BlioFlowView *aBookView = [[BlioFlowView alloc] initWithBook:newBook animated:YES];
-                    self.book = newBook;
                     self.bookView = aBookView;
                     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
                     [aBookView release];
                 } else {
+                    [self release];
                     return nil;
                 }
             } 
@@ -552,6 +568,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                     [(THEventCapturingWindow *)_bookView.window addTouchObserver:self forView:_bookView];            
                 }
             }
+            
+            // Pretend that we last saved this page number, so that we 
+            // don't save it again until the user switched a page.  This keeps
+            // the saved point stable when the user switches between different
+            // views repeatedly.
+            _lastSavedPageNumber = _bookView.pageNumber;
             
             [_bookView addObserver:self 
                         forKeyPath:@"pageNumber" 
@@ -798,6 +820,19 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [_bookView performSelector:@selector(stopAnimation)];
             }
             
+            if([self.bookView isKindOfClass:[BlioSpeedReadView class]]) {
+                // We do this because the current point is usually only saved on a 
+                // page switch, so we want to make sure the current point that the 
+                // user has reached in SpeedRead view is saved..
+                // Usually, the SpeedRead "Page" tracks the layout page that the 
+                // current SpeedRead paragraph starts on.
+                self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+                
+                NSError *error;
+                if (![[self.book managedObjectContext] save:&error])
+                    NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+            }            
+            
             [self.navigationController setToolbarHidden:YES animated:NO];
             [self.navigationController setToolbarHidden:NO animated:NO];
             UIToolbar *toolbar = self.navigationController.toolbar;
@@ -883,6 +918,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     self.pageJumpView = nil;
     self.pieButton = nil;
     self.managedObjectContext = nil;
+    
 	[super dealloc];
 }
 
@@ -1258,7 +1294,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
     
     BlioPageLayout currentLayout = self.currentPageLayout;
-    if(currentLayout != newLayout) {        
+    if(currentLayout != newLayout) { 
+        if([self.bookView isKindOfClass:[BlioSpeedReadView class]]) {
+            // We do this because the current point is usually only saved on a 
+            // page switch, so we want to make sure the current point that the 
+            // user has reached in SpeedRead view is up to date.
+            // Usually, the SpeedRead "Page" tracks the layout page that the 
+            // current SpeedRead paragraph starts on.
+            self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+        }
 		if (self.audioPlaying) {
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
@@ -1267,7 +1311,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithBook:self.book animated:NO];
-            [ePubView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
@@ -1275,13 +1318,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithBook:self.book animated:NO];
             [layoutView setDelegate:self];
-            [layoutView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self.book textFlowPath]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithBook:self.book animated:NO];
-            [speedReadView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
@@ -1410,21 +1451,24 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark KVO Callback
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    NSParameterAssert([NSThread isMainThread]);
+    
     if ([keyPath isEqual:@"pageNumber"]) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
-        
-        // This should be more generally handled for both types of bookview
-        // TODO - change this. Also, is it even thread-safe?
-        if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
-            [self.book setLayoutPageNumber:[change objectForKey:NSKeyValueChangeNewKey]];
-        }    
-		
+        		
 		if ( _acapelaTTS != nil )
 			[_acapelaTTS setPageChanged:YES];  
 		if ( _audioBookManager != nil )
 			[_audioBookManager setPageChanged:YES];
 		
+        if(_lastSavedPageNumber != self.bookView.pageNumber) {
+            self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+            
+            NSError *error;
+            if (![[self.book managedObjectContext] save:&error])
+                NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);            
+        }
     }
     
     if ([keyPath isEqual:@"pageCount"]) {
@@ -1723,7 +1767,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		return;
 	}
 	[_audioBookManager.speakingTimer invalidate];
-	NSInteger layoutPage = [self.bookView.pageBookmarkPoint layoutPage];
+	NSInteger layoutPage = [self.bookView.currentBookmarkPoint layoutPage];
 	// Subtract 1 to match Blio layout page number.  
 	NSMutableArray* pageSegments = (NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]];
 	if ([pageSegments count] == 1 ) {
@@ -1864,12 +1908,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			else if ([self.book audiobookFilename] != nil) {
 				if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
 					// So far this only would work for fixed view.
-					//if ( ![self findTimes:[self.bookView.pageBookmarkPoint layoutPage]] < 0 ) 
-					if ( ![self loadAudioFiles:[self.bookView.pageBookmarkPoint layoutPage] segmentIndex:0] ) {
+					//if ( ![self findTimes:[self.bookView.currentBookmarkPoint layoutPage]] < 0 ) 
+					if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
 						// No audio files for this page.
 						// Look for next page with files.
 						BOOL loadedFilesAhead = NO;
-						for ( int i=[self.bookView.pageBookmarkPoint layoutPage]+1;;++i ) {
+						for ( int i=[self.bookView.currentBookmarkPoint layoutPage]+1;;++i ) {
 							if ( [self loadAudioFiles:i segmentIndex:0] ) {
 								loadedFilesAhead = YES;
 								[self.bookView goToPageNumber:i animated:YES];
@@ -1960,9 +2004,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     } else if (buttonIndex == kBlioLibraryAddBookmarkAction) {
         [self setToolbarsForModalOverlayActive:NO];
         
-        // TODO Clean this up to remove Abosulte points and work with BookmarkRanges directly
-        BlioBookmarkAbsolutePoint *currentBookmarkAbsolutePoint = self.bookView.pageBookmarkPoint;
-        BlioBookmarkPoint *currentBookmarkPoint = [BlioBookmarkPoint bookmarkPointWithAbsolutePoint:currentBookmarkAbsolutePoint];
+        BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
         BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
         
         NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
@@ -2121,7 +2163,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
         pageNum = [self.bookView pageNumberForBookmarkRange:bookmarkRange];
     } else {
-        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:bookmarkRange.startPoint];
+        BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;
         pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
     }
     
@@ -2131,7 +2173,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
         [self.bookView goToBookmarkRange:bookmarkRange animated:animated];
     } else {
-        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:bookmarkRange.startPoint];
+        BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;
         [self.bookView goToBookmarkPoint:aBookMarkPoint animated:animated];
     }
 }

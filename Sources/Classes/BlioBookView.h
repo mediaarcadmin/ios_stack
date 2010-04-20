@@ -48,7 +48,7 @@
 #pragma mark -
 
 @protocol EucBookContentsTableViewControllerDataSource;
-@class BlioBookmarkAbsolutePoint;
+@class BlioBookmarkPoint;
 @class BlioBookmarkRange;
 @class BlioMockBook;
 
@@ -68,9 +68,9 @@
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 
-@property (nonatomic, readonly) BlioBookmarkAbsolutePoint *pageBookmarkPoint;
-- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated;
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint;
+@property (nonatomic, readonly) BlioBookmarkPoint *currentBookmarkPoint;
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 

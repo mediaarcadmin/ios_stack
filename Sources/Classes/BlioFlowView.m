@@ -33,7 +33,7 @@
 
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
-    EucBUpeLocalBookReference<EucBook> *eucBook = nil;
+    EucBUpeBook *eucBook = nil;
     
     if([aBook textFlowFilename]) {
         eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:aBook];
@@ -41,18 +41,20 @@
         eucBook = [[EucBUpeBook alloc] initWithPath:[aBook ePubPath]];
     }
     
-    self.paragraphSource = aBook.paragraphSource;
-    
     if(!eucBook) {
         [self release];
         return nil;
     }
-        
+
+    [eucBook setPersistsPositionAutomatically:NO];
     [eucBook setCacheDirectoryPath:[aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusPageIndexes"]];
     
+    self.paragraphSource = aBook.paragraphSource;
+
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:eucBook])) {
         self.allowsSelection = YES;
         self.selectorDelegate = self;
+        [self goToBookmarkPoint:aBook.implicitBookmarkPoint animated:NO];
         if (animated) self.appearAtCoverThenOpen = YES;
     }
     [eucBook release];
@@ -75,10 +77,20 @@
     return [[UIScreen mainScreen] bounds];
 }
 
-- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
+- (BlioBookmarkPoint *)currentBookmarkPoint
 {
-    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
-    EucBookPageIndexPoint *eucIndexPoint = ((EucBUpeBook *)self.book).currentPageIndexPoint;
+    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    EucBookPageIndexPoint *eucIndexPoint = [[self.book currentPageIndexPoint] copy];
+    
+    // EucIndexPoint words start with word 0 == before the first word,
+    // but Blio thinks that the first word is at 0.  This is a bit lossy,
+    // but there's not much else we can do.
+    if(eucIndexPoint.word == 0) {
+        eucIndexPoint.element = 0;
+    } else {
+        eucIndexPoint.word -= 1;
+    }
+    
     if(![self.book isKindOfClass:[BlioFlowEucBook class]]) {
         ret.layoutPage = eucIndexPoint.source;
         ret.blockOffset = eucIndexPoint.block;
@@ -103,10 +115,13 @@
             ret.elementOffset = eucIndexPoint.element;
         }
     }
+    
+    [eucIndexPoint release];
+    
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
 {
     EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
 
@@ -118,25 +133,32 @@
     } else {
         NSIndexPath *paragraphID = nil;
         uint32_t wordOffset = 0;
-        [self.paragraphSource bookmarkPoint:[BlioBookmarkPoint bookmarkPointWithAbsolutePoint:bookmarkPoint]
-                              toParagraphID:&paragraphID 
-                                 wordOffset:&wordOffset];
-        eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
-        eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
-        eucIndexPoint.word = wordOffset;
-        eucIndexPoint.element = bookmarkPoint.elementOffset;
-        
-        if(eucIndexPoint.source == 1 && eucIndexPoint.block == 0 && eucIndexPoint.word == 0 && eucIndexPoint.element == 0) {
-            eucIndexPoint.source = 0;
+
+        if(bookmarkPoint.layoutPage == 1 && bookmarkPoint.blockOffset == 0 && bookmarkPoint.wordOffset == 0 && bookmarkPoint.elementOffset == 0) {
+            // This is the start of the book.  Leave the eucIndexPoint empty
+            // so that we open at the cover.
+        } else {
+            [self.paragraphSource bookmarkPoint:bookmarkPoint
+                                  toParagraphID:&paragraphID 
+                                     wordOffset:&wordOffset];
+            eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
+            eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
+            eucIndexPoint.word = wordOffset;
+            eucIndexPoint.element = bookmarkPoint.elementOffset;
         }
     }    
+    
+    // EucIndexPoint words start with word 0 == before the first word,
+    // but Blio thinks that the first word is at 0.  This is a bit lossy,
+    // but there's not much else we can do.    
+    eucIndexPoint.word += 1;
     
     [self goToIndexPoint:eucIndexPoint animated:animated];
     
     [eucIndexPoint release];    
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
     NSInteger ret = 0;
     EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
@@ -149,7 +171,7 @@
     } else {
         NSIndexPath *paragraphID = nil;
         uint32_t wordOffset = 0;
-        [self.paragraphSource bookmarkPoint:[BlioBookmarkPoint bookmarkPointWithAbsolutePoint:bookmarkPoint]
+        [self.paragraphSource bookmarkPoint:bookmarkPoint
                               toParagraphID:&paragraphID 
                                  wordOffset:&wordOffset];
         eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
@@ -161,6 +183,11 @@
             eucIndexPoint.source = 0;
         }
     }
+    
+    // EucIndexPoint words start with word 0 == before the first word,
+    // but Blio thinks that the first word is at 0.  This is a bit lossy,
+    // but there's not much else we can do.    
+    eucIndexPoint.word += 1;    
     
     ret = [self pageNumberForIndexPoint:eucIndexPoint];
     
