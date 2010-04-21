@@ -317,38 +317,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 @end
 
-
-@interface _BlioBookViewControllerTransparentView : UIView {
-    BlioBookViewController *controller;
-}
-
-@property (nonatomic, assign) BlioBookViewController *controller;
-@end
-
-@implementation _BlioBookViewControllerTransparentView
-
-@synthesize controller;
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    UIView *ret = [super hitTest:point withEvent:event];
-    if(ret == self) {
-        UIView *view = controller.bookView;
-        CGPoint insidePoint = [self convertPoint:point toView:view];
-        ret = [view hitTest:insidePoint withEvent:event];
-    }
-    return ret;
-}
-
-@end
-
-
 @interface BlioBookViewController (PRIVATE)
 - (NSArray *)_toolbarItemsForReadingView;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
-
 @end
 
 @implementation BlioBookViewController
