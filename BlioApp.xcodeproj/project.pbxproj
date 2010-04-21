@@ -1280,16 +1280,16 @@
 		C921763E1176FF67009AC670 /* BookViewController */ = {
 			isa = PBXGroup;
 			children = (
-				C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */,
-				C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */,
 				7D7917F410F21CD400C4D839 /* BlioBookViewController.h */,
 				7D7917F510F21CD400C4D839 /* BlioBookViewController.m */,
+				7D79CF7B117F1E070081F554 /* BlioBookViewControllerProgressPieButton.h */,
+				7D79CF7C117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m */,
+				C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */,
+				C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */,
 				C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */,
 				C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */,
 				C932B03910ECBC6000B8286A /* BlioNotesView.h */,
 				C932B03A10ECBC6000B8286A /* BlioNotesView.m */,
-				7D79CF7B117F1E070081F554 /* BlioBookViewControllerProgressPieButton.h */,
-				7D79CF7C117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m */,
 			);
 			name = BookViewController;
 			sourceTree = "<group>";
