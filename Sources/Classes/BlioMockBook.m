@@ -8,6 +8,8 @@
 
 #import "BlioMockBook.h"
 #import "BlioTextFlowParagraphSource.h"
+#import "BlioEPubParagraphSource.h"
+#import <libEucalyptus/EucBUpeBook.h>
 
 @implementation BlioMockBook
 
@@ -146,14 +148,16 @@
     }
     
     return textFlow;
-        
-//    if (nil == textFlow) {
-//        textFlow = [[BlioTextFlow alloc] initWithPath:[self textflowPath]];
-//    }
-//    if (textFlow.ready)
-//        return textFlow;
-//    else
-//        return nil;
+}
+
+- (EucBUpeBook *)ePubBook {
+    if (nil == ePubBook) {
+        NSString *ePubPath = self.ePubPath;
+        if(ePubPath) {
+            ePubBook = [[EucBUpeBook alloc] initWithPath:[self ePubPath]];
+        }
+    }
+    return ePubBook;    
 }
 
 - (id<BlioParagraphSource>)paragraphSource {
@@ -161,6 +165,11 @@
         BlioTextFlow *myTextFlow = self.textFlow;
         if(myTextFlow) {
             paragraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
+        } else {
+            EucBUpeBook *myEPubBook = self.ePubBook;
+            if(myEPubBook) {
+                paragraphSource = [[BlioEPubParagraphSource alloc] initWitBUpeBook:myEPubBook];
+            }
         }
     }
     return paragraphSource;

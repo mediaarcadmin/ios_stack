@@ -12,6 +12,8 @@
 #import "BlioParagraphSource.h"
 #import "BlioBookmark.h"
 
+@class EucBUpeBook;
+
 static const NSInteger kBlioMockBookProcessingStateIncomplete = 0;
 static const NSInteger kBlioMockBookProcessingStatePaused = 1;
 static const NSInteger kBlioMockBookProcessingStateComplete = 2;
@@ -24,6 +26,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 @interface BlioMockBook : NSManagedObject <BlioBookText> {
     UIImage *coverThumb;
     BlioTextFlow *textFlow;
+    EucBUpeBook *ePubBook;
     id<BlioParagraphSource> paragraphSource;
 }
 
@@ -60,6 +63,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 - (NSString *)textFlowPath;
 
 - (BlioTextFlow *)textFlow;
+- (EucBUpeBook *)ePubBook;
 - (id<BlioParagraphSource>)paragraphSource;
 
 - (NSArray *)sortedBookmarks;
