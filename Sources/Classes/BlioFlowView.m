@@ -36,8 +36,8 @@
     
     if([aBook textFlowFilename]) {
         eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:aBook];
-    } else if([aBook epubFilename]) {
-        eucBook = [[EucBUpeBook alloc] initWithPath:[aBook ePubPath]];
+    } else {
+        eucBook = [aBook ePubBook];
     }
     
     if(!eucBook) {
