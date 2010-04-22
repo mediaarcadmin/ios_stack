@@ -2111,7 +2111,68 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self performSelectorOnMainThread:@selector(blioCoverPageDidFinishRenderOnMainThread:) withObject:notification waitUntilDone:YES];
 }
 
+#pragma mark -
+#pragma mark Accessibility
 
+- (BOOL)isAccessibilityElement {
+    return NO;
+}
+
+- (NSString *)accessibilityLabel {
+    return [NSString stringWithFormat:@"%@", [self.book title]];
+}
+
+- (NSString *)accessibilityHint {
+    return @"Toggles book toolbars.";
+}
+
+
+#if 0
+
+- (NSArray *)accessibleElements
+{
+    if ( _accessibleElements != nil )
+    {
+        return _accessibleElements;
+    }
+    _accessibleElements = [[NSMutableArray alloc] init];
+    
+    /* Create an accessibility element to represent the first contained element and initialize it as a component of MultiFacetedView. */
+    
+    UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+    //CGRect pageRect = self.currentPageLayer.bounds;
+    
+    CGRect cropRect;
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:self.currentPageLayer.pageNumber cropRect:&cropRect];
+    CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+    
+    [element setAccessibilityFrame:pageRect];
+    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", self.currentPageLayer.pageNumber]];
+    
+    /* Set attributes of the first contained element here. */
+    
+    [_accessibleElements addObject:element];
+    
+    return _accessibleElements;
+}
+
+/* The following methods are implementations of UIAccessibilityContainer protocol methods. */
+
+- (NSInteger)accessibilityElementCount
+{
+    return [[self accessibleElements] count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    return [[self accessibleElements] objectAtIndex:index];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return [[self accessibleElements] indexOfObject:element];
+}
+#endif
 @end
 
 @implementation BlioLayoutViewColoredRect
