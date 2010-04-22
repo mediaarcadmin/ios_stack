@@ -11,6 +11,12 @@
 #import "BlioEPubParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
 
+@interface BlioMockBook ()
+@property (nonatomic, retain) BlioTextFlow *textFlow;
+@property (nonatomic, retain) EucBUpeBook *ePubBook;
+@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
+@end
+
 @implementation BlioMockBook
 
 @dynamic title;
@@ -29,6 +35,12 @@
 @dynamic sourceID;
 @dynamic sourceSpecificID;
 @dynamic placeInBook;
+
+
+// Lazily instantiated - see getters below.
+@synthesize textFlow;
+@synthesize ePubBook;
+@synthesize paragraphSource;
 
 - (void)dealloc {
     [coverThumb release];
@@ -144,7 +156,11 @@
         
     if (nil == textFlow) {
         NSSet *pageRanges = [self valueForKey:@"textFlowPageRanges"];
-        if (nil != pageRanges) textFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
+        if (pageRanges) { 
+            BlioTextFlow *myTextFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
+            self.textFlow = myTextFlow;
+            [myTextFlow release];
+        }
     }
     
     return textFlow;
@@ -153,8 +169,10 @@
 - (EucBUpeBook *)ePubBook {
     if (nil == ePubBook) {
         NSString *ePubPath = self.ePubPath;
-        if(ePubPath) {
-            ePubBook = [[EucBUpeBook alloc] initWithPath:[self ePubPath]];
+        if (ePubPath) {
+            EucBUpeBook *myEPubBook = [[EucBUpeBook alloc] initWithPath:[self ePubPath]];
+            self.ePubBook = myEPubBook;
+            [myEPubBook release];
         }
     }
     return ePubBook;    
@@ -163,16 +181,28 @@
 - (id<BlioParagraphSource>)paragraphSource {
     if (nil == paragraphSource) {
         BlioTextFlow *myTextFlow = self.textFlow;
-        if(myTextFlow) {
-            paragraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
+        id<BlioParagraphSource> myParagraphSource = nil;
+        if (myTextFlow) {
+            myParagraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
         } else {
             EucBUpeBook *myEPubBook = self.ePubBook;
             if(myEPubBook) {
-                paragraphSource = [[BlioEPubParagraphSource alloc] initWitBUpeBook:myEPubBook];
+                myParagraphSource = [[BlioEPubParagraphSource alloc] initWitBUpeBook:myEPubBook];
             }
+        }
+        if(myParagraphSource) {
+            self.paragraphSource = myParagraphSource;
+            [myParagraphSource release];
         }
     }
     return paragraphSource;
+}
+
+- (void)flushCaches
+{
+    self.textFlow = nil;
+    self.ePubBook = nil;
+    self.paragraphSource = nil;
 }
 
 - (NSArray *)sortedBookmarks {

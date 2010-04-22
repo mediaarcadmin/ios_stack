@@ -330,6 +330,11 @@ typedef enum {
         }
         
         [_bookView release];
+        
+        // Could do this here to get rid of e.g. paragraph sources if they're 
+        // not needed - causes a bit of a stall though.
+        //[self.book flushCaches];
+        
         _bookView = [bookView retain];
         
         if(_bookView) {
@@ -678,6 +683,7 @@ typedef enum {
 
 - (void)didReceiveMemoryWarning 
 {
+    [self.book flushCaches];
 	[super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
 }
 
@@ -692,7 +698,10 @@ typedef enum {
     [tiltScroller release];
     
     self.bookView = nil;
-    self.book = nil;
+    
+    [self.book flushCaches];
+    self.book = nil;    
+    
     self.pageJumpView = nil;
     self.pieButton = nil;
     self.managedObjectContext = nil;

@@ -74,11 +74,9 @@
     NSUInteger sectionIndex = 0;
     NSUInteger bookmarkPageIndex = bookmarkPoint.layoutPage - 1;
     NSArray *sections = self.textFlow.sections;
-    BlioTextFlowSection *bestSection = [sections objectAtIndex:0];
     NSUInteger nextSectionIndex = 0;
     for(BlioTextFlowSection *section in sections) {
         if(section.startPage <= bookmarkPageIndex) {
-            bestSection = section;
             sectionIndex = nextSectionIndex;
             ++nextSectionIndex;
         } else {

@@ -37,7 +37,7 @@
     if([aBook textFlowFilename]) {
         eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:aBook];
     } else {
-        eucBook = [aBook ePubBook];
+        eucBook = [aBook.ePubBook retain];
     }
     
     if(!eucBook) {
