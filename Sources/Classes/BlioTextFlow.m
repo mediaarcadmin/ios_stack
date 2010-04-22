@@ -59,7 +59,7 @@
 
 @implementation BlioTextFlowPageRange
 
-@synthesize pageIndex, path, pageMarkers;
+@synthesize startPageIndex, endPageIndex, path, pageMarkers;
 @synthesize currentParser, currentPageIndex;
 
 - (id)init {
@@ -71,7 +71,8 @@
 
 - (id)initWithCoder:(NSCoder *)coder {
     if ((self = [super init])) {
-        self.pageIndex = [coder decodeIntegerForKey:@"BlioTextFlowPageRangePageIndex"];
+        self.startPageIndex = [coder decodeIntegerForKey:@"BlioTextFlowPageRangePageIndex"];
+        self.endPageIndex = [coder decodeIntegerForKey:@"BlioTextFlowPageRangeEndPageIndex"];
         self.path = [coder decodeObjectForKey:@"BlioTextFlowPageRangePagePath"];
         self.pageMarkers = [NSMutableSet setWithSet:[coder decodeObjectForKey:@"BlioTextFlowPageRangeImmutablePageMarkers"]];
     }
@@ -79,7 +80,8 @@
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    [coder encodeInteger:self.pageIndex forKey:@"BlioTextFlowPageRangePageIndex"];
+    [coder encodeInteger:self.startPageIndex forKey:@"BlioTextFlowPageRangePageIndex"];
+    [coder encodeInteger:self.endPageIndex forKey:@"BlioTextFlowPageRangeEndPageIndex"];
     [coder encodeObject:self.path forKey:@"BlioTextFlowPageRangePagePath"];
     [coder encodeObject:[NSSet setWithSet:self.pageMarkers] forKey:@"BlioTextFlowPageRangeImmutablePageMarkers"];
 }
@@ -517,7 +519,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 #pragma mark Convenience methods
 
 - (NSArray *)sortedPageRanges {
-    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"startPageIndex" ascending:YES] autorelease];
     NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortPageDescriptor, nil] autorelease];
     return [[self.pageRanges allObjects] sortedArrayUsingDescriptors:sortDescriptors];
 }
@@ -534,7 +536,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         NSUInteger i = 0;
         for (; i < pageRangeCount; ++i) {
             BlioTextFlowPageRange *pageRange = [sortedPageRanges objectAtIndex:i];
-            if ([pageRange pageIndex] > pageIndex)
+            if ([pageRange startPageIndex] > pageIndex)
                 break;
             else
                 targetPageRange = pageRange;
@@ -732,6 +734,11 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return pageString;
 }
 
+- (NSUInteger)lastPageIndex
+{
+    return [[[self sortedPageRanges] lastObject] endPageIndex];
+}
+
 + (NSArray *)preAvailabilityOperations {
     BlioTextFlowPreParseOperation *preParseOp = [[BlioTextFlowPreParseOperation alloc] init];
     NSArray *operations = [NSArray arrayWithObject:preParseOp];
@@ -753,12 +760,9 @@ static void pageRangeFileXMLParsingStartElementHandler(void *ctx, const XML_Char
         
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("Start", atts[i]) == 0) {
-                NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
-                if (nil != pageIndexString) {
-                    NSInteger newIndex = [pageIndexString integerValue];
-                    [pageIndexString release];
-                    [aPageRange setPageIndex:newIndex];
-                }
+                [aPageRange setStartPageIndex:atoi(atts[i+1])];
+            } else if (strcmp("End", atts[i]) == 0) {
+                [aPageRange setEndPageIndex:atoi(atts[i+1])];
             } else if (strcmp("Source", atts[i]) == 0) {
                 NSString *sourceString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != sourceString) {

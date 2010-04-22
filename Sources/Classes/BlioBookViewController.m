@@ -12,6 +12,7 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
+#import "BlioBookViewControllerProgressPieButton.h"
 #import "BlioViewSettingsSheet.h"
 #import "BlioFlowView.h"
 #import "BlioLayoutView.h"
@@ -61,294 +62,11 @@ typedef enum {
     kBlioTapTurnOn = 1,
 } BlioTapTurn;
 
-@interface BlioBookViewControllerProgressPieButton : UIControl {
-    CGFloat progress;
-    UIColor *tintColor;
-    BOOL toggled;
-    CGRect backgroundFrame;
-}
-
-@property (nonatomic) CGFloat progress;
-@property (nonatomic, retain) UIColor *tintColor;
-@property (nonatomic) BOOL toggled;
-
-@end
-
-@implementation BlioBookViewControllerProgressPieButton
-
-@synthesize progress, tintColor, toggled;
-
-- (id)initWithFrame:(CGRect)frame {
-    if ((self = [super initWithFrame:frame])) {
-        // Initialization code
-        self.progress = 0.0f;
-        self.toggled = NO;
-        self.backgroundColor = [UIColor clearColor];
-        self.tintColor = [UIColor blackColor];
-        
-        [self addTarget:self action:@selector(highlightOn) forControlEvents:UIControlEventTouchDown];
-        [self addTarget:self action:@selector(highlightOff) forControlEvents:UIControlEventTouchUpInside];
-        [self addTarget:self action:@selector(highlightOff) forControlEvents:UIControlEventTouchUpOutside];
-        [self addTarget:self action:@selector(highlightOff) forControlEvents:UIControlEventTouchCancel];
-    }
-    return self;
-}
-
-- (void)dealloc {
-    self.tintColor = nil;
-    [super dealloc];
-}
-
-- (void)highlightOn {
-    [self setHighlighted:YES];
-    [self setNeedsDisplay];
-}
-
-- (void)highlightOff {
-    [self setHighlighted:NO];
-    [self setNeedsDisplay];
-}
-
-- (void)setProgress:(CGFloat)newFloat {
-    progress = newFloat;
-    [self setNeedsDisplay];
-}
-
-- (void)setToggled:(BOOL)newToggle {
-    toggled = newToggle;
-    [self setNeedsDisplay];
-}
-
-- (void)setTintColor:(UIColor *)newTint {
-    [newTint retain];
-    [tintColor release];
-    tintColor = newTint;
-    [self setNeedsDisplay];
-}
-
-void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
-    CGContextSaveGState(c);
-    
-    if (radius > rect.size.width/2.0)
-        radius = rect.size.width/2.0;
-    if (radius > rect.size.height/2.0)
-        radius = rect.size.height/2.0;    
-    
-    CGFloat minx = CGRectGetMinX(rect);
-    CGFloat midx = CGRectGetMidX(rect);
-    CGFloat maxx = CGRectGetMaxX(rect);
-    CGFloat miny = CGRectGetMinY(rect);
-    CGFloat midy = CGRectGetMidY(rect);
-    CGFloat maxy = CGRectGetMaxY(rect);
-    CGContextMoveToPoint(c, minx, midy);
-    CGContextAddArcToPoint(c, minx, miny, midx, miny, radius);
-    CGContextAddArcToPoint(c, maxx, miny, maxx, midy, radius);
-    CGContextAddArcToPoint(c, maxx, maxy, midx, maxy, radius);
-    CGContextAddArcToPoint(c, minx, maxy, minx, midy, radius);
-    
-    CGContextClosePath(c); 
-    CGContextRestoreGState(c); 
-}
-
-void drawGlossGradient(CGContextRef c, CGRect rect) {
-    CGGradientRef glossGradient;
-    CGColorSpaceRef rgbColorspace;
-    size_t num_locations = 2;
-    CGFloat locations[2] = { 0.0, 1.0 };
-    CGFloat components[8] = { 1.0, 1.0, 1.0, 0.380,  // Start color
-        1.0, 1.0, 1.0, 0.188 }; // End color
-    
-    rgbColorspace = CGColorSpaceCreateDeviceRGB();
-    glossGradient = CGGradientCreateWithColorComponents(rgbColorspace, components, locations, num_locations);
-    
-    CGPoint topCenter = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
-    CGPoint midCenter = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
-    CGContextDrawLinearGradient(c, glossGradient, topCenter, midCenter, 0);    
-    CGGradientRelease(glossGradient);
-    CGColorSpaceRelease(rgbColorspace);
-}
-
-void addOvalToPath(CGContextRef c, CGPoint center, float a, float b, 
-                   float start_angle, float arc_angle, int pie) { 
-    float CGstart_angle = 90.0 - start_angle; 
-    CGContextSaveGState(c); 
-    CGContextTranslateCTM(c, center.x, center.y); 
-    CGContextScaleCTM(c, a, b); 
-    if (pie) { 
-        CGContextMoveToPoint(c, 0, 0); 
-    } else { 
-        CGContextMoveToPoint(c, cos(CGstart_angle * M_PI / 180), 
-                             sin(CGstart_angle * M_PI / 180)); 
-    } 
-    CGContextAddArc(c, 0, 0, 1, 
-                    CGstart_angle * M_PI / 180, 
-                    (CGstart_angle - arc_angle) * M_PI / 180, 
-                    arc_angle>0 ? 1 : 0); 
-    if (pie) { 
-        CGContextClosePath(c); 
-    } 
-    CGContextRestoreGState(c); 
-} 
-
-void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) { 
-    float a, b; 
-    CGPoint center; 
-    CGContextBeginPath(c); 
-    center = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect)); 
-    a = CGRectGetWidth(rect) / 2; 
-    b = CGRectGetHeight(rect) / 2; 
-    addOvalToPath(c, center, a, b, start_angle, arc_angle, 1); 
-    CGContextClosePath(c); 
-    CGContextFillPath(c); 
-}
-
-- (void)drawRect:(CGRect)rect {    
-    // Drawing code
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
-    CGContextScaleCTM(ctx, 1.0, -1.0);
-    
-    CGFloat yButtonPadding = rect.size.height - 19;
-    if (yButtonPadding > 7) yButtonPadding = 7;
-//    
-    //CGFloat xButtonPadding = yButtonPadding;
-    //CGFloat yButtonPadding = 7.0f;
-    CGFloat xButtonPadding = 7.0f;
-    CGFloat wedgePadding = 2.0f;
-    CGRect inRect = CGRectInset(rect, xButtonPadding, yButtonPadding);
-    CGFloat insetX, insetY;
-    CGFloat width = inRect.size.width;
-    CGFloat height = inRect.size.height;
-    
-    if (width > height) {
-        insetX = (width - height); // Right aligned
-        insetY = 0;
-        width = width - insetX;
-    } else {
-        insetX = 0;
-        insetY = (height - width)/2.0f;
-        height = height - 2 * insetY;
-    }
-    
-    //CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY + 1, width, height));
-    CGRect outerFrame = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY, width, height));
-
-    CGRect innerSquare = CGRectInset(outerFrame, wedgePadding, wedgePadding);
-    CGRect buttonSquare = CGRectInset(outerFrame, -xButtonPadding, -yButtonPadding);
-    //buttonSquare.origin.y -= 1;
-    backgroundFrame = UIEdgeInsetsInsetRect(buttonSquare, UIEdgeInsetsMake(1, 0, 0, 0));
-    
-    CGContextClipToRect(ctx, buttonSquare);
-
-    
-    if ([self isHighlighted] || toggled) {
-        CGContextSetShadowWithColor(ctx, CGSizeMake(0,-1), 0, [UIColor colorWithWhite:0.5f alpha:0.25f].CGColor);
-    } else {
-        CGContextSetShadowWithColor(ctx, CGSizeMake(0,-1), 0, [UIColor colorWithWhite:1.0f alpha:0.25f].CGColor);
-    }
-    
-    CGContextBeginTransparencyLayer(ctx, NULL);
-    addRoundedRectToPath(ctx, 6.0f, backgroundFrame);
-    CGContextClip(ctx);
-    
-    CGContextSetFillColorWithColor(ctx, tintColor.CGColor);
-    CGContextFillRect(ctx, backgroundFrame);
-    drawGlossGradient(ctx, backgroundFrame);
-    
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0,-0.5f), 0.5f, [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
-    CGContextSetLineWidth(ctx, 1.0f);
-    addRoundedRectToPath(ctx, 6.0f, backgroundFrame);
-    CGContextStrokePath(ctx);
-    
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
-    CGContextSetLineWidth(ctx, 2.0f);
-    
-    CGContextSaveGState(ctx);
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1.0f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
-    CGContextStrokeEllipseInRect(ctx, outerFrame);
-    CGContextRestoreGState(ctx);
-    
-    if (progress) {
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
-        fillOval(ctx, innerSquare, 0, progress*360);
-    }
-    
-    if ([self isHighlighted] || toggled) {
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.0f alpha:0.25f].CGColor);
-        CGContextFillRect(ctx, backgroundFrame);
-    }
-    
-    CGContextEndTransparencyLayer(ctx);
-}
-
-- (BOOL)isAccessibilityElement {
-    return YES;
-}
-
-- (CGRect)accessibilityFrame {
-    CGRect accFrame = [super accessibilityFrame];
-    
-    accFrame.origin.x += CGRectGetWidth(self.bounds) - CGRectGetWidth(backgroundFrame);
-    accFrame.size.width = CGRectGetWidth(backgroundFrame);
-    
-    return accFrame;
-}
-
-- (UIAccessibilityTraits)accessibilityTraits {
-    UIAccessibilityTraits traits = UIAccessibilityTraitButton;
-    if ([self isHighlighted] || toggled)
-        traits |= UIAccessibilityTraitSelected;
-    
-    return traits;
-}
-
-- (NSString *)accessibilityLabel {
-    return  NSLocalizedString(@"Book position", @"Accessibility label for Book View Controller Progress button");
-}
-
-- (NSString *)accessibilityValue {
-    return  [NSString stringWithFormat:NSLocalizedString(@"%.0f%%", @"Accessibility label for Book View Controller Progress value"), self.progress * 100];
-}
-
-- (NSString *)accessibilityHint {
-    return  NSLocalizedString(@"Toggles book position slider.", @"Accessibility label for Book View Controller Progress hint");
-}
-
-@end
-
-
-@interface _BlioBookViewControllerTransparentView : UIView {
-    BlioBookViewController *controller;
-}
-
-@property (nonatomic, assign) BlioBookViewController *controller;
-@end
-
-@implementation _BlioBookViewControllerTransparentView
-
-@synthesize controller;
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    UIView *ret = [super hitTest:point withEvent:event];
-    if(ret == self) {
-        UIView *view = controller.bookView;
-        CGPoint insidePoint = [self convertPoint:point toView:view];
-        ret = [view hitTest:insidePoint withEvent:event];
-    }
-    return ret;
-}
-
-@end
-
-
-@interface BlioBookViewController (PRIVATE)
+@interface BlioBookViewController ()
 - (NSArray *)_toolbarItemsForReadingView;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
-
 @end
 
 @implementation BlioBookViewController
@@ -411,6 +129,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 
 - (id)initWithBook:(BlioMockBook *)newBook {
     if ((self = [super initWithNibName:nil bundle:nil])) {
+        self.book = newBook;
+
         self.audioPlaying = NO;
         self.wantsFullScreenLayout = YES;
 		if (![self.book audioRights]) {
@@ -442,21 +162,35 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         
         BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
         
+        if (![newBook textFlowPath] && (lastLayout == kBlioPageLayoutSpeedRead)) {
+            lastLayout = kBlioPageLayoutPlainText;
+        }            
         if (![newBook pdfPath] && (lastLayout == kBlioPageLayoutPageLayout)) {
             lastLayout = kBlioPageLayoutPlainText;
         } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
-        }
-
+        } 
+        
         switch (lastLayout) {
+            case kBlioPageLayoutSpeedRead: {
+                if ([newBook textFlowPath]) {
+                    BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithBook:newBook animated:YES];
+                    self.bookView = aBookView; 
+                    [aBookView release];
+                } else {
+                    [self release];
+                    return nil;
+                }          
+            }
+                break;
             case kBlioPageLayoutPageLayout: {
                 if ([newBook pdfPath]) {
                     BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithBook:newBook animated:YES];
-                    self.book = newBook;
                     self.bookView = aBookView;
                     [aBookView setDelegate:self];
                     [aBookView release];
                 } else {
+                    [self release];
                     return nil;
                 }
             }
@@ -464,11 +198,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
             default: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
                     BlioFlowView *aBookView = [[BlioFlowView alloc] initWithBook:newBook animated:YES];
-                    self.book = newBook;
                     self.bookView = aBookView;
                     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
                     [aBookView release];
                 } else {
+                    [self release];
                     return nil;
                 }
             } 
@@ -611,6 +345,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                     [(THEventCapturingWindow *)_bookView.window addTouchObserver:self forView:_bookView];            
                 }
             }
+            
+            // Pretend that we last saved this page number, so that we 
+            // don't save it again until the user switched a page.  This keeps
+            // the saved point stable when the user switches between different
+            // views repeatedly.
+            _lastSavedPageNumber = _bookView.pageNumber;
             
             [_bookView addObserver:self 
                         forKeyPath:@"pageNumber" 
@@ -858,6 +598,19 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
                 [_bookView performSelector:@selector(stopAnimation)];
             }
             
+            if([self.bookView isKindOfClass:[BlioSpeedReadView class]]) {
+                // We do this because the current point is usually only saved on a 
+                // page switch, so we want to make sure the current point that the 
+                // user has reached in SpeedRead view is saved..
+                // Usually, the SpeedRead "Page" tracks the layout page that the 
+                // current SpeedRead paragraph starts on.
+                self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+                
+                NSError *error;
+                if (![[self.book managedObjectContext] save:&error])
+                    NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+            }            
+            
             [self.navigationController setToolbarHidden:YES animated:NO];
             [self.navigationController setToolbarHidden:NO animated:NO];
             UIToolbar *toolbar = self.navigationController.toolbar;
@@ -943,6 +696,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     self.pageJumpView = nil;
     self.pieButton = nil;
     self.managedObjectContext = nil;
+    
 	[super dealloc];
 }
 
@@ -1321,7 +1075,15 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
     
     BlioPageLayout currentLayout = self.currentPageLayout;
-    if(currentLayout != newLayout) {        
+    if(currentLayout != newLayout) { 
+        if([self.bookView isKindOfClass:[BlioSpeedReadView class]]) {
+            // We do this because the current point is usually only saved on a 
+            // page switch, so we want to make sure the current point that the 
+            // user has reached in SpeedRead view is up to date.
+            // Usually, the SpeedRead "Page" tracks the layout page that the 
+            // current SpeedRead paragraph starts on.
+            self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+        }
 		if (self.audioPlaying) {
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
@@ -1334,7 +1096,6 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithBook:self.book animated:NO];
-            [ePubView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
@@ -1342,13 +1103,11 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithBook:self.book animated:NO];
             [layoutView setDelegate:self];
-            [layoutView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self.book textFlowPath]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithBook:self.book animated:NO];
-            [speedReadView goToBookmarkPoint:self.bookView.pageBookmarkPoint animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
@@ -1477,21 +1236,24 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 #pragma mark KVO Callback
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    NSParameterAssert([NSThread isMainThread]);
+    
     if ([keyPath isEqual:@"pageNumber"]) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
-        
-        // This should be more generally handled for both types of bookview
-        // TODO - change this. Also, is it even thread-safe?
-        if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
-            [self.book setLayoutPageNumber:[change objectForKey:NSKeyValueChangeNewKey]];
-        }    
-		
+        		
 		if ( _acapelaTTS != nil )
 			[_acapelaTTS setPageChanged:YES];  
 		if ( _audioBookManager != nil )
 			[_audioBookManager setPageChanged:YES];
 		
+        if(_lastSavedPageNumber != self.bookView.pageNumber) {
+            self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+            
+            NSError *error;
+            if (![[self.book managedObjectContext] save:&error])
+                NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);            
+        }
     }
     
     if ([keyPath isEqual:@"pageCount"]) {
@@ -1798,7 +1560,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 		return;
 	}
 	[_audioBookManager.speakingTimer invalidate];
-	NSInteger layoutPage = [self.bookView.pageBookmarkPoint layoutPage];
+	NSInteger layoutPage = [self.bookView.currentBookmarkPoint layoutPage];
 	// Subtract 1 to match Blio layout page number.  
 	NSMutableArray* pageSegments = (NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]];
 	if ([pageSegments count] == 1 ) {
@@ -1947,12 +1709,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 			else if ([self.book audiobookFilename] != nil) {
 				if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
 					// So far this only would work for fixed view.
-					//if ( ![self findTimes:[self.bookView.pageBookmarkPoint layoutPage]] < 0 ) 
-					if ( ![self loadAudioFiles:[self.bookView.pageBookmarkPoint layoutPage] segmentIndex:0] ) {
+					//if ( ![self findTimes:[self.bookView.currentBookmarkPoint layoutPage]] < 0 ) 
+					if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
 						// No audio files for this page.
 						// Look for next page with files.
 						BOOL loadedFilesAhead = NO;
-						for ( int i=[self.bookView.pageBookmarkPoint layoutPage]+1;;++i ) {
+						for ( int i=[self.bookView.currentBookmarkPoint layoutPage]+1;;++i ) {
 							if ( [self loadAudioFiles:i segmentIndex:0] ) {
 								loadedFilesAhead = YES;
 								[self.bookView goToPageNumber:i animated:YES];
@@ -2046,9 +1808,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     } else if (buttonIndex == kBlioLibraryAddBookmarkAction) {
         [self setToolbarsForModalOverlayActive:NO];
         
-        // TODO Clean this up to remove Abosulte points and work with BookmarkRanges directly
-        BlioBookmarkAbsolutePoint *currentBookmarkAbsolutePoint = self.bookView.pageBookmarkPoint;
-        BlioBookmarkPoint *currentBookmarkPoint = [BlioBookmarkPoint bookmarkPointWithAbsolutePoint:currentBookmarkAbsolutePoint];
+        BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
         BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
         
         NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
@@ -2207,7 +1967,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
         pageNum = [self.bookView pageNumberForBookmarkRange:bookmarkRange];
     } else {
-        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:bookmarkRange.startPoint];
+        BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;
         pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
     }
     
@@ -2217,7 +1977,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
         [self.bookView goToBookmarkRange:bookmarkRange animated:animated];
     } else {
-        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:bookmarkRange.startPoint];
+        BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;
         [self.bookView goToBookmarkPoint:aBookMarkPoint animated:animated];
     }
 }

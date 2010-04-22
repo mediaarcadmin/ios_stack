@@ -36,14 +36,16 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 @property (nonatomic, retain) NSNumber *processingComplete;
 @property (nonatomic, retain) NSNumber *proportionateSize;
 @property (nonatomic, retain) NSNumber *position;
-@property (nonatomic, retain) NSNumber *layoutPageNumber;
 @property (nonatomic, retain) NSNumber *hasAudioRights;
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 @property (nonatomic, retain) NSString *textFlowFilename;
 @property (nonatomic, retain) NSString *sourceID;
 @property (nonatomic, retain) NSString *sourceSpecificID;
+@property (nonatomic, retain) NSManagedObject *placeInBook;
 
+// Convenience accessor.
+@property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
 
 - (NSString *)bookCacheDirectory;
 - (NSString *)bookTempDirectory;
@@ -66,5 +68,6 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 - (NSArray *)sortedHighlightRangesForLayoutPage:(NSInteger)layoutPage;
 - (NSArray *)sortedHighlightRangesForRange:(BlioBookmarkRange *)range;
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range;
+
 
 @end

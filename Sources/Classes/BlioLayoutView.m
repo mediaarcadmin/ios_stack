@@ -251,8 +251,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         [self addObserver:self forKeyPath:@"currentPageLayer" options:0 context:NULL];
         
-        NSNumber *savedPage = [aBook layoutPageNumber];
-        NSInteger page = (nil != savedPage) ? [savedPage intValue] : 1;
+        NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cacheThumbImage:) name:@"BlioLayoutThumbLayerContentsAvailable" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
@@ -305,13 +304,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self goToPageNumber:targetPage animated:animated shouldZoomOut:YES targetZoomScale:kBlioPDFGoToZoomTargetScale targetContentOffset:CGPointZero];
 }
 
-- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint {
-    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
+- (BlioBookmarkPoint *)currentBookmarkPoint {
+    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
     ret.layoutPage = self.pageNumber;
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated {
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
     [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
@@ -319,7 +318,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint {
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
     return bookmarkPoint.layoutPage;
 }
 

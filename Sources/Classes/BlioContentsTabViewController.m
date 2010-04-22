@@ -444,7 +444,7 @@ typedef enum {
     if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
         pageNum = [self.bookView pageNumberForBookmarkRange:aBookmarkRange];
     } else {
-        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:aBookmarkRange.startPoint];
+        BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
         pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
     }
     
@@ -614,7 +614,7 @@ typedef enum {
     if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
         pageNum = [self.bookView pageNumberForBookmarkRange:aBookmarkRange];
     } else {
-        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:aBookmarkRange.startPoint];
+        BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
         pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
     }
     

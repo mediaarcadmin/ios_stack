@@ -128,8 +128,13 @@
     BlioTextFlowParagraphWords *paragraphWords = paragraph.paragraphWords;
     NSArray *words = paragraphWords.words;
 
+    if(wordOffset >= words.count) {
+        NSLog(@"Unexpected word offset %ld - only %ld words", wordOffset, words.count);
+        return [self bookmarkPointFromParagraphID:[[(NSIndexPath *)paragraphID indexPathByRemovingLastIndex] indexPathByAddingIndex:0]
+                                       wordOffset:0];
+    }
+
     BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
-    
     BlioBookmarkPoint * ret = [[BlioBookmarkPoint alloc] init];
 
     ret.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:word.blockID] + 1;

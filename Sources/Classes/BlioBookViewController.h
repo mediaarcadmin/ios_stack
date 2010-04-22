@@ -38,6 +38,8 @@ typedef enum {
 @interface BlioBookViewController : UIViewController <BlioBookDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, AVAudioPlayerDelegate> {
     BOOL _firstAppearance;
     
+    BlioMockBook *_book;
+    
     UIView<BlioBookView> *_bookView;
     
     BookViewControllerUIFadeState _fadeState;
@@ -50,6 +52,7 @@ typedef enum {
     //EucBookContentsTableViewController *_contentsSheet;
     
     BOOL _viewIsDisappearing;
+    NSUInteger _lastSavedPageNumber;
         
     UIBarStyle _returnToNavigationBarStyle;
     UIColor *_returnToNavigationBarTint;
@@ -71,8 +74,6 @@ typedef enum {
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
     
-    BlioMockBook *_book;
-
     MSTiltScroller *tiltScroller;
     MSTapDetector *tapDetector;
     BOOL motionControlsEnabled;

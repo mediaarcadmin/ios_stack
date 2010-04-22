@@ -30,8 +30,6 @@
         self.path = blioBook.bookCacheDirectory;
         self.etextNumber = nil;
         self.coverPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:blioBook.coverFilename];
-        
-        self.persistsPositionAutomatically = NO;
     }
     
     return self;
