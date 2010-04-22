@@ -13,7 +13,6 @@
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import "BlioBookViewControllerProgressPieButton.h"
-#import "BlioViewSettingsSheet.h"
 #import "BlioFlowView.h"
 #import "BlioLayoutView.h"
 #import "BlioSpeedReadView.h"
@@ -34,33 +33,10 @@ typedef enum {
     kBlioLibraryAddNoteAction = 1,
 } BlioLibraryAddActions;
 
-typedef enum {
-    kBlioPageLayoutPlainText = 0,
-    kBlioPageLayoutPageLayout = 1,
-    kBlioPageLayoutSpeedRead = 2,
-} BlioPageLayout;
-
-typedef enum {
-    kBlioFontSizeVerySmall = 0,
-    kBlioFontSizeSmall = 1,
-    kBlioFontSizeMedium = 2,
-    kBlioFontSizeLarge = 3,
-    kBlioFontSizeVeryLarge = 4,
-} BlioFontSize;
 static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
 
 static NSString *kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"paper-black.png", @"paper-neutral.png" };
 static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
-
-typedef enum {
-    kBlioRotationLockOff = 0,
-    kBlioRotationLockOn = 1,
-} BlioRotationLock;
-
-typedef enum {
-    kBlioTapTurnOff = 0,
-    kBlioTapTurnOn = 1,
-} BlioTapTurn;
 
 @interface BlioBookViewController ()
 - (NSArray *)_toolbarItemsForReadingView;
@@ -87,6 +63,7 @@ typedef enum {
 @synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize tiltScroller, tapDetector, motionControlsEnabled;
+@synthesize rotationLocked;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -1199,16 +1176,9 @@ typedef enum {
     [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
 
-- (BlioRotationLock)currentLockRotation {
-    return kBlioRotationLockOff;
-}
-
-- (void)changeLockRotation:(id)sender {
-    // This is just a placeholder check. Obviously we shouldn't be checking against the string.
-    BlioRotationLock newLock = (BlioRotationLock)[[sender titleForSegmentAtIndex:[sender selectedSegmentIndex]] isEqualToString:@"Unlock Rotation"];
-    if([self currentLockRotation] != newLock) {
-        [[NSUserDefaults standardUserDefaults] setInteger:newLock forKey:kBlioLastLockRotationDefaultsKey];
-    }
+- (void)changeLockRotation {
+    [self setRotationLocked:![self isRotationLocked]];
+    [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];
 }
 
 - (BlioTapTurn)currentTapTurn {
@@ -1216,7 +1186,7 @@ typedef enum {
 
 }
 
-- (void)changeTapTurn:(id)sender {
+- (void)changeTapTurn {
     if (motionControlsEnabled == kBlioTapTurnOff) {
         motionControlsEnabled = kBlioTapTurnOn;
         [tiltScroller resetAngle];
@@ -1917,12 +1887,10 @@ typedef enum {
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
-    //return (interfaceOrientation == UIInterfaceOrientationPortrait);
-	// Return YES for supported orientations
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout)
-        return YES;
+    if ([self isRotationLocked])
+        return NO;
     else
-        return (interfaceOrientation == UIInterfaceOrientationPortrait);
+        return YES;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {

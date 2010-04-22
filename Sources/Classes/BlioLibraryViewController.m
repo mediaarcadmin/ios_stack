@@ -17,6 +17,7 @@
 #import "BlioLoginViewController.h"
 #import "BlioBookVaultManager.h"
 #import "BlioProcessingStandardOperations.h"
+#import "BlioAccessibilitySegmentedControl.h"
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -227,14 +228,17 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
                               [UIImage imageWithShadow:[UIImage imageNamed:@"button-grid.png"] inset:inset],
                               [UIImage imageWithShadow:[UIImage imageNamed:@"button-list.png"] inset:inset],
                               nil];
-    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentImages];
+    BlioAccessibilitySegmentedControl *segmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
     segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     segmentedControl.frame = CGRectMake(0,0, kBlioLibraryLayoutButtonWidth, segmentedControl.frame.size.height);
     [segmentedControl addTarget:self action:@selector(changeLibraryLayout:) forControlEvents:UIControlEventValueChanged];
     [segmentedControl setSelectedSegmentIndex:self.libraryLayout];
     
+    [segmentedControl setIsAccessibilityElement:NO];
     [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
-	[[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
+    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+
+     [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
     
     UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
     self.navigationItem.leftBarButtonItem = libraryLayoutButton;
