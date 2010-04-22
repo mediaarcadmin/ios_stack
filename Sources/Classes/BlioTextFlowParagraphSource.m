@@ -55,14 +55,18 @@
 
 - (BlioTextFlowParagraph *)paragraphWithID:(NSIndexPath *)paragraphID
 {
+    BlioTextFlowParagraph *ret = nil;
     BlioTextFlowFlowTree *flowFlowTree = [self flowFlowTreeForSection:[paragraphID indexAtPosition:0]];
     
-    uint32_t key = [paragraphID indexAtPosition:1];
-    if(key) {
-        return (BlioTextFlowParagraph *)[flowFlowTree nodeForKey:key];
-    } else {
-        return flowFlowTree.firstParagraph;
+    if(flowFlowTree) {
+        uint32_t key = [paragraphID indexAtPosition:1];
+        if(key) {
+            ret = (BlioTextFlowParagraph *)[flowFlowTree nodeForKey:key];
+        } else {
+            ret = flowFlowTree.firstParagraph;
+        }
     }
+    return ret;
 }
 
 - (void)bookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint toParagraphID:(id *)paragraphID wordOffset:(uint32_t *)wordOffset
@@ -124,24 +128,28 @@
 
 - (BlioBookmarkPoint *)bookmarkPointFromParagraphID:(id)paragraphID wordOffset:(uint32_t)wordOffset
 {
+    BlioBookmarkPoint *ret = nil;
+    
     BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
-    BlioTextFlowParagraphWords *paragraphWords = paragraph.paragraphWords;
-    NSArray *words = paragraphWords.words;
+    if(paragraph) {
+        BlioTextFlowParagraphWords *paragraphWords = paragraph.paragraphWords;
+        NSArray *words = paragraphWords.words;
 
-    if(wordOffset >= words.count) {
-        NSLog(@"Unexpected word offset %ld - only %ld words", wordOffset, words.count);
-        return [self bookmarkPointFromParagraphID:[[(NSIndexPath *)paragraphID indexPathByRemovingLastIndex] indexPathByAddingIndex:0]
-                                       wordOffset:0];
+        if(wordOffset >= words.count) {
+            ret = [self bookmarkPointFromParagraphID:[[(NSIndexPath *)paragraphID indexPathByRemovingLastIndex] indexPathByAddingIndex:0]
+                                          wordOffset:0];
+        } else {
+            BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
+            ret = [[BlioBookmarkPoint alloc] init];
+
+            ret.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:word.blockID] + 1;
+            ret.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:word.blockID];
+            ret.wordOffset = word.wordIndex;
+
+            [ret autorelease];
+        }
     }
-
-    BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
-    BlioBookmarkPoint * ret = [[BlioBookmarkPoint alloc] init];
-
-    ret.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:word.blockID] + 1;
-    ret.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:word.blockID];
-    ret.wordOffset = word.wordIndex;
-
-    return [ret autorelease];
+    return ret;
 }
 
 - (NSArray *)wordsForParagraphWithID:(id)paragraphID
