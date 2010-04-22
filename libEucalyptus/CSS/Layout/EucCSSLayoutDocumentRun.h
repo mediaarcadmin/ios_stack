@@ -107,4 +107,6 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 
 - (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
 
+- (NSArray *)words;
+
 @end

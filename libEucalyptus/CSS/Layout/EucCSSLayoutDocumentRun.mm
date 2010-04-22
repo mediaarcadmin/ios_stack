@@ -917,6 +917,18 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     return ret;
 }
 
+- (NSArray *)words
+{
+    NSUInteger wordsCount = _wordsCount;
+    NSMutableArray *words = [NSMutableArray arrayWithCapacity:wordsCount];
+    
+    for(NSUInteger i = 0; i < wordsCount; ++i) {
+        [words addObject:(id)_componentInfos[_wordToComponent[i + 1]].component];
+    }
+    
+    return words;
+}
+
 @end
 
 
