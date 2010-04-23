@@ -37,5 +37,6 @@
 @property (nonatomic, retain, readonly) BlioProcessingManager *processingManager;
 @property (nonatomic, retain, readwrite) Reachability *internetReach;
 
+-(void) resumeProcessing;
 @end
 

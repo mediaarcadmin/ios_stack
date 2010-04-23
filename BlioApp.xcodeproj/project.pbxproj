@@ -409,6 +409,8 @@
 		C9F749441140261700680E93 /* shadow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749411140261700680E93 /* shadow-left.png */; };
 		C9F749451140261700680E93 /* shadow-top.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749421140261700680E93 /* shadow-top.png */; };
 		C9F936F0113530260047B985 /* BlioProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F936EF113530260047B985 /* BlioProcessingManager.m */; };
+		DC12F613117E563C0074B2D8 /* library-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DC12F612117E563C0074B2D8 /* library-progress-background.png */; };
+		DC12F614117E563C0074B2D8 /* library-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DC12F612117E563C0074B2D8 /* library-progress-background.png */; };
 		DC2A3E64116C5DF80049A97E /* MRGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5D116C5DF80049A97E /* MRGridView.m */; };
 		DC2A3E65116C5DF80049A97E /* MRGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */; };
 		DC2A3E66116C5DF80049A97E /* MRGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E61116C5DF80049A97E /* MRGridViewController.m */; };
@@ -423,6 +425,14 @@
 		DCA65A4811503CF6006534F4 /* icon-vault.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4611503CF6006534F4 /* icon-vault.png */; };
 		DCA65A4911503CF6006534F4 /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
 		DCA65A4A11503CF6006534F4 /* icon-vault.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4611503CF6006534F4 /* icon-vault.png */; };
+		DCFF6192117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
+		DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6191117F6F4E00463427 /* button-delete-black.png */; };
+		DCFF6194117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
+		DCFF6195117F6F4E00463427 /* button-delete-black.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6191117F6F4E00463427 /* button-delete-black.png */; };
+		DCFF6198117F703A00463427 /* library-resumebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6196117F703A00463427 /* library-resumebutton.png */; };
+		DCFF6199117F703A00463427 /* library-pausebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6197117F703A00463427 /* library-pausebutton.png */; };
+		DCFF619A117F703A00463427 /* library-resumebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6196117F703A00463427 /* library-resumebutton.png */; };
+		DCFF619B117F703A00463427 /* library-pausebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6197117F703A00463427 /* library-pausebutton.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -840,6 +850,7 @@
 		C9F749421140261700680E93 /* shadow-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow-top.png"; sourceTree = "<group>"; };
 		C9F936EE113530260047B985 /* BlioProcessingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioProcessingManager.h; sourceTree = "<group>"; };
 		C9F936EF113530260047B985 /* BlioProcessingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioProcessingManager.m; sourceTree = "<group>"; };
+		DC12F612117E563C0074B2D8 /* library-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "library-progress-background.png"; sourceTree = "<group>"; };
 		DC2A3E5C116C5DF80049A97E /* MRGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridView.h; sourceTree = "<group>"; };
 		DC2A3E5D116C5DF80049A97E /* MRGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRGridView.m; sourceTree = "<group>"; };
 		DC2A3E5E116C5DF80049A97E /* MRGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewCell.h; sourceTree = "<group>"; };
@@ -853,6 +864,10 @@
 		DCA65A3911503A4D006534F4 /* SearchCellDivider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SearchCellDivider.png; sourceTree = "<group>"; };
 		DCA65A4511503CF6006534F4 /* icon-categories.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-categories.png"; sourceTree = "<group>"; };
 		DCA65A4611503CF6006534F4 /* icon-vault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-vault.png"; sourceTree = "<group>"; };
+		DCFF6190117F6F4E00463427 /* button-delete-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-red.png"; sourceTree = "<group>"; };
+		DCFF6191117F6F4E00463427 /* button-delete-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-black.png"; sourceTree = "<group>"; };
+		DCFF6196117F703A00463427 /* library-resumebutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "library-resumebutton.png"; sourceTree = "<group>"; };
+		DCFF6197117F703A00463427 /* library-pausebutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "library-pausebutton.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1041,6 +1056,7 @@
 				A37A586A113C45640003CCFF /* forward-black.png */,
 				A37A586B113C45640003CCFF /* forward-gray.png */,
 				A37A584A113C36EF0003CCFF /* back-black.png */,
+				DC12F612117E563C0074B2D8 /* library-progress-background.png */,
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				C9E1FAA7110F26DB00999587 /* TextFlows */,
 				A349F067110E31CC009A8F89 /* AudioBooks */,
@@ -1093,6 +1109,10 @@
 				7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */,
 				C9F47A0A1129BC7E00563348 /* downloadButton.png */,
 				C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */,
+				DCFF6190117F6F4E00463427 /* button-delete-red.png */,
+				DCFF6191117F6F4E00463427 /* button-delete-black.png */,
+				DCFF6196117F703A00463427 /* library-resumebutton.png */,
+				DCFF6197117F703A00463427 /* library-pausebutton.png */,
 				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				7DE7B5E21104B4FD0021F382 /* Lighting.xib */,
@@ -1710,6 +1730,11 @@
 				7D905E2011590AAC0011272A /* PageIndexes in Resources */,
 				A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */,
 				C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */,
+				DC12F613117E563C0074B2D8 /* library-progress-background.png in Resources */,
+				DCFF6192117F6F4E00463427 /* button-delete-red.png in Resources */,
+				DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */,
+				DCFF6198117F703A00463427 /* library-resumebutton.png in Resources */,
+				DCFF6199117F703A00463427 /* library-pausebutton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1820,6 +1845,11 @@
 				C9217859117732C8009AC670 /* Aliases in Resources */,
 				C921786E1177337A009AC670 /* icon-cart.png in Resources */,
 				C9E5DC13117C741600950BA0 /* Localizable.strings in Resources */,
+				DC12F614117E563C0074B2D8 /* library-progress-background.png in Resources */,
+				DCFF6194117F6F4E00463427 /* button-delete-red.png in Resources */,
+				DCFF6195117F6F4E00463427 /* button-delete-black.png in Resources */,
+				DCFF619A117F703A00463427 /* library-resumebutton.png in Resources */,
+				DCFF619B117F703A00463427 /* library-pausebutton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -886,6 +886,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     
     [self setBookValue:[NSSet setWithSet:pageRangesSet] forKey:@"textFlowPageRanges"];
     self.operationSuccess = YES;
+	self.percentageComplete = 100;
     [pool drain];
 }
 

@@ -45,13 +45,14 @@
 {
 //	NSLog(@"BlioFlowPaginateOperation start entered"); 
 
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     // Must be performed on main thread
     // See http://www.dribin.org/dave/blog/archives/2009/05/05/concurrent_operations/
     if (![NSThread isMainThread]) {
         [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
         return;
     }
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"failed dependency found!");
@@ -72,8 +73,8 @@
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
     // NSLog(@"self.cacheDirectory: %@",self.cacheDirectory);
-	
-    NSString *epubPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"epubFilename"]];
+	NSString *epubFilenameFromBook = [self getBookValueForKey:@"epubFilename"];
+    NSString *epubPath = [self.cacheDirectory stringByAppendingPathComponent:epubFilenameFromBook];
 
 //	NSString *textflowPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"textFlowFilename"]];
    
@@ -94,6 +95,7 @@
         [[NSFileManager defaultManager] copyItemAtPath:cannedPaginationPath
                                                 toPath:paginationPath 
                                                  error:NULL];
+		self.percentageComplete = 100;
 		self.operationSuccess = YES;
         [self finish];
 		return;
@@ -163,11 +165,19 @@
 
 - (void)paginationProgress:(NSNotification *)notification
 {
+    if ([self isCancelled]) {
+		if (paginator) [paginator stop];
+        [self willChangeValueForKey:@"isFinished"];
+        finished = YES;
+		NSLog(@"Operation cancelled, will prematurely abort pagination in progress");
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }
     NSDictionary *userInfo = [notification userInfo];
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
-    EucBUpeBook *book = [userInfo objectForKey:EucBookPaginatorNotificationBookKey];
+//    EucBUpeBook *book = [userInfo objectForKey:EucBookPaginatorNotificationBookKey];
     
-    NSLog(@"Pagination progress (%@, %f%%)!", book.title, (double)percentagePaginated);
+//    NSLog(@"Pagination progress (%@, %f%%)!", book.title, (double)percentagePaginated);
     
     self.percentageComplete = roundf(percentagePaginated);
 }

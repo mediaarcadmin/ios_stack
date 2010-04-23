@@ -55,25 +55,61 @@
 		}
 		MRGridViewCell * gridCell = [gridDataSource gridView:self cellForGridIndex:cellIndex];
 		[cellIndices setObject:gridCell forKey:[NSNumber numberWithInt:cellIndex]];
+		[gridCell.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+		if (self.isEditing) gridCell.deleteButton.alpha = 1;
+		else gridCell.deleteButton.alpha = 0;
 		[gridView addSubview:gridCell];
 		[gridView sendSubviewToBack:gridCell]; // we do this so that the cell will by default be "behind" a dragged cell.
 	}
 }
 - (void) removeCellAtIndex:(NSInteger)cellIndex {
 //	NSLog(@"removeCellAtIndex: %i",cellIndex);
-	NSInteger protectedCellIndex = currDraggedCellIndex;
-	if (moveStyle == MRGridViewMoveStyleDisplace) protectedCellIndex = currentHoveredIndex;
 	MRGridViewCell * cell = nil;
-	if (cellIndex >=0 && cellIndex < [gridDataSource numberOfItemsInGridView:self]  && cellIndex != protectedCellIndex) cell = [cellIndices objectForKey:[NSNumber numberWithInt:cellIndex]];
-	if (cell != nil && cell != currDraggedCell) {
-		[cell removeFromSuperview];
-		[self enqueueReusableCell:cell withIdentifier:cell.reuseIdentifier];
+	cell = [cellIndices objectForKey:[NSNumber numberWithInt:cellIndex]];
+	if (cell != nil) {
+//		NSLog(@"removing cell from view and adding to queue...");
+		[cell retain];
 		[cellIndices removeObjectForKey:[NSNumber numberWithInt:cellIndex]];
+		if (cell != currDraggedCell) {
+			[cell removeFromSuperview];
+			[self enqueueReusableCell:cell withIdentifier:cell.reuseIdentifier];
+		}
+		[cell release];
 	}	
+}
+-(void)deleteButtonPressed:(id)sender {
+	UIButton * deleteButton = (UIButton*)sender;
+	MRGridViewCell * gridCell = (MRGridViewCell*)[deleteButton superview];
+	NSArray *keys = [cellIndices allKeysForObject:gridCell];
+	if ([keys count] > 1) NSLog(@"WARNING: multiple keys found in cellIndices for cell to be deleted!");
+	else if ([keys count] == 0) NSLog(@"WARNING: No key found in cellIndices for cell to be deleted!");
+	else {
+		_keyValueOfCellToBeDeleted = [[keys objectAtIndex:0] intValue];
+		
+		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Please confirm..."
+														message:[NSString stringWithFormat:@"Are you sure you want to delete %@?", [gridCell cellContentDescription] ]
+													   delegate:self
+											  cancelButtonTitle:@"Cancel"
+											  otherButtonTitles:nil];
+		[alert addButtonWithTitle:@"Delete"];
+		[alert show];
+		[alert release];
+ 
+	}
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+	if([alertView buttonTitleAtIndex:buttonIndex] == @"Delete")
+	{
+		
+		[self.gridDataSource gridView:self commitEditingStyle:MRGridViewCellEditingStyleDelete forIndex:_keyValueOfCellToBeDeleted];
+	}
+	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
 }
 
 //reloads data from dataSource
 - (void)reloadData{
+//	NSLog(@"MRGridView reloadData");
+	[self cleanupAfterCellDrop];
 	NSMutableArray * keys = [NSMutableArray array];
 	for (id key in cellIndices)
 	{
@@ -99,7 +135,7 @@
 }
 
 - (void)rearrangeCells{
-//	NSLog(@"rearrangeCells");
+	NSLog(@"MRGridView rearrangeCells");
 	// rearranges cells that belong in the visible frame and refraining from accessing the data source as much as possible
 	NSArray * cellIndexes = [self indexesForCellsInRect:[self bounds]];
 	NSMutableArray * keys = [NSMutableArray array];
@@ -114,8 +150,7 @@
 	{
 		NSNumber * numberKey = [keys objectAtIndex:i];
 //		NSLog(@"[numberKey intValue]: %i",[numberKey intValue]);
-//		NSLog(@"[self frameForCellAtGridIndex:[numberKey intValue]]: %f,%f,%f,%f",[self frameForCellAtGridIndex:[numberKey intValue]].origin.x,[self frameForCellAtGridIndex:[numberKey intValue]].origin.y,[self frameForCellAtGridIndex:[numberKey intValue]].size.width,[self frameForCellAtGridIndex:[numberKey intValue]].size.height);
-		if (!CGRectIntersectsRect([self frameForCellAtGridIndex:[numberKey intValue]],[self bounds])) {
+		if (!CGRectIntersectsRect([self frameForCellAtGridIndex:[numberKey intValue]],[self bounds]) || [numberKey intValue] >= [gridDataSource numberOfItemsInGridView:self]) {
 			[self removeCellAtIndex:[numberKey intValue]];
 //			NSLog(@"did NOT intersect");
 		}
@@ -151,8 +186,9 @@
 	MRGridViewCell* gridCell = nil;
 	NSMutableArray* reusableCellsForIdentifier = (NSMutableArray*)[reusableCells objectForKey:identifier];
 	if (reusableCellsForIdentifier && [reusableCellsForIdentifier count] > 0){
-		gridCell = [[reusableCellsForIdentifier objectAtIndex:0] retain];
+		gridCell = [reusableCellsForIdentifier objectAtIndex:0];
 		if (gridCell){
+			[gridCell retain];
 			[reusableCellsForIdentifier removeObjectAtIndex:0];
 			[gridCell prepareForReuse];
 			[gridCell autorelease];
@@ -296,7 +332,7 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesBegan:touches withEvent:event];
-//	NSLog(@"touchesBegan");
+	NSLog(@"touchesBegan");
 	NSArray *touchArray = [touches allObjects];
 //	NSLog(@"touchArray count: %i",[touchArray count]);
 	if (_activeTouch == nil) {
@@ -340,7 +376,7 @@
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesMoved:touches withEvent:event];
 	NSArray *touchArray = [touches allObjects];
-	NSLog(@"touchArray count: %i",[touchArray count]);
+	// NSLog(@"touchArray count: %i",[touchArray count]);
 	UITouch *theTouch = nil;
 
 	for (UITouch * touch in touchArray)
@@ -354,6 +390,7 @@
 //		NSLog(@"touchArray count: %i",[touchArray count]);
 		UITouch *theTouch = [touches anyObject];
 		CGPoint touchLoc = [theTouch locationInView:self];
+//		NSLog(@"currDraggedCell: %@",currDraggedCell);
 		if (currDraggedCell){
 			self.currDraggedCell.center = touchLoc;
 			NSInteger previousHoveredIndex = currentHoveredIndex;
@@ -363,26 +400,27 @@
 				if (modifiedTouchLoc.y <= self.contentOffset.y + 20) modifiedTouchLoc.y = self.contentOffset.y + 20;
 				if (modifiedTouchLoc.y > self.contentOffset.y + self.bounds.size.height - 20) modifiedTouchLoc.y = self.contentOffset.y + self.bounds.size.height - 20;
 				currentHoveredIndex = [self indexForTouchLocation:modifiedTouchLoc];
-				NSLog(@"currentHoveredIndex: %i",currentHoveredIndex);
+				// NSLog(@"currentHoveredIndex: %i",currentHoveredIndex);
 				if (currentHoveredIndex >= [gridDataSource numberOfItemsInGridView:self]) currentHoveredIndex = [gridDataSource numberOfItemsInGridView:self] -1;
 				if (previousHoveredIndex == -1) previousHoveredIndex = currDraggedCellIndex;
 				if (previousHoveredIndex != currentHoveredIndex) {
 					// dragged cell moved to a different slot
 					[gridDataSource gridView:self moveCellAtIndex: previousHoveredIndex toIndex: currentHoveredIndex];
 
-					NSLog(@"previousHoveredIndex,currentHoveredIndex: %i,%i",previousHoveredIndex,currentHoveredIndex);
+					// NSLog(@"previousHoveredIndex,currentHoveredIndex: %i,%i",previousHoveredIndex,currentHoveredIndex);
 					NSInteger direction = -1;
 					if (currentHoveredIndex > previousHoveredIndex) direction = 1;
 					for (NSInteger i = previousHoveredIndex; i != currentHoveredIndex; i = i + direction)
 					{
-						NSLog(@"i+direction to i: %i%i",i+direction,i);
+						// NSLog(@"i+direction to i: %i%i",i+direction,i);
 						MRGridViewCell * cell = [cellIndices objectForKey:[NSNumber numberWithInt:i+direction]];
 						if (cell) {
-							[cellIndices removeObjectForKey:[NSNumber numberWithInt:i+direction]];
 							[cellIndices setObject:cell forKey:[NSNumber numberWithInt:i]];
+							[cellIndices removeObjectForKey:[NSNumber numberWithInt:i+direction]];
 						}
 						
 					}
+//					NSLog(@"currDraggedCell: %@",currDraggedCell);
 					[cellIndices setObject:currDraggedCell forKey:[NSNumber numberWithInt:currentHoveredIndex]];
 					[self rearrangeCells];
 				}
@@ -423,7 +461,7 @@
 	[super touchesEnded:touches withEvent:event];
 	NSLog(@"touchesEnded");
 	NSArray *touchArray = [touches allObjects];
-	NSLog(@"touchArray count: %i",[touchArray count]);
+	// NSLog(@"touchArray count: %i",[touchArray count]);
 	UITouch *theTouch = nil;
 	
 	for (UITouch * touch in touchArray)
@@ -457,7 +495,7 @@
 					NSInteger toIndex = currentHoveredIndex;
 					[self cleanupAfterCellDrop];
 					[gridDataSource gridView:self moveCellAtIndex: fromIndex toIndex: toIndex];
-					[self reloadData];
+					[self rearrangeCells];
 				}
 				else {
 					[self animateCellPutdownForCell:currDraggedCell toLocation:currDraggedCellOriginalCenter];
@@ -473,9 +511,9 @@
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesCancelled:touches withEvent:event];
-	NSLog(@"touchesCancelled");
+	// NSLog(@"touchesCancelled");
 	NSArray *touchArray = [touches allObjects];
-	NSLog(@"touchArray count: %i",[touchArray count]);
+	// NSLog(@"touchArray count: %i",[touchArray count]);
 	UITouch *theTouch = nil;
 	
 	for (UITouch * touch in touchArray)
@@ -524,6 +562,12 @@
 		[self invalidateScrollTimer];
 		return;
 	}
+	
+	if (self.contentSize.height < self.frame.size.height) {
+		[self setContentOffset:CGPointMake(0, 0) animated:YES];
+		[self invalidateScrollTimer];
+		return;
+	}
 	float speed = 10; //TODO: make it a constant
 
 	float scrollTravel = ceil(scrollIntensity * speed);
@@ -537,19 +581,22 @@
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:0.15];
 	cell.transform = CGAffineTransformMakeScale(1.2, 1.2);
+	cellPrePickupAlpha = cell.alpha;
 	cell.alpha = .8f;
+	cell.center = [_activeTouch locationInView:self];
 	[UIView commitAnimations];
 	
 }
 
 -(void)animateCellPutdownForCell:(MRGridViewCell*)cell toLocation:(CGPoint)theLocation {
+	NSLog(@"animateCellPutdownForCell");
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.15];
 	// Set the center to the final postion
 	cell.center = theLocation;
 	// Set the transform back to the identity, thus undoing the previous scaling effect.
 	cell.transform = CGAffineTransformIdentity;
-	cell.alpha = 1.0f;
+	cell.alpha = cellPrePickupAlpha;
 	[UIView setAnimationDelegate:self];
 	[UIView setAnimationDidStopSelector:@selector(animateCellPutdownDidStop:finished:context:)];
 	[UIView commitAnimations];
@@ -562,7 +609,8 @@
 	[self cleanupAfterCellDrop];
 //	NSLog(@"restingRect: %f,%f,%f,%f",restingRect.origin.x,restingRect.origin.y,restingRect.size.width,restingRect.size.height);
 //	NSLog(@"visible frame: %f,%f,%f,%f",self.contentOffset.x,self.contentOffset.y,self.frame.size.width,self.frame.size.height);
-	if (!CGRectIntersectsRect(restingRect, CGRectMake(self.contentOffset.x,self.contentOffset.y,self.frame.size.width,self.frame.size.height))) {
+
+	if (moveStyle != MRGridViewMoveStyleDisplace && !CGRectIntersectsRect(restingRect, CGRectMake(self.contentOffset.x,self.contentOffset.y,self.frame.size.width,self.frame.size.height))) {
 //		NSLog(@"cell doesn't intersect current visible frame");
 		[self removeCellAtIndex:indexOfCellToBeRemoved];
 	}
@@ -571,6 +619,7 @@
 //	[shadowView removeFromSuperview];
 //	[shadowView release];
 //	shadowView = nil;
+	_activeTouch = nil;
 	currDraggedCell = nil;
 	currDraggedCellIndex = -1;
 	currentHoveredIndex = -1;
@@ -668,14 +717,47 @@
 }
 
 - (void)setEditing:(BOOL)editingVal animated:(BOOL)animate {
+	NSLog(@"MRGridView setEditing:%i animated:%i entered",editingVal,animate);
 	self.editing = editingVal;
-//	if (self.isEditing) {
-//		[self setScrollEnabled:NO];
-//	} else {
-//		[self setScrollEnabled:YES];
-//	}
+	NSInteger targetAlphaValue = 0;
+	if (editingVal) targetAlphaValue = 1;
+	if (animate) [UIView beginAnimations:@"editingStateChange" context:nil];
+	NSArray * viewableCellIndexes = [self indexesForCellsInRect:[self bounds]];
+	for (NSNumber * key in viewableCellIndexes) {
+		MRGridViewCell * gridCell = [cellIndices objectForKey:key];
+		gridCell.deleteButton.alpha = targetAlphaValue;
+	}
+	if (animate) [UIView commitAnimations];
 }
 
+-(void)deleteIndices:(NSArray*)indices withCellAnimation:(MRGridViewCellAnimation)cellAnimation {
+	for (NSNumber * deletedKey in indices) {
+		if ([cellIndices objectForKey:deletedKey]) [self removeCellAtIndex:[deletedKey intValue]];
+	}
+	NSMutableArray * keys = [NSMutableArray array];
+	for (id key in cellIndices)
+	{
+		[keys addObject:key];
+	}
+	// sort keys
+	NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"intValue" ascending:YES];
+	[keys sortUsingDescriptors:[NSArray arrayWithObject:sorter]];
+	for (NSInteger i = 0; i < [keys count]; i++) {
+		NSNumber * key = [keys objectAtIndex:i];
+		NSInteger adjustment = 0;
+		for (NSNumber * deletedKey in indices) {
+			if ([deletedKey intValue] < [key intValue]) adjustment++;
+		}
+		if (adjustment > 0) {
+			NSInteger newKeyValue = [key intValue] - adjustment;
+			MRGridViewCell * gridCell = [cellIndices objectForKey:key];
+			[cellIndices removeObjectForKey:key];
+			[cellIndices setObject:gridCell forKey:[NSNumber numberWithInt:newKeyValue]];
+		}
+	}
+	[sorter release];
+	[self rearrangeCells];
+}
 - (void)dealloc {
 	self.gridDataSource = nil;
 	self.gridDelegate = nil;

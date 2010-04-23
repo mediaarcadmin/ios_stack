@@ -12,7 +12,12 @@
 
 
 
-@interface BlioProcessingCompleteOperation : BlioProcessingOperation
+@interface BlioProcessingCompleteOperation : BlioProcessingOperation {
+	NSUInteger alreadyCompletedOperations;	
+}
+
+@property (nonatomic, assign) NSUInteger alreadyCompletedOperations;
+-(void) calculateProgress;
 @end
 
 @interface BlioProcessingDownloadOperation : BlioProcessingOperation {
