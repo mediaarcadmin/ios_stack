@@ -29,7 +29,7 @@ NSString * const EucBookPaginatorCompleteNotification = @"BookPaginationComplete
 NSString * const EucBookPaginatorNotificationBookKey = @"BookPaginationBookKey";
 NSString * const EucBookPaginatorNotificationPercentagePaginatedKey = @"BookPaginationBytesPaginated";
 
-#define kThreadedProgressPollingDelay (1.0 / 10.0)
+#define kThreadedProgressPollingDelay (1.0 / 5.0)
 
 @interface EucBookPaginator (PRIVATE)
 
