@@ -57,6 +57,7 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 - (NSArray *)processingOperationsForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void)pauseProcessingForBook:(BlioMockBook*)aBook;
 - (void)stopProcessingForBook:(BlioMockBook*)aBook;
+-(void) deleteBook:(BlioMockBook*)aBook shouldSave:(BOOL)shouldSave;
 - (void)stopDownloadingOperations;
 - (NSArray *)downloadOperations;
 - (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;

@@ -66,6 +66,10 @@
 -(void) gridView:(MRGridView*)gridView finishedMovingCellToIndex:(NSInteger)toIndex {
 
 }
+-(void) gridView:(MRGridView*)gridView commitEditingStyle:(MRGridViewCellEditingStyle)editingStyle forIndex:(NSInteger)index {
+
+}
+
 #pragma mark - 
 #pragma mark MRGridViewDelegate methods
 

@@ -70,10 +70,10 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
         return nil;
     } 
     
-    id value = [book valueForKey:key];
+    id value = [[book valueForKey:key] retain];
     [moc release];
     [pool drain];
-
+	[value autorelease];
     return value;
 }
 

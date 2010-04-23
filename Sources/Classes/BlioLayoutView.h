@@ -71,6 +71,7 @@ typedef enum BlioLayoutPageMode {
     BlioLayoutPageMode layoutMode;
     CGAffineTransform cachedViewTransform;
     NSInteger cachedViewTransformPage;
+    NSMutableArray *_accessibleElements;
 }
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;

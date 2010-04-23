@@ -214,6 +214,63 @@
     //NSLog(@"Laying out contentView subviews done");
 }
 
+- (BOOL)isAccessibilityElement {
+    return NO;
+}
+
+#if 0
+- (NSArray *)accessibleElements
+{
+    if ( _accessibleElements != nil )
+    {
+        return _accessibleElements;
+    }
+    _accessibleElements = [[NSMutableArray alloc] init];
+    
+    /* Create an accessibility element to represent the first contained element and initialize it as a component of MultiFacetedView. */
+    
+    UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+    //CGRect pageRect = self.currentPageLayer.bounds;
+    
+    CGRect cropRect;
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:self.currentPageLayer.pageNumber cropRect:&cropRect];
+    CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+    
+    [element setAccessibilityFrame:pageRect];
+    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", self.currentPageLayer.pageNumber]];
+    
+    /* Set attributes of the first contained element here. */
+    
+    [_accessibleElements addObject:element];
+    
+    return _accessibleElements;
+}
+#endif
+/* The following methods are implementations of UIAccessibilityContainer protocol methods. */
+
+- (NSInteger)accessibilityElementCount
+{
+    return [self.pageLayers count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+    //CGRect pageRect = self.currentPageLayer.bounds;
+    
+    [element setAccessibilityFrame:CGRectMake(10,20,30,40)];
+    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", [[[self.pageLayers allObjects] objectAtIndex:index] pageNumber]]];
+    [element setAccessibilityValue:[[NSNumber numberWithInt:index] stringValue]];
+    return element;
+    
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return [[element accessibilityValue] intValue];
+}
+
+
 @end
 
 @implementation BlioLayoutPageLayer
@@ -300,6 +357,41 @@
         [self.cacheQueue addOperation:cacheOp];
         [cacheOp release];
     }
+}
+
+#pragma mark -
+#pragma mark Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return 1;
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return 0;
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+    CGRect pageRect = [thumbLayer frame];
+    [element setAccessibilityFrame:pageRect];
+    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", self.pageNumber]];
+    return element;
+}
+
+- (NSString *)accessibilityLabel {
+    return @"pageLayerLabel";
+}
+
+- (CGRect)accessibilityFrame {
+    CGRect pageRect = [thumbLayer frame];
+    return pageRect;
 }
 
 @end

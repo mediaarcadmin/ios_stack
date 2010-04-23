@@ -58,11 +58,16 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     
     [window addSubview:realDefaultImageView];
     [window makeKeyAndVisible];
-    
+
+	self.internetReach = [Reachability reachabilityForInternetConnection];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
+	[self.internetReach startNotifer];
+	
 	NSManagedObjectContext *moc = [self managedObjectContext];
 	
     [libraryController setManagedObjectContext:moc];
     [libraryController setProcessingDelegate:[self processingManager]];
+	
 	
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
@@ -108,10 +113,8 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
-	self.internetReach = [Reachability reachabilityForInternetConnection];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
-	[self.internetReach startNotifer];
-	 
+	if ([self.internetReach currentReachabilityStatus] != NotReachable) [self resumeProcessing];
+
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
     window.backgroundColor = [UIColor blackColor];
