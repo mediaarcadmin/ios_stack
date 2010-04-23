@@ -11,10 +11,15 @@
 #import "MRGridViewDelegate.h"
 #import "MRGridViewCell.h"
 
+typedef enum {
+	MRGridViewCellAnimationFade
+} MRGridViewCellAnimation;
+
 @protocol MRGridViewDelegate, MRGridViewDataSource;
 
 static const NSInteger MRGridViewMoveStyleDisplace = 0;
 static const NSInteger MRGridViewMoveStyleMarker = 1;
+
 
 @interface MRGridView : UIScrollView<UIScrollViewDelegate> {
 	id<MRGridViewDataSource> gridDataSource;
@@ -37,6 +42,7 @@ static const NSInteger MRGridViewMoveStyleMarker = 1;
 	CGPoint lastTouchLocation;
 	CGFloat scrollIntensity;
 	UITouch * _activeTouch;
+	NSInteger _keyValueOfCellToBeDeleted;
 
 	//this is a temporary way of keeping track of what row we are on
 	NSInteger highestCellYValue;
@@ -44,6 +50,7 @@ static const NSInteger MRGridViewMoveStyleMarker = 1;
 	CGPoint currentScrollOffset;
 	NSInteger moveStyle;
 	BOOL cellDragging;
+	float cellPrePickupAlpha;
 	
 	BOOL editing;
 }
@@ -81,6 +88,7 @@ static const NSInteger MRGridViewMoveStyleMarker = 1;
 -(NSArray*) indexesForCellsInRect:(CGRect)rect;
 -(void) putMarkerAtNearestSpace:(CGPoint)touchLoc;
 -(UIView*) viewAtLocation:(CGPoint)touchLoc;
+-(void)deleteIndices:(NSArray*)indices withCellAnimation:(MRGridViewCellAnimation)cellAnimation;
 
 - (void)setEditing:(BOOL)editingVal animated:(BOOL)animate;
 @end

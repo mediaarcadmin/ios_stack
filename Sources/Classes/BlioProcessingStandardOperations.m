@@ -16,6 +16,8 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 
 @implementation BlioProcessingCompleteOperation
 
+@synthesize alreadyCompletedOperations;
+
 - (void)main {
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
@@ -28,6 +30,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			[self cancel];
 			return;
 		}
+		NSLog(@"completed operation: %@ percentageComplete: %u",blioOp,blioOp.percentageComplete);
 	}	
 	// delete temp download dir
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
@@ -51,22 +54,25 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	[super removeDependency:operation];
 }
 - (void)onProcessingProgressNotification:(NSNotification*)note {
-	NSInteger measurableParts = 0;
+	[self calculateProgress];
+}
+- (void)calculateProgress {
+//	NSLog(@"alreadyCompletedOperations: %u",alreadyCompletedOperations);
 	float collectiveProgress = 0.0f;
 	for (NSOperation* op in self.dependencies) {
 		if ([op isKindOfClass:[BlioProcessingOperation class]]) {
 			collectiveProgress = collectiveProgress + ((BlioProcessingOperation*)op).percentageComplete;
-			measurableParts++;
 		}
 		else {
-			if (op.isFinished) collectiveProgress++;
-			else if (op.isExecuting) collectiveProgress = collectiveProgress + 0.5f;
+			if (op.isFinished) collectiveProgress = collectiveProgress + 100;
+			else if (op.isExecuting) collectiveProgress = collectiveProgress + 50;
+			else if (op.isCancelled) NSLog(@"NSOperation of class %@ cancelled.",[[op class] description]);
 		}
 	}
-	self.percentageComplete = (collectiveProgress/[self.dependencies count]);
+	self.percentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
 }
 - (void) dealloc {
-	NSLog(@"BlioProcessingCompleteOperation dealloc entered");
+//	NSLog(@"BlioProcessingCompleteOperation dealloc entered");
 	[super dealloc];
 }
 @end
@@ -77,8 +83,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 @synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength;
 
 - (void) dealloc {
-	NSLog(@"BlioProcessingDownloadOperation %@ dealloc entered.",self);
-	NSLog(@"self.localFilename: %@",self.localFilename);
+//	NSLog(@"BlioProcessingDownloadOperation %@ dealloc entered.",self);
     self.url = nil;
     self.filenameKey = nil;
     self.localFilename = nil;
@@ -339,20 +344,6 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 }
 
 - (void)connection:(NSURLConnection *)aConnection didReceiveData:(NSData *)data {
-    if (self.connection == aConnection) {
-//		NSLog(@"connection didReceiveData");
-		[self.downloadFile writeData:data];
-		if (expectedContentLength != 0 && expectedContentLength != NSURLResponseUnknownLength) {
-//			NSLog(@"[self.downloadFile seekToEndOfFile]: %llu",[self.downloadFile seekToEndOfFile]);
-//			NSLog(@"expectedContentLength: %lld",expectedContentLength);
-			self.percentageComplete = [self.downloadFile seekToEndOfFile]*100/expectedContentLength;
-			NSLog(@"Download operation percentageComplete: %u",self.percentageComplete);
-		}
-		else self.percentageComplete = 50;
-	}
-	else {
-		
-	}
 	if ([self isCancelled]) {
 		if (self.headConnection) {
 			[self.headConnection cancel];
@@ -368,6 +359,17 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         [self didChangeValueForKey:@"isFinished"];
         return;
     }	
+    if (self.connection == aConnection) {
+//		NSLog(@"connection didReceiveData");
+		[self.downloadFile writeData:data];
+		if (expectedContentLength != 0 && expectedContentLength != NSURLResponseUnknownLength) {
+//			NSLog(@"[self.downloadFile seekToEndOfFile]: %llu",[self.downloadFile seekToEndOfFile]);
+//			NSLog(@"expectedContentLength: %lld",expectedContentLength);
+			self.percentageComplete = [self.downloadFile seekToEndOfFile]*100/expectedContentLength;
+//			NSLog(@"Download operation percentageComplete for asset %@: %u",self.localFilename,self.percentageComplete);
+		}
+		else self.percentageComplete = 50;
+	}
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
@@ -645,7 +647,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     [listThumb release];
     [self setBookValue:@"listThumb.png" forKey:@"listThumbFilename"];
 	self.operationSuccess = YES;
-
+	self.percentageComplete = 100;
     
     // The above operations will erroneously report a malloc error in the 3.0 Simulator
     // This appears to be a simulator-only bug in Apple's framework as described here:

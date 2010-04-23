@@ -134,6 +134,7 @@
 	}
 }
 -(void) enqueueBook:(BlioMockBook*)aBook {
+	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (moc == nil) {
@@ -153,15 +154,7 @@
 			NSLog(@"Aborting enqueue by prematurely returning...");
 			return;
 		}
-		else if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStatePaused]]) {
-			// if book is paused, reflect unpausing in state
-			[aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingComplete"];			
-			NSError * error;
-			if (![moc save:&error]) {
-				NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
-			}			
-		}
-		else {
+		if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]) {
 			// status is incomplete; operations involved with this book may or may not be in the queue, so we'll cancel the CompleteOperation for this book if it exists and co-opt the other operations if they haven't been cancelled yet
 			BlioProcessingOperation * oldCompleteOperation = [self processingCompleteOperationForSourceID: sourceID sourceSpecificID:sourceSpecificID];
 			if (oldCompleteOperation) [oldCompleteOperation cancel];
@@ -175,45 +168,51 @@
 
 		NSURL * url = nil;
 		NSString * stringURL = nil;
+		NSUInteger alreadyCompletedOperations = 0;
 		
 		stringURL = [aBook valueForKey:@"coverFilename"];
-		if (stringURL != nil && [stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-		else url = nil;
-		// if (stringURL != nil) NSLog(@"coverFilename: %@",stringURL);
-		if (url != nil) {
-			BlioProcessingDownloadCoverOperation *coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:url];
-			coverOp.bookID = bookID;
-			coverOp.sourceID = sourceID;
-			coverOp.sourceSpecificID = sourceSpecificID;
-			coverOp.localFilename = [aBook valueForKey:coverOp.filenameKey];
-			coverOp.storeCoordinator = [moc persistentStoreCoordinator];
-			coverOp.cacheDirectory = cacheDir;
-			coverOp.tempDirectory = tempDir;
-			[coverOp setQueuePriority:NSOperationQueuePriorityHigh];
-			[self.preAvailabilityQueue addOperation:coverOp];
-			[bookOps addObject:coverOp];
-			
-			BlioProcessingGenerateCoverThumbsOperation *thumbsOp = [[BlioProcessingGenerateCoverThumbsOperation alloc] init];
-			thumbsOp.bookID = bookID;
-			thumbsOp.sourceID = sourceID;
-			thumbsOp.sourceSpecificID = sourceSpecificID;
-			thumbsOp.storeCoordinator = [moc persistentStoreCoordinator];
-			thumbsOp.cacheDirectory = cacheDir;
-			thumbsOp.tempDirectory = tempDir;
-			[thumbsOp addDependency:coverOp];
-			[thumbsOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
-			[self.preAvailabilityQueue addOperation:thumbsOp];
-			[bookOps addObject:thumbsOp];
-			
-			[coverOp release];
-			[thumbsOp release];
+		if (stringURL) {
+			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
+			else {
+				url = nil;
+				alreadyCompletedOperations++;
+			}
+			if (url != nil) {
+				BlioProcessingDownloadCoverOperation *coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:url];
+				coverOp.bookID = bookID;
+				coverOp.sourceID = sourceID;
+				coverOp.sourceSpecificID = sourceSpecificID;
+				coverOp.localFilename = [aBook valueForKey:coverOp.filenameKey];
+				coverOp.storeCoordinator = [moc persistentStoreCoordinator];
+				coverOp.cacheDirectory = cacheDir;
+				coverOp.tempDirectory = tempDir;
+				[coverOp setQueuePriority:NSOperationQueuePriorityHigh];
+				[self.preAvailabilityQueue addOperation:coverOp];
+				[bookOps addObject:coverOp];
+				
+				BlioProcessingGenerateCoverThumbsOperation *thumbsOp = [[BlioProcessingGenerateCoverThumbsOperation alloc] init];
+				thumbsOp.bookID = bookID;
+				thumbsOp.sourceID = sourceID;
+				thumbsOp.sourceSpecificID = sourceSpecificID;
+				thumbsOp.storeCoordinator = [moc persistentStoreCoordinator];
+				thumbsOp.cacheDirectory = cacheDir;
+				thumbsOp.tempDirectory = tempDir;
+				[thumbsOp addDependency:coverOp];
+				[thumbsOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+				[self.preAvailabilityQueue addOperation:thumbsOp];
+				[bookOps addObject:thumbsOp];
+				
+				[coverOp release];
+				[thumbsOp release];
+			}
 		}
-		
 		stringURL = [aBook valueForKey:@"epubFilename"];
 		if (stringURL && nil == [aBook valueForKey:@"textFlowFilename"]) {
 			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-			else url = nil;
-			// if (stringURL != nil) NSLog(@"epubFilename: %@",stringURL);
+			else {
+				alreadyCompletedOperations++;
+				url = nil;
+			}
 			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadEPubOperation * ePubOp = nil;
 			if (nil != url) {
@@ -263,8 +262,10 @@
 		stringURL = [aBook valueForKey:@"pdfFilename"];
 		if (stringURL) {
 			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-			else url = nil;
-			
+			else {
+				alreadyCompletedOperations++;
+				url = nil;
+			}
 			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadPdfOperation * pdfOp = nil;
 
@@ -295,9 +296,10 @@
 		stringURL = [aBook valueForKey:@"textFlowFilename"];
 		if (stringURL) {
 			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-			else url = nil;
-			// if (stringURL != nil) NSLog(@"textFlowFilename: %@",stringURL);
-
+			else {
+				alreadyCompletedOperations++;
+				url = nil;
+			}
 			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadTextFlowOperation * textFlowOp = nil;
 
@@ -334,7 +336,7 @@
 					preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
 					preAvailOp.cacheDirectory = cacheDir;
 					preAvailOp.tempDirectory = tempDir;
-					[preAvailOp addDependency:textFlowOp];
+					if (textFlowOp) [preAvailOp addDependency:textFlowOp];
 					[self.preAvailabilityQueue addOperation:preAvailOp];
 					[bookOps addObject:preAvailOp];
 					[newTextFlowPreAvailOps addObject:preAvailOp];
@@ -370,8 +372,10 @@
 		if (stringURL) {
 
 			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-			else url = nil;
-			
+			else {
+				alreadyCompletedOperations++;
+				url = nil;
+			}
 			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadAudiobookOperation * audiobookOp = nil;
 			
@@ -399,6 +403,8 @@
 		}
 		
 		BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];
+		[completeOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+		completeOp.alreadyCompletedOperations = alreadyCompletedOperations;
 		completeOp.bookID = bookID;
 		completeOp.sourceID = sourceID;
 		completeOp.sourceSpecificID = sourceSpecificID;
@@ -413,9 +419,20 @@
 		
 		[self.preAvailabilityQueue addOperation:completeOp];
 		[completeOp release];
+		
+		// now that completeOp is in queue, we change the model (which in turn triggers a refresh in LibraryView; the gridcell can successfully find the completeOp in the queue and become a listener to it.
+		if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStatePaused]]) {
+			// if book is paused, reflect unpausing in state
+			[aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingComplete"];			
+			NSError * error;
+			if (![moc save:&error]) {
+				NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+			}			
+		}		
 	}
 }
 - (void)pauseProcessingForBook:(BlioMockBook*)aBook {
+	NSLog(@"BlioProcessingManager pauseProcessingForBook entered");
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (moc == nil) {
 		NSLog(@"WARNING: pause processing attempted while Processing Manager MOC == nil!");
@@ -435,6 +452,34 @@
 	NSArray * relatedOperations = [self processingOperationsForSourceID:aBook.sourceID sourceSpecificID:aBook.sourceSpecificID];
 	for (BlioProcessingOperation * op in relatedOperations) {
 		[op cancel];
+	}
+}
+-(void) deleteBook:(BlioMockBook*)aBook shouldSave:(BOOL)shouldSave {
+	// if book is processing, stop all associated operations
+	if ([[aBook valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStateIncomplete) [self stopProcessingForBook:aBook];
+	
+    NSManagedObjectContext *moc = self.managedObjectContext;
+	NSError * error;
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	
+	// delete temporary files (which are only present if processing is not complete)
+	if ([fileManager fileExistsAtPath:[aBook bookTempDirectory]]) {
+		if (![fileManager removeItemAtPath:[aBook bookTempDirectory] error:&error]) {
+			NSLog(@"WARNING: deletion of temporary directory for book failed. %@, %@", error, [error userInfo]);
+		}
+	}
+	// delete permanent files
+	if (![fileManager removeItemAtPath:[aBook bookCacheDirectory] error:&error]) {
+		NSLog(@"WARNING: deletion of cache directory for book failed. %@, %@", error, [error userInfo]);
+	}
+	
+	// delete record
+	[moc deleteObject:aBook];
+	if (shouldSave) {
+		NSError * error;
+		if (![moc save:&error]) {
+			NSLog(@"deleteBook failed in processing manager with error: %@, %@", error, [error userInfo]);
+		}		
 	}
 }
 - (void)stopDownloadingOperations {

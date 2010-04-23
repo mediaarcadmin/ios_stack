@@ -18,6 +18,8 @@ typedef enum {
 
 @class BlioBookVaultManager;
 @class BlioLibraryBookView;
+@class BlioLibraryListCell;
+@class BlioLibraryGridViewCell;
 
 @protocol BlioProcessingDelegate;
 
@@ -53,4 +55,8 @@ typedef enum {
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) BlioBookVaultManager* vaultManager;
 
+
+-(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;
+-(void)configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index;
+	
 @end
