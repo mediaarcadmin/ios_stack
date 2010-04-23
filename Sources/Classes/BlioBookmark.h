@@ -8,24 +8,6 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
-@class BlioBookmarkPoint;
-
-@interface BlioBookmarkAbsolutePoint : NSObject {
-    NSInteger layoutPage;
-    uint32_t blockOffset;
-    uint32_t wordOffset;
-    uint32_t elementOffset;
-}
-
-@property (nonatomic, assign) NSInteger layoutPage;
-@property (nonatomic, assign) uint32_t blockOffset;
-@property (nonatomic, assign) uint32_t wordOffset;
-@property (nonatomic, assign) uint32_t elementOffset;
-
-+ (BlioBookmarkAbsolutePoint *)bookmarkAbsolutePointWithBookmarkPoint:(BlioBookmarkPoint *)point;
-
-@end
-
 @interface BlioBookmarkPoint : NSObject {
     NSInteger layoutPage;
     uint32_t blockOffset;
@@ -39,7 +21,6 @@
 @property (nonatomic, assign) uint32_t elementOffset;
 
 - (NSManagedObject *)persistentBookmarkPointInContext:(NSManagedObjectContext *)moc;
-+ (BlioBookmarkPoint *)bookmarkPointWithAbsolutePoint:(BlioBookmarkAbsolutePoint *)absolutePoint;
 + (BlioBookmarkPoint *)bookmarkPointWithPersistentBookmarkPoint:(NSManagedObject *)persistedBookmarkPoint;
 - (NSComparisonResult)compare:(BlioBookmarkPoint *)rhs;
 

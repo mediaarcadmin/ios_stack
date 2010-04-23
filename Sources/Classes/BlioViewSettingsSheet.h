@@ -7,21 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAccessibilitySegmentedControl.h"
+#import "BlioBookViewController.h"
 
+@protocol BlioViewSettingsDelegate;
 
 @interface BlioViewSettingsSheet : UIActionSheet {
     UILabel *fontSizeLabel;
     UILabel *pageColorLabel;
-    UISegmentedControl *pageLayoutSegment;
-    UISegmentedControl *fontSizeSegment;
-    UISegmentedControl *pageColorSegment;
-    UISegmentedControl *lockButtonSegment;
-    UISegmentedControl *tapTurnButtonSegment;
+    BlioAccessibilitySegmentedControl *pageLayoutSegment;
+    BlioAccessibilitySegmentedControl *fontSizeSegment;
+    BlioAccessibilitySegmentedControl *pageColorSegment;
+    BlioAccessibilitySegmentedControl *lockButtonSegment;
+    BlioAccessibilitySegmentedControl *tapTurnButtonSegment;
     UIButton *doneButton;
     UIImage *tapTurnOnImage;
     UIImage *tapTurnOffImage;
     UIImage *lockRotationImage;
     UIImage *unlockRotationImage;   
+    id<BlioViewSettingsDelegate> viewSettingsDelegate;
 }
 
 @property (nonatomic, retain) UILabel *fontSizeLabel;
@@ -32,6 +36,7 @@
 @property (nonatomic, retain) UISegmentedControl *lockButtonSegment;
 @property (nonatomic, retain) UISegmentedControl *tapTurnButtonSegment;
 @property (nonatomic, retain) UIButton *doneButton;
+@property (nonatomic, assign) id<BlioViewSettingsDelegate> viewSettingsDelegate;
 
 - (id)initWithDelegate:(id)newDelegate;
 

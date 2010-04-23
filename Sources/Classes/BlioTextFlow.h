@@ -46,7 +46,8 @@
 
 @interface BlioTextFlowPageRange : NSObject <NSCoding> {
     // NSCoding compliant
-    NSInteger pageIndex;
+    NSInteger startPageIndex;
+    NSInteger endPageIndex;
     NSString *path;
     NSMutableSet *pageMarkers;
     
@@ -55,7 +56,8 @@
     NSInteger currentPageIndex;
 }
 
-@property (nonatomic) NSInteger pageIndex;
+@property (nonatomic) NSInteger startPageIndex;
+@property (nonatomic) NSInteger endPageIndex;
 @property (nonatomic, retain) NSString *path;
 @property (nonatomic, retain) NSMutableSet *pageMarkers;
 
@@ -92,6 +94,7 @@
     NSString *name;
     NSString *flowSourcePath;
     NSUInteger startPage;
+    NSUInteger endPage;
 }
 
 @property (nonatomic, retain) NSString *name;
@@ -131,5 +134,6 @@
 - (NSArray *)wordsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSString *)stringForPageAtIndex:(NSInteger)pageIndex;
+- (NSUInteger)lastPageIndex; 
 
 @end

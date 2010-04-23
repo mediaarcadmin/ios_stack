@@ -25,7 +25,7 @@
 
 @implementation BlioSpeedReadView
 
-@synthesize pageCount, pageNumber, currentWordOffset, currentParagraphID, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize pageNumber, currentWordOffset, currentParagraphID, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {    
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
@@ -88,10 +88,7 @@
         [bigTextLabel setFont:font];
         [sampleTextLabel setFont:font];        
         
-        
-        pageNumber = 1;
-        
-        [self fillArrayWithCurrentBlock];	
+        [self goToBookmarkPoint:aBook.implicitBookmarkPoint animated:NO];	
         [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
         
         initialTouchDifference = 0;
@@ -100,8 +97,6 @@
     }    
     return self;
 }
-
-
 
 - (void)fillArrayWithNextBlock {
     if (textArray) {
@@ -328,25 +323,30 @@
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
     
-}
-
-- (void)gotoCurrentPageAnimated {
-    [self goToPageNumber:self.pageNumber animated:YES];
     
 }
 
 - (void)goToPageNumber:(NSInteger)aPageNumber animated:(BOOL)animated {
+    BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
+    point.layoutPage = aPageNumber;
+
+    [self goToBookmarkPoint:point animated:animated];
+    
+    [point release];
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint {
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
     return bookmarkPoint.layoutPage;
 }
 
-- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint
-{
+- (NSInteger)pageCount {
+    return [self.book.textFlow lastPageIndex] + 1;
+}
+
+- (BlioBookmarkPoint *)currentBookmarkPoint {
     BlioBookmarkPoint *bookmarkPoint = [paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID
                                                                           wordOffset:self.currentWordOffset];
-    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
+    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
     ret.layoutPage = bookmarkPoint.layoutPage;
     ret.blockOffset = bookmarkPoint.blockOffset;
     ret.wordOffset = bookmarkPoint.wordOffset;
@@ -354,11 +354,11 @@
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
 {
     id paragraphId = nil;
     uint32_t wordOffset = 0;
-    [paragraphSource bookmarkPoint:[BlioBookmarkPoint bookmarkPointWithAbsolutePoint:bookmarkPoint] toParagraphID:&paragraphId wordOffset:&wordOffset];
+    [paragraphSource bookmarkPoint:bookmarkPoint toParagraphID:&paragraphId wordOffset:&wordOffset];
     
     self.currentParagraphID = paragraphId;
     self.currentWordOffset = wordOffset;

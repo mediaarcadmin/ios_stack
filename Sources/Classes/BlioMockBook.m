@@ -8,6 +8,8 @@
 
 #import "BlioMockBook.h"
 #import "BlioTextFlowParagraphSource.h"
+#import "BlioEPubParagraphSource.h"
+#import <libEucalyptus/EucBUpeBook.h>
 
 @implementation BlioMockBook
 
@@ -20,13 +22,13 @@
 @dynamic processingComplete;
 @dynamic proportionateSize;
 @dynamic position;
-@dynamic layoutPageNumber;
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
 @dynamic textFlowFilename;
 @dynamic sourceID;
 @dynamic sourceSpecificID;
+@dynamic placeInBook;
 
 - (void)dealloc {
     [coverThumb release];
@@ -146,14 +148,16 @@
     }
     
     return textFlow;
-        
-//    if (nil == textFlow) {
-//        textFlow = [[BlioTextFlow alloc] initWithPath:[self textflowPath]];
-//    }
-//    if (textFlow.ready)
-//        return textFlow;
-//    else
-//        return nil;
+}
+
+- (EucBUpeBook *)ePubBook {
+    if (nil == ePubBook) {
+        NSString *ePubPath = self.ePubPath;
+        if(ePubPath) {
+            ePubBook = [[EucBUpeBook alloc] initWithPath:[self ePubPath]];
+        }
+    }
+    return ePubBook;    
 }
 
 - (id<BlioParagraphSource>)paragraphSource {
@@ -161,6 +165,11 @@
         BlioTextFlow *myTextFlow = self.textFlow;
         if(myTextFlow) {
             paragraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
+        } else {
+            EucBUpeBook *myEPubBook = self.ePubBook;
+            if(myEPubBook) {
+                paragraphSource = [[BlioEPubParagraphSource alloc] initWitBUpeBook:myEPubBook];
+            }
         }
     }
     return paragraphSource;
@@ -369,6 +378,55 @@
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
     return bookPath;
+}
+
+- (BlioBookmarkPoint *)implicitBookmarkPoint
+{
+    BlioBookmarkPoint *ret;
+    
+    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
+    if(placeInBook) {
+        ret = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[[placeInBook valueForKey:@"range"] valueForKey:@"startPoint"]];
+    } else {
+        ret = [[[BlioBookmarkPoint alloc] init] autorelease];
+        ret.layoutPage = 1;
+    }
+    return ret;
+}
+
+- (void)setImplicitBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
+    if(placeInBook) {
+        NSManagedObject *persistentBookmarkRange = [placeInBook valueForKey:@"range"];
+        
+        NSNumber *layoutPageNumber = [NSNumber numberWithInteger:bookmarkPoint.layoutPage];
+        NSNumber *layoutBlockOffset = [NSNumber numberWithInteger:bookmarkPoint.blockOffset];
+        NSNumber *layoutWordOffset = [NSNumber numberWithInteger:bookmarkPoint.wordOffset];
+        NSNumber *layoutElementOffset = [NSNumber numberWithInteger:bookmarkPoint.elementOffset];   
+        
+        NSManagedObject *bookmarkStartPoint = [persistentBookmarkRange valueForKey:@"startPoint"];
+        [bookmarkStartPoint setValue:layoutPageNumber forKey:@"layoutPage"];
+        [bookmarkStartPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
+        [bookmarkStartPoint setValue:layoutWordOffset forKey:@"wordOffset"];
+        [bookmarkStartPoint setValue:layoutElementOffset forKey:@"elementOffset"];
+        
+        NSManagedObject *bookmarkEndPoint = [persistentBookmarkRange valueForKey:@"endPoint"];
+        [bookmarkEndPoint setValue:layoutPageNumber forKey:@"layoutPage"];
+        [bookmarkEndPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
+        [bookmarkEndPoint setValue:layoutWordOffset forKey:@"wordOffset"];
+        [bookmarkEndPoint setValue:layoutElementOffset forKey:@"elementOffset"];
+    } else {
+        placeInBook = [NSEntityDescription
+                       insertNewObjectForEntityForName:@"BlioPlaceInBook"
+                       inManagedObjectContext:[self managedObjectContext]];
+        [self setValue:placeInBook forKey:@"placeInBook"];
+        
+        BlioBookmarkRange *bookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
+        
+        NSManagedObject *persistentBookmarkRange = [bookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+        [placeInBook setValue:persistentBookmarkRange forKey:@"range"];
+    }     
 }
 
 #pragma mark -

@@ -14,11 +14,51 @@
 #import "BlioAudioBookManager.h"
 #import "BlioMockBook.h"
 #import "BlioBookView.h"
+#import "BlioViewSettingsSheet.h"
 #import "BlioNotesView.h"
 #import "BlioContentsTabViewController.h"
 #import "BlioWebToolsViewController.h"
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
+
+typedef enum BlioPageColor {
+    kBlioPageColorWhite = 0,
+    kBlioPageColorBlack = 1,
+    kBlioPageColorNeutral = 2,
+} BlioPageColor;
+
+typedef enum BlioPageLayout {
+    kBlioPageLayoutPlainText = 0,
+    kBlioPageLayoutPageLayout = 1,
+    kBlioPageLayoutSpeedRead = 2,
+} BlioPageLayout;
+
+typedef enum BlioTapTurn {
+    kBlioTapTurnOff = 0,
+    kBlioTapTurnOn = 1,
+} BlioTapTurn;
+
+typedef enum BlioFontSize {
+    kBlioFontSizeVerySmall = 0,
+    kBlioFontSizeSmall = 1,
+    kBlioFontSizeMedium = 2,
+    kBlioFontSizeLarge = 3,
+    kBlioFontSizeVeryLarge = 4,
+} BlioFontSize;
+
+@protocol BlioViewSettingsDelegate <NSObject>
+@required
+- (void)changePageLayout:(id)sender;
+- (BOOL)shouldShowPageAttributeSettings;
+- (void)dismissViewSettings:(id)sender;
+- (BOOL)isRotationLocked;
+- (void)changeLockRotation;
+- (BlioPageLayout)currentPageLayout;
+- (BlioTapTurn)currentTapTurn;
+- (void)changeTapTurn;
+- (BlioPageColor)currentPageColor;
+- (BlioFontSize)currentFontSize;
+@end
 
 @class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton;
 @protocol EucBook, BlioBookView;
@@ -29,14 +69,10 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-typedef enum {
-    kBlioPageColorWhite = 0,
-    kBlioPageColorBlack = 1,
-    kBlioPageColorNeutral = 2,
-} BlioPageColor;
-
-@interface BlioBookViewController : UIViewController <BlioBookDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, AVAudioPlayerDelegate> {
+@interface BlioBookViewController : UIViewController <BlioBookDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
     BOOL _firstAppearance;
+    
+    BlioMockBook *_book;
     
     UIView<BlioBookView> *_bookView;
     
@@ -50,6 +86,7 @@ typedef enum {
     //EucBookContentsTableViewController *_contentsSheet;
     
     BOOL _viewIsDisappearing;
+    NSUInteger _lastSavedPageNumber;
         
     UIBarStyle _returnToNavigationBarStyle;
     UIColor *_returnToNavigationBarTint;
@@ -71,8 +108,6 @@ typedef enum {
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
     
-    BlioMockBook *_book;
-
     MSTiltScroller *tiltScroller;
     MSTapDetector *tapDetector;
     BOOL motionControlsEnabled;
@@ -86,6 +121,7 @@ typedef enum {
     BOOL _pageJumpSliderTracking;
     BlioBookViewControllerProgressPieButton *_pieButton;
     NSManagedObjectContext *_managedObjectContext;
+    BOOL rotationLocked;
 }
 
 // Designated initializers.
@@ -111,6 +147,8 @@ typedef enum {
 @property (nonatomic, retain) UIView *pageJumpView;
 @property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+
+@property (nonatomic, getter=isRotationLocked) BOOL rotationLocked;
 
 - (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;

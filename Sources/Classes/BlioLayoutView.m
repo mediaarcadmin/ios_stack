@@ -251,8 +251,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         [self addObserver:self forKeyPath:@"currentPageLayer" options:0 context:NULL];
         
-        NSNumber *savedPage = [aBook layoutPageNumber];
-        NSInteger page = (nil != savedPage) ? [savedPage intValue] : 1;
+        NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cacheThumbImage:) name:@"BlioLayoutThumbLayerContentsAvailable" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
@@ -305,13 +304,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self goToPageNumber:targetPage animated:animated shouldZoomOut:YES targetZoomScale:kBlioPDFGoToZoomTargetScale targetContentOffset:CGPointZero];
 }
 
-- (BlioBookmarkAbsolutePoint *)pageBookmarkPoint {
-    BlioBookmarkAbsolutePoint *ret = [[BlioBookmarkAbsolutePoint alloc] init];
+- (BlioBookmarkPoint *)currentBookmarkPoint {
+    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
     ret.layoutPage = self.pageNumber;
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint animated:(BOOL)animated {
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
     [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
@@ -319,7 +318,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkAbsolutePoint *)bookmarkPoint {
+- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
     return bookmarkPoint.layoutPage;
 }
 
@@ -2111,7 +2110,68 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self performSelectorOnMainThread:@selector(blioCoverPageDidFinishRenderOnMainThread:) withObject:notification waitUntilDone:YES];
 }
 
+#pragma mark -
+#pragma mark Accessibility
 
+- (BOOL)isAccessibilityElement {
+    return NO;
+}
+
+- (NSString *)accessibilityLabel {
+    return [NSString stringWithFormat:@"%@", [self.book title]];
+}
+
+- (NSString *)accessibilityHint {
+    return @"Toggles book toolbars.";
+}
+
+
+#if 0
+
+- (NSArray *)accessibleElements
+{
+    if ( _accessibleElements != nil )
+    {
+        return _accessibleElements;
+    }
+    _accessibleElements = [[NSMutableArray alloc] init];
+    
+    /* Create an accessibility element to represent the first contained element and initialize it as a component of MultiFacetedView. */
+    
+    UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+    //CGRect pageRect = self.currentPageLayer.bounds;
+    
+    CGRect cropRect;
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:self.currentPageLayer.pageNumber cropRect:&cropRect];
+    CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+    
+    [element setAccessibilityFrame:pageRect];
+    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", self.currentPageLayer.pageNumber]];
+    
+    /* Set attributes of the first contained element here. */
+    
+    [_accessibleElements addObject:element];
+    
+    return _accessibleElements;
+}
+
+/* The following methods are implementations of UIAccessibilityContainer protocol methods. */
+
+- (NSInteger)accessibilityElementCount
+{
+    return [[self accessibleElements] count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    return [[self accessibleElements] objectAtIndex:index];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return [[self accessibleElements] indexOfObject:element];
+}
+#endif
 @end
 
 @implementation BlioLayoutViewColoredRect

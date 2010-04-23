@@ -8,25 +8,6 @@
 
 #import "BlioBookmark.h"
 
-@implementation BlioBookmarkAbsolutePoint
- 
-@synthesize layoutPage;
-@synthesize blockOffset;
-@synthesize wordOffset;
-@synthesize elementOffset;
-
-+ (BlioBookmarkAbsolutePoint *)bookmarkAbsolutePointWithBookmarkPoint:(BlioBookmarkPoint *)point {
-    BlioBookmarkAbsolutePoint *absolutePoint = [[BlioBookmarkAbsolutePoint alloc] init];
-    absolutePoint.layoutPage = point.layoutPage;
-    absolutePoint.blockOffset = point.blockOffset;
-    absolutePoint.wordOffset = point.wordOffset;
-    absolutePoint.elementOffset = point.elementOffset;
-    
-    return [absolutePoint autorelease];
-}
-
-@end
-
 @implementation BlioBookmarkPoint
 
 @synthesize layoutPage;
@@ -45,16 +26,6 @@
     [newBookmarkPoint setValue:[NSNumber numberWithInteger:self.elementOffset] forKey:@"elementOffset"];   
     
     return newBookmarkPoint;
-}
-
-+ (BlioBookmarkPoint *)bookmarkPointWithAbsolutePoint:(BlioBookmarkAbsolutePoint *)absolutePoint {
-    BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
-    point.layoutPage = absolutePoint.layoutPage;
-    point.blockOffset = absolutePoint.blockOffset;
-    point.wordOffset = absolutePoint.wordOffset;
-    point.elementOffset = absolutePoint.elementOffset;
-    
-    return [point autorelease];
 }
 
 + (BlioBookmarkPoint *)bookmarkPointWithPersistentBookmarkPoint:(NSManagedObject *)persistedBookmarkPoint {

@@ -285,10 +285,12 @@ typedef enum {
 */
 
 // Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return YES;
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    if ([self.delegate isRotationLocked])
+        return NO;
+    else
+        return YES;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -312,11 +314,6 @@ typedef enum {
 @end
 
 @implementation BlioContentsTabContentsViewController
-/*
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
-*/
 @end
 
 
@@ -449,7 +446,7 @@ typedef enum {
     if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
         pageNum = [self.bookView pageNumberForBookmarkRange:aBookmarkRange];
     } else {
-        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:aBookmarkRange.startPoint];
+        BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
         pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
     }
     
@@ -619,7 +616,7 @@ typedef enum {
     if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
         pageNum = [self.bookView pageNumberForBookmarkRange:aBookmarkRange];
     } else {
-        BlioBookmarkAbsolutePoint *aBookMarkPoint = [BlioBookmarkAbsolutePoint bookmarkAbsolutePointWithBookmarkPoint:aBookmarkRange.startPoint];
+        BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
         pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
     }
     

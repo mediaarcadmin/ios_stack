@@ -87,6 +87,8 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
     aButtonSegment.frame = CGRectMake(kBlioNotesViewShadow + kBlioNotesViewTextXInset, kBlioNotesViewShadow + ((kBlioNotesViewToolbarHeight - aButtonSegment.frame.size.height)/2.0f), aButtonSegment.frame.size.width + 4, aButtonSegment.frame.size.height);
     aButtonSegment.tintColor = [UIColor colorWithRed:0.890 green:0.863f blue:0.592f alpha:1.0f];
+    [[aButtonSegment imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Cancel", @"Accessibility label for Notes View Cancel button")];
+
     [aButtonSegment addTarget:self action:@selector(dismiss:) forControlEvents:UIControlEventValueChanged];
     [aButtonSegment setAutoresizingMask:UIViewAutoresizingFlexibleRightMargin];
     [self addSubview:aButtonSegment];
@@ -99,6 +101,8 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
     aButtonSegment.frame = CGRectMake(self.frame.size.width - kBlioNotesViewShadow - kBlioNotesViewTextXInset - aButtonSegment.frame.size.width - 8, kBlioNotesViewShadow + ((kBlioNotesViewToolbarHeight - aButtonSegment.frame.size.height)/2.0f), aButtonSegment.frame.size.width + 8, aButtonSegment.frame.size.height);
     aButtonSegment.tintColor = [UIColor colorWithRed:0.890 green:0.863f blue:0.592f alpha:1.0f];
+    [[aButtonSegment imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Save", @"Accessibility label for Notes View Save button")];
+
     [aButtonSegment addTarget:self action:@selector(save:) forControlEvents:UIControlEventValueChanged];
     [aButtonSegment setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
     [self addSubview:aButtonSegment];

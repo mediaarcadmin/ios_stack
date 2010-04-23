@@ -312,6 +312,15 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     return ret;
 }
 
+- (EucCSSIntermediateDocumentNode *)_layoutNodeForKey:(uint32_t)nodeKey
+{
+    if(nodeKey == 0) {
+        return self.document.rootNode;
+    } else {
+        return [self.document nodeForKey:nodeKey];
+    }
+}
+
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                           inFrame:(CGRect)frame
                                returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
@@ -379,12 +388,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     uint32_t elementOffset = point.element;
     
     EucCSSIntermediateDocument *document = self.document;
-    EucCSSIntermediateDocumentNode* currentDocumentNode;
-    if(!point.nodeKey) {
-        currentDocumentNode = document.rootNode;
-    } else {
-        currentDocumentNode = [document nodeForKey:nodeKey];
-    }
+    EucCSSIntermediateDocumentNode* currentDocumentNode = [self _layoutNodeForKey:nodeKey];
                                                 
     if(currentDocumentNode) {
         css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;

@@ -88,6 +88,21 @@
     return ret;
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"[%ld, %ld, %ld, %ld]", (long)_source, (long)_block, (long)_word, (long)_element];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    EucBookPageIndexPoint *ret = [[EucBookPageIndexPoint alloc] init];
+    ret.source = self.source;
+    ret.block = self.block;
+    ret.word = self.word;
+    ret.element = self.element;
+    return ret;
+}
+
 - (NSComparisonResult)compare:(EucBookPageIndexPoint *)rhs
 {
     int32_t comparison = self.source - rhs.source;
