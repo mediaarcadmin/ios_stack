@@ -19,8 +19,8 @@
 - (id)init {
     if ((self = [super init])) {
 		[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd] autorelease]];
-		[self setSetupData:[setupTTS alloc]];
-		[self setEngine:[[AcapelaSpeech alloc] autorelease]];
+		[self setSetupData:[[setupTTS alloc] init]];
+		[self setEngine:[[[AcapelaSpeech alloc] init]autorelease]];
 		[self setCurrentPage:-1];
 		[self setBlockWords:nil];
 		[self setTextToSpeakChanged:NO];
@@ -30,21 +30,17 @@
     return self;
 }
 
-/*
-- (void)initTTS { 
-	[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd] autorelease]];
-	//[self setSetupData:[[setupTTS alloc] initialize]];
-	//[self setEngine:[[[AcapelaSpeech alloc] initWithVoice:setupData.CurrentVoice license:ttsLicense] autorelease]];
-	[self setSetupData:[setupTTS alloc]];
-	[self setEngine:[[AcapelaSpeech alloc] autorelease]];
-	[self setPreferences];
-	[self setCurrentPage:-1];
-	[self setBlockWords:nil];
-	[self setTextToSpeakChanged:NO];
-	[self setStartedPlaying:NO];
-	[self setPageChanged:YES];  
+- (void)dealloc
+{
+    if(currentStringWithWordOffsets) {
+        CFRelease(currentStringWithWordOffsets);
+    }
+    [engine release];
+    [setupData release];
+    [ttsLicense release];
+    
+    [super dealloc];
 }
- */
 
 - (BOOL)voiceHasChanged {
 	return ((([[self.setupData CurrentVoiceName] compare:@"Laura"]==NSOrderedSame) && 
@@ -68,9 +64,51 @@
 	[self setVolume:[[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastVolumeDefaultsKey]];
 }
 
-- (BOOL)startSpeaking:(NSString *)string {
-	return [engine startSpeakingString:string];
+- (BOOL)startSpeakingWords:(NSArray *)words {
+    if(currentStringWithWordOffsets) {
+        CFRelease(currentStringWithWordOffsets);
+    }
+    
+    // Create an attributed string so that we can look up word offsets for 
+    // any location in it later (in -wordOffsetForCharacterRange:)
+    CFMutableAttributedStringRef stringWithWordOffsets = CFAttributedStringCreateMutable(kCFAllocatorDefault, 0);
+    CFAttributedStringBeginEditing(stringWithWordOffsets);
+    
+    NSUInteger offset = 0;
+    for(NSString *word in words) {
+        NSUInteger wordLength = [word length];
+        CFIndex oldLength = CFAttributedStringGetLength(stringWithWordOffsets);
+        
+        CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(oldLength, 0), (CFStringRef)word);
+        CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(oldLength + wordLength, 0), CFSTR(" "));
+        CFAttributedStringSetAttribute(stringWithWordOffsets, CFRangeMake(oldLength, wordLength + 1),
+                                       CFSTR("wordOffset"), (CFTypeRef)[NSNumber numberWithUnsignedInteger:offset]);
+        ++offset;
+    }
+    
+    // Remove the trailing space we just added in the last iteration of the loop.
+    CFIndex stringLength = CFAttributedStringGetLength(stringWithWordOffsets);
+    CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(stringLength - 2, 1), CFSTR(""));
+    
+    CFAttributedStringEndEditing(stringWithWordOffsets);
+    
+    currentStringWithWordOffsets = stringWithWordOffsets;
+    
+    return [engine startSpeakingString:(NSString *)CFAttributedStringGetString(currentStringWithWordOffsets)];
 }
+
+- (BOOL)startSpeaking:(NSString *)string {
+	return [self startSpeakingWords:[NSArray arrayWithObject:string]];
+}
+
+- (NSUInteger)wordOffsetForCharacterRange:(NSRange)characterRange
+{
+    NSNumber *wordOffsetNumber = (NSNumber *)CFAttributedStringGetAttribute(currentStringWithWordOffsets, 
+                                                                            characterRange.location + characterRange.length,
+                                                                            CFSTR("wordOffset"), NULL);
+    return [wordOffsetNumber unsignedIntegerValue];
+}
+
 - (void)stopSpeaking {
 	[self setStartedPlaying:NO];
 	[engine stopSpeaking];

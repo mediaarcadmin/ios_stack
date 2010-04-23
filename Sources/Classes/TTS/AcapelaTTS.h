@@ -20,6 +20,8 @@ typedef enum {
 	setupTTS* setupData;
 	AcapelaSpeech* engine;
 	AcapelaLicense* ttsLicense;
+    
+    CFAttributedStringRef currentStringWithWordOffsets;
 }
 
 @property (nonatomic, retain) AcapelaLicense* ttsLicense;
@@ -41,5 +43,9 @@ typedef enum {
 - (void)setEngineWithPreferences:(BOOL)voiceChanged;
 - (BOOL)queueSpeakingString:(NSString *)string;
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError;
+
+
+- (BOOL)startSpeakingWords:(NSArray *)words;
+- (NSUInteger)wordOffsetForCharacterRange:(NSRange)characterRange;
 
 @end

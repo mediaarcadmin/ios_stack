@@ -11,10 +11,13 @@
 
 @implementation BlioAudioManager
 
-@synthesize currentWordOffset, adjustedWordOffset, currentBlock, currentWord, currentPage, startedPlaying, pageChanged, textToSpeakChanged, blockWords, speakingTimer;
+@synthesize currentWordOffset, adjustedWordOffset, currentBlock, currentPage, startedPlaying, pageChanged, textToSpeakChanged, blockWords, speakingTimer;
 
 - (void)dealloc {
-    self.currentBlock = nil;
+    [speakingTimer release];
+    [blockWords release];
+    [currentBlock release];
+    
     [super dealloc];
 }
 

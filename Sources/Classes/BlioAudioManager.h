@@ -20,11 +20,9 @@
 	BOOL pageChanged;  // This means page has changed since the stop button was last pressed.
 	// TTS
 	BOOL textToSpeakChanged; 
-	NSString* currentWord;
 }
 
 @property (nonatomic, retain) NSArray* blockWords;
-@property (nonatomic, retain) NSString* currentWord;
 @property (nonatomic, retain) NSTimer* speakingTimer;
 @property (nonatomic, retain) id currentBlock;
 @property (nonatomic) uint32_t currentWordOffset;

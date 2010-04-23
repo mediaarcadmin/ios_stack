@@ -1326,78 +1326,17 @@ typedef enum {
 - (void)speakNextBlock:(NSTimer*)timer {
 	if ( _acapelaTTS.textToSpeakChanged ) {	
 		[_acapelaTTS setTextToSpeakChanged:NO];
-		[_acapelaTTS startSpeaking:[_acapelaTTS.blockWords componentsJoinedByString:@" "]];
+		[_acapelaTTS startSpeakingWords:_acapelaTTS.blockWords];
 	}
 }
 
-- (id)getBlockId:(BlioPageLayout)pagetype currentBlock:(id)block {
-	if ( pagetype==kBlioPageLayoutPageLayout ) 
-		return [(BlioLayoutView *)self.bookView blockIdForBlockAfterBlockWithId:block];
-	else/* if ( pagetype==kBlioPageLayoutPlainText ) {
-        BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-        BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-        EucEPubBook *book = (EucEPubBook*)bookView.book;
-		return [[NSNumber alloc] initWithInteger:[book blockIdForBlockAfterBlockWithId:[block integerValue]]];
-	}
-	else*/
-		return nil;
-}
-
-- (id)getBlockWords:(BlioPageLayout)pagetype currentBlock:(id)block {
-	if ( pagetype==kBlioPageLayoutPageLayout ) {
-		return [(BlioLayoutView *)self.bookView blockWordsForBlockWithId:block];
-	}
-	else/* if ( pagetype==kBlioPageLayoutPlainText ) {
-		BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-		BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-		EucEPubBook *book = (EucEPubBook*)bookView.book;
-		return [book blockWordsForBlockWithId:[block integerValue]];
-	}
-	else*/
-		return nil;
-}
-
-/*
- - (BOOL)pageChanged:(BlioPageLayout)pageType blockId:(id)block wordOffset:(NSUInteger)offset currentPage:(NSInteger)page audioManager:(BlioAudioManager*)audioMgr{
- if ( pageType==kBlioPageLayoutPageLayout ) 
- return [(BlioLayoutView *)self.bookView pageNumber] != page;
- else if ( pageType==kBlioPageLayoutPlainText ) {
- return (([block integerValue] + offset) != page);
- }
- else
- // meaningless
- return NO;
- }
- */
-
-- (id)getCurrentBlock:(BlioPageLayout)pageType wordOffset:(NSInteger*)offset {
-	if ( pageType==kBlioPageLayoutPageLayout ) {
-		*offset = [(BlioLayoutView *)self.bookView getCurrentWordOffset];
-		return [(BlioLayoutView *)self.bookView getCurrentBlockId];
-	}
-	else /*if ( pageType==kBlioPageLayoutPlainText ) {
-		BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-		BlioEPubView *bookView = (BlioEPubView *)bookViewController.bookView;
-		EucEPubBook *book = (EucEPubBook*)bookView.book;
-		uint32_t tempBlock;
-		uint32_t tempOffset;
-		[book getCurrentBlockId:&tempBlock wordOffset:&tempOffset];
-		*offset = tempOffset;
-		return [[NSNumber alloc] initWithInteger:tempBlock]; // static NSNumber creation leads to crash
-	}
-	else*/
-		return nil;
-}
-
-- (id) getNextBlock:(NSInteger*)wordOffset blioPageType:(BlioPageLayout)pageType audioManager:(BlioAudioManager*)audioMgr {
-	id blockId;
-	while ( true ) {
-		blockId = [self getBlockId:pageType currentBlock:audioMgr.currentBlock];
-		*wordOffset = 0;
-		[audioMgr setCurrentWordOffset:*wordOffset];
-		[audioMgr setAdjustedWordOffset:*wordOffset];
-		[audioMgr setCurrentBlock:(id)blockId];
-		[audioMgr setBlockWords:[self getBlockWords:pageType currentBlock:audioMgr.currentBlock]];
+- (void) getNextBlockForAudioManager:(BlioAudioManager*)audioMgr {
+    id<BlioParagraphSource> paragraphSource = self.book.paragraphSource;
+	do {
+		audioMgr.currentBlock = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
+		[audioMgr setCurrentWordOffset:0];
+		[audioMgr setAdjustedWordOffset:0];
+		[audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:audioMgr.currentBlock]];
 		if ( audioMgr.blockWords == nil ) {
 			// end of the book
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
@@ -1408,54 +1347,48 @@ typedef enum {
 
 			[self stopAudio];
 			self.audioPlaying = NO;
-			return blockId;
+            break;
 		}
-		else if ( [audioMgr.blockWords count] == 0 ) 
-			// empty block, go to the next.
-			continue;
-		else
-			break;
-	}
-	return blockId;
+    } while ( [audioMgr.blockWords count] == 0 ); // Loop in case the block's empty.
 }
 
 - (void) prepareTextToSpeak:(BOOL)continuingSpeech blioPageType:(BlioPageLayout)pageType audioManager:(BlioAudioManager*)audioMgr {
-	id blockId;
-	NSInteger wordOffset;
 	if ( continuingSpeech ) {
 		// Continuing to speak, we just need more text.
-		blockId = [self getNextBlock:&wordOffset blioPageType:pageType audioManager:audioMgr];
-		if ( wordOffset != 0 ) 
-			[audioMgr adjustBlockWords];
+		[self getNextBlockForAudioManager:audioMgr];
 	}
 	else {
-		blockId = [self getCurrentBlock:pageType wordOffset:&wordOffset]; 
 		// Play button has just been pushed.
-		if ( audioMgr.pageChanged ) {  
-			// Page has changed since the stop button was last pushed (and pageChanged is initialized to true).
-			// So we're starting speech for the first time, or for the first time since changing the 
-			// page or book after stopping speech the last time (whew).
-			//[audioMgr setCurrentPage:[self getCurrentPage:pageType blockId:blockId wordOffset:wordOffset]]; // Using pageChanged instead
-			[audioMgr setCurrentWordOffset:wordOffset];
-			[audioMgr setCurrentBlock:(id)blockId];
-			[audioMgr setBlockWords:[self getBlockWords:pageType currentBlock:audioMgr.currentBlock]];
-			if ( wordOffset != 0 ) 
-				// The first blocks words displayed on this page are not at 
-				// the beginning of the block.
-				[audioMgr adjustBlockWords];
-			[audioMgr setPageChanged:NO];
-		}
-		else
-			// use the current word and block, which is where we last stopped.
-			if ( audioMgr.currentWordOffset + 1 < [audioMgr.blockWords count] )
-				// We last stopped in the middle of a block.
-				[audioMgr adjustBlockWords];
-			else {
-				// We last stopped at the end of a block, so need the next one.
-				[self getNextBlock:&wordOffset blioPageType:pageType audioManager:audioMgr];
-				if ( wordOffset != 0 ) 
-					[audioMgr adjustBlockWords];
-			}
+        id<BlioParagraphSource> paragraphSource = self.book.paragraphSource;
+        id blockId = nil;
+        uint32_t wordOffset = 0;
+		[paragraphSource bookmarkPoint:self.bookView.currentBookmarkPoint toParagraphID:&blockId wordOffset:&wordOffset]; 
+        if ( blockId ) {
+            if ( audioMgr.pageChanged ) {  
+                // Page has changed since the stop button was last pushed (and pageChanged is initialized to true).
+                // So we're starting speech for the first time, or for the first time since changing the 
+                // page or book after stopping speech the last time (whew).
+                [audioMgr setCurrentBlock:blockId];
+                [audioMgr setCurrentWordOffset:wordOffset];
+                [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:blockId]];
+                if ( wordOffset != 0 ) {
+                    // The first blocks words displayed on this page are not at 
+                    // the beginning of the block.
+                    [audioMgr adjustBlockWords];
+                }
+                [audioMgr setPageChanged:NO];
+            }
+            else {
+                // use the current word and block, which is where we last stopped.
+                if ( audioMgr.currentWordOffset + 1 < [audioMgr.blockWords count] )
+                    // We last stopped in the middle of a block.
+                    [audioMgr adjustBlockWords];
+                else {
+                    // We last stopped at the end of a block, so need the next one.
+                    [self getNextBlockForAudioManager:audioMgr];
+                }
+            }
+        }
 	}
 	[audioMgr setStartedPlaying:YES];
 	[audioMgr setTextToSpeakChanged:YES];
@@ -1489,34 +1422,6 @@ typedef enum {
 	return YES;
 }
 
-- (BOOL)isEucalyptusWord:(NSRange)characterRange ofString:(NSString*)string {
-	// For testing
-	//NSString* thisWord = [string substringWithRange:characterRange];
-	//NSLog(@"%@", thisWord);
-	
-	BOOL wordIsNotPunctuation = ([string rangeOfCharacterFromSet:[[NSCharacterSet punctuationCharacterSet] invertedSet]
-                                                         options:0 
-                                                           range:characterRange].location != NSNotFound);
-	// Hacks to get around Acapela bugs.
-	BOOL wordIsNotRepeated = ([[string substringWithRange:characterRange] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
-    && ([[[NSString stringWithString:@"\""] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame)
-    && ([[[NSString stringWithString:@"“"] stringByAppendingString:[string substringWithRange:characterRange]] compare:[_acapelaTTS currentWord]] != NSOrderedSame); // E.g. "I and I 
-	
-	BOOL wordDoesNotBeginWithApostrophe = ([[[string substringWithRange:characterRange] substringToIndex:1] compare:@"'"] != NSOrderedSame)
-	&& ([[[string substringWithRange:characterRange] substringToIndex:1] compare:@"’"] != NSOrderedSame);  
-	
-	/* Acapela does assemble hyphenated words, so I'm keeping this condition around
-     just in case it turns out they slip up sometimes.
-     // possible problem:  hyphen as a pause ("He waited- and then spoke.")
-     NSRange lastCharacter;
-     lastCharacter.length = 1;
-     lastCharacter.location = characterRange.location + characterRange.length -1;
-     BOOL wordIsNotHyphenated = ([[string substringWithRange:lastCharacter] compare:@"-"] != NSOrderedSame);
-	 */
-	
-	return wordIsNotPunctuation && wordIsNotRepeated && wordDoesNotBeginWithApostrophe;
-}
-
 // Singleton pattern
 + (AcapelaTTS**)getTTSEngine {
 	static AcapelaTTS* ttsEngine = nil; // can't initialize here unfortunately
@@ -1539,17 +1444,17 @@ typedef enum {
 				 ofString:(NSString*)string 
 {
     if(characterRange.location + characterRange.length <= string.length) {
-		if ( [self isEucalyptusWord:characterRange ofString:string] ) {
-			if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-				[(BlioLayoutView *)self.bookView  highlightWordAtBlockId:(id)(_acapelaTTS.currentBlock) wordOffset:_acapelaTTS.currentWordOffset];
-			else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
-				BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-				BlioFlowView *bookView = (BlioFlowView *)bookViewController.bookView;
-				[bookView highlightWordAtBlockId:[_acapelaTTS.currentBlock integerValue] wordOffset:_acapelaTTS.currentWordOffset];
-			}
-            [_acapelaTTS setCurrentWordOffset:[_acapelaTTS currentWordOffset]+1];
-			[_acapelaTTS setCurrentWord:[string substringWithRange:characterRange]];  
-        }
+        NSUInteger wordOffset = [_acapelaTTS wordOffsetForCharacterRange:characterRange];
+        
+        //if(wordOffset != _acapelaTTS.currentWordOffset) {
+            id<BlioBookView> bookView = self.bookView;
+            if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
+                BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaTTS.currentBlock
+                                                                                       wordOffset:wordOffset];
+                [bookView highlightWordAtBookmarkPoint:point];
+            }
+            [_acapelaTTS setCurrentWordOffset:wordOffset];
+        //}
     }
 }
 
@@ -1654,13 +1559,13 @@ typedef enum {
 	if ( ([_audioBookManager.avPlayer currentTime] * 1000 ) >= ([[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]) ) {
 		//NSLog(@"Passed time %d",[[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]);
 		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-			[(BlioLayoutView *)self.bookView highlightWordAtBlockId:(id)_audioBookManager.currentBlock wordOffset:_audioBookManager.currentWordOffset];
+		/*	[(BlioLayoutView *)self.bookView highlightWordAtBlockId:(id)_audioBookManager.currentBlock wordOffset:_audioBookManager.currentWordOffset];
 		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
 			// Problem: if just switching here from Fixed view, then prepareTextForSpeaking would not have been called for flowview
 			BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
 			BlioFlowView *bookView = (BlioFlowView *)bookViewController.bookView;
 			[bookView highlightWordAtBlockId:[_audioBookManager.currentBlock integerValue] wordOffset:_audioBookManager.currentWordOffset];	
-		}
+		}*/
 		++_audioBookManager.currentWordOffset;
 		++_audioBookManager.timeIx;
 	}
@@ -1696,64 +1601,61 @@ typedef enum {
 }
 
 - (void)toggleAudio:(id)sender {
-	if ([self currentPageLayout] == kBlioPageLayoutPlainText || [self currentPageLayout] == kBlioPageLayoutPageLayout) {
-		UIBarButtonItem *item = (UIBarButtonItem *)sender;
-		UIImage *audioImage = nil;
-		if (self.audioPlaying) {
-			[self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
-			audioImage = [UIImage imageNamed:@"icon-play.png"];
-            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
-            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-
-		} else { 
-			if (!self.navigationController.toolbarHidden) {
-                [self toggleToolbars];
+    UIBarButtonItem *item = (UIBarButtonItem *)sender;
+    UIImage *audioImage = nil;
+    if (self.audioPlaying) {
+        [self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
+        audioImage = [UIImage imageNamed:@"icon-play.png"];
+        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+    } else { 
+        if (!self.navigationController.toolbarHidden) {
+            [self toggleToolbars];
+        }
+        if (![self.book audioRights]) {
+            [self prepareTTSEngine];
+            [_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
+            [self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
+        }
+        else if ([self.book audiobookFilename] != nil) {
+            if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
+                // So far this only would work for fixed view.
+                //if ( ![self findTimes:[self.bookView.currentBookmarkPoint layoutPage]] < 0 ) 
+                if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
+                    // No audio files for this page.
+                    // Look for next page with files.
+                    BOOL loadedFilesAhead = NO;
+                    for ( int i=[self.bookView.currentBookmarkPoint layoutPage]+1;;++i ) {
+                        if ( [self loadAudioFiles:i segmentIndex:0] ) {
+                            loadedFilesAhead = YES;
+                            [self.bookView goToPageNumber:i animated:YES];
+                            break;
+                        }
+                    }
+                    if ( !loadedFilesAhead )
+                        return;
+                }
+                
+                [self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
             }
-			if (![self.book audioRights]) {
-				[self prepareTTSEngine];
-				[_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
-				[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
-			}
-			else if ([self.book audiobookFilename] != nil) {
-				if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
-					// So far this only would work for fixed view.
-					//if ( ![self findTimes:[self.bookView.currentBookmarkPoint layoutPage]] < 0 ) 
-					if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
-						// No audio files for this page.
-						// Look for next page with files.
-						BOOL loadedFilesAhead = NO;
-						for ( int i=[self.bookView.currentBookmarkPoint layoutPage]+1;;++i ) {
-							if ( [self loadAudioFiles:i segmentIndex:0] ) {
-								loadedFilesAhead = YES;
-								[self.bookView goToPageNumber:i animated:YES];
-								break;
-							}
-						}
-						if ( !loadedFilesAhead )
-							return;
-					}
-					
-					[self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
-				}
-				[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
-				[_audioBookManager playAudio];
-			}
-			else {
-				UIAlertView *errorAlert = [[UIAlertView alloc] 
-										   initWithTitle:@"" message:@"No audio is permitted for this book." // TODO: try Voiceover; how to word?
-										   delegate:self cancelButtonTitle:nil
-										   otherButtonTitles:@"OK", nil];
-				[errorAlert show];
-			}
-			audioImage = [UIImage imageNamed:@"icon-pause.png"];
-            [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
-
-		}
-		self.audioPlaying = !self.audioPlaying;  
-		[item setImage:audioImage];
-	} 
+            [_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
+            [_audioBookManager playAudio];
+        }
+        else {
+            UIAlertView *errorAlert = [[UIAlertView alloc] 
+                                       initWithTitle:@"" message:@"No audio is permitted for this book." // TODO: try Voiceover; how to word?
+                                       delegate:self cancelButtonTitle:nil
+                                       otherButtonTitles:@"OK", nil];
+            [errorAlert show];
+            [errorAlert release];
+        }
+        audioImage = [UIImage imageNamed:@"icon-pause.png"];
+        [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
+        [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
+    }
+    self.audioPlaying = !self.audioPlaying;  
+    [item setImage:audioImage];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
