@@ -134,7 +134,7 @@
 	}
 }
 -(void) enqueueBook:(BlioMockBook*)aBook {
-	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
+//	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (moc == nil) {
@@ -440,6 +440,10 @@
 	}
     [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStatePaused] forKey:@"processingComplete"];
 	[self stopProcessingForBook:aBook];
+	NSError * error;
+	if (![moc save:&error]) {
+		NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+	}			
 }
 - (void)stopProcessingForBook:(BlioMockBook*)aBook {
     NSManagedObjectContext *moc = self.managedObjectContext;

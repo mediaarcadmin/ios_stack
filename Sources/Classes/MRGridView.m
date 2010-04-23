@@ -65,7 +65,7 @@
 - (void) removeCellAtIndex:(NSInteger)cellIndex {
 //	NSLog(@"removeCellAtIndex: %i",cellIndex);
 	MRGridViewCell * cell = nil;
-	if (cellIndex >=0 && cellIndex < [gridDataSource numberOfItemsInGridView:self]) cell = [cellIndices objectForKey:[NSNumber numberWithInt:cellIndex]];
+	cell = [cellIndices objectForKey:[NSNumber numberWithInt:cellIndex]];
 	if (cell != nil) {
 //		NSLog(@"removing cell from view and adding to queue...");
 		[cell retain];
@@ -100,6 +100,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if([alertView buttonTitleAtIndex:buttonIndex] == @"Delete")
 	{
+		
 		[self.gridDataSource gridView:self commitEditingStyle:MRGridViewCellEditingStyleDelete forIndex:_keyValueOfCellToBeDeleted];
 	}
 	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
@@ -134,7 +135,7 @@
 }
 
 - (void)rearrangeCells{
-//	NSLog(@"MRGridView rearrangeCells");
+	NSLog(@"MRGridView rearrangeCells");
 	// rearranges cells that belong in the visible frame and refraining from accessing the data source as much as possible
 	NSArray * cellIndexes = [self indexesForCellsInRect:[self bounds]];
 	NSMutableArray * keys = [NSMutableArray array];
@@ -149,8 +150,7 @@
 	{
 		NSNumber * numberKey = [keys objectAtIndex:i];
 //		NSLog(@"[numberKey intValue]: %i",[numberKey intValue]);
-//		NSLog(@"[self frameForCellAtGridIndex:[numberKey intValue]]: %f,%f,%f,%f",[self frameForCellAtGridIndex:[numberKey intValue]].origin.x,[self frameForCellAtGridIndex:[numberKey intValue]].origin.y,[self frameForCellAtGridIndex:[numberKey intValue]].size.width,[self frameForCellAtGridIndex:[numberKey intValue]].size.height);
-		if (!CGRectIntersectsRect([self frameForCellAtGridIndex:[numberKey intValue]],[self bounds])) {
+		if (!CGRectIntersectsRect([self frameForCellAtGridIndex:[numberKey intValue]],[self bounds]) || [numberKey intValue] >= [gridDataSource numberOfItemsInGridView:self]) {
 			[self removeCellAtIndex:[numberKey intValue]];
 //			NSLog(@"did NOT intersect");
 		}
@@ -562,6 +562,12 @@
 		[self invalidateScrollTimer];
 		return;
 	}
+	
+	if (self.contentSize.height < self.frame.size.height) {
+		[self setContentOffset:CGPointMake(0, 0) animated:YES];
+		[self invalidateScrollTimer];
+		return;
+	}
 	float speed = 10; //TODO: make it a constant
 
 	float scrollTravel = ceil(scrollIntensity * speed);
@@ -736,7 +742,6 @@
 	// sort keys
 	NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"intValue" ascending:YES];
 	[keys sortUsingDescriptors:[NSArray arrayWithObject:sorter]];
-	 
 	for (NSInteger i = 0; i < [keys count]; i++) {
 		NSNumber * key = [keys objectAtIndex:i];
 		NSInteger adjustment = 0;

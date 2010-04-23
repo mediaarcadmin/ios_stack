@@ -524,6 +524,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	cell.showsReorderControl = YES;	
 }
 -(void) configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index {
+//	NSLog(@"configureGridCell atIndex: %i",index);
 	NSIndexPath * indexPath = [NSIndexPath indexPathForRow:index inSection:0];
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];	
 }
@@ -618,6 +619,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 //	NSLog(@"gridView:commitEditingStyle:%i forIndex:%i entered",editingStyle,index);
 	_didEdit = YES;
 	if (editingStyle == MRGridViewCellEditingStyleDelete) {
+
+
 		// Delete the book from the data source.
 		NSManagedObjectContext *moc = [self managedObjectContext]; 
 		
@@ -639,7 +642,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 		}
 		else {
 			[gridView deleteIndices:[NSArray arrayWithObject:[NSNumber numberWithInt:index]] withCellAnimation:MRGridViewCellAnimationFade];
-			// TODO: recalculate background color of remaining cells
 		}
 	}   
 	
@@ -925,6 +927,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 		[self.tableView reloadData];
 	}
 	_didEdit = NO;
+	// for debugging purposes
+//	NSArray * testArray = [self.fetchedResultsController fetchedObjects];
+//	for (NSInteger i = 0; i < [testArray count]; i++) {
+//		NSLog(@"mo index: %i, position: %i",i,[[[[self.fetchedResultsController fetchedObjects] objectAtIndex:i] valueForKey:@"position"] intValue]);
+//	}
+	
 }
 /*
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
@@ -935,17 +943,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	}
 	else _didEdit = NO;
 	
-	// for debugging purposes
-	NSArray * testArray = [self.fetchedResultsController fetchedObjects];
-	for (NSInteger i = 0; i < [testArray count]; i++) {
-		NSLog(@"mo index: %i, position: %i",i,[[[[self.fetchedResultsController fetchedObjects] objectAtIndex:i] valueForKey:@"position"] intValue]);
-	}
 }
 */
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
-	NSLog(@"mergeChangesFromContextDidSaveNotification entered");
+//	NSLog(@"mergeChangesFromContextDidSaveNotification entered");
     // Fault in all updated objects
 	NSArray* updates = [[notification.userInfo objectForKey:NSUpdatedObjectsKey] allObjects];
     for (NSManagedObject *object in updates) {
@@ -1460,14 +1463,15 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     CGRect progressFrame = self.progressSlider.frame;
     self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
     [self setNeedsLayout];
-	
+//	NSLog(@"[[self.book valueForKey:@processingComplete] intValue]: %i",[[self.book valueForKey:@"processingComplete"] intValue]);
 	if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
 		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[self.book valueForKey:@"sourceID"] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
-			NSLog(@"adding gridcell as observer...");
+//			NSLog(@"adding gridcell as observer...");
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:completeOp];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:completeOp];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingFailedNotification:) name:BlioProcessingOperationFailedNotification object:completeOp];
+			
 		}
 		// set appearance to reflect incomplete state
 		self.bookView.alpha = 0.35f;
@@ -1476,14 +1480,23 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 		if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStateIncomplete) {
 			self.progressView.hidden = NO;
 			[((BlioProcessingCompleteOperation*)completeOp) calculateProgress];
-			self.pauseButton.hidden = NO;	
+			self.pauseButton.hidden = NO;
+			self.resumeButton.hidden = YES;
+			self.pausedLabel.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStatePaused) {
 			self.resumeButton.hidden = NO;
 			self.pausedLabel.hidden = NO;
+			self.progressView.hidden = YES;
+			self.pauseButton.hidden = YES;
 		}
 	}
 	else {
+		self.resumeButton.hidden = YES;
+		self.pausedLabel.hidden = YES;
+		self.progressView.hidden = YES;
+		self.pauseButton.hidden = YES;
+		self.progressBackgroundView.hidden = YES;
 
 	}
 }
@@ -1592,6 +1605,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     return self;
 }
 -(void)prepareForReuse {
+	[super prepareForReuse];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.accessoryView = nil;
 	progressView.hidden = YES;
@@ -1628,7 +1642,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
 		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[self.book valueForKey:@"sourceID"] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
-			NSLog(@"adding table cell as observer...");
+//			NSLog(@"adding table cell as observer...");
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:completeOp];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:completeOp];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingFailedNotification:) name:BlioProcessingOperationFailedNotification object:completeOp];

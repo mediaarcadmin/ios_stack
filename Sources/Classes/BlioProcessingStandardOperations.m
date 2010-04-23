@@ -30,7 +30,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			[self cancel];
 			return;
 		}
-		NSLog(@"completed operation: %@ percentageComplete: %u",blioOp,blioOp.percentageComplete);
+//		NSLog(@"completed operation: %@ percentageComplete: %u",blioOp,blioOp.percentageComplete);
 	}	
 	// delete temp download dir
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
@@ -204,7 +204,6 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         }
 
 
-        
         [self downloadDidFinishSuccessfully:YES];
         [self finish];
     } else {
@@ -413,6 +412,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		else {
 			[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
 			self.operationSuccess = YES;
+			self.percentageComplete = 100;
 		}
 		CFRelease(uniqueString);
 
@@ -725,6 +725,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
             else {
 				[self setBookValue:rootFile forKey:self.filenameKey];
 				self.operationSuccess = YES;
+				self.percentageComplete = 100;
 			}
 		}
         else
@@ -783,6 +784,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 				[self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"];
 				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudioRights"]; 
 				self.operationSuccess = YES;
+				self.percentageComplete = 100;
 			}
         } else {
             NSLog(@"Could not find required audiobook files in AudioBook directory %@", temporaryPath);
