@@ -50,6 +50,7 @@
     // See http://www.dribin.org/dave/blog/archives/2009/05/05/concurrent_operations/
     if (![NSThread isMainThread]) {
         [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
+        [pool drain];
         return;
     }
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
