@@ -12,7 +12,6 @@
 @interface BlioAudioManager : NSObject {
 	id currentBlock;
 	uint32_t currentWordOffset;
-	uint32_t adjustedWordOffset;
 	uint32_t currentPage;
 	NSArray* blockWords;
 	NSTimer* speakingTimer;
@@ -26,12 +25,9 @@
 @property (nonatomic, retain) NSTimer* speakingTimer;
 @property (nonatomic, retain) id currentBlock;
 @property (nonatomic) uint32_t currentWordOffset;
-@property (nonatomic) uint32_t adjustedWordOffset;
 @property (nonatomic) uint32_t currentPage; 
 @property (nonatomic, assign) BOOL startedPlaying;
 @property (nonatomic, assign) BOOL pageChanged;
 @property (nonatomic) BOOL textToSpeakChanged; 
-
-- (void)adjustBlockWords;
 
 @end

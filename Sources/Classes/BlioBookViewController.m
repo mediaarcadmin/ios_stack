@@ -1335,7 +1335,6 @@ typedef enum {
 	do {
 		audioMgr.currentBlock = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
 		[audioMgr setCurrentWordOffset:0];
-		[audioMgr setAdjustedWordOffset:0];
 		[audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:audioMgr.currentBlock]];
 		if ( audioMgr.blockWords == nil ) {
 			// end of the book
@@ -1352,7 +1351,7 @@ typedef enum {
     } while ( [audioMgr.blockWords count] == 0 ); // Loop in case the block's empty.
 }
 
-- (void) prepareTextToSpeak:(BOOL)continuingSpeech blioPageType:(BlioPageLayout)pageType audioManager:(BlioAudioManager*)audioMgr {
+- (void) prepareTextToSpeakWithAudioManager:(BlioAudioManager*)audioMgr continuingSpeech:(BOOL)continuingSpeech {
 	if ( continuingSpeech ) {
 		// Continuing to speak, we just need more text.
 		[self getNextBlockForAudioManager:audioMgr];
@@ -1371,19 +1370,13 @@ typedef enum {
                 [audioMgr setCurrentBlock:blockId];
                 [audioMgr setCurrentWordOffset:wordOffset];
                 [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:blockId]];
-                if ( wordOffset != 0 ) {
-                    // The first blocks words displayed on this page are not at 
-                    // the beginning of the block.
-                    [audioMgr adjustBlockWords];
-                }
                 [audioMgr setPageChanged:NO];
             }
             else {
                 // use the current word and block, which is where we last stopped.
-                if ( audioMgr.currentWordOffset + 1 < [audioMgr.blockWords count] )
+                if ( audioMgr.currentWordOffset + 1 < [audioMgr.blockWords count] ) {
                     // We last stopped in the middle of a block.
-                    [audioMgr adjustBlockWords];
-                else {
+                } else {
                     // We last stopped at the end of a block, so need the next one.
                     [self getNextBlockForAudioManager:audioMgr];
                 }
@@ -1435,7 +1428,7 @@ typedef enum {
 {
 	if (finishedSpeaking) {
 		// Reached end of block.  Start on the next.
-		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_acapelaTTS]; 
+		[self prepareTextToSpeakWithAudioManager:_acapelaTTS continuingSpeech:YES]; 
 	}
 	//else stop button pushed before end of block.
 }
@@ -1446,15 +1439,13 @@ typedef enum {
     if(characterRange.location + characterRange.length <= string.length) {
         NSUInteger wordOffset = [_acapelaTTS wordOffsetForCharacterRange:characterRange];
         
-        //if(wordOffset != _acapelaTTS.currentWordOffset) {
-            id<BlioBookView> bookView = self.bookView;
-            if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-                BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaTTS.currentBlock
-                                                                                       wordOffset:wordOffset];
-                [bookView highlightWordAtBookmarkPoint:point];
-            }
-            [_acapelaTTS setCurrentWordOffset:wordOffset];
-        //}
+        id<BlioBookView> bookView = self.bookView;
+        if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
+            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaTTS.currentBlock
+                                                                                   wordOffset:wordOffset];
+            [bookView highlightWordAtBookmarkPoint:point];
+        }
+        [_acapelaTTS setCurrentWordOffset:wordOffset];
     }
 }
 
@@ -1498,7 +1489,7 @@ typedef enum {
 			self.audioPlaying = NO;
 		}
 		else {
-			[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+			[self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:YES];
 			[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 			[_audioBookManager playAudio];
 		}
@@ -1507,7 +1498,7 @@ typedef enum {
 		// Stopped in the middle of the page.
 		// Kluge: assume there won't be more than two segments on a page.
 		if ( [self loadAudioFiles:layoutPage segmentIndex:1] ) {
-			[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+			[self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:YES];
 			[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 			[_audioBookManager playAudio];
 		}
@@ -1525,50 +1516,31 @@ typedef enum {
 #pragma mark -
 #pragma mark Audiobook and General Audio Handling 
 
-/* obsolete
-- (BOOL)findTimes:(NSInteger)layoutPage {
-	NSString* fileSuffix;
-	for ( int i=0; i<[_audioBookManager.timingFiles count] ; ++i ) {
-		fileSuffix = (NSString*)[_audioBookManager.timingFiles objectAtIndex:i];
-		NSRange numRange;
-		numRange.location = 1;
-		numRange.length = [fileSuffix length] -1;
-		if ( [[fileSuffix substringWithRange:numRange] integerValue] == layoutPage ) {
-			_audioBookManager.queueIx = i; // timingFiles and queuedTimes correspond
-			_audioBookManager.times = [_audioBookManager.queuedTimes objectAtIndex:i];
-			return YES;
-		}
-	}
-	return NO;
-}
- */
-
-
 - (void)checkHighlightTime:(NSTimer*)timer {	
 	if ( _audioBookManager.timeIx >= [_audioBookManager.wordTimes count] )
 		// can get here ahead of audioPlayerDidFinishPlaying
 		return;
-	if ( _audioBookManager.currentWordOffset == [_audioBookManager.blockWords count] ) {
-		// Last word of block, get more words.  
-		//NSLog(@"Reached end of block, getting more words.");
-		[self prepareTextToSpeak:YES blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
-	}
 	//int timeElapsed = (int) (([_audioBookManager.avPlayer currentTime] - _audioBookManager.timeStarted) * 1000.0);
 	//int timeElapsed = [_audioBookManager.avPlayer currentTime] * 1000;
 	//NSLog(@"Elapsed time %d",timeElapsed);
 	if ( ([_audioBookManager.avPlayer currentTime] * 1000 ) >= ([[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]) ) {
 		//NSLog(@"Passed time %d",[[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]);
-		if ( [self currentPageLayout]==kBlioPageLayoutPageLayout ) 
-		/*	[(BlioLayoutView *)self.bookView highlightWordAtBlockId:(id)_audioBookManager.currentBlock wordOffset:_audioBookManager.currentWordOffset];
-		else if ( [self currentPageLayout]==kBlioPageLayoutPlainText ) {
-			// Problem: if just switching here from Fixed view, then prepareTextForSpeaking would not have been called for flowview
-			BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-			BlioFlowView *bookView = (BlioFlowView *)bookViewController.bookView;
-			[bookView highlightWordAtBlockId:[_audioBookManager.currentBlock integerValue] wordOffset:_audioBookManager.currentWordOffset];	
-		}*/
-		++_audioBookManager.currentWordOffset;
+
+        id<BlioBookView> bookView = self.bookView;
+        if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
+            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
+                                                                                    wordOffset:_audioBookManager.currentWordOffset];
+            [bookView highlightWordAtBookmarkPoint:point];
+        }
+		
+        ++_audioBookManager.currentWordOffset;
 		++_audioBookManager.timeIx;
 	}
+    if ( _audioBookManager.currentWordOffset == [_audioBookManager.blockWords count] ) {
+		// Last word of block, get more words.  
+		NSLog(@"Reached end of block, getting more words.");
+		[self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:YES];
+	}    
 }
 
 - (void)stopAudio {			
@@ -1616,7 +1588,7 @@ typedef enum {
         if (![self.book audioRights]) {
             [self prepareTTSEngine];
             [_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
-            [self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_acapelaTTS];
+            [self prepareTextToSpeakWithAudioManager:_acapelaTTS continuingSpeech:NO];
         }
         else if ([self.book audiobookFilename] != nil) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
@@ -1637,7 +1609,7 @@ typedef enum {
                         return;
                 }
                 
-                [self prepareTextToSpeak:NO blioPageType:[self currentPageLayout] audioManager:_audioBookManager];
+                [self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:NO];
             }
             [_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
             [_audioBookManager playAudio];
