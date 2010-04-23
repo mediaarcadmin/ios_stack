@@ -17,19 +17,19 @@
     NSString *string;
     CGRect rect;
     NSIndexPath *blockID;
-    NSInteger wordIndex;
+    NSUInteger wordIndex;
     NSNumber *wordID;
 }
 
 @property (nonatomic, retain) NSString *string;
 @property (nonatomic) CGRect rect;
 @property (nonatomic, retain) NSIndexPath *blockID;
-@property (nonatomic) NSInteger wordIndex;
+@property (nonatomic) NSUInteger wordIndex;
 @property (nonatomic, retain) NSNumber *wordID;
 
 - (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs;
-+ (NSInteger)wordIndexForWordID:(id)aWordID;
-+ (id)wordIDForWordIndex:(NSInteger)aWordIndex;
++ (NSUInteger)wordIndexForWordID:(id)aWordID;
++ (id)wordIDForWordIndex:(NSUInteger)aWordIndex;
 
 @end
 

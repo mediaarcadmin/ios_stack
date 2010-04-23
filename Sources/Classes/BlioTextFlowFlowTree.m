@@ -64,20 +64,21 @@ static void BlioTextFlowFlowTreeStartElementHandler(void *ctx, const XML_Char *n
         ++context->paragraphCount;
     } else if(strcmp("Words", name) == 0) {
         if([currentNode isKindOfClass:[BlioTextFlowParagraph class]]) {
-            uint32_t start = 0;
-            uint32_t end = 0;
-            uint32_t block = 0;
             uint32_t page = 0;
+            uint32_t block = 0;
+            uint32_t start = 0;
+            uint32_t end = UINT32_MAX;
+            
             for(int i = 0; atts[i]; i+=2) {
-                if(strcmp("Start", atts[i]) == 0) {
+                if (strcmp("Page", atts[i]) == 0) {
+                    page = atoi(atts[i+1]);
+                } else if(strcmp("Start", atts[i]) == 0) {
                     start = atoi(atts[i+1]);
                 } else if (strcmp("End", atts[i]) == 0) {
                     end = atoi(atts[i+1]);
                 } else if (strcmp("Block", atts[i]) == 0) {
                     block = atoi(atts[i+1]);
-                } else if (strcmp("Page", atts[i]) == 0) {
-                    page = atoi(atts[i+1]);
-                }
+                } 
             }
 
             if(!context->wordRangeAccumulator) {

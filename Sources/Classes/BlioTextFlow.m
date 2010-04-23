@@ -40,13 +40,13 @@
     }
 }
 
-+ (NSInteger)wordIndexForWordID:(id)aWordID {
++ (NSUInteger)wordIndexForWordID:(id)aWordID {
     NSNumber *wordIDNum = (NSNumber *)aWordID;
-    return [wordIDNum integerValue];
+    return [wordIDNum unsignedIntegerValue];
 }
 
-+ (id)wordIDForWordIndex:(NSInteger)aWordIndex {
-    return [NSNumber numberWithInteger:aWordIndex];
++ (id)wordIDForWordIndex:(NSUInteger)aWordIndex {
+    return [NSNumber numberWithUnsignedInteger:aWordIndex];
 }
 
 @end
