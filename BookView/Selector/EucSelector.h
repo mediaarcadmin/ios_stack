@@ -30,6 +30,7 @@ typedef enum EucSelectorTrackingStage {
     CALayer *_attachedLayer;
     CALayer *_snapshotLayer;
      
+    THPair *_temporaryHighlightedElement;
     NSMutableArray *_temporaryHighlightLayers;
 
     UITouch *_trackingTouch;
