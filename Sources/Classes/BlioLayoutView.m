@@ -20,6 +20,7 @@ static const CGFloat kBlioPDFBlockInsetY = 10;
 static const CGFloat kBlioPDFGoToZoomTransitionScale = 0.7f;
 static const CGFloat kBlioPDFGoToZoomTargetScale = 1;
 static const CGFloat kBlioLayoutShadow = 16.0f;
+static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 
 @interface BlioLayoutViewColoredRect : NSObject {
     CGRect rect;
@@ -39,6 +40,7 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) UIImage *pageSnapshot;
 @property (nonatomic, retain) UIImage *highlightsSnapshot;
+@property (nonatomic, retain) NSMutableArray *accessibilityElements;
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
@@ -97,6 +99,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
+@synthesize accessibilityElements;
 
 - (void)dealloc {
     isCancelled = YES;
@@ -130,7 +133,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     [self.selector detatch];
     self.selector = nil;
-
+    
+    self.accessibilityElements = nil;
+    
     [super dealloc];
 }
 
@@ -226,6 +231,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         aScrollView.delegate = self;
         aScrollView.canCancelContentTouches = YES;
         aScrollView.delaysContentTouches = NO;
+        aScrollView.accessibilityDelegate = self;
         [self addSubview:aScrollView];
         self.scrollView = aScrollView;
         [aScrollView release];
@@ -421,13 +427,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGFloat ratio;
     CGFloat zoomScale = self.scrollView.zoomScale;
     
+    // Reduce the conent size dimensions by teh accessibility offset to work around an accessibility bug that 
+    // incorrectly states the size as being 1 page larger than it is
     switch (layoutMode) {
         case BlioLayoutPageModeLandscape:
             ratio = CGRectGetWidth(self.bounds) / CGRectGetHeight(self.bounds);
-            contentSize = CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * zoomScale, CGRectGetWidth(self.bounds) * ratio * zoomScale);
+            contentSize = CGSizeMake(floorf(CGRectGetWidth(self.bounds) * pageCount * zoomScale) - kBlioLayoutViewAccessibilityOffset, floorf(CGRectGetWidth(self.bounds) * ratio * zoomScale) - kBlioLayoutViewAccessibilityOffset);
             break;
         default: // BlioLayoutPageModePortrait
-            contentSize = CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * zoomScale, CGRectGetHeight(self.bounds) * zoomScale);
+            contentSize = CGSizeMake(floorf(CGRectGetWidth(self.bounds) * pageCount * zoomScale) - kBlioLayoutViewAccessibilityOffset, floorf(CGRectGetHeight(self.bounds) * zoomScale) - kBlioLayoutViewAccessibilityOffset);
             break;
     }
     
@@ -2114,64 +2122,58 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Accessibility
 
 - (BOOL)isAccessibilityElement {
+    // If we are querying the accessibility mode, force us to zoom out to page
+//    [self.scrollView setZoomScale:kBlioPDFGoToZoomTargetScale animated:YES];
+//    [self.scrollView setContentSize:[self currentContentSize]];
+//    [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.currentPageLayer.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale] animated:YES]; 
+    
     return NO;
 }
 
-- (NSString *)accessibilityLabel {
-    return [NSString stringWithFormat:@"%@", [self.book title]];
+
+- (NSString *)pageAccessibilityLabel {
+    return [NSString stringWithFormat:@"%@, Page %d of %d, 3 paragraphs", [self.book title], self.pageNumber, self.pageCount];
 }
 
-- (NSString *)accessibilityHint {
-    return @"Toggles book toolbars.";
+- (NSString *)pageAccessibilityHint {
+    if ([self.delegate toolbarsVisible])
+        return @"Hides tool bars.";
+    else
+        return @"Shows tool bars.";
 }
 
+- (NSInteger)accessibilityElementCount {
 
-#if 0
-
-- (NSArray *)accessibleElements
-{
-    if ( _accessibleElements != nil )
-    {
-        return _accessibleElements;
-    }
-    _accessibleElements = [[NSMutableArray alloc] init];
-    
-    /* Create an accessibility element to represent the first contained element and initialize it as a component of MultiFacetedView. */
-    
+    NSMutableArray *elements = [[NSMutableArray alloc] init];
+        
     UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
-    //CGRect pageRect = self.currentPageLayer.bounds;
     
-    CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:self.currentPageLayer.pageNumber cropRect:&cropRect];
-    CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+    [element setAccessibilityFrame:CGRectMake(100,100,100,100)];
+    [element setAccessibilityLabel:[NSString stringWithFormat:@"Paragraph 1 of 3"]];
     
-    [element setAccessibilityFrame:pageRect];
-    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", self.currentPageLayer.pageNumber]];
+    [element setAccessibilityValue:[NSString stringWithFormat:@"This is a story of 3 little pigs and a big, bad, wolf."]];
     
-    /* Set attributes of the first contained element here. */
+    [elements addObject:element];
+    //[elements addObject:self.currentPageLayer];
+    [elements addObject:self.scrollView];
     
-    [_accessibleElements addObject:element];
+    self.accessibilityElements = elements;
+    [elements release];
     
-    return _accessibleElements;
+    return [self.accessibilityElements count];
 }
 
-/* The following methods are implementations of UIAccessibilityContainer protocol methods. */
-
-- (NSInteger)accessibilityElementCount
-{
-    return [[self accessibleElements] count];
-}
 
 - (id)accessibilityElementAtIndex:(NSInteger)index
 {
-    return [[self accessibleElements] objectAtIndex:index];
+    return [self.accessibilityElements objectAtIndex:index];
 }
 
 - (NSInteger)indexOfAccessibilityElement:(id)element
 {
-    return [[self accessibleElements] indexOfObject:element];
+    return [self.accessibilityElements indexOfObject:element];
 }
-#endif
+
 @end
 
 @implementation BlioLayoutViewColoredRect

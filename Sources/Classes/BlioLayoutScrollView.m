@@ -13,6 +13,7 @@
 @property (nonatomic, retain) NSTimer *doubleTapBeginTimer;
 @property (nonatomic, retain) NSTimer *doubleTapEndTimer;
 @property (nonatomic) BlioLayoutTouchForwardingState forwardingState;
+@property (nonatomic, retain) NSMutableArray *accessibilityElements;
 
 - (void)handleSingleTouch;
 
@@ -23,7 +24,8 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 
 @implementation BlioLayoutScrollView
 
-@synthesize selector, doubleTapBeginTimer, doubleTapEndTimer, bookDelegate, forwardingState;
+@synthesize selector, doubleTapBeginTimer, doubleTapEndTimer, bookDelegate, forwardingState, accessibilityDelegate;
+@synthesize accessibilityElements;
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -41,6 +43,8 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
     self.bookDelegate = nil;
+    self.accessibilityDelegate = nil;
+    self.accessibilityElements = nil;
     [super dealloc];
 }
 
@@ -218,7 +222,11 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (NSString *)accessibilityLabel {
-    return @"scrollView";
+    return [self.accessibilityDelegate pageAccessibilityLabel];
+}
+
+- (NSString *)accessibilityHint {
+    return [self.accessibilityDelegate pageAccessibilityHint];
 }
 
 @end    

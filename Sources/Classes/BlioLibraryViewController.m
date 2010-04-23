@@ -483,6 +483,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
@@ -1349,6 +1351,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aAuthorLabel release];
         
         UISlider *aSlider = [[UISlider alloc] init];
+        [aSlider setIsAccessibilityElement:NO];
         UIImage *minImage = [[UIImage imageNamed:@"minimum-progress.png"] stretchableImageWithLeftCapWidth:2 topCapHeight:0];
         //UIImage *maxImage = [[UIImage imageNamed:@"maximum-progress.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
         [aSlider setMinimumTrackImage:minImage forState:UIControlStateNormal];

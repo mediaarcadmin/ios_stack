@@ -31,6 +31,7 @@
 - (void)hideToolbars;
 - (void)hideToolbarsAndStatusBar:(BOOL)hidesStatusBar;
 - (void)toggleToolbars;
+- (BOOL)toolbarsVisible;
 
 @end
 

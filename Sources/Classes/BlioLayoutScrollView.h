@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioBookView.h"
+#import "BlioLayoutView.h"
 #import <libEucalyptus/EucSelector.h>
 
 typedef enum BlioLayoutTouchForwardingState {
@@ -23,11 +24,15 @@ typedef enum BlioLayoutTouchForwardingState {
     NSTimer *doubleTapBeginTimer;
     NSTimer *doubleTapEndTimer;
     id<BlioBookDelegate> bookDelegate;
+    id<BlioLayoutAccessibilityDelegate> accessibilityDelegate;
     BlioLayoutTouchForwardingState forwardingState;
     CGPoint touchesBeginPoint;
+    NSMutableArray *accessibilityElements;
+
 }
 
 @property (nonatomic, assign) EucSelector *selector;
 @property (nonatomic, assign) id<BlioBookDelegate> bookDelegate;
+@property (nonatomic, assign) id<BlioLayoutAccessibilityDelegate> accessibilityDelegate;
 
 @end

@@ -704,6 +704,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self toggleToolbars];
 }
 
+- (BOOL)toolbarsVisible {
+    return (self.navigationController.toolbarHidden == NO);
+}
+
 - (void)toggleToolbarsAndStatusBar:(BOOL)toggleStatusBar
 {
     if(_fadeState == BookViewControlleUIFadeStateNone) {
@@ -742,7 +746,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if (toggleStatusBar)
             [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
         
-        [UIView commitAnimations];        
+        [UIView commitAnimations];   
+        
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     }
 }
 
