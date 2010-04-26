@@ -49,6 +49,14 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 
 // Convenience accessor.
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
+@property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
+@property (nonatomic, retain, readonly) EucBUpeBook *ePubBook;
+@property (nonatomic, retain, readonly) id<BlioParagraphSource> paragraphSource;
+
+// Call to release all derived (i.e. not stored in CoreData) attributes 
+// (textflow, ePub book etc.)
+- (void)flushCaches;
+
 
 - (NSString *)bookCacheDirectory;
 - (NSString *)bookTempDirectory;
@@ -62,9 +70,6 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 - (BOOL)audioRights;
 - (NSString *)textFlowPath;
 
-- (BlioTextFlow *)textFlow;
-- (EucBUpeBook *)ePubBook;
-- (id<BlioParagraphSource>)paragraphSource;
 
 - (NSArray *)sortedBookmarks;
 - (NSArray *)sortedNotes;

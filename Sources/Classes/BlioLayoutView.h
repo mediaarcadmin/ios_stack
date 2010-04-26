@@ -24,15 +24,6 @@ typedef enum BlioLayoutPageMode {
     BlioLayoutPageModeLandscape
 } BlioLayoutPageMode;
 
-@protocol BlioLayoutAccessibilityDelegate
-@optional 
-- (NSString *)pageAccessibilityLabel;
-- (NSString *)pageAccessibilityHint;
-- (NSInteger)pageAccessibilityElementCount;
-- (id)pageAccessibilityElementAtIndex:(NSInteger)index;
-- (NSInteger)pageIndexOfAccessibilityElement:(id)element;
-@end
-
 @protocol BlioLayoutDataSource
 @required
 - (BOOL)dataSourceContainsPage:(NSInteger)page;
@@ -44,7 +35,7 @@ typedef enum BlioLayoutPageMode {
 
 @end
 
-@interface BlioLayoutView : UIView <BlioLayoutDataSource, BlioLayoutAccessibilityDelegate, UIScrollViewDelegate, BlioBookView, BlioTTSDataSource, EucBookContentsTableViewControllerDataSource, EucSelectorDataSource, EucSelectorDelegate> {
+@interface BlioLayoutView : UIView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource, EucSelectorDataSource, EucSelectorDelegate> {
     id<BlioBookDelegate> delegate;
     BlioMockBook *book;
     CGPDFDocumentRef pdf;

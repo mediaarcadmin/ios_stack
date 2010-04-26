@@ -36,17 +36,6 @@
 @end
 
 #pragma mark -
-@protocol BlioTTSDataSource <NSObject>
-
-@required
-- (id)getCurrentBlockId;
-- (uint32_t)getCurrentWordOffset;
-- (id)blockIdForBlockAfterBlockWithId:(id)blockId;
-- (NSArray *)blockWordsForBlockWithId:(id)blockId;
-- (void)highlightWordAtBlockId:(id)blockId wordOffset:(uint32_t)wordOffset;
-@end
-
-#pragma mark -
 
 @protocol EucBookContentsTableViewControllerDataSource;
 @class BlioBookmarkPoint;
@@ -94,5 +83,7 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
+
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 @end

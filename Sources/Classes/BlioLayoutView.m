@@ -230,7 +230,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         aScrollView.delegate = self;
         aScrollView.canCancelContentTouches = YES;
         aScrollView.delaysContentTouches = NO;
-        aScrollView.accessibilityDelegate = self;
         [self addSubview:aScrollView];
         self.scrollView = aScrollView;
         [aScrollView release];
@@ -1360,90 +1359,23 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark -
 #pragma mark TTS
 
-- (id)getCurrentBlockId {
-    NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-
-    if (![nonFolioPageBlocks count])
-        return nil;
-    else
-        return [[nonFolioPageBlocks objectAtIndex:0] blockID];
-}
-
-- (uint32_t)getCurrentWordOffset {
-    return 0;
-}
-
-- (id)blockIdForBlockAfterBlockWithId:(id)blockID {    
-    if (!blockID) {
-        NSInteger pageIndex = -1;
-        while (++pageIndex < ([self pageCount])) {
-            NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-            if ([pageBlocks count])
-                return (id)[[pageBlocks objectAtIndex:0] blockID];
-        }
-        return nil;
-    } else {
-
-        NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    if(bookmarkPoint) {
+        NSInteger pageIndex = bookmarkPoint.layoutPage - 1;
         NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
-        NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-        NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
-        BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
-        NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
-        
-            if (++currentIndex < [nonFolioPageBlocks count]) {
-                return (id)[[nonFolioPageBlocks objectAtIndex:currentIndex] blockID];
-            } else {
-                while (++pageIndex < ([self pageCount])) {
-                    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-                    if ([pageBlocks count])
-                        return (id)[[pageBlocks objectAtIndex:0] blockID];
-                }
-            }
-        
-    }
-    return nil;
-}
+        BlioTextFlowBlock *currentBlock = [pageBlocks objectAtIndex:bookmarkPoint.blockOffset];
 
-- (NSArray *)blockWordsForBlockWithId:(id)blockID {
-    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
-    BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
-    NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
-    
-    if ([nonFolioPageBlocks count] > currentIndex)
-        return [[nonFolioPageBlocks objectAtIndex:currentIndex] wordStrings];
-    else
-        return nil;
-    
-}
-
-- (void)highlightWordAtBlockId:(id)blockID wordOffset:(uint32_t)wordOffset {
-    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    NSInteger blockIndex = [BlioTextFlowBlock blockIndexForBlockID:blockID];
-    BlioTextFlowBlock *currentBlock = (blockIndex < [pageBlocks count]) ? [pageBlocks objectAtIndex:blockIndex] : nil;
-    NSInteger currentIndex = [nonFolioPageBlocks indexOfObject:currentBlock];
-    
-    if ([nonFolioPageBlocks count] > currentIndex) {
-        BlioTextFlowBlock *currentBlock = [nonFolioPageBlocks objectAtIndex:currentIndex];
-        NSInteger targetPageNumber = ++pageIndex;
+        NSInteger targetPageNumber = pageIndex + 1;
         if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
             [self goToPageNumber:targetPageNumber animated:YES];
         }
         
-        NSArray *words = [currentBlock words];
-        if ([words count] > wordOffset) {
-            BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
-            [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:blockID animated:YES];
-        }
-                                                   
+        NSUInteger wordOffset = bookmarkPoint.wordOffset;
+        BlioTextFlowPositionedWord *word = [[currentBlock words] objectAtIndex:wordOffset];
+        [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:currentBlock.blockID animated:YES];
+    } else {
+        [self.selector removeTemporaryHighlight];
     }
-
 }
 
 #pragma mark -

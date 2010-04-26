@@ -367,6 +367,13 @@
     [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
 }
 
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    if(bookmarkPoint) {
+        [self goToBookmarkPoint:bookmarkPoint animated:NO];
+    }
+}
+
 - (BOOL)wantsTouchesSniffed {
     return YES;
 }
