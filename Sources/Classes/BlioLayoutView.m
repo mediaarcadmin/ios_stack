@@ -104,7 +104,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (void)dealloc {
     isCancelled = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+
     CGPDFDocumentRelease(pdf);
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
@@ -335,8 +335,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark BlioBookDelegate
 
 - (void)setDelegate:(id<BlioBookDelegate>)newDelegate {
-    delegate = newDelegate;
+    [(NSObject *)delegate removeObserver:self forKeyPath:@"audioPlaying"];
+
     [self.scrollView setBookDelegate:newDelegate];
+    delegate = newDelegate;
+    
+    [(NSObject *)delegate addObserver:self forKeyPath:@"audioPlaying" options:0 context:NULL];
+    
 }
 
 #pragma mark -
@@ -1158,13 +1163,17 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
     } else if (object == self) {
         if ([keyPath isEqualToString:@"currentPageLayer"]) {
-            NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
+            //NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
             self.accessibilityElements = nil;
             UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        }
+    } else if (object == self.delegate) {
+        if ([keyPath isEqualToString:@"audioPlaying"]) {
+            self.accessibilityElements = nil;
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
         }
     }
 }
@@ -1744,7 +1753,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
-    NSLog(@"scrollViewDidScroll");
+    //NSLog(@"scrollViewDidScroll");
     [self.selector setShouldHideMenu:YES];
 
     if (self.disableScrollUpdating) return;
@@ -1762,7 +1771,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         currentPageNumber = floor((sender.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
     }
     
-    NSLog(@"Current page %d, pageNum %d", currentPageNumber, self.pageNumber);
+    //NSLog(@"Current page %d, pageNum %d", currentPageNumber, self.pageNumber);
     if (currentPageNumber != self.pageNumber) {
         
         BlioLayoutPageLayer *aLayer = [self.contentView addPage:currentPageNumber retainPages:nil];
@@ -1783,7 +1792,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)updateAfterScroll {
-    NSLog(@"updateAfterScroll");
+    //NSLog(@"updateAfterScroll");
     [self clearSnapshots];
     [self.selector setShouldHideMenu:NO];
     if (self.disableScrollUpdating) return;
@@ -2125,77 +2134,51 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (!self.disableScrollUpdating) {
     // If we are querying the accessibility mode, force us to zoom out to page
         if ([self.scrollView zoomScale] != kBlioPDFGoToZoomTargetScale) {
-            NSLog(@"Resetting zoom scale");
             [self.scrollView setZoomScale:kBlioPDFGoToZoomTargetScale animated:NO];
             [self.scrollView setContentSize:[self currentContentSize]];
         }
         
         CGPoint centeredOffset = [self contentOffsetToCenterPage:self.currentPageLayer.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale];
         if (!CGPointEqualToPoint([self.scrollView contentOffset], centeredOffset)) {
-            NSLog(@"Resetting contentOffset");
             [self.scrollView setContentOffset:centeredOffset animated:NO]; 
         }
     }
     return NO;
 }
 
-
-- (NSString *)pageAccessibilityLabel {
-    return [NSString stringWithFormat:@"%@, Page %d of %d, 3 paragraphs", [self.book title], self.pageNumber, self.pageCount];
-}
-
-- (NSString *)pageAccessibilityHint {
-    if ([self.delegate toolbarsVisible])
-        return @"Hides tool bars.";
-    else
-        return @"Shows tool bars.";
-}
-
 - (NSInteger)accessibilityElementCount {
     if (nil == self.accessibilityElements) {
-    NSLog(@"Generating accessibility elements");
-    NSMutableArray *elements = [[NSMutableArray alloc] init];
-    //[elements addObject:self.scrollView];
-        
-    NSInteger currentPage = self.pageNumber;
-    CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
-    NSInteger pageIndex = currentPage - 1;
-    NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    
-        [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
-        //[self.scrollView setAccessibilityTraits:UIAccessibilityTraitSummaryElement];
-        NSMutableString *allWords = [NSMutableString string];
-        NSInteger blockCount = [nonFolioPageBlocks count];
-        if (blockCount == 0) {
-            [self.scrollView setAccessibilityLabel:nil];
-        } else if (blockCount == 1) {
-            [self.scrollView setAccessibilityLabel:[NSString stringWithFormat:@"%d paragraph", [nonFolioPageBlocks count]]];
-        } else {
-            [self.scrollView setAccessibilityLabel:[NSString stringWithFormat:@"%d paragraphs", [nonFolioPageBlocks count]]];
-        }
-        //[elements addObject:self.scrollView];
+        NSMutableArray *elements = [[NSMutableArray alloc] init];
+        NSInteger currentPage = self.pageNumber;
 
-    NSInteger index = 1;
-    for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self.window] autorelease];
-        CGRect blockRect = [block rect];
-        CGRect elementRect = CGRectApplyAffineTransform(blockRect, viewTransform);
-        [element setAccessibilityFrame:elementRect];
-        //[element setAccessibilityLabel:[NSString stringWithFormat:@"Paragraph %d of %d", index, [nonFolioPageBlocks count]]];
-        [element setAccessibilityValue:[NSString stringWithFormat:@"%@", [block string]]];
-        //[elements addObject:element];
-        [allWords appendString:[block string]];
-        index++;
-    }
-    //[elements addObject:self.currentPageLayer];
-         [self.scrollView setAccessibilityLabel:allWords];
-    [elements addObject:self.scrollView];
-//        //CGRect pageRect = [self cropForPage:currentPage];
-//        [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
-//        [self.scrollView setAccessibilityTraits:UIAccessibilityTraitSummaryElement];
-    
-    self.accessibilityElements = elements;
-    [elements release];
+        if ([self.delegate audioPlaying]) {
+            UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+            [element setAccessibilityFrame:[self cropForPage:currentPage]];
+
+            [self.scrollView setIsAccessibilityElement:NO];
+            [elements addObject:element];        
+
+        } else {
+            [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
+            [self.scrollView setIsAccessibilityElement:YES];
+
+            //CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
+            NSInteger pageIndex = currentPage - 1;
+            NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+            
+            NSMutableString *allWords = [NSMutableString string];
+            
+            for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
+                [allWords appendString:[block string]];
+            }
+            [self.scrollView setAccessibilityLabel:allWords];
+            
+            [elements addObject:self.scrollView];        
+
+        }
+        
+        self.accessibilityElements = elements;
+        [elements release];
     }
     
     return [self.accessibilityElements count];
