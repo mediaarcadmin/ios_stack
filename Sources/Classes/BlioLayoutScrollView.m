@@ -220,6 +220,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 - (BOOL)isAccessibilityElement {
     return YES;
 }
+
 //
 //- (NSString *)accessibilityLabel {
 //    return [self.accessibilityDelegate pageAccessibilityLabel];

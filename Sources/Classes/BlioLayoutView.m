@@ -187,7 +187,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.shadowRight = [UIImage imageNamed:@"shadow-right.png"];
         
         pageCount = CGPDFDocumentGetNumberOfPages(pdf);
-        
+        lastZoomScale = 1;
         // Populate the cache of page sizes and viewTransforms
         NSMutableDictionary *aPageCropsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
         NSMutableDictionary *aViewTransformsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
@@ -1158,7 +1158,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
     } else if (object == self) {
         if ([keyPath isEqualToString:@"currentPageLayer"]) {
-//            NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
+            NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
@@ -1744,7 +1744,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
-    //NSLog(@"scrollViewDidScroll");
+    NSLog(@"scrollViewDidScroll");
     [self.selector setShouldHideMenu:YES];
 
     if (self.disableScrollUpdating) return;
@@ -1762,7 +1762,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         currentPageNumber = floor((sender.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
     }
     
-    
+    NSLog(@"Current page %d, pageNum %d", currentPageNumber, self.pageNumber);
     if (currentPageNumber != self.pageNumber) {
         
         BlioLayoutPageLayer *aLayer = [self.contentView addPage:currentPageNumber retainPages:nil];
@@ -1783,7 +1783,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)updateAfterScroll {
-    //NSLog(@"updateAfterScroll");
+    NSLog(@"updateAfterScroll");
     [self clearSnapshots];
     [self.selector setShouldHideMenu:NO];
     if (self.disableScrollUpdating) return;
@@ -2163,8 +2163,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
         [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
-        [self.scrollView setAccessibilityTraits:UIAccessibilityTraitSummaryElement];
-        
+        //[self.scrollView setAccessibilityTraits:UIAccessibilityTraitSummaryElement];
+        NSMutableString *allWords = [NSMutableString string];
         NSInteger blockCount = [nonFolioPageBlocks count];
         if (blockCount == 0) {
             [self.scrollView setAccessibilityLabel:nil];
@@ -2173,21 +2173,23 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         } else {
             [self.scrollView setAccessibilityLabel:[NSString stringWithFormat:@"%d paragraphs", [nonFolioPageBlocks count]]];
         }
-        [elements addObject:self.scrollView];
+        //[elements addObject:self.scrollView];
 
     NSInteger index = 1;
     for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self.window] autorelease];
         CGRect blockRect = [block rect];
         CGRect elementRect = CGRectApplyAffineTransform(blockRect, viewTransform);
         [element setAccessibilityFrame:elementRect];
         //[element setAccessibilityLabel:[NSString stringWithFormat:@"Paragraph %d of %d", index, [nonFolioPageBlocks count]]];
         [element setAccessibilityValue:[NSString stringWithFormat:@"%@", [block string]]];
-        [elements addObject:element];
+        //[elements addObject:element];
+        [allWords appendString:[block string]];
         index++;
     }
     //[elements addObject:self.currentPageLayer];
-//    [elements addObject:self.scrollView];
+         [self.scrollView setAccessibilityLabel:allWords];
+    [elements addObject:self.scrollView];
 //        //CGRect pageRect = [self cropForPage:currentPage];
 //        [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
 //        [self.scrollView setAccessibilityTraits:UIAccessibilityTraitSummaryElement];
