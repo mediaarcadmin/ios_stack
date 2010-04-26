@@ -95,7 +95,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor;
+@synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
@@ -177,7 +177,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         isCancelled = NO;
         self.book = aBook;
         self.clearsContextBeforeDrawing = NO; // Performance optimisation;
-        self.scrollToPageInProgress = NO;
         self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];    
         self.autoresizesSubviews = YES;
         
@@ -1163,7 +1162,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
-            
+            self.accessibilityElements = nil;
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         }
     }
 }
@@ -1766,7 +1767,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         BlioLayoutPageLayer *aLayer = [self.contentView addPage:currentPageNumber retainPages:nil];
         
-        if (!self.scrollToPageInProgress) {
             if (currentPageNumber < self.pageNumber) {
                 BlioLayoutPageLayer *prevLayer = [self.contentView addPage:currentPageNumber - 1 retainPages:nil];
                 [prevLayer forceThumbCacheAfterDelay:0.75f];
@@ -1778,7 +1778,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             self.pageNumber = currentPageNumber;
             self.currentPageLayer = aLayer;
             self.lastBlock = nil;
-        }
+        
     }
 }
 
@@ -1789,12 +1789,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (self.disableScrollUpdating) return;
     
     
-    if (self.scrollToPageInProgress) {
-        self.scrollToPageInProgress = NO;
-        
-        [self.contentView addPage:self.pageNumber - 1 retainPages:nil];
-        [self.contentView addPage:self.pageNumber + 1 retainPages:nil];
-    }
+//    if (self.scrollToPageInProgress) {
+//        self.scrollToPageInProgress = NO;
+//        
+//        [self.contentView addPage:self.pageNumber - 1 retainPages:nil];
+//        [self.contentView addPage:self.pageNumber + 1 retainPages:nil];
+//    }
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -2078,7 +2078,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Manual KVO overrides
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
-    if (!self.scrollToPageInProgress) {
+    if (!self.disableScrollUpdating) {
         [self willChangeValueForKey:@"pageNumber"];
         pageNumber=newPageNumber;
         [self didChangeValueForKey:@"pageNumber"];
@@ -2122,11 +2122,20 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Accessibility
 
 - (BOOL)isAccessibilityElement {
+    if (!self.disableScrollUpdating) {
     // If we are querying the accessibility mode, force us to zoom out to page
-//    [self.scrollView setZoomScale:kBlioPDFGoToZoomTargetScale animated:YES];
-//    [self.scrollView setContentSize:[self currentContentSize]];
-//    [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.currentPageLayer.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale] animated:YES]; 
-    
+        if ([self.scrollView zoomScale] != kBlioPDFGoToZoomTargetScale) {
+            NSLog(@"Resetting zoom scale");
+            [self.scrollView setZoomScale:kBlioPDFGoToZoomTargetScale animated:NO];
+            [self.scrollView setContentSize:[self currentContentSize]];
+        }
+        
+        CGPoint centeredOffset = [self contentOffsetToCenterPage:self.currentPageLayer.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale];
+        if (!CGPointEqualToPoint([self.scrollView contentOffset], centeredOffset)) {
+            NSLog(@"Resetting contentOffset");
+            [self.scrollView setContentOffset:centeredOffset animated:NO]; 
+        }
+    }
     return NO;
 }
 
@@ -2143,22 +2152,49 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (NSInteger)accessibilityElementCount {
-
+    if (nil == self.accessibilityElements) {
+    NSLog(@"Generating accessibility elements");
     NSMutableArray *elements = [[NSMutableArray alloc] init];
+    //[elements addObject:self.scrollView];
         
-    UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+    NSInteger currentPage = self.pageNumber;
+    CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
+    NSInteger pageIndex = currentPage - 1;
+    NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
-    [element setAccessibilityFrame:CGRectMake(100,100,100,100)];
-    [element setAccessibilityLabel:[NSString stringWithFormat:@"Paragraph 1 of 3"]];
-    
-    [element setAccessibilityValue:[NSString stringWithFormat:@"This is a story of 3 little pigs and a big, bad, wolf."]];
-    
-    [elements addObject:element];
+        [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
+        [self.scrollView setAccessibilityTraits:UIAccessibilityTraitSummaryElement];
+        
+        NSInteger blockCount = [nonFolioPageBlocks count];
+        if (blockCount == 0) {
+            [self.scrollView setAccessibilityLabel:nil];
+        } else if (blockCount == 1) {
+            [self.scrollView setAccessibilityLabel:[NSString stringWithFormat:@"%d paragraph", [nonFolioPageBlocks count]]];
+        } else {
+            [self.scrollView setAccessibilityLabel:[NSString stringWithFormat:@"%d paragraphs", [nonFolioPageBlocks count]]];
+        }
+        [elements addObject:self.scrollView];
+
+    NSInteger index = 1;
+    for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
+        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+        CGRect blockRect = [block rect];
+        CGRect elementRect = CGRectApplyAffineTransform(blockRect, viewTransform);
+        [element setAccessibilityFrame:elementRect];
+        //[element setAccessibilityLabel:[NSString stringWithFormat:@"Paragraph %d of %d", index, [nonFolioPageBlocks count]]];
+        [element setAccessibilityValue:[NSString stringWithFormat:@"%@", [block string]]];
+        [elements addObject:element];
+        index++;
+    }
     //[elements addObject:self.currentPageLayer];
-    [elements addObject:self.scrollView];
+//    [elements addObject:self.scrollView];
+//        //CGRect pageRect = [self cropForPage:currentPage];
+//        [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
+//        [self.scrollView setAccessibilityTraits:UIAccessibilityTraitSummaryElement];
     
     self.accessibilityElements = elements;
     [elements release];
+    }
     
     return [self.accessibilityElements count];
 }
