@@ -13,7 +13,7 @@
 #import "EucPageView.h"
 #import "THEventCapturingWindow.h"
 
-@class EucPageView, EucGutenbergPageLayoutController, EucBookSection, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
+@class EucPageView, EucGutenbergPageLayoutController, EucBookContentsTableViewController, THScalableSlider, EucBookReference;
 @protocol EucBook, EucBookViewControllerDelegate;
 
 typedef enum {

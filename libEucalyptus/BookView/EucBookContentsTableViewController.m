@@ -11,7 +11,6 @@
 #import "EucNameAndPageNumberView.h"
 #import "EucPageLayoutController.h"
 #import "EucBook.h"
-#import "EucBookSection.h"
 //#import "BookPaginator.h"
 #import "THPair.h"
 #import "THNSStringAdditions.h"

@@ -38,6 +38,7 @@
 
 - (void)dealloc
 {
+    free(sectionScaleFactors);
     [textFlow release];
     [currentFlowTree release];
     
@@ -178,4 +179,37 @@
     return ret;
 }
 
+/*
+- (float *)sectionScaleFactors
+{
+    if(!sectionScaleFactors) {
+        BlioTextFlow *myTextFlow = self.textFlow;
+        
+        NSUInteger sectionCount = myTextFlow.sections.count;
+        size_t *sizes = malloc(sectionCount * sizeof(size_t));;
+        size_t total = 0;
+        struct stat statResult;
+        for(NSUInteger i = 0; i < sectionCount - 1; ++i) {
+            sizes[i+1] = [myTextFlow sizeOfSectionWithIndex:i];
+            total += sizes[i+1];
+        }
+        
+        sectionScaleFactors = malloc(sectionCount * sizeof(float));
+        
+        for(NSUInteger i = 0; i < sectionCount; ++i) {  
+            sectionScaleFactors[i] = (float)sizes[i] / (float)total;
+        }
+        
+        free(sizes);
+    }
+    
+    return sectionScaleFactors;
+}
+
+- (float)percentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    
+    [self.textFlow 
+}
+*/
 @end

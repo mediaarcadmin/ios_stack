@@ -10,6 +10,7 @@
 #import "EucBUpeBook.h"
 #import "EucBUpePageTextView.h"
 
+#import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
 #import "EucFilteredBookPageIndex.h"
@@ -28,42 +29,47 @@
 @synthesize book = _book;
 @synthesize fontPointSize = _fontPointSize;
 @synthesize globalPageCount = _globalPageCount;
-@synthesize availablePointSizes = _availablePointSizes;
 
 - (id)initWithBook:(EucBUpeBook *)book fontPointSize:(CGFloat)pointSize
 {
     if((self = [super init])) {
         _book = [book retain];   
-        _bookIndexes = [[_book bookPageIndexes] retain];
-        
-        NSMutableArray *buildAvailablePointSizes = [[NSMutableArray alloc] initWithCapacity:_bookIndexes.count];
-        for(EucBookPageIndex *index in _bookIndexes) {
-            [buildAvailablePointSizes addObject:[NSNumber numberWithFloat:index.pointSize]];
-        }
-        [buildAvailablePointSizes sortUsingSelector:@selector(compare:)];
-        _availablePointSizes = buildAvailablePointSizes; 
-        
+        _bookIndex = [[_book bookIndex] retain];
         [self setFontPointSize:pointSize];        
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [_book release];
+    [_currentBookPageIndex release];
+    [_bookIndex release];
+    
+    [super dealloc];
+}
+
+- (NSArray *)availablePointSizes
+{
+    return _bookIndex.pageIndexPointSizes;
 }
 
 - (void)setFontPointSize:(CGFloat)pointSize
 {
     CGFloat difference = CGFLOAT_MAX;
     EucFilteredBookPageIndex *foundIndex = nil;
-    for(EucFilteredBookPageIndex *index in _bookIndexes) {
+    for(EucFilteredBookPageIndex *index in _bookIndex.pageIndexes) {
         CGFloat thisDifference = fabsf(index.pointSize - pointSize);
         if(thisDifference < difference) {
             difference = thisDifference;
             foundIndex = index;
         }
     }
-    if(foundIndex != _bookIndex) {
-        [_bookIndex release];
-        _bookIndex = [foundIndex retain];
-        _fontPointSize = _bookIndex.pointSize;  
-        _globalPageCount = _bookIndex.filteredLastPageNumber;
+    if(foundIndex != _currentBookPageIndex) {
+        [_currentBookPageIndex release];
+        _currentBookPageIndex = [foundIndex retain];
+        _fontPointSize = _currentBookPageIndex.pointSize;  
+        _globalPageCount = _currentBookPageIndex.filteredLastPageNumber;
     }
 }
 
@@ -90,7 +96,7 @@
 - (NSString *)sectionUuidForPageNumber:(NSUInteger)pageNumber
 {
     NSString *lastSection = nil;
-    EucBookPageIndexPoint *pageIndexPoint = [_bookIndex filteredIndexPointForPage:pageNumber+1];
+    EucBookPageIndexPoint *pageIndexPoint = [_currentBookPageIndex filteredIndexPointForPage:pageNumber+1];
     for(THPair *navPoint in _book.navPoints) {
         NSString *identifier = navPoint.second;
         if([[_book indexPointForId:identifier] compare:pageIndexPoint] != NSOrderedDescending) {
@@ -105,7 +111,7 @@
 - (NSString *)sectionNameForPageNumber:(NSUInteger)pageNumber
 {
     NSString *lastName = nil;
-    EucBookPageIndexPoint *pageIndexPoint = [_bookIndex filteredIndexPointForPage:pageNumber+1];
+    EucBookPageIndexPoint *pageIndexPoint = [_currentBookPageIndex filteredIndexPointForPage:pageNumber+1];
     for(THPair *navPoint in _book.navPoints) {
         NSString *identifier = navPoint.second;
         if([[_book indexPointForId:identifier] compare:pageIndexPoint] != NSOrderedDescending) {
@@ -158,7 +164,7 @@
 
 - (NSUInteger)pageNumberForSectionUuid:(NSString *)uuid
 {
-    return [_bookIndex pageForIndexPoint:[_book indexPointForId:uuid]];
+    return [_currentBookPageIndex pageForIndexPoint:[_book indexPointForId:uuid]];
 }
 
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber 
@@ -167,8 +173,8 @@
 {
     THPair *ret = nil;
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
-        EucBookPageIndexPoint *indexPoint = [_bookIndex filteredIndexPointForPage:pageNumber];
-        EucPageView *pageView = [[self class] blankPageViewForPointSize:_bookIndex.pointSize 
+        EucBookPageIndexPoint *indexPoint = [_currentBookPageIndex filteredIndexPointForPage:pageNumber];
+        EucPageView *pageView = [[self class] blankPageViewForPointSize:_currentBookPageIndex.pointSize 
                                                         withPageTexture:pageTexture];
         pageView.titleLinePosition = EucPageViewTitleLinePositionTop;
         pageView.titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
@@ -192,7 +198,7 @@
 
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    NSUInteger ret = [_bookIndex filteredPageForIndexPoint:indexPoint];
+    NSUInteger ret = [_currentBookPageIndex filteredPageForIndexPoint:indexPoint];
     if(ret == 0) {
         ret = 1;
     }

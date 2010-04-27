@@ -11,7 +11,7 @@
 #import <unistd.h>
 #import <glob.h>
 #import "EucBook.h"
-#import "EucBookSection.h"
+#import "EucBookIndex.h"
 #import "EucBookPaginator.h"
 #import "THLog.h"
 #import "THRegex.h"
@@ -22,69 +22,6 @@
 @implementation EucBookPageIndex
 
 @synthesize lastPageNumber = _lastPageNumber;
-
-+ (NSUInteger)indexVersion
-{
-    return 1;
-}
-
-+ (NSString *)filenameForPageIndexForPointSize:(NSUInteger)fontSize
-{
-    return [NSString stringWithFormat:@"%lu.v%luindex", (unsigned long)fontSize, (unsigned long)[EucBookPageIndex indexVersion]];
-}
-
-+ (NSString *)constructionFilenameForPageIndexForPointSize:(NSUInteger)fontSize
-{
-    return [NSString stringWithFormat:@"%lu.v%luindexConstruction", (unsigned long)fontSize, (unsigned long)[EucBookPageIndex indexVersion]];
-}
-
-+ (NSString *)constructionFlagFilename
-{
-    return [NSString stringWithFormat:@"constructed.v%luindexes", (unsigned long)[EucBookPageIndex indexVersion]];
-}
-
-+ (void)markBookBundleAsIndexesConstructed:(NSString *)bundlePath
-{
-    NSString *globPath = [bundlePath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luindexConstruction", (unsigned long)[EucBookPageIndex indexVersion]]];
-    glob_t globValue;
-    int err = glob([globPath fileSystemRepresentation],
-                   GLOB_NOSORT,
-                   NULL,
-                   &globValue);
-    if(err != 0) {
-        THWarn(@"Globbing failed when attempting to find constructed indexes in book bundle %@", bundlePath);
-    } else if(globValue.gl_pathc <= 0) {
-        THWarn(@"Could not find indexes in book bundle %@", bundlePath);
-    } else {
-        for(size_t i = 0; i < globValue.gl_pathc; ++i) {
-            char *from = globValue.gl_pathv[i];
-            int fromLength = strlen(from);
-            int toLength = fromLength - 12;
-            char to[toLength + 1];
-            memcpy(to, from, toLength);
-            to[toLength] = 0;
-            if(rename(from, to) != 0) {
-                THWarn(@"Error moving book index into place, (%s -> %s), error %d [\"%s\"]", from, to, errno, strerror(errno));  
-            }
-        }
-        globfree(&globValue);
-    }
-    
-    int flagFd = open([[bundlePath stringByAppendingPathComponent:[[self class] constructionFlagFilename]] fileSystemRepresentation],
-                      O_WRONLY | O_TRUNC | O_CREAT, 
-                      S_IRUSR | S_IWUSR);
-    if(flagFd != -1) {
-        close(flagFd);
-    } else {
-        THWarn(@"Error marking indexes in %@ as constructed%s), error %d [\"%s\"]", bundlePath, errno, strerror(errno));  
-    }
-}
-
-+ (BOOL)indexesAreConstructedForBookBundle:(NSString *)bundlePath
-{
-    return access([[bundlePath stringByAppendingPathComponent:[[self class] constructionFlagFilename]] fileSystemRepresentation],
-                  F_OK) == 0;
-}
 
 @synthesize book = _book;
 @synthesize pointSize = _pointSize;
@@ -101,9 +38,9 @@
         NSString *indexDirectoryPath = book.cacheDirectoryPath;
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *indexPath = [indexDirectoryPath stringByAppendingPathComponent:[[self class] filenameForPageIndexForPointSize:pointSize]];
+        NSString *indexPath = [indexDirectoryPath stringByAppendingPathComponent:[EucBookIndex filenameForPageIndexForPointSize:pointSize]];
         if(![fileManager fileExistsAtPath:indexPath]) {
-            indexPath =  [indexDirectoryPath stringByAppendingPathComponent:[[self class] constructionFilenameForPageIndexForPointSize:pointSize]];
+            indexPath =  [indexDirectoryPath stringByAppendingPathComponent:[EucBookIndex constructionFilenameForPageIndexForPointSize:pointSize]];
         } else {
             _isFinal = YES;
         }
@@ -181,41 +118,6 @@
     return [[[self alloc] _initForIndexInBook:book pointSize:pointSize] autorelease];
 }
 
-+ (NSArray *)bookPageIndexesForBook:(id<EucBook>)book
-{
-    NSMutableArray *indexes = [NSMutableArray array];
-    
-    NSString *indexDirectoryPath = [book cacheDirectoryPath];
-    NSString *globPath = [indexDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luindex*", (unsigned long)[EucBookPageIndex indexVersion]]];
-    glob_t globValue;
-    int err = glob([globPath fileSystemRepresentation],
-                   0,
-                   NULL,
-                   &globValue);
-    if(err != 0) {
-        THWarn(@"Globbing failed when attempting to find indexes in book bundle %@", indexDirectoryPath);
-    } else if(globValue.gl_pathc <= 0) {
-        THWarn(@"Could not find indexes in book bundle %@", indexDirectoryPath);
-    } else {
-        THRegex *indexRegex = [THRegex regexWithPOSIXRegex:[NSString stringWithFormat:@"([[:digit:]]+).v%luindex(Construction)?$", (unsigned long)[EucBookPageIndex indexVersion]]];
-        
-        for(size_t i = 0; i < globValue.gl_pathc; ++i) {
-            NSString *path = [NSString stringWithUTF8String:globValue.gl_pathv[i]];
-            if([indexRegex matchString:path]) {
-                NSUInteger pointSize = [[indexRegex match:1] integerValue];
-                EucBookPageIndex *index = [self bookPageIndexForIndexInBook:book forPointSize:pointSize];
-                if(index) {
-                    [indexes addObject:index];
-                }
-            }
-        }
-        globfree(&globValue);
-    }
-    
-    [indexes sortUsingSelector:@selector(compare:)];
-    
-    return indexes;
-}
 
 - (void)seekToEnd
 {

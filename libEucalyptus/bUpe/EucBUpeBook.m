@@ -9,19 +9,20 @@
 
 #import "THLog.h"
 #import "EucBUpeBook.h"
+#import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
 #import "EucBookParagraph.h"
-#import "EucBookSection.h"
 #import "THPair.h"
 #import "THRegex.h"
 #import "THNSURLAdditions.h"
-#import "expat.h"
 
 #import "EucCSSXMLTree.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSLayouter.h"
+
+#import <expat.h>
 
 #import <fcntl.h>
 #import <sys/stat.h>
@@ -600,9 +601,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     }*/
 }
 
-- (NSArray *)bookPageIndexes
+- (EucBookIndex *)bookIndex
 {
-    NSArray *indexes = [EucFilteredBookPageIndex bookPageIndexesForBook:self];
+    EucBookIndex *index = [EucBookIndex bookIndexForBook:self];
     /*if(_filteredSections) {
         NSMutableArray *ranges = [NSMutableArray arrayWithCapacity:_filteredSections.count];
         EucBookSection *lastSection = nil;
@@ -626,7 +627,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         
         [lastSection release];
     }*/
-    return indexes;
+    return index;
 }
 
 - (EucBookPageIndexPoint *)currentPageIndexPoint
