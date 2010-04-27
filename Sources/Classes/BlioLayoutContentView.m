@@ -215,7 +215,11 @@
 }
 
 - (BOOL)isAccessibilityElement {
-    return NO;
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return @"contentView";
 }
 
 #if 0
@@ -366,31 +370,31 @@
     return YES;
 }
 
-- (NSInteger)accessibilityElementCount
-{
-    return 1;
-}
+//- (NSInteger)accessibilityElementCount
+//{
+//    return 1;
+//}
 
-- (NSInteger)indexOfAccessibilityElement:(id)element
-{
-    return 0;
-}
-
-- (id)accessibilityElementAtIndex:(NSInteger)index
-{
-    UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
-    CGRect pageRect = [thumbLayer frame];
-    [element setAccessibilityFrame:pageRect];
-    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", self.pageNumber]];
-    return element;
-}
+//- (NSInteger)indexOfAccessibilityElement:(id)element
+//{
+//    return 0;
+//}
+//
+//- (id)accessibilityElementAtIndex:(NSInteger)index
+//{
+//    UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+//    CGRect pageRect = [thumbLayer frame];
+//    [element setAccessibilityFrame:pageRect];
+//    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", self.pageNumber]];
+//    return element;
+//}
 
 - (NSString *)accessibilityLabel {
     return @"pageLayerLabel";
 }
 
 - (CGRect)accessibilityFrame {
-    CGRect pageRect = [thumbLayer frame];
+    CGRect pageRect = CGRectMake(100,100,100,100);
     return pageRect;
 }
 

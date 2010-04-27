@@ -31,7 +31,8 @@
 - (void)hideToolbars;
 - (void)hideToolbarsAndStatusBar:(BOOL)hidesStatusBar;
 - (void)toggleToolbars;
-
+- (BOOL)toolbarsVisible;
+- (BOOL)audioPlaying;
 @end
 
 #pragma mark -

@@ -43,7 +43,6 @@ typedef enum BlioLayoutPageMode {
     BlioLayoutContentView *contentView;
     NSInteger visiblePageIndex;
     BlioLayoutPageLayer *currentPageLayer;
-    BOOL scrollToPageInProgress;
     BOOL disableScrollUpdating;
     MSTiltScroller *tiltScroller;
     NSInteger pageNumber;
@@ -71,7 +70,7 @@ typedef enum BlioLayoutPageMode {
     BlioLayoutPageMode layoutMode;
     CGAffineTransform cachedViewTransform;
     NSInteger cachedViewTransformPage;
-    NSMutableArray *_accessibleElements;
+    NSMutableArray *accessibilityElements;
 }
 
 @property (nonatomic, assign) id<BlioBookDelegate> delegate;
@@ -80,7 +79,6 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic, retain) BlioLayoutContentView *contentView;
 @property (nonatomic, retain) BlioLayoutPageLayer *currentPageLayer;
 @property (nonatomic, assign) MSTiltScroller *tiltScroller;
-@property (nonatomic) BOOL scrollToPageInProgress;
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;

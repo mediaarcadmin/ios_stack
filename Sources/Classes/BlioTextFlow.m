@@ -148,7 +148,7 @@
 }
 
 - (NSString *)string {
-    return [[self words] componentsJoinedByString:@" "];
+    return [[self wordStrings] componentsJoinedByString:@" "];
 }
 
 - (CGRect)rect {
