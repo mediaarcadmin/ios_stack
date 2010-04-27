@@ -386,6 +386,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     [self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
     [self performSelector:@selector(enableInteractions) withObject:nil afterDelay:0.1f];
+    
+    self.accessibilityElements = nil;
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+NSLog(@"did rotate");
 }
 
 #pragma mark -
@@ -2080,18 +2085,37 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (NSInteger)accessibilityElementCount {
     if (nil == self.accessibilityElements) {
+        NSLog(@"accessibilityElementCount width bounds %@ %@", NSStringFromCGRect(self.scrollView.bounds), NSStringFromCGRect(self.scrollView.frame));
         NSMutableArray *elements = [[NSMutableArray alloc] init];
         NSInteger currentPage = self.pageNumber;
-
+        CGRect cropRect;
+        CGAffineTransform boundsTransform = [self boundsTransformForPage:currentPage cropRect:&cropRect];
+        cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+        //cropRect = [self.window convertRect:cropRect fromView:self.scrollView];
+        //if (CGRectGetMaxY(cropRect) > 320) cropRect.size.height = 320 - cropRect.origin.y;
+        if (layoutMode == BlioLayoutPageModeLandscape) {
+            //CGFloat yOrigin = [self.scrollView convertPoint:CGPointMake(0, CGRectGetMaxY(cropRect)) fromView:self.contentView].y;
+            cropRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + cropRect.origin.y, cropRect.origin.x, cropRect.size.height, cropRect.size.width);
+            if (CGRectGetWidth(cropRect) > CGRectGetHeight(self.scrollView.frame)) {
+                CGFloat diff = CGRectGetWidth(cropRect) - CGRectGetHeight(self.scrollView.frame);
+                cropRect.origin.x += diff;
+                cropRect.size.width -= diff;
+            }
+        }
+        //cropRect.origin.y = 0;
+//        //cropRect.origin.x = 0;
+//        cropRect.size.width = 300;
+//        cropRect.size.height = 480;
         if ([self.delegate audioPlaying]) {
+        //if (true) {    
             UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
-            [element setAccessibilityFrame:[self cropForPage:currentPage]];
+            [element setAccessibilityFrame:cropRect];
 
             [self.scrollView setIsAccessibilityElement:NO];
             [elements addObject:element];        
 
         } else {
-            [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
+            [self.scrollView setAccessibilityFrame:cropRect];
             [self.scrollView setIsAccessibilityElement:YES];
 
             //CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
