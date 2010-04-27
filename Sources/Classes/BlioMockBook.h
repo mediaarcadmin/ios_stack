@@ -14,9 +14,11 @@
 
 @class EucBUpeBook;
 
-static const NSInteger kBlioMockBookProcessingStateIncomplete = 0;
-static const NSInteger kBlioMockBookProcessingStatePaused = 1;
-static const NSInteger kBlioMockBookProcessingStateComplete = 2;
+static const NSInteger kBlioMockBookProcessingStateNotProcessed = 0;
+static const NSInteger kBlioMockBookProcessingStatePlaceholderOnly = 1;
+static const NSInteger kBlioMockBookProcessingStateIncomplete = 2;
+static const NSInteger kBlioMockBookProcessingStatePaused = 3;
+static const NSInteger kBlioMockBookProcessingStateComplete = 4;
 
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;

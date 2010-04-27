@@ -8,17 +8,25 @@
 
 #import <Foundation/Foundation.h>
 #import "BlioLoginManager.h"
+#import "BlioProcessingManager.h"
 
+@class ContentCafe_ProductItem;
+
+static NSString * const kBlioOnlineStoreSourceID = @"kBlioOnlineStoreSourceID";
 
 @interface BlioBookVaultManager : NSObject {
 	BlioLoginManager* loginManager;
-	NSMutableArray* isbns; // array of ISBN numbers
+	BlioProcessingManager* processingManager;
+	NSMutableArray* _isbns; // array of ISBN numbers
 }
 
 @property (nonatomic, retain) BlioLoginManager* loginManager;
+@property (nonatomic, retain) BlioProcessingManager* processingManager;
+@property (nonatomic, copy,readonly) NSMutableArray* isbns;
 
-- (void)getContent:(NSString*)isbn;
+- (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
 - (void)archiveBooks;
+- (BOOL)fetchBooksFromServer;
 - (void)downloadBook:(NSString*)isbn;
 
 @end

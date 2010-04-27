@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BlioProcessing.h"
 #import <CoreData/CoreData.h>
+#import "BlioBookVaultManager.h"
 
 @interface BlioStoreTabViewController : UITabBarController <UITabBarControllerDelegate> {
     id <BlioProcessingDelegate> processingDelegate;
@@ -17,6 +18,6 @@
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
-- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate managedObjectContext:(NSManagedObjectContext*)moc;
+- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate managedObjectContext:(NSManagedObjectContext*)moc vaultManager:(BlioBookVaultManager*)aVaultManager;
 
 @end

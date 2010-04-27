@@ -13,6 +13,8 @@
 @implementation BlioBookVaultManager
 
 @synthesize loginManager;
+@synthesize processingManager;
+@synthesize isbns = _isbns;
 
 
 - (id)init
@@ -20,13 +22,13 @@
 	self = [super init];
 	if (self)
 	{
-		self.loginManager = [[BlioLoginManager alloc] init];
-		
+		self.loginManager = [[[BlioLoginManager alloc] init] autorelease];
+		_isbns = nil;
 	}
 	
 	return self;
 }
-
+// TODO: refactor as NSOperation
 - (void)downloadBook:(NSString*)isbn {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	vaultBinding.logXMLInOut = YES;
@@ -56,7 +58,7 @@
 	}
 }
 
-- (void)getContent:(NSString*)isbn {
+- (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn {
 	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
 	cafeBinding.logXMLInOut = YES;
 	ContentCafe_Single* singleRequest = [[ContentCafe_Single new] autorelease];
@@ -67,34 +69,74 @@
 	ContentCafeSoapResponse* response = [cafeBinding SingleUsingParameters:singleRequest];
 	[cafeBinding release];
 	NSArray *responseBodyParts = response.bodyParts;
+	if (responseBodyParts == nil) {
+		NSLog(@"ERROR: responseBodyParts is nil. response: %@",response);
+		return nil;
+	}
 	ContentCafe_RequestItems* requestItems;
 	for(id bodyPart in responseBodyParts) {
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 			NSLog(@"SOAP error for ContentCafeSingle: %s",err);
 			// TODO: Message
-			return;
+			return nil;
 		}
 		else if ( (requestItems = [[bodyPart ContentCafe] RequestItems]) ) { 
 			ContentCafe_RequestItem* requestItem = (ContentCafe_RequestItem*)[[requestItems RequestItem] objectAtIndex:0];
 			ContentCafe_ProductItem* productItem =(ContentCafe_ProductItem*)[[[requestItem ProductItems] ProductItem] objectAtIndex:0];
-			// TODO: put in a book for display in the vault.
-			NSString* title = [[productItem Title] Value];
-			NSString* author = [productItem Author];
-			NSString* coverURL = [NSString stringWithFormat:@"http://images.btol.com/cc2images/Image.aspx?SystemID=knfb&IdentifierID=I&IdentifierValue=%@&Source=BT&Category=FC&Sequence=1&Size=L&NotFound=S",isbn];
-			NSLog(@"Title: %s", title);
-			NSLog(@"Author: %s", author);
-			NSLog(@"Cover: %s", coverURL);
+			return productItem;
 		}
 		else {
 			NSLog(@"ContentCafeSingle error.");
 			// TODO: Message
 		}
 		
-	}		
+	}
+	return nil;
 }
 
 - (void)archiveBooks {
+	if (!self.processingManager) {
+		NSLog(@"ERROR: no processingManager set for BlioBookVaultManager! Aborting archiveBooks...");
+		return;
+	}
+	if (![self fetchBooksFromServer]) {
+		NSLog(@"ERROR: could not fetch ISBNs from the server!");
+		return;
+	}
+	// add new book entries to PersistentStore as appropriate
+	for (NSString * isbn in _isbns) {
+		ContentCafe_ProductItem* productItem = [self getContentMetaDataFromISBN:isbn];
+		if (productItem) {
+			// TODO: put in a book for display in the vault.
+			NSString* title = [[productItem Title] Value];
+			NSString* author = [productItem Author];
+			NSString* coverURL = [NSString stringWithFormat:@"http://images.btol.com/cc2images/Image.aspx?SystemID=knfb&IdentifierID=I&IdentifierValue=%@&Source=BT&Category=FC&Sequence=1&Size=L&NotFound=S",isbn];
+			NSLog(@"Title: %@", title);
+			NSLog(@"Author: %@", author);
+			NSLog(@"Cover: %@", coverURL);
+			
+			// check to see if title is already in persistent store
+			
+			
+			[self.processingManager enqueueBookWithTitle:title 
+												 authors:[NSArray arrayWithObject:author] 
+												coverURL:[NSURL URLWithString:coverURL] 
+												 ePubURL:nil 
+												  pdfURL:nil 
+											 textFlowURL:nil 
+											audiobookURL:nil 
+												sourceID:kBlioOnlineStoreSourceID 
+										sourceSpecificID:isbn
+										 placeholderOnly:YES
+			 ];
+		}
+		else {
+
+		}
+	}	
+}
+- (BOOL)fetchBooksFromServer {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
 	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
@@ -107,25 +149,36 @@
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 			NSLog(@"SOAP error for VaultContents: %s",err);
 			// TODO: Message
-			return;
+			return NO;
 		}
 		else if ( [[bodyPart VaultContentsWithTokenResult].ReturnCode intValue] == 300 ) { 
-			isbns = [bodyPart VaultContentsWithTokenResult].Contents.string;
+			if (_isbns) [_isbns release]; // release old set of ISBNs
+			_isbns = [[bodyPart VaultContentsWithTokenResult].Contents.string retain];
+			return YES;
 		}
 		else {
 			NSLog(@"VaultContents error: %s",[bodyPart VaultContentsWithTokenResult].Message);
 			// TODO: Message
-			return;
+			return NO;
 		}
 	}
+	return NO;
+}
+/*
+-(void) testDownloadAllContent {
 	// TODO: Remove from the isbn list the isbns that are already on the device.
-	for (id isbn in isbns) {
+	for (id isbn in _isbns) {
 		[self getContent:isbn];
 		// For testing
 		[self downloadBook:isbn];
-	}
-	
-	
+	}	
+}
+ */
+- (void)dealloc {
+	if (_isbns) [_isbns release];
+	self.loginManager = nil;
+	self.processingManager = nil;
+    [super dealloc];
 }
 
 @end

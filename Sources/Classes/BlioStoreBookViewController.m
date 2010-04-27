@@ -179,8 +179,8 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
     NSManagedObjectContext *moc = [self managedObjectContext]; 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-//	NSLog(@"sourceSpecificID: %@",[self.entity id]);
-//	NSLog(@"sourceID: %@",[self.feed id]);
+	NSLog(@"sourceSpecificID: %@",[self.entity id]);
+	NSLog(@"sourceID: %@",[self.feed id]);
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@", [self.entity id],[self.feed id]]];
 	
 	NSError *errorExecute = nil; 
@@ -198,7 +198,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
 			}
 			NSManagedObject * resultBook = [results objectAtIndex:0];
-			NSLog(@"processingStatus int: %i",[[resultBook valueForKey:@"processingComplete"] intValue]);
+//			NSLog(@"processingStatus int: %i",[[resultBook valueForKey:@"processingComplete"] intValue]);
 				  if ([[resultBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
 				NSLog(@"and processingComplete is kBlioMockBookProcessingStateComplete."); 
 				

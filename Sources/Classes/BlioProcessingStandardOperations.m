@@ -25,7 +25,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	}
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
-			NSLog(@"failed dependency found! Sending Failed Notification...");
+			NSLog(@"failed dependency found! Operation: %@ Sending Failed Notification...",blioOp);
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self];
 			[self cancel];
 			return;
@@ -38,8 +38,9 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	if (![[NSFileManager defaultManager] removeItemAtPath:dirPath error:&downloadDirError]) {
 		NSLog(@"Failed to delete download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
 	}
-	
-    [self setBookValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateComplete] forKey:@"processingComplete"];
+	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingComplete"] intValue];
+    if (currentProcessingState == kBlioMockBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly] forKey:@"processingComplete"];
+	else [self setBookValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateComplete] forKey:@"processingComplete"];
     // The following condition is done in order to prevent a thread's first-time access to [self getBookValueForKey:@"title"] (which happens when there are no dependencies- theoretically that should never happen, but a crash would occur in artificial tests so a safeguard is warranted)... could also be avoided by simply not accessing the MOC in this method for the NSLog.
     if ([NSThread isMainThread]) NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
 	else NSLog(@"Processing complete for book with sourceID:%@ sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);

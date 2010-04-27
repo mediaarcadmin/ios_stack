@@ -87,6 +87,10 @@
 	usernameField.autocorrectionType = UITextAutocorrectionTypeNo;
 	usernameField.placeholder = @"Username";
 	usernameField.delegate = self;
+	
+	//temporarily populate to save time
+	usernameField.text = @"achien@knfbreader.com";
+	
 	return usernameField;
 }
 	
@@ -104,6 +108,8 @@
 	passwordField.delegate = self;
 	passwordField.secureTextEntry = YES;
 		
+	passwordField.text = @"Soniac1Soniac1";
+
 	return passwordField;
 }
 
@@ -180,7 +186,7 @@
         //cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellTextField_ID] autorelease];
     }
 	
-	if (row == 0)
+	if (row == 0) 
 		((CellTextField *)cell).view = [self createUsernameTextField];
 	else
 		((CellTextField *)cell).view = [self createPasswordTextField];
