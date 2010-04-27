@@ -7,7 +7,7 @@
  *
  */
 
-@class EucBookPageIndexPoint, EucBookSection;
+@class EucBookIndex, EucBookPageIndexPoint;
 
 @protocol EucBook <NSObject>
 
@@ -23,7 +23,7 @@
 - (NSString *)cacheDirectoryPath;
 
 - (Class)pageLayoutControllerClass;
-- (NSArray *)bookPageIndexes;
+- (EucBookIndex *)bookIndex;
 
 - (float)estimatedPercentageForIndexPoint:(EucBookPageIndexPoint *)point;
 

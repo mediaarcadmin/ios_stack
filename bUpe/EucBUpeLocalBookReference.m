@@ -7,7 +7,7 @@
 //
 
 #import "EucBUpeLocalBookReference.h"
-#import "EucBookPageIndex.h"
+#import "EucBookIndex.h"
 #import "THNSFileManagerAdditions.h"
 
 
@@ -37,7 +37,7 @@
 
 - (BOOL)paginationIsComplete
 {
-    return [EucBookPageIndex indexesAreConstructedForBookBundle:self.cacheDirectoryPath];
+    return [EucBookIndex indexesAreConstructedForBookBundle:self.cacheDirectoryPath];
 }
 
 - (CGFloat)percentThroughBook
