@@ -297,7 +297,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    [self goToPageNumber:1 animated:animated];
+    [self goToPageNumber:[self.book.textFlow pageNumberForSectionUuid:uuid] animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
@@ -1579,38 +1579,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
 } 
 
-#pragma mark -
-#pragma mark Contents Data Source protocol methods
-
-- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
-    return self;
-}
-
-- (NSArray *)sectionUuids
-{
-  return [NSArray arrayWithObject:@"dummy-uuid"];
-}
-
-- (NSString *)sectionUuidForPageNumber:(NSUInteger)page
-{
-  return @"dummy-uuid";
-}
-
-- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
-{
-  return NULL;
-}
-
-- (NSInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
-{
-  return 1; // only one section, very easy
-}
-
-- (NSString *)displayPageNumberForPageNumber:(NSInteger)aPageNumber
-{
-  return [NSString stringWithFormat:@"%d", aPageNumber];
-}
-
 - (CGRect)firstPageRect {
     if ([self pageCount] > 0) {
         CGRect cropRect;
@@ -1622,7 +1590,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         return self.contentView.frame;
     }
 }
-    
+
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
+    return self.book.textFlow;
+}
+
 #pragma mark -
 #pragma mark Container UIScrollView Delegate
 

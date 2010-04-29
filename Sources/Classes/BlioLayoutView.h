@@ -35,7 +35,7 @@ typedef enum BlioLayoutPageMode {
 
 @end
 
-@interface BlioLayoutView : UIView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucBookContentsTableViewControllerDataSource, EucSelectorDataSource, EucSelectorDelegate> {
+@interface BlioLayoutView : UIView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
     id<BlioBookDelegate> delegate;
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
