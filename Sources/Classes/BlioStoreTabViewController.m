@@ -61,11 +61,13 @@
         [feedBooksFeed setTitle:@"Feedbooks"];
         [feedBooksFeed setFeedURL:feedbooksFeedURL];
         [feedBooksFeed setParserClass:[BlioStoreLocalParser class]];
+		feedBooksFeed.sourceID = BlioBookSourceFeedbooks;
         NSURL *googleFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"googlebooks" ofType:@"atom" inDirectory:@"Feeds"]];
         BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
         [googleBooksFeed setTitle:@"Google Books"];
         [googleBooksFeed setFeedURL:googleFeedURL];
         [googleBooksFeed setParserClass:[BlioStoreLocalParser class]];
+		googleBooksFeed.sourceID = BlioBookSourceGoogleBooks;
         [vc2 setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
         [feedBooksFeed release];
         [googleBooksFeed release];

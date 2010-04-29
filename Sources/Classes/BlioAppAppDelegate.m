@@ -153,7 +153,7 @@ static void *background_init_thread(void * arg) {
 		if ([results count] > 0) {
 			NSLog(@"Found non-paused incomplete book results, will resume..."); 
 			for (BlioMockBook * book in results) {
-				//				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
+				//				NSLog(@"mo sourceSpecificID:%@ sourceID:%i",[mo valueForKey:@"sourceSpecificID"],[[mo valueForKey:@"sourceID"] intValue]);
 				[[self processingManager] enqueueBook:book];
 			}
 		}

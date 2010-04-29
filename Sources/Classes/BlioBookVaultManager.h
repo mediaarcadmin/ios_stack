@@ -12,21 +12,22 @@
 
 @class ContentCafe_ProductItem;
 
-static NSString * const kBlioOnlineStoreSourceID = @"kBlioOnlineStoreSourceID";
 
 @interface BlioBookVaultManager : NSObject {
 	BlioLoginManager* loginManager;
 	BlioProcessingManager* processingManager;
+	NSManagedObjectContext* managedObjectContext;
 	NSMutableArray* _isbns; // array of ISBN numbers
 }
 
 @property (nonatomic, retain) BlioLoginManager* loginManager;
 @property (nonatomic, retain) BlioProcessingManager* processingManager;
+@property (nonatomic, retain) NSManagedObjectContext* managedObjectContext;
 @property (nonatomic, copy,readonly) NSMutableArray* isbns;
 
 - (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
 - (void)archiveBooks;
 - (BOOL)fetchBooksFromServer;
-- (void)downloadBook:(NSString*)isbn;
+- (NSURL*)URLForPaidBook:(NSString*)isbn;
 
 @end

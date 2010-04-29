@@ -180,8 +180,8 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
 	NSLog(@"sourceSpecificID: %@",[self.entity id]);
-	NSLog(@"sourceID: %@",[self.feed id]);
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@", [self.entity id],[self.feed id]]];
+	NSLog(@"sourceID: %i",self.feed.sourceID);
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@", [self.entity id],[NSNumber numberWithInt:self.feed.sourceID]]];
 	
 	NSError *errorExecute = nil; 
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -195,7 +195,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 			// then update button options accordingly to prevent possible duplication of entries.
 			NSLog(@"Found Book in context already"); 
 			for (NSManagedObject * mo in results) {
-				NSLog(@"mo sourceSpecificID:%@ sourceID:%@",[mo valueForKey:@"sourceSpecificID"],[mo valueForKey:@"sourceID"]);
+				NSLog(@"mo sourceSpecificID:%@ sourceID:%i",[mo valueForKey:@"sourceSpecificID"],[[mo valueForKey:@"sourceID"] intValue]);
 			}
 			NSManagedObject * resultBook = [results objectAtIndex:0];
 //			NSLog(@"processingStatus int: %i",[[resultBook valueForKey:@"processingComplete"] intValue]);
@@ -208,7 +208,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 			{
 				// Book is in context/state, but not complete.
 				// Check operation queue to see if completeOperation for id is present
-				NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:feed.id sourceSpecificID:entity.id];
+				NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
 				if (completeOperation == nil) {
 					// for now, treat as incomplete - redownload completely. TODO: processing manager should scan for pre-existing entity in context and append to it instead of creating new one.
 					NSLog(@"but not processingComplete and could not find completeOperation."); 
@@ -294,7 +294,7 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 	else if (downloadState == kBlioStoreDownloadButtonStateConfirm) {
 //		NSLog(@"button pressed while in Confirm state");
 		// start processing download decision
-		
+				
 		[self.processingDelegate enqueueBookWithTitle:self.entity.title 
 											  authors:[NSArray arrayWithObject:self.entity.author]
 											 coverURL:self.entity.coverUrl ? [NSURL URLWithString:self.entity.coverUrl] : nil
@@ -302,15 +302,15 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 											   pdfURL:self.entity.pdfUrl ? [NSURL URLWithString:self.entity.pdfUrl] : nil
 										  textFlowURL:nil
 										 audiobookURL:nil
-											 sourceID:self.feed.id
+											 sourceID:self.feed.sourceID
 									 sourceSpecificID:self.entity.id
 		 ];
 		
 		// register as listener
 
-		NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:feed.id sourceSpecificID:entity.id];
+		NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
 		if (completeOperation == nil) {
-			NSLog(@"WARNING: cannot find completeOperation for recently enqueued book sourceID:%@ sourceSpecificID:%@",self.feed.id,self.entity.id);
+			NSLog(@"WARNING: cannot find completeOperation for recently enqueued book sourceID:%i sourceSpecificID:%@",self.feed.id,self.entity.id);
 		}
 		else {
 //			NSLog(@"completeOperation found, BlioStoreBookViewController becoming listener...");

@@ -118,6 +118,7 @@
     self.tableView = aTableView;
     self.dimmableTableView = aTableView;
     [aTableView release];
+	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 	[self.view addSubview:activityIndicatorView];
 	activityIndicatorView.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
@@ -206,10 +207,12 @@
 	// cell background
 	if (cell.backgroundView == nil) { // if no existing divider image, add one
 		NSLog(@"background!");
-		cell.backgroundView = [[[UIView alloc] initWithFrame:CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,2)] autorelease];
+		cell.backgroundView = [[[UIView alloc] initWithFrame:cell.bounds] autorelease];
+		cell.backgroundView.autoresizesSubviews = YES;
 		UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
 		[cell.backgroundView addSubview:backgroundImageView];
-		backgroundImageView.frame = CGRectMake(0,0,[[UIScreen mainScreen] bounds].size.width,1);
+		backgroundImageView.frame = CGRectMake(0,0,cell.bounds.size.width,2);
+		backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		[backgroundImageView release];
 
 		// label styling
@@ -221,6 +224,7 @@
 	cell.textLabel.font = [UIFont boldSystemFontOfSize:16.0];
 	cell.detailTextLabel.font = [UIFont boldSystemFontOfSize:12.0];
 	cell.detailTextLabel.text = [cell.detailTextLabel.text uppercaseString];
+	cell.selectionStyle = UITableViewCellSelectionStyleGray;
 	
 	
 	return cell;
@@ -316,7 +320,7 @@
         [self setScrollEnabled:NO];
     } else {
         [self.dimmingView setAlpha:0.0f];
-        [self setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+        // [self setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
         [self setScrollEnabled:YES];
     }
 }

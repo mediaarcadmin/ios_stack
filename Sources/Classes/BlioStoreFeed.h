@@ -11,10 +11,12 @@
 #import "BlioStoreLocalParser.h"
 #import "BlioStoreFeedBooksParser.h"
 #import "BlioStoreGoogleBooksParser.h"
+#import "BlioProcessing.h"
 
 @interface BlioStoreFeed : NSObject {
     Class parserClass;
     BlioStoreBooksSourceParser *parser;
+	BlioBookSource sourceID;
     NSString *title;
     NSMutableArray *categories;
     NSMutableArray *entities;
@@ -33,5 +35,6 @@
 @property (nonatomic, retain) NSURL *nextURL;
 @property (nonatomic, retain) NSString *id;
 @property (nonatomic, assign) NSUInteger totalResults;
+@property (nonatomic, assign) BlioBookSource sourceID;
 
 @end

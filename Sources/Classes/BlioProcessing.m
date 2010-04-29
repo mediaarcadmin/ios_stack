@@ -27,7 +27,6 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     self.bookID = nil;
-	self.sourceID = nil;
 	self.sourceSpecificID = nil;
     self.storeCoordinator = nil;
     self.cacheDirectory = nil;

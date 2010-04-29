@@ -43,7 +43,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	else [self setBookValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateComplete] forKey:@"processingComplete"];
     // The following condition is done in order to prevent a thread's first-time access to [self getBookValueForKey:@"title"] (which happens when there are no dependencies- theoretically that should never happen, but a crash would occur in artificial tests so a safeguard is warranted)... could also be avoided by simply not accessing the MOC in this method for the NSLog.
     if ([NSThread isMainThread]) NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
-	else NSLog(@"Processing complete for book with sourceID:%@ sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
+	else NSLog(@"Processing complete for book with sourceID:%i sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self];
 }
 - (void)addDependency:(NSOperation *)operation {
@@ -256,7 +256,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		}
 		NSNumber * bytesAlreadyDownloaded = [fileAttributes valueForKey:NSFileSize];
 //		NSLog(@"bytesAlreadyDownloaded: %@",[bytesAlreadyDownloaded stringValue]);
-		// TODO: add support for etag in header. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27
+		// TODO: add support for etag in header (not a priority now since Feedbooks doesn't seem to support 205 partial content responses, but may be relevant when paid books are downloaded). See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27
 		if ([bytesAlreadyDownloaded longValue] != 0)
 		{
 			NSString * rangeString = [NSString stringWithFormat:@"bytes=%@-",[bytesAlreadyDownloaded stringValue]];
@@ -418,6 +418,17 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		CFRelease(uniqueString);
 
 	}
+}
+
+@end
+
+#pragma mark -
+@implementation BlioProcessingPaidBookDownloadOperation
+- (id)initWithUrl:(NSURL *)aURL {
+    if ((self = [super initWithUrl:aURL])) {
+		self.filenameKey = @"paidBookFilename";
+    }
+    return self;
 }
 
 @end

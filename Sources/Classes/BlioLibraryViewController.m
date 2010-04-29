@@ -97,6 +97,7 @@
 	
 	self.vaultManager = [[BlioBookVaultManager alloc] init];
     self.vaultManager.processingManager = (BlioProcessingManager*)self.processingDelegate;
+    self.vaultManager.managedObjectContext = self.managedObjectContext;
 	
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
@@ -433,12 +434,7 @@
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.delegate = self;
-	
-	if ([indexPath row] % 2)
-		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
-	else                         
-		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
-	
+		
 	cell.showsReorderControl = YES;	
 }
 -(void) configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index {
@@ -620,44 +616,33 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch (self.libraryLayout) {
-/*        case kBlioLibraryLayoutGrid:
-            return kBlioLibraryGridRowHeight;
-            break;
- */
-        default:
-            return kBlioLibraryListRowHeight;
-            break;
-    }
+	return kBlioLibraryListRowHeight;
 }
-/*
+
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSUInteger row = [indexPath row];
-	if (row%2 == 1) cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
-	else cell.backgroundColor = [UIColor whiteColor];
+	NSLog(@"willDisplayCell");
+	if ([indexPath row] % 2) {
+		cell.backgroundColor = [UIColor whiteColor];
+//		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
+	}
+	else {                        
+		cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
+//		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
+	}
 }
-*/
+
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-	static NSString *ListCellOddIdentifier = @"BlioLibraryListCellOdd";
-	static NSString *ListCellEvenIdentifier = @"BlioLibraryListCellEven";
+	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
+
 	BlioLibraryListCell *cell;
 	
-	if ([indexPath row] % 2) {
-		cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellEvenIdentifier];
+		cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 		if (cell == nil) {
-			cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellEvenIdentifier] autorelease];
+			cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
 		} 
-		//                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
-	} else {   
-		cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellOddIdentifier];
-		if (cell == nil) {
-			cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellOddIdentifier] autorelease];
-		} 
-		//                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
-	}
-	
+
 	[self configureTableCell:cell atIndexPath:indexPath];
 	return cell;
 	
@@ -707,9 +692,32 @@
 //	 }
 	
 	[self moveBookInManagedObjectContextFromPosition:fromPosition toPosition:toPosition shouldSave:YES];
-	
-}
 
+	// moveRowAtIndexPath is called before UITableView updates its internal indexPaths, so we need to calculate what the indexPath for each cell *will* be when the move is complete, and use that value to color the cell background.
+	NSArray * indexPaths = [tableView indexPathsForVisibleRows];
+	[UIView beginAnimations:@"changeRowBackgroundColor" context:nil];
+	for (NSIndexPath * visiblePath in indexPaths) {
+		NSInteger newRow = visiblePath.row;
+			if (fromIndexPath.row < visiblePath.row) newRow--;
+			if (toIndexPath.row < visiblePath.row) newRow++;
+			if (toIndexPath.row < fromIndexPath.row && toIndexPath.row == visiblePath.row) newRow++;
+		NSLog(@"oldrow: %i newrow: %i",visiblePath.row,newRow);
+		[self tableView:tableView willDisplayCell:[tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:newRow inSection:visiblePath.section]];
+	}
+	NSLog(@"[tableView cellForRowAtIndexPath:fromIndexPath]: %@",[tableView cellForRowAtIndexPath:fromIndexPath]);
+	NSLog(@"[[tableView visibleCells] count]: %i",[[tableView visibleCells] count]);
+	[self tableView:tableView willDisplayCell:[tableView cellForRowAtIndexPath:fromIndexPath] forRowAtIndexPath:toIndexPath];
+	[UIView commitAnimations];
+	if ([tableView cellForRowAtIndexPath:fromIndexPath] == nil) {
+		// if fromIndexPath is "off the screen", UITableView provides no way to get a reference to the cell that was just dragged, so we need to update this cell's background color after UITableView has updated its cell's indexPaths.
+		[self performSelector:@selector(delayedChangeTableCellBackground:) withObject:toIndexPath afterDelay:.01];
+	}
+}
+-(void)delayedChangeTableCellBackground:(NSIndexPath*)indexPath {
+	[UIView beginAnimations:@"changeDraggedRowBackgroundColor" context:nil];
+	[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:indexPath] forRowAtIndexPath:indexPath];
+	[UIView commitAnimations];
+}
 
  - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	 if (editingStyle == UITableViewCellEditingStyleDelete) {
@@ -797,8 +805,16 @@
 				case kBlioLibraryLayoutGrid:
 					[self.gridView deleteIndices:[NSArray arrayWithObject:[NSNumber numberWithInt:indexPath.row]] withCellAnimation:MRGridViewCellAnimationFade];
 					break;
-				case kBlioLibraryLayoutList:
+				case kBlioLibraryLayoutList: {
+					NSArray * indexPaths = [self.tableView indexPathsForVisibleRows];
+					for (NSIndexPath * visiblePath in indexPaths) {
+						if (visiblePath.row > indexPath.row) {
+							[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:visiblePath.row-1 inSection:visiblePath.section]];
+						}
+					}				
+					
 					[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+				}
 					break;
 			}
 			break;
@@ -1383,7 +1399,7 @@
 		self.pausedLabel.hidden = YES;
 	}	
 	else if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
-		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[self.book valueForKey:@"sourceID"] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
+		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
 //			NSLog(@"adding gridcell as observer...");
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:completeOp];
@@ -1468,6 +1484,12 @@
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         self.selectionStyle = UITableViewCellSelectionStyleGray;
         
+		self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
+		self.backgroundView.autoresizesSubviews = YES;
+		UIImageView * dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
+		dividerView.frame = CGRectMake(0,0,self.bounds.size.width,2);
+		[self.backgroundView addSubview:dividerView];
+		dividerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(8,0, kBlioLibraryListBookWidth, kBlioLibraryListBookHeight)];
 //        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
 //            forControlEvents:UIControlEventTouchUpInside];
@@ -1565,7 +1587,7 @@
 		[self resetAuthorText];
 	}			
 	else if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
-		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[self.book valueForKey:@"sourceID"] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
+		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
 //			NSLog(@"adding table cell as observer...");
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:completeOp];

@@ -45,7 +45,7 @@
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],kBlioOnlineStoreSourceID]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request
