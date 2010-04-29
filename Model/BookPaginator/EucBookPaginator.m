@@ -213,6 +213,11 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
                          
         [pool drain];
     }
+        
+    // Let the book save any data it's collected.
+    THTimer *cacheableDataSaveTimer = [THTimer timerWithName:@"Saving cachable data"];
+    [_book persistCacheableData];
+    [cacheableDataSaveTimer report];
     
     if(_continueParsing) {
         _percentagePaginated = 100.0f;

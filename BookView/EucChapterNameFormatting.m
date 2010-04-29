@@ -21,7 +21,7 @@ static NSCharacterSet *sCharsToTrim = nil;
     if(!sCharsToTrimTo) {
         sCharsToTrim = [[NSMutableCharacterSet whitespaceAndNewlineCharacterSet] retain];
         [(NSMutableCharacterSet *)sCharsToTrim formUnionWithCharacterSet:[NSMutableCharacterSet punctuationCharacterSet]];
-        [(NSMutableCharacterSet *)sCharsToTrim removeCharactersInString:@"[{(\"\'“‘”’«"];
+        [(NSMutableCharacterSet *)sCharsToTrim removeCharactersInString:@"-[{(\"\'“‘”’«"];
         sCharsToTrimTo = [[sCharsToTrim invertedSet] retain];
     }
     

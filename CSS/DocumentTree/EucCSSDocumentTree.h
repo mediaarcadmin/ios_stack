@@ -17,6 +17,6 @@
 - (uint32_t)lastKey;
 
 @optional
-- (id<EucCSSDocumentTreeNode>)nodeWithId:(NSString *)identifier;
+- (NSDictionary *)idToNode;
 
 @end

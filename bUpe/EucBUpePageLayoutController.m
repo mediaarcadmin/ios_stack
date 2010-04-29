@@ -15,6 +15,7 @@
 #import "EucBookPageIndexPoint.h"
 #import "EucFilteredBookPageIndex.h"
 #import "EucPageView.h"
+#import "EucChapterNameFormatting.h"
 
 #import "THPair.h"
 #import "THLog.h"
@@ -108,35 +109,17 @@
     return lastSection;
 }
 
-- (NSString *)sectionNameForPageNumber:(NSUInteger)pageNumber
-{
-    NSString *lastName = nil;
-    EucBookPageIndexPoint *pageIndexPoint = [_currentBookPageIndex filteredIndexPointForPage:pageNumber+1];
-    for(THPair *navPoint in _book.navPoints) {
-        NSString *identifier = navPoint.second;
-        if([[_book indexPointForId:identifier] compare:pageIndexPoint] != NSOrderedDescending) {
-            break;
-        } else {
-            lastName = navPoint.first;
-        }
-    }
-    return lastName;
-}
-
-- (NSString *)nameForSectionUuid:(NSString *)uuid
-{
-    for(THPair *navPoint in _book.navPoints) {
-        NSString *identifier = navPoint.second;
-        if([identifier compare:uuid] == NSOrderedSame) {
-            return navPoint.first;
-        }
-    }
-    return nil;
-}
-
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)uuid
 {
-    return [THPair pairWithFirst:[[[[self nameForSectionUuid:uuid] lowercaseString] titlecaseString] stringWithSmartQuotes] second:nil];
+    NSString *lastName = nil;
+    for(THPair *navPoint in _book.navPoints) {
+        NSString *identifier = navPoint.second;
+        if([identifier isEqualToString:uuid]) {
+            lastName = navPoint.first;
+            break;
+        }
+    }
+    return [lastName splitAndFormattedChapterName];
 }
 
 - (NSArray *)sectionUuids

@@ -35,7 +35,6 @@
 - (NSString *)displayPageNumberForPageNumber:(NSUInteger)pageNumber;
 
 - (NSString *)sectionUuidForPageNumber:(NSUInteger)page;
-- (NSString *)nameForSectionUuid:(NSString *)sectionUuid;
 - (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid;
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)uuid;
 

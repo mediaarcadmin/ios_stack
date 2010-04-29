@@ -153,7 +153,7 @@
         NSLog(@"Paginating \"%@\"", path);
         
         // Remove old indexes.
-        [self removeFilesMatchingPattern:@"*.v*index*" fromPath:path];
+        [self removeFilesMatchingPattern:@"*v*Index*" fromPath:path];
         
         EucBUpeBook *testBook = [[EucBUpeBook alloc] initWithPath:moveTo];    
         [paginator paginateBookInBackground:testBook saveImagesTo:saveImages ? images : nil];
