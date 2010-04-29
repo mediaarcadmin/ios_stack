@@ -367,28 +367,26 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (uint32_t)nodeKeyForId:(NSString *)identifier
 {
-    id<EucCSSDocumentTreeNode> dbNode = nil;
-    if([_documentTree respondsToSelector:@selector(nodeWithId:)]) {
-        dbNode = [_documentTree nodeWithId:identifier];
-    } else {
-        // Perform the search manually.
-        dbNode = _documentTree.root;
-        NSString *dbNodeId = [dbNode attributeWithName:@"id"];
-        while(dbNode && (!dbNodeId || ![dbNodeId isEqualToString:identifier])) {
-            id<EucCSSDocumentTreeNode> oldExaminingNode = dbNode;
-            
-            dbNode = oldExaminingNode.firstChild;
-            if(!dbNode) {
-                dbNode = oldExaminingNode.nextSibling;
+    id<EucCSSDocumentTreeNode> dbNode = [[_documentTree idToNode] objectForKey:identifier];
+    return dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+}
+
+- (NSDictionary *)idToNodeKey
+{
+    NSMutableDictionary *ret = nil;
+    if([_documentTree respondsToSelector:@selector(idToNode)]) {
+        NSDictionary *idToDbNode = [_documentTree idToNode];
+        NSUInteger count = idToDbNode.count;
+        if(count) {
+            ret = [[NSMutableDictionary alloc] initWithCapacity:count];
+            for(id identifier in [idToDbNode keyEnumerator]) {
+                id<EucCSSDocumentTreeNode> dbNode = [[_documentTree idToNode] objectForKey:identifier];
+                [ret setObject:[NSNumber numberWithUnsignedInt:dbNode.key]
+                        forKey:identifier];
             }
-            if(!dbNode) {
-                dbNode = oldExaminingNode.parent.nextSibling;
-            }
-            
-            dbNodeId = [dbNode attributeWithName:@"id"];
         }
     }
-    return dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+    return ret;
 }
 
 + (uint32_t)documentTreeNodeKeyForKey:(uint32_t)key

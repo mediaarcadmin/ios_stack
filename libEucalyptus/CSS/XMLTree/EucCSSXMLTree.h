@@ -16,6 +16,8 @@
     NSDictionary *_idToNode;
 }
 
+@property (nonatomic, readonly) NSDictionary *idToNode;
+
 - (id)initWithData:(NSData *)xmlData;
 
 @end

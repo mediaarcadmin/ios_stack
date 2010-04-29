@@ -22,7 +22,7 @@
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSLayouter.h"
 
-#import <expat.h>
+#import "expat.h"
 
 #import <fcntl.h>
 #import <sys/stat.h>
@@ -32,8 +32,10 @@
 
 @interface EucBUpeBook ()
 @property (nonatomic, retain) NSDictionary *manifestOverrides;
+@property (nonatomic, retain) NSDictionary *idToIndexPoint;
 
 - (EucCSSIntermediateDocument *)_intermediateDocumentForURL:(NSURL *)url;
+- (void)_restorePersistedCachableDataIfPossible;
 
 @end
 
@@ -42,6 +44,7 @@
 @synthesize navPoints = _navPoints;
 @synthesize manifestOverrides = _manifestOverrides;
 @synthesize persistsPositionAutomatically = _persistsPositionAutomatically;
+@synthesize idToIndexPoint = _idToIndexPoint;
 
 static inline const XML_Char* unqualifiedName(const XML_Char *name) {
     const XML_Char *offset = strrchr(name, ':');
@@ -489,6 +492,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 NSString *key = [NSString stringWithFormat:@"gs.ingsmadeoutofotherthin.th.Euclayptus.bUpe.%@.manifestOverrides", self.etextNumber];
                 self.manifestOverrides = [[NSUserDefaults standardUserDefaults] objectForKey:key];
             }
+            
+            [self _restorePersistedCachableDataIfPossible];
         } else {
             THWarn(@"Couldn't find content for ePub at %@", path);
             [self release];
@@ -680,11 +685,6 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     }
 }
 
-- (void)setCurrentPageIndexPointForId:(NSString *)anchor
-{
-    self.currentPageIndexPoint = [self indexPointForId:anchor];
-}
-
 - (void)setCurrentPageIndexPoint:(EucBookPageIndexPoint *)currentPage
 {
     if(_persistsPositionAutomatically) {
@@ -706,46 +706,65 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return NSClassFromString(@"EucBUpePageLayoutController");
 }
 
-- (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier
+- (NSDictionary *)idToIndexPoint
 {
-    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-    
-    NSString *file = nil;
-    NSString *fragment = nil;
-    
-    THRegex *fragmentFinder = [THRegex regexWithPOSIXRegex:@"^(.*)#(.*)$"];
-    if([fragmentFinder matchString:identifier]) {
-        file = [fragmentFinder match:1];
-        fragment = [fragmentFinder match:2];
-    } else {
-        file = identifier;
-    }
-    
-    for(NSString *identifier in [_manifest keyEnumerator]) {
-        NSString *path = [_manifest objectForKey:identifier];
-        if([path isEqualToString:file] && [_spine containsObject:identifier]) {
-            NSURL *url = [NSURL URLWithString:path relativeToURL:_root];
-            EucCSSIntermediateDocument *document = [self _intermediateDocumentForURL:url];
-            EucCSSIntermediateDocumentNode *node = fragment ? [document nodeForKey:[document nodeKeyForId:fragment]] : document.rootNode;
-            if(!node) {
-                node = document.rootNode;
+    if(!_idToIndexPoint) {
+        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
+        NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] init];
+        EucBookPageIndexPoint *sourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
+        int source = 0;
+        EucCSSIntermediateDocument *document = [self intermediateDocumentForIndexPoint:sourceIndexPoint];
+        
+        for(; 
+            document != nil;
+            sourceIndexPoint.source = ++source, document = [self intermediateDocumentForIndexPoint:sourceIndexPoint]) {
+            NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+            NSURL *documentUrl = document.url;
+            [buildIdToIndexPoint setObject:[[sourceIndexPoint copy] autorelease] forKey:[documentUrl pathRelativeTo:_root]];
+            
+            layouter.document = document;
+            
+            NSDictionary *localIdsToNodes = document.idToNodeKey;
+            if(localIdsToNodes) {
+                NSString *documentUrlString = [documentUrl absoluteString];
+                for(NSString *localId in [localIdsToNodes keyEnumerator]) {
+                    NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+
+                    EucCSSIntermediateDocumentNode *node = [document nodeForKey:[document nodeKeyForId:localId]];
+                    EucCSSLayoutPoint layoutPoint = [layouter layoutPointForNode:node];                   
+                    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+                    indexPoint.source = source;
+                    indexPoint.block = layoutPoint.nodeKey;
+                    indexPoint.word = layoutPoint.word;
+                    indexPoint.element = layoutPoint.element;
+                    
+                    NSURL *globalUrl = [NSURL URLWithString:[documentUrlString stringByAppendingFormat:@"#%@", localId]];
+                    
+                    [buildIdToIndexPoint setObject:indexPoint forKey:[globalUrl pathRelativeTo:_root]];
+                    
+                    [indexPoint release];
+                    
+                    [innerPool drain];
+                }
             }
             
-            // The point is dependent on the layout algorithm.
-            // (It depends on how the text is split into runs).
-            EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
-            layouter.document = document;
-            EucCSSLayoutPoint layoutPoint = [layouter layoutPointForNode:node];
-            [layouter release];
-            
-            indexPoint.source = [_spine indexOfObject:identifier];
-            indexPoint.block = layoutPoint.nodeKey;
-            indexPoint.word = layoutPoint.word;
-            indexPoint.element = layoutPoint.element;
+            layouter.document = nil;
+
+            [innerPool drain];
         }
+
+        self.idToIndexPoint = buildIdToIndexPoint;
+        
+        [sourceIndexPoint release];
+        [buildIdToIndexPoint release];
+        [layouter release];
     }
-    
-    return [indexPoint autorelease];
+    return _idToIndexPoint;
+}
+
+- (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier
+{
+    return [self.idToIndexPoint objectForKey:identifier];
 }
 
 - (float *)indexSourceScaleFactors
@@ -928,6 +947,27 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
     return NO;
+}
+
+- (NSString *)_persistedDataPath
+{
+    NSString *filename = [NSString stringWithFormat:@"v%luIndexIdToIndexPoint.keyedArchive", (unsigned long)[EucBookIndex indexVersion]];
+    NSString *archivePath = [self.cacheDirectoryPath stringByAppendingPathComponent:filename];
+    return archivePath;
+}
+
+- (void)_restorePersistedCachableDataIfPossible
+{
+    NSDictionary *persistedIdToIndexPoint = [NSKeyedUnarchiver unarchiveObjectWithFile:[self _persistedDataPath]];
+    if(persistedIdToIndexPoint) {
+        self.idToIndexPoint = persistedIdToIndexPoint;
+    }
+}
+
+- (void)persistCacheableData
+{
+    [NSKeyedArchiver archiveRootObject:self.idToIndexPoint 
+                                toFile:[self _persistedDataPath]];
 }
 
 @end

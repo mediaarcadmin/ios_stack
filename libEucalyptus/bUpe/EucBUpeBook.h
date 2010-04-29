@@ -30,8 +30,9 @@
     // Pairs of name, path relative to _root, including URL fragment.
     NSArray *_navPoints; 
     
-    NSMutableArray *_documentCache;
+    NSDictionary *_idToIndexPoint;
     
+    NSMutableArray *_documentCache;
     
     BOOL _persistsPositionAutomatically;
     int _currentPageIndexPointFD;
@@ -48,9 +49,6 @@
 
 - (NSData *)dataForURL:(NSURL *)url;
 
-// Takes fragment IDs as paths relative to _root URL.
-- (void)setCurrentPageIndexPointForId:(NSString *)uuid;
-
 - (EucCSSIntermediateDocument *)intermediateDocumentForIndexPoint:(EucBookPageIndexPoint *)point;
 
 // Set to NO to not save the index point internally.
@@ -62,6 +60,8 @@
 - (NSData *)dataForURL:(NSURL *)url;
 - (id<EucCSSDocumentTree>)documentTreeForURL:(NSURL *)url;
 - (NSURL *)documentURLForIndexPoint:(EucBookPageIndexPoint *)point;
+
+// Takes fragment IDs as paths relative to _root URL.
 - (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier;
 
 // Default is YES.  Controls whether to look for a HEAD element in the supplied

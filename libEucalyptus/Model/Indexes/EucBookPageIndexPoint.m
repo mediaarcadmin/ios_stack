@@ -136,6 +136,24 @@
     }
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeInt32:(int32_t)_source forKey:@"source"];
+    [aCoder encodeInt32:(int32_t)_block forKey:@"block"];
+    [aCoder encodeInt32:(int32_t)_word forKey:@"word"];
+    [aCoder encodeInt32:(int32_t)_element forKey:@"element"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if((self = [super init])) {
+        _source = (uint32_t)[aDecoder decodeInt32ForKey:@"source"];
+        _block = (uint32_t)[aDecoder decodeInt32ForKey:@"block"];
+        _word = (uint32_t)[aDecoder decodeInt32ForKey:@"word"];
+        _element = (uint32_t)[aDecoder decodeInt32ForKey:@"element"];
+    }
+    return self;
+}
 
 @end
 

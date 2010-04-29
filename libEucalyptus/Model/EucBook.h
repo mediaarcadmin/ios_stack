@@ -30,5 +30,6 @@
 @optional
 
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
+- (void)persistCacheableData;
 
 @end
