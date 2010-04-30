@@ -29,6 +29,7 @@
 
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
+- (EucBookPageIndexPoint *)indexPointForPageNumber:(NSUInteger)pageNumber;
 
 - (BOOL)viewShouldBeRigid:(UIView *)view;
 
