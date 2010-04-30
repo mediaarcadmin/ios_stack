@@ -580,18 +580,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [_bookView performSelector:@selector(stopAnimation)];
             }
             
-            if([self.bookView isKindOfClass:[BlioSpeedReadView class]]) {
+            if([_bookView isKindOfClass:[BlioSpeedReadView class]]) {
                 // We do this because the current point is usually only saved on a 
                 // page switch, so we want to make sure the current point that the 
                 // user has reached in SpeedRead view is saved..
                 // Usually, the SpeedRead "Page" tracks the layout page that the 
                 // current SpeedRead paragraph starts on.
                 self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
-                
-                NSError *error;
-                if (![[self.book managedObjectContext] save:&error])
-                    NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
-            }            
+            } 
+            
+            // Save the current progress, for UI display purposes.
+            float bookProgress = (float)(_bookView.pageNumber - 1) / (float)(_bookView.pageCount);
+            self.book.progress = [NSNumber numberWithFloat:bookProgress];
             
             [self.navigationController setToolbarHidden:YES animated:NO];
             [self.navigationController setToolbarHidden:NO animated:NO];
@@ -642,6 +642,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [self.navigationController setNavigationBarHidden:_returnToNavigationBarHidden 
                                                          animated:NO];
             }     
+            
+            NSError *error;
+            if (![[self.book managedObjectContext] save:&error])
+                NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);            
         }
     }
 }
