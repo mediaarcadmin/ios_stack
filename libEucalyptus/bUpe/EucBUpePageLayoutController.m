@@ -150,6 +150,12 @@
     return [_currentBookPageIndex pageForIndexPoint:[_book indexPointForId:uuid]];
 }
 
+
+- (EucBookPageIndexPoint *)indexPointForPageNumber:(NSUInteger)pageNumber
+{
+    return [_currentBookPageIndex filteredIndexPointForPage:pageNumber];
+}
+
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber 
                            withPageTexture:(UIImage *)pageTexture 
                                     isDark:(BOOL)dark
