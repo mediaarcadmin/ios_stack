@@ -30,6 +30,40 @@
 
 #define kMaxCachedDocuments 3
 
+@interface TocNcxParsingContextNavPointInfo : NSObject {
+    NSString *_text;
+    NSString *_src;
+    NSUInteger _playOrder;
+    
+    BOOL _inNavLabel;
+    BOOL _inNavLabelText;
+}
+
+@property (nonatomic, retain) NSString *text;
+@property (nonatomic, retain) NSString *src;
+@property (nonatomic, assign) NSUInteger playOrder;
+@property (nonatomic, assign) BOOL inNavLabel;
+@property (nonatomic, assign) BOOL inNavLabelText;
+
+@end
+
+@implementation TocNcxParsingContextNavPointInfo
+
+@synthesize text = _text;
+@synthesize src = _src;
+@synthesize playOrder = _playOrder;
+@synthesize inNavLabel = _inNavLabel;
+@synthesize inNavLabelText = _inNavLabelText;
+
+- (void)dealloc
+{
+    [_text release];
+    [_src release];
+    [super dealloc];
+}
+
+@end
+
 @interface EucBUpeBook ()
 @property (nonatomic, retain) NSDictionary *manifestOverrides;
 @property (nonatomic, retain) NSDictionary *idToIndexPoint;
@@ -315,14 +349,12 @@ struct tocNcxParsingContext
     NSURL *url;
     
     BOOL inNavMap;
-    BOOL inNavPoint;
-    BOOL inNavLabel;
-    BOOL inNavLabelText;
     
     NSString *thisLabelText;
     NSString *thisLabelSrc;
     NSUInteger thisLabelPlayOrder;
     
+    NSMutableArray *navPointStack;
     NSMutableDictionary *buildNavMap;
 };
 
@@ -336,29 +368,31 @@ static void tocNcxStartElementHandler(void *ctx, const XML_Char *name, const XML
             context->inNavMap = YES;
         }
     } else {
-        if(!context->inNavPoint) {
-            if(strcmp("navPoint", name) == 0) {
-                context->inNavPoint = YES;
-                for(int i = 0; atts[i]; i+=2) {
-                    if(strcmp("playOrder", atts[i]) == 0) {
-                        context->thisLabelPlayOrder = atoi(atts[i+1]);
-                    }
+        if(strcmp("navPoint", name) == 0) {
+            TocNcxParsingContextNavPointInfo *navPointInfo = [[TocNcxParsingContextNavPointInfo alloc] init];
+            [context->navPointStack addObject:navPointInfo];
+            [navPointInfo release];
+            for(int i = 0; atts[i]; i+=2) {
+                if(strcmp("playOrder", atts[i]) == 0) {
+                    navPointInfo.playOrder = atoi(atts[i+1]);
                 }
             }
-        } else {
-            if(!context->inNavLabel) {
+        } else if(context->navPointStack.count) {
+            TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+            if(!navPointInfo.inNavLabel) {
                 if(strcmp("navLabel", name) == 0) {
-                    context->inNavLabel = YES;
+                    navPointInfo.inNavLabel = YES;
                 } else if(strcmp("content", name) == 0) {
                     for(int i = 0; atts[i]; i+=2) {
                         if(strcmp("src", atts[i]) == 0) {
-                            context->thisLabelSrc = [[NSString stringWithUTF8String:atts[i+1]] retain];
+                            TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+                            navPointInfo.src = [NSString stringWithUTF8String:atts[i+1]];
                         }
                     }            
                 }
             } else {
                 if(strcmp("text", name) == 0) {
-                    context->inNavLabelText = YES;
+                    navPointInfo.inNavLabelText = YES;
                 }
             }
         }
@@ -371,30 +405,31 @@ static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)
     
     struct tocNcxParsingContext *context = (struct tocNcxParsingContext *)ctx;
     if(context->inNavMap) { 
-        if(context->inNavPoint) {
-            if(context->inNavLabelText) {
+        if(context->navPointStack.count) {
+            TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+            if(navPointInfo.inNavLabelText) {
                 if(strcmp("text", name) == 0) {
-                    context->inNavLabelText = NO;
+                    navPointInfo.inNavLabelText = NO;
                 }                
-            } else if(context->inNavLabel) {
+            } else if(navPointInfo.inNavLabel) {
                 if(strcmp("navLabel", name) == 0) {
-                    context->inNavLabel = NO;
+                    navPointInfo.inNavLabel = NO;
                 }
             } else if(strcmp("navPoint", name) == 0) {
-                context->inNavPoint = NO;
-                
-                if(context->thisLabelSrc && context->thisLabelText) {
-                    [context->buildNavMap setObject:[THPair pairWithFirst:context->thisLabelText 
-                                                                   second:[[NSURL URLWithString:context->thisLabelSrc 
-                                                                                 relativeToURL:context->url] pathRelativeTo:context->self->_root]]
-                                             forKey:[NSNumber numberWithUnsignedInteger:context->thisLabelPlayOrder]];
+                TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+
+                NSString *src = navPointInfo.src;
+                if(src) {
+                    NSString *text = navPointInfo.text;
+                    if(text) {
+                        [context->buildNavMap setObject:[THPair pairWithFirst:text 
+                                                                       second:[[NSURL URLWithString:src 
+                                                                                      relativeToURL:context->url] pathRelativeTo:context->self->_root]]
+                                                 forKey:[NSNumber numberWithUnsignedInteger:navPointInfo.playOrder]];
+                    }
                 }
                 
-                [context->thisLabelText release];
-                context->thisLabelText = nil;
-                [context->thisLabelSrc release];
-                context->thisLabelSrc = nil;
-                context->thisLabelPlayOrder = 0;                
+                [context->navPointStack removeLastObject];
             }
         } else if(strcmp("navMap", name) == 0) {
             context->inNavMap = NO;
@@ -405,16 +440,19 @@ static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)
 static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len) 
 {
     struct tocNcxParsingContext *context = (struct tocNcxParsingContext *)ctx;
-    
-    if(context->inNavLabelText) {
-        NSString *text = [[NSString alloc] initWithBytes:chars length:len encoding:NSUTF8StringEncoding];
-        if(context->thisLabelText && text.length) {
-            NSString *newText = [context->thisLabelText stringByAppendingString:text];
-            [context->thisLabelText release];
+    if(context->navPointStack.count) {
+        TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+        if(navPointInfo.inNavLabelText) {
+            NSString *text = [[NSString alloc] initWithBytes:chars length:len encoding:NSUTF8StringEncoding];
+
+            NSString *oldText = navPointInfo.text;
+            if(oldText && text.length) {
+                navPointInfo.text = [oldText stringByAppendingString:text];
+            } else {
+                navPointInfo.text = text;
+            }
+            
             [text release];
-            context->thisLabelText = [newText retain];
-        } else {
-            context->thisLabelText = text;
         }
     }
 }
@@ -434,6 +472,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             context.parser = parser;
             context.url = url;
             context.self = self;
+            context.navPointStack = [[NSMutableArray alloc] init];
             context.buildNavMap = buildNavMap;
             
             XML_SetStartElementHandler(parser, tocNcxStartElementHandler);
@@ -442,6 +481,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             XML_SetUserData(parser, (void *)&context);    
             XML_Parse(parser, [data bytes], [data length], XML_TRUE);
             XML_ParserFree(parser);
+            
+            [context.navPointStack release];
         }   
     }
     
