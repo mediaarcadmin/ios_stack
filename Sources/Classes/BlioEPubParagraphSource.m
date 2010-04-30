@@ -124,4 +124,8 @@
     return ret;
 }
 
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
+    return nil;
+}
+
 @end

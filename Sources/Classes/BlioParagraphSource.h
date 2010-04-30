@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class BlioBookmarkPoint;
+@protocol EucBookContentsTableViewControllerDataSource;
 
 @protocol BlioParagraphSource <NSObject>
 
@@ -18,5 +19,7 @@
 - (NSArray *)wordsForParagraphWithID:(id)paragraphID;
 
 - (id)nextParagraphIdForParagraphWithID:(id)paragraphID;
+
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource; 
 
 @end

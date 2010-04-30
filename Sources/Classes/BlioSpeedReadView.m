@@ -322,8 +322,8 @@
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    
-    
+    return [self goToPageNumber:[self.contentsDataSource pageNumberForSectionUuid:uuid]
+                       animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)aPageNumber animated:(BOOL)animated {
@@ -383,7 +383,7 @@
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
-    return nil;
+    return paragraphSource.contentsDataSource;
 }
 
 

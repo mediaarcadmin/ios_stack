@@ -784,13 +784,13 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return [[[self.sections objectAtIndex:sectionIndex] name] splitAndFormattedChapterName];
 }
 
-- (NSInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
+- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
 {
     NSUInteger sectionIndex = [sectionUuid integerValue];
     return [[self.sections objectAtIndex:sectionIndex] startPage] + 1;
 }
 
-- (NSString *)displayPageNumberForPageNumber:(NSInteger)aPageNumber
+- (NSString *)displayPageNumberForPageNumber:(NSUInteger)aPageNumber
 {
     return [NSString stringWithFormat:@"%ld", (long)aPageNumber];
 }

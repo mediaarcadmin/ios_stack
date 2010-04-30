@@ -164,52 +164,26 @@
     BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
     paragraph = paragraph.nextSibling;
     
-    if(!paragraph) {
-        NSUInteger indexes[2] = { [paragraphID indexAtPosition:0] + 1, 0 };
-        NSIndexPath *newID = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
-        paragraph = [self paragraphWithID:newID];
-        [newID release];
-    }
-    
     if(paragraph) {
         NSUInteger indexes[2] = { [paragraphID indexAtPosition:0], (NSUInteger)paragraph.key };
         ret = [NSIndexPath indexPathWithIndexes:indexes length:2];
+    } else {
+        NSUInteger indexes[2] = { [paragraphID indexAtPosition:0] + 1, 0 };
+        NSIndexPath *newID = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
+        paragraph = [self paragraphWithID:newID];
+        if(paragraph) {
+            ret = [newID autorelease];
+        } else {
+            [newID release];
+        }
     }
     
     return ret;
 }
 
-/*
-- (float *)sectionScaleFactors
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
 {
-    if(!sectionScaleFactors) {
-        BlioTextFlow *myTextFlow = self.textFlow;
-        
-        NSUInteger sectionCount = myTextFlow.sections.count;
-        size_t *sizes = malloc(sectionCount * sizeof(size_t));;
-        size_t total = 0;
-        struct stat statResult;
-        for(NSUInteger i = 0; i < sectionCount - 1; ++i) {
-            sizes[i+1] = [myTextFlow sizeOfSectionWithIndex:i];
-            total += sizes[i+1];
-        }
-        
-        sectionScaleFactors = malloc(sectionCount * sizeof(float));
-        
-        for(NSUInteger i = 0; i < sectionCount; ++i) {  
-            sectionScaleFactors[i] = (float)sizes[i] / (float)total;
-        }
-        
-        free(sizes);
-    }
-    
-    return sectionScaleFactors;
+    return self.textFlow;
 }
-
-- (float)percentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
-{
-    
-    [self.textFlow 
-}
-*/
+ 
 @end
