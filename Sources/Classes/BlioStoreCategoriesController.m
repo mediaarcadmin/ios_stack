@@ -49,7 +49,9 @@
     [super loadView];
 	self.view.autoresizesSubviews =	YES;
 	activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-	[self.view addSubview:activityIndicatorView];
+	[activityIndicatorView setIsAccessibilityElement:YES];
+    [activityIndicatorView setAccessibilityLabel:NSLocalizedString(@"Retrieving results", @"Accessibility label for Categories Controller Activity spinner")];
+    [self.view addSubview:activityIndicatorView];
 	activityIndicatorView.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
 	activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin|
 										   UIViewAutoresizingFlexibleRightMargin|
@@ -352,6 +354,8 @@
 	activityIndicatorView.hidden = YES;
 	
 	[self.tableView reloadData];
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseTotalResults:(NSNumber *)volumeTotalResults {
@@ -399,6 +403,8 @@
     // called in this method because of user interaction.
     if (!self.tableView.dragging && !self.tableView.tracking && !self.tableView.decelerating) {
         [self.tableView reloadData];
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     }
 }
 
@@ -416,6 +422,8 @@
     // called in this method because of user interaction.
     if (!self.tableView.dragging && !self.tableView.tracking && !self.tableView.decelerating) {
         [self.tableView reloadData];
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     }
 }
 

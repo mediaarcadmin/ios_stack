@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioBookView.h"
+#import "BlioLayoutView.h"
 #import <libEucalyptus/EucSelector.h>
 
 typedef enum BlioLayoutTouchForwardingState {

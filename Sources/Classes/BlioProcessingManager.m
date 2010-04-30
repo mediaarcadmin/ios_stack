@@ -51,11 +51,18 @@
 	// for legacy compatibility (pre-sourceID and sourceSpecificID)
 	[self enqueueBookWithTitle:title authors:authors coverURL:coverURL 
 					   ePubURL:ePubURL pdfURL:pdfURL textFlowURL:textFlowURL 
-				  audiobookURL:audiobookURL sourceID:@"" sourceSpecificID:title];
+				  audiobookURL:audiobookURL sourceID:BlioBookSourceNotSpecified sourceSpecificID:title placeholderOnly:NO];
 }
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
                      ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
-                audiobookURL:(NSURL *)audiobookURL sourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID {    
+                audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+	[self enqueueBookWithTitle:title authors:authors coverURL:coverURL 
+					   ePubURL:ePubURL pdfURL:pdfURL textFlowURL:textFlowURL 
+				  audiobookURL:audiobookURL sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO];    
+}
+- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (nil != moc) {
         
@@ -73,9 +80,9 @@
         } 
 		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 		[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-		//	NSLog(@"sourceSpecificID: %@",[self.entity id]);
-		//	NSLog(@"sourceID: %@",[self.feed id]);
-		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@", sourceSpecificID,sourceID]];
+//			NSLog(@"sourceSpecificID: %@",sourceSpecificID);
+//			NSLog(@"sourceID: %i",sourceID);
+		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@", sourceSpecificID,[NSNumber numberWithInt:sourceID]]];
 		
 		NSError *errorExecute = nil; 
 		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -86,7 +93,7 @@
 			return;
 		}
 		if ([results count] > 1) {
-			NSLog(@"WARNING: More than one book found with sourceSpecificID:%@ and sourceID:%@",sourceSpecificID,sourceID); 
+			NSLog(@"WARNING: More than one book found with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID); 
 		} else if ([results count] == 1) {
 
 			NSLog(@"Processing Manager: Found Book in context already"); 
@@ -95,7 +102,7 @@
 			
 			
 			if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
-				NSLog(@"WARNING: enqueue method called on already complete book with sourceSpecificID:%@ and sourceID:%@",sourceSpecificID,sourceID);
+				NSLog(@"WARNING: enqueue method called on already complete book with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID);
 				NSLog(@"Aborting enqueue by prematurely returning...");
 				return;
 			}
@@ -106,11 +113,12 @@
 		}
 		
         [aBook setValue:title forKey:@"title"];
-        [aBook setValue:sourceID forKey:@"sourceID"];
+        [aBook setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
         [aBook setValue:sourceSpecificID forKey:@"sourceSpecificID"];
         [aBook setValue:[authors lastObject] forKey:@"author"];
         [aBook setValue:[NSNumber numberWithInt:count] forKey:@"position"];        
-        [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingComplete"];
+        if (placeholderOnly) [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateNotProcessed] forKey:@"processingComplete"];
+        else [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingComplete"];
 		
 		if (coverURL != nil) [aBook setValue:[coverURL absoluteString] forKey:@"coverFilename"];
 		if (ePubURL != nil) [aBook setValue:[ePubURL absoluteString] forKey:@"epubFilename"];
@@ -130,10 +138,13 @@
         if (![moc save:&error]) {
             NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
         }
-		[self enqueueBook:aBook];
+		[self enqueueBook:aBook placeholderOnly:placeholderOnly];
 	}
 }
 -(void) enqueueBook:(BlioMockBook*)aBook {
+	[self enqueueBook:aBook placeholderOnly:NO];
+}
+-(void) enqueueBook:(BlioMockBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
 //	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
     NSManagedObjectContext *moc = self.managedObjectContext;
@@ -146,13 +157,18 @@
 		NSManagedObjectID *bookID = [aBook objectID];
 		NSString *cacheDir = [aBook bookCacheDirectory];
 		NSString *tempDir = [aBook bookTempDirectory];
-		NSString *sourceID = [aBook sourceID];
+		BlioBookSource sourceID = [[aBook sourceID] intValue];
 		NSString *sourceSpecificID = [aBook sourceSpecificID];
 		
 		if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
 			NSLog(@"WARNING: enqueue method called on already complete book!");
 			NSLog(@"Aborting enqueue by prematurely returning...");
 			return;
+		}
+		if (![[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateNotProcessed]] && placeholderOnly) {
+			NSLog(@"WARNING: enqueue method with placeholderOnly called on a book that is in a state other than NotProcessed!");
+			NSLog(@"Aborting enqueue by prematurely returning...");
+			return;			
 		}
 		if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]) {
 			// status is incomplete; operations involved with this book may or may not be in the queue, so we'll cancel the CompleteOperation for this book if it exists and co-opt the other operations if they haven't been cancelled yet
@@ -207,7 +223,7 @@
 			}
 		}
 		stringURL = [aBook valueForKey:@"epubFilename"];
-		if (stringURL && nil == [aBook valueForKey:@"textFlowFilename"]) {
+		if (stringURL && nil == [aBook valueForKey:@"textFlowFilename"] && !placeholderOnly) {
 			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 			else {
 				alreadyCompletedOperations++;
@@ -260,7 +276,7 @@
 			}                    
 		}
 		stringURL = [aBook valueForKey:@"pdfFilename"];
-		if (stringURL) {
+		if (stringURL && !placeholderOnly) {
 			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 			else {
 				alreadyCompletedOperations++;
@@ -294,7 +310,7 @@
 		}
 
 		stringURL = [aBook valueForKey:@"textFlowFilename"];
-		if (stringURL) {
+		if (stringURL && !placeholderOnly) {
 			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 			else {
 				alreadyCompletedOperations++;
@@ -369,7 +385,7 @@
 			}                    			
 		}
 		stringURL = [aBook valueForKey:@"audiobookFilename"];
-		if (stringURL) {
+		if (stringURL && !placeholderOnly) {
 
 			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 			else {
@@ -451,9 +467,9 @@
 		NSLog(@"WARNING: stop processing for book attempted while Processing Manager MOC == nil!");
 		return;
 	}
-	[[self processingCompleteOperationForSourceID:aBook.sourceID sourceSpecificID:aBook.sourceSpecificID] cancel];
+	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
-	NSArray * relatedOperations = [self processingOperationsForSourceID:aBook.sourceID sourceSpecificID:aBook.sourceSpecificID];
+	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
 	for (BlioProcessingOperation * op in relatedOperations) {
 		[op cancel];
 	}
@@ -477,8 +493,33 @@
 		NSLog(@"WARNING: deletion of cache directory for book failed. %@, %@", error, [error userInfo]);
 	}
 	
-	// delete record
+	NSInteger deletedBookPosition = [aBook.position intValue];
+		
+	// reposition remaining books with a position value greater than the deleted book
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+	
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"position > %@", [NSNumber numberWithInt:deletedBookPosition]]];
+	
+	NSError *errorExecute = nil; 
+	NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+	[fetchRequest release];
+	
+	if (errorExecute) {
+		NSLog(@"Error getting executeFetchRequest results. %@, %@", errorExecute, [errorExecute userInfo]);
+		return;
+	}
+	
+	for (BlioMockBook* book in results) {
+		NSInteger newPosition = [book.position intValue];
+		newPosition--;
+		[book setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
+	}
+	
+	// delete record. N.B.: this needs to happen after the re-ordering, as the update changeObject events for the re-ordering to the fetchedController delegate should happen after the delete event.
 	[moc deleteObject:aBook];
+	
 	if (shouldSave) {
 		NSError * error;
 		if (![moc save:&error]) {
@@ -493,26 +534,26 @@
 	}
 	// any processing operations that are dependent on these downloads will also cancel (as intended).
 }
-- (BlioProcessingOperation *)processingCompleteOperationForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+- (BlioProcessingOperation *)processingCompleteOperationForSourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	NSArray * operations = [preAvailabilityQueue operations];
 	for (BlioProcessingOperation * op in operations) {
-		if ([op isKindOfClass:[BlioProcessingCompleteOperation class]] && [sourceID isEqualToString:op.sourceID] && [sourceSpecificID isEqualToString:op.sourceSpecificID]) {
+		if ([op isKindOfClass:[BlioProcessingCompleteOperation class]] && (sourceID == op.sourceID) && [sourceSpecificID isEqualToString:op.sourceSpecificID]) {
 			return op;
 		}
 	}
 	return nil;
 }
-- (NSArray *)processingOperationsForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+- (NSArray *)processingOperationsForSourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	NSArray * operations = [preAvailabilityQueue operations];
 	NSMutableArray * tempArray = [NSMutableArray array];
 	for (BlioProcessingOperation * op in operations) {
-		if ([sourceID isEqualToString:op.sourceID] && [sourceSpecificID isEqualToString:op.sourceSpecificID]) {
+		if (sourceID == op.sourceID && [sourceSpecificID isEqualToString:op.sourceSpecificID]) {
 			[tempArray addObject:op];
 		}
 	}
 	return tempArray;
 }
-- (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+- (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	// helper function to search for such an operation that meets the conditions in the parameters
 	NSArray * operations = [preAvailabilityQueue operations];
 	for (BlioProcessingOperation * op in operations) {

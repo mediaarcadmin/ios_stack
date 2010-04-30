@@ -11,7 +11,7 @@
 
 @implementation BlioStoreFeed
 
-@synthesize parserClass, parser, title, categories, entities, feedURL, nextURL, totalResults, id;
+@synthesize parserClass, parser, title, categories, entities, feedURL, nextURL, totalResults, id,sourceID;
 
 - (id)init {
     if ((self = [super init])) {
@@ -20,6 +20,8 @@
 		totalResults = 0;
 		self.nextURL = nil;
 		self.id = nil;
+		self.sourceID = BlioBookSourceNotSpecified;
+		
     }
     return self;
 }

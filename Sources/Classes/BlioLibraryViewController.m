@@ -10,7 +10,6 @@
 #import "BlioLibraryViewController.h"
 #import "BlioBookViewController.h"
 #import "BlioLayoutView.h"
-#import "BlioMockBook.h"
 #import "BlioUIImageAdditions.h"
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
@@ -19,91 +18,6 @@
 #import "BlioProcessingStandardOperations.h"
 #import "BlioAccessibilitySegmentedControl.h"
 
-static const CGFloat kBlioLibraryToolbarHeight = 44;
-
-static const CGFloat kBlioLibraryListRowHeight = 76;
-static const CGFloat kBlioLibraryListBookHeight = 76;
-static const CGFloat kBlioLibraryListBookWidth = 53;
-static const CGFloat kBlioLibraryListContentWidth = 220;
-static const CGFloat kBlioLibraryListProgressViewWidth = 150;
-
-static const CGFloat kBlioLibraryGridRowHeight = 140;
-static const CGFloat kBlioLibraryGridBookHeight = 140;
-static const CGFloat kBlioLibraryGridBookWidth = 106;
-static const CGFloat kBlioLibraryGridProgressViewWidth = 60;
-static const CGFloat kBlioLibraryGridBookSpacing = 0;
-
-static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
-static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
-static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
-
-@interface BlioLibraryBookView : UIView {
-    UIImageView *imageView;
-    UIImageView *textureView;
-    UIView *highlightView;
-    BlioMockBook *book;
-}
-
-@property (nonatomic, retain) UIImageView *imageView;
-@property (nonatomic, retain) UIImageView *textureView;
-@property (nonatomic, retain) UIView *highlightView;
-@property (nonatomic, retain) BlioMockBook *book;
-@property (nonatomic, readonly) UIImage *image;
-
-- (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout;
-
-@end
-
-@interface BlioLibraryGridViewCell : MRGridViewCell {
-    BlioLibraryBookView *bookView;
-    UILabel *titleLabel;
-    UILabel *authorLabel;
-    UISlider *progressSlider;
-    UIImageView *progressBackgroundView;
-    UIProgressView *progressView;
-    UIButton * pauseButton;
-    UIButton * resumeButton;
-    UILabel * pausedLabel;
-    id delegate;
-}
-
-@property (nonatomic, retain) BlioLibraryBookView *bookView;
-@property (nonatomic, retain) UILabel *titleLabel;
-@property (nonatomic, retain) UILabel *authorLabel;
-@property (nonatomic, retain) UISlider *progressSlider;
-@property (nonatomic, retain) UIImageView *progressBackgroundView;
-@property (nonatomic, retain) UIProgressView *progressView;
-@property (nonatomic, retain) UIButton *pauseButton;
-@property (nonatomic, retain) UIButton *resumeButton;
-@property (nonatomic, assign) BlioMockBook *book;
-@property (nonatomic, assign) UILabel *pausedLabel;
-@property (nonatomic, assign) id delegate;
-
-@end
-
-@interface BlioLibraryListCell : UITableViewCell {
-    BlioLibraryBookView *bookView;
-    UILabel *titleLabel;
-    UILabel *authorLabel;
-    UISlider *progressSlider;
-    UIProgressView *progressView;
-    UIButton * pauseButton;
-    UIButton * resumeButton;
-    id delegate;
-}
-
-@property (nonatomic, retain) BlioLibraryBookView *bookView;
-@property (nonatomic, retain) UILabel *titleLabel;
-@property (nonatomic, retain) UILabel *authorLabel;
-@property (nonatomic, retain) UISlider *progressSlider;
-@property (nonatomic, retain) UIProgressView *progressView;
-@property (nonatomic, retain) UIButton *pauseButton;
-@property (nonatomic, retain) UIButton *resumeButton;
-@property (nonatomic, assign) BlioMockBook *book;
-@property (nonatomic, assign) id delegate;
-
--(void) resetAuthorText;
-@end
 
 @interface BlioLibraryViewController (PRIVATE)
 - (void)bookSelected:(BlioLibraryBookView *)bookView;
@@ -182,7 +96,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	self.gridView.gridDataSource = self;
 	
 	self.vaultManager = [[BlioBookVaultManager alloc] init];
-    
+    self.vaultManager.processingManager = (BlioProcessingManager*)self.processingDelegate;
+    self.vaultManager.managedObjectContext = self.managedObjectContext;
+	
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
     
@@ -272,12 +188,13 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     // the fetchedResultsController won't auto-update correctly
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
     NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:NO];
-    NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
+   NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
     [positionSort release];
     
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete >= %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
     
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
                                               initWithFetchRequest:request
@@ -449,7 +366,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     self.tableView.backgroundColor = [UIColor clearColor];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
-	NSLog(@"Initial library load: populating cells...");
+//	NSLog(@"Initial library load: populating cells...");
 	[self.tableView reloadData];
 	[self.gridView reloadData];
 }
@@ -504,6 +421,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
@@ -515,12 +434,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.delegate = self;
-	
-	if ([indexPath row] % 2)
-		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
-	else                         
-		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
-	
+		
 	cell.showsReorderControl = YES;	
 }
 -(void) configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index {
@@ -528,6 +442,53 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	NSIndexPath * indexPath = [NSIndexPath indexPathForRow:index inSection:0];
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];	
 }
+
+- (void)moveBookInManagedObjectContextFromPosition:(NSInteger)fromPosition toPosition:(NSInteger)toPosition shouldSave:(BOOL)savePreference {
+	if (fromPosition == toPosition) {
+		NSLog(@"moveBookInManagedObjectContextFromPosition fromPosition == toPosition. returning prematurely...");
+		return;
+	}
+	
+	NSManagedObjectContext *moc = [self managedObjectContext]; 
+	
+	NSInteger lowerBounds = fromPosition;
+	NSInteger upperBounds = toPosition;
+	if (toPosition < lowerBounds) {
+		lowerBounds = toPosition;
+		upperBounds = fromPosition;
+	}
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+	
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"position >= %@ && position <= %@", [NSNumber numberWithInt:lowerBounds],[NSNumber numberWithInt:upperBounds]]];
+	
+	NSError *errorExecute = nil; 
+	NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+	[fetchRequest release];
+	
+	if (errorExecute) {
+		NSLog(@"Error getting executeFetchRequest results. %@, %@", errorExecute, [errorExecute userInfo]);
+		return;
+	}
+	
+	for (BlioMockBook* aBook in results) {
+		if ([aBook.position intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"position"];
+        else {
+			NSInteger newPosition = [aBook.position intValue];
+			if (fromPosition > newPosition) newPosition++;
+			if (toPosition >= newPosition) newPosition--;
+			[aBook setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
+		}		
+	}
+	
+	if (savePreference) {
+		NSError * error;
+		if (![moc save:&error]) {
+			NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results): %@, %@", error, [error userInfo]);
+		}
+	}	
+}
+
 #pragma mark - 
 #pragma mark MRGridViewDataSource methods
 
@@ -562,7 +523,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex {
 	_didEdit = YES;
-	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
 //	NSLog(@"fromIndex: %i, toIndex: %i",fromIndex,toIndex);
 	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndex];
 	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndex];
@@ -571,6 +531,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 //	NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
 /*	
 	// tracing purposes
+	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
 	for (NSInteger i = 0; i < fetchedResultsCount; i++)
 	{
 		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
@@ -578,32 +539,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 		
 	}
 */	
-	for (NSInteger i = 0; i < fetchedResultsCount; i++)
-	{
-		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-		if ([aBook.position intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"position"];
-        else {
-			NSInteger newPosition = [aBook.position intValue];
-			if (fromPosition > newPosition) newPosition++;
-			if (toPosition >= newPosition) newPosition--;
-			[aBook setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
-		}
-	}
-//	NSManagedObjectContext *moc = [self managedObjectContext]; 
-//	NSError * error;
-//	if (![moc save:&error]) {
-//		NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results): %@, %@", error, [error userInfo]);
-//	}
-	
-/*	
-	// tracing purposes
-	for (NSInteger i = 0; i < fetchedResultsCount; i++)
-	{
-		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-		NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
-		
-	}
- */
+	[self moveBookInManagedObjectContextFromPosition:fromPosition toPosition:toPosition shouldSave:NO];
 	
 }
 -(void) gridView:(MRGridView*)gridView finishedMovingCellToIndex:(NSInteger)toIndex {
@@ -611,38 +547,23 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	NSManagedObjectContext *moc = [self managedObjectContext]; 
 	NSError * error;
 	if (![moc save:&error]) {
-		NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results): %@, %@", error, [error userInfo]);
+		NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results gridView moveCellAtIndexs): %@, %@", error, [error userInfo]);
 	}
 	
 }
 -(void) gridView:(MRGridView*)gridView commitEditingStyle:(MRGridViewCellEditingStyle)editingStyle forIndex:(NSInteger)index {
 //	NSLog(@"gridView:commitEditingStyle:%i forIndex:%i entered",editingStyle,index);
-	_didEdit = YES;
 	if (editingStyle == MRGridViewCellEditingStyleDelete) {
 
 
 		// Delete the book from the data source.
-		NSManagedObjectContext *moc = [self managedObjectContext]; 
 		
 		BlioMockBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:index];
 		
-		// TODO: delete object in a method that deletes the associated files as well.
-		[self.processingDelegate deleteBook:bookToBeDeleted shouldSave:NO];
-		// NSLog(@"Found books with position greater than %i, will resume...",[[bookToBeDeleted valueForKey:@"position"] intValue]); 
-		// decrement position of all found books by 1.
-		for (NSInteger i = 0; i < index; i++) {
-			NSManagedObject * mo = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-			NSInteger newPosition = [[mo valueForKey:@"position"] intValue] - 1;
-			[mo setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
-		}		 
+		[self.processingDelegate deleteBook:bookToBeDeleted shouldSave:YES];
+
+//		[gridView deleteIndices:[NSArray arrayWithObject:[NSNumber numberWithInt:index]] withCellAnimation:MRGridViewCellAnimationFade];
 		
-		NSError * error;
-		if (![moc save:&error]) {
-			NSLog(@"Save failed in BlioLibraryViewController (attempted to delete book and re-position remaining books): %@, %@", error, [error userInfo]);
-		}
-		else {
-			[gridView deleteIndices:[NSArray arrayWithObject:[NSNumber numberWithInt:index]] withCellAnimation:MRGridViewCellAnimationFade];
-		}
 	}   
 	
 }
@@ -695,44 +616,33 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch (self.libraryLayout) {
-/*        case kBlioLibraryLayoutGrid:
-            return kBlioLibraryGridRowHeight;
-            break;
- */
-        default:
-            return kBlioLibraryListRowHeight;
-            break;
-    }
+	return kBlioLibraryListRowHeight;
 }
-/*
+
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSUInteger row = [indexPath row];
-	if (row%2 == 1) cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
-	else cell.backgroundColor = [UIColor whiteColor];
+	NSLog(@"willDisplayCell");
+	if ([indexPath row] % 2) {
+		cell.backgroundColor = [UIColor whiteColor];
+//		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
+	}
+	else {                        
+		cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
+//		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
+	}
 }
-*/
+
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-	static NSString *ListCellOddIdentifier = @"BlioLibraryListCellOdd";
-	static NSString *ListCellEvenIdentifier = @"BlioLibraryListCellEven";
+	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
+
 	BlioLibraryListCell *cell;
 	
-	if ([indexPath row] % 2) {
-		cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellEvenIdentifier];
+		cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 		if (cell == nil) {
-			cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellEvenIdentifier] autorelease];
+			cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
 		} 
-		//                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
-	} else {   
-		cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellOddIdentifier];
-		if (cell == nil) {
-			cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellOddIdentifier] autorelease];
-		} 
-		//                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
-	}
-	
+
 	[self configureTableCell:cell atIndexPath:indexPath];
 	return cell;
 	
@@ -764,78 +674,64 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+//	NSLog(@"tableView moveRowAtIndexPath fromIndexPath: %i, toIndexPath: %i",fromIndexPath.row,toIndexPath.row);
 	_didEdit = YES;
-	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
-	//	NSLog(@"fromIndex: %i, toIndex: %i",fromIndex,toIndex);
 	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndexPath.row];
 	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndexPath.row];
 	NSInteger fromPosition = [fromBook.position intValue];
 	NSInteger toPosition = [toBook.position intValue];
-	//	NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
-	/*	
+//		NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
+		
 	 // tracing purposes
-	 for (NSInteger i = 0; i < fetchedResultsCount; i++)
-	 {
-	 BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-	 NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
-	 
-	 }
-	 */	
-	for (NSInteger i = 0; i < fetchedResultsCount; i++)
-	{
-		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-		if ([aBook.position intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"position"];
-        else {
-			NSInteger newPosition = [aBook.position intValue];
-			if (fromPosition > newPosition) newPosition++;
-			if (toPosition >= newPosition) newPosition--;
-			[aBook setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
-		}
-	}
-	/*	
-	 // tracing purposes
-	 for (NSInteger i = 0; i < fetchedResultsCount; i++)
-	 {
-	 BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-	 NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
-	 
-	 }
-	 */
-	NSManagedObjectContext *moc = [self managedObjectContext]; 
-	NSError * error;
-	if (![moc save:&error]) {
-		NSLog(@"Save failed in BlioLibraryViewController (attempted to re-order fetched results): %@, %@", error, [error userInfo]);
-	}
+//	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
+//	 for (NSInteger i = 0; i < fetchedResultsCount; i++)
+//	 {
+//	 BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+//	 NSLog(@"PRE index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
+//	 
+//	 }
 	
+	[self moveBookInManagedObjectContextFromPosition:fromPosition toPosition:toPosition shouldSave:YES];
+
+	// moveRowAtIndexPath is called before UITableView updates its internal indexPaths, so we need to calculate what the indexPath for each cell *will* be when the move is complete, and use that value to color the cell background.
+	NSArray * indexPaths = [tableView indexPathsForVisibleRows];
+	[UIView beginAnimations:@"changeRowBackgroundColor" context:nil];
+	for (NSIndexPath * visiblePath in indexPaths) {
+		NSInteger newRow = visiblePath.row;
+			if (fromIndexPath.row < visiblePath.row) newRow--;
+			if (toIndexPath.row < visiblePath.row) newRow++;
+			if (toIndexPath.row < fromIndexPath.row && toIndexPath.row == visiblePath.row) newRow++;
+		NSLog(@"oldrow: %i newrow: %i",visiblePath.row,newRow);
+		[self tableView:tableView willDisplayCell:[tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:newRow inSection:visiblePath.section]];
+	}
+	NSLog(@"[tableView cellForRowAtIndexPath:fromIndexPath]: %@",[tableView cellForRowAtIndexPath:fromIndexPath]);
+	NSLog(@"[[tableView visibleCells] count]: %i",[[tableView visibleCells] count]);
+	[self tableView:tableView willDisplayCell:[tableView cellForRowAtIndexPath:fromIndexPath] forRowAtIndexPath:toIndexPath];
+	[UIView commitAnimations];
+	if ([tableView cellForRowAtIndexPath:fromIndexPath] == nil) {
+		// if fromIndexPath is "off the screen", UITableView provides no way to get a reference to the cell that was just dragged, so we need to update this cell's background color after UITableView has updated its cell's indexPaths.
+		[self performSelector:@selector(delayedChangeTableCellBackground:) withObject:toIndexPath afterDelay:.01];
+	}
+}
+-(void)delayedChangeTableCellBackground:(NSIndexPath*)indexPath {
+	[UIView beginAnimations:@"changeDraggedRowBackgroundColor" context:nil];
+	[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:indexPath] forRowAtIndexPath:indexPath];
+	[UIView commitAnimations];
 }
 
-
  - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- 	 _didEdit = YES;
 	 if (editingStyle == UITableViewCellEditingStyleDelete) {
 		 // Delete the row from the data source.
-		 NSManagedObjectContext *moc = [self managedObjectContext]; 
 		 
 		 BlioMockBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];
+
 		 
-		 // TODO: delete object in a method that deletes the associated files as well.
-		 [self.processingDelegate deleteBook:bookToBeDeleted shouldSave:NO];
-		 // NSLog(@"Found books with position greater than %i, will resume...",[[bookToBeDeleted valueForKey:@"position"] intValue]); 
-		 // decrement position of all found books by 1.
-		 for (NSInteger i = 0; i < indexPath.row; i++) {
-			 NSManagedObject * mo = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-			 NSInteger newPosition = [[mo valueForKey:@"position"] intValue] - 1;
-			 [mo setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
-		 }		 
-				
-		 NSError * error;
-		 if (![moc save:&error]) {
-			 NSLog(@"Save failed in BlioLibraryViewController (attempted to delete book and re-position remaining books): %@, %@", error, [error userInfo]);
-		 }
-		 else {
-			 [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-			 // TODO: recalculate background color of remaining cells
-		 }
+		 [self.processingDelegate deleteBook:bookToBeDeleted shouldSave:YES];
+
+//		 [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+		 
+		 // TODO: recalculate background color of remaining cells
+		
 	 }   
 	 else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		 // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
@@ -886,52 +782,72 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
 	   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
 	  newIndexPath:(NSIndexPath *)newIndexPath {
-//	NSLog(@"controller didChangeObject");
+//	BlioMockBook * book = (BlioMockBook*)anObject;
+//	NSLog(@"controller didChangeObject. type: %i, _didEdit: %i title: %@, position: %i",type,_didEdit,book.title,[book.position intValue]);
 	
-	if (!_didEdit) {
-		switch(type) {
-				
-			case NSFetchedResultsChangeInsert:
-//				[tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-//								 withRowAnimation:UITableViewRowAnimationFade];
-				[self.gridView reloadData];
-				break;
-// this will always be user-instigated				
-//			case NSFetchedResultsChangeDelete:
-//				[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-//								 withRowAnimation:UITableViewRowAnimationFade];
-//				break;
-				
-			case NSFetchedResultsChangeUpdate:
-//				[self configureTableCell:(BlioLibraryListCell*)[tableView cellForRowAtIndexPath:indexPath]
-//							 atIndexPath:indexPath];
-				[self configureGridCell:(BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:indexPath.row]
-							 atIndex:indexPath.row];
-				break;
-// this will always be user-instigated
-//			case NSFetchedResultsChangeMove:
-//				[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-//								 withRowAnimation:UITableViewRowAnimationFade];
-//				[tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-//								 withRowAnimation:UITableViewRowAnimationFade];
-//				break;
-		}
+	switch(type) {
+			
+		case NSFetchedResultsChangeInsert:
+			//				[tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+			//								 withRowAnimation:UITableViewRowAnimationFade];
+			switch (self.libraryLayout) {
+				case kBlioLibraryLayoutGrid:
+					[self.gridView reloadData];
+					break;
+				case kBlioLibraryLayoutList:
+					[self.tableView reloadData];
+					break;
+			}
+			break;
+			
+		case NSFetchedResultsChangeDelete:
+			switch (self.libraryLayout) {
+				case kBlioLibraryLayoutGrid:
+					[self.gridView deleteIndices:[NSArray arrayWithObject:[NSNumber numberWithInt:indexPath.row]] withCellAnimation:MRGridViewCellAnimationFade];
+					break;
+				case kBlioLibraryLayoutList: {
+					NSArray * indexPaths = [self.tableView indexPathsForVisibleRows];
+					for (NSIndexPath * visiblePath in indexPaths) {
+						if (visiblePath.row > indexPath.row) {
+							[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:visiblePath.row-1 inSection:visiblePath.section]];
+						}
+					}				
+					
+					[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+				}
+					break;
+			}
+			break;
+	
+		case NSFetchedResultsChangeUpdate:
+			if (!_didEdit) {
+				switch (self.libraryLayout) {
+					case kBlioLibraryLayoutGrid:
+						[self configureGridCell:(BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:indexPath.row]
+										atIndex:indexPath.row];
+						 break;
+					case kBlioLibraryLayoutList:
+						[self configureTableCell:(BlioLibraryListCell*)[self.tableView cellForRowAtIndexPath:indexPath]
+									 atIndexPath:indexPath];
+						break;
+				}
+			}
+			break;
+			// this will always be user-instigated, so the view will actually be updated before the model, not the other way around.
+	//			case NSFetchedResultsChangeMove:
+	//				[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+	//								 withRowAnimation:UITableViewRowAnimationFade];
+	//				[tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+	//								 withRowAnimation:UITableViewRowAnimationFade];
+	//				break;
 	}
 }
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-// 	NSLog(@"controllerDidChangeContent");
+// 	NSLog(@"controllerDidChangeContent. _didEdit: %i",_didEdit);
+
 //   [self.tableView endUpdates];
-	if (!_didEdit) {
-		[self.tableView reloadData];
-	}
-	_didEdit = NO;
-	// for debugging purposes
-//	NSArray * testArray = [self.fetchedResultsController fetchedObjects];
-//	for (NSInteger i = 0; i < [testArray count]; i++) {
-//		NSLog(@"mo index: %i, position: %i",i,[[[[self.fetchedResultsController fetchedObjects] objectAtIndex:i] valueForKey:@"position"] intValue]);
-//	}
 	
 }
 /*
@@ -948,12 +864,20 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
-//	NSLog(@"mergeChangesFromContextDidSaveNotification entered");
+//	NSLog(@"mergeChangesFromContextDidSaveNotification received...");
+//	
+//	if (notification.object == self.managedObjectContext) {
+//		NSLog(@"...from same moc as library- returning.");
+//		return;
+//	}
+//	else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
     // Fault in all updated objects
-	NSArray* updates = [[notification.userInfo objectForKey:NSUpdatedObjectsKey] allObjects];
-    for (NSManagedObject *object in updates) {
-        [[self.managedObjectContext objectWithID:[object objectID]] willAccessValueForKey:nil];
-    }
+	
+	//refresh updated objects and merge changes
+//	NSArray* updates = [[notification.userInfo objectForKey:NSUpdatedObjectsKey] allObjects];
+//  for (NSManagedObject *object in updates) {
+//      [[self.managedObjectContext objectWithID:[object objectID]] willAccessValueForKey:nil];
+//  }
 //	for (NSInteger i = [updates count]-1; i >= 0; i--)
 //	{
 //		[[managedObjectContext objectWithID:[[updates objectAtIndex:i] objectID]] willAccessValueForKey:nil];
@@ -961,6 +885,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     
 	// Merge
 	[[self managedObjectContext] mergeChangesFromContextDidSaveNotification:notification];
+	
+	// this code below happens after NSFetchedControllerDelegate methods are called.
+	
 //    NSArray *updatedObjects = [[notification userInfo] valueForKey:NSUpdatedObjectsKey];
 //    if ([updatedObjects count]) {
 //        [self.tableView reloadData];
@@ -992,7 +919,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 
 - (void)showStore:(id)sender {    
-    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];
+    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext vaultManager:self.vaultManager];
 	[self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
 }
@@ -1464,8 +1391,15 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
     [self setNeedsLayout];
 //	NSLog(@"[[self.book valueForKey:@processingComplete] intValue]: %i",[[self.book valueForKey:@"processingComplete"] intValue]);
-	if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
-		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[self.book valueForKey:@"sourceID"] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
+	if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
+		self.progressBackgroundView.hidden = YES;
+		self.progressView.hidden = YES;
+		self.pauseButton.hidden = YES;
+		self.resumeButton.hidden = NO;
+		self.pausedLabel.hidden = YES;
+	}	
+	else if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
+		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
 //			NSLog(@"adding gridcell as observer...");
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:completeOp];
@@ -1497,7 +1431,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 		self.progressView.hidden = YES;
 		self.pauseButton.hidden = YES;
 		self.progressBackgroundView.hidden = YES;
-
+		bookView.alpha = 1;
 	}
 }
 - (void)setDelegate:(id)newDelegate {
@@ -1520,6 +1454,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 	resumeButton.hidden = YES;	
 	progressView.hidden = YES;
 	bookView.alpha = 1;
+	self.pausedLabel.hidden = YES;
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {
 	NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
@@ -1549,6 +1484,12 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         self.selectionStyle = UITableViewCellSelectionStyleGray;
         
+		self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
+		self.backgroundView.autoresizesSubviews = YES;
+		UIImageView * dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
+		dividerView.frame = CGRectMake(0,0,self.bounds.size.width,2);
+		[self.backgroundView addSubview:dividerView];
+		dividerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(8,0, kBlioLibraryListBookWidth, kBlioLibraryListBookHeight)];
 //        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
 //            forControlEvents:UIControlEventTouchUpInside];
@@ -1572,6 +1513,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
         [aAuthorLabel release];
         
         UISlider *aSlider = [[UISlider alloc] init];
+        [aSlider setIsAccessibilityElement:NO];
         UIImage *minImage = [[UIImage imageNamed:@"minimum-progress.png"] stretchableImageWithLeftCapWidth:2 topCapHeight:0];
         //UIImage *maxImage = [[UIImage imageNamed:@"maximum-progress.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
         [aSlider setMinimumTrackImage:minImage forState:UIControlStateNormal];
@@ -1639,8 +1581,13 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     CGRect progressFrame = self.progressSlider.frame;
     self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
 
-	if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
-		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[self.book valueForKey:@"sourceID"] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
+	if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
+		self.progressView.hidden = YES;
+		self.accessoryView = resumeButton;
+		[self resetAuthorText];
+	}			
+	else if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
+		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
 //			NSLog(@"adding table cell as observer...");
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:completeOp];
@@ -1662,7 +1609,9 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 		}
 	}
 	else {
+		progressView.hidden = YES;
 		[self resetAuthorText];
+		self.accessoryView = nil;
 	}
     [self setNeedsLayout];
 }

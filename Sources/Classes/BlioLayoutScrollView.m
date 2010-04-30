@@ -208,17 +208,4 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     }
 }
 
-//- (void)setContentOffset:(CGPoint)newContentOffset {
-//    NSLog(@"newContentOffset: %@", NSStringFromCGPoint(newContentOffset));
-//    [super setContentOffset:newContentOffset];
-//}
-
-- (BOOL)isAccessibilityElement {
-    return YES;
-}
-
-- (NSString *)accessibilityLabel {
-    return @"scrollView";
-}
-
 @end    

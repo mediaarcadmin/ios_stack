@@ -37,10 +37,11 @@
 }
 */
 - (id)init {
-    return [self initWithProcessingDelegate:nil managedObjectContext:nil];
+    return [self initWithProcessingDelegate:nil managedObjectContext:nil vaultManager:nil];
 }
 
-- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate managedObjectContext:(NSManagedObjectContext*)moc {
+- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate managedObjectContext:(NSManagedObjectContext*)moc vaultManager:(BlioBookVaultManager*)vm
+{
     if ((self = [super init])) {
         self.processingDelegate = aProcessingDelegate;
 		self.managedObjectContext = moc;
@@ -60,11 +61,13 @@
         [feedBooksFeed setTitle:@"Feedbooks"];
         [feedBooksFeed setFeedURL:feedbooksFeedURL];
         [feedBooksFeed setParserClass:[BlioStoreLocalParser class]];
+		feedBooksFeed.sourceID = BlioBookSourceFeedbooks;
         NSURL *googleFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"googlebooks" ofType:@"atom" inDirectory:@"Feeds"]];
         BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
         [googleBooksFeed setTitle:@"Google Books"];
         [googleBooksFeed setFeedURL:googleFeedURL];
         [googleBooksFeed setParserClass:[BlioStoreLocalParser class]];
+		googleBooksFeed.sourceID = BlioBookSourceGoogleBooks;
         [vc2 setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
         [feedBooksFeed release];
         [googleBooksFeed release];
@@ -83,7 +86,9 @@
         [vc3.navigationItem setRightBarButtonItem:aDoneButton];
         [vc3 release];
         
-        BlioStoreMyVaultController* vc4 = [[BlioStoreMyVaultController alloc] init];
+        BlioStoreMyVaultController* vc4 = [[BlioStoreMyVaultController alloc] initWithVaultManager:vm];
+		vc4.managedObjectContext = self.managedObjectContext;
+		vc4.processingDelegate = self.processingDelegate;
         UINavigationController* nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
         [vc4.navigationItem setRightBarButtonItem:aDoneButton];
         [vc4 release];

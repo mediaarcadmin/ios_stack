@@ -53,6 +53,11 @@
     [self invalidateAccessibilitySegments];
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self invalidateAccessibilitySegments];
+}
+
 - (BOOL)isAccessibilityElement {
     return NO;
 }

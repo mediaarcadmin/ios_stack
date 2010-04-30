@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 
 typedef enum  {
-	success = 0,
-    invalidPassword,
-    error,
+	BlioLoginResultSuccess = 0,
+    BlioLoginResultInvalidPassword,
+    BlioLoginResultError,
 } BlioLoginResult;
 
 @interface BlioLoginManager : NSObject {

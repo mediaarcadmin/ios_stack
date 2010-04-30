@@ -14,9 +14,13 @@
 
 @class EucBUpeBook;
 
-static const NSInteger kBlioMockBookProcessingStateIncomplete = 0;
-static const NSInteger kBlioMockBookProcessingStatePaused = 1;
-static const NSInteger kBlioMockBookProcessingStateComplete = 2;
+static const NSInteger kBlioMockBookProcessingStateNotProcessed = 0;
+static const NSInteger kBlioMockBookProcessingStatePlaceholderOnly = 1;
+static const NSInteger kBlioMockBookProcessingStateIncomplete = 2;
+static const NSInteger kBlioMockBookProcessingStatePaused = 3;
+static const NSInteger kBlioMockBookProcessingStateComplete = 4;
+
+
 
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
@@ -43,7 +47,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 2;
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 @property (nonatomic, retain) NSString *textFlowFilename;
-@property (nonatomic, retain) NSString *sourceID;
+@property (nonatomic, retain) NSNumber *sourceID;
 @property (nonatomic, retain) NSString *sourceSpecificID;
 @property (nonatomic, retain) NSManagedObject *placeInBook;
 

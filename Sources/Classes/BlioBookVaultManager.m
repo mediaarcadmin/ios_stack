@@ -12,7 +12,8 @@
 
 @implementation BlioBookVaultManager
 
-@synthesize loginManager;
+@synthesize loginManager, processingManager,managedObjectContext;
+@synthesize isbns = _isbns;
 
 
 - (id)init
@@ -20,14 +21,14 @@
 	self = [super init];
 	if (self)
 	{
-		self.loginManager = [[BlioLoginManager alloc] init];
-		
+		self.loginManager = [[[BlioLoginManager alloc] init] autorelease];
+		_isbns = nil;
 	}
 	
 	return self;
 }
-
-- (void)downloadBook:(NSString*)isbn {
+// TODO: have this method utilized by NSOperation sub-class
+- (NSURL*)URLForPaidBook:(NSString*)isbn {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	vaultBinding.logXMLInOut = YES;
 	BookVault_RequestDownloadWithToken* downloadRequest = [[BookVault_RequestDownloadWithToken new] autorelease];
@@ -41,22 +42,24 @@
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 			NSLog(@"SOAP error for VaultContents: %s",err);
 			// TODO: Message
-			return;
+			return nil;
 		}
 		else if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
 			NSString* url = [bodyPart RequestDownloadWithTokenResult].Url;
 			NSLog(@"Book download url is %s",url);
+			return [NSURL URLWithString:url];
 		}
 		else {
 			NSLog(@"DownloadRequest error: %s",[bodyPart RequestDownloadResult].Message);
 			// cancel download
 			// TODO: Message
-			return;
+			return nil;
 		}
 	}
+	return nil;
 }
 
-- (void)getContent:(NSString*)isbn {
+- (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn {
 	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
 	cafeBinding.logXMLInOut = YES;
 	ContentCafe_Single* singleRequest = [[ContentCafe_Single new] autorelease];
@@ -67,34 +70,114 @@
 	ContentCafeSoapResponse* response = [cafeBinding SingleUsingParameters:singleRequest];
 	[cafeBinding release];
 	NSArray *responseBodyParts = response.bodyParts;
+	if (responseBodyParts == nil) {
+		NSLog(@"ERROR: responseBodyParts is nil. response: %@",response);
+		return nil;
+	}
 	ContentCafe_RequestItems* requestItems;
 	for(id bodyPart in responseBodyParts) {
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 			NSLog(@"SOAP error for ContentCafeSingle: %s",err);
 			// TODO: Message
-			return;
+			return nil;
 		}
 		else if ( (requestItems = [[bodyPart ContentCafe] RequestItems]) ) { 
 			ContentCafe_RequestItem* requestItem = (ContentCafe_RequestItem*)[[requestItems RequestItem] objectAtIndex:0];
 			ContentCafe_ProductItem* productItem =(ContentCafe_ProductItem*)[[[requestItem ProductItems] ProductItem] objectAtIndex:0];
-			// TODO: put in a book for display in the vault.
-			NSString* title = [[productItem Title] Value];
-			NSString* author = [productItem Author];
-			NSString* coverURL = [NSString stringWithFormat:@"http://images.btol.com/cc2images/Image.aspx?SystemID=knfb&IdentifierID=I&IdentifierValue=%@&Source=BT&Category=FC&Sequence=1&Size=L&NotFound=S",isbn];
-			NSLog(@"Title: %s", title);
-			NSLog(@"Author: %s", author);
-			NSLog(@"Cover: %s", coverURL);
+			return productItem;
 		}
 		else {
 			NSLog(@"ContentCafeSingle error.");
 			// TODO: Message
 		}
 		
-	}		
+	}
+	return nil;
 }
 
 - (void)archiveBooks {
+	if (!self.processingManager) {
+		NSLog(@"ERROR: no processingManager set for BlioBookVaultManager! Aborting archiveBooks...");
+		return;
+	}
+	if (![self fetchBooksFromServer]) {
+		NSLog(@"ERROR: could not fetch ISBNs from the server!");
+		return;
+	}
+	// add new book entries to PersistentStore as appropriate
+	NSInteger successfulResponseCount = 0;
+	NSInteger newISBNs = 0;
+	for (NSString * isbn in _isbns) {
+		
+		// check to see if BlioMockBook record is already in the persistent store
+		
+		NSManagedObjectContext *moc = [self managedObjectContext];
+				
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+		[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@ && sourceSpecificID == %@",[NSNumber numberWithInt:BlioBookSourceOnlineStore],isbn]];
+		
+		NSError *errorExecute = nil;
+		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+		[fetchRequest release];
+		if (errorExecute) {
+			NSLog(@"Error searching for paid book in MOC. %@, %@", errorExecute, [errorExecute userInfo]);
+			break;
+		}
+		if ([results count] == 0) {
+			newISBNs++;
+			ContentCafe_ProductItem* productItem = [self getContentMetaDataFromISBN:isbn];
+			if (productItem) {
+				successfulResponseCount++;
+				// TODO: put in a book for display in the vault.
+				NSString* title = [[productItem Title] Value];
+				NSString* author = [productItem Author];
+				NSString* coverURL = [NSString stringWithFormat:@"http://images.btol.com/cc2images/Image.aspx?SystemID=knfb&IdentifierID=I&IdentifierValue=%@&Source=BT&Category=FC&Sequence=1&Size=L&NotFound=S",isbn];
+				NSLog(@"Title: %@", title);
+				NSLog(@"Author: %@", author);
+				NSLog(@"Cover: %@", coverURL);
+				
+				[self.processingManager enqueueBookWithTitle:title 
+													 authors:[NSArray arrayWithObject:author] 
+													coverURL:[NSURL URLWithString:coverURL] 
+													 ePubURL:nil 
+													  pdfURL:nil 
+												 textFlowURL:nil 
+												audiobookURL:nil 
+													sourceID:BlioBookSourceOnlineStore 
+											sourceSpecificID:isbn
+											 placeholderOnly:YES
+				 ];
+			}
+			else {
+				
+			}			
+		}
+		else {
+			NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",isbn);
+		}
+	}
+	NSString * ISBNMetadataResponseAlertText = nil;
+	if (successfulResponseCount == 0 && newISBNs > 0) {
+		// we didn't get any successful responses, though we have a need for ISBN metadata.
+		ISBNMetadataResponseAlertText = @"The app was not able to retrieve your latest purchases at this time due to a server error. Please try logging in again later.";
+	}
+	else if (successfulResponseCount < newISBNs) {
+		// we got some successful responses, though not all for the new ISBNs.
+		ISBNMetadataResponseAlertText = @"The app was able to retrieve some but not all of your latest purchases at this time due to a server error. Please try logging in again later.";		
+	}
+	if (ISBNMetadataResponseAlertText != nil) {
+	// show alert box
+		UIAlertView *errorAlert = [[UIAlertView alloc] 
+								   initWithTitle:@"We're Sorry..." message:ISBNMetadataResponseAlertText
+								   delegate:self cancelButtonTitle:nil
+								   otherButtonTitles:@"OK", nil];
+		[errorAlert show];
+		[errorAlert release];		
+	}
+}
+- (BOOL)fetchBooksFromServer {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
 	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
@@ -107,25 +190,37 @@
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 			NSLog(@"SOAP error for VaultContents: %s",err);
 			// TODO: Message
-			return;
+			return NO;
 		}
 		else if ( [[bodyPart VaultContentsWithTokenResult].ReturnCode intValue] == 300 ) { 
-			isbns = [bodyPart VaultContentsWithTokenResult].Contents.string;
+			if (_isbns) [_isbns release]; // release old set of ISBNs
+			_isbns = [[bodyPart VaultContentsWithTokenResult].Contents.string retain];
+			return YES;
 		}
 		else {
 			NSLog(@"VaultContents error: %s",[bodyPart VaultContentsWithTokenResult].Message);
 			// TODO: Message
-			return;
+			return NO;
 		}
 	}
+	return NO;
+}
+/*
+-(void) testDownloadAllContent {
 	// TODO: Remove from the isbn list the isbns that are already on the device.
-	for (id isbn in isbns) {
+	for (id isbn in _isbns) {
 		[self getContent:isbn];
 		// For testing
 		[self downloadBook:isbn];
-	}
-	
-	
+	}	
+}
+ */
+- (void)dealloc {
+	if (_isbns) [_isbns release];
+	self.loginManager = nil;
+	self.processingManager = nil;
+	self.managedObjectContext = nil;
+    [super dealloc];
 }
 
 @end

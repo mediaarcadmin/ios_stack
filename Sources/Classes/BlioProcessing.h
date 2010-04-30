@@ -11,6 +11,13 @@
 
 @class BlioMockBook;
 
+typedef enum {
+	BlioBookSourceNotSpecified = 0,
+	BlioBookSourceOnlineStore = 1,
+	BlioBookSourceFeedbooks = 2,
+	BlioBookSourceGoogleBooks = 3
+} BlioBookSource;
+
 extern NSString * const BlioProcessingOperationStartNotification;
 extern NSString * const BlioProcessingOperationProgressNotification;
 extern NSString * const BlioProcessingOperationCompleteNotification;
@@ -18,7 +25,7 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 
 @interface BlioProcessingOperation : NSOperation {
     NSManagedObjectID *bookID;
-    NSString *sourceID;
+    BlioBookSource sourceID;
     NSString *sourceSpecificID;
     NSPersistentStoreCoordinator *storeCoordinator;
     BOOL forceReprocess;
@@ -29,7 +36,7 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
-@property (nonatomic, copy) NSString *sourceID;
+@property (nonatomic, assign) BlioBookSource sourceID;
 @property (nonatomic, copy) NSString *sourceSpecificID;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *storeCoordinator;
 @property (nonatomic) BOOL forceReprocess;
@@ -50,16 +57,20 @@ extern NSString * const BlioProcessingOperationFailedNotification;
                 audiobookURL:(NSURL *)audiobookURL;
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
                      ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
-                audiobookURL:(NSURL *)audiobookURL sourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+                audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
 -(void) enqueueBook:(BlioMockBook*)aBook;
+-(void) enqueueBook:(BlioMockBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
 -(void) pauseProcessingForBook:(BlioMockBook*) aBook;
-- (BlioProcessingOperation *)processingCompleteOperationForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
-- (NSArray *)processingOperationsForSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+- (BlioProcessingOperation *)processingCompleteOperationForSourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+- (NSArray *)processingOperationsForSourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void)pauseProcessingForBook:(BlioMockBook*)aBook;
 - (void)stopProcessingForBook:(BlioMockBook*)aBook;
 -(void) deleteBook:(BlioMockBook*)aBook shouldSave:(BOOL)shouldSave;
 - (void)stopDownloadingOperations;
 - (NSArray *)downloadOperations;
-- (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(NSString*)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+- (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(BlioBookSource)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 
 @end

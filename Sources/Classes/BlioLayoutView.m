@@ -20,6 +20,7 @@ static const CGFloat kBlioPDFBlockInsetY = 10;
 static const CGFloat kBlioPDFGoToZoomTransitionScale = 0.7f;
 static const CGFloat kBlioPDFGoToZoomTargetScale = 1;
 static const CGFloat kBlioLayoutShadow = 16.0f;
+static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 
 @interface BlioLayoutViewColoredRect : NSObject {
     CGRect rect;
@@ -39,6 +40,7 @@ static const CGFloat kBlioLayoutShadow = 16.0f;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) UIImage *pageSnapshot;
 @property (nonatomic, retain) UIImage *highlightsSnapshot;
+@property (nonatomic, retain) NSMutableArray *accessibilityElements;
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
@@ -93,15 +95,16 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, scrollToPageInProgress, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor;
+@synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
+@synthesize accessibilityElements;
 
 - (void)dealloc {
     isCancelled = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+
     CGPDFDocumentRelease(pdf);
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
@@ -130,7 +133,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     [self.selector detatch];
     self.selector = nil;
-
+    
+    self.accessibilityElements = nil;
+    
     [super dealloc];
 }
 
@@ -172,7 +177,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         isCancelled = NO;
         self.book = aBook;
         self.clearsContextBeforeDrawing = NO; // Performance optimisation;
-        self.scrollToPageInProgress = NO;
         self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];    
         self.autoresizesSubviews = YES;
         
@@ -183,7 +187,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.shadowRight = [UIImage imageNamed:@"shadow-right.png"];
         
         pageCount = CGPDFDocumentGetNumberOfPages(pdf);
-        
+        lastZoomScale = 1;
         // Populate the cache of page sizes and viewTransforms
         NSMutableDictionary *aPageCropsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
         NSMutableDictionary *aViewTransformsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
@@ -330,8 +334,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark BlioBookDelegate
 
 - (void)setDelegate:(id<BlioBookDelegate>)newDelegate {
-    delegate = newDelegate;
+    [(NSObject *)delegate removeObserver:self forKeyPath:@"audioPlaying"];
+
     [self.scrollView setBookDelegate:newDelegate];
+    delegate = newDelegate;
+    
+    [(NSObject *)delegate addObserver:self forKeyPath:@"audioPlaying" options:0 context:NULL];
+    
 }
 
 #pragma mark -
@@ -421,13 +430,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGFloat ratio;
     CGFloat zoomScale = self.scrollView.zoomScale;
     
+    // Reduce the conent size dimensions by teh accessibility offset to work around an accessibility bug that 
+    // incorrectly states the size as being 1 page larger than it is
     switch (layoutMode) {
         case BlioLayoutPageModeLandscape:
             ratio = CGRectGetWidth(self.bounds) / CGRectGetHeight(self.bounds);
-            contentSize = CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * zoomScale, CGRectGetWidth(self.bounds) * ratio * zoomScale);
+            contentSize = CGSizeMake(floorf(CGRectGetWidth(self.bounds) * pageCount * zoomScale) - kBlioLayoutViewAccessibilityOffset, floorf(CGRectGetWidth(self.bounds) * ratio * zoomScale) - kBlioLayoutViewAccessibilityOffset);
             break;
         default: // BlioLayoutPageModePortrait
-            contentSize = CGSizeMake(CGRectGetWidth(self.bounds) * pageCount * zoomScale, CGRectGetHeight(self.bounds) * zoomScale);
+            contentSize = CGSizeMake(floorf(CGRectGetWidth(self.bounds) * pageCount * zoomScale) - kBlioLayoutViewAccessibilityOffset, floorf(CGRectGetHeight(self.bounds) * zoomScale) - kBlioLayoutViewAccessibilityOffset);
             break;
     }
     
@@ -1151,11 +1162,17 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
     } else if (object == self) {
         if ([keyPath isEqualToString:@"currentPageLayer"]) {
-//            NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
+            //NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
-            
+            self.accessibilityElements = nil;
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+        }
+    } else if (object == self.delegate) {
+        if ([keyPath isEqualToString:@"audioPlaying"]) {
+            self.accessibilityElements = nil;
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
         }
     }
 }
@@ -1658,12 +1675,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         currentPageNumber = floor((sender.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
     }
     
-    
+    //NSLog(@"Current page %d, pageNum %d", currentPageNumber, self.pageNumber);
     if (currentPageNumber != self.pageNumber) {
         
         BlioLayoutPageLayer *aLayer = [self.contentView addPage:currentPageNumber retainPages:nil];
         
-        if (!self.scrollToPageInProgress) {
             if (currentPageNumber < self.pageNumber) {
                 BlioLayoutPageLayer *prevLayer = [self.contentView addPage:currentPageNumber - 1 retainPages:nil];
                 [prevLayer forceThumbCacheAfterDelay:0.75f];
@@ -1675,7 +1691,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             self.pageNumber = currentPageNumber;
             self.currentPageLayer = aLayer;
             self.lastBlock = nil;
-        }
+        
     }
 }
 
@@ -1686,12 +1702,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (self.disableScrollUpdating) return;
     
     
-    if (self.scrollToPageInProgress) {
-        self.scrollToPageInProgress = NO;
-        
-        [self.contentView addPage:self.pageNumber - 1 retainPages:nil];
-        [self.contentView addPage:self.pageNumber + 1 retainPages:nil];
-    }
+//    if (self.scrollToPageInProgress) {
+//        self.scrollToPageInProgress = NO;
+//        
+//        [self.contentView addPage:self.pageNumber - 1 retainPages:nil];
+//        [self.contentView addPage:self.pageNumber + 1 retainPages:nil];
+//    }
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -1975,7 +1991,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Manual KVO overrides
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
-    if (!self.scrollToPageInProgress) {
+    if (!self.disableScrollUpdating) {
         [self willChangeValueForKey:@"pageNumber"];
         pageNumber=newPageNumber;
         [self didChangeValueForKey:@"pageNumber"];
@@ -2019,64 +2035,70 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Accessibility
 
 - (BOOL)isAccessibilityElement {
+    if (!self.disableScrollUpdating) {
+    // If we are querying the accessibility mode, force us to zoom out to page
+        if ([self.scrollView zoomScale] != kBlioPDFGoToZoomTargetScale) {
+            [self.scrollView setZoomScale:kBlioPDFGoToZoomTargetScale animated:NO];
+            [self.scrollView setContentSize:[self currentContentSize]];
+        }
+        
+        CGPoint centeredOffset = [self contentOffsetToCenterPage:self.currentPageLayer.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale];
+        if (!CGPointEqualToPoint([self.scrollView contentOffset], centeredOffset)) {
+            [self.scrollView setContentOffset:centeredOffset animated:NO]; 
+        }
+    }
     return NO;
 }
 
-- (NSString *)accessibilityLabel {
-    return [NSString stringWithFormat:@"%@", [self.book title]];
-}
+- (NSInteger)accessibilityElementCount {
+    if (nil == self.accessibilityElements) {
+        NSMutableArray *elements = [[NSMutableArray alloc] init];
+        NSInteger currentPage = self.pageNumber;
 
-- (NSString *)accessibilityHint {
-    return @"Toggles book toolbars.";
-}
+        if ([self.delegate audioPlaying]) {
+            UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+            [element setAccessibilityFrame:[self cropForPage:currentPage]];
 
+            [self.scrollView setIsAccessibilityElement:NO];
+            [elements addObject:element];        
 
-#if 0
+        } else {
+            [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
+            [self.scrollView setIsAccessibilityElement:YES];
 
-- (NSArray *)accessibleElements
-{
-    if ( _accessibleElements != nil )
-    {
-        return _accessibleElements;
+            //CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
+            NSInteger pageIndex = currentPage - 1;
+            NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+            
+            NSMutableString *allWords = [NSMutableString string];
+            
+            for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
+                [allWords appendString:[block string]];
+            }
+            [self.scrollView setAccessibilityLabel:allWords];
+            
+            [elements addObject:self.scrollView];        
+
+        }
+        
+        self.accessibilityElements = elements;
+        [elements release];
     }
-    _accessibleElements = [[NSMutableArray alloc] init];
     
-    /* Create an accessibility element to represent the first contained element and initialize it as a component of MultiFacetedView. */
-    
-    UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
-    //CGRect pageRect = self.currentPageLayer.bounds;
-    
-    CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:self.currentPageLayer.pageNumber cropRect:&cropRect];
-    CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
-    
-    [element setAccessibilityFrame:pageRect];
-    [element setAccessibilityLabel:[NSString stringWithFormat:@"Page %d", self.currentPageLayer.pageNumber]];
-    
-    /* Set attributes of the first contained element here. */
-    
-    [_accessibleElements addObject:element];
-    
-    return _accessibleElements;
+    return [self.accessibilityElements count];
 }
 
-/* The following methods are implementations of UIAccessibilityContainer protocol methods. */
-
-- (NSInteger)accessibilityElementCount
-{
-    return [[self accessibleElements] count];
-}
 
 - (id)accessibilityElementAtIndex:(NSInteger)index
 {
-    return [[self accessibleElements] objectAtIndex:index];
+    return [self.accessibilityElements objectAtIndex:index];
 }
 
 - (NSInteger)indexOfAccessibilityElement:(id)element
 {
-    return [[self accessibleElements] indexOfObject:element];
+    return [self.accessibilityElements indexOfObject:element];
 }
-#endif
+
 @end
 
 @implementation BlioLayoutViewColoredRect

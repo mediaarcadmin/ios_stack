@@ -54,6 +54,10 @@
 
 @end
 
+@interface BlioProcessingPaidBookDownloadOperation : BlioProcessingDownloadOperation
+@end
+
+
 @interface BlioProcessingDownloadAndUnzipOperation : BlioProcessingDownloadOperation
 
 - (void)unzipDidFinishSuccessfully:(BOOL)success;
