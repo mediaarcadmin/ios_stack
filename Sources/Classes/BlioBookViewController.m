@@ -984,23 +984,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void) _updatePageJumpLabelForPage:(NSInteger)page
 {
-    NSString* section = [self.bookView.contentsDataSource sectionUuidForPageNumber:page];
-    THPair* chapter = [self.bookView.contentsDataSource presentationNameAndSubTitleForSectionUuid:section];
-    NSString* pageStr = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
-    
-    if (section && chapter.first) {
-        if (pageStr) {
-            _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
-        } else {
-            _pageJumpLabel.text = [NSString stringWithFormat:@"%@", chapter.first];
-        }
-    } else {
-        if (pageStr) {
-            _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
-        } else {
-            _pageJumpLabel.text = self.book.title;
-        }
-    } // of no section name
+    _pageJumpLabel.text = [self.bookView pageLabelForPageNumber:page];
 }
 
 #pragma mark -

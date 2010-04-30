@@ -13,7 +13,7 @@
 @protocol BlioParagraphSource;
 
 
-@interface BlioSpeedReadView : UIView <BlioBookView> {
+@interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {
     CGPDFDocumentRef pdf;
     UIScrollView *scrollView;
     UIView *containerView;

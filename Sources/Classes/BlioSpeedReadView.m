@@ -12,6 +12,7 @@
 #import <QuartzCore/CALayer.h>
 #import <QuartzCore/CATransaction.h>
 #import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/THPair.h>
 #import "BlioMockBook.h"
 #import "BlioParagraphSource.h"
 
@@ -367,6 +368,23 @@
     [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
 }
 
+- (NSString *)pageLabelForPageNumber:(NSInteger)page {
+    NSString *ret = nil;
+    
+    id<EucBookContentsTableViewControllerDataSource> contentsSource = self.contentsDataSource;
+    NSString* section = [contentsSource sectionUuidForPageNumber:page];
+    THPair* chapter = [contentsSource presentationNameAndSubTitleForSectionUuid:section];
+    NSString* pageStr = [contentsSource displayPageNumberForPageNumber:page];
+    
+    if(chapter.first) {
+        ret = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
+    } else {
+        ret = pageStr;
+    } 
+    
+    return ret;
+}
+
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
     if(bookmarkPoint) {
@@ -380,10 +398,6 @@
 
 - (CGRect)firstPageRect {
     return [[UIScreen mainScreen] bounds];
-}
-
-- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
-    return paragraphSource.contentsDataSource;
 }
 
 
@@ -405,5 +419,35 @@
     [super dealloc];
 }
 
+#pragma mark -
+#pragma mark EucBookContentsTableViewControllerDataSource
+
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
+{
+    return self;
+}
+
+- (NSArray *)sectionUuids {
+    return paragraphSource.contentsDataSource.sectionUuids;
+}
+
+- (NSString *)sectionUuidForPageNumber:(NSUInteger)page {
+    return [paragraphSource.contentsDataSource sectionUuidForPageNumber:page];
+}
+
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
+    return [paragraphSource.contentsDataSource presentationNameAndSubTitleForSectionUuid:sectionUuid];
+}
+
+- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid {
+    return [paragraphSource.contentsDataSource pageNumberForSectionUuid:sectionUuid];
+}
+
+- (NSString *)displayPageNumberForPageNumber:(NSUInteger)page
+{
+    float percentage = 100.0f * ((float)(page - 1) / (float)self.pageCount);
+    unsigned long intPercentage = roundf(percentage);
+    return [NSString stringWithFormat:@"%lu%%", intPercentage];
+}
 
 @end

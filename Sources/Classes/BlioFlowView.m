@@ -15,6 +15,7 @@
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucMenuItem.h>
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
+#import <libEucalyptus/THPair.h>
 
 @interface BlioFlowView ()
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
@@ -169,6 +170,31 @@
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
     return [self pageNumberForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+}
+
+- (NSString *)pageLabelForPageNumber:(NSInteger)page {
+    NSString *ret = nil;
+    
+    id<EucBookContentsTableViewControllerDataSource> contentsSource = self.contentsDataSource;
+    NSString* section = [contentsSource sectionUuidForPageNumber:page];
+    THPair* chapter = [contentsSource presentationNameAndSubTitleForSectionUuid:section];
+    NSString* pageStr = [contentsSource displayPageNumberForPageNumber:page];
+    
+    if (section && chapter.first) {
+        if (pageStr) {
+            ret = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
+        } else {
+            ret = [NSString stringWithFormat:@"%@", chapter.first];
+        }
+    } else {
+        if (pageStr) {
+            ret = [NSString stringWithFormat:@"Page %@ of %lu", pageStr, (unsigned long)self.pageCount];
+        } else {
+            ret = [self.book title];
+        }
+    } // of no section name
+    
+    return ret;
 }
 
 - (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter
