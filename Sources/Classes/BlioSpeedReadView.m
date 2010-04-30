@@ -122,7 +122,7 @@
         [self fillArrayWithNextBlock];
     } 
     
-    self.pageNumber = [paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:self.currentWordOffset].layoutPage;
+    self.pageNumber = [self pageNumberForBookmarkPoint:[paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:self.currentWordOffset]];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -328,20 +328,15 @@
 }
 
 - (void)goToPageNumber:(NSInteger)aPageNumber animated:(BOOL)animated {
-    BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
-    point.layoutPage = aPageNumber;
-
-    [self goToBookmarkPoint:point animated:animated];
-    
-    [point release];
+    return [self goToBookmarkPoint:[paragraphSource bookmarkPointForPageNumber:aPageNumber] animated:animated];
 }
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    return bookmarkPoint.layoutPage;
+    return [paragraphSource pageNumberForBookmarkPoint:bookmarkPoint];
 }
 
 - (NSInteger)pageCount {
-    return [self.book.textFlow lastPageIndex] + 1;
+    return [paragraphSource pageCount];
 }
 
 - (BlioBookmarkPoint *)currentBookmarkPoint {

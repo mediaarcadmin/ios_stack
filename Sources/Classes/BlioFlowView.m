@@ -37,6 +37,8 @@
     
     if([aBook textFlowFilename]) {
         eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:aBook];
+        eucBook.persistsPositionAutomatically = NO;
+        eucBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
     } else {
         eucBook = [aBook.ePubBook retain];
     }
@@ -45,9 +47,6 @@
         [self release];
         return nil;
     }
-
-    [eucBook setPersistsPositionAutomatically:NO];
-    [eucBook setCacheDirectoryPath:[aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusPageIndexes"]];
     
     self.paragraphSource = aBook.paragraphSource;
 

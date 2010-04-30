@@ -171,6 +171,8 @@
         NSString *ePubPath = self.ePubPath;
         if (ePubPath) {
             EucBUpeBook *myEPubBook = [[EucBUpeBook alloc] initWithPath:[self ePubPath]];
+            [myEPubBook setPersistsPositionAutomatically:NO];
+            [myEPubBook setCacheDirectoryPath:[self.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"]];
             self.ePubBook = myEPubBook;
             [myEPubBook release];
         }

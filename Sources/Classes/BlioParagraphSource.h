@@ -13,6 +13,7 @@
 
 @protocol BlioParagraphSource <NSObject>
 
+@required
 - (void)bookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint toParagraphID:(id *)paragraphID wordOffset:(uint32_t *)wordOffset;
 - (BlioBookmarkPoint *)bookmarkPointFromParagraphID:(id)paragraphID wordOffset:(uint32_t)wordOffset;
 
@@ -21,5 +22,9 @@
 - (id)nextParagraphIdForParagraphWithID:(id)paragraphID;
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource; 
+
+- (NSUInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (BlioBookmarkPoint *)bookmarkPointForPageNumber:(NSUInteger)pageNumber;
+- (NSUInteger)pageCount;
 
 @end

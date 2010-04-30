@@ -186,4 +186,22 @@
     return self.textFlow;
 }
  
+- (NSUInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return bookmarkPoint.layoutPage;
+}
+
+- (BlioBookmarkPoint *)bookmarkPointForPageNumber:(NSUInteger)pageNumber
+{
+    BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
+    point.layoutPage = pageNumber;
+    return [point autorelease];
+}
+
+- (NSUInteger)pageCount
+{
+    return self.textFlow.lastPageIndex + 1;
+}
+
+
 @end
