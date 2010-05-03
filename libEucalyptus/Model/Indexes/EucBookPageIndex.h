@@ -22,15 +22,7 @@
     off_t _lastOffset;
 }
 
-+ (NSUInteger)indexVersion;
-+ (NSString *)filenameForPageIndexForPointSize:(NSUInteger)fontSize;
-+ (NSString *)constructionFilenameForPageIndexForPointSize:(NSUInteger)fontSize;
-
-+ (void)markBookBundleAsIndexesConstructed:(NSString *)bundlePath;
-+ (BOOL)indexesAreConstructedForBookBundle:(NSString *)bundlePath;
-
 + (id)bookPageIndexForIndexInBook:(id<EucBook>)path forPointSize:(NSUInteger)pointSize;
-+ (NSArray *)bookPageIndexesForBook:(id<EucBook>)book;
 
 @property (nonatomic, readonly) id<EucBook> book;
 @property (nonatomic, readonly) NSUInteger pointSize;

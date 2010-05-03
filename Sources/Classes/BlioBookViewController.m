@@ -580,18 +580,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [_bookView performSelector:@selector(stopAnimation)];
             }
             
-            if([self.bookView isKindOfClass:[BlioSpeedReadView class]]) {
+            if([_bookView isKindOfClass:[BlioSpeedReadView class]]) {
                 // We do this because the current point is usually only saved on a 
                 // page switch, so we want to make sure the current point that the 
                 // user has reached in SpeedRead view is saved..
                 // Usually, the SpeedRead "Page" tracks the layout page that the 
                 // current SpeedRead paragraph starts on.
                 self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
-                
-                NSError *error;
-                if (![[self.book managedObjectContext] save:&error])
-                    NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
-            }            
+            } 
+            
+            // Save the current progress, for UI display purposes.
+            float bookProgress = (float)(_bookView.pageNumber - 1) / (float)(_bookView.pageCount);
+            self.book.progress = [NSNumber numberWithFloat:bookProgress];
             
             [self.navigationController setToolbarHidden:YES animated:NO];
             [self.navigationController setToolbarHidden:NO animated:NO];
@@ -642,6 +642,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [self.navigationController setNavigationBarHidden:_returnToNavigationBarHidden 
                                                          animated:NO];
             }     
+            
+            NSError *error;
+            if (![[self.book managedObjectContext] save:&error])
+                NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);            
         }
     }
 }
@@ -984,23 +988,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void) _updatePageJumpLabelForPage:(NSInteger)page
 {
-    NSString* section = [self.bookView.contentsDataSource sectionUuidForPageNumber:page];
-    THPair* chapter = [self.bookView.contentsDataSource presentationNameAndSubTitleForSectionUuid:section];
-    NSString* pageStr = [self.bookView.contentsDataSource displayPageNumberForPageNumber:page];
-    
-    if (section && chapter.first) {
-        if (pageStr) {
-            _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
-        } else {
-            _pageJumpLabel.text = [NSString stringWithFormat:@"%@", chapter.first];
-        }
-    } else {
-        if (pageStr) {
-            _pageJumpLabel.text = [NSString stringWithFormat:@"Page %@ of %d", pageStr, self.bookView.pageCount];
-        } else {
-            _pageJumpLabel.text = self.book.title;
-        }
-    } // of no section name
+    _pageJumpLabel.text = [self.bookView pageLabelForPageNumber:page];
 }
 
 #pragma mark -

@@ -9,19 +9,20 @@
 
 #import "THLog.h"
 #import "EucBUpeBook.h"
+#import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
 #import "EucBookParagraph.h"
-#import "EucBookSection.h"
 #import "THPair.h"
 #import "THRegex.h"
 #import "THNSURLAdditions.h"
-#import "expat.h"
 
 #import "EucCSSXMLTree.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSLayouter.h"
+
+#import "expat.h"
 
 #import <fcntl.h>
 #import <sys/stat.h>
@@ -29,10 +30,46 @@
 
 #define kMaxCachedDocuments 3
 
+@interface TocNcxParsingContextNavPointInfo : NSObject {
+    NSString *_text;
+    NSString *_src;
+    NSUInteger _playOrder;
+    
+    BOOL _inNavLabel;
+    BOOL _inNavLabelText;
+}
+
+@property (nonatomic, retain) NSString *text;
+@property (nonatomic, retain) NSString *src;
+@property (nonatomic, assign) NSUInteger playOrder;
+@property (nonatomic, assign) BOOL inNavLabel;
+@property (nonatomic, assign) BOOL inNavLabelText;
+
+@end
+
+@implementation TocNcxParsingContextNavPointInfo
+
+@synthesize text = _text;
+@synthesize src = _src;
+@synthesize playOrder = _playOrder;
+@synthesize inNavLabel = _inNavLabel;
+@synthesize inNavLabelText = _inNavLabelText;
+
+- (void)dealloc
+{
+    [_text release];
+    [_src release];
+    [super dealloc];
+}
+
+@end
+
 @interface EucBUpeBook ()
 @property (nonatomic, retain) NSDictionary *manifestOverrides;
+@property (nonatomic, retain) NSDictionary *idToIndexPoint;
 
 - (EucCSSIntermediateDocument *)_intermediateDocumentForURL:(NSURL *)url;
+- (void)_restorePersistedCachableDataIfPossible;
 
 @end
 
@@ -41,6 +78,7 @@
 @synthesize navPoints = _navPoints;
 @synthesize manifestOverrides = _manifestOverrides;
 @synthesize persistsPositionAutomatically = _persistsPositionAutomatically;
+@synthesize idToIndexPoint = _idToIndexPoint;
 
 static inline const XML_Char* unqualifiedName(const XML_Char *name) {
     const XML_Char *offset = strrchr(name, ':');
@@ -311,14 +349,12 @@ struct tocNcxParsingContext
     NSURL *url;
     
     BOOL inNavMap;
-    BOOL inNavPoint;
-    BOOL inNavLabel;
-    BOOL inNavLabelText;
     
     NSString *thisLabelText;
     NSString *thisLabelSrc;
     NSUInteger thisLabelPlayOrder;
     
+    NSMutableArray *navPointStack;
     NSMutableDictionary *buildNavMap;
 };
 
@@ -332,29 +368,31 @@ static void tocNcxStartElementHandler(void *ctx, const XML_Char *name, const XML
             context->inNavMap = YES;
         }
     } else {
-        if(!context->inNavPoint) {
-            if(strcmp("navPoint", name) == 0) {
-                context->inNavPoint = YES;
-                for(int i = 0; atts[i]; i+=2) {
-                    if(strcmp("playOrder", atts[i]) == 0) {
-                        context->thisLabelPlayOrder = atoi(atts[i+1]);
-                    }
+        if(strcmp("navPoint", name) == 0) {
+            TocNcxParsingContextNavPointInfo *navPointInfo = [[TocNcxParsingContextNavPointInfo alloc] init];
+            [context->navPointStack addObject:navPointInfo];
+            [navPointInfo release];
+            for(int i = 0; atts[i]; i+=2) {
+                if(strcmp("playOrder", atts[i]) == 0) {
+                    navPointInfo.playOrder = atoi(atts[i+1]);
                 }
             }
-        } else {
-            if(!context->inNavLabel) {
+        } else if(context->navPointStack.count) {
+            TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+            if(!navPointInfo.inNavLabel) {
                 if(strcmp("navLabel", name) == 0) {
-                    context->inNavLabel = YES;
+                    navPointInfo.inNavLabel = YES;
                 } else if(strcmp("content", name) == 0) {
                     for(int i = 0; atts[i]; i+=2) {
                         if(strcmp("src", atts[i]) == 0) {
-                            context->thisLabelSrc = [[NSString stringWithUTF8String:atts[i+1]] retain];
+                            TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+                            navPointInfo.src = [NSString stringWithUTF8String:atts[i+1]];
                         }
                     }            
                 }
             } else {
                 if(strcmp("text", name) == 0) {
-                    context->inNavLabelText = YES;
+                    navPointInfo.inNavLabelText = YES;
                 }
             }
         }
@@ -367,30 +405,31 @@ static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)
     
     struct tocNcxParsingContext *context = (struct tocNcxParsingContext *)ctx;
     if(context->inNavMap) { 
-        if(context->inNavPoint) {
-            if(context->inNavLabelText) {
+        if(context->navPointStack.count) {
+            TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+            if(navPointInfo.inNavLabelText) {
                 if(strcmp("text", name) == 0) {
-                    context->inNavLabelText = NO;
+                    navPointInfo.inNavLabelText = NO;
                 }                
-            } else if(context->inNavLabel) {
+            } else if(navPointInfo.inNavLabel) {
                 if(strcmp("navLabel", name) == 0) {
-                    context->inNavLabel = NO;
+                    navPointInfo.inNavLabel = NO;
                 }
             } else if(strcmp("navPoint", name) == 0) {
-                context->inNavPoint = NO;
-                
-                if(context->thisLabelSrc && context->thisLabelText) {
-                    [context->buildNavMap setObject:[THPair pairWithFirst:context->thisLabelText 
-                                                                   second:[[NSURL URLWithString:context->thisLabelSrc 
-                                                                                 relativeToURL:context->url] pathRelativeTo:context->self->_root]]
-                                             forKey:[NSNumber numberWithUnsignedInteger:context->thisLabelPlayOrder]];
+                TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+
+                NSString *src = navPointInfo.src;
+                if(src) {
+                    NSString *text = navPointInfo.text;
+                    if(text) {
+                        [context->buildNavMap setObject:[THPair pairWithFirst:text 
+                                                                       second:[[NSURL URLWithString:src 
+                                                                                      relativeToURL:context->url] pathRelativeTo:context->self->_root]]
+                                                 forKey:[NSNumber numberWithUnsignedInteger:navPointInfo.playOrder]];
+                    }
                 }
                 
-                [context->thisLabelText release];
-                context->thisLabelText = nil;
-                [context->thisLabelSrc release];
-                context->thisLabelSrc = nil;
-                context->thisLabelPlayOrder = 0;                
+                [context->navPointStack removeLastObject];
             }
         } else if(strcmp("navMap", name) == 0) {
             context->inNavMap = NO;
@@ -401,16 +440,19 @@ static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)
 static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len) 
 {
     struct tocNcxParsingContext *context = (struct tocNcxParsingContext *)ctx;
-    
-    if(context->inNavLabelText) {
-        NSString *text = [[NSString alloc] initWithBytes:chars length:len encoding:NSUTF8StringEncoding];
-        if(context->thisLabelText && text.length) {
-            NSString *newText = [context->thisLabelText stringByAppendingString:text];
-            [context->thisLabelText release];
+    if(context->navPointStack.count) {
+        TocNcxParsingContextNavPointInfo *navPointInfo = [context->navPointStack lastObject];
+        if(navPointInfo.inNavLabelText) {
+            NSString *text = [[NSString alloc] initWithBytes:chars length:len encoding:NSUTF8StringEncoding];
+
+            NSString *oldText = navPointInfo.text;
+            if(oldText && text.length) {
+                navPointInfo.text = [oldText stringByAppendingString:text];
+            } else {
+                navPointInfo.text = text;
+            }
+            
             [text release];
-            context->thisLabelText = [newText retain];
-        } else {
-            context->thisLabelText = text;
         }
     }
 }
@@ -430,6 +472,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             context.parser = parser;
             context.url = url;
             context.self = self;
+            context.navPointStack = [[NSMutableArray alloc] init];
             context.buildNavMap = buildNavMap;
             
             XML_SetStartElementHandler(parser, tocNcxStartElementHandler);
@@ -438,6 +481,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             XML_SetUserData(parser, (void *)&context);    
             XML_Parse(parser, [data bytes], [data length], XML_TRUE);
             XML_ParserFree(parser);
+            
+            [context.navPointStack release];
         }   
     }
     
@@ -488,6 +533,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 NSString *key = [NSString stringWithFormat:@"gs.ingsmadeoutofotherthin.th.Euclayptus.bUpe.%@.manifestOverrides", self.etextNumber];
                 self.manifestOverrides = [[NSUserDefaults standardUserDefaults] objectForKey:key];
             }
+            
+            [self _restorePersistedCachableDataIfPossible];
         } else {
             THWarn(@"Couldn't find content for ePub at %@", path);
             [self release];
@@ -600,9 +647,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     }*/
 }
 
-- (NSArray *)bookPageIndexes
+- (EucBookIndex *)bookIndex
 {
-    NSArray *indexes = [EucFilteredBookPageIndex bookPageIndexesForBook:self];
+    EucBookIndex *index = [EucBookIndex bookIndexForBook:self];
     /*if(_filteredSections) {
         NSMutableArray *ranges = [NSMutableArray arrayWithCapacity:_filteredSections.count];
         EucBookSection *lastSection = nil;
@@ -626,7 +673,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         
         [lastSection release];
     }*/
-    return indexes;
+    return index;
 }
 
 - (EucBookPageIndexPoint *)currentPageIndexPoint
@@ -679,11 +726,6 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     }
 }
 
-- (void)setCurrentPageIndexPointForId:(NSString *)anchor
-{
-    self.currentPageIndexPoint = [self indexPointForId:anchor];
-}
-
 - (void)setCurrentPageIndexPoint:(EucBookPageIndexPoint *)currentPage
 {
     if(_persistsPositionAutomatically) {
@@ -705,46 +747,65 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return NSClassFromString(@"EucBUpePageLayoutController");
 }
 
-- (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier
+- (NSDictionary *)idToIndexPoint
 {
-    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-    
-    NSString *file = nil;
-    NSString *fragment = nil;
-    
-    THRegex *fragmentFinder = [THRegex regexWithPOSIXRegex:@"^(.*)#(.*)$"];
-    if([fragmentFinder matchString:identifier]) {
-        file = [fragmentFinder match:1];
-        fragment = [fragmentFinder match:2];
-    } else {
-        file = identifier;
-    }
-    
-    for(NSString *identifier in [_manifest keyEnumerator]) {
-        NSString *path = [_manifest objectForKey:identifier];
-        if([path isEqualToString:file] && [_spine containsObject:identifier]) {
-            NSURL *url = [NSURL URLWithString:path relativeToURL:_root];
-            EucCSSIntermediateDocument *document = [self _intermediateDocumentForURL:url];
-            EucCSSIntermediateDocumentNode *node = fragment ? [document nodeForKey:[document nodeKeyForId:fragment]] : document.rootNode;
-            if(!node) {
-                node = document.rootNode;
+    if(!_idToIndexPoint) {
+        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
+        NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] init];
+        EucBookPageIndexPoint *sourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
+        int source = 0;
+        EucCSSIntermediateDocument *document = [self intermediateDocumentForIndexPoint:sourceIndexPoint];
+        
+        for(; 
+            document != nil;
+            sourceIndexPoint.source = ++source, document = [self intermediateDocumentForIndexPoint:sourceIndexPoint]) {
+            NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+            NSURL *documentUrl = document.url;
+            [buildIdToIndexPoint setObject:[[sourceIndexPoint copy] autorelease] forKey:[documentUrl pathRelativeTo:_root]];
+            
+            layouter.document = document;
+            
+            NSDictionary *localIdsToNodes = document.idToNodeKey;
+            if(localIdsToNodes) {
+                NSString *documentUrlString = [documentUrl absoluteString];
+                for(NSString *localId in [localIdsToNodes keyEnumerator]) {
+                    NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+
+                    EucCSSIntermediateDocumentNode *node = [document nodeForKey:[document nodeKeyForId:localId]];
+                    EucCSSLayoutPoint layoutPoint = [layouter layoutPointForNode:node];                   
+                    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+                    indexPoint.source = source;
+                    indexPoint.block = layoutPoint.nodeKey;
+                    indexPoint.word = layoutPoint.word;
+                    indexPoint.element = layoutPoint.element;
+                    
+                    NSURL *globalUrl = [NSURL URLWithString:[documentUrlString stringByAppendingFormat:@"#%@", localId]];
+                    
+                    [buildIdToIndexPoint setObject:indexPoint forKey:[globalUrl pathRelativeTo:_root]];
+                    
+                    [indexPoint release];
+                    
+                    [innerPool drain];
+                }
             }
             
-            // The point is dependent on the layout algorithm.
-            // (It depends on how the text is split into runs).
-            EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
-            layouter.document = document;
-            EucCSSLayoutPoint layoutPoint = [layouter layoutPointForNode:node];
-            [layouter release];
-            
-            indexPoint.source = [_spine indexOfObject:identifier];
-            indexPoint.block = layoutPoint.nodeKey;
-            indexPoint.word = layoutPoint.word;
-            indexPoint.element = layoutPoint.element;
+            layouter.document = nil;
+
+            [innerPool drain];
         }
+
+        self.idToIndexPoint = buildIdToIndexPoint;
+        
+        [sourceIndexPoint release];
+        [buildIdToIndexPoint release];
+        [layouter release];
     }
-    
-    return [indexPoint autorelease];
+    return _idToIndexPoint;
+}
+
+- (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier
+{
+    return [self.idToIndexPoint objectForKey:identifier];
 }
 
 - (float *)indexSourceScaleFactors
@@ -927,6 +988,27 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
     return NO;
+}
+
+- (NSString *)_persistedDataPath
+{
+    NSString *filename = [NSString stringWithFormat:@"v%luIndexIdToIndexPoint.keyedArchive", (unsigned long)[EucBookIndex indexVersion]];
+    NSString *archivePath = [self.cacheDirectoryPath stringByAppendingPathComponent:filename];
+    return archivePath;
+}
+
+- (void)_restorePersistedCachableDataIfPossible
+{
+    NSDictionary *persistedIdToIndexPoint = [NSKeyedUnarchiver unarchiveObjectWithFile:[self _persistedDataPath]];
+    if(persistedIdToIndexPoint) {
+        self.idToIndexPoint = persistedIdToIndexPoint;
+    }
+}
+
+- (void)persistCacheableData
+{
+    [NSKeyedArchiver archiveRootObject:self.idToIndexPoint 
+                                toFile:[self _persistedDataPath]];
 }
 
 @end

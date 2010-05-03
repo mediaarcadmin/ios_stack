@@ -38,6 +38,7 @@
 
 - (void)dealloc
 {
+    free(sectionScaleFactors);
     [textFlow release];
     [currentFlowTree release];
     
@@ -163,19 +164,44 @@
     BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
     paragraph = paragraph.nextSibling;
     
-    if(!paragraph) {
-        NSUInteger indexes[2] = { [paragraphID indexAtPosition:0] + 1, 0 };
-        NSIndexPath *newID = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
-        paragraph = [self paragraphWithID:newID];
-        [newID release];
-    }
-    
     if(paragraph) {
         NSUInteger indexes[2] = { [paragraphID indexAtPosition:0], (NSUInteger)paragraph.key };
         ret = [NSIndexPath indexPathWithIndexes:indexes length:2];
+    } else {
+        NSUInteger indexes[2] = { [paragraphID indexAtPosition:0] + 1, 0 };
+        NSIndexPath *newID = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
+        paragraph = [self paragraphWithID:newID];
+        if(paragraph) {
+            ret = [newID autorelease];
+        } else {
+            [newID release];
+        }
     }
     
     return ret;
 }
+
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
+{
+    return self.textFlow;
+}
+ 
+- (NSUInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return bookmarkPoint.layoutPage;
+}
+
+- (BlioBookmarkPoint *)bookmarkPointForPageNumber:(NSUInteger)pageNumber
+{
+    BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
+    point.layoutPage = pageNumber;
+    return [point autorelease];
+}
+
+- (NSUInteger)pageCount
+{
+    return self.textFlow.lastPageIndex + 1;
+}
+
 
 @end

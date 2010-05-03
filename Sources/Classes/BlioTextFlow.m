@@ -9,6 +9,8 @@
 #import "BlioTextFlow.h"
 #import "BlioTextFlowFlowTree.h"
 #import "BlioProcessing.h"
+#import <libEucalyptus/THPair.h>
+#import <libEucalyptus/EucChapterNameFormatting.h>
 
 #import <sys/stat.h>
 
@@ -744,6 +746,53 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     NSArray *operations = [NSArray arrayWithObject:preParseOp];
     [preParseOp release];
     return operations;
+}
+
+
+#pragma mark -
+#pragma mark Contents Data Source protocol methods
+
+- (NSArray *)sectionUuids
+{
+    NSUInteger sectionCount = self.sections.count;
+    NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:sectionCount];
+    for(NSUInteger i = 0; i < sectionCount; ++i) {
+        [array addObject:[[NSNumber numberWithUnsignedInteger:i] stringValue]];
+    }
+    return [array autorelease];
+}
+
+- (NSString *)sectionUuidForPageNumber:(NSUInteger)page
+{
+    NSUInteger pageIndex = page - 1;
+    NSUInteger sectionIndex = 0;
+    NSUInteger nextSectionIndex = 0;
+    for(BlioTextFlowSection *section in self.sections) {
+        if(section.startPage <= pageIndex) {
+            sectionIndex = nextSectionIndex;
+            ++nextSectionIndex;
+        } else {
+            break;
+        }
+    }
+    return [[NSNumber numberWithUnsignedInteger:sectionIndex] stringValue];
+}
+
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
+{
+    NSUInteger sectionIndex = [sectionUuid integerValue];
+    return [[[self.sections objectAtIndex:sectionIndex] name] splitAndFormattedChapterName];
+}
+
+- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
+{
+    NSUInteger sectionIndex = [sectionUuid integerValue];
+    return [[self.sections objectAtIndex:sectionIndex] startPage] + 1;
+}
+
+- (NSString *)displayPageNumberForPageNumber:(NSUInteger)aPageNumber
+{
+    return [NSString stringWithFormat:@"%ld", (long)aPageNumber];
 }
 
 @end

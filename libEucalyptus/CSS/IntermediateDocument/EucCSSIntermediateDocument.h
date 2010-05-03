@@ -52,6 +52,7 @@ struct css_stylesheet;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *rootNode;
 @property (nonatomic, retain, readonly) NSURL *url;
 @property (nonatomic, assign, readonly) id<EucCSSIntermediateDocumentDataSource> dataSource;
+@property (nonatomic, retain, readonly) NSDictionary *idToNodeKey;
 
 @end
 

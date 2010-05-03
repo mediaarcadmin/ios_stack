@@ -71,7 +71,7 @@
 	 activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(kLeftMargin, yPlacement, 16.0f, 16.0f)];
 	 [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
 	 [self.view addSubview:activityIndicator];
- }
+}
 
 - (void) dismissLoginView: (id) sender {
     [self dismissModalViewControllerAnimated:YES];
@@ -87,6 +87,10 @@
 	usernameField.autocorrectionType = UITextAutocorrectionTypeNo;
 	usernameField.placeholder = @"Username";
 	usernameField.delegate = self;
+	
+	//temporarily populate to save time
+	usernameField.text = @"achien@knfbreader.com";
+	
 	return usernameField;
 }
 	
@@ -104,6 +108,8 @@
 	passwordField.delegate = self;
 	passwordField.secureTextEntry = YES;
 		
+	passwordField.text = @"Soniac1Soniac1";
+
 	return passwordField;
 }
 
@@ -131,6 +137,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
+	NSString * loginErrorText = nil;
 	if (textField == usernameField) 
 		[passwordField becomeFirstResponder];
 	else { 
@@ -138,18 +145,26 @@
 		statusField.text = @"    Signing in..."; 
 		[activityIndicator startAnimating];
 		BlioLoginResult loginStatus = [[self.vaultManager loginManager] login:usernameField.text password:passwordField.text];
-		if ( loginStatus == success ) {
+		if ( loginStatus == BlioLoginResultSuccess ) {
 			[self dismissModalViewControllerAnimated:YES];
 			[self.vaultManager archiveBooks];
 		}
-		else if ( loginStatus == invalidPassword ) 
-			statusField.text = @"Invalid username or password.";
+		else if ( loginStatus == BlioLoginResultInvalidPassword ) 
+			loginErrorText = @"An invalid username or password was entered. Please try again.";
 		else
-			statusField.text = @"Error signing in.";
+			loginErrorText = @"There was a problem logging in due to a server error. Please try again later.";
 		[activityIndicator stopAnimating];
 		statusField.textColor = [UIColor redColor];
 		[textField resignFirstResponder];
-	}
+		if (loginErrorText != nil) {
+		UIAlertView *errorAlert = [[UIAlertView alloc] 
+								   initWithTitle:@"We're Sorry..." message:loginErrorText
+								   delegate:self cancelButtonTitle:nil
+								   otherButtonTitles:@"OK", nil];
+		[errorAlert show];
+		[errorAlert release];
+		}
+	}	
 	return NO;
 }
 	
@@ -180,7 +195,7 @@
         //cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellTextField_ID] autorelease];
     }
 	
-	if (row == 0)
+	if (row == 0) 
 		((CellTextField *)cell).view = [self createUsernameTextField];
 	else
 		((CellTextField *)cell).view = [self createPasswordTextField];

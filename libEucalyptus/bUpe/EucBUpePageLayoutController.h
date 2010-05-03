@@ -9,20 +9,16 @@
 #import <Foundation/Foundation.h>
 #import "EucPageLayoutController.h"
 
-@class EucBUpeBook, EucFilteredBookPageIndex;
+@class EucBUpeBook, EucBookIndex, EucFilteredBookPageIndex;
 
 @interface EucBUpePageLayoutController : NSObject <EucPageLayoutController> {
     CGFloat _fontPointSize;
         
     EucBUpeBook *_book;
-    EucFilteredBookPageIndex *_bookIndex;
-        
-    NSArray *_bookIndexes;
-    NSArray *_availablePointSizes;
-    
+    EucBookIndex *_bookIndex;
+    EucFilteredBookPageIndex *_currentBookPageIndex;
+
     NSUInteger _globalPageCount;   
 }
-
-
 
 @end

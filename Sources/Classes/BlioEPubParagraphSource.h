@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "BlioParagraphSource.h"
 
-@class EucBUpeBook;
+@class EucBUpeBook, EucBUpePageLayoutController;
 
 @interface BlioEPubParagraphSource : NSObject <BlioParagraphSource> {
     EucBUpeBook *_bUpeBook;
+    EucBUpePageLayoutController *_layoutController;
 }
 
 - (id)initWitBUpeBook:(EucBUpeBook *)bUpeBook;

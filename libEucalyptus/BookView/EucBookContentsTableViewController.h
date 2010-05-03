@@ -49,7 +49,11 @@
 - (NSArray *)sectionUuids;
 - (NSString *)sectionUuidForPageNumber:(NSUInteger)pageNumber;
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid;
-- (NSInteger)pageNumberForSectionUuid:(NSString *)sectionUuid;
-- (NSString *)displayPageNumberForPageNumber:(NSInteger)pageNumber;
+- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid;
+
+
+// A "display number" i.e. cover -> nil, 2 -> @"1" etc;
+// Could also do things like convert to roman numerals when appropriate.
+- (NSString *)displayPageNumberForPageNumber:(NSUInteger)pageNumber;
 
 @end

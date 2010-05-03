@@ -10,6 +10,7 @@
 #import <expat/expat.h>
 #import "BlioBookmark.h"
 #import "BlioProcessingManager.h"
+#import <libEucalyptus/EucBookContentsTableViewController.h>
 
 @class BlioTextFlowFlowTree;
 
@@ -103,7 +104,7 @@
 
 @end
 
-@interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider> {
+@interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider, EucBookContentsTableViewControllerDataSource> {
     NSSet *pageRanges;
     NSInteger currentPageIndex;
     BlioTextFlowPageRange *currentPageRange;

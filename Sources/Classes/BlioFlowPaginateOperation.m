@@ -74,7 +74,7 @@
     [self didChangeValueForKey:@"isExecuting"];
         	
     NSString *epubPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"epubFilename"]];
-    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusPageIndexes"];
+    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
 
     if(self.forceReprocess) {
         // Best effort - ignore errors.

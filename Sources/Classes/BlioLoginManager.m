@@ -24,28 +24,29 @@
 	[vaultBinding release];
 	NSArray *responseBodyParts = response.bodyParts;
 	for(id bodyPart in responseBodyParts) {
+		NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 			NSLog(@"SOAP error for login: %s",err);
-			return error;
+			return BlioLoginResultError;
 		}
 		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
 			self.isLoggedIn = YES;
 			self.username = user;
 			self.token = [bodyPart LoginResult].Token;
 			self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
-			return success;
+			return BlioLoginResultSuccess;
 		}
 		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 203 ) {
 			NSLog(@"Invalid password");
-			return invalidPassword;
+			return BlioLoginResultInvalidPassword;
 		}
 		else {
 			NSLog(@"Login error: %s",[bodyPart LoginResult].Message);
-			return error;
+			return BlioLoginResultError;
 		}
 	}
-	return error;
+	return BlioLoginResultError;
 }
 
 - (void)logout {

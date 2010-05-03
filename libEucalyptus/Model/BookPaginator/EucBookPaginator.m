@@ -10,8 +10,8 @@
 #import "EucBook.h"
 #import "EucPageLayoutController.h"
 #import "EucPageView.h"
-#import "EucBookSection.h"
 #import "EucPageTextView.h"
+#import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
 #import "THLog.h"
@@ -78,7 +78,7 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
         
     // Open raw index files.
     for(NSUInteger i = 0; i < sDesiredPointSizesCount; ++i) {
-        NSString *path = [indexDirectoryPath stringByAppendingPathComponent:[EucBookPageIndex constructionFilenameForPageIndexForPointSize:sDesiredPointSizes[i]]];
+        NSString *path = [indexDirectoryPath stringByAppendingPathComponent:[EucBookIndex constructionFilenameForPageIndexForPointSize:sDesiredPointSizes[i]]];
         if([[NSFileManager defaultManager] fileExistsAtPath:path]) {
             pageIndexFDs[i] = open([path fileSystemRepresentation], O_RDWR, S_IRUSR | S_IWUSR);
         } else {
@@ -213,6 +213,11 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
                          
         [pool drain];
     }
+        
+    // Let the book save any data it's collected.
+    THTimer *cacheableDataSaveTimer = [THTimer timerWithName:@"Saving cachable data"];
+    [_book persistCacheableData];
+    [cacheableDataSaveTimer report];
     
     if(_continueParsing) {
         _percentagePaginated = 100.0f;
@@ -329,7 +334,7 @@ abandon:
 {
     [self _sendPeriodicPaginationUpdate];
     
-    [EucBookPageIndex markBookBundleAsIndexesConstructed:[_book cacheDirectoryPath]];
+    [EucBookIndex markBookBundleAsIndexesConstructed:[_book cacheDirectoryPath]];
     
     // Retain what we need then clear the ivars to support
     // allowing calls to start pagination in the completion

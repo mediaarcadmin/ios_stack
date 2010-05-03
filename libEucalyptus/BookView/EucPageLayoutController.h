@@ -20,33 +20,25 @@
 @property (nonatomic, readonly) NSArray *availablePointSizes;
 @property (nonatomic, assign) CGFloat fontPointSize;
 
-@property (nonatomic, readonly) NSArray *sectionUuids;
-
 @property (nonatomic, readonly) NSUInteger globalPageCount;
 
 - (id)initWithBook:(id<EucBook>)book fontPointSize:(CGFloat)pointSize;
-
-// A full description for display with the page slider.
-// i.e. page 3 might be "page 1 of 300", to discount the cover and inner licence page
-- (NSString *)pageDescriptionForPageNumber:(NSUInteger)logicalPageNumber;
-
-// A "display number" i.e. cover -> nil, 2 -> @"1" etc;
-// Could also do things like convert to roman numerals when appropriate.
-- (NSString *)displayPageNumberForPageNumber:(NSUInteger)pageNumber;
-
-- (NSString *)sectionUuidForPageNumber:(NSUInteger)page;
-- (NSString *)nameForSectionUuid:(NSString *)sectionUuid;
-- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid;
-- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)uuid;
 
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 
 - (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
+- (EucBookPageIndexPoint *)indexPointForPageNumber:(NSUInteger)pageNumber;
 
 - (BOOL)viewShouldBeRigid:(UIView *)view;
 
 + (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture;
+
+// A full description.
+// i.e. page 3 might be "1 of 300", to discount the cover and inner licence page.
+// page 1 might be "Cover" etc.
+// Used by the page slider.
+- (NSString *)pageDescriptionForPageNumber:(NSUInteger)logicalPageNumber;
 
 @end

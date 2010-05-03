@@ -11,6 +11,7 @@
 #import "BlioWebToolsViewController.h"
 #import <libEucalyptus/EucMenuItem.h>
 #import <libEucalyptus/EucSelectorRange.h>
+#import <libEucalyptus/THPair.h>
 #import "BlioLayoutScrollView.h"
 #import "BlioLayoutContentView.h"
 #import "UIDevice+BlioAdditions.h"
@@ -301,7 +302,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    [self goToPageNumber:1 animated:animated];
+    [self goToPageNumber:[self.book.textFlow pageNumberForSectionUuid:uuid] animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
@@ -329,6 +330,32 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
     return bookmarkRange.startPoint.layoutPage;
 }
+
+- (NSString *)pageLabelForPageNumber:(NSInteger)page {
+    NSString *ret = nil;
+    
+    BlioTextFlow *textFlow = self.book.textFlow;
+    NSString* section = [textFlow sectionUuidForPageNumber:page];
+    THPair* chapter = [textFlow presentationNameAndSubTitleForSectionUuid:section];
+    NSString* pageStr = [textFlow displayPageNumberForPageNumber:page];
+
+    if (section && chapter.first) {
+        if (pageStr) {
+            ret = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
+        } else {
+            ret = [NSString stringWithFormat:@"%@", chapter.first];
+        }
+    } else {
+        if (pageStr) {
+            ret = [NSString stringWithFormat:@"Page %@ of %lu", pageStr, (unsigned long)self.pageCount];
+        } else {
+            ret = self.book.title;
+        }
+    } // of no section name
+    
+    return ret;
+}
+
 
 #pragma mark -
 #pragma mark BlioBookDelegate
@@ -1601,38 +1628,6 @@ NSLog(@"did rotate");
     }
 } 
 
-#pragma mark -
-#pragma mark Contents Data Source protocol methods
-
-- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
-    return self;
-}
-
-- (NSArray *)sectionUuids
-{
-  return [NSArray arrayWithObject:@"dummy-uuid"];
-}
-
-- (NSString *)sectionUuidForPageNumber:(NSUInteger)page
-{
-  return @"dummy-uuid";
-}
-
-- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
-{
-  return NULL;
-}
-
-- (NSInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
-{
-  return 1; // only one section, very easy
-}
-
-- (NSString *)displayPageNumberForPageNumber:(NSInteger)aPageNumber
-{
-  return [NSString stringWithFormat:@"%d", aPageNumber];
-}
-
 - (CGRect)firstPageRect {
     if ([self pageCount] > 0) {
         CGRect cropRect;
@@ -1644,7 +1639,11 @@ NSLog(@"did rotate");
         return self.contentView.frame;
     }
 }
-    
+
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
+    return self.book.textFlow;
+}
+
 #pragma mark -
 #pragma mark Container UIScrollView Delegate
 

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <stdint.h>
 
-@interface EucBookPageIndexPoint : NSObject <NSCopying> {
+@interface EucBookPageIndexPoint : NSObject <NSCopying, NSCoding> {
     uint32_t _source;
     uint32_t _block;
     uint32_t _word;

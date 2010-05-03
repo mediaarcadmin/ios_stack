@@ -16,6 +16,8 @@
     
     NSUInteger currentFlowTreeSection;
     BlioTextFlowFlowTree *currentFlowTree;
+    
+    float *sectionScaleFactors;
 }
 
 @property (nonatomic, retain) BlioTextFlow *textFlow;
