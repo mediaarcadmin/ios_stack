@@ -723,9 +723,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //glOrthof(0, PAGE_WIDTH, PAGE_HEIGHT, 0, -PAGE_WIDTH, 0);
-    //glFrustumf(0, 1, 0, 1, 0.5, 1000);
-    //gluPerspective(45.0, 1.0, 3.0, 7.0); 
     GLUPerspective(FOV_ANGLE, (GLfloat)PAGE_WIDTH / (GLfloat)PAGE_HEIGHT, 0.5, 1000.0);
     
     glMatrixMode(GL_MODELVIEW);
@@ -748,7 +745,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     GLfloat lightPosition[] = { PAGE_WIDTH * _lightPosition.x, 
                                 PAGE_HEIGHT * _lightPosition.y, 
                                 -PAGE_WIDTH * (_lightPosition.z - (_dimQuotient * (_lightPosition.z - 0.3f))), 
-                                1.0f};
+                                1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glLightfv(GL_LIGHT0, GL_AMBIENT, _ambientLightColor);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, _diffuseLightColor);
@@ -757,17 +754,16 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, constantAttenuation);
     glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, _linearAttenutaionFactor);
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION,_quadraticAttenuationFactor );
-
-    glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates);
+    
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    
+    glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates);
     
     glBindTexture(GL_TEXTURE_2D, _pageTextures[_flatPageIndex]);
-
     glVertexPointer(3, GL_FLOAT, 0, _stablePageVertices);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    
     glNormalPointer(GL_FLOAT, 0, _stablePageVertexNormals);
-    glEnableClientState(GL_NORMAL_ARRAY);
     
     glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, _triangleStripIndices);
     
@@ -795,10 +791,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         }
             
         glVertexPointer(3, GL_FLOAT, 0, pageVertices);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        
         glNormalPointer(GL_FLOAT, 0, pageVertexNormals);
-        glEnableClientState(GL_NORMAL_ARRAY);
 
         // The front faces of the page.
         if(!_isTurningAutomatically || pageVertexNormals == (const GLfloatTriplet *)_stablePageVertexNormals) {
@@ -818,7 +811,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         }
         
         glNormalPointer(GL_FLOAT, 0, invertedPageVertexNormals);
-        glEnableClientState(GL_NORMAL_ARRAY);
 
         if(_isTurningAutomatically && pageVertexNormals != (const GLfloatTriplet *)_stablePageVertexNormals) {
             // Compensating for the normals in the automatic turn files being 
@@ -828,18 +820,15 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             // Because the normals are backwards, we use the non-inverted
             // (really, the inverted) ones to draw the back face.
             glNormalPointer(GL_FLOAT, 0, pageVertexNormals);
-            glEnableClientState(GL_NORMAL_ARRAY);
         }        
         
         glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
         glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         
         // By starting 1 into the triangle strip in glDrawElements, we draw the
         // strip with the opposite winding order, making the back the front (the
         // first triangle is degenerate anyway, so skippable).        
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 3, GL_UNSIGNED_BYTE, _triangleStripIndices + 1);
-        
         
 
         if(_isTurningAutomatically) {
@@ -885,14 +874,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 glClear(GL_DEPTH_BUFFER_BIT);
             
                 glVertexPointer(3, GL_FLOAT, 0, pageEdge);
-                glEnableClientState(GL_VERTEX_ARRAY);
 
                 glNormalPointer(GL_FLOAT, 0, pageEdgeNormals);
-                glEnableClientState(GL_NORMAL_ARRAY);
                 
                 glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
                 glTexCoordPointer(2, GL_FLOAT, 0, _pageEdgeTextureCoordinates);
-                glEnableClientState(GL_TEXTURE_COORD_ARRAY);        
                 
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, Y_VERTEX_COUNT * 2);
             }
@@ -948,6 +934,10 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         glDrawArrays(GL_LINES, 0, Y_VERTEX_COUNT * X_VERTEX_COUNT * 2);
         */        
     }
+    
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
     
     if(_atRenderScreenshotBuffer) {
         CGRect bounds = self.bounds;
