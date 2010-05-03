@@ -727,8 +727,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     glMatrixMode(GL_MODELVIEW);
     
-    glClearColor (0.0, 0.0, 0.0, 1.0);
-    glShadeModel (GL_SMOOTH);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glShadeModel(GL_SMOOTH);
     
     glLightModelx(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
     
@@ -984,7 +984,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     if(_touchTime) {
         GLfloat difference = (GLfloat)(thisTouchTime - _touchTime);
         if(difference) {
-            _touchVelocity = (modelTouchPoint.x - _touchPoint.x) / (30 * difference);
+            _touchVelocity = (modelTouchPoint.x - _touchPoint.x) / (30.0f * difference);
         } else {
             _touchVelocity = 0;
         }
