@@ -23,7 +23,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 
 @implementation BlioLayoutScrollView
 
-@synthesize selector, doubleTapBeginTimer, doubleTapEndTimer, bookDelegate, forwardingState;
+@synthesize selector, doubleTapBeginTimer, doubleTapEndTimer, bookDelegate, forwardingState, touchesBeginPoint;
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
