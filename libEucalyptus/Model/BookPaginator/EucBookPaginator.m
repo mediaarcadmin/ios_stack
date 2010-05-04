@@ -23,12 +23,12 @@
 #import <fcntl.h>
 #import <sys/stat.h>
 
-NSString * const EucBookBookPaginatorProgressNotification = @"BookPaginationProgressNotification";
-NSString * const EucBookPaginatorCompleteNotification = @"BookPaginationCompleteNotification";
+NSString * const EucBookBookPaginatorProgressNotification = @"EucBookPaginatorProgressNotification";
+NSString * const EucBookPaginatorCompleteNotification = @"EucBookPaginatorCompleteNotification";
 
-NSString * const EucBookPaginatorNotificationBookKey = @"BookPaginationBookKey";
-NSString * const EucBookPaginatorNotificationPercentagePaginatedKey = @"BookPaginationBytesPaginated";
-NSString * const EucBookPaginatorNotificationPageCountsKey = @"BookPaginatorNotificationPageCounts";
+NSString * const EucBookPaginatorNotificationBookKey = @"EucBookPaginatorBookKey";
+NSString * const EucBookPaginatorNotificationPercentagePaginatedKey = @"EucBookPaginatorBytesPaginated";
+NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey = @"EucBookPaginatorNotificationPageCountForPointSize";
 
 #define kThreadedProgressPollingDelay (1.0 / 5.0)
 
@@ -365,7 +365,7 @@ abandon:
     NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
                               book, EucBookPaginatorNotificationBookKey,
                               [NSNumber numberWithFloat:100.0f], EucBookPaginatorNotificationPercentagePaginatedKey,
-                              pageCounts, EucBookPaginatorNotificationPageCountsKey,
+                              pageCounts, EucBookPaginatorNotificationPageCountForPointSizeKey,
                               nil];    
     
     [[NSNotificationCenter defaultCenter] postNotificationName:EucBookPaginatorCompleteNotification
