@@ -198,9 +198,9 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 				NSLog(@"mo sourceSpecificID:%@ sourceID:%i",[mo valueForKey:@"sourceSpecificID"],[[mo valueForKey:@"sourceID"] intValue]);
 			}
 			NSManagedObject * resultBook = [results objectAtIndex:0];
-//			NSLog(@"processingStatus int: %i",[[resultBook valueForKey:@"processingComplete"] intValue]);
-				  if ([[resultBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
-				NSLog(@"and processingComplete is kBlioMockBookProcessingStateComplete."); 
+//			NSLog(@"processingStatus int: %i",[[resultBook valueForKey:@"processingState"] intValue]);
+				  if ([[resultBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
+				NSLog(@"and processingState is kBlioMockBookProcessingStateComplete."); 
 				
 				[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
 			}
@@ -211,11 +211,11 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 				NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
 				if (completeOperation == nil) {
 					// for now, treat as incomplete - redownload completely. TODO: processing manager should scan for pre-existing entity in context and append to it instead of creating new one.
-					NSLog(@"but not processingComplete and could not find completeOperation."); 
+					NSLog(@"but not processingState and could not find completeOperation."); 
 					[self setDownloadState:kBlioStoreDownloadButtonStateConfirm animated:NO];
 				}
 				else {
-					NSLog(@"but not processingComplete. However, completeOperation is present and will become listener."); 
+					NSLog(@"but not processingState. However, completeOperation is present and will become listener."); 
 					[self setDownloadState:kBlioStoreDownloadButtonStateInProcess animated:NO];
 					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioProcessingOperationCompleteNotification) name:BlioProcessingOperationCompleteNotification object:completeOperation];
 				}

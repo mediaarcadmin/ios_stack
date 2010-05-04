@@ -25,9 +25,8 @@
 @dynamic epubFilename;
 @dynamic pdfFilename;
 @dynamic progress;
-@dynamic processingComplete;
-@dynamic proportionateSize;
-@dynamic position;
+@dynamic processingState;
+@dynamic libraryPosition;
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;

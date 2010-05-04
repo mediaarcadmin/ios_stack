@@ -38,14 +38,14 @@
     // N.B. Do not set a predicate on this request, if you do there is a risk that
     // the fetchedResultsController won't auto-update correctly
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
-    NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:NO];
-    NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
-    [positionSort release];
+    NSSortDescriptor *libraryPositionSort = [[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO];
+    NSArray *sorters = [NSArray arrayWithObject:libraryPositionSort]; 
+    [libraryPositionSort release];
     
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request
@@ -280,7 +280,7 @@
 	// for debugging purposes
 	//	NSArray * testArray = [self.fetchedResultsController fetchedObjects];
 	//	for (NSInteger i = 0; i < [testArray count]; i++) {
-	//		NSLog(@"mo index: %i, position: %i",i,[[[[self.fetchedResultsController fetchedObjects] objectAtIndex:i] valueForKey:@"position"] intValue]);
+	//		NSLog(@"mo index: %i, libraryPosition: %i",i,[[[[self.fetchedResultsController fetchedObjects] objectAtIndex:i] valueForKey:@"libraryPosition"] intValue]);
 	//	}
 	
 }

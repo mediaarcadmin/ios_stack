@@ -101,7 +101,7 @@
 			aBook = [results objectAtIndex:0];
 			
 			
-			if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
+			if ([[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
 				NSLog(@"WARNING: enqueue method called on already complete book with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID);
 				NSLog(@"Aborting enqueue by prematurely returning...");
 				return;
@@ -116,9 +116,9 @@
         [aBook setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
         [aBook setValue:sourceSpecificID forKey:@"sourceSpecificID"];
         [aBook setValue:[authors lastObject] forKey:@"author"];
-        [aBook setValue:[NSNumber numberWithInt:count] forKey:@"position"];        
-        if (placeholderOnly) [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateNotProcessed] forKey:@"processingComplete"];
-        else [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingComplete"];
+        [aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
+        if (placeholderOnly) [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateNotProcessed] forKey:@"processingState"];
+        else [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingState"];
 		
 		if (coverURL != nil) [aBook setValue:[coverURL absoluteString] forKey:@"coverFilename"];
 		if (ePubURL != nil) [aBook setValue:[ePubURL absoluteString] forKey:@"epubFilename"];
@@ -160,17 +160,17 @@
 		BlioBookSource sourceID = [[aBook sourceID] intValue];
 		NSString *sourceSpecificID = [aBook sourceSpecificID];
 		
-		if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
+		if ([[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
 			NSLog(@"WARNING: enqueue method called on already complete book!");
 			NSLog(@"Aborting enqueue by prematurely returning...");
 			return;
 		}
-		if (![[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateNotProcessed]] && placeholderOnly) {
+		if (![[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateNotProcessed]] && placeholderOnly) {
 			NSLog(@"WARNING: enqueue method with placeholderOnly called on a book that is in a state other than NotProcessed!");
 			NSLog(@"Aborting enqueue by prematurely returning...");
 			return;			
 		}
-		if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]) {
+		if ([[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]) {
 			// status is incomplete; operations involved with this book may or may not be in the queue, so we'll cancel the CompleteOperation for this book if it exists and co-opt the other operations if they haven't been cancelled yet
 			BlioProcessingOperation * oldCompleteOperation = [self processingCompleteOperationForSourceID: sourceID sourceSpecificID:sourceSpecificID];
 			if (oldCompleteOperation) [oldCompleteOperation cancel];
@@ -437,9 +437,9 @@
 		[completeOp release];
 		
 		// now that completeOp is in queue, we change the model (which in turn triggers a refresh in LibraryView; the gridcell can successfully find the completeOp in the queue and become a listener to it.
-		if ([[aBook valueForKey:@"processingComplete"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStatePaused]]) {
+		if ([[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStatePaused]]) {
 			// if book is paused, reflect unpausing in state
-			[aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingComplete"];			
+			[aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingState"];			
 			NSError * error;
 			if (![moc save:&error]) {
 				NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
@@ -454,7 +454,7 @@
 		NSLog(@"WARNING: pause processing attempted while Processing Manager MOC == nil!");
 		return;
 	}
-    [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStatePaused] forKey:@"processingComplete"];
+    [aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStatePaused] forKey:@"processingState"];
 	[self stopProcessingForBook:aBook];
 	NSError * error;
 	if (![moc save:&error]) {
@@ -476,7 +476,7 @@
 }
 -(void) deleteBook:(BlioMockBook*)aBook shouldSave:(BOOL)shouldSave {
 	// if book is processing, stop all associated operations
-	if ([[aBook valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStateIncomplete) [self stopProcessingForBook:aBook];
+	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStateIncomplete) [self stopProcessingForBook:aBook];
 	
     NSManagedObjectContext *moc = self.managedObjectContext;
 	NSError * error;
@@ -493,14 +493,14 @@
 		NSLog(@"WARNING: deletion of cache directory for book failed. %@, %@", error, [error userInfo]);
 	}
 	
-	NSInteger deletedBookPosition = [aBook.position intValue];
+	NSInteger deletedBookPosition = [aBook.libraryPosition intValue];
 		
 	// reposition remaining books with a position value greater than the deleted book
 	
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
 	
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"position > %@", [NSNumber numberWithInt:deletedBookPosition]]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"libraryPosition > %@", [NSNumber numberWithInt:deletedBookPosition]]];
 	
 	NSError *errorExecute = nil; 
 	NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -512,9 +512,9 @@
 	}
 	
 	for (BlioMockBook* book in results) {
-		NSInteger newPosition = [book.position intValue];
+		NSInteger newPosition = [book.libraryPosition intValue];
 		newPosition--;
-		[book setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
+		[book setValue:[NSNumber numberWithInt:newPosition] forKey:@"libraryPosition"];
 	}
 	
 	// delete record. N.B.: this needs to happen after the re-ordering, as the update changeObject events for the re-ordering to the fetchedController delegate should happen after the delete event.

@@ -187,14 +187,14 @@
     // N.B. Do not set a predicate on this request, if you do there is a risk that
     // the fetchedResultsController won't auto-update correctly
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
-    NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:NO];
-   NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
-    [positionSort release];
+    NSSortDescriptor *libraryPositionSort = [[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO];
+   NSArray *sorters = [NSArray arrayWithObject:libraryPositionSort]; 
+    [libraryPositionSort release];
     
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
- 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete >= %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
     
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
                                               initWithFetchRequest:request
@@ -460,7 +460,7 @@
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
 	
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"position >= %@ && position <= %@", [NSNumber numberWithInt:lowerBounds],[NSNumber numberWithInt:upperBounds]]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"libraryPosition >= %@ && libraryPosition <= %@", [NSNumber numberWithInt:lowerBounds],[NSNumber numberWithInt:upperBounds]]];
 	
 	NSError *errorExecute = nil; 
 	NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -472,12 +472,12 @@
 	}
 	
 	for (BlioMockBook* aBook in results) {
-		if ([aBook.position intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"position"];
+		if ([aBook.libraryPosition intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"libraryPosition"];
         else {
-			NSInteger newPosition = [aBook.position intValue];
+			NSInteger newPosition = [aBook.libraryPosition intValue];
 			if (fromPosition > newPosition) newPosition++;
 			if (toPosition >= newPosition) newPosition--;
-			[aBook setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
+			[aBook setValue:[NSNumber numberWithInt:newPosition] forKey:@"libraryPosition"];
 		}		
 	}
 	
@@ -526,8 +526,8 @@
 //	NSLog(@"fromIndex: %i, toIndex: %i",fromIndex,toIndex);
 	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndex];
 	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndex];
-	NSInteger fromPosition = [fromBook.position intValue];
-	NSInteger toPosition = [toBook.position intValue];
+	NSInteger fromPosition = [fromBook.libraryPosition intValue];
+	NSInteger toPosition = [toBook.libraryPosition intValue];
 //	NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
 /*	
 	// tracing purposes
@@ -535,7 +535,7 @@
 	for (NSInteger i = 0; i < fetchedResultsCount; i++)
 	{
 		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-		NSLog(@"index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
+		NSLog(@"index: %i, libraryPosition: %i, title: %@",i,[aBook.libraryPosition intValue],aBook.title);
 		
 	}
 */	
@@ -574,7 +574,7 @@
 - (void)gridView:(MRGridView *)gridView didSelectCellAtIndex:(NSInteger)index{
 //	NSLog(@"selected cell %i",index);
 	BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:index];
-	if ([[cell.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStateComplete) {
+	if ([[cell.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStateComplete) {
 		[self bookSelected:cell.bookView];
 	}
 }
@@ -678,8 +678,8 @@
 	_didEdit = YES;
 	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndexPath.row];
 	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndexPath.row];
-	NSInteger fromPosition = [fromBook.position intValue];
-	NSInteger toPosition = [toBook.position intValue];
+	NSInteger fromPosition = [fromBook.libraryPosition intValue];
+	NSInteger toPosition = [toBook.libraryPosition intValue];
 //		NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
 		
 	 // tracing purposes
@@ -687,7 +687,7 @@
 //	 for (NSInteger i = 0; i < fetchedResultsCount; i++)
 //	 {
 //	 BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
-//	 NSLog(@"PRE index: %i, position: %i, title: %@",i,[aBook.position intValue],aBook.title);
+//	 NSLog(@"PRE index: %i, libraryPosition: %i, title: %@",i,[aBook.libraryPosition intValue],aBook.title);
 //	 
 //	 }
 	
@@ -783,7 +783,7 @@
 	   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
 	  newIndexPath:(NSIndexPath *)newIndexPath {
 //	BlioMockBook * book = (BlioMockBook*)anObject;
-//	NSLog(@"controller didChangeObject. type: %i, _didEdit: %i title: %@, position: %i",type,_didEdit,book.title,[book.position intValue]);
+//	NSLog(@"controller didChangeObject. type: %i, _didEdit: %i title: %@, libraryPosition: %i",type,_didEdit,book.title,[book.libraryPosition intValue]);
 	
 	switch(type) {
 			
@@ -1387,18 +1387,18 @@
         self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
     }
     self.progressSlider.value = [[newBook progress] floatValue];
-    CGRect progressFrame = self.progressSlider.frame;
-    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
+    //CGRect progressFrame = self.progressSlider.frame;
+    //self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
     [self setNeedsLayout];
-//	NSLog(@"[[self.book valueForKey:@processingComplete] intValue]: %i",[[self.book valueForKey:@"processingComplete"] intValue]);
-	if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
+//	NSLog(@"[[self.book valueForKey:@processingState] intValue]: %i",[[self.book valueForKey:@"processingState"] intValue]);
+	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
 		self.progressBackgroundView.hidden = YES;
 		self.progressView.hidden = YES;
 		self.pauseButton.hidden = YES;
 		self.resumeButton.hidden = NO;
 		self.pausedLabel.hidden = YES;
 	}	
-	else if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
+	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioMockBookProcessingStateComplete) {
 		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
 //			NSLog(@"adding gridcell as observer...");
@@ -1411,14 +1411,14 @@
 		self.bookView.alpha = 0.35f;
 		self.progressBackgroundView.hidden = NO;
 		
-		if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStateIncomplete) {
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStateIncomplete) {
 			self.progressView.hidden = NO;
 			[((BlioProcessingCompleteOperation*)completeOp) calculateProgress];
 			self.pauseButton.hidden = NO;
 			self.resumeButton.hidden = YES;
 			self.pausedLabel.hidden = YES;
 		}
-		if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStatePaused) {
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePaused) {
 			self.resumeButton.hidden = NO;
 			self.pausedLabel.hidden = NO;
 			self.progressView.hidden = YES;
@@ -1578,15 +1578,15 @@
     self.titleLabel.text = [newBook title];
 
     self.progressSlider.value = [[newBook progress] floatValue];
-    CGRect progressFrame = self.progressSlider.frame;
-    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
+    //CGRect progressFrame = self.progressSlider.frame;
+    //self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
 
-	if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
+	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
 		self.progressView.hidden = YES;
 		self.accessoryView = resumeButton;
 		[self resetAuthorText];
 	}			
-	else if ([[self.book valueForKey:@"processingComplete"] intValue] != kBlioMockBookProcessingStateComplete) {
+	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioMockBookProcessingStateComplete) {
 		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 		if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
 //			NSLog(@"adding table cell as observer...");
@@ -1597,13 +1597,13 @@
 		// set appearance to reflect incomplete state
 		// self.bookView.alpha = 0.35f;
 		
-		if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStateIncomplete) {
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStateIncomplete) {
 			self.progressView.hidden = NO;
 			[((BlioProcessingCompleteOperation*)completeOp) calculateProgress];
 			self.accessoryView = pauseButton;
 			self.authorLabel.text = @"Downloading...";
 		}
-		if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStatePaused) {
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePaused) {
 			self.accessoryView = resumeButton;
 			self.authorLabel.text = @"Paused...";
 		}
