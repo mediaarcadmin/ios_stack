@@ -17,5 +17,6 @@
     
     EucBookPaginator *paginator;
 }
+@property (nonatomic, retain) EucBookPaginator *paginator;
 
 @end

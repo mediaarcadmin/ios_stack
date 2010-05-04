@@ -28,5 +28,6 @@ typedef enum  {
 
 - (BlioLoginResult)login:(NSString*)user password:(NSString*)passwd;
 - (void)logout;
+-(BOOL)hasValidToken;
 
 @end

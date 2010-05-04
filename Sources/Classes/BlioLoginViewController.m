@@ -63,13 +63,13 @@
 	loginTableView.autoresizesSubviews = YES;
 	self.view = loginTableView;
 	
-	CGFloat yPlacement = kTopMargin + 3*kTextFieldHeight;
-	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
+	CGFloat yPlacement = kTopMargin + 2*kCellHeight;
+	CGRect frame = CGRectMake(kLeftMargin, yPlacement+kLabelHeight, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
 	statusField = [BlioLoginViewController labelWithFrame:frame title:@""];
 	[self.view addSubview:statusField];
 	 
 	 activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(kLeftMargin, yPlacement, 16.0f, 16.0f)];
-	 [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
 	 [self.view addSubview:activityIndicator];
 }
 
@@ -87,7 +87,6 @@
 	usernameField.autocorrectionType = UITextAutocorrectionTypeNo;
 	usernameField.placeholder = @"Username";
 	usernameField.delegate = self;
-	
 	//temporarily populate to save time
 	usernameField.text = @"achien@knfbreader.com";
 	
@@ -128,9 +127,13 @@
 }
 
 - (void)dealloc {
-	[activityIndicator release];
-	[loginTableView release];
-    [super dealloc];
+	self.vaultManager = nil;
+	self.loginTableView = nil;
+	self.usernameField = nil;
+	self.passwordField = nil;
+	self.statusField = nil;
+	self.activityIndicator = nil;
+	[super dealloc];
 }
 	
 #pragma mark UITextField delegate methods
@@ -150,15 +153,15 @@
 			[self.vaultManager archiveBooks];
 		}
 		else if ( loginStatus == BlioLoginResultInvalidPassword ) 
-			loginErrorText = @"An invalid username or password was entered. Please try again.";
+			loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
 		else
-			loginErrorText = @"There was a problem logging in due to a server error. Please try again later.";
+			loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
 		[activityIndicator stopAnimating];
 		statusField.textColor = [UIColor redColor];
 		[textField resignFirstResponder];
 		if (loginErrorText != nil) {
 		UIAlertView *errorAlert = [[UIAlertView alloc] 
-								   initWithTitle:@"We're Sorry..." message:loginErrorText
+								   initWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") message:loginErrorText
 								   delegate:self cancelButtonTitle:nil
 								   otherButtonTitles:@"OK", nil];
 		[errorAlert show];
@@ -184,7 +187,10 @@
 {
 	return 2;
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	
+	return kCellHeight;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSInteger row = [indexPath row];

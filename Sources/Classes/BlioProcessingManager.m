@@ -482,44 +482,79 @@
 	NSError * error;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
+	NSLog(@"[aBook bookCacheDirectory]: %@",[aBook bookCacheDirectory]);
 	// delete temporary files (which are only present if processing is not complete)
 	if ([fileManager fileExistsAtPath:[aBook bookTempDirectory]]) {
 		if (![fileManager removeItemAtPath:[aBook bookTempDirectory] error:&error]) {
 			NSLog(@"WARNING: deletion of temporary directory for book failed. %@, %@", error, [error userInfo]);
 		}
 	}
-	// delete permanent files
-	if (![fileManager removeItemAtPath:[aBook bookCacheDirectory] error:&error]) {
-		NSLog(@"WARNING: deletion of cache directory for book failed. %@, %@", error, [error userInfo]);
-	}
 	
-	NSInteger deletedBookPosition = [aBook.position intValue];
+	if ([[aBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+		// delete all files except the thumbnail so that we can put the book back in the vault.
+		NSString * listThumbnailFilename = [aBook valueForKey:@"listThumbFilename"];
+		NSString * gridThumbnailFilename = [aBook valueForKey:@"gridThumbFilename"];
+		NSString * coverFilename = [aBook valueForKey:@"coverFilename"];
+		if ([fileManager fileExistsAtPath:[aBook bookCacheDirectory]]) {
+			NSError * directoryContentError;
+			NSArray *fileList = [fileManager contentsOfDirectoryAtPath:[aBook bookCacheDirectory] error:&directoryContentError];
+			if (fileList != nil) {
+				for (NSString * fileName in fileList) {
+					NSLog(@"fileName: %@",fileName);
+					if (![fileName isEqualToString:listThumbnailFilename] && ![fileName isEqualToString:gridThumbnailFilename] && ![fileName isEqualToString:coverFilename]) {
+						if (![fileManager removeItemAtPath:[[aBook bookCacheDirectory] stringByAppendingPathComponent:fileName] error:&error]) {
+							NSLog(@"WARNING: deletion of asset for paid book failed. %@, %@", error, [error userInfo]);
+						}
+					}
+				}
+				// reset asset values in BlioMockBook.
+				[aBook setValue:nil forKey:@"audiobookFilename"];
+				[aBook setValue:nil forKey:@"epubFilename"];
+				[aBook setValue:nil forKey:@"pdfFilename"];
+				[aBook setValue:nil forKey:@"textFlowFilename"];
+				[aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly] forKey:@"processingComplete"];
+			}
+			else {
+				NSLog(@"ERROR: could not get directory content listing for paid book. %@, %@", directoryContentError, [directoryContentError userInfo]);
+			}
+		}
 		
-	// reposition remaining books with a position value greater than the deleted book
-	
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-	
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"position > %@", [NSNumber numberWithInt:deletedBookPosition]]];
-	
-	NSError *errorExecute = nil; 
-	NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
-	[fetchRequest release];
-	
-	if (errorExecute) {
-		NSLog(@"Error getting executeFetchRequest results. %@, %@", errorExecute, [errorExecute userInfo]);
-		return;
+		
 	}
-	
-	for (BlioMockBook* book in results) {
-		NSInteger newPosition = [book.position intValue];
-		newPosition--;
-		[book setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
+	else {
+		// delete permanent files
+		if (![fileManager removeItemAtPath:[aBook bookCacheDirectory] error:&error]) {
+			NSLog(@"WARNING: deletion of cache directory for book failed. %@, %@", error, [error userInfo]);
+		}
+		
+		NSInteger deletedBookPosition = [aBook.position intValue];
+		
+		// reposition remaining books with a position value greater than the deleted book
+		
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+		[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+		
+		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"position > %@", [NSNumber numberWithInt:deletedBookPosition]]];
+		
+		NSError *errorExecute = nil; 
+		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+		[fetchRequest release];
+		
+		if (errorExecute) {
+			NSLog(@"Error getting executeFetchRequest results. %@, %@", errorExecute, [errorExecute userInfo]);
+			return;
+		}
+		
+		for (BlioMockBook* book in results) {
+			NSInteger newPosition = [book.position intValue];
+			newPosition--;
+			[book setValue:[NSNumber numberWithInt:newPosition] forKey:@"position"];
+		}
+		// TODO: delete related objects (e.g. bookmarks) from the object graph?
+		
+		// delete record. N.B.: this needs to happen after the re-ordering, as the update changeObject events for the re-ordering to the fetchedController delegate should happen after the delete event.
+		[moc deleteObject:aBook];
 	}
-	
-	// delete record. N.B.: this needs to happen after the re-ordering, as the update changeObject events for the re-ordering to the fetchedController delegate should happen after the delete event.
-	[moc deleteObject:aBook];
-	
 	if (shouldSave) {
 		NSError * error;
 		if (![moc save:&error]) {

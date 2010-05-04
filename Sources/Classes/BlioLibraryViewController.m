@@ -37,6 +37,8 @@
 @synthesize gridView = _gridView;
 @synthesize tableView = _tableView;
 @synthesize vaultManager = _vaultManager;
+@synthesize maxProportionateValue;
+
 
 - (id)init {
 	if ((self = [super init])) {
@@ -95,7 +97,6 @@
 	self.gridView.gridDelegate = self;
 	self.gridView.gridDataSource = self;
 	
-	self.vaultManager = [[BlioBookVaultManager alloc] init];
     self.vaultManager.processingManager = (BlioProcessingManager*)self.processingDelegate;
     self.vaultManager.managedObjectContext = self.managedObjectContext;
 	
@@ -180,12 +181,47 @@
     [libraryLayoutButton release];
     [segmentedControl release];
     
+	maxProportionateValue = 0;
+	
     NSError *error = nil; 
     NSManagedObjectContext *moc = [self managedObjectContext]; 
 	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioLibraryViewController!");
-    // Load any persisted books
-    // N.B. Do not set a predicate on this request, if you do there is a risk that
-    // the fetchedResultsController won't auto-update correctly
+/*
+	// ********************** find max proportionateSize
+	// TODO: possibly refactor into NSFetchedResultsController for automatic updates.
+
+	NSFetchRequest *maxFetch = [[NSFetchRequest alloc] init];
+	[maxFetch setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+	[maxFetch setResultType:NSManagedObjectResultType];
+	
+	NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:@"proportionateSize"];
+	NSExpression *minExpression = [NSExpression expressionForFunction:@"max:" arguments: [NSArray arrayWithObject:keyPathExpression]];
+	NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
+	[expressionDescription setName:@"maxProportionateSize"];
+	[expressionDescription setExpression:minExpression];
+	[expressionDescription setExpressionResultType:NSDoubleAttributeType];
+	[maxFetch setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
+	
+	// Execute the fetch.
+	NSError *maxError;
+	NSArray *objects = nil;
+	objects = [moc executeFetchRequest:maxFetch error:&maxError];
+	
+	if (maxError) {
+		NSLog(@"Error finding max proportionateSize: %@, %@", maxError, [maxError userInfo]);
+	}
+	else if (objects && ([objects count] > 0))
+	{
+		maxProportionateValue = [((NSNumber *)[[objects objectAtIndex:0] valueForKey:@"proportionateSize"]) floatValue];
+		NSLog(@"max proportionate size value found: %f",maxProportionateValue);
+	}
+	
+	[maxFetch release];
+	[expressionDescription release];
+	// **********************
+	*/
+	
+	
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
     NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:NO];
    NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
@@ -623,11 +659,9 @@
 	NSLog(@"willDisplayCell");
 	if ([indexPath row] % 2) {
 		cell.backgroundColor = [UIColor whiteColor];
-//		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
 	}
 	else {                        
 		cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
-//		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
 	}
 }
 
@@ -807,12 +841,13 @@
 					break;
 				case kBlioLibraryLayoutList: {
 					NSArray * indexPaths = [self.tableView indexPathsForVisibleRows];
+					[UIView beginAnimations:@"changeRowBackgroundColor" context:nil];
 					for (NSIndexPath * visiblePath in indexPaths) {
 						if (visiblePath.row > indexPath.row) {
 							[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:visiblePath.row-1 inSection:visiblePath.section]];
 						}
 					}				
-					
+					[UIView commitAnimations];
 					[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
 				}
 					break;
@@ -864,13 +899,13 @@
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
-//	NSLog(@"mergeChangesFromContextDidSaveNotification received...");
-//	
-//	if (notification.object == self.managedObjectContext) {
-//		NSLog(@"...from same moc as library- returning.");
-//		return;
-//	}
-//	else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
+	NSLog(@"BlioLibraryViewController mergeChangesFromContextDidSaveNotification received...");
+	
+	if (notification.object == self.managedObjectContext) {
+		NSLog(@"...from same moc as library- returning.");
+		return;
+	}
+	else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
     // Fault in all updated objects
 	
 	//refresh updated objects and merge changes
@@ -1212,6 +1247,7 @@
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
     self.imageView = nil;
     self.textureView = nil;
     self.book = nil;
@@ -1463,7 +1499,7 @@
 
 @implementation BlioLibraryListCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider, delegate,progressView,pauseButton,resumeButton;
+@synthesize bookView, titleLabel, authorLabel, progressSlider,proportionalProgressView, delegate,progressView,pauseButton,resumeButton;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -1579,7 +1615,8 @@
 
     self.progressSlider.value = [[newBook progress] floatValue];
     CGRect progressFrame = self.progressSlider.frame;
-    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
+    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, ([[newBook proportionateSize] floatValue]/((BlioLibraryViewController*)delegate).maxProportionateValue) * kBlioLibraryListContentWidth, progressFrame.size.height);
+    //self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, kBlioLibraryListContentWidth, progressFrame.size.height);
 
 	if ([[self.book valueForKey:@"processingComplete"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
 		self.progressView.hidden = YES;
@@ -1648,4 +1685,34 @@
 
 @end
 
+@implementation BlioProportionalProgressView
 
+@synthesize proportionalBackground,progressBar;
+
+-(id)initWithFrame:(CGRect)frame {
+	if ((self = [super initWithFrame:frame])) {
+		proportionalBackground = [[UIImageView alloc] initWithFrame:self.bounds];
+		progressBar = [[UIView alloc] initWithFrame:CGRectInset(self.bounds, kBlioProportionalProgressBarInsetX, kBlioProportionalProgressBarInsetY)];
+		progressBar.backgroundColor = [UIColor blackColor];
+		progressBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		proportionalBackground.image = [[UIImage imageNamed:@"proportionate-size-box.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0];
+		[self addSubview:proportionalBackground];
+		[self addSubview:progressBar];
+	}
+	return self;
+}
+-(float)progress {
+	return progress;
+}
+-(void)setProgress:(float)progressValue {
+	CGFloat targetValue = progressValue;
+	if (targetValue < 0) targetValue = 0;
+	if (targetValue > 1) targetValue = 1;
+	// change view visuals
+	CGRect maxBarFrame = CGRectInset(self.bounds, kBlioProportionalProgressBarInsetX, kBlioProportionalProgressBarInsetY);
+	CGFloat newBarWidth = targetValue * maxBarFrame.size.width;
+	
+	progressBar.bounds = CGRectMake(progressBar.bounds.origin.x, progressBar.bounds.origin.y, newBarWidth, progressBar.bounds.size.height);
+	progress = targetValue;
+}
+@end

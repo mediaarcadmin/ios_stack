@@ -320,7 +320,7 @@
         [self setScrollEnabled:NO];
     } else {
         [self.dimmingView setAlpha:0.0f];
-        // [self setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+        //  [self setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
         [self setScrollEnabled:YES];
     }
 }

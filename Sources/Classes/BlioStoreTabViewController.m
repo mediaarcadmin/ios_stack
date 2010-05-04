@@ -47,7 +47,7 @@
 		self.managedObjectContext = moc;
         self.delegate = self;
         
-        UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(dismissTabView:)];        
+        UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleBordered target:self action:@selector(dismissTabView:)];        
         
         BlioStoreFeaturedController* vc1 = [[BlioStoreFeaturedController alloc] init];
         UINavigationController* nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];

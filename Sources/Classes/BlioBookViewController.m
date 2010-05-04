@@ -434,7 +434,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:buttonFrame];
     [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
     
-    [_pageJumpButton release];
+    if (_pageJumpButton) [_pageJumpButton release];
     _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
     
     self.pieButton = aPieButton;
@@ -674,7 +674,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
-    
+	if (_pageJumpButton) [_pageJumpButton release];
     [tapDetector release];
     [tiltScroller release];
     
@@ -1626,7 +1626,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [aTextView release];
         UINavigationController *aNC = [[UINavigationController alloc] initWithRootViewController:aVC];
         [self presentModalViewController:aNC animated:YES];
-        aVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dummyDismissParsedText:)];                                                 
+        aVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleDone target:self action:@selector(dummyDismissParsedText:)];                                                 
         aVC.navigationItem.title = [NSString stringWithFormat:@"Page %d Text", self.bookView.pageNumber];
         aNC.navigationBar.tintColor = _returnToNavigationBarTint;
         [aVC release];
@@ -1980,7 +1980,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     NSURL *url = [NSURL URLWithString:queryString];
     if (nil != url) {
         BlioWebToolsViewController *aWebToolController = [[BlioWebToolsViewController alloc] initWithURL:url];
-        aWebToolController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissWebTool:)];                                                 
+        aWebToolController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleDone target:self action:@selector(dismissWebTool:)];                                                 
         aWebToolController.topViewController.navigationItem.title = titleString;
 		
 		//NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", nil]; // until there's icons...

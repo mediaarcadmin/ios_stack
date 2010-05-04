@@ -28,7 +28,6 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 4;
 
 
 @interface BlioMockBook : NSManagedObject <BlioBookText> {
-    UIImage *coverThumb;
     BlioTextFlow *textFlow;
     EucBUpeBook *ePubBook;
     id<BlioParagraphSource> paragraphSource;
@@ -39,6 +38,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 4;
 @property (nonatomic, retain) NSString *coverFilename;
 @property (nonatomic, retain) NSString *epubFilename;
 @property (nonatomic, retain) NSString *pdfFilename;
+@property (nonatomic, retain) NSString *xpsFilename;
 @property (nonatomic, retain) NSNumber *progress;
 @property (nonatomic, retain) NSNumber *processingComplete;
 @property (nonatomic, retain) NSNumber *proportionateSize;
@@ -69,6 +69,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 4;
 - (UIImage *)coverThumbForList;
 - (NSString *)ePubPath;
 - (NSString *)pdfPath;
+- (NSString *)xpsPath;
 - (NSString *)audiobookPath;
 - (NSString *)timingIndicesPath;
 - (BOOL)audioRights;

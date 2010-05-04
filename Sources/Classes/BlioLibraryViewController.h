@@ -35,6 +35,8 @@ static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
 static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
+static const CGFloat kBlioProportionalProgressBarInsetX = 3;
+static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @class BlioBookVaultManager;
 @class BlioLibraryBookView;
@@ -58,6 +60,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     NSFetchedResultsController *_fetchedResultsController;
 	UITableView * _tableView;
 	MRGridView * _gridView;
+	CGFloat maxProportionateValue;
 	
 	BlioBookVaultManager* _vaultManager;
 }
@@ -74,7 +77,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) BlioBookVaultManager* vaultManager;
-
+@property (nonatomic, assign) CGFloat maxProportionateValue;
 
 -(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;
 -(void)configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index;
@@ -95,6 +98,17 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @property (nonatomic, readonly) UIImage *image;
 
 - (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout;
+
+@end
+
+@interface BlioProportionalProgressView : UIView {
+	UIImageView * proportionalBackground;
+	UIView * progressBar;
+	float progress;
+}
+@property (nonatomic,assign) float progress;
+@property (nonatomic, retain) UIImageView *proportionalBackground;
+@property (nonatomic, retain) UIView *progressBar;
 
 @end
 
@@ -129,7 +143,8 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     BlioLibraryBookView *bookView;
     UILabel *titleLabel;
     UILabel *authorLabel;
-    UISlider *progressSlider;
+	UISlider *progressSlider;
+	BlioProportionalProgressView *proportionalProgressView;
     UIProgressView *progressView;
     UIButton * pauseButton;
     UIButton * resumeButton;
@@ -140,6 +155,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UILabel *authorLabel;
 @property (nonatomic, retain) UISlider *progressSlider;
+@property (nonatomic, retain) BlioProportionalProgressView *proportionalProgressView;
 @property (nonatomic, retain) UIProgressView *progressView;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) UIButton *resumeButton;
@@ -148,3 +164,4 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 -(void) resetAuthorText;
 @end
+

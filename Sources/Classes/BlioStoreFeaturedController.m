@@ -12,7 +12,7 @@
 
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-        self.title = @"Featured";
+        self.title = NSLocalizedString(@"Featured",@"\"Featured\" view controller header");
         
         UITabBarItem* theItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFeatured tag:kBlioStoreFeaturedTag];
         self.tabBarItem = theItem;

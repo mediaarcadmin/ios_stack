@@ -35,6 +35,7 @@
 @dynamic sourceID;
 @dynamic sourceSpecificID;
 @dynamic placeInBook;
+@dynamic xpsFilename;
 
 
 // Lazily instantiated - see getters below.
@@ -43,8 +44,9 @@
 @synthesize paragraphSource;
 
 - (void)dealloc {
-    [coverThumb release];
+
     [textFlow release];
+	[ePubBook release];
     [paragraphSource release];
     
     [super dealloc];
@@ -128,6 +130,16 @@
     NSString *filename = [self valueForKey:@"textFlowFilename"];
     if (filename) {
         NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:filename];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
+    }
+    
+    return nil;
+}
+
+- (NSString *)xpsPath {
+    NSString *filename = [self valueForKey:@"xpsFilename"];
+    if (filename) {
+        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
         if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
     }
     

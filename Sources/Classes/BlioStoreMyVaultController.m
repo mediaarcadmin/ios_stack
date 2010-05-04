@@ -34,9 +34,7 @@
 	NSError *error = nil; 
     NSManagedObjectContext *moc = [self managedObjectContext]; 
 	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioStoreMyVaultController!");
-    // Load any persisted books
-    // N.B. Do not set a predicate on this request, if you do there is a risk that
-    // the fetchedResultsController won't auto-update correctly
+
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
     NSSortDescriptor *positionSort = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:NO];
     NSArray *sorters = [NSArray arrayWithObject:positionSort]; 
@@ -45,13 +43,13 @@
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete == %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingComplete <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request
 															 managedObjectContext:moc
 															 sectionNameKeyPath:nil
-															 cacheName:@"BlioFetchedBooks"];
+															 cacheName:nil];
     [request release];
     
     [aFetchedResultsController setDelegate:self];
@@ -65,7 +63,7 @@
 	
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
 	[self.tableView reloadData];	
 }
 
@@ -152,46 +150,34 @@
 
             return kBlioLibraryListRowHeight;
 }
-/*
- - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
- NSUInteger row = [indexPath row];
- if (row%2 == 1) cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
- else cell.backgroundColor = [UIColor whiteColor];
- }
- */
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSLog(@"willDisplayCell");
+	if ([indexPath row] % 2) {
+		cell.backgroundColor = [UIColor whiteColor];
+	}
+	else {                        
+		cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
+	}
+}
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	
-	static NSString *ListCellOddIdentifier = @"BlioLibraryListCellOdd";
-	static NSString *ListCellEvenIdentifier = @"BlioLibraryListCellEven";
+	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
+	
 	BlioLibraryListCell *cell;
 	
-	if ([indexPath row] % 2) {
-		cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellEvenIdentifier];
-		if (cell == nil) {
-			cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellEvenIdentifier] autorelease];
-		} 
-		//                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
-	} else {   
-		cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellOddIdentifier];
-		if (cell == nil) {
-			cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellOddIdentifier] autorelease];
-		} 
-		//                cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
-	}
+	cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+	if (cell == nil) {
+		cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+	} 
 	
 	[self configureTableCell:cell atIndexPath:indexPath];
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
-	
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController];
-	// [anotherViewController release];
+    // This is intentionally empty.
 }
 
 
@@ -238,14 +224,14 @@
 #pragma mark Fetched Results Controller Delegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-	//	NSLog(@"controllerWillChangeContent");
+		NSLog(@"BlioStoreMyVaultController controllerWillChangeContent");
 	//    [self.tableView beginUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
 	   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
 	  newIndexPath:(NSIndexPath *)newIndexPath {
-	//	NSLog(@"controller didChangeObject");
+		NSLog(@"BlioStoreMyVaultController controller:didChangeObject");
 	
 		//switch(type) {
 				
@@ -274,7 +260,7 @@
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-	// 	NSLog(@"controllerDidChangeContent");
+	 	NSLog(@"BlioStoreMyVaultController controllerDidChangeContent");
 	//   [self.tableView endUpdates];
 		[self.tableView reloadData];
 	// for debugging purposes
@@ -284,34 +270,17 @@
 	//	}
 	
 }
-/*
+
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
-	//	NSLog(@"mergeChangesFromContextDidSaveNotification entered");
-    // Fault in all updated objects
-	NSArray* updates = [[notification.userInfo objectForKey:NSUpdatedObjectsKey] allObjects];
-    for (NSManagedObject *object in updates) {
-        [[self.managedObjectContext objectWithID:[object objectID]] willAccessValueForKey:nil];
-    }
-	//	for (NSInteger i = [updates count]-1; i >= 0; i--)
-	//	{
-	//		[[managedObjectContext objectWithID:[[updates objectAtIndex:i] objectID]] willAccessValueForKey:nil];
-	//	}
-    
-	// Merge
-	[[self managedObjectContext] mergeChangesFromContextDidSaveNotification:notification];
-	//    NSArray *updatedObjects = [[notification userInfo] valueForKey:NSUpdatedObjectsKey];
-	//    if ([updatedObjects count]) {
-	//        [self.tableView reloadData];
-	//        NSLog(@"objects updated");
-	//    }
-	//    NSLog(@"Did save");
+	NSLog(@"BlioStoreMyVaultController mergeChangesFromContextDidSaveNotification entered");
 }
 
-*/
+
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.vaultManager = nil;
 	self.processingDelegate = nil;
 	self.fetchedResultsController = nil;

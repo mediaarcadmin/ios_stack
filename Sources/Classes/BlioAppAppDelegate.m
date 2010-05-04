@@ -22,6 +22,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 @synthesize window;
 @synthesize navigationController;
 @synthesize libraryController;
+@synthesize vaultManager;
 @synthesize internetReach;
 
 #pragma mark -
@@ -65,9 +66,11 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 	
 	NSManagedObjectContext *moc = [self managedObjectContext];
 	
+	vaultManager = [[BlioBookVaultManager alloc] init];
+	
     [libraryController setManagedObjectContext:moc];
     [libraryController setProcessingDelegate:[self processingManager]];
-	
+	libraryController.vaultManager = self.vaultManager;
 	
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
@@ -145,7 +148,8 @@ static void *background_init_thread(void * arg) {
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
     
-	
+	BOOL hasValidToken = [self.vaultManager hasValidToken];
+	BOOL lackedToken = NO;
     if (errorExecute) {
         NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
     }
@@ -154,7 +158,18 @@ static void *background_init_thread(void * arg) {
 			NSLog(@"Found non-paused incomplete book results, will resume..."); 
 			for (BlioMockBook * book in results) {
 				//				NSLog(@"mo sourceSpecificID:%@ sourceID:%i",[mo valueForKey:@"sourceSpecificID"],[[mo valueForKey:@"sourceID"] intValue]);
-				[[self processingManager] enqueueBook:book];
+				if ([[book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+					// paid books
+					// check to see if token is still present and valid first.
+					if (hasValidToken) [[self processingManager] enqueueBook:book];
+					else {
+						lackedToken = YES;
+					}
+				}
+				else {
+					// free books
+					[[self processingManager] enqueueBook:book];
+				}
 			}
 		}
 		else {
@@ -164,7 +179,17 @@ static void *background_init_thread(void * arg) {
     [fetchRequest release];
 	
 	// end resume previous processing operations
-	
+	if (lackedToken) {
+		// ALERT user that we needed a token from login.
+		// TODO: test this logic after the download operation for paid books is complete.
+		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+														message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_PAID_BOOKS_PROCESSING",nil,[NSBundle mainBundle],@"Your paid books could not continue processing because you need to login first.",@"Alert message informing the end-user that paid book processing cannot continue because the user needs to login.")]
+													   delegate:self
+											  cancelButtonTitle:@"OK"
+											  otherButtonTitles:nil];
+		[alert show];
+		[alert release];		
+	}
 }
 
 - (NSString *)dynamicDefaultPngPath {
@@ -196,12 +221,13 @@ static void *background_init_thread(void * arg) {
 		if ([[self.processingManager downloadOperations] count] > 0)
 		{
 			// ALERT user to what just happened.
-			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"For Your Information..."
-															message:[NSString stringWithFormat:@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored."]
+			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+															message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")]
 														   delegate:self
 												  cancelButtonTitle:@"OK"
 												  otherButtonTitles:nil];
 			[alert show];
+			[alert release];
 		}
 	}
 	else if (previousNetStatus == NotReachable && netStatus != NotReachable) { // if changed from unavailable to available
@@ -214,6 +240,7 @@ static void *background_init_thread(void * arg) {
 #pragma mark Memory management
 
 - (void)dealloc {
+	[vaultManager release];
     [managedObjectContext release];
     [managedObjectModel release];
     [persistentStoreCoordinator release];

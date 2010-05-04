@@ -17,6 +17,8 @@
 
 @implementation BlioFlowPaginateOperation
 
+@synthesize paginator;
+
 - (BOOL)isConcurrent {
     return YES;
 }
@@ -157,5 +159,8 @@
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
     self.percentageComplete = roundf(percentagePaginated);
 }
-
+-(void) dealloc {
+	self.paginator = nil;
+	[super dealloc];
+}
 @end
