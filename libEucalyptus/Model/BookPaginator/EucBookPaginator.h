@@ -13,8 +13,12 @@
 extern NSString * const EucBookBookPaginatorProgressNotification;
 extern NSString * const EucBookPaginatorCompleteNotification;
 
+// For all notifications.
 extern NSString * const EucBookPaginatorNotificationBookKey;
 extern NSString * const EucBookPaginatorNotificationPercentagePaginatedKey;
+
+// Only for EucBookPaginatorCompleteNotification complete.
+extern NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey;
 
 @interface EucBookPaginator : NSObject {
     float _percentagePaginated;
@@ -26,6 +30,9 @@ extern NSString * const EucBookPaginatorNotificationPercentagePaginatedKey;
     pthread_t _paginationThread;
     NSConditionLock *_paginationStartedLock;
     BOOL _continueParsing;
+    
+    NSUInteger *_pageCounts;
+    pthread_mutex_t _countMutationMutex;
     
     NSTimer *_monitoringTimer;
 }
