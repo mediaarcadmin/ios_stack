@@ -58,8 +58,10 @@
 {
     [_title release];
     [_author release];
-    [_path release];
     [_etextNumber release];
+    [_path release];
+    [_cacheDirectoryPath release];
+    
     [super dealloc];
 }
 
