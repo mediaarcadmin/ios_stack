@@ -23,6 +23,25 @@ static const CGFloat kBlioPDFGoToZoomTargetScale = 1;
 static const CGFloat kBlioLayoutShadow = 16.0f;
 static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 
+@interface BlioLayoutScrollViewAccessibleProxy : NSProxy {
+    BlioLayoutScrollView *target;
+    CGRect accessibilityFrameProxy;
+    NSString *accessibilityLabelProxy;
+    NSString *accessibilityHintProxy;
+    UIAccessibilityElement *element;
+}
+
+@property (nonatomic, retain) BlioLayoutScrollView *target;
+@property (nonatomic) CGRect accessibilityFrameProxy;
+@property (nonatomic, retain) NSString *accessibilityLabelProxy;
+@property (nonatomic, retain) NSString *accessibilityHintProxy;
+@property (nonatomic, retain) UIAccessibilityElement *element;
+
+- (void)setProxyContainer:(id)container;
+
+@end
+
+
 @interface BlioLayoutViewColoredRect : NSObject {
     CGRect rect;
     UIColor *color;
@@ -42,6 +61,7 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 @property (nonatomic, retain) UIImage *pageSnapshot;
 @property (nonatomic, retain) UIImage *highlightsSnapshot;
 @property (nonatomic, retain) NSMutableArray *accessibilityElements;
+@property (nonatomic, retain) NSArray *previousAccessibilityElements;
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
@@ -100,7 +120,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
-@synthesize accessibilityElements;
+@synthesize accessibilityElements, previousAccessibilityElements;
 
 - (void)dealloc {
     isCancelled = YES;
@@ -136,6 +156,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     self.selector = nil;
     
     self.accessibilityElements = nil;
+    self.previousAccessibilityElements = nil;
     
     [super dealloc];
 }
@@ -189,6 +210,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         pageCount = CGPDFDocumentGetNumberOfPages(pdf);
         lastZoomScale = 1;
+        accessibilityRefreshRequired = YES;
+        
         // Populate the cache of page sizes and viewTransforms
         NSMutableDictionary *aPageCropsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
         NSMutableDictionary *aViewTransformsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
@@ -361,13 +384,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark BlioBookDelegate
 
 - (void)setDelegate:(id<BlioBookDelegate>)newDelegate {
-    [(NSObject *)delegate removeObserver:self forKeyPath:@"audioPlaying"];
 
     [self.scrollView setBookDelegate:newDelegate];
     delegate = newDelegate;
-    
-    [(NSObject *)delegate addObserver:self forKeyPath:@"audioPlaying" options:0 context:NULL];
-    
+
 }
 
 #pragma mark -
@@ -413,6 +433,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     [self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
     [self performSelector:@selector(enableInteractions) withObject:nil afterDelay:0.1f];
+    
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+
+    //self.accessibilityElements = nil;
+    accessibilityRefreshRequired = YES;
+NSLog(@"did rotate");
 }
 
 #pragma mark -
@@ -1189,17 +1216,18 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
     } else if (object == self) {
         if ([keyPath isEqualToString:@"currentPageLayer"]) {
-            //NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
+//            NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
-            self.accessibilityElements = nil;
             UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+            accessibilityRefreshRequired = YES;
         }
     } else if (object == self.delegate) {
         if ([keyPath isEqualToString:@"audioPlaying"]) {
-            self.accessibilityElements = nil;
             UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+            accessibilityRefreshRequired = YES;
         }
     }
 }
@@ -2061,7 +2089,78 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark -
 #pragma mark Accessibility
 
+- (void)createAccessibilityElements {
+    NSMutableArray *elements = [[NSMutableArray alloc] init];
+    NSInteger currentPage = self.pageNumber;
+    
+    CGRect cropRect;
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:currentPage cropRect:&cropRect];
+    cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+    
+    if (layoutMode == BlioLayoutPageModeLandscape) {
+        cropRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + cropRect.origin.y, cropRect.origin.x, cropRect.size.height, cropRect.size.width);
+        if (CGRectGetWidth(cropRect) > CGRectGetHeight(self.scrollView.frame)) {
+            CGFloat diff = CGRectGetWidth(cropRect) - CGRectGetHeight(self.scrollView.frame);
+            cropRect.origin.x += diff;
+            cropRect.size.width -= diff;
+        }
+    }
+    
+    if ([self.delegate audioPlaying]) {
+        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+        [element setAccessibilityFrame:cropRect];
+        [self.scrollView setIsAccessibilityElement:NO];
+        [elements addObject:element];        
+    } else {
+        CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
+        
+        [self.scrollView setIsAccessibilityElement:YES];
+        
+        NSInteger pageIndex = currentPage - 1;
+        NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        
+        NSMutableString *allWords = [NSMutableString string];
+        for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
+            [allWords appendString:[block string]];
+            BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
+            [aProxy setTarget:self.scrollView];
+            [aProxy setAccessibilityFrameProxy:CGRectApplyAffineTransform([block rect], viewTransform)];
+            [aProxy setAccessibilityLabelProxy:[block string]];
+            //[aProxy setAccessibilityContainer:self];
+            [elements addObject:aProxy];
+            [aProxy release];
+        }
+        
+        BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
+        [aProxy setTarget:self.scrollView];
+        [aProxy setAccessibilityFrameProxy:cropRect];
+        [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page.", @"Accessibility hint for page swipe advance")];
+        //[aProxy setAccessibilityContainer:self];
+        
+        if ([nonFolioPageBlocks count] == 0)
+            [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"Page %d is blank", @"Accessibility label for blank book page"), currentPage]];
+        else
+            [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"End of page %d", @"Accessibility label for end of page"), currentPage]];
+        
+        [elements addObject:aProxy];
+        [aProxy release];
+        
+    }
+    
+    // We keep around a copy of the previous accessibility elements because 
+    // the OS doesn't retain them but can attempt to access them
+    [self.accessibilityElements makeObjectsPerformSelector:@selector(setProxyContainer:) withObject:self];
+    self.previousAccessibilityElements = self.accessibilityElements;
+    self.accessibilityElements = elements;
+    accessibilityRefreshRequired = NO;
+    [elements release];
+}
+
 - (BOOL)isAccessibilityElement {
+    if (accessibilityRefreshRequired) {
+        [self createAccessibilityElements];
+    }
+    
     if (!self.disableScrollUpdating) {
     // If we are querying the accessibility mode, force us to zoom out to page
         if ([self.scrollView zoomScale] != kBlioPDFGoToZoomTargetScale) {
@@ -2078,51 +2177,26 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (NSInteger)accessibilityElementCount {
-    if (nil == self.accessibilityElements) {
-        NSMutableArray *elements = [[NSMutableArray alloc] init];
-        NSInteger currentPage = self.pageNumber;
-
-        if ([self.delegate audioPlaying]) {
-            UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
-            [element setAccessibilityFrame:[self cropForPage:currentPage]];
-
-            [self.scrollView setIsAccessibilityElement:NO];
-            [elements addObject:element];        
-
-        } else {
-            [self.scrollView setAccessibilityFrame:[self cropForPage:currentPage]];
-            [self.scrollView setIsAccessibilityElement:YES];
-
-            //CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
-            NSInteger pageIndex = currentPage - 1;
-            NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-            
-            NSMutableString *allWords = [NSMutableString string];
-            
-            for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-                [allWords appendString:[block string]];
-            }
-            [self.scrollView setAccessibilityLabel:allWords];
-            
-            [elements addObject:self.scrollView];        
-
-        }
-        
-        self.accessibilityElements = elements;
-        [elements release];
+    if (accessibilityRefreshRequired) {
+        [self createAccessibilityElements];
     }
     
     return [self.accessibilityElements count];
 }
 
 
-- (id)accessibilityElementAtIndex:(NSInteger)index
-{
+- (id)accessibilityElementAtIndex:(NSInteger)index {
+    if (accessibilityRefreshRequired) {
+        [self createAccessibilityElements];
+    }
+
     return [self.accessibilityElements objectAtIndex:index];
 }
 
-- (NSInteger)indexOfAccessibilityElement:(id)element
-{
+- (NSInteger)indexOfAccessibilityElement:(id)element {
+    if (accessibilityRefreshRequired) {
+        [self createAccessibilityElements];
+    }
     return [self.accessibilityElements indexOfObject:element];
 }
 
@@ -2135,6 +2209,55 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (void)dealloc {
     self.color = nil;
     [super dealloc];
+}
+
+@end
+
+
+@implementation BlioLayoutScrollViewAccessibleProxy
+
+@synthesize target, accessibilityFrameProxy, accessibilityLabelProxy, accessibilityHintProxy, element;
+
+- (void)dealloc {
+    self.target = nil;
+    self.accessibilityLabelProxy = nil;
+    self.accessibilityHintProxy = nil;
+    self.element = nil;
+    [super dealloc];
+}
+
+- (NSMethodSignature *) methodSignatureForSelector:(SEL)aSelector {
+    if (nil != self.element)
+        return [self.element methodSignatureForSelector:aSelector];
+    else
+        return [self.target methodSignatureForSelector:aSelector];
+}
+
+- (void)forwardInvocation:(NSInvocation*)anInvocation {
+    if (nil != self.element) {
+        [anInvocation invokeWithTarget:self.element];
+    } else {
+        
+        [self.target setAccessibilityFrame:self.accessibilityFrameProxy];
+        [self.target setAccessibilityLabel:self.accessibilityLabelProxy];
+        [self.target setAccessibilityHint:self.accessibilityHintProxy];
+        
+        // Force the touches begin point to be the mid-point of the view
+        // So that it only ever toggles the toolbars in accessibility mode
+        // If we could check for voice-over mode being active we would just
+        // handle this in the touch handling code
+        [self.target setTouchesBeginPoint:CGPointMake(CGRectGetMidX([self.target frame]), CGRectGetMidY([self.target frame]))];
+        
+        [anInvocation invokeWithTarget:self.target];
+    }
+}
+
+- (void)setProxyContainer:(id)container {
+    // The proxy container is set when this object is no longer neded but might
+    // still be accessed by internal accessibility methods
+    UIAccessibilityElement *anElement = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:container];
+    self.element = anElement;
+    [anElement release];
 }
 
 @end

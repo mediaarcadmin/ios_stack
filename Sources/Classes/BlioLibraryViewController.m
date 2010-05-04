@@ -380,8 +380,16 @@
     logoImageView.contentMode = UIViewContentModeScaleAspectFit;
     logoImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [logoImageView setIsAccessibilityElement:YES];
-    [logoImageView setAccessibilityLabel:NSLocalizedString(@"Blio", @"Accessibility label for Library View Blio label")];
-    [logoImageView setAccessibilityTraits:UIAccessibilityTraitStaticText];
+    NSUInteger bookCount = [self numberOfItemsInGridView:self.gridView];
+    if (bookCount == 0) {
+        [logoImageView setAccessibilityLabel:NSLocalizedString(@"Blio Library. No books", @"Accessibility label for Library View Blio label with no books")];
+    } else if (bookCount == 1) {
+        [logoImageView setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"Blio Library. %d book", @"Accessibility label for Library View Blio label with 1 book"), bookCount]];
+    } else {
+        [logoImageView setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"Blio Library. %d books", @"Accessibility label for Library View Blio label with more than 1 book"), bookCount]];
+    }
+        
+    [logoImageView setAccessibilityTraits:UIAccessibilityTraitStaticText | UIAccessibilityTraitSummaryElement];
 
     self.navigationItem.titleView = logoImageView;
     [logoImageView release];
@@ -429,6 +437,8 @@
 	[super setEditing:editing animated:animated];
 	[self.gridView setEditing:editing animated:animated];
 	[self.tableView setEditing:editing animated:animated];
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
@@ -1371,7 +1381,7 @@
 }
 
 - (UIAccessibilityTraits)accessibilityTraits {
-    return UIAccessibilityTraitButton;
+    return UIAccessibilityTraitButton | UIAccessibilityTraitImage | UIAccessibilityTraitUpdatesFrequently;
 }
 
 - (BlioMockBook *)book {

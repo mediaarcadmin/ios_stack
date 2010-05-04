@@ -30,5 +30,6 @@ typedef enum BlioLayoutTouchForwardingState {
 
 @property (nonatomic, assign) EucSelector *selector;
 @property (nonatomic, assign) id<BlioBookDelegate> bookDelegate;
+@property (nonatomic, assign) CGPoint touchesBeginPoint;
 
 @end
