@@ -1626,7 +1626,7 @@
     self.progressSlider.value = [[newBook progress] floatValue];
 
     CGRect progressFrame = self.progressSlider.frame;
-    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, ([[newBook proportionateSize] floatValue]/((BlioLibraryViewController*)delegate).maxProportionateValue) * kBlioLibraryListContentWidth, progressFrame.size.height);
+    self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, ([newBook.layoutPageEquivalentCount floatValue]/((BlioLibraryViewController*)delegate).maxProportionateValue) * kBlioLibraryListContentWidth, progressFrame.size.height);
     //self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, kBlioLibraryListContentWidth, progressFrame.size.height);
 
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {

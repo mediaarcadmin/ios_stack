@@ -527,7 +527,7 @@
 			NSLog(@"WARNING: deletion of cache directory for book failed. %@, %@", error, [error userInfo]);
 		}
 		
-		NSInteger deletedBookPosition = [aBook.position intValue];
+		NSInteger deletedBookPosition = [aBook.libraryPosition intValue];
 		
 		// reposition remaining books with a position value greater than the deleted book
 		
@@ -546,7 +546,7 @@
 		}
 		
 		for (BlioMockBook* book in results) {
-			NSInteger newPosition = [book.position intValue];
+			NSInteger newPosition = [book.libraryPosition intValue];
 			newPosition--;
 			[book setValue:[NSNumber numberWithInt:newPosition] forKey:@"libraryPosition"];
 		}

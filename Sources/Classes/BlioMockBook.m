@@ -27,6 +27,7 @@
 @dynamic progress;
 @dynamic processingState;
 @dynamic libraryPosition;
+@dynamic layoutPageEquivalentCount;
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
