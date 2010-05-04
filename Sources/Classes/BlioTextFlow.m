@@ -934,8 +934,15 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     }
     
     [self setBookValue:[NSSet setWithSet:pageRangesSet] forKey:@"textFlowPageRanges"];
+    
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"startPageIndex" ascending:YES] autorelease];
+    NSArray *sortedRanges = [[pageRangesSet allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortPageDescriptor]];
+    [self setBookValue:[NSNumber numberWithInteger:[[sortedRanges lastObject] endPageIndex]]
+                forKey:@"layoutPageEquivalentCount"];
+    
     self.operationSuccess = YES;
 	self.percentageComplete = 100;
+    
     [pool drain];
 }
 

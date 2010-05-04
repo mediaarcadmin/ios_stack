@@ -137,7 +137,7 @@
                                                        object:paginator];
                 
             
-            NSLog(@"Begining pagination for %@", eucBook.title);
+            //NSLog(@"Begining pagination for %@", eucBook.title);
             [paginator paginateBookInBackground:eucBook saveImagesTo:nil];
         }
     }
@@ -147,9 +147,24 @@
 }
 
 - (void)paginationComplete:(NSNotification *)notification
-{
+{   
+    if(![[self getBookValueForKey:@"layoutPageEquivalentCount"] integerValue]) {
+        // If we don't have a layout page length yet (because we have no layout document)
+        // calculate smething sensible so that the bars that show comparable lengths
+        // of books in the UI can look 'right'.
+        
+        NSDictionary *pageCounts = [[notification userInfo] objectForKey:EucBookPaginatorNotificationPageCountForPointSizeKey];
+        NSInteger pageCount = [[pageCounts objectForKey:[NSNumber numberWithInteger:18]] integerValue];
+        NSInteger layoutEquivalentPageCount = (NSInteger)round((double)pageCount / 0.34);
+        [self setBookValue:[NSNumber numberWithInteger:layoutEquivalentPageCount]
+                    forKey:@"layoutPageEquivalentCount"];
+        
+        NSLog(@"Using layout equivalent page length of %ld for %@", layoutEquivalentPageCount, [self getBookValueForKey:@"title"]); 
+    }
+    
     self.percentageComplete = 100;
     self.operationSuccess = YES;
+    
     [self finish];
 }
 

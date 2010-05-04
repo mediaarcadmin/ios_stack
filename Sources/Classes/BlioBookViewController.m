@@ -293,6 +293,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)setBookView:(UIView<BlioBookView> *)bookView
 {
+    if(_bookView)
+        [self removeObserver:_bookView forKeyPath:@"audioPath"];
+        
     if(_bookView != bookView) {
         if(_bookView) {
             [_bookView removeObserver:self forKeyPath:@"pageNumber"];
@@ -343,6 +346,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         forKeyPath:@"pageCount" 
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                            context:nil];   
+            
+            if (nil != _bookView)
+                [self addObserver:_bookView forKeyPath:@"audioPath" options:0 context:nil];
         }
     }
 }

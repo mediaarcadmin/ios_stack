@@ -23,11 +23,12 @@
 #import <fcntl.h>
 #import <sys/stat.h>
 
-NSString * const EucBookBookPaginatorProgressNotification = @"BookPaginationProgressNotification";
-NSString * const EucBookPaginatorCompleteNotification = @"BookPaginationCompleteNotification";
+NSString * const EucBookBookPaginatorProgressNotification = @"EucBookPaginatorProgressNotification";
+NSString * const EucBookPaginatorCompleteNotification = @"EucBookPaginatorCompleteNotification";
 
-NSString * const EucBookPaginatorNotificationBookKey = @"BookPaginationBookKey";
-NSString * const EucBookPaginatorNotificationPercentagePaginatedKey = @"BookPaginationBytesPaginated";
+NSString * const EucBookPaginatorNotificationBookKey = @"EucBookPaginatorBookKey";
+NSString * const EucBookPaginatorNotificationPercentagePaginatedKey = @"EucBookPaginatorBytesPaginated";
+NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey = @"EucBookPaginatorNotificationPageCountForPointSize";
 
 #define kThreadedProgressPollingDelay (1.0 / 5.0)
 
@@ -109,6 +110,8 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
                 currentPoints[i] = [[EucBookPageIndexPoint bookPageIndexPointFromOpenFD:pageIndexFDs[i]] retain];
                 lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
                 // We'll overwrite this point, below.
+                
+                _pageCounts[i] = (currentIndexSize / indexPointSize) - 1;
             } else {
                 currentPoints[i] = [[EucBookPageIndexPoint alloc] init];
             }
@@ -152,11 +155,7 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
             // We're done, all the indexes are finished.
             break;
         }
-        
-        if((pageCount % 16) == 0) {
-            _percentagePaginated = [_book estimatedPercentageForIndexPoint:currentPoints[currentPointIndex]];
-        }
-        
+                
 #if TARGET_IPHONE_SIMULATOR
 //         usleep(100000);
 #endif            
@@ -191,6 +190,13 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
         
         [currentPoints[currentPointIndex] writeToOpenFD:pageIndexFDs[currentPointIndex]];
         
+        pthread_mutex_lock(&_countMutationMutex);
+        ++_pageCounts[currentPointIndex];
+        if((pageCount % 16) == 0) {
+            _percentagePaginated = [_book estimatedPercentageForIndexPoint:currentPoints[currentPointIndex]];
+        }        
+        pthread_mutex_unlock(&_countMutationMutex);
+
         [currentPoints[currentPointIndex] release];
         currentPoints[currentPointIndex] = [nextPoint retain];
         
@@ -251,6 +257,9 @@ abandon:
     _saveImagesTo = [[saveImagesTo stringByAppendingPathComponent:@"PageImages"] retain];
     _continueParsing = YES;
     
+    _pageCounts = calloc(sizeof(NSUInteger), sDesiredPointSizesCount);
+    pthread_mutex_init(&_countMutationMutex, NULL);
+    
     if(_saveImagesTo) {
         [[NSFileManager defaultManager] removeItemAtPath:_saveImagesTo error:nil];
         [[NSFileManager defaultManager] createDirectoryAtPath:_saveImagesTo withIntermediateDirectories:YES attributes:nil error:nil];
@@ -291,6 +300,7 @@ abandon:
 
 - (void)_sendPeriodicPaginationUpdate
 {
+    pthread_mutex_lock(&_countMutationMutex);
     if(_percentagePaginated) {
         NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
                                   _book, EucBookPaginatorNotificationBookKey,
@@ -301,6 +311,7 @@ abandon:
                                                           userInfo:userInfo];
         [userInfo release];
     }
+    pthread_mutex_unlock(&_countMutationMutex);
 }
 
     
@@ -315,8 +326,11 @@ abandon:
     _book = nil;
     [_saveImagesTo release];
     _saveImagesTo = nil;
+    free(_pageCounts);
+    _pageCounts = nil;
     _percentagePaginated = 0.0f;
     _continueParsing = NO;
+    pthread_mutex_destroy(&_countMutationMutex);
 }
 
     
@@ -340,16 +354,26 @@ abandon:
     // allowing calls to start pagination in the completion
     // callback.
     id<EucBook> book = [_book retain];
+    NSMutableDictionary *pageCounts = [[NSMutableDictionary alloc] initWithCapacity:sDesiredPointSizesCount];
+    for(NSUInteger i = 0; i < sDesiredPointSizesCount; ++i) {
+        [pageCounts setObject:[NSNumber numberWithInteger:_pageCounts[i]]
+                       forKey:[NSNumber numberWithInteger:sDesiredPointSizes[i]]];
+    }
+        
     [self _releasePaginationIvars]; 
 
     NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
                               book, EucBookPaginatorNotificationBookKey,
-                              [NSNumber numberWithFloat:100.0f], EucBookPaginatorNotificationPercentagePaginatedKey, 
+                              [NSNumber numberWithFloat:100.0f], EucBookPaginatorNotificationPercentagePaginatedKey,
+                              pageCounts, EucBookPaginatorNotificationPageCountForPointSizeKey,
                               nil];    
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:EucBookPaginatorCompleteNotification
                                                         object:self
                                                       userInfo:userInfo];
+    
     [userInfo release];
+    [pageCounts release];
     [book release];
     
     THLog(@"Pagination of %@ done!", _book.title);

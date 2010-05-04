@@ -386,7 +386,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             }
         }
     }
-    return ret;
+    return [ret autorelease];
 }
 
 + (uint32_t)documentTreeNodeKeyForKey:(uint32_t)key

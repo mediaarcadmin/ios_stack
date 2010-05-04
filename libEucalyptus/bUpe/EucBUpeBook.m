@@ -838,6 +838,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             [pool drain];
         } while(existed);
     
+        [point release];
+        
         i = 0;
         float *scaleFactors = malloc(sizes.count * sizeof(float));
         for(NSNumber *size in sizes) {
