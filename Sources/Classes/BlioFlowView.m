@@ -52,9 +52,7 @@
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:eucBook])) {
         self.delegate = self;
         self.paragraphSource = aBook.paragraphSource;
-
         self.allowsSelection = YES;
-        self.selectorDelegate = self;
         [self goToBookmarkPoint:aBook.implicitBookmarkPoint animated:NO];
         if (animated) self.appearAtCoverThenOpen = YES;
     }
