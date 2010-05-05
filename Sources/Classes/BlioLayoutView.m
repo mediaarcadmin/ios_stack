@@ -439,7 +439,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
     //self.accessibilityElements = nil;
     accessibilityRefreshRequired = YES;
-NSLog(@"did rotate");
+
 }
 
 #pragma mark -
@@ -1747,6 +1747,12 @@ NSLog(@"did rotate");
             self.currentPageLayer = aLayer;
             self.lastBlock = nil;
         
+    } else {
+        if (nil != self.accessibilityElements) {
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+            accessibilityRefreshRequired = YES;
+        }
     }
 }
 
@@ -2098,12 +2104,27 @@ NSLog(@"did rotate");
     cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
     if (layoutMode == BlioLayoutPageModeLandscape) {
-        CGRect newCropRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + cropRect.origin.y, cropRect.origin.x, cropRect.size.height, cropRect.size.width);
-        if (CGRectGetWidth(newCropRect) > CGRectGetHeight(self.scrollView.frame)) {
-            CGFloat diff = CGRectGetWidth(newCropRect) - CGRectGetHeight(self.scrollView.frame);
+        //CGRect newCropRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + cropRect.origin.y, cropRect.origin.x, cropRect.size.height, cropRect.size.width);
+        //cropRect.origin.y -= self.scrollView.contentOffset.y;
+        CGRect newCropRect = [self.window.layer convertRect:cropRect fromLayer:self.currentPageLayer];
+        
+        //CGFloat originY = [self.window.layer convertPoint:newCropRect.origin fromLayer:self.currentPageLayer].y;
+        if ((CGRectGetWidth(newCropRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMinX(newCropRect) < CGRectGetMinY(self.scrollView.frame))) {
+            CGFloat diff = CGRectGetMinY(self.scrollView.frame) - CGRectGetMinX(newCropRect);
             newCropRect.origin.x += diff;
             newCropRect.size.width -= diff;
         }
+        
+        if ((CGRectGetWidth(newCropRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMaxX(newCropRect) > CGRectGetMaxY(self.scrollView.frame))) {
+            CGFloat diff = CGRectGetMaxX(newCropRect) - CGRectGetMaxY(self.scrollView.frame);
+            //newCropRect.origin.x += diff;
+            newCropRect.size.width -= diff;
+        }
+        //if (CGRectGetWidth(newCropRect) > CGRectGetHeight(self.scrollView.frame)) {
+//            CGFloat diff = CGRectGetWidth(newCropRect) - CGRectGetHeight(self.scrollView.frame);
+//            newCropRect.origin.x += diff;
+//            newCropRect.size.width -= diff;
+//        }
         cropRect = newCropRect;
     }
     
@@ -2127,13 +2148,25 @@ NSLog(@"did rotate");
             [aProxy setTarget:self.scrollView];
             CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
             if (layoutMode == BlioLayoutPageModeLandscape) {
-                blockRect = CGRectMake(blockRect.origin.y-90, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
-                if (CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) {
-                    CGFloat diff = CGRectGetWidth(blockRect) - CGRectGetHeight(self.scrollView.frame);
+                //blockRect = CGRectMake(blockRect.origin.y-90, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
+                blockRect.origin.y -= self.scrollView.contentOffset.y;
+                blockRect = [self.window.layer convertRect:blockRect fromLayer:self.currentPageLayer];
+                blockRect.origin.x -= self.scrollView.contentOffset.y;
+                //if (CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) {
+//                    CGFloat diff = CGRectGetWidth(blockRect) - CGRectGetHeight(self.scrollView.frame);
+//                    blockRect.origin.x += diff;
+//                    blockRect.size.width -= diff;
+//                }
+                if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMinX(blockRect) < CGRectGetMinY(self.scrollView.frame))) {
+                    CGFloat diff = CGRectGetMinY(self.scrollView.frame) - CGRectGetMinX(blockRect);
                     blockRect.origin.x += diff;
                     blockRect.size.width -= diff;
                 }
-                //blockRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + blockRect.origin.y, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
+                
+                if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMaxX(blockRect) > CGRectGetMaxY(self.scrollView.frame))) {
+                    CGFloat diff = CGRectGetMaxX(blockRect) - CGRectGetMaxY(self.scrollView.frame);
+                    blockRect.size.width -= diff;
+                }
             }
                                 
             [aProxy setAccessibilityFrameProxy:blockRect];
@@ -2179,7 +2212,7 @@ NSLog(@"did rotate");
         }
         
         CGPoint centeredOffset = [self contentOffsetToCenterPage:self.currentPageLayer.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale];
-        if (!CGPointEqualToPoint([self.scrollView contentOffset], centeredOffset)) {
+        if ([self.scrollView contentOffset].x != centeredOffset.x) {
             [self.scrollView setContentOffset:centeredOffset animated:NO]; 
         }
     }
