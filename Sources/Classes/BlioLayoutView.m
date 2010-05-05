@@ -2098,12 +2098,13 @@ NSLog(@"did rotate");
     cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
     if (layoutMode == BlioLayoutPageModeLandscape) {
-        cropRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + cropRect.origin.y, cropRect.origin.x, cropRect.size.height, cropRect.size.width);
-        if (CGRectGetWidth(cropRect) > CGRectGetHeight(self.scrollView.frame)) {
-            CGFloat diff = CGRectGetWidth(cropRect) - CGRectGetHeight(self.scrollView.frame);
-            cropRect.origin.x += diff;
-            cropRect.size.width -= diff;
+        CGRect newCropRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + cropRect.origin.y, cropRect.origin.x, cropRect.size.height, cropRect.size.width);
+        if (CGRectGetWidth(newCropRect) > CGRectGetHeight(self.scrollView.frame)) {
+            CGFloat diff = CGRectGetWidth(newCropRect) - CGRectGetHeight(self.scrollView.frame);
+            newCropRect.origin.x += diff;
+            newCropRect.size.width -= diff;
         }
+        cropRect = newCropRect;
     }
     
     if ([self.delegate audioPlaying]) {
@@ -2124,9 +2125,19 @@ NSLog(@"did rotate");
             [allWords appendString:[block string]];
             BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
             [aProxy setTarget:self.scrollView];
-            [aProxy setAccessibilityFrameProxy:CGRectApplyAffineTransform([block rect], viewTransform)];
+            CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
+            if (layoutMode == BlioLayoutPageModeLandscape) {
+                blockRect = CGRectMake(blockRect.origin.y-90, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
+                if (CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) {
+                    CGFloat diff = CGRectGetWidth(blockRect) - CGRectGetHeight(self.scrollView.frame);
+                    blockRect.origin.x += diff;
+                    blockRect.size.width -= diff;
+                }
+                //blockRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + blockRect.origin.y, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
+            }
+                                
+            [aProxy setAccessibilityFrameProxy:blockRect];
             [aProxy setAccessibilityLabelProxy:[block string]];
-            //[aProxy setAccessibilityContainer:self];
             [elements addObject:aProxy];
             [aProxy release];
         }
@@ -2135,7 +2146,6 @@ NSLog(@"did rotate");
         [aProxy setTarget:self.scrollView];
         [aProxy setAccessibilityFrameProxy:cropRect];
         [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page.", @"Accessibility hint for page swipe advance")];
-        //[aProxy setAccessibilityContainer:self];
         
         if ([nonFolioPageBlocks count] == 0)
             [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"Page %d is blank", @"Accessibility label for blank book page"), currentPage]];
