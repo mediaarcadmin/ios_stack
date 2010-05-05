@@ -769,9 +769,13 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 - (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
 {
+    if([_delegate respondsToSelector:@selector(bookViewPageTurnWillBegin:)]) {
+        [_delegate bookViewPageTurnWillBegin:self];
+    }
+    
     _selector.selectionDisabled = YES;
     _highlightingDisabled = YES;
-    [self _removeHighlights];
+    [self _removeHighlights];    
 }
 
 - (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
@@ -780,6 +784,10 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _highlightingDisabled = NO;
     if(_highlightPage == self.pageNumber) {
         [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
+    }    
+    
+    if([_delegate respondsToSelector:@selector(bookViewPageTurnDidEnd:)]) {
+        [_delegate bookViewPageTurnDidEnd:self];
     }    
 }
 

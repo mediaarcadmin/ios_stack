@@ -41,6 +41,7 @@ typedef enum {
         
     EucBookContentsTableViewController *_contentsSheet;
     
+    BOOL _pageViewIsTurning;
     BOOL _viewIsDisappearing;
         
     UIBarStyle _returnToNavigationBarStyle;
