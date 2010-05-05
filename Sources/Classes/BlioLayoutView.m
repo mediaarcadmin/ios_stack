@@ -439,7 +439,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
     //self.accessibilityElements = nil;
     accessibilityRefreshRequired = YES;
-NSLog(@"did rotate");
+
 }
 
 #pragma mark -
@@ -1747,6 +1747,12 @@ NSLog(@"did rotate");
             self.currentPageLayer = aLayer;
             self.lastBlock = nil;
         
+    } else {
+        if (nil != self.accessibilityElements) {
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+            accessibilityRefreshRequired = YES;
+        }
     }
 }
 
@@ -2098,12 +2104,28 @@ NSLog(@"did rotate");
     cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
     if (layoutMode == BlioLayoutPageModeLandscape) {
-        cropRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + cropRect.origin.y, cropRect.origin.x, cropRect.size.height, cropRect.size.width);
-        if (CGRectGetWidth(cropRect) > CGRectGetHeight(self.scrollView.frame)) {
-            CGFloat diff = CGRectGetWidth(cropRect) - CGRectGetHeight(self.scrollView.frame);
-            cropRect.origin.x += diff;
-            cropRect.size.width -= diff;
+        //CGRect newCropRect = CGRectMake(-CGRectGetHeight(self.contentView.frame) + CGRectGetHeight(self.frame) + cropRect.origin.y, cropRect.origin.x, cropRect.size.height, cropRect.size.width);
+        //cropRect.origin.y -= self.scrollView.contentOffset.y;
+        CGRect newCropRect = [self.window.layer convertRect:cropRect fromLayer:self.currentPageLayer];
+        
+        //CGFloat originY = [self.window.layer convertPoint:newCropRect.origin fromLayer:self.currentPageLayer].y;
+        if ((CGRectGetWidth(newCropRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMinX(newCropRect) < CGRectGetMinY(self.scrollView.frame))) {
+            CGFloat diff = CGRectGetMinY(self.scrollView.frame) - CGRectGetMinX(newCropRect);
+            newCropRect.origin.x += diff;
+            newCropRect.size.width -= diff;
         }
+        
+        if ((CGRectGetWidth(newCropRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMaxX(newCropRect) > CGRectGetMaxY(self.scrollView.frame))) {
+            CGFloat diff = CGRectGetMaxX(newCropRect) - CGRectGetMaxY(self.scrollView.frame);
+            //newCropRect.origin.x += diff;
+            newCropRect.size.width -= diff;
+        }
+        //if (CGRectGetWidth(newCropRect) > CGRectGetHeight(self.scrollView.frame)) {
+//            CGFloat diff = CGRectGetWidth(newCropRect) - CGRectGetHeight(self.scrollView.frame);
+//            newCropRect.origin.x += diff;
+//            newCropRect.size.width -= diff;
+//        }
+        cropRect = newCropRect;
     }
     
     if ([self.delegate audioPlaying]) {
@@ -2124,9 +2146,31 @@ NSLog(@"did rotate");
             [allWords appendString:[block string]];
             BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
             [aProxy setTarget:self.scrollView];
-            [aProxy setAccessibilityFrameProxy:CGRectApplyAffineTransform([block rect], viewTransform)];
+            CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
+            if (layoutMode == BlioLayoutPageModeLandscape) {
+                //blockRect = CGRectMake(blockRect.origin.y-90, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
+                blockRect.origin.y -= self.scrollView.contentOffset.y;
+                blockRect = [self.window.layer convertRect:blockRect fromLayer:self.currentPageLayer];
+                blockRect.origin.x -= self.scrollView.contentOffset.y;
+                //if (CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) {
+//                    CGFloat diff = CGRectGetWidth(blockRect) - CGRectGetHeight(self.scrollView.frame);
+//                    blockRect.origin.x += diff;
+//                    blockRect.size.width -= diff;
+//                }
+                if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMinX(blockRect) < CGRectGetMinY(self.scrollView.frame))) {
+                    CGFloat diff = CGRectGetMinY(self.scrollView.frame) - CGRectGetMinX(blockRect);
+                    blockRect.origin.x += diff;
+                    blockRect.size.width -= diff;
+                }
+                
+                if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMaxX(blockRect) > CGRectGetMaxY(self.scrollView.frame))) {
+                    CGFloat diff = CGRectGetMaxX(blockRect) - CGRectGetMaxY(self.scrollView.frame);
+                    blockRect.size.width -= diff;
+                }
+            }
+                                
+            [aProxy setAccessibilityFrameProxy:blockRect];
             [aProxy setAccessibilityLabelProxy:[block string]];
-            //[aProxy setAccessibilityContainer:self];
             [elements addObject:aProxy];
             [aProxy release];
         }
@@ -2135,7 +2179,6 @@ NSLog(@"did rotate");
         [aProxy setTarget:self.scrollView];
         [aProxy setAccessibilityFrameProxy:cropRect];
         [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page.", @"Accessibility hint for page swipe advance")];
-        //[aProxy setAccessibilityContainer:self];
         
         if ([nonFolioPageBlocks count] == 0)
             [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"Page %d is blank", @"Accessibility label for blank book page"), currentPage]];
@@ -2169,7 +2212,7 @@ NSLog(@"did rotate");
         }
         
         CGPoint centeredOffset = [self contentOffsetToCenterPage:self.currentPageLayer.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale];
-        if (!CGPointEqualToPoint([self.scrollView contentOffset], centeredOffset)) {
+        if ([self.scrollView contentOffset].x != centeredOffset.x) {
             [self.scrollView setContentOffset:centeredOffset animated:NO]; 
         }
     }
