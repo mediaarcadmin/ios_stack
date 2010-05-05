@@ -145,8 +145,10 @@
 {
     EucBookView *bookView = [[EucBookView alloc] initWithFrame:[[UIApplication sharedApplication] keyWindow].bounds book:book];
     bookView.delegate = self;
+    bookView.allowsSelection = YES;
     
     self = [self initWithBookView:bookView];
+    
     
     [bookView release];
     return self;

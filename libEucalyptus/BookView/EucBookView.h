@@ -26,7 +26,7 @@ typedef struct EucRange {
     EucPoint end;
 } EucRange;
 
-@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDataSource> {
+@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDelegate, EucSelectorDataSource> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
 
@@ -83,7 +83,6 @@ typedef struct EucRange {
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
 
 @property (nonatomic, assign) id<EucBookViewDelegate> delegate;
-@property (nonatomic, assign) id<EucSelectorDelegate> selectorDelegate;
 
 @property (nonatomic, readonly) EucBookReference<EucBook> *book;
 
