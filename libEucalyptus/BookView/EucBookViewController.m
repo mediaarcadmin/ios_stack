@@ -671,32 +671,40 @@
     }
 }
 
+- (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
+{
+    if(!_toolbar.hidden) {
+        [self _toggleToolbars];
+    }    
+    _pageViewIsTurning = YES;
+}
+
+- (void)bookViewPageTurnDidEnd:(EucBookView *)bookView
+{
+    _pageViewIsTurning = NO;
+}
 
 - (void)observeTouch:(UITouch *)touch
 {
     UITouchPhase phase = touch.phase;
         
-    if(touch != _touch) {
-        [_touch release];
-        _touch = nil;
-        if(phase == UITouchPhaseBegan) {
-            _touch = [touch retain];
-            _touchMoved = NO;
-        }
+    if(!_touch) {
+        _touch = touch;
+        _touchMoved = NO;
     } else if(touch == _touch) {
         if(phase == UITouchPhaseMoved) { 
             _touchMoved = YES;
             if(!_toolbar.hidden) {
                 [self _toggleToolbars];
-            }
+            }            
         } else if(phase == UITouchPhaseEnded) {
             if(!_touchMoved) {
-                [self _toggleToolbars];
+                if(!_pageViewIsTurning) {
+                    [self _toggleToolbars];
+                }
             }
-            [_touch release];
             _touch = nil;
         } else if(phase == UITouchPhaseCancelled) {
-            [_touch release];
             _touch = nil;
         }
     }

@@ -100,6 +100,7 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 - (BOOL)_satisfyConstraints;
 - (void)_setupConstraints;
 - (void)_postAnimationViewAndTextureRecache;
+- (CGFloat)_tapTurnMarginForView:(UIView *)view;
 
 @end
 
@@ -395,7 +396,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [_animatedTurnData release];
     [_reverseAnimatedTurnData release];
 
-    [_touch release]; // This should actually never be non-nil.
     [super dealloc];
 }
 
@@ -1000,7 +1000,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     // If we're not currently tracking a touch
     if(!_touch) {
         // Store touch
-        _touch = [touch retain];
+        _touch = touch;
+        _touchBeganTime = [touch timestamp];
         if(_animating) {
             [self setTouchLocationFromTouch:_touch firstTouch:YES];
         } else {
@@ -1028,7 +1029,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             
             for(UITouch *secondTouch in touches) {
                 if(secondTouch != _pinchTouches[0]) {
-                    _pinchTouches[1] = [secondTouch retain];
+                    _pinchTouches[1] = secondTouch;
                     break;
                 }
             }
@@ -1159,7 +1160,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         _touchPoint.x = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x;
         _touchTime = 0;
         
-        [_touch release];
         _touch = nil;
     } else if([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]]) {
         UITouch *remainingTouch = nil;
@@ -1169,9 +1169,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             remainingTouch = _pinchTouches[1];
         }
         
-        [_pinchTouches[0] release];
         _pinchTouches[0] = nil;
-        [_pinchTouches[1] release];
         _pinchTouches[1] = nil;
         
         if(_pinchUnderway) {
@@ -1230,7 +1228,37 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         }
         [unusedTouches release];     
     } else {
-        [_pageViews[1] touchesEnded:touches withEvent:event];
+        if(_touch && 
+           [touches containsObject:_touch] && 
+           [_touch timestamp] - _touchBeganTime < 0.2) {
+            BOOL turning = NO;
+            
+            CGPoint point = [_touch locationInView:self];
+            CGFloat tapTurnMargin = [self _tapTurnMarginForView:_pageViews[1]];
+            if(point.x < tapTurnMargin && _pageViews[0]) {
+                [self turnToPageView:_pageViews[0] forwards:NO pageCount:1];
+                turning = YES;
+            } else if(point.x > (_pageViews[1].bounds.size.width - tapTurnMargin) && _pageViews[2]) {
+                [self turnToPageView:_pageViews[2] forwards:YES pageCount:1];
+                turning = YES;
+            }
+            
+            if(turning) {
+                NSMutableSet *unusedTouches = [touches mutableCopy];
+                if(_touch) {
+                    [unusedTouches removeObject:_touch];
+                }
+                if(unusedTouches.count) {
+                    [_pageViews[1] touchesEnded:unusedTouches withEvent:event];
+                }
+                [unusedTouches release];   
+                [_pageViews[1] touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
+            } else {
+                [_pageViews[1] touchesEnded:touches withEvent:event];
+            }
+        } else {
+            [_pageViews[1] touchesEnded:touches withEvent:event];
+        }
     }
     [self _touchesEndedOrCancelled:touches withEvent:event];
 }
@@ -1270,6 +1298,20 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         [self _touchesEndedOrCancelled:[NSSet setWithObject:_touch] withEvent:nil];
     }
     [super setUserInteractionEnabled:enabled];
+}
+
+
+
+- (CGFloat)_tapTurnMarginForView:(UIView *)view
+{
+    CGFloat ret;
+    id<EucPageTurningViewDelegate> delegate = self.delegate;
+    if([delegate respondsToSelector:@selector(pageTurningView:tapTurnMarginForView:)]) {
+        ret = [delegate pageTurningView:self tapTurnMarginForView:view];
+    } else {
+        ret = 0.1f * view.bounds.size.width;
+    }
+    return ret;
 }
 
 // Since gravity is the only force we're using, we just manually add it in 

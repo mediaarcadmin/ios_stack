@@ -792,10 +792,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     UITouchPhase phase = touch.phase;
         
     if(touch != _touch) {
-        [_touch release];
         _touch = nil;
         if(phase == UITouchPhaseBegan) {
-            _touch = [touch retain];
+            _touch = touch;
             _touchMoved = NO;
         }
     } else if(touch == _touch) {
@@ -806,14 +805,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
         } else if(phase == UITouchPhaseEnded) {
             if(!_touchMoved) {
-                [self toggleToolbars];
+                if(!self.navigationController.toolbarHidden ||
+                   ![self.bookView respondsToSelector:@selector(toolbarShowShouldBeSuppressed)] ||
+                   ![self.bookView toolbarShowShouldBeSuppressed]) {
+                    [self toggleToolbars];
+                }
             }
-            [_touch release];
             _touch = nil;
         } else if(phase == UITouchPhaseCancelled) {
-            [_touch release];
             _touch = nil;
-            NSLog(@"UITouchPhaseCancelled");
         }
     }
 }
