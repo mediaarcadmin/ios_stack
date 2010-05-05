@@ -230,4 +230,9 @@
     return _renderItems;
 }
 
+- (NSComparisonResult)compare:(EucCSSLayoutLine *)rhs 
+{
+    return self < rhs ? NSOrderedAscending : (self > rhs ? NSOrderedDescending : NSOrderedSame);
+}
+
 @end

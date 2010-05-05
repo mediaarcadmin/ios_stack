@@ -56,7 +56,6 @@
 @synthesize book = _book;
 
 @synthesize allowsSelection = _allowsSelection;
-@synthesize selectorDelegate = _selectorDelegate;
 
 @synthesize pageTexture = _pageTexture;
 @synthesize pageTextureIsDark = _pageTextureIsDark;
@@ -190,9 +189,7 @@
                           options:0
                           context:NULL];
         _selector.dataSource = self;
-        if(_selectorDelegate) {
-            _selector.delegate = _selectorDelegate;
-        }
+        _selector.delegate = self;
     } else {
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
@@ -318,14 +315,6 @@
             }
         }
     }*/
-}
-
-- (void)setHighlighterDelegate:(id <EucSelectorDelegate>)selectorDelegate
-{
-    if(_selector) {
-        _selector.delegate = selectorDelegate;
-    }
-    _selectorDelegate = selectorDelegate;
 }
 
 #pragma mark -
