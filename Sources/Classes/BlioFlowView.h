@@ -14,7 +14,10 @@
 @interface BlioFlowView : EucBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
     id<BlioParagraphSource> _paragraphSource;
     BOOL _pageViewIsTurning;
+    
+    id<BlioBookViewDelegate> _bookViewDelegate;
 }
 
+@property (nonatomic, assign) id<BlioBookViewDelegate> bookViewDelegate;
 
 @end

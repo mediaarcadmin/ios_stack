@@ -36,7 +36,7 @@ typedef enum BlioLayoutPageMode {
 @end
 
 @interface BlioLayoutView : UIView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
-    id<BlioBookDelegate> delegate;
+    id<BlioBookViewDelegate> delegate;
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioLayoutScrollView *scrollView;
@@ -75,7 +75,7 @@ typedef enum BlioLayoutPageMode {
     BOOL accessibilityRefreshRequired;
 }
 
-@property (nonatomic, assign) id<BlioBookDelegate> delegate;
+@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
 @property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, retain) BlioLayoutScrollView *scrollView;
 @property (nonatomic, retain) BlioLayoutContentView *contentView;

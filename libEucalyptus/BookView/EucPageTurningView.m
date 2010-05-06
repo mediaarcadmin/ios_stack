@@ -101,6 +101,7 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 - (void)_setupConstraints;
 - (void)_postAnimationViewAndTextureRecache;
 - (CGFloat)_tapTurnMarginForView:(UIView *)view;
+- (void)_setNeedsAccessibilityElementsRebuild;
 
 @end
 
@@ -1339,7 +1340,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             CGRect frame = [self convertRect:self.bounds toView:nil];
             frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
             frame.size.width = tapZoneWidth;
-            frame.size.height -= tapZoneWidth;
             nextPageTapZone.accessibilityFrame = frame;
             nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");
             
@@ -1355,7 +1355,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             }
             CGRect frame = [self convertRect:self.bounds toView:nil];
             frame.size.width = tapZoneWidth;
-            frame.size.height -= tapZoneWidth;
             previousPageTapZone.accessibilityFrame = frame;
             previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
             
@@ -1365,18 +1364,18 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
         {
             CGRect frame = [self convertRect:self.bounds toView:nil];
-            frame.origin.y = frame.size.height - tapZoneWidth;
+            frame.origin.y = 0;
             frame.size.height = tapZoneWidth;
-            if([self.window hitTest:CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame)) withEvent:NO] == self) {
-                UIAccessibilityElement *toolbarTapButton = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-                toolbarTapButton.accessibilityTraits = UIAccessibilityTraitSummaryElement;
-                toolbarTapButton.accessibilityFrame = frame;
-                toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book Page", @"Accessibility title for previous page tap zone");
-                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to switch on tool bars.", @"Accessibility title for previous page tap zone");
-                
-                [accessibilityElements addObject:toolbarTapButton];
-                [toolbarTapButton release];
-            }
+            frame.size.width -= 2 * tapZoneWidth;
+            frame.origin.x += tapZoneWidth;
+
+            UIAccessibilityElement *toolbarTapButton = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            toolbarTapButton.accessibilityFrame = frame;
+            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book Page", @"Accessibility title for previous page tap zone");
+            toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone");
+            
+            [accessibilityElements addObject:toolbarTapButton];
+            [toolbarTapButton release];
         }
                 
         _accessibilityElements = accessibilityElements;
@@ -1631,10 +1630,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     }                    
     _viewsNeedRecache = NO;
     
+    [self _setNeedsAccessibilityElementsRebuild];
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
-- (void)setNeedsAccessibilityElementsRebuild
+- (void)_setNeedsAccessibilityElementsRebuild
 {
     [_accessibilityElements release];
     _accessibilityElements = nil;

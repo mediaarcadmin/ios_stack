@@ -23,7 +23,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 
 @implementation BlioLayoutScrollView
 
-@synthesize selector, doubleTapBeginTimer, doubleTapEndTimer, bookDelegate, forwardingState, touchesBeginPoint;
+@synthesize selector, doubleTapBeginTimer, doubleTapEndTimer, bookViewDelegate, forwardingState, touchesBeginPoint;
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -40,7 +40,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     self.doubleTapBeginTimer = nil;
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
-    self.bookDelegate = nil;
+    self.bookViewDelegate = nil;
     [super dealloc];
 }
 
@@ -74,7 +74,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomAtPoint:)])
             [(NSObject *)self.delegate performSelector:@selector(zoomAtPoint:) withObject:NSStringFromCGPoint(touchesBeginPoint)];  
         
-        [self.bookDelegate hideToolbars];
+        [self.bookViewDelegate hideToolbars];
     } else {
         [self.selector touchesBegan:touches];
         self.forwardingState = BlioLayoutTouchForwardingStateForwardedBegin;
@@ -181,14 +181,14 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToPreviousBlock)])
             [(NSObject *)self.delegate performSelector:@selector(zoomToPreviousBlock) withObject:nil];
         
-        [self.bookDelegate hideToolbars];
+        [self.bookViewDelegate hideToolbars];
     } else if (touchesBeginPoint.x >= rightHandHotZone) {
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToNextBlock)])
             [(NSObject *)self.delegate performSelector:@selector(zoomToNextBlock) withObject:nil]; 
         
-        [self.bookDelegate hideToolbars];
+        [self.bookViewDelegate hideToolbars];
     } else {
-        [self.bookDelegate toggleToolbars]; 
+        [self.bookViewDelegate toggleToolbars]; 
     }    
 }
 

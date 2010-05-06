@@ -22,6 +22,7 @@
 #import "THScalableSlider.h"
 #import "EucBookTitleView.h"
 #import "EucBook.h"
+#import "EucBookView.h"
 #import "EucBookReference.h"
 #import "EucPageTextView.h"
 #import "EucBookPageIndexPoint.h"
@@ -591,8 +592,6 @@
 
 - (void)_fadeDidEnd
 {
-    [self.bookView setNeedsAccessibilityElementsRebuild];
-
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
         _toolbar.hidden = YES;
         self.navigationController.navigationBar.hidden = YES;
@@ -612,7 +611,6 @@
         [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];    
     } 
 }
-
 
 - (void)_toggleToolbars
 {
@@ -663,6 +661,30 @@
 - (void)bookViewPageTurnDidEnd:(EucBookView *)bookView
 {
     _pageViewIsTurning = NO;
+}
+
+- (BOOL)bookViewToolbarsVisible:(EucBookView *)bookView
+{
+    return !_toolbar.hidden;
+}
+
+- (CGRect)bookViewNonToolbarRect:(EucBookView *)bookView
+{
+    CGRect rect = [bookView convertRect:self.bookView.bounds toView:nil];
+    
+    if([self bookViewToolbarsVisible:bookView]) {
+        UINavigationBar *navBar = self.navigationController.navigationBar;
+        CGRect navRect = [navBar convertRect:navBar.bounds toView:nil];
+        
+        CGFloat navRectBottom = CGRectGetMaxY(navRect);
+        rect.size.height -= navRectBottom - rect.origin.y;
+        rect.origin.y = navRectBottom;
+        
+        CGRect toolbarRect = [_toolbar convertRect:navBar.bounds toView:nil];
+        rect.size.height = toolbarRect.origin.y - rect.origin.y;
+    }
+    
+    return [bookView convertRect:rect fromView:nil];
 }
 
 - (void)observeTouch:(UITouch *)touch
