@@ -51,6 +51,7 @@
 {
     [_positionedBlock release];
     [_runs release];
+    [_accessibilityElements release];
     [super dealloc];
 }
 
@@ -219,6 +220,73 @@
 - (void)drawRect:(CGRect)rect 
 {
     [self drawRect:rect inContext:UIGraphicsGetCurrentContext()];
+}
+
+- (NSArray *)accessibilityElements
+{
+    if(!_accessibilityElements) {
+        CGRect myFrame = self.frame;
+        NSArray *runs = [self _runs];
+        
+        NSMutableArray *buildAccessibilityElements = [[NSMutableArray alloc] initWithCapacity:runs.count];
+        for(EucCSSLayoutPositionedRun *run in runs) {
+            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            
+            CGRect frame = run.frame;
+            frame.origin.x += myFrame.origin.x;
+            frame.origin.y += myFrame.origin.y;
+            element.accessibilityFrame = frame;
+            
+            NSMutableString *buildString = [NSMutableString string];
+            for(EucCSSLayoutLine *line in run.lines) {
+                EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+                size_t renderItemsCount = line.renderItemCount;
+                    
+                EucCSSLayoutLineRenderItem* renderItem = renderItems;
+                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
+                    if(renderItem->altText) {
+                        [buildString appendString:renderItem->altText];
+                    } else if(renderItem->point.element == 0) {
+                        [buildString appendString:renderItem->item];
+                    }
+                    [buildString appendString:@" "];
+                }
+            }
+            NSUInteger stringLength = buildString.length;
+            if(stringLength) {
+                [buildString deleteCharactersInRange:NSMakeRange(stringLength - 1, 1)];
+            }            
+            element.accessibilityLabel = buildString;
+            
+            element.accessibilityTraits = UIAccessibilityTraitStaticText;
+            
+            [buildAccessibilityElements addObject:element];
+            [element release];
+        }
+        
+        _accessibilityElements = buildAccessibilityElements;
+    }
+    return _accessibilityElements;
+}
+
+- (BOOL)isAccessibilityElement
+{
+    return NO;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return [[self accessibilityElements] count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    return [[self accessibilityElements] objectAtIndex:index];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return [[self accessibilityElements] indexOfObject:element];
 }
 
 - (void)handleTouchBegan:(UITouch *)touch atLocation:(CGPoint)location {}

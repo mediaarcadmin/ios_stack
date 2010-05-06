@@ -108,6 +108,12 @@
     return nil;
 }
 
+- (NSString *)altText
+{
+    return [_documentTreeNode attributeWithName:@"alt"];
+}
+
+
 - (css_computed_style *)_createComputedStyleForPseudoElement:(enum css_pseudo_element)pseudoElement
                                             usingInlineStyle:(const css_stylesheet *)inlineStyle
                                             usingParentStyle:(const css_computed_style *)parentStyle 

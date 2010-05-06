@@ -27,7 +27,7 @@ typedef enum {
     
     BOOL _firstAppearance;
     
-    UIView *_bookView;
+    EucBookView *_bookView;
     
     UIToolbar *_overriddenToolbar;
     UIToolbar *_toolbar;
@@ -59,7 +59,7 @@ typedef enum {
 
 // Designated initializers.
 - (id)initWithBook:(EucBookReference<EucBook> *)book;
-- (id)initWithBookView:(UIView *)view;
+- (id)initWithBookView:(EucBookView *)view;
 
 @property (nonatomic, assign) id<EucBookViewControllerDelegate> delegate;
 
@@ -71,7 +71,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL returnToNavigationBarHidden;
 @property (nonatomic, assign) BOOL returnToStatusBarHidden;
 
-@property (nonatomic, retain) UIView *bookView;
+@property (nonatomic, retain) EucBookView *bookView;
 @property (nonatomic, retain) UIToolbar *overriddenToolbar;
 
 

@@ -1314,6 +1314,96 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     return ret;
 }
 
+- (NSArray *)accessibilityElements
+{
+    if(!_accessibilityElements) {
+        NSArray *pageViewAccessibilityElements = nil;
+        if([_pageViews[1] respondsToSelector:@selector(accessibilityElements)]) {
+            pageViewAccessibilityElements = [_pageViews[1]  performSelector:@selector(accessibilityElements)];
+        }
+        NSMutableArray *accessibilityElements = [[NSMutableArray alloc] initWithCapacity:pageViewAccessibilityElements.count + 1];
+        
+        CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageViews[1]];
+            
+        for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
+            element.accessibilityContainer = self;
+            [accessibilityElements addObject:element];
+        }
+
+        {
+            UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
+            if(!_pageViews[2])  {
+                nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+            }            
+            CGRect frame = [self convertRect:self.bounds toView:nil];
+            frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
+            frame.size.width = tapZoneWidth;
+            frame.size.height -= tapZoneWidth;
+            nextPageTapZone.accessibilityFrame = frame;
+            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");
+            
+            [accessibilityElements addObject:nextPageTapZone];
+            [nextPageTapZone release];
+        }        
+        
+        {
+            UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
+            if(!_pageViews[0])  {
+                previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+            }
+            CGRect frame = [self convertRect:self.bounds toView:nil];
+            frame.size.width = tapZoneWidth;
+            frame.size.height -= tapZoneWidth;
+            previousPageTapZone.accessibilityFrame = frame;
+            previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+            
+            [accessibilityElements addObject:previousPageTapZone];
+            [previousPageTapZone release];
+        }        
+
+        {
+            CGRect frame = [self convertRect:self.bounds toView:nil];
+            frame.origin.y = frame.size.height - tapZoneWidth;
+            frame.size.height = tapZoneWidth;
+            if([self.window hitTest:CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame)) withEvent:NO] == self) {
+                UIAccessibilityElement *toolbarTapButton = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+                toolbarTapButton.accessibilityTraits = UIAccessibilityTraitSummaryElement;
+                toolbarTapButton.accessibilityFrame = frame;
+                toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book Page", @"Accessibility title for previous page tap zone");
+                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to switch on tool bars.", @"Accessibility title for previous page tap zone");
+                
+                [accessibilityElements addObject:toolbarTapButton];
+                [toolbarTapButton release];
+            }
+        }
+                
+        _accessibilityElements = accessibilityElements;
+    }
+    return _accessibilityElements;
+}
+
+- (BOOL)isAccessibilityElement
+{
+    return NO;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return [[self accessibilityElements] count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    return [[self accessibilityElements] objectAtIndex:index];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return [[self accessibilityElements] indexOfObject:element];
+}
+
 // Since gravity is the only force we're using, we just manually add it in 
 // -_verlet;
 /*
@@ -1540,7 +1630,16 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         [_delegate pageTurningView:self didTurnToView:_pageViews[1]];
     }                    
     _viewsNeedRecache = NO;
+    
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
+
+- (void)setNeedsAccessibilityElementsRebuild
+{
+    [_accessibilityElements release];
+    _accessibilityElements = nil;
+}
+
 
 - (void)setDimQuotient:(CGFloat)dimQuotient
 {

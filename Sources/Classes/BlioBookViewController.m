@@ -769,6 +769,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+        if([self.bookView respondsToSelector:@selector(setNeedsAccessibilityElementsRebuild)]) {
+            [self.bookView performSelector:@selector(setNeedsAccessibilityElementsRebuild)];
+        }
     }
 }
 

@@ -36,32 +36,6 @@
 #define NON_TEXT_PAGE_FAKE_BYTE_COUNT (30 * 20)
 
 
-
-@interface _TransparentView : UIView {
-    EucBookViewController *controller;
-}
-
-@property (nonatomic, assign) EucBookViewController *controller;
-@end
-
-@implementation _TransparentView
-
-@synthesize controller;
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    UIView *ret = [super hitTest:point withEvent:event];
-    if(ret == self) {
-        UIView *view = controller.bookView;
-        CGPoint insidePoint = [self convertPoint:point toView:view];
-        ret = [view hitTest:insidePoint withEvent:event];
-    }
-    return ret;
-}
-
-@end
-
-
 @interface EucBookViewController (PRIVATE)
 - (void)_toggleToolbars;
 - (void)_setupContentsButton;
@@ -109,13 +83,14 @@
     return [self init];
 }
 
-- (id)initWithBookView:(UIView *)view
+- (id)initWithBookView:(EucBookView *)view
 {
 	if ((self = [super initWithNibName:nil bundle:nil])) {
-        self.wantsFullScreenLayout = NO;
+        self.wantsFullScreenLayout = YES;
         self.hidesBottomBarWhenPushed = YES;
 
         UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
+        [backArrow setAccessibilityLabel:NSLocalizedString(@"Library", @"Back to library button accessibility label")];
         [backArrow addTarget:self
                       action:@selector(_backButtonTapped) 
             forControlEvents:UIControlEventTouchUpInside];
@@ -155,7 +130,7 @@
 }
 
 
-- (void)setBookView:(UIView *)bookView
+- (void)setBookView:(EucBookView *)bookView
 {
     if(_bookView != bookView) {
         THEventCapturingWindow *window = (THEventCapturingWindow *)[_bookView superview];
@@ -174,8 +149,9 @@
             [titleView setAuthor:[((EucBookReference *)((EucBookView *)_bookView).book).author humanReadableNameFromLibraryFormattedName]];                
         }
         
-        [window addSubview:_bookView];
-        [window sendSubviewToBack:_bookView];
+        if(self.isViewLoaded) {
+            [self.view addSubview:_bookView];
+        }
     }
 }
 
@@ -364,12 +340,12 @@
 - (void)loadView 
 {
     CGRect mainScreenBounds = [[UIScreen mainScreen] applicationFrame];
-    _TransparentView *mainSuperview = [[_TransparentView alloc] initWithFrame:mainScreenBounds];
-    mainSuperview.controller = self;
-    [mainSuperview setBackgroundColor:[UIColor clearColor]];
-    [mainSuperview setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
-    mainSuperview.opaque = NO;
-    mainSuperview.multipleTouchEnabled = YES;
+    UIView *mainSuperview = [[UIView alloc] initWithFrame:mainScreenBounds];
+    mainSuperview.opaque = YES;
+    if(_bookView) {
+        [mainSuperview addSubview:_bookView];
+        [mainSuperview sendSubviewToBack:_bookView];
+    }
     self.view = mainSuperview;
     [mainSuperview release];
         
@@ -385,6 +361,7 @@
     UIImage *contentsImage = [UIImage imageNamed:@"ContentsButton.png"];
     UIButton *contentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [contentsButton setImage:contentsImage forState:UIControlStateNormal];
+    [contentsButton setAccessibilityLabel:NSLocalizedString(@"Contents", @"Contents button accessibility label")];
     contentsButton.adjustsImageWhenHighlighted = YES;
     contentsButton.showsTouchWhenHighlighted = NO;
     [contentsButton sizeToFit];
@@ -392,6 +369,7 @@
     [contentsButton addTarget:self action:@selector(_contentsButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:contentsButton];
+    [rightItem setAccessibilityLabel:NSLocalizedString(@"Contents", @"Contents button accessibility label")];
     self.navigationItem.rightBarButtonItem = rightItem;
     [rightItem release];
 }
@@ -479,9 +457,6 @@
             [titleView setTitle:((EucBookReference *)((EucBookView *)_bookView).book).humanReadableTitle];
             [titleView setAuthor:[((EucBookReference *)((EucBookView *)_bookView).book).author humanReadableNameFromLibraryFormattedName]];                
         }
-        
-        [window addSubview:_bookView];
-        [window sendSubviewToBack:_bookView];
         
         if(animated) {
             CATransition *animation = [CATransition animation];
@@ -594,7 +569,7 @@
 
 - (void)didReceiveMemoryWarning 
 {
-    if(_toolbar && !self.view.superview) {
+    if(_toolbar && !self.isViewLoaded) {
         [_toolbar release];
         _toolbar = nil;
         [_bookView release];
@@ -616,12 +591,16 @@
 
 - (void)_fadeDidEnd
 {
+    [self.bookView setNeedsAccessibilityElementsRebuild];
+
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
         _toolbar.hidden = YES;
         self.navigationController.navigationBar.hidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     } else {
         [UIApplication sharedApplication].idleTimerDisabled = NO;
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
     _fadeState = BookViewControlleUIFadeStateNone;
 }

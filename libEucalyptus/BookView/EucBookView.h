@@ -126,6 +126,7 @@ typedef struct EucRange {
 - (NSInteger)pageNumberForUuid:(NSString *)uuid;
 
 - (void)highlightWordAtBlockId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+- (void)setNeedsAccessibilityElementsRebuild;
 
 @property (nonatomic, readonly) EucRange selectedRange;
 - (void)clearSelectedRange;

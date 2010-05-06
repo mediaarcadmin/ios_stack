@@ -18,6 +18,7 @@ typedef struct EucCSSLayoutLineRenderItem
     CGFloat pointSize;
     EucCSSLayoutDocumentRunPoint point;
     THStringRenderer *stringRenderer;
+    NSString *altText;
 } EucCSSLayoutLineRenderItem;
 
 @interface EucCSSLayoutLine : NSObject {
