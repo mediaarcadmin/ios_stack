@@ -135,8 +135,6 @@ typedef struct {
 
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 
-- (void)setNeedsAccessibilityElementsRebuild;
-
 @end
 
 
