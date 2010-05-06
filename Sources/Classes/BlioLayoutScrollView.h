@@ -23,13 +23,13 @@ typedef enum BlioLayoutTouchForwardingState {
     EucSelector *selector;
     NSTimer *doubleTapBeginTimer;
     NSTimer *doubleTapEndTimer;
-    id<BlioBookDelegate> bookDelegate;
+    id<BlioBookViewDelegate> bookViewDelegate;
     BlioLayoutTouchForwardingState forwardingState;
     CGPoint touchesBeginPoint;
 }
 
 @property (nonatomic, assign) EucSelector *selector;
-@property (nonatomic, assign) id<BlioBookDelegate> bookDelegate;
+@property (nonatomic, assign) id<BlioBookViewDelegate> bookViewDelegate;
 @property (nonatomic, assign) CGPoint touchesBeginPoint;
 
 @end

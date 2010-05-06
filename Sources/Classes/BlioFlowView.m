@@ -30,6 +30,7 @@
 @dynamic contentsDataSource;
 
 @synthesize paragraphSource = _paragraphSource;
+@synthesize bookViewDelegate = _bookViewDelegate;
 
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
@@ -237,6 +238,17 @@
 - (BOOL)toolbarShowShouldBeSuppressed
 {
     return _pageViewIsTurning;
+}
+
+
+- (BOOL)bookViewToolbarsVisible:(EucBookView *)bookView
+{
+    return self.bookViewDelegate.toolbarsVisible;
+}
+
+- (CGRect)bookViewNonToolbarRect:(EucBookView *)bookView
+{
+    return self.bookViewDelegate.nonToolbarRect;
 }
 
 

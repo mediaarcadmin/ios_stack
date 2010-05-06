@@ -383,9 +383,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark -
 #pragma mark BlioBookDelegate
 
-- (void)setDelegate:(id<BlioBookDelegate>)newDelegate {
+- (void)setDelegate:(id<BlioBookViewDelegate>)newDelegate {
 
-    [self.scrollView setBookDelegate:newDelegate];
+    [self.scrollView setBookViewDelegate:newDelegate];
     delegate = newDelegate;
 
 }

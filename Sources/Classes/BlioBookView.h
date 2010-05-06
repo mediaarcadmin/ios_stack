@@ -11,7 +11,7 @@
 #import "BlioWebToolsViewController.h"
 
 #pragma mark -
-@protocol BlioBookDelegate <NSObject>
+@protocol BlioBookViewDelegate <NSObject>
 
 @required
 - (NSArray *)rangesToHighlightForRange:(BlioBookmarkRange *)range;
@@ -33,6 +33,8 @@
 - (void)toggleToolbars;
 - (BOOL)toolbarsVisible;
 - (BOOL)audioPlaying;
+
+- (CGRect)nonToolbarRect;
 @end
 
 #pragma mark -

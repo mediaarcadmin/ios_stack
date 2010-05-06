@@ -353,9 +353,61 @@
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:animated];                
 }
 
-- (void)setNeedsAccessibilityElementsRebuild 
+- (CGRect)accessibilityFrame
 {
-    [self.pageTurningView setNeedsAccessibilityElementsRebuild];
+    CGRect bounds;
+    if([self.delegate respondsToSelector:@selector(bookViewNonToolbarRect:)]) {
+        bounds = [self.delegate bookViewNonToolbarRect:self];
+    } else {
+        bounds = bounds;
+    }
+    return [self convertRect:bounds toView:nil];
+}
+
+- (NSString *)accessibilityLabel
+{
+    return NSLocalizedString(@"Book Page", "Accessibility label for libEucalyptus page view");
+}
+
+- (NSString *)accessibilityHint
+{
+    return NSLocalizedString(@"Double tap to read page.", "Accessibility label for libEucalyptus page view");
+}
+
+- (BOOL)isAccessibilityElement
+{
+    if([self.delegate respondsToSelector:@selector(bookViewToolbarsVisible:)]) {
+        return [self.delegate bookViewToolbarsVisible:self];
+    } else {
+        return NO;
+    }
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    if(!self.isAccessibilityElement) {
+        return [super accessibilityElementCount];
+    } else {
+        return 0;
+    }
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    if(!self.isAccessibilityElement) {
+        return [super accessibilityElementAtIndex:index];
+    } else {
+        return nil;
+    }
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    if(!self.isAccessibilityElement) {
+        return [super indexOfAccessibilityElement:element];
+    } else {
+        return 0;
+    }
 }
 
 - (void)_redisplayCurrentPage
@@ -740,9 +792,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     self.pageNumber = pageNumber;  
     
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
-    [self _updatePageNumberLabel];
-    
-    [self setNeedsAccessibilityElementsRebuild];
+    [self _updatePageNumberLabel];    
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view

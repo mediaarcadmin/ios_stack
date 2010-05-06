@@ -163,8 +163,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             case kBlioPageLayoutPageLayout: {
                 if ([newBook pdfPath]) {
                     BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithBook:newBook animated:YES];
+                    aBookView.delegate = self;
                     self.bookView = aBookView;
-                    [aBookView setDelegate:self];
                     [aBookView release];
                 } else {
                     [self release];
@@ -175,6 +175,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             default: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
                     BlioFlowView *aBookView = [[BlioFlowView alloc] initWithBook:newBook animated:YES];
+                    aBookView.bookViewDelegate = self;
                     self.bookView = aBookView;
                     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
                     [aBookView release];
@@ -431,7 +432,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     //UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
 
     [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    [backArrow setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
+    [backArrow setAccessibilityLabel:NSLocalizedString(@"Library", @"Accessibility label for Book View Controller Back button")];
 
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
     self.navigationItem.leftBarButtonItem = backItem;
@@ -769,9 +770,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-        if([self.bookView respondsToSelector:@selector(setNeedsAccessibilityElementsRebuild)]) {
-            [self.bookView performSelector:@selector(setNeedsAccessibilityElementsRebuild)];
-        }
     }
 }
 
@@ -788,6 +786,26 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)hideToolbars {
     [self hideToolbarsAndStatusBar:YES];
+}
+
+- (CGRect)nonToolbarRect
+{
+    UIView *bookView = self.bookView;
+    CGRect rect = [bookView convertRect:self.bookView.bounds toView:nil];
+    
+    if([self toolbarsVisible]) {
+        UINavigationBar *navBar = self.navigationController.navigationBar;
+        CGRect navRect = [navBar convertRect:navBar.bounds toView:nil];
+        
+        CGFloat navRectBottom = CGRectGetMaxY(navRect);
+        rect.size.height -= navRectBottom - rect.origin.y;
+        rect.origin.y = navRectBottom;
+        
+        CGRect toolbarRect = [self.navigationController.toolbar convertRect:navBar.bounds toView:nil];
+        rect.size.height = toolbarRect.origin.y - rect.origin.y;
+    }
+    
+    return [bookView convertRect:rect fromView:nil];
 }
 
 - (void)observeTouch:(UITouch *)touch
@@ -1086,13 +1104,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithBook:self.book animated:NO];
+            ePubView.bookViewDelegate = self;
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithBook:self.book animated:NO];
-            [layoutView setDelegate:self];
+            layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
