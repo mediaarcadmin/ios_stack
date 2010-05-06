@@ -10,6 +10,7 @@
 #import <pthread.h>
 #import "BlioAppAppDelegate.h"
 #import "BlioLibraryViewController.h"
+#import "BlioAlertManager.h"
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -221,13 +222,18 @@ static void *background_init_thread(void * arg) {
 		if ([[self.processingManager downloadOperations] count] > 0)
 		{
 			// ALERT user to what just happened.
-			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
 															message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")]
 														   delegate:self
 												  cancelButtonTitle:@"OK"
 												  otherButtonTitles:nil];
-			[alert show];
-			[alert release];
+//			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+//															message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")]
+//														   delegate:self
+//												  cancelButtonTitle:@"OK"
+//												  otherButtonTitles:nil];
+//			[alert show];
+//			[alert release];
 		}
 	}
 	else if (previousNetStatus == NotReachable && netStatus != NotReachable) { // if changed from unavailable to available

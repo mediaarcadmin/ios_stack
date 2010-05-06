@@ -46,7 +46,7 @@
 
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
-        self.title = @"Search";
+        self.title = NSLocalizedString(@"Search",@"\"Search\" title in view controller");
         
         // UIBarStyleDefault for a UISearchBar doesn't match UIBarStyleDefault for a UINavigationBar
         // This tint is pretty close, but both should be set to make it seamless
@@ -59,7 +59,7 @@
         
         UISearchBar *aSearchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
         [aSearchBar setShowsCancelButton:NO];
-        [aSearchBar setPlaceholder:@"Search"];
+        [aSearchBar setPlaceholder:NSLocalizedString(@"Search",@"\"Search\" placeholder text in Search bar")];
         [aSearchBar setTintColor:matchedTintColor];
         [aSearchBar setDelegate:self];
         [aSearchBar sizeToFit];
@@ -179,7 +179,7 @@
 }
 
 - (NSString *)getMoreCellLabelForSection:(NSUInteger) section {
-	return [NSString stringWithFormat:@"%@ Results",[[self.feeds objectAtIndex:section] title]];
+	return [NSString stringWithFormat:NSLocalizedString(@"%@ Results",@"\"%@ Results\" See More Cell label"),[[self.feeds objectAtIndex:section] title]];
 }
 
 #pragma mark -

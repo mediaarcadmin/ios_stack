@@ -9,6 +9,7 @@
 #import "BlioBookVaultManager.h"
 #import "BlioContentCafe.h"
 #import "BlioBookVault.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioBookVaultManager
 
@@ -172,12 +173,19 @@
 	}
 	if (ISBNMetadataResponseAlertText != nil) {
 	// show alert box
-		UIAlertView *errorAlert = [[UIAlertView alloc] 
-								   initWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") message:ISBNMetadataResponseAlertText
-								   delegate:self cancelButtonTitle:nil
-								   otherButtonTitles:@"OK", nil];
-		[errorAlert show];
-		[errorAlert release];		
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+									 message:ISBNMetadataResponseAlertText
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles: nil];
+//		UIAlertView *errorAlert = [[UIAlertView alloc] 
+//								   initWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+//								   message:ISBNMetadataResponseAlertText
+//								   delegate:self 
+//								   cancelButtonTitle:@"OK"
+//								   otherButtonTitles: nil];
+//		[errorAlert show];
+//		[errorAlert release];		
 	}
 }
 - (BOOL)fetchBooksFromServer {

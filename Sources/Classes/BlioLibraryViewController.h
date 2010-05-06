@@ -17,6 +17,8 @@ typedef enum {
     kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
+static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayoutPageEquivalentCountChanged";
+
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
 static const CGFloat kBlioLibraryListRowHeight = 76;
@@ -60,7 +62,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     NSFetchedResultsController *_fetchedResultsController;
 	UITableView * _tableView;
 	MRGridView * _gridView;
-	CGFloat maxProportionateValue;
+	NSUInteger maxLayoutPageEquivalentCount;
 	
 	BlioBookVaultManager* _vaultManager;
 }
@@ -77,11 +79,11 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) BlioBookVaultManager* vaultManager;
-@property (nonatomic, assign) CGFloat maxProportionateValue;
+@property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 
 -(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;
 -(void)configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index;
-	
+-(void)calculateMaxLayoutPageEquivalentCount;
 @end
 
 @interface BlioLibraryBookView : UIView {
@@ -149,6 +151,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIButton * pauseButton;
     UIButton * resumeButton;
     id delegate;
+	NSUInteger layoutPageEquivalentCount;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
@@ -162,6 +165,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) BlioMockBook *book;
 @property (nonatomic, assign) id delegate;
 
--(void) resetAuthorText;
+-(void)resetAuthorText;
+-(void)resetProgressSlider;
 @end
 

@@ -18,13 +18,15 @@ static const NSInteger kBlioStoreMyVaultTag = 3;
 	NSFetchedResultsController * fetchedResultsController;
     NSManagedObjectContext *_managedObjectContext;
     id <BlioProcessingDelegate> processingDelegate;
+	NSUInteger maxLayoutPageEquivalentCount;
 
 }
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) BlioBookVaultManager* vaultManager;
 @property (nonatomic, retain) NSFetchedResultsController* fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 
 - (id)initWithVaultManager:(BlioBookVaultManager*)vm;
-
+-(void)calculateMaxLayoutPageEquivalentCount;
 @end

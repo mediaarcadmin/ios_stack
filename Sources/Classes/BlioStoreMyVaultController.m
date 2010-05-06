@@ -16,12 +16,13 @@
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate;
+@synthesize maxLayoutPageEquivalentCount;
 
 - (id)initWithVaultManager:(BlioBookVaultManager*)vm {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
-        self.title = @"My Vault";
+        self.title = NSLocalizedString(@"My Vault",@"\"My Vault\" view controller header");
         self.vaultManager = vm;
-        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"My Vault" image:[UIImage imageNamed:@"icon-vault.png"] tag:kBlioStoreMyVaultTag];
+        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"My Vault",@"\"My Vault\" button title") image:[UIImage imageNamed:@"icon-vault.png"] tag:kBlioStoreMyVaultTag];
         self.tabBarItem = theItem;
         [theItem release];
     }
@@ -34,7 +35,8 @@
 	NSError *error = nil; 
     NSManagedObjectContext *moc = [self managedObjectContext]; 
 	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioStoreMyVaultController!");
-
+	
+	[self calculateMaxLayoutPageEquivalentCount];
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
     NSSortDescriptor *libraryPositionSort = [[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO];
     NSArray *sorters = [NSArray arrayWithObject:libraryPositionSort]; 
@@ -124,6 +126,42 @@
 	[self.processingDelegate enqueueBook:book];
 }
 
+-(void) calculateMaxLayoutPageEquivalentCount {
+	
+	NSManagedObjectContext * moc = [self managedObjectContext];
+	
+	NSFetchRequest *maxFetch = [[NSFetchRequest alloc] init];
+	[maxFetch setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+	[maxFetch setResultType:NSDictionaryResultType];
+	[maxFetch setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+
+	NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:@"layoutPageEquivalentCount"];
+	NSExpression *maxExpression = [NSExpression expressionForFunction:@"max:" arguments: [NSArray arrayWithObject:keyPathExpression]];
+	NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
+	[expressionDescription setName:@"maxLayoutPageEquivalentCount"];
+	[expressionDescription setExpression:maxExpression];
+	[expressionDescription setExpressionResultType:NSDecimalAttributeType];
+	[maxFetch setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
+	
+	// Execute the fetch.
+	NSError *maxError = nil;
+	NSArray *objects = nil;
+	objects = [moc executeFetchRequest:maxFetch error:&maxError];
+	
+	if (maxError) {
+		NSLog(@"Error finding max layoutPageEquivalentCount: %@, %@", maxError, [maxError userInfo]);
+	}
+	else if (objects && ([objects count] > 0))
+	{
+		NSLog(@"[objects count]: %i",[objects count]);
+		maxLayoutPageEquivalentCount = [[[objects objectAtIndex:0] valueForKey:@"maxLayoutPageEquivalentCount"] unsignedIntValue];
+		NSLog(@"max layoutPageEquivalentCount value found: %u",maxLayoutPageEquivalentCount);
+	}
+	
+	[maxFetch release];
+	[expressionDescription release];
+}
+
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -151,7 +189,7 @@
             return kBlioLibraryListRowHeight;
 }
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSLog(@"willDisplayCell");
+//	NSLog(@"willDisplayCell");
 	if ([indexPath row] % 2) {
 		cell.backgroundColor = [UIColor whiteColor];
 	}
@@ -262,7 +300,8 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	 	NSLog(@"BlioStoreMyVaultController controllerDidChangeContent");
 	//   [self.tableView endUpdates];
-		[self.tableView reloadData];
+	[self calculateMaxLayoutPageEquivalentCount];
+	[self.tableView reloadData];
 	// for debugging purposes
 	//	NSArray * testArray = [self.fetchedResultsController fetchedObjects];
 	//	for (NSInteger i = 0; i < [testArray count]; i++) {

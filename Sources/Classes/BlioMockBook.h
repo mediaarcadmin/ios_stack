@@ -40,6 +40,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 4;
 @property (nonatomic, retain) NSString *pdfFilename;
 @property (nonatomic, retain) NSString *xpsFilename;
 @property (nonatomic, retain) NSNumber *progress;
+@property (nonatomic, retain) NSNumber *layoutPageEquivalentCount;
 @property (nonatomic, retain) NSNumber *processingState;
 @property (nonatomic, retain) NSNumber *libraryPosition;
 @property (nonatomic, retain) NSNumber *hasAudioRights;

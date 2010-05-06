@@ -90,7 +90,7 @@
 	else if ([keys count] == 0) NSLog(@"WARNING: No key found in cellIndices for cell to be deleted!");
 	else {
 		_keyValueOfCellToBeDeleted = [[keys objectAtIndex:0] intValue];
-		
+		// TODO: put this in the delegate
 		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Please confirm...",@"\"Please confirm...\" alert message title")
 														message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CONFIRM_DELETE_ACTION", nil,[NSBundle mainBundle],@"Are you sure you want to delete %@?",@"Message requesting to confirm delete action within MRGridView"), [gridCell cellContentDescription] ]
 													   delegate:self
