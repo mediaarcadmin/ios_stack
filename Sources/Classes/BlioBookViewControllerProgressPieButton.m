@@ -7,7 +7,7 @@
 //
 
 #import "BlioBookViewControllerProgressPieButton.h"
-
+#import <QuartzCore/QuartzCore.h>
 
 @implementation BlioBookViewControllerProgressPieButton
 
@@ -222,12 +222,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (CGRect)accessibilityFrame {
-    CGRect accFrame = [super accessibilityFrame];
-    
-    accFrame.origin.x += CGRectGetWidth(self.bounds) - CGRectGetWidth(backgroundFrame);
-    accFrame.size.width = CGRectGetWidth(backgroundFrame);
-    
-    return accFrame;
+    return [self.window.layer convertRect:backgroundFrame fromLayer:self.layer];
 }
 
 - (UIAccessibilityTraits)accessibilityTraits {

@@ -45,6 +45,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
 @end
 
+@interface BlioBookSlider : UISlider {
+    BOOL touchInProgress;
+}
+
+@property (nonatomic) BOOL touchInProgress;
+
+@end
+
+
 @implementation BlioBookViewController
 
 @synthesize book = _book;
@@ -909,7 +918,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         sliderFrame.size.width -= 8;
         
         // the slider
-        UISlider* slider = [[UISlider alloc] initWithFrame: sliderFrame];
+        BlioBookSlider* slider = [[BlioBookSlider alloc] initWithFrame: sliderFrame];
         slider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         [slider setAccessibilityLabel:NSLocalizedString(@"Progress", @"Accessibility label for Book View Controller Progress slider")];
         [slider setAccessibilityHint:NSLocalizedString(@"Jumps to new position in book.", @"Accessibility hint for Book View Controller Progress slider")];
@@ -934,7 +943,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         slider.minimumValue = 1;
         [slider setValue:self.bookView.pageNumber];
         
-        _pageJumpSliderTracking = NO;
         [self layoutPageJumpSlider];
         [_pageJumpView addSubview:slider];
         
@@ -978,16 +986,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void) _pageSliderSlid: (id) sender
 {
-    UISlider* slider = (UISlider*) sender;
+    BlioBookSlider* slider = (BlioBookSlider*) sender;
     NSInteger page = (NSInteger) slider.value;
     [self _updatePageJumpLabelForPage:page];
-    
-    if (slider.isTracking) {
-        _pageJumpSliderTracking = YES;
-    } else if (_pageJumpSliderTracking) {
-        [self.bookView goToPageNumber:page animated:YES];
-        _pageJumpSliderTracking = NO;
+
+    if (!slider.touchInProgress) {
+        if (page != [self.bookView pageNumber]) {
+            [self.bookView goToPageNumber:page animated:YES];
+        }
     }
+    
     [self.pieButton setProgress:_pageJumpSlider.value/_pageJumpSlider.maximumValue];
     
     // When we come to set this later, after the page turn,
@@ -995,9 +1003,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [_pageJumpSlider setValue:page animated:NO];
 }
 
+- (void)goToPageNumberAnimated:(NSNumber *)pageNumber {
+    [self.bookView goToPageNumber:[pageNumber integerValue] animated:YES];
+}
+
 - (void) _updatePageJumpLabelForPage:(NSInteger)page
 {
     _pageJumpLabel.text = [self.bookView pageLabelForPageNumber:page];
+    [_pageJumpSlider setAccessibilityValue:_pageJumpLabel.text];
 }
 
 #pragma mark -
@@ -2081,6 +2094,27 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         [self displayNote:existingNote atRange:toRange animated:YES];
     }
+}
+
+@end
+
+@implementation BlioBookSlider 
+
+@synthesize touchInProgress;
+
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    touchInProgress = YES;
+    return [super beginTrackingWithTouch:touch withEvent:event];
+}
+
+- (void)cancelTrackingWithEvent:(UIEvent *)event {
+    touchInProgress = NO;
+    [super cancelTrackingWithEvent:event];
+}
+
+- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    touchInProgress = NO;
+    [super endTrackingWithTouch:touch withEvent:event];
 }
 
 @end
