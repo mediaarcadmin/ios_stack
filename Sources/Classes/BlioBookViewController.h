@@ -118,7 +118,6 @@ typedef enum {
     UIView* _pageJumpView;
     UILabel* _pageJumpLabel;
     UISlider* _pageJumpSlider;
-    BOOL _pageJumpSliderTracking;
     BlioBookViewControllerProgressPieButton *_pieButton;
     NSManagedObjectContext *_managedObjectContext;
     BOOL rotationLocked;
