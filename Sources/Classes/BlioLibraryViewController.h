@@ -17,6 +17,8 @@ typedef enum {
     kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
+static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayoutPageEquivalentCountChanged";
+
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
 static const CGFloat kBlioLibraryListRowHeight = 76;
@@ -35,6 +37,8 @@ static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
 static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
 static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
+static const CGFloat kBlioProportionalProgressBarInsetX = 3;
+static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @class BlioBookVaultManager;
 @class BlioLibraryBookView;
@@ -58,6 +62,7 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     NSFetchedResultsController *_fetchedResultsController;
 	UITableView * _tableView;
 	MRGridView * _gridView;
+	NSUInteger maxLayoutPageEquivalentCount;
 	
 	BlioBookVaultManager* _vaultManager;
 }
@@ -74,11 +79,11 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) BlioBookVaultManager* vaultManager;
-
+@property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 
 -(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;
 -(void)configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index;
-	
+-(void)calculateMaxLayoutPageEquivalentCount;
 @end
 
 @interface BlioLibraryBookView : UIView {
@@ -95,6 +100,17 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 @property (nonatomic, readonly) UIImage *image;
 
 - (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout;
+
+@end
+
+@interface BlioProportionalProgressView : UIView {
+	UIImageView * proportionalBackground;
+	UIView * progressBar;
+	float progress;
+}
+@property (nonatomic,assign) float progress;
+@property (nonatomic, retain) UIImageView *proportionalBackground;
+@property (nonatomic, retain) UIView *progressBar;
 
 @end
 
@@ -129,22 +145,27 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
     BlioLibraryBookView *bookView;
     UILabel *titleLabel;
     UILabel *authorLabel;
-    UISlider *progressSlider;
+	UISlider *progressSlider;
+	BlioProportionalProgressView *proportionalProgressView;
     UIProgressView *progressView;
     UIButton * pauseButton;
     UIButton * resumeButton;
     id delegate;
+	NSUInteger layoutPageEquivalentCount;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UILabel *authorLabel;
 @property (nonatomic, retain) UISlider *progressSlider;
+@property (nonatomic, retain) BlioProportionalProgressView *proportionalProgressView;
 @property (nonatomic, retain) UIProgressView *progressView;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) UIButton *resumeButton;
 @property (nonatomic, assign) BlioMockBook *book;
 @property (nonatomic, assign) id delegate;
 
--(void) resetAuthorText;
+-(void)resetAuthorText;
+-(void)resetProgressSlider;
 @end
+

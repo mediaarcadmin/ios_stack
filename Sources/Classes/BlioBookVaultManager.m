@@ -9,6 +9,7 @@
 #import "BlioBookVaultManager.h"
 #import "BlioContentCafe.h"
 #import "BlioBookVault.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioBookVaultManager
 
@@ -59,6 +60,9 @@
 	return nil;
 }
 
+-(BOOL)hasValidToken {
+	return [self.loginManager hasValidToken];
+}
 - (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn {
 	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
 	cafeBinding.logXMLInOut = YES;
@@ -161,20 +165,27 @@
 	NSString * ISBNMetadataResponseAlertText = nil;
 	if (successfulResponseCount == 0 && newISBNs > 0) {
 		// we didn't get any successful responses, though we have a need for ISBN metadata.
-		ISBNMetadataResponseAlertText = @"The app was not able to retrieve your latest purchases at this time due to a server error. Please try logging in again later.";
+		ISBNMetadataResponseAlertText = NSLocalizedStringWithDefaultValue(@"ISBN_METADATA_ALL_ATTEMPTS_FAILED",nil,[NSBundle mainBundle],@"The app was not able to retrieve your latest purchases at this time due to a server error. Please try logging in again later.",@"Alert message when all attempts to access the ISBN meta-data web service fail.");
 	}
 	else if (successfulResponseCount < newISBNs) {
 		// we got some successful responses, though not all for the new ISBNs.
-		ISBNMetadataResponseAlertText = @"The app was able to retrieve some but not all of your latest purchases at this time due to a server error. Please try logging in again later.";		
+		ISBNMetadataResponseAlertText = NSLocalizedStringWithDefaultValue(@"ISBN_METADATA_SOME_ATTEMPTS_FAILED",nil,[NSBundle mainBundle],@"The app was able to retrieve some but not all of your latest purchases at this time due to a server error. Please try logging in again later.",@"Alert message when some but not all attempts to access the ISBN meta-data web service fail.");
 	}
 	if (ISBNMetadataResponseAlertText != nil) {
 	// show alert box
-		UIAlertView *errorAlert = [[UIAlertView alloc] 
-								   initWithTitle:@"We're Sorry..." message:ISBNMetadataResponseAlertText
-								   delegate:self cancelButtonTitle:nil
-								   otherButtonTitles:@"OK", nil];
-		[errorAlert show];
-		[errorAlert release];		
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+									 message:ISBNMetadataResponseAlertText
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles: nil];
+//		UIAlertView *errorAlert = [[UIAlertView alloc] 
+//								   initWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+//								   message:ISBNMetadataResponseAlertText
+//								   delegate:self 
+//								   cancelButtonTitle:@"OK"
+//								   otherButtonTitles: nil];
+//		[errorAlert show];
+//		[errorAlert release];		
 	}
 }
 - (BOOL)fetchBooksFromServer {

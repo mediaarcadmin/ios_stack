@@ -27,9 +27,9 @@
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
         
-        self.title = @"Categories";
+        self.title = NSLocalizedString(@"Categories",@"\"Categories\" header");
 
-        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"Categories" image:[UIImage imageNamed:@"icon-categories.png"] tag:kBlioStoreCategoriesTag];
+        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Categories",@"\"Categories\" tab bar title") image:[UIImage imageNamed:@"icon-categories.png"] tag:kBlioStoreCategoriesTag];
         self.tabBarItem = theItem;
         [theItem release];
     }
@@ -206,8 +206,8 @@
 		
 		[(UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag] stopAnimating];
 
-		cell.textLabel.text = [NSString stringWithFormat:@"See More %@...", [self getMoreCellLabelForSection:section]];
-		cell.detailTextLabel.text = [NSString stringWithFormat:@"%i shown out of %i total", ([feed.categories count]+[feed.entities count]),feed.totalResults];
+		cell.textLabel.text = [NSString stringWithFormat:NSLocalizedString(@"See More %@...",@"See More %@(Type of Result)..."), [self getMoreCellLabelForSection:section]];
+		cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%i shown out of %i total",@"%i shown out of %i total"), ([feed.categories count]+[feed.entities count]),feed.totalResults];
 		cell.imageView.image = nil;
         [cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@, %@", @"Accessibility label for Store Categories View Load More cell"), cell.textLabel.text, cell.detailTextLabel.text]];
         [cell setAccessibilityHint:NSLocalizedString(@"Loads more results.", @"Accessibility hint for Store Categories View Load More cell")];

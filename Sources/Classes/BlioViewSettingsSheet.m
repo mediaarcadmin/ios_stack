@@ -250,7 +250,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         UIButton *aDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
         aDoneButton.showsTouchWhenHighlighted = NO;
-        [aDoneButton setTitle:@"Done" forState:UIControlStateNormal];
+        [aDoneButton setTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") forState:UIControlStateNormal];
         [aDoneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:20.0f]];
         [aDoneButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [aDoneButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];

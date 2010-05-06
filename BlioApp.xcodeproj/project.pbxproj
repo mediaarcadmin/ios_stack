@@ -419,6 +419,8 @@
 		DC2A3E69116C5DF80049A97E /* MRGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E61116C5DF80049A97E /* MRGridViewController.m */; };
 		DC5077A1116A3F2800CD40B3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DC5077A0116A3F2800CD40B3 /* Reachability.m */; };
 		DC5077A2116A3F2800CD40B3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DC5077A0116A3F2800CD40B3 /* Reachability.m */; };
+		DCA4D09C11925AB30046CE51 /* BlioAlertManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */; };
+		DCA4D09D11925AB30046CE51 /* BlioAlertManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */; };
 		DCA65A3A11503A4D006534F4 /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
 		DCA65A3B11503A4D006534F4 /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
 		DCA65A4711503CF6006534F4 /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
@@ -861,6 +863,8 @@
 		DC2A3E63116C5DF80049A97E /* MRGridViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewDelegate.h; sourceTree = "<group>"; };
 		DC50779F116A3F2800CD40B3 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		DC5077A0116A3F2800CD40B3 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAlertManager.h; sourceTree = "<group>"; };
+		DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAlertManager.m; sourceTree = "<group>"; };
 		DCA65A3911503A4D006534F4 /* SearchCellDivider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SearchCellDivider.png; sourceTree = "<group>"; };
 		DCA65A4511503CF6006534F4 /* icon-categories.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-categories.png"; sourceTree = "<group>"; };
 		DCA65A4611503CF6006534F4 /* icon-vault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-vault.png"; sourceTree = "<group>"; };
@@ -948,6 +952,8 @@
 				A3892C1D1164331A006D8DF4 /* BookVault */,
 				C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */,
 				C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */,
+				DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */,
+				DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */,
 				7D9147C31151494A00BCBB23 /* FlowView */,
 				C9985BF8113E8286009E5263 /* LayoutView */,
 				C9F936EB113530020047B985 /* Processing */,
@@ -1938,6 +1944,7 @@
 				7D79CF7D117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m in Sources */,
 				C9336E7C1180854800D29256 /* BlioAccessibilitySegmentedControl.m in Sources */,
 				7D79CFAD117F55E70081F554 /* BlioEPubParagraphSource.m in Sources */,
+				DCA4D09C11925AB30046CE51 /* BlioAlertManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2023,6 +2030,7 @@
 				7D79CF7E117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m in Sources */,
 				C9336E7D1180854800D29256 /* BlioAccessibilitySegmentedControl.m in Sources */,
 				7D79CFAE117F55E70081F554 /* BlioEPubParagraphSource.m in Sources */,
+				DCA4D09D11925AB30046CE51 /* BlioAlertManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -90,20 +90,20 @@
 	else if ([keys count] == 0) NSLog(@"WARNING: No key found in cellIndices for cell to be deleted!");
 	else {
 		_keyValueOfCellToBeDeleted = [[keys objectAtIndex:0] intValue];
-		
-		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Please confirm..."
-														message:[NSString stringWithFormat:@"Are you sure you want to delete %@?", [gridCell cellContentDescription] ]
+		// TODO: put this in the delegate
+		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Please confirm...",@"\"Please confirm...\" alert message title")
+														message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CONFIRM_DELETE_ACTION", nil,[NSBundle mainBundle],@"Are you sure you want to delete %@?",@"Message requesting to confirm delete action within MRGridView"), [gridCell cellContentDescription] ]
 													   delegate:self
-											  cancelButtonTitle:@"Cancel"
+											  cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" alert button")
 											  otherButtonTitles:nil];
-		[alert addButtonWithTitle:@"Delete"];
+		[alert addButtonWithTitle:NSLocalizedString(@"Delete",@"\"Delete\" alert button")];
 		[alert show];
 		[alert release];
  
 	}
 }
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-	if([alertView buttonTitleAtIndex:buttonIndex] == @"Delete")
+	if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"Delete",@"\"Delete\" alert button")])
 	{
 		
 		[self.gridDataSource gridView:self commitEditingStyle:MRGridViewCellEditingStyleDelete forIndex:_keyValueOfCellToBeDeleted];

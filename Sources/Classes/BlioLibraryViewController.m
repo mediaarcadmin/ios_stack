@@ -37,6 +37,8 @@
 @synthesize gridView = _gridView;
 @synthesize tableView = _tableView;
 @synthesize vaultManager = _vaultManager;
+@synthesize maxLayoutPageEquivalentCount;
+
 
 - (id)init {
 	if ((self = [super init])) {
@@ -95,7 +97,6 @@
 	self.gridView.gridDelegate = self;
 	self.gridView.gridDataSource = self;
 	
-	self.vaultManager = [[BlioBookVaultManager alloc] init];
     self.vaultManager.processingManager = (BlioProcessingManager*)self.processingDelegate;
     self.vaultManager.managedObjectContext = self.managedObjectContext;
 	
@@ -180,15 +181,17 @@
     [libraryLayoutButton release];
     [segmentedControl release];
     
+	maxLayoutPageEquivalentCount = 0;
+	
     NSError *error = nil; 
     NSManagedObjectContext *moc = [self managedObjectContext]; 
 	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioLibraryViewController!");
-    // Load any persisted books
-    // N.B. Do not set a predicate on this request, if you do there is a risk that
-    // the fetchedResultsController won't auto-update correctly
+
+	[self calculateMaxLayoutPageEquivalentCount];	
+	
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
     NSSortDescriptor *libraryPositionSort = [[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO];
-   NSArray *sorters = [NSArray arrayWithObject:libraryPositionSort]; 
+	NSArray *sorters = [NSArray arrayWithObject:libraryPositionSort]; 
     [libraryPositionSort release];
     
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
@@ -441,6 +444,42 @@
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
+-(void) calculateMaxLayoutPageEquivalentCount {
+
+	NSManagedObjectContext * moc = [self managedObjectContext];
+	
+	NSFetchRequest *maxFetch = [[NSFetchRequest alloc] init];
+	[maxFetch setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+	[maxFetch setResultType:NSDictionaryResultType];
+ 	[maxFetch setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
+	
+	NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:@"layoutPageEquivalentCount"];
+	NSExpression *maxExpression = [NSExpression expressionForFunction:@"max:" arguments: [NSArray arrayWithObject:keyPathExpression]];
+	NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
+	[expressionDescription setName:@"maxLayoutPageEquivalentCount"];
+	[expressionDescription setExpression:maxExpression];
+	[expressionDescription setExpressionResultType:NSDecimalAttributeType];
+	[maxFetch setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
+	
+	// Execute the fetch.
+	NSError *maxError = nil;
+	NSArray *objects = nil;
+	objects = [moc executeFetchRequest:maxFetch error:&maxError];
+	
+	if (maxError) {
+		NSLog(@"Error finding max layoutPageEquivalentCount: %@, %@", maxError, [maxError userInfo]);
+	}
+	else if (objects && ([objects count] > 0))
+	{
+		NSLog(@"[objects count]: %i",[objects count]);
+		maxLayoutPageEquivalentCount = [[[objects objectAtIndex:0] valueForKey:@"maxLayoutPageEquivalentCount"] unsignedIntValue];
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioMaxLayoutPageEquivalentCountChanged object:self];
+		NSLog(@"max layoutPageEquivalentCount value found: %u",maxLayoutPageEquivalentCount);
+	}
+	
+	[maxFetch release];
+	[expressionDescription release];
+}
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.delegate = self;
@@ -630,14 +669,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSLog(@"willDisplayCell");
+//	NSLog(@"willDisplayCell");
 	if ([indexPath row] % 2) {
 		cell.backgroundColor = [UIColor whiteColor];
-//		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
 	}
 	else {                        
 		cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
-//		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
 	}
 }
 
@@ -732,16 +769,10 @@
  - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	 if (editingStyle == UITableViewCellEditingStyleDelete) {
 		 // Delete the row from the data source.
-		 
-		 BlioMockBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];
-
-		 
+		 BlioMockBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];		 
+		 NSUInteger bookLayoutPageEquivalentCount = [bookToBeDeleted.layoutPageEquivalentCount unsignedIntValue];
 		 [self.processingDelegate deleteBook:bookToBeDeleted shouldSave:YES];
-
-//		 [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-		 
-		 // TODO: recalculate background color of remaining cells
-		
+		 if (bookLayoutPageEquivalentCount == maxLayoutPageEquivalentCount) [self calculateMaxLayoutPageEquivalentCount];
 	 }   
 	 else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		 // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
@@ -817,12 +848,13 @@
 					break;
 				case kBlioLibraryLayoutList: {
 					NSArray * indexPaths = [self.tableView indexPathsForVisibleRows];
+					[UIView beginAnimations:@"changeRowBackgroundColor" context:nil];
 					for (NSIndexPath * visiblePath in indexPaths) {
 						if (visiblePath.row > indexPath.row) {
 							[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:visiblePath.row-1 inSection:visiblePath.section]];
 						}
 					}				
-					
+					[UIView commitAnimations];
 					[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
 				}
 					break;
@@ -874,13 +906,13 @@
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
-//	NSLog(@"mergeChangesFromContextDidSaveNotification received...");
-//	
-//	if (notification.object == self.managedObjectContext) {
-//		NSLog(@"...from same moc as library- returning.");
-//		return;
-//	}
-//	else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
+	NSLog(@"BlioLibraryViewController mergeChangesFromContextDidSaveNotification received...");
+	
+	if (notification.object == self.managedObjectContext) {
+		NSLog(@"...from same moc as library- returning.");
+		return;
+	}
+	else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
     // Fault in all updated objects
 	
 	//refresh updated objects and merge changes
@@ -1222,6 +1254,7 @@
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
     self.imageView = nil;
     self.textureView = nil;
     self.book = nil;
@@ -1315,7 +1348,7 @@
 		pausedLabel.textAlignment = UITextAlignmentCenter;
 		pausedLabel.backgroundColor = [UIColor clearColor];
 		pausedLabel.textColor = [UIColor whiteColor];
-		pausedLabel.text = @"Paused...";
+		pausedLabel.text = NSLocalizedString(@"Paused...","\"Paused...\" status indicator in BlioLibraryGridViewCell");
 		pausedLabel.hidden = YES;
 		pausedLabel.font = [UIFont boldSystemFontOfSize:12.0];
 		[progressBackgroundView addSubview:pausedLabel];
@@ -1473,7 +1506,7 @@
 
 @implementation BlioLibraryListCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider, delegate,progressView,pauseButton,resumeButton;
+@synthesize bookView, titleLabel, authorLabel, progressSlider,proportionalProgressView, delegate,progressView,pauseButton,resumeButton;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -1586,15 +1619,16 @@
 - (void)setBook:(BlioMockBook *)newBook {
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
-
+	layoutPageEquivalentCount = [self.book.layoutPageEquivalentCount unsignedIntValue];
     self.progressSlider.value = [[newBook progress] floatValue];
-    //CGRect progressFrame = self.progressSlider.frame;
-    //self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
 
+	[self resetProgressSlider];
+	
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
 		self.progressView.hidden = YES;
 		self.accessoryView = resumeButton;
 		[self resetAuthorText];
+		self.progressSlider.hidden = NO;
 	}			
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioMockBookProcessingStateComplete) {
 		NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
@@ -1609,21 +1643,39 @@
 		
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStateIncomplete) {
 			self.progressView.hidden = NO;
+			self.progressSlider.hidden = YES;
 			[((BlioProcessingCompleteOperation*)completeOp) calculateProgress];
 			self.accessoryView = pauseButton;
-			self.authorLabel.text = @"Downloading...";
+			self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePaused) {
 			self.accessoryView = resumeButton;
 			self.authorLabel.text = @"Paused...";
+			self.progressSlider.hidden = YES;
 		}
 	}
 	else {
+		self.progressSlider.hidden = NO;
 		progressView.hidden = YES;
 		[self resetAuthorText];
 		self.accessoryView = nil;
 	}
     [self setNeedsLayout];
+}
+-(void) resetProgressSlider {
+    CGRect progressFrame = self.progressSlider.frame;
+	CGFloat targetProgressWidth = 0;
+	if (((BlioLibraryViewController*)delegate).maxLayoutPageEquivalentCount != 0) {
+//		NSLog(@"layoutPageEquivalentCount: %u",layoutPageEquivalentCount);
+//		NSLog(@"((BlioLibraryViewController*)delegate).maxLayoutPageEquivalentCount: %u",[(BlioLibraryViewController*)delegate maxLayoutPageEquivalentCount]);
+		CGFloat layoutPageEquivalentCountFloat = layoutPageEquivalentCount;
+		targetProgressWidth = (layoutPageEquivalentCountFloat/((BlioLibraryViewController*)delegate).maxLayoutPageEquivalentCount) * kBlioLibraryListContentWidth;
+		if (targetProgressWidth > kBlioLibraryListContentWidth) {
+			NSLog(@"WARNING: this book's layoutPageEquivalentCount may be larger than maxLayoutPageEquivalentCount- which should never happen!");
+			targetProgressWidth = kBlioLibraryListContentWidth; // should never happen but this is a safeguard.
+		}
+	}
+	self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, targetProgressWidth, progressFrame.size.height);	
 }
 -(void) resetAuthorText {
     self.authorLabel.text = [[self.book author] uppercaseString];
@@ -1636,21 +1688,28 @@
 //               forControlEvents:UIControlEventTouchUpInside];
     
     delegate = newDelegate;
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioMaxLayoutPageEquivalentCountChanged:) name:BlioMaxLayoutPageEquivalentCountChanged object:newDelegate];
+
 //    [self.bookView addTarget:delegate action:@selector(bookTouched:)
 //            forControlEvents:UIControlEventTouchUpInside];
 }
-
+-(void) onBlioMaxLayoutPageEquivalentCountChanged:(NSNotification*)note {
+	NSLog(@"onBlioMaxLayoutPageEquivalentCountChanged entered");
+	if (delegate == [note object]) [self resetProgressSlider];
+}
 - (void)onProcessingProgressNotification:(NSNotification*)note {
 	BlioProcessingCompleteOperation * completeOp = [note object];
 //	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
 	progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 }
+
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
 	NSLog(@"BlioLibraryListViewCell onProcessingCompleteNotification entered");
-	progressView.hidden = YES;
-	[self resetAuthorText];
-	self.accessoryView = nil;
+//	progressView.hidden = YES;
+//	[self resetAuthorText];
+//	self.accessoryView = nil;
 	// bookView.alpha = 1;
+	[(BlioLibraryViewController*)delegate calculateMaxLayoutPageEquivalentCount];
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {
 	NSLog(@"BlioLibraryListViewCell onProcessingFailedNotification entered");
@@ -1658,4 +1717,34 @@
 
 @end
 
+@implementation BlioProportionalProgressView
 
+@synthesize proportionalBackground,progressBar;
+
+-(id)initWithFrame:(CGRect)frame {
+	if ((self = [super initWithFrame:frame])) {
+		proportionalBackground = [[UIImageView alloc] initWithFrame:self.bounds];
+		progressBar = [[UIView alloc] initWithFrame:CGRectInset(self.bounds, kBlioProportionalProgressBarInsetX, kBlioProportionalProgressBarInsetY)];
+		progressBar.backgroundColor = [UIColor blackColor];
+		progressBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		proportionalBackground.image = [[UIImage imageNamed:@"proportionate-size-box.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0];
+		[self addSubview:proportionalBackground];
+		[self addSubview:progressBar];
+	}
+	return self;
+}
+-(float)progress {
+	return progress;
+}
+-(void)setProgress:(float)progressValue {
+	CGFloat targetValue = progressValue;
+	if (targetValue < 0) targetValue = 0;
+	if (targetValue > 1) targetValue = 1;
+	// change view visuals
+	CGRect maxBarFrame = CGRectInset(self.bounds, kBlioProportionalProgressBarInsetX, kBlioProportionalProgressBarInsetY);
+	CGFloat newBarWidth = targetValue * maxBarFrame.size.width;
+	
+	progressBar.bounds = CGRectMake(progressBar.bounds.origin.x, progressBar.bounds.origin.y, newBarWidth, progressBar.bounds.size.height);
+	progress = targetValue;
+}
+@end

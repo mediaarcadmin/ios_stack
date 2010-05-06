@@ -35,6 +35,7 @@
 			self.username = user;
 			self.token = [bodyPart LoginResult].Token;
 			self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
+			NSLog(@"timeout: %@",self.timeout);
 			return BlioLoginResultSuccess;
 		}
 		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 203 ) {
@@ -48,7 +49,11 @@
 	}
 	return BlioLoginResultError;
 }
-
+-(BOOL)hasValidToken {
+	if (self.token == nil) return NO;
+	if ([self.timeout compare:[NSDate date]] == NSOrderedDescending) return YES;
+	return NO;
+}
 - (void)logout {
 	self.token = nil;
 	self.isLoggedIn = NO;

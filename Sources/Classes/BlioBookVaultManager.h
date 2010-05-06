@@ -29,5 +29,6 @@
 - (void)archiveBooks;
 - (BOOL)fetchBooksFromServer;
 - (NSURL*)URLForPaidBook:(NSString*)isbn;
+-(BOOL)hasValidToken;
 
 @end

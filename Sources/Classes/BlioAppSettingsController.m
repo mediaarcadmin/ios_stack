@@ -24,14 +24,14 @@
 	[super loadView];
 	
 	self.navigationItem.titleView = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)];
-	[(UILabel*)self.navigationItem.titleView setText:@"Settings"];
+	[(UILabel*)self.navigationItem.titleView setText:NSLocalizedString(@"Settings",@"\"Settings\" view controller header")];
 	[(UILabel*)self.navigationItem.titleView setBackgroundColor:[UIColor clearColor]];
 	[(UILabel*)self.navigationItem.titleView setTextColor:[UIColor whiteColor]];
 	[(UILabel*)self.navigationItem.titleView setTextAlignment:UITextAlignmentCenter];
 	[(UILabel*)self.navigationItem.titleView setFont:[UIFont boldSystemFontOfSize:18.0f]];
 	
 	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
-											  initWithTitle:@"Done" 
+											  initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
 											  style:UIBarButtonItemStyleDone 
 											  target:self
 											   action:@selector(dismissSettingsView:)]

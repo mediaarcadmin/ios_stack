@@ -39,7 +39,8 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 
 @implementation BlioStoreBookViewController
 
-@synthesize fetchThumbQueue, feed, entity, scroller, container, bookThumb, bookTitle, bookShadow, bookPlaceholder, authors, download, summary, releaseDate, publicationDate, pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherLabel, belowSummaryDetails,downloadStateLabels,downloadButtonContainer,downloadButtonBackgroundView;
+@synthesize fetchThumbQueue, feed, entity, scroller, container, bookThumb, bookTitle, bookShadow, bookPlaceholder, authors, download, summary, releaseDate, publicationDate,
+pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherLabel, belowSummaryDetails,downloadStateLabels,downloadButtonContainer,downloadButtonBackgroundView;
 @synthesize processingDelegate;
 @synthesize managedObjectContext;
 
@@ -47,21 +48,31 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 - (void)dealloc {
     [self.fetchThumbQueue cancelAllOperations];
     self.fetchThumbQueue = nil;
+	self.feed = nil;
     self.entity = nil;
     self.scroller = nil;
     self.container = nil;
+	self.bookThumb = nil;
     self.bookTitle = nil;
     self.bookShadow = nil;
     self.bookPlaceholder = nil;
     self.authors = nil;
     self.download = nil;
     self.summary = nil;
-    self.belowSummaryDetails = nil;
     self.releaseDate = nil;
     self.publicationDate = nil;
     self.pages = nil;
     self.publisher = nil;
+	self.releaseDateLabel = nil;
+	self.publicationDateLabel = nil;
+	self.pagesLabel = nil;
+	self.publisherLabel = nil;
+    self.belowSummaryDetails = nil;
+	self.downloadStateLabels = nil;
+	self.downloadButtonContainer = nil;
+	self.downloadButtonBackgroundView = nil;
     self.processingDelegate = nil;
+	self.managedObjectContext = nil;
     [super dealloc];
 }
 
@@ -465,6 +476,8 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
                           endCenter.x,curveTop,
                           endCenter.x,endCenter.y);
     positionAnimation.path=thePath;
+	CGPathRelease(thePath);
+
     positionAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
     positionAnimation.duration = animationDuration;
     positionAnimation.delegate = self;

@@ -93,7 +93,7 @@ typedef enum {
         
         UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
         
-        UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(dismissTabView:)];
+        UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleDone target:self action:@selector(dismissTabView:)];
         self.doneButton = aDoneButton;
         [aDoneButton release];
                 
@@ -102,7 +102,7 @@ typedef enum {
         [tabItems addObject:item];
         [item release];
         
-        NSArray *tabTitles = [NSArray arrayWithObjects: @"Contents", @"Bookmarks", @"Notes", nil];
+        NSArray *tabTitles = [NSArray arrayWithObjects: NSLocalizedString(@"Contents",@"\"Contents\" segmented control title for BlioContentsTabViewController"), NSLocalizedString(@"Bookmarks",@"\"Bookmarks\" segmented control title for BlioContentsTabViewController"), NSLocalizedString(@"Notes",@"\"Notes\" segmented control title for BlioContentsTabViewController"), nil];
         UISegmentedControl *aTabSegmentedControl = [[UISegmentedControl alloc] initWithItems:tabTitles];
         aTabSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aTabSegmentedControl.tintColor = tintColor;

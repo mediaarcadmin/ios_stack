@@ -9,15 +9,13 @@
 #import "BlioStoreWebsiteViewController.h"
 #import "BlioAppSettingsConstants.h"
 
-static NSString * const kBlioWebsiteIntro = @"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Vault for download the next time you start Blio.";
-
 @implementation BlioStoreWebsiteViewController
 
 - (id)init {
     if ((self = [super init])) {
-        self.title = @"Buy Books";
+        self.title = NSLocalizedString(@"Buy Books",@"\"Buy Books\" view controller header");
         
-        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:@"Buy Books" image:[UIImage imageNamed:@"icon-cart.png"] tag:kBlioStoreBuyBooksTag];
+        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Buy Books",@"\"Buy Books\" bar button title") image:[UIImage imageNamed:@"icon-cart.png"] tag:kBlioStoreBuyBooksTag];
         self.tabBarItem = theItem;
         [theItem release];
     }
@@ -45,14 +43,14 @@ static NSString * const kBlioWebsiteIntro = @"To buy books for Blio, you must vi
 	// Display instructions for website.
 	CGFloat yPlacement = kTopMargin;
 	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
-	[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:kBlioWebsiteIntro]];
+	[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Vault for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.")]];
 	
 	// blioreader.com button.
 	yPlacement += kTweenMargin + 5*kLabelHeight;
 	launchButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 	launchButton.frame = CGRectMake(kLeftMargin, yPlacement, (2.6)*kStdButtonWidth, kStdButtonHeight);
     launchButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	[launchButton setTitle:@"Open blioreader.com in Safari" forState:UIControlStateNormal];
+	[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
 	launchButton.backgroundColor = [UIColor clearColor];
 	[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:launchButton];
