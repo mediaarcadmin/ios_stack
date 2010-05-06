@@ -794,14 +794,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     CGRect rect = [bookView convertRect:self.bookView.bounds toView:nil];
     
     if([self toolbarsVisible]) {
-        UINavigationBar *navBar = self.navigationController.navigationBar;
-        CGRect navRect = [navBar convertRect:navBar.bounds toView:nil];
+        CGRect navRect;
+        if(_pageJumpView) {
+            navRect = [_pageJumpView convertRect:_pageJumpView.bounds toView:nil];
+        } else {
+            UINavigationBar *navBar = self.navigationController.navigationBar;
+            navRect = [navBar convertRect:navBar.bounds toView:nil];
+        }
         
         CGFloat navRectBottom = CGRectGetMaxY(navRect);
         rect.size.height -= navRectBottom - rect.origin.y;
         rect.origin.y = navRectBottom;
-        
-        CGRect toolbarRect = [self.navigationController.toolbar convertRect:navBar.bounds toView:nil];
+
+        UIToolbar *toolbar = self.navigationController.toolbar;
+        CGRect toolbarRect = [toolbar convertRect:toolbar.bounds toView:nil];
         rect.size.height = toolbarRect.origin.y - rect.origin.y;
     }
     
