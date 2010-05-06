@@ -26,7 +26,7 @@ typedef struct EucRange {
     EucPoint end;
 } EucRange;
 
-@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDataSource> {
+@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDelegate, EucSelectorDataSource> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
 
@@ -83,7 +83,6 @@ typedef struct EucRange {
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
 
 @property (nonatomic, assign) id<EucBookViewDelegate> delegate;
-@property (nonatomic, assign) id<EucSelectorDelegate> selectorDelegate;
 
 @property (nonatomic, readonly) EucBookReference<EucBook> *book;
 
@@ -127,6 +126,7 @@ typedef struct EucRange {
 - (NSInteger)pageNumberForUuid:(NSString *)uuid;
 
 - (void)highlightWordAtBlockId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+- (void)setNeedsAccessibilityElementsRebuild;
 
 @property (nonatomic, readonly) EucRange selectedRange;
 - (void)clearSelectedRange;
@@ -137,6 +137,8 @@ typedef struct EucRange {
 
 @protocol EucBookViewDelegate <NSObject>
 @optional
-- (BOOL)bookView:(EucBookView *)controller shouldHandleTapOnHyperlink:(NSURL *)link withAttributes:(NSDictionary *)attributes;
+- (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link withAttributes:(NSDictionary *)attributes;
+- (void)bookViewPageTurnWillBegin:(EucBookView *)bookView;
+- (void)bookViewPageTurnDidEnd:(EucBookView *)bookView;
 
 @end

@@ -11,8 +11,9 @@
 #import "BlioBookViewController.h"
 #import "BlioProcessingManager.h"
 
-@interface BlioFlowView : EucBookView <BlioBookView, EucSelectorDelegate, BlioProcessingManagerOperationProvider> {
+@interface BlioFlowView : EucBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
     id<BlioParagraphSource> _paragraphSource;
+    BOOL _pageViewIsTurning;
 }
 
 

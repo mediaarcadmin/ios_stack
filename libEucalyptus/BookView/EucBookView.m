@@ -56,7 +56,6 @@
 @synthesize book = _book;
 
 @synthesize allowsSelection = _allowsSelection;
-@synthesize selectorDelegate = _selectorDelegate;
 
 @synthesize pageTexture = _pageTexture;
 @synthesize pageTextureIsDark = _pageTextureIsDark;
@@ -190,9 +189,7 @@
                           options:0
                           context:NULL];
         _selector.dataSource = self;
-        if(_selectorDelegate) {
-            _selector.delegate = _selectorDelegate;
-        }
+        _selector.delegate = self;
     } else {
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
@@ -320,14 +317,6 @@
     }*/
 }
 
-- (void)setHighlighterDelegate:(id <EucSelectorDelegate>)selectorDelegate
-{
-    if(_selector) {
-        _selector.delegate = selectorDelegate;
-    }
-    _selectorDelegate = selectorDelegate;
-}
-
 #pragma mark -
 #pragma mark Navigation
 
@@ -362,6 +351,11 @@
     // Preemptive, to make the animation run at the same time as the 
     // page turning view's animation.
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:animated];                
+}
+
+- (void)setNeedsAccessibilityElementsRebuild 
+{
+    [self.pageTurningView setNeedsAccessibilityElementsRebuild];
 }
 
 - (void)_redisplayCurrentPage
@@ -747,6 +741,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
     [self _updatePageNumberLabel];
+    
+    [self setNeedsAccessibilityElementsRebuild];
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view
@@ -769,9 +765,13 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 - (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
 {
+    if([_delegate respondsToSelector:@selector(bookViewPageTurnWillBegin:)]) {
+        [_delegate bookViewPageTurnWillBegin:self];
+    }
+    
     _selector.selectionDisabled = YES;
     _highlightingDisabled = YES;
-    [self _removeHighlights];
+    [self _removeHighlights];    
 }
 
 - (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
@@ -780,6 +780,10 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _highlightingDisabled = NO;
     if(_highlightPage == self.pageNumber) {
         [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
+    }    
+    
+    if([_delegate respondsToSelector:@selector(bookViewPageTurnDidEnd:)]) {
+        [_delegate bookViewPageTurnDidEnd:self];
     }    
 }
 
@@ -864,7 +868,12 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 #pragma mark -
 #pragma mark Toolbar
 
-- (void)_addButtonToView:(UIView *)view withImageNamed:(NSString *)name centerPoint:(CGPoint)centerPoint target:(id)target action:(SEL)action
+- (void)_addButtonToView:(UIView *)view 
+          withImageNamed:(NSString *)name 
+             centerPoint:(CGPoint)centerPoint 
+                  target:(id)target
+                  action:(SEL)action
+                   title:(NSString *)title
 {
     UIButton *button;
     button = [[UIButton alloc] init];
@@ -881,6 +890,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     }
     button.center = centerPoint;
     button.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
+    [button setAccessibilityLabel:title];
     
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:button];
@@ -944,13 +954,15 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
             withImageNamed:@"UIBarButtonSystemItemRewind.png" 
                centerPoint:CGPointMake(floorf(toolbarBounds.size.width * 0.3f), centerY)
                     target:self
-                    action:@selector(jumpBackwards)];
+                    action:@selector(jumpBackwards)
+                     title:@"Jump Backwards"];
     
     [self _addButtonToView:toolbar 
             withImageNamed:@"UIBarButtonSystemItemFastForward.png" 
                centerPoint:CGPointMake(ceilf(toolbarBounds.size.width * 0.7f), centerY)
                     target:self
-                    action:@selector(jumpForwards)];
+                    action:@selector(jumpForwards)
+                     title:@"Jump Forwards"];
     /*
      [self _addButtonToView:toolbar 
      withImageNamed:@"UIBarButtonSystemItemTrash.png" 
@@ -985,11 +997,11 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     
     pageSliderFrame = _pageSlider.frame;
     
-    
     UIProgressView *behindSlider = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     CGRect behindSliderFrame = behindSlider.frame;
     behindSliderFrame.size.width = pageSliderFrame.size.width - 4;
     behindSlider.frame = behindSliderFrame;
+    behindSlider.isAccessibilityElement = NO;
     
     CGPoint pageSliderCenter = _pageSlider.center;
     pageSliderCenter.y += 1.5;
@@ -1208,5 +1220,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [self _updateSliderByteToPageRatio];
     [self _updatePageNumberLabel];
 }
+
 
 @end

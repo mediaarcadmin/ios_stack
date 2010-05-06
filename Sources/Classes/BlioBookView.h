@@ -88,4 +88,6 @@
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
+- (BOOL)toolbarShowShouldBeSuppressed;
+
 @end

@@ -17,7 +17,10 @@
 #import "EucCSSLayouter.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSRenderer.h"
-#import "EucCSSLayoutPositionedBlock.h"
+#import "EucCSSLayoutPositionedRun.h"
+#import "EucCSSLayoutLine.h"
+
+#import "THPair.h"
 
 @interface EucBUpePageTextView ()
     
@@ -47,6 +50,8 @@
 - (void)dealloc
 {
     [_positionedBlock release];
+    [_runs release];
+    [_accessibilityElements release];
     [super dealloc];
 }
 
@@ -99,24 +104,100 @@
     return [ret autorelease];
 }
 
+- (void)_accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)block intoArray:(NSMutableArray *)array
+{
+    for(id subBlock in block.subEntities) {
+        if([subBlock isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
+            [self _accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)subBlock intoArray:array];
+        } else if([subBlock isKindOfClass:[EucCSSLayoutPositionedRun class]]) {
+            [array addObject:subBlock];
+        }
+    }
+}
+
+- (NSArray *)_runs
+{
+    if(!_runs) {
+        _runs = [[NSMutableArray alloc] init];
+        [self _accumulateRunsBelowBlock:self.positionedBlock intoArray:(NSMutableArray *)_runs];
+    }
+    return _runs;
+}
+
 - (NSArray *)blockIdentifiers
 {
+    return [[[self _runs] valueForKey:@"documentRun"] valueForKey:@"id"];
+}
+
+- (EucCSSLayoutPositionedRun *)_runWithKey:(uint32_t)key
+{
+    for(EucCSSLayoutPositionedRun *run in [self _runs]) {
+        if(key == run.documentRun.id) {
+            return run;
+        }
+    }
     return nil;
 }
 
 - (CGRect)frameOfBlockWithIdentifier:(id)blockId
 {
-    return CGRectZero;
+    EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
+    if(run) {
+        return run.frame;
+    }
+    return CGRectZero; 
 }
 
-- (NSArray *)identifiersForElementsOfBlockWithIdentifier:(id)id
+- (NSArray *)identifiersForElementsOfBlockWithIdentifier:(id)blockId
 {
+    EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
+    if(run) {
+        NSMutableArray *array = [NSMutableArray array];
+        uint32_t lastWordId = UINT32_MAX;
+
+        for(EucCSSLayoutLine *line in run.lines) {
+            EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+            size_t renderItemsCount = line.renderItemCount;
+            
+            EucCSSLayoutLineRenderItem* renderItem = renderItems;
+            for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
+                if([renderItem->item isKindOfClass:[NSString class]]) {
+                    uint32_t wordId = renderItem->point.word;
+                    if(wordId != lastWordId) {
+                        [array addObject:[NSNumber numberWithUnsignedInt:wordId]];
+                        lastWordId = wordId;
+                    }
+                }
+            }
+        }
+        return array;
+    }
     return nil;
 }
 
 - (NSArray *)rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId
 {
-    return nil;
+    EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
+    uint32_t wantedWordId = [(NSNumber *)elementId intValue];
+    
+    NSMutableArray *array = [NSMutableArray array];
+    for(EucCSSLayoutLine *line in run.lines) {
+        EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+        size_t renderItemsCount = line.renderItemCount;
+        
+        EucCSSLayoutLineRenderItem* renderItem = renderItems;
+        for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
+            if([renderItem->item isKindOfClass:[NSString class]]) {
+                uint32_t wordId = renderItem->point.word;
+                if(wordId == wantedWordId) {
+                    [array addObject:[NSValue valueWithCGRect:renderItem->rect]];
+                } else if(wordId > wantedWordId) {
+                    break;   
+                }
+            }
+        }
+    }    
+    return array.count ? array : nil;
 }
 
 - (void)clear
@@ -139,6 +220,73 @@
 - (void)drawRect:(CGRect)rect 
 {
     [self drawRect:rect inContext:UIGraphicsGetCurrentContext()];
+}
+
+- (NSArray *)accessibilityElements
+{
+    if(!_accessibilityElements) {
+        CGRect myFrame = self.frame;
+        NSArray *runs = [self _runs];
+        
+        NSMutableArray *buildAccessibilityElements = [[NSMutableArray alloc] initWithCapacity:runs.count];
+        for(EucCSSLayoutPositionedRun *run in runs) {
+            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            
+            CGRect frame = run.frame;
+            frame.origin.x += myFrame.origin.x;
+            frame.origin.y += myFrame.origin.y;
+            element.accessibilityFrame = frame;
+            
+            NSMutableString *buildString = [NSMutableString string];
+            for(EucCSSLayoutLine *line in run.lines) {
+                EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+                size_t renderItemsCount = line.renderItemCount;
+                    
+                EucCSSLayoutLineRenderItem* renderItem = renderItems;
+                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
+                    if(renderItem->altText) {
+                        [buildString appendString:renderItem->altText];
+                    } else if(renderItem->point.element == 0) {
+                        [buildString appendString:renderItem->item];
+                    }
+                    [buildString appendString:@" "];
+                }
+            }
+            NSUInteger stringLength = buildString.length;
+            if(stringLength) {
+                [buildString deleteCharactersInRange:NSMakeRange(stringLength - 1, 1)];
+            }            
+            element.accessibilityLabel = buildString;
+            
+            element.accessibilityTraits = UIAccessibilityTraitStaticText;
+            
+            [buildAccessibilityElements addObject:element];
+            [element release];
+        }
+        
+        _accessibilityElements = buildAccessibilityElements;
+    }
+    return _accessibilityElements;
+}
+
+- (BOOL)isAccessibilityElement
+{
+    return NO;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return [[self accessibilityElements] count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    return [[self accessibilityElements] objectAtIndex:index];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return [[self accessibilityElements] indexOfObject:element];
 }
 
 - (void)handleTouchBegan:(UITouch *)touch atLocation:(CGPoint)location {}

@@ -48,11 +48,11 @@
         return nil;
     }
     
-    self.paragraphSource = aBook.paragraphSource;
 
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds book:eucBook])) {
+        self.delegate = self;
+        self.paragraphSource = aBook.paragraphSource;
         self.allowsSelection = YES;
-        self.selectorDelegate = self;
         [self goToBookmarkPoint:aBook.implicitBookmarkPoint animated:NO];
         if (animated) self.appearAtCoverThenOpen = YES;
     }
@@ -223,5 +223,21 @@
     [preParseOp release];
     return operations;
 }
+
+- (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
+{
+    _pageViewIsTurning = YES;
+}
+
+- (void)bookViewPageTurnDidEnd:(EucBookView *)bookView
+{
+    _pageViewIsTurning = NO;
+}
+
+- (BOOL)toolbarShowShouldBeSuppressed
+{
+    return _pageViewIsTurning;
+}
+
 
 @end

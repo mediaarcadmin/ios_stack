@@ -21,6 +21,9 @@
     BOOL _backgroundIsDark;
     
     EucCSSLayoutPositionedBlock *_positionedBlock;
+    NSArray *_runs;
+    
+    NSArray *_accessibilityElements;
 }
 
 @end

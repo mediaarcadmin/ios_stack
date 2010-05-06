@@ -62,6 +62,7 @@ typedef struct {
     GLfloatPair _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
     UITouch *_touch;
+    NSTimeInterval _touchBeganTime;
     NSInteger _touchRow;
     GLfloat _touchXOffset;
     NSTimeInterval _touchTime;
@@ -110,6 +111,8 @@ typedef struct {
     GLfloat _diffuseLightColor[4];
     
     GLfloatTriplet _lightPosition;
+    
+    NSArray *_accessibilityElements;
 }
 
 @property (nonatomic,assign) id<EucPageTurningViewDelegate> delegate;
@@ -132,6 +135,8 @@ typedef struct {
 
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 
+- (void)setNeedsAccessibilityElementsRebuild;
+
 @end
 
 
@@ -153,6 +158,7 @@ typedef struct {
 
 // Views are assumed not to have rigid edges if this is not implemented.
 - (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView viewEdgeIsRigid:(UIView *)view;
+- (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView tapTurnMarginForView:(UIView *)view;
 
 @end
 
