@@ -22,6 +22,8 @@
     
     EucCSSLayoutPositionedBlock *_positionedBlock;
     NSArray *_runs;
+    
+    NSArray *_accessibilityElements;
 }
 
 @end

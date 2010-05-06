@@ -45,6 +45,8 @@ typedef enum EucPageViewTitleLineContents
     BOOL _fullBleed;
     
     UITouch *_touch;
+    
+    NSArray *_accessibilityElements;
 }
 
 @property (nonatomic, assign) id<EucPageViewDelegate> delegate;

@@ -43,6 +43,7 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) BOOL isImageNode;
 @property (nonatomic, readonly) NSURL *imageSrc;
+@property (nonatomic, readonly) NSString *altText;
 
 // Abstract:
 

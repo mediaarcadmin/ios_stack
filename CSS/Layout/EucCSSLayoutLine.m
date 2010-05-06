@@ -36,9 +36,14 @@
 
 - (void)dealloc
 {    
-    for(size_t i = 0; i < _renderItemCount; ++i) {
-        [_renderItems[i].item release];
-        [_renderItems[i].stringRenderer release];
+    EucCSSLayoutLineRenderItem *renderItem = _renderItems;
+    EucCSSLayoutLineRenderItem *renderItemEnd = _renderItems + _renderItemCount;
+    for(; renderItem < renderItemEnd; ++renderItem) {
+        [renderItem->item release];
+        [renderItem->stringRenderer release];
+        if(renderItem->altText) {
+            [renderItem->altText release];   
+        }
     }
     free(_renderItems);
     
@@ -128,7 +133,7 @@
         uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
         uint32_t lastComponentOffset = [documentRun pointToComponentOffset:_endPoint] - 1;
         
-        _renderItems = malloc(sizeof(EucCSSLayoutLineRenderItem) * componentsCount);
+        _renderItems = calloc(sizeof(EucCSSLayoutLineRenderItem), componentsCount);
         
         CGFloat xPosition = _origin.x;
         CGFloat yPosition = _origin.y;
@@ -190,7 +195,7 @@
                 renderItem->item = [(UIImage *)info->component retain];
                 renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, info->pointSize);
                 renderItem->point = info->point;
-                renderItem->stringRenderer = nil;
+                renderItem->altText = [[info->documentNode altText] retain];
                 ++renderItem;
                 ++_renderItemCount;
                 
@@ -216,9 +221,11 @@
         if(i < documentRun.componentsCount) {
             if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
                 --renderItem;
-                [renderItem->item release];
                 
                 xPosition -= info->width;
+                
+                // Store the entire word in the alt text for accessibility.
+                renderItem->altText = renderItem->item;
                 
                 renderItem->item = [(NSString *)info->component retain];
                 renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthBeforeHyphen, _size.height);

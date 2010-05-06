@@ -111,6 +111,8 @@ typedef struct {
     GLfloat _diffuseLightColor[4];
     
     GLfloatTriplet _lightPosition;
+    
+    NSArray *_accessibilityElements;
 }
 
 @property (nonatomic,assign) id<EucPageTurningViewDelegate> delegate;
@@ -132,6 +134,8 @@ typedef struct {
 @property (nonatomic, assign) GLfloatTriplet lightPosition;
 
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
+
+- (void)setNeedsAccessibilityElementsRebuild;
 
 @end
 

@@ -281,4 +281,9 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return nil;
 }
 
+- (NSString *)altText
+{
+    return nil;
+}
+
 @end

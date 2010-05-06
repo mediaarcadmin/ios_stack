@@ -120,6 +120,9 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     
     [_title release];
     [_bookTextView release];
+    
+    [_accessibilityElements release];
+
 	[super dealloc];
 }
 
@@ -385,6 +388,39 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapOnHyperlinkWithAttributes:)]) {
         [_delegate pageView:self didReceiveTapOnHyperlinkWithAttributes:attributes];
     }
+}
+
+- (NSArray *)accessibilityElements
+{
+    if(!_accessibilityElements) {
+        if([_bookTextView respondsToSelector:@selector(accessibilityElements)]) {
+            _accessibilityElements = [[_bookTextView performSelector:@selector(accessibilityElements)] retain];
+        }
+        for(UIAccessibilityElement *element in _accessibilityElements) {
+            element.accessibilityContainer = self;
+        }
+    }
+    return _accessibilityElements;
+}
+
+- (BOOL)isAccessibilityElement
+{
+    return NO;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return [[self accessibilityElements] count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    return [[self accessibilityElements] objectAtIndex:index];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return [[self accessibilityElements] indexOfObject:element];
 }
 
 @end
