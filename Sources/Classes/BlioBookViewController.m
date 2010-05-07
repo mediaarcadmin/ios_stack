@@ -303,8 +303,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)setBookView:(UIView<BlioBookView> *)bookView
 {
-    if(_bookView)
-        [self removeObserver:_bookView forKeyPath:@"audioPath"];
         
     if(_bookView != bookView) {
         if(_bookView) {
@@ -356,9 +354,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         forKeyPath:@"pageCount" 
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                            context:nil];   
-            
-            if (nil != _bookView)
-                [self addObserver:_bookView forKeyPath:@"audioPath" options:0 context:nil];
         }
     }
 }
@@ -1639,6 +1634,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
     }
     self.audioPlaying = !self.audioPlaying;  
+    
     [item setImage:audioImage];
 }
 

@@ -357,6 +357,7 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
 
 - (NSArray *)blocksForPage:(NSInteger)pageIndex inPageRange:(BlioTextFlowPageRange *)pageRange targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker {
     
+//    NSLog(@"CurrentThread is main %d %@", [[NSThread currentThread] isMainThread], [NSThread currentThread]);
     self.currentBlockArray = nil;
     NSString *path = [self.basePath stringByAppendingPathComponent:[pageRange path]];
     
@@ -384,6 +385,12 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
                 char *error = (char *)XML_ErrorString(errorCode);
                 NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
             }
+        }
+        
+        if ((dataLength - offset) < 0) {
+            NSLog(@"offset is too large");
+            [data release];
+            return nil;
         }
         
         NSUInteger targetFragmentLength = dataLength - offset;
