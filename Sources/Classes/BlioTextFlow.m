@@ -199,8 +199,6 @@
 
 @interface BlioTextFlow()
 
-@property (nonatomic) NSInteger cachedPageIndex;
-@property (nonatomic, retain) NSArray *cachedPageBlocks;
 @property (nonatomic, retain) NSSet *pageRanges;
 @property (nonatomic, retain) NSString *basePath;
 
@@ -214,14 +212,18 @@
 @implementation BlioTextFlow
 
 @synthesize pageRanges, basePath;
-@synthesize cachedPageIndex, cachedPageBlocks;
 @synthesize sections; // Lazily loaded - see -(NSArray *)sections
 
 - (void)dealloc {
     self.pageRanges = nil;
-    self.cachedPageBlocks = nil;
     self.basePath = nil;
     self.sections = nil;
+    [pageBlocksCacheLock release];
+    
+    for(NSUInteger i = 0; i < kTextFlowPageBlocksCacheCapacity; ++i) {
+        [pageBlocksCache[i] release];
+    }
+    
     [super dealloc];
 }
 
@@ -229,6 +231,7 @@
     if ((self = [super init])) {
         self.pageRanges = pageRangesSet;
         self.basePath = aBasePath;
+        pageBlocksCacheLock = [[NSLock alloc] init];
     }
     return self;
 } 
@@ -517,69 +520,101 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return [[self.pageRanges allObjects] sortedArrayUsingDescriptors:sortDescriptors];
 }
 
-- (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex includingFolioBlocks:(BOOL)includingFolioBlocks {
+- (NSArray *)calculateBlocksForPageAtIndex:(NSInteger)pageIndex {
+    
     NSArray *pageBlocks = nil;
     
-    if (self.cachedPageBlocks && (self.cachedPageIndex == pageIndex)) {
-        pageBlocks = self.cachedPageBlocks;
-    } else {
-        BlioTextFlowPageRange *targetPageRange = nil;
-        NSArray *sortedPageRanges = [self sortedPageRanges];
-        NSUInteger pageRangeCount = sortedPageRanges.count;
+    BlioTextFlowPageRange *targetPageRange = nil;
+    NSArray *sortedPageRanges = [self sortedPageRanges];
+    NSUInteger pageRangeCount = sortedPageRanges.count;
+    NSUInteger i = 0;
+    for (; i < pageRangeCount; ++i) {
+        BlioTextFlowPageRange *pageRange = [sortedPageRanges objectAtIndex:i];
+        if ([pageRange startPageIndex] > pageIndex)
+            break;
+        else
+            targetPageRange = pageRange;
+    }
+    
+    BOOL inLastPageRange = (i == pageRangeCount);
+    BOOL afterLastPageMarker = NO;
+    
+    if (nil != targetPageRange) {
+        BlioTextFlowPageMarker *targetMarker = nil;
+        BlioTextFlowPageMarker *firstMarker = nil;
+        
+        NSArray *sortedPageMarkers = [targetPageRange sortedPageMarkers];
         NSUInteger i = 0;
-        for (; i < pageRangeCount; ++i) {
-            BlioTextFlowPageRange *pageRange = [sortedPageRanges objectAtIndex:i];
-            if ([pageRange startPageIndex] > pageIndex)
+        NSUInteger sortedPageMarkersCount = [sortedPageMarkers count];
+        for (; i < sortedPageMarkersCount; i++) {
+            BlioTextFlowPageMarker *pageMarker = [sortedPageMarkers objectAtIndex:i];
+            if (i == 0) firstMarker = pageMarker;
+            if ([pageMarker pageIndex] == pageIndex) targetMarker = pageMarker;
+            if ([pageMarker pageIndex] >= pageIndex) 
                 break;
-            else
-                targetPageRange = pageRange;
         }
         
-        BOOL inLastPageRange = (i == pageRangeCount);
-        BOOL afterLastPageMarker = NO;
-        
-        if (nil != targetPageRange) {
-            BlioTextFlowPageMarker *targetMarker = nil;
-            BlioTextFlowPageMarker *firstMarker = nil;
-            
-            NSArray *sortedPageMarkers = [targetPageRange sortedPageMarkers];
-            NSUInteger i = 0;
-            NSUInteger sortedPageMarkersCount = [sortedPageMarkers count];
-            for (; i < sortedPageMarkersCount; i++) {
-                BlioTextFlowPageMarker *pageMarker = [sortedPageMarkers objectAtIndex:i];
-                if (i == 0) firstMarker = pageMarker;
-                if ([pageMarker pageIndex] == pageIndex) targetMarker = pageMarker;
-                if ([pageMarker pageIndex] >= pageIndex) 
-                    break;
-            }
-            
-            if (!targetMarker && i == sortedPageMarkersCount) {
-                afterLastPageMarker = YES;
-            }
-            
-            if ((nil != targetMarker) && (nil != firstMarker)) {
-                NSArray *pageBlocksFromDisk = [self blocksForPage:pageIndex inPageRange:targetPageRange targetMarker:targetMarker firstMarker:firstMarker];
-                if (nil != pageBlocksFromDisk) pageBlocks = pageBlocksFromDisk;
-                
-            }
-        }
-
-        if (!pageBlocks && (!inLastPageRange || !afterLastPageMarker)) {
-            // We haven't found blocks for this page, but we're also
-            // not past the end of the book, so return an empty array.
-            pageBlocks = [NSArray array];
+        if (!targetMarker && i == sortedPageMarkersCount) {
+            afterLastPageMarker = YES;
         }
         
-        if(pageBlocks) {
-            self.cachedPageBlocks = pageBlocks;
-            self.cachedPageIndex = pageIndex;
+        if ((nil != targetMarker) && (nil != firstMarker)) {
+            NSArray *pageBlocksFromDisk = [self blocksForPage:pageIndex inPageRange:targetPageRange targetMarker:targetMarker firstMarker:firstMarker];
+            if (nil != pageBlocksFromDisk) pageBlocks = pageBlocksFromDisk;
         }
     }
     
-    if(includingFolioBlocks) {
-        return pageBlocks;
+    if (!pageBlocks && (!inLastPageRange || !afterLastPageMarker)) {
+        // We haven't found blocks for this page, but we're also
+        // not past the end of the book, so return an empty array.
+        pageBlocks = [NSArray array];
+    }
+    
+    return pageBlocks;
+}
+
+- (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex includingFolioBlocks:(BOOL)includingFolioBlocks {
+    NSArray *ret = nil;
+    
+    [pageBlocksCacheLock lock];
+    {
+        NSUInteger cacheIndex = NSUIntegerMax;
+        for(NSUInteger i = 0; i < kTextFlowPageBlocksCacheCapacity; ++i) {
+            if(cacheIndex == pageIndex) {
+                cacheIndex = i;
+                break;
+            }
+        }
+        
+        if(cacheIndex != NSUIntegerMax) {
+            ret = [pageBlocksCache[cacheIndex] autorelease];
+            if(ret) {
+                size_t toMove = kTextFlowPageBlocksCacheCapacity - cacheIndex - 1;
+                if(toMove) {
+                    memmove(pageIndexCache + cacheIndex, pageIndexCache + cacheIndex + 1, toMove * sizeof(NSInteger));
+                    memmove(pageBlocksCache + cacheIndex, pageBlocksCache + cacheIndex + 1, toMove * sizeof(NSArray *));
+                } 
+            }
+        } 
+        
+        if(!ret) {
+            [pageBlocksCache[0] release];
+            memmove(pageIndexCache, pageIndexCache + 1, sizeof(NSInteger) * (kTextFlowPageBlocksCacheCapacity - 1));
+            memmove(pageBlocksCache, pageBlocksCache + 1, sizeof(NSArray *) * (kTextFlowPageBlocksCacheCapacity - 1));
+            
+            ret = [self calculateBlocksForPageAtIndex:pageIndex];
+        }
+        
+        pageBlocksCache[kTextFlowPageBlocksCacheCapacity - 1] = [ret retain];
+        pageIndexCache[kTextFlowPageBlocksCacheCapacity - 1] = pageIndex;
+        
+    }
+    [pageBlocksCacheLock unlock];
+
+    if(!includingFolioBlocks) {
+        return [ret filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFolio == NO"]];
     } else {
-        return [pageBlocks filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFolio == NO"]];
+        return ret;
     }
 }
 

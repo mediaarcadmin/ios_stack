@@ -104,13 +104,17 @@
 
 @end
 
+#define kTextFlowPageBlocksCacheCapacity 3
+
 @interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider, EucBookContentsTableViewControllerDataSource> {
     NSSet *pageRanges;
-    NSInteger cachedPageIndex;
-    NSArray *cachedPageBlocks;
     NSString *basePath;
     
     NSMutableArray *sections;
+    
+    NSInteger pageIndexCache[kTextFlowPageBlocksCacheCapacity];
+    NSArray *pageBlocksCache[kTextFlowPageBlocksCacheCapacity];
+    NSLock *pageBlocksCacheLock;
 }
 
 @property (nonatomic, retain, readonly) NSMutableArray *sections;
