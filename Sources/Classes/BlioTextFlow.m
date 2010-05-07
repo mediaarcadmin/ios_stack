@@ -199,11 +199,6 @@
 
 @interface BlioTextFlow()
 
-@property (nonatomic) NSInteger currentPageIndex;
-@property (nonatomic, retain) BlioTextFlowPageRange *currentPageRange;
-@property (nonatomic, retain) BlioTextFlowBlock *currentBlock;
-@property (nonatomic, retain) NSMutableArray *currentBlockArray;
-@property (nonatomic, readonly) XML_Parser currentParser;
 @property (nonatomic) NSInteger cachedPageIndex;
 @property (nonatomic, retain) NSArray *cachedPageBlocks;
 @property (nonatomic, retain) NSSet *pageRanges;
@@ -219,27 +214,14 @@
 @implementation BlioTextFlow
 
 @synthesize pageRanges, basePath;
-@synthesize currentPageRange, currentBlock;
-@synthesize currentPageIndex, currentBlockArray, currentParser;
 @synthesize cachedPageIndex, cachedPageBlocks;
 @synthesize sections; // Lazily loaded - see -(NSArray *)sections
 
 - (void)dealloc {
     self.pageRanges = nil;
-    self.currentPageRange = nil;
-    self.currentBlock = nil;
-    self.currentBlockArray = nil;
     self.cachedPageBlocks = nil;
     self.basePath = nil;
     self.sections = nil;
-    if (nil != self.currentParser) {
-        enum XML_Status status = XML_StopParser(currentParser, false);
-        if (status == XML_STATUS_OK) {
-            XML_ParserFree(currentParser);
-        } else {
-            NSLog(@"Error whilst attempting to stop XML Parser in TextFlow dealloc.");
-        }
-    }
     [super dealloc];
 }
 
@@ -254,14 +236,18 @@
 #pragma mark -
 #pragma mark Fragment XML (block) parsing
 
+typedef struct FragmentParsingContext {
+    XML_Parser parser;
+    NSInteger pageIndex;
+    BlioTextFlowBlock *block;
+    NSMutableArray *blockArray;
+} FragmentParsingContext;
+
 static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
-    
-    BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
+    FragmentParsingContext *context = (FragmentParsingContext *)ctx;
 
     if (strcmp("Page", name) == 0) {
-        NSInteger targetIndex = [textFlow currentPageIndex];
-        NSMutableArray *blockArray = [textFlow currentBlockArray];
-        
+        NSInteger targetIndex = context->pageIndex;
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("PageIndex", atts[i]) == 0) {
                 NSString *pageIndexString = [[NSString alloc] initWithUTF8String:atts[i+1]];
@@ -269,12 +255,11 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                     NSInteger newIndex = [pageIndexString integerValue];
                     [pageIndexString release];
                     if (newIndex == targetIndex) {
-                        if (nil == blockArray) {
-                            blockArray = [NSMutableArray array];
-                            [textFlow setCurrentBlockArray:blockArray];
+                        if (!context->blockArray) {
+                            context->blockArray = [[NSMutableArray alloc] init];
                         }
                     } else if (newIndex > targetIndex) {
-                        XML_StopParser([textFlow currentParser], false);
+                        XML_StopParser(context->parser, false);
                         return;
                     } else {
                         return;
@@ -295,8 +280,8 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             }
         }
         
-        NSInteger targetIndex = [textFlow currentPageIndex];
-        NSMutableArray *blockArray = [textFlow currentBlockArray];
+        NSInteger targetIndex = context->pageIndex;
+        NSMutableArray *blockArray = context->blockArray;
         
         NSUInteger newBlockIndex = [blockArray count];
         if (newBlockIndex != [newBlockIDString integerValue]) {
@@ -310,8 +295,8 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         [block setBlockID:blockID];
         [block setFolio:folio];
         [blockArray addObject:block];
-        [textFlow setCurrentBlock:block];
-        [block release];
+        [context->block release];
+        context->block = block;
         
         [newBlockIDString release];
     } else if (strcmp("Word", name) == 0) {
@@ -329,9 +314,9 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             }
         }
                 
-        if (nil != textString) {
+        if (textString) {
             if(rectFound) {
-                BlioTextFlowBlock *block = [textFlow currentBlock];
+                BlioTextFlowBlock *block = context->block;
                 BlioTextFlowPositionedWord *newWord = [[BlioTextFlowPositionedWord alloc] init];
                 [newWord setString:textString];
                 [newWord setRect:CGRectMake(rect[0], rect[1], rect[2], rect[3])];
@@ -350,14 +335,12 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 
 static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)  {
     if(strcmp("Flow", name) == 0) {
-        BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
-        XML_StopParser([textFlow currentParser], false);
+        XML_StopParser(((FragmentParsingContext *)ctx)->parser, false);
     }
 }
 
 - (NSArray *)blocksForPage:(NSInteger)pageIndex inPageRange:(BlioTextFlowPageRange *)pageRange targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker {
     
-    self.currentBlockArray = nil;
     NSString *path = [self.basePath stringByAppendingPathComponent:[pageRange path]];
     
     if (nil != path) {
@@ -371,15 +354,18 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
             return nil;
         }
         
-        currentParser = XML_ParserCreate(NULL);
-        XML_SetStartElementHandler(currentParser, fragmentXMLParsingStartElementHandler);
-        XML_SetEndElementHandler(currentParser, fragmentXMLParsingEndElementHandler);
-        XML_SetUserData(currentParser, (void *)self);  
+        FragmentParsingContext context = {0};
+        context.parser = XML_ParserCreate(NULL);
+        context.pageIndex = [targetMarker pageIndex];
+
+        XML_SetStartElementHandler(context.parser, fragmentXMLParsingStartElementHandler);
+        XML_SetEndElementHandler(context.parser, fragmentXMLParsingEndElementHandler);
+        XML_SetUserData(context.parser, &context);  
         
         // Parse anything before the first marker in the file
         NSUInteger firstFragmentLength = [firstMarker byteIndex] - 1;
-        if (!XML_Parse(currentParser, [data bytes], firstFragmentLength - 1, XML_FALSE)) {
-            enum XML_Error errorCode = XML_GetErrorCode(currentParser);
+        if (!XML_Parse(context.parser, [data bytes], firstFragmentLength - 1, XML_FALSE)) {
+            enum XML_Error errorCode = XML_GetErrorCode(context.parser);
             if (errorCode != XML_ERROR_ABORTED) {
                 char *error = (char *)XML_ErrorString(errorCode);
                 NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
@@ -388,13 +374,10 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         
         NSUInteger targetFragmentLength = dataLength - offset;
         const void* offsetBytes = [data bytes] + offset;
-        
-        [self setCurrentPageIndex:[targetMarker pageIndex]];
-        [self setCurrentBlock:nil];
           
         @try {
-            if (!XML_Parse(currentParser, offsetBytes, targetFragmentLength, XML_FALSE)) {
-                enum XML_Error errorCode = XML_GetErrorCode(currentParser);
+            if (!XML_Parse(context.parser, offsetBytes, targetFragmentLength, XML_FALSE)) {
+                enum XML_Error errorCode = XML_GetErrorCode(context.parser);
                 if (errorCode != XML_ERROR_ABORTED) {
                     char *error = (char *)XML_ErrorString(errorCode);
                     NSLog(@"TextFlow parsing error: '%s' in file: '%@'", error, path);
@@ -406,16 +389,18 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         }
         
         @try {
-            XML_ParserFree(currentParser);
+            XML_ParserFree(context.parser);
         } @catch (NSException * e) {
             NSLog(@"TextFlow parser freeing exception: '%@'.", e.userInfo);
         }
         [data release];
 
-        currentParser = nil;
+        [context.block release];
+        
+        return [context.blockArray autorelease];
     }
     
-    return [NSArray arrayWithArray:self.currentBlockArray];
+    return nil;
 }
 
 

@@ -106,11 +106,6 @@
 
 @interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider, EucBookContentsTableViewControllerDataSource> {
     NSSet *pageRanges;
-    NSInteger currentPageIndex;
-    BlioTextFlowPageRange *currentPageRange;
-    BlioTextFlowBlock *currentBlock;
-    NSMutableArray *currentBlockArray;
-    XML_Parser currentParser;
     NSInteger cachedPageIndex;
     NSArray *cachedPageBlocks;
     NSString *basePath;
