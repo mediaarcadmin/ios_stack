@@ -73,11 +73,7 @@
     // any location in it later (in -wordOffsetForCharacterRange:)
     CFMutableAttributedStringRef stringWithWordOffsets = CFAttributedStringCreateMutable(kCFAllocatorDefault, 0);
     CFAttributedStringBeginEditing(stringWithWordOffsets);
-    
-    if(words.count == 1) {
-        NSLog(@"fdsfds");
-    }
-    
+        
     NSUInteger offset = 0;
     for(NSString *word in words) {
         NSUInteger wordLength = [word length];
