@@ -88,13 +88,16 @@
     
     // Remove the trailing space we just added in the last iteration of the loop.
     CFIndex stringLength = CFAttributedStringGetLength(stringWithWordOffsets);
-    CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(stringLength - 2, 1), CFSTR(""));
+    if(stringLength) {
+        CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(stringLength - 2, 1), CFSTR(""));
+    }
     
     CFAttributedStringEndEditing(stringWithWordOffsets);
     
     currentStringWithWordOffsets = stringWithWordOffsets;
     
-    return [engine startSpeakingString:(NSString *)CFAttributedStringGetString(currentStringWithWordOffsets)];
+    NSString *stringToSpeak = (NSString *)CFAttributedStringGetString(currentStringWithWordOffsets);
+    return [engine startSpeakingString:stringToSpeak];
 }
 
 - (BOOL)startSpeaking:(NSString *)string {

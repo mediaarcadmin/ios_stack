@@ -1333,29 +1333,32 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)speakNextBlock:(NSTimer*)timer {
 	if ( _acapelaTTS.textToSpeakChanged ) {	
 		[_acapelaTTS setTextToSpeakChanged:NO];
-		[_acapelaTTS startSpeakingWords:_acapelaTTS.blockWords];
+		if(![_acapelaTTS startSpeakingWords:_acapelaTTS.blockWords]) {
+            // This probably means that the block was empty.  
+            // Pretend that we have read everything from it (which, in effect, 
+            // we have).
+            [self speechSynthesizer:_acapelaTTS.engine didFinishSpeaking:YES];
+        }
 	}
 }
 
 - (void) getNextBlockForAudioManager:(BlioAudioManager*)audioMgr {
     id<BlioParagraphSource> paragraphSource = self.book.paragraphSource;
-	do {
-		audioMgr.currentBlock = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
-		[audioMgr setCurrentWordOffset:0];
-		[audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:audioMgr.currentBlock]];
-		if ( audioMgr.blockWords == nil ) {
-			// end of the book
-			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
-            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+    
+    audioMgr.currentBlock = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
+    [audioMgr setCurrentWordOffset:0];
+    [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:audioMgr.currentBlock]];
+    if ( audioMgr.blockWords == nil ) {
+        // end of the book
+        UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
+        [item setImage:[UIImage imageNamed:@"icon-play.png"]];
+        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
 
-			[self stopAudio];
-			self.audioPlaying = NO;
-            break;
-		}
-    } while ( [audioMgr.blockWords count] == 0 ); // Loop in case the block's empty.
+        [self stopAudio];
+        self.audioPlaying = NO;
+    }
 }
 
 - (void) prepareTextToSpeakWithAudioManager:(BlioAudioManager*)audioMgr continuingSpeech:(BOOL)continuingSpeech {
