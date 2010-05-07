@@ -135,7 +135,7 @@
         NSArray *words = paragraphWords.words;
 
         if(wordOffset >= words.count) {
-            ret = [self bookmarkPointFromParagraphID:[[(NSIndexPath *)paragraphID indexPathByRemovingLastIndex] indexPathByAddingIndex:0]
+            ret = [self bookmarkPointFromParagraphID:[self nextParagraphIdForParagraphWithID:paragraphID]
                                           wordOffset:0];
         } else {
             BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
