@@ -277,6 +277,7 @@
 		[aFeed setFeedURL:targetFeedURL];
         [aFeed setParser:feed.parser];
         [aFeed setParserClass:[category classForType]];
+		aFeed.sourceID = feed.sourceID;
         [aCategoriesController setFeeds:[NSArray arrayWithObject:aFeed]];
         [aFeed release];
         

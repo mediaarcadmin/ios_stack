@@ -49,11 +49,33 @@
         
         UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleBordered target:self action:@selector(dismissTabView:)];        
         
-        BlioStoreFeaturedController* vc1 = [[BlioStoreFeaturedController alloc] init];
-        UINavigationController* nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
+//        BlioStoreFeaturedController* vc1 = [[BlioStoreFeaturedController alloc] init];
+//        UINavigationController* nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
+//        [vc1.navigationItem setRightBarButtonItem:aDoneButton];
+//        [vc1 release];
+
+		BlioStoreCategoriesController* vc1 = [[BlioStoreCategoriesController alloc] init];
+		[vc1 setManagedObjectContext:self.managedObjectContext];
+        NSURL *featuredFeedURL = [NSURL URLWithString:@"http://www.feedbooks.com/userbooks/top.atom?range=week"];
+        BlioStoreFeed *featuredFeed = [[BlioStoreFeed alloc] init];
+        [featuredFeed setTitle:NSLocalizedString(@"Featured",@"\"Featured\" view controller header")];
+        [featuredFeed setFeedURL:featuredFeedURL];
+        [featuredFeed setParserClass:[BlioStoreFeedBooksParser class]];
+		featuredFeed.sourceID = BlioBookSourceFeedbooks;		
+		[vc1 setFeeds:[NSArray arrayWithObject:featuredFeed]];
+		[featuredFeed release];
+		[vc1 setProcessingDelegate:self.processingDelegate];
+
+		vc1.title = NSLocalizedString(@"Featured",@"\"Featured\" view controller header");
+        
+        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFeatured tag:kBlioStoreFeaturedTag];
+        vc1.tabBarItem = theItem;
+        [theItem release];
+		
+		UINavigationController* nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
         [vc1.navigationItem setRightBarButtonItem:aDoneButton];
         [vc1 release];
-        
+		
         BlioStoreCategoriesController* vc2 = [[BlioStoreCategoriesController alloc] init];
 		[vc2 setManagedObjectContext:self.managedObjectContext];
         NSURL *feedbooksFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"feedbooks" ofType:@"atom" inDirectory:@"Feeds"]];
