@@ -97,7 +97,6 @@
     currentStringWithWordOffsets = stringWithWordOffsets;
     
     NSString *stringToSpeak = (NSString *)CFAttributedStringGetString(currentStringWithWordOffsets);
-    NSLog(@"%@", stringToSpeak);
     return [engine startSpeakingString:stringToSpeak];
 }
 
