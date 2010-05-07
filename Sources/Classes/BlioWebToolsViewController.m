@@ -7,7 +7,7 @@
 //
 
 #import "BlioWebToolsViewController.h"
-
+#import "BlioAlertManager.h"
 
 @implementation BlioWebToolsViewController
 
@@ -140,11 +140,11 @@
 	[activityIndicator stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
 	NSLog(@"Error loading web page: %@",errorMsg);
-	UIAlertView *errorAlert = [[UIAlertView alloc] 
-							  initWithTitle:@"" message:errorMsg 
-							  delegate:self cancelButtonTitle:nil
-							  otherButtonTitles:@"OK", nil];
-	[errorAlert show];
+	[BlioAlertManager showAlertWithTitle:@""
+								 message:errorMsg 
+								delegate:self 
+					   cancelButtonTitle:@"OK"
+					   otherButtonTitles:nil];
 }
 
 @end
