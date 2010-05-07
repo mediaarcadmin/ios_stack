@@ -134,7 +134,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         THWarn(@"Highlighter released while still attached to view.");
         [self detatch];
     }
-    [_trackingTouch release];
+    
+    [_highlightEndLayers release];
+    [_highlightKnobLayers release];
     
     [super dealloc];
 }
@@ -198,7 +200,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 {    
     THPair *currentTemporaryHighlightedElement = self.temporaryHighlightedElement;
-    THPair *newTemporaryHighlightedElement = [THPair pairWithFirst:blockId second:elementId];
+    THPair *newTemporaryHighlightedElement = [[THPair alloc] initWithFirst:blockId second:elementId];
     if(!currentTemporaryHighlightedElement || ![currentTemporaryHighlightedElement isEqual:newTemporaryHighlightedElement]) {
         // Don't use the caches in this method, they're only valid during a selection!
         NSArray *rects = [self.dataSource eucSelector:self
@@ -293,8 +295,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             layer.bounds = newBounds;
         }
         self.temporaryHighlightLayers = newTemporaryHighlightLayers;
+        [newTemporaryHighlightLayers release];
         self.temporaryHighlightedElement = newTemporaryHighlightedElement;
     }
+    [newTemporaryHighlightedElement release];
 }
 
 - (void)removeTemporaryHighlight

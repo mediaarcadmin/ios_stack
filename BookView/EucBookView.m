@@ -1007,12 +1007,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
                     action:@selector(jumpBackwards)
                      title:@"Jump Backwards"];
     
-    [self _addButtonToView:toolbar 
-            withImageNamed:@"UIBarButtonSystemItemFastForward.png" 
-               centerPoint:CGPointMake(ceilf(toolbarBounds.size.width * 0.7f), centerY)
-                    target:self
-                    action:@selector(jumpForwards)
-                     title:@"Jump Forwards"];
     /*
      [self _addButtonToView:toolbar 
      withImageNamed:@"UIBarButtonSystemItemTrash.png" 
@@ -1075,6 +1069,13 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [self _updateSliderByteToPageRatio];    
     [self _updatePageNumberLabel];
 
+    [self _addButtonToView:toolbar 
+            withImageNamed:@"UIBarButtonSystemItemFastForward.png" 
+               centerPoint:CGPointMake(ceilf(toolbarBounds.size.width * 0.7f), centerY)
+                    target:self
+                    action:@selector(jumpForwards)
+                     title:@"Jump Forwards"];    
+    
     return toolbar;
 }    
 
