@@ -385,8 +385,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (void)setDelegate:(id<BlioBookViewDelegate>)newDelegate {
 
+    if (delegate)
+        [(NSObject *)delegate removeObserver:self forKeyPath:@"audioPlaying"];
+    
     [self.scrollView setBookViewDelegate:newDelegate];
     delegate = newDelegate;
+    
+    if (delegate)
+        [(NSObject *)delegate addObserver:self forKeyPath:@"audioPlaying" options:0 context:nil];
 
 }
 
@@ -2192,7 +2198,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     // We keep around a copy of the previous accessibility elements because 
     // the OS doesn't retain them but can attempt to access them
-    [self.accessibilityElements makeObjectsPerformSelector:@selector(setProxyContainer:) withObject:self];
+    for (NSObject *accessibilityElement in self.accessibilityElements) {
+        if ([accessibilityElement respondsToSelector:@selector(setProxyContainer:)])
+            [accessibilityElement performSelector:@selector(setProxyContainer:) withObject:self];
+    }
+    
     self.previousAccessibilityElements = self.accessibilityElements;
     self.accessibilityElements = elements;
     accessibilityRefreshRequired = NO;

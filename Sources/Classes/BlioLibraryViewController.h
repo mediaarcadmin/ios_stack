@@ -13,6 +13,7 @@
 @class BlioTestBlockWords;
 
 typedef enum {
+    kBlioLibraryLayoutUndefined = -1,
     kBlioLibraryLayoutGrid = 0,
     kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;

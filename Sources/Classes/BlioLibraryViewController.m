@@ -18,6 +18,7 @@
 #import "BlioProcessingStandardOperations.h"
 #import "BlioAccessibilitySegmentedControl.h"
 
+static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
 @interface BlioLibraryViewController (PRIVATE)
 - (void)bookSelected:(BlioLibraryBookView *)bookView;
@@ -154,7 +155,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.libraryLayout = kBlioLibraryLayoutGrid;
     self.tableView.hidden = YES;
 	
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -168,13 +168,16 @@
     segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     segmentedControl.frame = CGRectMake(0,0, kBlioLibraryLayoutButtonWidth, segmentedControl.frame.size.height);
     [segmentedControl addTarget:self action:@selector(changeLibraryLayout:) forControlEvents:UIControlEventValueChanged];
-    [segmentedControl setSelectedSegmentIndex:self.libraryLayout];
     
     [segmentedControl setIsAccessibilityElement:NO];
     [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
     [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
 
      [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
+    
+    self.libraryLayout = kBlioLibraryLayoutUndefined;
+    [segmentedControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"]];
+
     
     UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
     self.navigationItem.leftBarButtonItem = libraryLayoutButton;
@@ -372,6 +375,7 @@
 //	NSLog(@"Initial library load: populating cells...");
 	[self.tableView reloadData];
 	[self.gridView reloadData];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -838,6 +842,8 @@
 				case kBlioLibraryLayoutList:
 					[self.tableView reloadData];
 					break;
+                default:
+                    break;
 			}
 			break;
 			
@@ -858,6 +864,8 @@
 					[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
 				}
 					break;
+                default:
+                    break;
 			}
 			break;
 	
@@ -872,6 +880,8 @@
 						[self configureTableCell:(BlioLibraryListCell*)[self.tableView cellForRowAtIndexPath:indexPath]
 									 atIndexPath:indexPath];
 						break;
+                    default:
+                        break;
 				}
 			}
 			break;
@@ -988,6 +998,7 @@
     
     if (self.libraryLayout != newLayout) {
         self.libraryLayout = newLayout;
+        [[NSUserDefaults standardUserDefaults] setInteger:self.libraryLayout forKey:@"kBlioLastLibraryLayoutDefaultsKey"];
         
         switch (newLayout) {
             case kBlioLibraryLayoutGrid:

@@ -32,7 +32,9 @@
 - (void)hideToolbarsAndStatusBar:(BOOL)hidesStatusBar;
 - (void)toggleToolbars;
 - (BOOL)toolbarsVisible;
-- (BOOL)audioPlaying;
+//- (BOOL)audioPlaying;
+
+@property (nonatomic, readonly) BOOL audioPlaying;
 
 - (CGRect)nonToolbarRect;
 @end

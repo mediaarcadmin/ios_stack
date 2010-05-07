@@ -372,6 +372,12 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
             }
         }
         
+        if ((dataLength - offset) < 0) {
+            NSLog(@"offset is too large");
+            [data release];
+            return nil;
+        }
+        
         NSUInteger targetFragmentLength = dataLength - offset;
         const void* offsetBytes = [data bytes] + offset;
           
