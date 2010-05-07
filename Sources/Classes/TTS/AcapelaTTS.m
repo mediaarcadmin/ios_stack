@@ -74,6 +74,10 @@
     CFMutableAttributedStringRef stringWithWordOffsets = CFAttributedStringCreateMutable(kCFAllocatorDefault, 0);
     CFAttributedStringBeginEditing(stringWithWordOffsets);
     
+    if(words.count == 1) {
+        NSLog(@"fdsfds");
+    }
+    
     NSUInteger offset = 0;
     for(NSString *word in words) {
         NSUInteger wordLength = [word length];
@@ -85,18 +89,19 @@
                                        CFSTR("wordOffset"), (CFTypeRef)[NSNumber numberWithUnsignedInteger:offset]);
         ++offset;
     }
-    
-    // Remove the trailing space we just added in the last iteration of the loop.
+
     CFIndex stringLength = CFAttributedStringGetLength(stringWithWordOffsets);
+    // Remove the trailing space we just added in the last iteration of the loop.
     if(stringLength) {
-        CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(stringLength - 2, 1), CFSTR(""));
+        CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(stringLength - 1, 1), CFSTR(""));
     }
-    
+
     CFAttributedStringEndEditing(stringWithWordOffsets);
-    
+
     currentStringWithWordOffsets = stringWithWordOffsets;
     
     NSString *stringToSpeak = (NSString *)CFAttributedStringGetString(currentStringWithWordOffsets);
+    NSLog(@"%@", stringToSpeak);
     return [engine startSpeakingString:stringToSpeak];
 }
 
@@ -106,8 +111,10 @@
 
 - (NSUInteger)wordOffsetForCharacterRange:(NSRange)characterRange
 {
+    // Get the word offset for at the end of the range.
+    CFIndex location = characterRange.location + (characterRange.length ? (characterRange.length - 1) : 0);
     NSNumber *wordOffsetNumber = (NSNumber *)CFAttributedStringGetAttribute(currentStringWithWordOffsets, 
-                                                                            characterRange.location + characterRange.length,
+                                                                            location,
                                                                             CFSTR("wordOffset"), NULL);
     return [wordOffsetNumber unsignedIntegerValue];
 }
