@@ -24,7 +24,6 @@
 
 - (void)copyWithRange:(BlioBookmarkRange *)range;
 
-//- (void)openWebToolDictionaryWithRange:(BlioBookmarkRange *)range;
 - (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type;
 
 - (void)showToolbars;
@@ -32,7 +31,7 @@
 - (void)hideToolbarsAndStatusBar:(BOOL)hidesStatusBar;
 - (void)toggleToolbars;
 - (BOOL)toolbarsVisible;
-//- (BOOL)audioPlaying;
+- (BOOL)audioPlaying;
 
 @property (nonatomic, readonly) BOOL audioPlaying;
 

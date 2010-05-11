@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioBookView.h"
+#import "BlioSelectableBookView.h"
 #import "BlioMockBook.h"
 #import "MSTiltScroller.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
@@ -35,8 +36,7 @@ typedef enum BlioLayoutPageMode {
 
 @end
 
-@interface BlioLayoutView : UIView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
-    id<BlioBookViewDelegate> delegate;
+@interface BlioLayoutView : BlioSelectableBookView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioLayoutScrollView *scrollView;
@@ -53,7 +53,6 @@ typedef enum BlioLayoutPageMode {
     BOOL shouldZoomOut;
     CALayer *sharpLayer;
     EucSelector *selector;
-    UIColor *lastHighlightColor;
     NSString *pdfPath;
     NSData *pdfData;
     NSDictionary *pageCropsCache;
@@ -75,7 +74,6 @@ typedef enum BlioLayoutPageMode {
     BOOL accessibilityRefreshRequired;
 }
 
-@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
 @property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, retain) BlioLayoutScrollView *scrollView;
 @property (nonatomic, retain) BlioLayoutContentView *contentView;
@@ -84,7 +82,6 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
-@property (nonatomic, retain) UIColor *lastHighlightColor;
 @property (nonatomic, retain) NSDictionary *pageCropsCache;
 @property (nonatomic, retain) NSDictionary *viewTransformsCache;
 @property (nonatomic, retain) NSString *pdfPath;
