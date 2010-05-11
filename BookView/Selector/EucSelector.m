@@ -627,8 +627,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (void)_positionMenu
 {
     UIView *viewForMenu = self.attachedView;
-    if(!viewForMenu || [self.delegate respondsToSelector:@selector(viewForMenuForEucSelector:)]) {
-        viewForMenu = [self.delegate viewForMenuForEucSelector:self];
+    id<EucSelectorDataSource> dataSource = self.dataSource;
+    if(!viewForMenu || [dataSource respondsToSelector:@selector(viewForMenuForEucSelector:)]) {
+        viewForMenu = [dataSource viewForMenuForEucSelector:self];
     }
     
     CGRect targetRect = [[[self highlightLayers] objectAtIndex:0] frame];
@@ -698,7 +699,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         }
         
         if(stage == EucSelectorTrackingStageFirstSelection || stage == EucSelectorTrackingStageChangingSelection) {
-            if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
+            id<EucSelectorDataSource> dataSource = self.dataSource;
+            if([dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
                 [CATransaction begin];
                 [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 
@@ -707,7 +709,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 CGRect windowFrame = [windowLayer convertRect:windowLayer.bounds toLayer:attachedLayer];
                 
                 CALayer *snapshotLayer = [CALayer layer];
-                snapshotLayer.contents = (id)([self.delegate viewSnapshotImageForEucSelector:self].CGImage);
+                snapshotLayer.contents = (id)([dataSource viewSnapshotImageForEucSelector:self].CGImage);
                 snapshotLayer.opaque = YES;
                 snapshotLayer.frame = windowFrame;
                 [attachedLayer addSublayer:snapshotLayer];

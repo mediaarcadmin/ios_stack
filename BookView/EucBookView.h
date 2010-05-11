@@ -29,8 +29,6 @@ typedef struct EucRange {
 @interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDelegate, EucSelectorDataSource> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
-
-    BOOL _allowsSelection;
     
     UIImage *_pageTexture;
     BOOL _pageTextureIsDark;
@@ -76,8 +74,9 @@ typedef struct EucRange {
     NSMutableArray *_highlightLayers;
     BOOL _highlightingDisabled;
     
+    BOOL _allowsSelection;
     EucSelector *_selector;
-    id<EucSelectorDelegate> _selectorDelegate;
+    id<EucSelectorDelegate> _selectorDelegate;    
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
@@ -87,6 +86,8 @@ typedef struct EucRange {
 @property (nonatomic, readonly) EucBookReference<EucBook> *book;
 
 @property (nonatomic, assign) BOOL allowsSelection;
+@property (nonatomic, assign) id<EucSelectorDelegate> selectorDelegate;
+@property (nonatomic, retain, readonly) EucSelector *selector;
 
 @property (nonatomic, assign) CGFloat dimQuotient;
 @property (nonatomic, assign) BOOL undimAfterAppearance;

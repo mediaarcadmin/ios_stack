@@ -56,6 +56,8 @@
 @synthesize book = _book;
 
 @synthesize allowsSelection = _allowsSelection;
+@synthesize selector = _selector;
+@synthesize selectorDelegate = _selectorDelegate;
 
 @synthesize pageTexture = _pageTexture;
 @synthesize pageTextureIsDark = _pageTextureIsDark;
@@ -181,6 +183,9 @@
             NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];
             [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
         }  
+        
+        // We crewate this even if allowsSelection is NO, because it's also 
+        // used to perform temporary highlighting.
         _selector = [[EucSelector alloc] init];
         _selector.shouldSniffTouches = self.allowsSelection;
         [_selector attachToView:self];
@@ -189,7 +194,7 @@
                           options:0
                           context:NULL];
         _selector.dataSource = self;
-        _selector.delegate = self;
+        _selector.delegate = self.selectorDelegate;
     } else {
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
@@ -198,6 +203,14 @@
         [_pageViewToIndexPoint removeAllObjects];
         [_pageViewToIndexPointCounts removeAllObjects];
     }
+}
+
+- (void)setSelectorDelegate:(id<EucSelectorDelegate>)delegate
+{
+    if(self.selector) {
+        self.selector.delegate = delegate;
+    }
+    _selectorDelegate = delegate;
 }
 
 - (void)updateDimQuotientForTimeAfterAppearance:(NSNumber *)appearanceTime
