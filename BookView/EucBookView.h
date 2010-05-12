@@ -68,9 +68,8 @@ typedef struct EucRange {
     UIView *_pageSliderTrackingInfoView;    
     
     NSInteger _highlightPage;
-    uint32_t _highlightParagraph;
-    uint32_t _highlightWordOffset;
-
+    EucBookPageIndexPoint *_highlightIndexPoint;
+    
     NSMutableArray *_highlightLayers;
     BOOL _highlightingDisabled;
     
@@ -126,7 +125,7 @@ typedef struct EucRange {
 - (NSInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (NSInteger)pageNumberForUuid:(NSString *)uuid;
 
-- (void)highlightWordAtBlockId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+- (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
 @property (nonatomic, readonly) EucRange selectedRange;
 - (void)clearSelectedRange;

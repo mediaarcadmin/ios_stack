@@ -221,11 +221,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 CGFloat bestDistance = CGFLOAT_MAX;
                 for(CALayer *prospectiveLayer in temporaryHilightLayers) {
                     CGPoint prospectiveCenter = prospectiveLayer.position;
-                    if(prospectiveCenter.x < newCenter.x) {
-                        CGFloat thisDistance = CGPointDistance(prospectiveCenter, newCenter);
-                        if(thisDistance < bestDistance) {
-                            bestDistance = thisDistance;
-                            layer = [prospectiveLayer retain];
+                    if(prospectiveCenter.x < newCenter.x) {  // If the prospective layer is to the let of the desired location
+                        CGRect prospectiveRect = prospectiveLayer.frame;
+                        if(!(CGRectGetMinY(prospectiveRect) > CGRectGetMaxY(rect) ||
+                            CGRectGetMinY(rect) > CGRectGetMaxY(prospectiveRect))) { // And it vertically overlaps.
+                            CGFloat thisDistance = CGPointDistance(prospectiveCenter, newCenter);
+                            if(thisDistance < bestDistance) {
+                                bestDistance = thisDistance;
+                                layer = [prospectiveLayer retain];
+                            }
                         }
                     }
                 }

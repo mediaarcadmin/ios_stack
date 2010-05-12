@@ -108,14 +108,15 @@
 
 - (void)dealloc
 {
+    [self _removeHighlights];
+    [_highlightIndexPoint release];
+
     if(_selector) {
-        [_selector removeObserver:self
-                          forKeyPath:@"tracking"];
+        [_selector removeObserver:self forKeyPath:@"tracking"];
         [_selector detatch];
         [_selector release];
     }
-    [self _removeHighlights];
-
+    
     [_book release];
     
     [_pageTexture release];
@@ -294,40 +295,39 @@
     [_selector removeTemporaryHighlight];
 }
 
-- (void)_moveHighlightToWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset 
+- (void)_displayHighlights
 {
-    [_selector temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:wordOffset]
-                                     inBlockWithIdentifier:[NSNumber numberWithInt:paragraphId] 
-                                                  animated:YES];
+    [_selector temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:_highlightIndexPoint.word]
+                                  inBlockWithIdentifier:[NSNumber numberWithInt:_highlightIndexPoint.block] 
+                                               animated:YES];
 }
 
-- (void)highlightWordAtBlockId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+- (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 {
- /*   if(paragraphId == 0) {
+    if(!indexPoint) {
         _highlightPage = 0;
-        _highlightParagraph = 0;
-        _highlightWordOffset = 0;        
+        [_highlightIndexPoint release];
+        _highlightIndexPoint = nil;
         [self _removeHighlights];
     } else {
-        EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-        indexPoint.startOfParagraphByteOffset = paragraphId;
-        indexPoint.startOfPageParagraphWordOffset = wordOffset;
-        NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
-        [indexPoint release];
-        
-        _highlightPage = newPageNumber;
-        _highlightParagraph = paragraphId;
-        _highlightWordOffset = wordOffset;
-        
-        if(!_highlightingDisabled) {
-            if(newPageNumber != self.pageNumber) {
-                [self _removeHighlights];
-                [self _goToPageNumber:newPageNumber animated:YES];
-            } else {
-                [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
+        if(![_highlightIndexPoint isEqual:indexPoint]) {
+            [_highlightIndexPoint release];
+            _highlightIndexPoint = [indexPoint retain];
+            
+            NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
+            
+            _highlightPage = newPageNumber;
+            
+            if(!_highlightingDisabled) {
+                if(newPageNumber != self.pageNumber) {
+                    [self _removeHighlights];
+                    [self _goToPageNumber:newPageNumber animated:YES];
+                } else {
+                    [self _displayHighlights];
+                }
             }
         }
-    }*/
+    }
 }
 
 #pragma mark -
@@ -842,7 +842,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _selector.selectionDisabled = NO;
     _highlightingDisabled = NO;
     if(_highlightPage == self.pageNumber) {
-        [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
+        [self _displayHighlights];
     }    
     
     if([_delegate respondsToSelector:@selector(bookViewPageTurnDidEnd:)]) {
