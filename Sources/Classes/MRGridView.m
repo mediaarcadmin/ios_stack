@@ -58,7 +58,7 @@
 		[cellIndices setObject:gridCell forKey:[NSNumber numberWithInt:cellIndex]];
 		[gridCell.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		if (self.isEditing) gridCell.deleteButton.alpha = 1;
-		else gridCell.deleteButton.alpha = 0;
+		else gridCell.deleteButton.alpha = 1;
 		[gridView addSubview:gridCell];
 		[gridView sendSubviewToBack:gridCell]; // we do this so that the cell will by default be "behind" a dragged cell.
 	}
@@ -333,7 +333,7 @@
 	return ceil((float)[gridDataSource numberOfItemsInGridView:self]/numCellsInRow);
 }
 -(void)activateCellDragging:(NSTimer *)aTimer {
-//	NSLog(@"activateCellDragging");
+	NSLog(@"activateCellDragging");
 //	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
 	if (editTimer && [editTimer isValid]) [editTimer invalidate];
 	editTimer = nil;
@@ -346,7 +346,7 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesBegan:touches withEvent:event];
-//	NSLog(@"touchesBegan");
+	NSLog(@"touchesBegan");
 //	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
 NSArray *touchArray = [touches allObjects];
 //	NSLog(@"touchArray count: %i",[touchArray count]);
@@ -391,7 +391,7 @@ NSArray *touchArray = [touches allObjects];
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesMoved:touches withEvent:event];
 	NSArray *touchArray = [touches allObjects];
-//	NSLog(@"touchesMoved... touchArray count: %i",[touchArray count]);
+	NSLog(@"touchesMoved... touchArray count: %i",[touchArray count]);
 //	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
 	UITouch *theTouch = nil;
 
@@ -475,7 +475,7 @@ NSArray *touchArray = [touches allObjects];
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesEnded:touches withEvent:event];
-//	NSLog(@"touchesEnded");
+	NSLog(@"touchesEnded");
 //	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
 	NSArray *touchArray = [touches allObjects];
 	// NSLog(@"touchArray count: %i",[touchArray count]);

@@ -20,10 +20,20 @@
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
+@interface BlioAccessibleGridCell : UIAccessibilityElement {
+    id deleteTarget;
+    id dragTarget;
+}
+
+@property (nonatomic, assign) id deleteTarget;
+@property (nonatomic, assign) id dragTarget;
+
+@end
+
+
 @interface BlioLibraryViewController (PRIVATE)
 - (void)bookSelected:(BlioLibraryBookView *)bookView;
 @end
-
 
 @implementation BlioLibraryViewController
 
@@ -1408,17 +1418,25 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	[delegate enqueueBook:[self book]];
 }
 - (BOOL)isAccessibilityElement {
-    return YES;
+    return NO;
 }
+
+- (CGRect)accessibilityFrame {
+    CGRect accFrame = [super accessibilityFrame];
+    CGFloat offset = CGRectGetHeight([self.deleteButton accessibilityFrame]);
+    accFrame.size.height -= offset;
+    accFrame.origin.y += offset;
+    return accFrame;
+}   
 
 - (NSString *)accessibilityLabel {
     return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
             [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]];
 }
 
-- (CGRect)accessibilityFrame {
-    return CGRectInset([super accessibilityFrame], CGRectGetWidth(self.bookView.bounds) * kBlioLibraryShadowXInset, CGRectGetHeight(self.bookView.bounds) * kBlioLibraryShadowYInset);
-}
+//- (CGRect)accessibilityFrame {
+//    return CGRectInset([super accessibilityFrame], CGRectGetWidth(self.bookView.bounds) * kBlioLibraryShadowXInset, CGRectGetHeight(self.bookView.bounds) * kBlioLibraryShadowYInset);
+//}
 
 - (NSString *)accessibilityHint {
     return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
@@ -1758,4 +1776,28 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	progressBar.bounds = CGRectMake(progressBar.bounds.origin.x, progressBar.bounds.origin.y, newBarWidth, progressBar.bounds.size.height);
 	progress = targetValue;
 }
+@end
+
+@implementation BlioAccessibleGridCell
+
+@synthesize deleteTarget, dragTarget;
+
+- (void)dealloc {
+    self.deleteTarget = nil;
+    self.dragTarget = nil;
+    [super dealloc];
+}
+
+- (BOOL)isUserInteractionEnabled {
+    return YES;
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    return (UIView *)self;
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    return YES;
+}
+
 @end
