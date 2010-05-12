@@ -266,6 +266,11 @@
 }
 
 
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+}
+
 #pragma mark -
 #pragma mark BlioSelectableBookView overrides
 
