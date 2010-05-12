@@ -18,6 +18,9 @@
     BOOL _pageViewIsTurning;
     
     id<BlioBookViewDelegate> _delegate;
+    
+    NSInteger _pageCount;
+    NSInteger _pageNumber;
 }
 
 @property (nonatomic, assign) id<BlioBookViewDelegate> delegate;

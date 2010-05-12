@@ -20,6 +20,8 @@
 
 @interface BlioFlowView ()
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
+@property (nonatomic, assign) NSInteger pageCount;
+@property (nonatomic, assign) NSInteger pageNumber;
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 @end
 
@@ -27,6 +29,9 @@
 
 @synthesize paragraphSource = _paragraphSource;
 @synthesize delegate = _delegate;
+
+@synthesize pageCount = _pageCount;
+@synthesize pageNumber = _pageNumber;
 
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated 
 {
@@ -55,6 +60,9 @@
                 }
                 [self goToBookmarkPoint:aBook.implicitBookmarkPoint animated:NO];
                 
+                [_eucBookView addObserver:self forKeyPath:@"pageCount" options:NSKeyValueObservingOptionInitial context:NULL];
+                [_eucBookView addObserver:self forKeyPath:@"pageNumber" options:NSKeyValueObservingOptionInitial context:NULL];
+                
                 [self addSubview:_eucBookView];
             }
             [eucBook release];
@@ -71,25 +79,27 @@
 
 - (void)dealloc
 {
+    [_eucBookView removeObserver:self forKeyPath:@"pageCount"];
+    [_eucBookView removeObserver:self forKeyPath:@"pageNumber"];
     [_eucBookView release];
     [_paragraphSource release];
     [super dealloc];
 }
 
-
-- (NSInteger)pageCount
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
 {
-    return _eucBookView.pageCount;
+    if([keyPath isEqualToString:@"pageNumber"]) {
+        self.pageNumber = _eucBookView.pageNumber;
+    } else { //if([keyPath isEqualToString:@"pageCount"] ) {
+        self.pageCount = _eucBookView.pageCount;
+    }
 }
+
 
 - (BOOL)wantsTouchesSniffed 
 {
     return YES;
-}
-
-- (NSInteger)pageNumber 
-{
-    return _eucBookView.pageNumber;
 }
 
 - (CGRect)firstPageRect

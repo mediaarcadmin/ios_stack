@@ -26,7 +26,7 @@ typedef enum {
 	AVAudioPlayer* avPlayer;
 	NSMutableArray* audioFiles;
 	NSMutableArray* timeFiles;
-	NSXMLParser* xmlParser;
+
 	NSMutableDictionary* pagesDict;
 	NSString* currDictKey;
 	NSMutableArray* pageSegments;

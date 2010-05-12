@@ -36,13 +36,14 @@
 		timeRange.length = [[thisLine substringFromIndex:timeRange.location]  rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location;
 		thisTimeStr = [thisLine substringWithRange:timeRange];
 		lastTime = atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding]);
-		[fileTimes addObject:[[NSNumber alloc] initWithInt:lastTime]];
+		[fileTimes addObject:[NSNumber numberWithInt:lastTime]];
 	}
 	if ( thisTimeStr == nil ) {
 		NSLog(@"Empty timing file, %s", [audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding]);
 		return NO;
 	}
 	self.wordTimes = fileTimes;
+    [fileTimes release];
 	fclose(timingFile);
 	return YES;
 }
@@ -50,7 +51,7 @@
 - (void)parseData:(NSString*)path  {
 	// Prepare to parse the xml file.
 	NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
-	xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:url];
+	NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:url];
 	[xmlParser setDelegate:self];
 	[url release];	
 	// Start the parse.
@@ -65,10 +66,10 @@
 - (id)initWithPath:(NSString*)referencesPath metadataPath:(NSString*)metadataPath{
 	if ( (self = [super init]) ) {
 		[self setAvPlayer:nil]; 
-		[self setWordTimes:[[NSMutableArray alloc] init]];
-		[self setTimeFiles:[[NSMutableArray alloc] init]];
-		[self setAudioFiles:[[NSMutableArray alloc] init]];
-		[self setPagesDict:[[NSMutableDictionary alloc] init]];
+		[self setWordTimes:[NSMutableArray array]];
+		[self setTimeFiles:[NSMutableArray array]];
+		[self setAudioFiles:[NSMutableArray array]];
+		[self setPagesDict:[NSMutableDictionary dictionary]];
 		[self parseData:referencesPath];
 		[self parseData:metadataPath];
 		[self setStartedPlaying:NO]; 
@@ -78,12 +79,28 @@
 	return self;
 }
 
+- (void)dealloc {
+	[wordTimes release];
+	[avPlayer release];
+	[audioFiles release];
+	[timeFiles release];
+    [pagesDict release];
+	[currDictKey release];
+	[pageSegments release];
+	[pageSegmentVals release];
+    
+    [super dealloc];   
+}
+
 - (BOOL)initAudioWithBook:(NSString*)audioBookPath {
 	if ( self.avPlayer != nil )
 		[self.avPlayer release];
 	NSError* err;
-	self.avPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:audioBookPath] 
-													  error:&err];
+    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:audioBookPath] 
+                                                                   error:&err];
+	self.avPlayer = player;
+    [player release];
+    
 	self.avPlayer.volume = 1.0;   
 	BOOL prepared = [self.avPlayer prepareToPlay];
 	if ( err == nil && prepared )
@@ -147,18 +164,18 @@
 		[self.timeFiles addObject:audioPath];
 	}
 	else if ( [elementName isEqualToString:@"Page"] ) {
-		pageSegments = [[NSMutableArray alloc] init];
+		self.pageSegments = [NSMutableArray array];
 		[self setCurrDictKey:[attributeDict objectForKey:@"PageIndex"]];  // TODO: add one to match Blio layout pages
 	}
 	else if ( [elementName isEqualToString:@"AudioSegment"] ) {
-		pageSegmentVals = [[NSMutableArray alloc] initWithCapacity:3];
+		self.pageSegmentVals = [NSMutableArray arrayWithCapacity:3];
 		[pageSegmentVals addObject:[attributeDict objectForKey:@"TimeIndex"]];
 		[pageSegmentVals addObject:[attributeDict objectForKey:@"TimeOffset"]];
 	}
 	else if ( [elementName isEqualToString:@"AudioRef"] ) {
 		[pageSegmentVals addObject:[attributeDict objectForKey:@"AudioRefIndex"]];
 		[pageSegments addObject:pageSegmentVals];
-		[pageSegmentVals release];
+		self.pageSegmentVals  = nil;
 	}
 }
 
@@ -171,7 +188,7 @@
 	}
 	else if ( [elementName isEqualToString:@"Page"] ) {
 		[self.pagesDict setObject:pageSegments forKey:self.currDictKey];
-		[pageSegments release];
+		self.pageSegments = nil;
 	}
 }
 
