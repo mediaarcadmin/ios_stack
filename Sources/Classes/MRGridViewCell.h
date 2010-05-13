@@ -7,9 +7,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BlioAccessibleButton : UIButton
-@end
-
 typedef enum {
 	MRGridViewCellEditingStyleNone,
 	MRGridViewCellEditingStyleDelete,
@@ -19,13 +16,13 @@ typedef enum {
 @interface MRGridViewCell : UIView {
 	NSString* reuseIdentifier;
 	UIView * contentView;
-	BlioAccessibleButton * deleteButton;
+	UIButton * deleteButton;
 	NSString * cellContentDescription;
 }
 @property(readwrite,copy,nonatomic) NSString* reuseIdentifier;
 @property(readwrite,copy,nonatomic) NSString* cellContentDescription;
 @property(readwrite,retain,nonatomic) UIView* contentView;
-@property(readwrite,retain,nonatomic) BlioAccessibleButton* deleteButton;
+@property(readwrite,retain,nonatomic) UIButton* deleteButton;
 -(id) initWithFrame:(CGRect)frame reuseIdentifier:(NSString*)identifier;
 -(void) prepareForReuse;
 @end

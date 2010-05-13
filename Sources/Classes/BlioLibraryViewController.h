@@ -85,6 +85,8 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 -(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;
 -(void)configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index;
 -(void)calculateMaxLayoutPageEquivalentCount;
+- (CGRect)visibleRect;
+
 @end
 
 @interface BlioLibraryBookView : UIView {
@@ -126,6 +128,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIButton * resumeButton;
     UILabel * pausedLabel;
     id delegate;
+    NSArray *accessibilityElements;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
@@ -139,6 +142,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) BlioMockBook *book;
 @property (nonatomic, assign) UILabel *pausedLabel;
 @property (nonatomic, assign) id delegate;
+@property (nonatomic, retain) NSArray *accessibilityElements;
 
 @end
 

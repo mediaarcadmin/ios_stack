@@ -20,13 +20,11 @@
 		contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		[self addSubview:contentView];
 		
-		//deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
-        deleteButton = [[BlioAccessibleButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
-		deleteButton.alpha = 1;
+		deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
+		deleteButton.alpha = 0;
 		deleteButton.showsTouchWhenHighlighted = YES;
 		[deleteButton setImage:[UIImage imageNamed:@"button-delete-red.png"] forState:UIControlStateNormal];
         [deleteButton setIsAccessibilityElement:YES];
-        [deleteButton setAccessibilityLabel:NSLocalizedString(@"Delete book", @"Accessibility label for Grid View cell Delete button")];
         [self addSubview:deleteButton];
     }
     return self;
@@ -34,7 +32,7 @@
 
 //override to clear out cell for reuse.  Similar to UITableViewCell call.
 -(void) prepareForReuse{
-	deleteButton.alpha = 1;
+	deleteButton.alpha = 0;
 	self.transform = CGAffineTransformIdentity;
 }
 
@@ -43,18 +41,6 @@
 	self.deleteButton = nil;
 	self.cellContentDescription = nil;
     [super dealloc];
-}
-
-@end
-
-@implementation BlioAccessibleButton
-
-- (BOOL)isAccessibilityElement {
-    return YES;
-}
-
-- (NSString *)accessibilityLabel {
-    return @"Delete button";
 }
 
 @end
