@@ -120,44 +120,24 @@
 {
     UIImage *buttonImage = [self _templateImageForBarStyle:barStyle];
     UIImage *stretchableImage = [buttonImage stretchableImageWithLeftCapWidth:4 topCapHeight:15];
-    CGRect imageFrame = CGRectMake(0, 0, 41, 30);
+    CGRect stretchedImageFrame = CGRectMake(0, 0, 41, 30);
     
-    // Create a bitmap to render the button image into.
-    NSMutableData *bitmapData = [[NSMutableData alloc] initWithLength:4 * frame.size.width * frame.size.height];    
-    CGColorSpaceRef deviceColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef myContext = CGBitmapContextCreate([bitmapData mutableBytes],
-                                                   frame.size.width,
-                                                   frame.size.height,
-                                                   8,
-                                                   4 * frame.size.width,
-                                                   deviceColorSpace,
-                                                   kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
-    
-    // We need to flip the bitmap, because we're goung to draw with UIKit routines
-    // and they have the opposite coordinate system.
-    CGContextTranslateCTM(myContext, 0, frame.size.height);
-    CGContextScaleCTM(myContext, 1, -1);
-    
-    CGContextClearRect(myContext, frame);
-    
-    UIGraphicsPushContext(myContext);
-    
+    UIGraphicsBeginImageContext(stretchedImageFrame.size);
+    CGContextRef myContext = UIGraphicsGetCurrentContext();
     // Mirror the drawing - we want a left-facing arrow.
     CGContextScaleCTM(myContext, -1, 1);
-    CGContextTranslateCTM(myContext, -frame.size.width, 0);
-    
-    // Push a new context to draw the image background onto and then scale to size
-    UIGraphicsBeginImageContext(imageFrame.size);
-    CGContextClearRect(UIGraphicsGetCurrentContext(), frame);
-    [stretchableImage drawInRect:imageFrame];
-    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    CGContextTranslateCTM(myContext, -stretchedImageFrame.size.width, 0);
+    [stretchableImage drawInRect:stretchedImageFrame];
+    UIImage *stretchedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    [scaledImage drawInRect:frame];
-    CGContextScaleCTM(myContext, -1, 1);
-    CGContextTranslateCTM(myContext, -frame.size.width, 0);
+    
+    UIGraphicsBeginImageContext(frame.size);
+    myContext = UIGraphicsGetCurrentContext();
+    CGContextClearRect(myContext, frame);
+    [stretchedImage drawInRect:frame];
     
     // Draw the arrow.  Points worked out by examining screenshots.
-    // (it's a pity the iPhone has not fonts with the Unicode arrows in them). 
+    // (it's a pity the iPhone has not fonts with the Unicode arrows in them).    
     CGMutablePathRef arrowPath = CGPathCreateMutable();
     CGPathMoveToPoint(arrowPath, NULL,    -0.5,   0);
     CGPathAddLineToPoint(arrowPath, NULL, 10, -9);
@@ -169,6 +149,7 @@
     CGPathAddLineToPoint(arrowPath, NULL, -0.5,0);
     CGPathCloseSubpath(arrowPath);
     
+    
     [[[UIColor blackColor] colorWithAlphaComponent:0.5f] set];
     CGContextTranslateCTM(myContext, 11, floorf(frame.size.height/2.0f)-1);
     CGContextAddPath(myContext, arrowPath);
@@ -178,25 +159,12 @@
     CGContextTranslateCTM(myContext, 0, 1);
     CGContextAddPath(myContext, arrowPath);
     CGContextFillPath(myContext);
-    CGContextStrokePath(myContext);
     
     CFRelease(arrowPath);
     
     // Done drawing!
-    UIGraphicsPopContext();
-    CGContextRelease(myContext);
-    
-    // Create a CGImage around our bitmap data, and create a UIImage from that.
-    CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)bitmapData);
-    CGImageRef newImageRef = CGImageCreate(frame.size.width, frame.size.height, 8, 32, 4 * frame.size.width, 
-                                           deviceColorSpace, 
-                                           kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, 
-                                           dataProvider, NULL, YES, kCGRenderingIntentDefault);
-    UIImage *renderedImage = [UIImage imageWithCGImage:newImageRef];
-    CGImageRelease(newImageRef);
-    CGColorSpaceRelease(deviceColorSpace);
-    CGDataProviderRelease(dataProvider);
-    [bitmapData release];
+    UIImage *renderedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
     
     return renderedImage;
 }    
