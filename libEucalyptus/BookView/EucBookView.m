@@ -56,6 +56,8 @@
 @synthesize book = _book;
 
 @synthesize allowsSelection = _allowsSelection;
+@synthesize selector = _selector;
+@synthesize selectorDelegate = _selectorDelegate;
 
 @synthesize pageTexture = _pageTexture;
 @synthesize pageTextureIsDark = _pageTextureIsDark;
@@ -106,14 +108,15 @@
 
 - (void)dealloc
 {
+    [self _removeHighlights];
+    [_highlightIndexPoint release];
+
     if(_selector) {
-        [_selector removeObserver:self
-                          forKeyPath:@"tracking"];
+        [_selector removeObserver:self forKeyPath:@"tracking"];
         [_selector detatch];
         [_selector release];
     }
-    [self _removeHighlights];
-
+    
     [_book release];
     
     [_pageTexture release];
@@ -181,6 +184,9 @@
             NSNumber *timeNow = [NSNumber numberWithDouble:CFAbsoluteTimeGetCurrent()];
             [self performSelector:@selector(updateDimQuotientForTimeAfterAppearance:) withObject:timeNow afterDelay:1.0/30.0];
         }  
+        
+        // We crewate this even if allowsSelection is NO, because it's also 
+        // used to perform temporary highlighting.
         _selector = [[EucSelector alloc] init];
         _selector.shouldSniffTouches = self.allowsSelection;
         [_selector attachToView:self];
@@ -189,7 +195,7 @@
                           options:0
                           context:NULL];
         _selector.dataSource = self;
-        _selector.delegate = self;
+        _selector.delegate = self.selectorDelegate;
     } else {
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
@@ -198,6 +204,14 @@
         [_pageViewToIndexPoint removeAllObjects];
         [_pageViewToIndexPointCounts removeAllObjects];
     }
+}
+
+- (void)setSelectorDelegate:(id<EucSelectorDelegate>)delegate
+{
+    if(self.selector) {
+        self.selector.delegate = delegate;
+    }
+    _selectorDelegate = delegate;
 }
 
 - (void)updateDimQuotientForTimeAfterAppearance:(NSNumber *)appearanceTime
@@ -281,40 +295,39 @@
     [_selector removeTemporaryHighlight];
 }
 
-- (void)_moveHighlightToWordAtParagraphId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset 
+- (void)_displayHighlights
 {
-    [_selector temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:wordOffset]
-                                     inBlockWithIdentifier:[NSNumber numberWithInt:paragraphId] 
-                                                  animated:YES];
+    [_selector temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:_highlightIndexPoint.word]
+                                  inBlockWithIdentifier:[NSNumber numberWithInt:_highlightIndexPoint.block] 
+                                               animated:YES];
 }
 
-- (void)highlightWordAtBlockId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+- (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 {
- /*   if(paragraphId == 0) {
+    if(!indexPoint) {
         _highlightPage = 0;
-        _highlightParagraph = 0;
-        _highlightWordOffset = 0;        
+        [_highlightIndexPoint release];
+        _highlightIndexPoint = nil;
         [self _removeHighlights];
     } else {
-        EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-        indexPoint.startOfParagraphByteOffset = paragraphId;
-        indexPoint.startOfPageParagraphWordOffset = wordOffset;
-        NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
-        [indexPoint release];
-        
-        _highlightPage = newPageNumber;
-        _highlightParagraph = paragraphId;
-        _highlightWordOffset = wordOffset;
-        
-        if(!_highlightingDisabled) {
-            if(newPageNumber != self.pageNumber) {
-                [self _removeHighlights];
-                [self _goToPageNumber:newPageNumber animated:YES];
-            } else {
-                [self _moveHighlightToWordAtParagraphId:paragraphId wordOffset:wordOffset];
+        if(![_highlightIndexPoint isEqual:indexPoint]) {
+            [_highlightIndexPoint release];
+            _highlightIndexPoint = [indexPoint retain];
+            
+            NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
+            
+            _highlightPage = newPageNumber;
+            
+            if(!_highlightingDisabled) {
+                if(newPageNumber != self.pageNumber) {
+                    [self _removeHighlights];
+                    [self _goToPageNumber:newPageNumber animated:YES];
+                } else {
+                    [self _displayHighlights];
+                }
             }
         }
-    }*/
+    }
 }
 
 #pragma mark -
@@ -829,7 +842,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _selector.selectionDisabled = NO;
     _highlightingDisabled = NO;
     if(_highlightPage == self.pageNumber) {
-        [self _moveHighlightToWordAtParagraphId:_highlightParagraph wordOffset:_highlightWordOffset];
+        [self _displayHighlights];
     }    
     
     if([_delegate respondsToSelector:@selector(bookViewPageTurnDidEnd:)]) {
@@ -1007,12 +1020,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
                     action:@selector(jumpBackwards)
                      title:@"Jump Backwards"];
     
-    [self _addButtonToView:toolbar 
-            withImageNamed:@"UIBarButtonSystemItemFastForward.png" 
-               centerPoint:CGPointMake(ceilf(toolbarBounds.size.width * 0.7f), centerY)
-                    target:self
-                    action:@selector(jumpForwards)
-                     title:@"Jump Forwards"];
     /*
      [self _addButtonToView:toolbar 
      withImageNamed:@"UIBarButtonSystemItemTrash.png" 
@@ -1075,6 +1082,13 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [self _updateSliderByteToPageRatio];    
     [self _updatePageNumberLabel];
 
+    [self _addButtonToView:toolbar 
+            withImageNamed:@"UIBarButtonSystemItemFastForward.png" 
+               centerPoint:CGPointMake(ceilf(toolbarBounds.size.width * 0.7f), centerY)
+                    target:self
+                    action:@selector(jumpForwards)
+                     title:@"Jump Forwards"];    
+    
     return toolbar;
 }    
 

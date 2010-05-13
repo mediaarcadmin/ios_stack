@@ -134,7 +134,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         THWarn(@"Highlighter released while still attached to view.");
         [self detatch];
     }
-    [_trackingTouch release];
+    
+    [_highlightEndLayers release];
+    [_highlightKnobLayers release];
     
     [super dealloc];
 }
@@ -198,7 +200,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 {    
     THPair *currentTemporaryHighlightedElement = self.temporaryHighlightedElement;
-    THPair *newTemporaryHighlightedElement = [THPair pairWithFirst:blockId second:elementId];
+    THPair *newTemporaryHighlightedElement = [[THPair alloc] initWithFirst:blockId second:elementId];
     if(!currentTemporaryHighlightedElement || ![currentTemporaryHighlightedElement isEqual:newTemporaryHighlightedElement]) {
         // Don't use the caches in this method, they're only valid during a selection!
         NSArray *rects = [self.dataSource eucSelector:self
@@ -219,11 +221,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 CGFloat bestDistance = CGFLOAT_MAX;
                 for(CALayer *prospectiveLayer in temporaryHilightLayers) {
                     CGPoint prospectiveCenter = prospectiveLayer.position;
-                    if(prospectiveCenter.x < newCenter.x) {
-                        CGFloat thisDistance = CGPointDistance(prospectiveCenter, newCenter);
-                        if(thisDistance < bestDistance) {
-                            bestDistance = thisDistance;
-                            layer = [prospectiveLayer retain];
+                    if(prospectiveCenter.x < newCenter.x) {  // If the prospective layer is to the let of the desired location
+                        CGRect prospectiveRect = prospectiveLayer.frame;
+                        if(!(CGRectGetMinY(prospectiveRect) > CGRectGetMaxY(rect) ||
+                            CGRectGetMinY(rect) > CGRectGetMaxY(prospectiveRect))) { // And it vertically overlaps.
+                            CGFloat thisDistance = CGPointDistance(prospectiveCenter, newCenter);
+                            if(thisDistance < bestDistance) {
+                                bestDistance = thisDistance;
+                                layer = [prospectiveLayer retain];
+                            }
                         }
                     }
                 }
@@ -293,8 +299,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             layer.bounds = newBounds;
         }
         self.temporaryHighlightLayers = newTemporaryHighlightLayers;
+        [newTemporaryHighlightLayers release];
         self.temporaryHighlightedElement = newTemporaryHighlightedElement;
     }
+    [newTemporaryHighlightedElement release];
 }
 
 - (void)removeTemporaryHighlight
@@ -623,8 +631,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (void)_positionMenu
 {
     UIView *viewForMenu = self.attachedView;
-    if(!viewForMenu || [self.delegate respondsToSelector:@selector(viewForMenuForEucSelector:)]) {
-        viewForMenu = [self.delegate viewForMenuForEucSelector:self];
+    id<EucSelectorDataSource> dataSource = self.dataSource;
+    if(!viewForMenu || [dataSource respondsToSelector:@selector(viewForMenuForEucSelector:)]) {
+        viewForMenu = [dataSource viewForMenuForEucSelector:self];
     }
     
     CGRect targetRect = [[[self highlightLayers] objectAtIndex:0] frame];
@@ -694,7 +703,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         }
         
         if(stage == EucSelectorTrackingStageFirstSelection || stage == EucSelectorTrackingStageChangingSelection) {
-            if([self.dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
+            id<EucSelectorDataSource> dataSource = self.dataSource;
+            if([dataSource respondsToSelector:@selector(viewSnapshotImageForEucSelector:)]) {
                 [CATransaction begin];
                 [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 
@@ -703,7 +713,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 CGRect windowFrame = [windowLayer convertRect:windowLayer.bounds toLayer:attachedLayer];
                 
                 CALayer *snapshotLayer = [CALayer layer];
-                snapshotLayer.contents = (id)([self.delegate viewSnapshotImageForEucSelector:self].CGImage);
+                snapshotLayer.contents = (id)([dataSource viewSnapshotImageForEucSelector:self].CGImage);
                 snapshotLayer.opaque = YES;
                 snapshotLayer.frame = windowFrame;
                 [attachedLayer addSublayer:snapshotLayer];

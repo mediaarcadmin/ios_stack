@@ -10,14 +10,19 @@
 #import <libEucalyptus/EucSelector.h>
 #import "BlioBookViewController.h"
 #import "BlioProcessingManager.h"
+#import "BlioSelectableBookView.h"
 
-@interface BlioFlowView : EucBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
+@interface BlioFlowView : BlioSelectableBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
+    EucBookView *_eucBookView;
     id<BlioParagraphSource> _paragraphSource;
     BOOL _pageViewIsTurning;
     
-    id<BlioBookViewDelegate> _bookViewDelegate;
+    id<BlioBookViewDelegate> _delegate;
+    
+    NSInteger _pageCount;
+    NSInteger _pageNumber;
 }
 
-@property (nonatomic, assign) id<BlioBookViewDelegate> bookViewDelegate;
+@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
 
 @end

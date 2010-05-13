@@ -184,7 +184,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             default: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
                     BlioFlowView *aBookView = [[BlioFlowView alloc] initWithBook:newBook animated:YES];
-                    aBookView.bookViewDelegate = self;
+                    aBookView.delegate = self;
                     self.bookView = aBookView;
                     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
                     [aBookView release];
@@ -1118,7 +1118,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithBook:self.book animated:NO];
-            ePubView.bookViewDelegate = self;
+            ePubView.delegate = self;
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
@@ -1677,10 +1677,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         aNC.navigationBar.tintColor = _returnToNavigationBarTint;
         [aVC release];
         [aNC release];
-    } else {
+    } else if([self.bookView isKindOfClass:[BlioFlowView class]]) {
         BlioLightSettingsViewController *controller = [[BlioLightSettingsViewController alloc] initWithNibName:@"Lighting"
                                                                                                         bundle:[NSBundle mainBundle]];
-        controller.pageTurningView = [(BlioFlowView *)self.bookView pageTurningView];
+        controller.pageTurningView = [[self.bookView valueForKey:@"eucBookView"] valueForKey:@"pageTurningView"];
         [self.navigationController presentModalViewController:controller animated:YES];
         [controller release];
     }
