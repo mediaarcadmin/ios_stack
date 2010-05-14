@@ -14,6 +14,8 @@
 		7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */; };
 		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
 		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D14D1BD119C695800F4B5D3 /* EucHighlightRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */; };
+		7D14D1BE119C695D00F4B5D3 /* EucHighlightRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D1900B61149498500375803 /* libwapcaplet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1900A91149498500375803 /* libwapcaplet.h */; };
 		7D1900B81149498500375803 /* libwapcaplet.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1900AE1149498500375803 /* libwapcaplet.c */; };
 		7D19015E11494A5800375803 /* codec.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1900E711494A5800375803 /* codec.h */; };
@@ -509,6 +511,8 @@
 		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
 		7D0D818211075E2A00C672AC /* EucSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelector.h; sourceTree = "<group>"; };
 		7D0D818311075E2A00C672AC /* EucSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelector.m; sourceTree = "<group>"; };
+		7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHighlightRange.h; sourceTree = "<group>"; };
+		7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHighlightRange.m; sourceTree = "<group>"; };
 		7D1900981149490E00375803 /* libwapcaplet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwapcaplet.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D1900A31149498500375803 /* Makefile.subdir */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.subdir; sourceTree = "<group>"; };
 		7D1900A41149498500375803 /* Makefile.tools */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.tools; sourceTree = "<group>"; };
@@ -2185,6 +2189,8 @@
 				7D6AAD671028E7BD006289E6 /* EucLocalBookReference.m */,
 				7D516E4310287405005F3C46 /* EucBookTextStyle.h */,
 				7D516E4410287405005F3C46 /* EucBookTextStyle.m */,
+				7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */,
+				7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2651,6 +2657,7 @@
 				7D9283D41186E73C00061FCC /* EucBookPageIndexPoint.h in Headers */,
 				7D9283D61186E73C00061FCC /* EucFilteredBookPageIndex.h in Headers */,
 				7D9283E01186E75900061FCC /* EucBookIndex.h in Headers */,
+				7D14D1BE119C695D00F4B5D3 /* EucHighlightRange.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3184,6 +3191,7 @@
 				7D9283D51186E73C00061FCC /* EucBookPageIndexPoint.m in Sources */,
 				7D9283D71186E73C00061FCC /* EucFilteredBookPageIndex.m in Sources */,
 				7D9283E11186E75900061FCC /* EucBookIndex.m in Sources */,
+				7D14D1BD119C695800F4B5D3 /* EucHighlightRange.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
