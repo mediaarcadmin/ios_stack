@@ -16,6 +16,7 @@
 #import "EucBookTitleView.h"
 #import "EucPageTextView.h"
 #import "EucSelector.h"
+#import "EucHighlightRange.h"
 
 #import "THUIViewAdditions.h"
 #import "THRoundRectView.h"
@@ -35,12 +36,14 @@
 @interface EucBookView ()
 - (void)_redisplayCurrentPage;
 - (void)_goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
-- (void)_removeHighlights;
+- (void)_removeTemporaryHighlights;
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber;
 - (NSInteger)_sliderByteToPage:(float)byte;
 - (float)_pageToSliderByte:(NSInteger)page;
 - (void)_updateSliderByteToPageRatio;
 - (void)_updatePageNumberLabel;
+- (NSArray *)_highlightRangesForPage:(NSUInteger)page;
+
 @property (nonatomic, retain) UIImage *pageTexture;
 @property (nonatomic, assign) BOOL pageTextureIsDark;
 
@@ -108,8 +111,8 @@
 
 - (void)dealloc
 {
-    [self _removeHighlights];
-    [_highlightIndexPoint release];
+    [self _removeTemporaryHighlights];
+    [_temporaryHighlightIndexPoint release];
 
     if(_selector) {
         [_selector removeObserver:self forKeyPath:@"tracking"];
@@ -290,40 +293,40 @@
 #pragma mark -
 #pragma mark Highlighting
 
-- (void)_removeHighlights
+- (void)_removeTemporaryHighlights
 {
     [_selector removeTemporaryHighlight];
 }
 
-- (void)_displayHighlights
+- (void)_displayTemporaryHighlights
 {
-    [_selector temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:_highlightIndexPoint.word]
-                                  inBlockWithIdentifier:[NSNumber numberWithInt:_highlightIndexPoint.block] 
+    [_selector temporarilyHighlightElementWithIdentfier:[NSNumber numberWithInt:_temporaryHighlightIndexPoint.word]
+                                  inBlockWithIdentifier:[NSNumber numberWithInt:_temporaryHighlightIndexPoint.block] 
                                                animated:YES];
 }
 
 - (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 {
     if(!indexPoint) {
-        _highlightPage = 0;
-        [_highlightIndexPoint release];
-        _highlightIndexPoint = nil;
-        [self _removeHighlights];
+        _temporaryHighlightPage = 0;
+        [_temporaryHighlightIndexPoint release];
+        _temporaryHighlightIndexPoint = nil;
+        [self _removeTemporaryHighlights];
     } else {
-        if(![_highlightIndexPoint isEqual:indexPoint]) {
-            [_highlightIndexPoint release];
-            _highlightIndexPoint = [indexPoint retain];
+        if(![_temporaryHighlightIndexPoint isEqual:indexPoint]) {
+            [_temporaryHighlightIndexPoint release];
+            _temporaryHighlightIndexPoint = [indexPoint retain];
             
             NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
             
-            _highlightPage = newPageNumber;
+            _temporaryHighlightPage = newPageNumber;
             
-            if(!_highlightingDisabled) {
+            if(!_temporaryHighlightingDisabled) {
                 if(newPageNumber != self.pageNumber) {
-                    [self _removeHighlights];
+                    [self _removeTemporaryHighlights];
                     [self _goToPageNumber:newPageNumber animated:YES];
                 } else {
-                    [self _displayHighlights];
+                    [self _displayTemporaryHighlights];
                 }
             }
         }
@@ -537,12 +540,85 @@
 #pragma mark -
 #pragma mark PageView Handling
 
+- (NSArray *)_highlightRectsForRange:(EucHighlightRange *)highlightRange inPageView:(EucPageView *)pageView
+{                                  
+    UIView<EucPageTextView> *bookTextView = pageView.bookTextView;
+    
+    NSArray *blockIds = [bookTextView blockIdentifiers];
+    NSUInteger blockIdIndex = 0;
+    
+    NSMutableArray *nonCoalescedRects = [NSMutableArray array];
+    
+    id startBlockId = [NSNumber numberWithUnsignedInt:highlightRange.startPoint.block];
+    id endBlockId = [NSNumber numberWithUnsignedInt:highlightRange.endPoint.block];
+    id startElementId = [NSNumber numberWithUnsignedInt:highlightRange.startPoint.word];
+    id endElementId = [NSNumber numberWithUnsignedInt:highlightRange.endPoint.word];
+    
+    while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+        ++blockIdIndex;
+    }
+    BOOL isFirstBlock = YES;
+    BOOL isLastBlock = NO;
+    do {
+        id blockId = [blockIds objectAtIndex:blockIdIndex];
+        
+        NSArray *elementIds = [bookTextView identifiersForElementsOfBlockWithIdentifier:blockId];
+        NSUInteger elementIdCount = elementIds.count;
+        NSUInteger elementIdIndex = 0;
+        
+        isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+        
+        id elementId;
+        if(isFirstBlock) {
+            while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                ++elementIdIndex;
+            }
+            isFirstBlock = NO;
+        }
+        
+        do {
+            elementId = [elementIds objectAtIndex:elementIdIndex];
+            [nonCoalescedRects addObjectsFromArray:[bookTextView rectsForElementWithIdentifier:elementId
+                                                                         ofBlockWithIdentifier:blockId]];
+            ++elementIdIndex;
+        } while (isLastBlock ? 
+                 ([elementId compare:endElementId] < NSOrderedSame) : 
+                 elementIdIndex < elementIdCount);
+        ++blockIdIndex;
+    } while(!isLastBlock);
+    
+    return [EucSelector coalescedLineRectsForElementRects:nonCoalescedRects];
+}
+
 - (THPair *)_pageViewAndIndexPointForBookPageNumber:(NSInteger)pageNumber
 {          
     THPair *ret = [_pageLayoutController viewAndIndexPointForPageNumber:pageNumber withPageTexture:self.pageTexture isDark:self.pageTextureIsDark];
     if([ret.first isKindOfClass:[EucPageView class]]) {
         // Hrm, this is a bit messy...
-        ((EucPageView *)ret.first).delegate = self;
+        EucPageView *pageView = (EucPageView *)ret.first;
+        pageView.delegate = self;
+        
+        NSArray *highlightRanges = [self _highlightRangesForPage:pageNumber];
+        if(highlightRanges) {
+            UIView *bookTextView = pageView.bookTextView;
+            CALayer *pageLayer = pageView.layer;
+            for(EucHighlightRange *range in highlightRanges) {
+                CGColorRef color = [range.color colorWithAlphaComponent:0.3f].CGColor;
+                NSArray *rects = [self _highlightRectsForRange:range inPageView:pageView];
+                for(NSValue *rectValue in rects) {
+                    CGRect rect  = CGRectIntegral([bookTextView convertRect:rectValue.CGRectValue toView:pageView]);
+                    
+                    CALayer *layer = [[CALayer alloc] init];
+                    layer.cornerRadius = 4;
+                    layer.backgroundColor = color;
+                    layer.frame = rect;
+                    
+                    [pageLayer addSublayer:layer]; 
+                    
+                    [layer release];
+                }
+            }
+        }        
     }
     
     return ret;
@@ -699,7 +775,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
                  pinchNowAt:(CGPoint[])pinchNowAt 
           currentScaledView:(UIView *)currentScaledView
 {
-    [self _removeHighlights];
+    [self _removeTemporaryHighlights];
     
     CFAbsoluteTime start = 0;
     if(THWillLog()) {
@@ -762,7 +838,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         EucBookPageIndexPoint *oldIndexPoint = [_pageViewToIndexPoint objectForKey:[NSValue valueWithNonretainedObject:view]];
         [_pageLayoutController setFontPointSize:foundSize];
         NSInteger newPageNumber = [_pageLayoutController pageNumberForIndexPoint:oldIndexPoint];
-        THPair *viewAndIndexPoint = [_pageLayoutController viewAndIndexPointForPageNumber:newPageNumber withPageTexture:self.pageTexture isDark:self.pageTextureIsDark];
+        THPair *viewAndIndexPoint = [self _pageViewAndIndexPointForBookPageNumber:newPageNumber];
         
         ret = viewAndIndexPoint.first;
         
@@ -833,16 +909,16 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     }
     
     _selector.selectionDisabled = YES;
-    _highlightingDisabled = YES;
-    [self _removeHighlights];    
+    _temporaryHighlightingDisabled = YES;
+    [self _removeTemporaryHighlights];    
 }
 
 - (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
 {
     _selector.selectionDisabled = NO;
-    _highlightingDisabled = NO;
-    if(_highlightPage == self.pageNumber) {
-        [self _displayHighlights];
+    _temporaryHighlightingDisabled = NO;
+    if(_temporaryHighlightPage == self.pageNumber) {
+        [self _displayTemporaryHighlights];
     }    
     
     if([_delegate respondsToSelector:@selector(bookViewPageTurnDidEnd:)]) {
@@ -907,6 +983,42 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         return ret;
     }
     return nil;
+}
+
+- (NSArray *)_highlightRangesForPage:(NSUInteger)page
+{
+    NSArray *ret = nil;
+    
+    id<EucBookViewDelegate> delegate = self.delegate;
+    if([delegate respondsToSelector:@selector(bookView:highlightRangesFromPoint:toPoint:)]) {
+        EucBookPageIndexPoint *startPoint = [_pageLayoutController indexPointForPageNumber:page];
+        EucBookPageIndexPoint *endPoint;
+        if(page < self.pageCount) {
+            endPoint = [_pageLayoutController indexPointForPageNumber:page + 1];
+        } else {
+            endPoint = nil;
+        }
+        NSArray *eucRanges = [delegate bookView:self
+                       highlightRangesFromPoint:startPoint
+                                        toPoint:endPoint];
+        if(eucRanges.count) {
+            ret = eucRanges;
+        }
+    }    
+    
+    return ret;
+}
+
+- (NSArray *)highlightRangesForEucSelector:(EucSelector *)selector
+{
+    NSArray *selectorRanges = nil;
+
+    NSArray *eucRanges = [self _highlightRangesForPage:self.pageNumber];
+    if(eucRanges.count) {
+        selectorRanges = [eucRanges valueForKey:@"selectorRange"];
+    }
+
+    return selectorRanges;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

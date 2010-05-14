@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EucHighlightRange.h"
 
 @interface EucSelectorRange : NSObject {
     id _startBlockId;
@@ -23,5 +24,11 @@
 - (BOOL)overlaps:(EucSelectorRange *)otherRange;
 - (BOOL)isEqual:(id)object;
 - (NSUInteger)hash;
+
+@end
+
+@interface EucHighlightRange (EucSelectorRangeAdditions)
+
+- (EucSelectorRange *)selectorRange;
 
 @end

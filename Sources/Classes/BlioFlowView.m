@@ -13,6 +13,7 @@
 #import "BlioParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
+#import <libEucalyptus/EucHighlightRange.h>
 #import <libEucalyptus/EucMenuItem.h>
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucSelectorRange.h>
@@ -217,7 +218,8 @@
     return _eucBookView.contentsDataSource;
 }
 
-- (NSString *)pageLabelForPageNumber:(NSInteger)page {
+- (NSString *)pageLabelForPageNumber:(NSInteger)page 
+{
     NSString *ret = nil;
     
     id<EucBookContentsTableViewControllerDataSource> contentsSource = self.contentsDataSource;
@@ -242,12 +244,27 @@
     return ret;
 }
 
-+ (NSArray *)preAvailabilityOperations {
++ (NSArray *)preAvailabilityOperations 
+{
     BlioFlowPaginateOperation *preParseOp = [[BlioFlowPaginateOperation alloc] init];
     NSArray *operations = [NSArray arrayWithObject:preParseOp];
     [preParseOp release];
     return operations;
 }
+
+- (BOOL)toolbarShowShouldBeSuppressed
+{
+    return _pageViewIsTurning;
+}
+
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+}
+
+
+#pragma mark -
+#pragma mark EucBookView delegate methods
 
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
 {
@@ -259,12 +276,6 @@
     _pageViewIsTurning = NO;
 }
 
-- (BOOL)toolbarShowShouldBeSuppressed
-{
-    return _pageViewIsTurning;
-}
-
-
 - (BOOL)bookViewToolbarsVisible:(EucBookView *)bookView
 {
     return self.delegate.toolbarsVisible;
@@ -275,11 +286,33 @@
     return self.delegate.nonToolbarRect;
 }
 
-
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (NSArray *)bookView:(EucBookView *)bookView highlightRangesFromPoint:(EucBookPageIndexPoint *)startPoint toPoint:(EucBookPageIndexPoint *)endPoint
 {
-    [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+    NSArray *ret = nil;
+    
+    BlioBookmarkRange *blioPageRange = [[BlioBookmarkRange alloc] init];
+    blioPageRange.startPoint = [self bookmarkPointFromBookPageIndexPoint:startPoint];
+    blioPageRange.endPoint = [self bookmarkPointFromBookPageIndexPoint:endPoint];
+    NSArray *blioRanges = [self.delegate rangesToHighlightForRange:blioPageRange];
+    [blioPageRange release];
+    
+    NSUInteger count = blioRanges.count;
+    if(count) {
+        NSMutableArray *eucRanges = [[NSMutableArray alloc] initWithCapacity:count];
+        for(BlioBookmarkRange *blioRange in blioRanges) {
+            EucHighlightRange *eucRange = [[EucHighlightRange alloc] init];
+            eucRange.startPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.startPoint];
+            eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
+            eucRange.color = blioRange.color;
+            [eucRanges addObject:eucRange];
+            [eucRange release];
+        }
+        ret = [eucRanges autorelease];
+     }
+    
+    return ret;
 }
+
 
 #pragma mark -
 #pragma mark BlioSelectableBookView overrides

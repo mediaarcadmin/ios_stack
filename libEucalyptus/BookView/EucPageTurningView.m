@@ -451,7 +451,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef textureContext = CGBitmapContextCreate(textureData, width, height, 8, width * 4, 
                                                         colorSpace, kCGImageAlphaPremultipliedLast);
-    if([newCurrentView respondsToSelector:@selector(drawRect:inContext:)]) {
+    if([newCurrentView respondsToSelector:@selector(drawRect:inContext:)] && !newCurrentView.layer.sublayers) {
         CGContextSetFillColorSpace(textureContext, colorSpace);
         CGContextSetStrokeColorSpace(textureContext, colorSpace); 
         

@@ -1603,7 +1603,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         else if ([self.book audiobookFilename] != nil) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
                 // So far this only would work for fixed view.
-                //if ( ![self findTimes:[self.bookView.currentBookmarkPoint layoutPage]] < 0 ) 
                 if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
                     // No audio files for this page.
                     // Look for next page with files.

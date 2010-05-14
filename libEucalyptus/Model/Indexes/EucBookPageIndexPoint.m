@@ -155,5 +155,18 @@
     return self;
 }
 
+- (BOOL)isEqual:(id)object
+{
+    if([object isKindOfClass:[EucBookPageIndexPoint class]]) {
+        return [self compare:(EucBookPageIndexPoint *)object] == NSOrderedSame; 
+    }
+    return NO;
+}
+
+- (NSUInteger)hash
+{
+    return (_source * 2654435761) | (_block * 2654435761) | (_word * 2654435761) | (_element * 2654435761);
+}
+
 @end
 

@@ -26,7 +26,7 @@ typedef struct EucRange {
     EucPoint end;
 } EucRange;
 
-@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDelegate, EucSelectorDataSource> {
+@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDataSource> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
     
@@ -67,11 +67,9 @@ typedef struct EucRange {
     
     UIView *_pageSliderTrackingInfoView;    
     
-    NSInteger _highlightPage;
-    EucBookPageIndexPoint *_highlightIndexPoint;
-    
-    NSMutableArray *_highlightLayers;
-    BOOL _highlightingDisabled;
+    NSInteger _temporaryHighlightPage;
+    EucBookPageIndexPoint *_temporaryHighlightIndexPoint;
+    BOOL _temporaryHighlightingDisabled;
     
     BOOL _allowsSelection;
     EucSelector *_selector;
@@ -142,5 +140,8 @@ typedef struct EucRange {
 
 - (BOOL)bookViewToolbarsVisible:(EucBookView *)bookView;
 - (CGRect)bookViewNonToolbarRect:(EucBookView *)bookView;
+
+// Return an array of EucHighlightRanges.
+- (NSArray *)bookView:(EucBookView *)bookView highlightRangesFromPoint:(EucBookPageIndexPoint *)startPoint toPoint:(EucBookPageIndexPoint *)endPoint;
 
 @end
