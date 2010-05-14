@@ -121,12 +121,18 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
 @synthesize accessibilityElements, previousAccessibilityElements;
+@synthesize xpsPath;
 
 - (void)dealloc {
     isCancelled = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    CGPDFDocumentRelease(pdf);
+    if (pdf) CGPDFDocumentRelease(pdf);
+//    if (xpsHandle) {
+//        XPS_Close(xpsHandle);
+//        XPS_End();
+//    }
+    self.xpsPath = nil;
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
     [self.selector removeObserver:self forKeyPath:@"trackingStage"];
@@ -170,6 +176,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
 
     self.pdfPath = [aBook pdfPath];
+    if (nil == self.pdfPath) {
+        self.xpsPath = [aBook xpsPath];
+        if (nil == self.xpsPath) return nil;
+    }
     
     self.pdfData = [[NSData alloc] initWithContentsOfMappedFile:[aBook pdfPath]];
     CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);

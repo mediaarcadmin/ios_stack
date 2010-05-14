@@ -13,6 +13,7 @@
 #import "MSTiltScroller.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucSelector.h>
+#import "XpsSdk.h"
 
 static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the go to animations to look right
 
@@ -72,6 +73,9 @@ typedef enum BlioLayoutPageMode {
     NSMutableArray *accessibilityElements;
     NSArray *previousAccessibilityElements;
     BOOL accessibilityRefreshRequired;
+    NSString *xpsPath;
+//    RasterImageInfo *imageInfo;
+//    XPS_HANDLE xpsHandle;
 }
 
 @property (nonatomic, retain) BlioMockBook *book;
@@ -90,5 +94,6 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic, retain) UIImage *shadowTop;
 @property (nonatomic, retain) UIImage *shadowLeft;
 @property (nonatomic, retain) UIImage *shadowRight;
+@property (nonatomic, retain) NSString *xpsPath;
 
 @end

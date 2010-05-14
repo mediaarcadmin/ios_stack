@@ -812,6 +812,7 @@
 		C9867DE51127164F0070A03E /* BlioStoreBookView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = BlioStoreBookView.xib; path = ../Sources/Classes/BlioStoreBookView.xib; sourceTree = "<group>"; };
 		C9867F6A112964A70070A03E /* BlioStoreFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreFeed.h; sourceTree = "<group>"; };
 		C9867F6B112964A70070A03E /* BlioStoreFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFeed.m; sourceTree = "<group>"; };
+		C98CCAAB119D8352002E9A8E /* XpsSdk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XpsSdk.h; sourceTree = "<group>"; };
 		C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioContentsTabViewController.h; sourceTree = "<group>"; };
 		C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioContentsTabViewController.m; sourceTree = "<group>"; };
 		C9985C01113E84E9009E5263 /* BlioLayoutScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutScrollView.h; sourceTree = "<group>"; };
@@ -947,6 +948,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C98CCAA9119D8343002E9A8E /* XPS */,
 				A3F9387D116BD63500E53BD3 /* CellTextField.h */,
 				A3F9387E116BD63500E53BD3 /* CellTextField.m */,
 				A3F9387F116BD63500E53BD3 /* EditableTableViewCell.h */,
@@ -1381,6 +1383,14 @@
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C98CCAA9119D8343002E9A8E /* XPS */ = {
+			isa = PBXGroup;
+			children = (
+				C98CCAAB119D8352002E9A8E /* XpsSdk.h */,
+			);
+			name = XPS;
 			sourceTree = "<group>";
 		};
 		C9985BF8113E8286009E5263 /* LayoutView */ = {
@@ -2099,6 +2109,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Sources/Classes\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2131,6 +2142,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Sources/Classes\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2195,6 +2207,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Sources/Classes\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2227,6 +2240,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Sources/Classes\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
