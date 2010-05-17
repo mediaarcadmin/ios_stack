@@ -93,8 +93,6 @@
 }
 
 - (BOOL)initAudioWithBook:(NSString*)audioBookPath {
-	if ( self.avPlayer != nil )
-		[self.avPlayer release];
 	NSError* err;
     AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:audioBookPath] 
                                                                    error:&err];

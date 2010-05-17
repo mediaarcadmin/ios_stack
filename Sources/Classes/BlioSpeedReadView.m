@@ -21,6 +21,7 @@
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, retain) id currentParagraphID;
 @property (nonatomic) uint32_t currentWordOffset;
+@property (nonatomic, retain) NSArray *textArray;
 
 @end
 
@@ -99,30 +100,43 @@
     return self;
 }
 
-- (void)fillArrayWithNextBlock {
+- (BOOL)fillArrayWithNextBlock {
     if (textArray) {
         [textArray release];
         textArray = nil;
     }
     
-    self.currentParagraphID = [paragraphSource nextParagraphIdForParagraphWithID:self.currentParagraphID];
-    self.currentWordOffset = 0;
-        
-    [self fillArrayWithCurrentBlock];
+    id newId = [paragraphSource nextParagraphIdForParagraphWithID:self.currentParagraphID];
+    if(newId) {
+        self.currentParagraphID = newId;
+        self.currentWordOffset = 0;
+            
+        return [self fillArrayWithCurrentBlock];
+    } else {
+        return NO;
+    }
 }
 
-- (void)fillArrayWithCurrentBlock {
+- (BOOL)fillArrayWithCurrentBlock {
+    BOOL ret = NO;
+    
     if (textArray) {
         [textArray release];
         textArray = nil;
     }
 
-    self.textArray = [[paragraphSource wordsForParagraphWithID:self.currentParagraphID] mutableCopy];
-    if (!textArray.count) {
-        [self fillArrayWithNextBlock];
+    self.textArray = [paragraphSource wordsForParagraphWithID:self.currentParagraphID];
+    if (textArray.count) {
+        ret = YES;
+    } else {
+        ret = [self fillArrayWithNextBlock];
     } 
     
-    self.pageNumber = [self pageNumberForBookmarkPoint:[paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:self.currentWordOffset]];
+    if (ret) {
+        self.pageNumber = [self pageNumberForBookmarkPoint:[paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:self.currentWordOffset]];
+    }
+    
+    return ret;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
