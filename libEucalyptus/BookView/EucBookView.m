@@ -1029,17 +1029,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     }
 }
 
-- (EucRange)selectedRange
-{
-    EucRange selectedRange = {{0, 0}, {0, 0}};
-    return selectedRange;
-}
-
-- (void)clearSelectedRange
-{
-    
-}
-
 #pragma mark -
 #pragma mark Toolbar
 

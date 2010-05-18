@@ -125,9 +125,6 @@ typedef struct EucRange {
 
 - (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
-@property (nonatomic, readonly) EucRange selectedRange;
-- (void)clearSelectedRange;
-
 - (void)stopAnimation;
 
 @end
