@@ -268,7 +268,6 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     }
 }
 
-
 #pragma mark -
 #pragma mark Override Points.
 

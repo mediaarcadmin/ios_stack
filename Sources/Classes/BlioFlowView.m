@@ -350,6 +350,16 @@
     return [bookmarkRange autorelease];
 }
 
+- (BlioBookmarkRange *)bookmarkRangeFromHilightRange:(EucHighlightRange *)range
+{
+    BlioBookmarkRange *bookmarkRange = [[BlioBookmarkRange alloc] init];
+    bookmarkRange.startPoint = [self bookmarkPointFromBookPageIndexPoint:range.startPoint];
+    bookmarkRange.endPoint = [self bookmarkPointFromBookPageIndexPoint:range.endPoint];    
+    bookmarkRange.color = range.color;
+    return [bookmarkRange autorelease];
+}
+
+
 - (BlioBookmarkRange *)selectedRange 
 {
     EucSelectorRange *selectedRange = [self.selector selectedRange];
@@ -366,6 +376,25 @@
         
         return [bookmarkRange autorelease];
     }
+}
+
+- (void)bookView:(EucBookView *)bookView didUpdateHighlightAtRange:(EucHighlightRange *)fromRange toRange:(EucHighlightRange *)toRange
+{
+    if([self.delegate respondsToSelector:@selector(updateHighlightAtRange:toRange:withColor:)]) {
+        [self.delegate updateHighlightAtRange:[self bookmarkRangeFromHilightRange:fromRange]
+                                      toRange:[self bookmarkRangeFromHilightRange:toRange]
+                                    withColor:toRange.color];
+    }
+}
+
+- (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
+{
+    return [_eucBookView eucSelector:selector willBeginEditingHighlightWithRange:selectedRange];
+}
+
+- (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange
+{
+    return [_eucBookView eucSelector:selector didEndEditingHighlightWithRange:fromRange movedToRange:toRange];
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "EucHighlightRange.h"
+#import "EucBookPageIndexPoint.h"
 
 @implementation EucHighlightRange
 
@@ -26,6 +27,22 @@
 - (NSUInteger)hash
 {
     return [self.startPoint hash] ^ [self.endPoint hash];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    EucHighlightRange *copy = [[EucHighlightRange allocWithZone:zone] init];
+    
+    EucBookPageIndexPoint *newStartPoint = [_startPoint copy];
+    copy.startPoint = newStartPoint;
+    [newStartPoint release];
+    
+    EucBookPageIndexPoint *newEndPoint = [_endPoint copy];
+    copy.endPoint = newEndPoint;
+    [newEndPoint release];
+    
+    copy.color = _color;
+    return copy;
 }
 
 @end
