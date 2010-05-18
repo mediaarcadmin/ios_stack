@@ -322,7 +322,10 @@
     return _eucBookView.selector;
 }
 
-- (void)refreshHighlights {}
+- (void)refreshHighlights 
+{
+    return [_eucBookView refreshHighlights];
+}
 
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range
 {
