@@ -13,8 +13,8 @@
 #import "EucSelector.h"
 #import "EucPageView.h"
 
-@protocol EucBook, EucPageLayoutController, EucBookViewDelegate, EucSelectorDelegate;
-@class EucBookReference, THScalableSlider, EucBookPageIndexPoint, EucSelector;
+@protocol EucBook, EucPageLayoutController, EucBookViewDelegate;
+@class EucBookReference, THScalableSlider, EucBookPageIndexPoint, EucSelector, EucHighlightRange;
 
 typedef struct EucPoint {
     uint32_t paragraphId;
@@ -26,7 +26,7 @@ typedef struct EucRange {
     EucPoint end;
 } EucRange;
 
-@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDataSource> {
+@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDataSource, EucSelectorDelegate> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
     
@@ -73,7 +73,8 @@ typedef struct EucRange {
     
     BOOL _allowsSelection;
     EucSelector *_selector;
-    id<EucSelectorDelegate> _selectorDelegate;    
+    id<EucSelectorDelegate> _selectorDelegate;
+    EucHighlightRange *_rangeBeingEdited;
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
@@ -142,5 +143,7 @@ typedef struct EucRange {
 
 // Return an array of EucHighlightRanges.
 - (NSArray *)bookView:(EucBookView *)bookView highlightRangesFromPoint:(EucBookPageIndexPoint *)startPoint toPoint:(EucBookPageIndexPoint *)endPoint;
+
+- (void)bookView:(EucBookView *)bookView didUpdateHighlightAtRange:(EucHighlightRange *)fromRange toRange:(EucHighlightRange *)toRange;
 
 @end

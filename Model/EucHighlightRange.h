@@ -10,7 +10,7 @@
 
 @class EucBookPageIndexPoint;
 
-@interface EucHighlightRange : NSObject {
+@interface EucHighlightRange : NSObject <NSCopying> {
     EucBookPageIndexPoint *_startPoint;
     EucBookPageIndexPoint *_endPoint;
     UIColor *_color;

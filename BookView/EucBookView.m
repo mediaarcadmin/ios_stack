@@ -16,6 +16,7 @@
 #import "EucBookTitleView.h"
 #import "EucPageTextView.h"
 #import "EucSelector.h"
+#import "EucSelectorRange.h"
 #import "EucHighlightRange.h"
 
 #import "THUIViewAdditions.h"
@@ -198,7 +199,7 @@
                           options:0
                           context:NULL];
         _selector.dataSource = self;
-        _selector.delegate = self.selectorDelegate;
+        _selector.delegate = self.selectorDelegate ?: self;
     } else {
         [_pageTurningView removeFromSuperview];
         [_pageTurningView release];
@@ -337,6 +338,8 @@
 {
     [self _redisplayCurrentPage];
 }
+
+
 
 #pragma mark -
 #pragma mark Navigation
@@ -608,19 +611,21 @@
             UIView *bookTextView = pageView.bookTextView;
             CALayer *pageLayer = pageView.layer;
             for(EucHighlightRange *range in highlightRanges) {
-                CGColorRef color = [range.color colorWithAlphaComponent:0.3f].CGColor;
-                NSArray *rects = [self _highlightRectsForRange:range inPageView:pageView];
-                for(NSValue *rectValue in rects) {
-                    CGRect rect  = CGRectIntegral([bookTextView convertRect:rectValue.CGRectValue toView:pageView]);
-                    
-                    CALayer *layer = [[CALayer alloc] init];
-                    layer.cornerRadius = 4;
-                    layer.backgroundColor = color;
-                    layer.frame = rect;
-                    
-                    [pageLayer addSublayer:layer]; 
-                    
-                    [layer release];
+                if(!_rangeBeingEdited || ![range isEqual:_rangeBeingEdited]) {                 
+                    CGColorRef color = [range.color colorWithAlphaComponent:0.3f].CGColor;
+                    NSArray *rects = [self _highlightRectsForRange:range inPageView:pageView];
+                    for(NSValue *rectValue in rects) {
+                        CGRect rect  = CGRectIntegral([bookTextView convertRect:rectValue.CGRectValue toView:pageView]);
+                        
+                        CALayer *layer = [[CALayer alloc] init];
+                        layer.cornerRadius = 4;
+                        layer.backgroundColor = color;
+                        layer.frame = rect;
+                        
+                        [pageLayer addSublayer:layer]; 
+                        
+                        [layer release];
+                    }
                 }
             }
         }        
@@ -998,7 +1003,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     if([delegate respondsToSelector:@selector(bookView:highlightRangesFromPoint:toPoint:)]) {
         EucBookPageIndexPoint *startPoint = [_pageLayoutController indexPointForPageNumber:page];
         EucBookPageIndexPoint *endPoint;
-        if(page < self.pageCount) {
+        if(page < _pageLayoutController.globalPageCount) {
             endPoint = [_pageLayoutController indexPointForPageNumber:page + 1];
         } else {
             endPoint = nil;
@@ -1033,6 +1038,51 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         _pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
     }
 }
+
+- (UIColor *)eucSelector:(EucSelector *)aSelector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
+{    
+    UIColor *ret = nil;
+    for(EucHighlightRange *highlightRange in [self _highlightRangesForPage:self.pageNumber]) {
+        if([[highlightRange selectorRange] isEqual:selectedRange]) {
+            ret = [highlightRange.color colorWithAlphaComponent:0.3f];
+            
+            NSParameterAssert(!_rangeBeingEdited);
+            _rangeBeingEdited = [highlightRange copy];
+        }
+    }
+    
+    [self refreshHighlights];
+    
+    return ret;
+}
+
+- (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange
+{
+    if(toRange && ![fromRange isEqual:toRange]) {
+        NSParameterAssert([[_rangeBeingEdited selectorRange] isEqual:fromRange]);
+        EucHighlightRange *fromHighlightRange = _rangeBeingEdited;
+        EucHighlightRange *toHighlightRange = [_rangeBeingEdited copy];
+        
+        toHighlightRange.startPoint.block = [toRange.startBlockId integerValue];
+        toHighlightRange.startPoint.word = [toRange.startElementId integerValue];
+        toHighlightRange.startPoint.element = 0;
+        
+        toHighlightRange.endPoint.block = [toRange.endBlockId integerValue];
+        toHighlightRange.endPoint.word = [toRange.endElementId integerValue];
+        toHighlightRange.endPoint.element = 0;
+        
+        if([self.delegate respondsToSelector:@selector(bookView:didUpdateHighlightAtRange:toRange:)]) {
+            [self.delegate bookView:self didUpdateHighlightAtRange:fromHighlightRange toRange:toHighlightRange];
+        }
+    }
+    
+    [_rangeBeingEdited release];
+    _rangeBeingEdited = nil;
+
+    self.selector.selectedRange = nil;
+    [self refreshHighlights];
+}
+
 
 #pragma mark -
 #pragma mark Toolbar
