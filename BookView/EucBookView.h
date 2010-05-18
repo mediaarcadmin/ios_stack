@@ -125,6 +125,8 @@ typedef struct EucRange {
 
 - (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
+- (void)refreshHighlights;
+
 - (void)stopAnimation;
 
 @end

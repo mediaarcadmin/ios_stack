@@ -333,6 +333,11 @@
     }
 }
 
+- (void)refreshHighlights
+{
+    [self _redisplayCurrentPage];
+}
+
 #pragma mark -
 #pragma mark Navigation
 
