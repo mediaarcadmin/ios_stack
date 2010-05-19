@@ -580,7 +580,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     {
         NSUInteger cacheIndex = NSUIntegerMax;
         for(NSUInteger i = 0; i < kTextFlowPageBlocksCacheCapacity; ++i) {
-            if(cacheIndex == pageIndex) {
+            if(pageIndexCache[i] == pageIndex) {
                 cacheIndex = i;
                 break;
             }
@@ -598,12 +598,18 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         } 
         
         if(!ret) {
+            //if(pageBlocksCache[0]) {
+            //    NSLog(@"Discarding cached blocks for layout page %ld", (long)pageIndexCache[0]);
+            //}
             [pageBlocksCache[0] release];
             memmove(pageIndexCache, pageIndexCache + 1, sizeof(NSInteger) * (kTextFlowPageBlocksCacheCapacity - 1));
             memmove(pageBlocksCache, pageBlocksCache + 1, sizeof(NSArray *) * (kTextFlowPageBlocksCacheCapacity - 1));
             
             ret = [self calculateBlocksForPageAtIndex:pageIndex];
-        }
+            //NSLog(@"Generating blocks for layout page %ld", (long)pageIndex);
+        } //else {
+            //NSLog(@"Using cached blocks for layout page %ld", (long)pageIndex);
+        //}
         
         pageBlocksCache[kTextFlowPageBlocksCacheCapacity - 1] = [ret retain];
         pageIndexCache[kTextFlowPageBlocksCacheCapacity - 1] = pageIndex;

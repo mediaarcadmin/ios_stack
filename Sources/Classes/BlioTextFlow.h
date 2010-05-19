@@ -104,7 +104,7 @@
 
 @end
 
-#define kTextFlowPageBlocksCacheCapacity 3
+#define kTextFlowPageBlocksCacheCapacity 5
 
 @interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider, EucBookContentsTableViewControllerDataSource> {
     NSSet *pageRanges;
