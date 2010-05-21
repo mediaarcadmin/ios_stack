@@ -172,7 +172,9 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
  //   [self.download setBackgroundImage:[UIImage midpointStretchableImageNamed:@"downloadButtonPressed.png"] forState:UIControlStateHighlighted];
  //   [self.download setBackgroundColor:[UIColor greenColor]];
     self.download.titleLabel.shadowOffset = CGSizeMake(0, -1);
-    [self.download setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];    
+    [self.download setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];
+	
+	NSLog(@"[self.entity thumbUrl]: %@",[self.entity thumbUrl]);
         
     // Fetch bookThumb
     if (nil != [self.entity thumbUrl]) {
@@ -185,62 +187,42 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     }
 	
 	// check data to see if downloadState must be changed:
-	// access Managed Object Context to see if the corresponding BlioMockBook is already in context
-		
-    NSManagedObjectContext *moc = [self managedObjectContext]; 
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-	NSLog(@"sourceSpecificID: %@",[self.entity id]);
-	NSLog(@"sourceID: %i",self.feed.sourceID);
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@", [self.entity id],[NSNumber numberWithInt:self.feed.sourceID]]];
+	// access processing manager to see if the corresponding BlioMockBook is already in library
 	
-	NSError *errorExecute = nil; 
-    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
-    
-	
-    if (errorExecute) {
-        NSLog(@"Error getting executeFetchRequest results. %@, %@", errorExecute, [errorExecute userInfo]); 
-    }
-    else {
-		if ([results count] > 0) {
-			// then update button options accordingly to prevent possible duplication of entries.
-			NSLog(@"Found Book in context already"); 
-			for (NSManagedObject * mo in results) {
-				NSLog(@"mo sourceSpecificID:%@ sourceID:%i",[mo valueForKey:@"sourceSpecificID"],[[mo valueForKey:@"sourceID"] intValue]);
-			}
-			NSManagedObject * resultBook = [results objectAtIndex:0];
-//			NSLog(@"processingStatus int: %i",[[resultBook valueForKey:@"processingState"] intValue]);
-				  if ([[resultBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
-				NSLog(@"and processingState is kBlioMockBookProcessingStateComplete."); 
-				
-				[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
-			}
-			else
-			{
-				// Book is in context/state, but not complete.
-				// Check operation queue to see if completeOperation for id is present
-				NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
-				if (completeOperation == nil) {
-					// for now, treat as incomplete - redownload completely. TODO: processing manager should scan for pre-existing entity in context and append to it instead of creating new one.
-					NSLog(@"but not processingState and could not find completeOperation."); 
-					[self setDownloadState:kBlioStoreDownloadButtonStateConfirm animated:NO];
-				}
-				else {
-					NSLog(@"but not processingState. However, completeOperation is present and will become listener."); 
-					[self setDownloadState:kBlioStoreDownloadButtonStateInProcess animated:NO];
-					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioProcessingOperationCompleteNotification) name:BlioProcessingOperationCompleteNotification object:completeOperation];
-				}
-			}
+	BlioMockBook * resultBook = [self.processingDelegate bookWithSourceID:self.feed.sourceID sourceSpecificID:[self.entity id]];
+
+	if (resultBook != nil) {
+		// then update button options accordingly to prevent possible duplication of entries.
+		NSLog(@"Found Book in context already"); 
+		if ([[resultBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
+			NSLog(@"and processingState is kBlioMockBookProcessingStateComplete."); 
+			
+			[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
 		}
-		else {
-			NSLog(@"book is not already present in the library."); 
-			if (![self.entity ePubUrl] && ![self.entity pdfUrl]) {
-				[self setDownloadState:kBlioStoreDownloadButtonStateNoDownload animated:NO];
-				
-			} else [self setDownloadState:kBlioStoreDownloadButtonStateConfirm animated:NO]; // make initial state match the XIB file text
+		else
+		{
+			// Book is in context/state, but not complete.
+			// Check operation queue to see if completeOperation for id is present
+			NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
+			if (completeOperation == nil) {
+				// for now, treat as incomplete - redownload completely. TODO: processing manager should scan for pre-existing entity in context and append to it instead of creating new one.
+				NSLog(@"but not processingState and could not find completeOperation."); 
+				[self setDownloadState:kBlioStoreDownloadButtonStateConfirm animated:NO];
+			}
+			else {
+				NSLog(@"but not processingState. However, completeOperation is present and will become listener."); 
+				[self setDownloadState:kBlioStoreDownloadButtonStateInProcess animated:NO];
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioProcessingOperationCompleteNotification) name:BlioProcessingOperationCompleteNotification object:completeOperation];
+			}
 		}
 	}
-    [fetchRequest release];
+	else {
+		NSLog(@"book is not already present in the library."); 
+		if (![self.entity ePubUrl] && ![self.entity pdfUrl]) {
+			[self setDownloadState:kBlioStoreDownloadButtonStateNoDownload animated:NO];
+			
+		} else [self setDownloadState:kBlioStoreDownloadButtonStateConfirm animated:NO]; // make initial state match the XIB file text
+	}	
 }
 
 - (void)layoutViews {    

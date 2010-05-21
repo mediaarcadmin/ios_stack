@@ -16,7 +16,7 @@
 @interface BlioStoreFeed : NSObject {
     Class parserClass;
     BlioStoreBooksSourceParser *parser;
-	BlioBookSource sourceID;
+	BlioBookSourceID sourceID;
     NSString *title;
     NSMutableArray *categories;
     NSMutableArray *entities;
@@ -35,6 +35,6 @@
 @property (nonatomic, retain) NSURL *nextURL;
 @property (nonatomic, retain) NSString *id;
 @property (nonatomic, assign) NSUInteger totalResults;
-@property (nonatomic, assign) BlioBookSource sourceID;
+@property (nonatomic, assign) BlioBookSourceID sourceID;
 
 @end

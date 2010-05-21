@@ -45,7 +45,9 @@
                 [aEntity setEPubUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/acquisition" type:@"application/epub+zip" fromLinks:[entry links]] href]];
                 [aEntity setPdfUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/acquisition" type:@"application/pdf" fromLinks:[entry links]] href]];
                 [aEntity setCoverUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/cover" type:@"image/png" fromLinks:[entry links]] href]];
+				if (aEntity.coverUrl == nil) [aEntity setCoverUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/cover" type:nil fromLinks:[entry links]] href]];
                 [aEntity setThumbUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/thumbnail" type:@"image/png" fromLinks:[entry links]] href]];                             
+				if (aEntity.thumbUrl == nil) [aEntity setThumbUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/thumbnail" type:nil fromLinks:[entry links]] href]];
                 [aEntity setPublishedDate:[[entry updatedDate] date]];
                 
                 // Ideally this would be handled by a GDataEntryBase subclass instead of like this

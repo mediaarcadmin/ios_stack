@@ -10,18 +10,18 @@
 #import "BlioAppSettingsConstants.h"
 #import "CellTextField.h"
 #import "BlioAlertManager.h"
+#import "BlioStoreManager.h"
 
 @implementation BlioLoginViewController
 
-@synthesize loginTableView, vaultManager, usernameField, passwordField, activityIndicator, statusField;
+@synthesize sourceID, usernameField, passwordField, activityIndicator, statusField;
 
-- (id)init
+- (id)initWithSourceID:(BlioBookSourceID)bookSourceID
 {
-	self = [super init];
+	self = [super initWithStyle:UITableViewStyleGrouped];
 	if (self)
 	{
-		//self.title = NSLocalizedString(@"Sign in to Blio", @"");
-		
+		self.sourceID = bookSourceID;		
 	}
 	
 	return self;
@@ -42,8 +42,12 @@
 }
 
 - (void)loadView {
+	[super loadView];
+	self.tableView.frame = [[UIScreen mainScreen] applicationFrame];
+	self.tableView.scrollEnabled = NO;
+	self.tableView.autoresizesSubviews = YES;
 	
-	self.navigationItem.titleView = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)];
+	self.navigationItem.titleView = [[[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)] autorelease];
 	[(UILabel*)self.navigationItem.titleView setText:NSLocalizedString(@"Sign in to Blio",@"\"Sign in to Blio\" view controller header")];
 	[(UILabel*)self.navigationItem.titleView setBackgroundColor:[UIColor clearColor]];
 	[(UILabel*)self.navigationItem.titleView setTextColor:[UIColor whiteColor]];
@@ -57,31 +61,26 @@
 											   action:@selector(dismissLoginView:)]
 											 autorelease];
 	
-	loginTableView = [[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStyleGrouped];	
-	loginTableView.delegate = self;
-	loginTableView.dataSource = self;
-	loginTableView.scrollEnabled = NO;
-	loginTableView.autoresizesSubviews = YES;
-	self.view = loginTableView;
 	
 	CGFloat yPlacement = kTopMargin + 2*kCellHeight;
 	 
-	activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(kLeftMargin, yPlacement, 16.0f, 16.0f)];
+	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(kLeftMargin, yPlacement, 16.0f, 16.0f)] autorelease];
 	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
 	[self.view addSubview:activityIndicator];
 
 	CGRect frame = CGRectMake(kLeftMargin+activityIndicator.bounds.size.width+4, yPlacement+kLabelHeight, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
-	statusField = [BlioLoginViewController labelWithFrame:frame title:@""];
+	self.statusField = [BlioLoginViewController labelWithFrame:frame title:@""];
 	[self.view addSubview:statusField];
 }
 
 - (void) dismissLoginView: (id) sender {
-    [self dismissModalViewControllerAnimated:YES];
+	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
+	[self dismissModalViewControllerAnimated:YES];
 }
 
 - (UITextField *)createUsernameTextField {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	usernameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	self.usernameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	usernameField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	usernameField.keyboardType = UIKeyboardTypeAlphabet;
 	usernameField.keyboardAppearance = UIKeyboardAppearanceAlert;
@@ -89,8 +88,14 @@
 	usernameField.autocorrectionType = UITextAutocorrectionTypeNo;
 	usernameField.placeholder = NSLocalizedString(@"Username",@"\"Username\" placeholder");
 	usernameField.delegate = self;
+	
+	NSMutableDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] objectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+	if (loginCredentials && [loginCredentials objectForKey:@"username"]) {
+		usernameField.text = [loginCredentials objectForKey:@"username"];
+	}
+	
 	//temporarily populate to save time
-	usernameField.text = @"achien@knfbreader.com";
+//	usernameField.text = @"achien@knfbreader.com";
 	
 	return usernameField;
 }
@@ -98,7 +103,7 @@
 - (UITextField *)createPasswordTextField
 {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	passwordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	self.passwordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	passwordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	passwordField.keyboardType = UIKeyboardTypeAlphabet;
 	passwordField.keyboardAppearance = UIKeyboardAppearanceAlert;
@@ -109,7 +114,7 @@
 	passwordField.delegate = self;
 	passwordField.secureTextEntry = YES;
 		
-	passwordField.text = @"Soniac1Soniac1";
+//	passwordField.text = @"Soniac1Soniac1";
 
 	return passwordField;
 }
@@ -129,8 +134,6 @@
 }
 
 - (void)dealloc {
-	self.vaultManager = nil;
-	self.loginTableView = nil;
 	self.usernameField = nil;
 	self.passwordField = nil;
 	self.statusField = nil;
@@ -142,44 +145,44 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
-	NSString * loginErrorText = nil;
 	if (textField == usernameField) 
 		[passwordField becomeFirstResponder];
 	else { 
 		statusField.textColor = [UIColor colorWithRed:76.0/255.0 green:86.0/255.0 blue:108.0/255.0 alpha:1.0];
 		statusField.text = NSLocalizedString(@"Signing in...",@"\"Signing in...\" indicator"); 
 		[activityIndicator startAnimating];
-		BlioLoginResult loginStatus = [[self.vaultManager loginManager] login:usernameField.text password:passwordField.text];
-		if ( loginStatus == BlioLoginResultSuccess ) {
-			[self dismissModalViewControllerAnimated:YES];
-			[self.vaultManager archiveBooks];
-		}
-		else if ( loginStatus == BlioLoginResultInvalidPassword ) 
-			loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
-		else
-			loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
-		[activityIndicator stopAnimating];
-		statusField.text = @"";
-		passwordField.text = @"";
-		[textField resignFirstResponder];
-		if (loginErrorText != nil) {
-//			UIAlertView *errorAlert = [[UIAlertView alloc] 
-//									   initWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") message:loginErrorText
-//									   delegate:self cancelButtonTitle:@"OK"
-//									   otherButtonTitles:nil];
-//			[errorAlert show];
-//			[errorAlert release];
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
-										 message:loginErrorText
-										delegate:self 
-							   cancelButtonTitle:@"OK"
-							   otherButtonTitles:nil];
-			
-		}
-	}	
+		
+		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
+		[loginCredentials setObject:[NSString stringWithString:usernameField.text] forKey:@"username"];
+		[loginCredentials setObject:[NSString stringWithString:passwordField.text] forKey:@"password"];
+		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+
+		[[BlioStoreManager sharedInstance] loginWithUsername:usernameField.text password:passwordField.text sourceID:self.sourceID];
+	}
+	[textField resignFirstResponder];
 	return NO;
 }
-	
+
+- (void)receivedLoginResult:(BlioLoginResult)loginResult {
+	NSString * loginErrorText = nil;
+	if ( loginResult == BlioLoginResultSuccess ) {
+		[self dismissModalViewControllerAnimated:YES];
+	}
+	else if ( loginResult == BlioLoginResultInvalidPassword ) 
+		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
+	else
+		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
+	[activityIndicator stopAnimating];
+	statusField.text = @"";
+	passwordField.text = @"";
+	if (loginErrorText != nil) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+									 message:loginErrorText
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
+	}
+}
 #pragma mark - UITableView delegates
 	
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath

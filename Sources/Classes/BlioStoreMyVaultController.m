@@ -9,29 +9,62 @@
 #import "BlioStoreMyVaultController.h"
 #import "BlioMockBook.h"
 #import "BlioLibraryViewController.h"
+#import "BlioAlertManager.h"
+#import "BlioStoreManager.h"
 
 @implementation BlioStoreMyVaultController
 
-@synthesize vaultManager = _vaultManager;
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
-@synthesize processingDelegate;
-@synthesize maxLayoutPageEquivalentCount;
+@synthesize processingDelegate,noResultsLabel,maxLayoutPageEquivalentCount;
 
-- (id)initWithVaultManager:(BlioBookVaultManager*)vm {
+- (id)init {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         self.title = NSLocalizedString(@"My Vault",@"\"My Vault\" view controller header");
-        self.vaultManager = vm;
         UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"My Vault",@"\"My Vault\" button title") image:[UIImage imageNamed:@"icon-vault.png"] tag:kBlioStoreMyVaultTag];
         self.tabBarItem = theItem;
         [theItem release];
     }
     return self;
 }
+-(void) loadView {
+	[super loadView];
+	noResultsLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
+	noResultsLabel.text = NSLocalizedString(@"There are no books in your vault.",@"\"There are no books in your vault.\" indicator"); 
+	noResultsLabel.textAlignment = UITextAlignmentCenter;
+	noResultsLabel.font = [UIFont systemFontOfSize:14.0];
+	noResultsLabel.textColor = [UIColor colorWithRed:108.0/255.0 green:108.0/255.0 blue:108.0/255.0 alpha:1.0];
+	noResultsLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	[self.view addSubview:noResultsLabel];
 
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		[self fetchResults];
+	}
+	else {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+	}		
+}
+-(void)loginDismissed:(NSNotification*)note {
+	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		}
+		else {
+//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Vault. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Vault. In the meantime, previously synced books will display.")]
+//										delegate:self
+//							   cancelButtonTitle:@"OK"
+//							   otherButtonTitles:nil];			
+		}
+		[self fetchResults];
+	}
+}
+- (void)fetchResults {
 	NSError *error = nil; 
     NSManagedObjectContext *moc = [self managedObjectContext]; 
 	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioStoreMyVaultController!");
@@ -74,11 +107,10 @@
     [super viewWillAppear:animated];
 }
 */
-/*
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
-*/
 /*
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
@@ -128,6 +160,9 @@
 
 -(void) calculateMaxLayoutPageEquivalentCount {
 	
+	// calculateMaxLayoutPageEquivalentCount is deactivated because we have decided to have all reading progress bars display as the same size (instead of relative size); we are intentionally returning prematurely.	
+	return;
+
 	NSManagedObjectContext * moc = [self managedObjectContext];
 	
 	NSFetchRequest *maxFetch = [[NSFetchRequest alloc] init];
@@ -181,6 +216,11 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:section];
         bookCount = [sectionInfo numberOfObjects];
     }
+	if (bookCount == 0) {
+		noResultsLabel.frame = self.view.bounds;
+		noResultsLabel.hidden = NO;
+	}
+	else noResultsLabel.hidden = YES;
 	return bookCount;
 }
 
@@ -262,14 +302,14 @@
 #pragma mark Fetched Results Controller Delegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-		NSLog(@"BlioStoreMyVaultController controllerWillChangeContent");
+//		NSLog(@"BlioStoreMyVaultController controllerWillChangeContent");
 	//    [self.tableView beginUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
 	   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
 	  newIndexPath:(NSIndexPath *)newIndexPath {
-		NSLog(@"BlioStoreMyVaultController controller:didChangeObject");
+//		NSLog(@"BlioStoreMyVaultController controller:didChangeObject");
 	
 		//switch(type) {
 				
@@ -298,7 +338,7 @@
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-	 	NSLog(@"BlioStoreMyVaultController controllerDidChangeContent");
+//	 	NSLog(@"BlioStoreMyVaultController controllerDidChangeContent");
 	//   [self.tableView endUpdates];
 	[self calculateMaxLayoutPageEquivalentCount];
 	[self.tableView reloadData];
@@ -313,16 +353,16 @@
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
-	NSLog(@"BlioStoreMyVaultController mergeChangesFromContextDidSaveNotification entered");
+//	NSLog(@"BlioStoreMyVaultController mergeChangesFromContextDidSaveNotification entered");
 }
 
 
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	self.vaultManager = nil;
 	self.processingDelegate = nil;
 	self.fetchedResultsController = nil;
+	self.noResultsLabel = nil;
 	self.managedObjectContext = nil;
     [super dealloc];
 }

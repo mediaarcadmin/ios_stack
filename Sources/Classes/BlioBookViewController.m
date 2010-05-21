@@ -718,7 +718,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)_fadeWillStart
 {
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
-        [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];    
+        [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
     } 
 }
 
@@ -737,7 +737,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if(_fadeState == BookViewControlleUIFadeStateNone) {
         if(self.navigationController.toolbarHidden == YES) {
             if (toggleStatusBar) {
-                [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
+                [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO];
                 [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             }
             self.navigationController.navigationBarHidden = NO;

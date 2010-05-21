@@ -37,10 +37,10 @@
 }
 */
 - (id)init {
-    return [self initWithProcessingDelegate:nil managedObjectContext:nil vaultManager:nil];
+    return [self initWithProcessingDelegate:nil managedObjectContext:nil];
 }
 
-- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate managedObjectContext:(NSManagedObjectContext*)moc vaultManager:(BlioBookVaultManager*)vm
+- (id)initWithProcessingDelegate:(id<BlioProcessingDelegate>)aProcessingDelegate managedObjectContext:(NSManagedObjectContext*)moc
 {
     if ((self = [super init])) {
         self.processingDelegate = aProcessingDelegate;
@@ -58,7 +58,7 @@
 		[vc1 setManagedObjectContext:self.managedObjectContext];
         NSURL *featuredFeedURL = [NSURL URLWithString:@"http://www.feedbooks.com/userbooks/top.atom?range=week"];
         BlioStoreFeed *featuredFeed = [[BlioStoreFeed alloc] init];
-        [featuredFeed setTitle:NSLocalizedString(@"Featured",@"\"Featured\" view controller header")];
+        [featuredFeed setTitle:NSLocalizedString(@"Featured Books",@"\"Featured Books\" table section header")];
         [featuredFeed setFeedURL:featuredFeedURL];
         [featuredFeed setParserClass:[BlioStoreFeedBooksParser class]];
 		featuredFeed.sourceID = BlioBookSourceFeedbooks;		
@@ -108,7 +108,7 @@
         [vc3.navigationItem setRightBarButtonItem:aDoneButton];
         [vc3 release];
         
-        BlioStoreMyVaultController* vc4 = [[BlioStoreMyVaultController alloc] initWithVaultManager:vm];
+        BlioStoreMyVaultController* vc4 = [[BlioStoreMyVaultController alloc] init];
 		vc4.managedObjectContext = self.managedObjectContext;
 		vc4.processingDelegate = self.processingDelegate;
         UINavigationController* nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
