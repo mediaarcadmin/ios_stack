@@ -107,27 +107,27 @@
 {
     int32_t comparison = self.source - rhs.source;
     if(comparison < 0) {
-        return NSOrderedDescending;
-    } else if (comparison > 0) {
         return NSOrderedAscending;
+    } else if (comparison > 0) {
+        return NSOrderedDescending;
     } else {            
         comparison = self.block - rhs.block;
         if(comparison < 0) {
-            return NSOrderedDescending;
-        } else if (comparison > 0) {
             return NSOrderedAscending;
+        } else if (comparison > 0) {
+            return NSOrderedDescending;
         } else {
             comparison = self.word - rhs.word;
             if(comparison < 0) {
-                return NSOrderedDescending;
-            } else if (comparison > 0) {
                 return NSOrderedAscending;
+            } else if (comparison > 0) {
+                return NSOrderedDescending;
             } else {
                 comparison = self.element - rhs.element;
                 if(comparison < 0) {
-                    return NSOrderedDescending;
-                } else if (comparison > 0) {
                     return NSOrderedAscending;
+                } else if (comparison > 0) {
+                    return NSOrderedDescending;
                 } else {
                     return NSOrderedSame;
                 }

@@ -1634,6 +1634,21 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
+- (NSArray *)pageViews
+{
+    return [NSArray arrayWithObjects:_pageViews count:_pageViews[3] ? 4 : 3];
+}
+
+- (void)refreshView:(UIView *)view
+{
+    for(int i = 0; i < sizeof(_pageViews); ++i) {
+        if(view == _pageViews[i]) {
+            [self _createTextureIn:&_pageTextures[i] fromView:view];
+            break;
+        }
+    }
+}
+
 - (void)_setNeedsAccessibilityElementsRebuild
 {
     [_accessibilityElements release];

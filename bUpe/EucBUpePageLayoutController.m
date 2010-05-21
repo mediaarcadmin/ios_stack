@@ -100,7 +100,7 @@
     EucBookPageIndexPoint *pageIndexPoint = [_currentBookPageIndex filteredIndexPointForPage:pageNumber+1];
     for(THPair *navPoint in _book.navPoints) {
         NSString *identifier = navPoint.second;
-        if([[_book indexPointForId:identifier] compare:pageIndexPoint] != NSOrderedDescending) {
+        if([[_book indexPointForId:identifier] compare:pageIndexPoint] != NSOrderedAscending) {
             break;
         } else {
             lastSection = identifier;
@@ -156,19 +156,20 @@
     return [_currentBookPageIndex filteredIndexPointForPage:pageNumber];
 }
 
-- (THPair *)viewAndIndexPointForPageNumber:(NSUInteger)pageNumber 
-                           withPageTexture:(UIImage *)pageTexture 
-                                    isDark:(BOOL)dark
+- (THPair *)viewAndIndexPointRangeForPageNumber:(NSUInteger)pageNumber 
+                                withPageTexture:(UIImage *)pageTexture 
+                                         isDark:(BOOL)dark
 {
     THPair *ret = nil;
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
-        EucBookPageIndexPoint *indexPoint = [_currentBookPageIndex filteredIndexPointForPage:pageNumber];
+        THPair *indexPointRange = [_currentBookPageIndex filteredIndexPointRangeForPage:pageNumber];
+        EucBookPageIndexPoint *indexPoint = indexPointRange.first;
         EucPageView *pageView = [[self class] blankPageViewForPointSize:_currentBookPageIndex.pointSize 
                                                         withPageTexture:pageTexture];
         pageView.titleLinePosition = EucPageViewTitleLinePositionTop;
         pageView.titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
         pageView.bookTextView.backgroundIsDark = dark;
-        pageView.pageNumber = [self displayPageNumberForPageNumber:pageNumber];
+        pageView.pageNumberString = [self displayPageNumberForPageNumber:pageNumber];
         pageView.title = _book.title;
         if([_book respondsToSelector:@selector(fullBleedPageForIndexPoint:)]) {
             pageView.fullBleed = [_book fullBleedPageForIndexPoint:indexPoint];
@@ -177,7 +178,7 @@
         [pageView.bookTextView layoutPageFromPoint:indexPoint
                                             inBook:_book];
 
-        ret = [THPair pairWithFirst:pageView second:indexPoint];
+        ret = [THPair pairWithFirst:pageView second:indexPointRange];
     } 
     
     THLog(@"Returning page %ld, %@", (long)pageNumber, ret);
@@ -219,7 +220,7 @@
 
 - (BOOL)viewShouldBeRigid:(UIView *)view
 {
-    return [(EucPageView *)view pageNumber] != nil;
+    return [(EucPageView *)view pageNumberString] != nil;
 }
 
 @end

@@ -38,10 +38,7 @@ typedef struct EucRange {
 
     NSInteger _pageNumber;
     NSInteger _pageCount;
-    
-    NSMutableDictionary *_pageViewToIndexPoint;
-    NSCountedSet *_pageViewToIndexPointCounts;
-    
+        
     CGFloat _dimQuotient;
     BOOL _undimAfterAppearance;
     BOOL _appearAtCoverThenOpen;

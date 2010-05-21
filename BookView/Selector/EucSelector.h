@@ -82,6 +82,9 @@ typedef enum EucSelectorTrackingStage {
 @property (nonatomic, assign, readonly, getter=isTracking) BOOL tracking;
 @property (nonatomic, assign, readonly) EucSelectorTrackingStage trackingStage;
 
+@property (nonatomic, retain, readonly) UIView *attachedView;
+@property (nonatomic, retain, readonly) CALayer *attachedLayer;
+
 - (void)attachToView:(UIView *)view;
 - (void)attachToLayer:(CALayer *)view;
 - (void)detatch;

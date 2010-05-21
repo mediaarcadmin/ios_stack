@@ -51,7 +51,7 @@ typedef enum EucPageViewTitleLineContents
 
 @property (nonatomic, assign) id<EucPageViewDelegate> delegate;
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, copy) NSString *pageNumber;
+@property (nonatomic, copy) NSString *pageNumberString;
 @property (nonatomic, readonly) UIView<EucPageTextView> *bookTextView;
 @property (nonatomic, assign) EucPageViewTitleLinePosition titleLinePosition;
 @property (nonatomic, assign) EucPageViewTitleLineContents titleLineContents;
