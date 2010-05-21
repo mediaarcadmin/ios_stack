@@ -1,12 +1,12 @@
 //
 //  NSAcapelaSpeech.h
 //
-//  Created by Jo De Lafonteyne on 06/08/08.
-//  Copyright 2008 Acapela. All rights reserved.
+//  Copyright 2010 Acapela. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "AcapelaLicense.h"
+
 
 enum {
 	AcapelaSpeechImmediateBoundary =  0,
@@ -25,6 +25,7 @@ typedef unsigned int BB_U32;
 	- (BOOL)startSpeakingString:(NSString *)string toURL:(NSURL *)url;
 	
 	- (BOOL)isSpeaking;
+	- (BOOL)isPaused;
 	- (void)stopSpeaking;
     - (void)stopSpeakingAtBoundary:(AcapelaSpeechBoundary)boundary;
 
@@ -36,18 +37,19 @@ typedef unsigned int BB_U32;
 	- (void)setRate:(float)rate;
 	- (float)volume;
 	- (void)setVolume:(float)volume;
+	- (int)selbreak;
+	- (void)setSelbreak:(int)selbreak;
 
     - (void)pauseSpeakingAtBoundary:(AcapelaSpeechBoundary)boundary;
     - (void)continueSpeaking;
+	- (BOOL)setActive:(BOOL)state;
 
-//	- (BOOL)usesFeedbackWindow;
-//	- (void)setUsesFeedbackWindow:(BOOL)flag;
 
 	- (id)objectForProperty:(NSString *)property error:(NSError **)outError;
-//	- (BOOL)setObject:(id)object forProperty:(NSString *)property error:(NSError **)outError;
 
 	+ (void)setVoicesDirectoryArray:(NSArray*)anArray;
 	+ (void)refreshVoiceList;
+
 	+ (BOOL)isAnyApplicationSpeaking;
 	+ (NSArray *)availableVoices;
 	+ (NSDictionary *)attributesForVoice:(NSString*)voice;
@@ -77,6 +79,7 @@ extern NSString *const AcapelaVoiceLocaleIdentifier;
 extern NSString *const AcapelaVoiceSupportedCharacters;
 extern NSString *const AcapelaVoiceIndividuallySpokenCharacters;
 extern NSString *const AcapelaVoiceStringEncoding;
+extern NSString *const AcapelaVoiceVersionString;
 
 // Values for AcapelaVoiceGender voice attribute
 extern NSString *const AcapelaVoiceGenderNeuter;
@@ -148,5 +151,3 @@ NSString *const AcapelaSpeechDictionaryPronunciations ;  // NSArray
 NSString *const AcapelaSpeechDictionaryAbbreviations ;  // NSArray
 NSString *const AcapelaSpeechDictionaryEntrySpelling ;  // NSString
 NSString *const AcapelaSpeechDictionaryEntryPhonemes ;  // NSString
-
-	

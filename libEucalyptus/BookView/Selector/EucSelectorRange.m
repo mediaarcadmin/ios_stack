@@ -7,6 +7,7 @@
 //
 
 #import "EucSelectorRange.h"
+#import "EucBookPageIndexPoint.h"
 
 @implementation EucSelectorRange
 
@@ -63,3 +64,23 @@
 }
 
 @end
+
+@implementation  EucHighlightRange (EucSelectorRangeAdditions)
+
+- (EucSelectorRange *)selectorRange 
+{
+    EucSelectorRange *ret = [[EucSelectorRange alloc] init];
+    
+    EucBookPageIndexPoint *startPoint = self.startPoint;
+    ret.startBlockId = [NSNumber numberWithUnsignedInt:startPoint.block];
+    ret.startElementId = [NSNumber numberWithUnsignedInt:startPoint.word];
+    
+    EucBookPageIndexPoint *endPoint = self.endPoint;
+    ret.endBlockId = [NSNumber numberWithUnsignedInt:endPoint.block];
+    ret.endElementId = [NSNumber numberWithUnsignedInt:endPoint.word];
+    
+    return [ret autorelease];
+}
+
+@end
+

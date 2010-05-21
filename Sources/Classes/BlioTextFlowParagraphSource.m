@@ -178,6 +178,8 @@
         }
     }
     
+    NSLog(@"Returning Paragraph %ld, %ld", (long)[ret indexAtPosition:0], (long)[ret indexAtPosition:1]);
+    
     return ret;
 }
 

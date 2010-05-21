@@ -184,7 +184,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             default: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
                     BlioFlowView *aBookView = [[BlioFlowView alloc] initWithBook:newBook animated:YES];
-                    aBookView.bookViewDelegate = self;
+                    aBookView.delegate = self;
                     self.bookView = aBookView;
                     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
                     [aBookView release];
@@ -1118,7 +1118,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithBook:self.book animated:NO];
-            ePubView.bookViewDelegate = self;
+            ePubView.delegate = self;
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
@@ -1345,11 +1345,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) getNextBlockForAudioManager:(BlioAudioManager*)audioMgr {
     id<BlioParagraphSource> paragraphSource = self.book.paragraphSource;
     
-    audioMgr.currentBlock = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
-    [audioMgr setCurrentWordOffset:0];
-    [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:audioMgr.currentBlock]];
-    if ( audioMgr.blockWords == nil ) {
+    id newBlock  = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
+    if(newBlock) {
+        audioMgr.currentBlock = newBlock;
+        audioMgr.currentWordOffset = 0;
+        audioMgr.blockWords = [paragraphSource wordsForParagraphWithID:audioMgr.currentBlock];
+    } else {        
         // end of the book
+
+        audioMgr.currentBlock = nil;
+        audioMgr.currentWordOffset = 0;
+        audioMgr.blockWords = nil;
+        
         UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
         [item setImage:[UIImage imageNamed:@"icon-play.png"]];
         [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
@@ -1393,8 +1400,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
         }
 	}
-	[audioMgr setStartedPlaying:YES];
-	[audioMgr setTextToSpeakChanged:YES];
+    
+    if(audioMgr.currentBlock) {
+        [audioMgr setStartedPlaying:YES];
+        [audioMgr setTextToSpeakChanged:YES];
+    }
 }
 
 - (BOOL)loadAudioFiles:(NSInteger)layoutPage segmentIndex:(NSInteger)segmentIx {
@@ -1587,10 +1597,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     UIImage *audioImage = nil;
     if (self.audioPlaying) {
         [self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
-        audioImage = [UIImage imageNamed:@"icon-play.png"];
-        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
-        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+        self.audioPlaying = NO;  
     } else { 
         if (!self.navigationController.toolbarHidden) {
             [self toggleToolbars];
@@ -1599,11 +1606,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self prepareTTSEngine];
             [_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
             [self prepareTextToSpeakWithAudioManager:_acapelaTTS continuingSpeech:NO];
+            self.audioPlaying = _acapelaTTS.startedPlaying;  
         }
         else if ([self.book audiobookFilename] != nil) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
                 // So far this only would work for fixed view.
-                //if ( ![self findTimes:[self.bookView.currentBookmarkPoint layoutPage]] < 0 ) 
                 if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
                     // No audio files for this page.
                     // Look for next page with files.
@@ -1623,6 +1630,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
             [_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
             [_audioBookManager playAudio];
+            self.audioPlaying = _audioBookManager.startedPlaying;  
         }
         else {
             UIAlertView *errorAlert = [[UIAlertView alloc] 
@@ -1632,12 +1640,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [errorAlert show];
             [errorAlert release];
         }
+    }
+    
+    if(self.audioPlaying) {
         audioImage = [UIImage imageNamed:@"icon-pause.png"];
         [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
         [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
+    } else {
+        audioImage = [UIImage imageNamed:@"icon-play.png"];
+        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
     }
-    self.audioPlaying = !self.audioPlaying;  
-    
+       
     [item setImage:audioImage];
 }
 
@@ -1677,10 +1692,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         aNC.navigationBar.tintColor = _returnToNavigationBarTint;
         [aVC release];
         [aNC release];
-    } else {
+    } else if([self.bookView isKindOfClass:[BlioFlowView class]]) {
         BlioLightSettingsViewController *controller = [[BlioLightSettingsViewController alloc] initWithNibName:@"Lighting"
                                                                                                         bundle:[NSBundle mainBundle]];
-        controller.pageTurningView = [(BlioFlowView *)self.bookView pageTurningView];
+        controller.pageTurningView = [[self.bookView valueForKey:@"eucBookView"] valueForKey:@"pageTurningView"];
         [self.navigationController presentModalViewController:controller animated:YES];
         [controller release];
     }

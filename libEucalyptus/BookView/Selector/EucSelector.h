@@ -130,17 +130,6 @@ typedef enum EucSelectorTrackingStage {
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange;
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)selectedRange movedToRange:(EucSelectorRange *)selectedRange;
 
-// Data source can supply an image that will be used to replace the view while
-// selection is taking place.  This is uesful if he view's layer would otherwise
-// not respond to renderInContext: 'correctly' (for example, it's an OpenGL
-// backed view), or if rendering the view is too expensive to be performed
-// quickly when rendering the magnified view in the loupe.
-- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector;
-
-// Should be implemented if the selector is attached to a layer (will cause a 
-// crash if not!).  Can optionally be implemented otherwise.
-- (UIView *)viewForMenuForEucSelector:(EucSelector *)selector;
-
 @end
 
 
@@ -157,5 +146,16 @@ typedef enum EucSelectorTrackingStage {
 // These are used to tell if the user has tapped in an already-highlighted
 // area.
 - (NSArray *)highlightRangesForEucSelector:(EucSelector *)selector;
+
+// Data source can supply an image that will be used to replace the view while
+// selection is taking place.  This is uesful if he view's layer would otherwise
+// not respond to renderInContext: 'correctly' (for example, it's an OpenGL
+// backed view), or if rendering the view is too expensive to be performed
+// quickly when rendering the magnified view in the loupe.
+- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector;
+
+// Should be implemented if the selector is attached to a layer (will cause a 
+// crash if not!).  Can optionally be implemented otherwise.
+- (UIView *)viewForMenuForEucSelector:(EucSelector *)selector;
 
 @end

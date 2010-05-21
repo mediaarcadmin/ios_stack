@@ -7,10 +7,6 @@
 
 #import "MRGridViewCell.h"
 
-@interface BlioAccessibleButton : UIButton
-@end
-
-
 @implementation MRGridViewCell
 @synthesize reuseIdentifier,contentView,deleteButton,cellContentDescription;
 
@@ -25,13 +21,10 @@
 		[self addSubview:contentView];
 		
 		deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
-        deleteButton = [[BlioAccessibleButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
 		deleteButton.alpha = 0;
 		deleteButton.showsTouchWhenHighlighted = YES;
 		[deleteButton setImage:[UIImage imageNamed:@"button-delete-red.png"] forState:UIControlStateNormal];
-//        [deleteButton setIsAccessibilityElement:YES];
-//        [deleteButton setAccessibilityLabel:NSLocalizedString(@"Delete book", @"Accessibility label for Grid View cell Delete button")];
-//		[deleteButton setAccessibilityFrame:CGRectMake(0,0,100,100)];
+        [deleteButton setIsAccessibilityElement:YES];
         [self addSubview:deleteButton];
     }
     return self;
@@ -48,18 +41,6 @@
 	self.deleteButton = nil;
 	self.cellContentDescription = nil;
     [super dealloc];
-}
-
-@end
-
-@implementation BlioAccessibleButton
-
-- (BOOL)isAccessibilityElement {
-    return YES;
-}
-
-- (NSString *)accessibilityLabel {
-    return @"Delete button";
 }
 
 @end

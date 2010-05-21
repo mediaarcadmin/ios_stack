@@ -47,7 +47,7 @@
 	
 	UIFont* font;
     
-	NSMutableArray *textArray;
+	NSArray *textArray;
 	
 	NSTimer *nextWordTimer;
 }
@@ -72,14 +72,13 @@
 
 - (float)speedForYValue:(float)y;
 - (float)calculateFingerXValueFromY:(float)y;
-- (void)fillArrayWithNextBlock;
-- (void)fillArrayWithCurrentBlock;
+- (BOOL)fillArrayWithNextBlock;
+- (BOOL)fillArrayWithCurrentBlock;
 
 @property (nonatomic) float speed;
 
 @property (nonatomic, retain) UIFont *font;
 
-@property (nonatomic, retain) NSMutableArray *textArray;
 
 @property (nonatomic, retain) NSTimer *nextWordTimer;
 

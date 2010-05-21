@@ -74,11 +74,14 @@
     CFMutableAttributedStringRef stringWithWordOffsets = CFAttributedStringCreateMutable(kCFAllocatorDefault, 0);
     CFAttributedStringBeginEditing(stringWithWordOffsets);
         
-    NSUInteger offset = 0;
-    for(NSString *word in words) {
+    NSUInteger offset = self.currentWordOffset;
+    NSArray *wordsToSpeak = words;
+    if(offset) {
+        wordsToSpeak = [wordsToSpeak subarrayWithRange:NSMakeRange(offset, wordsToSpeak.count - offset)];
+    } 
+    for(NSString *word in wordsToSpeak) {
         NSUInteger wordLength = [word length];
         CFIndex oldLength = CFAttributedStringGetLength(stringWithWordOffsets);
-        
         CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(oldLength, 0), (CFStringRef)word);
         CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(oldLength + wordLength, 0), CFSTR(" "));
         CFAttributedStringSetAttribute(stringWithWordOffsets, CFRangeMake(oldLength, wordLength + 1),

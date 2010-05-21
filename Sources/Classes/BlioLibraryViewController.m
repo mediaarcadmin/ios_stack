@@ -19,10 +19,20 @@
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
+@interface BlioAccessibleGridElement : UIAccessibilityElement {
+    id target;
+    CGRect visibleRect;
+}
+
+@property (nonatomic, assign) id target;
+@property (nonatomic) CGRect visibleRect;
+
+@end
+
+
 @interface BlioLibraryViewController (PRIVATE)
 - (void)bookSelected:(BlioLibraryBookView *)bookView;
 @end
-
 
 @implementation BlioLibraryViewController
 
@@ -411,6 +421,11 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	// Release any cached data, images, etc that aren't in use.
 }
 
+- (CGRect)visibleRect {
+    CGRect visibleRect = [self.view.window.layer convertRect:self.view.frame fromLayer:self.view.layer];
+    return visibleRect;
+}
+
 - (void)viewDidUnload {
 }
 
@@ -441,8 +456,15 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	[super setEditing:editing animated:animated];
 	[self.gridView setEditing:editing animated:animated];
 	[self.tableView setEditing:editing animated:animated];
+    
+    NSArray * viewableCellIndexes = [self.gridView indexesForCellsInRect:[self.gridView bounds]];
+    NSDictionary *cellIndices = [self.gridView cellIndices];
+	for (NSNumber * key in viewableCellIndexes) {
+		BlioLibraryGridViewCell * gridCell = [cellIndices objectForKey:key];
+		gridCell.accessibilityElements = nil;
+	}
+
     UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 -(void) calculateMaxLayoutPageEquivalentCount {
@@ -493,7 +515,8 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 -(void) configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index {
 //	NSLog(@"configureGridCell atIndex: %i",index);
 	NSIndexPath * indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];	
+	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	cell.accessibilityElements = nil;
 }
 
 - (void)moveBookInManagedObjectContextFromPosition:(NSInteger)fromPosition toPosition:(NSInteger)toPosition shouldSave:(BOOL)savePreference {
@@ -1210,12 +1233,14 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
         self.clipsToBounds = YES;
+        self.userInteractionEnabled = NO;
         
         UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:self.bounds];
         aTextureView.contentMode = UIViewContentModeScaleToFill;
         aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
         aTextureView.backgroundColor = [UIColor clearColor];
         aTextureView.alpha = 0.0f;
+        aTextureView.userInteractionEnabled = NO;
 //        aTextureView.userInteractionEnabled = NO;
         [self addSubview:aTextureView];
         self.textureView = aTextureView;
@@ -1227,6 +1252,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
         UIImageView *aImageView = [[UIImageView alloc] initWithFrame:insetFrame];
         aImageView.contentMode = UIViewContentModeScaleToFill;
         aImageView.backgroundColor = [UIColor clearColor];
+        aImageView.userInteractionEnabled = NO;
 //        aImageView.userInteractionEnabled = NO;
         [self insertSubview:aImageView belowSubview:self.textureView];
         self.imageView = aImageView;
@@ -1305,6 +1331,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 @implementation BlioLibraryGridViewCell
 
 @synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,pausedLabel;
+@synthesize accessibilityElements;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -1318,6 +1345,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	self.progressBackgroundView = nil;
 	self.pausedLabel = nil;
     self.delegate = nil;
+    self.accessibilityElements = nil;
     [super dealloc];
 }
 
@@ -1367,7 +1395,6 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 		[self.contentView addSubview:resumeButton];
 
         [aBookView release];
-        
     }
     return self;
 }
@@ -1388,24 +1415,49 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	[delegate enqueueBook:[self book]];
 }
 - (BOOL)isAccessibilityElement {
-    return YES;
+    return NO;
 }
 
-- (NSString *)accessibilityLabel {
-    return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
-            [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]];
+- (NSInteger)accessibilityElementCount {
+    if (nil == self.accessibilityElements) {
+        NSMutableArray *accArray = [NSMutableArray array];
+        
+        if (![self.deleteButton isHidden] && [self.deleteButton alpha]) {
+            BlioAccessibleGridElement *deleteElement = [[BlioAccessibleGridElement alloc] initWithAccessibilityContainer:self];
+            [deleteElement setTarget:self.deleteButton];
+            [deleteElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"Delete: %@", @"Accessibility label for Library View cell book delete"), 
+                                                  [[self.bookView book] title]]];
+            [deleteElement setAccessibilityTraits:UIAccessibilityTraitButton];
+            [deleteElement setVisibleRect:[self.delegate visibleRect]];
+            [accArray addObject:deleteElement];
+        }
+    
+        BlioAccessibleGridElement *bookElement = [[BlioAccessibleGridElement alloc] initWithAccessibilityContainer:self];
+        [bookElement setTarget:self];
+        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
+                                                [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]]];
+
+        [bookElement setAccessibilityTraits:UIAccessibilityTraitButton];
+        [bookElement setVisibleRect:[self.delegate visibleRect]];
+        if (![self.deleteButton isHidden] && [self.deleteButton alpha]) {
+            [bookElement setAccessibilityHint:NSLocalizedString(@"Draggable. Double-tap and hold then move to desired location.", @"Accessibility hint for Library View cell book when editing")];
+        } else {
+            [bookElement setAccessibilityHint:NSLocalizedString(@"Opens book.", @"Accessibility hint for Library View cell book when not editing")];
+        }
+        [accArray addObject:bookElement];
+        
+        self.accessibilityElements = accArray;
+    }
+    
+    return [self.accessibilityElements count];
 }
 
-- (CGRect)accessibilityFrame {
-    return CGRectInset([super accessibilityFrame], CGRectGetWidth(self.bookView.bounds) * kBlioLibraryShadowXInset, CGRectGetHeight(self.bookView.bounds) * kBlioLibraryShadowYInset);
+- (id)accessibilityElementAtIndex:(NSInteger)index {    
+    return [self.accessibilityElements objectAtIndex:index];
 }
 
-- (NSString *)accessibilityHint {
-    return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
-}
-
-- (UIAccessibilityTraits)accessibilityTraits {
-    return UIAccessibilityTraitButton | UIAccessibilityTraitImage | UIAccessibilityTraitUpdatesFrequently;
+- (NSInteger)indexOfAccessibilityElement:(id)element {
+    return [self.accessibilityElements indexOfObject:element];
 }
 
 - (BlioMockBook *)book {
@@ -1718,3 +1770,31 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 
 @end
 
+@implementation BlioAccessibleGridElement
+
+@synthesize target, visibleRect;
+
+- (void)dealloc {
+    self.target = nil;
+    [super dealloc];
+}
+
+- (BOOL)isAccessibilityElement {
+    CGRect accFrame = [self.target accessibilityFrame];
+    CGPoint midPoint = CGPointMake(CGRectGetMidX(accFrame), CGRectGetMidY(accFrame));
+    if (CGRectContainsPoint(self.visibleRect, midPoint))
+        return YES;
+    else
+        return NO;
+}
+
+- (CGRect)accessibilityFrame {
+    CGRect accFrame = [self.target accessibilityFrame];
+//    CGPoint midPoint = CGPointMake(CGRectGetMidX(accFrame), CGRectGetMidY(accFrame));
+//    if (CGRectContainsPoint(self.visibleRect, midPoint))
+        return accFrame;
+//    else
+//        return CGRectMake(-1000, -1000, 0, 0);
+}
+
+@end

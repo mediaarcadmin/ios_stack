@@ -406,6 +406,7 @@
 
 - (void)dealloc {
     self.thumbLayer = nil;
+    self.dataSource = nil;
     [super dealloc];
 }
 
@@ -447,6 +448,7 @@
 @synthesize pageNumber, dataSource, cacheLayer;
 
 - (void)dealloc {
+    self.dataSource = nil;
     if (nil != cacheLayer)
         CGLayerRelease(cacheLayer);
     
@@ -514,6 +516,11 @@
 
 @synthesize pageNumber, dataSource;
 
+- (void)dealloc {
+    self.dataSource = nil;
+    [super dealloc];
+}
+
 - (void)setPageNumber:(NSInteger)aPageNumber {
     self.contents = nil;
     pageNumber = aPageNumber;
@@ -531,6 +538,7 @@
 @synthesize pageNumber, dataSource, excludedHighlight;
 
 - (void)dealloc {
+    self.dataSource = nil;
     self.excludedHighlight = nil;
     [super dealloc];
 }

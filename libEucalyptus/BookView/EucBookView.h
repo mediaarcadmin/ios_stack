@@ -13,8 +13,8 @@
 #import "EucSelector.h"
 #import "EucPageView.h"
 
-@protocol EucBook, EucPageLayoutController, EucBookViewDelegate, EucSelectorDelegate;
-@class EucBookReference, THScalableSlider, EucBookPageIndexPoint, EucSelector;
+@protocol EucBook, EucPageLayoutController, EucBookViewDelegate;
+@class EucBookReference, THScalableSlider, EucBookPageIndexPoint, EucSelector, EucHighlightRange;
 
 typedef struct EucPoint {
     uint32_t paragraphId;
@@ -26,11 +26,9 @@ typedef struct EucRange {
     EucPoint end;
 } EucRange;
 
-@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDelegate, EucSelectorDataSource> {
+@interface EucBookView : UIView <EucPageTurningViewDelegate, EucPageViewDelegate, EucSelectorDataSource, EucSelectorDelegate> {
     id<EucBookViewDelegate> _delegate;
     EucBookReference<EucBook> *_book;    
-
-    BOOL _allowsSelection;
     
     UIImage *_pageTexture;
     BOOL _pageTextureIsDark;
@@ -69,15 +67,14 @@ typedef struct EucRange {
     
     UIView *_pageSliderTrackingInfoView;    
     
-    NSInteger _highlightPage;
-    uint32_t _highlightParagraph;
-    uint32_t _highlightWordOffset;
-
-    NSMutableArray *_highlightLayers;
-    BOOL _highlightingDisabled;
+    NSInteger _temporaryHighlightPage;
+    EucBookPageIndexPoint *_temporaryHighlightIndexPoint;
+    BOOL _temporaryHighlightingDisabled;
     
+    BOOL _allowsSelection;
     EucSelector *_selector;
     id<EucSelectorDelegate> _selectorDelegate;
+    EucHighlightRange *_rangeBeingEdited;
 }
 
 - (id)initWithFrame:(CGRect)frame book:(EucBookReference<EucBook> *)book;
@@ -87,6 +84,8 @@ typedef struct EucRange {
 @property (nonatomic, readonly) EucBookReference<EucBook> *book;
 
 @property (nonatomic, assign) BOOL allowsSelection;
+@property (nonatomic, assign) id<EucSelectorDelegate> selectorDelegate;
+@property (nonatomic, retain, readonly) EucSelector *selector;
 
 @property (nonatomic, assign) CGFloat dimQuotient;
 @property (nonatomic, assign) BOOL undimAfterAppearance;
@@ -125,10 +124,9 @@ typedef struct EucRange {
 - (NSInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (NSInteger)pageNumberForUuid:(NSString *)uuid;
 
-- (void)highlightWordAtBlockId:(uint32_t)paragraphId wordOffset:(uint32_t)wordOffset;
+- (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
-@property (nonatomic, readonly) EucRange selectedRange;
-- (void)clearSelectedRange;
+- (void)refreshHighlights;
 
 - (void)stopAnimation;
 
@@ -142,5 +140,10 @@ typedef struct EucRange {
 
 - (BOOL)bookViewToolbarsVisible:(EucBookView *)bookView;
 - (CGRect)bookViewNonToolbarRect:(EucBookView *)bookView;
+
+// Return an array of EucHighlightRanges.
+- (NSArray *)bookView:(EucBookView *)bookView highlightRangesFromPoint:(EucBookPageIndexPoint *)startPoint toPoint:(EucBookPageIndexPoint *)endPoint;
+
+- (void)bookView:(EucBookView *)bookView didUpdateHighlightAtRange:(EucHighlightRange *)fromRange toRange:(EucHighlightRange *)toRange;
 
 @end

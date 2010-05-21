@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioBookView.h"
+#import "BlioSelectableBookView.h"
 #import "BlioMockBook.h"
 #import "MSTiltScroller.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucSelector.h>
+#import "XpsSdk.h"
 
 static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the go to animations to look right
 
@@ -35,8 +37,7 @@ typedef enum BlioLayoutPageMode {
 
 @end
 
-@interface BlioLayoutView : UIView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
-    id<BlioBookViewDelegate> delegate;
+@interface BlioLayoutView : BlioSelectableBookView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioLayoutScrollView *scrollView;
@@ -53,7 +54,6 @@ typedef enum BlioLayoutPageMode {
     BOOL shouldZoomOut;
     CALayer *sharpLayer;
     EucSelector *selector;
-    UIColor *lastHighlightColor;
     NSString *pdfPath;
     NSData *pdfData;
     NSDictionary *pageCropsCache;
@@ -73,9 +73,11 @@ typedef enum BlioLayoutPageMode {
     NSMutableArray *accessibilityElements;
     NSArray *previousAccessibilityElements;
     BOOL accessibilityRefreshRequired;
+    NSString *xpsPath;
+//    RasterImageInfo *imageInfo;
+//    XPS_HANDLE xpsHandle;
 }
 
-@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
 @property (nonatomic, retain) BlioMockBook *book;
 @property (nonatomic, retain) BlioLayoutScrollView *scrollView;
 @property (nonatomic, retain) BlioLayoutContentView *contentView;
@@ -84,7 +86,6 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
-@property (nonatomic, retain) UIColor *lastHighlightColor;
 @property (nonatomic, retain) NSDictionary *pageCropsCache;
 @property (nonatomic, retain) NSDictionary *viewTransformsCache;
 @property (nonatomic, retain) NSString *pdfPath;
@@ -93,5 +94,6 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic, retain) UIImage *shadowTop;
 @property (nonatomic, retain) UIImage *shadowLeft;
 @property (nonatomic, retain) UIImage *shadowRight;
+@property (nonatomic, retain) NSString *xpsPath;
 
 @end

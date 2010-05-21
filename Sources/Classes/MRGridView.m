@@ -286,6 +286,10 @@
 		}
 	}
 	self.currentScrollOffset = scrollView.contentOffset;
+    
+    // In OS 4.0 we should check if voice-over is active before sending this notification
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+//    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 -(void) setCellSize:(CGSize)size withBorderSize:(NSInteger) borderSize{

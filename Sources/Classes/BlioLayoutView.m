@@ -116,28 +116,32 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize delegate, book, scrollView, contentView, currentPageLayer, tiltScroller, disableScrollUpdating, pageNumber, pageCount, selector, lastHighlightColor;
+@synthesize book, scrollView, contentView, currentPageLayer, tiltScroller, disableScrollUpdating, pageNumber, pageCount, selector;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
 @synthesize accessibilityElements, previousAccessibilityElements;
+@synthesize xpsPath;
 
 - (void)dealloc {
     isCancelled = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    CGPDFDocumentRelease(pdf);
+    if (pdf) CGPDFDocumentRelease(pdf);
+//    if (xpsHandle) {
+//        XPS_Close(xpsHandle);
+//        XPS_End();
+//    }
+    self.xpsPath = nil;
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
     [self.selector removeObserver:self forKeyPath:@"trackingStage"];
     [self removeObserver:self forKeyPath:@"currentPageLayer"];
     
-    self.delegate = nil;
     self.book = nil;
     self.scrollView = nil;
     self.contentView = nil;
     self.currentPageLayer = nil;
-    self.lastHighlightColor = nil;
     self.pdfPath = nil;
     self.pdfData = nil;
     self.pageCropsCache = nil;
@@ -172,6 +176,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
 
     self.pdfPath = [aBook pdfPath];
+    if (nil == self.pdfPath) {
+        self.xpsPath = [aBook xpsPath];
+        if (nil == self.xpsPath) return nil;
+    }
     
     self.pdfData = [[NSData alloc] initWithContentsOfMappedFile:[aBook pdfPath]];
     CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);
@@ -1107,90 +1115,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return [NSArray array];
 }
 
-- (NSArray *)colorMenuItems {    
-    EucMenuItem *yellowItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorYellow:)] autorelease];
-    yellowItem.color = [UIColor yellowColor];
-    
-    EucMenuItem *redItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorRed:)] autorelease];
-    redItem.color = [UIColor redColor];
-    
-    EucMenuItem *blueItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorBlue:)] autorelease];
-    blueItem.color = [UIColor blueColor];
-    
-    EucMenuItem *greenItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorGreen:)] autorelease];
-    greenItem.color = [UIColor greenColor];
-    
-    NSArray *ret = [NSArray arrayWithObjects:yellowItem, redItem, blueItem, greenItem, nil];
-        
-    return ret;
-}
-
-- (NSArray *)webToolsMenuItems {    
-    EucMenuItem *dictionaryItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Dictionary", "\"Dictionary\" option in popup menu in layout view")
-                                                               action:@selector(dictionary:)] autorelease];
-    
-    //EucMenuItem *thesaurusItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Thesaurus", "\"Thesaurus\" option in popup menu in layout view")
-    //                                                          action:@selector(thesaurus:)] autorelease];
-    
-    EucMenuItem *wikipediaItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Encyclopedia", "\"Encyclopedia\" option in popup menu in layout view")
-                                                              action:@selector(encyclopedia:)] autorelease];
-    
-    EucMenuItem *searchItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Search", "\"Search\" option in popup menu in layout view")
-                                                           action:@selector(search:)] autorelease];
-        
-    NSArray *ret = [NSArray arrayWithObjects:dictionaryItem/*, thesaurusItem*/, wikipediaItem, searchItem, nil];
-    
-    return ret;
-}
-
-- (NSArray *)highlightMenuItemsWithCopy:(BOOL)copy {
-    EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
-                                                            action:@selector(addNote:)] autorelease];
-    
-    EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
-                                                         action:@selector(copy:)] autorelease];
-    
-    EucMenuItem *colorItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Color", "\"Color\" option in popup menu in layout view")
-                                                          action:@selector(showColorMenu:)] autorelease];
-    
-    EucMenuItem *removeItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Remove", "\"Remove Highlight\" option in popup menu in layout view")
-                                                           action:@selector(removeHighlight:)] autorelease];
-
-    NSArray *ret;
-    if (copy)
-        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, colorItem, nil];
-    else
-        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, colorItem, nil];
-
-    return ret;
-}
-
-- (NSArray *)rootMenuItemsWithCopy:(BOOL)copy {
-    EucMenuItem *highlightItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Hilight\" option in popup menu in layout view")                                                              
-                                                              action:@selector(highlight:)] autorelease];
-    EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu in layout view")                                                    
-                                                            action:@selector(addNote:)] autorelease];
-    EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu in layout view")
-                                                         action:@selector(copy:)] autorelease];
-    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu in layout view")
-                                                                 action:@selector(showWebTools:)] autorelease];
-    
-    NSArray *ret;
-    if (copy)
-        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
-    else
-        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, showWebToolsItem, nil];
-    
-    return ret;
-}
-
-- (NSArray *)menuItemsForEucSelector:(EucSelector *)hilighter {
-    if ([self.selector selectedRangeIsHighlight])
-        return [self highlightMenuItemsWithCopy:YES];
-    else
-        return [self rootMenuItemsWithCopy:YES];
-}
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == self.selector) {
         if ([keyPath isEqualToString:@"tracking"]) {
@@ -1280,142 +1204,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Selector Menu Responder Actions 
 
 - (void)addHighlightWithColor:(UIColor *)color {
-    if ([self.selector selectedRangeIsHighlight]) {
-        BlioBookmarkRange *fromBookmarkRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
-        BlioBookmarkRange *toBookmarkRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-        
-        if ([self.delegate respondsToSelector:@selector(updateHighlightAtRange:toRange:withColor:)])
-            [self.delegate updateHighlightAtRange:fromBookmarkRange toRange:toBookmarkRange withColor:color];
-        
-        // Deselect, this will fire the endEditing highlight callback which refreshes
-        [self.selector setSelectedRange:nil];
-
-    } else {
-        
-        if ([self.delegate respondsToSelector:@selector(addHighlightWithColor:)])
-            [self.delegate addHighlightWithColor:color];
-        
+    if(![self.selector selectedRangeIsHighlight]) {
         [self clearHighlightsSnapshot];
-        // Set this to nil now because the refresh depends on it
-        [self.selector setSelectedRange:nil];
-        [self refreshHighlights];
-    }
-    
-    self.lastHighlightColor = color;
-}
-
-- (void)highlightColorYellow:(id)sender {
-    [self addHighlightWithColor:[UIColor yellowColor]];
-}
-
-- (void)highlightColorRed:(id)sender {
-    [self addHighlightWithColor:[UIColor redColor]];
-}
-
-- (void)highlightColorBlue:(id)sender {
-    [self addHighlightWithColor:[UIColor blueColor]];
-}
-
-- (void)highlightColorGreen:(id)sender {
-    [self addHighlightWithColor:[UIColor greenColor]];
-}
-
-- (void)highlight:(id)sender {
-    [self addHighlightWithColor:self.lastHighlightColor];
-}
-
-- (void)showColorMenu:(id)sender {
-    [self.selector changeActiveMenuItemsTo:[self colorMenuItems]];
-}
-
-- (void)removeHighlight:(id)sender {
-    BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
-
-    if ([self.delegate respondsToSelector:@selector(removeHighlightAtRange:)])
-        [self.delegate removeHighlightAtRange:highlightRange];
-    
-    // Set this to nil now because the refresh depends on it
-    [self.selector setSelectedRange:nil];
-    [self refreshHighlights];
-}
-
-- (void)addNote:(id)sender {
-    if ([self.selector selectedRangeIsHighlight]) {
-        BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
-        if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:withColor:)])
-            [self.delegate updateHighlightNoteAtRange:highlightRange withColor:nil];
-    } else {
-        if ([self.delegate respondsToSelector:@selector(addHighlightNoteWithColor:)])
-            [self.delegate addHighlightNoteWithColor:self.lastHighlightColor];
-    }
-    
-    // TODO - this probably doesn't want to deselect yet in case the note is cancelled
-    // Or the selection could be saved and reinstated
-    // Or we could just not bother but it might be annoying
-    [self.selector setSelectedRange:nil];
-    [self refreshHighlights];
-}
-
-- (void)copy:(id)sender {    
-    BlioBookmarkRange *copyRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(copyWithRange:)]) {
-        [self.delegate copyWithRange:copyRange];
-        
-        if ([self.selector selectedRangeIsHighlight])
-            [self.selector changeActiveMenuItemsTo:[self highlightMenuItemsWithCopy:NO]];
-        else
-            [self.selector changeActiveMenuItemsTo:[self rootMenuItemsWithCopy:NO]];
     }    
-}
-
-- (void)showWebTools:(id)sender {
-    [self.selector changeActiveMenuItemsTo:[self webToolsMenuItems]];
-}
-
-
-- (void)dictionary:(id)sender {
-    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
-        [self.delegate openWebToolWithRange:webToolRange  toolType:dictionaryTool];
-        [self.selector setSelectedRange:nil];
-    }
-}
-
-/*
-- (void)thesaurus:(id)sender {
-    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
-        [self.delegate openWebToolWithRange:webToolRange toolType:thesaurusTool];
-        
-        [self.selector setSelectedRange:nil];
-    }
-}
- */
-
-- (void)encyclopedia:(id)sender {
-    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
-        [self.delegate openWebToolWithRange:webToolRange toolType:encyclopediaTool];
-        [self.selector setSelectedRange:nil];
-    }
-}
-
-- (void)search:(id)sender {
-    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
-        [self.delegate openWebToolWithRange:webToolRange toolType:searchTool];
-        [self.selector setSelectedRange:nil];
-    }
-}
-
-- (UIColor *)lastHighlightColor {
-    if (nil == lastHighlightColor) {
-        lastHighlightColor = [UIColor yellowColor];
-        [lastHighlightColor retain];
-    }
     
-    return lastHighlightColor;
+    [super addHighlightWithColor:color];
 }
+
 
 #pragma mark -
 #pragma mark TTS
