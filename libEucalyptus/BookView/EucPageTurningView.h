@@ -115,11 +115,10 @@ typedef struct {
     NSArray *_accessibilityElements;
 }
 
-@property (nonatomic,assign) id<EucPageTurningViewDelegate> delegate;
-@property (nonatomic,retain) UIView *currentPageView;
+@property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
+@property (nonatomic, retain) UIView *currentPageView;
 @property (nonatomic, readonly) UIImage *screenshot;
 @property (nonatomic, assign) CGFloat dimQuotient;
-
 
 @property (nonatomic, copy) UIColor *specularColor;
 @property (nonatomic, assign) GLfloat shininess;
@@ -133,7 +132,10 @@ typedef struct {
 
 @property (nonatomic, assign) GLfloatTriplet lightPosition;
 
+@property (nonatomic, readonly) NSArray *pageViews;
+
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
+- (void)refreshView:(UIView *)view;
 
 @end
 

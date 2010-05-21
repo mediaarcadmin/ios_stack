@@ -735,6 +735,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         switch(stage) {
             case EucSelectorTrackingStageNone:
             {
+                self.selectedRangeIsHighlight = NO;
                 [self _removeAllHighlightLayers];
                 [self _clearSelectionCaches];
                 self.tracking = NO;
@@ -1005,8 +1006,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
         ++blockIdIndex;
     }
-    BOOL isFirstBlock = YES;
+    BOOL isFirstBlock = blockIdIndex != 0;
     BOOL isLastBlock = NO;
+    NSUInteger blockIdsCount = blockIds.count;
     do {
         id blockId = [blockIds objectAtIndex:blockIdIndex];
         
@@ -1029,11 +1031,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             [nonCoalescedRects addObjectsFromArray:[self _rectsForElementWithIdentifier:elementId
                                                                   ofBlockWithIdentifier:blockId]];
             ++elementIdIndex;
-        } while (isLastBlock ? 
-                 ([elementId compare:endElementId] < NSOrderedSame) : 
+        } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
                  elementIdIndex < elementIdCount);
         ++blockIdIndex;
-    } while(!isLastBlock);
+    } while(!isLastBlock && blockIdIndex < blockIdsCount);
     
     NSArray *coalescedRects = [[self class] coalescedLineRectsForElementRects:nonCoalescedRects];
     

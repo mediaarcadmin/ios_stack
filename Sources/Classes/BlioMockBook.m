@@ -10,6 +10,7 @@
 #import "BlioTextFlowParagraphSource.h"
 #import "BlioEPubParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
+#import <pthread.h>
 
 @interface BlioMockBook ()
 @property (nonatomic, retain) BlioTextFlow *textFlow;
@@ -305,6 +306,25 @@
     
 }
 
+static NSPredicate *sSortedHighlightRangePredicate = nil;
+pthread_once_t sSortedHighlightRangePredicateOnceControl = PTHREAD_ONCE_INIT;
+static void sortedHighlightRangePredicateInit() {
+    sSortedHighlightRangePredicate = [[NSPredicate predicateWithFormat:
+          @"book == $BOOK AND "
+          @"NOT ( range.startPoint.layoutPage > $MAX_LAYOUT_PAGE ) && "
+          @"NOT ( range.endPoint.layoutPage < $MIN_LAYOUT_PAGE ) && "
+          @"NOT ( range.startPoint.layoutPage == $MAX_LAYOUT_PAGE && range.startPoint.blockOffset > $MAX_BLOCK_OFFSET ) && "
+          @"NOT ( range.endPoint.layoutPage == $MIN_LAYOUT_PAGE && range.endPoint.blockOffset < $MIN_BLOCK_OFFSET) && "
+          @"NOT ( range.startPoint.layoutPage == $MAX_LAYOUT_PAGE && range.startPoint.blockOffset == $MAX_BLOCK_OFFSET && range.startPoint.wordOffset > $MAX_WORD_OFFSET ) && "
+          @"NOT ( range.endPoint.layoutPage == $MIN_LAYOUT_PAGE && range.endPoint.blockOffset == $MIN_BLOCK_OFFSET && range.endPoint.wordOffset < $MIN_WORD_OFFSET )"
+    ] retain];
+}
+
+- (NSPredicate *)sortedHighlightRangePredicate {
+    pthread_once(&sSortedHighlightRangePredicateOnceControl, sortedHighlightRangePredicateInit);
+    return sSortedHighlightRangePredicate;
+}
+
 - (NSArray *)sortedHighlightRangesForRange:(BlioBookmarkRange *)range {
     NSManagedObjectContext *moc = nil;
     
@@ -318,32 +338,28 @@
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
     [request setEntity:[NSEntityDescription entityForName:@"BlioHighlight" inManagedObjectContext:moc]];
     
-    NSNumber *minPageLayout = [NSNumber numberWithInteger:range.startPoint.layoutPage];
+    NSNumber *minLayoutPage = [NSNumber numberWithInteger:range.startPoint.layoutPage];
     NSNumber *minBlockOffset = [NSNumber numberWithInteger:range.startPoint.blockOffset];
     NSNumber *minWordOffset = [NSNumber numberWithInteger:range.startPoint.wordOffset];
 
-    NSNumber *maxPageLayout = [NSNumber numberWithInteger:range.endPoint.layoutPage];
+    NSNumber *maxLayoutPage = [NSNumber numberWithInteger:range.endPoint.layoutPage];
     NSNumber *maxBlockOffset = [NSNumber numberWithInteger:range.endPoint.blockOffset];
     NSNumber *maxWordOffset = [NSNumber numberWithInteger:range.endPoint.wordOffset];
     
-    NSPredicate *belongsToBook =                  [NSPredicate predicateWithFormat:@"(book == %@)", self]; 
-    NSPredicate *doesNotEndBeforeStartPage =      [NSPredicate predicateWithFormat:@"NOT  (range.endPoint.layoutPage < %@)", minPageLayout];                                 
-    NSPredicate *doesNotEndBeforeStartBlock = [NSPredicate predicateWithFormat:@"NOT ((range.endPoint.layoutPage == %@) && (range.endPoint.blockOffset < %@))", minPageLayout, minBlockOffset]; 
-    NSPredicate *doesNotEndBeforeStartWord =      [NSPredicate predicateWithFormat:@"NOT ((range.endPoint.layoutPage == %@) && (range.endPoint.blockOffset == %@) && (range.endPoint.wordOffset < %@))", minPageLayout, minBlockOffset, minWordOffset]; 
-    NSPredicate *doesNotStartAfterEndPage =       [NSPredicate predicateWithFormat:@"NOT  (range.startPoint.layoutPage > %@)", maxPageLayout];                                 
-    NSPredicate *doesNotStartAfterEndBlock =  [NSPredicate predicateWithFormat:@"NOT ((range.startPoint.layoutPage == %@) && (range.startPoint.blockOffset > %@))", maxPageLayout, maxBlockOffset]; 
-    NSPredicate *doesNotStartAfterEndWord =       [NSPredicate predicateWithFormat:@"NOT ((range.startPoint.layoutPage == %@) && (range.startPoint.blockOffset == %@) && (range.startPoint.wordOffset > %@))", maxPageLayout, maxBlockOffset, maxWordOffset]; 
+    NSDictionary *substitutionVariables = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                           self, @"BOOK",
+                                           minLayoutPage, @"MIN_LAYOUT_PAGE",
+                                           minBlockOffset, @"MIN_BLOCK_OFFSET",
+                                           minWordOffset, @"MIN_WORD_OFFSET",
+                                           maxLayoutPage, @"MAX_LAYOUT_PAGE",
+                                           maxBlockOffset, @"MAX_BLOCK_OFFSET",
+                                           maxWordOffset, @"MAX_WORD_OFFSET",
+                                           nil];
+                                           
+    NSPredicate *predicate = [[self sortedHighlightRangePredicate] predicateWithSubstitutionVariables:substitutionVariables];
     
-    NSPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:
-                               belongsToBook,
-                               doesNotEndBeforeStartPage, 
-                               doesNotEndBeforeStartBlock,
-                               doesNotEndBeforeStartWord,
-                               doesNotStartAfterEndPage,
-                               doesNotStartAfterEndBlock,
-                               doesNotStartAfterEndWord,
-                               nil]];
-    
+    [substitutionVariables release];
+                              
     [request setPredicate:predicate];
     
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
@@ -364,7 +380,6 @@
     }
     
     NSMutableArray *highlightRanges = [NSMutableArray array];
-    
     for (NSManagedObject *highlight in results) {
         BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[highlight valueForKey:@"range"]];
         [highlightRanges addObject:range];

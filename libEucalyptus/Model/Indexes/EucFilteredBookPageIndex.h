@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "EucBookPageIndex.h"
 
+@class THPair;
+
 @interface EucFilteredBookPageIndex : EucBookPageIndex {
     NSArray *_filteredByteRanges;
     NSRange *_filteredPageRanges;
@@ -22,6 +24,7 @@
 @property (nonatomic, readonly) NSUInteger filteredLastPageNumber;
 
 - (EucBookPageIndexPoint *)filteredIndexPointForPage:(NSUInteger)pageNumber;
+- (THPair *)filteredIndexPointRangeForPage:(NSUInteger)pageNumber;
 - (NSUInteger)filteredPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
 @end

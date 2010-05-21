@@ -144,7 +144,7 @@ static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / 
                 if(currentPointIndex == -1) {
                     currentPointIndex = i;
                 } else {
-                    if([currentPoints[currentPointIndex] compare:currentPoints[i]] == NSOrderedAscending) {
+                    if([currentPoints[i] compare:currentPoints[currentPointIndex]] == NSOrderedAscending) {
                         currentPointIndex = i;
                     }
                 }

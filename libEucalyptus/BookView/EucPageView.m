@@ -14,7 +14,7 @@
 @implementation EucPageView
 
 @synthesize title = _title;
-@synthesize pageNumber = _pageNumber;
+@synthesize pageNumberString = _pageNumber;
 @synthesize delegate = _delegate;
 @synthesize bookTextView = _bookTextView;
 @synthesize titleLinePosition = _titleLinePosition;
@@ -86,8 +86,10 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 {
     static UIImage *sPaperImage = nil;
-    if(!sPaperImage) {
-        sPaperImage = [[UIImage imageNamed:@"BookPaper.png"] retain];
+    if(!pageTexture) {
+        if(!sPaperImage) {
+            sPaperImage = [[UIImage imageNamed:@"BookPaper.png"] retain];
+        }
     }
     NSString *font = [EucBookTextStyle defaultFontFamilyName];
 	return [self initWithPointSize:pointSize 
@@ -96,7 +98,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
                     pageNumberFont:font
           pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
                     titlePointSize:pointSize 
-                       pageTexture:sPaperImage
+                       pageTexture:pageTexture ?: sPaperImage
                      textViewClass:(Class)textViewClass];
 }
 
