@@ -41,7 +41,6 @@ static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 static const CGFloat kBlioProportionalProgressBarInsetX = 3;
 static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
-@class BlioBookVaultManager;
 @class BlioLibraryBookView;
 @class BlioLibraryListCell;
 @class BlioLibraryGridViewCell;
@@ -65,7 +64,6 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	MRGridView * _gridView;
 	NSUInteger maxLayoutPageEquivalentCount;
 	
-	BlioBookVaultManager* _vaultManager;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -79,7 +77,6 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic) BlioLibraryLayout libraryLayout;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) BlioBookVaultManager* vaultManager;
 @property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 
 -(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;

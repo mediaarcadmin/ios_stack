@@ -423,10 +423,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 @end
 
 #pragma mark -
-@implementation BlioProcessingPaidBookDownloadOperation
+@implementation BlioProcessingPaidBookDownloadAndUnzipOperation
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
-		self.filenameKey = @"paidBookFilename";
+		self.filenameKey = @"xpsFilename";
     }
     return self;
 }

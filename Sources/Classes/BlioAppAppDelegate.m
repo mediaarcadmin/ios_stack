@@ -11,6 +11,8 @@
 #import "BlioAppAppDelegate.h"
 #import "BlioLibraryViewController.h"
 #import "BlioAlertManager.h"
+#import "BlioLoginViewController.h"
+#import "BlioStoreManager.h"
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -23,7 +25,6 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 @synthesize window;
 @synthesize navigationController;
 @synthesize libraryController;
-@synthesize vaultManager;
 @synthesize internetReach;
 
 #pragma mark -
@@ -67,11 +68,8 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 	
 	NSManagedObjectContext *moc = [self managedObjectContext];
 	
-	vaultManager = [[BlioBookVaultManager alloc] init];
-	
     [libraryController setManagedObjectContext:moc];
     [libraryController setProcessingDelegate:[self processingManager]];
-	libraryController.vaultManager = self.vaultManager;
 	
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
@@ -117,10 +115,12 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
-	if ([self.internetReach currentReachabilityStatus] != NotReachable) [self resumeProcessing];
+	if ([self.internetReach currentReachabilityStatus] != NotReachable) [self.processingManager resumeProcessing];
 
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
+	[BlioStoreManager sharedInstance].rootViewController = navigationController;
+	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
     window.backgroundColor = [UIColor blackColor];
     
 	[UIView beginAnimations:@"FadeOutRealDefault" context:nil];
@@ -136,61 +136,6 @@ static void *background_init_thread(void * arg) {
     realDefaultImageView = nil;
     
     [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
-}
-- (void) resumeProcessing {
-    NSManagedObjectContext *moc = [self managedObjectContext];
-	
-	// resume previous processing operations
-	
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
-	
-	NSError *errorExecute = nil;
-    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
-    
-	BOOL hasValidToken = [self.vaultManager hasValidToken];
-	BOOL lackedToken = NO;
-    if (errorExecute) {
-        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
-    }
-    else {
-		if ([results count] > 0) {
-			NSLog(@"Found non-paused incomplete book results, will resume..."); 
-			for (BlioMockBook * book in results) {
-				//				NSLog(@"mo sourceSpecificID:%@ sourceID:%i",[mo valueForKey:@"sourceSpecificID"],[[mo valueForKey:@"sourceID"] intValue]);
-				if ([[book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-					// paid books
-					// check to see if token is still present and valid first.
-					if (hasValidToken) [[self processingManager] enqueueBook:book];
-					else {
-						lackedToken = YES;
-					}
-				}
-				else {
-					// free books
-					[[self processingManager] enqueueBook:book];
-				}
-			}
-		}
-		else {
-			//			NSLog(@"No incomplete book results to resume."); 
-		}
-	}
-    [fetchRequest release];
-	
-	// end resume previous processing operations
-	if (lackedToken) {
-		// ALERT user that we needed a token from login.
-		// TODO: test this logic after the download operation for paid books is complete.
-		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-														message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_PAID_BOOKS_PROCESSING",nil,[NSBundle mainBundle],@"Your paid books could not continue processing because you need to login first.",@"Alert message informing the end-user that paid book processing cannot continue because the user needs to login.")]
-													   delegate:self
-											  cancelButtonTitle:@"OK"
-											  otherButtonTitles:nil];
-		[alert show];
-		[alert release];		
-	}
 }
 
 - (NSString *)dynamicDefaultPngPath {
@@ -237,7 +182,7 @@ static void *background_init_thread(void * arg) {
 		}
 	}
 	else if (previousNetStatus == NotReachable && netStatus != NotReachable) { // if changed from unavailable to available
-		[self resumeProcessing];
+		[self.processingManager resumeProcessing];
 	}
 	self.internetReach = curReach;
 }
@@ -246,7 +191,6 @@ static void *background_init_thread(void * arg) {
 #pragma mark Memory management
 
 - (void)dealloc {
-	[vaultManager release];
     [managedObjectContext release];
     [managedObjectModel release];
     [persistentStoreCoordinator release];

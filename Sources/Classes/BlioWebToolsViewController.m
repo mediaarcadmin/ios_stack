@@ -62,8 +62,9 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
     statusBarHiddenOnEntry = [[UIApplication sharedApplication] isStatusBarHidden];
     
-    if (statusBarHiddenOnEntry)
+    if (statusBarHiddenOnEntry) {
         [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+	}
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -74,8 +75,9 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
     
-    if (statusBarHiddenOnEntry)
+    if (statusBarHiddenOnEntry) {
         [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
+	}
 }
     
 /*

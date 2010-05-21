@@ -14,7 +14,6 @@
 #import "BlioStoreTabViewController.h"
 #import "BlioAppSettingsController.h"
 #import "BlioLoginViewController.h"
-#import "BlioBookVaultManager.h"
 #import "BlioProcessingStandardOperations.h"
 #import "BlioAccessibilitySegmentedControl.h"
 
@@ -37,7 +36,6 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize gridView = _gridView;
 @synthesize tableView = _tableView;
-@synthesize vaultManager = _vaultManager;
 @synthesize maxLayoutPageEquivalentCount;
 
 
@@ -97,10 +95,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
     [aGridView release];
 	self.gridView.gridDelegate = self;
 	self.gridView.gridDataSource = self;
-	
-    self.vaultManager.processingManager = (BlioProcessingManager*)self.processingDelegate;
-    self.vaultManager.managedObjectContext = self.managedObjectContext;
-	
+		
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
     
@@ -108,18 +103,18 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 //    [libraryItems addObject:item];
 //    [item release];
 
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
-                                            style:UIBarButtonItemStyleBordered
-                                           target:self 
-                                           action:@selector(showLogin:)];
-    [item setAccessibilityLabel:NSLocalizedString(@"Sync", @"Accessibility label for Library View Sync button")];
-    [item setAccessibilityHint:NSLocalizedString(@"Syncs to Blio Account.", @"Accessibility label for Library View Sync hint")];
-    [libraryItems addObject:item];
-    [item release];
+//    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
+//                                            style:UIBarButtonItemStyleBordered
+//                                           target:self 
+//                                           action:@selector(showLogin:)];
+//    [item setAccessibilityLabel:NSLocalizedString(@"Sync", @"Accessibility label for Library View Sync button")];
+//    [item setAccessibilityHint:NSLocalizedString(@"Syncs to Blio Account.", @"Accessibility label for Library View Sync hint")];
+//    [libraryItems addObject:item];
+//    [item release];
     
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [libraryItems addObject:item];
-    [item release];
+//    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+//    [libraryItems addObject:item];
+//    [item release];
     
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-getbooks.png"]
                                             style:UIBarButtonItemStyleBordered
@@ -190,7 +185,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
     NSManagedObjectContext *moc = [self managedObjectContext]; 
 	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioLibraryViewController!");
 
-	[self calculateMaxLayoutPageEquivalentCount];	
+	[self calculateMaxLayoutPageEquivalentCount];
 	
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
     NSSortDescriptor *libraryPositionSort = [[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO];
@@ -375,6 +370,8 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 //	NSLog(@"Initial library load: populating cells...");
 	[self.tableView reloadData];
 	[self.gridView reloadData];
+	
+//	[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 
 }
 
@@ -450,6 +447,9 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 
 -(void) calculateMaxLayoutPageEquivalentCount {
 
+	// calculateMaxLayoutPageEquivalentCount is deactivated because we have decided to have all reading progress bars display as the same size (instead of relative size); we are intentionally returning prematurely.	
+	return;
+	
 	NSManagedObjectContext * moc = [self managedObjectContext];
 	
 	NSFetchRequest *maxFetch = [[NSFetchRequest alloc] init];
@@ -916,13 +916,12 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
-	NSLog(@"BlioLibraryViewController mergeChangesFromContextDidSaveNotification received...");
-	
-	if (notification.object == self.managedObjectContext) {
-		NSLog(@"...from same moc as library- returning.");
-		return;
-	}
-	else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
+//	NSLog(@"BlioLibraryViewController mergeChangesFromContextDidSaveNotification received...");	
+//	if (notification.object == self.managedObjectContext) {
+//		NSLog(@"...from same moc as library- returning.");
+//		return;
+//	}
+//	else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
     // Fault in all updated objects
 	
 	//refresh updated objects and merge changes
@@ -951,27 +950,8 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 #pragma mark -
 #pragma mark Toolbar Actions
 
-- (void)showLogin:(id)sender {     
-	BlioLoginViewController *loginController = [[BlioLoginViewController alloc] init];
-    loginController.vaultManager = self.vaultManager;
-	[self presentModalViewController:[[UINavigationController alloc] initWithRootViewController:loginController] animated:YES];
-    [loginController release]; 
-	/*
-	BlioLoginView* loginView = [[BlioLoginView alloc] initWithTitle: @"Sign in to Blio" 
-															message:@"\n\n\n"
-														   delegate:nil
-												  cancelButtonTitle:@"Cancel"
-												  otherButtonTitles:@"Log In", nil]; 
-	loginView.delegate = loginView;
-	loginView.loginManager = self.loginManager;
-	[loginView display];
-	[loginView release];
-	 */
-}
-
-
 - (void)showStore:(id)sender {    
-    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext vaultManager:self.vaultManager];
+    BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];
 	[self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
 }
@@ -1502,7 +1482,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 }
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
-	NSLog(@"BlioLibraryGridViewCell onProcessingCompleteNotification entered");
+//	NSLog(@"BlioLibraryGridViewCell onProcessingCompleteNotification entered");
 	progressBackgroundView.hidden = YES;
 	pauseButton.hidden = YES;	
 	resumeButton.hidden = YES;	
@@ -1605,6 +1585,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.accessoryView = nil;
 	progressView.hidden = YES;
+	progressSlider.hidden = YES;
 }
 -(void)onPauseButtonPressed:(id)sender {
 	[delegate pauseProcessingForBook:[self book]];
@@ -1677,8 +1658,9 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
     CGRect progressFrame = self.progressSlider.frame;
 	CGFloat targetProgressWidth = 0;
 	if (((BlioLibraryViewController*)delegate).maxLayoutPageEquivalentCount != 0) {
-//		NSLog(@"layoutPageEquivalentCount: %u",layoutPageEquivalentCount);
-//		NSLog(@"((BlioLibraryViewController*)delegate).maxLayoutPageEquivalentCount: %u",[(BlioLibraryViewController*)delegate maxLayoutPageEquivalentCount]);
+		
+		// N.B. this condition is for when maxLayoutPageEquivalentCount is honored and progress bars should be relatively sized.
+		
 		CGFloat layoutPageEquivalentCountFloat = layoutPageEquivalentCount;
 		targetProgressWidth = (layoutPageEquivalentCountFloat/((BlioLibraryViewController*)delegate).maxLayoutPageEquivalentCount) * kBlioLibraryListContentWidth;
 		if (targetProgressWidth > kBlioLibraryListContentWidth) {
@@ -1686,6 +1668,14 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 			targetProgressWidth = kBlioLibraryListContentWidth; // should never happen but this is a safeguard.
 		}
 	}
+	else {
+
+		// N.B. this condition is for when maxLayoutPageEquivalentCount is NOT honored and progress bars should all be a standard size.
+		if ([self.book.progress floatValue] > 0) {
+			targetProgressWidth = kBlioLibraryListContentWidth;
+		}
+	}
+
 	self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, targetProgressWidth, progressFrame.size.height);	
 }
 -(void) resetAuthorText {
@@ -1715,7 +1705,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 }
 
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
-	NSLog(@"BlioLibraryListViewCell onProcessingCompleteNotification entered");
+//	NSLog(@"BlioLibraryListViewCell onProcessingCompleteNotification entered");
 //	progressView.hidden = YES;
 //	[self resetAuthorText];
 //	self.accessoryView = nil;
@@ -1728,34 +1718,3 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 
 @end
 
-@implementation BlioProportionalProgressView
-
-@synthesize proportionalBackground,progressBar;
-
--(id)initWithFrame:(CGRect)frame {
-	if ((self = [super initWithFrame:frame])) {
-		proportionalBackground = [[UIImageView alloc] initWithFrame:self.bounds];
-		progressBar = [[UIView alloc] initWithFrame:CGRectInset(self.bounds, kBlioProportionalProgressBarInsetX, kBlioProportionalProgressBarInsetY)];
-		progressBar.backgroundColor = [UIColor blackColor];
-		progressBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		proportionalBackground.image = [[UIImage imageNamed:@"proportionate-size-box.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0];
-		[self addSubview:proportionalBackground];
-		[self addSubview:progressBar];
-	}
-	return self;
-}
--(float)progress {
-	return progress;
-}
--(void)setProgress:(float)progressValue {
-	CGFloat targetValue = progressValue;
-	if (targetValue < 0) targetValue = 0;
-	if (targetValue > 1) targetValue = 1;
-	// change view visuals
-	CGRect maxBarFrame = CGRectInset(self.bounds, kBlioProportionalProgressBarInsetX, kBlioProportionalProgressBarInsetY);
-	CGFloat newBarWidth = targetValue * maxBarFrame.size.width;
-	
-	progressBar.bounds = CGRectMake(progressBar.bounds.origin.x, progressBar.bounds.origin.y, newBarWidth, progressBar.bounds.size.height);
-	progress = targetValue;
-}
-@end

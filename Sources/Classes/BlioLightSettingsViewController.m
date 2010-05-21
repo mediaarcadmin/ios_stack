@@ -1,3 +1,5 @@
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 //
 //  BlioLightSettingsViewController.m
 //  BlioApp
@@ -186,7 +188,8 @@
     if(!_keyboardVisible) {
         UIScrollView *scrollView = self.containerScrollView;
         
-        NSValue* sizeValue = [notification.userInfo objectForKey:UIKeyboardBoundsUserInfoKey];
+		// N.B. - #pragma GCC diagnostic ignored "-Wdeprecated-declarations" is at the top to prevent a deprecated warning. Requires at least GCC 4.2.
+        NSValue* sizeValue = [notification.userInfo objectForKey:UIKeyboardBoundsUserInfoKey];			
         CGSize keyboardSize = [sizeValue CGRectValue].size;
         
         CGRect viewFrame = scrollView.frame;
@@ -202,7 +205,8 @@
     if(_keyboardVisible) {
         UIScrollView *scrollView = self.containerScrollView;
         
-        NSValue* sizeValue = [notification.userInfo objectForKey:UIKeyboardBoundsUserInfoKey];
+		// N.B. - #pragma GCC diagnostic ignored "-Wdeprecated-declarations" is at the top to prevent a deprecated warning. Requires at least GCC 4.2.
+        NSValue* sizeValue = [notification.userInfo objectForKey:UIKeyboardBoundsUserInfoKey];			
         CGSize keyboardSize = [sizeValue CGRectValue].size;
         
         CGRect viewFrame = scrollView.frame;
