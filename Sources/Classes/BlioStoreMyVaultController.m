@@ -40,6 +40,14 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		[self fetchResults];
+	}
+	else {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+	}		
 }
 -(void)loginDismissed:(NSNotification*)note {
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
@@ -102,14 +110,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-		[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-		[self fetchResults];
-	}
-	else {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-	}	
 }
 /*
 - (void)viewWillDisappear:(BOOL)animated {
