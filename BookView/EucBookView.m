@@ -664,9 +664,12 @@ typedef enum {
         }
     }
     
-    // Remove any unused highlight layers.
-    while(reuseIndex < reuseCount) {
-        [[highlightLayersToReuse objectAtIndex:reuseIndex++] removeFromSuperlayer];
+    if(highlightLayersToReuse) {
+        // Remove any unused highlight layers.
+        while(reuseIndex < reuseCount) {
+            [[highlightLayersToReuse objectAtIndex:reuseIndex++] removeFromSuperlayer];
+        }
+        [highlightLayersToReuse release];
     }
     
     if(oldHighlightRanges.count) {
@@ -1117,6 +1120,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         if([self.delegate respondsToSelector:@selector(bookView:didUpdateHighlightAtRange:toRange:)]) {
             [self.delegate bookView:self didUpdateHighlightAtRange:fromHighlightRange toRange:toHighlightRange];
         }
+        
+        [toHighlightRange release];
     }
     
     [_rangeBeingEdited release];
