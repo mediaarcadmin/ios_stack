@@ -557,10 +557,18 @@
     NSMutableArray *nonCoalescedRects = [NSMutableArray array];    
     NSUInteger blockIdIndex = 0;
     NSUInteger blockIdsCount = blockIds.count;
-    while(blockIdIndex < blockIdsCount && [[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
-        ++blockIdIndex;
+    
+    BOOL isFirstBlock;
+    if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
+        // The real first block was before the first block we have seen.
+        isFirstBlock = NO;
+    } else {
+        while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+            ++blockIdIndex;
+        }
+        isFirstBlock = YES;
     }
-    BOOL isFirstBlock = YES;
+
     BOOL isLastBlock = NO;
     while(!isLastBlock && blockIdIndex < blockIdsCount) {
         id blockId = [blockIds objectAtIndex:blockIdIndex];
@@ -600,6 +608,7 @@ typedef enum {
 } EucBookViewHighlightSurroundingPageFlags;
 
 - (EucBookViewHighlightSurroundingPageFlags)_applyHighlightLayersToPageView:(EucPageView *)pageView 
+                                                         refreshingFromBook:(BOOL)refreshingFromBook    
 {
     EucBookViewHighlightSurroundingPageFlags ret = EucBookViewHighlightSurroundingPageFlagsNone;
     
@@ -618,15 +627,21 @@ typedef enum {
         }
     }
     
-    NSArray *oldHighlightRanges = [[pageLayer valueForKey:@"EucBookViewHighlightRanges"] retain];
+    NSArray *oldHighlightRanges = [pageLayer valueForKey:@"EucBookViewHighlightRanges"];
 
     NSUInteger reuseCount = highlightLayersToReuse.count;
     NSUInteger reuseIndex = 0;
-    NSArray *newHighlightRanges = [self _highlightRangesForIndexPointRange:indexPointRange];
+    
+    NSArray *newHighlightRanges;
+    if(!refreshingFromBook && oldHighlightRanges) {
+        newHighlightRanges = oldHighlightRanges;
+    } else {
+        newHighlightRanges = [self _highlightRangesForIndexPointRange:indexPointRange];
+    }
     if(newHighlightRanges) {
         UIView *bookTextView = pageView.bookTextView;
         for(EucHighlightRange *highlightRange in newHighlightRanges) {
-            if(!_rangeBeingEdited || ![highlightRange isEqual:_rangeBeingEdited]) {                 
+            if(!_rangeBeingEdited || ![highlightRange intersects:_rangeBeingEdited]) {                 
                 CGColorRef color = [highlightRange.color colorWithAlphaComponent:0.3f].CGColor;
                 NSArray *rects = [self _highlightRectsForRange:highlightRange inPageView:pageView];
                 for(NSValue *rectValue in rects) {
@@ -665,19 +680,20 @@ typedef enum {
         }
         
     } 
-    if(newHighlightRanges.count) {
-        EucHighlightRange *firstRange = [newHighlightRanges objectAtIndex:0];
-        if([firstRange.startPoint compare:indexPointRange.first] == NSOrderedAscending) {
-            ret |= EucBookViewHighlightSurroundingPageFlagsPrevious;
+    if(newHighlightRanges != oldHighlightRanges) {
+        if(newHighlightRanges.count) {
+            EucHighlightRange *firstRange = [newHighlightRanges objectAtIndex:0];
+            if([firstRange.startPoint compare:indexPointRange.first] == NSOrderedAscending) {
+                ret |= EucBookViewHighlightSurroundingPageFlagsPrevious;
+            }
+            EucHighlightRange *lastRange = [newHighlightRanges lastObject];
+            if([(EucBookPageIndexPoint *)(indexPointRange.second) compare:lastRange.endPoint] == NSOrderedAscending) {
+                ret |= EucBookViewHighlightSurroundingPageFlagsNext;
+            }
         }
-        EucHighlightRange *lastRange = [newHighlightRanges lastObject];
-        if([(EucBookPageIndexPoint *)(indexPointRange.second) compare:lastRange.endPoint] == NSOrderedAscending) {
-            ret |= EucBookViewHighlightSurroundingPageFlagsNext;
-        }
+        [pageLayer setValue:newHighlightRanges forKey:@"EucBookViewHighlightRanges"];
     }
     
-    [pageLayer setValue:newHighlightRanges forKey:@"EucBookViewHighlightRanges"];
-
     return ret;
 }
 
@@ -687,7 +703,7 @@ typedef enum {
     EucPageView *pageView = (EucPageView *)ret.first;
     pageView.delegate = self;
     [pageView.layer setValue:ret.second forKey:@"EucBookViewIndexPointRange"];
-    [self _applyHighlightLayersToPageView:pageView];
+    [self _applyHighlightLayersToPageView:pageView refreshingFromBook:YES];
     return ret;
 }
 
@@ -1071,10 +1087,10 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     UIColor *ret = nil;
     for(EucHighlightRange *highlightRange in [_pageTurningView.currentPageView.layer valueForKey:@"EucBookViewHighlightRanges"]) {
         if([[highlightRange selectorRange] isEqual:selectedRange]) {
-            ret = [highlightRange.color colorWithAlphaComponent:0.3f];
-            
             NSParameterAssert(!_rangeBeingEdited);
+            ret = [highlightRange.color colorWithAlphaComponent:0.3f];
             _rangeBeingEdited = [highlightRange copy];
+            break;
         }
     }
     
@@ -1113,14 +1129,15 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 - (void)refreshHighlights
 {
     EucPageView *currentPageView = (EucPageView *)(_pageTurningView.currentPageView);
-    EucBookViewHighlightSurroundingPageFlags surroundingPageFlags = [self _applyHighlightLayersToPageView:currentPageView];
-    [_pageTurningView refreshView:currentPageView];
-    
-    NSLog(@"Refresh!");
-    
-    if(_rangeBeingEdited) {
+
+    if(_rangeBeingEdited) {  
         // We know that only the current page can be viewed, so only update it.
+        [self _applyHighlightLayersToPageView:currentPageView refreshingFromBook:NO];
+        [_pageTurningView refreshView:currentPageView];
     } else {
+        EucBookViewHighlightSurroundingPageFlags surroundingPageFlags = [self _applyHighlightLayersToPageView:currentPageView refreshingFromBook:YES];
+        [_pageTurningView refreshView:currentPageView];
+        
         if(surroundingPageFlags != EucBookViewHighlightSurroundingPageFlagsNone) {
             NSArray *pageViews = _pageTurningView.pageViews;
             NSUInteger indexOfCurrentPage = [pageViews indexOfObject:currentPageView];
@@ -1128,13 +1145,13 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
             if((surroundingPageFlags & EucBookViewHighlightSurroundingPageFlagsPrevious) == EucBookViewHighlightSurroundingPageFlagsPrevious &&
                indexOfCurrentPage >= 1) {
                 EucPageView *pageView = [pageViews objectAtIndex:indexOfCurrentPage-1];
-                [self _applyHighlightLayersToPageView:pageView];
+                [self _applyHighlightLayersToPageView:pageView refreshingFromBook:YES];
                 [_pageTurningView refreshView:pageView];
             }
             if((surroundingPageFlags & EucBookViewHighlightSurroundingPageFlagsNext) == EucBookViewHighlightSurroundingPageFlagsNext &&
                indexOfCurrentPage < (pageViews.count - 1)) {
                 EucPageView *pageView = [pageViews objectAtIndex:indexOfCurrentPage+1];
-                [self _applyHighlightLayersToPageView:pageView];
+                [self _applyHighlightLayersToPageView:pageView refreshingFromBook:YES];
                 [_pageTurningView refreshView:pageView];
             }
         }

@@ -994,22 +994,29 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (NSArray *)highlightRectsForRange:(EucSelectorRange *)selectedRange 
 {                                   
     NSArray *blockIds = [self _blockIdentifiers];
-    NSUInteger blockIdIndex = 0;
-    
-    NSMutableArray *nonCoalescedRects = [NSMutableArray array];
     
     id startBlockId = selectedRange.startBlockId;
     id endBlockId = selectedRange.endBlockId;
     id startElementId = selectedRange.startElementId;
     id endElementId = selectedRange.endElementId;
     
-    while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
-        ++blockIdIndex;
+    NSMutableArray *nonCoalescedRects = [NSMutableArray array];    
+    NSUInteger blockIdIndex = 0;
+    NSUInteger blockIdsCount = blockIds.count;    
+    
+    BOOL isFirstBlock;
+    if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
+        // The real first block was before the first block we have seen.
+        isFirstBlock = NO;
+    } else {
+        while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+            ++blockIdIndex;
+        }
+        isFirstBlock = YES;
     }
-    BOOL isFirstBlock = blockIdIndex != 0;
+    
     BOOL isLastBlock = NO;
-    NSUInteger blockIdsCount = blockIds.count;
-    do {
+    while(!isLastBlock && blockIdIndex < blockIdsCount) {
         id blockId = [blockIds objectAtIndex:blockIdIndex];
         
         NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:blockId];
@@ -1034,7 +1041,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
                  elementIdIndex < elementIdCount);
         ++blockIdIndex;
-    } while(!isLastBlock && blockIdIndex < blockIdsCount);
+    }
     
     NSArray *coalescedRects = [[self class] coalescedLineRectsForElementRects:nonCoalescedRects];
     
