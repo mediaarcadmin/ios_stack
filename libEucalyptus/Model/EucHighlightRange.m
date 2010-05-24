@@ -15,18 +15,10 @@
 @synthesize endPoint = _endPoint;
 @synthesize color = _color;
 
-- (BOOL)isEqual:(id)object
+- (BOOL)intersects:(EucHighlightRange *)otherRange
 {
-    if([object isKindOfClass:[EucHighlightRange class]]) {
-        EucHighlightRange *rhs = (EucHighlightRange *)object;
-        return [self.startPoint isEqual:rhs.startPoint] && [self.endPoint isEqual:rhs.endPoint]; 
-    }
-    return NO;
-}
-
-- (NSUInteger)hash
-{
-    return [self.startPoint hash] ^ [self.endPoint hash];
+    return ([self.startPoint compare:otherRange.endPoint] != NSOrderedDescending &&
+            [self.endPoint compare:otherRange.startPoint] != NSOrderedAscending);
 }
 
 - (id)copyWithZone:(NSZone *)zone

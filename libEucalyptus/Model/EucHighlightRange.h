@@ -20,4 +20,6 @@
 @property (nonatomic, retain) EucBookPageIndexPoint *endPoint;
 @property (nonatomic, retain) UIColor *color;
 
+- (BOOL)intersects:(EucHighlightRange *)otherRange;
+
 @end
