@@ -810,44 +810,21 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         
         if (![highlightRange isEqual:excludedBookmark]) {
-                        
-            NSMutableArray *highlightRects = [NSMutableArray array];
+            NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
             
-            for (BlioTextFlowBlock *block in pageBlocks) {
-                
+            for (BlioTextFlowBlock *block in pageBlocks) {                
                 for (BlioTextFlowPositionedWord *word in [block words]) {
-                    if ((highlightRange.startPoint.layoutPage < aPageNumber) &&
-                        (block.blockIndex <= highlightRange.endPoint.blockOffset) &&
-                        (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
-                        
-                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        
-                    } else if ((highlightRange.endPoint.layoutPage > aPageNumber) &&
-                               (block.blockIndex >= highlightRange.startPoint.blockOffset) &&
-                               (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
-                        
-                        [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        
-                    } else if ((highlightRange.startPoint.layoutPage == aPageNumber) &&
-                               (block.blockIndex == highlightRange.startPoint.blockOffset) &&
-                               (word.wordIndex >= highlightRange.startPoint.wordOffset)) {
-                        
-                        if ((block.blockIndex == highlightRange.endPoint.blockOffset) &&
-                            (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
+                    // If the range starts before this word:
+                    if ( highlightRange.startPoint.layoutPage < aPageNumber ||
+                       ((highlightRange.startPoint.layoutPage == aPageNumber) && (highlightRange.startPoint.blockOffset < block.blockIndex)) ||
+                       ((highlightRange.startPoint.layoutPage == aPageNumber) && (highlightRange.startPoint.blockOffset == block.blockIndex) && (highlightRange.startPoint.wordOffset <= word.wordIndex)) ) {
+                        // If the range ends after this word:
+                        if ( highlightRange.endPoint.layoutPage > aPageNumber ||
+                            ((highlightRange.endPoint.layoutPage == aPageNumber) && (highlightRange.endPoint.blockOffset > block.blockIndex)) ||
+                            ((highlightRange.endPoint.layoutPage == aPageNumber) && (highlightRange.endPoint.blockOffset == block.blockIndex) && (highlightRange.endPoint.wordOffset >= word.wordIndex)) ) {
+                            // This word is in the range.
                             [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        } else if (block.blockIndex < highlightRange.endPoint.blockOffset) {
-                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        }
-                        
-                    } else if ((highlightRange.startPoint.layoutPage == aPageNumber) &&
-                               (block.blockIndex > highlightRange.startPoint.blockOffset)) {
-                        
-                        if ((block.blockIndex == highlightRange.endPoint.blockOffset) &&
-                            (word.wordIndex <= highlightRange.endPoint.wordOffset)) {
-                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        } else if (block.blockIndex < highlightRange.endPoint.blockOffset) {
-                            [highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-                        }
+                        }                            
                     }
                 }
             }
@@ -861,6 +838,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 [allHighlights addObject:coloredRect];
                 [coloredRect release];
             }
+            
+            [highlightRects release];
         }
     
     }
@@ -935,14 +914,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range {
     if (nil == range) return nil;
-    
-    NSInteger pageIndex = self.pageNumber - 1;
+
+    BlioBookmarkPoint *startPoint = range.startPoint;
+    BlioBookmarkPoint *endPoint = range.endPoint;
     
     EucSelectorRange *selectorRange = [[EucSelectorRange alloc] init];
-    selectorRange.startBlockId = [BlioTextFlowBlock blockIDForPageIndex:pageIndex blockIndex:range.startPoint.blockOffset];
-    selectorRange.startElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:range.startPoint.wordOffset];
-    selectorRange.endBlockId = [BlioTextFlowBlock blockIDForPageIndex:pageIndex blockIndex:range.endPoint.blockOffset];
-    selectorRange.endElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:range.endPoint.wordOffset];
+    selectorRange.startBlockId = [BlioTextFlowBlock blockIDForPageIndex:startPoint.layoutPage - 1 blockIndex:startPoint.blockOffset];
+    selectorRange.startElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:startPoint.wordOffset];
+    selectorRange.endBlockId = [BlioTextFlowBlock blockIDForPageIndex:endPoint.layoutPage - 1 blockIndex:endPoint.blockOffset];
+    selectorRange.endElementId = [BlioTextFlowPositionedWord wordIDForWordIndex:endPoint.wordOffset];
     
     return [selectorRange autorelease];
 }
@@ -950,16 +930,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range {
     
     if (nil == range) return nil;
-    
-    NSInteger currentPage = self.pageNumber;
-    
+        
     BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-    startPoint.layoutPage = currentPage;
+    startPoint.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:range.startBlockId] + 1;
     startPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:range.startBlockId];
     startPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:range.startElementId];
     
     BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
-    endPoint.layoutPage = currentPage;
+    endPoint.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:range.endBlockId] + 1;
     endPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:range.endBlockId];
     endPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:range.endElementId];
     
