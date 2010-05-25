@@ -1,9 +1,9 @@
 //
 //  MRGridViewController.m
 //
-//  Created by Sean Doherty on 3/19/10.
 //  Copyright 2010 CrossComm, Inc. All rights reserved.
-//
+//	Licensed to K-NFB Reading Technology, Inc. for use in the Blio iPhone OS Application.
+//	Please refer to the Licensing Agreement for terms and conditions.
 
 #import "MRGridViewController.h"
 
@@ -107,7 +107,11 @@
     // e.g. self.myOutlet = nil;
 }
 
-
+-(NSString*)contentDescriptionForCellAtIndex:(NSInteger)index {
+	// abstract method
+	return nil;
+	
+}
 - (void)dealloc {
 	self.gridView = nil;
 	self.scrollView = nil;
