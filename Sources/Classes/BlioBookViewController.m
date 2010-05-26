@@ -613,7 +613,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [application setStatusBarHidden:YES animated:YES];
             }            
         }
-        [self layoutNavigationToolbar];
     }
     _firstAppearance = NO;
 }
@@ -793,6 +792,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             break;
     }
     
+    // Set the status bar settings we don't want to animate 
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateStatusBarVisible:
+        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
+            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO];
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+            break;
+        default:
+            [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
+            break;
+    }
+    
     // Set the toolbar settings we don't want to animate 
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateToolbarsVisible:
@@ -810,18 +821,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [UIView beginAnimations:@"ToolbarsFade" context:nil];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(_fadeDidEnd)];
-    
-    // Set the status bar
-    switch (toolbarState) {
-        case kBlioLibraryToolbarsStateStatusBarVisible:
-        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
-            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO];
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
-            break;
-        default:
-            [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
-            break;
-    }
     
     // Set the toolbars
     switch (toolbarState) {
