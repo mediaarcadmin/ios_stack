@@ -753,7 +753,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.navigationController.navigationBar.hidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     } else {
-        if ([!self audioPlaying])
+        if (![self audioPlaying])
             [UIApplication sharedApplication].idleTimerDisabled = NO;
     }
     _fadeState = BookViewControlleUIFadeStateNone;
