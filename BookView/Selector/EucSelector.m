@@ -207,7 +207,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                            rectsForElementWithIdentifier:elementId
                                    ofBlockWithIdentifier:blockId];
         
-        NSMutableArray *temporaryHilightLayers = self.temporaryHighlightLayers;
+        NSMutableArray *temporaryHighlightLayers = self.temporaryHighlightLayers;
         NSMutableArray *newTemporaryHighlightLayers = [[NSMutableArray alloc] initWithCapacity:2];
         
         CALayer *attachedLayer = self.attachedLayer;
@@ -217,9 +217,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             
             CGPoint newCenter = CGPointMake(rect.origin.x + (rect.size.width / 2.0f), rect.origin.y + (rect.size.height / 2.0f));
             CALayer *layer = nil;
-            if(temporaryHilightLayers.count) {
+            if(temporaryHighlightLayers.count) {
                 CGFloat bestDistance = CGFLOAT_MAX;
-                for(CALayer *prospectiveLayer in temporaryHilightLayers) {
+                for(CALayer *prospectiveLayer in temporaryHighlightLayers) {
                     CGPoint prospectiveCenter = prospectiveLayer.position;
                     if(prospectiveCenter.x < newCenter.x) {  // If the prospective layer is to the let of the desired location
                         CGRect prospectiveRect = prospectiveLayer.frame;
@@ -238,7 +238,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             rect.size.height += 4;
             
             if(layer) {
-                [temporaryHilightLayers removeObject:layer];
+                [temporaryHighlightLayers removeObject:layer];
             } else {                 
                 layer = [[CALayer alloc] init];
                 layer.cornerRadius = 4;
@@ -271,7 +271,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             [newTemporaryHighlightLayers addObject:layer];
             [layer release];
         }
-        for(CALayer *layer in temporaryHilightLayers) {
+        for(CALayer *layer in temporaryHighlightLayers) {
             CGRect frame = layer.frame;
             CGPoint newCenter = CGPointMake(frame.origin.x + frame.size.width - 1.0f, 
                                             frame.origin.y + frame.size.height / 2.0f);
