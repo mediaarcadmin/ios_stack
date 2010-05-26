@@ -144,7 +144,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         if (_TTSEnabled) {
             
-            if (![self.book audioRights]) {
+            if ([self.book audioRights] && ![self.book audiobookFilename]) {
                 self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
             } else {
                 self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
@@ -613,6 +613,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [application setStatusBarHidden:YES animated:YES];
             }            
         }
+        [self layoutNavigationToolbar];
     }
     _firstAppearance = NO;
 }
