@@ -800,7 +800,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             break;
         default:
-            [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
             break;
     }
     
@@ -821,6 +820,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [UIView beginAnimations:@"ToolbarsFade" context:nil];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(_fadeDidEnd)];
+    
+    // Set the status bar settings
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateStatusBarVisible:
+        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
+            break;
+        default:
+            [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
+            break;
+    }
     
     // Set the toolbars
     switch (toolbarState) {
