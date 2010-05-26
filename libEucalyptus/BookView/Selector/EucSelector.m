@@ -1009,7 +1009,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         // The real first block was before the first block we have seen.
         isFirstBlock = NO;
     } else {
-        while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+        while(blockIdIndex < blockIdsCount &&
+              [[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
             ++blockIdIndex;
         }
         isFirstBlock = YES;
