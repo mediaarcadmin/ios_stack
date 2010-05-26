@@ -395,6 +395,10 @@
 		C9B620D01137BE170012CE7E /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9B620CB1137BE170012CE7E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
 		C9C5467610F77EDD00ECE126 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5467510F77EDD00ECE126 /* CoreData.framework */; };
 		C9C546F210F7802F00ECE126 /* Blio.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = C9C546F110F7802F00ECE126 /* Blio.xcdatamodel */; };
+		C9D280B311AD0FCE00857CFB /* icon-noTTS.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B111AD0FCE00857CFB /* icon-noTTS.png */; };
+		C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
+		C9D280B511AD0FCE00857CFB /* icon-noTTS.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B111AD0FCE00857CFB /* icon-noTTS.png */; };
+		C9D280B611AD0FCE00857CFB /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
 		C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */; };
 		C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57810F2289D00FD5F22 /* icon-lock.png */; };
 		C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57910F2289D00FD5F22 /* icon-finger.png */; };
@@ -841,6 +845,8 @@
 		C9B620CB1137BE170012CE7E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
 		C9C5467510F77EDD00ECE126 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		C9C546F110F7802F00ECE126 /* Blio.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = Blio.xcdatamodel; sourceTree = "<group>"; };
+		C9D280B111AD0FCE00857CFB /* icon-noTTS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-noTTS.png"; sourceTree = "<group>"; };
+		C9D280B211AD0FCE00857CFB /* button-tts-pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-tts-pause.png"; sourceTree = "<group>"; };
 		C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioUIImageAdditions.h; sourceTree = "<group>"; };
 		C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioUIImageAdditions.m; sourceTree = "<group>"; };
 		C9D8A57810F2289D00FD5F22 /* icon-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-lock.png"; sourceTree = "<group>"; };
@@ -1128,6 +1134,8 @@
 				55822F1C10F2891B008614FD /* icon-play.png */,
 				55822F1D10F2891B008614FD /* icon-plus.png */,
 				55822F1E10F2891B008614FD /* icon-search.png */,
+				C9D280B111AD0FCE00857CFB /* icon-noTTS.png */,
+				C9D280B211AD0FCE00857CFB /* button-tts-pause.png */,
 				7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */,
 				C9F47A0A1129BC7E00563348 /* downloadButton.png */,
 				C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */,
@@ -1765,6 +1773,8 @@
 				DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */,
 				DCFF6198117F703A00463427 /* library-resumebutton.png in Resources */,
 				DCFF6199117F703A00463427 /* library-pausebutton.png in Resources */,
+				C9D280B311AD0FCE00857CFB /* icon-noTTS.png in Resources */,
+				C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1880,6 +1890,8 @@
 				DCFF6195117F6F4E00463427 /* button-delete-black.png in Resources */,
 				DCFF619A117F703A00463427 /* library-resumebutton.png in Resources */,
 				DCFF619B117F703A00463427 /* library-pausebutton.png in Resources */,
+				C9D280B511AD0FCE00857CFB /* icon-noTTS.png in Resources */,
+				C9D280B611AD0FCE00857CFB /* button-tts-pause.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

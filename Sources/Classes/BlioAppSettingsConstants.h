@@ -31,3 +31,4 @@ static NSString * const kBlioLastSpeedDefaultsKey = @"lastSpeed";
 static NSString * const kBlioLastVolumeDefaultsKey = @"lastVolume";
 static NSString * const kBlioLastSearchEngineDefaultsKey = @"lastSearchEngine";
 static NSString * const kBlioLastEncyclopediaDefaultsKey = @"lastEncyclopedia";
+static NSString * const kBlioTTSEnabledDefaultsKey = @"TTSEnabled";
