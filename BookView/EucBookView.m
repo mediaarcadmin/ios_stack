@@ -527,79 +527,85 @@
 #pragma mark PageView Handling
 
 - (NSArray *)_highlightRectsForRange:(EucHighlightRange *)highlightRange inPageView:(EucPageView *)pageView
-{                                  
+{                
+    NSArray *ret = nil;
+    
     UIView<EucPageTextView> *bookTextView = pageView.bookTextView;
-    THPair *pageIndexPointRange = [pageView.layer valueForKey:@"EucBookViewIndexPointRange"];
-    
     NSArray *blockIds = [bookTextView blockIdentifiers];
-
-    EucBookPageIndexPoint *startPoint = highlightRange.startPoint;
-    EucBookPageIndexPoint *pageStartPoint = pageIndexPointRange.first;
-    if([startPoint compare:pageStartPoint] == NSOrderedAscending) {
-        startPoint = pageStartPoint;
-    }
-    id startBlockId = [NSNumber numberWithUnsignedInt:startPoint.block];
-    id startElementId = [NSNumber numberWithUnsignedInt:startPoint.word];
-
-    id endBlockId;
-    id endElementId;
-                     
-    EucBookPageIndexPoint *endPoint = highlightRange.endPoint;
-    EucBookPageIndexPoint *pageEndPoint = pageIndexPointRange.second;
-    if([pageEndPoint compare:endPoint] != NSOrderedDescending) {
-        endBlockId = [blockIds lastObject];
-        endElementId = [[bookTextView identifiersForElementsOfBlockWithIdentifier:endBlockId] lastObject];
-    } else {
-        endBlockId = [NSNumber numberWithUnsignedInt:endPoint.block];
-        endElementId = [NSNumber numberWithUnsignedInt:endPoint.word];
-    }
-    
-    NSMutableArray *nonCoalescedRects = [NSMutableArray array];    
-    NSUInteger blockIdIndex = 0;
     NSUInteger blockIdsCount = blockIds.count;
+    if(blockIdsCount) {
+        THPair *pageIndexPointRange = [pageView.layer valueForKey:@"EucBookViewIndexPointRange"];
+
+        EucBookPageIndexPoint *startPoint = highlightRange.startPoint;
+        EucBookPageIndexPoint *pageStartPoint = pageIndexPointRange.first;
+        if([startPoint compare:pageStartPoint] == NSOrderedAscending) {
+            startPoint = pageStartPoint;
+        }
+        id startBlockId = [NSNumber numberWithUnsignedInt:startPoint.block];
+        id startElementId = [NSNumber numberWithUnsignedInt:startPoint.word];
+
+        id endBlockId;
+        id endElementId;
+                         
+        EucBookPageIndexPoint *endPoint = highlightRange.endPoint;
+        EucBookPageIndexPoint *pageEndPoint = pageIndexPointRange.second;
+        if([pageEndPoint compare:endPoint] != NSOrderedDescending) {
+            endBlockId = [blockIds lastObject];
+            endElementId = [[bookTextView identifiersForElementsOfBlockWithIdentifier:endBlockId] lastObject];
+        } else {
+            endBlockId = [NSNumber numberWithUnsignedInt:endPoint.block];
+            endElementId = [NSNumber numberWithUnsignedInt:endPoint.word];
+        }
     
-    BOOL isFirstBlock;
-    if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
-        // The real first block was before the first block we have seen.
-        isFirstBlock = NO;
-    } else {
-        while(blockIdIndex < blockIdsCount &&
-              [[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+        NSMutableArray *nonCoalescedRects = [NSMutableArray array];    
+        NSUInteger blockIdIndex = 0;
+        
+        BOOL isFirstBlock;
+        if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
+            // The real first block was before the first block we have seen.
+            isFirstBlock = NO;
+        } else {
+            while(blockIdIndex < blockIdsCount &&
+                  [[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+                ++blockIdIndex;
+            }
+            isFirstBlock = YES;
+        }
+
+        BOOL isLastBlock = NO;
+        while(!isLastBlock && blockIdIndex < blockIdsCount) {
+            id blockId = [blockIds objectAtIndex:blockIdIndex];
+            
+            NSArray *elementIds = [bookTextView identifiersForElementsOfBlockWithIdentifier:blockId];
+            NSUInteger elementIdCount = elementIds.count;
+            NSUInteger elementIdIndex = 0;
+            
+            isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+            
+            id elementId;
+            if(isFirstBlock) {
+                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                    ++elementIdIndex;
+                }
+                isFirstBlock = NO;
+            }
+            
+            do {
+                elementId = [elementIds objectAtIndex:elementIdIndex];
+                [nonCoalescedRects addObjectsFromArray:[bookTextView rectsForElementWithIdentifier:elementId
+                                                                             ofBlockWithIdentifier:blockId]];
+                ++elementIdIndex;
+            } while (isLastBlock ? 
+                     ([elementId compare:endElementId] < NSOrderedSame) : 
+                     elementIdIndex < elementIdCount);
             ++blockIdIndex;
         }
-        isFirstBlock = YES;
-    }
-
-    BOOL isLastBlock = NO;
-    while(!isLastBlock && blockIdIndex < blockIdsCount) {
-        id blockId = [blockIds objectAtIndex:blockIdIndex];
         
-        NSArray *elementIds = [bookTextView identifiersForElementsOfBlockWithIdentifier:blockId];
-        NSUInteger elementIdCount = elementIds.count;
-        NSUInteger elementIdIndex = 0;
-        
-        isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
-        
-        id elementId;
-        if(isFirstBlock) {
-            while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
-                ++elementIdIndex;
-            }
-            isFirstBlock = NO;
-        }
-        
-        do {
-            elementId = [elementIds objectAtIndex:elementIdIndex];
-            [nonCoalescedRects addObjectsFromArray:[bookTextView rectsForElementWithIdentifier:elementId
-                                                                         ofBlockWithIdentifier:blockId]];
-            ++elementIdIndex;
-        } while (isLastBlock ? 
-                 ([elementId compare:endElementId] < NSOrderedSame) : 
-                 elementIdIndex < elementIdCount);
-        ++blockIdIndex;
+        ret = [EucSelector coalescedLineRectsForElementRects:nonCoalescedRects];
+        [nonCoalescedRects release];
     }
     
-    return [EucSelector coalescedLineRectsForElementRects:nonCoalescedRects];
+    return ret;
 }
 
 typedef enum {

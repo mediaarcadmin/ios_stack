@@ -992,67 +992,72 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 }
 
 - (NSArray *)highlightRectsForRange:(EucSelectorRange *)selectedRange 
-{                                   
+{           
+    NSArray *ret = nil;
     NSArray *blockIds = [self _blockIdentifiers];
     
-    id startBlockId = selectedRange.startBlockId;
-    id endBlockId = selectedRange.endBlockId;
-    id startElementId = selectedRange.startElementId;
-    id endElementId = selectedRange.endElementId;
-    
-    NSMutableArray *nonCoalescedRects = [NSMutableArray array];    
-    NSUInteger blockIdIndex = 0;
     NSUInteger blockIdsCount = blockIds.count;    
     
-    BOOL isFirstBlock;
-    if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
-        // The real first block was before the first block we have seen.
-        isFirstBlock = NO;
-    } else {
-        while(blockIdIndex < blockIdsCount &&
-              [[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+    if(blockIdsCount) {        
+        id startBlockId = selectedRange.startBlockId;
+        id endBlockId = selectedRange.endBlockId;
+        id startElementId = selectedRange.startElementId;
+        id endElementId = selectedRange.endElementId;
+        
+        NSMutableArray *nonCoalescedRects = [[NSMutableArray alloc] init];    
+        NSUInteger blockIdIndex = 0;
+
+        BOOL isFirstBlock;
+        if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
+            // The real first block was before the first block we have seen.
+            isFirstBlock = NO;
+        } else {
+            while(blockIdIndex < blockIdsCount &&
+                  [[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+                ++blockIdIndex;
+            }
+            isFirstBlock = YES;
+        }
+        
+        BOOL isLastBlock = NO;
+        while(!isLastBlock && blockIdIndex < blockIdsCount) {
+            id blockId = [blockIds objectAtIndex:blockIdIndex];
+            
+            NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:blockId];
+            NSUInteger elementIdCount = elementIds.count;
+            NSUInteger elementIdIndex = 0;
+            
+            isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+            
+            id elementId;
+            if(isFirstBlock) {
+                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                    ++elementIdIndex;
+                }
+                isFirstBlock = NO;
+            }
+            
+            do {
+                elementId = [elementIds objectAtIndex:elementIdIndex];
+                [nonCoalescedRects addObjectsFromArray:[self _rectsForElementWithIdentifier:elementId
+                                                                      ofBlockWithIdentifier:blockId]];
+                ++elementIdIndex;
+            } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
+                     elementIdIndex < elementIdCount);
             ++blockIdIndex;
         }
-        isFirstBlock = YES;
-    }
-    
-    BOOL isLastBlock = NO;
-    while(!isLastBlock && blockIdIndex < blockIdsCount) {
-        id blockId = [blockIds objectAtIndex:blockIdIndex];
         
-        NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:blockId];
-        NSUInteger elementIdCount = elementIds.count;
-        NSUInteger elementIdIndex = 0;
+        NSArray *coalescedRects = [[self class] coalescedLineRectsForElementRects:nonCoalescedRects];
+        [nonCoalescedRects release];
         
-        isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+        // We'll scale the rects to make sure they will be on pixl boundies
+        // on screen even if the layer they're in has a scale transform applied.
+        CGSize screenScaleFactors = [self.attachedLayer screenScaleFactors];
         
-        id elementId;
-        if(isFirstBlock) {
-            while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
-                ++elementIdIndex;
-            }
-            isFirstBlock = NO;
+        ret = [NSMutableArray arrayWithCapacity:coalescedRects.count];
+        for(NSValue *rectValue in coalescedRects) {
+            [(NSMutableArray *)ret addObject:[NSValue valueWithCGRect:CGRectScreenIntegral([rectValue CGRectValue], screenScaleFactors)]];
         }
-        
-        do {
-            elementId = [elementIds objectAtIndex:elementIdIndex];
-            [nonCoalescedRects addObjectsFromArray:[self _rectsForElementWithIdentifier:elementId
-                                                                  ofBlockWithIdentifier:blockId]];
-            ++elementIdIndex;
-        } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
-                 elementIdIndex < elementIdCount);
-        ++blockIdIndex;
-    }
-    
-    NSArray *coalescedRects = [[self class] coalescedLineRectsForElementRects:nonCoalescedRects];
-    
-    // We'll scale the rects to make sure they will be on pixl boundies
-    // on screen even if the layer they're in has a scale transform applied.
-    CGSize screenScaleFactors = [self.attachedLayer screenScaleFactors];
-    
-    NSMutableArray *ret = [NSMutableArray arrayWithCapacity:coalescedRects.count];
-    for(NSValue *rectValue in coalescedRects) {
-        [ret addObject:[NSValue valueWithCGRect:CGRectScreenIntegral([rectValue CGRectValue], screenScaleFactors)]];
     }
     return ret;
 }
