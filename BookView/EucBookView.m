@@ -101,8 +101,10 @@
          }       */ 
         
         _pageLayoutController = [[[_book pageLayoutControllerClass] alloc] initWithBook:_book fontPointSize:desiredPointSize];  
+         
+        self.opaque = YES;
         
-        self.opaque = YES;        
+        self.backgroundColor = [UIColor yellowColor];
     }
     return self;
 }
@@ -159,7 +161,7 @@
     } 
     if(_selector) {
         [_selector removeObserver:self
-                          forKeyPath:@"tracking"];
+                       forKeyPath:@"tracking"];
         [_selector detatch];
         [_selector release];
         _selector = nil;
@@ -557,7 +559,7 @@
             endElementId = [NSNumber numberWithUnsignedInt:endPoint.word];
         }
     
-        NSMutableArray *nonCoalescedRects = [NSMutableArray array];    
+        NSMutableArray *nonCoalescedRects = [[NSMutableArray alloc] init];    
         NSUInteger blockIdIndex = 0;
         
         BOOL isFirstBlock;
