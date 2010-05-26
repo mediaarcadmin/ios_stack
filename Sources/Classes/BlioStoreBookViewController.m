@@ -8,7 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "BlioStoreBookViewController.h"
-#import "BlioProcessing.h"
+#import "BlioProcessingStandardOperations.h"
 #import <libEucalyptus/THUIImageAdditions.h>
 #import "BlioMockBook.h"
 
@@ -203,7 +203,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 		{
 			// Book is in context/state, but not complete.
 			// Check operation queue to see if completeOperation for id is present
-			NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
+			BlioProcessingCompleteOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
 			if (completeOperation == nil) {
 				// for now, treat as incomplete - redownload completely. TODO: processing manager should scan for pre-existing entity in context and append to it instead of creating new one.
 				NSLog(@"but not processingState and could not find completeOperation."); 
@@ -301,7 +301,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 		
 		// register as listener
 
-		NSOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
+		BlioProcessingCompleteOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
 		if (completeOperation == nil) {
 			NSLog(@"WARNING: cannot find completeOperation for recently enqueued book sourceID:%i sourceSpecificID:%@",self.feed.id,self.entity.id);
 		}

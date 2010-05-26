@@ -1,10 +1,9 @@
 //
 //  MRGridView.m
-//  scifi
 //
-//  Created by Sean Doherty on 3/20/10.
 //  Copyright 2010 CrossComm, Inc. All rights reserved.
-//
+//	Licensed to K-NFB Reading Technology, Inc. for use in the Blio iPhone OS Application.
+//	Please refer to the Licensing Agreement for terms and conditions.
 
 #import "MRGridView.h"
 
@@ -90,25 +89,9 @@
 	else if ([keys count] == 0) NSLog(@"WARNING: No key found in cellIndices for cell to be deleted!");
 	else {
 		_keyValueOfCellToBeDeleted = [[keys objectAtIndex:0] intValue];
-		// TODO: put this in the delegate
-		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Please confirm...",@"\"Please confirm...\" alert message title")
-														message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CONFIRM_DELETE_ACTION", nil,[NSBundle mainBundle],@"Are you sure you want to delete %@?",@"Message requesting to confirm delete action within MRGridView"), [gridCell cellContentDescription] ]
-													   delegate:self
-											  cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" alert button")
-											  otherButtonTitles:nil];
-		[alert addButtonWithTitle:NSLocalizedString(@"Delete",@"\"Delete\" alert button")];
-		[alert show];
-		[alert release];
- 
+		if ([gridDelegate respondsToSelector:@selector(gridView:confirmationForDeletionAtIndex:)]) [gridDelegate gridView:self confirmationForDeletionAtIndex:_keyValueOfCellToBeDeleted];
+		else [self.gridDataSource gridView:self commitEditingStyle:MRGridViewCellEditingStyleDelete forIndex:_keyValueOfCellToBeDeleted];
 	}
-}
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-	if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"Delete",@"\"Delete\" alert button")])
-	{
-		
-		[self.gridDataSource gridView:self commitEditingStyle:MRGridViewCellEditingStyleDelete forIndex:_keyValueOfCellToBeDeleted];
-	}
-	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
 }
 
 //reloads data from dataSource
@@ -244,9 +227,9 @@
 	}
 	else return;
 	
-	if (recycleRowDelta >= self.bounds.size.height/currCellSize.height) {
+	if (abs(newScrollOffsetY - oldScrollOffsetY) >= self.bounds.size.height) {
 		// total refresh - recycle all cells
-		NSArray * cellIndexes = [self indexesForCellsInRect:CGRectMake(0, 0+scrollView.contentOffset.y, self.bounds.size.width, self.bounds.size.height)];
+		NSArray * cellIndexes = [self indexesForCellsInRect:CGRectMake(0, 0+oldScrollOffsetY, self.bounds.size.width, self.bounds.size.height)];
 		for (NSNumber * index in cellIndexes) {
 			[self removeCellAtIndex:[index intValue]];
 		}
@@ -265,9 +248,9 @@
 	}
 	
 	// now make sure the right cells are visible
-	if (createRowDelta >= self.bounds.size.height/currCellSize.height) {
+	if (abs(newScrollOffsetY - oldScrollOffsetY) >= self.bounds.size.height) {
 		// total refresh - create all cells
-		NSArray * cellIndexes = [self indexesForCellsInRect:[self bounds]];
+		NSArray * cellIndexes = [self indexesForCellsInRect:CGRectMake(0, 0+newScrollOffsetY, self.bounds.size.width, self.bounds.size.height)];
 		for (NSNumber* index in cellIndexes){
 			if (![self cellAtGridIndex:[index intValue]]) [self addCellAtIndex:[index intValue]];
 		}		
@@ -449,7 +432,7 @@ NSArray *touchArray = [touches allObjects];
 			// calculate scroll intensity
 			float topOfScreen = self.contentOffset.y;
 			float bottomOfScreen = (self.contentOffset.y + self.frame.size.height);
-			float zoneHeight = 44;  //TODO: make it a constant
+			float zoneHeight = MRGridViewScrollOverlapHeight;
 			if (lastTouchLocation.y >= (bottomOfScreen - zoneHeight))
 			{
 //				NSLog(@"lastTouchLocation.y,bottomOfScreen, zoneHeight: %f,%f,%f",lastTouchLocation.y,bottomOfScreen,zoneHeight);
@@ -590,7 +573,7 @@ NSArray *touchArray = [touches allObjects];
 		[self invalidateScrollTimer];
 		return;
 	}
-	float speed = 10; //TODO: make it a constant
+	float speed = MRGridViewDragScrollSpeed;
 
 	float scrollTravel = ceil(scrollIntensity * speed);
 	if ((self.contentOffset.y + scrollTravel) > self.contentSize.height - self.frame.size.height) scrollTravel = self.contentSize.height - self.frame.size.height - self.contentOffset.y;
@@ -690,7 +673,6 @@ NSArray *touchArray = [touches allObjects];
 	NSInteger rowsBelow = ceil((startingY-currBorderSize+rect.size.height)/(currCellSize.height+currBorderSize));
 	
 	NSInteger numRows = rowsBelow - rowsAbove;
-	
 	// add an extra row if we need to accommodate partial row at bottom
 	//	CGFloat rowLeftover = (rect.origin.y-currBorderSize)/(currCellSize.height+currBorderSize);
 	//	NSLog(@"rowLeftover: %f",rowLeftover);

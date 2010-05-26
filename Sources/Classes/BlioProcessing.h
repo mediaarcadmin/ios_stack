@@ -10,6 +10,7 @@
 #import <CoreData/CoreData.h>
 
 @class BlioMockBook;
+@class BlioProcessingCompleteOperation;
 
 typedef enum {
 	BlioBookSourceNotSpecified = 0,
@@ -66,7 +67,7 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 - (void) resumeProcessing;
 -(BlioMockBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource;
-- (BlioProcessingOperation *)processingCompleteOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+- (BlioProcessingCompleteOperation *)processingCompleteOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (NSArray *)processingOperationsForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void)pauseProcessingForBook:(BlioMockBook*)aBook;
 - (void)stopProcessingForBook:(BlioMockBook*)aBook;
