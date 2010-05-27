@@ -23,10 +23,12 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
 	}
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:self.bookID forKey:@"bookID"];
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"failed dependency found! Operation: %@ Sending Failed Notification...",blioOp);
-			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self];
+			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
 			[self cancel];
 			return;
 		}
@@ -44,7 +46,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     // The following condition is done in order to prevent a thread's first-time access to [self getBookValueForKey:@"title"] (which happens when there are no dependencies- theoretically that should never happen, but a crash would occur in artificial tests so a safeguard is warranted)... could also be avoided by simply not accessing the MOC in this method for the NSLog.
     if ([NSThread isMainThread]) NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
 	else NSLog(@"Processing complete for book with sourceID:%i sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
-	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
 }
 - (void)addDependency:(NSOperation *)operation {
 	[super addDependency:operation];

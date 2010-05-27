@@ -1,10 +1,9 @@
 //
 //  MRGridView.h
-//  scifi
 //
-//  Created by Sean Doherty on 3/20/10.
 //  Copyright 2010 CrossComm, Inc. All rights reserved.
-//
+//	Licensed to K-NFB Reading Technology, Inc. for use in the Blio iPhone OS Application.
+//	Please refer to the Licensing Agreement for terms and conditions.
 
 #import <UIKit/UIKit.h>
 #import "MRGridViewDataSource.h"
@@ -19,7 +18,8 @@ typedef enum {
 
 static const NSInteger MRGridViewMoveStyleDisplace = 0;
 static const NSInteger MRGridViewMoveStyleMarker = 1;
-
+static const CGFloat MRGridViewDragScrollSpeed = 10.0;
+static const CGFloat MRGridViewScrollOverlapHeight = 44.0;
 
 @interface MRGridView : UIScrollView<UIScrollViewDelegate> {
 	id<MRGridViewDataSource> gridDataSource;

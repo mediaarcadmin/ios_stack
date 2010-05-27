@@ -1128,9 +1128,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
-            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
-            accessibilityRefreshRequired = YES;
+            if (![self.delegate audioPlaying]) {
+                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+                UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+                accessibilityRefreshRequired = YES;
+            }
         }
     } else if (object == self.delegate) {
         if ([keyPath isEqualToString:@"audioPlaying"]) {
@@ -1875,7 +1877,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Accessibility
 
 - (void)createAccessibilityElements {
-    NSMutableArray *elements = [[NSMutableArray alloc] init];
+    NSMutableArray *elements = nil;
+    if (![self.delegate audioPlaying]) {
+        
+
+    
+    elements = [NSMutableArray array];
     NSInteger currentPage = self.pageNumber;
     
     CGRect cropRect;
@@ -1907,12 +1914,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         cropRect = newCropRect;
     }
     
-    if ([self.delegate audioPlaying]) {
-        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
-        [element setAccessibilityFrame:cropRect];
-        [self.scrollView setIsAccessibilityElement:NO];
-        [elements addObject:element];        
-    } else {
+    //if (![self.delegate audioPlaying]) {
+//        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
+//        [element setAccessibilityFrame:cropRect];
+//        [self.scrollView setIsAccessibilityElement:NO];
+//        [elements addObject:element];        
+//    } else {
         CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
         
         [self.scrollView setIsAccessibilityElement:YES];
@@ -1967,6 +1974,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [elements addObject:aProxy];
         [aProxy release];
         
+   // }
     }
     
     // We keep around a copy of the previous accessibility elements because 
@@ -1979,7 +1987,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     self.previousAccessibilityElements = self.accessibilityElements;
     self.accessibilityElements = elements;
     accessibilityRefreshRequired = NO;
-    [elements release];
+    //[elements release];
 }
 
 - (BOOL)isAccessibilityElement {

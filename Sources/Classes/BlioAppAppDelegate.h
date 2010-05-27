@@ -25,6 +25,7 @@
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
     
     BlioProcessingManager *processingManager;
+	NetworkStatus networkStatus;
 	Reachability * internetReach;
 }
 
@@ -35,7 +36,8 @@
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, retain, readonly) BlioProcessingManager *processingManager;
-@property (nonatomic, retain, readwrite) Reachability *internetReach;
+@property (nonatomic, assign, readwrite) NetworkStatus networkStatus;
+@property (nonatomic, retain, readwrite) Reachability * internetReach;
 
 @end
 

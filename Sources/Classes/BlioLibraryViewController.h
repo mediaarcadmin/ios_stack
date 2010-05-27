@@ -63,7 +63,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	UITableView * _tableView;
 	MRGridView * _gridView;
 	NSUInteger maxLayoutPageEquivalentCount;
-	
+	NSInteger _keyValueOfCellToBeDeleted;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -141,6 +141,9 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) NSArray *accessibilityElements;
 
+-(void)listenToProcessingNotifications;
+-(void)stopListeningToProcessingNotifications;
+
 @end
 
 @interface BlioLibraryListCell : UITableViewCell {
@@ -169,5 +172,8 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 -(void)resetAuthorText;
 -(void)resetProgressSlider;
+-(void)listenToProcessingNotifications;
+-(void)stopListeningToProcessingNotifications;
+
 @end
 

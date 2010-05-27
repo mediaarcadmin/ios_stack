@@ -13,6 +13,7 @@
 #import "BlioAlertManager.h"
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
+#import "BlioAppSettingsConstants.h"
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -25,6 +26,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 @synthesize window;
 @synthesize navigationController;
 @synthesize libraryController;
+@synthesize networkStatus;
 @synthesize internetReach;
 
 #pragma mark -
@@ -34,6 +36,8 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     // Override point for customization after app launch   
 	//[window addSubview:[navigationController view]];
 
+    // TODO - update this with a proper check for TTS being enabled
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTTSEnabledDefaultsKey];
     
     NSString *dynamicDefaultPngPath = [self dynamicDefaultPngPath];
     NSData *imageData = [NSData dataWithContentsOfFile:dynamicDefaultPngPath];
@@ -63,6 +67,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     [window makeKeyAndVisible];
 
 	self.internetReach = [Reachability reachabilityForInternetConnection];
+	self.networkStatus = [self.internetReach currentReachabilityStatus];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
 	[self.internetReach startNotifer];
 	
@@ -71,6 +76,8 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     [libraryController setManagedObjectContext:moc];
     [libraryController setProcessingDelegate:[self processingManager]];
 	
+	if (self.networkStatus != NotReachable) [self.processingManager resumeProcessing];
+
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
 
@@ -115,8 +122,6 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
-	if ([self.internetReach currentReachabilityStatus] != NotReachable) [self.processingManager resumeProcessing];
-
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
@@ -157,12 +162,14 @@ static void *background_init_thread(void * arg) {
 //Called by Reachability whenever status changes.
 - (void) reachabilityChanged: (NSNotification* )note
 {
+	NSLog(@"BlioAppAppDelegate reachabilityChanged");
 	Reachability* curReach = [note object];
 	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
-	NetworkStatus previousNetStatus = [self.internetReach currentReachabilityStatus];
-	NetworkStatus netStatus = [curReach currentReachabilityStatus];
-
-	if (previousNetStatus != NotReachable && netStatus == NotReachable) { // if changed from available to unavailable
+	NetworkStatus previousNetStatus = self.networkStatus;
+	self.networkStatus = [curReach currentReachabilityStatus];
+	NSLog(@"previousNetStatus: %i",previousNetStatus);
+	NSLog(@"self.networkStatus: %i",self.networkStatus);
+	if (previousNetStatus != NotReachable && self.networkStatus == NotReachable) { // if changed from available to unavailable
 		[self.processingManager stopDownloadingOperations];
 		if ([[self.processingManager downloadOperations] count] > 0)
 		{
@@ -181,10 +188,9 @@ static void *background_init_thread(void * arg) {
 //			[alert release];
 		}
 	}
-	else if (previousNetStatus == NotReachable && netStatus != NotReachable) { // if changed from unavailable to available
+	else if (previousNetStatus == NotReachable && self.networkStatus != NotReachable) { // if changed from unavailable to available
 		[self.processingManager resumeProcessing];
 	}
-	self.internetReach = curReach;
 }
 
 #pragma mark -

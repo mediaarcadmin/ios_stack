@@ -86,7 +86,9 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
 }
 -(void) setPercentageComplete:(NSUInteger)percentage {
 	percentageComplete = percentage;
-	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self];
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:self.bookID forKey:@"bookID"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self userInfo:userInfo];
 }
 -(NSUInteger) percentageComplete {
 	return percentageComplete;
