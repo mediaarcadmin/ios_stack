@@ -138,6 +138,7 @@
     if(!self.window) {
         _pageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
         _pageTurningView.delegate = self;
+        _pageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self addSubview:_pageTurningView];
         
         EucBookPageIndexPoint *indexPoint;
@@ -1208,7 +1209,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 - (UIToolbar *)bookNavigationToolbar
 {
-    CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
+    CGRect bounds = [self bounds];
 
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectZero];
     toolbar.barStyle = UIBarStyleBlack;
@@ -1219,9 +1220,9 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     CGFloat toolbarNonMarginHeight = [toolbar frame].size.height - 2.0f * toolbarMarginHeight;
     
     CGFloat toolbarHeight = floorf(toolbarMarginHeight * 3.0f + 2.0f * toolbarNonMarginHeight);
-    [toolbar setFrame:CGRectMake(mainScreenBounds.origin.x,
-                                 mainScreenBounds.origin.y + mainScreenBounds.size.height - toolbarHeight,
-                                 mainScreenBounds.size.width,
+    [toolbar setFrame:CGRectMake(bounds.origin.x,
+                                 bounds.origin.y + bounds.size.height - toolbarHeight,
+                                 bounds.size.width,
                                  toolbarHeight)];
     [toolbar setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth];
     
@@ -1238,6 +1239,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _pageNumberLabel.textColor = [UIColor whiteColor];
     _pageNumberLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
     _pageNumberLabel.shadowOffset = CGSizeMake(0, -1);
+    
+    _pageNumberLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
     
     CGRect pageNumberFrame = _pageNumberLabel.frame;
     pageNumberFrame.size.width = ceilf(toolbarBounds.size.width / 3.0f);
@@ -1275,6 +1278,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     
     _pageSlider = [[THScalableSlider alloc] initWithFrame:toolbarBounds];
     _pageSlider.backgroundColor = [UIColor clearColor];	
+    _pageSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
     leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
@@ -1303,6 +1307,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     CGRect behindSliderFrame = behindSlider.frame;
     behindSliderFrame.size.width = pageSliderFrame.size.width - 4;
     behindSlider.frame = behindSliderFrame;
+    behindSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     behindSlider.isAccessibilityElement = NO;
     
     CGPoint pageSliderCenter = _pageSlider.center;
