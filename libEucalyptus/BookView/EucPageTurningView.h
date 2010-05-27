@@ -116,9 +116,13 @@ typedef struct {
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
+
+@property (nonatomic, readonly) NSArray *pageViews;
 @property (nonatomic, retain) UIView *currentPageView;
-@property (nonatomic, readonly) UIImage *screenshot;
+
 @property (nonatomic, assign) CGFloat dimQuotient;
+
+@property (nonatomic, readonly) UIImage *screenshot;
 
 @property (nonatomic, copy) UIColor *specularColor;
 @property (nonatomic, assign) GLfloat shininess;
@@ -131,8 +135,6 @@ typedef struct {
 @property (nonatomic, copy) UIColor *diffuseLightColor;
 
 @property (nonatomic, assign) GLfloatTriplet lightPosition;
-
-@property (nonatomic, readonly) NSArray *pageViews;
 
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 - (void)refreshView:(UIView *)view;
@@ -154,7 +156,6 @@ typedef struct {
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didTurnToView:(UIView *)view;
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view;
-- (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view;
 
 // Views are assumed not to have rigid edges if this is not implemented.
 - (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView viewEdgeIsRigid:(UIView *)view;
