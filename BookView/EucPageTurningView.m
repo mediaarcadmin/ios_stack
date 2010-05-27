@@ -482,9 +482,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)_setView:(UIView *)view forPage:(int)page
 {
     if(_pageViews[page] != view) {
-        if(_pageViews[page] && [_delegate respondsToSelector:@selector(pageTurningView:discardingView:)]) {
-            [_delegate pageTurningView:self discardingView:_pageViews[page]];
-        }
         [_pageViews[page] release];
         if(view) {
             [self _createTextureIn:&_pageTextures[page] fromView:view];
