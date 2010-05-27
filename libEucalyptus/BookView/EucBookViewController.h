@@ -71,7 +71,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL returnToNavigationBarHidden;
 @property (nonatomic, assign) BOOL returnToStatusBarHidden;
 
-@property (nonatomic, retain) EucBookView *bookView;
+@property (nonatomic, retain, readonly) EucBookView *bookView;
 @property (nonatomic, retain) UIToolbar *overriddenToolbar;
 
 
