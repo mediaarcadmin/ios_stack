@@ -44,16 +44,11 @@
          pageNumberFont:(NSString *)pageNumberFont 
 pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlags
          titlePointSize:(CGFloat)titlePointSize
-            pageTexture:(UIImage *)pageTexture
           textViewClass:(Class)textViewClass
 {
     CGRect frame = [[UIScreen mainScreen] bounds];
 	if((self = [super initWithFrame:frame])) {
-        // Measured with Shark, this is at least as efficient as drawing the 
-        // background image in  any other way (including using a clearColor
-        // background and multitextureing over a paper texture).
-        _pageTexture = CGImageRetain([pageTexture CGImage]);
-        self.clearsContextBeforeDrawing = NO;
+        self.clearsContextBeforeDrawing = YES;
         self.opaque = NO;
         
         _textPointSize = pointSize;
@@ -81,16 +76,9 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 }
 
 - (id)initWithPointSize:(CGFloat)pointSize 
-            pageTexture:(UIImage *)pageTexture  
           textViewClass:(Class)textViewClass;
 
 {
-    static UIImage *sPaperImage = nil;
-    if(!pageTexture) {
-        if(!sPaperImage) {
-            sPaperImage = [[UIImage imageNamed:@"BookPaper.png"] retain];
-        }
-    }
     NSString *font = [EucBookTextStyle defaultFontFamilyName];
 	return [self initWithPointSize:pointSize 
                          titleFont:font 
@@ -98,7 +86,6 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
                     pageNumberFont:font
           pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
                     titlePointSize:pointSize 
-                       pageTexture:pageTexture ?: sPaperImage
                      textViewClass:(Class)textViewClass];
 }
 
@@ -110,10 +97,6 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 - (void)dealloc
 {
-    if(_pageTexture) {
-        CGImageRelease(_pageTexture);
-    }
-    
     [_touch release];
 
     [_pageNumber release];
@@ -176,8 +159,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     CGContextSaveGState(currentContext);
 
     CGRect bounds = [self bounds];
-    CGContextDrawImage(currentContext, bounds, _pageTexture);
-
+    
     CGPoint origin = _bookTextView.frame.origin;
     CGContextTranslateCTM(currentContext, origin.x, origin.y);
     [_bookTextView drawRect:rect inContext:currentContext];

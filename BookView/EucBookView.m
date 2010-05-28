@@ -139,6 +139,12 @@
         _pageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
         _pageTurningView.delegate = self;
         _pageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        UIImage *pageTexture = self.pageTexture;
+        if(!pageTexture) {
+            pageTexture = [[UIImage imageNamed:@"BookPaper.png"] retain];
+            self.pageTexture = pageTexture;
+        }
+        [_pageTurningView setPageTexture:pageTexture isDark:self.pageTextureIsDark];
         [self addSubview:_pageTurningView];
         
         EucBookPageIndexPoint *indexPoint;
@@ -151,7 +157,7 @@
         NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
         THPair *currentPageViewAndIndexPointRange = [self _pageViewAndIndexPointRangeForBookPageNumber:pageNumber];
         _pageTurningView.currentPageView = currentPageViewAndIndexPointRange.first;
-       
+        
         self.pageCount = _pageLayoutController.globalPageCount;
         self.pageNumber = pageNumber;
 
@@ -272,7 +278,8 @@
     if(self.pageTexture != pageTexture || self.pageTextureIsDark != isDark) {
         self.pageTexture = pageTexture;
         self.pageTextureIsDark = isDark;
-        [self _redisplayCurrentPage];
+        [_pageTurningView setPageTexture:pageTexture isDark:isDark];
+        [_pageTurningView drawView];
     }
 }
 

@@ -214,7 +214,6 @@
                                     pageNumberFont:@"Georgia"
                           pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
                                     titlePointSize:pointSize
-                                       pageTexture:pageTexture
                                      textViewClass:[EucBUpePageTextView class]] autorelease];
 }
 

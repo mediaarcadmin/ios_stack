@@ -298,9 +298,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [self _setupConstraints];
     
     NSParameterAssert(triangleStripIndex == TRIANGLE_STRIP_COUNT);
-    
+        
+    glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
     
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
@@ -310,32 +314,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     GLfloat yAddition = (_powerOf2Bounds.height - boundsSize.height) / _powerOf2Bounds.height;
     for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
         for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-            _pageTextureCoordinates[row][column].x = _pageVertices[row][column].x / PAGE_WIDTH / po2WidthScale;
-            _pageTextureCoordinates[row][column].y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) / po2HeightScale + yAddition; 
+            GLfloat x = _pageVertices[row][column].x / PAGE_WIDTH / po2WidthScale;
+            _pageTextureCoordinates[row][column].x = x;
+            GLfloat y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) / po2HeightScale + yAddition;
+            _pageTextureCoordinates[row][column].y = y;
         }
     } 
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"Square256X256BookPaper" ofType:@"pvrtc"];
-    NSData *squareBookPaper = [[NSData alloc] initWithContentsOfMappedFile:path];
-    glGenTextures(1, &_blankPageTexture);
-    glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
-    texImage2DPVRTC(0, 2, 0, 256, [squareBookPaper bytes]);
-    [squareBookPaper release];
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-            _blankPageTextureCoordinates[row][column].x = _pageVertices[row][column].x / PAGE_WIDTH;
-            _blankPageTextureCoordinates[row][column].y = _pageVertices[row][column].y / PAGE_HEIGHT;
-        }
-    }         
-    
-    path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
     NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
     glGenTextures(1, &_bookEdgeTexture);
     glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
@@ -346,7 +332,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
     
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -436,29 +421,41 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
-- (void)_createTextureIn:(GLuint *)textureRef fromView:(UIView *)newCurrentView;
+- (void)_createTextureIn:(GLuint *)textureRef from:(id)viewOrImage;
 {
     GLuint width, height;
     CGRect bounds = self.bounds;
 
-    
     width = _powerOf2Bounds.height;
     height = _powerOf2Bounds.width;
     
     size_t byteLength = width * height * 4;
     GLubyte *textureData = (GLubyte *)malloc(byteLength);
-    memset(textureData, -1, byteLength);
+    
+    memset(textureData, 0xFFFFFFFF, byteLength);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef textureContext = CGBitmapContextCreate(textureData, width, height, 8, width * 4, 
                                                         colorSpace, kCGImageAlphaPremultipliedLast);
-    if([newCurrentView respondsToSelector:@selector(drawRect:inContext:)] && !newCurrentView.layer.sublayers) {
-        CGContextSetFillColorSpace(textureContext, colorSpace);
-        CGContextSetStrokeColorSpace(textureContext, colorSpace); 
-        
-        [(UIView<THUIViewThreadSafeDrawing> *)newCurrentView drawRect:bounds inContext:textureContext];
+    
+    if([viewOrImage isKindOfClass:[UIView class]]) {
+        UIView *view = (UIView *)viewOrImage;
+        if([view respondsToSelector:@selector(drawRect:inContext:)] && !view.layer.sublayers) {
+            CGContextSetFillColorSpace(textureContext, colorSpace);
+            CGContextSetStrokeColorSpace(textureContext, colorSpace); 
+            
+            [(UIView<THUIViewThreadSafeDrawing> *)view drawRect:bounds inContext:textureContext];
+        } else {
+            [view.layer renderInContext:textureContext];
+        }
     } else {
-        [newCurrentView.layer renderInContext:textureContext];
+        CGImageRef image = ((UIImage *)viewOrImage).CGImage;
+        CGContextDrawImage(textureContext, bounds, image);
     }
+    
+    CGImageRef image = CGBitmapContextCreateImage(textureContext);
+    static int num = 0;
+    [UIImagePNGRepresentation([UIImage imageWithCGImage:image]) writeToFile:[NSString stringWithFormat:@"/tmp/test%d.png", (int)num++] atomically:NO];
+    
     CGContextRelease(textureContext);
     CGColorSpaceRelease(colorSpace);
 
@@ -484,7 +481,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_pageViews[page] != view) {
         [_pageViews[page] release];
         if(view) {
-            [self _createTextureIn:&_pageTextures[page] fromView:view];
+            [self _createTextureIn:&_pageTextures[page] from:view];
         }
         _pageViews[page] = [view retain];
     }
@@ -540,6 +537,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (UIView *)currentPageView
 {
     return _pageViews[1];
+}
+
+
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
+{
+    [self _createTextureIn:&_blankPageTexture from:pageTexture];
+    _pageTextureIsDark = isDark;
 }
 
 static inline GLfloatTriplet addVector(GLfloatTriplet a, GLfloatTriplet b)
@@ -705,9 +709,19 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         shouldStopAnimating = [self _satisfyConstraints];
         [self _calculateVertexNormals];
     }
-    
+
     [EAGLContext setCurrentContext:context];
+    /*
+    glActiveTexture(GL_TEXTURE0);
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
+    glActiveTexture(GL_TEXTURE1);
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    */
+    glActiveTexture(GL_TEXTURE0);
+
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
     glViewport(0, 0, backingWidth, backingHeight);
     
@@ -753,16 +767,49 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, _linearAttenutaionFactor);
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION,_quadraticAttenuationFactor );
     
+    glClientActiveTexture(GL_TEXTURE0);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     
+    glClientActiveTexture(GL_TEXTURE1);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    
+    // Sample RGB, multiply by previous texunit result
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    
+    // Sample ALPHA, multiply by previous texunit result
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_DECAL);  //Get ALPHA of previous TUI (tex0)
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+    
+    
+    glClientActiveTexture(GL_TEXTURE0);
     glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates);
     
+    glClientActiveTexture(GL_TEXTURE1);
+    glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glClientActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
+    glVertexPointer(3, GL_FLOAT, 0, _stablePageVertices);
+    glNormalPointer(GL_FLOAT, 0, _stablePageVertexNormals);    
+    
+    glActiveTexture(GL_TEXTURE1);
+    glClientActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _pageTextures[_flatPageIndex]);
     glVertexPointer(3, GL_FLOAT, 0, _stablePageVertices);
     glNormalPointer(GL_FLOAT, 0, _stablePageVertexNormals);
-    
+                
     glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, _triangleStripIndices);
     
     if(!shouldStopAnimating) {
@@ -820,17 +867,18 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             glNormalPointer(GL_FLOAT, 0, pageVertexNormals);
         }        
         
-        glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
-        glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates);
+        glBindTexture(GL_TEXTURE_2D, 0);
         
         // By starting 1 into the triangle strip in glDrawElements, we draw the
         // strip with the opposite winding order, making the back the front (the
         // first triangle is degenerate anyway, so skippable).        
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 3, GL_UNSIGNED_BYTE, _triangleStripIndices + 1);
         
-
         if(_isTurningAutomatically) {
             if(_automaticTurnPercentage > 0.0f) {
+                glActiveTexture(GL_TEXTURE0);
+                glClientActiveTexture(GL_TEXTURE0);
+
                 GLfloatTriplet pageEdge[Y_VERTEX_COUNT][2];
                 GLfloatTriplet pageEdgeNormals[Y_VERTEX_COUNT * 2] = { {0, 0, 0} };
                 int column = X_VERTEX_COUNT - 1;
@@ -932,10 +980,18 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         glDrawArrays(GL_LINES, 0, Y_VERTEX_COUNT * X_VERTEX_COUNT * 2);
         */        
     }
-    
+
+    glClientActiveTexture(GL_TEXTURE1);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+    
+    glClientActiveTexture(GL_TEXTURE0);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    
+    glActiveTexture(GL_TEXTURE0);
     
     if(_atRenderScreenshotBuffer) {
         CGRect bounds = self.bounds;
@@ -1640,7 +1696,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 {
     for(int i = 0; i < sizeof(_pageViews); ++i) {
         if(view == _pageViews[i]) {
-            [self _createTextureIn:&_pageTextures[i] fromView:view];
+            [self _createTextureIn:&_pageTextures[i] from:view];
             break;
         }
     }
