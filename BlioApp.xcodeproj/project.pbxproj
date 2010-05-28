@@ -160,6 +160,7 @@
 		A3A672B611304D7700138097 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
 		A3A67376113078E300138097 /* BlioAudioSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioAudioSettingsController.m */; };
 		A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
+		A3D9F13B11B064680011D544 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3D9F13A11B064680011D544 /* libPlayReadyPK.a */; };
 		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
 		C901F8B8116B816A00A1858D /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */; };
 		C901F8BC116B819000A1858D /* BlioBookVault.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161551164FB3E003A9709 /* BlioBookVault.m */; };
@@ -752,6 +753,7 @@
 		A3A67375113078E300138097 /* BlioAudioSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioSettingsController.m; sourceTree = "<group>"; };
 		A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppSettingsConstants.h; sourceTree = "<group>"; };
 		A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticFat.a; path = Libraries/TTS/libMobilityStaticFat.a; sourceTree = "<group>"; };
+		A3D9F13A11B064680011D544 /* libPlayReadyPK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPlayReadyPK.a; path = Libraries/DRM/libPlayReadyPK.a; sourceTree = "<group>"; };
 		A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioBookManager.h; sourceTree = "<group>"; };
 		A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioBookManager.m; sourceTree = "<group>"; };
 		A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLoginViewController.h; sourceTree = "<group>"; };
@@ -919,6 +921,7 @@
 				C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */,
 				C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */,
 				7DAA30C411512B1C006634CC /* libiconv.dylib in Frameworks */,
+				A3D9F13B11B064680011D544 /* libPlayReadyPK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1288,6 +1291,7 @@
 		A37FC20B10EA770500F3DC5A /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A3D9F13911B064530011D544 /* DRM */,
 				C9867652112411060070A03E /* GData.xcodeproj */,
 				7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */,
 				A37FC32D10EA780500F3DC5A /* TTS */,
@@ -1337,6 +1341,14 @@
 				A381615F1164FB3E003A9709 /* xsd.m */,
 			);
 			name = BookVault;
+			sourceTree = "<group>";
+		};
+		A3D9F13911B064530011D544 /* DRM */ = {
+			isa = PBXGroup;
+			children = (
+				A3D9F13A11B064680011D544 /* libPlayReadyPK.a */,
+			);
+			name = DRM;
 			sourceTree = "<group>";
 		};
 		C921763E1176FF67009AC670 /* BookViewController */ = {
@@ -2132,6 +2144,7 @@
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Sources/Classes\"",
+					"\"$(SRCROOT)/Libraries/DRM\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2165,6 +2178,7 @@
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Sources/Classes\"",
+					"\"$(SRCROOT)/Libraries/DRM\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
