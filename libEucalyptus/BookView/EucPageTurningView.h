@@ -55,8 +55,8 @@ typedef struct {
     
     GLfloatPair _pageTextureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     
+    BOOL _pageTextureIsDark;
     GLuint _blankPageTexture;
-    GLfloatPair _blankPageTextureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     
     GLuint _bookEdgeTexture;
     GLfloatPair _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
@@ -135,6 +135,8 @@ typedef struct {
 @property (nonatomic, copy) UIColor *diffuseLightColor;
 
 @property (nonatomic, assign) GLfloatTriplet lightPosition;
+
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 - (void)refreshView:(UIView *)view;
