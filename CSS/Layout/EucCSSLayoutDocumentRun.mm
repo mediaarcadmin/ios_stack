@@ -66,7 +66,9 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
 
 + (void)initialize
 {
-    sCachedRuns = (EucCSSLayoutDocumentRun **)malloc(sCachedRunsCapacity * sizeof(EucCSSLayoutDocumentRun *));
+    if(self == [EucCSSLayoutDocumentRun class]) {
+        sCachedRuns = (EucCSSLayoutDocumentRun **)malloc(sCachedRunsCapacity * sizeof(EucCSSLayoutDocumentRun *));
+    }
 }
 
 + (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 

@@ -7,6 +7,7 @@
 //
 
 #import "THLog.h"
+#import "EucConfiguration.h"
 #import "EucPageView.h"
 #import "EucPageTextView.h"
 #import "THStringRenderer.h"
@@ -79,7 +80,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
           textViewClass:(Class)textViewClass;
 
 {
-    NSString *font = [EucBookTextStyle defaultFontFamilyName];
+    NSString *font = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
 	return [self initWithPointSize:pointSize 
                          titleFont:font 
                titleFontStyleFlags:THStringRendererFontStyleFlagItalic

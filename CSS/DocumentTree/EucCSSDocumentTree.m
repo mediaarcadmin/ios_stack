@@ -11,8 +11,10 @@
 
 #import "EucCSSDocumentTree.h"
 #import "EucCSSDocumentTree_Package.h"
+#import "EucConfiguration.h"
 
 #import <libwapcaplet/libwapcaplet.h>
+#import <pthread.h>
 #import "LWCNSStringAdditions.h"
 
 static bool _StringContainsElement(const char *string, size_t stringLength, const char *element, size_t elementLength);
@@ -370,22 +372,35 @@ static css_error EucCSSDocumentTreeUADefaultForProperty(void *pw, uint32_t prope
 	return CSS_OK;
 }
 
+static pthread_once_t s_font_sizes_once_control = PTHREAD_ONCE_INIT;
+static css_hint_length s_font_sizes[7];
+static void setup_font_sizes() {
+    float default_size = [[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey] floatValue];
+    s_font_sizes[0].value = FLTTOFIX(default_size / 1.2f / 1.2f / 1.2f);
+    s_font_sizes[0].unit = CSS_UNIT_PT;
+    s_font_sizes[1].value = FLTTOFIX(default_size / 1.2f / 1.2f);
+    s_font_sizes[1].unit = CSS_UNIT_PT;
+    s_font_sizes[2].value = FLTTOFIX(default_size / 1.2f);
+    s_font_sizes[2].unit = CSS_UNIT_PT;
+    s_font_sizes[3].value = FLTTOFIX(default_size);
+    s_font_sizes[3].unit = CSS_UNIT_PT;
+    s_font_sizes[4].value = FLTTOFIX(default_size * 1.2f);
+    s_font_sizes[4].unit = CSS_UNIT_PT;
+    s_font_sizes[5].value = FLTTOFIX(default_size * 1.2f * 1.2f);
+    s_font_sizes[5].unit = CSS_UNIT_PT;
+    s_font_sizes[6].value = FLTTOFIX(default_size * 1.2f * 1.2f * 1.2f);
+    s_font_sizes[6].unit = CSS_UNIT_PT;
+}
+
 static css_error EucCSSDocumentTreeComputeFontSize(void *pw, const css_hint *parent, css_hint *size)
 {
-	static css_hint_length sizes[] = {
-		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE / 1.2f / 1.2f / 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE / 1.2f / 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE / 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE), CSS_UNIT_PT },
-		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE * 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE * 1.2f * 1.2f), CSS_UNIT_PT },
-		{ FLTTOFIX(EUC_CSS_DEFAULT_POINT_SIZE * 1.2f * 1.2f * 1.2f), CSS_UNIT_PT }
-	};
+    pthread_once(&s_font_sizes_once_control, setup_font_sizes);
+    
 	const css_hint_length *parent_size;
     
 	/* Grab parent size, defaulting to medium if none */
 	if (parent == NULL) {
-		parent_size = &sizes[CSS_FONT_SIZE_MEDIUM - 1];
+		parent_size = &s_font_sizes[CSS_FONT_SIZE_MEDIUM - 1];
 	} else {
 		assert(parent->status == CSS_FONT_SIZE_DIMENSION);
 		assert(parent->data.length.unit != CSS_UNIT_EM);
@@ -396,7 +411,7 @@ static css_error EucCSSDocumentTreeComputeFontSize(void *pw, const css_hint *par
 	assert(size->status != CSS_FONT_SIZE_INHERIT);
     
 	if (size->status < CSS_FONT_SIZE_LARGER) {
-		size->data.length = sizes[size->status - 1];
+		size->data.length = s_font_sizes[size->status - 1];
 	} else if (size->status == CSS_FONT_SIZE_LARGER) {
 		size->data.length.value = 
         FMUL(parent_size->value, FLTTOFIX(1.2));
