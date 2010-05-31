@@ -115,10 +115,6 @@
 		7DABAD2C112C9A7F0036BA8D /* MagnificationLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD29112C9A7F0036BA8D /* MagnificationLoupeHigh.png */; };
 		7DABAD2D112C9A7F0036BA8D /* MagnificationLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD2A112C9A7F0036BA8D /* MagnificationLoupeLow.png */; };
 		7DABAD2E112C9A7F0036BA8D /* MagnificationLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD2B112C9A7F0036BA8D /* MagnificationLoupeMask.png */; };
-		7DB9F6FC10F364060010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6F810F364060010DF0B /* LinuxLibertine-Bold.otf */; };
-		7DB9F6FD10F364060010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6F910F364060010DF0B /* LinuxLibertine-BoldItalic.otf */; };
-		7DB9F6FE10F364060010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6FA10F364060010DF0B /* LinuxLibertine-Italic.otf */; };
-		7DB9F6FF10F364060010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6FB10F364060010DF0B /* LinuxLibertine.otf */; };
 		7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F93F10F39FF60010DF0B /* logo-bevel.png */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
@@ -134,6 +130,8 @@
 		7DF2A49011536CA100FC2045 /* BlioFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */; };
 		7DF2A58B115381EF00FC2045 /* TextFlow.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DF2A589115381EF00FC2045 /* TextFlow.css */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
+		7DF8B6BE11B41BE7003B7A97 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
+		7DF8B6BF11B41BE7003B7A97 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
 		A3169289111488C9005AAE5E /* BlioAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3169288111488C9005AAE5E /* BlioAudioManager.m */; };
 		A349F06B110E31CC009A8F89 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A349F067110E31CC009A8F89 /* AudioBooks */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
@@ -268,10 +266,6 @@
 		C9AF19FC1147A772007D7AFC /* icon-play.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1C10F2891B008614FD /* icon-play.png */; };
 		C9AF19FD1147A772007D7AFC /* icon-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1D10F2891B008614FD /* icon-plus.png */; };
 		C9AF19FE1147A772007D7AFC /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1E10F2891B008614FD /* icon-search.png */; };
-		C9AF19FF1147A772007D7AFC /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6F810F364060010DF0B /* LinuxLibertine-Bold.otf */; };
-		C9AF1A001147A772007D7AFC /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6F910F364060010DF0B /* LinuxLibertine-BoldItalic.otf */; };
-		C9AF1A011147A772007D7AFC /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6FA10F364060010DF0B /* LinuxLibertine-Italic.otf */; };
-		C9AF1A021147A772007D7AFC /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F6FB10F364060010DF0B /* LinuxLibertine.otf */; };
 		C9AF1A031147A772007D7AFC /* logo-bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F93F10F39FF60010DF0B /* logo-bevel.png */; };
 		C9AF1A041147A772007D7AFC /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		C9AF1A051147A772007D7AFC /* booktextureandshadowsubtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */; };
@@ -685,10 +679,6 @@
 		7DABAD2A112C9A7F0036BA8D /* MagnificationLoupeLow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeLow.png; sourceTree = "<group>"; };
 		7DABAD2B112C9A7F0036BA8D /* MagnificationLoupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeMask.png; sourceTree = "<group>"; };
 		7DB9F57C10F345450010DF0B /* BlioBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookView.h; sourceTree = "<group>"; };
-		7DB9F6F810F364060010DF0B /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
-		7DB9F6F910F364060010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
-		7DB9F6FA10F364060010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
-		7DB9F6FB10F364060010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DB9F93F10F39FF60010DF0B /* logo-bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-bevel.png"; sourceTree = "<group>"; };
 		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
 		7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scrubber-icon.png"; sourceTree = "<group>"; };
@@ -707,6 +697,7 @@
 		7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioFlowEucBook.m; sourceTree = "<group>"; };
 		7DF2A589115381EF00FC2045 /* TextFlow.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = TextFlow.css; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
+		7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EucConfiguration.plist; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A3169287111488C9005AAE5E /* BlioAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioManager.h; sourceTree = "<group>"; };
 		A3169288111488C9005AAE5E /* BlioAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioManager.m; sourceTree = "<group>"; };
@@ -1196,6 +1187,7 @@
 		7D381CCC10D93023008D34E2 /* libEucalyptus Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */,
 				7D9148D3115159E400BCBB23 /* Aliases */,
 				7DE7DB26110F662600403651 /* SelectionEnd.png */,
 				7DE7DB27110F662600403651 /* SelectionKnob.png */,
@@ -1207,10 +1199,6 @@
 				7D381CDF10D93023008D34E2 /* EPubDefault.css */,
 				7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */,
 				7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */,
-				7DB9F6F810F364060010DF0B /* LinuxLibertine-Bold.otf */,
-				7DB9F6F910F364060010DF0B /* LinuxLibertine-BoldItalic.otf */,
-				7DB9F6FA10F364060010DF0B /* LinuxLibertine-Italic.otf */,
-				7DB9F6FB10F364060010DF0B /* LinuxLibertine.otf */,
 			);
 			name = "libEucalyptus Resources";
 			path = libEucalyptus/Resources;
@@ -1710,10 +1698,6 @@
 				55822F2210F2891B008614FD /* icon-play.png in Resources */,
 				55822F2310F2891B008614FD /* icon-plus.png in Resources */,
 				55822F2410F2891B008614FD /* icon-search.png in Resources */,
-				7DB9F6FC10F364060010DF0B /* LinuxLibertine-Bold.otf in Resources */,
-				7DB9F6FD10F364060010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
-				7DB9F6FE10F364060010DF0B /* LinuxLibertine-Italic.otf in Resources */,
-				7DB9F6FF10F364060010DF0B /* LinuxLibertine.otf in Resources */,
 				7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */,
 				7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */,
 				555CAF2C10F3B943007B1885 /* booktextureandshadowsubtle.png in Resources */,
@@ -1775,6 +1759,7 @@
 				DCFF6199117F703A00463427 /* library-pausebutton.png in Resources */,
 				C9D280B311AD0FCE00857CFB /* icon-noTTS.png in Resources */,
 				C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */,
+				7DF8B6BF11B41BE7003B7A97 /* EucConfiguration.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1831,10 +1816,6 @@
 				C9AF19FC1147A772007D7AFC /* icon-play.png in Resources */,
 				C9AF19FD1147A772007D7AFC /* icon-plus.png in Resources */,
 				C9AF19FE1147A772007D7AFC /* icon-search.png in Resources */,
-				C9AF19FF1147A772007D7AFC /* LinuxLibertine-Bold.otf in Resources */,
-				C9AF1A001147A772007D7AFC /* LinuxLibertine-BoldItalic.otf in Resources */,
-				C9AF1A011147A772007D7AFC /* LinuxLibertine-Italic.otf in Resources */,
-				C9AF1A021147A772007D7AFC /* LinuxLibertine.otf in Resources */,
 				C9AF1A031147A772007D7AFC /* logo-bevel.png in Resources */,
 				C9AF1A041147A772007D7AFC /* logo-white.png in Resources */,
 				C9AF1A051147A772007D7AFC /* booktextureandshadowsubtle.png in Resources */,
@@ -1892,6 +1873,7 @@
 				DCFF619B117F703A00463427 /* library-pausebutton.png in Resources */,
 				C9D280B511AD0FCE00857CFB /* icon-noTTS.png in Resources */,
 				C9D280B611AD0FCE00857CFB /* button-tts-pause.png in Resources */,
+				7DF8B6BE11B41BE7003B7A97 /* EucConfiguration.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

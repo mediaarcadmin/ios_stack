@@ -202,8 +202,6 @@
 		7D516E261028735A005F3C46 /* THLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E241028735A005F3C46 /* THLog.m */; };
 		7D516E3C102873BE005F3C46 /* THUIViewThreadSafeDrawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E3D102873BE005F3C46 /* THUIViewThreadSafeDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E3B102873BE005F3C46 /* THUIViewThreadSafeDrawing.m */; };
-		7D516E4510287405005F3C46 /* EucBookTextStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E4310287405005F3C46 /* EucBookTextStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D516E4610287405005F3C46 /* EucBookTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E4410287405005F3C46 /* EucBookTextStyle.m */; };
 		7D516E5010287458005F3C46 /* THNavigationButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E4E10287458005F3C46 /* THNavigationButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E5110287458005F3C46 /* THNavigationButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E4F10287458005F3C46 /* THNavigationButton.m */; };
 		7D516E561028746B005F3C46 /* THTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E541028746B005F3C46 /* THTimer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -283,6 +281,10 @@
 		7D5EC951113196380054F657 /* LineLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC94E113196380054F657 /* LineLoupeHigh.png */; };
 		7D5EC952113196380054F657 /* LineLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC94F113196380054F657 /* LineLoupeLow.png */; };
 		7D5EC953113196380054F657 /* LineLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC950113196380054F657 /* LineLoupeMask.png */; };
+		7D653B8111AFD17000C47DC6 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */; };
+		7D653B8211AFD17000C47DC6 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */; };
+		7D653BA611AFDA3000C47DC6 /* EucConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D653B9C11AFD8F300C47DC6 /* EucConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D653BA711AFDA3500C47DC6 /* EucConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D653B9D11AFD8F300C47DC6 /* EucConfiguration.m */; };
 		7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D658C6D103DEAD900EB5003 /* THImageFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D658C6E103DEAD900EB5003 /* THImageFactory.m */; };
 		7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAC841028DEAD006289E6 /* THScalableSlider.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -854,8 +856,6 @@
 		7D516E241028735A005F3C46 /* THLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLog.m; sourceTree = "<group>"; };
 		7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THUIViewThreadSafeDrawing.h; sourceTree = "<group>"; };
 		7D516E3B102873BE005F3C46 /* THUIViewThreadSafeDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THUIViewThreadSafeDrawing.m; sourceTree = "<group>"; };
-		7D516E4310287405005F3C46 /* EucBookTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookTextStyle.h; sourceTree = "<group>"; };
-		7D516E4410287405005F3C46 /* EucBookTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookTextStyle.m; sourceTree = "<group>"; };
 		7D516E4E10287458005F3C46 /* THNavigationButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNavigationButton.h; sourceTree = "<group>"; };
 		7D516E4F10287458005F3C46 /* THNavigationButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNavigationButton.m; sourceTree = "<group>"; };
 		7D516E541028746B005F3C46 /* THTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTimer.h; sourceTree = "<group>"; };
@@ -948,6 +948,9 @@
 		7D5EC94E113196380054F657 /* LineLoupeHigh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeHigh.png; sourceTree = "<group>"; };
 		7D5EC94F113196380054F657 /* LineLoupeLow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeLow.png; sourceTree = "<group>"; };
 		7D5EC950113196380054F657 /* LineLoupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeMask.png; sourceTree = "<group>"; };
+		7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EucConfiguration.plist; sourceTree = "<group>"; };
+		7D653B9C11AFD8F300C47DC6 /* EucConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucConfiguration.h; sourceTree = "<group>"; };
+		7D653B9D11AFD8F300C47DC6 /* EucConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucConfiguration.m; sourceTree = "<group>"; };
 		7D658C6D103DEAD900EB5003 /* THImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THImageFactory.h; sourceTree = "<group>"; };
 		7D658C6E103DEAD900EB5003 /* THImageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THImageFactory.m; sourceTree = "<group>"; };
 		7D6AAC841028DEAD006289E6 /* THScalableSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THScalableSlider.h; sourceTree = "<group>"; };
@@ -2187,10 +2190,10 @@
 				7D6AAD631028E7A9006289E6 /* EucBookReference.m */,
 				7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */,
 				7D6AAD671028E7BD006289E6 /* EucLocalBookReference.m */,
-				7D516E4310287405005F3C46 /* EucBookTextStyle.h */,
-				7D516E4410287405005F3C46 /* EucBookTextStyle.m */,
 				7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */,
 				7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */,
+				7D653B9C11AFD8F300C47DC6 /* EucConfiguration.h */,
+				7D653B9D11AFD8F300C47DC6 /* EucConfiguration.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2409,6 +2412,7 @@
 				7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */,
 				7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */,
 				7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */,
+				7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2608,7 +2612,6 @@
 				7D516E1D10287311005F3C46 /* THAppleSampleEAGLView.h in Headers */,
 				7D516E251028735A005F3C46 /* THLog.h in Headers */,
 				7D516E3C102873BE005F3C46 /* THUIViewThreadSafeDrawing.h in Headers */,
-				7D516E4510287405005F3C46 /* EucBookTextStyle.h in Headers */,
 				7D516E5010287458005F3C46 /* THNavigationButton.h in Headers */,
 				7D516E561028746B005F3C46 /* THTimer.h in Headers */,
 				7D516E5D10287486005F3C46 /* THUIViewAdditions.h in Headers */,
@@ -2658,6 +2661,7 @@
 				7D9283D61186E73C00061FCC /* EucFilteredBookPageIndex.h in Headers */,
 				7D9283E01186E75900061FCC /* EucBookIndex.h in Headers */,
 				7D14D1BE119C695D00F4B5D3 /* EucHighlightRange.h in Headers */,
+				7D653BA611AFDA3000C47DC6 /* EucConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2936,6 +2940,7 @@
 				7D2CCB09114DA3A2007FDEAF /* Aliases in Resources */,
 				7D81C2301151BAAC008248F1 /* Down and out in the Magic Kingdom in Resources */,
 				7D5BE20F118F152B003BE69B /* Square256X256BookPaper.pvrtc in Resources */,
+				7D653B8111AFD17000C47DC6 /* EucConfiguration.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2968,6 +2973,7 @@
 				7D7E2202111F227E00F7F585 /* MenuArrowTopHighlighted.png in Resources */,
 				7D2CCB0A114DA3A2007FDEAF /* Aliases in Resources */,
 				7DBBC892114FACF500225E51 /* Down and out in the Magic Kingdom in Resources */,
+				7D653B8211AFD17000C47DC6 /* EucConfiguration.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3147,7 +3153,6 @@
 				7D516E1E10287311005F3C46 /* THAppleSampleEAGLView.m in Sources */,
 				7D516E261028735A005F3C46 /* THLog.m in Sources */,
 				7D516E3D102873BE005F3C46 /* THUIViewThreadSafeDrawing.m in Sources */,
-				7D516E4610287405005F3C46 /* EucBookTextStyle.m in Sources */,
 				7D516E5110287458005F3C46 /* THNavigationButton.m in Sources */,
 				7D516E571028746B005F3C46 /* THTimer.m in Sources */,
 				7D516E5E10287486005F3C46 /* THUIViewAdditions.m in Sources */,
@@ -3192,6 +3197,7 @@
 				7D9283D71186E73C00061FCC /* EucFilteredBookPageIndex.m in Sources */,
 				7D9283E11186E75900061FCC /* EucBookIndex.m in Sources */,
 				7D14D1BD119C695800F4B5D3 /* EucHighlightRange.m in Sources */,
+				7D653BA711AFDA3500C47DC6 /* EucConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

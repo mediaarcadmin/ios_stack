@@ -6,6 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucConfiguration.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
@@ -215,19 +216,26 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
             }
             
             if(!_stringRenderer) {
-                NSString *fontName = @"Georgia";
+                NSString *fontName;
                 if(!names) {
                     switch(family) {
+                        case CSS_FONT_FAMILY_SERIF:
+                            fontName = [EucConfiguration objectForKey:EucConfigurationSerifFontFamilyKey];
+                            break;                            
                         case CSS_FONT_FAMILY_SANS_SERIF:
-                            fontName = @"Helvetica";
+                            fontName = [EucConfiguration objectForKey:EucConfigurationSansSerifFontFamilyKey];
                             break;
                         case CSS_FONT_FAMILY_MONOSPACE:
-                            fontName = @"Courier";
+                            fontName = [EucConfiguration objectForKey:EucConfigurationMonospaceFontFamilyKey];
                             break;
-                        case CSS_FONT_FAMILY_SERIF:
                         case CSS_FONT_FAMILY_CURSIVE:
-                        case CSS_FONT_FAMILY_FANTASY:
+                            fontName = [EucConfiguration objectForKey:EucConfigurationCursiveFontFamilyKey];
                             break;
+                        case CSS_FONT_FAMILY_FANTASY:
+                            fontName = [EucConfiguration objectForKey:EucConfigurationFantasyFontFamilyKey];
+                            break;
+                        default:
+                            fontName = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
                     }
                 }
                 _stringRenderer = [self _cachedStringRendererWithFontName:fontName

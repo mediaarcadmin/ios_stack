@@ -8,6 +8,7 @@
 
 #import "EucBookView.h"
 
+#import "EucConfiguration.h"
 #import "EucPageTurningView.h"
 #import "EucPageLayoutController.h"
 #import "EucBook.h"
@@ -86,7 +87,7 @@
         
         CGFloat desiredPointSize = [[NSUserDefaults standardUserDefaults] floatForKey:kBookFontPointSizeDefaultsKey];
         if(desiredPointSize == 0) {
-            desiredPointSize = [EucBookTextStyle defaultFontPointSize];
+            desiredPointSize = [[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey] floatValue];
         }
         
         /* if(!_bookIndex.isFinal) {
@@ -1541,6 +1542,5 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [self _updateSliderByteToPageRatio];
     [self _updatePageNumberLabel];
 }
-
 
 @end

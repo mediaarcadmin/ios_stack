@@ -6,6 +6,8 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucConfiguration.h"
+
 #import "EucBUpePageLayoutController.h"
 #import "EucBUpeBook.h"
 #import "EucBUpePageTextView.h"
@@ -208,10 +210,11 @@
         pageTexture = sPaperImage;
     }
     
+    NSString *fontFamily = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
     return [[[EucPageView alloc] initWithPointSize:pointSize 
-                                         titleFont:@"Georgia" 
+                                         titleFont:fontFamily
                                titleFontStyleFlags:THStringRendererFontStyleFlagItalic
-                                    pageNumberFont:@"Georgia"
+                                    pageNumberFont:fontFamily
                           pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
                                     titlePointSize:pointSize
                                      textViewClass:[EucBUpePageTextView class]] autorelease];
