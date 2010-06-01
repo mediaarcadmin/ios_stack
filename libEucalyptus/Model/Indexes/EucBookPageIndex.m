@@ -23,124 +23,44 @@
 
 @synthesize lastPageNumber = _lastPageNumber;
 
-@synthesize book = _book;
-@synthesize pointSize = _pointSize;
-
-@synthesize isFinal = _isFinal;
-//@synthesize lastOffset = _lastOffset;
-
-- (id)_initForIndexInBook:(id<EucBook>)book pointSize:(NSUInteger)pointSize
+- (id)_initForIndexAtPath:(NSString *)indexPath
 {
     if((self = [super init])) {
-        _book = [book retain];
-        _pointSize = pointSize;
-        
-        NSString *indexDirectoryPath = book.cacheDirectoryPath;
-        
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *indexPath = [indexDirectoryPath stringByAppendingPathComponent:[EucBookIndex filenameForPageIndexForPointSize:pointSize]];
-        if(![fileManager fileExistsAtPath:indexPath]) {
-            indexPath =  [indexDirectoryPath stringByAppendingPathComponent:[EucBookIndex constructionFilenameForPageIndexForPointSize:pointSize]];
-        } else {
-            _isFinal = YES;
-        }
-        
         _fd = open([indexPath fileSystemRepresentation], O_RDONLY);
         if(_fd == -1) {
             THWarn(@"Could not turn open index at %@, error %d [\"%s\"]", indexPath, errno, strerror(errno));
-            [self dealloc];
+            [self release];
             return nil;
         } else {
             THLog(@"Opened index at %@", indexPath);
         }
         
-        //if(fcntl(_fd, F_NOCACHE, 1) == -1) {
-        //    THWarn(@"Could not turn off caching for index file handle, error %d [\"%s\"]", errno, strerror(errno));
-        //}
-        
         struct stat stat;
         fstat(_fd, &stat);
         _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 4);   
-        
-       // if(_isFinal) {
-       //     _lastOffset = _book.bookFileSize;
-       // } else {
-         //   _lastOffset = [self indexPointForPage:self.lastPageNumber].startOfParagraphByteOffset;
-       /*     [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(_bookPaginationProgress:)
-                                                         name:BookPaginationProgressNotification
-                                                       object:nil];            
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(_bookPaginationComplete:)
-                                                         name:BookPaginationCompleteNotification
-                                                       object:nil];
-        }*/
     }
     return self;
 }
 
-
-- (void)_bookPaginationProgress:(NSNotification *)notification
++ (id)bookPageIndexAtPath:(NSString *)indexPath
 {
- /*   NSDictionary *userInfo = [notification userInfo];
-    id<EucBook> book = [userInfo objectForKey:BookPaginationBookKey];
-    if(book.etextNumber == _book.etextNumber) {
-        struct stat stat;
-        fstat(_fd, &stat);
-        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 4);   
-        _lastOffset = [self indexPointForPage:_lastPageNumber].startOfParagraphByteOffset;
-    }*/
+    return [[[self alloc] _initForIndexAtPath:(NSString *)indexPath] autorelease];
 }
-
-
-- (void)_bookPaginationComplete:(NSNotification *)notification
-{
- /*   NSDictionary *userInfo = [notification userInfo];
-    id<EucBook> book = [userInfo objectForKey:BookPaginationBookKey];
-    if(book.etextNumber == _book.etextNumber) {
-        struct stat stat;
-        fstat(_fd, &stat);
-        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 4);   
-        //_lastOffset = _book.bookFileSize;
-        _isFinal = YES;
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:BookPaginationProgressNotification
-                                                      object:nil];
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:BookPaginationCompleteNotification
-                                                      object:nil];        
-    }*/
-}
-
-
-+ (id)bookPageIndexForIndexInBook:(id<EucBook>)book forPointSize:(NSUInteger)pointSize
-{
-    return [[[self alloc] _initForIndexInBook:book pointSize:pointSize] autorelease];
-}
-
 
 - (void)seekToEnd
 {
     lseek(_fd, 0, SEEK_END);
 }
 
-- (void)closeIndex
+- (void)dealloc
 {
     if(_fd > 0) {
         close(_fd);
     }
     _fd = 0;
-}
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self closeIndex];
-    [_book release];
-    
     [super dealloc];
 }
-
 
 - (EucBookPageIndexPoint *)indexPointForPage:(NSUInteger)pageNumber
 {       
@@ -160,7 +80,6 @@
     }
     return ret;
 }
-
 
 - (NSUInteger)pageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
@@ -208,18 +127,6 @@
     } while(upperBound - lowerBound > 1);
     
     return lowerBound + 1;
-}
-
-- (NSComparisonResult)compare:(EucBookPageIndex *)rhs
-{
-    NSInteger comparison = (NSInteger)self.pointSize - (NSInteger)rhs.pointSize;
-    if(comparison > 0) {
-        return NSOrderedDescending;
-    } else if (comparison < 0) {
-        return NSOrderedAscending;
-    } else {
-        return NSOrderedSame;
-    }
 }
 
 @end
