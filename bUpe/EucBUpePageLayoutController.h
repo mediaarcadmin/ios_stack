@@ -15,6 +15,7 @@
     CGFloat _fontPointSize;
         
     EucBUpeBook *_book;
+    CGSize _pageSize;
     EucBookIndex *_bookIndex;
     EucFilteredBookPageIndex *_currentBookPageIndex;
 

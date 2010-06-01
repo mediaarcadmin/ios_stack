@@ -17,28 +17,32 @@ The view content is basically an EAGL surface you render your OpenGL scene into.
 Note that setting the view non-opaque will only work if the EAGL surface has an alpha channel.
 */
 @interface THAppleSampleEAGLView : UIView {
+    GLint _backingWidth;
+    GLint _backingHeight;
     
-@protected
-    /* The pixel dimensions of the backbuffer */
-    GLint backingWidth;
-    GLint backingHeight;
-    
-    EAGLContext *context;
+    EAGLContext *_eaglContext;
     
     /* OpenGL names for the renderbuffer and framebuffers used to render to this view */
-    GLuint viewRenderbuffer, viewFramebuffer;
+    GLuint _viewRenderbuffer, _viewFramebuffer;
     
-    /* OpenGL name for the depth buffer that is attached to viewFramebuffer, if it exists (0 if it does not exist) */
-    GLuint depthRenderbuffer;
+    /* OpenGL name for the depth buffer that is attached to viewFramebuffer */
+    GLuint _depthRenderbuffer;
     
-    NSTimer *animationTimer;
-    NSTimeInterval animationInterval;
+    BOOL _animating;
+    NSTimer *_animationTimer;
+    NSTimeInterval _animationInterval;
+    
+    BOOL _needsDraw;
+    BOOL _didJustMoveToNewWindow;
 }
 
-@property NSTimeInterval animationInterval;
+@property (nonatomic, assign, getter=isAnimating) BOOL animating;
+@property (nonatomic, assign) NSTimeInterval animationInterval;
 
-- (void)startAnimation;
-- (void)stopAnimation;
+- (void)setNeedsDraw;
 - (void)drawView;
+
+// Protected.
+@property (nonatomic, retain) EAGLContext *eaglContext;
 
 @end

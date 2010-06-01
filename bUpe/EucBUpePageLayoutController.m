@@ -30,13 +30,17 @@
 @implementation EucBUpePageLayoutController
 
 @synthesize book = _book;
+@synthesize pageSize = _pageSize;
 @synthesize fontPointSize = _fontPointSize;
 @synthesize globalPageCount = _globalPageCount;
 
-- (id)initWithBook:(EucBUpeBook *)book fontPointSize:(CGFloat)pointSize
+- (id)initWithBook:(id<EucBook>)book 
+          pageSize:(CGSize)pageSize
+     fontPointSize:(CGFloat)pointSize
 {
     if((self = [super init])) {
-        _book = [book retain];   
+        _book = [book retain];
+        _pageSize = pageSize;
         _bookIndex = [[_book bookIndex] retain];
         [self setFontPointSize:pointSize];        
     }
@@ -166,7 +170,10 @@
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
         THPair *indexPointRange = [_currentBookPageIndex filteredIndexPointRangeForPage:pageNumber];
         EucBookPageIndexPoint *indexPoint = indexPointRange.first;
-        EucPageView *pageView = [[self class] blankPageViewForPointSize:_currentBookPageIndex.pointSize 
+        
+        CGRect frame = CGRectMake(0, 0, _pageSize.width, _pageSize.height);
+        EucPageView *pageView = [[self class] blankPageViewWithFrame:frame
+                                                        forPointSize:_currentBookPageIndex.pointSize 
                                                         withPageTexture:pageTexture];
         pageView.titleLinePosition = EucPageViewTitleLinePositionTop;
         pageView.titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
@@ -200,7 +207,9 @@
     return ret;
 }
 
-+ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture
++ (EucPageView *)blankPageViewWithFrame:(CGRect)frame
+                           forPointSize:(CGFloat)pointSize
+                        withPageTexture:(UIImage *)pageTexture
 {
     if(!pageTexture) {
         static UIImage *sPaperImage = nil;
@@ -211,13 +220,14 @@
     }
     
     NSString *fontFamily = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
-    return [[[EucPageView alloc] initWithPointSize:pointSize 
-                                         titleFont:fontFamily
-                               titleFontStyleFlags:THStringRendererFontStyleFlagItalic
-                                    pageNumberFont:fontFamily
-                          pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
-                                    titlePointSize:pointSize
-                                     textViewClass:[EucBUpePageTextView class]] autorelease];
+    return [[[EucPageView alloc] initWithFrame:frame
+                                     pointSize:pointSize 
+                                     titleFont:fontFamily
+    titleFontStyleFlags:THStringRendererFontStyleFlagItalic
+                                pageNumberFont:fontFamily
+                      pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
+                                titlePointSize:pointSize
+                                 textViewClass:[EucBUpePageTextView class]] autorelease];
 }
 
 - (BOOL)viewShouldBeRigid:(UIView *)view

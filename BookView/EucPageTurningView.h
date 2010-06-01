@@ -33,9 +33,15 @@ typedef struct {
     GLfloat lengthSquared;
 } VerletContstraint;
 
+typedef struct {
+    GLfloatPair textureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    GLuint innerPixelWidth;
+    GLuint innerPixelHeight;
+} TextureCoordinates;
+
 @interface EucPageTurningView : THAppleSampleEAGLView {
     GLfloat _touchVelocity;
-
+    
     CGSize _powerOf2Bounds;
 
     GLfloatTriplet _stablePageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
@@ -53,11 +59,12 @@ typedef struct {
     VerletContstraint _constraints[CONSTRAINT_COUNT];
     int _constraintCount;
     
-    GLfloatPair _pageTextureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    TextureCoordinates _pageTextureCoordinates;
     
     BOOL _pageTextureIsDark;
     GLuint _blankPageTexture;
-    
+    TextureCoordinates _blankPageTextureCoordinates;
+
     GLuint _bookEdgeTexture;
     GLfloatPair _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
@@ -72,7 +79,6 @@ typedef struct {
     UITouch *_pinchTouches[2];
     CGPoint _pinchStartPoints[2];
     
-    BOOL _animating;
     BOOL _vibrated;
     
     id<EucPageTurningViewDelegate> _delegate;
