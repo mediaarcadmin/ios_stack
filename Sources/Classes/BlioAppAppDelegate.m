@@ -14,6 +14,7 @@
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioDrmManager.h"
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -77,6 +78,8 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     [libraryController setProcessingDelegate:[self processingManager]];
 	
 	if (self.networkStatus != NotReachable) [self.processingManager resumeProcessing];
+	
+	[[BlioDrmManager getDrmManager] initialize];
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }

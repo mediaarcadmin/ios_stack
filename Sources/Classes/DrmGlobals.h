@@ -6,9 +6,6 @@
 //  Copyright 2010 Kurzweil Technologies Inc. All rights reserved.
 //
 
-//#ifndef __DRMGLOBALS_H__
-//#define __DRMGLOBALS_H__
-
 #import <Foundation/Foundation.h>
 #import "drmmanager.h"
 
@@ -37,4 +34,3 @@
 
 @end
 
-//#endif
