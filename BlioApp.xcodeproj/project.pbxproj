@@ -145,6 +145,7 @@
 		A37A586C113C45640003CCFF /* back-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A5869113C45640003CCFF /* back-gray.png */; };
 		A37A586D113C45640003CCFF /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
 		A37A586E113C45640003CCFF /* forward-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586B113C45640003CCFF /* forward-gray.png */; };
+		A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37DADCF11B1E52A005F949A /* BlioDrmManager.m */; };
 		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
 		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
@@ -156,9 +157,11 @@
 		A38161641164FB3E003A9709 /* USGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615D1164FB3E003A9709 /* USGlobals.m */; };
 		A38161651164FB3E003A9709 /* xsd.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615F1164FB3E003A9709 /* xsd.m */; };
 		A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
+		A3951D7911B35665000BCAC1 /* DRM in Resources */ = {isa = PBXBuildFile; fileRef = A3951D6F11B35665000BCAC1 /* DRM */; };
 		A3A672B611304D7700138097 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
 		A3A67376113078E300138097 /* BlioAudioSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioAudioSettingsController.m */; };
 		A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
+		A3D9F13B11B064680011D544 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3D9F13A11B064680011D544 /* libPlayReadyPK.a */; };
 		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
 		C901F8B8116B816A00A1858D /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */; };
 		C901F8BC116B819000A1858D /* BlioBookVault.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161551164FB3E003A9709 /* BlioBookVault.m */; };
@@ -393,6 +396,10 @@
 		C9B620D01137BE170012CE7E /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9B620CB1137BE170012CE7E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
 		C9C5467610F77EDD00ECE126 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5467510F77EDD00ECE126 /* CoreData.framework */; };
 		C9C546F210F7802F00ECE126 /* Blio.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = C9C546F110F7802F00ECE126 /* Blio.xcdatamodel */; };
+		C9D280B311AD0FCE00857CFB /* icon-noTTS.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B111AD0FCE00857CFB /* icon-noTTS.png */; };
+		C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
+		C9D280B511AD0FCE00857CFB /* icon-noTTS.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B111AD0FCE00857CFB /* icon-noTTS.png */; };
+		C9D280B611AD0FCE00857CFB /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
 		C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */; };
 		C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57810F2289D00FD5F22 /* icon-lock.png */; };
 		C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57910F2289D00FD5F22 /* icon-finger.png */; };
@@ -721,10 +728,150 @@
 		A36D809B117141DF00F93176 /* BlioContentCafe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioContentCafe.m; sourceTree = "<group>"; };
 		A371FDCC113AF77200E1A51C /* BlioWebToolSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioWebToolSettingsController.h; sourceTree = "<group>"; };
 		A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioWebToolSettingsController.m; sourceTree = "<group>"; };
+		A379DE4811B2E256009749DE /* drmfeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmfeatures.h; path = DRM/drmfeatures.h; sourceTree = "<group>"; };
+		A379DE9311B2E9AA009749DE /* oem_msdbpk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oem_msdbpk.h; path = DRM/oem_msdbpk.h; sourceTree = "<group>"; };
+		A379DE9411B2E9AA009749DE /* oem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oem.h; path = DRM/oem.h; sourceTree = "<group>"; };
+		A379DE9511B2E9AA009749DE /* oemaes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemaes.h; path = DRM/oemaes.h; sourceTree = "<group>"; };
+		A379DE9611B2E9AA009749DE /* oemaesimpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemaesimpl.h; path = DRM/oemaesimpl.h; sourceTree = "<group>"; };
+		A379DE9711B2E9AA009749DE /* oemcommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemcommon.h; path = DRM/oemcommon.h; sourceTree = "<group>"; };
+		A379DE9811B2E9AA009749DE /* oemdebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemdebug.h; path = DRM/oemdebug.h; sourceTree = "<group>"; };
+		A379DE9911B2E9AA009749DE /* oemdevstore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemdevstore.h; path = DRM/oemdevstore.h; sourceTree = "<group>"; };
+		A379DE9A11B2E9AA009749DE /* oemndt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemndt.h; path = DRM/oemndt.h; sourceTree = "<group>"; };
+		A379DE9B11B2E9AA009749DE /* oemplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemplatform.h; path = DRM/oemplatform.h; sourceTree = "<group>"; };
+		A379DE9C11B2E9AA009749DE /* oemprofile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemprofile.h; path = DRM/oemprofile.h; sourceTree = "<group>"; };
+		A379DE9D11B2E9AA009749DE /* oemrsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemrsa.h; path = DRM/oemrsa.h; sourceTree = "<group>"; };
+		A379DE9E11B2E9AA009749DE /* oemrsaimpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oemrsaimpl.h; path = DRM/oemrsaimpl.h; sourceTree = "<group>"; };
 		A37A584A113C36EF0003CCFF /* back-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-black.png"; sourceTree = "<group>"; };
 		A37A5869113C45640003CCFF /* back-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-gray.png"; sourceTree = "<group>"; };
 		A37A586A113C45640003CCFF /* forward-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward-black.png"; sourceTree = "<group>"; };
 		A37A586B113C45640003CCFF /* forward-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward-gray.png"; sourceTree = "<group>"; };
+		A37DADCE11B1E52A005F949A /* BlioDrmManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDrmManager.h; sourceTree = "<group>"; };
+		A37DADCF11B1E52A005F949A /* BlioDrmManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDrmManager.m; sourceTree = "<group>"; };
+		A37DADE611B2123D005F949A /* drmtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmtypes.h; path = DRM/drmtypes.h; sourceTree = "<group>"; };
+		A37DADE711B2123D005F949A /* drmutf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmutf.h; path = DRM/drmutf.h; sourceTree = "<group>"; };
+		A37DADE811B2123D005F949A /* drmwindowsenv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmwindowsenv.h; path = DRM/drmwindowsenv.h; sourceTree = "<group>"; };
+		A37DAE0411B21458005F949A /* byteorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = byteorder.h; path = DRM/byteorder.h; sourceTree = "<group>"; };
+		A37DAE0511B21458005F949A /* drm_msdbpk_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drm_msdbpk_manager.h; path = DRM/drm_msdbpk_manager.h; sourceTree = "<group>"; };
+		A37DAE0611B21458005F949A /* drmaes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmaes.h; path = DRM/drmaes.h; sourceTree = "<group>"; };
+		A37DAE0711B21458005F949A /* drmaescommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmaescommon.h; path = DRM/drmaescommon.h; sourceTree = "<group>"; };
+		A37DAE0811B21458005F949A /* drmbase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmbase64.h; path = DRM/drmbase64.h; sourceTree = "<group>"; };
+		A37DAE0911B21458005F949A /* drmbcrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmbcrl.h; path = DRM/drmbcrl.h; sourceTree = "<group>"; };
+		A37DAE0A11B21458005F949A /* drmblackbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmblackbox.h; path = DRM/drmblackbox.h; sourceTree = "<group>"; };
+		A37DAE0B11B21458005F949A /* drmbuild_oem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmbuild_oem.h; path = DRM/drmbuild_oem.h; sourceTree = "<group>"; };
+		A37DAE0C11B21458005F949A /* drmbuild_pk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmbuild_pk.h; path = DRM/drmbuild_pk.h; sourceTree = "<group>"; };
+		A37DAE0D11B21458005F949A /* drmbytemanip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmbytemanip.h; path = DRM/drmbytemanip.h; sourceTree = "<group>"; };
+		A37DAE0E11B21458005F949A /* drmcallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcallbacks.h; path = DRM/drmcallbacks.h; sourceTree = "<group>"; };
+		A37DAE0F11B21458005F949A /* drmcbc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcbc.h; path = DRM/drmcbc.h; sourceTree = "<group>"; };
+		A37DAE1011B21458005F949A /* drmcert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcert.h; path = DRM/drmcert.h; sourceTree = "<group>"; };
+		A37DAE1111B21458005F949A /* drmcertparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcertparser.h; path = DRM/drmcertparser.h; sourceTree = "<group>"; };
+		A37DAE1211B21458005F949A /* drmcfdalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcfdalloc.h; path = DRM/drmcfdalloc.h; sourceTree = "<group>"; };
+		A37DAE1311B21458005F949A /* drmcfdlicenseutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcfdlicenseutils.h; path = DRM/drmcfdlicenseutils.h; sourceTree = "<group>"; };
+		A37DAE1411B21458005F949A /* drmcfdtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcfdtypes.h; path = DRM/drmcfdtypes.h; sourceTree = "<group>"; };
+		A37DAE1511B21458005F949A /* drmchain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmchain.h; path = DRM/drmchain.h; sourceTree = "<group>"; };
+		A37DAE1611B21458005F949A /* drmcipher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcipher.h; path = DRM/drmcipher.h; sourceTree = "<group>"; };
+		A37DAE1711B21458005F949A /* drmcmdlnpars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcmdlnpars.h; path = DRM/drmcmdlnpars.h; sourceTree = "<group>"; };
+		A37DAE1811B21458005F949A /* drmcommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcommon.h; path = DRM/drmcommon.h; sourceTree = "<group>"; };
+		A37DAE1911B21458005F949A /* drmcompiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcompiler.h; path = DRM/drmcompiler.h; sourceTree = "<group>"; };
+		A37DAE1A11B21458005F949A /* drmcontextsizes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcontextsizes.h; path = DRM/drmcontextsizes.h; sourceTree = "<group>"; };
+		A37DAE1B11B21458005F949A /* drmcontract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcontract.h; path = DRM/drmcontract.h; sourceTree = "<group>"; };
+		A37DAE1C11B21458005F949A /* drmcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmcrt.h; path = DRM/drmcrt.h; sourceTree = "<group>"; };
+		A37DAE1D11B21458005F949A /* drmdatastore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdatastore.h; path = DRM/drmdatastore.h; sourceTree = "<group>"; };
+		A37DAE1E11B21458005F949A /* drmdatastorecommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdatastorecommon.h; path = DRM/drmdatastorecommon.h; sourceTree = "<group>"; };
+		A37DAE1F11B21458005F949A /* drmdebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdebug.h; path = DRM/drmdebug.h; sourceTree = "<group>"; };
+		A37DAE2011B21458005F949A /* drmdes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdes.h; path = DRM/drmdes.h; sourceTree = "<group>"; };
+		A37DAE2111B21458005F949A /* drmdevcert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdevcert.h; path = DRM/drmdevcert.h; sourceTree = "<group>"; };
+		A37DAE2211B21458005F949A /* drmdevcertacq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdevcertacq.h; path = DRM/drmdevcertacq.h; sourceTree = "<group>"; };
+		A37DAE2311B21458005F949A /* drmdevicestore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdevicestore.h; path = DRM/drmdevicestore.h; sourceTree = "<group>"; };
+		A37DAE2411B21458005F949A /* drmdevstore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdevstore.h; path = DRM/drmdevstore.h; sourceTree = "<group>"; };
+		A37DAE2511B21458005F949A /* drmdomainapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdomainapi.h; path = DRM/drmdomainapi.h; sourceTree = "<group>"; };
+		A37DAE2611B21458005F949A /* drmdomainconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdomainconstants.h; path = DRM/drmdomainconstants.h; sourceTree = "<group>"; };
+		A37DAE2711B21458005F949A /* drmdomainimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdomainimp.h; path = DRM/drmdomainimp.h; sourceTree = "<group>"; };
+		A37DAE2811B21458005F949A /* drmdomainkeyxmrparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdomainkeyxmrparser.h; path = DRM/drmdomainkeyxmrparser.h; sourceTree = "<group>"; };
+		A37DAE2911B21458005F949A /* drmdomainstore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmdomainstore.h; path = DRM/drmdomainstore.h; sourceTree = "<group>"; };
+		A37DAE2A11B21458005F949A /* drmeccp160.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmeccp160.h; path = DRM/drmeccp160.h; sourceTree = "<group>"; };
+		A37DAE2B11B21458005F949A /* drmeccp256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmeccp256.h; path = DRM/drmeccp256.h; sourceTree = "<group>"; };
+		A37DAE2C11B21458005F949A /* drmembeddedstore_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmembeddedstore_impl.h; path = DRM/drmembeddedstore_impl.h; sourceTree = "<group>"; };
+		A37DAE2D11B21458005F949A /* drmembeddedstore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmembeddedstore.h; path = DRM/drmembeddedstore.h; sourceTree = "<group>"; };
+		A37DAE2E11B21458005F949A /* drmembedding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmembedding.h; path = DRM/drmembedding.h; sourceTree = "<group>"; };
+		A37DAE2F11B21458005F949A /* drmenvelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmenvelope.h; path = DRM/drmenvelope.h; sourceTree = "<group>"; };
+		A37DAE3011B21458005F949A /* drmerr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmerr.h; path = DRM/drmerr.h; sourceTree = "<group>"; };
+		A37DAE3111B21458005F949A /* drmexpreval.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmexpreval.h; path = DRM/drmexpreval.h; sourceTree = "<group>"; };
+		A37DAE3211B21458005F949A /* drmhash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmhash.h; path = DRM/drmhash.h; sourceTree = "<group>"; };
+		A37DAE3311B21458005F949A /* drmhdrbuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmhdrbuilder.h; path = DRM/drmhdrbuilder.h; sourceTree = "<group>"; };
+		A37DAE3411B21458005F949A /* drmhds_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmhds_impl.h; path = DRM/drmhds_impl.h; sourceTree = "<group>"; };
+		A37DAE3511B21458005F949A /* drmhds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmhds.h; path = DRM/drmhds.h; sourceTree = "<group>"; };
+		A37DAE3611B21458005F949A /* drmheaderparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmheaderparser.h; path = DRM/drmheaderparser.h; sourceTree = "<group>"; };
+		A37DAE3711B21458005F949A /* drmhmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmhmac.h; path = DRM/drmhmac.h; sourceTree = "<group>"; };
+		A37DAE3811B21458005F949A /* drmint64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmint64.h; path = DRM/drmint64.h; sourceTree = "<group>"; };
+		A37DAE3911B21458005F949A /* drmkeygenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmkeygenerator.h; path = DRM/drmkeygenerator.h; sourceTree = "<group>"; };
+		A37DAE3A11B21458005F949A /* drmlicacq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmlicacq.h; path = DRM/drmlicacq.h; sourceTree = "<group>"; };
+		A37DAE3B11B21458005F949A /* drmlicacqv3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmlicacqv3.h; path = DRM/drmlicacqv3.h; sourceTree = "<group>"; };
+		A37DAE3C11B21458005F949A /* drmlicacqv3constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmlicacqv3constants.h; path = DRM/drmlicacqv3constants.h; sourceTree = "<group>"; };
+		A37DAE3D11B21458005F949A /* drmlicense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmlicense.h; path = DRM/drmlicense.h; sourceTree = "<group>"; };
+		A37DAE3E11B21458005F949A /* drmlicenseparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmlicenseparser.h; path = DRM/drmlicenseparser.h; sourceTree = "<group>"; };
+		A37DAE3F11B21458005F949A /* drmliceval.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmliceval.h; path = DRM/drmliceval.h; sourceTree = "<group>"; };
+		A37DAE4011B21458005F949A /* drmlicreason.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmlicreason.h; path = DRM/drmlicreason.h; sourceTree = "<group>"; };
+		A37DAE4111B21458005F949A /* drmlicstore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmlicstore.h; path = DRM/drmlicstore.h; sourceTree = "<group>"; };
+		A37DAE4211B21458005F949A /* drmmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmmanager.h; path = DRM/drmmanager.h; sourceTree = "<group>"; };
+		A37DAE4311B21458005F949A /* drmmd5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmmd5.h; path = DRM/drmmd5.h; sourceTree = "<group>"; };
+		A37DAE4411B21458005F949A /* drmmeterapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmmeterapi.h; path = DRM/drmmeterapi.h; sourceTree = "<group>"; };
+		A37DAE4511B21458005F949A /* drmmetercertprivkey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmmetercertprivkey.h; path = DRM/drmmetercertprivkey.h; sourceTree = "<group>"; };
+		A37DAE4611B21458005F949A /* drmmetercertpubkey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmmetercertpubkey.h; path = DRM/drmmetercertpubkey.h; sourceTree = "<group>"; };
+		A37DAE4711B21458005F949A /* drmmetercertstore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmmetercertstore.h; path = DRM/drmmetercertstore.h; sourceTree = "<group>"; };
+		A37DAE4811B21458005F949A /* drmmeterconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmmeterconstants.h; path = DRM/drmmeterconstants.h; sourceTree = "<group>"; };
+		A37DAE4911B21458005F949A /* drmmeterimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmmeterimp.h; path = DRM/drmmeterimp.h; sourceTree = "<group>"; };
+		A37DAE4A11B21458005F949A /* drmnamespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmnamespace.h; path = DRM/drmnamespace.h; sourceTree = "<group>"; };
+		A37DAE4B11B21458005F949A /* drmndr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmndr.h; path = DRM/drmndr.h; sourceTree = "<group>"; };
+		A37DAE4C11B21458005F949A /* drmndtasf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmndtasf.h; path = DRM/drmndtasf.h; sourceTree = "<group>"; };
+		A37DAE4D11B21458005F949A /* drmndtmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmndtmanager.h; path = DRM/drmndtmanager.h; sourceTree = "<group>"; };
+		A37DAE4E11B21458005F949A /* drmnoncestore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmnoncestore.h; path = DRM/drmnoncestore.h; sourceTree = "<group>"; };
+		A37DAE4F11B21458005F949A /* drmopcodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmopcodes.h; path = DRM/drmopcodes.h; sourceTree = "<group>"; };
+		A37DAE5011B21458005F949A /* drmorderedlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmorderedlist.h; path = DRM/drmorderedlist.h; sourceTree = "<group>"; };
+		A37DAE5111B21458005F949A /* drmoutputlevels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmoutputlevels.h; path = DRM/drmoutputlevels.h; sourceTree = "<group>"; };
+		A37DAE5211B21458005F949A /* drmoutputleveltypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmoutputleveltypes.h; path = DRM/drmoutputleveltypes.h; sourceTree = "<group>"; };
+		A37DAE5311B21458005F949A /* drmpfd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmpfd.h; path = DRM/drmpfd.h; sourceTree = "<group>"; };
+		A37DAE5411B21458005F949A /* drmpfdmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmpfdmanager.h; path = DRM/drmpfdmanager.h; sourceTree = "<group>"; };
+		A37DAE5511B21458005F949A /* drmpkcrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmpkcrypto.h; path = DRM/drmpkcrypto.h; sourceTree = "<group>"; };
+		A37DAE5611B21458005F949A /* drmplayreadyobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmplayreadyobj.h; path = DRM/drmplayreadyobj.h; sourceTree = "<group>"; };
+		A37DAE5711B21458005F949A /* drmpragmas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmpragmas.h; path = DRM/drmpragmas.h; sourceTree = "<group>"; };
+		A37DAE5811B21458005F949A /* drmprivkeydeviceexclusion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmprivkeydeviceexclusion.h; path = DRM/drmprivkeydeviceexclusion.h; sourceTree = "<group>"; };
+		A37DAE5911B21458005F949A /* drmprofile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmprofile.h; path = DRM/drmprofile.h; sourceTree = "<group>"; };
+		A37DAE5A11B21458005F949A /* drmprofileconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmprofileconstants.h; path = DRM/drmprofileconstants.h; sourceTree = "<group>"; };
+		A37DAE5B11B21458005F949A /* drmprofileconstantscfd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmprofileconstantscfd.h; path = DRM/drmprofileconstantscfd.h; sourceTree = "<group>"; };
+		A37DAE5C11B21458005F949A /* drmptrlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmptrlist.h; path = DRM/drmptrlist.h; sourceTree = "<group>"; };
+		A37DAE5D11B21458005F949A /* drmpubkeydeviceexclusion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmpubkeydeviceexclusion.h; path = DRM/drmpubkeydeviceexclusion.h; sourceTree = "<group>"; };
+		A37DAE5E11B21458005F949A /* drmpubkeyrevocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmpubkeyrevocation.h; path = DRM/drmpubkeyrevocation.h; sourceTree = "<group>"; };
+		A37DAE5F11B21458005F949A /* drmrc4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmrc4.h; path = DRM/drmrc4.h; sourceTree = "<group>"; };
+		A37DAE6011B21458005F949A /* drmresults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmresults.h; path = DRM/drmresults.h; sourceTree = "<group>"; };
+		A37DAE6111B21458005F949A /* drmrevocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmrevocation.h; path = DRM/drmrevocation.h; sourceTree = "<group>"; };
+		A37DAE6211B21458005F949A /* drmrevocationstore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmrevocationstore.h; path = DRM/drmrevocationstore.h; sourceTree = "<group>"; };
+		A37DAE6311B21458005F949A /* drmrevocationtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmrevocationtypes.h; path = DRM/drmrevocationtypes.h; sourceTree = "<group>"; };
+		A37DAE6411B21458005F949A /* drmrsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmrsa.h; path = DRM/drmrsa.h; sourceTree = "<group>"; };
+		A37DAE6511B21458005F949A /* drmrsacommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmrsacommon.h; path = DRM/drmrsacommon.h; sourceTree = "<group>"; };
+		A37DAE6611B21458005F949A /* drmsal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsal.h; path = DRM/drmsal.h; sourceTree = "<group>"; };
+		A37DAE6711B21458005F949A /* drmsecureclock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsecureclock.h; path = DRM/drmsecureclock.h; sourceTree = "<group>"; };
+		A37DAE6811B21458005F949A /* drmsecureclockstatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsecureclockstatus.h; path = DRM/drmsecureclockstatus.h; sourceTree = "<group>"; };
+		A37DAE6911B21458005F949A /* drmsecurestore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsecurestore.h; path = DRM/drmsecurestore.h; sourceTree = "<group>"; };
+		A37DAE6A11B21458005F949A /* drmsha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsha1.h; path = DRM/drmsha1.h; sourceTree = "<group>"; };
+		A37DAE6B11B21458005F949A /* drmsha256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsha256.h; path = DRM/drmsha256.h; sourceTree = "<group>"; };
+		A37DAE6C11B21458005F949A /* drmsoapxmlconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsoapxmlconstants.h; path = DRM/drmsoapxmlconstants.h; sourceTree = "<group>"; };
+		A37DAE6D11B21458005F949A /* drmsoapxmlutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsoapxmlutility.h; path = DRM/drmsoapxmlutility.h; sourceTree = "<group>"; };
+		A37DAE6E11B21458005F949A /* drmstkalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmstkalloc.h; path = DRM/drmstkalloc.h; sourceTree = "<group>"; };
+		A37DAE6F11B21458005F949A /* drmstrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmstrings.h; path = DRM/drmstrings.h; sourceTree = "<group>"; };
+		A37DAE7011B21458005F949A /* drmstringscfd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmstringscfd.h; path = DRM/drmstringscfd.h; sourceTree = "<group>"; };
+		A37DAE7111B21458005F949A /* drmstrsafe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmstrsafe.h; path = DRM/drmstrsafe.h; sourceTree = "<group>"; };
+		A37DAE7211B21458005F949A /* drmsyncstore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsyncstore.h; path = DRM/drmsyncstore.h; sourceTree = "<group>"; };
+		A37DAE7311B21458005F949A /* drmsyncstorecontext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmsyncstorecontext.h; path = DRM/drmsyncstorecontext.h; sourceTree = "<group>"; };
+		A37DAE7411B21458005F949A /* drmtoken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmtoken.h; path = DRM/drmtoken.h; sourceTree = "<group>"; };
+		A37DAE7511B21458005F949A /* drmtrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmtrace.h; path = DRM/drmtrace.h; sourceTree = "<group>"; };
+		A37DAE7611B21458005F949A /* drmutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmutilities.h; path = DRM/drmutilities.h; sourceTree = "<group>"; };
+		A37DAE7711B21458005F949A /* drmviewprops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmviewprops.h; path = DRM/drmviewprops.h; sourceTree = "<group>"; };
+		A37DAE7811B21458005F949A /* drmxmlbuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlbuilder.h; path = DRM/drmxmlbuilder.h; sourceTree = "<group>"; };
+		A37DAE7911B21458005F949A /* drmxmlbuildera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlbuildera.h; path = DRM/drmxmlbuildera.h; sourceTree = "<group>"; };
+		A37DAE7A11B21458005F949A /* drmxmlparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlparser.h; path = DRM/drmxmlparser.h; sourceTree = "<group>"; };
+		A37DAE7B11B21458005F949A /* drmxmlsig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsig.h; path = DRM/drmxmlsig.h; sourceTree = "<group>"; };
+		A37DAE7C11B21458005F949A /* drmxmlsigconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsigconstants.h; path = DRM/drmxmlsigconstants.h; sourceTree = "<group>"; };
+		A37DAE7D11B21458005F949A /* drmxmlutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlutilities.h; path = DRM/drmxmlutilities.h; sourceTree = "<group>"; };
 		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
 		A37FC33310EA785F00F3DC5A /* BlioAcapelaAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioAcapelaAudioManager.h; path = TTS/BlioAcapelaAudioManager.h; sourceTree = "<group>"; };
@@ -748,12 +895,27 @@
 		A381615E1164FB3E003A9709 /* xsd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xsd.h; sourceTree = "<group>"; };
 		A381615F1164FB3E003A9709 /* xsd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xsd.m; sourceTree = "<group>"; };
 		A383F2431174FA7A0049ED3A /* icon-cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-cart.png"; sourceTree = "<group>"; };
+		A3951B6411B31D4E000BCAC1 /* drmbcert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmbcert.h; path = DRM/drmbcert.h; sourceTree = "<group>"; };
+		A3951B6511B31D4E000BCAC1 /* ecurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ecurve.h; path = DRM/ecurve.h; sourceTree = "<group>"; };
+		A3951B6A11B31DCD000BCAC1 /* bigdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigdefs.h; path = DRM/bigdefs.h; sourceTree = "<group>"; };
+		A3951B6B11B31DCD000BCAC1 /* bignum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bignum.h; path = DRM/bignum.h; sourceTree = "<group>"; };
+		A3951B6C11B31DCD000BCAC1 /* bigpriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigpriv.h; path = DRM/bigpriv.h; sourceTree = "<group>"; };
+		A3951B6D11B31DCD000BCAC1 /* dblint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dblint.h; path = DRM/dblint.h; sourceTree = "<group>"; };
+		A3951B6E11B31DCD000BCAC1 /* field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = field.h; path = DRM/field.h; sourceTree = "<group>"; };
+		A3951B6F11B31DCD000BCAC1 /* fieldpriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fieldpriv.h; path = DRM/fieldpriv.h; sourceTree = "<group>"; };
+		A3951B7011B31DCD000BCAC1 /* mprand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mprand.h; path = DRM/mprand.h; sourceTree = "<group>"; };
+		A3951B7311B31E39000BCAC1 /* drmxmr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmr.h; path = DRM/drmxmr.h; sourceTree = "<group>"; };
+		A3951B7411B31E39000BCAC1 /* drmxmrbuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmrbuilder.h; path = DRM/drmxmrbuilder.h; sourceTree = "<group>"; };
+		A3951B7511B31E39000BCAC1 /* drmxmrparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmrparser.h; path = DRM/drmxmrparser.h; sourceTree = "<group>"; };
+		A3951B7C11B31ED1000BCAC1 /* DrmGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrmGlobals.h; sourceTree = "<group>"; };
+		A3951D6F11B35665000BCAC1 /* DRM */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DRM; sourceTree = "<group>"; };
 		A3A672B411304D7700138097 /* BlioAppSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppSettingsController.h; sourceTree = "<group>"; };
 		A3A672B511304D7700138097 /* BlioAppSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAppSettingsController.m; sourceTree = "<group>"; };
 		A3A67374113078E300138097 /* BlioAudioSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioSettingsController.h; sourceTree = "<group>"; };
 		A3A67375113078E300138097 /* BlioAudioSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioSettingsController.m; sourceTree = "<group>"; };
 		A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppSettingsConstants.h; sourceTree = "<group>"; };
 		A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticFat.a; path = Libraries/TTS/libMobilityStaticFat.a; sourceTree = "<group>"; };
+		A3D9F13A11B064680011D544 /* libPlayReadyPK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPlayReadyPK.a; path = Libraries/DRM/libPlayReadyPK.a; sourceTree = "<group>"; };
 		A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioBookManager.h; sourceTree = "<group>"; };
 		A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioBookManager.m; sourceTree = "<group>"; };
 		A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLoginViewController.h; sourceTree = "<group>"; };
@@ -847,6 +1009,8 @@
 		C9B620CB1137BE170012CE7E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
 		C9C5467510F77EDD00ECE126 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		C9C546F110F7802F00ECE126 /* Blio.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = Blio.xcdatamodel; sourceTree = "<group>"; };
+		C9D280B111AD0FCE00857CFB /* icon-noTTS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-noTTS.png"; sourceTree = "<group>"; };
+		C9D280B211AD0FCE00857CFB /* button-tts-pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-tts-pause.png"; sourceTree = "<group>"; };
 		C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioUIImageAdditions.h; sourceTree = "<group>"; };
 		C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioUIImageAdditions.m; sourceTree = "<group>"; };
 		C9D8A57810F2289D00FD5F22 /* icon-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-lock.png"; sourceTree = "<group>"; };
@@ -924,6 +1088,7 @@
 				C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */,
 				C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */,
 				7DAA30C411512B1C006634CC /* libiconv.dylib in Frameworks */,
+				A3D9F13B11B064680011D544 /* libPlayReadyPK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -964,6 +1129,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A37DADCD11B1E4DC005F949A /* DRM */,
 				C98CCAA9119D8343002E9A8E /* XPS */,
 				A3F9387D116BD63500E53BD3 /* CellTextField.h */,
 				A3F9387E116BD63500E53BD3 /* CellTextField.m */,
@@ -1081,6 +1247,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3951D6F11B35665000BCAC1 /* DRM */,
 				A383F2431174FA7A0049ED3A /* icon-cart.png */,
 				C9F749401140261700680E93 /* shadow-right.png */,
 				C9F749411140261700680E93 /* shadow-left.png */,
@@ -1143,6 +1310,8 @@
 				55822F1C10F2891B008614FD /* icon-play.png */,
 				55822F1D10F2891B008614FD /* icon-plus.png */,
 				55822F1E10F2891B008614FD /* icon-search.png */,
+				C9D280B111AD0FCE00857CFB /* icon-noTTS.png */,
+				C9D280B211AD0FCE00857CFB /* button-tts-pause.png */,
 				7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */,
 				C9F47A0A1129BC7E00563348 /* downloadButton.png */,
 				C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */,
@@ -1293,9 +1462,177 @@
 			name = TextFlow;
 			sourceTree = "<group>";
 		};
+		A37DADCD11B1E4DC005F949A /* DRM */ = {
+			isa = PBXGroup;
+			children = (
+				A3951B7C11B31ED1000BCAC1 /* DrmGlobals.h */,
+				A37DADCE11B1E52A005F949A /* BlioDrmManager.h */,
+				A37DADCF11B1E52A005F949A /* BlioDrmManager.m */,
+			);
+			name = DRM;
+			sourceTree = "<group>";
+		};
+		A37DADE311B211DA005F949A /* DRM */ = {
+			isa = PBXGroup;
+			children = (
+				A3951B7311B31E39000BCAC1 /* drmxmr.h */,
+				A3951B7411B31E39000BCAC1 /* drmxmrbuilder.h */,
+				A3951B7511B31E39000BCAC1 /* drmxmrparser.h */,
+				A3951B6A11B31DCD000BCAC1 /* bigdefs.h */,
+				A3951B6B11B31DCD000BCAC1 /* bignum.h */,
+				A3951B6C11B31DCD000BCAC1 /* bigpriv.h */,
+				A3951B6D11B31DCD000BCAC1 /* dblint.h */,
+				A3951B6E11B31DCD000BCAC1 /* field.h */,
+				A3951B6F11B31DCD000BCAC1 /* fieldpriv.h */,
+				A3951B7011B31DCD000BCAC1 /* mprand.h */,
+				A3951B6411B31D4E000BCAC1 /* drmbcert.h */,
+				A3951B6511B31D4E000BCAC1 /* ecurve.h */,
+				A379DE9311B2E9AA009749DE /* oem_msdbpk.h */,
+				A379DE9411B2E9AA009749DE /* oem.h */,
+				A379DE9511B2E9AA009749DE /* oemaes.h */,
+				A379DE9611B2E9AA009749DE /* oemaesimpl.h */,
+				A379DE9711B2E9AA009749DE /* oemcommon.h */,
+				A379DE9811B2E9AA009749DE /* oemdebug.h */,
+				A379DE9911B2E9AA009749DE /* oemdevstore.h */,
+				A379DE9A11B2E9AA009749DE /* oemndt.h */,
+				A379DE9B11B2E9AA009749DE /* oemplatform.h */,
+				A379DE9C11B2E9AA009749DE /* oemprofile.h */,
+				A379DE9D11B2E9AA009749DE /* oemrsa.h */,
+				A379DE9E11B2E9AA009749DE /* oemrsaimpl.h */,
+				A379DE4811B2E256009749DE /* drmfeatures.h */,
+				A37DAE0411B21458005F949A /* byteorder.h */,
+				A37DAE0511B21458005F949A /* drm_msdbpk_manager.h */,
+				A37DAE0611B21458005F949A /* drmaes.h */,
+				A37DAE0711B21458005F949A /* drmaescommon.h */,
+				A37DAE0811B21458005F949A /* drmbase64.h */,
+				A37DAE0911B21458005F949A /* drmbcrl.h */,
+				A37DAE0A11B21458005F949A /* drmblackbox.h */,
+				A37DAE0B11B21458005F949A /* drmbuild_oem.h */,
+				A37DAE0C11B21458005F949A /* drmbuild_pk.h */,
+				A37DAE0D11B21458005F949A /* drmbytemanip.h */,
+				A37DAE0E11B21458005F949A /* drmcallbacks.h */,
+				A37DAE0F11B21458005F949A /* drmcbc.h */,
+				A37DAE1011B21458005F949A /* drmcert.h */,
+				A37DAE1111B21458005F949A /* drmcertparser.h */,
+				A37DAE1211B21458005F949A /* drmcfdalloc.h */,
+				A37DAE1311B21458005F949A /* drmcfdlicenseutils.h */,
+				A37DAE1411B21458005F949A /* drmcfdtypes.h */,
+				A37DAE1511B21458005F949A /* drmchain.h */,
+				A37DAE1611B21458005F949A /* drmcipher.h */,
+				A37DAE1711B21458005F949A /* drmcmdlnpars.h */,
+				A37DAE1811B21458005F949A /* drmcommon.h */,
+				A37DAE1911B21458005F949A /* drmcompiler.h */,
+				A37DAE1A11B21458005F949A /* drmcontextsizes.h */,
+				A37DAE1B11B21458005F949A /* drmcontract.h */,
+				A37DAE1C11B21458005F949A /* drmcrt.h */,
+				A37DAE1D11B21458005F949A /* drmdatastore.h */,
+				A37DAE1E11B21458005F949A /* drmdatastorecommon.h */,
+				A37DAE1F11B21458005F949A /* drmdebug.h */,
+				A37DAE2011B21458005F949A /* drmdes.h */,
+				A37DAE2111B21458005F949A /* drmdevcert.h */,
+				A37DAE2211B21458005F949A /* drmdevcertacq.h */,
+				A37DAE2311B21458005F949A /* drmdevicestore.h */,
+				A37DAE2411B21458005F949A /* drmdevstore.h */,
+				A37DAE2511B21458005F949A /* drmdomainapi.h */,
+				A37DAE2611B21458005F949A /* drmdomainconstants.h */,
+				A37DAE2711B21458005F949A /* drmdomainimp.h */,
+				A37DAE2811B21458005F949A /* drmdomainkeyxmrparser.h */,
+				A37DAE2911B21458005F949A /* drmdomainstore.h */,
+				A37DAE2A11B21458005F949A /* drmeccp160.h */,
+				A37DAE2B11B21458005F949A /* drmeccp256.h */,
+				A37DAE2C11B21458005F949A /* drmembeddedstore_impl.h */,
+				A37DAE2D11B21458005F949A /* drmembeddedstore.h */,
+				A37DAE2E11B21458005F949A /* drmembedding.h */,
+				A37DAE2F11B21458005F949A /* drmenvelope.h */,
+				A37DAE3011B21458005F949A /* drmerr.h */,
+				A37DAE3111B21458005F949A /* drmexpreval.h */,
+				A37DAE3211B21458005F949A /* drmhash.h */,
+				A37DAE3311B21458005F949A /* drmhdrbuilder.h */,
+				A37DAE3411B21458005F949A /* drmhds_impl.h */,
+				A37DAE3511B21458005F949A /* drmhds.h */,
+				A37DAE3611B21458005F949A /* drmheaderparser.h */,
+				A37DAE3711B21458005F949A /* drmhmac.h */,
+				A37DAE3811B21458005F949A /* drmint64.h */,
+				A37DAE3911B21458005F949A /* drmkeygenerator.h */,
+				A37DAE3A11B21458005F949A /* drmlicacq.h */,
+				A37DAE3B11B21458005F949A /* drmlicacqv3.h */,
+				A37DAE3C11B21458005F949A /* drmlicacqv3constants.h */,
+				A37DAE3D11B21458005F949A /* drmlicense.h */,
+				A37DAE3E11B21458005F949A /* drmlicenseparser.h */,
+				A37DAE3F11B21458005F949A /* drmliceval.h */,
+				A37DAE4011B21458005F949A /* drmlicreason.h */,
+				A37DAE4111B21458005F949A /* drmlicstore.h */,
+				A37DAE4211B21458005F949A /* drmmanager.h */,
+				A37DAE4311B21458005F949A /* drmmd5.h */,
+				A37DAE4411B21458005F949A /* drmmeterapi.h */,
+				A37DAE4511B21458005F949A /* drmmetercertprivkey.h */,
+				A37DAE4611B21458005F949A /* drmmetercertpubkey.h */,
+				A37DAE4711B21458005F949A /* drmmetercertstore.h */,
+				A37DAE4811B21458005F949A /* drmmeterconstants.h */,
+				A37DAE4911B21458005F949A /* drmmeterimp.h */,
+				A37DAE4A11B21458005F949A /* drmnamespace.h */,
+				A37DAE4B11B21458005F949A /* drmndr.h */,
+				A37DAE4C11B21458005F949A /* drmndtasf.h */,
+				A37DAE4D11B21458005F949A /* drmndtmanager.h */,
+				A37DAE4E11B21458005F949A /* drmnoncestore.h */,
+				A37DAE4F11B21458005F949A /* drmopcodes.h */,
+				A37DAE5011B21458005F949A /* drmorderedlist.h */,
+				A37DAE5111B21458005F949A /* drmoutputlevels.h */,
+				A37DAE5211B21458005F949A /* drmoutputleveltypes.h */,
+				A37DAE5311B21458005F949A /* drmpfd.h */,
+				A37DAE5411B21458005F949A /* drmpfdmanager.h */,
+				A37DAE5511B21458005F949A /* drmpkcrypto.h */,
+				A37DAE5611B21458005F949A /* drmplayreadyobj.h */,
+				A37DAE5711B21458005F949A /* drmpragmas.h */,
+				A37DAE5811B21458005F949A /* drmprivkeydeviceexclusion.h */,
+				A37DAE5911B21458005F949A /* drmprofile.h */,
+				A37DAE5A11B21458005F949A /* drmprofileconstants.h */,
+				A37DAE5B11B21458005F949A /* drmprofileconstantscfd.h */,
+				A37DAE5C11B21458005F949A /* drmptrlist.h */,
+				A37DAE5D11B21458005F949A /* drmpubkeydeviceexclusion.h */,
+				A37DAE5E11B21458005F949A /* drmpubkeyrevocation.h */,
+				A37DAE5F11B21458005F949A /* drmrc4.h */,
+				A37DAE6011B21458005F949A /* drmresults.h */,
+				A37DAE6111B21458005F949A /* drmrevocation.h */,
+				A37DAE6211B21458005F949A /* drmrevocationstore.h */,
+				A37DAE6311B21458005F949A /* drmrevocationtypes.h */,
+				A37DAE6411B21458005F949A /* drmrsa.h */,
+				A37DAE6511B21458005F949A /* drmrsacommon.h */,
+				A37DAE6611B21458005F949A /* drmsal.h */,
+				A37DAE6711B21458005F949A /* drmsecureclock.h */,
+				A37DAE6811B21458005F949A /* drmsecureclockstatus.h */,
+				A37DAE6911B21458005F949A /* drmsecurestore.h */,
+				A37DAE6A11B21458005F949A /* drmsha1.h */,
+				A37DAE6B11B21458005F949A /* drmsha256.h */,
+				A37DAE6C11B21458005F949A /* drmsoapxmlconstants.h */,
+				A37DAE6D11B21458005F949A /* drmsoapxmlutility.h */,
+				A37DAE6E11B21458005F949A /* drmstkalloc.h */,
+				A37DAE6F11B21458005F949A /* drmstrings.h */,
+				A37DAE7011B21458005F949A /* drmstringscfd.h */,
+				A37DAE7111B21458005F949A /* drmstrsafe.h */,
+				A37DAE7211B21458005F949A /* drmsyncstore.h */,
+				A37DAE7311B21458005F949A /* drmsyncstorecontext.h */,
+				A37DAE7411B21458005F949A /* drmtoken.h */,
+				A37DAE7511B21458005F949A /* drmtrace.h */,
+				A37DAE7611B21458005F949A /* drmutilities.h */,
+				A37DAE7711B21458005F949A /* drmviewprops.h */,
+				A37DAE7811B21458005F949A /* drmxmlbuilder.h */,
+				A37DAE7911B21458005F949A /* drmxmlbuildera.h */,
+				A37DAE7A11B21458005F949A /* drmxmlparser.h */,
+				A37DAE7B11B21458005F949A /* drmxmlsig.h */,
+				A37DAE7C11B21458005F949A /* drmxmlsigconstants.h */,
+				A37DAE7D11B21458005F949A /* drmxmlutilities.h */,
+				A37DADE611B2123D005F949A /* drmtypes.h */,
+				A37DADE711B2123D005F949A /* drmutf.h */,
+				A37DADE811B2123D005F949A /* drmwindowsenv.h */,
+			);
+			name = DRM;
+			sourceTree = "<group>";
+		};
 		A37FC20B10EA770500F3DC5A /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A3D9F13911B064530011D544 /* DRM */,
 				C9867652112411060070A03E /* GData.xcodeproj */,
 				7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */,
 				A37FC32D10EA780500F3DC5A /* TTS */,
@@ -1345,6 +1682,14 @@
 				A381615F1164FB3E003A9709 /* xsd.m */,
 			);
 			name = BookVault;
+			sourceTree = "<group>";
+		};
+		A3D9F13911B064530011D544 /* DRM */ = {
+			isa = PBXGroup;
+			children = (
+				A3D9F13A11B064680011D544 /* libPlayReadyPK.a */,
+			);
+			name = DRM;
 			sourceTree = "<group>";
 		};
 		C921763E1176FF67009AC670 /* BookViewController */ = {
@@ -1433,6 +1778,7 @@
 		C9B620BD1137BDB10012CE7E /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				A37DADE311B211DA005F949A /* DRM */,
 				C9B620BF1137BE170012CE7E /* ZipArchive */,
 			);
 			name = ThirdParty;
@@ -1783,6 +2129,9 @@
 				DCC447E211ADBAB700CBD491 /* BlioVoiceData.plist in Resources */,
 				DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */,
 				DCC45AD311B458A400CBD491 /* voiceSamples in Resources */,
+				C9D280B311AD0FCE00857CFB /* icon-noTTS.png in Resources */,
+				C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */,
+				A3951D7911B35665000BCAC1 /* DRM in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1900,6 +2249,8 @@
 				DCC447E111ADBAB700CBD491 /* BlioVoiceData.plist in Resources */,
 				DCC4548911B092A800CBD491 /* voice-sample-play-button.png in Resources */,
 				DCC45AD211B458A400CBD491 /* voiceSamples in Resources */,
+				C9D280B511AD0FCE00857CFB /* icon-noTTS.png in Resources */,
+				C9D280B611AD0FCE00857CFB /* button-tts-pause.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1992,6 +2343,7 @@
 				DC0B993F1194F03B0040CEFB /* BlioStoreHelper.m in Sources */,
 				7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */,
 				DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */,
+				A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2142,6 +2494,7 @@
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Sources/Classes\"",
+					"\"$(SRCROOT)/Libraries/DRM\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2175,6 +2528,7 @@
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Sources/Classes\"",
+					"\"$(SRCROOT)/Libraries/DRM\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2198,9 +2552,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
 				SDKROOT = iphoneos3.0;
-				WARNING_CFLAGS = "-Wall";
+				WARNING_CFLAGS = "";
 			};
 			name = Debug;
 		};
@@ -2213,9 +2568,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
 				SDKROOT = iphonesimulator3.0;
-				WARNING_CFLAGS = "-Wall";
+				WARNING_CFLAGS = "";
 			};
 			name = Release;
 		};

@@ -20,6 +20,7 @@
 #import "BlioLightSettingsViewController.h"
 #import "BlioBookmark.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioAlertManager.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -33,16 +34,25 @@ typedef enum {
     kBlioLibraryAddNoteAction = 1,
 } BlioLibraryAddActions;
 
+typedef enum {
+    kBlioLibraryToolbarsStateNoneVisible = 0,
+    kBlioLibraryToolbarsStateStatusBarVisible,
+    kBlioLibraryToolbarsStateToolbarsVisible,
+    kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible,
+    kBlioLibraryToolbarsStatePauseButtonVisible,
+} BlioLibraryToolbarsState;
+
 static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
 
 static NSString *kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"paper-black.png", @"paper-neutral.png" };
 static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @interface BlioBookViewController ()
-- (NSArray *)_toolbarItemsForReadingView;
+- (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
+- (void)layoutPauseButton;
 @end
 
 @interface BlioBookSlider : UISlider {
@@ -60,6 +70,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize bookView = _bookView;
 @synthesize pageJumpView = _pageJumpView;
 @synthesize pieButton = _pieButton;
+@synthesize pauseButton = _pauseButton;
 
 @synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
 @synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
@@ -119,13 +130,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
         self.audioPlaying = NO;
         self.wantsFullScreenLayout = YES;
-		if (![self.book audioRights]) {
-			_acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
-			if ( _acapelaAudioManager != nil )  {
-				[_acapelaAudioManager setPageChanged:YES];
-				[_acapelaAudioManager setDelegate:self];
-			} 
-		}
         
         EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
         CGRect frame = titleView.frame;
@@ -137,7 +141,41 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         _firstAppearance = YES;
         
-        self.toolbarItems = [self _toolbarItemsForReadingView];
+        _TTSEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTTSEnabledDefaultsKey];
+        
+        if (_TTSEnabled) {
+            
+            if ([self.book audioRights] && ![self.book audiobookFilename]) {
+                self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
+            } else {
+                self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
+                
+                UIButton *aPauseButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                UIImage *pauseImage = [UIImage imageNamed:@"button-tts-pause.png"];
+                [aPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
+                [aPauseButton addTarget:self action:@selector(toggleAudio:) forControlEvents:UIControlEventTouchUpInside];
+                [aPauseButton setFrame:CGRectMake(0, 0, pauseImage.size.width, pauseImage.size.height)];
+                [aPauseButton setShowsTouchWhenHighlighted:YES];
+                [aPauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
+                [aPauseButton setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
+                [aPauseButton setAlpha:0];
+                [self.view addSubview:aPauseButton];
+                self.pauseButton = aPauseButton;
+                
+                if ([self.book audiobookFilename]) {
+                    _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
+                } else {
+					_acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
+                    if ( _acapelaAudioManager != nil )  {
+                        [_acapelaAudioManager setPageChanged:YES];
+                        [_acapelaAudioManager setDelegate:self];
+                    } 
+                }
+            }
+        } else {
+            self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];
+        }
+
         
         _pageJumpView = nil;
         
@@ -196,14 +234,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 break;
         }
 		
-		if ([self.book audiobookFilename] != nil) 
-			// We need to do this here instead of lazily when the play button is pushed because it takes too long.
-			_audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
     }
     return self;
 }
 
-- (NSArray *)_toolbarItemsForReadingView {
+- (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled {
     
     NSMutableArray *readingItems = [NSMutableArray array];
     UIBarButtonItem *item;
@@ -246,39 +281,40 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            target:self 
                                            action:@selector(dummyShowParsedText:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Search", @"Accessibility label for Book View Controller Search button")];
-
+    
     [readingItems addObject:item];
     [item release];
     
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];  
-    
-    UIImage *audioImage = nil;
-    if (self.audioPlaying) {
-        audioImage = [UIImage imageNamed:@"icon-pause.png"];
-    } else {
-        audioImage = [UIImage imageNamed:@"icon-play.png"];
-    }
-    
-    item = [[UIBarButtonItem alloc] initWithImage:audioImage
-                                            style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:@selector(toggleAudio:)];
-    
-    if (self.audioPlaying) {
-        [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
+    if (installed) {
+        item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        [readingItems addObject:item];
+        [item release];  
         
-    } else {
-        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
-        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-        
-    }
+        UIImage *audioImage = nil;
+        if (enabled) {
+            audioImage = [UIImage imageNamed:@"icon-play.png"];
+            item = [[UIBarButtonItem alloc] initWithImage:audioImage
+                                                    style:UIBarButtonItemStylePlain
+                                                   target:self 
+                                                   action:@selector(toggleAudio:)];
+            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+            
+        } else {
+            audioImage = [UIImage imageNamed:@"icon-noTTS.png"];
+            item = [[UIBarButtonItem alloc] initWithImage:audioImage
+                                                    style:UIBarButtonItemStylePlain
+                                                   target:nil 
+                                                   action:nil];
+            [item setEnabled:NO];
+            [item setAccessibilityLabel:NSLocalizedString(@"Audio is not available for this book", @"Accessibility label for Book View Controller Audio unavailable button")];
+            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitNotEnabled];
+        }
 
     [readingItems addObject:item];
     [item release];
+    }
     
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
@@ -421,6 +457,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.navigationController.navigationBar setFrame:navFrame];
 }
 
+- (void)layoutPauseButton {
+    CGRect buttonFrame = self.pauseButton.frame;
+    buttonFrame.origin.y = CGRectGetHeight(self.bookView.frame) - CGRectGetHeight(buttonFrame) - 3;
+    buttonFrame.origin.x = 3;
+    [self.pauseButton setFrame:buttonFrame];
+}
+
 - (void)setNavigationBarButtons {
     
     CGFloat buttonHeight = 30;
@@ -541,6 +584,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [titleView setAuthor:[self.book author]];
         
         [self setNavigationBarButtons];
+        [self layoutPauseButton];
     }
 }
 
@@ -696,6 +740,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     self.pageJumpView = nil;
     self.pieButton = nil;
+    self.pauseButton = nil;
     self.managedObjectContext = nil;
     
 	[super dealloc];
@@ -709,7 +754,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.navigationController.navigationBar.hidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     } else {
-        [UIApplication sharedApplication].idleTimerDisabled = NO;
+        if (![self audioPlaying])
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
     }
     _fadeState = BookViewControlleUIFadeStateNone;
 }
@@ -732,64 +778,124 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return (self.navigationController.toolbarHidden == NO);
 }
 
-- (void)toggleToolbarsAndStatusBar:(BOOL)toggleStatusBar
+- (void)toggleToolbars:(BlioLibraryToolbarsState)toolbarState
 {
-    if(_fadeState == BookViewControlleUIFadeStateNone) {
-        if(self.navigationController.toolbarHidden == YES) {
-            if (toggleStatusBar) {
-                [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO];
-                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
-            }
+    if(_fadeState != BookViewControlleUIFadeStateNone) return;
+    
+    // Set the fade state
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateNoneVisible:
+        case kBlioLibraryToolbarsStatePauseButtonVisible:
+            _fadeState = BookViewControlleUIFadeStateFadingOut;
+            break;
+        default:
+            _fadeState = BookViewControlleUIFadeStateFadingIn;
+            break;
+    }
+    
+    // Set the status bar settings we don't want to animate 
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateStatusBarVisible:
+        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
+            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO];
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+            break;
+        default:
+            break;
+    }
+    
+    // Set the toolbar settings we don't want to animate 
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateToolbarsVisible:
+        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
             self.navigationController.navigationBarHidden = NO;
             self.navigationController.navigationBar.hidden = NO;
             self.navigationController.toolbarHidden = NO;
-            self.navigationController.toolbar.alpha = 0;
-            _fadeState = BookViewControlleUIFadeStateFadingIn;
-        } else {
-            _fadeState = BookViewControlleUIFadeStateFadingOut;
-        }
-                
-        // Durations below taken from trial-and-error comparison with the 
-        // Photos application.
-        [UIView beginAnimations:@"ToolbarsFade" context:nil];
-        
-        if(_fadeState == BookViewControlleUIFadeStateFadingIn) {
-            [UIView setAnimationDuration:0.0];
+            break;
+        default:
+            break;
+    }
+    
+    // Durations below taken from trial-and-error comparison with the 
+    // Photos application.
+    [UIView beginAnimations:@"ToolbarsFade" context:nil];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(_fadeDidEnd)];
+    
+    // Set the status bar settings we do want to animate
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateStatusBarVisible:
+        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
+            break;
+        default:
+            [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
+            break;
+    }
+    
+    // Set the toolbars settings we do want to animate
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateToolbarsVisible:
+        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
+            [UIView setAnimationDuration:0];
             self.navigationController.toolbar.alpha = 1;          
             self.pageJumpView.alpha = 1;
             self.navigationController.navigationBar.alpha = 1;
-        } else {
+            break;
+        default:
             [UIView setAnimationDuration:1.0/3.0];
             self.navigationController.toolbar.alpha = 0;
             self.pageJumpView.alpha = 0;
             self.navigationController.navigationBar.alpha = 0;
-        }
-        
-        [UIView setAnimationDelegate:self];
-        [UIView setAnimationDidStopSelector:@selector(_fadeDidEnd)];
-        if (toggleStatusBar)
-            [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
-        
-        [UIView commitAnimations];   
-        
-        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+            break;
     }
+    
+    // Set the pause button settings we do want to animate
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStatePauseButtonVisible:
+            self.pauseButton.alpha = 1;
+            break;
+        default:
+            self.pauseButton.alpha = 0;
+            break;
+    }
+    
+    [UIView commitAnimations];   
+        
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+    
+}
+
+- (void)togglePauseButton {
+    if (self.audioPlaying)
+        [self toggleToolbars:kBlioLibraryToolbarsStatePauseButtonVisible];
+    else 
+        [self toggleToolbars:kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible];
 }
 
 - (void)toggleToolbars
-{
-    [self toggleToolbarsAndStatusBar:YES];
+{   
+    if (![self audioPlaying]) {
+        if ([self toolbarsVisible]) 
+            [self toggleToolbars:kBlioLibraryToolbarsStateNoneVisible];
+        else
+            [self toggleToolbars:kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible];
+    }
 }
 
 - (void)hideToolbarsAndStatusBar:(BOOL)hidesStatusBar
 {
-    if(!self.navigationController.toolbarHidden)
-        [self toggleToolbarsAndStatusBar:hidesStatusBar];
+    if([self toolbarsVisible]) {
+        if (hidesStatusBar)
+            [self toggleToolbars:kBlioLibraryToolbarsStateNoneVisible];
+        else
+            [self toggleToolbars:kBlioLibraryToolbarsStateStatusBarVisible];
+    }
 }
 
 - (void)hideToolbars {
-    [self hideToolbarsAndStatusBar:YES];
+    if (![self audioPlaying])
+        [self hideToolbarsAndStatusBar:YES];
 }
 
 - (CGRect)nonToolbarRect
@@ -1581,20 +1687,29 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)toggleAudio:(id)sender {
-    UIBarButtonItem *item = (UIBarButtonItem *)sender;
-    UIImage *audioImage = nil;
+    //UIBarButtonItem *item = (UIBarButtonItem *)sender;
+    //UIImage *audioImage = nil;
     if (self.audioPlaying) {
         [self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
         self.audioPlaying = NO;  
     } else { 
-        if (!self.navigationController.toolbarHidden) {
-            [self toggleToolbars];
-        }
+        //if (!self.navigationController.toolbarHidden) {
+//            [self toggleToolbars];
+//        }
         if (![self.book audioRights]) {
-            [self prepareTTSEngine];
-            [_acapelaAudioManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
-            [self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:NO];
-            self.audioPlaying = _acapelaAudioManager.startedPlaying;  
+			if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse] count] > 0) {
+				[self prepareTTSEngine];
+				[_acapelaAudioManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
+				[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:NO];
+				self.audioPlaying = _acapelaAudioManager.startedPlaying;
+			}
+			else {
+				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Settings section of this app first and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+											delegate:self 
+								   cancelButtonTitle:@"OK"
+								   otherButtonTitles: nil];				
+			}
         }
         else if ([self.book audiobookFilename] != nil) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
@@ -1630,18 +1745,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
     }
     
-    if(self.audioPlaying) {
-        audioImage = [UIImage imageNamed:@"icon-pause.png"];
-        [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
-    } else {
-        audioImage = [UIImage imageNamed:@"icon-play.png"];
-        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
-        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-    }
+    [self togglePauseButton];
+    //if(self.audioPlaying) {
+//        audioImage = [UIImage imageNamed:@"icon-pause.png"];
+//        [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
+//        [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
+//    } else {
+//        audioImage = [UIImage imageNamed:@"icon-play.png"];
+//        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
+//        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+//        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+//    }
        
-    [item setImage:audioImage];
+    //[item setImage:audioImage];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -1827,6 +1943,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self layoutNavigationToolbar];
+    [self layoutPauseButton];
     [self setNavigationBarButtons];
     if (_pageJumpView) {
         [self layoutPageJumpView];

@@ -79,6 +79,7 @@ typedef enum {
     BookViewControllerUIFadeState _fadeState;
     
     UIToolbar *_toolbar;
+    UIButton *_pauseButton;
     
     UITouch *_touch;
     BOOL _touchMoved;
@@ -105,6 +106,7 @@ typedef enum {
     BOOL _overrideReturnToStatusBarHidden;
     
 	BlioAcapelaAudioManager* _acapelaAudioManager;
+    BOOL _TTSEnabled;
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
     
@@ -145,6 +147,7 @@ typedef enum {
 
 @property (nonatomic, retain) UIView *pageJumpView;
 @property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
+@property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic, getter=isRotationLocked) BOOL rotationLocked;

@@ -14,6 +14,8 @@
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
 #import "AcapelaSpeech.h"
+#import "BlioAppSettingsConstants.h"
+#import "BlioDrmManager.h"
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -36,6 +38,8 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     // Override point for customization after app launch   
 	//[window addSubview:[navigationController view]];
 
+    // TODO - update this with a proper check for TTS being enabled
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTTSEnabledDefaultsKey];
     
     NSString *dynamicDefaultPngPath = [self dynamicDefaultPngPath];
     NSData *imageData = [NSData dataWithContentsOfFile:dynamicDefaultPngPath];
@@ -75,6 +79,8 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     [libraryController setProcessingDelegate:[self processingManager]];
 	
 	if (self.networkStatus != NotReachable) [self.processingManager resumeProcessing];
+	
+	[[BlioDrmManager getDrmManager] initialize];
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
