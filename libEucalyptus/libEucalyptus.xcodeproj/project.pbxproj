@@ -196,8 +196,6 @@
 		7D516E12102872DB005F3C46 /* EucBookContentsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E0A102872DB005F3C46 /* EucBookContentsTableViewController.m */; };
 		7D516E13102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E0B102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E14102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E0C102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m */; };
-		7D516E1D10287311005F3C46 /* THAppleSampleEAGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E1910287311005F3C46 /* THAppleSampleEAGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D516E1E10287311005F3C46 /* THAppleSampleEAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E1A10287311005F3C46 /* THAppleSampleEAGLView.m */; };
 		7D516E251028735A005F3C46 /* THLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E231028735A005F3C46 /* THLog.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E261028735A005F3C46 /* THLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E241028735A005F3C46 /* THLog.m */; };
 		7D516E3C102873BE005F3C46 /* THUIViewThreadSafeDrawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -424,6 +422,8 @@
 		7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */; };
 		7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF58B5D10DA9005004E3DBB /* EucBookView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF58B6010DA9005004E3DBB /* EucBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF58B5E10DA9005004E3DBB /* EucBookView.m */; };
+		7DF8BC3311B526E3003B7A97 /* THBaseEAGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DF8BC3411B526E3003B7A97 /* THBaseEAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8BC3211B526E3003B7A97 /* THBaseEAGLView.m */; };
 		AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */; settings = {ATTRIBUTES = (); }; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -850,8 +850,6 @@
 		7D516E0A102872DB005F3C46 /* EucBookContentsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookContentsTableViewController.m; sourceTree = "<group>"; };
 		7D516E0B102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookContentsTableViewCellBackground.h; sourceTree = "<group>"; };
 		7D516E0C102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookContentsTableViewCellBackground.m; sourceTree = "<group>"; };
-		7D516E1910287311005F3C46 /* THAppleSampleEAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THAppleSampleEAGLView.h; sourceTree = "<group>"; };
-		7D516E1A10287311005F3C46 /* THAppleSampleEAGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THAppleSampleEAGLView.m; sourceTree = "<group>"; };
 		7D516E231028735A005F3C46 /* THLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THLog.h; sourceTree = "<group>"; };
 		7D516E241028735A005F3C46 /* THLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THLog.m; sourceTree = "<group>"; };
 		7D516E3A102873BE005F3C46 /* THUIViewThreadSafeDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THUIViewThreadSafeDrawing.h; sourceTree = "<group>"; };
@@ -1060,6 +1058,8 @@
 		7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTextFittingLabel.m; sourceTree = "<group>"; };
 		7DF58B5D10DA9005004E3DBB /* EucBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookView.h; sourceTree = "<group>"; };
 		7DF58B5E10DA9005004E3DBB /* EucBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookView.m; sourceTree = "<group>"; };
+		7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THBaseEAGLView.h; sourceTree = "<group>"; };
+		7DF8BC3211B526E3003B7A97 /* THBaseEAGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THBaseEAGLView.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libEucalyptus_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libEucalyptus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptus.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2089,7 +2089,6 @@
 		7D516E1710287300005F3C46 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				7D516E1810287300005F3C46 /* Apple */,
 				7D51700C10287987005F3C46 /* VCTitleCase */,
 				7D5170D11028ADD6005F3C46 /* libhyphenate */,
 				7D51734D1028BA13005F3C46 /* expat */,
@@ -2099,15 +2098,6 @@
 				7D19038711494CE900375803 /* libcss */,
 			);
 			path = ThirdParty;
-			sourceTree = "<group>";
-		};
-		7D516E1810287300005F3C46 /* Apple */ = {
-			isa = PBXGroup;
-			children = (
-				7D516E1910287311005F3C46 /* THAppleSampleEAGLView.h */,
-				7D516E1A10287311005F3C46 /* THAppleSampleEAGLView.m */,
-			);
-			path = Apple;
 			sourceTree = "<group>";
 		};
 		7D516E221028734C005F3C46 /* Utils */ = {
@@ -2149,6 +2139,8 @@
 		7D516E39102873B0005F3C46 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */,
+				7DF8BC3211B526E3003B7A97 /* THBaseEAGLView.m */,
 				7D658C6D103DEAD900EB5003 /* THImageFactory.h */,
 				7D658C6E103DEAD900EB5003 /* THImageFactory.m */,
 				7D6AAC841028DEAD006289E6 /* THScalableSlider.h */,
@@ -2609,7 +2601,6 @@
 				7D516E0F102872DB005F3C46 /* EucPageTurningView.h in Headers */,
 				7D516E11102872DB005F3C46 /* EucBookContentsTableViewController.h in Headers */,
 				7D516E13102872DB005F3C46 /* EucBookContentsTableViewCellBackground.h in Headers */,
-				7D516E1D10287311005F3C46 /* THAppleSampleEAGLView.h in Headers */,
 				7D516E251028735A005F3C46 /* THLog.h in Headers */,
 				7D516E3C102873BE005F3C46 /* THUIViewThreadSafeDrawing.h in Headers */,
 				7D516E5010287458005F3C46 /* THNavigationButton.h in Headers */,
@@ -2662,6 +2653,7 @@
 				7D9283E01186E75900061FCC /* EucBookIndex.h in Headers */,
 				7D14D1BE119C695D00F4B5D3 /* EucHighlightRange.h in Headers */,
 				7D653BA611AFDA3000C47DC6 /* EucConfiguration.h in Headers */,
+				7DF8BC3311B526E3003B7A97 /* THBaseEAGLView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3150,7 +3142,6 @@
 				7D516E10102872DB005F3C46 /* EucPageTurningView.m in Sources */,
 				7D516E12102872DB005F3C46 /* EucBookContentsTableViewController.m in Sources */,
 				7D516E14102872DB005F3C46 /* EucBookContentsTableViewCellBackground.m in Sources */,
-				7D516E1E10287311005F3C46 /* THAppleSampleEAGLView.m in Sources */,
 				7D516E261028735A005F3C46 /* THLog.m in Sources */,
 				7D516E3D102873BE005F3C46 /* THUIViewThreadSafeDrawing.m in Sources */,
 				7D516E5110287458005F3C46 /* THNavigationButton.m in Sources */,
@@ -3198,6 +3189,7 @@
 				7D9283E11186E75900061FCC /* EucBookIndex.m in Sources */,
 				7D14D1BD119C695800F4B5D3 /* EucHighlightRange.m in Sources */,
 				7D653BA711AFDA3500C47DC6 /* EucConfiguration.m in Sources */,
+				7DF8BC3411B526E3003B7A97 /* THBaseEAGLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

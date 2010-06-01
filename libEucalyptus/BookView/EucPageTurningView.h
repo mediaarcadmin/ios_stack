@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "THAppleSampleEAGLView.h"
+#import "THBaseEAGLView.h"
 
 @protocol EucPageTurningViewDelegate;
 
@@ -39,7 +39,7 @@ typedef struct {
     GLuint innerPixelHeight;
 } TextureCoordinates;
 
-@interface EucPageTurningView : THAppleSampleEAGLView {
+@interface EucPageTurningView : THBaseEAGLView {
     GLfloat _touchVelocity;
     
     CGSize _powerOf2Bounds;

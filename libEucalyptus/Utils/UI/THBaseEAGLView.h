@@ -1,6 +1,6 @@
 //
-//  THAppleSampleEAGLView.h
-//  PageTurnTest
+//  THBaseEAGLView.h
+//  libEucalyptus
 //
 //  Created by James Montgomerie on 07/11/2008.
 //  Copyright 2008 Things Made Out Of Other Things Limited. All rights reserved.
@@ -11,12 +11,7 @@
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
-/*
-This class wraps the CAEAGLLayer from CoreAnimation into a convenient UIView subclass.
-The view content is basically an EAGL surface you render your OpenGL scene into.
-Note that setting the view non-opaque will only work if the EAGL surface has an alpha channel.
-*/
-@interface THAppleSampleEAGLView : UIView {
+@interface THBaseEAGLView : UIView {
     GLint _backingWidth;
     GLint _backingHeight;
     
