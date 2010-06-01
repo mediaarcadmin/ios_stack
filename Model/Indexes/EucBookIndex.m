@@ -10,6 +10,7 @@
 #import "EucBook.h"
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
+#import "THPair.h"
 #import "THRegex.h"
 #import "THLog.h"
 
@@ -89,8 +90,7 @@
 - (id)initForBook:(id<EucBook>)book
 {
     if((self = [super init])) {
-        NSMutableArray *buildPageIndexes = [NSMutableArray array];
-        NSMutableArray *buildPageIndexPointSizes = [NSMutableArray array];
+        NSMutableArray *buildPageIndexes = [[NSMutableArray alloc] init];
         
         NSString *indexDirectoryPath = [book cacheDirectoryPath];
         NSString *globPath = [indexDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luPageIndex*", (unsigned long)[[self class] indexVersion]]];
@@ -111,10 +111,11 @@
                 NSString *path = [NSString stringWithUTF8String:globValue.gl_pathv[i]];
                 if([indexRegex matchString:path]) {
                     NSUInteger pointSize = [[indexRegex match:1] integerValue];
-                    EucFilteredBookPageIndex *index = [EucFilteredBookPageIndex bookPageIndexForIndexInBook:book forPointSize:pointSize];
+                    
+                    EucFilteredBookPageIndex *index = [EucFilteredBookPageIndex bookPageIndexAtPath:path];
                     if(index) {
-                        [buildPageIndexes addObject:index];
-                        [buildPageIndexPointSizes addObject:[NSNumber numberWithUnsignedInteger:pointSize]];
+                        [buildPageIndexes addPairWithFirst:[NSNumber numberWithUnsignedInteger:pointSize]
+                                                    second:index];
                     }
                 }
             }
@@ -123,13 +124,19 @@
         
         if(buildPageIndexes.count) {
             [buildPageIndexes sortUsingSelector:@selector(compare:)];
-            _pageIndexes = [buildPageIndexes retain];
-            [buildPageIndexPointSizes sortUsingSelector:@selector(compare:)];
-            _pageIndexPointSizes = [buildPageIndexPointSizes retain];
+            
+            NSUInteger count = buildPageIndexes.count;
+            _pageIndexPointSizes = [[NSMutableArray alloc] initWithCapacity:count];
+            _pageIndexes = [[NSMutableArray alloc] initWithCapacity:count];
+            for(THPair *sizeAndIndex in buildPageIndexes) {
+                [(NSMutableArray *)_pageIndexPointSizes addObject:sizeAndIndex.first];
+                [(NSMutableArray *)_pageIndexes addObject:sizeAndIndex.second];
+            }
         } else {
             [self release];
             self = nil;
         }
+        [buildPageIndexes release];
     }
     return self;
 }

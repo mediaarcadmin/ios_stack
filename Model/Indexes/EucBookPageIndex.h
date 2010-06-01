@@ -12,7 +12,6 @@
 @protocol EucBook;
 
 @interface EucBookPageIndex : NSObject {
-    id<EucBook> _book;
     NSUInteger _pointSize;
     
     int _fd;
@@ -22,18 +21,10 @@
     off_t _lastOffset;
 }
 
-+ (id)bookPageIndexForIndexInBook:(id<EucBook>)path forPointSize:(NSUInteger)pointSize;
-
-@property (nonatomic, readonly) id<EucBook> book;
-@property (nonatomic, readonly) NSUInteger pointSize;
-
++ (id)bookPageIndexAtPath:(NSString *)path;
 @property (nonatomic, readonly) NSUInteger lastPageNumber;
-@property (nonatomic, readonly) BOOL isFinal;
 
 - (EucBookPageIndexPoint *)indexPointForPage:(NSUInteger)pageNumber;
 - (NSUInteger)pageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
-- (void)closeIndex;
-
-- (NSComparisonResult)compare:(EucBookPageIndex *)rhs;
 
 @end

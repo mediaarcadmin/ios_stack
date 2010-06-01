@@ -63,19 +63,26 @@
 
 - (void)setFontPointSize:(CGFloat)pointSize
 {
+    NSUInteger bestIndex = NSUIntegerMax;
+    CGFloat bestSize = CGFLOAT_MAX;
     CGFloat difference = CGFLOAT_MAX;
-    EucFilteredBookPageIndex *foundIndex = nil;
-    for(EucFilteredBookPageIndex *index in _bookIndex.pageIndexes) {
-        CGFloat thisDifference = fabsf(index.pointSize - pointSize);
+    
+    NSUInteger index = 0;
+    for(NSNumber *indexPointSize in _bookIndex.pageIndexPointSizes) {
+        CGFloat size = [indexPointSize floatValue];
+        CGFloat thisDifference = fabsf(pointSize - size);
         if(thisDifference < difference) {
             difference = thisDifference;
-            foundIndex = index;
+            bestIndex = index;
+            bestSize = size;
         }
+        ++index;
     }
-    if(foundIndex != _currentBookPageIndex) {
+    
+    if(bestIndex != CGFLOAT_MAX) {
+        _fontPointSize = bestSize;  
         [_currentBookPageIndex release];
-        _currentBookPageIndex = [foundIndex retain];
-        _fontPointSize = _currentBookPageIndex.pointSize;  
+        _currentBookPageIndex = [[_bookIndex.pageIndexes objectAtIndex:bestIndex] retain];
         _globalPageCount = _currentBookPageIndex.filteredLastPageNumber;
     }
 }
@@ -173,7 +180,7 @@
         
         CGRect frame = CGRectMake(0, 0, _pageSize.width, _pageSize.height);
         EucPageView *pageView = [[self class] blankPageViewWithFrame:frame
-                                                        forPointSize:_currentBookPageIndex.pointSize 
+                                                        forPointSize:_fontPointSize 
                                                         withPageTexture:pageTexture];
         pageView.titleLinePosition = EucPageViewTitleLinePositionTop;
         pageView.titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
