@@ -359,7 +359,9 @@
         EucPageView *newPageView = newPageViewAndIndexPoint.first;
         THPair *newPageIndexPointRange = newPageViewAndIndexPoint.second;        
         
-        [_book setCurrentPageIndexPoint:newPageIndexPointRange.first];
+        if(!_dontSaveIndexPoints) {
+            [_book setCurrentPageIndexPoint:newPageIndexPointRange.first];
+        }
 
         if(animated && oldPageNumber != pageNumber) {
             NSInteger count = oldPageNumber - pageNumber;
