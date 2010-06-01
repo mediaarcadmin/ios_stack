@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
+#import <objc/message.h>
 
 #import "THBaseEAGLView.h"
 
@@ -158,18 +159,33 @@
 {
     if(animating != _animating) {
         if(animating) {
-            self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:self.animationInterval target:self selector:@selector(drawView) userInfo:nil repeats:YES];
+            // Use CADisplayLink, if available.
+            Class displayLinkClass = NSClassFromString(@"CADisplayLink");
+            if(displayLinkClass) {
+                if(!self.animationTimer) {
+                    id displayLink = objc_msgSend(displayLinkClass, @selector(displayLinkWithTarget:selector:), self, @selector(drawView));
+                    objc_msgSend(displayLink, @selector(setFrameInterval:), round(_animationInterval * 60.0));
+                    objc_msgSend(displayLink, @selector(addToRunLoop:forMode:), [NSRunLoop currentRunLoop], NSDefaultRunLoopMode);
+                    self.animationTimer = displayLink;
+                } else {
+                    id displayLink = self.animationTimer;
+                    objc_msgSend(displayLink, @selector(setFrameInterval:), round(_animationInterval * 60.0));
+                    objc_msgSend(displayLink, @selector(setPaused:), NO);
+                }
+            } else {
+                self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:self.animationInterval target:self selector:@selector(drawView) userInfo:nil repeats:YES];
+            }
         } else {
-            self.animationTimer = nil;
+            id animationTimer = self.animationTimer;
+            if([animationTimer isKindOfClass:[NSTimer class]]) {
+                [animationTimer invalidate];
+                self.animationTimer = nil;
+            } else {
+                objc_msgSend(animationTimer, @selector(setPaused:), YES);
+            }
         }
         _animating = animating;        
     }
-}
-
-- (void)setAnimationTimer:(NSTimer *)newTimer 
-{
-    [_animationTimer invalidate];
-    _animationTimer = newTimer;
 }
 
 - (void)setAnimationInterval:(NSTimeInterval)interval
@@ -184,6 +200,10 @@
 - (void)dealloc 
 {    
     self.animating = NO;
+    if(self.animationTimer) {
+        [self.animationTimer invalidate]; // Works with NSTimer and CADisplayLink.
+        self.animationTimer = nil;
+    }
     if(!_needsDraw) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
     }
