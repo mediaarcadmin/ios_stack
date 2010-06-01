@@ -217,26 +217,24 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
             
             if(!_stringRenderer) {
                 NSString *fontName;
-                if(!names) {
-                    switch(family) {
-                        case CSS_FONT_FAMILY_SERIF:
-                            fontName = [EucConfiguration objectForKey:EucConfigurationSerifFontFamilyKey];
-                            break;                            
-                        case CSS_FONT_FAMILY_SANS_SERIF:
-                            fontName = [EucConfiguration objectForKey:EucConfigurationSansSerifFontFamilyKey];
-                            break;
-                        case CSS_FONT_FAMILY_MONOSPACE:
-                            fontName = [EucConfiguration objectForKey:EucConfigurationMonospaceFontFamilyKey];
-                            break;
-                        case CSS_FONT_FAMILY_CURSIVE:
-                            fontName = [EucConfiguration objectForKey:EucConfigurationCursiveFontFamilyKey];
-                            break;
-                        case CSS_FONT_FAMILY_FANTASY:
-                            fontName = [EucConfiguration objectForKey:EucConfigurationFantasyFontFamilyKey];
-                            break;
-                        default:
-                            fontName = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
-                    }
+                switch(family) {
+                    case CSS_FONT_FAMILY_SERIF:
+                        fontName = [EucConfiguration objectForKey:EucConfigurationSerifFontFamilyKey];
+                        break;                            
+                    case CSS_FONT_FAMILY_SANS_SERIF:
+                        fontName = [EucConfiguration objectForKey:EucConfigurationSansSerifFontFamilyKey];
+                        break;
+                    case CSS_FONT_FAMILY_MONOSPACE:
+                        fontName = [EucConfiguration objectForKey:EucConfigurationMonospaceFontFamilyKey];
+                        break;
+                    case CSS_FONT_FAMILY_CURSIVE:
+                        fontName = [EucConfiguration objectForKey:EucConfigurationCursiveFontFamilyKey];
+                        break;
+                    case CSS_FONT_FAMILY_FANTASY:
+                        fontName = [EucConfiguration objectForKey:EucConfigurationFantasyFontFamilyKey];
+                        break;
+                    default:
+                        fontName = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
                 }
                 _stringRenderer = [self _cachedStringRendererWithFontName:fontName
                                                                styleFlags:styleFlags];
