@@ -1431,6 +1431,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self setToolbarsForModalOverlayActive:NO];
 }
 
+#pragma mark -
+#pragma mark Search
 
 #pragma mark -
 #pragma mark TTS Handling 
