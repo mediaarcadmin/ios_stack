@@ -42,6 +42,7 @@
         _book = [book retain];
         _pageSize = pageSize;
         _bookIndex = [[_book bookIndex] retain];
+        _bookIndex.pageSize = pageSize;
         [self setFontPointSize:pointSize];        
     }
     return self;
@@ -79,11 +80,20 @@
         ++index;
     }
     
-    if(bestIndex != CGFLOAT_MAX) {
+    if(bestIndex != NSUIntegerMax) {
         _fontPointSize = bestSize;  
         [_currentBookPageIndex release];
         _currentBookPageIndex = [[_bookIndex.pageIndexes objectAtIndex:bestIndex] retain];
         _globalPageCount = _currentBookPageIndex.filteredLastPageNumber;
+    }
+}
+
+- (void)setPageSize:(CGSize)pageSize
+{
+    if(!CGSizeEqualToSize(pageSize, _pageSize)) {
+        _pageSize = pageSize;
+        [_bookIndex setPageSize:pageSize];
+        [self setFontPointSize:_fontPointSize];
     }
 }
 

@@ -10,6 +10,7 @@
 #import "EucBook.h"
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
+#import "EucConfiguration.h"
 #import "THPair.h"
 #import "THRegex.h"
 #import "THLog.h"
@@ -21,19 +22,25 @@
 
 @implementation EucBookIndex
 
+@synthesize pageSize = _pageSize;
+
 + (NSUInteger)indexVersion
 {
     return 1;
 }
 
-+ (NSString *)filenameForPageIndexForPointSize:(NSUInteger)fontSize
++ (NSString *)filenameForPageIndexForFont:(NSString *)font
+                                 pageSize:(CGSize)pageSize
+                                 fontSize:(NSUInteger)fontSize
 {
-    return [NSString stringWithFormat:@"%lu.v%luPageIndex", (unsigned long)fontSize, (unsigned long)[self indexVersion]];
+    return [NSString stringWithFormat:@"%@-(%lux%lu)-%lu.v%luPageIndex", font, (unsigned long)pageSize.width, (unsigned long)pageSize.height, (unsigned long)fontSize, (unsigned long)[self indexVersion]];
 }
 
-+ (NSString *)constructionFilenameForPageIndexForPointSize:(NSUInteger)fontSize
++ (NSString *)constructionFilenameForPageIndexForFont:(NSString *)font
+                                             pageSize:(CGSize)pageSize
+                                             fontSize:(NSUInteger)fontSize
 {
-    return [NSString stringWithFormat:@"%lu.v%luPageIndexConstruction", (unsigned long)fontSize, (unsigned long)[self indexVersion]];
+    return [NSString stringWithFormat:@"%@-(%lux%lu)-%lu.v%luPageIndex", font, (unsigned long)pageSize.width, (unsigned long)pageSize.height, (unsigned long)fontSize, (unsigned long)[self indexVersion]];
 }
 
 + (NSString *)constructionFlagFilename
@@ -90,21 +97,41 @@
 - (id)initForBook:(id<EucBook>)book
 {
     if((self = [super init])) {
+        _indexesPath = [[book cacheDirectoryPath] copy];
+    }
+    return self;
+}
+
+- (void)setPageSize:(CGSize)pageSize
+{
+    if(!CGSizeEqualToSize(pageSize, _pageSize)) {
+        [_pageIndexes release];
+        _pageIndexes = nil;
+        [_pageIndexPointSizes release];
+        _pageIndexPointSizes = nil;
+        
         NSMutableArray *buildPageIndexes = [[NSMutableArray alloc] init];
         
-        NSString *indexDirectoryPath = [book cacheDirectoryPath];
-        NSString *globPath = [indexDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"*.v%luPageIndex*", (unsigned long)[[self class] indexVersion]]];
+        NSString *globPath = [NSString stringWithFormat:@"%@-(%lux%lu)-*.v%luPageIndex*",
+                              [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey], 
+                              (unsigned long)pageSize.width, (unsigned long)pageSize.height, 
+                              (unsigned long)[[self class] indexVersion]];
+        
+        globPath = [_indexesPath stringByAppendingPathComponent:globPath];
         glob_t globValue;
         int err = glob([globPath fileSystemRepresentation],
                        0,
                        NULL,
                        &globValue);
         if(err != 0) {
-            THWarn(@"Globbing failed when attempting to find indexes in book bundle %@", indexDirectoryPath);
+            THWarn(@"Globbing failed when attempting to find indexes in book bundle %@", globPath);
         } else if(globValue.gl_pathc <= 0) {
-            THWarn(@"Could not find indexes in book bundle %@", indexDirectoryPath);
+            THWarn(@"Could not find indexes in book bundle %@", globPath);
         } else {
-            THRegex *indexRegex = [THRegex regexWithPOSIXRegex:[NSString stringWithFormat:@"([[:digit:]]+).v%luPageIndex(Construction)?$", (unsigned long)[[self class] indexVersion]]];
+            THRegex *indexRegex = [THRegex regexWithPOSIXRegex:[NSString stringWithFormat:@"%@-\\(%lux%lu\\)-([[:digit:]]*).v%luPageIndex(Construction)?$", 
+                                                                [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey], 
+                                                                (unsigned long)pageSize.width, (unsigned long)pageSize.height, 
+                                                                (unsigned long)[[self class] indexVersion]]];
             
             _pageIndexPointSizes = malloc(globValue.gl_pathc * sizeof(NSUInteger));
             for(size_t i = 0; i < globValue.gl_pathc; ++i) {
@@ -132,13 +159,11 @@
                 [(NSMutableArray *)_pageIndexPointSizes addObject:sizeAndIndex.first];
                 [(NSMutableArray *)_pageIndexes addObject:sizeAndIndex.second];
             }
-        } else {
-            [self release];
-            self = nil;
         }
         [buildPageIndexes release];
+        
+        _pageSize = pageSize;
     }
-    return self;
 }
 
 - (void)dealloc
@@ -148,7 +173,6 @@
     
     [super dealloc];
 }
-
 
 + (EucBookIndex *)bookIndexForBook:(id<EucBook>)book
 {
