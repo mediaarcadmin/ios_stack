@@ -24,7 +24,7 @@
     GLuint _depthRenderbuffer;
     
     BOOL _animating;
-    NSTimer *_animationTimer;
+    id _animationTimer;
     NSTimeInterval _animationInterval;
     
     BOOL _needsDraw;
