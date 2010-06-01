@@ -1706,9 +1706,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			else {
 				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Settings section of this app first and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
-											delegate:self 
+											delegate:nil 
 								   cancelButtonTitle:@"OK"
-								   otherButtonTitles: nil];				
+								   otherButtonTitles: nil];
+				return;
 			}
         }
         else if ([self.book audiobookFilename] != nil) {
@@ -1736,12 +1737,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             self.audioPlaying = _audioBookManager.startedPlaying;  
         }
         else {
-            UIAlertView *errorAlert = [[UIAlertView alloc] 
-                                       initWithTitle:@"" message:@"No audio is permitted for this book." // TODO: try Voiceover; how to word?
-                                       delegate:self cancelButtonTitle:nil
-                                       otherButtonTitles:@"OK", nil];
-            [errorAlert show];
-            [errorAlert release];
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+										 message:NSLocalizedStringWithDefaultValue(@"NO_AUDIO_PERMITTED_FOR_THIS_BOOK",nil,[NSBundle mainBundle],@"No audio is permitted for this book.",@"Alert message shown to end-user when the end-user attempts to hear a book read but no audiobook is present and TTS is not enabled.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles: nil];
+			return;
         }
     }
     
@@ -1760,21 +1761,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     //[item setImage:audioImage];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	[alertView release];
-}
-
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
 	[activityIndicator stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
 	NSLog(@"Error loading web page: %@",errorMsg);
-	UIAlertView *errorAlert = [[UIAlertView alloc] 
-							   initWithTitle:@"" message:errorMsg 
-							   delegate:self cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
-	[errorAlert show];
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title")
+								 message:errorMsg
+								delegate:nil 
+					   cancelButtonTitle:@"OK"
+					   otherButtonTitles: nil];
 }
 
 
