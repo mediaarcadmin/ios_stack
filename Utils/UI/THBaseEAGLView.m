@@ -159,8 +159,10 @@
 {
     if(animating != _animating) {
         if(animating) {
+            // Actually, don't use displaylink - it causes lots of jittering
+            // during interaction on early devices.
             // Use CADisplayLink, if available.
-            Class displayLinkClass = NSClassFromString(@"CADisplayLink");
+            /*Class displayLinkClass = NSClassFromString(@"CADisplayLink");
             if(displayLinkClass) {
                 if(!self.animationTimer) {
                     id displayLink = objc_msgSend(displayLinkClass, @selector(displayLinkWithTarget:selector:), self, @selector(drawView));
@@ -172,9 +174,9 @@
                     objc_msgSend(displayLink, @selector(setFrameInterval:), round(_animationInterval * 60.0));
                     objc_msgSend(displayLink, @selector(setPaused:), NO);
                 }
-            } else {
+            } else {*/
                 self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:self.animationInterval target:self selector:@selector(drawView) userInfo:nil repeats:YES];
-            }
+            //}
         } else {
             id animationTimer = self.animationTimer;
             if([animationTimer isKindOfClass:[NSTimer class]]) {
