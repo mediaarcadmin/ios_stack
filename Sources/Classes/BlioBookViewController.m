@@ -120,10 +120,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.audioPlaying = NO;
         self.wantsFullScreenLayout = YES;
 		if (![self.book audioRights]) {
-			_acapelaTTS = *[BlioBookViewController getTTSEngine];
-			if ( _acapelaTTS != nil )  {
-				[_acapelaTTS setPageChanged:YES];
-				[_acapelaTTS setDelegate:self];
+			_acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
+			if ( _acapelaAudioManager != nil )  {
+				[_acapelaAudioManager setPageChanged:YES];
+				[_acapelaAudioManager setDelegate:self];
 			} 
 		}
         
@@ -1258,8 +1258,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
         		
-		if ( _acapelaTTS != nil )
-			[_acapelaTTS setPageChanged:YES];  
+		if ( _acapelaAudioManager != nil )
+			[_acapelaAudioManager setPageChanged:YES];  
 		if ( _audioBookManager != nil )
 			[_audioBookManager setPageChanged:YES];
 		
@@ -1331,13 +1331,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark TTS Handling 
 
 - (void)speakNextBlock:(NSTimer*)timer {
-	if ( _acapelaTTS.textToSpeakChanged ) {	
-		[_acapelaTTS setTextToSpeakChanged:NO];
-		if(![_acapelaTTS startSpeakingWords:_acapelaTTS.blockWords]) {
+	if ( _acapelaAudioManager.textToSpeakChanged ) {	
+		[_acapelaAudioManager setTextToSpeakChanged:NO];
+		if(![_acapelaAudioManager startSpeakingWords:_acapelaAudioManager.blockWords]) {
             // This probably means that the block was empty.  
             // Pretend that we have read everything from it (which, in effect, 
             // we have).
-            [self speechSynthesizer:_acapelaTTS.engine didFinishSpeaking:YES];
+            [self speechSynthesizer:_acapelaAudioManager.engine didFinishSpeaking:YES];
         }
 	}
 }
@@ -1435,12 +1435,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	return YES;
 }
 
-// Singleton pattern
-+ (AcapelaTTS**)getTTSEngine {
-	static AcapelaTTS* ttsEngine = nil; // can't initialize here unfortunately
-	return &ttsEngine;
-}
-
 #pragma mark -
 #pragma mark Acapela Delegate Methods 
 
@@ -1448,7 +1442,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
 	if (finishedSpeaking) {
 		// Reached end of block.  Start on the next.
-		[self prepareTextToSpeakWithAudioManager:_acapelaTTS continuingSpeech:YES]; 
+		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:YES]; 
 	}
 	//else stop button pushed before end of block.
 }
@@ -1457,15 +1451,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 				 ofString:(NSString*)string 
 {
     if(characterRange.location + characterRange.length <= string.length) {
-        NSUInteger wordOffset = [_acapelaTTS wordOffsetForCharacterRange:characterRange];
+        NSUInteger wordOffset = [_acapelaAudioManager wordOffsetForCharacterRange:characterRange];
         
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaTTS.currentBlock
+            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
                                                                                    wordOffset:wordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
-        [_acapelaTTS setCurrentWordOffset:wordOffset];
+        [_acapelaAudioManager setCurrentWordOffset:wordOffset];
     }
 }
 
@@ -1565,15 +1559,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)stopAudio {			
 		if (![self.book audioRights]) 
-			[_acapelaTTS stopSpeaking];
+			[_acapelaAudioManager stopSpeaking];
 		else if ([self.book audiobookFilename] != nil) 
 			[_audioBookManager stopAudio];
 }
 
 - (void)pauseAudio {			
 	if (![self.book audioRights]) {
-		[_acapelaTTS pauseSpeaking];
-		[_acapelaTTS setPageChanged:NO]; // In case speaking continued through a page turn.
+		[_acapelaAudioManager pauseSpeaking];
+		[_acapelaAudioManager setPageChanged:NO]; // In case speaking continued through a page turn.
 	}
 	else if ([self.book audiobookFilename] != nil) {
 		[_audioBookManager pauseAudio];
@@ -1582,14 +1576,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)prepareTTSEngine {
-	if (*[BlioBookViewController getTTSEngine] == nil) {
-		*[BlioBookViewController getTTSEngine] = [[AcapelaTTS alloc] init];
-		[*[BlioBookViewController getTTSEngine] setEngineWithPreferences:YES];  
-		_acapelaTTS = *[BlioBookViewController getTTSEngine]; 
-		[_acapelaTTS setDelegate:self];
-	}
-	else
-		[*[BlioBookViewController getTTSEngine] setEngineWithPreferences:[*[BlioBookViewController getTTSEngine] voiceHasChanged]]; 
+	[_acapelaAudioManager setEngineWithPreferences:YES];  
+	[_acapelaAudioManager setDelegate:self];
 }
 
 - (void)toggleAudio:(id)sender {
@@ -1604,9 +1592,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         if (![self.book audioRights]) {
             [self prepareTTSEngine];
-            [_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
-            [self prepareTextToSpeakWithAudioManager:_acapelaTTS continuingSpeech:NO];
-            self.audioPlaying = _acapelaTTS.startedPlaying;  
+            [_acapelaAudioManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
+            [self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:NO];
+            self.audioPlaying = _acapelaAudioManager.startedPlaying;  
         }
         else if ([self.book audiobookFilename] != nil) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 

@@ -13,6 +13,7 @@
 #import "BlioAlertManager.h"
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
+#import "AcapelaSpeech.h"
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -119,6 +120,11 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];	
+	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
+	
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;

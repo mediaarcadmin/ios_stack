@@ -145,9 +145,8 @@
 		A37A586C113C45640003CCFF /* back-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A5869113C45640003CCFF /* back-gray.png */; };
 		A37A586D113C45640003CCFF /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
 		A37A586E113C45640003CCFF /* forward-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586B113C45640003CCFF /* forward-gray.png */; };
-		A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
 		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
-		A37FC33610EA785F00F3DC5A /* AcapelaTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */; };
+		A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
 		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
 		A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
 		A38161601164FB3E003A9709 /* BlioBookVault.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161551164FB3E003A9709 /* BlioBookVault.m */; };
@@ -255,7 +254,6 @@
 		C9AF19EF1147A772007D7AFC /* paper-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2310E90C220016D44A /* paper-black.png */; };
 		C9AF19F01147A772007D7AFC /* paper-neutral.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2410E90C220016D44A /* paper-neutral.png */; };
 		C9AF19F11147A772007D7AFC /* paper-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2510E90C220016D44A /* paper-white.png */; };
-		C9AF19F21147A772007D7AFC /* TTS in Resources */ = {isa = PBXBuildFile; fileRef = A37FC0D910EA76AD00F3DC5A /* TTS */; };
 		C9AF19F31147A772007D7AFC /* icon-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57810F2289D00FD5F22 /* icon-lock.png */; };
 		C9AF19F41147A772007D7AFC /* icon-finger.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57910F2289D00FD5F22 /* icon-finger.png */; };
 		C9AF19F51147A772007D7AFC /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EEF10F2860F008614FD /* Default.png */; };
@@ -320,7 +318,7 @@
 		C9AF1A331147A772007D7AFC /* BlioLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */; };
 		C9AF1A341147A772007D7AFC /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		C9AF1A351147A772007D7AFC /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
-		C9AF1A371147A772007D7AFC /* AcapelaTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */; };
+		C9AF1A371147A772007D7AFC /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
 		C9AF1A381147A772007D7AFC /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
 		C9AF1A391147A772007D7AFC /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
 		C9AF1A3A1147A772007D7AFC /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = C932AF9310EBCFBD00B8286A /* BlioViewSettingsSheet.m */; };
@@ -431,6 +429,14 @@
 		DCA65A4811503CF6006534F4 /* icon-vault.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4611503CF6006534F4 /* icon-vault.png */; };
 		DCA65A4911503CF6006534F4 /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
 		DCA65A4A11503CF6006534F4 /* icon-vault.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4611503CF6006534F4 /* icon-vault.png */; };
+		DCC447E111ADBAB700CBD491 /* BlioVoiceData.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */; };
+		DCC447E211ADBAB700CBD491 /* BlioVoiceData.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */; };
+		DCC451E911B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
+		DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
+		DCC4548911B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
+		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
+		DCC45AD211B458A400CBD491 /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
+		DCC45AD311B458A400CBD491 /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
 		DCFF6192117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
 		DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6191117F6F4E00463427 /* button-delete-black.png */; };
 		DCFF6194117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
@@ -721,8 +727,8 @@
 		A37A586B113C45640003CCFF /* forward-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward-gray.png"; sourceTree = "<group>"; };
 		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
-		A37FC33310EA785F00F3DC5A /* AcapelaTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AcapelaTTS.h; path = TTS/AcapelaTTS.h; sourceTree = "<group>"; };
-		A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AcapelaTTS.m; path = TTS/AcapelaTTS.m; sourceTree = "<group>"; };
+		A37FC33310EA785F00F3DC5A /* BlioAcapelaAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioAcapelaAudioManager.h; path = TTS/BlioAcapelaAudioManager.h; sourceTree = "<group>"; };
+		A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioAcapelaAudioManager.m; path = TTS/BlioAcapelaAudioManager.m; sourceTree = "<group>"; };
 		A37FC33510EA785F00F3DC5A /* TTSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTSManager.h; path = TTS/TTSManager.h; sourceTree = "<group>"; };
 		A37FC33710EA787D00F3DC5A /* AcapelaSpeech.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AcapelaSpeech.h; path = TTS/Acapela/AcapelaSpeech.h; sourceTree = "<group>"; };
 		A37FC33810EA787D00F3DC5A /* force_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = force_cpp.cpp; path = TTS/Acapela/force_cpp.cpp; sourceTree = "<group>"; };
@@ -878,6 +884,11 @@
 		DCA65A3911503A4D006534F4 /* SearchCellDivider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SearchCellDivider.png; sourceTree = "<group>"; };
 		DCA65A4511503CF6006534F4 /* icon-categories.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-categories.png"; sourceTree = "<group>"; };
 		DCA65A4611503CF6006534F4 /* icon-vault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-vault.png"; sourceTree = "<group>"; };
+		DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioVoiceData.plist; sourceTree = "<group>"; };
+		DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDownloadVoicesViewController.h; sourceTree = "<group>"; };
+		DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDownloadVoicesViewController.m; sourceTree = "<group>"; };
+		DCC4548811B092A800CBD491 /* voice-sample-play-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "voice-sample-play-button.png"; sourceTree = "<group>"; };
+		DCC45ACB11B458A400CBD491 /* voiceSamples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = voiceSamples; sourceTree = "<group>"; };
 		DCFF6190117F6F4E00463427 /* button-delete-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-red.png"; sourceTree = "<group>"; };
 		DCFF6191117F6F4E00463427 /* button-delete-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-black.png"; sourceTree = "<group>"; };
 		DCFF6196117F703A00463427 /* library-resumebutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "library-resumebutton.png"; sourceTree = "<group>"; };
@@ -1018,6 +1029,8 @@
 				A3A672B411304D7700138097 /* BlioAppSettingsController.h */,
 				A3A67374113078E300138097 /* BlioAudioSettingsController.h */,
 				A3A67375113078E300138097 /* BlioAudioSettingsController.m */,
+				DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */,
+				DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */,
 				A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */,
 				A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */,
 				DC50779F116A3F2800CD40B3 /* Reachability.h */,
@@ -1079,10 +1092,12 @@
 				A37A586B113C45640003CCFF /* forward-gray.png */,
 				A37A584A113C36EF0003CCFF /* back-black.png */,
 				DC12F612117E563C0074B2D8 /* library-progress-background.png */,
+				DCC4548811B092A800CBD491 /* voice-sample-play-button.png */,
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				C9E1FAA7110F26DB00999587 /* TextFlows */,
 				A349F067110E31CC009A8F89 /* AudioBooks */,
 				A37FC0D910EA76AD00F3DC5A /* TTS */,
+				DCC45ACB11B458A400CBD491 /* voiceSamples */,
 				C9775E9A10DFE1C3005E0E2B /* MockCovers */,
 				C94D27B510DBCF4C00F30AFE /* PDFs */,
 				7DF58BA210DA9A86004E3DBB /* ePubs */,
@@ -1144,6 +1159,7 @@
 				7DF2A589115381EF00FC2045 /* TextFlow.css */,
 				7D529C101158DC1100548C00 /* TextFlowCover.xhtml */,
 				C9E5DC11117C741600950BA0 /* Localizable.strings */,
+				DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1304,8 +1320,8 @@
 				A37FC33910EA787D00F3DC5A /* force_cpp.h */,
 				A37FC33A10EA787D00F3DC5A /* setupTTS.h */,
 				A37FC33B10EA787D00F3DC5A /* setupTTS.m */,
-				A37FC33310EA785F00F3DC5A /* AcapelaTTS.h */,
-				A37FC33410EA785F00F3DC5A /* AcapelaTTS.m */,
+				A37FC33310EA785F00F3DC5A /* BlioAcapelaAudioManager.h */,
+				A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */,
 				A37FC33510EA785F00F3DC5A /* TTSManager.h */,
 			);
 			name = TTS;
@@ -1689,7 +1705,6 @@
 				7D81ED2610E90C220016D44A /* paper-black.png in Resources */,
 				7D81ED2710E90C220016D44A /* paper-neutral.png in Resources */,
 				7D81ED2810E90C220016D44A /* paper-white.png in Resources */,
-				A37FC0EF10EA76AD00F3DC5A /* TTS in Resources */,
 				C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */,
 				C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */,
 				55822EF210F2860F008614FD /* Default.png in Resources */,
@@ -1765,6 +1780,9 @@
 				DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */,
 				DCFF6198117F703A00463427 /* library-resumebutton.png in Resources */,
 				DCFF6199117F703A00463427 /* library-pausebutton.png in Resources */,
+				DCC447E211ADBAB700CBD491 /* BlioVoiceData.plist in Resources */,
+				DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */,
+				DCC45AD311B458A400CBD491 /* voiceSamples in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1808,7 +1826,6 @@
 				C9AF19EF1147A772007D7AFC /* paper-black.png in Resources */,
 				C9AF19F01147A772007D7AFC /* paper-neutral.png in Resources */,
 				C9AF19F11147A772007D7AFC /* paper-white.png in Resources */,
-				C9AF19F21147A772007D7AFC /* TTS in Resources */,
 				C9AF19F31147A772007D7AFC /* icon-lock.png in Resources */,
 				C9AF19F41147A772007D7AFC /* icon-finger.png in Resources */,
 				C9AF19F51147A772007D7AFC /* Default.png in Resources */,
@@ -1880,6 +1897,9 @@
 				DCFF6195117F6F4E00463427 /* button-delete-black.png in Resources */,
 				DCFF619A117F703A00463427 /* library-resumebutton.png in Resources */,
 				DCFF619B117F703A00463427 /* library-pausebutton.png in Resources */,
+				DCC447E111ADBAB700CBD491 /* BlioVoiceData.plist in Resources */,
+				DCC4548911B092A800CBD491 /* voice-sample-play-button.png in Resources */,
+				DCC45AD211B458A400CBD491 /* voiceSamples in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1895,7 +1915,7 @@
 				28C286E10D94DF7D0034E888 /* BlioLibraryViewController.m in Sources */,
 				C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */,
 				C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */,
-				A37FC33610EA785F00F3DC5A /* AcapelaTTS.m in Sources */,
+				A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */,
 				A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */,
 				A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */,
 				C932AF9410EBCFBD00B8286A /* BlioViewSettingsSheet.m in Sources */,
@@ -1971,6 +1991,7 @@
 				DC0B99381194E9190040CEFB /* BlioStoreManager.m in Sources */,
 				DC0B993F1194F03B0040CEFB /* BlioStoreHelper.m in Sources */,
 				7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */,
+				DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1985,7 +2006,7 @@
 				C9AF1A331147A772007D7AFC /* BlioLibraryViewController.m in Sources */,
 				C9AF1A341147A772007D7AFC /* BlioLayoutView.m in Sources */,
 				C9AF1A351147A772007D7AFC /* BlioMockBook.m in Sources */,
-				C9AF1A371147A772007D7AFC /* AcapelaTTS.m in Sources */,
+				C9AF1A371147A772007D7AFC /* BlioAcapelaAudioManager.m in Sources */,
 				C9AF1A381147A772007D7AFC /* force_cpp.cpp in Sources */,
 				C9AF1A391147A772007D7AFC /* setupTTS.m in Sources */,
 				C9AF1A3A1147A772007D7AFC /* BlioViewSettingsSheet.m in Sources */,
@@ -2059,6 +2080,7 @@
 				DC0B99391194E9190040CEFB /* BlioStoreManager.m in Sources */,
 				DC0B993E1194F03B0040CEFB /* BlioStoreHelper.m in Sources */,
 				7DD9BA151199B7F4001FED8E /* BlioSelectableBookView.m in Sources */,
+				DCC451E911B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

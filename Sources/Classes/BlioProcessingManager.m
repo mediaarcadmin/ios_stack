@@ -456,14 +456,14 @@
 			url = nil;
 		}
 		BOOL usedPreExistingOperation = NO;
-		BlioProcessingPaidBookDownloadAndUnzipOperation * paidBookOp = nil;
+		BlioProcessingDownloadAndUnzipPaidBookOperation * paidBookOp = nil;
 		
 		if (nil != url) {
 			// we still need to finish downloading this file
 			// so check to see if operation already exists
-			paidBookOp = (BlioProcessingPaidBookDownloadAndUnzipOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingPaidBookDownloadOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			paidBookOp = (BlioProcessingDownloadAndUnzipPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingPaidBookDownloadOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!paidBookOp || paidBookOp.isCancelled) {
-				paidBookOp = [[[BlioProcessingPaidBookDownloadAndUnzipOperation alloc] initWithUrl:url] autorelease];
+				paidBookOp = [[[BlioProcessingDownloadAndUnzipPaidBookOperation alloc] initWithUrl:url] autorelease];
 				paidBookOp.bookID = bookID;
 				paidBookOp.sourceID = sourceID;
 				paidBookOp.sourceSpecificID = sourceSpecificID;

@@ -9,6 +9,8 @@
 #import "BlioAudioSettingsController.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookViewController.h"
+#import "BlioDownloadVoicesViewController.h"
+#import "BlioAcapelaAudioManager.h"
 
 @interface BlioAudioSettingsController(PRIVATE)
 - (void)layoutControlsForOrientation:(UIInterfaceOrientation)orientation;
@@ -16,21 +18,44 @@
 
 @implementation BlioAudioSettingsController
 
+@synthesize voiceControl, speedControl, volumeControl, playButton, voiceLabel, speedLabel, volumeLabel, availableVoices, contentView, footerHeight;
 
 - (id)init
 {
 	self = [super init];
 	if (self)
 	{
-		self.title = @"Text to Speech";
+		self.title = NSLocalizedString(@"Text to Speech",@"\"Text to Speech\" view controller title.");
 	}
 	return self;
 }
+-(void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	self.voiceControl = nil;
+	self.speedControl = nil;
+	self.volumeControl = nil;
+	self.playButton = nil;
+    self.voiceLabel = nil;
+    self.speedLabel = nil;
+    self.volumeLabel = nil;
+	self.availableVoices = nil;
+	self.contentView = nil;
+	[super dealloc];
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onVoiceListRefreshedNotification:) name:BlioVoiceListRefreshedNotification object:nil];
 
+    // Uncomment the following line to preserve selection between presentations.
+//    self.clearsSelectionOnViewWillAppear = YES;
+}
+-(void)viewDidUnload {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioVoiceListRefreshedNotification object:nil];
+}
 - (void)viewWillDisappear:(BOOL)animated {
-	AcapelaTTS** tts = [BlioBookViewController getTTSEngine];
-	if ( *tts != nil && [*tts isSpeaking] )
-		[*tts stopSpeaking]; 
+	BlioAcapelaAudioManager * tts = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
+	if (tts != nil && [tts isSpeaking] )
+		[tts stopSpeaking]; 
 }
 
 + (UILabel *)labelWithFrame:(CGRect)frame title:(NSString *)title
@@ -48,29 +73,28 @@
 
 - (void)createControls
 {
-	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Laura", @"Ryan", nil];
 	
-	// Voice control
-    voiceLabel = [BlioAudioSettingsController labelWithFrame:CGRectZero title:@"Voice"];
-	[self.view addSubview:voiceLabel];
+//	// Voice control
+//    self.voiceLabel = [BlioAudioSettingsController labelWithFrame:CGRectZero title:@"Voice"];
+//	[self.contentView addSubview:voiceLabel];
 
-    voiceControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
-    voiceControl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
-    
-	[voiceControl addTarget:self action:@selector(changeVoice:) forControlEvents:UIControlEventValueChanged];
-	voiceControl.segmentedControlStyle = UISegmentedControlStyleBar;
-	// If no voice has previously been set, set to the first voice (female).
-	[voiceControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]];
-	[self.view addSubview:voiceControl];
-	[voiceControl release];
+//	NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Laura", @"Ryan", nil];
+//    self.voiceControl = [[[UISegmentedControl alloc] initWithItems:segmentTextContent] autorelease];
+//    voiceControl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+//    
+//	[voiceControl addTarget:self action:@selector(changeVoice:) forControlEvents:UIControlEventValueChanged];
+//	voiceControl.segmentedControlStyle = UISegmentedControlStyleBar;
+//	// If no voice has previously been set, set to the first voice (female).
+//	[voiceControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]];
+//	[self.contentView addSubview:voiceControl];
 	
 	// Speed control
 	
-    speedLabel = [BlioAudioSettingsController labelWithFrame:CGRectZero title:@"Speed"];
-	[self.view addSubview:speedLabel];
+    self.speedLabel = [BlioAudioSettingsController labelWithFrame:CGRectZero title:NSLocalizedString(@"Speed",@"\"Speed\" audio setting label.")];
+	[self.contentView addSubview:speedLabel];
 	
 	
-	speedControl = [[UISlider alloc] initWithFrame:CGRectZero];
+	self.speedControl = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
     speedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	[speedControl addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventValueChanged];
 	// in case the parent view draws with a custom color or gradient, use a transparent color
@@ -84,14 +108,13 @@
 		// Preference has not been set.  Set to default.
 		[[NSUserDefaults standardUserDefaults] setFloat:180.0 forKey:kBlioLastSpeedDefaultsKey];
 	speedControl.value = [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastSpeedDefaultsKey];
-	[self.view addSubview:speedControl];
-	[speedControl release];
+	[self.contentView addSubview:speedControl];
 	
 	// Volume control
-    volumeLabel = [BlioAudioSettingsController labelWithFrame:CGRectZero title:@"Volume"];
-	[self.view addSubview:volumeLabel];
+    self.volumeLabel = [BlioAudioSettingsController labelWithFrame:CGRectZero title:NSLocalizedString(@"Volume",@"\"Volume\" audio setting label.")];
+	[self.contentView addSubview:volumeLabel];
 
-	volumeControl = [[UISlider alloc] initWithFrame:CGRectZero];
+	self.volumeControl = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
     volumeControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	[volumeControl addTarget:self action:@selector(changeVolume:) forControlEvents:UIControlEventValueChanged];
 	volumeControl.backgroundColor = [UIColor clearColor];
@@ -104,17 +127,15 @@
 		// Preference has not been set.  Set to default.
 		[[NSUserDefaults standardUserDefaults] setFloat:50.0 forKey:kBlioLastVolumeDefaultsKey];
 	volumeControl.value = [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastVolumeDefaultsKey];
-	[self.view addSubview:volumeControl];
-	[volumeControl release];
+	[self.contentView addSubview:volumeControl];
 	
 	// Play sample button.
-	playButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+	self.playButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     playButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-	[playButton setTitle:@"Play sample" forState:UIControlStateNormal];
+	[playButton setTitle:NSLocalizedString(@"Play sample",@"\"Play sample\" button title in audio settings.") forState:UIControlStateNormal];
 	playButton.backgroundColor = [UIColor clearColor];
 	[playButton addTarget:self action:@selector(playSample:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:playButton];
-	[playButton release];
+	[self.contentView addSubview:playButton];
     
     [self layoutControlsForOrientation:self.interfaceOrientation];
 }
@@ -127,19 +148,19 @@
         topMargin = floorf(topMargin/2.0f);
         tweenMargin = floorf(tweenMargin/2.0f);
     }
-    
+    CGRect frame = CGRectZero;
     CGFloat yPlacement = topMargin;
-	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
-    voiceLabel.frame = frame;
-    
-    yPlacement += tweenMargin + kLabelHeight;
-    frame = CGRectMake(	kLeftMargin,
-					   yPlacement,
-					   self.view.bounds.size.width - (kRightMargin * 2.0),
-					   kSegmentedControlHeight);
-    voiceControl.frame = frame;
-    
-    yPlacement += (tweenMargin * 2.0) + kSegmentedControlHeight;
+//	frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
+//    voiceLabel.frame = frame;
+//    
+//    yPlacement += tweenMargin + kLabelHeight;
+//    frame = CGRectMake(	kLeftMargin,
+//					   yPlacement,
+//					   self.view.bounds.size.width - (kRightMargin * 2.0),
+//					   kSegmentedControlHeight);
+//    voiceControl.frame = frame;
+//    
+//    yPlacement += (tweenMargin * 2.0) + kSegmentedControlHeight;
 	frame = CGRectMake(	kLeftMargin,
 					   yPlacement,
 					   self.view.bounds.size.width,
@@ -171,6 +192,7 @@
     frame = CGRectMake((self.view.bounds.size.width - kStdButtonWidth)/2, yPlacement, kStdButtonWidth, kStdButtonHeight);
     
     playButton.frame = frame;
+	self.footerHeight = yPlacement + kStdButtonHeight;
 }
 
 -(void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -182,12 +204,11 @@
 
 - (void)loadView
 {	
+	[super loadView];
 	// create a gradient-based content view	
-	UIView *contentView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-	contentView.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
-	contentView.autoresizesSubviews = YES;
-	self.view = contentView;
-	[contentView release];
+	self.contentView = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
+	[AcapelaSpeech refreshVoiceList];
+	self.availableVoices = [AcapelaSpeech availableVoices];
 	[self createControls];	
 }
 
@@ -198,12 +219,19 @@
         return YES;
 }
 
-- (void)changeVoice:(id)sender
-{
-	UISegmentedControl* ctl = (UISegmentedControl*)sender;
-	if ( ctl == voiceControl )
-		[[NSUserDefaults standardUserDefaults] setInteger:(AcapelaVoice)([sender selectedSegmentIndex]) forKey:kBlioLastVoiceDefaultsKey];
+-(void)onVoiceListRefreshedNotification:(NSNotification*)note {
+	NSLog(@"BlioAudioSettingsController onVoiceListRefreshedNotification entered");
+	self.availableVoices = [AcapelaSpeech availableVoices];
+	[self.tableView reloadData];
 }
+
+
+//- (void)changeVoice:(id)sender
+//{
+//	UISegmentedControl* ctl = (UISegmentedControl*)sender;
+//	if ( ctl == voiceControl )
+//		[[NSUserDefaults standardUserDefaults] setInteger:(AcapelaVoice)([sender selectedSegmentIndex]) forKey:kBlioLastVoiceDefaultsKey];
+//}
 
 - (void)changeSpeed:(id)sender
 {
@@ -220,17 +248,92 @@
 }
 
 - (void)playSample:(id)sender {	
+	BlioAcapelaAudioManager * tts = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
+	if (tts != nil && [tts isSpeaking] )
+		[tts stopSpeaking];
+	tts.currentWordOffset = 0;
 	UIButton* ctl = (UIButton*)sender;
 	if ( ctl == playButton ) {
-		AcapelaTTS** tts = [BlioBookViewController getTTSEngine];
-		if ( *tts == nil ) {
-			*tts = [[AcapelaTTS alloc] init]; 
-			[*tts setEngineWithPreferences:YES];
+		[tts setEngineWithPreferences:[tts voiceHasChanged]];
+		NSString *samplePhrase = NSLocalizedStringWithDefaultValue(@"TTS_SAMPLE_PHRASE",nil,[NSBundle mainBundle],@"It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness.",@"Sample phrase spoken by TTS engine.");
+
+		[tts startSpeaking:samplePhrase]; 
+		
+	}
+}
+#pragma mark UITableViewDataSource Methods
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+	return 1;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	return NSLocalizedString(@"Voices",@"\"Voices\" table header in Audio Settings View");
+}
+
+// Customize the number of rows in the table view.
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	NSInteger voicesAvailableForDownloadStatus = 0;
+	if ([[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForDownload]) voicesAvailableForDownloadStatus = 1;
+	return [self.availableVoices count] + voicesAvailableForDownloadStatus;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	static NSString *ListCellIdentifier = @"UITableViewCelldentifier";
+	UITableViewCell *cell;
+	
+	cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+	if (cell == nil) {
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+	}
+	if (indexPath.row == self.availableVoices.count) {
+		// special "More Voices" cell
+		cell.textLabel.text = NSLocalizedString(@"Download Voices","\"Download Voices\" cell label");
+		[cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+	}
+	else {
+		cell.textLabel.text = [self.availableVoices objectAtIndex:indexPath.row];
+		NSString * voiceName = [BlioAcapelaAudioManager voiceNameForVoice:cell.textLabel.text];
+		if (voiceName) cell.textLabel.text = voiceName;
+		if ([[self.availableVoices objectAtIndex:indexPath.row] isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:kBlioLastVoiceDefaultsKey]]) 
+		{
+			[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
 		}
-		else
-			[*tts setEngineWithPreferences:[*tts voiceHasChanged]];
-		[*tts startSpeaking:@"It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness."]; 
+		else [cell setAccessoryType:UITableViewCellAccessoryNone];
+	}	
+	return cell;
+}
+
+#pragma mark UITableViewDelegate Methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 44;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	if (indexPath.row == self.availableVoices.count) {
+		[self.navigationController pushViewController:[[[BlioDownloadVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
+	}
+	else {
+		[tableView deselectRowAtIndexPath:indexPath animated:YES];
+		for (UITableViewCell * cell in [tableView visibleCells]) {
+			if (cell != [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow: self.availableVoices.count inSection:0]]) [cell setAccessoryType:UITableViewCellAccessoryNone];
+		}
+		BlioAcapelaAudioManager * tts = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
+		if (tts != nil && [tts isSpeaking] )
+			[tts stopSpeaking];
+		[[NSUserDefaults standardUserDefaults] setObject:[self.availableVoices objectAtIndex:indexPath.row] forKey:kBlioLastVoiceDefaultsKey];
+		[[tts setupData] setCurrentVoice:[self.availableVoices objectAtIndex:indexPath.row]];
+		[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
 	}
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+	if (self.availableVoices && [self.availableVoices count] > 0) return self.contentView;
+	else return nil;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+	return self.footerHeight;
+}
 @end

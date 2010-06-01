@@ -51,6 +51,7 @@
 - (void)downloadDidFinishSuccessfully:(BOOL)success;
 -(void)startDownload;
 -(void)headDownload;
+-(NSString*)temporaryPath;
 
 @end
 
@@ -62,7 +63,14 @@
 
 @end
 
-@interface BlioProcessingPaidBookDownloadAndUnzipOperation : BlioProcessingDownloadAndUnzipOperation
+@interface BlioProcessingDownloadAndUnzipVoiceOperation : BlioProcessingDownloadAndUnzipOperation {
+	NSString * voice;
+}
+@property (nonatomic, copy) NSString *voice;
+
+@end
+
+@interface BlioProcessingDownloadAndUnzipPaidBookOperation : BlioProcessingDownloadAndUnzipOperation
 @end
 
 @interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation
