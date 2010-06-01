@@ -101,11 +101,12 @@
          object:nil];
          }       */ 
         
-        _pageLayoutController = [[[_book pageLayoutControllerClass] alloc] initWithBook:_book fontPointSize:desiredPointSize];  
+        _pageLayoutController = [[[_book pageLayoutControllerClass] alloc] initWithBook:_book 
+                                                                               pageSize:self.bounds.size
+                                                                          fontPointSize:desiredPointSize];  
          
         self.opaque = YES;
-        
-        self.backgroundColor = [UIColor yellowColor];
+        self.backgroundColor = [UIColor blackColor];
     }
     return self;
 }
@@ -208,6 +209,16 @@
     }
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    CGSize newSize = self.bounds.size;
+    if(!CGSizeEqualToSize(newSize, _pageLayoutController.pageSize)) {
+        _pageLayoutController.pageSize = newSize;
+        [self _redisplayCurrentPage];
+    }
+}
+
 - (void)setSelectorDelegate:(id<EucSelectorDelegate>)delegate
 {
     if(self.selector) {
@@ -234,7 +245,7 @@
 
 - (void)stopAnimation
 {
-    [_pageTurningView stopAnimation];
+    _pageTurningView.animating = NO;
 }
 
 #pragma mark -
@@ -280,7 +291,7 @@
         self.pageTexture = pageTexture;
         self.pageTextureIsDark = isDark;
         [_pageTurningView setPageTexture:pageTexture isDark:isDark];
-        [_pageTurningView drawView];
+        [_pageTurningView setNeedsDraw];
     }
 }
 
@@ -358,7 +369,7 @@
             [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count];
         } else {
             _pageTurningView.currentPageView = newPageView;
-            [_pageTurningView drawView];
+            [_pageTurningView setNeedsDraw];
             
             [self pageTurningView:_pageTurningView didTurnToView:newPageView];
         }

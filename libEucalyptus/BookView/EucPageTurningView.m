@@ -158,29 +158,26 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 }
 
 
-- (void)startAnimation
+- (void)setAnimating:(BOOL)animating
 {
-    if(!_animating) {
-        // Curtail background tasks to allow smooth animation.
-        if([_delegate respondsToSelector:@selector(pageTurningViewAnimationWillBegin:)]) {
-            [_delegate pageTurningViewAnimationWillBegin:self];   
+    if(animating) {
+        if(!self.isAnimating) {
+            // Curtail background tasks to allow smooth animation.
+            if([_delegate respondsToSelector:@selector(pageTurningViewAnimationWillBegin:)]) {
+                [_delegate pageTurningViewAnimationWillBegin:self];   
+            }
+            [THBackgroundProcessingMediator curtailBackgroundProcessing];
+            super.animating = YES;
         }
-        [THBackgroundProcessingMediator curtailBackgroundProcessing];
-        _animating = YES;
-        [super startAnimation];
-    }
-}
-
-- (void)stopAnimation
-{
-    if(_animating) {
-        // Allow background tasks again.
-        [THBackgroundProcessingMediator allowBackgroundProcessing];
-        _animating = NO;
-        [super stopAnimation];
-        if([_delegate respondsToSelector:@selector(pageTurningViewAnimationDidEnd:)]) {
-            [_delegate pageTurningViewAnimationDidEnd:self];   
-        }        
+    } else {
+        if(self.isAnimating) {
+            // Allow background tasks again.
+            [THBackgroundProcessingMediator allowBackgroundProcessing];
+            super.animating = NO;
+            if([_delegate respondsToSelector:@selector(pageTurningViewAnimationDidEnd:)]) {
+                [_delegate pageTurningViewAnimationDidEnd:self];   
+            }        
+        }
     }
 }
 
@@ -214,7 +211,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 }
 
 - (void)_pageTurningViewInternalInit
-{
+{    
     GLfloat white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     memcpy(_specularColor, white, 4 * sizeof(GLfloat));
     _shininess = 60.0;
@@ -231,14 +228,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _lightPosition.y = 0.25f;
     _lightPosition.z = 1.79f;
     
-    [EAGLContext setCurrentContext:context];
+    EAGLContext *eaglContext = self.eaglContext;
+    [EAGLContext setCurrentContext:eaglContext];
 
-    CGSize boundsSize = self.bounds.size;
-    _powerOf2Bounds.width = (CGFloat)nextPowerOfTwo((uint32_t)boundsSize.width);
-    _powerOf2Bounds.height = (CGFloat)nextPowerOfTwo((uint32_t)boundsSize.height);
-    
-    CGFloat po2WidthScale = _powerOf2Bounds.width / boundsSize.width;
-    CGFloat po2HeightScale = _powerOf2Bounds.height / boundsSize.height;
     
     GLfloat yCoord = 0;
     
@@ -310,17 +302,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
-    GLfloat yAddition = (_powerOf2Bounds.height - boundsSize.height) / _powerOf2Bounds.height;
-    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-            GLfloat x = _pageVertices[row][column].x / PAGE_WIDTH / po2WidthScale;
-            _pageTextureCoordinates[row][column].x = x;
-            GLfloat y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) / po2HeightScale + yAddition;
-            _pageTextureCoordinates[row][column].y = y;
-        }
-    } 
-    
+        
     NSString *path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
     NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
     glGenTextures(1, &_bookEdgeTexture);
@@ -336,7 +318,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     
-    _textureUploadContext = [[EAGLContext alloc] initWithAPI:[context API] sharegroup:[context sharegroup]];
+    _textureUploadContext = [[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
     
     _animatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"animatedBookTurnVertices" ofType:@"vertexData"]];
     _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
@@ -371,7 +353,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 {
     [_textureUploadContext release];
     
-    [EAGLContext setCurrentContext:context];
+    [EAGLContext setCurrentContext:self.eaglContext];
     for(int i = 0; i < 4; ++i) {
         [_pageViews[i] release];
         if(_pageTextures[i]) {
@@ -421,20 +403,28 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
-- (void)_createTextureIn:(GLuint *)textureRef from:(id)viewOrImage;
-{
-    GLuint width, height;
-    CGRect bounds = self.bounds;
-
-    width = _powerOf2Bounds.height;
-    height = _powerOf2Bounds.width;
+- (void)_createTextureIn:(GLuint *)textureRef 
+                    from:(id)viewOrImage
+   setTextureCoordinates:(TextureCoordinates *)coordinates
+{    
+    CGSize rawSize;
+    if([viewOrImage isKindOfClass:[UIView class]]) {
+        rawSize = [(UIView *)viewOrImage bounds].size;
+    } else {
+        rawSize = [(UIImage *)viewOrImage size];
+    }
     
-    size_t byteLength = width * height * 4;
+    CGSize powerOfTwoSize = CGSizeMake(nextPowerOfTwo(rawSize.width), nextPowerOfTwo(rawSize.height));
+
+    GLuint powerOfTwoWidth = powerOfTwoSize.height;
+    GLuint powerOfTwoHeight = powerOfTwoSize.width;
+    
+    size_t byteLength = powerOfTwoWidth * powerOfTwoHeight * 4;
     GLubyte *textureData = (GLubyte *)malloc(byteLength);
     
     memset(textureData, 0xFFFFFFFF, byteLength);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef textureContext = CGBitmapContextCreate(textureData, width, height, 8, width * 4, 
+    CGContextRef textureContext = CGBitmapContextCreate(textureData, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
                                                         colorSpace, kCGImageAlphaPremultipliedLast);
     
     if([viewOrImage isKindOfClass:[UIView class]]) {
@@ -443,18 +433,21 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             CGContextSetFillColorSpace(textureContext, colorSpace);
             CGContextSetStrokeColorSpace(textureContext, colorSpace); 
             
-            [(UIView<THUIViewThreadSafeDrawing> *)view drawRect:bounds inContext:textureContext];
+            [(UIView<THUIViewThreadSafeDrawing> *)view drawRect:CGRectMake(0, 0, rawSize.width,rawSize.height)
+                                                      inContext:textureContext];
         } else {
             [view.layer renderInContext:textureContext];
         }
     } else {
         CGImageRef image = ((UIImage *)viewOrImage).CGImage;
-        CGContextDrawImage(textureContext, bounds, image);
+        CGContextDrawImage(textureContext, CGRectMake(0, 0, rawSize.width,rawSize.height), image);
     }
     
+    /*  
     CGImageRef image = CGBitmapContextCreateImage(textureContext);
     static int num = 0;
     [UIImagePNGRepresentation([UIImage imageWithCGImage:image]) writeToFile:[NSString stringWithFormat:@"/tmp/test%d.png", (int)num++] atomically:NO];
+    */
     
     CGContextRelease(textureContext);
     CGColorSpaceRelease(colorSpace);
@@ -471,9 +464,23 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
     
     free(textureData);
+    
+    if(coordinates && coordinates->innerPixelWidth != rawSize.width && coordinates -> innerPixelHeight != rawSize.height) {
+        CGFloat po2WidthScale = powerOfTwoSize.width / rawSize.width;
+        CGFloat po2HeightScale = powerOfTwoSize.height / rawSize.height;
+        GLfloat yAddition = (powerOfTwoSize.height - rawSize.height) / powerOfTwoSize.height;
+        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+                GLfloat x = _pageVertices[row][column].x / PAGE_WIDTH / po2WidthScale;
+                coordinates->textureCoordinates[row][column].x = x;
+                GLfloat y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) / po2HeightScale + yAddition;
+                coordinates->textureCoordinates[row][column].y = y;
+            }
+        }     
+    }
 }
 
 - (void)_setView:(UIView *)view forPage:(int)page
@@ -481,7 +488,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_pageViews[page] != view) {
         [_pageViews[page] release];
         if(view) {
-            [self _createTextureIn:&_pageTextures[page] from:view];
+            [self _createTextureIn:&_pageTextures[page]
+                              from:view
+             setTextureCoordinates:&_pageTextureCoordinates];
         }
         _pageViews[page] = [view retain];
     }
@@ -530,7 +539,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         _automaticTurnPercentage = percentage;
         
-        [self startAnimation];
+        self.animating = YES;
     }
 }
 
@@ -542,7 +551,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
-    [self _createTextureIn:&_blankPageTexture from:pageTexture];
+    [self _createTextureIn:&_blankPageTexture 
+                      from:pageTexture
+     setTextureCoordinates:&_blankPageTextureCoordinates];
     _pageTextureIsDark = isDark;
 }
 
@@ -700,17 +711,23 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     }
 }
 
+
 - (void)drawView 
 {        
-    BOOL shouldStopAnimating = !_animating;
-    if(_animating && !_isTurningAutomatically) {
+    [super drawView];
+    
+    BOOL animating = self.isAnimating;
+    
+    BOOL shouldStopAnimating = !animating;
+    if(animating && !_isTurningAutomatically) {
         //[self _accumulateForces]; // Not used - see comments around implementation.
         [self _verlet];
         shouldStopAnimating = [self _satisfyConstraints];
         [self _calculateVertexNormals];
-    }
+    } 
 
-    [EAGLContext setCurrentContext:context];
+    EAGLContext *eaglContext = self.eaglContext;
+    [EAGLContext setCurrentContext:eaglContext];
     /*
     glActiveTexture(GL_TEXTURE0);
     glEnable (GL_BLEND);
@@ -722,8 +739,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     */
     glActiveTexture(GL_TEXTURE0);
 
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
-    glViewport(0, 0, backingWidth, backingHeight);
+    glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
+    glViewport(0, 0, _backingWidth, _backingHeight);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -779,24 +796,22 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glEnableClientState(GL_NORMAL_ARRAY);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     
-    // Sample RGB, multiply by previous texunit result
     glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
     glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
     glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
     
-    // Sample ALPHA, multiply by previous texunit result
-    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_DECAL);  //Get ALPHA of previous TUI (tex0)
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_DECAL); 
     glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
     
     
     glClientActiveTexture(GL_TEXTURE0);
-    glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates);
+    glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates.textureCoordinates);
     
     glClientActiveTexture(GL_TEXTURE1);
-    glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates);
+    glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates.textureCoordinates);
     
     glActiveTexture(GL_TEXTURE0);
     glClientActiveTexture(GL_TEXTURE0);
@@ -998,15 +1013,15 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         glReadPixels(0, 0, bounds.size.width, bounds.size.height, GL_RGBA, GL_UNSIGNED_BYTE, _atRenderScreenshotBuffer);
     }
         
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
-    [context presentRenderbuffer:GL_RENDERBUFFER_OES];
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, _viewRenderbuffer);
+    [eaglContext presentRenderbuffer:GL_RENDERBUFFER_OES];
 
     if(_viewsNeedRecache) {
         [self _postAnimationViewAndTextureRecache];
     }
     
     if(shouldStopAnimating) {
-        [self stopAnimation];
+        self.animating = NO;
     }
 }
 
@@ -1056,14 +1071,14 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         // Store touch
         _touch = touch;
         _touchBeganTime = [touch timestamp];
-        if(_animating) {
+        if(self.isAnimating) {
             [self setTouchLocationFromTouch:_touch firstTouch:YES];
         } else {
             _vibrated = NO;
         }
     }
     
-    if(_animating || _vibrated) {
+    if(self.isAnimating || _vibrated) {
         // We've already started to turn the page.
         // Remove the touch we're 'using' and pass the rest on.
         NSMutableSet *unusedTouches = [touches mutableCopy];
@@ -1104,7 +1119,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     if([touches containsObject:_touch]) {
         if(self.userInteractionEnabled) {
             // If first movement
-            if(!_animating) {
+            if(!self.isAnimating) {
                 // usleep(180000); Test to see if it would be acceptable to re-cache
                 // the view here (it would not).
                 
@@ -1112,7 +1127,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 BOOL shouldAnimate = YES;
                 CGPoint location = [_touch locationInView:self];
                 CGPoint previousLocation = [_touch previousLocationInView:self];
-                if(!_animating && previousLocation.x < location.x) {
+                if(previousLocation.x < location.x) {
                     if(_pageViews[0]) {
                         for(int column = 1; column < X_VERTEX_COUNT; ++column) {
                             for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
@@ -1124,20 +1139,20 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                     } else {
                         shouldAnimate = NO;
                     }
-                } else if (!_animating) {
+                } else {
                     if(_pageViews[2]) {
                         _flatPageIndex = 2;
                     } else {
                         shouldAnimate = NO;
                     }
                 }
-                if(!_animating && !_vibrated) {
+                if(!_vibrated) {
                     [_pageViews[1] touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
                 }
                 if(shouldAnimate) {
                     _vibrated = NO;
                     [self setTouchLocationFromTouch:_touch firstTouch:YES];
-                    [self startAnimation];
+                    self.animating = YES;
                 } else {
                     if(!_vibrated) {
                         AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
@@ -1174,7 +1189,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         }
     }
     
-    if(_animating || _vibrated || _pinchUnderway) {
+    if(self.isAnimating || _vibrated || _pinchUnderway) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_touch) {
             [unusedTouches removeObject:_touch];
@@ -1260,7 +1275,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if(_animating || _vibrated) {
+    if(self.isAnimating || _vibrated) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_touch) {
             [unusedTouches removeObject:_touch];
@@ -1319,7 +1334,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if(_animating || _vibrated) {
+    if(self.isAnimating || _vibrated) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_touch) {
             [unusedTouches removeObject:_touch];
@@ -1696,7 +1711,9 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 {
     for(int i = 0; i < sizeof(_pageViews); ++i) {
         if(view == _pageViews[i]) {
-            [self _createTextureIn:&_pageTextures[i] from:view];
+            [self _createTextureIn:&_pageTextures[i] 
+                              from:view
+             setTextureCoordinates:&_pageTextureCoordinates];
             break;
         }
     }

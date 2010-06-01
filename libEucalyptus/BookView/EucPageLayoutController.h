@@ -17,12 +17,16 @@
 
 @property (nonatomic, readonly) id<EucBook> book;
 
+@property (nonatomic, assign) CGSize pageSize;
+
 @property (nonatomic, readonly) NSArray *availablePointSizes;
 @property (nonatomic, assign) CGFloat fontPointSize;
 
 @property (nonatomic, readonly) NSUInteger globalPageCount;
 
-- (id)initWithBook:(id<EucBook>)book fontPointSize:(CGFloat)pointSize;
+- (id)initWithBook:(id<EucBook>)book 
+          pageSize:(CGSize)pageSize
+     fontPointSize:(CGFloat)pointSize;
 
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
@@ -33,7 +37,9 @@
 
 - (BOOL)viewShouldBeRigid:(UIView *)view;
 
-+ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture;
++ (EucPageView *)blankPageViewWithFrame:(CGRect)frame
+                           forPointSize:(CGFloat)pointSize
+                        withPageTexture:(UIImage *)pageTexture;
 
 // A full description.
 // i.e. page 3 might be "1 of 300", to discount the cover and inner licence page.
