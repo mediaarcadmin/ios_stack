@@ -1,6 +1,6 @@
 //
-//  THAppleSampleEAGLView.m
-//  PageTurnTest
+//  THBaseEAGLView.m
+//  libEucalyptus
 //
 //  Created by James Montgomerie on 07/11/2008.
 //  Copyright 2008 Things Made Out Of Other Things Limited. All rights reserved.
@@ -9,9 +9,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 
-#import "THAppleSampleEAGLView.h"
+#import "THBaseEAGLView.h"
 
-@interface THAppleSampleEAGLView ()
+@interface THBaseEAGLView ()
 
 @property (nonatomic, assign) id animationTimer;
 
@@ -21,7 +21,7 @@
 @end
 
 
-@implementation THAppleSampleEAGLView
+@implementation THBaseEAGLView
 
 @synthesize animating = _animating;
 @synthesize eaglContext = _eaglContext;
