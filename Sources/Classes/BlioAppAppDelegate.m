@@ -129,6 +129,9 @@ static void *background_init_thread(void * arg) {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];
+	
+	// TEMPORARY CODE START (Installing Heather manually)
+
     NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
 	NSString *manualVoiceCopyPath = 
 	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
@@ -144,6 +147,9 @@ static void *background_init_thread(void * arg) {
 		if (![[NSFileManager defaultManager] copyItemAtPath:manualVoiceCopyPath toPath:manualVoiceDestinationPath error:&manualVoiceCopyError]) 
 			NSLog(@"ERROR: could not manually copy the Heather voice directory to the Documents/TTS directory! %@, %@",manualVoiceCopyError, [manualVoiceCopyError userInfo]);
 	}
+		
+	// TEMPORARY CODE END
+	
 	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
 	
     [window addSubview:[navigationController view]];

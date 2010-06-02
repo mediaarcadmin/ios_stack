@@ -7,7 +7,7 @@
 		<key>voiceName</key>
 		<string>Kenny</string>
 		<key>url</key>
-		<string>http://localhost/kenny.zip</string>
+		<string>http://naphtali.crosscomm.net/don/kenny.zip</string>
 		<key>sampleFilename</key>
 		<string>sample-kenny.mp3</string>
 	</dict>
@@ -16,7 +16,7 @@
 		<key>voiceName</key>
 		<string>Laura</string>
 		<key>url</key>
-		<string>http://localhost/laura.zip</string>
+		<string>http://naphtali.crosscomm.net/don/laura.zip</string>
 		<key>sampleFilename</key>
 		<string>sample-laura.mp3</string>
 	</dict>
@@ -25,7 +25,7 @@
 		<key>voiceName</key>
 		<string>Nelly</string>
 		<key>url</key>
-		<string>http://localhost/nelly.zip</string>
+		<string>http://naphtali.crosscomm.net/don/nelly.zip</string>
 		<key>sampleFilename</key>
 		<string>sample-nelly.mp3</string>
 	</dict>
@@ -34,7 +34,7 @@
 		<key>voiceName</key>
 		<string>Ryan</string>
 		<key>url</key>
-		<string>http://localhost/ryan.zip</string>
+		<string>http://naphtali.crosscomm.net/don/ryan.zip</string>
 		<key>sampleFilename</key>
 		<string>sample-ryan.mp3</string>
 	</dict>
@@ -43,7 +43,7 @@
 		<key>voiceName</key>
 		<string>Heather</string>
 		<key>url</key>
-		<string>http://localhost/heather.zip</string>
+		<string>http://naphtali.crosscomm.net/don/heather.zip</string>
 		<key>sampleFilename</key>
 		<string>sample-heather.mp3</string>
 	</dict>
