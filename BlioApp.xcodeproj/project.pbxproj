@@ -444,6 +444,8 @@
 		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
 		DCC45AD211B458A400CBD491 /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
 		DCC45AD311B458A400CBD491 /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
+		DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
+		DCC46B8E11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
 		DCFF6192117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
 		DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6191117F6F4E00463427 /* button-delete-black.png */; };
 		DCFF6194117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
@@ -872,7 +874,6 @@
 		A37DAE7B11B21458005F949A /* drmxmlsig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsig.h; path = DRM/drmxmlsig.h; sourceTree = "<group>"; };
 		A37DAE7C11B21458005F949A /* drmxmlsigconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsigconstants.h; path = DRM/drmxmlsigconstants.h; sourceTree = "<group>"; };
 		A37DAE7D11B21458005F949A /* drmxmlutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlutilities.h; path = DRM/drmxmlutilities.h; sourceTree = "<group>"; };
-		A37FC0D910EA76AD00F3DC5A /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
 		A37FC33310EA785F00F3DC5A /* BlioAcapelaAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioAcapelaAudioManager.h; path = TTS/BlioAcapelaAudioManager.h; sourceTree = "<group>"; };
 		A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioAcapelaAudioManager.m; path = TTS/BlioAcapelaAudioManager.m; sourceTree = "<group>"; };
@@ -1053,6 +1054,8 @@
 		DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDownloadVoicesViewController.m; sourceTree = "<group>"; };
 		DCC4548811B092A800CBD491 /* voice-sample-play-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "voice-sample-play-button.png"; sourceTree = "<group>"; };
 		DCC45ACB11B458A400CBD491 /* voiceSamples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = voiceSamples; sourceTree = "<group>"; };
+		DCC4696811B5C31400CBD491 /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
+		DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Acapela For iPhone LF USEnglish Heather"; path = "TTS/Acapela For iPhone LF USEnglish Heather"; sourceTree = "<group>"; };
 		DCFF6190117F6F4E00463427 /* button-delete-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-red.png"; sourceTree = "<group>"; };
 		DCFF6191117F6F4E00463427 /* button-delete-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-black.png"; sourceTree = "<group>"; };
 		DCFF6196117F703A00463427 /* library-resumebutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "library-resumebutton.png"; sourceTree = "<group>"; };
@@ -1263,7 +1266,8 @@
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				C9E1FAA7110F26DB00999587 /* TextFlows */,
 				A349F067110E31CC009A8F89 /* AudioBooks */,
-				A37FC0D910EA76AD00F3DC5A /* TTS */,
+				DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */,
+				DCC4696811B5C31400CBD491 /* TTS */,
 				DCC45ACB11B458A400CBD491 /* voiceSamples */,
 				C9775E9A10DFE1C3005E0E2B /* MockCovers */,
 				C94D27B510DBCF4C00F30AFE /* PDFs */,
@@ -2132,6 +2136,7 @@
 				C9D280B311AD0FCE00857CFB /* icon-noTTS.png in Resources */,
 				C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */,
 				A3951D7911B35665000BCAC1 /* DRM in Resources */,
+				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2251,6 +2256,7 @@
 				DCC45AD211B458A400CBD491 /* voiceSamples in Resources */,
 				C9D280B511AD0FCE00857CFB /* icon-noTTS.png in Resources */,
 				C9D280B611AD0FCE00857CFB /* button-tts-pause.png in Resources */,
+				DCC46B8E11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
