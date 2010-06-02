@@ -10,17 +10,14 @@
 #import "AcapelaSpeech.h"
 
 @interface setupTTS : NSObject {
-	NSMutableArray *Voices;
-	NSString *CurrentVoice;
-	NSString *CurrentVoiceName;
-	BOOL AutoMode;
+	NSArray *voices;
+	NSString *currentVoice;
+	BOOL autoMode;
 }
-@property (nonatomic, retain) NSMutableArray *Voices;
-@property (nonatomic, retain) NSString *CurrentVoice;
-@property (nonatomic, retain) NSString *CurrentVoiceName;
-@property (nonatomic) BOOL AutoMode;
+@property (nonatomic, copy) NSArray *voices;
+@property (nonatomic, copy) NSString *currentVoice;
+@property (nonatomic, assign) BOOL autoMode;
 
-- (id)initialize;
-- (NSString*)SetCurrentVoice:(NSInteger)row;
+- (void)setCurrentVoice:(NSString*)voice;
 
 @end

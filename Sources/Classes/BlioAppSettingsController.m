@@ -101,7 +101,7 @@
 	BlioWebToolSettingsController *webToolController;
 	switch ( [indexPath section] ) {
 		case 0:
-			audioController = [[BlioAudioSettingsController alloc] init];
+			audioController = [[BlioAudioSettingsController alloc] initWithStyle:UITableViewStyleGrouped];
 			[self.navigationController pushViewController:audioController animated:YES];
 			[audioController release];
 			break;

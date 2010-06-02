@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
-#import "AcapelaTTS.h"
+#import "BlioAcapelaAudioManager.h"
 #import "BlioAudioBookManager.h"
 #import "BlioMockBook.h"
 #import "BlioBookView.h"
@@ -105,8 +105,8 @@ typedef enum {
     BOOL _overrideReturnToNavigationBarHidden;
     BOOL _overrideReturnToStatusBarHidden;
     
+	BlioAcapelaAudioManager* _acapelaAudioManager;
     BOOL _TTSEnabled;
-	AcapelaTTS* _acapelaTTS;
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
     
@@ -155,7 +155,5 @@ typedef enum {
 - (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;
 - (void)stopAudio;
-
-+ (AcapelaTTS**)getTTSEngine;
 
 @end

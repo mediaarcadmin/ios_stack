@@ -13,7 +13,9 @@
 #import "BlioAlertManager.h"
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
+#import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioDrmManager.h"
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -77,6 +79,8 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     [libraryController setProcessingDelegate:[self processingManager]];
 	
 	if (self.networkStatus != NotReachable) [self.processingManager resumeProcessing];
+	
+	[[BlioDrmManager getDrmManager] initialize];
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
@@ -122,6 +126,26 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];
+    NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
+	NSString *manualVoiceCopyPath = 
+	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
+	BOOL isDir;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath isDirectory:&isDir] || !isDir) {
+		NSError * createTTSDirError = nil;
+		if (![[NSFileManager defaultManager] createDirectoryAtPath:voicesPath withIntermediateDirectories:YES attributes:nil error:&createTTSDirError]) {
+			NSLog(@"ERROR: could not create TTS directory in the Documents directory! %@, %@",createTTSDirError, [createTTSDirError userInfo]);
+		}
+	}
+	if ([[NSFileManager defaultManager] fileExistsAtPath:manualVoiceCopyPath] && ![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath]) {
+		NSError * manualVoiceCopyError = nil;
+		if (![[NSFileManager defaultManager] copyItemAtPath:manualVoiceCopyPath toPath:manualVoiceDestinationPath error:&manualVoiceCopyError]) 
+			NSLog(@"ERROR: could not manually copy the Heather voice directory to the Documents/TTS directory! %@, %@",manualVoiceCopyError, [manualVoiceCopyError userInfo]);
+	}
+	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
+	
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
