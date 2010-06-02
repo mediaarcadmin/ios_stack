@@ -241,6 +241,7 @@
 
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationProgressNotification:) name:BlioProcessingOperationProgressNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationFailedNotification:) name:BlioProcessingOperationFailedNotification object:nil];
 	}
     return self;
 }
@@ -266,7 +267,7 @@
 		case BlioVoiceDownloadButtonStateInProgress:
 			self.progressView.hidden = NO;
 			self.progressLabel.hidden = NO;
-			self.progressLabel.text = nil;
+			self.progressLabel.text = NSLocalizedString(@"Calculating...",@"\"Calculating...\" text label as temporary substitute for i of i MB progress label text.");
 			self.downloadButton.hidden = YES;		
 			break;
 			
@@ -291,9 +292,11 @@
 	if (voiceOp) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
 		self.progressView.progress = voiceOp.percentageComplete/100.0f;
-		NSInteger totalMB = voiceOp.expectedContentLength/1000000;
-		NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
-		self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];		
+		if (voiceOp.expectedContentLength != NSURLResponseUnknownLength) {
+			NSInteger totalMB = voiceOp.expectedContentLength/1000000;
+			NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
+			self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];
+		}
 	}
 	else if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse] containsObject:aVoice]) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInstalled];
@@ -306,6 +309,7 @@
 }
 -(void)onDownloadButtonPressed:(id)sender {
 //	NSLog(@"onDownloadButtonPressed");
+	[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
 	[[BlioAcapelaAudioManager sharedAcapelaAudioManager] downloadVoice:self.voice];
 }
 - (void)onProcessingOperationProgressNotification:(NSNotification*)note {
@@ -314,10 +318,13 @@
 		if ([voiceOp.voice isEqualToString:self.voice]) {
 //			NSLog(@"BlioDownloadVoiceTableViewCell onProcessingProgressNotification entered. percentage: %u",voiceOp.percentageComplete);
 			[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
-			self.progressView.progress = voiceOp.percentageComplete/100.0f;
-			NSInteger totalMB = voiceOp.expectedContentLength/1000000;
-			NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
-			self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];		
+			if (voiceOp.percentageComplete != 100) {
+				self.progressView.progress = voiceOp.percentageComplete/100.0f;
+				NSInteger totalMB = voiceOp.expectedContentLength/1000000;
+				NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
+				self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];		
+			}
+			else self.progressLabel.text = self.progressLabel.text = NSLocalizedString(@"Installing...",@"\"Installing...\" text label as temporary substitute for i of i MB progress label text.");
 		}
 	}
 }
@@ -325,8 +332,17 @@
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [note object];
 		if ([voiceOp.voice isEqualToString:self.voice]) {
-//			NSLog(@"BlioDownloadVoiceTableViewCell onProcessingOperationCompleteNotification entered.");
+			//			NSLog(@"BlioDownloadVoiceTableViewCell onProcessingOperationCompleteNotification entered.");
 			[self setDownloadButtonState:BlioVoiceDownloadButtonStateInstalled];
+		}
+	}
+}
+- (void)onProcessingOperationFailedNotification:(NSNotification*)note {
+	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
+		BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [note object];
+		if ([voiceOp.voice isEqualToString:self.voice]) {
+			//			NSLog(@"BlioDownloadVoiceTableViewCell onProcessingOperationFailedNotification entered.");
+			[self setDownloadButtonState:BlioVoiceDownloadButtonStateDownload];
 		}
 	}
 }
