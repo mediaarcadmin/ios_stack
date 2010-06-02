@@ -29,7 +29,9 @@
 
 @synthesize pageNumber, currentWordOffset, currentParagraphID, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
-- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {    
+- (id)initWithFrame:(CGRect)frame
+               book:(BlioMockBook *)aBook 
+           animated:(BOOL)animated {
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
         book = [aBook retain];
         paragraphSource = [aBook.paragraphSource retain];

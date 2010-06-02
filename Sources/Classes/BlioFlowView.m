@@ -34,9 +34,13 @@
 @synthesize pageCount = _pageCount;
 @synthesize pageNumber = _pageNumber;
 
-- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated 
+- (id)initWithFrame:(CGRect)frame
+               book:(BlioMockBook *)aBook 
+           animated:(BOOL)animated 
 {
-    if((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {
+    if((self = [super initWithFrame:frame])) {
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
         EucBUpeBook *eucBook = nil;
         
         self.opaque = YES;
@@ -56,6 +60,7 @@
                 _eucBookView.delegate = self;
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;
+                _eucBookView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
                 if(animated) {
                     _eucBookView.appearAtCoverThenOpen = YES;
                 }

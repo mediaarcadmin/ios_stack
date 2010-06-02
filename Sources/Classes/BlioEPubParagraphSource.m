@@ -143,6 +143,7 @@
 - (EucBUpePageLayoutController *)layoutController {
     if(!_layoutController) {
         _layoutController = [[EucBUpePageLayoutController alloc] initWithBook:self.bUpeBook
+                                                                     pageSize:CGSizeMake(320, 480)
                                                                 fontPointSize:18.0f];
     }
     return _layoutController;
