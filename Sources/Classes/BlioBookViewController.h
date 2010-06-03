@@ -20,6 +20,7 @@
 #import "BlioWebToolsViewController.h"
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
+#import "BlioBookSearchController.h"
 
 typedef enum BlioPageColor {
     kBlioPageColorWhite = 0,
@@ -69,7 +70,7 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-@interface BlioBookViewController : UIViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
+@interface BlioBookViewController : UIViewController <BlioBookSearchDelegate, BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
     BOOL _firstAppearance;
     
     BlioMockBook *_book;
@@ -123,6 +124,8 @@ typedef enum {
     BlioBookViewControllerProgressPieButton *_pieButton;
     NSManagedObjectContext *_managedObjectContext;
     BOOL rotationLocked;
+    
+    BlioBookSearchController *searchController;
 }
 
 // Designated initializers.

@@ -8,14 +8,39 @@
 
 #import <Foundation/Foundation.h>
 #import "BlioParagraphSource.h"
+#import "BlioBookmark.h" // Only needed for debug
+
+@protocol BlioBookSearchDelegate;
 
 @interface BlioBookSearchController : NSObject {
-    id<BlioParagraphSource> paragraphSource
+    id<BlioParagraphSource> paragraphSource;
+    id<BlioBookSearchDelegate> delegate;
+    
+    NSString *searchString;
+    NSStringCompareOptions searchOptions;
+    NSUInteger searchResultsContextCharacters;
+    
+    id currentParagraphID;
+    NSUInteger currentElementOffset;
+    NSArray *currentParagraphWords;
 }
 
 @property (nonatomic, assign) id<BlioParagraphSource> paragraphSource;
+@property (nonatomic, assign) id<BlioBookSearchDelegate> delegate;
+@property (nonatomic, readonly, getter=isSearching) BOOL searching;
+@property (nonatomic, assign) NSUInteger searchResultsContextCharacters;
+@property (nonatomic, assign) NSStringCompareOptions searchOptions;
 
 - (id)initWithParagraphSource:(id<BlioParagraphSource>)aParagraphSource;
-- (id)findString:(NSString *)string fromParagraphWithID:(id)startParagraphID;
+- (void)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint;
+- (void)findNextOccurrence;
+- (void)cancel;
+
+@end
+
+@protocol BlioBookSearchDelegate
+
+@optional
+- (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 @end
