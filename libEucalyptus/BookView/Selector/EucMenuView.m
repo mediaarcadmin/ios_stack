@@ -208,7 +208,7 @@ static const CGFloat sOuterYPadding = 2.0f;
         }
         [arrowImage drawAtPoint:arrowPoint];
         
-        // Weirdly the highlighted bottom arrow png is an overlay for the non-hilighted
+        // Weirdly the highlighted bottom arrow png is an overlay for the non-highlighted
         // arrow.
         if(highlighted) {
             [self.bottomArrowImageHighlighted drawAtPoint:arrowPoint];

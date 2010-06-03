@@ -8,6 +8,7 @@
 
 #import "EucBookView.h"
 
+#import "EucConfiguration.h"
 #import "EucPageTurningView.h"
 #import "EucPageLayoutController.h"
 #import "EucBook.h"
@@ -86,7 +87,7 @@
         
         CGFloat desiredPointSize = [[NSUserDefaults standardUserDefaults] floatForKey:kBookFontPointSizeDefaultsKey];
         if(desiredPointSize == 0) {
-            desiredPointSize = [EucBookTextStyle defaultFontPointSize];
+            desiredPointSize = [[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey] floatValue];
         }
         
         /* if(!_bookIndex.isFinal) {
@@ -100,9 +101,12 @@
          object:nil];
          }       */ 
         
-        _pageLayoutController = [[[_book pageLayoutControllerClass] alloc] initWithBook:_book fontPointSize:desiredPointSize];  
-        
-        self.opaque = YES;        
+        _pageLayoutController = [[[_book pageLayoutControllerClass] alloc] initWithBook:_book 
+                                                                               pageSize:self.bounds.size
+                                                                          fontPointSize:desiredPointSize];  
+         
+        self.opaque = YES;
+        self.backgroundColor = [UIColor blackColor];
     }
     return self;
 }
@@ -136,6 +140,13 @@
     if(!self.window) {
         _pageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
         _pageTurningView.delegate = self;
+        _pageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        UIImage *pageTexture = self.pageTexture;
+        if(!pageTexture) {
+            pageTexture = [[UIImage imageNamed:@"BookPaper.png"] retain];
+            self.pageTexture = pageTexture;
+        }
+        [_pageTurningView setPageTexture:pageTexture isDark:self.pageTextureIsDark];
         [self addSubview:_pageTurningView];
         
         EucBookPageIndexPoint *indexPoint;
@@ -148,7 +159,7 @@
         NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:indexPoint];
         THPair *currentPageViewAndIndexPointRange = [self _pageViewAndIndexPointRangeForBookPageNumber:pageNumber];
         _pageTurningView.currentPageView = currentPageViewAndIndexPointRange.first;
-       
+        
         self.pageCount = _pageLayoutController.globalPageCount;
         self.pageNumber = pageNumber;
 
@@ -159,7 +170,7 @@
     } 
     if(_selector) {
         [_selector removeObserver:self
-                          forKeyPath:@"tracking"];
+                       forKeyPath:@"tracking"];
         [_selector detatch];
         [_selector release];
         _selector = nil;
@@ -198,6 +209,16 @@
     }
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    CGSize newSize = self.bounds.size;
+    if(!CGSizeEqualToSize(newSize, _pageLayoutController.pageSize)) {
+        _pageLayoutController.pageSize = newSize;
+        [self _redisplayCurrentPage];
+    }
+}
+
 - (void)setSelectorDelegate:(id<EucSelectorDelegate>)delegate
 {
     if(self.selector) {
@@ -224,7 +245,7 @@
 
 - (void)stopAnimation
 {
-    [_pageTurningView stopAnimation];
+    _pageTurningView.animating = NO;
 }
 
 #pragma mark -
@@ -269,7 +290,8 @@
     if(self.pageTexture != pageTexture || self.pageTextureIsDark != isDark) {
         self.pageTexture = pageTexture;
         self.pageTextureIsDark = isDark;
-        [self _redisplayCurrentPage];
+        [_pageTurningView setPageTexture:pageTexture isDark:isDark];
+        [_pageTurningView setNeedsDraw];
     }
 }
 
@@ -337,7 +359,9 @@
         EucPageView *newPageView = newPageViewAndIndexPoint.first;
         THPair *newPageIndexPointRange = newPageViewAndIndexPoint.second;        
         
-        [_book setCurrentPageIndexPoint:newPageIndexPointRange.first];
+        if(!_dontSaveIndexPoints) {
+            [_book setCurrentPageIndexPoint:newPageIndexPointRange.first];
+        }
 
         if(animated && oldPageNumber != pageNumber) {
             NSInteger count = oldPageNumber - pageNumber;
@@ -347,7 +371,7 @@
             [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count];
         } else {
             _pageTurningView.currentPageView = newPageView;
-            [_pageTurningView drawView];
+            [_pageTurningView setNeedsDraw];
             
             [self pageTurningView:_pageTurningView didTurnToView:newPageView];
         }
@@ -527,78 +551,85 @@
 #pragma mark PageView Handling
 
 - (NSArray *)_highlightRectsForRange:(EucHighlightRange *)highlightRange inPageView:(EucPageView *)pageView
-{                                  
+{                
+    NSArray *ret = nil;
+    
     UIView<EucPageTextView> *bookTextView = pageView.bookTextView;
-    THPair *pageIndexPointRange = [pageView.layer valueForKey:@"EucBookViewIndexPointRange"];
-    
     NSArray *blockIds = [bookTextView blockIdentifiers];
-
-    EucBookPageIndexPoint *startPoint = highlightRange.startPoint;
-    EucBookPageIndexPoint *pageStartPoint = pageIndexPointRange.first;
-    if([startPoint compare:pageStartPoint] == NSOrderedAscending) {
-        startPoint = pageStartPoint;
-    }
-    id startBlockId = [NSNumber numberWithUnsignedInt:startPoint.block];
-    id startElementId = [NSNumber numberWithUnsignedInt:startPoint.word];
-
-    id endBlockId;
-    id endElementId;
-                     
-    EucBookPageIndexPoint *endPoint = highlightRange.endPoint;
-    EucBookPageIndexPoint *pageEndPoint = pageIndexPointRange.second;
-    if([pageEndPoint compare:endPoint] != NSOrderedDescending) {
-        endBlockId = [blockIds lastObject];
-        endElementId = [[bookTextView identifiersForElementsOfBlockWithIdentifier:endBlockId] lastObject];
-    } else {
-        endBlockId = [NSNumber numberWithUnsignedInt:endPoint.block];
-        endElementId = [NSNumber numberWithUnsignedInt:endPoint.word];
-    }
-    
-    NSMutableArray *nonCoalescedRects = [NSMutableArray array];    
-    NSUInteger blockIdIndex = 0;
     NSUInteger blockIdsCount = blockIds.count;
+    if(blockIdsCount) {
+        THPair *pageIndexPointRange = [pageView.layer valueForKey:@"EucBookViewIndexPointRange"];
+
+        EucBookPageIndexPoint *startPoint = highlightRange.startPoint;
+        EucBookPageIndexPoint *pageStartPoint = pageIndexPointRange.first;
+        if([startPoint compare:pageStartPoint] == NSOrderedAscending) {
+            startPoint = pageStartPoint;
+        }
+        id startBlockId = [NSNumber numberWithUnsignedInt:startPoint.block];
+        id startElementId = [NSNumber numberWithUnsignedInt:startPoint.word];
+
+        id endBlockId;
+        id endElementId;
+                         
+        EucBookPageIndexPoint *endPoint = highlightRange.endPoint;
+        EucBookPageIndexPoint *pageEndPoint = pageIndexPointRange.second;
+        if([pageEndPoint compare:endPoint] != NSOrderedDescending) {
+            endBlockId = [blockIds lastObject];
+            endElementId = [[bookTextView identifiersForElementsOfBlockWithIdentifier:endBlockId] lastObject];
+        } else {
+            endBlockId = [NSNumber numberWithUnsignedInt:endPoint.block];
+            endElementId = [NSNumber numberWithUnsignedInt:endPoint.word];
+        }
     
-    BOOL isFirstBlock;
-    if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
-        // The real first block was before the first block we have seen.
-        isFirstBlock = NO;
-    } else {
-        while([[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+        NSMutableArray *nonCoalescedRects = [[NSMutableArray alloc] init];    
+        NSUInteger blockIdIndex = 0;
+        
+        BOOL isFirstBlock;
+        if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
+            // The real first block was before the first block we have seen.
+            isFirstBlock = NO;
+        } else {
+            while(blockIdIndex < blockIdsCount &&
+                  [[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+                ++blockIdIndex;
+            }
+            isFirstBlock = YES;
+        }
+
+        BOOL isLastBlock = NO;
+        while(!isLastBlock && blockIdIndex < blockIdsCount) {
+            id blockId = [blockIds objectAtIndex:blockIdIndex];
+            
+            NSArray *elementIds = [bookTextView identifiersForElementsOfBlockWithIdentifier:blockId];
+            NSUInteger elementIdCount = elementIds.count;
+            NSUInteger elementIdIndex = 0;
+            
+            isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+            
+            id elementId;
+            if(isFirstBlock) {
+                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                    ++elementIdIndex;
+                }
+                isFirstBlock = NO;
+            }
+            
+            do {
+                elementId = [elementIds objectAtIndex:elementIdIndex];
+                [nonCoalescedRects addObjectsFromArray:[bookTextView rectsForElementWithIdentifier:elementId
+                                                                             ofBlockWithIdentifier:blockId]];
+                ++elementIdIndex;
+            } while (isLastBlock ? 
+                     ([elementId compare:endElementId] < NSOrderedSame) : 
+                     elementIdIndex < elementIdCount);
             ++blockIdIndex;
         }
-        isFirstBlock = YES;
-    }
-
-    BOOL isLastBlock = NO;
-    while(!isLastBlock && blockIdIndex < blockIdsCount) {
-        id blockId = [blockIds objectAtIndex:blockIdIndex];
         
-        NSArray *elementIds = [bookTextView identifiersForElementsOfBlockWithIdentifier:blockId];
-        NSUInteger elementIdCount = elementIds.count;
-        NSUInteger elementIdIndex = 0;
-        
-        isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
-        
-        id elementId;
-        if(isFirstBlock) {
-            while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
-                ++elementIdIndex;
-            }
-            isFirstBlock = NO;
-        }
-        
-        do {
-            elementId = [elementIds objectAtIndex:elementIdIndex];
-            [nonCoalescedRects addObjectsFromArray:[bookTextView rectsForElementWithIdentifier:elementId
-                                                                         ofBlockWithIdentifier:blockId]];
-            ++elementIdIndex;
-        } while (isLastBlock ? 
-                 ([elementId compare:endElementId] < NSOrderedSame) : 
-                 elementIdIndex < elementIdCount);
-        ++blockIdIndex;
+        ret = [EucSelector coalescedLineRectsForElementRects:nonCoalescedRects];
+        [nonCoalescedRects release];
     }
     
-    return [EucSelector coalescedLineRectsForElementRects:nonCoalescedRects];
+    return ret;
 }
 
 typedef enum {
@@ -1199,7 +1230,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 - (UIToolbar *)bookNavigationToolbar
 {
-    CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
+    CGRect bounds = [self bounds];
 
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectZero];
     toolbar.barStyle = UIBarStyleBlack;
@@ -1210,9 +1241,9 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     CGFloat toolbarNonMarginHeight = [toolbar frame].size.height - 2.0f * toolbarMarginHeight;
     
     CGFloat toolbarHeight = floorf(toolbarMarginHeight * 3.0f + 2.0f * toolbarNonMarginHeight);
-    [toolbar setFrame:CGRectMake(mainScreenBounds.origin.x,
-                                 mainScreenBounds.origin.y + mainScreenBounds.size.height - toolbarHeight,
-                                 mainScreenBounds.size.width,
+    [toolbar setFrame:CGRectMake(bounds.origin.x,
+                                 bounds.origin.y + bounds.size.height - toolbarHeight,
+                                 bounds.size.width,
                                  toolbarHeight)];
     [toolbar setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth];
     
@@ -1229,6 +1260,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _pageNumberLabel.textColor = [UIColor whiteColor];
     _pageNumberLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
     _pageNumberLabel.shadowOffset = CGSizeMake(0, -1);
+    
+    _pageNumberLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
     
     CGRect pageNumberFrame = _pageNumberLabel.frame;
     pageNumberFrame.size.width = ceilf(toolbarBounds.size.width / 3.0f);
@@ -1266,6 +1299,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     
     _pageSlider = [[THScalableSlider alloc] initWithFrame:toolbarBounds];
     _pageSlider.backgroundColor = [UIColor clearColor];	
+    _pageSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
     leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
@@ -1294,6 +1328,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     CGRect behindSliderFrame = behindSlider.frame;
     behindSliderFrame.size.width = pageSliderFrame.size.width - 4;
     behindSlider.frame = behindSliderFrame;
+    behindSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     behindSlider.isAccessibilityElement = NO;
     
     CGPoint pageSliderCenter = _pageSlider.center;
@@ -1520,6 +1555,5 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [self _updateSliderByteToPageRatio];
     [self _updatePageNumberLabel];
 }
-
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "THLog.h"
+#import "EucConfiguration.h"
 #import "EucPageView.h"
 #import "EucPageTextView.h"
 #import "THStringRenderer.h"
@@ -26,34 +27,28 @@
     return CGSizeMake(roundf(pointSize / 0.9f), roundf(pointSize / 1.2f));
 }
 
-+ (CGRect)bookTextViewFrameForPointSize:(CGFloat)pointSize
++ (CGRect)bookTextViewFrameForFrame:(CGRect)frame
+                       forPointSize:(CGFloat)pointSize
 {
     CGSize margins = [self _marginsForPointSize:pointSize];
-
-    CGRect bookTextFrame = [[UIScreen mainScreen] bounds];
-    bookTextFrame.origin.x += margins.width;
-    bookTextFrame.size.width -= margins.width + margins.width;
-    bookTextFrame.origin.y += margins.height + roundf(pointSize *  1.4f);
-    bookTextFrame.size.height -= bookTextFrame.origin.y + margins.height;  
-    return bookTextFrame;
+    frame.origin.x += margins.width;
+    frame.size.width -= margins.width + margins.width;
+    frame.origin.y += margins.height + roundf(pointSize *  1.4f);
+    frame.size.height -= frame.origin.y + margins.height;  
+    return frame;
 }
 
-- (id)initWithPointSize:(CGFloat)pointSize 
-              titleFont:(NSString *)titleFont 
-    titleFontStyleFlags:(THStringRendererFontStyleFlags)titleFontStyleFlags
-         pageNumberFont:(NSString *)pageNumberFont 
+- (id)initWithFrame:(CGRect)frame
+          pointSize:(CGFloat)pointSize 
+          titleFont:(NSString *)titleFont 
+titleFontStyleFlags:(THStringRendererFontStyleFlags)titleFontStyleFlags
+     pageNumberFont:(NSString *)pageNumberFont 
 pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlags
-         titlePointSize:(CGFloat)titlePointSize
-            pageTexture:(UIImage *)pageTexture
-          textViewClass:(Class)textViewClass
+     titlePointSize:(CGFloat)titlePointSize
+      textViewClass:(Class)textViewClass
 {
-    CGRect frame = [[UIScreen mainScreen] bounds];
 	if((self = [super initWithFrame:frame])) {
-        // Measured with Shark, this is at least as efficient as drawing the 
-        // background image in  any other way (including using a clearColor
-        // background and multitextureing over a paper texture).
-        _pageTexture = CGImageRetain([pageTexture CGImage]);
-        self.clearsContextBeforeDrawing = NO;
+        self.clearsContextBeforeDrawing = YES;
         self.opaque = NO;
         
         _textPointSize = pointSize;
@@ -64,7 +59,8 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont styleFlags:pageNumberFontStyleFlags];
         _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont styleFlags:titleFontStyleFlags];
 
-        _bookTextView = [[textViewClass alloc] initWithFrame:[[self class] bookTextViewFrameForPointSize:_titlePointSize] 
+        _bookTextView = [[textViewClass alloc] initWithFrame:[[self class] bookTextViewFrameForFrame:frame 
+                                                                                        forPointSize:_titlePointSize] 
                                                    pointSize:pointSize];
 
         _bookTextView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -80,26 +76,20 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 	return self;
 }
 
-- (id)initWithPointSize:(CGFloat)pointSize 
-            pageTexture:(UIImage *)pageTexture  
-          textViewClass:(Class)textViewClass;
+- (id)initWithFrame:(CGRect)frame
+          pointSize:(CGFloat)pointSize 
+      textViewClass:(Class)textViewClass;
 
 {
-    static UIImage *sPaperImage = nil;
-    if(!pageTexture) {
-        if(!sPaperImage) {
-            sPaperImage = [[UIImage imageNamed:@"BookPaper.png"] retain];
-        }
-    }
-    NSString *font = [EucBookTextStyle defaultFontFamilyName];
-	return [self initWithPointSize:pointSize 
-                         titleFont:font 
-               titleFontStyleFlags:THStringRendererFontStyleFlagItalic
-                    pageNumberFont:font
-          pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
-                    titlePointSize:pointSize 
-                       pageTexture:pageTexture ?: sPaperImage
-                     textViewClass:(Class)textViewClass];
+    NSString *font = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
+	return [self initWithFrame:(CGRect)frame
+                     pointSize:pointSize 
+                     titleFont:font 
+           titleFontStyleFlags:THStringRendererFontStyleFlagItalic
+                pageNumberFont:font
+      pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
+                titlePointSize:pointSize 
+                 textViewClass:(Class)textViewClass];
 }
 
 - (id)initWithFrame:(CGRect)frame 
@@ -110,10 +100,6 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 - (void)dealloc
 {
-    if(_pageTexture) {
-        CGImageRelease(_pageTexture);
-    }
-    
     [_touch release];
 
     [_pageNumber release];
@@ -131,7 +117,8 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 - (void)setTitleLinePosition:(EucPageViewTitleLinePosition)position
 {
-    CGRect protoFrame = [[self class] bookTextViewFrameForPointSize:_textPointSize];
+    CGRect protoFrame = [[self class] bookTextViewFrameForFrame:self.frame
+                                                   forPointSize:_textPointSize];
     if(position == EucPageViewTitleLinePositionTop) {
     } else if(position == EucPageViewTitleLinePositionBottom) {
         CGRect myBounds = self.bounds;
@@ -176,8 +163,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     CGContextSaveGState(currentContext);
 
     CGRect bounds = [self bounds];
-    CGContextDrawImage(currentContext, bounds, _pageTexture);
-
+    
     CGPoint origin = _bookTextView.frame.origin;
     CGContextTranslateCTM(currentContext, origin.x, origin.y);
     [_bookTextView drawRect:rect inContext:currentContext];

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EucBookTextStyle.h"
 #import "THUIViewThreadSafeDrawing.h"
 
 @protocol EucPageTextViewDelegate, EucBook;

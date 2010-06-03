@@ -150,4 +150,11 @@
     return _indexSourceScaleFactors;
 }
 
+- (void)persistCacheableData
+{
+    // Superclass persists the ePub anchors here, but we don't have any 
+    // (ePub uses them in indexPointForId:, but we can compute that directly)
+    // so we do nothing.
+}
+
 @end

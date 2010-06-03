@@ -60,7 +60,10 @@
 
 - (NSString *)pageLabelForPageNumber:(NSInteger)pageNumber;
 
-- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated;
+- (id)initWithFrame:(CGRect)frame
+               book:(BlioMockBook *)aBook 
+           animated:(BOOL)animated;
+
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 

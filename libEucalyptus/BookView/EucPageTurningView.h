@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "THAppleSampleEAGLView.h"
+#import "THBaseEAGLView.h"
 
 @protocol EucPageTurningViewDelegate;
 
@@ -33,9 +33,15 @@ typedef struct {
     GLfloat lengthSquared;
 } VerletContstraint;
 
-@interface EucPageTurningView : THAppleSampleEAGLView {
-    GLfloat _touchVelocity;
+typedef struct {
+    GLfloatPair textureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    GLuint innerPixelWidth;
+    GLuint innerPixelHeight;
+} TextureCoordinates;
 
+@interface EucPageTurningView : THBaseEAGLView {
+    GLfloat _touchVelocity;
+    
     CGSize _powerOf2Bounds;
 
     GLfloatTriplet _stablePageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
@@ -53,11 +59,12 @@ typedef struct {
     VerletContstraint _constraints[CONSTRAINT_COUNT];
     int _constraintCount;
     
-    GLfloatPair _pageTextureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    TextureCoordinates _pageTextureCoordinates;
     
+    BOOL _pageTextureIsDark;
     GLuint _blankPageTexture;
-    GLfloatPair _blankPageTextureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
-    
+    TextureCoordinates _blankPageTextureCoordinates;
+
     GLuint _bookEdgeTexture;
     GLfloatPair _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
@@ -72,7 +79,6 @@ typedef struct {
     UITouch *_pinchTouches[2];
     CGPoint _pinchStartPoints[2];
     
-    BOOL _animating;
     BOOL _vibrated;
     
     id<EucPageTurningViewDelegate> _delegate;
@@ -116,9 +122,13 @@ typedef struct {
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
+
+@property (nonatomic, readonly) NSArray *pageViews;
 @property (nonatomic, retain) UIView *currentPageView;
-@property (nonatomic, readonly) UIImage *screenshot;
+
 @property (nonatomic, assign) CGFloat dimQuotient;
+
+@property (nonatomic, readonly) UIImage *screenshot;
 
 @property (nonatomic, copy) UIColor *specularColor;
 @property (nonatomic, assign) GLfloat shininess;
@@ -132,7 +142,7 @@ typedef struct {
 
 @property (nonatomic, assign) GLfloatTriplet lightPosition;
 
-@property (nonatomic, readonly) NSArray *pageViews;
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 - (void)refreshView:(UIView *)view;
@@ -154,7 +164,6 @@ typedef struct {
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didTurnToView:(UIView *)view;
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view;
-- (void)pageTurningView:(EucPageTurningView *)pageTurningView discardingView:(UIView *)view;
 
 // Views are assumed not to have rigid edges if this is not implemented.
 - (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView viewEdgeIsRigid:(UIView *)view;

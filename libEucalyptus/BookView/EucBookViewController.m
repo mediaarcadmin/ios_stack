@@ -95,6 +95,7 @@
         [backArrow addTarget:self
                       action:@selector(_backButtonTapped) 
             forControlEvents:UIControlEventTouchUpInside];
+        backArrow.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 
         UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
         self.navigationItem.leftBarButtonItem = backItem;
@@ -113,6 +114,7 @@
         _firstAppearance = YES;
         
         _bookView = [view retain];
+        _bookView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
 	return self;
 }
@@ -130,31 +132,6 @@
     return self;
 }
 
-
-- (void)setBookView:(EucBookView *)bookView
-{
-    if(_bookView != bookView) {
-        THEventCapturingWindow *window = (THEventCapturingWindow *)[_bookView superview];
-        [window removeTouchObserver:self forView:_bookView];
-        
-        [_bookView removeFromSuperview];
-        [_bookView release];
-        _bookView = [bookView retain];
-        
-        [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
-        
-        if([_bookView isKindOfClass:[EucBookView class]]) {
-            EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
-            // Casts below shouldn't be necessary - the property is of type 'EucBookReference<EucBook> *'...
-            [titleView setTitle:((EucBookReference *)((EucBookView *)_bookView).book).humanReadableTitle];
-            [titleView setAuthor:[((EucBookReference *)((EucBookView *)_bookView).book).author humanReadableNameFromLibraryFormattedName]];                
-        }
-        
-        if(self.isViewLoaded) {
-            [self.view addSubview:_bookView];
-        }
-    }
-}
 
 - (void)_backButtonTapped
 {
@@ -226,12 +203,20 @@
     [_contentsSheet release];
     _contentsSheet = nil;
     
+    // Move the page turning view back.
+    UIWindow *window = _bookView.window;
+    CGRect newFrame = [window convertRect:_bookView.frame toView:self.view];
+    [self.view addSubview:_bookView];
+    _bookView.frame = newFrame;
+    [self.view sendSubviewToBack:_bookView];            
+    
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(newSectionUuid) {
         [((EucBookView *)_bookView) goToUuid:newSectionUuid animated:YES];
         [newSectionUuid release];
     }
+    
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
@@ -249,6 +234,14 @@
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
     if(!_contentsSheet && [_bookView isKindOfClass:[EucBookView class]]) {
+        // Move the page turning view to the main window so that it doesn't
+        // automatically get shifted down when the oolbar turns opaque.
+        UIWindow *window = _bookView.window;
+        CGRect newFrame = [_bookView.superview convertRect:_bookView.frame toView:window];
+        [window addSubview:_bookView];
+        _bookView.frame = newFrame;
+        [window sendSubviewToBack:_bookView];
+        
         _contentsSheet = [[EucBookContentsTableViewController alloc] init];
         _contentsSheet.dataSource = ((EucBookView *)_bookView).contentsDataSource;
         _contentsSheet.delegate = self;        
@@ -256,7 +249,6 @@
         
         UIView *sheetView = _contentsSheet.view;
         
-        UIView *window = self.view.window;    
         CGRect windowFrame = window.frame;
         UINavigationBar *navBar = self.navigationController.navigationBar;
         CGRect navBarRect = [navBar.superview convertRect:navBar.frame toView:window];
@@ -271,7 +263,7 @@
         [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         [animation setValue:@"ContentsSlideIn" forKey:@"THName"];
         [animation setDelegate:self];
-        [[sheetView layer] addAnimation:animation forKey:@"ContentSlide"];
+        [[sheetView layer] addAnimation:animation forKey:@"ContentSlideIn"];
         
         [window addSubview:sheetView];
         
@@ -316,7 +308,7 @@
             [animation setType:kCATransitionFade];
             [animation setDuration:0.3f];
             [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-            [[navBar layer] addAnimation:animation forKey:@"animation"];
+            [[navBar layer] addAnimation:animation forKey:@"ContentsSlideOut"];
             
             navBar.barStyle = UIBarStyleBlack;
             navBar.translucent = YES;
@@ -343,7 +335,9 @@
     CGRect mainScreenBounds = [[UIScreen mainScreen] applicationFrame];
     UIView *mainSuperview = [[UIView alloc] initWithFrame:mainScreenBounds];
     mainSuperview.opaque = YES;
+    mainSuperview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     if(_bookView) {
+        _bookView.frame = mainSuperview.bounds;
         [mainSuperview addSubview:_bookView];
         [mainSuperview sendSubviewToBack:_bookView];
     }
@@ -440,7 +434,7 @@
         }
         
         _toolbar.exclusiveTouch = YES;
-        _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+        _toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         CGRect viewBounds = self.view.bounds;
         CGFloat toolbarFrameHeight = _toolbar.frame.size.height;
         [_toolbar setFrame:CGRectMake(viewBounds.origin.x,
@@ -564,7 +558,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
 	// Return YES for supported orientations
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	return YES;
 }
 
 
@@ -615,11 +609,28 @@
 - (void)_toggleToolbars
 {
     if(_fadeState == BookViewControlleUIFadeStateNone) {
-        if(_toolbar.hidden == YES) {
-            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; 
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+        if(_toolbar.hidden) {
+            UIApplication *application = [UIApplication sharedApplication];
+            [application setStatusBarHidden:NO animated:NO]; 
+            [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+            
+            UINavigationBar *navigationBar = self.navigationController.navigationBar;
+    
+            // For some reason, the position of the navigation bar is not updated
+            // correctly by the frameworks if it's hidden during a rotation,
+            // so we proactively set it here.
+            CGRect frame = navigationBar.frame;
+            CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
+            if(UIInterfaceOrientationIsLandscape([self interfaceOrientation])) {
+                frame.origin.y = applicationFrame.origin.x;
+            } else {
+                frame.origin.y = applicationFrame.origin.y;
+            }
+            navigationBar.frame = frame;
+               
+            navigationBar.hidden = NO;
             self.navigationController.navigationBarHidden = NO;
-            self.navigationController.navigationBar.hidden = NO;
+            
             _toolbar.hidden = NO;
             _toolbar.alpha = 0;
             _fadeState = BookViewControlleUIFadeStateFadingIn;

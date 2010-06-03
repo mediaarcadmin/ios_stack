@@ -119,7 +119,7 @@
 												audiobookURL:nil 
 													sourceID:BlioBookSourceOnlineStore 
 											sourceSpecificID:isbn
-											 placeholderOnly:YES
+											 placeholderOnly:NO
 				 ];
 			}
 			else {

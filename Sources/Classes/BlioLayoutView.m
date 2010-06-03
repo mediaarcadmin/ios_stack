@@ -173,7 +173,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark -
 #pragma mark BlioBookView
 
-- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated {
+- (id)initWithFrame:(CGRect)frame
+               book:(BlioMockBook *)aBook 
+           animated:(BOOL)animated {
 
     self.pdfPath = [aBook pdfPath];
     if (nil == self.pdfPath) {

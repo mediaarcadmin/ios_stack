@@ -26,8 +26,6 @@ typedef enum EucPageViewTitleLineContents
 } EucPageViewTitleLineContents;
 
 @interface EucPageView : UIView <EucPageTextViewDelegate, THUIViewThreadSafeDrawing> {
-    CGImageRef _pageTexture;
-
     id<EucPageViewDelegate> _delegate;
     NSString *_title;
     NSString *_pageNumber;
@@ -57,19 +55,20 @@ typedef enum EucPageViewTitleLineContents
 @property (nonatomic, assign) EucPageViewTitleLineContents titleLineContents;
 @property (nonatomic, assign) BOOL fullBleed;
 
-+ (CGRect)bookTextViewFrameForPointSize:(CGFloat)pointSize;
++ (CGRect)bookTextViewFrameForFrame:(CGRect)frame
+                       forPointSize:(CGFloat)pointSize;
 
-- (id)initWithPointSize:(CGFloat)pointSize 
-              titleFont:(NSString *)titleFont 
-    titleFontStyleFlags:(THStringRendererFontStyleFlags)titleFontStyleFlags
-         pageNumberFont:(NSString *)pageNumberFont 
+- (id)initWithFrame:(CGRect)frame
+          pointSize:(CGFloat)pointSize 
+          titleFont:(NSString *)titleFont 
+titleFontStyleFlags:(THStringRendererFontStyleFlags)titleFontStyleFlags
+     pageNumberFont:(NSString *)pageNumberFont 
 pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlags
-         titlePointSize:(CGFloat)titlePointSize
-            pageTexture:(UIImage *)pageTexture
-          textViewClass:(Class)textViewClass;
+     titlePointSize:(CGFloat)titlePointSize
+      textViewClass:(Class)textViewClass;
 
-- (id)initWithPointSize:(CGFloat)pointSize 
-            pageTexture:(UIImage *)pageTexture
+- (id)initWithFrame:(CGRect)frame
+          pointSize:(CGFloat)pointSize 
           textViewClass:(Class)textViewClass;
 
 @end

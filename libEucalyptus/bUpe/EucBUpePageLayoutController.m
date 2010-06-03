@@ -6,6 +6,8 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucConfiguration.h"
+
 #import "EucBUpePageLayoutController.h"
 #import "EucBUpeBook.h"
 #import "EucBUpePageTextView.h"
@@ -28,14 +30,19 @@
 @implementation EucBUpePageLayoutController
 
 @synthesize book = _book;
+@synthesize pageSize = _pageSize;
 @synthesize fontPointSize = _fontPointSize;
 @synthesize globalPageCount = _globalPageCount;
 
-- (id)initWithBook:(EucBUpeBook *)book fontPointSize:(CGFloat)pointSize
+- (id)initWithBook:(id<EucBook>)book 
+          pageSize:(CGSize)pageSize
+     fontPointSize:(CGFloat)pointSize
 {
     if((self = [super init])) {
-        _book = [book retain];   
+        _book = [book retain];
+        _pageSize = pageSize;
         _bookIndex = [[_book bookIndex] retain];
+        _bookIndex.pageSize = pageSize;
         [self setFontPointSize:pointSize];        
     }
     return self;
@@ -57,20 +64,36 @@
 
 - (void)setFontPointSize:(CGFloat)pointSize
 {
+    NSUInteger bestIndex = NSUIntegerMax;
+    CGFloat bestSize = CGFLOAT_MAX;
     CGFloat difference = CGFLOAT_MAX;
-    EucFilteredBookPageIndex *foundIndex = nil;
-    for(EucFilteredBookPageIndex *index in _bookIndex.pageIndexes) {
-        CGFloat thisDifference = fabsf(index.pointSize - pointSize);
+    
+    NSUInteger index = 0;
+    for(NSNumber *indexPointSize in _bookIndex.pageIndexPointSizes) {
+        CGFloat size = [indexPointSize floatValue];
+        CGFloat thisDifference = fabsf(pointSize - size);
         if(thisDifference < difference) {
             difference = thisDifference;
-            foundIndex = index;
+            bestIndex = index;
+            bestSize = size;
         }
+        ++index;
     }
-    if(foundIndex != _currentBookPageIndex) {
+    
+    if(bestIndex != NSUIntegerMax) {
+        _fontPointSize = bestSize;  
         [_currentBookPageIndex release];
-        _currentBookPageIndex = [foundIndex retain];
-        _fontPointSize = _currentBookPageIndex.pointSize;  
+        _currentBookPageIndex = [[_bookIndex.pageIndexes objectAtIndex:bestIndex] retain];
         _globalPageCount = _currentBookPageIndex.filteredLastPageNumber;
+    }
+}
+
+- (void)setPageSize:(CGSize)pageSize
+{
+    if(!CGSizeEqualToSize(pageSize, _pageSize)) {
+        _pageSize = pageSize;
+        [_bookIndex setPageSize:pageSize];
+        [self setFontPointSize:_fontPointSize];
     }
 }
 
@@ -164,7 +187,10 @@
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
         THPair *indexPointRange = [_currentBookPageIndex filteredIndexPointRangeForPage:pageNumber];
         EucBookPageIndexPoint *indexPoint = indexPointRange.first;
-        EucPageView *pageView = [[self class] blankPageViewForPointSize:_currentBookPageIndex.pointSize 
+        
+        CGRect frame = CGRectMake(0, 0, _pageSize.width, _pageSize.height);
+        EucPageView *pageView = [[self class] blankPageViewWithFrame:frame
+                                                        forPointSize:_fontPointSize 
                                                         withPageTexture:pageTexture];
         pageView.titleLinePosition = EucPageViewTitleLinePositionTop;
         pageView.titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
@@ -198,7 +224,9 @@
     return ret;
 }
 
-+ (EucPageView *)blankPageViewForPointSize:(CGFloat)pointSize withPageTexture:(UIImage *)pageTexture
++ (EucPageView *)blankPageViewWithFrame:(CGRect)frame
+                           forPointSize:(CGFloat)pointSize
+                        withPageTexture:(UIImage *)pageTexture
 {
     if(!pageTexture) {
         static UIImage *sPaperImage = nil;
@@ -208,14 +236,15 @@
         pageTexture = sPaperImage;
     }
     
-    return [[[EucPageView alloc] initWithPointSize:pointSize 
-                                         titleFont:@"Georgia" 
-                               titleFontStyleFlags:THStringRendererFontStyleFlagItalic
-                                    pageNumberFont:@"Georgia"
-                          pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
-                                    titlePointSize:pointSize
-                                       pageTexture:pageTexture
-                                     textViewClass:[EucBUpePageTextView class]] autorelease];
+    NSString *fontFamily = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
+    return [[[EucPageView alloc] initWithFrame:frame
+                                     pointSize:pointSize 
+                                     titleFont:fontFamily
+    titleFontStyleFlags:THStringRendererFontStyleFlagItalic
+                                pageNumberFont:fontFamily
+                      pageNumberFontStyleFlags:THStringRendererFontStyleFlagRegular
+                                titlePointSize:pointSize
+                                 textViewClass:[EucBUpePageTextView class]] autorelease];
 }
 
 - (BOOL)viewShouldBeRigid:(UIView *)view

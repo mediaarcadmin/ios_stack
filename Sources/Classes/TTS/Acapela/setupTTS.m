@@ -7,33 +7,38 @@
 //
 
 #import "setupTTS.h"
-#import "AcapelaTTS.h"
+#import "BlioAcapelaAudioManager.h"
 #import "BlioAppSettingsConstants.h"
 
 @implementation setupTTS
 
-@synthesize Voices;
-@synthesize CurrentVoice;
-@synthesize CurrentVoiceName;
-@synthesize AutoMode;
+@synthesize voices;
+@synthesize currentVoice;
+@synthesize autoMode;
 
--(id)initialize
-{
-	AutoMode = FALSE;
-	Voices = [[NSArray arrayWithArray:[AcapelaSpeech availableVoices]] retain];
-	if (Voices.count > 0) 
-		CurrentVoiceName = [[self SetCurrentVoice:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]] retain];
+-(id)init {
+	autoMode = FALSE;
+	self.voices = [AcapelaSpeech availableVoices];
+	if (voices.count > 0) {
+		[self setCurrentVoice:[[NSUserDefaults standardUserDefaults] stringForKey:kBlioLastVoiceDefaultsKey]];
+	}
 	else
-		CurrentVoice = NULL;
+		[self setCurrentVoice:nil];
 	
 	return self;
 }
 
-- (NSString*)SetCurrentVoice:(NSInteger)row
-{
-	CurrentVoice = [Voices objectAtIndex:row];
-	NSDictionary *dic = [AcapelaSpeech attributesForVoice:CurrentVoice];
-	CurrentVoiceName = [dic valueForKey:AcapelaVoiceName];
-	return CurrentVoiceName;
+- (void)setCurrentVoice:(NSString*)voice {
+	if (currentVoice) [currentVoice release];
+	if (voice != nil) {
+		currentVoice = [[NSString stringWithString:voice] retain];
+	}
+	else {
+		currentVoice = nil;
+	}
+}
+- (NSString*)currentVoiceName {
+	if (currentVoice != nil) return [BlioAcapelaAudioManager voiceNameForVoice:currentVoice];
+	return nil;
 }
 @end

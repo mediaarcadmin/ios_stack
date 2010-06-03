@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AcapelaTTS.h"
+#import "BlioAcapelaAudioManager.h"
 
-@interface BlioAudioSettingsController : UIViewController {
+@interface BlioAudioSettingsController : UITableViewController {
 	UISegmentedControl* voiceControl;
 	UISlider* speedControl;
 	UISlider* volumeControl;
@@ -17,6 +17,19 @@
     UILabel *voiceLabel;
     UILabel *speedLabel;
     UILabel *volumeLabel;
+	NSArray * availableVoices;
+	UIView * contentView;
+	CGFloat footerHeight;
 }
+@property (nonatomic, retain) UISegmentedControl * voiceControl;
+@property (nonatomic, retain) UISlider * speedControl;
+@property (nonatomic, retain) UISlider * volumeControl;
+@property (nonatomic, retain) UIButton * playButton;
+@property (nonatomic, retain) UILabel * voiceLabel;
+@property (nonatomic, retain) UILabel * speedLabel;
+@property (nonatomic, retain) UILabel * volumeLabel;
+@property (nonatomic, retain) NSArray * availableVoices;
+@property (nonatomic, retain) UIView * contentView;
+@property (nonatomic, assign) CGFloat footerHeight;
 
 @end

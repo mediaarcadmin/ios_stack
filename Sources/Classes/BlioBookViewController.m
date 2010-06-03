@@ -20,6 +20,7 @@
 #import "BlioLightSettingsViewController.h"
 #import "BlioBookmark.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioAlertManager.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -164,10 +165,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 if ([self.book audiobookFilename]) {
                     _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
                 } else {
-                    _acapelaTTS = *[BlioBookViewController getTTSEngine];
-                    if ( _acapelaTTS != nil )  {
-                        [_acapelaTTS setPageChanged:YES];
-                        [_acapelaTTS setDelegate:self];
+					_acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
+                    if ( _acapelaAudioManager != nil )  {
+                        [_acapelaAudioManager setPageChanged:YES];
+                        [_acapelaAudioManager setDelegate:self];
                     } 
                 }
             }
@@ -197,7 +198,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
-                    BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithBook:newBook animated:YES];
+                    BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds 
+                                                                                       book:newBook 
+                                                                                   animated:YES];
                     self.bookView = aBookView; 
                     [aBookView release];
                 } else {
@@ -208,7 +211,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 break;
             case kBlioPageLayoutPageLayout: {
                 if ([newBook pdfPath]) {
-                    BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithBook:newBook animated:YES];
+                    BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds 
+                                                                                 book:newBook 
+                                                                             animated:YES];
                     aBookView.delegate = self;
                     self.bookView = aBookView;
                     [aBookView release];
@@ -220,7 +225,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 break;
             default: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
-                    BlioFlowView *aBookView = [[BlioFlowView alloc] initWithBook:newBook animated:YES];
+                    BlioFlowView *aBookView = [[BlioFlowView alloc] initWithFrame:self.view.bounds 
+                                                                             book:newBook 
+                                                                         animated:YES];
                     aBookView.delegate = self;
                     self.bookView = aBookView;
                     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
@@ -1222,20 +1229,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			self.audioPlaying = NO;  
 		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
-            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithBook:self.book animated:NO];
+            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds book:self.book animated:NO];
             ePubView.delegate = self;
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
-            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithBook:self.book animated:NO];
+            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds book:self.book animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutSpeedRead && ([self.book ePubPath] || [self.book textFlowPath])) {
-            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithBook:self.book animated:NO];
+            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds book:self.book animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
@@ -1363,8 +1370,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
         		
-		if ( _acapelaTTS != nil )
-			[_acapelaTTS setPageChanged:YES];  
+		if ( _acapelaAudioManager != nil )
+			[_acapelaAudioManager setPageChanged:YES];  
 		if ( _audioBookManager != nil )
 			[_audioBookManager setPageChanged:YES];
 		
@@ -1438,13 +1445,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark TTS Handling 
 
 - (void)speakNextBlock:(NSTimer*)timer {
-	if ( _acapelaTTS.textToSpeakChanged ) {	
-		[_acapelaTTS setTextToSpeakChanged:NO];
-		if(![_acapelaTTS startSpeakingWords:_acapelaTTS.blockWords]) {
+	if ( _acapelaAudioManager.textToSpeakChanged ) {	
+		[_acapelaAudioManager setTextToSpeakChanged:NO];
+		if(![_acapelaAudioManager startSpeakingWords:_acapelaAudioManager.blockWords]) {
             // This probably means that the block was empty.  
             // Pretend that we have read everything from it (which, in effect, 
             // we have).
-            [self speechSynthesizer:_acapelaTTS.engine didFinishSpeaking:YES];
+            [self speechSynthesizer:_acapelaAudioManager.engine didFinishSpeaking:YES];
         }
 	}
 }
@@ -1542,12 +1549,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	return YES;
 }
 
-// Singleton pattern
-+ (AcapelaTTS**)getTTSEngine {
-	static AcapelaTTS* ttsEngine = nil; // can't initialize here unfortunately
-	return &ttsEngine;
-}
-
 #pragma mark -
 #pragma mark Acapela Delegate Methods 
 
@@ -1555,7 +1556,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
 	if (finishedSpeaking) {
 		// Reached end of block.  Start on the next.
-		[self prepareTextToSpeakWithAudioManager:_acapelaTTS continuingSpeech:YES]; 
+		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:YES]; 
 	}
 	//else stop button pushed before end of block.
 }
@@ -1564,15 +1565,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 				 ofString:(NSString*)string 
 {
     if(characterRange.location + characterRange.length <= string.length) {
-        NSUInteger wordOffset = [_acapelaTTS wordOffsetForCharacterRange:characterRange];
+        NSUInteger wordOffset = [_acapelaAudioManager wordOffsetForCharacterRange:characterRange];
         
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaTTS.currentBlock
+            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
                                                                                    wordOffset:wordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
-        [_acapelaTTS setCurrentWordOffset:wordOffset];
+        [_acapelaAudioManager setCurrentWordOffset:wordOffset];
     }
 }
 
@@ -1672,15 +1673,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)stopAudio {			
 		if (![self.book audioRights]) 
-			[_acapelaTTS stopSpeaking];
+			[_acapelaAudioManager stopSpeaking];
 		else if ([self.book audiobookFilename] != nil) 
 			[_audioBookManager stopAudio];
 }
 
 - (void)pauseAudio {			
 	if (![self.book audioRights]) {
-		[_acapelaTTS pauseSpeaking];
-		[_acapelaTTS setPageChanged:NO]; // In case speaking continued through a page turn.
+		[_acapelaAudioManager pauseSpeaking];
+		[_acapelaAudioManager setPageChanged:NO]; // In case speaking continued through a page turn.
 	}
 	else if ([self.book audiobookFilename] != nil) {
 		[_audioBookManager pauseAudio];
@@ -1689,14 +1690,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)prepareTTSEngine {
-	if (*[BlioBookViewController getTTSEngine] == nil) {
-		*[BlioBookViewController getTTSEngine] = [[AcapelaTTS alloc] init];
-		[*[BlioBookViewController getTTSEngine] setEngineWithPreferences:YES];  
-		_acapelaTTS = *[BlioBookViewController getTTSEngine]; 
-		[_acapelaTTS setDelegate:self];
-	}
-	else
-		[*[BlioBookViewController getTTSEngine] setEngineWithPreferences:[*[BlioBookViewController getTTSEngine] voiceHasChanged]]; 
+	[_acapelaAudioManager setEngineWithPreferences:YES];  
+	[_acapelaAudioManager setDelegate:self];
 }
 
 - (void)toggleAudio:(id)sender {
@@ -1710,10 +1705,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 //            [self toggleToolbars];
 //        }
         if (![self.book audioRights]) {
-            [self prepareTTSEngine];
-            [_acapelaTTS setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
-            [self prepareTextToSpeakWithAudioManager:_acapelaTTS continuingSpeech:NO];
-            self.audioPlaying = _acapelaTTS.startedPlaying;  
+			if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse] count] > 0) {
+				[self prepareTTSEngine];
+				[_acapelaAudioManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
+				[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:NO];
+				self.audioPlaying = _acapelaAudioManager.startedPlaying;
+			}
+			else {
+				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Settings section of this app first and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+											delegate:nil 
+								   cancelButtonTitle:@"OK"
+								   otherButtonTitles: nil];
+				return;
+			}
         }
         else if ([self.book audiobookFilename] != nil) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
@@ -1740,12 +1745,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             self.audioPlaying = _audioBookManager.startedPlaying;  
         }
         else {
-            UIAlertView *errorAlert = [[UIAlertView alloc] 
-                                       initWithTitle:@"" message:@"No audio is permitted for this book." // TODO: try Voiceover; how to word?
-                                       delegate:self cancelButtonTitle:nil
-                                       otherButtonTitles:@"OK", nil];
-            [errorAlert show];
-            [errorAlert release];
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+										 message:NSLocalizedStringWithDefaultValue(@"NO_AUDIO_PERMITTED_FOR_THIS_BOOK",nil,[NSBundle mainBundle],@"No audio is permitted for this book.",@"Alert message shown to end-user when the end-user attempts to hear a book read but no audiobook is present and TTS is not enabled.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles: nil];
+			return;
         }
     }
     
@@ -1764,21 +1769,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     //[item setImage:audioImage];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	[alertView release];
-}
-
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
 	[activityIndicator stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
 	NSLog(@"Error loading web page: %@",errorMsg);
-	UIAlertView *errorAlert = [[UIAlertView alloc] 
-							   initWithTitle:@"" message:errorMsg 
-							   delegate:self cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
-	[errorAlert show];
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title")
+								 message:errorMsg
+								delegate:nil 
+					   cancelButtonTitle:@"OK"
+					   otherButtonTitles: nil];
 }
 
 

@@ -34,9 +34,13 @@
 @synthesize pageCount = _pageCount;
 @synthesize pageNumber = _pageNumber;
 
-- (id)initWithBook:(BlioMockBook *)aBook animated:(BOOL)animated 
+- (id)initWithFrame:(CGRect)frame
+               book:(BlioMockBook *)aBook 
+           animated:(BOOL)animated 
 {
-    if((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {
+    if((self = [super initWithFrame:frame])) {
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
         EucBUpeBook *eucBook = nil;
         
         self.opaque = YES;
@@ -56,6 +60,7 @@
                 _eucBookView.delegate = self;
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;
+                _eucBookView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
                 if(animated) {
                     _eucBookView.appearAtCoverThenOpen = YES;
                 }
@@ -350,7 +355,7 @@
     return [bookmarkRange autorelease];
 }
 
-- (BlioBookmarkRange *)bookmarkRangeFromHilightRange:(EucHighlightRange *)range
+- (BlioBookmarkRange *)bookmarkRangeFromHighlightRange:(EucHighlightRange *)range
 {
     BlioBookmarkRange *bookmarkRange = [[BlioBookmarkRange alloc] init];
     bookmarkRange.startPoint = [self bookmarkPointFromBookPageIndexPoint:range.startPoint];
@@ -381,8 +386,8 @@
 - (void)bookView:(EucBookView *)bookView didUpdateHighlightAtRange:(EucHighlightRange *)fromRange toRange:(EucHighlightRange *)toRange
 {
     if([self.delegate respondsToSelector:@selector(updateHighlightAtRange:toRange:withColor:)]) {
-        [self.delegate updateHighlightAtRange:[self bookmarkRangeFromHilightRange:fromRange]
-                                      toRange:[self bookmarkRangeFromHilightRange:toRange]
+        [self.delegate updateHighlightAtRange:[self bookmarkRangeFromHighlightRange:fromRange]
+                                      toRange:[self bookmarkRangeFromHighlightRange:toRange]
                                     withColor:toRange.color];
     }
 }
@@ -395,6 +400,34 @@
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange
 {
     return [_eucBookView eucSelector:selector didEndEditingHighlightWithRange:fromRange movedToRange:toRange];
+}
+
+#pragma mark -
+#pragma mark Visual Properties
+
+- (CGFloat)fontPointSize
+{
+    return _eucBookView.fontPointSize;
+}
+
+- (void)setFontPointSize:(CGFloat)fontPointSize
+{
+    _eucBookView.fontPointSize = fontPointSize;
+}
+
+- (UIImage *)pageTexture
+{
+    return _eucBookView.pageTexture;
+}
+
+- (BOOL)pageTextureIsDark
+{
+    return _eucBookView.pageTextureIsDark;
+}
+
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
+{
+    return [_eucBookView setPageTexture:pageTexture isDark:isDark];
 }
 
 @end

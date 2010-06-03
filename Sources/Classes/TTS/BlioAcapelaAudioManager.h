@@ -1,5 +1,5 @@
 //
-//  AcapelaTTS.h
+//  BlioAcapelaAudioManager.h
 //  TTSDemo
 //
 //  Created by Arnold Chien on 12/22/09.
@@ -7,26 +7,30 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 #import "TTSManager.h"
 #import "setupTTS.h"
 #import "BlioAudioManager.h"
+#import "BlioProcessingStandardOperations.h"
 
-typedef enum {
-    kAcapelaVoiceUSEnglishLaura = 0,
-    kAcapelaVoiceUSEnglishRyan = 1,
-} AcapelaVoice;
+extern NSString * const BlioVoiceListRefreshedNotification;
 
-@interface AcapelaTTS : BlioAudioManager<TTSManager> {
+@interface BlioAcapelaAudioManager : BlioAudioManager<TTSManager> {
 	setupTTS* setupData;
 	AcapelaSpeech* engine;
 	AcapelaLicense* ttsLicense;
-    
+    NSOperationQueue *downloadQueue;
+	NSDictionary * voiceData;
     CFAttributedStringRef currentStringWithWordOffsets;
+	AVAudioPlayer * sampleAudioPlayer;
 }
 
 @property (nonatomic, retain) AcapelaLicense* ttsLicense;
 @property (nonatomic, retain) setupTTS* setupData;
 @property (nonatomic, retain) AcapelaSpeech* engine;
+@property (nonatomic, retain) NSOperationQueue *downloadQueue;
+@property (nonatomic, retain) NSDictionary *voiceData;
+@property (nonatomic, retain) AVAudioPlayer *sampleAudioPlayer;
 
 
 // These look like they refer to properties, but no.
@@ -43,9 +47,19 @@ typedef enum {
 - (void)setEngineWithPreferences:(BOOL)voiceChanged;
 - (BOOL)queueSpeakingString:(NSString *)string;
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError;
-
++(NSString*)voiceNameForVoice:(NSString*)voice;
 
 - (BOOL)startSpeakingWords:(NSArray *)words;
 - (NSUInteger)wordOffsetForCharacterRange:(NSRange)characterRange;
+
+-(NSArray*)availableVoicesForUse;
+-(NSArray*)availableVoicesForDownload;
+
+-(void)playSampleForVoice:(NSString *)aVoice;
+-(void)downloadVoice:(NSString *)aVoice;
+
+-(BlioProcessingDownloadAndUnzipVoiceOperation*)downloadVoiceOperationByVoice:(NSString*)aVoice;
+
++(BlioAcapelaAudioManager*)sharedAcapelaAudioManager;
 
 @end

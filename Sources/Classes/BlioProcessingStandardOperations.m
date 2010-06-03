@@ -101,17 +101,6 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     [super dealloc];
 }
 
-//- (id)initWithUrl:(NSURL *)aURL {
-//    
-//    if (nil == aURL) return nil;
-//    
-//    if((self = [super init])) {
-//        self.url = aURL;
-//    }
-//    
-//    return self;
-//}
-
 - (id)initWithUrl:(NSURL *)aURL {
     
     if (nil == aURL) return nil;
@@ -190,10 +179,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			NSLog(@"Failed to create download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
 		}
 	}
-//	NSLog(@"self.url: %@",[self.url absoluteString]);
     if([self.url isFileURL]) {
-		//   NSLog(@"self.localFilename: %@",self.localFilename);
-
 		
 		NSString *cachedPath = [self.tempDirectory stringByAppendingPathComponent:self.filenameKey];
         
@@ -221,8 +207,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		}
     }
 }
+-(NSString*)temporaryPath {
+	return [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
+}
 - (void)startDownload {
-    NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
+    NSString *temporaryPath = [self temporaryPath];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	/*
     NSString *cachedPath = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
@@ -258,7 +247,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		}
 		NSNumber * bytesAlreadyDownloaded = [fileAttributes valueForKey:NSFileSize];
 //		NSLog(@"bytesAlreadyDownloaded: %@",[bytesAlreadyDownloaded stringValue]);
-		// TODO: add support for etag in header (not a priority now since Feedbooks doesn't seem to support 205 partial content responses, but may be relevant when paid books are downloaded). See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27
+		// TODO: add support for etag in header (not a priority now since Feedbooks doesn't seem to support 206 partial content responses, but may be relevant when paid books are downloaded). See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27
 		if ([bytesAlreadyDownloaded longValue] != 0)
 		{
 			NSString * rangeString = [NSString stringWithFormat:@"bytes=%@-",[bytesAlreadyDownloaded stringValue]];
@@ -394,17 +383,20 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
 //	if (success) NSLog(@"Download finished successfully"); 
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:self.bookID forKey:@"bookID"];
 	if (!success) {
 		NSLog(@"BlioProcessingDownloadOperation: Download did not finish successfully");
 		NSLog(@"for url: %@",[self.url absoluteString]);
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];		
 	}
 	else {
 		// generate new filename
 		CFUUIDRef theUUID = CFUUIDCreate(NULL);
 		CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
 		CFRelease(theUUID);
-		
-		NSString *temporaryPath = [self.tempDirectory stringByAppendingPathComponent:self.filenameKey];
+
+		NSString *temporaryPath = [self temporaryPath];
 		NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:[NSString stringWithString:(NSString *)uniqueString]];
 		// copy file to final location (cachedPath)
 		NSError * error;
@@ -416,6 +408,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
 			self.operationSuccess = YES;
 			self.percentageComplete = 100;
+			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
 		}
 		CFRelease(uniqueString);
 
@@ -425,7 +418,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 @end
 
 #pragma mark -
-@implementation BlioProcessingPaidBookDownloadAndUnzipOperation
+@implementation BlioProcessingDownloadAndUnzipPaidBookOperation
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
 		self.filenameKey = @"xpsFilename";
@@ -439,25 +432,23 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 @implementation BlioProcessingDownloadAndUnzipOperation
 
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:self.bookID forKey:@"bookID"];
     if ([self isCancelled]) return;
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     if (!success) {
-        NSLog(@"BlioProcessingDownloadAndUnzipOperation: Download did not finish successfully");
-		NSLog(@"for url: %@",[self.url absoluteString]);
+        NSLog(@"BlioProcessingDownloadAndUnzipOperation: Download did not finish successfully for url: %@",[self.url absoluteString]);
         [pool drain];
         return;
     }
-//	NSLog(@"Download finished successfully"); 
-//	NSLog(@"for url: %@",[self.url absoluteString]);
-
 
 	// Generate a random filename
 	CFUUIDRef theUUID = CFUUIDCreate(NULL);
 	CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
 	CFRelease(theUUID);
-	NSString *unzippedFilename = unzippedFilename = [NSString stringWithString:(NSString *)uniqueString];
+	NSString *unzippedFilename = [NSString stringWithString:(NSString *)uniqueString];
 	CFRelease(uniqueString);
 	
 	
@@ -492,19 +483,105 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 }
 
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:self.bookID forKey:@"bookID"];
     if (success) {
 		NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
 		NSString *targetFilename = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
 		NSError *anError;
         if (![[NSFileManager defaultManager] moveItemAtPath:temporaryPath toPath:targetFilename error:&anError]) {
             NSLog(@"Error whilst attempting to move file %@ to %@", temporaryPath, targetFilename);
+			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
             return;
         }
 		else {
 			[self setBookValue:self.localFilename forKey:self.filenameKey];
 			self.operationSuccess = YES;
+			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
 		}
-	} else NSLog(@"Unzip did not finish successfully");
+	} else {
+		NSLog(@"Unzip did not finish successfully");
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
+	}
+}
+
+@end
+
+#pragma mark -
+@implementation BlioProcessingDownloadAndUnzipVoiceOperation
+
+@synthesize voice;
+
+-(void) dealloc {
+	self.voice = nil;
+	[super dealloc];
+}
+
+- (void)downloadDidFinishSuccessfully:(BOOL)success {
+    if ([self isCancelled]) return;
+
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:self.voice forKey:@"voice"];
+    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    if (!success) {
+        NSLog(@"BlioDownloadAndUnzipVoiceOperation: Download did not finish successfully for url: %@",[self.url absoluteString]);
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
+        [pool drain];
+        return;
+    }
+	//	NSLog(@"Download finished successfully"); 
+	//	NSLog(@"for url: %@",[self.url absoluteString]);
+	
+
+	
+    NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
+    NSString *temporaryPath2 = [[self.cacheDirectory stringByAppendingPathComponent:@"TTS"] stringByStandardizingPath];
+	
+    BOOL unzipSuccess = NO;
+    ZipArchive* aZipArchive = [[ZipArchive alloc] init];
+	if([aZipArchive UnzipOpenFile:temporaryPath] ) {
+		if (![aZipArchive UnzipFileTo:temporaryPath2 overWrite:YES]) {
+            NSLog(@"Failed to unzip file from %@ to %@", temporaryPath, temporaryPath2);
+        } else {
+            unzipSuccess = YES;
+        }
+		
+		[aZipArchive UnzipCloseFile];
+	} else {
+        NSLog(@"Failed to open zipfile at path: %@", temporaryPath);
+    }
+    
+	[aZipArchive release];
+	
+    NSError *anError;
+    if (![[NSFileManager defaultManager] removeItemAtPath:temporaryPath error:&anError])
+        NSLog(@"Failed to delete zip file at path %@ with error: %@, %@", temporaryPath, anError, [anError userInfo]);
+	
+    self.localFilename = temporaryPath2;
+	
+    [self unzipDidFinishSuccessfully:unzipSuccess];    
+    
+    [pool drain];
+}
+
+- (void)unzipDidFinishSuccessfully:(BOOL)success {
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:self.voice forKey:@"voice"];
+    if (success) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
+	} 
+	else {
+		NSLog(@"Unzip did not finish successfully");
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
+	}
+}
+-(void) setPercentageComplete:(NSUInteger)percentage {
+	percentageComplete = percentage;
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:self.voice forKey:@"voice"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self userInfo:userInfo];
 }
 
 @end
