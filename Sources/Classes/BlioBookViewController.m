@@ -1798,13 +1798,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     [self.searchController cancel];
     BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-    [self.searchController findString:@"igs" fromBookmarkPoint:currentBookmarkPoint];
+    [self.searchController findString:@"Little" fromBookmarkPoint:currentBookmarkPoint];
 }
     
 - (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
     NSLog(@"searchController didFindString '%@' at page %d paragraph %d word %d element %d", searchString, bookmarkPoint.layoutPage, bookmarkPoint.blockOffset, bookmarkPoint.wordOffset, bookmarkPoint.elementOffset);
-    
-    if (bookmarkPoint) [self.searchController findNextOccurrence];
+    [self.searchController findNextOccurrence];
+}
+
+- (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)searchController {
+    NSLog(@"Search reached end of book");
+    [self.searchController findNextOccurrence];
+}
+
+- (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)searchController {
+    NSLog(@"Search complete");
 }
     
 

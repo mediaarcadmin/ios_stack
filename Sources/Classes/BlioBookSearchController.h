@@ -20,9 +20,14 @@
     NSStringCompareOptions searchOptions;
     NSUInteger searchResultsContextCharacters;
     
+    id startParagraphID;
+    NSUInteger startElementOffset;
+    
     id currentParagraphID;
     NSUInteger currentElementOffset;
     NSArray *currentParagraphWords;
+    
+    BOOL hasLooped;
 }
 
 @property (nonatomic, assign) id<BlioParagraphSource> paragraphSource;
@@ -42,5 +47,7 @@
 
 @optional
 - (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)searchController;
+- (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)searchController;
 
 @end
