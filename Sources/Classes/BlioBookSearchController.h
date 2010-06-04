@@ -28,6 +28,7 @@
     NSArray *currentParagraphWords;
     
     BOOL hasLooped;
+	BOOL searching;
 }
 
 @property (nonatomic, assign) id<BlioParagraphSource> paragraphSource;

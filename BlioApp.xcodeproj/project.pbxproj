@@ -156,6 +156,7 @@
 		A38161651164FB3E003A9709 /* xsd.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615F1164FB3E003A9709 /* xsd.m */; };
 		A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
 		A3951D7911B35665000BCAC1 /* DRM in Resources */ = {isa = PBXBuildFile; fileRef = A3951D6F11B35665000BCAC1 /* DRM */; };
+		A39A8C8F11B97C0F00182D7E /* BlioLicenseClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */; };
 		A3A672B611304D7700138097 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
 		A3A67376113078E300138097 /* BlioAudioSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioAudioSettingsController.m */; };
 		A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
@@ -905,6 +906,8 @@
 		A3951B7511B31E39000BCAC1 /* drmxmrparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmrparser.h; path = DRM/drmxmrparser.h; sourceTree = "<group>"; };
 		A3951B7C11B31ED1000BCAC1 /* DrmGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrmGlobals.h; sourceTree = "<group>"; };
 		A3951D6F11B35665000BCAC1 /* DRM */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DRM; sourceTree = "<group>"; };
+		A39A8C8D11B97C0F00182D7E /* BlioLicenseClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLicenseClient.h; sourceTree = "<group>"; };
+		A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLicenseClient.m; sourceTree = "<group>"; };
 		A3A672B411304D7700138097 /* BlioAppSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppSettingsController.h; sourceTree = "<group>"; };
 		A3A672B511304D7700138097 /* BlioAppSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAppSettingsController.m; sourceTree = "<group>"; };
 		A3A67374113078E300138097 /* BlioAudioSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioSettingsController.h; sourceTree = "<group>"; };
@@ -1464,6 +1467,8 @@
 		A37DADCD11B1E4DC005F949A /* DRM */ = {
 			isa = PBXGroup;
 			children = (
+				A39A8C8D11B97C0F00182D7E /* BlioLicenseClient.h */,
+				A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */,
 				A3951B7C11B31ED1000BCAC1 /* DrmGlobals.h */,
 				A37DADCE11B1E52A005F949A /* BlioDrmManager.h */,
 				A37DADCF11B1E52A005F949A /* BlioDrmManager.m */,
@@ -2342,6 +2347,7 @@
 				DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */,
 				A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */,
 				C93317AF11B5457D0057E0BE /* BlioBookSearchController.m in Sources */,
+				A39A8C8F11B97C0F00182D7E /* BlioLicenseClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
