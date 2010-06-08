@@ -10,9 +10,10 @@
 #import "BlioStoreFeaturedController.h"
 #import "BlioStoreCategoriesController.h"
 #import "BlioStoreSearchController.h"
-#import "BlioStoreMyVaultController.h"
+#import "BlioStoreArchiveViewController.h"
 //#import "BlioStoreDownloadsController.h"
 #import "BlioStoreWebsiteViewController.h"
+#import "BlioStoreFreeBooksViewController.h"
 
 @interface BlioStoreTabViewController()
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
@@ -54,7 +55,7 @@
 //        [vc1.navigationItem setRightBarButtonItem:aDoneButton];
 //        [vc1 release];
 
-		BlioStoreCategoriesController* vc1 = [[BlioStoreCategoriesController alloc] init];
+		BlioStoreFreeBooksViewController* vc1 = [[BlioStoreFreeBooksViewController alloc] init];
 		[vc1 setManagedObjectContext:self.managedObjectContext];
         NSURL *featuredFeedURL = [NSURL URLWithString:@"http://www.feedbooks.com/userbooks/top.atom?range=week"];
         BlioStoreFeed *featuredFeed = [[BlioStoreFeed alloc] init];
@@ -66,9 +67,9 @@
 		[featuredFeed release];
 		[vc1 setProcessingDelegate:self.processingDelegate];
 
-		vc1.title = NSLocalizedString(@"Featured",@"\"Featured\" view controller header");
+		vc1.title = NSLocalizedString(@"Free Books",@"\"Free Books\" view controller header");
         
-        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFeatured tag:kBlioStoreFeaturedTag];
+		UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Free Books",@"\"Free Books\" tab bar title") image:[UIImage imageNamed:@"icon-freebooks.png"] tag:kBlioStoreFreeBooksTag];
         vc1.tabBarItem = theItem;
         [theItem release];
 		
@@ -108,7 +109,7 @@
         [vc3.navigationItem setRightBarButtonItem:aDoneButton];
         [vc3 release];
         
-        BlioStoreMyVaultController* vc4 = [[BlioStoreMyVaultController alloc] init];
+        BlioStoreArchiveViewController* vc4 = [[BlioStoreArchiveViewController alloc] init];
 		vc4.managedObjectContext = self.managedObjectContext;
 		vc4.processingDelegate = self.processingDelegate;
         UINavigationController* nc4 = [[UINavigationController alloc] initWithRootViewController:vc4];
@@ -125,7 +126,8 @@
         [vc5.navigationItem setRightBarButtonItem:aDoneButton];
         [vc5 release];
         
-        NSArray* controllers = [NSArray arrayWithObjects:nc1, nc2, nc3, nc4, nc5, nil];
+		
+        NSArray* controllers = [NSArray arrayWithObjects:nc5, nc1, nc4, nil];
         self.viewControllers = controllers;
         
         [nc1 release];

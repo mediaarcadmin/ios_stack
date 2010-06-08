@@ -193,7 +193,7 @@
 		C97263A3111C6146001BCC0B /* BlioStoreFeaturedController.m in Sources */ = {isa = PBXBuildFile; fileRef = C97263A2111C6146001BCC0B /* BlioStoreFeaturedController.m */; };
 		C9726466111C760B001BCC0B /* BlioStoreCategoriesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726465111C760B001BCC0B /* BlioStoreCategoriesController.m */; };
 		C9726489111C7B0E001BCC0B /* BlioStoreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */; };
-		C972648E111C7B8C001BCC0B /* BlioStoreMyVaultController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */; };
+		C972648E111C7B8C001BCC0B /* BlioStoreArchiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */; };
 		C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
 		C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F225113C1AB1007B5868 /* SystemConfiguration.framework */; };
 		C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
@@ -338,7 +338,7 @@
 		C9AF1A4B1147A772007D7AFC /* BlioStoreFeaturedController.m in Sources */ = {isa = PBXBuildFile; fileRef = C97263A2111C6146001BCC0B /* BlioStoreFeaturedController.m */; };
 		C9AF1A4C1147A772007D7AFC /* BlioStoreCategoriesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726465111C760B001BCC0B /* BlioStoreCategoriesController.m */; };
 		C9AF1A4D1147A772007D7AFC /* BlioStoreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */; };
-		C9AF1A4E1147A772007D7AFC /* BlioStoreMyVaultController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */; };
+		C9AF1A4E1147A772007D7AFC /* BlioStoreArchiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */; };
 		C9AF1A501147A772007D7AFC /* BlioStoreFeedBooksNonGDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */; };
 		C9AF1A511147A772007D7AFC /* BlioStoreBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C98674E11122F3580070A03E /* BlioStoreBookViewController.m */; };
 		C9AF1A521147A772007D7AFC /* BlioStoreBooksSourceParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867698112413B70070A03E /* BlioStoreBooksSourceParser.m */; };
@@ -440,6 +440,10 @@
 		DCC45AD311B458A400CBD491 /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
 		DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
 		DCC46B8E11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
+		DCCE466A11B9AE22002D7E01 /* icon-freebooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DCCE466911B9AE22002D7E01 /* icon-freebooks.png */; };
+		DCCE466B11B9AE22002D7E01 /* icon-freebooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DCCE466911B9AE22002D7E01 /* icon-freebooks.png */; };
+		DCCE467511BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCE467411BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m */; };
+		DCCE467611BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCE467411BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m */; };
 		DCFF6192117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
 		DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6191117F6F4E00463427 /* button-delete-black.png */; };
 		DCFF6194117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
@@ -941,8 +945,8 @@
 		C9726465111C760B001BCC0B /* BlioStoreCategoriesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreCategoriesController.m; sourceTree = "<group>"; };
 		C9726487111C7B0E001BCC0B /* BlioStoreSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreSearchController.h; sourceTree = "<group>"; };
 		C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreSearchController.m; sourceTree = "<group>"; };
-		C972648C111C7B8C001BCC0B /* BlioStoreMyVaultController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreMyVaultController.h; sourceTree = "<group>"; };
-		C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreMyVaultController.m; sourceTree = "<group>"; };
+		C972648C111C7B8C001BCC0B /* BlioStoreArchiveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreArchiveViewController.h; sourceTree = "<group>"; };
+		C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreArchiveViewController.m; sourceTree = "<group>"; };
 		C974F221113C1AA0007B5868 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		C974F225113C1AB1007B5868 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C9775AF410DFD728005E0E2B /* BlioMockBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMockBook.h; sourceTree = "<group>"; };
@@ -1047,6 +1051,9 @@
 		DCC45ACB11B458A400CBD491 /* voiceSamples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = voiceSamples; sourceTree = "<group>"; };
 		DCC4696811B5C31400CBD491 /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Acapela For iPhone LF USEnglish Heather"; path = "TTS/Acapela For iPhone LF USEnglish Heather"; sourceTree = "<group>"; };
+		DCCE466911B9AE22002D7E01 /* icon-freebooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-freebooks.png"; sourceTree = "<group>"; };
+		DCCE467311BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreFreeBooksViewController.h; sourceTree = "<group>"; };
+		DCCE467411BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFreeBooksViewController.m; sourceTree = "<group>"; };
 		DCFF6190117F6F4E00463427 /* button-delete-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-red.png"; sourceTree = "<group>"; };
 		DCFF6191117F6F4E00463427 /* button-delete-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-black.png"; sourceTree = "<group>"; };
 		DCFF6196117F703A00463427 /* library-resumebutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "library-resumebutton.png"; sourceTree = "<group>"; };
@@ -1243,6 +1250,7 @@
 			children = (
 				A3951D6F11B35665000BCAC1 /* DRM */,
 				A383F2431174FA7A0049ED3A /* icon-cart.png */,
+				DCCE466911B9AE22002D7E01 /* icon-freebooks.png */,
 				C9F749401140261700680E93 /* shadow-right.png */,
 				C9F749411140261700680E93 /* shadow-left.png */,
 				C9F749421140261700680E93 /* shadow-top.png */,
@@ -1708,6 +1716,8 @@
 				C9867F6B112964A70070A03E /* BlioStoreFeed.m */,
 				C9726385111C595F001BCC0B /* BlioStoreTabViewController.h */,
 				C9726386111C595F001BCC0B /* BlioStoreTabViewController.m */,
+				DCCE467311BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.h */,
+				DCCE467411BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m */,
 				C97263A1111C6146001BCC0B /* BlioStoreFeaturedController.h */,
 				C97263A2111C6146001BCC0B /* BlioStoreFeaturedController.m */,
 				C9726464111C760B001BCC0B /* BlioStoreCategoriesController.h */,
@@ -1716,8 +1726,8 @@
 				C98674E11122F3580070A03E /* BlioStoreBookViewController.m */,
 				C9726487111C7B0E001BCC0B /* BlioStoreSearchController.h */,
 				C9726488111C7B0E001BCC0B /* BlioStoreSearchController.m */,
-				C972648C111C7B8C001BCC0B /* BlioStoreMyVaultController.h */,
-				C972648D111C7B8C001BCC0B /* BlioStoreMyVaultController.m */,
+				C972648C111C7B8C001BCC0B /* BlioStoreArchiveViewController.h */,
+				C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */,
 				C918B6971121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.h */,
 				C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */,
 				C9867697112413B70070A03E /* BlioStoreBooksSourceParser.h */,
@@ -2122,6 +2132,7 @@
 				A3951D7911B35665000BCAC1 /* DRM in Resources */,
 				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */,
+				DCCE466A11B9AE22002D7E01 /* icon-freebooks.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2239,6 +2250,7 @@
 				C9D280B611AD0FCE00857CFB /* button-tts-pause.png in Resources */,
 				DCC46B8E11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				7DED9CFB11B6A906007848FD /* EucConfiguration.plist in Resources */,
+				DCCE466B11B9AE22002D7E01 /* icon-freebooks.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2277,7 +2289,7 @@
 				C97263A3111C6146001BCC0B /* BlioStoreFeaturedController.m in Sources */,
 				C9726466111C760B001BCC0B /* BlioStoreCategoriesController.m in Sources */,
 				C9726489111C7B0E001BCC0B /* BlioStoreSearchController.m in Sources */,
-				C972648E111C7B8C001BCC0B /* BlioStoreMyVaultController.m in Sources */,
+				C972648E111C7B8C001BCC0B /* BlioStoreArchiveViewController.m in Sources */,
 				C918B6991121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m in Sources */,
 				C98674E21122F3580070A03E /* BlioStoreBookViewController.m in Sources */,
 				C9867699112413B70070A03E /* BlioStoreBooksSourceParser.m in Sources */,
@@ -2332,6 +2344,7 @@
 				7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */,
 				DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */,
 				A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */,
+				DCCE467511BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2369,7 +2382,7 @@
 				C9AF1A4B1147A772007D7AFC /* BlioStoreFeaturedController.m in Sources */,
 				C9AF1A4C1147A772007D7AFC /* BlioStoreCategoriesController.m in Sources */,
 				C9AF1A4D1147A772007D7AFC /* BlioStoreSearchController.m in Sources */,
-				C9AF1A4E1147A772007D7AFC /* BlioStoreMyVaultController.m in Sources */,
+				C9AF1A4E1147A772007D7AFC /* BlioStoreArchiveViewController.m in Sources */,
 				C9AF1A501147A772007D7AFC /* BlioStoreFeedBooksNonGDataParser.m in Sources */,
 				C9AF1A511147A772007D7AFC /* BlioStoreBookViewController.m in Sources */,
 				C9AF1A521147A772007D7AFC /* BlioStoreBooksSourceParser.m in Sources */,
@@ -2421,6 +2434,7 @@
 				DC0B993E1194F03B0040CEFB /* BlioStoreHelper.m in Sources */,
 				7DD9BA151199B7F4001FED8E /* BlioSelectableBookView.m in Sources */,
 				DCC451E911B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */,
+				DCCE467611BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
