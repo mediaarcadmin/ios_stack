@@ -71,6 +71,7 @@
 	CGRect frame = CGRectMake(kLeftMargin+activityIndicator.bounds.size.width+4, yPlacement+kLabelHeight, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
 	self.statusField = [BlioLoginViewController labelWithFrame:frame title:@""];
 	[self.view addSubview:statusField];
+	
 }
 
 - (void) dismissLoginView: (id) sender {
@@ -199,6 +200,11 @@
 {
 	return 2;
 }
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+	return NSLocalizedStringWithDefaultValue(@"LOGIN_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"If you have a blioreader.com username, login now to retrieve your latest blioreader.com purchases.",@"Explanatory message that appears at the bottom of the Login table.");
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	return kCellHeight;
@@ -217,10 +223,8 @@
 		((CellTextField *)cell).view = [self createUsernameTextField];
 	else
 		((CellTextField *)cell).view = [self createPasswordTextField];
-		
+	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
 }
-	
-	
 
 @end

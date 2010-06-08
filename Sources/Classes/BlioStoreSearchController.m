@@ -206,7 +206,7 @@
 	
 	// cell background
 	if (cell.backgroundView == nil) { // if no existing divider image, add one
-		NSLog(@"background!");
+//		NSLog(@"background!");
 		cell.backgroundView = [[[UIView alloc] initWithFrame:cell.bounds] autorelease];
 		cell.backgroundView.autoresizesSubviews = YES;
 		UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
@@ -217,7 +217,7 @@
 
 		// label styling
 		CGRect f = cell.textLabel.frame; 
-		NSLog(@"rect: %f,%f,%f,%f", f.origin.x, f.origin.y, f.size.width, f.size.height);
+//		NSLog(@"rect: %f,%f,%f,%f", f.origin.x, f.origin.y, f.size.width, f.size.height);
 		cell.textLabel.contentMode = UIViewContentModeRedraw;
 		cell.textLabel.frame = CGRectMake(f.origin.x, f.origin.y + 30, f.size.width, f.size.height);
 	}

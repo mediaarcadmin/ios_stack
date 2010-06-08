@@ -78,11 +78,25 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     [libraryController setManagedObjectContext:moc];
     [libraryController setProcessingDelegate:[self processingManager]];
 	
-	if (self.networkStatus != NotReachable) [self.processingManager resumeProcessing];
-	
 	[[BlioDrmManager getDrmManager] initialize];
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
+}
+
+-(void)loginDismissed:(NSNotification*)note {
+	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		}
+		else {
+			//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+			//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Vault. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Vault. In the meantime, previously synced books will display.")]
+			//										delegate:self
+			//							   cancelButtonTitle:@"OK"
+			//							   otherButtonTitles:nil];			
+		}
+	}
 }
 
 static void *background_init_thread(void * arg) {
@@ -154,10 +168,22 @@ static void *background_init_thread(void * arg) {
 	
     [window addSubview:[navigationController view]];
     [window sendSubviewToBack:[navigationController view]];
-	[BlioStoreManager sharedInstance].rootViewController = navigationController;
-	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
     window.backgroundColor = [UIColor blackColor];
     
+	[BlioStoreManager sharedInstance].rootViewController = navigationController;
+	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
+
+	if (self.networkStatus != NotReachable) {
+		[self.processingManager resumeProcessing];
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		}
+		else {
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+		}		
+	}	
+	
 	[UIView beginAnimations:@"FadeOutRealDefault" context:nil];
     [UIView setAnimationDuration:1.0/5.0];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
