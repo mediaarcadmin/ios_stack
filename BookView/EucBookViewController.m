@@ -470,7 +470,15 @@
         UIApplication *application = [UIApplication sharedApplication];
         if(self.toolbarsVisibleAfterAppearance) {
             if([application isStatusBarHidden]) {
+#ifdef __IPHONE_3_2
+				if([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+                    [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+                } else  {
+                    [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
+                }
+#else
                 [application setStatusBarHidden:NO animated:YES];
+#endif
                 [self.navigationController setNavigationBarHidden:YES animated:YES];
                 [self.navigationController setNavigationBarHidden:NO animated:NO];
             }            
@@ -479,7 +487,15 @@
             navBar.barStyle = UIBarStyleBlack;  
             navBar.translucent = YES;
             if(![application isStatusBarHidden]) {
+#ifdef __IPHONE_3_2
+				if([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+                    [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+                } else  {
+                    [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.
+                }
+#else
                 [application setStatusBarHidden:YES animated:YES];
+#endif
             }            
         }
     }
@@ -531,8 +547,15 @@
                                       animated:YES];
             }                        
             if(_returnToStatusBarHidden != application.isStatusBarHidden){
-                [application setStatusBarHidden:_returnToStatusBarHidden 
-                                       animated:YES];
+#ifdef __IPHONE_3_2
+				if([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+                    [application setStatusBarHidden:_returnToStatusBarHidden withAnimation:UIStatusBarAnimationFade];
+                } else  {
+                    [(id)application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // typecast as id to mask deprecation warnings.
+                }
+#else
+                [application setStatusBarHidden:_returnToStatusBarHidden animated:YES];
+#endif
             }           
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleDefault;
@@ -602,7 +625,16 @@
 - (void)_fadeWillStart
 {
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
-        [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];    
+        UIApplication *application = [UIApplication sharedApplication];
+#ifdef __IPHONE_3_2
+        if([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+            [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        } else  {
+            [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.
+        }
+#else
+        [application setStatusBarHidden:YES animated:YES];
+#endif
     } 
 }
 
@@ -611,7 +643,15 @@
     if(_fadeState == BookViewControlleUIFadeStateNone) {
         if(_toolbar.hidden) {
             UIApplication *application = [UIApplication sharedApplication];
-            [application setStatusBarHidden:NO animated:NO]; 
+#ifdef __IPHONE_3_2
+            if([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+                [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+            } else  {
+                [(id)application setStatusBarHidden:NO animated:NO]; // typecast as id to mask deprecation warnings.
+            }
+#else
+            [application setStatusBarHidden:NO animated:NO];
+#endif
             [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             
             UINavigationBar *navigationBar = self.navigationController.navigationBar;
