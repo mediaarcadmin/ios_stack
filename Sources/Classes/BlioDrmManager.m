@@ -7,6 +7,7 @@
 //
 
 #import "BlioDrmManager.h"
+#import "BlioLicenseClient.h"
 #import "DrmGlobals.h"
 
 @implementation BlioDrmManager
@@ -39,6 +40,24 @@ ErrorExit:
 		return;
 	}
 	self.drmInitialized = YES;
+}
+
+DRM_RESULT DRM_CALL NetClient(
+							  IN DRM_BYTE *f_pbChallenge,
+							  IN DRM_DWORD f_cbChallenge,
+							  OUT DRM_BYTE **f_ppbResponse,  
+							  OUT DRM_DWORD *f_pcbResponse )
+{
+	DRM_RESULT dr = DRM_SUCCESS;
+	
+	BlioLicenseClient* licenseClient = [[BlioLicenseClient alloc] initWithMessage:(const void*)f_pbChallenge 
+										messageSize:f_cbChallenge];
+	if ( ![licenseClient getResponse:(unsigned char**)f_ppbResponse responseSize:(unsigned int*)f_pcbResponse] ) {
+		dr = DRM_S_FALSE;
+	}
+	
+ErrorExit:
+	return dr;
 }
 
 - (DRM_RESULT)_getLicense {
@@ -85,13 +104,14 @@ ErrorExit:
         ChkDR( dr );
     }
 	
-	NSLog(@"DRM license challenge generated: %s",(char*)pbChallenge);
+	NSLog(@"DRM license challenge: %s",(unsigned char*)pbChallenge);
+		
+    ChkDR( NetClient( pbChallenge,
+					 cbChallenge,
+					 &pbResponse,
+					 &cbResponse) );
 	
-	// external url not ready yet
-    //ChkDR( NetClient( pbChallenge,
-	//				 cbChallenge,
-	//				 &pbResponse,
-	//				 &cbResponse) );
+	NSLog(@"DRM license response: %s",(unsigned char*)pbResponse);
 	
     ChkDR( Drm_LicenseAcq_ProcessResponse( [DrmGlobals getDrmGlobals].drmAppContext,
 										  NULL,

@@ -48,6 +48,9 @@ static NSString *kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"pape
 static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @interface BlioBookViewController ()
+
+@property (nonatomic, retain) BlioBookSearchController *searchController;
+
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
@@ -84,6 +87,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @synthesize tiltScroller, tapDetector, motionControlsEnabled;
 @synthesize rotationLocked;
+
+@synthesize searchController;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -285,7 +290,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:@selector(dummyShowParsedText:)];
+                                           action:@selector(search:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Search", @"Accessibility label for Book View Controller Search button")];
     
     [readingItems addObject:item];
@@ -738,6 +743,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	if (_pageJumpButton) [_pageJumpButton release];
     [tapDetector release];
     [tiltScroller release];
+    
+    self.searchController = nil;
     
     self.bookView = nil;
     
@@ -1438,6 +1445,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self setToolbarsForModalOverlayActive:NO];
 }
 
+#pragma mark -
+#pragma mark Search
 
 #pragma mark -
 #pragma mark TTS Handling 
@@ -1779,6 +1788,33 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 					   otherButtonTitles: nil];
 }
 
+- (void)search:(id)sender {
+    if (!self.searchController) {
+        BlioBookSearchController *aSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+        aSearchController.delegate = self;
+        self.searchController = aSearchController;
+        [aSearchController release];
+    }
+    
+    [self.searchController cancel];
+    BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
+    [self.searchController findString:@"Little" fromBookmarkPoint:currentBookmarkPoint];
+}
+    
+- (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    NSLog(@"searchController didFindString '%@' at page %d paragraph %d word %d element %d", searchString, bookmarkPoint.layoutPage, bookmarkPoint.blockOffset, bookmarkPoint.wordOffset, bookmarkPoint.elementOffset);
+    [self.searchController findNextOccurrence];
+}
+
+- (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)searchController {
+    NSLog(@"Search reached end of book");
+    [self.searchController findNextOccurrence];
+}
+
+- (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)searchController {
+    NSLog(@"Search complete");
+}
+    
 
 - (void)dummyShowParsedText:(id)sender {
     if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
