@@ -403,7 +403,6 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor = [UIColor clearColor];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
 //	NSLog(@"Initial library load: populating cells...");
 	[self.tableView reloadData];
 	[self.gridView reloadData];
@@ -1549,7 +1548,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 				progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 			}
 			else {
-				NSLog(@"WARNING: could not find completeOp for obtaining processing progress!");
+				// NSLog(@"WARNING: could not find completeOp for obtaining processing progress for book: %@",[newBook title]);
 				progressView.progress = 0;
 			}
 			self.pauseButton.hidden = NO;
@@ -1761,7 +1760,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 				progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 			}
 			else {
-				NSLog(@"WARNING: could not find completeOp for obtaining processing progress!");
+				// NSLog(@"WARNING: could not find completeOp for obtaining processing progress for book: %@",[newBook title]);
 				progressView.progress = 0;
 			}
 			self.accessoryView = pauseButton;

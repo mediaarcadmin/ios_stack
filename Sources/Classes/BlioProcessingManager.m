@@ -140,7 +140,7 @@
 			CFRelease(uniqueString);
 		}        
         if (![moc save:&error]) {
-            NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+            NSLog(@"[BlioProcessingManager enqueueBookWithTitle:] (saving UUID) Save failed with error: %@, %@", error, [error userInfo]);
         }
 		[self enqueueBook:aBook placeholderOnly:placeholderOnly];
 	}
@@ -338,39 +338,39 @@
 			[bookOps addObject:pdfOp];
 		}
 	}
-    stringURL = [aBook valueForKey:@"xpsFilename"];
-	if (stringURL && !placeholderOnly) {
-		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-		else {
-			alreadyCompletedOperations++;
-			url = nil;
-		}
-		BOOL usedPreExistingOperation = NO;
-		BlioProcessingDownloadXPSOperation * xpsOp = nil;
-		
-		if (nil != url) {
-			// we still need to finish downloading this file
-			// so check to see if operation already exists
-			xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-			
-			if (!xpsOp || xpsOp.isCancelled) {
-				
-				xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
-				xpsOp.bookID = bookID;
-				xpsOp.sourceID = sourceID;
-				xpsOp.sourceSpecificID = sourceSpecificID;
-				xpsOp.localFilename = [aBook valueForKey:xpsOp.filenameKey];
-				xpsOp.storeCoordinator = [moc persistentStoreCoordinator];
-				xpsOp.cacheDirectory = cacheDir;
-				xpsOp.tempDirectory = tempDir;
-				[self.preAvailabilityQueue addOperation:xpsOp];
-			}
-			else {
-				usedPreExistingOperation = YES; // in case we have dependent operations in the future
-			}
-			[bookOps addObject:xpsOp];
-		}
-	}   
+//    stringURL = [aBook valueForKey:@"xpsFilename"];
+//	if (stringURL && !placeholderOnly) {
+//		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
+//		else {
+//			alreadyCompletedOperations++;
+//			url = nil;
+//		}
+//		BOOL usedPreExistingOperation = NO;
+//		BlioProcessingDownloadXPSOperation * xpsOp = nil;
+//		
+//		if (nil != url) {
+//			// we still need to finish downloading this file
+//			// so check to see if operation already exists
+//			xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+//			
+//			if (!xpsOp || xpsOp.isCancelled) {
+//				
+//				xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
+//				xpsOp.bookID = bookID;
+//				xpsOp.sourceID = sourceID;
+//				xpsOp.sourceSpecificID = sourceSpecificID;
+//				xpsOp.localFilename = [aBook valueForKey:xpsOp.filenameKey];
+//				xpsOp.storeCoordinator = [moc persistentStoreCoordinator];
+//				xpsOp.cacheDirectory = cacheDir;
+//				xpsOp.tempDirectory = tempDir;
+//				[self.preAvailabilityQueue addOperation:xpsOp];
+//			}
+//			else {
+//				usedPreExistingOperation = YES; // in case we have dependent operations in the future
+//			}
+//			[bookOps addObject:xpsOp];
+//		}
+//	}   
 	
 	stringURL = [aBook valueForKey:@"textFlowFilename"];
 	if (stringURL && !placeholderOnly) {
@@ -542,7 +542,7 @@
 		[aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingState"];			
 		NSError * error;
 		if (![moc save:&error]) {
-			NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+			NSLog(@"[BlioProcessingManager enqueueBook:placeholderOnly:] (changing state to incomplete) Save failed with error: %@, %@", error, [error userInfo]);
 		}			
 	}		
 }
@@ -658,7 +658,7 @@
 	[self stopProcessingForBook:aBook];
 	NSError * error;
 	if (![moc save:&error]) {
-		NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+		NSLog(@"[BlioProcessingManager pauseProcessingForBook:] (set state to paused) Save failed in processing manager with error: %@, %@", error, [error userInfo]);
 	}			
 }
 - (void)stopProcessingForBook:(BlioMockBook*)aBook {

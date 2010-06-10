@@ -725,7 +725,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             
             NSError *error;
             if (![[self.book managedObjectContext] save:&error])
-                NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);            
+                NSLog(@"[BlioBookViewController viewWillDisappear] Save failed with error: %@, %@", error, [error userInfo]);            
         }
     }
 }
@@ -1411,7 +1411,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             
             NSError *error;
             if (![[self.book managedObjectContext] save:&error])
-                NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);            
+                NSLog(@"[BlioBookViewController observeValueForKeyPath] Save failed with error: %@, %@", error, [error userInfo]);            
         }
     }
     
@@ -1923,7 +1923,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         NSError *error;
         if (![[self managedObjectContext] save:&error])
-            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+            NSLog(@"[BlioBookViewController actionSheet:clickedButtonAtIndex:] Save failed with error: %@, %@", error, [error userInfo]);
         
     } else {
         // Cancel
@@ -1959,7 +1959,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioBookViewController notesViewCreateNote:] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 - (void)notesViewUpdateNote:(BlioNotesView *)notesView {
@@ -1979,7 +1979,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         NSError *error;
         if (![[self managedObjectContext] save:&error])
-            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+            NSLog(@"[BlioBookViewController notesViewUpdateNote:] Save failed with error: %@, %@", error, [error userInfo]);
     }
 }
 
@@ -2071,7 +2071,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioBookViewController deleteNote:] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 - (void)deleteBookmark:(NSManagedObject *)bookmark {
@@ -2081,7 +2081,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioBookViewController deleteBookmark:] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 #pragma mark -
@@ -2256,7 +2256,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         NSError *error;
         if (![[self managedObjectContext] save:&error])
-            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+            NSLog(@"[BlioBookViewController addHighlightWithColor:] Save failed with error: %@, %@", error, [error userInfo]);
     }
     
     //if ([self.bookView respondsToSelector:@selector(refreshHighlights)])

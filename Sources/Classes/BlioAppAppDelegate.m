@@ -209,7 +209,7 @@ static void *background_init_thread(void * arg) {
 	// Save data if appropriate
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioAppAppDelegate applicationWilTerminate] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 #pragma mark -
@@ -253,6 +253,7 @@ static void *background_init_thread(void * arg) {
 #pragma mark Memory management
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:managedObjectContext];
     [managedObjectContext release];
     [managedObjectModel release];
     [persistentStoreCoordinator release];
@@ -280,6 +281,8 @@ static void *background_init_thread(void * arg) {
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
         managedObjectContext = [[NSManagedObjectContext alloc] init];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
+
         [managedObjectContext setPersistentStoreCoordinator: coordinator];
     }
     return managedObjectContext;
@@ -333,6 +336,11 @@ static void *background_init_thread(void * arg) {
    }    
 	
     return persistentStoreCoordinator;
+}
+
+- (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
+//	NSLog(@"BlioAppAppDelegate mergeChangesFromContextDidSaveNotification received...");	
+	[[self managedObjectContext] mergeChangesFromContextDidSaveNotification:notification];
 }
 
 /**
