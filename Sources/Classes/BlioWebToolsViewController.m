@@ -63,7 +63,12 @@
     statusBarHiddenOnEntry = [[UIApplication sharedApplication] isStatusBarHidden];
     
     if (statusBarHiddenOnEntry) {
-        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+		else [(id)[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.							
+#else
+		[[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES]; // original code 
+#endif
 	}
 }
 
@@ -76,7 +81,12 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
     
     if (statusBarHiddenOnEntry) {
-        [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		else [(id)[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
+#else
+		[[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // original code 
+#endif
 	}
 }
     

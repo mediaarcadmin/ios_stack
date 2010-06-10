@@ -48,8 +48,8 @@
 	// blioreader.com button.
 	yPlacement += kTweenMargin + 5*kLabelHeight;
 	launchButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-	launchButton.frame = CGRectMake(kLeftMargin, yPlacement, (2.6)*kStdButtonWidth, kStdButtonHeight);
-    launchButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	launchButton.frame = CGRectMake(self.view.bounds.size.width/2 - ((2.6)*kStdButtonWidth)/2, yPlacement, (2.6)*kStdButtonWidth, kStdButtonHeight);
+    launchButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
 	launchButton.backgroundColor = [UIColor clearColor];
 	[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
@@ -62,7 +62,17 @@
 {	
 	// create a gradient-based content view	
 	UIView *contentView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+		contentView.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
+	}
+	else {
+		contentView.backgroundColor = [UIColor colorWithRed:224.0f/255.0f green:226.0f/255.0f blue:232.0f/255.0f alpha:1.0f]; // the default background color of grouped tableview on iPad
+	}
+#else
 	contentView.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
+#endif
+
 	contentView.autoresizesSubviews = YES;
 	self.view = contentView;
 	[contentView release];

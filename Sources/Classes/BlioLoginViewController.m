@@ -21,7 +21,8 @@
 	self = [super initWithStyle:UITableViewStyleGrouped];
 	if (self)
 	{
-		self.sourceID = bookSourceID;		
+		self.sourceID = bookSourceID;
+		self.title = NSLocalizedString(@"Sign in to Blio",@"\"Sign in to Blio\" view controller header");
 	}
 	
 	return self;
@@ -47,12 +48,12 @@
 	self.tableView.scrollEnabled = NO;
 	self.tableView.autoresizesSubviews = YES;
 	
-	self.navigationItem.titleView = [[[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)] autorelease];
-	[(UILabel*)self.navigationItem.titleView setText:NSLocalizedString(@"Sign in to Blio",@"\"Sign in to Blio\" view controller header")];
-	[(UILabel*)self.navigationItem.titleView setBackgroundColor:[UIColor clearColor]];
-	[(UILabel*)self.navigationItem.titleView setTextColor:[UIColor whiteColor]];
-	[(UILabel*)self.navigationItem.titleView setTextAlignment:UITextAlignmentCenter];
-	[(UILabel*)self.navigationItem.titleView setFont:[UIFont boldSystemFontOfSize:18.0f]];
+//	self.navigationItem.titleView = [[[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)] autorelease];
+//	[(UILabel*)self.navigationItem.titleView setText:NSLocalizedString(@"Sign in to Blio",@"\"Sign in to Blio\" view controller header")];
+//	[(UILabel*)self.navigationItem.titleView setBackgroundColor:[UIColor clearColor]];
+//	[(UILabel*)self.navigationItem.titleView setTextColor:[UIColor whiteColor]];
+//	[(UILabel*)self.navigationItem.titleView setTextAlignment:UITextAlignmentCenter];
+//	[(UILabel*)self.navigationItem.titleView setFont:[UIFont boldSystemFontOfSize:18.0f]];
  	
 	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] 
 											  initWithTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" bar button") 

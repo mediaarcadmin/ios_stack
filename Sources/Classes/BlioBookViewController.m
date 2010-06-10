@@ -605,7 +605,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIApplication *application = [UIApplication sharedApplication];
         if(self.toolbarsVisibleAfterAppearance) {
             if([application isStatusBarHidden]) {
-                [application setStatusBarHidden:NO animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+				else [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
+#else
+                [application setStatusBarHidden:NO animated:YES]; // original code
+#endif
                 [self.navigationController setNavigationBarHidden:YES animated:YES];
                 [self.navigationController setNavigationBarHidden:NO animated:NO];
             }
@@ -622,7 +627,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleBlackTranslucent;  
             if(![application isStatusBarHidden]) {
-                [application setStatusBarHidden:YES animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+				else [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
+#else
+				[application setStatusBarHidden:YES animated:YES]; // original code
+#endif
             }            
         }
     }
@@ -691,8 +701,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                       animated:YES];
             }                        
             if(_returnToStatusBarHidden != application.isStatusBarHidden){
-                [application setStatusBarHidden:_returnToStatusBarHidden 
-                                       animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:_returnToStatusBarHidden withAnimation:UIStatusBarAnimationFade];
+				else [(id)application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // typecast as id to mask deprecation warnings.							
+#else
+				[application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // original code
+#endif
             }           
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleDefault;
@@ -777,7 +791,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)_fadeWillStart
 {
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
-        [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		else [(id)[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
+#else
+		[[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // original code 
+#endif
     } 
 }
 
@@ -810,7 +829,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateStatusBarVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
-            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+			if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+			else [(id)[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // typecast as id to mask deprecation warnings.							
+#else
+			[[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // original code
+#endif
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             break;
         default:
