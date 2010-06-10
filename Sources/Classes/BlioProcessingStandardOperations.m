@@ -772,6 +772,18 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 @end
 
 #pragma mark -
+@implementation BlioProcessingDownloadXPSOperation
+
+- (id)initWithUrl:(NSURL *)aURL {
+    if ((self = [super initWithUrl:aURL])) {
+		self.filenameKey = @"xpsFilename";
+    }
+    return self;
+}
+
+@end
+
+#pragma mark -
 @implementation BlioProcessingDownloadTextFlowOperation
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {

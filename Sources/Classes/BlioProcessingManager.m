@@ -49,22 +49,22 @@
 #pragma mark -
 #pragma mark BlioProcessingDelegate
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL {
 	// for legacy compatibility (pre-sourceID and sourceSpecificID)
 	[self enqueueBookWithTitle:title authors:authors coverURL:coverURL 
-					   ePubURL:ePubURL pdfURL:pdfURL textFlowURL:textFlowURL 
+					   ePubURL:ePubURL pdfURL:pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:textFlowURL 
 				  audiobookURL:audiobookURL sourceID:BlioBookSourceNotSpecified sourceSpecificID:title placeholderOnly:NO];
 }
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	[self enqueueBookWithTitle:title authors:authors coverURL:coverURL 
-					   ePubURL:ePubURL pdfURL:pdfURL textFlowURL:textFlowURL 
+					   ePubURL:ePubURL pdfURL:pdfURL xpsURL:xpsURL textFlowURL:textFlowURL 
 				  audiobookURL:audiobookURL sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO];    
 }
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL  xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (nil != moc) {
@@ -126,6 +126,7 @@
 		if (coverURL != nil) [aBook setValue:[coverURL absoluteString] forKey:@"coverFilename"];
 		if (ePubURL != nil) [aBook setValue:[ePubURL absoluteString] forKey:@"epubFilename"];
 		if (pdfURL != nil) [aBook setValue:[pdfURL absoluteString] forKey:@"pdfFilename"];
+        if (xpsURL != nil) [aBook setValue:[xpsURL absoluteString] forKey:@"xpsFilename"];
 		if (textFlowURL != nil) [aBook setValue:[textFlowURL absoluteString] forKey:@"textFlowFilename"];
 		if (audiobookURL != nil) [aBook setValue:[audiobookURL absoluteString] forKey:@"audiobookFilename"];
 		
@@ -147,6 +148,7 @@
 -(void) enqueueBook:(BlioMockBook*)aBook {
 	[self enqueueBook:aBook placeholderOnly:NO];
 }
+
 -(void) enqueueBook:(BlioMockBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
 //	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
 
@@ -330,12 +332,42 @@
 				pdfOp.tempDirectory = tempDir;
 				[self.preAvailabilityQueue addOperation:pdfOp];
 			}
-			else {
-				usedPreExistingOperation = YES; // in case we have dependent operations in the future
-			}
-			[bookOps addObject:pdfOp];
-		}
-	}
+        }
+    }
+        
+//        stringURL = [aBook valueForKey:@"xpsFilename"];
+//		if (stringURL && !placeholderOnly) {
+//			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
+//			else {
+//				alreadyCompletedOperations++;
+//				url = nil;
+//			}
+//			BOOL usedPreExistingOperation = NO;
+//			BlioProcessingDownloadXPSOperation * xpsOp = nil;
+//            
+//			if (nil != url) {
+//				// we still need to finish downloading this file
+//				// so check to see if operation already exists
+//				xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+//                
+//				if (!xpsOp || xpsOp.isCancelled) {
+//                    
+//					xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
+//					xpsOp.bookID = bookID;
+//					xpsOp.sourceID = sourceID;
+//					xpsOp.sourceSpecificID = sourceSpecificID;
+//					xpsOp.localFilename = [aBook valueForKey:xpsOp.filenameKey];
+//					xpsOp.storeCoordinator = [moc persistentStoreCoordinator];
+//					xpsOp.cacheDirectory = cacheDir;
+//					xpsOp.tempDirectory = tempDir;
+//					[self.preAvailabilityQueue addOperation:xpsOp];
+//				}
+//				else {
+//					usedPreExistingOperation = YES; // in case we have dependent operations in the future
+//				}
+//				[bookOps addObject:xpsOp];
+//			}
+//		}
 	
 	stringURL = [aBook valueForKey:@"textFlowFilename"];
 	if (stringURL && !placeholderOnly) {
@@ -511,6 +543,7 @@
 		}			
 	}		
 }
+    
 - (void) resumeProcessing {
     NSManagedObjectContext *moc = [self managedObjectContext];
 	

@@ -82,6 +82,9 @@
 @interface BlioProcessingDownloadPdfOperation : BlioProcessingDownloadOperation
 @end
 
+@interface BlioProcessingDownloadXPSOperation : BlioProcessingDownloadOperation
+@end
+
 @interface BlioProcessingDownloadTextFlowOperation : BlioProcessingDownloadAndUnzipOperation
 @end
 

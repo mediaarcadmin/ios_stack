@@ -293,7 +293,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 											 coverURL:self.entity.coverUrl ? [NSURL URLWithString:self.entity.coverUrl] : nil
 											  ePubURL:self.entity.ePubUrl ? [NSURL URLWithString:self.entity.ePubUrl] : nil 
 											   pdfURL:self.entity.pdfUrl ? [NSURL URLWithString:self.entity.pdfUrl] : nil
-										  textFlowURL:nil
+                                               xpsURL:nil
+                                          textFlowURL:nil
 										 audiobookURL:nil
 											 sourceID:self.feed.sourceID
 									 sourceSpecificID:self.entity.id
