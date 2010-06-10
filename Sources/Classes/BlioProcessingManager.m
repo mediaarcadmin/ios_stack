@@ -305,7 +305,7 @@
 			
 		}                    
 	}
-	stringURL = [aBook valueForKey:@"pdfFilename"];
+    stringURL = [aBook valueForKey:@"pdfFilename"];
 	if (stringURL && !placeholderOnly) {
 		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 		else {
@@ -332,42 +332,45 @@
 				pdfOp.tempDirectory = tempDir;
 				[self.preAvailabilityQueue addOperation:pdfOp];
 			}
-        }
-    }
-        
-//        stringURL = [aBook valueForKey:@"xpsFilename"];
-//		if (stringURL && !placeholderOnly) {
-//			if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-//			else {
-//				alreadyCompletedOperations++;
-//				url = nil;
-//			}
-//			BOOL usedPreExistingOperation = NO;
-//			BlioProcessingDownloadXPSOperation * xpsOp = nil;
-//            
-//			if (nil != url) {
-//				// we still need to finish downloading this file
-//				// so check to see if operation already exists
-//				xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-//                
-//				if (!xpsOp || xpsOp.isCancelled) {
-//                    
-//					xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
-//					xpsOp.bookID = bookID;
-//					xpsOp.sourceID = sourceID;
-//					xpsOp.sourceSpecificID = sourceSpecificID;
-//					xpsOp.localFilename = [aBook valueForKey:xpsOp.filenameKey];
-//					xpsOp.storeCoordinator = [moc persistentStoreCoordinator];
-//					xpsOp.cacheDirectory = cacheDir;
-//					xpsOp.tempDirectory = tempDir;
-//					[self.preAvailabilityQueue addOperation:xpsOp];
-//				}
-//				else {
-//					usedPreExistingOperation = YES; // in case we have dependent operations in the future
-//				}
-//				[bookOps addObject:xpsOp];
-//			}
-//		}
+			else {
+				usedPreExistingOperation = YES; // in case we have dependent operations in the future
+			}
+			[bookOps addObject:pdfOp];
+		}
+	}
+    stringURL = [aBook valueForKey:@"xpsFilename"];
+	if (stringURL && !placeholderOnly) {
+		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
+		else {
+			alreadyCompletedOperations++;
+			url = nil;
+		}
+		BOOL usedPreExistingOperation = NO;
+		BlioProcessingDownloadXPSOperation * xpsOp = nil;
+		
+		if (nil != url) {
+			// we still need to finish downloading this file
+			// so check to see if operation already exists
+			xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			
+			if (!xpsOp || xpsOp.isCancelled) {
+				
+				xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
+				xpsOp.bookID = bookID;
+				xpsOp.sourceID = sourceID;
+				xpsOp.sourceSpecificID = sourceSpecificID;
+				xpsOp.localFilename = [aBook valueForKey:xpsOp.filenameKey];
+				xpsOp.storeCoordinator = [moc persistentStoreCoordinator];
+				xpsOp.cacheDirectory = cacheDir;
+				xpsOp.tempDirectory = tempDir;
+				[self.preAvailabilityQueue addOperation:xpsOp];
+			}
+			else {
+				usedPreExistingOperation = YES; // in case we have dependent operations in the future
+			}
+			[bookOps addObject:xpsOp];
+		}
+	}   
 	
 	stringURL = [aBook valueForKey:@"textFlowFilename"];
 	if (stringURL && !placeholderOnly) {

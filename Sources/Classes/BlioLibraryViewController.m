@@ -384,6 +384,15 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:nil
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
+                                              authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Peter Rabbit" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:nil
+                                               xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"The Tale of Peter Rabbit.drm.xps" ofType:nil inDirectory:@"PDFs"]]
+                                          textFlowURL:nil
+                                         audiobookURL:nil];
     }
     
 	

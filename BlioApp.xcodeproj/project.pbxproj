@@ -404,6 +404,7 @@
 		C9E1FAAA110F26DB00999587 /* TextFlows in Resources */ = {isa = PBXBuildFile; fileRef = C9E1FAA7110F26DB00999587 /* TextFlows */; };
 		C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
 		C9E5DC13117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
+		C9F42DC511C14189000B6D8C /* BlioLicenseClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */; };
 		C9F47A0E1129BC7E00563348 /* downloadButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0A1129BC7E00563348 /* downloadButton.png */; };
 		C9F47A0F1129BC7E00563348 /* downloadButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */; };
 		C9F748591140100100680E93 /* shadow-bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F748581140100100680E93 /* shadow-bottom.png */; };
@@ -2465,6 +2466,7 @@
 				C93317B011B5457D0057E0BE /* BlioBookSearchController.m in Sources */,
 				DCC451E911B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */,
 				DCCE467611BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m in Sources */,
+				C9F42DC511C14189000B6D8C /* BlioLicenseClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
