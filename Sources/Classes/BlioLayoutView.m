@@ -16,6 +16,33 @@
 #import "BlioLayoutContentView.h"
 #import "UIDevice+BlioAdditions.h"
 
+@interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource> {
+    NSData *data;
+    NSInteger pageCount;
+    CGPDFDocumentRef pdf;
+}
+
+@property (nonatomic, retain) NSData *data;
+
+- (id)initWithPath:(NSString *)aPath;
+
+@end
+
+@interface BlioLayoutXPSDataSource : NSObject<BlioLayoutDataSource> {
+    NSString *path;
+    RasterImageInfo *imageInfo;
+    XPS_HANDLE xpsHandle;
+    NSInteger pageCount;
+    FixedPageProperties properties;
+}
+
+@property (nonatomic, retain) NSString *path;
+@property (nonatomic, assign) RasterImageInfo *imageInfo;
+
+- (id)initWithPath:(NSString *)aPath;
+
+@end
+
 static const CGFloat kBlioPDFBlockInsetX = 6;
 static const CGFloat kBlioPDFBlockInsetY = 10;
 static const CGFloat kBlioPDFGoToZoomTransitionScale = 0.7f;
@@ -62,6 +89,7 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 @property (nonatomic, retain) UIImage *highlightsSnapshot;
 @property (nonatomic, retain) NSMutableArray *accessibilityElements;
 @property (nonatomic, retain) NSArray *previousAccessibilityElements;
+@property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
@@ -92,11 +120,18 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 
 @implementation BlioLayoutView
 
-static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect) {
+static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, BOOL preserveAspect) {
+    
     CGFloat xScale = targetRect.size.width / sourceRect.size.width;
     CGFloat yScale = targetRect.size.height / sourceRect.size.height;
-    CGFloat scale = xScale < yScale ? xScale : yScale;
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
+    
+    CGAffineTransform scaleTransform;
+    if (preserveAspect) {
+        CGFloat scale = xScale < yScale ? xScale : yScale;
+        scaleTransform = CGAffineTransformMakeScale(scale, scale);
+    } else {
+        scaleTransform = CGAffineTransformMakeScale(xScale, yScale);
+    } 
     CGRect scaledRect = CGRectApplyAffineTransform(sourceRect, scaleTransform);
     CGFloat xOffset = (targetRect.size.width - scaledRect.size.width);
     CGFloat yOffset = (targetRect.size.height - scaledRect.size.height);
@@ -122,28 +157,22 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
 @synthesize accessibilityElements, previousAccessibilityElements;
 @synthesize xpsPath;
+@synthesize dataSource;
 
 - (void)dealloc {
+    NSLog(@"*************** dealloc called for layoutview");
     isCancelled = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-    if (pdf) CGPDFDocumentRelease(pdf);
-//    if (xpsHandle) {
-//        XPS_Close(xpsHandle);
-//        XPS_End();
-//    }
-    self.xpsPath = nil;
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
     [self.selector removeObserver:self forKeyPath:@"trackingStage"];
     [self removeObserver:self forKeyPath:@"currentPageLayer"];
     
+    self.delegate = nil;
+    
     self.book = nil;
     self.scrollView = nil;
-    self.contentView = nil;
     self.currentPageLayer = nil;
-    self.pdfPath = nil;
-    self.pdfData = nil;
     self.pageCropsCache = nil;
     self.viewTransformsCache = nil;
     self.checkerBoard = nil;
@@ -158,6 +187,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     [self.selector detatch];
     self.selector = nil;
+    
+    self.pdfPath = nil;
+    self.pdfData = nil;
+    self.xpsPath = nil;
+    [self.contentView abortRendering];
+    self.contentView = nil;
+    [self.dataSource closeDocumentIfRequired];
+    self.dataSource = nil;
     
     self.accessibilityElements = nil;
     self.previousAccessibilityElements = nil;
@@ -177,18 +214,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                book:(BlioMockBook *)aBook 
            animated:(BOOL)animated {
 
-    self.pdfPath = [aBook pdfPath];
-    if (nil == self.pdfPath) {
-        self.xpsPath = [aBook xpsPath];
-        if (nil == self.xpsPath) return nil;
+    if (!([aBook pdfPath] || [aBook xpsPath])) {
+        return nil;
     }
-    
-    self.pdfData = [[NSData alloc] initWithContentsOfMappedFile:[aBook pdfPath]];
-    CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);
-    pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-    CGDataProviderRelease(pdfProvider);
-    
-    if (NULL == pdf) return nil;
     
     CGRect rotatedFrame = [UIScreen mainScreen].bounds;
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -218,9 +246,21 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.shadowLeft = [UIImage imageNamed:@"shadow-left.png"];
         self.shadowRight = [UIImage imageNamed:@"shadow-right.png"];
         
-        pageCount = CGPDFDocumentGetNumberOfPages(pdf);
+        
         lastZoomScale = 1;
         accessibilityRefreshRequired = YES;
+        
+        if ([aBook xpsPath]) {
+            BlioLayoutXPSDataSource *aXPSDataSource = [[BlioLayoutXPSDataSource alloc] initWithPath:[aBook xpsPath]];
+            self.dataSource = aXPSDataSource;
+            [aXPSDataSource release];
+        } else if ([aBook pdfPath]) {
+            BlioLayoutPDFDataSource *aPDFDataSource = [[BlioLayoutPDFDataSource alloc] initWithPath:[aBook pdfPath]];
+            self.dataSource = aPDFDataSource;
+            [aPDFDataSource release];
+        }
+        
+        pageCount = [self.dataSource pageCount];
         
         // Populate the cache of page sizes and viewTransforms
         NSMutableDictionary *aPageCropsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
@@ -228,21 +268,29 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         CGFloat inset = -kBlioLayoutShadow;
         CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-        CGAffineTransform dpiScale = CGAffineTransformMakeScale(72/96.0f, 72/96.0f);
+        
+        CGFloat dpiRatio = [self.dataSource dpiRatio];
+        CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
+        
+        [self.dataSource openDocumentIfRequired];
+        NSLog(@"Document opened");
         
         for (int i = 1; i <= pageCount; i++) {
-            CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, i);
-            CGRect cropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
-            CGAffineTransform pdfTransform = transformRectToFitRect(cropRect, insetBounds);
-            CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pdfTransform);
+            CGRect cropRect = [self.dataSource cropRectForPage:i];
+            CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
+            CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
             [aPageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:i]];
             
-            CGRect mediaRect = CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox);
+            CGRect mediaRect = [self.dataSource mediaRectForPage:i];
             CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
             CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
-            CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pdfTransform);
+            CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
             [aViewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:i]];
         }
+        NSLog(@"Rects calculated");
+        
+        [self.dataSource closeDocumentIfRequired];
+        
         self.pageCropsCache = [NSDictionary dictionaryWithDictionary:aPageCropsCache];
         self.viewTransformsCache = [NSDictionary dictionaryWithDictionary:aViewTransformsCache];
         [aPageCropsCache release];
@@ -253,6 +301,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         aScrollView.pagingEnabled = YES;
         aScrollView.minimumZoomScale = 1.0f;
         aScrollView.maximumZoomScale = [[UIDevice currentDevice] blioDeviceMaximumLayoutZoom];
+        //aScrollView.maximumZoomScale = 8;
         aScrollView.showsHorizontalScrollIndicator = NO;
         aScrollView.showsVerticalScrollIndicator = NO;
         aScrollView.clearsContextBeforeDrawing = NO;
@@ -270,7 +319,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         BlioLayoutContentView *aContentView = [[BlioLayoutContentView alloc] initWithFrame:self.bounds];
         [self.scrollView addSubview:aContentView];
-        aContentView.dataSource = self;
+        aContentView.renderingDelegate = self;
         aContentView.backgroundColor = [UIColor clearColor];
         aContentView.clipsToBounds = NO;
         self.contentView = aContentView;
@@ -394,16 +443,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark BlioBookDelegate
 
 - (void)setDelegate:(id<BlioBookViewDelegate>)newDelegate {
-
-    if (delegate)
-        [(NSObject *)delegate removeObserver:self forKeyPath:@"audioPlaying"];
-    
     [self.scrollView setBookViewDelegate:newDelegate];
     delegate = newDelegate;
-    
-    if (delegate)
-        [(NSObject *)delegate addObserver:self forKeyPath:@"audioPlaying" options:0 context:nil];
-
 }
 
 #pragma mark -
@@ -486,7 +527,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.scrollView setZoomScale:1];
     
     CGSize newContentSize = [self currentContentSize];
-    [self.contentView setFrame:CGRectMake(0,0, newFrame.size.width, newContentSize.height)];
+    [self.contentView setFrame:CGRectMake(0,0, newFrame.size.width, ceilf(newContentSize.height))];
     [self.scrollView setContentSize:newContentSize];
     [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:1]];
     
@@ -618,7 +659,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 
 #pragma mark -
-#pragma mark BlioLayoutDataSource
+#pragma mark BlioLayoutRenderingDelegate
 
 - (BOOL)dataSourceContainsPage:(NSInteger)page {
     if (page >= 1 && page <= [self pageCount])
@@ -663,9 +704,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return cachedViewTransform;
 }
 
-#pragma mark -
-#pragma mark Rendering
-
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx  forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer {
     CGRect cropRect;
     CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
@@ -678,12 +716,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector {
-    //NSLog(@"Tiled rendering started");
+    //NSLog(@"Tiled rendering started for page %d isCancelled %d", aPageNumber, isCancelled);
     // Because this occurs on a background thread but accesses self, we must check whether we have been cancelled
-    CGRect layerBounds = aLayer.bounds;
+    //CGRect layerBounds = aLayer.bounds;
+    //NSLog(@"drawTile %d inContext %@ inBounds %@ withClip %@", aPageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(layerBounds), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+    //NSLog(@"drawTile %d subRect %@", aPageNumber, NSStringFromCGRect(CGRectApplyAffineTransform(CGContextGetClipBoundingBox(ctx), CGContextGetCTM(ctx))));
         
-    CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
-	CGContextScaleCTM(ctx, 1, -1);
+    //CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
+	//CGContextScaleCTM(ctx, 1, -1);
     
     if (isCancelled) return;
     
@@ -691,64 +731,60 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
     if (CGRectEqualToRect(cropRect, CGRectZero)) return;
     cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
-    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    //CGContextSetFillColorWithColor(ctx, [UIColor yellowColor].CGColor);
 
-    CGContextFillRect(ctx, cropRect);
-    CGContextClipToRect(ctx, cropRect);
+    //CGContextFillRect(ctx, cropRect);
+    //CGContextClipToRect(ctx, cropRect);
     
     if (isCancelled) return;
-    CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.pdfData);
-    CGPDFDocumentRef aPdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(aPdf, aPageNumber);
-    
-    CGRect unscaledCropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
-    CGAffineTransform pdfTransform = transformRectToFitRectWidth(unscaledCropRect, cropRect);
-    
-    CGContextConcatCTM(ctx, pdfTransform);
-    
-        if (nil != target) {
+
+    @synchronized (self.dataSource) {
+        [self.dataSource openDocumentIfRequired];
+        CGRect unscaledCropRect = [self.dataSource cropRectForPage:aPageNumber];
+        //NSLog(@"unscaledCropRect %@", NSStringFromCGRect(unscaledCropRect));
+        CGAffineTransform pageTransform = transformRectToFitRectWidth(unscaledCropRect, cropRect);
+        
+        //CGContextConcatCTM(ctx, pageTransform);
+        if (false) {
+        //if (nil != target) {
             CGRect cacheRect = CGRectIntegral(CGRectMake(0, 0, 160, 240));
-            CGAffineTransform cacheTransform = transformRectToFitRectWidth(unscaledCropRect, cacheRect);
-            cacheRect = CGRectApplyAffineTransform(unscaledCropRect, cacheTransform);
-            cacheRect.origin = CGPointZero;
-            cacheTransform = transformRectToFitRect(unscaledCropRect, cacheRect);
+            CGAffineTransform cacheTransform = transformRectToFitRect(unscaledCropRect, cacheRect, false);
+//            cacheRect = CGRectApplyAffineTransform(unscaledCropRect, cacheTransform);
+//            cacheRect.origin = CGPointZero;
+            //cacheTransform = transformRectToFitRect(unscaledCropRect, cacheRect);
             
             CGLayerRef aCGLayer = CGLayerCreateWithContext(ctx, cacheRect.size, NULL);
             CGContextRef cacheCtx = CGLayerGetContext(aCGLayer);
-            CGContextTranslateCTM(cacheCtx, 0, cacheRect.size.height);
-            CGContextScaleCTM(cacheCtx, 1, -1);
+            //CGContextTranslateCTM(cacheCtx, 0, cacheRect.size.height);
+            //CGContextScaleCTM(cacheCtx, 1, -1);
             
-            CGContextConcatCTM(cacheCtx, cacheTransform);
-            CGContextSetFillColorWithColor(cacheCtx, [UIColor whiteColor].CGColor);
-            CGContextClipToRect(cacheCtx, unscaledCropRect);
-            CGContextFillRect(cacheCtx, unscaledCropRect);
-
-            @synchronized ([[UIApplication sharedApplication] delegate]) {
-                CGContextDrawPDFPage(cacheCtx, aPage);
-
-                if ([target respondsToSelector:readySelector])
-                    [target performSelectorOnMainThread:readySelector withObject:(id)aCGLayer waitUntilDone:NO];
-                
-                CGLayerRelease(aCGLayer);
-
-                if (isCancelled) {
-                    CGDataProviderRelease(pdfProvider);
-                    return;
-                }
-                
-                CGContextDrawPDFPage(ctx, aPage);
-                CGPDFDocumentRelease(aPdf);
+            //CGContextConcatCTM(cacheCtx, cacheTransform);
+            
+            //CGContextSetFillColorWithColor(cacheCtx, [UIColor whiteColor].CGColor);
+            //CGContextClipToRect(cacheCtx, unscaledCropRect);
+//            CGContextFillRect(cacheCtx, unscaledCropRect);
+            //CGContextFillRect(cacheCtx, cacheRect);
+            
+//            [self.dataSource drawPage:aPageNumber inContext:cacheCtx withTransform:CGAffineTransformConcat(pageTransform, cacheTransform)];
+            [self.dataSource drawPage:aPageNumber inContext:cacheCtx inRect:cacheRect withTransform:cacheTransform];
+            
+            if ([target respondsToSelector:readySelector])
+                [target performSelectorOnMainThread:readySelector withObject:(id)aCGLayer waitUntilDone:NO];
+            
+            CGLayerRelease(aCGLayer);
+            
+            if (isCancelled) {
+                [self.dataSource closeDocumentIfRequired];
+                return;
             }
+            [self.dataSource drawPage:aPageNumber inContext:ctx inRect:cropRect withTransform:pageTransform];
             
         } else {
-
-            @synchronized ([[UIApplication sharedApplication] delegate]) {
-                CGContextDrawPDFPage(ctx, aPage);
-                CGPDFDocumentRelease(aPdf);
-            }
+            [self.dataSource drawPage:aPageNumber inContext:ctx inRect:cropRect withTransform:pageTransform];
         }
-    CGDataProviderRelease(pdfProvider);
-    
+        [self.dataSource closeDocumentIfRequired];
+
+    }
 }
 
 - (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber {
@@ -762,8 +798,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (CGRectEqualToRect(cropRect, CGRectZero)) return;
     cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
-    CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
-	CGContextScaleCTM(ctx, 1, -1);
+//    CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
+//	CGContextScaleCTM(ctx, 1, -1);
     
     CGContextSaveGState(ctx);
     CGContextClipToRect(ctx, cropRect);
@@ -886,10 +922,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:[self.scrollView.layer superlayer]];
-
-        CGContextScaleCTM(ctx, scale, scale);
-        CGContextTranslateCTM(ctx, -translatePoint.x, -translatePoint.y);
-        [[snapLayer shadowLayer] renderInContext:ctx];
+        //CGContextTranslateCTM(ctx, 0, snapSize.height);
+        CGContextTranslateCTM(ctx, -translatePoint.x*scale, (snapSize.height - translatePoint.y*scale));
+        //CGContextScaleCTM(ctx, 1, -1);
+        CGContextScaleCTM(ctx, scale, -scale);
+        //CGContextTranslateCTM(ctx, -translatePoint.x, snapSize.height -translatePoint.y);
+        [[snapLayer shadowLayer] renderInContext:ctx];        
         [[snapLayer tiledLayer] renderInContext:ctx];
         self.pageSnapshot = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
@@ -2097,4 +2135,490 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 @end
+
+@implementation BlioLayoutPDFDataSource
+
+@synthesize data, pageCount;
+
+- (void)dealloc {
+    if (pdf) CGPDFDocumentRelease(pdf);
+    self.data = nil;
+    [super dealloc];
+}
+
+- (id)initWithPath:(NSString *)aPath {
+    if ((self = [super init])) {
+        NSData *aData = [[NSData alloc] initWithContentsOfMappedFile:aPath];
+        CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)aData);
+        CGPDFDocumentRef aPdf = CGPDFDocumentCreateWithProvider(pdfProvider);
+        pageCount = CGPDFDocumentGetNumberOfPages(aPdf);
+        CGPDFDocumentRelease(aPdf);
+        CGDataProviderRelease(pdfProvider);
+        self.data = aData;
+        [aData release];
+    }
+    return self;
+}
+
+- (CGRect)cropRectForPage:(NSInteger)page {
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
+    return CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
+}
+
+- (CGRect)mediaRectForPage:(NSInteger)page {
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
+    return CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox);
+}
+
+- (CGFloat)dpiRatio {
+    return 72/96.0f;
+}
+
+- (void)drawPage:(NSInteger)page inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform {
+    //NSLog(@"drawPage %d inContext %@ inRect: %@ withTransform %@ andBounds %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(rect), NSStringFromCGAffineTransform(transform), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);    
+    CGContextFillRect(ctx, rect);
+    CGContextClipToRect(ctx, rect);
+    
+    CGContextConcatCTM(ctx, transform);
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
+    CGPDFPageRetain(aPage);
+    CGContextDrawPDFPage(ctx, aPage);
+    CGPDFPageRelease(aPage);
+}
+
+- (void)openDocumentIfRequired {
+    CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.data);
+    pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
+    CGDataProviderRelease(pdfProvider);
+}
+
+- (void)closeDocument {
+    if (pdf) CGPDFDocumentRelease(pdf);
+    pdf = NULL;
+}
+
+- (void)closeDocumentIfRequired {
+    [self closeDocument];
+}
+
+@end
+
+@implementation BlioLayoutXPSDataSource
+
+@synthesize path, pageCount, imageInfo;
+
+- (void)dealloc {
+    NSLog(@"*************** dealloc called for xps datasource");
+    if (xpsHandle) {
+        XPS_Cancel(xpsHandle);
+        XPS_Close(xpsHandle);
+        XPS_End();
+    }
+    
+    self.path = nil;
+    self.imageInfo = nil;
+
+    [super dealloc];
+}
+
+- (id)initWithPath:(NSString *)aPath {
+    if ((self = [super init])) {
+        CFUUIDRef theUUID = CFUUIDCreate(NULL);
+        CFStringRef UUIDString = CFUUIDCreateString(NULL, theUUID); 
+        self.path = [NSTemporaryDirectory() stringByAppendingPathComponent:(NSString *)UUIDString];
+        CFRelease(theUUID);
+        CFRelease(UUIDString);
+
+        NSError *error;
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:self.path]) {
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:self.path withIntermediateDirectories:YES attributes:nil error:&error]) {
+                NSLog(@"Unable to create directory at path %@ with error %@ %@", self.path, error, [error userInfo]);
+            } else {
+                NSLog(@"Directory created at path %@", self.path);
+            }
+        } else {
+            NSLog(@"Directory exists at path %@", self.path);
+        }
+        
+        XPS_Start();
+        xpsHandle = XPS_Open([aPath UTF8String], [self.path UTF8String]);
+        XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
+        NSLog(@"XPS opened");
+        pageCount = XPS_GetNumberPages(xpsHandle, 0);
+        
+        NSLog(@"XPS page count retrieved");
+        
+    }
+    return self;
+}
+
+- (CGRect)cropRectForPage:(NSInteger)page {
+    memset(&properties,0,sizeof(properties));
+    XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
+    return CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
+}
+
+- (CGRect)mediaRectForPage:(NSInteger)page {
+    memset(&properties,0,sizeof(properties));
+    XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
+    return CGRectMake(0, 0, properties.width, properties.height);
+}
+
+- (CGFloat)dpiRatio {
+    return 1;
+}
+
+void RenderCallback3(
+                                    void *userdata, 
+                                    unsigned pagePercentComplete, 
+                                    unsigned numPagesRenderedSoFar, 
+                                    unsigned totalPages
+      ) {
+    NSLog(@"RenderCallback3 Progress for percentage %d", pagePercentComplete);
+}
+    
+
+int RenderCallback2(void *userdata, int page) {
+    if (page == 0) {
+        //NSLog(@"Check this");
+    }
+    NSLog(@"XPS_RegisterPageBeginCallback for page %d", page + 1);
+    return 1;
+}
+
+void RenderCallback1(void *userdata, RasterImageInfo *data) {
+    NSLog(@"XPS_RegisterPageCompleteCallback");
+	BlioLayoutXPSDataSource *dataSource = (BlioLayoutXPSDataSource *)userdata;	
+	dataSource.imageInfo = data;
+}
+
+static void dataReleaseCallback(void *info, const void *data, size_t size) {
+	XPS_ReleaseImageMemory((void *)data);
+}
+
+- (void)drawPage:(NSInteger)page inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform {
+    //NSLog(@"drawPage %d inContext %@ inRect: %@ withTransform %@ andClip %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(rect), NSStringFromCGAffineTransform(transform), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+    fprintf(stderr, "\n");
+    
+    CGAffineTransform ctm = CGContextGetCTM(ctx);
+    CGRect clipRect = CGContextGetClipBoundingBox(ctx);
+    //NSLog(@"clipRect %@", NSStringFromCGRect(clipRect));
+    
+    CGContextClipToRect(ctx, clipRect);
+
+    CGRect screenRect = CGRectIntersection(rect, clipRect);
+    //NSLog(@"screenRect %@", NSStringFromCGRect(screenRect));
+    CGRect imageTileRect = CGRectApplyAffineTransform(screenRect, CGAffineTransformInvert(transform));
+    //NSLog(@"imageTileRect %@", NSStringFromCGRect(imageTileRect));
+    NSLog(@"Desired tile: %@", NSStringFromCGRect(imageTileRect));
+    NSLog(@"Desired tile origin.x: %.20g", imageTileRect.origin.x);
+    NSLog(@"Desired tile max y: %.20g", (double)imageTileRect.origin.y + (double)imageTileRect.size.height);
+
+    CGRect tileRect = CGRectApplyAffineTransform(clipRect, ctm);
+    //NSLog(@"tileRect %@", NSStringFromCGRect(tileRect));
+    //tileRect.origin = CGContextGetClipBoundingBox(ctx).origin;
+
+    //tileRect = CGRectApplyAffineTransform(CGContextGetClipBoundingBox(ctx), CGAffineTransformInvert(ctm));
+
+    
+    CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
+    
+   // if (clipRect.origin.x == 0) {
+//        if (clipRect.origin.y == 0)
+//            CGContextSetRGBFillColor(ctx, 1, 0, 0, 0.5);
+//        else
+//            CGContextSetRGBFillColor(ctx, 0, 1, 0, 0.5);
+//    } else {
+//        if (clipRect.origin.y == 0)
+//            CGContextSetRGBFillColor(ctx, 0, 0, 1, 0.5);
+//        else
+//            CGContextSetRGBFillColor(ctx, 1, 1, 0, 0.5);
+//    }
+    //CGContextSetRGBFillColor(ctx, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, 1);
+    
+    CGRect scaledPageWithBorders = CGRectApplyAffineTransform(rect, ctm);
+    //NSLog(@"scaledPage %@", NSStringFromCGRect(scaledPage));
+    if (!CGRectIntersectsRect(scaledPageWithBorders, tileRect)) return;
+    CGRect intersectionRect = CGRectIntersection(scaledPageWithBorders, tileRect);
+    
+    //NSLog(@"intersectionRect %@", NSStringFromCGRect(intersectionRect));
+    //NSLog(@"tileRect %@", NSStringFromCGRect(tileRect));
+    //CGAffineTransform tileTransform = transformRectToFitRect(tileRect, rect, NO);
+    //tileRect = CGRectApplyAffineTransform(tileRect, tileTransform);
+    //CGContextFillRect(ctx, CGRectApplyAffineTransform(tileRect, transf));
+    //CGContextFillRect(ctx, tileRect);
+//    return;
+
+    CGRect xpsPageRect = CGRectApplyAffineTransform(rect, CGAffineTransformInvert(transform));
+    //NSLog(@"xpsPageRect %@", NSStringFromCGRect(xpsPageRect));
+    NSLog(@"xpsPageRect max y: %.20g", (double)xpsPageRect.origin.y + (double)xpsPageRect.size.height);
+
+    
+    double xScaleFactor = ctm.a * transform.a;
+    double yScaleFactor = ctm.d * transform.d;
+//    double xScaleFactor = ctm.a * transform.a;
+//    double yScaleFactor = ctm.d * transform.d;
+    NSLog(@"ctm.a %.20g, transform.a %.20g", ctm.a, transform.a);
+    NSLog(@"ctm.d %.20g, transform.d %.20g", ctm.d, transform.d);
+
+    //NSLog(@"xScaleFactor %f, yScaleFactor %f", xScaleFactor, yScaleFactor);
+    
+    //CGRect fullOutputImage = CGRectMake(0,0, floorf(xpsPageRect.size.width), floorf(xpsPageRect.size.height));
+    //NSLog(@"fullOutputImage %@", NSStringFromCGRect(fullOutputImage));
+    CGRect scaledOutputImage = CGRectMake(0, 0, floorf(xpsPageRect.size.width * xScaleFactor), floorf(xpsPageRect.size.height * yScaleFactor));
+    //NSLog(@"scaledOutputImage %@", NSStringFromCGRect(scaledOutputImage));
+    
+    //CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);    
+    //CGContextFillRect(ctx, rect);
+    //CGContextClipToRect(ctx, rect);
+    
+    //CGFloat scaledWidth = CGRectGetWidth(xpsPageRect) * ctm.a * transform.a;
+//    CGFloat scaledHeight = CGRectGetHeight(xpsPageRect) * ctm.d * transform.d;
+//    NSLog(@"scaledWidth/Height %f %f", scaledWidth, scaledHeight);
+    
+    
+    //NSLog(@"scaledWidth %f tileWidthRatio %f", scaledWidth, tileWidthRatio);
+    //NSLog(@"scaledHeight %f tileHeightRatio %f", scaledHeight, tileHeightRatio);
+    //CGRect cropRect = [self cropRectForPage:page];
+    
+
+    //CGRect scaledCropRect = CGRectApplyAffineTransform(rect, transform);
+    
+    //CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
+
+ 
+
+    //CGRect viewRect = CGContextGetClipBoundingBox(ctx);
+    //NSLog(@"drawPage %d inContext %@ viewRect %@ scaledCropRect %@, rect %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(viewRect), NSStringFromCGRect(scaledCropRect), NSStringFromCGRect(rect));
+
+    //CGFloat xscale = scaledCropRect.size.width / rect.size.width;
+    //CGFloat yscale = scaledCropRect.size.height / rect.size.height;
+    //CGFloat scaleFactor = MIN(xscale,yscale);
+    //scaleFactor = 1;
+    
+    OutputFormat format;
+    memset(&format,0,sizeof(format));
+    //CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
+    //static XPS_ctm render_ctm = { 1, 0, 0, 1, 0, 0 };
+    
+    
+
+    
+    
+    
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(xScaleFactor, yScaleFactor);
+    CGAffineTransform translationTransform = CGAffineTransformMakeTranslation(-imageTileRect.origin.x, -(CGRectGetMaxY(xpsPageRect) - CGRectGetMaxY(imageTileRect)));
+    CGAffineTransform renderTransform = CGAffineTransformConcat(translationTransform, scaleTransform);
+    renderTransform = renderTransform;
+    
+    //CGAffineTransform translationTransform = CGAffineTransformMakeTranslation(-imageTileRect.origin.x, -(floorf(CGRectGetMaxY(xpsPageRect)) - CGRectGetMaxY(imageTileRect)));
+    //CGAffineTransform translationTransform = CGAffineTransformMakeTranslation(-imageTileRect.origin.x, -(CGRectGetMaxY(scaledOutputImage) - CGRectGetMaxY(imageTileRect)));
+    //CGAffineTransform translationTransform = CGAffineTransformMakeTranslation(-imageTileRect.origin.x, -(MIN(0, CGRectGetMaxY(scaledOutputImage) - CGRectGetMaxY(imageTileRect))));
+    //NSLog(@"translation: { %f, %f }", renderTransform.tx, renderTransform.ty);
+    //NSInteger roundedTX = floorf(renderTransform.tx);
+    //NSInteger roundedTY = floorf(renderTransform.ty);
+    //NSInteger roundedTY = ceilf(renderTransform.ty);
+    //NSInteger roundedTX = floorf(translationTransform.tx);
+    //NSInteger roundedTY = ceilf(translationTransform.ty);
+    
+    
+    CGFloat tileWidth = MIN(scaledOutputImage.size.width, CGRectGetWidth(intersectionRect) + 1);
+    CGFloat tileHeight = MIN(scaledOutputImage.size.height, CGRectGetHeight(intersectionRect) + 1);
+    
+   // if ((-roundedTY + tileHeight) > CGRectGetHeight(scaledOutputImage)) {
+//        NSLog(@"Truncating tileHeight from %f to %f", tileHeight, CGRectGetHeight(scaledOutputImage) + roundedTY);
+//        tileHeight = CGRectGetHeight(scaledOutputImage) + roundedTY;
+//    }
+    
+    //if ((-roundedTX + tileWidth) > CGRectGetWidth(scaledOutputImage)) {
+//        NSLog(@"Truncating tileWidth from %f to %f", tileWidth, CGRectGetWidth(scaledOutputImage) + roundedTX);
+//        tileWidth = CGRectGetWidth(scaledOutputImage) + roundedTX;
+//    }
+    
+    //NSLog(@"rounded translation: { %d, %d }", roundedTX, roundedTY);
+    //NSLog(@"tile size { %f, %f }", tileWidth, tileHeight);
+    
+    double tileWidthRatio =  tileWidth / scaledOutputImage.size.width;
+    double tileHeightRatio = tileHeight / scaledOutputImage.size.height;
+    
+    //CGFloat yNudge = renderTransform.ty - roundedTY;
+    
+    //NSLog(@"yNudge: %f -> %f", yNudge, yNudge * yScaleFactor);
+    //yNudge = yNudge * yScaleFactor;
+    
+    //NSLog(@"Render transform %@", NSStringFromCGAffineTransform(renderTransform));
+    //XPS_ctm render_ctm = { xScaleFactor, 0, 0, yScaleFactor, -subRect.origin.x / xScaleFactor, -(CGRectGetMaxY(cropRect) - CGRectGetMaxY(subRect)) / yScaleFactor };
+    //XPS_ctm render_ctm = { renderTransform.a, 0, 0, renderTransform.d, roundedTX, roundedTY };
+    //float a = renderTransform.a;
+//    float b = 0;
+//    float c = 0;
+//    float d = renderTransform.d;
+//    float tx = renderTransform.tx;
+//    float ty = renderTransform.ty;
+    //float a = 2.635432f;
+//    float b = 0.0f;
+//    float c = 0.0f;
+//    float d = 2.635432f;
+//    float tx = -1152.0f;
+//    float ty = -1268.98999f;
+    
+    //float a = 1.317716f;
+//    float b = 0.0f;
+//    float c = 0.0f;
+//    float d = 1.317716f;
+//    float tx = -448.0f;
+//    float ty = -378.494934f;
+    
+    //XPS_ctm render_ctm = {a, b, c, d, tx, ty};
+    //XPS_ctm render_ctm = { 1.317716, 0, 0, 1.317716, -448, -0.000160854004 };
+    //XPS_ctm render_ctm = { (CGFloat)1.317716, (CGFloat)0, (CGFloat)0, (CGFloat)1.317716, (CGFloat)-448, (CGFloat)-378.494934 };
+    XPS_ctm render_ctm = { renderTransform.a, 0, 0, renderTransform.d, renderTransform.tx, renderTransform.ty };
+    //XPS_ctm render_ctm = { 4 * 0.3294290006160736084, 0, 0, 4 * 0.3294290006160736084, -(1060.1600328970162082 - 578.648895263671875) , -378.494934f };
+//    XPS_ctm render_ctm = { xScaleFactor, 0, 0, yScaleFactor, -339.982208251953125 * xScaleFactor , -378.494934f };
+    //XPS_ctm render_ctm = { xScaleFactor, 0, 0, yScaleFactor, -imageTileRect.origin.x * xScaleFactor , renderTransform.ty };
+    //XPS_ctm render_ctm = { 4 * 0.3294290006160736084, 0, 0, 4 * 0.3294290006160736084, -imageTileRect.origin.x * 4 * 0.3294290006160736084 , -(1060.1600328970162082 - 578.648895263671875) * 4 * 0.3294290006160736084 };
+
+    //XPS_ctm render_ctm = { 1.31771602, 0.000000f, 0.000000f, 1.31771602, -448.000000f, -378.494934f };
+    //XPS_ctm render_ctm = { 1.317716f, 0.000000f, 0.000000f, 1.317716f, (double)renderTransform.tx, (double)renderTransform.ty };
+    //XPS_ctm render_ctm = { renderTransform.a, 0.000000f, 0.000000f, renderTransform.d, -448.000000f, -378.494934f };
+    NSLog(@"format.ctm: { %.20g (%.20g), %f (%f), %.20g (%.20g), %f (%f), %f (%f), %f (%f) }", render_ctm.a, 1.317716, render_ctm.b, 0.000000,  render_ctm.c, 0.000000, render_ctm.d, 1.317716, render_ctm.tx, -448.000000, render_ctm.ty, -378.494934);
+    //XPS_ctm render_ctm = { 1, 0, 0, 1, roundedTX, roundedTY };
+    //XPS_ctm render_ctm = { 1 , 0, 0, 1, 0, (ctm.ty) ? -256 : 0 };
+    format.xResolution = 96;			
+    format.yResolution = 96;
+    //format.xResolution = 96 * xScaleFactor;			
+    //format.yResolution = 96 * yScaleFactor;
+    //format.xResolution = 96 * ctm.a * transform.a;			
+//    format.yResolution = 96 * ctm.d * transform.d;	
+	//format.xResolution = 96 * transform.a;			
+//    format.yResolution = 96 * transform.d;	
+    format.colorDepth = 8;
+    format.colorSpace = XPS_COLORSPACE_RGB;
+    format.pagesizescale = 1;			
+    //format.pagesizescalewidth = 1;		
+    //format.pagesizescaleheight = 1;
+    //format.pagesizescalewidth = tileWidthRatio;		
+    //format.pagesizescaleheight = tileHeightRatio;
+    
+    //float pageWidth = tileWidthRatio * xScaleFactor; 
+    //float pageHeight = tileHeightRatio * yScaleFactor;
+    
+    //float pageWidth = 0.293969631f; 
+//    float pageHeight = 0.242501259f;
+    //float pageWidth = 0.293970f; 
+//    float pageHeight = 0.242588f;
+    format.pagesizescalewidth = tileWidthRatio * xScaleFactor;		
+    format.pagesizescaleheight = tileHeightRatio * yScaleFactor;
+    //format.pagesizescalewidth = pageWidth;		
+//    format.pagesizescaleheight = pageHeight;
+    NSLog(@"tileWidthRatio %.20g * xScaleFactor %.20g", tileWidthRatio, xScaleFactor);
+    NSLog(@"tileHeightRatio %.20g * yScaleFactor %.20g", tileHeightRatio, yScaleFactor);
+    
+    //format.pagesizescalewidth = 0.29396963119506835938f;
+    //format.pagesizescaleheight = 0.24271035194396972656f;
+    NSLog(@"format.pagesizescalewidth:  %.20g (%.20g)", format.pagesizescalewidth, 0.2939696312);
+    NSLog(@"format.pagesizescaleheight: %.20g (%.20g)", format.pagesizescaleheight, 0.2425881177);
+    NSLog(@"unrounded image width %f height %f", CGRectGetWidth(xpsPageRect) * tileWidthRatio * xScaleFactor, CGRectGetHeight(xpsPageRect) * tileHeightRatio * yScaleFactor); 
+
+    //NSLog(@"Predicted imageInfo width %f height %f", CGRectGetWidth(xpsPageRect) * tileWidthRatio * xScaleFactor, CGRectGetHeight(xpsPageRect) * tileHeightRatio * yScaleFactor); 
+    format.ctm = &render_ctm;				
+    format.formatType = OutputFormat_RAW;
+    imageInfo = NULL;
+    
+    XPS_RegisterPageBeginCallback(xpsHandle, RenderCallback2);
+    XPS_RegisterPageCompleteCallback(xpsHandle, RenderCallback1);
+    //XPS_RegisterProgressCallback(xpsHandle, RenderCallback3);
+    XPS_SetUserData(xpsHandle, self);
+    
+    //NSLog(@"Entering XPS_Convert for page %d in context %@ with intersectionrect %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(intersectionRect));
+    XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
+    //NSLog(@"Exiting XPS_Convert for page %d in context %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
+    
+    if (imageInfo) {
+        size_t width  = imageInfo->widthInPixels;
+        size_t height = imageInfo->height;
+        //NSLog(@"imageInfo width %d, height %d", width, height);
+        
+        //CGRect imageRect = CGRectMake(floorf((viewRect.size.width - width)/2.0f), floorf((viewRect.size.height - height)/2.0f), width, height);
+        //CGRect scaledCrop = CGRectApplyAffineTransform(rect, ctm);
+        //CGRect imageRect = CGRectMake(floorf(scaledCrop.origin.x), floorf(scaledCrop.origin.x), width, height);
+        //imageRect = scaledCropRect;
+        size_t dataLength = width * height * 3;
+        
+        CGDataProviderRef providerRef = CGDataProviderCreateWithData(self, imageInfo->pBits, dataLength, dataReleaseCallback);
+        CGImageRef imageRef =
+        CGImageCreate(width, height, 8, 24, width * 3, CGColorSpaceCreateDeviceRGB(), 
+                      kCGImageAlphaNone
+                      , providerRef, NULL, true, 
+                      kCGRenderingIntentDefault);
+        
+        NSLog(@"imageInfo->widthInPixels: %d", imageInfo->widthInPixels);
+        NSLog(@"imageInfo->height: %d", imageInfo->height);
+        
+        CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
+        CGRect imageRect = CGRectMake(intersectionRect.origin.x, intersectionRect.origin.y, width, height);
+
+        //CGRect imageRect = CGRectMake(intersectionRect.origin.x, intersectionRect.origin.y - (height - CGRectGetHeight(intersectionRect)), width, height);
+        //NSLog(@"imageRect %@", NSStringFromCGRect(imageRect));
+        
+        //CGContextSetAlpha(ctx, 0.7f);
+        CGContextDrawImage(ctx, imageRect, imageRef);
+        UIImage *image = [UIImage imageWithCGImage:imageRef];
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, NULL);
+        //CGContextSetAlpha(ctx, 1);
+        //CGContextDrawImage(ctx, tileRect, imageRef);
+        //CGContextDrawImage(ctx, tileRect, imageRef);
+        //CGContextDrawImage(ctx, CGContextGetClipBoundingBox(ctx), imageRef);
+        //CGContextDrawImage(ctx, tileRect, imageRef);
+        //CGContextDrawImage(ctx, rect, imageRef);
+        //CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
+        //CGContextDrawImage(ctx, CGRectApplyAffineTransform(rect, ctm), imageRef);
+        //CGContextDrawImage(ctx, CGRectMake(floorf(rect.origin.x * ctm.a), floorf(rect.origin.y * ctm.d), width, height), imageRef);
+        //CGContextDrawImage(ctx, imageRect, imageRef);
+        //NSLog(@"Draw image in rect %@", NSStringFromCGRect(imageRect));
+        
+        CGDataProviderRelease(providerRef);
+        CGImageRelease(imageRef);
+        //CGContextSetRGBFillColor(ctx, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, 0.6);
+        //CGContextSetRGBStrokeColor(ctx, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, 0.6);
+        //CGContextFillRect(ctx, tileRect);
+        //CGContextFillRect(ctx, imageRect);
+        //CGContextSetRGBStrokeColor(ctx, 0, 0, 0, 0.5f);
+        //CGContextSetRGBStrokeColor(ctx, arc4random()%2, arc4random()%2, arc4random()%2, 1);
+
+        
+        CGContextSetLineWidth(ctx, 2);
+        CGContextSetRGBStrokeColor(ctx, 0, 1, 0, 1);
+        CGContextStrokeRect(ctx, tileRect);
+        CGContextSetLineWidth(ctx, 1);
+        CGContextSetRGBStrokeColor(ctx, 1, 0, 0, 0.5);
+        //CGContextStrokeRect(ctx, imageRect);
+    }
+    
+}
+
+- (void)openDocumentIfRequired {
+    // Not required as XPS document stays open
+    return;
+}
+
+- (void)closeDocument {
+    if (xpsHandle) {
+        XPS_Cancel(xpsHandle);
+        XPS_Close(xpsHandle);
+        XPS_End();
+        xpsHandle = NULL;
+    }
+}
+
+- (void)closeDocumentIfRequired {
+    // Not required as XPS document stays open
+    return;
+}
+
+@end
+
 

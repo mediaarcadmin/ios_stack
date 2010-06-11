@@ -222,7 +222,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
     
     if (![[aFetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
-
+#if 0
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Bill Willingham"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"FablesLegendsInExile" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -231,16 +231,20 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:nil
                                           textFlowURL:nil
                                          audiobookURL:nil];
-        
+#endif        
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
                                               authors:[NSArray arrayWithObject:@"Stella Blackstone"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three_Little_Pigs" ofType:@"png" inDirectory:@"MockCovers"]]
                                               ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]]
+<<<<<<< HEAD:Sources/Classes/BlioLibraryViewController.m
                                                xpsURL:nil
+=======
+                                               xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"xps"]]
+>>>>>>> XPSIntegration:Sources/Classes/BlioLibraryViewController.m
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"AudioBooks"]]];
-
+#if 0
         [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
                                               authors:[NSArray arrayWithObject:@"David J. Hunter"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -249,7 +253,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:nil
                                           textFlowURL:nil
                                          audiobookURL:nil];
-        
+ #endif         
         [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
                                               authors:[NSArray arrayWithObject:@"Ward Just"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -258,16 +262,21 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:nil
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
-        
+      
         [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
                                               authors:[NSArray arrayWithObject:@"Marlene Perez"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"png" inDirectory:@"MockCovers"]]
                                               ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"]]
+<<<<<<< HEAD:Sources/Classes/BlioLibraryViewController.m
                                                xpsURL:nil
+=======
+                                               xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"xps"]]
+>>>>>>> XPSIntegration:Sources/Classes/BlioLibraryViewController.m
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
         
+#if 0        
         [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
                                               authors:[NSArray arrayWithObject:@"Bruce Degen"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -285,16 +294,21 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:nil
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
-
+#endif
         [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
                                               authors:[NSArray arrayWithObject:@"Neil Gaiman"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"NeilGaiman" ofType:@"png" inDirectory:@"MockCovers"]]
                                               ePubURL:nil
                                                pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
+<<<<<<< HEAD:Sources/Classes/BlioLibraryViewController.m
                                                xpsURL:nil
+=======
+                                               xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"xps"]]
+>>>>>>> XPSIntegration:Sources/Classes/BlioLibraryViewController.m
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
 										 audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"AudioBooks"]]];
 
+#if 0
         [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
                                               authors:[NSArray arrayWithObject:@"Martha Stewart"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -303,7 +317,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:nil
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
-        
+#endif 
         [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
                                               authors:[NSArray arrayWithObjects:@"Jennifer L. Holme", @"Matthew Holme", nil]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -312,7 +326,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:nil
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
-        
+#if 0        
         [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
                                               authors:[NSArray arrayWithObject:@"Marjane Satrapi"]
                                              coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"png" inDirectory:@"MockCovers"]]
@@ -384,6 +398,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:nil
                                           textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"zip" inDirectory:@"TextFlows"]]
                                          audiobookURL:nil];
+<<<<<<< HEAD:Sources/Classes/BlioLibraryViewController.m
         
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
@@ -393,6 +408,9 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"The Tale of Peter Rabbit.drm.xps" ofType:nil inDirectory:@"PDFs"]]
                                           textFlowURL:nil
                                          audiobookURL:nil];
+=======
+#endif
+>>>>>>> XPSIntegration:Sources/Classes/BlioLibraryViewController.m
     }
     
 	
@@ -988,12 +1006,22 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 #pragma mark -
 #pragma mark Core Data Multi-Threading
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification {
+<<<<<<< HEAD:Sources/Classes/BlioLibraryViewController.m
 //	NSLog(@"BlioLibraryViewController mergeChangesFromContextDidSaveNotification received...");	
 //	if (notification.object == self.managedObjectContext) {
 //		NSLog(@"...from same moc as library- returning.");
 //		return;
 //	}
 //	else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
+=======
+	//NSLog(@"BlioLibraryViewController mergeChangesFromContextDidSaveNotification received...");
+	
+	if (notification.object == self.managedObjectContext) {
+		//NSLog(@"...from same moc as library- returning.");
+		return;
+	}
+	//else NSLog(@"...from a moc other than the library's moc. will continue with merge and save.");
+>>>>>>> XPSIntegration:Sources/Classes/BlioLibraryViewController.m
     // Fault in all updated objects
 	
 	//refresh updated objects and merge changes

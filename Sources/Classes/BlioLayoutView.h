@@ -26,18 +26,34 @@ typedef enum BlioLayoutPageMode {
     BlioLayoutPageModeLandscape
 } BlioLayoutPageMode;
 
-@protocol BlioLayoutDataSource
-@required
+@protocol BlioLayoutRenderingDelegate
 - (BOOL)dataSourceContainsPage:(NSInteger)page;
-
-- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer;
-- (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector;
+- (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page withCacheLayer:(CGLayerRef)cacheLayer;
+- (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector;
 - (void)drawShadowLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page;
 - (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)page excluding:(BlioBookmarkRange *)excludedBookmark;
 
 @end
 
-@interface BlioLayoutView : BlioSelectableBookView <BlioLayoutDataSource, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
+
+@protocol BlioLayoutDataSource
+@required
+
+@property(nonatomic, readonly) NSInteger pageCount;
+
+- (CGRect)cropRectForPage:(NSInteger)page;
+- (CGRect)mediaRectForPage:(NSInteger)page;
+- (CGFloat)dpiRatio;
+
+- (void)openDocumentIfRequired;
+- (void)closeDocumentIfRequired;
+- (void)closeDocument;
+
+- (void)drawPage:(NSInteger)page inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform;
+
+@end
+
+@interface BlioLayoutView : BlioSelectableBookView <BlioLayoutRenderingDelegate, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
     BlioMockBook *book;
     CGPDFDocumentRef pdf;
     BlioLayoutScrollView *scrollView;
@@ -74,8 +90,9 @@ typedef enum BlioLayoutPageMode {
     NSArray *previousAccessibilityElements;
     BOOL accessibilityRefreshRequired;
     NSString *xpsPath;
-//    RasterImageInfo *imageInfo;
-//    XPS_HANDLE xpsHandle;
+    RasterImageInfo *imageInfo;
+    XPS_HANDLE xpsHandle;
+    id<BlioLayoutDataSource> dataSource;
 }
 
 @property (nonatomic, retain) BlioMockBook *book;

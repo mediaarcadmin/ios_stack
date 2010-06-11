@@ -200,6 +200,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             lastLayout = kBlioPageLayoutPageLayout;
         } 
         
+        // Forced override
+        lastLayout = kBlioPageLayoutPageLayout;
+        
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
@@ -353,6 +356,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     if(_bookView != bookView) {
         if(_bookView) {
+            if (bookView != nil) [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
             [_bookView removeObserver:self forKeyPath:@"pageNumber"];
             [_bookView removeObserver:self forKeyPath:@"pageCount"];        
             if(_bookView.superview) {
@@ -401,6 +405,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         forKeyPath:@"pageCount" 
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                            context:nil];   
+            
+            [self addObserver:_bookView 
+                        forKeyPath:@"audioPlaying" 
+                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
+                           context:nil];
         }
     }
 }
@@ -655,6 +664,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if([_bookView respondsToSelector:@selector(stopAnimation)]) {
                 [_bookView performSelector:@selector(stopAnimation)];
             }
+            
+            [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
             
             if([_bookView isKindOfClass:[BlioSpeedReadView class]]) {
                 // We do this because the current point is usually only saved on a 

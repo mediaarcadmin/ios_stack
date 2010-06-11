@@ -32,21 +32,50 @@
     NSString *platformString = [self blioDevicePlatform];
     
     CGFloat layoutZoom = 2;
+    //CGFloat highLayoutZoom = 4;
+    CGFloat highLayoutZoom = 32;
   
     // Devices newer than iPhone 3G or iPod 2G will be able to handle higher zoom levels
     if ([[self model] isEqualToString:@"iPhone"]) {
-        if ([[platformString substringWithRange:iPhoneFamilyRange] floatValue] >= 2) layoutZoom = 4;
+        if ([[platformString substringWithRange:iPhoneFamilyRange] floatValue] >= 2) layoutZoom = highLayoutZoom;
     } else if ([[self model] isEqualToString:@"iPod"]) {
         if ([[platformString substringWithRange:iPodFamilyRange] floatValue] == 2) {
-            if ([[platformString substringWithRange:iPodModelRange] floatValue] >= 2) layoutZoom = 4;
+            if ([[platformString substringWithRange:iPodModelRange] floatValue] >= 2) layoutZoom = highLayoutZoom;
         } else if ([[platformString substringWithRange:iPodFamilyRange] floatValue] > 2) {
-            layoutZoom = 4;
+            layoutZoom = highLayoutZoom;
         }
-    } else if ([[self model] isEqualToString:@"iPhone Simulator"]) {
-        layoutZoom = 4;
+    } else {
+        layoutZoom = highLayoutZoom;
     }
   
     return layoutZoom;
+}
+
+- (NSInteger)blioDeviceMaximumTileSize {
+    
+    NSRange iPhoneFamilyRange = {6,1};
+    NSRange iPodFamilyRange = {4,1};  
+    NSRange iPodModelRange = {6,1};
+    
+    NSString *platformString = [self blioDevicePlatform];
+    
+    NSInteger tileSize = 1024;
+    NSInteger largeTileSize = 256;
+        
+    // Devices older than iPhone 3G or iPod 2G will be able to handle higher tile sizes
+    if ([[self model] isEqualToString:@"iPhone"]) {
+        if ([[platformString substringWithRange:iPhoneFamilyRange] floatValue] >= 2) tileSize = largeTileSize;
+    } else if ([[self model] isEqualToString:@"iPod"]) {
+        if ([[platformString substringWithRange:iPodFamilyRange] floatValue] == 2) {
+            if ([[platformString substringWithRange:iPodModelRange] floatValue] >= 2) tileSize = largeTileSize;
+        } else if ([[platformString substringWithRange:iPodFamilyRange] floatValue] > 2) {
+            tileSize = largeTileSize;
+        }
+    } else {
+        tileSize = largeTileSize;
+    }
+    
+    return tileSize;
 }
 
 @end
