@@ -200,9 +200,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             lastLayout = kBlioPageLayoutPageLayout;
         } 
         
-        // Forced override
-        lastLayout = kBlioPageLayoutPageLayout;
-        
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
