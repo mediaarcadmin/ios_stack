@@ -194,7 +194,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if (!([newBook ePubPath] || [newBook textFlowPath]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
             lastLayout = kBlioPageLayoutPlainText;
         }            
-        if (![newBook pdfPath] && (lastLayout == kBlioPageLayoutPageLayout)) {
+        if (!([newBook pdfPath] || [newBook xpsPath]) && (lastLayout == kBlioPageLayoutPageLayout)) {
             lastLayout = kBlioPageLayoutPlainText;
         } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
@@ -215,7 +215,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
                 break;
             case kBlioPageLayoutPageLayout: {
-                if ([newBook pdfPath]) {
+                if ([newBook pdfPath] || [newBook xpsPath]) {
                     BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds 
                                                                                  book:newBook 
                                                                              animated:YES];

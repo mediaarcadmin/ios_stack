@@ -273,7 +273,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
         
         [self.dataSource openDocumentIfRequired];
-        NSLog(@"Document opened");
+        //NSLog(@"Document opened");
         
         for (int i = 1; i <= pageCount; i++) {
             CGRect cropRect = [self.dataSource cropRectForPage:i];
@@ -287,7 +287,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
             [aViewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:i]];
         }
-        NSLog(@"Rects calculated");
+        //NSLog(@"Rects calculated");
         
         [self.dataSource closeDocumentIfRequired];
         
@@ -719,7 +719,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     //NSLog(@"Tiled rendering started for page %d isCancelled %d", aPageNumber, isCancelled);
     // Because this occurs on a background thread but accesses self, we must check whether we have been cancelled
     //CGRect layerBounds = aLayer.bounds;
-    //NSLog(@"drawTile %d inContext %@ inBounds %@ withClip %@", aPageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(layerBounds), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+    //fprintf(stderr, "\n");
+
+   // NSLog(@"drawTile %d inContext %@ inBounds %@ withClip %@", aPageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(aLayer.bounds), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
     //NSLog(@"drawTile %d subRect %@", aPageNumber, NSStringFromCGRect(CGRectApplyAffineTransform(CGContextGetClipBoundingBox(ctx), CGContextGetCTM(ctx))));
         
     //CGContextTranslateCTM(ctx, 0, layerBounds.size.height);
@@ -745,8 +747,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         CGAffineTransform pageTransform = transformRectToFitRectWidth(unscaledCropRect, cropRect);
         
         //CGContextConcatCTM(ctx, pageTransform);
-        if (false) {
-        //if (nil != target) {
+        //if (false) {
+        if (nil != target) {
             CGRect cacheRect = CGRectIntegral(CGRectMake(0, 0, 160, 240));
             CGAffineTransform cacheTransform = transformRectToFitRect(unscaledCropRect, cacheRect, false);
 //            cacheRect = CGRectApplyAffineTransform(unscaledCropRect, cacheTransform);
@@ -766,7 +768,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             //CGContextFillRect(cacheCtx, cacheRect);
             
 //            [self.dataSource drawPage:aPageNumber inContext:cacheCtx withTransform:CGAffineTransformConcat(pageTransform, cacheTransform)];
-            [self.dataSource drawPage:aPageNumber inContext:cacheCtx inRect:cacheRect withTransform:cacheTransform];
+            [self.dataSource drawPage:aPageNumber inBounds:cacheRect withInset:0 inContext:cacheCtx inRect:cacheRect withTransform:cacheTransform observeAspect:NO];
             
             if ([target respondsToSelector:readySelector])
                 [target performSelectorOnMainThread:readySelector withObject:(id)aCGLayer waitUntilDone:NO];
@@ -777,10 +779,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 [self.dataSource closeDocumentIfRequired];
                 return;
             }
-            [self.dataSource drawPage:aPageNumber inContext:ctx inRect:cropRect withTransform:pageTransform];
+            [self.dataSource drawPage:aPageNumber inBounds:aLayer.bounds withInset:kBlioLayoutShadow inContext:ctx inRect:cropRect withTransform:pageTransform observeAspect:YES];
             
         } else {
-            [self.dataSource drawPage:aPageNumber inContext:ctx inRect:cropRect withTransform:pageTransform];
+            [self.dataSource drawPage:aPageNumber inBounds:aLayer.bounds withInset:kBlioLayoutShadow inContext:ctx inRect:cropRect withTransform:pageTransform observeAspect:YES];
+//            [self.dataSource drawPage:aPageNumber inContext:ctx inRect:cropRect withTransform:pageTransform];
         }
         [self.dataSource closeDocumentIfRequired];
 
@@ -2174,7 +2177,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return 72/96.0f;
 }
 
-- (void)drawPage:(NSInteger)page inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform {
+- (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
     //NSLog(@"drawPage %d inContext %@ inRect: %@ withTransform %@ andBounds %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(rect), NSStringFromCGAffineTransform(transform), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
     
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);    
@@ -2210,7 +2213,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize path, pageCount, imageInfo;
 
 - (void)dealloc {
-    NSLog(@"*************** dealloc called for xps datasource");
+    //NSLog(@"*************** dealloc called for xps datasource");
     if (xpsHandle) {
         XPS_Cancel(xpsHandle);
         XPS_Close(xpsHandle);
@@ -2245,11 +2248,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         XPS_Start();
         xpsHandle = XPS_Open([aPath UTF8String], [self.path UTF8String]);
+
         XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
-        NSLog(@"XPS opened");
+        //NSLog(@"XPS opened");
         pageCount = XPS_GetNumberPages(xpsHandle, 0);
         
-        NSLog(@"XPS page count retrieved");
+        //NSLog(@"XPS page count retrieved");
         
     }
     return self;
@@ -2271,26 +2275,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return 1;
 }
 
-void RenderCallback3(
-                                    void *userdata, 
-                                    unsigned pagePercentComplete, 
-                                    unsigned numPagesRenderedSoFar, 
-                                    unsigned totalPages
-      ) {
-    NSLog(@"RenderCallback3 Progress for percentage %d", pagePercentComplete);
-}
-    
-
-int RenderCallback2(void *userdata, int page) {
-    if (page == 0) {
-        //NSLog(@"Check this");
-    }
-    NSLog(@"XPS_RegisterPageBeginCallback for page %d", page + 1);
-    return 1;
-}
-
 void RenderCallback1(void *userdata, RasterImageInfo *data) {
-    NSLog(@"XPS_RegisterPageCompleteCallback");
+    //NSLog(@"XPS_RegisterPageCompleteCallback");
 	BlioLayoutXPSDataSource *dataSource = (BlioLayoutXPSDataSource *)userdata;	
 	dataSource.imageInfo = data;
 }
@@ -2299,253 +2285,90 @@ static void dataReleaseCallback(void *info, const void *data, size_t size) {
 	XPS_ReleaseImageMemory((void *)data);
 }
 
-- (void)drawPage:(NSInteger)page inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform {
-    //NSLog(@"drawPage %d inContext %@ inRect: %@ withTransform %@ andClip %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(rect), NSStringFromCGAffineTransform(transform), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
-    fprintf(stderr, "\n");
-    
+- (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
+    //fprintf(stderr, "\n");
     CGAffineTransform ctm = CGContextGetCTM(ctx);
-    CGRect clipRect = CGContextGetClipBoundingBox(ctx);
-    //NSLog(@"clipRect %@", NSStringFromCGRect(clipRect));
     
-    CGContextClipToRect(ctx, clipRect);
-
-    CGRect screenRect = CGRectIntersection(rect, clipRect);
-    //NSLog(@"screenRect %@", NSStringFromCGRect(screenRect));
-    CGRect imageTileRect = CGRectApplyAffineTransform(screenRect, CGAffineTransformInvert(transform));
-    //NSLog(@"imageTileRect %@", NSStringFromCGRect(imageTileRect));
-    NSLog(@"Desired tile: %@", NSStringFromCGRect(imageTileRect));
-    NSLog(@"Desired tile origin.x: %.20g", imageTileRect.origin.x);
-    NSLog(@"Desired tile max y: %.20g", (double)imageTileRect.origin.y + (double)imageTileRect.size.height);
-
-    CGRect tileRect = CGRectApplyAffineTransform(clipRect, ctm);
-    //NSLog(@"tileRect %@", NSStringFromCGRect(tileRect));
-    //tileRect.origin = CGContextGetClipBoundingBox(ctx).origin;
-
-    //tileRect = CGRectApplyAffineTransform(CGContextGetClipBoundingBox(ctx), CGAffineTransformInvert(ctm));
-
+    //NSLog(@"ctm %@", NSStringFromCGAffineTransform(ctm));
+    //NSLog(@"bounds: %@", NSStringFromCGRect(bounds));
+    CGRect insetBounds = CGRectInset(bounds, inset, inset);
+    
+    // FOR RANDAIR
+    // Stage 1. Retrieve the page size
+    memset(&properties,0,sizeof(properties));
+    XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
+    CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
+    //NSLog(@"pageCropRect: %@", NSStringFromCGRect(pageCropRect));
+    
+    // FOR RANDAIR
+    // Stage 2. Calculate the scale to fit this page inside a rectangle that is the 288x 448, then multiply the scale by the tile scale factor
+    // This gives us the page scale, i.e. teh size we want to scale the pageCropRect calculated in 1.
+    CGFloat widthScale = (CGRectGetWidth(insetBounds) / CGRectGetWidth(pageCropRect)) * ctm.a;
+    CGFloat heightScale = (CGRectGetHeight(insetBounds) / CGRectGetHeight(pageCropRect)) * ctm.d;
+    CGFloat pageScale = MIN(widthScale, heightScale);
+    if (aspect) widthScale = heightScale = pageScale;
+    
+    
+    // FOR RANDAIR
+    // Stage 3. Calculate the size of the page when it is scaled, and the subsequent size once it is truncated
+    CGRect scaledPage = CGRectMake(pageCropRect.origin.x, pageCropRect.origin.y, pageCropRect.size.width * widthScale, pageCropRect.size.height * heightScale);
+    CGRect truncatedPage = CGRectMake(scaledPage.origin.x, scaledPage.origin.y, floorf(scaledPage.size.width), floorf(scaledPage.size.height));
+    CGFloat horizontalPageOffset = (CGRectGetWidth(bounds) * ctm.a - CGRectGetWidth(truncatedPage))/2.0f; 
+    CGFloat verticalPageOffset = (CGRectGetHeight(bounds) * ctm.d  - CGRectGetHeight(truncatedPage))/2.0f; 
+    
+    // FOR RANDAIR
+    // Stage 4. Calculate the tile we currently want, includng it's offset
+    CGRect clipRect = CGContextGetClipBoundingBox(ctx);
+    CGRect tileRect = CGRectApplyAffineTransform(clipRect, ctm); 
+    tileRect.origin = CGPointMake(clipRect.origin.x * ctm.a, clipRect.origin.y * ctm.d);
+    //NSLog(@"tileRect: %@", NSStringFromCGRect(tileRect));
+    
+    // FOR RANDAIR
+    // Stage 5. Calculate the pagesizescalewidth & pagesizescaleheight to produce an image that should match the tile size
+    // This is where we use the truncated page size
+    CGFloat pagesizescalewidth = (CGRectGetWidth(tileRect))/ CGRectGetWidth(truncatedPage);
+    CGFloat pagesizescaleheight = (CGRectGetHeight(tileRect))/ CGRectGetHeight(truncatedPage);
     
     CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
     
-   // if (clipRect.origin.x == 0) {
-//        if (clipRect.origin.y == 0)
-//            CGContextSetRGBFillColor(ctx, 1, 0, 0, 0.5);
-//        else
-//            CGContextSetRGBFillColor(ctx, 0, 1, 0, 0.5);
-//    } else {
-//        if (clipRect.origin.y == 0)
-//            CGContextSetRGBFillColor(ctx, 0, 0, 1, 0.5);
-//        else
-//            CGContextSetRGBFillColor(ctx, 1, 1, 0, 0.5);
-//    }
-    //CGContextSetRGBFillColor(ctx, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, 1);
-    
-    CGRect scaledPageWithBorders = CGRectApplyAffineTransform(rect, ctm);
-    //NSLog(@"scaledPage %@", NSStringFromCGRect(scaledPage));
-    if (!CGRectIntersectsRect(scaledPageWithBorders, tileRect)) return;
-    CGRect intersectionRect = CGRectIntersection(scaledPageWithBorders, tileRect);
-    
-    //NSLog(@"intersectionRect %@", NSStringFromCGRect(intersectionRect));
-    //NSLog(@"tileRect %@", NSStringFromCGRect(tileRect));
-    //CGAffineTransform tileTransform = transformRectToFitRect(tileRect, rect, NO);
-    //tileRect = CGRectApplyAffineTransform(tileRect, tileTransform);
-    //CGContextFillRect(ctx, CGRectApplyAffineTransform(tileRect, transf));
-    //CGContextFillRect(ctx, tileRect);
-//    return;
+    CGRect maskRect = CGRectMake(ctm.tx + horizontalPageOffset, ctm.ty + verticalPageOffset, truncatedPage.size.width, truncatedPage.size.height);
+    //NSLog(@"maskRect: %@", NSStringFromCGRect(maskRect));
+    CGContextClipToRect(ctx, maskRect);
+    //CGContextClipToRect(ctx, CGRectMake(horizontalPageOffset*ctm.a, verticalPageOffset*ctm.d, truncatedPage.size.width, truncatedPage.size.height));
 
-    CGRect xpsPageRect = CGRectApplyAffineTransform(rect, CGAffineTransformInvert(transform));
-    //NSLog(@"xpsPageRect %@", NSStringFromCGRect(xpsPageRect));
-    NSLog(@"xpsPageRect max y: %.20g", (double)xpsPageRect.origin.y + (double)xpsPageRect.size.height);
-
-    
-    double xScaleFactor = ctm.a * transform.a;
-    double yScaleFactor = ctm.d * transform.d;
-//    double xScaleFactor = ctm.a * transform.a;
-//    double yScaleFactor = ctm.d * transform.d;
-    NSLog(@"ctm.a %.20g, transform.a %.20g", ctm.a, transform.a);
-    NSLog(@"ctm.d %.20g, transform.d %.20g", ctm.d, transform.d);
-
-    //NSLog(@"xScaleFactor %f, yScaleFactor %f", xScaleFactor, yScaleFactor);
-    
-    //CGRect fullOutputImage = CGRectMake(0,0, floorf(xpsPageRect.size.width), floorf(xpsPageRect.size.height));
-    //NSLog(@"fullOutputImage %@", NSStringFromCGRect(fullOutputImage));
-    CGRect scaledOutputImage = CGRectMake(0, 0, floorf(xpsPageRect.size.width * xScaleFactor), floorf(xpsPageRect.size.height * yScaleFactor));
-    //NSLog(@"scaledOutputImage %@", NSStringFromCGRect(scaledOutputImage));
-    
-    //CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);    
-    //CGContextFillRect(ctx, rect);
-    //CGContextClipToRect(ctx, rect);
-    
-    //CGFloat scaledWidth = CGRectGetWidth(xpsPageRect) * ctm.a * transform.a;
-//    CGFloat scaledHeight = CGRectGetHeight(xpsPageRect) * ctm.d * transform.d;
-//    NSLog(@"scaledWidth/Height %f %f", scaledWidth, scaledHeight);
-    
-    
-    //NSLog(@"scaledWidth %f tileWidthRatio %f", scaledWidth, tileWidthRatio);
-    //NSLog(@"scaledHeight %f tileHeightRatio %f", scaledHeight, tileHeightRatio);
-    //CGRect cropRect = [self cropRectForPage:page];
-    
-
-    //CGRect scaledCropRect = CGRectApplyAffineTransform(rect, transform);
-    
-    //CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
-
- 
-
-    //CGRect viewRect = CGContextGetClipBoundingBox(ctx);
-    //NSLog(@"drawPage %d inContext %@ viewRect %@ scaledCropRect %@, rect %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(viewRect), NSStringFromCGRect(scaledCropRect), NSStringFromCGRect(rect));
-
-    //CGFloat xscale = scaledCropRect.size.width / rect.size.width;
-    //CGFloat yscale = scaledCropRect.size.height / rect.size.height;
-    //CGFloat scaleFactor = MIN(xscale,yscale);
-    //scaleFactor = 1;
     
     OutputFormat format;
     memset(&format,0,sizeof(format));
-    //CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
-    //static XPS_ctm render_ctm = { 1, 0, 0, 1, 0, 0 };
     
+    // FOR RANDAIR
+    // Stage 6. Calculate where the top left of the tile is offset from the bottom left of the screen
+    // These values are used to translate the page
+    CGPoint topLeftOfTileOffsetFromBottomLeft = CGPointMake(tileRect.origin.x, CGRectGetHeight(bounds)*ctm.d - CGRectGetMaxY(tileRect));
+    //NSLog(@"topLeftOfTile %@", NSStringFromCGPoint(topLeftOfTileOffsetFromBottomLeft));
     
-
-    
-    
-    
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(xScaleFactor, yScaleFactor);
-    CGAffineTransform translationTransform = CGAffineTransformMakeTranslation(-imageTileRect.origin.x, -(CGRectGetMaxY(xpsPageRect) - CGRectGetMaxY(imageTileRect)));
-    CGAffineTransform renderTransform = CGAffineTransformConcat(translationTransform, scaleTransform);
-    renderTransform = renderTransform;
-    
-    //CGAffineTransform translationTransform = CGAffineTransformMakeTranslation(-imageTileRect.origin.x, -(floorf(CGRectGetMaxY(xpsPageRect)) - CGRectGetMaxY(imageTileRect)));
-    //CGAffineTransform translationTransform = CGAffineTransformMakeTranslation(-imageTileRect.origin.x, -(CGRectGetMaxY(scaledOutputImage) - CGRectGetMaxY(imageTileRect)));
-    //CGAffineTransform translationTransform = CGAffineTransformMakeTranslation(-imageTileRect.origin.x, -(MIN(0, CGRectGetMaxY(scaledOutputImage) - CGRectGetMaxY(imageTileRect))));
-    //NSLog(@"translation: { %f, %f }", renderTransform.tx, renderTransform.ty);
-    //NSInteger roundedTX = floorf(renderTransform.tx);
-    //NSInteger roundedTY = floorf(renderTransform.ty);
-    //NSInteger roundedTY = ceilf(renderTransform.ty);
-    //NSInteger roundedTX = floorf(translationTransform.tx);
-    //NSInteger roundedTY = ceilf(translationTransform.ty);
-    
-    
-    CGFloat tileWidth = MIN(scaledOutputImage.size.width, CGRectGetWidth(intersectionRect) + 1);
-    CGFloat tileHeight = MIN(scaledOutputImage.size.height, CGRectGetHeight(intersectionRect) + 1);
-    
-   // if ((-roundedTY + tileHeight) > CGRectGetHeight(scaledOutputImage)) {
-//        NSLog(@"Truncating tileHeight from %f to %f", tileHeight, CGRectGetHeight(scaledOutputImage) + roundedTY);
-//        tileHeight = CGRectGetHeight(scaledOutputImage) + roundedTY;
-//    }
-    
-    //if ((-roundedTX + tileWidth) > CGRectGetWidth(scaledOutputImage)) {
-//        NSLog(@"Truncating tileWidth from %f to %f", tileWidth, CGRectGetWidth(scaledOutputImage) + roundedTX);
-//        tileWidth = CGRectGetWidth(scaledOutputImage) + roundedTX;
-//    }
-    
-    //NSLog(@"rounded translation: { %d, %d }", roundedTX, roundedTY);
-    //NSLog(@"tile size { %f, %f }", tileWidth, tileHeight);
-    
-    double tileWidthRatio =  tileWidth / scaledOutputImage.size.width;
-    double tileHeightRatio = tileHeight / scaledOutputImage.size.height;
-    
-    //CGFloat yNudge = renderTransform.ty - roundedTY;
-    
-    //NSLog(@"yNudge: %f -> %f", yNudge, yNudge * yScaleFactor);
-    //yNudge = yNudge * yScaleFactor;
-    
-    //NSLog(@"Render transform %@", NSStringFromCGAffineTransform(renderTransform));
-    //XPS_ctm render_ctm = { xScaleFactor, 0, 0, yScaleFactor, -subRect.origin.x / xScaleFactor, -(CGRectGetMaxY(cropRect) - CGRectGetMaxY(subRect)) / yScaleFactor };
-    //XPS_ctm render_ctm = { renderTransform.a, 0, 0, renderTransform.d, roundedTX, roundedTY };
-    //float a = renderTransform.a;
-//    float b = 0;
-//    float c = 0;
-//    float d = renderTransform.d;
-//    float tx = renderTransform.tx;
-//    float ty = renderTransform.ty;
-    //float a = 2.635432f;
-//    float b = 0.0f;
-//    float c = 0.0f;
-//    float d = 2.635432f;
-//    float tx = -1152.0f;
-//    float ty = -1268.98999f;
-    
-    //float a = 1.317716f;
-//    float b = 0.0f;
-//    float c = 0.0f;
-//    float d = 1.317716f;
-//    float tx = -448.0f;
-//    float ty = -378.494934f;
-    
-    //XPS_ctm render_ctm = {a, b, c, d, tx, ty};
-    //XPS_ctm render_ctm = { 1.317716, 0, 0, 1.317716, -448, -0.000160854004 };
-    //XPS_ctm render_ctm = { (CGFloat)1.317716, (CGFloat)0, (CGFloat)0, (CGFloat)1.317716, (CGFloat)-448, (CGFloat)-378.494934 };
-    XPS_ctm render_ctm = { renderTransform.a, 0, 0, renderTransform.d, renderTransform.tx, renderTransform.ty };
-    //XPS_ctm render_ctm = { 4 * 0.3294290006160736084, 0, 0, 4 * 0.3294290006160736084, -(1060.1600328970162082 - 578.648895263671875) , -378.494934f };
-//    XPS_ctm render_ctm = { xScaleFactor, 0, 0, yScaleFactor, -339.982208251953125 * xScaleFactor , -378.494934f };
-    //XPS_ctm render_ctm = { xScaleFactor, 0, 0, yScaleFactor, -imageTileRect.origin.x * xScaleFactor , renderTransform.ty };
-    //XPS_ctm render_ctm = { 4 * 0.3294290006160736084, 0, 0, 4 * 0.3294290006160736084, -imageTileRect.origin.x * 4 * 0.3294290006160736084 , -(1060.1600328970162082 - 578.648895263671875) * 4 * 0.3294290006160736084 };
-
-    //XPS_ctm render_ctm = { 1.31771602, 0.000000f, 0.000000f, 1.31771602, -448.000000f, -378.494934f };
-    //XPS_ctm render_ctm = { 1.317716f, 0.000000f, 0.000000f, 1.317716f, (double)renderTransform.tx, (double)renderTransform.ty };
-    //XPS_ctm render_ctm = { renderTransform.a, 0.000000f, 0.000000f, renderTransform.d, -448.000000f, -378.494934f };
-    NSLog(@"format.ctm: { %.20g (%.20g), %f (%f), %.20g (%.20g), %f (%f), %f (%f), %f (%f) }", render_ctm.a, 1.317716, render_ctm.b, 0.000000,  render_ctm.c, 0.000000, render_ctm.d, 1.317716, render_ctm.tx, -448.000000, render_ctm.ty, -378.494934);
-    //XPS_ctm render_ctm = { 1, 0, 0, 1, roundedTX, roundedTY };
-    //XPS_ctm render_ctm = { 1 , 0, 0, 1, 0, (ctm.ty) ? -256 : 0 };
+    XPS_ctm render_ctm = { widthScale, 0, 0, heightScale, -topLeftOfTileOffsetFromBottomLeft.x + horizontalPageOffset, -topLeftOfTileOffsetFromBottomLeft.y + verticalPageOffset };
+    //XPS_ctm render_ctm = { pageScale, 0, 0, pageScale, -topLeftOfTileOffsetFromBottomLeft.x, -topLeftOfTileOffsetFromBottomLeft.y };
+    //NSLog(@"render_ctm { %f, %f, %f, %f, %f, %f }", render_ctm.a, render_ctm.b, render_ctm.c, render_ctm.d, render_ctm.tx, render_ctm.ty);
     format.xResolution = 96;			
-    format.yResolution = 96;
-    //format.xResolution = 96 * xScaleFactor;			
-    //format.yResolution = 96 * yScaleFactor;
-    //format.xResolution = 96 * ctm.a * transform.a;			
-//    format.yResolution = 96 * ctm.d * transform.d;	
-	//format.xResolution = 96 * transform.a;			
-//    format.yResolution = 96 * transform.d;	
+    format.yResolution = 96;	
     format.colorDepth = 8;
     format.colorSpace = XPS_COLORSPACE_RGB;
-    format.pagesizescale = 1;			
-    //format.pagesizescalewidth = 1;		
-    //format.pagesizescaleheight = 1;
-    //format.pagesizescalewidth = tileWidthRatio;		
-    //format.pagesizescaleheight = tileHeightRatio;
+    format.pagesizescale = 1;	
+    format.pagesizescalewidth = pagesizescalewidth * widthScale;		
+    format.pagesizescaleheight = pagesizescaleheight * heightScale;
     
-    //float pageWidth = tileWidthRatio * xScaleFactor; 
-    //float pageHeight = tileHeightRatio * yScaleFactor;
-    
-    //float pageWidth = 0.293969631f; 
-//    float pageHeight = 0.242501259f;
-    //float pageWidth = 0.293970f; 
-//    float pageHeight = 0.242588f;
-    format.pagesizescalewidth = tileWidthRatio * xScaleFactor;		
-    format.pagesizescaleheight = tileHeightRatio * yScaleFactor;
-    //format.pagesizescalewidth = pageWidth;		
-//    format.pagesizescaleheight = pageHeight;
-    NSLog(@"tileWidthRatio %.20g * xScaleFactor %.20g", tileWidthRatio, xScaleFactor);
-    NSLog(@"tileHeightRatio %.20g * yScaleFactor %.20g", tileHeightRatio, yScaleFactor);
-    
-    //format.pagesizescalewidth = 0.29396963119506835938f;
-    //format.pagesizescaleheight = 0.24271035194396972656f;
-    NSLog(@"format.pagesizescalewidth:  %.20g (%.20g)", format.pagesizescalewidth, 0.2939696312);
-    NSLog(@"format.pagesizescaleheight: %.20g (%.20g)", format.pagesizescaleheight, 0.2425881177);
-    NSLog(@"unrounded image width %f height %f", CGRectGetWidth(xpsPageRect) * tileWidthRatio * xScaleFactor, CGRectGetHeight(xpsPageRect) * tileHeightRatio * yScaleFactor); 
-
-    //NSLog(@"Predicted imageInfo width %f height %f", CGRectGetWidth(xpsPageRect) * tileWidthRatio * xScaleFactor, CGRectGetHeight(xpsPageRect) * tileHeightRatio * yScaleFactor); 
     format.ctm = &render_ctm;				
     format.formatType = OutputFormat_RAW;
     imageInfo = NULL;
     
-    XPS_RegisterPageBeginCallback(xpsHandle, RenderCallback2);
     XPS_RegisterPageCompleteCallback(xpsHandle, RenderCallback1);
-    //XPS_RegisterProgressCallback(xpsHandle, RenderCallback3);
     XPS_SetUserData(xpsHandle, self);
     
-    //NSLog(@"Entering XPS_Convert for page %d in context %@ with intersectionrect %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(intersectionRect));
     XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-    //NSLog(@"Exiting XPS_Convert for page %d in context %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
     
     if (imageInfo) {
         size_t width  = imageInfo->widthInPixels;
         size_t height = imageInfo->height;
-        //NSLog(@"imageInfo width %d, height %d", width, height);
-        
-        //CGRect imageRect = CGRectMake(floorf((viewRect.size.width - width)/2.0f), floorf((viewRect.size.height - height)/2.0f), width, height);
-        //CGRect scaledCrop = CGRectApplyAffineTransform(rect, ctm);
-        //CGRect imageRect = CGRectMake(floorf(scaledCrop.origin.x), floorf(scaledCrop.origin.x), width, height);
-        //imageRect = scaledCropRect;
         size_t dataLength = width * height * 3;
         
         CGDataProviderRef providerRef = CGDataProviderCreateWithData(self, imageInfo->pBits, dataLength, dataReleaseCallback);
@@ -2555,47 +2378,25 @@ static void dataReleaseCallback(void *info, const void *data, size_t size) {
                       , providerRef, NULL, true, 
                       kCGRenderingIntentDefault);
         
-        NSLog(@"imageInfo->widthInPixels: %d", imageInfo->widthInPixels);
-        NSLog(@"imageInfo->height: %d", imageInfo->height);
+        //NSLog(@"imageInfo->widthInPixels: %d", imageInfo->widthInPixels);
+        //NSLog(@"imageInfo->height: %d", imageInfo->height);
         
+        // FOR RANDAIR
+        // Stage 7. Remove the transform and interpolation currently applied to the context so we guarantee we get 1:1 pixel calculation when we draw the image
         CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
-        CGRect imageRect = CGRectMake(intersectionRect.origin.x, intersectionRect.origin.y, width, height);
-
-        //CGRect imageRect = CGRectMake(intersectionRect.origin.x, intersectionRect.origin.y - (height - CGRectGetHeight(intersectionRect)), width, height);
-        //NSLog(@"imageRect %@", NSStringFromCGRect(imageRect));
         
-        //CGContextSetAlpha(ctx, 0.7f);
+        // FOR RANDAIR
+        // Stage 8. If the image is taller than the tile then offset the image by the difference in height
+        // We want the top left of the image to be drawn at the top left of the tile but the origin is at the bottom left
+        CGRect imageRect = CGRectMake(0, tileRect.size.height - height, width, height);
+        //NSLog(@"imageRect: %@", NSStringFromCGRect(imageRect));
+        
+        
         CGContextDrawImage(ctx, imageRect, imageRef);
-        UIImage *image = [UIImage imageWithCGImage:imageRef];
-        UIImageWriteToSavedPhotosAlbum(image, nil, nil, NULL);
-        //CGContextSetAlpha(ctx, 1);
-        //CGContextDrawImage(ctx, tileRect, imageRef);
-        //CGContextDrawImage(ctx, tileRect, imageRef);
-        //CGContextDrawImage(ctx, CGContextGetClipBoundingBox(ctx), imageRef);
-        //CGContextDrawImage(ctx, tileRect, imageRef);
-        //CGContextDrawImage(ctx, rect, imageRef);
-        //CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
-        //CGContextDrawImage(ctx, CGRectApplyAffineTransform(rect, ctm), imageRef);
-        //CGContextDrawImage(ctx, CGRectMake(floorf(rect.origin.x * ctm.a), floorf(rect.origin.y * ctm.d), width, height), imageRef);
-        //CGContextDrawImage(ctx, imageRect, imageRef);
-        //NSLog(@"Draw image in rect %@", NSStringFromCGRect(imageRect));
         
         CGDataProviderRelease(providerRef);
-        CGImageRelease(imageRef);
-        //CGContextSetRGBFillColor(ctx, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, 0.6);
-        //CGContextSetRGBStrokeColor(ctx, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, 0.6);
-        //CGContextFillRect(ctx, tileRect);
-        //CGContextFillRect(ctx, imageRect);
-        //CGContextSetRGBStrokeColor(ctx, 0, 0, 0, 0.5f);
-        //CGContextSetRGBStrokeColor(ctx, arc4random()%2, arc4random()%2, arc4random()%2, 1);
-
+        CGImageRelease(imageRef);        
         
-        CGContextSetLineWidth(ctx, 2);
-        CGContextSetRGBStrokeColor(ctx, 0, 1, 0, 1);
-        CGContextStrokeRect(ctx, tileRect);
-        CGContextSetLineWidth(ctx, 1);
-        CGContextSetRGBStrokeColor(ctx, 1, 0, 0, 0.5);
-        //CGContextStrokeRect(ctx, imageRect);
     }
     
 }

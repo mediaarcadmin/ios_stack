@@ -79,13 +79,13 @@
 @synthesize renderingDelegate, pageLayers;
 
 - (void)dealloc {
-    NSLog(@"*************** dealloc called for contentView");
+    //NSLog(@"*************** dealloc called for contentView");
     [self abortRendering];
     [super dealloc];
 }
 
 - (void)abortRendering {
-    NSLog(@"*************** abort called for contentView");
+    //NSLog(@"*************** abort called for contentView");
     self.renderingDelegate = nil;
     self.pageLayers = nil;
 }
@@ -299,7 +299,7 @@
 @synthesize pageNumber, tiledLayer, thumbLayer, shadowLayer, highlightsLayer, cacheQueue;
 
 - (void)dealloc {
-    NSLog(@"cancelPreviousPerformRequestsWithTarget during dealloc");
+    //NSLog(@"cancelPreviousPerformRequestsWithTarget during dealloc");
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
 
     self.tiledLayer = nil;
@@ -330,7 +330,7 @@
 }
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
-    NSLog(@"set page number and cancel force");
+    //NSLog(@"set page number and cancel force");
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
     [self.cacheQueue cancelAllOperations];
     
@@ -363,13 +363,13 @@
 - (void)forceThumbCacheAfterDelay:(NSTimeInterval)delay {
     //return;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
-    NSLog(@"forceThumbCacheAfterDelay: %f for page %d", delay, self.pageNumber);
-    CGFloat cacheDelay = delay + 0.1f;
-    [self performSelector:@selector(forceThumbCache) withObject:nil afterDelay:cacheDelay];
+    //NSLog(@"forceThumbCacheAfterDelay: %f for page %d", delay, self.pageNumber);
+    CGFloat cacheDelay = delay;
+    [self performSelector:@selector(forceThumbCache) withObject:nil afterDelay:cacheDelay inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 }
 
 - (void)forceThumbCache {
-    NSLog(@"forceThumbCache fired after delay for page %d", self.pageNumber);
+    //NSLog(@"forceThumbCache fired after delay for page %d", self.pageNumber);
     if (!self.tiledLayer.cached) {
         [self.cacheQueue cancelAllOperations];
         
@@ -383,10 +383,10 @@
         BlioLayoutForceCacheOperation *cacheOp = [[BlioLayoutForceCacheOperation alloc] initWithTiledLayer:self.tiledLayer];
         [self.cacheQueue addOperation:cacheOp];
         [cacheOp release];
-    } else {
-        NSLog(@"already cached");
-
-    }
+    } //else {
+//        NSLog(@"already cached");
+//
+//    }
 }
 
 #pragma mark -

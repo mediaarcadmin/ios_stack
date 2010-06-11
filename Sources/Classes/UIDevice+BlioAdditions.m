@@ -60,7 +60,7 @@
     NSString *platformString = [self blioDevicePlatform];
     
     NSInteger tileSize = 1024;
-    NSInteger largeTileSize = 256;
+    NSInteger largeTileSize = 2048;
         
     // Devices older than iPhone 3G or iPod 2G will be able to handle higher tile sizes
     if ([[self model] isEqualToString:@"iPhone"]) {
