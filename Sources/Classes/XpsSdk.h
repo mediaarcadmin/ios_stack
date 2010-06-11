@@ -1704,6 +1704,10 @@ XPSSDK void XPSCALL XPS_DeleteOption(XPS_HANDLE handle, const XPSCHAR * option);
  */
 XPSSDK int XPSCALL XPS_QueryOption(XPS_HANDLE handle, const XPSCHAR * option, int * value);
 
+XPSSDK int  XPS_inflate(void * v, int f);
+XPSSDK int  XPS_inflateInit(void * v);
+	XPSSDK int  XPS_inflateInit2(void * v,int wb);
+XPSSDK int XPS_inflateEnd(void * v);	
 /*@}*/		// apifunc
 
 #if defined __cplusplus

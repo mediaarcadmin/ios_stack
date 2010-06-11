@@ -188,6 +188,8 @@
 		C9336E7C1180854800D29256 /* BlioAccessibilitySegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = C9336E7B1180854800D29256 /* BlioAccessibilitySegmentedControl.m */; };
 		C9336E7D1180854800D29256 /* BlioAccessibilitySegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = C9336E7B1180854800D29256 /* BlioAccessibilitySegmentedControl.m */; };
 		C93E825D1134241D000117C6 /* BlioWebToolsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */; };
+		C944EC0211C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
+		C944EC0311C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
 		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		C94D27B910DBCF4C00F30AFE /* PDFs in Resources */ = {isa = PBXBuildFile; fileRef = C94D27B510DBCF4C00F30AFE /* PDFs */; };
 		C94D864110E78E140094B9C5 /* button-getbooks.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863E10E78E140094B9C5 /* button-getbooks.png */; };
@@ -941,6 +943,7 @@
 		C9336E7B1180854800D29256 /* BlioAccessibilitySegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAccessibilitySegmentedControl.m; sourceTree = "<group>"; };
 		C93E825B1134241D000117C6 /* BlioWebToolsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioWebToolsViewController.h; sourceTree = "<group>"; };
 		C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioWebToolsViewController.m; sourceTree = "<group>"; };
+		C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libXpsSDKipad.a; path = Libraries/XPS/libXpsSDKipad.a; sourceTree = "<group>"; };
 		C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutView.h; sourceTree = "<group>"; };
 		C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutView.m; sourceTree = "<group>"; };
 		C94D27B510DBCF4C00F30AFE /* PDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PDFs; sourceTree = "<group>"; };
@@ -1102,6 +1105,7 @@
 				A3D9F13B11B064680011D544 /* libPlayReadyPK.a in Frameworks */,
 				A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */,
 				DC5320DF11C09EF40042D3EA /* AudioToolbox.framework in Frameworks */,
+				C944EC0211C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1134,6 +1138,7 @@
 				7DAA30C511512B1C006634CC /* libiconv.dylib in Frameworks */,
 				C93317A211B53C560057E0BE /* libPlayReadyPK.a in Frameworks */,
 				DC5320E011C09EF40042D3EA /* AudioToolbox.framework in Frameworks */,
+				C944EC0311C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1648,6 +1653,7 @@
 		A37FC20B10EA770500F3DC5A /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				C944EC0011C1C09F00943402 /* XPS */,
 				A3D9F13911B064530011D544 /* DRM */,
 				C9867652112411060070A03E /* GData.xcodeproj */,
 				7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */,
@@ -1725,6 +1731,14 @@
 				C932B03A10ECBC6000B8286A /* BlioNotesView.m */,
 			);
 			name = BookViewController;
+			sourceTree = "<group>";
+		};
+		C944EC0011C1C09F00943402 /* XPS */ = {
+			isa = PBXGroup;
+			children = (
+				C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */,
+			);
+			name = XPS;
 			sourceTree = "<group>";
 		};
 		C972639A111C6063001BCC0B /* Store */ = {
@@ -2530,6 +2544,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/XPS\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2567,6 +2582,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/XPS\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2641,6 +2657,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/XPS\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -2675,6 +2692,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/XPS\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
