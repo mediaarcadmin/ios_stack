@@ -2556,7 +2556,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				SDKROOT = iphoneos3.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -2594,7 +2593,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				SDKROOT = iphoneos3.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

@@ -16,11 +16,11 @@
 
 @implementation BlioStoreCategoriesController
 
-@synthesize feeds, processingDelegate, managedObjectContext,activityIndicatorView;
+@synthesize processingDelegate, managedObjectContext,activityIndicatorView;
 
 - (void)dealloc {
-    self.feeds = nil;
     self.processingDelegate = nil;
+	if (storeFeedTableViewDataSource) [storeFeedTableViewDataSource release];
     [super dealloc];
 }
 
@@ -32,10 +32,14 @@
         UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Categories",@"\"Categories\" tab bar title") image:[UIImage imageNamed:@"icon-categories.png"] tag:kBlioStoreCategoriesTag];
         self.tabBarItem = theItem;
         [theItem release];
+		
     }
     return self;
 }
-
+-(BlioStoreFeedTableViewDataSource*)storeFeedTableViewDataSource {
+	if (!storeFeedTableViewDataSource) storeFeedTableViewDataSource = [[BlioStoreFeedTableViewDataSource alloc] init];
+	return storeFeedTableViewDataSource;
+}
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
     // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -60,6 +64,7 @@
 	[activityIndicatorView startAnimating];
 	activityIndicatorView.hidden = NO;
 	[activityIndicatorView release];
+	self.tableView.dataSource = self.storeFeedTableViewDataSource;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -69,7 +74,13 @@
     
     [self parseFeeds];
 }
-
+-(NSMutableArray*)feeds {
+	if (self.storeFeedTableViewDataSource) return self.storeFeedTableViewDataSource.feeds;
+	return nil;
+}
+-(void)setFeeds:(NSMutableArray *)feedsMutableArray {
+	if (self.storeFeedTableViewDataSource) self.storeFeedTableViewDataSource.feeds = feedsMutableArray;
+}
 // This method will be called repeatedly - once each time the user choses to parse.
 - (void)parseFeeds {
     if (![self.feeds count]) return;
@@ -137,111 +148,63 @@
 	// e.g. self.myOutlet = nil;
 }
 
-- (NSString *)getMoreCellLabelForSection:(NSUInteger) section {
-	return [[self.feeds objectAtIndex:section] title];
-}
-
-#pragma mark -
-#pragma mark UITableViewDataSource Methods
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    NSUInteger sections = 0;
-    for (BlioStoreFeed *feed in self.feeds) {
-        if ([feed.categories count] || [feed.entities count]) sections++;
-    }
-    return sections;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section 
-{ 
-	return [[self.feeds objectAtIndex:section] title];
-}
-
-
-
-// Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
-	NSUInteger getMoreResultsCell = 0;
-	if (([feed.categories count] + [feed.entities count]) < feed.totalResults) getMoreResultsCell = 1; // our data is less than the totalResults, so we need a "Get More Results" option.
-    return [feed.categories count] + [feed.entities count] + getMoreResultsCell;
-}
-
-// Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSUInteger row = [indexPath row];
-    NSUInteger section = [indexPath section];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath feed:(BlioStoreFeed*)feed {
+	NSUInteger row = [indexPath row];
 	
-    BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
-	
-    static NSString *MoreResultsCellIdentifier = @"MoreResultsCell";
-	static NSString *CategoryCellIdentifier = @"CategoryCell";
-	static NSString *EntityCellIdentifier = @"EntityCell";
-
-    UITableViewCell *cell;
-	
-	// for More Results
-    if (row == ([feed.categories count]+[feed.entities count])) { // one row beyond categories/entities was selected
-		cell = [tableView dequeueReusableCellWithIdentifier:MoreResultsCellIdentifier];
-		if (cell == nil) {
-			// create cell
-			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MoreResultsCellIdentifier] autorelease];
-			cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
-			cell.textLabel.textColor = [UIColor colorWithRed:36.0/255 green:112.0/255 blue:216.0/255 alpha:1];
-			cell.detailTextLabel.font = [UIFont systemFontOfSize:12.5];
-
-			// add activity indicator
-			UIActivityIndicatorView * cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-			cellActivityIndicatorView.frame = CGRectMake(-kBlioMoreResultsCellActivityIndicatorViewWidth/3,-kBlioMoreResultsCellActivityIndicatorViewWidth/2,kBlioMoreResultsCellActivityIndicatorViewWidth,kBlioMoreResultsCellActivityIndicatorViewWidth);
-			cellActivityIndicatorView.hidden = YES;
-
-			cellActivityIndicatorView.hidesWhenStopped = YES;
-			cellActivityIndicatorView.tag = kBlioMoreResultsCellActivityIndicatorViewTag;
-			[cell.imageView addSubview:cellActivityIndicatorView];
-			[cellActivityIndicatorView release];
-		}		
-		// populate cell with content
-		
-		
-		[(UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag] stopAnimating];
-
-		cell.textLabel.text = [NSString stringWithFormat:NSLocalizedString(@"See More %@...",@"See More %@(Type of Result)..."), [self getMoreCellLabelForSection:section]];
-		cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%i shown out of %i total",@"%i shown out of %i total"), ([feed.categories count]+[feed.entities count]),feed.totalResults];
-		cell.imageView.image = nil;
-        [cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@, %@", @"Accessibility label for Store Categories View Load More cell"), cell.textLabel.text, cell.detailTextLabel.text]];
-        [cell setAccessibilityHint:NSLocalizedString(@"Loads more results.", @"Accessibility hint for Store Categories View Load More cell")];
-
-	}
-	else if (row < [feed.categories count]) { // category cell is needed
-		cell = [tableView dequeueReusableCellWithIdentifier:CategoryCellIdentifier];
-		if (cell == nil) {
-			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CategoryCellIdentifier] autorelease];
-			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//			cell.textLabel.font = [UIFont boldSystemFontOfSize:12.0]; // we'll use default size
+	if (row == ([feed.categories count]+[feed.entities count])) { // More Results option chosen
+		if (([feed.categories count]+[feed.entities count]) < feed.totalResults) {
+			// reveal activity indicator
+			UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag];
+			cellActivityIndicatorView.hidden = NO;
+			[cellActivityIndicatorView startAnimating];
+			UIImage * emptyImage = [[UIImage alloc] init];
+			[tableView cellForRowAtIndexPath:indexPath].imageView.image = emptyImage;  // setting a UIImage object allows the view (and activity indicator subview) to show up
+			[tableView cellForRowAtIndexPath:indexPath].imageView.frame = CGRectMake(0, 0, kBlioMoreResultsCellActivityIndicatorViewWidth * 1.5, kBlioMoreResultsCellActivityIndicatorViewWidth);
+			[emptyImage release];
+			//download and parse "next page" feed URL
+			[feed.parser startWithURL:feed.nextURL];			
 		}
-        cell.textLabel.text = [[feed.categories objectAtIndex:indexPath.row] title];
-        [cell setAccessibilityLabel:cell.textLabel.text];
-        [cell setAccessibilityHint:nil];
-
-    } else { // entity cell is needed
-		cell = [tableView dequeueReusableCellWithIdentifier:EntityCellIdentifier];
-		if (cell == nil) {
-			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:EntityCellIdentifier] autorelease];
-			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
-			cell.detailTextLabel.font = [UIFont systemFontOfSize:12.5];
-		}		
-        row -= [feed.categories count];
-        if (row < [feed.entities count]) {
-			cell.textLabel.text = [[feed.entities objectAtIndex:indexPath.row] title];
-			cell.detailTextLabel.text = [[feed.entities objectAtIndex:indexPath.row] author];
-            [cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@", @"Accessibility label for Store Categories Entity cell"), cell.textLabel.text, cell.detailTextLabel.text ? : @"Anon"]];
-            [cell setAccessibilityHint:nil];
-        }               
-    }
-
-	return cell;
+	}
+	else if (row < [feed.categories count]) { // Category cell selected
+		BlioStoreParsedCategory *category = [feed.categories objectAtIndex:[indexPath row]];
+		BlioStoreCategoriesController *aCategoriesController = [[BlioStoreCategoriesController alloc] init];
+		[aCategoriesController setManagedObjectContext:self.managedObjectContext];
+		[aCategoriesController setTitle:[category title]];
+		NSURL *targetFeedURL = [category url];
+		BlioStoreFeed *aFeed = [[BlioStoreFeed alloc] init];
+		[aFeed setTitle:[category title]];
+		[aFeed setFeedURL:targetFeedURL];
+		[aFeed setParser:feed.parser];
+		[aFeed setParserClass:[category classForType]];
+		aFeed.sourceID = feed.sourceID;
+		[aCategoriesController setFeeds:[NSArray arrayWithObject:aFeed]];
+		[aFeed release];
+		
+		[aCategoriesController setProcessingDelegate:self.processingDelegate];
+		
+		[aCategoriesController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
+		[self.navigationController pushViewController:aCategoriesController animated:YES];
+		[aCategoriesController release];
+	} else { // Entity cell selected
+		row -= [feed.categories count];
+		if (row < [feed.entities count]) {
+			BlioStoreParsedEntity *entity = [feed.entities objectAtIndex:[indexPath row]];
+			BlioStoreBookViewController *aEntityController = [[BlioStoreBookViewController alloc] initWithNibName:@"BlioStoreBookView"
+																										   bundle:[NSBundle mainBundle]];
+			[aEntityController setProcessingDelegate:self.processingDelegate];
+			[aEntityController setManagedObjectContext:self.managedObjectContext];
+			[aEntityController setTitle:[entity title]];
+			[aEntityController setEntity:entity];
+			[aEntityController setFeed:feed];
+			[aEntityController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
+			
+			[self.navigationController pushViewController:aEntityController animated:YES];
+			[aEntityController release];
+		}                
+	}
+	
+	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
 }
 
 #pragma mark -
@@ -250,61 +213,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Navigation logic may go here. Create and push another view controller.
-    NSUInteger row = [indexPath row];
-    NSUInteger section = [indexPath section];
+
+	NSUInteger section = [indexPath section];
 
     BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
-	if (row == ([feed.categories count]+[feed.entities count])) { // More Results option chosen
-		// reveal activity indicator
-		UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag];
-		cellActivityIndicatorView.hidden = NO;
-		[cellActivityIndicatorView startAnimating];
-		UIImage * emptyImage = [[UIImage alloc] init];
-		[tableView cellForRowAtIndexPath:indexPath].imageView.image = emptyImage;  // setting a UIImage object allows the view (and activity indicator subview) to show up
-		[tableView cellForRowAtIndexPath:indexPath].imageView.frame = CGRectMake(0, 0, kBlioMoreResultsCellActivityIndicatorViewWidth * 1.5, kBlioMoreResultsCellActivityIndicatorViewWidth);
-		[emptyImage release];
-		//download and parse "next page" feed URL
-		[feed.parser startWithURL:feed.nextURL];
-	}
-    else if (row < [feed.categories count]) { // Category cell selected
-        BlioStoreParsedCategory *category = [feed.categories objectAtIndex:[indexPath row]];
-        BlioStoreCategoriesController *aCategoriesController = [[BlioStoreCategoriesController alloc] init];
-		[aCategoriesController setManagedObjectContext:self.managedObjectContext];
-        [aCategoriesController setTitle:[category title]];
-        NSURL *targetFeedURL = [category url];
-        BlioStoreFeed *aFeed = [[BlioStoreFeed alloc] init];
-		[aFeed setTitle:[category title]];
-		[aFeed setFeedURL:targetFeedURL];
-        [aFeed setParser:feed.parser];
-        [aFeed setParserClass:[category classForType]];
-		aFeed.sourceID = feed.sourceID;
-        [aCategoriesController setFeeds:[NSArray arrayWithObject:aFeed]];
-        [aFeed release];
-        
-        [aCategoriesController setProcessingDelegate:self.processingDelegate];
-        
-        [aCategoriesController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
-        [self.navigationController pushViewController:aCategoriesController animated:YES];
-        [aCategoriesController release];
-    } else { // Entity cell selected
-        row -= [feed.categories count];
-        if (row < [feed.entities count]) {
-            BlioStoreParsedEntity *entity = [feed.entities objectAtIndex:[indexPath row]];
-            BlioStoreBookViewController *aEntityController = [[BlioStoreBookViewController alloc] initWithNibName:@"BlioStoreBookView"
-                                                                                                       bundle:[NSBundle mainBundle]];
-            [aEntityController setProcessingDelegate:self.processingDelegate];
-			[aEntityController setManagedObjectContext:self.managedObjectContext];
-            [aEntityController setTitle:[entity title]];
-            [aEntityController setEntity:entity];
-            [aEntityController setFeed:feed];
-            [aEntityController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
-            
-            [self.navigationController pushViewController:aEntityController animated:YES];
-            [aEntityController release];
-        }                
-    }
-    
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	[self tableView:tableView didSelectRowAtIndexPath:indexPath feed:feed];
 }
 
 
@@ -432,6 +345,127 @@
     // handle errors as appropriate to your application...
 }
 
+@end
 
+@implementation BlioStoreFeedTableViewDataSource
+
+@synthesize feeds;
+	
+#pragma mark -
+#pragma mark UITableViewDataSource Methods
+	
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+	NSUInteger sections = 0;
+	for (BlioStoreFeed *feed in self.feeds) {
+		if ([feed.categories count] || [feed.entities count]) sections++;
+	}
+	return sections;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section 
+{ 
+	return [[self.feeds objectAtIndex:section] title];
+}
+
+
+
+// Customize the number of rows in the table view.
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	NSUInteger getMoreResultsCell = 0;
+	if (([feed.categories count] + [feed.entities count]) < feed.totalResults) getMoreResultsCell = 1; // our data is less than the totalResults, so we need a "Get More Results" option.
+	return [feed.categories count] + [feed.entities count] + getMoreResultsCell;
+}
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	NSUInteger row = [indexPath row];
+	NSUInteger section = [indexPath section];
+	
+	BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	
+	static NSString *MoreResultsCellIdentifier = @"MoreResultsCell";
+	static NSString *CategoryCellIdentifier = @"CategoryCell";
+	static NSString *EntityCellIdentifier = @"EntityCell";
+	
+	UITableViewCell *cell;
+	
+	// for More Results
+	if (row == ([feed.categories count]+[feed.entities count])) { // one row beyond categories/entities was selected
+		cell = [tableView dequeueReusableCellWithIdentifier:MoreResultsCellIdentifier];
+		if (cell == nil) {
+			// create cell
+			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MoreResultsCellIdentifier] autorelease];
+			cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
+			cell.textLabel.textColor = [UIColor colorWithRed:36.0/255 green:112.0/255 blue:216.0/255 alpha:1];
+			cell.detailTextLabel.font = [UIFont systemFontOfSize:12.5];
+			
+			// add activity indicator
+			UIActivityIndicatorView * cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+			cellActivityIndicatorView.frame = CGRectMake(-kBlioMoreResultsCellActivityIndicatorViewWidth/3,-kBlioMoreResultsCellActivityIndicatorViewWidth/2,kBlioMoreResultsCellActivityIndicatorViewWidth,kBlioMoreResultsCellActivityIndicatorViewWidth);
+			cellActivityIndicatorView.hidden = YES;
+			
+			cellActivityIndicatorView.hidesWhenStopped = YES;
+			cellActivityIndicatorView.tag = kBlioMoreResultsCellActivityIndicatorViewTag;
+			[cell.imageView addSubview:cellActivityIndicatorView];
+			[cellActivityIndicatorView release];
+		}		
+		// populate cell with content
+		
+		
+		[(UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag] stopAnimating];
+		if (([feed.categories count]+[feed.entities count]) < feed.totalResults) {
+			cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+			cell.textLabel.text = [NSString stringWithFormat:NSLocalizedString(@"See More %@...",@"See More %@(Type of Result)..."), [self getMoreCellLabelForSection:section]];
+			[cell setAccessibilityHint:NSLocalizedString(@"Loads more results.", @"Accessibility hint for Store Categories View Load More cell")];
+		}
+		else {
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+			cell.textLabel.text = [NSString stringWithFormat:NSLocalizedString(@"No More %@...",@"No More %@(Type of Result)..."), [self getMoreCellLabelForSection:section]];
+			[cell setAccessibilityHint:NSLocalizedString(@"No more results.", @"Accessibility hint for Store Categories View No More cell")];
+		}
+	
+		cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%i shown out of %i total",@"%i shown out of %i total"), ([feed.categories count]+[feed.entities count]),feed.totalResults];
+		cell.imageView.image = nil;
+
+		[cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@, %@", @"Accessibility label for Store Categories View Load More cell"), cell.textLabel.text, cell.detailTextLabel.text]];
+		
+	}
+	else if (row < [feed.categories count]) { // category cell is needed
+		cell = [tableView dequeueReusableCellWithIdentifier:CategoryCellIdentifier];
+		if (cell == nil) {
+			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CategoryCellIdentifier] autorelease];
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			//			cell.textLabel.font = [UIFont boldSystemFontOfSize:12.0]; // we'll use default size
+		}
+		cell.textLabel.text = [[feed.categories objectAtIndex:indexPath.row] title];
+		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+		[cell setAccessibilityLabel:cell.textLabel.text];
+		[cell setAccessibilityHint:nil];
+		
+	} else { // entity cell is needed
+		cell = [tableView dequeueReusableCellWithIdentifier:EntityCellIdentifier];
+		if (cell == nil) {
+			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:EntityCellIdentifier] autorelease];
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
+			cell.detailTextLabel.font = [UIFont systemFontOfSize:12.5];
+		}		
+		row -= [feed.categories count];
+		if (row < [feed.entities count]) {
+			cell.textLabel.text = [[feed.entities objectAtIndex:indexPath.row] title];
+			cell.detailTextLabel.text = [[feed.entities objectAtIndex:indexPath.row] author];
+			[cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@", @"Accessibility label for Store Categories Entity cell"), cell.textLabel.text, cell.detailTextLabel.text ? : @"Anon"]];
+			[cell setAccessibilityHint:nil];
+		}
+		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+	}
+	return cell;
+}
+
+- (NSString *)getMoreCellLabelForSection:(NSUInteger) section {
+	return [[self.feeds objectAtIndex:section] title];
+}
 
 @end
