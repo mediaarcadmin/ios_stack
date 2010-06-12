@@ -194,7 +194,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if (!([newBook ePubPath] || [newBook textFlowPath]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
             lastLayout = kBlioPageLayoutPlainText;
         }            
-        if (![newBook pdfPath] && (lastLayout == kBlioPageLayoutPageLayout)) {
+        if (!([newBook pdfPath] || [newBook xpsPath]) && (lastLayout == kBlioPageLayoutPageLayout)) {
             lastLayout = kBlioPageLayoutPlainText;
         } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
@@ -215,7 +215,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
                 break;
             case kBlioPageLayoutPageLayout: {
-                if ([newBook pdfPath]) {
+                if ([newBook pdfPath] || [newBook xpsPath]) {
                     BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds 
                                                                                  book:newBook 
                                                                              animated:YES];
@@ -353,6 +353,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     if(_bookView != bookView) {
         if(_bookView) {
+            if (bookView != nil) [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
             [_bookView removeObserver:self forKeyPath:@"pageNumber"];
             [_bookView removeObserver:self forKeyPath:@"pageCount"];        
             if(_bookView.superview) {
@@ -401,6 +402,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         forKeyPath:@"pageCount" 
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                            context:nil];   
+            
+            [self addObserver:_bookView 
+                        forKeyPath:@"audioPlaying" 
+                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
+                           context:nil];
         }
     }
 }
@@ -655,6 +661,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if([_bookView respondsToSelector:@selector(stopAnimation)]) {
                 [_bookView performSelector:@selector(stopAnimation)];
             }
+            
+            [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
             
             if([_bookView isKindOfClass:[BlioSpeedReadView class]]) {
                 // We do this because the current point is usually only saved on a 
