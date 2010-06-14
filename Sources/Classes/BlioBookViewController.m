@@ -1274,7 +1274,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
-        } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
+        } else if (newLayout == kBlioPageLayoutPageLayout && ([self.book pdfPath] || [self.book xpsPath])) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds book:self.book animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
