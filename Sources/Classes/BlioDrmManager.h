@@ -24,8 +24,8 @@
 
 - (void)initialize;
 
-- (void)getLicenseForFile:(NSString*)xpsFile;
+- (BOOL)getLicenseForBook:(NSString*)xpsFile;
 
-- (void)decrypt:(void*)xpsFileHandle xpsComponent:(NSString*)component bufferToDecrypt:(unsigned char**)buffer;
+- (BOOL)decryptComponentInBook:(NSString*)component xpsFileHandle:(void*)fileHandle decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz;
 
 @end

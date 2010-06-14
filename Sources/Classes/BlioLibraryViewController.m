@@ -16,7 +16,9 @@
 #import "BlioLoginViewController.h"
 #import "BlioProcessingStandardOperations.h"
 #import "BlioAccessibilitySegmentedControl.h"
+// TEMPORARY
 #import "BlioDrmManager.h"
+#import "BlioXpsClient.h"
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
@@ -1034,7 +1036,18 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	BlioAppSettingsController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
     
 	// TEMPORARY: test code, will be moved
-	[[BlioDrmManager getDrmManager] getLicenseForFile:@"The Tale of Peter Rabbit.drm.xps"];
+	
+	// Get license for a book.
+	NSString* xpsBook = @"The Tale of Peter Rabbit.drm.xps";
+	BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBook:xpsBook];
+	
+	// Decrypt a page from the book.
+	unsigned char* decryptedBuff;	
+	NSInteger decryptedBuffSz;
+	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsBook ofType:nil inDirectory:@"PDFs"];
+	void* handle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsPath];
+	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:@"/Documents/1/Other/KNFB/Epages/1.fpage.bin" xpsFileHandle:handle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+	
 	// END temporary code
 	
 	[self presentModalViewController:settingsController animated:YES];

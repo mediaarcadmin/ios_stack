@@ -17,7 +17,8 @@
     return self;
 }
 
-- (int)decompress:(unsigned char*)inbuf inbufSz:(NSInteger)sz {
+- (int)decompress:(unsigned char*)inBuffer inBufferSz:(NSInteger)inBufSz outBuffer:(unsigned char**)outBuf outBufferSz:(NSInteger*)outBufSz {
+//- (int)decompress:(unsigned char*)inbuf inbufSz:(NSInteger)sz {
 	int ret;
 	unsigned bytesDecompressed;
 	z_stream strm;
@@ -27,9 +28,9 @@
 	
 	// Read the gzip header.
 	// TESTING
-	//unsigned char ID1 = inbuf[0];  // should be x1f
-	//unsigned char ID2 = inbuf[1];  // should be x8b
-	//unsigned char CM = inbuf[2];   // should be 8
+	//unsigned char ID1 = inBuffer[0];  // should be x1f
+	//unsigned char ID2 = inBuffer[1];  // should be x8b
+	//unsigned char CM = inBuffer[2];   // should be 8
 	
 	// Allocate inflate state.
 	strm.zalloc = Z_NULL;
@@ -43,10 +44,10 @@
 	if (ret != Z_OK)
 		return ret;
 	
-	strm.avail_in = sz;
+	strm.avail_in = inBufSz;
 	// if (strm.avail_in == 0)
 	//	  break;
-	strm.next_in = inbuf;
+	strm.next_in = inBuffer;
 	// Inflate until the output buffer isn't full
 	do {
 		strm.avail_out = BUFSIZE;
@@ -67,6 +68,13 @@
 	}
 	while (strm.avail_out == 0);
 	XPS_inflateEnd(&strm);
+	
+	// TESTING
+	//NSString* testStr = [[NSString alloc] initWithData:outData encoding:NSASCIIStringEncoding];
+	//NSLog(@"Unencrypted buffer: %s",testStr);
+	*outBuf = (unsigned char*)malloc([outData length]);  
+    [outData getBytes:*outBuf length:[outData length]];
+	*outBufSz = [outData length];
 	
 	if (ret == Z_STREAM_END)
 		return Z_OK;

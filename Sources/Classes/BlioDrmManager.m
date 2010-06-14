@@ -131,10 +131,10 @@ ErrorExit:
 }
 
 
-- (void)getLicenseForFile:(NSString*)xpsFile {
+- (BOOL)getLicenseForBook:(NSString*)xpsFile {
 	if ( !self.drmInitialized ) {
 		NSLog(@"DRM error: license cannot be acquired because DRM is not initialized.");
-		return;
+		return NO;
 	}
 	DRM_RESULT dr = DRM_SUCCESS;	
 	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsFile ofType:nil inDirectory:@"PDFs"];
@@ -152,6 +152,7 @@ ErrorExit:
 		bytesRead = [xpsClient readComponent:compHandle componentBuffer:buffer componentLen:sizeof(buffer)]; 
 	}
 	[xpsClient closeComponent:compHandle];
+	[xpsClient closeFile:xpsHandle];
 	unsigned char* headerBuff = Oem_MemAlloc( [headerData length] );
     [headerData getBytes:headerBuff length:[headerData length]];
 	
@@ -163,13 +164,15 @@ ErrorExit:
 ErrorExit:
 	if ( dr != DRM_SUCCESS ) {
 		NSLog(@"DRM license error: %d",dr);
+		return NO;
 	}
+	return YES;
 }
 
-- (void)decrypt:(void*)xpsFileHandle xpsComponent:(NSString*)component bufferToDecrypt:(unsigned char**)buffer {
+- (BOOL)decryptComponentInBook:(NSString*)component xpsFileHandle:(void*)fileHandle decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz {
 	if ( !self.drmInitialized ) {
 		NSLog(@"DRM error: content cannot be decrypted because DRM is not initialized.");
-		return;
+		return NO;
 	}
 	DRM_RESULT dr = DRM_SUCCESS;
 	const DRM_CONST_STRING *rgpdstrRights[1] = {0};
@@ -177,23 +180,23 @@ ErrorExit:
     DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
 
 	// Get encrypted page from XPS file.
-	void* compFPHandle = [xpsClient openComponent:xpsFileHandle componentPath:component];
+	void* compHandle = [xpsClient openComponent:fileHandle componentPath:component];
 	NSMutableData* fpData = [[NSMutableData alloc] init];
 	unsigned char buff[4096];
-	int bytesRead = [xpsClient readComponent:compFPHandle componentBuffer:buff componentLen:sizeof(buff)];
+	int bytesRead = [xpsClient readComponent:compHandle componentBuffer:buff componentLen:sizeof(buff)];
 	while (1) {
 		NSData* data = [[NSData alloc] initWithBytes:(const void*)buff length:bytesRead];
 		[fpData appendData:data];
 		if ( bytesRead != sizeof(buff) )
 			break;
-		bytesRead = [xpsClient readComponent:compFPHandle componentBuffer:buff componentLen:sizeof(buff)]; 
+		bytesRead = [xpsClient readComponent:compHandle componentBuffer:buff componentLen:sizeof(buff)]; 
 	}
-	[xpsClient closeComponent:compFPHandle];
-	[xpsClient closeFile:xpsFileHandle];
+	[xpsClient closeComponent:compHandle];
+	[xpsClient closeFile:fileHandle];
 	//XPS_End();
 	
-	*buffer = (unsigned char*)Oem_MemAlloc([fpData length]);
-    [fpData getBytes:*buffer length:[fpData length]];
+	unsigned char *buffer = (unsigned char*)Oem_MemAlloc([fpData length]);
+    [fpData getBytes:buffer length:[fpData length]];
  	
 	 // Roundabout assignment needed to get around compiler complaint.
 	DRM_CONST_STRING readRight;
@@ -201,7 +204,7 @@ ErrorExit:
 	readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
 	rgpdstrRights[0] = &readRight; 
 
-	ChkDR( Drm_Reader_Bind( [DrmGlobals getDrmGlobals].drmAppContext,
+ 	ChkDR( Drm_Reader_Bind( [DrmGlobals getDrmGlobals].drmAppContext,
 				rgpdstrRights,
 				NO_OF(rgpdstrRights),
 				NULL, 
@@ -210,7 +213,7 @@ ErrorExit:
  
 	ChkDR(Drm_Reader_Decrypt (&oDecryptContext,
 					&oCtrContext,
-					*buffer, 
+					buffer, 
 					[fpData length]));
  
 	// At this point, the buffer is PlayReady-decrypted.
@@ -221,15 +224,19 @@ ErrorExit:
 
 	// This XOR step is to undo an additional encryption step that was needed for .NET environment.
 	for (int i=0;i<[fpData length];++i)
-		(*buffer)[i] ^= 0xA0;
+		buffer[i] ^= 0xA0;
 	
 	// The buffer is fully decrypted now, but gzip compressed; so must decompress.
-	[xpsClient decompress:*buffer inbufSz:[fpData length]];
+	[xpsClient decompress:buffer inBufferSz:[fpData length] outBuffer:decrBuff outBufferSz:decrBuffSz];
+	
+	Oem_MemFree((void*)buffer);
 
 ErrorExit:
 	if ( dr != DRM_SUCCESS ) {
 		NSLog(@"DRM decryption error: %d",dr);
+		return NO;
 	}
+	return YES;
 }
 
 @end
