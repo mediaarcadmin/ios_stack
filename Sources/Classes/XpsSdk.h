@@ -1706,8 +1706,11 @@ XPSSDK int XPSCALL XPS_QueryOption(XPS_HANDLE handle, const XPSCHAR * option, in
 
 XPSSDK int  XPS_inflate(void * v, int f);
 XPSSDK int  XPS_inflateInit(void * v);
-	XPSSDK int  XPS_inflateInit2(void * v,int wb);
+XPSSDK int  XPS_inflateInit2(void * v,int wb);
 XPSSDK int XPS_inflateEnd(void * v);	
+
+XPSSDK int XPSCALL XPS_GetPackageDir(XPS_HANDLE handle,void **p);
+
 /*@}*/		// apifunc
 
 #if defined __cplusplus
