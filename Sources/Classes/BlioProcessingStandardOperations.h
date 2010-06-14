@@ -70,7 +70,7 @@
 
 @end
 
-@interface BlioProcessingDownloadAndUnzipPaidBookOperation : BlioProcessingDownloadAndUnzipOperation
+@interface BlioProcessingDownloadAndUnzipPaidBookOperation : BlioProcessingDownloadOperation
 @end
 
 @interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation
