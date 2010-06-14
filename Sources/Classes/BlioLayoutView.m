@@ -916,19 +916,21 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
     if (nil == snapLayer) return nil;
     
-    CGFloat scale = self.scrollView.zoomScale * 1.2f;
+    CGFloat scale = self.scrollView.zoomScale * 1.2;
     CGSize snapSize = self.bounds.size;
-    snapSize.width *= 1.2f;
-    snapSize.height *= 1.2f;
+    snapSize.width *= 1.2;
+    snapSize.height *= 1.2;
     
     if (nil == self.pageSnapshot) {
         UIGraphicsBeginImageContext(snapSize);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:[self.scrollView.layer superlayer]];
         //CGContextTranslateCTM(ctx, 0, snapSize.height);
-        CGContextTranslateCTM(ctx, -translatePoint.x*scale, (snapSize.height - translatePoint.y*scale));
-        //CGContextScaleCTM(ctx, 1, -1);
-        CGContextScaleCTM(ctx, scale, -scale);
+        CGContextTranslateCTM(ctx, -translatePoint.x*scale, (snapSize.height/1.2 - translatePoint.y)*scale);
+        
+        CGContextScaleCTM(ctx, 1, -1);
+        
+        CGContextScaleCTM(ctx, scale, scale);
         //CGContextTranslateCTM(ctx, -translatePoint.x, snapSize.height -translatePoint.y);
         [[snapLayer shadowLayer] renderInContext:ctx];        
         [[snapLayer tiledLayer] renderInContext:ctx];
