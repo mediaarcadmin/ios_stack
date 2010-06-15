@@ -10,6 +10,10 @@
 #import "XpsSdk.h"
 #include "zlib.h"
 
+static NSString* const encryptedPagesDir = @"/Documents/1/Other/KNFB/Epages/";
+static NSString* const encryptedTextflowDir = @"/Documents/1/Other/KNFB/Flow/";
+static NSString* const encryptedImagesDir = @"/Resources/";
+
 @interface BlioXpsClient : NSObject {
 	
 }

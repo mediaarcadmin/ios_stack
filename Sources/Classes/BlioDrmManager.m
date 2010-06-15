@@ -192,8 +192,6 @@ ErrorExit:
 		bytesRead = [xpsClient readComponent:compHandle componentBuffer:buff componentLen:sizeof(buff)]; 
 	}
 	[xpsClient closeComponent:compHandle];
-	[xpsClient closeFile:fileHandle];
-	//XPS_End();
 	
 	unsigned char *buffer = (unsigned char*)Oem_MemAlloc([fpData length]);
     [fpData getBytes:buffer length:[fpData length]];

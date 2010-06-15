@@ -1041,12 +1041,25 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	NSString* xpsBook = @"The Tale of Peter Rabbit.drm.xps";
 	BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBook:xpsBook];
 	
-	// Decrypt a page from the book.
+	// Decrypt a fixed page from the book.
 	unsigned char* decryptedBuff;	
 	NSInteger decryptedBuffSz;
 	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsBook ofType:nil inDirectory:@"PDFs"];
 	void* handle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsPath];
-	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:@"/Documents/1/Other/KNFB/Epages/1.fpage.bin" xpsFileHandle:handle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] xpsFileHandle:handle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+	// If successful, decrypted content is now in the buffer.
+	// Do something with it.  Don't forget you now have the size of the buffer too.
+	NSLog(@"Decrypted page: %s",decryptedBuff);
+	// You are responsible for freeing (not releasing) the buffer.
+	free(decryptedBuff);
+	
+	// Decrypt a textflow file for the book.
+	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"] xpsFileHandle:handle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+	// If successful, decrypted content is now in the buffer.
+	// Do something with it.  Don't forget you now have the size of the buffer too.
+	NSLog(@"Decrypted textflow: %s",decryptedBuff);
+	// You are responsible for freeing (not releasing) the buffer.
+	free(decryptedBuff);
 	
 	// END temporary code
 	
