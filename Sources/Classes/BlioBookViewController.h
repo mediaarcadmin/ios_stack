@@ -21,6 +21,7 @@
 #import "MSTiltScroller.h"
 #import "MSTapDetector.h"
 #import "BlioBookSearchController.h"
+#import "BlioBookSearchViewController.h"
 
 typedef enum BlioPageColor {
     kBlioPageColorWhite = 0,
@@ -70,7 +71,7 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-@interface BlioBookViewController : UIViewController <BlioBookSearchDelegate, BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
+@interface BlioBookViewController : UIViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
     BOOL _firstAppearance;
     
     BlioMockBook *_book;

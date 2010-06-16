@@ -199,6 +199,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
         } 
+        // Force - TODO remove this
+        lastLayout = kBlioPageLayoutPageLayout;
         
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
@@ -1823,31 +1825,24 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)search:(id)sender {
     if (!self.searchController) {
         BlioBookSearchController *aSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
-        aSearchController.delegate = self;
         self.searchController = aSearchController;
         [aSearchController release];
     }
     
-    [self.searchController cancel];
-    BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-    [self.searchController findString:@"Little" fromBookmarkPoint:currentBookmarkPoint];
+    //[self.searchController cancel];
+//    BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
+//    [self.searchController findString:@"Little" fromBookmarkPoint:currentBookmarkPoint];
+    
+    BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
+    [self.searchController setDelegate:aSearchViewController];
+    [aSearchViewController setBookSearchController:self.searchController];
+    [self.searchController setMaxPrefixAndMatchLength:20];
+    [self.searchController setMaxSuffixLength:100];
+    [aSearchViewController setTintColor:_returnToNavigationBarTint];
+    [self.navigationController presentModalViewController:aSearchViewController animated:YES];
+    [aSearchViewController release];
 }
     
-- (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    NSLog(@"searchController didFindString '%@' at page %d paragraph %d word %d element %d", searchString, bookmarkPoint.layoutPage, bookmarkPoint.blockOffset, bookmarkPoint.wordOffset, bookmarkPoint.elementOffset);
-    [self.searchController findNextOccurrence];
-}
-
-- (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)searchController {
-    NSLog(@"Search reached end of book");
-    [self.searchController findNextOccurrence];
-}
-
-- (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)searchController {
-    NSLog(@"Search complete");
-}
-    
-
 - (void)dummyShowParsedText:(id)sender {
     if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
         UITextView *aTextView = [[UITextView alloc] initWithFrame:self.view.bounds];
