@@ -10,6 +10,10 @@
 #import "XpsSdk.h"
 #include "zlib.h"
 
+static NSString* const encryptedPagesDir = @"/Documents/1/Other/KNFB/Epages/";
+static NSString* const encryptedTextflowDir = @"/Documents/1/Other/KNFB/Flow/";
+static NSString* const encryptedImagesDir = @"/Resources/";
+
 @interface BlioXpsClient : NSObject {
 	
 }
@@ -21,6 +25,6 @@
 - (NSInteger)readComponent:(void*)componentHandle componentBuffer:(void*)buffer componentLen:(NSInteger)len;
 - (void)closeComponent:(void*)componentHandle;
 - (NSInteger)inflateInit:(void*)stream; 
-- (int)decompress:(unsigned char*)inbuf inbufSz:(NSInteger)sz;
+- (int)decompress:(unsigned char*)inBuffer inBufferSz:(NSInteger)sz outBuffer:(unsigned char**)outBuf outBufferSz:(NSInteger*)outBufSz;
 
 @end
