@@ -41,6 +41,8 @@
 	ChkDR( Drm_Initialize( [DrmGlobals getDrmGlobals].drmAppContext,
 						  NULL,
 						  &dstrDataStoreFile ) );
+	// TESTING
+	NSLog(@"DRM successfully initialized.");
 ErrorExit:
 	if ( dr != DRM_SUCCESS ) {
 		NSLog(@"DRM initialization error: %d",dr);
@@ -193,8 +195,7 @@ ErrorExit:
 	}
 	[xpsClient closeComponent:compHandle];
 	
-	unsigned char *buffer = (unsigned char*)Oem_MemAlloc([fpData length]);
-    [fpData getBytes:buffer length:[fpData length]];
+ 	unsigned char *buffer = (unsigned char*)[fpData bytes];
  	
 	 // Roundabout assignment needed to get around compiler complaint.
 	DRM_CONST_STRING readRight;
@@ -227,7 +228,7 @@ ErrorExit:
 	// The buffer is fully decrypted now, but gzip compressed; so must decompress.
 	[xpsClient decompress:buffer inBufferSz:[fpData length] outBuffer:decrBuff outBufferSz:decrBuffSz];
 	
-	Oem_MemFree((void*)buffer);
+	[fpData release];
 
 ErrorExit:
 	if ( dr != DRM_SUCCESS ) {
