@@ -27,6 +27,8 @@
 
 - (void)initialize {
 	DRM_RESULT dr = DRM_SUCCESS;
+	
+	// Data store.
 	DRM_CONST_STRING  dstrDataStoreFile = CREATE_DRM_STRING( HDS_STORE_FILE );
 	dstrDataStoreFile.pwszString = [DrmGlobals getDrmGlobals].dataStore.pwszString;
 	dstrDataStoreFile.cchString = [DrmGlobals getDrmGlobals].dataStore.cchString;
@@ -37,12 +39,29 @@
 	//NSString *documentsDirectory = [paths objectAtIndex:0];
 	//NSString* strDataStore = [documentsDirectory stringByAppendingString:@"/playready.hds"];
 	//int res = remove([strDataStore cStringUsingEncoding:NSASCIIStringEncoding]);
+	
+	// Copy certs to writeable directory.
+	NSError* err;	
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	NSString* rsrcWmModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/priv.dat"]; 
+	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:@"/priv.dat"];
+	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelKey toPath:docsWmModelKey error:&err];
+	NSString* rsrcWmModelCert = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/devcerttemplate.dat"]; 
+	NSString* docsWmModelCert = [documentsDirectory stringByAppendingString:@"/devcerttemplate.dat"];
+	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
+	NSString* rsrcPRModelCert = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/iphonecert.dat"]; 
+	NSString* docsPRModelCert = [documentsDirectory stringByAppendingString:@"/iphonecert.dat"];
+	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];
+	NSString* rsrcPRModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/iphonezgpriv.dat"]; 
+	NSString* docsPRModelKey = [documentsDirectory stringByAppendingString:@"/iphonezgpriv.dat"];
+	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelKey toPath:docsPRModelKey error:&err];
     
+	// Initialize the DRM runtime.
 	ChkDR( Drm_Initialize( [DrmGlobals getDrmGlobals].drmAppContext,
 						  NULL,
 						  &dstrDataStoreFile ) );
-	// TESTING
-	NSLog(@"DRM successfully initialized.");
+	
 ErrorExit:
 	if ( dr != DRM_SUCCESS ) {
 		NSLog(@"DRM initialization error: %d",dr);
