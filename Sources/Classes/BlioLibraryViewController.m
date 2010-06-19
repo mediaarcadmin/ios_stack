@@ -226,168 +226,168 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
     if (![[aFetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
 
-        [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
-                                              authors:[NSArray arrayWithObject:@"Bill Willingham"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"FablesLegendsInExile" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Legends" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
-                                              authors:[NSArray arrayWithObject:@"Stella Blackstone"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three_Little_Pigs" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               pdfURL:nil
-                                               xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"xps" inDirectory:@"PDFs"]]
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"AudioBooks"]]];
-
-        [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
-                                              authors:[NSArray arrayWithObject:@"David J. Hunter"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
-                                              authors:[NSArray arrayWithObject:@"Ward Just"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
-                                              authors:[NSArray arrayWithObject:@"Marlene Perez"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
-                                              authors:[NSArray arrayWithObject:@"Bruce Degen"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
-                                              authors:[NSArray arrayWithObject:@"Christoph Niemann"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"ChristophNiemann" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-
-        [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
-                                              authors:[NSArray arrayWithObject:@"Neil Gaiman"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"NeilGaiman" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
-										 audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"AudioBooks"]]];
-
-        [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
-                                              authors:[NSArray arrayWithObject:@"Martha Stewart"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
-                                              authors:[NSArray arrayWithObjects:@"Jennifer L. Holme", @"Matthew Holme", nil]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
-                                              authors:[NSArray arrayWithObject:@"Marjane Satrapi"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"The Art of the Band T-Shirt" 
-                                              authors:[NSArray arrayWithObjects:@"Amber Easby", @"Henry Oliver", nil]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Sylvester and the Magic Pebble" 
-                                              authors:[NSArray arrayWithObject:@"William Steig"]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"You On A Diet" 
-                                              authors:[NSArray arrayWithObjects:@"Michael F. Roizen, M.D.", @"Mehmet C. Oz, M.D.", nil]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
-                                              authors:[NSArray arrayWithObjects:@"Shirley O. Corriher", nil]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
-                                              authors:[NSArray arrayWithObjects:@"Bill Martin Jr", @"Joan Archambault", nil]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:nil
-                                         audiobookURL:nil];
-      
-        [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
-                                              authors:[NSArray arrayWithObjects:@"Matthew Reilly", nil]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
-                                              authors:[NSArray arrayWithObjects:@"Lisa Wheeler", @"Sophie Blackall", nil]
-                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"png" inDirectory:@"MockCovers"]]
-                                              ePubURL:nil
-                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"pdf" inDirectory:@"PDFs"]]
-                                               xpsURL:nil
-                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"zip" inDirectory:@"TextFlows"]]
-                                         audiobookURL:nil];
+//        [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
+//                                              authors:[NSArray arrayWithObject:@"Bill Willingham"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"FablesLegendsInExile" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Legends" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:nil
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
+//                                              authors:[NSArray arrayWithObject:@"Stella Blackstone"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three_Little_Pigs" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+////                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               pdfURL:nil
+//                                               xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"xps" inDirectory:@"PDFs"]]
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"AudioBooks"]]];
+//
+//        [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
+//                                              authors:[NSArray arrayWithObject:@"David J. Hunter"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:nil
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
+//                                              authors:[NSArray arrayWithObject:@"Ward Just"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
+//                                              authors:[NSArray arrayWithObject:@"Marlene Perez"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
+//                                              authors:[NSArray arrayWithObject:@"Bruce Degen"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
+//                                              authors:[NSArray arrayWithObject:@"Christoph Niemann"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"ChristophNiemann" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//
+//        [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
+//                                              authors:[NSArray arrayWithObject:@"Neil Gaiman"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"NeilGaiman" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
+//										 audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"AudioBooks"]]];
+//
+//        [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
+//                                              authors:[NSArray arrayWithObject:@"Martha Stewart"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
+//                                              authors:[NSArray arrayWithObjects:@"Jennifer L. Holme", @"Matthew Holme", nil]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
+//                                              authors:[NSArray arrayWithObject:@"Marjane Satrapi"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"The Art of the Band T-Shirt" 
+//                                              authors:[NSArray arrayWithObjects:@"Amber Easby", @"Henry Oliver", nil]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Sylvester and the Magic Pebble" 
+//                                              authors:[NSArray arrayWithObject:@"William Steig"]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"You On A Diet" 
+//                                              authors:[NSArray arrayWithObjects:@"Michael F. Roizen, M.D.", @"Mehmet C. Oz, M.D.", nil]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
+//                                              authors:[NSArray arrayWithObjects:@"Shirley O. Corriher", nil]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
+//                                              authors:[NSArray arrayWithObjects:@"Bill Martin Jr", @"Joan Archambault", nil]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:nil
+//                                         audiobookURL:nil];
+//      
+//        [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
+//                                              authors:[NSArray arrayWithObjects:@"Matthew Reilly", nil]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
+//        
+//        [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
+//                                              authors:[NSArray arrayWithObjects:@"Lisa Wheeler", @"Sophie Blackall", nil]
+//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"png" inDirectory:@"MockCovers"]]
+//                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"pdf" inDirectory:@"PDFs"]]
+//                                               xpsURL:nil
+//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"zip" inDirectory:@"TextFlows"]]
+//                                         audiobookURL:nil];
         
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
@@ -396,7 +396,10 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
                                                pdfURL:nil
                                                xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"The Tale of Peter Rabbit.drm.xps" ofType:nil inDirectory:@"PDFs"]]
                                           textFlowURL:nil
-                                         audiobookURL:nil];
+                                         audiobookURL:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"The Tale of Peter Rabbit" // this should normally be ISBN number when downloaded from the Book Store
+		 ];
     }
     
 	
@@ -1039,12 +1042,12 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	
 	// Get license for a book.
 	NSString* xpsBook = @"The Tale of Peter Rabbit.drm.xps";
-	BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBook:xpsBook];
+	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsBook ofType:nil inDirectory:@"PDFs"];
+	BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookPath:xpsPath];
 	
 	// Decrypt a fixed page from the book.
 	unsigned char* decryptedBuff;	
 	NSInteger decryptedBuffSz;
-	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsBook ofType:nil inDirectory:@"PDFs"];
 	void* xpsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsPath];
 	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] xpsFileHandle:xpsHandle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
 	// If successful, decrypted content is now in the buffer.

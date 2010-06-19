@@ -12,17 +12,23 @@
 #import "DrmGlobals.h"
 #import "XpsSdk.h"
 
+static BlioDrmManager* drmManager = nil; 
+
 @implementation BlioDrmManager
 
 @synthesize drmInitialized, xpsClient;
 
 + (BlioDrmManager*)getDrmManager {
-	static BlioDrmManager* drmManager = nil; 
 	if ( drmManager == nil ) {
 		drmManager = [[BlioDrmManager alloc] init];
 		drmManager.xpsClient = [[BlioXpsClient alloc] init];
 	}
 	return drmManager;
+}
+
+-(void) dealloc {
+	self.xpsClient = nil;
+	[super dealloc];
 }
 
 - (void)initialize {
@@ -131,13 +137,12 @@ ErrorExit:
 }
 
 
-- (BOOL)getLicenseForBook:(NSString*)xpsFile {
+- (BOOL)getLicenseForBookPath:(NSString*)xpsPath {
 	if ( !self.drmInitialized ) {
 		NSLog(@"DRM error: license cannot be acquired because DRM is not initialized.");
 		return NO;
 	}
 	DRM_RESULT dr = DRM_SUCCESS;	
-	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsFile ofType:nil inDirectory:@"PDFs"];
 
 	void* xpsHandle = [xpsClient openFile:xpsPath];
 	void* compHandle = [xpsClient openComponent:xpsHandle componentPath:@"/Documents/1/Other/KNFB/DrmpHeader.bin"];

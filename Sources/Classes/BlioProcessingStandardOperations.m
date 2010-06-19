@@ -8,6 +8,7 @@
 
 #import "BlioProcessingStandardOperations.h"
 #import "ZipArchive.h"
+#import "BlioDrmManager.h"
 
 static const CGFloat kBlioCoverListThumbHeight = 76;
 static const CGFloat kBlioCoverListThumbWidth = 53;
@@ -79,6 +80,50 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	[super dealloc];
 }
 @end
+
+#pragma mark -
+@implementation BlioProcessingLicenseAcquisitionOperation
+
+@synthesize attemptsMade, attemptsMaximum;
+
+- (id)init {
+    if((self = [super init])) {
+        attemptsMade = 0;
+		attemptsMaximum = 3;	
+    }
+    
+    return self;
+}
+
+- (void)main {
+	NSLog(@"BlioProcessingLicenseAcquisitionOperation main entered");
+    if ([self isCancelled]) {
+		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
+		return;
+	}
+	for (BlioProcessingOperation * blioOp in [self dependencies]) {
+		if (!blioOp.operationSuccess) {
+			NSLog(@"failed dependency found: %@",blioOp);
+			[self cancel];
+			break;
+		}
+	}
+	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore) {
+		NSLog(@"ERROR: Title (%@) is not an online store title!",[self getBookValueForKey:@"title"]);
+		NSLog(@"xpsFilename: %@", [self getBookValueForKey:@"xpsFilename"]);
+		return;
+	}
+	@synchronized ([BlioDrmManager getDrmManager]) {
+		while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
+			NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
+			self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookPath:[self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"xpsFilename"]]];
+			attemptsMade++;
+		}
+	}
+	if (self.operationSuccess) self.percentageComplete = 100;
+}
+@end
+
 
 #pragma mark -
 @implementation BlioProcessingDownloadOperation
@@ -153,7 +198,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     }
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
-			NSLog(@"failed dependency found!");
+			NSLog(@"failed dependency found: %@",blioOp);
 			[self cancel];
 			break;
 		}
@@ -418,7 +463,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 @end
 
 #pragma mark -
-@implementation BlioProcessingDownloadAndUnzipPaidBookOperation
+@implementation BlioProcessingDownloadPaidBookOperation
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
 		self.filenameKey = @"xpsFilename";

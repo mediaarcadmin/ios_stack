@@ -55,7 +55,15 @@
 
 @end
 
+@interface BlioProcessingLicenseAcquisitionOperation : BlioProcessingOperation {
+	NSUInteger attemptsMade;
+	NSUInteger attemptsMaximum;
+}
+	
+@property (nonatomic, assign) NSUInteger attemptsMade;
+@property (nonatomic, assign) NSUInteger attemptsMaximum;
 
+@end
 
 @interface BlioProcessingDownloadAndUnzipOperation : BlioProcessingDownloadOperation
 
@@ -70,7 +78,7 @@
 
 @end
 
-@interface BlioProcessingDownloadAndUnzipPaidBookOperation : BlioProcessingDownloadOperation
+@interface BlioProcessingDownloadPaidBookOperation : BlioProcessingDownloadOperation
 @end
 
 @interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation

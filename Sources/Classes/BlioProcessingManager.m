@@ -338,39 +338,6 @@
 			[bookOps addObject:pdfOp];
 		}
 	}
-//    stringURL = [aBook valueForKey:@"xpsFilename"];
-//	if (stringURL && !placeholderOnly) {
-//		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
-//		else {
-//			alreadyCompletedOperations++;
-//			url = nil;
-//		}
-//		BOOL usedPreExistingOperation = NO;
-//		BlioProcessingDownloadXPSOperation * xpsOp = nil;
-//		
-//		if (nil != url) {
-//			// we still need to finish downloading this file
-//			// so check to see if operation already exists
-//			xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-//			
-//			if (!xpsOp || xpsOp.isCancelled) {
-//				
-//				xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
-//				xpsOp.bookID = bookID;
-//				xpsOp.sourceID = sourceID;
-//				xpsOp.sourceSpecificID = sourceSpecificID;
-//				xpsOp.localFilename = [aBook valueForKey:xpsOp.filenameKey];
-//				xpsOp.storeCoordinator = [moc persistentStoreCoordinator];
-//				xpsOp.cacheDirectory = cacheDir;
-//				xpsOp.tempDirectory = tempDir;
-//				[self.preAvailabilityQueue addOperation:xpsOp];
-//			}
-//			else {
-//				usedPreExistingOperation = YES; // in case we have dependent operations in the future
-//			}
-//			[bookOps addObject:xpsOp];
-//		}
-//	}   
 	
 	stringURL = [aBook valueForKey:@"textFlowFilename"];
 	if (stringURL && !placeholderOnly) {
@@ -492,14 +459,14 @@
 			url = nil;
 		}
 		BOOL usedPreExistingOperation = NO;
-		BlioProcessingDownloadAndUnzipPaidBookOperation * paidBookOp = nil;
+		BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
 		
 		if (nil != url) {
 			// we still need to finish downloading this file
 			// so check to see if operation already exists
-			paidBookOp = (BlioProcessingDownloadAndUnzipPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingPaidBookDownloadOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingPaidBookDownloadOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!paidBookOp || paidBookOp.isCancelled) {
-				paidBookOp = [[[BlioProcessingDownloadAndUnzipPaidBookOperation alloc] initWithUrl:url] autorelease];
+				paidBookOp = [[[BlioProcessingDownloadPaidBookOperation alloc] initWithUrl:url] autorelease];
 				paidBookOp.bookID = bookID;
 				paidBookOp.sourceID = sourceID;
 				paidBookOp.sourceSpecificID = sourceSpecificID;
@@ -515,6 +482,24 @@
 			}
 			[bookOps addObject:paidBookOp];
 		}
+		BlioProcessingOperation * licenseOp = [self operationByClass:NSClassFromString(@"BlioProcessingLicenseAcquisitionOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+		if (!licenseOp || licenseOp.isCancelled) {
+			licenseOp = [[[BlioProcessingLicenseAcquisitionOperation alloc] init] autorelease];
+			licenseOp.bookID = bookID;
+			licenseOp.sourceID = sourceID;
+			licenseOp.sourceSpecificID = sourceSpecificID;
+			licenseOp.storeCoordinator = [moc persistentStoreCoordinator];
+			licenseOp.cacheDirectory = cacheDir;
+			licenseOp.tempDirectory = tempDir;
+			if (paidBookOp && usedPreExistingOperation == NO) [licenseOp addDependency:paidBookOp];
+			[self.preAvailabilityQueue addOperation:licenseOp];
+			[bookOps addObject:licenseOp];
+		}
+		else {
+			// if it already exists, it is dependent on a completed operation
+		}
+		
+		
 	}
 	
 	BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];

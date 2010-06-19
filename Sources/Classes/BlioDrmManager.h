@@ -24,7 +24,7 @@
 
 - (void)initialize;
 
-- (BOOL)getLicenseForBook:(NSString*)xpsFile;
+- (BOOL)getLicenseForBookPath:(NSString*)xpsPath;
 
 - (BOOL)decryptComponentInBook:(NSString*)component xpsFileHandle:(void*)fileHandle decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz;
 
