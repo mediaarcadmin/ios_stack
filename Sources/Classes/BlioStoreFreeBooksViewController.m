@@ -25,23 +25,6 @@
         self.tabBarItem = theItem;
         [theItem release];
 		resultsDisplayed = NO;
-		
-//        UIView *fillerView = [[UIView alloc] initWithFrame:CGRectMake(0,0,DONEBUTTONWIDTH,self.searchBar.frame.size.height)];
-//        [fillerView setBackgroundColor:[UIColor clearColor]];
-//        UIBarButtonItem *filler = [[UIBarButtonItem alloc] initWithCustomView:fillerView];
-//        [fillerView release];
-//        self.fillerButton = filler;
-//        [filler release];
-        
-//        BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
-//        [feedBooksFeed setTitle:@"Feedbooks"];
-//        [feedBooksFeed setParserClass:[BlioStoreFeedBooksParser class]];
-//        BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
-//        [googleBooksFeed setTitle:@"Google Books"];
-//        [googleBooksFeed setParserClass:[BlioStoreGoogleBooksParser class]];
-//        [self setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
-//        [feedBooksFeed release];
-//        [googleBooksFeed release];
     }
     return self;
 }
@@ -118,27 +101,8 @@
 //    self.savedScopeButtonIndex = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
 }
 
-- (void)layoutSearchBar {
-    CGRect searchBounds = self.searchBar.bounds;
-    searchBounds.size.height = self.navigationController.navigationBar.frame.size.height;
-    [self.searchBar setBounds:searchBounds];
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-//    [self layoutSearchBar];
-}
-
 #pragma mark -
 #pragma mark UITableViewDelegate Methods
-
-//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-//	if (tableView == self.searchDisplayController.searchResultsTableView) {
-//		NSUInteger row = [indexPath row];
-//		if (row%2 == 1) cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
-//		else cell.backgroundColor = [UIColor whiteColor];
-//		return;
-//	}
-//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger row = [indexPath row];
@@ -190,7 +154,7 @@
     for (BlioStoreFeed *feed in self.storeSearchTableViewDataSource.feeds) {
         [feed.categories removeAllObjects];
         [feed.entities removeAllObjects];
-    }	
+    }
 }
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {   
@@ -214,16 +178,26 @@
     // Return YES to cause the search result table view to be reloaded.
     return NO;
 }
+//- (void)searchDisplayController:(UISearchDisplayController *)controller willShowSearchResultsTableView:(UITableView *)tableView {
+//	[self.activityIndicatorView removeFromSuperview];
+//}
+//- (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView {
+//	[tableView addSubview:self.activityIndicatorView];
+//}
 - (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView {
+	NSLog(@"willHideSearchResultsTableView entered");
+	[self.activityIndicatorView removeFromSuperview];
 	resultsDisplayed = NO;
 	for (BlioStoreFeed *feed in self.storeSearchTableViewDataSource.feeds) {
         [feed.categories removeAllObjects];
         [feed.entities removeAllObjects];
     }
     [self.searchDisplayController.searchResultsTableView reloadData];
-	
 }
-
+- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView {
+	NSLog(@"didHideSearchResultsTableView entered");
+	[self.view addSubview:self.activityIndicatorView];
+}
 
 #pragma mark -
 #pragma mark UISearch Delegate Methods
@@ -252,6 +226,7 @@
 #pragma mark Search-Specific Methods
 
 - (void)performSearch {
+	NSLog(@"performSearch entered");
     if (![self.storeSearchTableViewDataSource.feeds count]) return;
 	
 	[activityIndicatorView startAnimating];
@@ -283,11 +258,33 @@
 #pragma mark <BlioStoreFeedBooksParserDelegate> Implementation
 
 - (void)parserDidEndParsingData:(BlioStoreBooksSourceParser *)parser {
-    // hide UIActivityIndicator
-	[activityIndicatorView stopAnimating];
-	activityIndicatorView.hidden = YES;
+	NSLog(@"BlioStoreFreeBooksViewController parserDidEndParsingData entered. parser: %@",parser);
+	NSArray * currentModeFeeds = nil;
+	if (self.searchDisplayController.active) {
+		currentModeFeeds = self.storeSearchTableViewDataSource.feeds;
+	}
+	else currentModeFeeds = self.feeds;
+	BOOL stillParsing = NO;
+	for (BlioStoreFeed *feed in currentModeFeeds) {
+		if (feed.parser.isParsing) {
+			stillParsing = YES;
+			break;
+		}
+	}
+	if (!stillParsing) {
+		NSLog(@"stillParsing is NO, hiding UIActivityIndicator");
+		// hide UIActivityIndicator
+		[activityIndicatorView stopAnimating];
+		activityIndicatorView.hidden = YES;
+		if (self.searchDisplayController.active) {
+			[activityIndicatorView removeFromSuperview];
+			[self.searchDisplayController.searchResultsTableView addSubview:self.activityIndicatorView];
+		}
+	}
 	
 	if (self.searchDisplayController.active) {
+		// prepare it to appear on the searchResultsTableView for subsequent searches
+		
 		[self.searchDisplayController.searchResultsTableView reloadData];
 		[self.searchDisplayController.searchResultsTableView setBackgroundColor:[UIColor whiteColor]];
 		[self.searchDisplayController.searchResultsTableView setRowHeight:44];

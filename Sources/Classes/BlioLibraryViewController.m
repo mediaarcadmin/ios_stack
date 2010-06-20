@@ -22,6 +22,8 @@
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
+static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayoutPageEquivalentCountChanged";
+
 @interface BlioAccessibleGridElement : UIAccessibilityElement {
     id target;
     CGRect visibleRect;
@@ -55,6 +57,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 - (id)init {
 	if ((self = [super init])) {
 		_didEdit = NO;
+		librarySortType = kBlioLibrarySortTypePersonalized;
 	}
 	return self;
 }
@@ -111,24 +114,7 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 		
     NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
-    
-//    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-//    [libraryItems addObject:item];
-//    [item release];
-
-//    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-sync.png"]
-//                                            style:UIBarButtonItemStyleBordered
-//                                           target:self 
-//                                           action:@selector(showLogin:)];
-//    [item setAccessibilityLabel:NSLocalizedString(@"Sync", @"Accessibility label for Library View Sync button")];
-//    [item setAccessibilityHint:NSLocalizedString(@"Syncs to Blio Account.", @"Accessibility label for Library View Sync hint")];
-//    [libraryItems addObject:item];
-//    [item release];
-    
-//    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-//    [libraryItems addObject:item];
-//    [item release];
-    
+        
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-getbooks.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
@@ -138,11 +124,25 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 
     [libraryItems addObject:item];
     [item release];
+        
+	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+	[libraryItems addObject:item];
+	[item release];
+	
+	item = [[UIBarButtonItem alloc] initWithTitle:@"Sort"
+	                                        style:UIBarButtonItemStyleBordered
+	                                       target:self 
+	                                       action:@selector(showSortOptions:)];
+	[item setAccessibilityLabel:NSLocalizedString(@"Sort", @"Accessibility label for Library View Sort button")];
+	[item setAccessibilityHint:NSLocalizedString(@"Provides options for sorting the library", @"Accessibility label for Library View Sort hint")];
+	[libraryItems addObject:item];
+	[item release];
     
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [libraryItems addObject:item];
-    [item release];  
-    
+	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+	[libraryItems addObject:item];
+	[item release];
+	
+	
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-settings.png"]
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
@@ -194,200 +194,180 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
     
 	maxLayoutPageEquivalentCount = 0;
 	
-    NSError *error = nil; 
-    NSManagedObjectContext *moc = [self managedObjectContext]; 
-	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioLibraryViewController!");
-
+    
+	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.backgroundColor = [UIColor clearColor];
+	
 	[self calculateMaxLayoutPageEquivalentCount];
 	
-    NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
-    NSSortDescriptor *libraryPositionSort = [[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO];
-	NSArray *sorters = [NSArray arrayWithObject:libraryPositionSort]; 
-    [libraryPositionSort release];
-    
-    [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
-    [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-    [request setSortDescriptors:sorters];
- 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
-    
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
-                                              initWithFetchRequest:request
-                                              managedObjectContext:moc
-                                              sectionNameKeyPath:nil
-                                              cacheName:@"BlioFetchedBooks"];
-    [request release];
-    
-    [aFetchedResultsController setDelegate:self];
-    [aFetchedResultsController performFetch:&error];
+	[self fetchResults];
 	
-    if (error) 
-        NSLog(@"Error loading from persistent store: %@, %@", error, [error userInfo]);
-    
-    if (![[aFetchedResultsController fetchedObjects] count]) {
+    if (![[self.fetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
 
-//        [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
-//                                              authors:[NSArray arrayWithObject:@"Bill Willingham"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"FablesLegendsInExile" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Legends" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:nil
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
-//                                              authors:[NSArray arrayWithObject:@"Stella Blackstone"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three_Little_Pigs" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-////                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               pdfURL:nil
-//                                               xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"xps" inDirectory:@"PDFs"]]
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"AudioBooks"]]];
-//
-//        [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
-//                                              authors:[NSArray arrayWithObject:@"David J. Hunter"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:nil
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
-//                                              authors:[NSArray arrayWithObject:@"Ward Just"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
-//                                              authors:[NSArray arrayWithObject:@"Marlene Perez"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
-//                                              authors:[NSArray arrayWithObject:@"Bruce Degen"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
-//                                              authors:[NSArray arrayWithObject:@"Christoph Niemann"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"ChristophNiemann" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//
-//        [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
-//                                              authors:[NSArray arrayWithObject:@"Neil Gaiman"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"NeilGaiman" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
-//										 audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"AudioBooks"]]];
-//
-//        [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
-//                                              authors:[NSArray arrayWithObject:@"Martha Stewart"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
-//                                              authors:[NSArray arrayWithObjects:@"Jennifer L. Holme", @"Matthew Holme", nil]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
-//                                              authors:[NSArray arrayWithObject:@"Marjane Satrapi"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"The Art of the Band T-Shirt" 
-//                                              authors:[NSArray arrayWithObjects:@"Amber Easby", @"Henry Oliver", nil]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Sylvester and the Magic Pebble" 
-//                                              authors:[NSArray arrayWithObject:@"William Steig"]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"You On A Diet" 
-//                                              authors:[NSArray arrayWithObjects:@"Michael F. Roizen, M.D.", @"Mehmet C. Oz, M.D.", nil]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
-//                                              authors:[NSArray arrayWithObjects:@"Shirley O. Corriher", nil]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
-//                                              authors:[NSArray arrayWithObjects:@"Bill Martin Jr", @"Joan Archambault", nil]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:nil
-//                                         audiobookURL:nil];
-//      
-//        [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
-//                                              authors:[NSArray arrayWithObjects:@"Matthew Reilly", nil]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
-//        
-//        [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
-//                                              authors:[NSArray arrayWithObjects:@"Lisa Wheeler", @"Sophie Blackall", nil]
-//                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"png" inDirectory:@"MockCovers"]]
-//                                              ePubURL:nil
-//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"pdf" inDirectory:@"PDFs"]]
-//                                               xpsURL:nil
-//                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"zip" inDirectory:@"TextFlows"]]
-//                                         audiobookURL:nil];
+        [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
+                                              authors:[NSArray arrayWithObject:@"Bill Willingham"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"FablesLegendsInExile" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Legends" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:nil
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
+                                              authors:[NSArray arrayWithObject:@"Stella Blackstone"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three_Little_Pigs" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+//                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               pdfURL:nil
+                                               xpsURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"xps" inDirectory:@"PDFs"]]
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Three Little Pigs" ofType:@"zip" inDirectory:@"AudioBooks"]]];
+
+        [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
+                                              authors:[NSArray arrayWithObject:@"David J. Hunter"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Essentials_of_Discrete_Mathematics" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:nil
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
+                                              authors:[NSArray arrayWithObject:@"Ward Just"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Exiles In The Garden" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
+                                              authors:[NSArray arrayWithObject:@"Marlene Perez"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Dead Is So Last Year" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
+                                              authors:[NSArray arrayWithObject:@"Bruce Degen"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Jamberry" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
+                                              authors:[NSArray arrayWithObject:@"Christoph Niemann"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"ChristophNiemann" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Pet Dragon" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+
+        [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
+                                              authors:[NSArray arrayWithObject:@"Neil Gaiman"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"NeilGaiman" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"TextFlows"]]
+										 audiobookURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Graveyard Book" ofType:@"zip" inDirectory:@"AudioBooks"]]];
+
+        [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
+                                              authors:[NSArray arrayWithObject:@"Martha Stewart"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Martha Stewart Cookies" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
+                                              authors:[NSArray arrayWithObjects:@"Jennifer L. Holme", @"Matthew Holme", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Baby Mouse" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
+                                              authors:[NSArray arrayWithObject:@"Marjane Satrapi"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Persepolis 2" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"The Art of the Band T-Shirt" 
+                                              authors:[NSArray arrayWithObjects:@"Amber Easby", @"Henry Oliver", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Art of the Band T-Shirt" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Sylvester and the Magic Pebble" 
+                                              authors:[NSArray arrayWithObject:@"William Steig"]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Sylvester and the Magic Pebble" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"You On A Diet" 
+                                              authors:[NSArray arrayWithObjects:@"Michael F. Roizen, M.D.", @"Mehmet C. Oz, M.D.", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"You On A Diet" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
+                                              authors:[NSArray arrayWithObjects:@"Shirley O. Corriher", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Bakewise" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
+                                              authors:[NSArray arrayWithObjects:@"Bill Martin Jr", @"Joan Archambault", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Chicka Chicka Boom Boom" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:nil
+                                         audiobookURL:nil];
+      
+        [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
+                                              authors:[NSArray arrayWithObjects:@"Matthew Reilly", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Five Greatest Warriors" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
+                                              authors:[NSArray arrayWithObjects:@"Lisa Wheeler", @"Sophie Blackall", nil]
+                                             coverURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"png" inDirectory:@"MockCovers"]]
+                                              ePubURL:nil
+                                               pdfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"pdf" inDirectory:@"PDFs"]]
+                                               xpsURL:nil
+                                          textFlowURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Spinster Goose" ofType:@"zip" inDirectory:@"TextFlows"]]
+                                         audiobookURL:nil];
         
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
@@ -403,19 +383,8 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
     }
     
 	
-    self.fetchedResultsController = aFetchedResultsController;
-    [aFetchedResultsController release];
     
-	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.backgroundColor = [UIColor clearColor];
-    
-//	NSLog(@"Initial library load: populating cells...");
-	[self.tableView reloadData];
-	[self.gridView reloadData];
 	
-//	[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -499,7 +468,22 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 
     UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
-
+-(BlioLibrarySortType)librarySortType {
+	return librarySortType;
+}
+-(void)setLibrarySortType:(BlioLibrarySortType)sortType {
+	if (librarySortType != sortType) {
+		librarySortType = sortType;
+		if (sortType == kBlioLibrarySortTypePersonalized) {
+			self.navigationItem.rightBarButtonItem = self.editButtonItem;	
+		}
+		else {
+			if (self.editing) [self setEditing:NO animated:NO];
+			self.navigationItem.rightBarButtonItem = nil;
+		}
+		[self fetchResults];
+	}
+}
 -(void) calculateMaxLayoutPageEquivalentCount {
 
 	// calculateMaxLayoutPageEquivalentCount is deactivated because we have decided to have all reading progress bars display as the same size (instead of relative size); we are intentionally returning prematurely.	
@@ -597,7 +581,49 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 		}
 	}	
 }
+-(void) fetchResults {
+    NSManagedObjectContext *moc = [self managedObjectContext]; 
+	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioLibraryViewController!");
 
+    NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+
+    NSSortDescriptor *sortDescriptor = nil;
+	switch (librarySortType) {
+		case kBlioLibrarySortTypeTitle:
+			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES] autorelease];
+			break;
+		case kBlioLibrarySortTypeAuthor:
+			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"author" ascending:YES] autorelease];
+			break;
+        default: {
+			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO] autorelease];
+		}
+	}
+	NSArray *sorters = [NSArray arrayWithObject:sortDescriptor]; 
+    
+    [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
+    [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+    [request setSortDescriptors:sorters];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
+    
+	self.fetchedResultsController = [[[NSFetchedResultsController alloc]
+									  initWithFetchRequest:request
+									  managedObjectContext:moc
+									  sectionNameKeyPath:nil
+									  cacheName:@"BlioFetchedBooks"] autorelease];
+    [request release];
+    
+    [self.fetchedResultsController setDelegate:self];
+    NSError *error = nil; 
+    [self.fetchedResultsController performFetch:&error];
+	
+    if (error) 
+        NSLog(@"Error loading from persistent store: %@, %@", error, [error userInfo]);
+	else {
+		[self.tableView reloadData];
+		[self.gridView reloadData];		
+	}
+}
 #pragma mark - 
 #pragma mark MRGridViewDataSource methods
 
@@ -1034,6 +1060,20 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	[self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
 }
+- (void)showSortOptions:(id)sender {    
+	// show sheet interface
+	NSString * sheetTitle = NSLocalizedString(@"Select Sort Order:",@"\"Select Sort Order:\" sort sheet title");
+	NSString * sort0 = NSLocalizedString(@"Personalized",@"\"Personalized...\" library sort option");
+	NSString * sort1 = NSLocalizedString(@"By Title",@"\"By Title...\" library sort option");
+	NSString * sort2 = NSLocalizedString(@"By Author",@"\"By Author...\" library sort option");
+	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle
+															 delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" sheet button") 
+											   destructiveButtonTitle:nil
+													otherButtonTitles:sort0, sort1, sort2, nil];
+	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
+	[actionSheet showInView:self.view];
+	[actionSheet release];	
+}
 
 - (void)showSettings:(id)sender {    
 	BlioAppSettingsController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
@@ -1071,6 +1111,19 @@ static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLay
 	
 	[self presentModalViewController:settingsController animated:YES];
     [settingsController release];    
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	NSLog(@"buttonIndex: %i",buttonIndex);
+	if (buttonIndex == actionSheet.cancelButtonIndex) {
+			NSLog(@"Sort Sheet cancelled");
+			return;
+	}
+	
+	self.librarySortType = buttonIndex;	
 }
 
 #pragma mark -

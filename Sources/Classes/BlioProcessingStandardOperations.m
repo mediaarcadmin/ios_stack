@@ -111,6 +111,9 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore) {
 		NSLog(@"ERROR: Title (%@) is not an online store title!",[self getBookValueForKey:@"title"]);
 		NSLog(@"xpsFilename: %@", [self getBookValueForKey:@"xpsFilename"]);
+		// TODO: remove the following two lines for final version (we're bypassing for now since Three Little Pigs doesn't need a license)
+		self.operationSuccess = YES;
+		self.percentageComplete = 100;
 		return;
 	}
 	@synchronized ([BlioDrmManager getDrmManager]) {

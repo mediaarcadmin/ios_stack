@@ -41,7 +41,7 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
         //[aService setShouldServiceFeedsIgnoreUnknowns:YES]; // cannot use ths because we have unknown elements
         self.service = aService;
         [aService release];
-        
+        isParsing = NO;
     }
     return self;
 }
@@ -49,6 +49,7 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 - (void)startWithURL:(NSURL *)url {
     if (nil == url) return;
 //    NSLog(@"BlioStoreBooksSourceParser startWithURL: %@", [url absoluteString]);
+	isParsing = YES;
 	self.parsedCategories = [NSMutableArray array];
     self.parsedEntities = [NSMutableArray array];
     
@@ -83,7 +84,7 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 - (void)parseEnded {
     NSAssert2([NSThread isMainThread], @"%s at line %d called on secondary thread", __FUNCTION__, __LINE__);
-    
+	isParsing = NO;
     if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parser:didParseCategories:)] && [parsedCategories count] > 0) {
         [self.delegate parser:self didParseCategories:parsedCategories];
     }
@@ -106,7 +107,9 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 - (NSURL *)queryUrlForString:(NSString *)queryString {
     return nil;
 }
-
+-(BOOL)isParsing {
+	return isParsing;
+}
 @end
 
 @implementation BlioStoreParsedCategory

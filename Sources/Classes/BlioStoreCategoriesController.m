@@ -63,7 +63,6 @@
 										   UIViewAutoresizingFlexibleBottomMargin);
 	[activityIndicatorView startAnimating];
 	activityIndicatorView.hidden = NO;
-	[activityIndicatorView release];
 	self.tableView.dataSource = self.storeFeedTableViewDataSource;
 }
 - (void)viewDidLoad {

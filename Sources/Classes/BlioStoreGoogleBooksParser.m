@@ -10,9 +10,11 @@
 
 @implementation BlioStoreGoogleBooksParser
 
+@synthesize entryServiceTickets;
+
 - (void)startWithURL:(NSURL *)url {
     if (nil == url) return;
-    
+    isParsing = YES;
     self.parsedCategories = [NSMutableArray array];
     self.parsedEntities = [NSMutableArray array];
     
@@ -25,10 +27,14 @@
     
 
 }
-
+-(void) dealloc {
+	self.entryServiceTickets = nil;
+	[super dealloc];
+}
 - (void)volumeListFetchTicket:(GDataServiceTicket *)ticket finishedWithFeed:(GDataFeedVolume *)object error:(NSError *)error {
-    
-    if (error == nil) {        
+    NSLog(@"BlioStoreGoogleBooksParser volumeFetchTicket:finishedWithFeed: entered");
+    if (error == nil) {
+        self.entryServiceTickets = [NSMutableArray array];
 		[self.delegate parser:self didParseTotalResults:[object totalResults]]; // pass over the total results number to the BlioStoreCategoriesController, so that it can assign the number to the respective feed.
 		// if nextLink is not nil, then send it back to the delegate in NSURL form
 		if ([object nextLink] != nil) [self.delegate parser:self didParseNextLink:[[object nextLink] URL]];
@@ -38,24 +44,35 @@
             NSURL *idUrl = [NSURL URLWithString:[entry identifier]];
             if (nil != idUrl) {
                 GDataQueryBooks *query = [GDataQueryBooks booksQueryWithFeedURL:idUrl];            
-                [self.service fetchFeedWithQuery:query
+                [entryServiceTickets addObject:[self.service fetchFeedWithQuery:query
                                         delegate:self
-                               didFinishSelector:@selector(volumeFetchTicket:finishedWithVolume:error:)];
+                               didFinishSelector:@selector(volumeFetchTicket:finishedWithVolume:error:)]];
             }
         }
     }
+	else {
+		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
+	}
+
 }
 
 - (void)volumeFetchTicket:(GDataServiceTicket *)ticket finishedWithVolume:(GDataEntryVolume *)object error:(NSError *)error {
-    
+    NSLog(@"BlioStoreGoogleBooksParser volumeFetchTicket:%@ finishedWithVolume: entered",ticket);
     // transfer the feed source to a property in the feed object
+	if ([entryServiceTickets containsObject:ticket]) {
+		[entryServiceTickets removeObject:ticket];
+	}
+	else {
+		NSLog(@"ERROR: finished entry service ticket that is not our our entryServiceTicket array!");
+	}
     if (error == nil) {
         GDataLink *selfLink = [object selfLink];
         NSURL *baseURL = selfLink ? [NSURL URLWithString:[selfLink href]] : nil;
         
-        [self parseEntry:object withBaseURL:baseURL];   
-        [self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
+        [self parseEntry:object withBaseURL:baseURL];
     }
+	NSLog(@"[entryServiceTickets count]: %i",[entryServiceTickets count]);
+	if ([entryServiceTickets count] == 0) [self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
 }
 
 - (void)parseEntry:(GDataEntryVolume *)entry withBaseURL:(NSURL *)baseURL {
@@ -103,5 +120,4 @@
     [booksQuery setFullTextQueryString:queryString];
     return [booksQuery URL];
 }
-
 @end

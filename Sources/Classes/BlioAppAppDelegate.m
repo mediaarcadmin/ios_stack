@@ -77,8 +77,9 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 	
     [libraryController setManagedObjectContext:moc];
     [libraryController setProcessingDelegate:[self processingManager]];
-	
-	[[BlioDrmManager getDrmManager] initialize];
+	@synchronized ([BlioDrmManager getDrmManager]) {
+		[[BlioDrmManager getDrmManager] initialize];
+	}
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
@@ -87,6 +88,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
 		else {

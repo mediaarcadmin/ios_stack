@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "BlioStoreBooksSourceParser.h"
 
-@interface BlioStoreGoogleBooksParser : BlioStoreBooksSourceParser
+@interface BlioStoreGoogleBooksParser : BlioStoreBooksSourceParser {
+	NSMutableArray * entryServiceTickets;
+}
+@property (nonatomic, retain) NSMutableArray * entryServiceTickets;
+
 - (void)parseEntry:(GDataEntryBase *)entry withBaseURL:(NSURL *)baseURL;
 @end

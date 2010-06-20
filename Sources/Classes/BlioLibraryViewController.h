@@ -18,7 +18,11 @@ typedef enum {
     kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
-static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayoutPageEquivalentCountChanged";
+typedef enum {
+    kBlioLibrarySortTypePersonalized = 0,
+    kBlioLibrarySortTypeTitle = 1,
+    kBlioLibrarySortTypeAuthor = 2,
+} BlioLibrarySortType;
 
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
@@ -64,6 +68,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	MRGridView * _gridView;
 	NSUInteger maxLayoutPageEquivalentCount;
 	NSInteger _keyValueOfCellToBeDeleted;
+	BlioLibrarySortType librarySortType;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -78,10 +83,12 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
+@property (nonatomic, assign) BlioLibrarySortType librarySortType;
 
 -(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;
 -(void)configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index;
 -(void)calculateMaxLayoutPageEquivalentCount;
+-(void)fetchResults;
 - (CGRect)visibleRect;
 
 @end
@@ -126,6 +133,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UILabel * pausedLabel;
     id delegate;
     NSArray *accessibilityElements;
+	NSString * librarySortKey;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
