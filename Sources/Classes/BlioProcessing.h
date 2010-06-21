@@ -54,13 +54,13 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 @protocol BlioProcessingDelegate
 @required
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL;
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
 -(void) enqueueBook:(BlioMockBook*)aBook;
 -(void) enqueueBook:(BlioMockBook*)aBook placeholderOnly:(BOOL)placeholderOnly;

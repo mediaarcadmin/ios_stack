@@ -3877,6 +3877,7 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 		[request setAllHTTPHeaderFields:[NSHTTPCookie requestHeaderFieldsWithCookies:cookies]];
 	}
 	[request setValue:@"wsdl2objc" forHTTPHeaderField:@"User-Agent"];
+	[request setValue:@"close" forHTTPHeaderField:@"Connection"];
 	[request setValue:soapAction forHTTPHeaderField:@"SOAPAction"];
 	// originally:
 	//[request setValue:@"application/soap+xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];

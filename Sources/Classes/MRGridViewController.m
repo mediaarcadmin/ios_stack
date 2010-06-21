@@ -20,12 +20,16 @@
 	self.view.autoresizesSubviews = YES;
 	
 	MRGridView* myGridView = [[MRGridView alloc]initWithFrame:[[self view] bounds]];
-	if ([[[UIDevice currentDevice]model] rangeOfString:@"iPad"].location != NSNotFound) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		myGridView.backgroundColor = [UIColor blackColor];
 	}
 	else {
 		myGridView.backgroundColor = [UIColor whiteColor];
 	}
+#else
+	myGridView.backgroundColor = [UIColor whiteColor];
+#endif
 	myGridView.autoresizingMask = (UIViewAutoresizingFlexibleHeight|
 								   UIViewAutoresizingFlexibleWidth);
 	

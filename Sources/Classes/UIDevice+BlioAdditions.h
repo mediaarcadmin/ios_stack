@@ -3,4 +3,5 @@
 @interface UIDevice (blioAdditions)
 - (NSString *)blioDevicePlatform;
 - (CGFloat)blioDeviceMaximumLayoutZoom;
+- (NSInteger)blioDeviceMaximumTileSize;
 @end

@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutContentView.h"
+#import "UIDevice+BlioAdditions.h"
 
 @interface BlioLayoutForceCacheOperation : NSOperation {
     BlioLayoutTiledLayer *tiledLayer;
@@ -15,17 +16,20 @@
 
 - (id)initWithTiledLayer:(BlioLayoutTiledLayer *)aTiledLayer;
 
+@property (nonatomic, retain) BlioLayoutTiledLayer *tiledLayer;
+
 @end
 
 @interface BlioLayoutTiledLayer : CATiledLayer {
+//@interface BlioLayoutTiledLayer : CALayer {
     NSInteger pageNumber;
-    id <BlioLayoutDataSource> dataSource;
+    id <BlioLayoutRenderingDelegate> renderingDelegate;
     BOOL cached;
     id thumbLayer;
 }
 
 @property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, assign) id <BlioLayoutDataSource> dataSource;
+@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic) BOOL cached;
 @property (nonatomic, assign) id thumbLayer;
 
@@ -33,34 +37,34 @@
 
 @interface BlioLayoutThumbLayer : CALayer {
     NSInteger pageNumber;
-    id <BlioLayoutDataSource> dataSource;
+    id <BlioLayoutRenderingDelegate> renderingDelegate;
     CGLayerRef cacheLayer;
 }
 
 @property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, assign) id <BlioLayoutDataSource> dataSource;
+@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic) CGLayerRef cacheLayer;
 
 @end
 
 @interface BlioLayoutShadowLayer : CALayer {
     NSInteger pageNumber;
-    id <BlioLayoutDataSource> dataSource;
+    id <BlioLayoutRenderingDelegate> renderingDelegate;
 }
 
 @property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, assign) id <BlioLayoutDataSource> dataSource;
+@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
 
 @end
 
 @interface BlioLayoutHighlightsLayer : CATiledLayer {
     NSInteger pageNumber;
-    id <BlioLayoutDataSource> dataSource;
+    id <BlioLayoutRenderingDelegate> renderingDelegate;
     BlioBookmarkRange *excludedHighlight;
 }
 
 @property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, assign) id <BlioLayoutDataSource> dataSource;
+@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic, retain) BlioBookmarkRange *excludedHighlight;
 
 @end
@@ -72,12 +76,18 @@
 
 @implementation BlioLayoutContentView
 
-@synthesize dataSource, pageLayers;
+@synthesize renderingDelegate, pageLayers;
 
 - (void)dealloc {
-    self.dataSource = nil;
-    self.pageLayers = nil;
+    //NSLog(@"*************** dealloc called for contentView");
+    [self abortRendering];
     [super dealloc];
+}
+
+- (void)abortRendering {
+    //NSLog(@"*************** abort called for contentView");
+    self.renderingDelegate = nil;
+    self.pageLayers = nil;
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -85,15 +95,14 @@
         // Initialization code
         self.pageLayers = [NSMutableSet setWithCapacity:kBlioLayoutMaxPages];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        self.backgroundColor = [UIColor greenColor];
-        self.layer.backgroundColor = [UIColor purpleColor].CGColor;
+        maxTileSize = [[UIDevice currentDevice] blioDeviceMaximumTileSize];
     }
     return self;
 }
 
 - (CALayer *)addPage:(NSInteger)aPageNumber retainPages:(NSSet *)pages {
    // NSLog(@"Add page %d", aPageNumber);
-    if (![self.dataSource dataSourceContainsPage:aPageNumber]) {
+    if (![self.renderingDelegate dataSourceContainsPage:aPageNumber]) {
         return nil;
     }
     
@@ -135,33 +144,40 @@
             
             
             BlioLayoutShadowLayer *shadowLayer = [BlioLayoutShadowLayer layer];
-            shadowLayer.dataSource = self.dataSource;
+            shadowLayer.renderingDelegate = self.renderingDelegate;
             shadowLayer.frame = self.bounds;
+            shadowLayer.geometryFlipped = YES;
             shadowLayer.opaque = YES;
             [shadowLayer setNeedsDisplayOnBoundsChange:YES];
             [pageLayer addSublayer:shadowLayer];
             [pageLayer setShadowLayer:shadowLayer];
             
             BlioLayoutThumbLayer *thumbLayer = [BlioLayoutThumbLayer layer];
-            thumbLayer.dataSource = self.dataSource;
+            thumbLayer.renderingDelegate = self.renderingDelegate;
             thumbLayer.frame = self.bounds;
+            thumbLayer.geometryFlipped = YES;
             [thumbLayer setNeedsDisplayOnBoundsChange:YES];
             [pageLayer addSublayer:thumbLayer];
             [pageLayer setThumbLayer:thumbLayer];
             
             BlioLayoutTiledLayer *tiledLayer = [BlioLayoutTiledLayer layer];
-            tiledLayer.dataSource = self.dataSource;
+            tiledLayer.renderingDelegate = self.renderingDelegate;
             tiledLayer.frame = self.bounds;
-            tiledLayer.levelsOfDetail = 7;
+            tiledLayer.geometryFlipped = YES;
+            //tiledLayer.levelsOfDetail = 2;
+            //tiledLayer.levelsOfDetailBias = 2;
+            tiledLayer.levelsOfDetail = 6;
             tiledLayer.levelsOfDetailBias = 5;
-            tiledLayer.tileSize = CGSizeMake(2048, 2048);
+            //tiledLayer.tileSize = CGSizeMake(256, 256);
+            tiledLayer.tileSize = CGSizeMake(maxTileSize, maxTileSize);
+            //tiledLayer.tileSize = CGSizeMake(2048, 2048);
             tiledLayer.thumbLayer = (id)thumbLayer;
             [tiledLayer setNeedsDisplayOnBoundsChange:YES];
             [pageLayer addSublayer:tiledLayer];
             [pageLayer setTiledLayer:tiledLayer];
             
             BlioLayoutHighlightsLayer *highlightsLayer = [BlioLayoutHighlightsLayer layer];
-            highlightsLayer.dataSource = self.dataSource;
+            highlightsLayer.renderingDelegate = self.renderingDelegate;
             highlightsLayer.frame = self.bounds;
             highlightsLayer.levelsOfDetail = 1;
             highlightsLayer.tileSize = CGSizeMake(1024, 1024);
@@ -199,8 +215,9 @@
 }
 
 - (void)layoutSubviewsAfterBoundsChange {
-    //NSLog(@"Laying out contentView subviews");
+    
     CGRect newFrame = self.bounds;
+    //NSLog(@"Laying out contentView subviews after bounds changed to: %@", NSStringFromCGRect(newFrame));
     
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
@@ -282,6 +299,7 @@
 @synthesize pageNumber, tiledLayer, thumbLayer, shadowLayer, highlightsLayer, cacheQueue;
 
 - (void)dealloc {
+    //NSLog(@"cancelPreviousPerformRequestsWithTarget during dealloc");
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
 
     self.tiledLayer = nil;
@@ -312,6 +330,7 @@
 }
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
+    //NSLog(@"set page number and cancel force");
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
     [self.cacheQueue cancelAllOperations];
     
@@ -342,11 +361,15 @@
 }
 
 - (void)forceThumbCacheAfterDelay:(NSTimeInterval)delay {
+    //return;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
-    [self performSelector:@selector(forceThumbCache) withObject:nil afterDelay:delay];
+    //NSLog(@"forceThumbCacheAfterDelay: %f for page %d", delay, self.pageNumber);
+    CGFloat cacheDelay = delay;
+    [self performSelector:@selector(forceThumbCache) withObject:nil afterDelay:cacheDelay inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 }
 
 - (void)forceThumbCache {
+    //NSLog(@"forceThumbCache fired after delay for page %d", self.pageNumber);
     if (!self.tiledLayer.cached) {
         [self.cacheQueue cancelAllOperations];
         
@@ -360,7 +383,10 @@
         BlioLayoutForceCacheOperation *cacheOp = [[BlioLayoutForceCacheOperation alloc] initWithTiledLayer:self.tiledLayer];
         [self.cacheQueue addOperation:cacheOp];
         [cacheOp release];
-    }
+    } //else {
+//        NSLog(@"already cached");
+//
+//    }
 }
 
 #pragma mark -
@@ -402,11 +428,11 @@
 
 @implementation BlioLayoutTiledLayer
 
-@synthesize pageNumber, dataSource, cached, thumbLayer;
+@synthesize pageNumber, renderingDelegate, cached, thumbLayer;
 
 - (void)dealloc {
     self.thumbLayer = nil;
-    self.dataSource = nil;
+    self.renderingDelegate = nil;
     [super dealloc];
 }
 
@@ -423,13 +449,13 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    //NSLog(@"Draw tiled layer for page %d with transform %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)));
+    //NSLog(@"Draw tiled layer for page %d with transform %@ and clipbounds %@ and layerbounds %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)), NSStringFromCGRect(self.frame));
     
     if (!self.cached) {
         self.cached = YES;
-        [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
+        [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
     } else {
-        [self.dataSource drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:nil cacheReadySelector:nil];
+        [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:nil cacheReadySelector:nil];
     }
     
     if (pageNumber == 1) 
@@ -445,10 +471,10 @@
 
 @implementation BlioLayoutThumbLayer
 
-@synthesize pageNumber, dataSource, cacheLayer;
+@synthesize pageNumber, renderingDelegate, cacheLayer;
 
 - (void)dealloc {
-    self.dataSource = nil;
+    self.renderingDelegate = nil;
     if (nil != cacheLayer)
         CGLayerRelease(cacheLayer);
     
@@ -492,21 +518,8 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    //CGRect ctxBounds = CGContextGetClipBoundingBox(ctx);
-//    CGContextClearRect(ctx, ctxBounds);
-    
-//    CGAffineTransform boundsTransform;
-//    CGRect insetBounds = UIEdgeInsetsInsetRect(ctxBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
-//    if (layerBounds.size.width < layerBounds.size.height)
-//        ctxBounds = transformRectToFitRect(cropRect, insetBounds);
-//    else
-//        boundsTransform = transformRectToFillRect(cropRect, insetBounds);
-//    cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
-    
-    //NSLog(@"Drawing thumb in %@ %@", NSStringFromCGRect(ctxBounds), NSStringFromCGRect(self.bounds));
     if (nil != cacheLayer) {
-        [self.dataSource drawThumbLayer:self inContext:ctx forPage:self.pageNumber withCacheLayer:cacheLayer];  
-        //CGContextDrawLayerInRect(ctx, ctxBounds, cacheLayer);
+        [self.renderingDelegate drawThumbLayer:self inContext:ctx forPage:self.pageNumber withCacheLayer:cacheLayer];  
     }
 }
 
@@ -514,10 +527,10 @@
 
 @implementation BlioLayoutShadowLayer
 
-@synthesize pageNumber, dataSource;
+@synthesize pageNumber, renderingDelegate;
 
 - (void)dealloc {
-    self.dataSource = nil;
+    self.renderingDelegate = nil;
     [super dealloc];
 }
 
@@ -528,17 +541,17 @@
 
 - (void)drawInContext:(CGContextRef)ctx {
     //NSLog(@"Draw shadow for page %d", self.pageNumber);
-    [self.dataSource drawShadowLayer:self inContext:ctx forPage:self.pageNumber];    
+    [self.renderingDelegate drawShadowLayer:self inContext:ctx forPage:self.pageNumber];    
 }
 
 @end
 
 @implementation BlioLayoutHighlightsLayer
 
-@synthesize pageNumber, dataSource, excludedHighlight;
+@synthesize pageNumber, renderingDelegate, excludedHighlight;
 
 - (void)dealloc {
-    self.dataSource = nil;
+    self.renderingDelegate = nil;
     self.excludedHighlight = nil;
     [super dealloc];
 }
@@ -552,7 +565,7 @@
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
     //NSLog(@"Draw highlights for page %d", self.pageNumber);
-    [self.dataSource drawHighlightsLayer:self inContext:ctx forPage:self.pageNumber excluding:self.excludedHighlight];
+    [self.renderingDelegate drawHighlightsLayer:self inContext:ctx forPage:self.pageNumber excluding:self.excludedHighlight];
     [CATransaction commit];
 }
 
@@ -564,11 +577,13 @@
 
 @implementation BlioLayoutForceCacheOperation
 
+@synthesize tiledLayer;
+
 - (id)initWithTiledLayer:(BlioLayoutTiledLayer *)aTiledLayer {
     if(aTiledLayer == nil) return nil;
     
     if((self = [super init])) {
-        tiledLayer = [aTiledLayer retain];
+        self.tiledLayer = aTiledLayer;
     }
     
     return self;
@@ -599,8 +614,10 @@
     }
     
     // Draw into the context; this force the caching
-    if (tiledLayer)
-        [tiledLayer renderInContext:bitmap];
+    if (self.tiledLayer != nil) {
+        //NSLog(@"Force tile caching from operation");
+        [self.tiledLayer renderInContext:bitmap];
+    }
     
     // Clean up
     CGContextRelease(bitmap);
@@ -610,7 +627,7 @@
 }
 
 - (void)dealloc {
-    [tiledLayer release];
+    self.tiledLayer = nil;
     [super dealloc];
 }
 

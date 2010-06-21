@@ -39,6 +39,7 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     
     NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
     [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
+    @synchronized (self.storeCoordinator) {
     NSManagedObject *book = [moc objectWithID:self.bookID];
     if (nil == book) 
         NSLog(@"Failed to retrieve book");
@@ -47,9 +48,9 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     
     NSError *anError;
     if (![moc save:&anError]) {
-        NSLog(@"Save failed with error: %@, %@", anError, [anError userInfo]);
+        NSLog(@"[BlioProcessingOperation setBookValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
     }
-    
+    }
     [moc release];
     
     [pool drain];
@@ -124,7 +125,7 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
         
         NSError *anError;
         if (![moc save:&anError]) {
-            NSLog(@"Save failed with error: %@, %@", anError, [anError userInfo]);
+            NSLog(@"[BlioProcessingOperation setBookProcessingComplete] Save failed with error: %@, %@", anError, [anError userInfo]);
         }
     }
     

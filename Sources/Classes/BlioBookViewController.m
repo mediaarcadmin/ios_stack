@@ -194,11 +194,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if (!([newBook ePubPath] || [newBook textFlowPath]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
             lastLayout = kBlioPageLayoutPlainText;
         }            
-        if (![newBook pdfPath] && (lastLayout == kBlioPageLayoutPageLayout)) {
+        if (!([newBook pdfPath] || [newBook xpsPath]) && (lastLayout == kBlioPageLayoutPageLayout)) {
             lastLayout = kBlioPageLayoutPlainText;
         } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
         } 
+        // Force - TODO remove this
+        lastLayout = kBlioPageLayoutPageLayout;
         
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
@@ -215,7 +217,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
                 break;
             case kBlioPageLayoutPageLayout: {
-                if ([newBook pdfPath]) {
+                if ([newBook pdfPath] || [newBook xpsPath]) {
                     BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds 
                                                                                  book:newBook 
                                                                              animated:YES];
@@ -353,6 +355,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     if(_bookView != bookView) {
         if(_bookView) {
+            if (bookView != nil) [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
             [_bookView removeObserver:self forKeyPath:@"pageNumber"];
             [_bookView removeObserver:self forKeyPath:@"pageCount"];        
             if(_bookView.superview) {
@@ -401,6 +404,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         forKeyPath:@"pageCount" 
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                            context:nil];   
+            
+            [self addObserver:_bookView 
+                        forKeyPath:@"audioPlaying" 
+                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
+                           context:nil];
         }
     }
 }
@@ -605,7 +613,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIApplication *application = [UIApplication sharedApplication];
         if(self.toolbarsVisibleAfterAppearance) {
             if([application isStatusBarHidden]) {
-                [application setStatusBarHidden:NO animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+				else [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
+#else
+                [application setStatusBarHidden:NO animated:YES]; // original code
+#endif
                 [self.navigationController setNavigationBarHidden:YES animated:YES];
                 [self.navigationController setNavigationBarHidden:NO animated:NO];
             }
@@ -622,7 +635,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleBlackTranslucent;  
             if(![application isStatusBarHidden]) {
-                [application setStatusBarHidden:YES animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+				else [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
+#else
+				[application setStatusBarHidden:YES animated:YES]; // original code
+#endif
             }            
         }
     }
@@ -645,6 +663,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if([_bookView respondsToSelector:@selector(stopAnimation)]) {
                 [_bookView performSelector:@selector(stopAnimation)];
             }
+            
+            [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
             
             if([_bookView isKindOfClass:[BlioSpeedReadView class]]) {
                 // We do this because the current point is usually only saved on a 
@@ -691,8 +711,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                       animated:YES];
             }                        
             if(_returnToStatusBarHidden != application.isStatusBarHidden){
-                [application setStatusBarHidden:_returnToStatusBarHidden 
-                                       animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:_returnToStatusBarHidden withAnimation:UIStatusBarAnimationFade];
+				else [(id)application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // typecast as id to mask deprecation warnings.							
+#else
+				[application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // original code
+#endif
             }           
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleDefault;
@@ -711,7 +735,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             
             NSError *error;
             if (![[self.book managedObjectContext] save:&error])
-                NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);            
+                NSLog(@"[BlioBookViewController viewWillDisappear] Save failed with error: %@, %@", error, [error userInfo]);            
         }
     }
 }
@@ -777,7 +801,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)_fadeWillStart
 {
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
-        [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		else [(id)[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
+#else
+		[[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // original code 
+#endif
     } 
 }
 
@@ -810,7 +839,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateStatusBarVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
-            [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+			if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+			else [(id)[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // typecast as id to mask deprecation warnings.							
+#else
+			[[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // original code
+#endif
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             break;
         default:
@@ -1242,7 +1276,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
-        } else if (newLayout == kBlioPageLayoutPageLayout && [self.book pdfPath]) {
+        } else if (newLayout == kBlioPageLayoutPageLayout && ([self.book pdfPath] || [self.book xpsPath])) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds book:self.book animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
@@ -1387,7 +1421,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             
             NSError *error;
             if (![[self.book managedObjectContext] save:&error])
-                NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);            
+                NSLog(@"[BlioBookViewController observeValueForKeyPath] Save failed with error: %@, %@", error, [error userInfo]);            
         }
     }
     
@@ -1791,31 +1825,24 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)search:(id)sender {
     if (!self.searchController) {
         BlioBookSearchController *aSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
-        aSearchController.delegate = self;
         self.searchController = aSearchController;
         [aSearchController release];
     }
     
-    [self.searchController cancel];
-    BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-    [self.searchController findString:@"Little" fromBookmarkPoint:currentBookmarkPoint];
+    //[self.searchController cancel];
+//    BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
+//    [self.searchController findString:@"Little" fromBookmarkPoint:currentBookmarkPoint];
+    
+    BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
+    [self.searchController setDelegate:aSearchViewController];
+    [aSearchViewController setBookSearchController:self.searchController];
+    [self.searchController setMaxPrefixAndMatchLength:20];
+    [self.searchController setMaxSuffixLength:100];
+    [aSearchViewController setTintColor:_returnToNavigationBarTint];
+    [self.navigationController presentModalViewController:aSearchViewController animated:YES];
+    [aSearchViewController release];
 }
     
-- (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    NSLog(@"searchController didFindString '%@' at page %d paragraph %d word %d element %d", searchString, bookmarkPoint.layoutPage, bookmarkPoint.blockOffset, bookmarkPoint.wordOffset, bookmarkPoint.elementOffset);
-    [self.searchController findNextOccurrence];
-}
-
-- (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)searchController {
-    NSLog(@"Search reached end of book");
-    [self.searchController findNextOccurrence];
-}
-
-- (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)searchController {
-    NSLog(@"Search complete");
-}
-    
-
 - (void)dummyShowParsedText:(id)sender {
     if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
         UITextView *aTextView = [[UITextView alloc] initWithFrame:self.view.bounds];
@@ -1899,7 +1926,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         NSError *error;
         if (![[self managedObjectContext] save:&error])
-            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+            NSLog(@"[BlioBookViewController actionSheet:clickedButtonAtIndex:] Save failed with error: %@, %@", error, [error userInfo]);
         
     } else {
         // Cancel
@@ -1935,7 +1962,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioBookViewController notesViewCreateNote:] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 - (void)notesViewUpdateNote:(BlioNotesView *)notesView {
@@ -1955,7 +1982,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         NSError *error;
         if (![[self managedObjectContext] save:&error])
-            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+            NSLog(@"[BlioBookViewController notesViewUpdateNote:] Save failed with error: %@, %@", error, [error userInfo]);
     }
 }
 
@@ -2047,7 +2074,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioBookViewController deleteNote:] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 - (void)deleteBookmark:(NSManagedObject *)bookmark {
@@ -2057,7 +2084,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioBookViewController deleteBookmark:] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 #pragma mark -
@@ -2232,7 +2259,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         NSError *error;
         if (![[self managedObjectContext] save:&error])
-            NSLog(@"Save failed with error: %@, %@", error, [error userInfo]);
+            NSLog(@"[BlioBookViewController addHighlightWithColor:] Save failed with error: %@, %@", error, [error userInfo]);
     }
     
     //if ([self.bookView respondsToSelector:@selector(refreshHighlights)])

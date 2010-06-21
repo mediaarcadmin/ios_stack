@@ -77,18 +77,20 @@
     
     NSMutableArray *parsedCategories;
     NSMutableArray *parsedEntities;
+	
+	BOOL isParsing;
 }
 
 @property (nonatomic, assign) id <BlioStoreBooksSourceParserDelegate> delegate;
 @property (nonatomic, retain) NSMutableArray *parsedCategories;
 @property (nonatomic, retain) NSMutableArray *parsedEntities;
 @property (nonatomic, retain) GDataServiceGoogleBooks *service;
+@property (nonatomic, readonly) BOOL isParsing;
 
 - (void)startWithURL:(NSURL *)url;
 
 // Subclasses can override these methods
 - (NSURL *)queryUrlForString:(NSString *)queryString;
-
 // Subclasses must override these methods
 - (void)volumeListFetchTicket:(GDataServiceTicket *)ticket finishedWithFeed:(GDataFeedVolume *)object error:(NSError *)error;
 

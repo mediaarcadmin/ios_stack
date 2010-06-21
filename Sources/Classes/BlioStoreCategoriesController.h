@@ -16,16 +16,27 @@ static const NSInteger kBlioMoreResultsCellActivityIndicatorViewWidth = 16;
 
 @protocol BlioProcessingDelegate;
 
-@interface BlioStoreCategoriesController : UITableViewController <BlioStoreBooksSourceParserDelegate> {
+@interface BlioStoreFeedTableViewDataSource : NSObject <UITableViewDataSource> {
     NSMutableArray *feeds;
+}
+@property (nonatomic, retain) NSMutableArray *feeds;
+- (NSString *)getMoreCellLabelForSection:(NSUInteger) section;
+@end
+
+@interface BlioStoreCategoriesController : UITableViewController <BlioStoreBooksSourceParserDelegate> {
     id <BlioProcessingDelegate> processingDelegate;
 	NSManagedObjectContext *managedObjectContext;
 	UIActivityIndicatorView * activityIndicatorView;
+	BlioStoreFeedTableViewDataSource * storeFeedTableViewDataSource;
 }
 
-@property (nonatomic, retain) NSMutableArray *feeds;
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
+@property (nonatomic, assign) NSMutableArray *feeds;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic, readonly) BlioStoreFeedTableViewDataSource * storeFeedTableViewDataSource;
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath feed:(BlioStoreFeed*)feed;
 
 @end
+

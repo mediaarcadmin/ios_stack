@@ -49,22 +49,22 @@
 #pragma mark -
 #pragma mark BlioProcessingDelegate
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL {
 	// for legacy compatibility (pre-sourceID and sourceSpecificID)
 	[self enqueueBookWithTitle:title authors:authors coverURL:coverURL 
-					   ePubURL:ePubURL pdfURL:pdfURL textFlowURL:textFlowURL 
+					   ePubURL:ePubURL pdfURL:pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:textFlowURL 
 				  audiobookURL:audiobookURL sourceID:BlioBookSourceNotSpecified sourceSpecificID:title placeholderOnly:NO];
 }
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	[self enqueueBookWithTitle:title authors:authors coverURL:coverURL 
-					   ePubURL:ePubURL pdfURL:pdfURL textFlowURL:textFlowURL 
+					   ePubURL:ePubURL pdfURL:pdfURL xpsURL:xpsURL textFlowURL:textFlowURL 
 				  audiobookURL:audiobookURL sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO];    
 }
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
-                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL textFlowURL:(NSURL *)textFlowURL 
+                     ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL  xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (nil != moc) {
@@ -126,6 +126,7 @@
 		if (coverURL != nil) [aBook setValue:[coverURL absoluteString] forKey:@"coverFilename"];
 		if (ePubURL != nil) [aBook setValue:[ePubURL absoluteString] forKey:@"epubFilename"];
 		if (pdfURL != nil) [aBook setValue:[pdfURL absoluteString] forKey:@"pdfFilename"];
+        if (xpsURL != nil) [aBook setValue:[xpsURL absoluteString] forKey:@"xpsFilename"];
 		if (textFlowURL != nil) [aBook setValue:[textFlowURL absoluteString] forKey:@"textFlowFilename"];
 		if (audiobookURL != nil) [aBook setValue:[audiobookURL absoluteString] forKey:@"audiobookFilename"];
 		
@@ -139,7 +140,7 @@
 			CFRelease(uniqueString);
 		}        
         if (![moc save:&error]) {
-            NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+            NSLog(@"[BlioProcessingManager enqueueBookWithTitle:] (saving UUID) Save failed with error: %@, %@", error, [error userInfo]);
         }
 		[self enqueueBook:aBook placeholderOnly:placeholderOnly];
 	}
@@ -147,6 +148,7 @@
 -(void) enqueueBook:(BlioMockBook*)aBook {
 	[self enqueueBook:aBook placeholderOnly:NO];
 }
+
 -(void) enqueueBook:(BlioMockBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
 //	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
 
@@ -303,7 +305,7 @@
 			
 		}                    
 	}
-	stringURL = [aBook valueForKey:@"pdfFilename"];
+    stringURL = [aBook valueForKey:@"pdfFilename"];
 	if (stringURL && !placeholderOnly) {
 		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 		else {
@@ -457,14 +459,14 @@
 			url = nil;
 		}
 		BOOL usedPreExistingOperation = NO;
-		BlioProcessingDownloadAndUnzipPaidBookOperation * paidBookOp = nil;
+		BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
 		
 		if (nil != url) {
 			// we still need to finish downloading this file
 			// so check to see if operation already exists
-			paidBookOp = (BlioProcessingDownloadAndUnzipPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingPaidBookDownloadOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingPaidBookDownloadOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!paidBookOp || paidBookOp.isCancelled) {
-				paidBookOp = [[[BlioProcessingDownloadAndUnzipPaidBookOperation alloc] initWithUrl:url] autorelease];
+				paidBookOp = [[[BlioProcessingDownloadPaidBookOperation alloc] initWithUrl:url] autorelease];
 				paidBookOp.bookID = bookID;
 				paidBookOp.sourceID = sourceID;
 				paidBookOp.sourceSpecificID = sourceSpecificID;
@@ -480,6 +482,24 @@
 			}
 			[bookOps addObject:paidBookOp];
 		}
+		BlioProcessingOperation * licenseOp = [self operationByClass:NSClassFromString(@"BlioProcessingLicenseAcquisitionOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+		if (!licenseOp || licenseOp.isCancelled) {
+			licenseOp = [[[BlioProcessingLicenseAcquisitionOperation alloc] init] autorelease];
+			licenseOp.bookID = bookID;
+			licenseOp.sourceID = sourceID;
+			licenseOp.sourceSpecificID = sourceSpecificID;
+			licenseOp.storeCoordinator = [moc persistentStoreCoordinator];
+			licenseOp.cacheDirectory = cacheDir;
+			licenseOp.tempDirectory = tempDir;
+			if (paidBookOp && usedPreExistingOperation == NO) [licenseOp addDependency:paidBookOp];
+			[self.preAvailabilityQueue addOperation:licenseOp];
+			[bookOps addObject:licenseOp];
+		}
+		else {
+			// if it already exists, it is dependent on a completed operation
+		}
+		
+		
 	}
 	
 	BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];
@@ -507,10 +527,11 @@
 		[aBook setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete] forKey:@"processingState"];			
 		NSError * error;
 		if (![moc save:&error]) {
-			NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+			NSLog(@"[BlioProcessingManager enqueueBook:placeholderOnly:] (changing state to incomplete) Save failed with error: %@, %@", error, [error userInfo]);
 		}			
 	}		
 }
+    
 - (void) resumeProcessing {
     NSManagedObjectContext *moc = [self managedObjectContext];
 	
@@ -622,7 +643,7 @@
 	[self stopProcessingForBook:aBook];
 	NSError * error;
 	if (![moc save:&error]) {
-		NSLog(@"Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+		NSLog(@"[BlioProcessingManager pauseProcessingForBook:] (set state to paused) Save failed in processing manager with error: %@, %@", error, [error userInfo]);
 	}			
 }
 - (void)stopProcessingForBook:(BlioMockBook*)aBook {

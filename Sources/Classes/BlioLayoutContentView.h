@@ -36,14 +36,16 @@
 @end
 
 @interface BlioLayoutContentView : UIView {
-    id <BlioLayoutDataSource> dataSource;
+    id <BlioLayoutRenderingDelegate> renderingDelegate;
     NSMutableSet *pageLayers;
+    NSInteger maxTileSize;
 }
 
-@property (nonatomic, assign) id <BlioLayoutDataSource> dataSource;
+@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic, retain) NSMutableSet *pageLayers;
 
 - (BlioLayoutPageLayer *)addPage:(int)aPageNumber retainPages:(NSSet *)pages;
 - (void)layoutSubviewsAfterBoundsChange;
+- (void)abortRendering;
 
 @end

@@ -115,6 +115,7 @@
 													coverURL:[NSURL URLWithString:coverURL] 
 													 ePubURL:nil 
 													  pdfURL:nil 
+                                                      xpsURL:nil
 												 textFlowURL:nil 
 												audiobookURL:nil 
 													sourceID:BlioBookSourceOnlineStore 

@@ -23,7 +23,7 @@
 
 @implementation BlioBookSearchController
 
-@synthesize paragraphSource, delegate, searchString, searching, searchOptions, searchResultsContextCharacters, startParagraphID, startElementOffset, currentParagraphID, currentElementOffset, currentParagraphWords, hasLooped;
+@synthesize paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentElementOffset, currentParagraphWords, hasLooped;
 
 - (void)dealloc {
     [self cancel];
@@ -136,14 +136,34 @@
         NSUInteger characterOffset = 0;
         NSUInteger wordOffset = 0;
         NSUInteger elementOffset = NSNotFound;
+        NSString *prefix = @"";
         
         for (NSString *word in self.currentParagraphWords) {
             if ((characterOffset + [word length]) > foundRange.location) {
                 elementOffset = foundRange.location - characterOffset;
+                prefix = [word substringWithRange:NSMakeRange(0, elementOffset)];
                 break;
             } else {
                 characterOffset += [word length] + 1;
                 wordOffset++;
+            }
+        }
+        
+        NSString *matchString = [currentParagraphString substringWithRange:foundRange];
+        NSUInteger endOfMatchOffset = foundRange.location + foundRange.length;
+        NSString *suffix = [currentParagraphString substringWithRange:NSMakeRange(endOfMatchOffset, MIN(self.maxSuffixLength, [currentParagraphString length] - 1 - endOfMatchOffset))];
+        
+        NSInteger prefixLength = self.maxPrefixAndMatchLength - foundRange.length;
+        
+        if (prefixLength > 0) {
+            NSArray *prefixWords = [self.currentParagraphWords subarrayWithRange:NSMakeRange(0, wordOffset)] ;
+            NSEnumerator *reversedWords = [prefixWords reverseObjectEnumerator];
+            
+            for (NSString *prefixWord in reversedWords) {
+                if (([prefix length] + [prefixWord length]) < prefixLength)
+                    prefix = [NSString stringWithFormat:@"%@ %@", prefixWord, prefix];
+                else
+                    break;
             }
         }
         
@@ -155,8 +175,8 @@
         
         [self searchStopped];
         
-        if ([(NSObject *)self.delegate respondsToSelector:@selector(searchController:didFindString:atBookmarkPoint:)])
-            [self.delegate searchController:self didFindString:self.searchString atBookmarkPoint:foundBookmarkPoint];
+        if ([(NSObject *)self.delegate respondsToSelector:@selector(searchController:didFindString:atBookmarkPoint:withPrefix:withSuffix:)])
+            [self.delegate searchController:self didFindString:matchString atBookmarkPoint:foundBookmarkPoint withPrefix:prefix withSuffix:suffix];
         
     } else {
         self.currentParagraphID = [self.paragraphSource nextParagraphIdForParagraphWithID:self.currentParagraphID];

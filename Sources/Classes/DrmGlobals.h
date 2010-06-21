@@ -19,6 +19,10 @@
 	DRM_WCHAR* _dataStore;
 	DRM_STRING dataStore;
 	
+	// License rights.  For now just Read.
+	DRM_WCHAR* _readRight;
+	DRM_STRING readRight;
+	
 	// App context.
 	DRM_APP_CONTEXT* drmAppContext;
 	
@@ -26,6 +30,7 @@
 
 @property (nonatomic, assign) DRM_STRING drmPath;
 @property (nonatomic, assign) DRM_STRING dataStore;
+@property (nonatomic, assign) DRM_STRING readRight;
 @property (nonatomic, assign) DRM_APP_CONTEXT* drmAppContext;
 
 
