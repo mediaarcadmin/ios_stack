@@ -6,19 +6,19 @@
 //  Copyright 2009 BitWink. All rights reserved.
 //
 
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioTextFlowParagraphSource.h"
 #import "BlioEPubParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <pthread.h>
 
-@interface BlioMockBook ()
+@interface BlioBook ()
 @property (nonatomic, retain) BlioTextFlow *textFlow;
 @property (nonatomic, retain) EucBUpeBook *ePubBook;
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 @end
 
-@implementation BlioMockBook
+@implementation BlioBook
 
 @dynamic title;
 @dynamic author;

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BlioBookView.h"
 #import "BlioSelectableBookView.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "MSTiltScroller.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucSelector.h>
@@ -54,7 +54,7 @@ typedef enum BlioLayoutPageMode {
 @end
 
 @interface BlioLayoutView : BlioSelectableBookView <BlioLayoutRenderingDelegate, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
-    BlioMockBook *book;
+    BlioBook *book;
     CGPDFDocumentRef pdf;
     BlioLayoutScrollView *scrollView;
     BlioLayoutContentView *contentView;
@@ -95,7 +95,7 @@ typedef enum BlioLayoutPageMode {
     id<BlioLayoutDataSource> dataSource;
 }
 
-@property (nonatomic, retain) BlioMockBook *book;
+@property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, retain) BlioLayoutScrollView *scrollView;
 @property (nonatomic, retain) BlioLayoutContentView *contentView;
 @property (nonatomic, retain) BlioLayoutPageLayer *currentPageLayer;

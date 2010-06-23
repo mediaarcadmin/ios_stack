@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <libEucalyptus/EucBUpeBook.h>
 
-@class BlioMockBook, BlioTextFlow;
+@class BlioBook, BlioTextFlow;
 
 @interface BlioFlowEucBook : EucBUpeBook {
     BlioTextFlow *textFlow;
@@ -17,6 +17,6 @@
 
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
 
-- (id)initWithBlioBook:(BlioMockBook *)blioBook;
+- (id)initWithBlioBook:(BlioBook *)blioBook;
 
 @end

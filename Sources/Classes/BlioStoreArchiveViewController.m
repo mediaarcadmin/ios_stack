@@ -7,7 +7,7 @@
 //
 
 #import "BlioStoreArchiveViewController.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioLibraryViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
@@ -77,9 +77,9 @@
     [libraryPositionSort release];
     
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
-    [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+    [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request
@@ -152,10 +152,10 @@
 	
 	cell.showsReorderControl = YES;	
 }
--(void) pauseProcessingForBook:(BlioMockBook*)book {
+-(void) pauseProcessingForBook:(BlioBook*)book {
 	[self.processingDelegate pauseProcessingForBook:book];
 }
--(void) enqueueBook:(BlioMockBook*)book {
+-(void) enqueueBook:(BlioBook*)book {
 	[self.processingDelegate enqueueBook:book];
 }
 
@@ -167,9 +167,9 @@
 	NSManagedObjectContext * moc = [self managedObjectContext];
 	
 	NSFetchRequest *maxFetch = [[NSFetchRequest alloc] init];
-	[maxFetch setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+	[maxFetch setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
 	[maxFetch setResultType:NSDictionaryResultType];
-	[maxFetch setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	[maxFetch setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
 
 	NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:@"layoutPageEquivalentCount"];
 	NSExpression *maxExpression = [NSExpression expressionForFunction:@"max:" arguments: [NSArray arrayWithObject:keyPathExpression]];

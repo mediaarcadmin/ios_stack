@@ -129,7 +129,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return [self init];
 }
 
-- (id)initWithBook:(BlioMockBook *)newBook {
+- (id)initWithBook:(BlioBook *)newBook {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         self.book = newBook;
 

@@ -9,7 +9,7 @@
 #import "BlioFlowPaginateOperation.h"
 #import "BlioProcessing.h"
 
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioFlowEucBook.h"
 
 #import <libEucalyptus/EucBUpeBook.h>
@@ -91,7 +91,7 @@
         NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
         [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
         
-        eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:(BlioMockBook *)[moc objectWithID:self.bookID]];
+        eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:(BlioBook *)[moc objectWithID:self.bookID]];
         [moc release];
         
         [pool drain];

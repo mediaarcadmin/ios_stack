@@ -7,7 +7,7 @@
 //
 
 #import "BlioFlowEucBook.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioTextFlow.h"
 #import "BlioTextFlowFlowTree.h"
 
@@ -21,7 +21,7 @@
 
 @synthesize textFlow;
 
-- (id)initWithBlioBook:(BlioMockBook *)blioBook;
+- (id)initWithBlioBook:(BlioBook *)blioBook;
 {
     if((self = [super init])) {
         textFlow = [blioBook.textFlow retain];

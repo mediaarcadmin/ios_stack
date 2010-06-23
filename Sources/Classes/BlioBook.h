@@ -14,11 +14,11 @@
 
 @class EucBUpeBook;
 
-static const NSInteger kBlioMockBookProcessingStateNotProcessed = 0;
-static const NSInteger kBlioMockBookProcessingStatePlaceholderOnly = 1;
-static const NSInteger kBlioMockBookProcessingStateIncomplete = 2;
-static const NSInteger kBlioMockBookProcessingStatePaused = 3;
-static const NSInteger kBlioMockBookProcessingStateComplete = 4;
+static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
+static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
+static const NSInteger kBlioBookProcessingStateIncomplete = 2;
+static const NSInteger kBlioBookProcessingStatePaused = 3;
+static const NSInteger kBlioBookProcessingStateComplete = 4;
 
 
 
@@ -27,7 +27,7 @@ static const NSInteger kBlioMockBookProcessingStateComplete = 4;
 @end
 
 
-@interface BlioMockBook : NSManagedObject <BlioBookText> {
+@interface BlioBook : NSManagedObject <BlioBookText> {
     BlioTextFlow *textFlow;
     EucBUpeBook *ePubBook;
     id<BlioParagraphSource> paragraphSource;

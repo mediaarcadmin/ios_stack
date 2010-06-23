@@ -12,7 +12,7 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import "BlioAcapelaAudioManager.h"
 #import "BlioAudioBookManager.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioBookView.h"
 #import "BlioViewSettingsSheet.h"
 #import "BlioNotesView.h"
@@ -74,7 +74,7 @@ typedef enum {
 @interface BlioBookViewController : UIViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
     BOOL _firstAppearance;
     
-    BlioMockBook *_book;
+    BlioBook *_book;
     
     UIView<BlioBookView> *_bookView;
     
@@ -130,9 +130,9 @@ typedef enum {
 }
 
 // Designated initializers.
-- (id)initWithBook:(BlioMockBook *)newBook;
+- (id)initWithBook:(BlioBook *)newBook;
 
-@property (nonatomic, retain) BlioMockBook *book;
+@property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, assign) BOOL toolbarsVisibleAfterAppearance;
 
 @property (nonatomic, assign) UIBarStyle returnToNavigationBarStyle;

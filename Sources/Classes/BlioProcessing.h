@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class BlioMockBook;
+@class BlioBook;
 @class BlioProcessingCompleteOperation;
 
 typedef enum {
@@ -62,16 +62,16 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
                      ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
--(void) enqueueBook:(BlioMockBook*)aBook;
--(void) enqueueBook:(BlioMockBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
+-(void) enqueueBook:(BlioBook*)aBook;
+-(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
 - (void) resumeProcessing;
--(BlioMockBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+-(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource;
 - (BlioProcessingCompleteOperation *)processingCompleteOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (NSArray *)processingOperationsForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
-- (void)pauseProcessingForBook:(BlioMockBook*)aBook;
-- (void)stopProcessingForBook:(BlioMockBook*)aBook;
--(void) deleteBook:(BlioMockBook*)aBook shouldSave:(BOOL)shouldSave;
+- (void)pauseProcessingForBook:(BlioBook*)aBook;
+- (void)stopProcessingForBook:(BlioBook*)aBook;
+-(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave;
 - (void)stopDownloadingOperations;
 - (NSArray *)downloadOperations;
 - (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;

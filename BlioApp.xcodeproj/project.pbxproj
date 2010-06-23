@@ -225,7 +225,7 @@
 		C972648E111C7B8C001BCC0B /* BlioStoreArchiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */; };
 		C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
 		C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F225113C1AB1007B5868 /* SystemConfiguration.framework */; };
-		C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
+		C9775AF610DFD728005E0E2B /* BlioBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioBook.m */; };
 		C9775EA510DFE1C3005E0E2B /* MockCovers in Resources */ = {isa = PBXBuildFile; fileRef = C9775E9A10DFE1C3005E0E2B /* MockCovers */; };
 		C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
 		C977649B10E0E413005E0E2B /* row-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649910E0E413005E0E2B /* row-dark.png */; };
@@ -346,7 +346,7 @@
 		C9AF1A321147A772007D7AFC /* BlioAppAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */; };
 		C9AF1A331147A772007D7AFC /* BlioLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */; };
 		C9AF1A341147A772007D7AFC /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
-		C9AF1A351147A772007D7AFC /* BlioMockBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioMockBook.m */; };
+		C9AF1A351147A772007D7AFC /* BlioBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioBook.m */; };
 		C9AF1A371147A772007D7AFC /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
 		C9AF1A381147A772007D7AFC /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
 		C9AF1A391147A772007D7AFC /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
@@ -1014,8 +1014,8 @@
 		C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreArchiveViewController.m; sourceTree = "<group>"; };
 		C974F221113C1AA0007B5868 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		C974F225113C1AB1007B5868 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		C9775AF410DFD728005E0E2B /* BlioMockBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMockBook.h; sourceTree = "<group>"; };
-		C9775AF510DFD728005E0E2B /* BlioMockBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMockBook.m; sourceTree = "<group>"; };
+		C9775AF410DFD728005E0E2B /* BlioBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBook.h; sourceTree = "<group>"; };
+		C9775AF510DFD728005E0E2B /* BlioBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBook.m; sourceTree = "<group>"; };
 		C9775E9A10DFE1C3005E0E2B /* MockCovers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MockCovers; sourceTree = "<group>"; };
 		C977636C10E056E2005E0E2B /* booktextureandshadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = booktextureandshadow.png; sourceTree = "<group>"; };
 		C977649910E0E413005E0E2B /* row-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "row-dark.png"; sourceTree = "<group>"; };
@@ -1247,8 +1247,8 @@
 				7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */,
 				553E98FF1107B8F200FB309D /* BlioSpeedReadView.h */,
 				553E99001107B8F200FB309D /* BlioSpeedReadView.m */,
-				C9775AF410DFD728005E0E2B /* BlioMockBook.h */,
-				C9775AF510DFD728005E0E2B /* BlioMockBook.m */,
+				C9775AF410DFD728005E0E2B /* BlioBook.h */,
+				C9775AF510DFD728005E0E2B /* BlioBook.m */,
 				7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */,
 				7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */,
 				C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */,
@@ -2410,7 +2410,7 @@
 				1D3623260D0F684500981E51 /* BlioAppAppDelegate.m in Sources */,
 				28C286E10D94DF7D0034E888 /* BlioLibraryViewController.m in Sources */,
 				C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */,
-				C9775AF610DFD728005E0E2B /* BlioMockBook.m in Sources */,
+				C9775AF610DFD728005E0E2B /* BlioBook.m in Sources */,
 				A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */,
 				A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */,
 				A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */,
@@ -2508,7 +2508,7 @@
 				C9AF1A321147A772007D7AFC /* BlioAppAppDelegate.m in Sources */,
 				C9AF1A331147A772007D7AFC /* BlioLibraryViewController.m in Sources */,
 				C9AF1A341147A772007D7AFC /* BlioLayoutView.m in Sources */,
-				C9AF1A351147A772007D7AFC /* BlioMockBook.m in Sources */,
+				C9AF1A351147A772007D7AFC /* BlioBook.m in Sources */,
 				C9AF1A371147A772007D7AFC /* BlioAcapelaAudioManager.m in Sources */,
 				C9AF1A381147A772007D7AFC /* force_cpp.cpp in Sources */,
 				C9AF1A391147A772007D7AFC /* setupTTS.m in Sources */,

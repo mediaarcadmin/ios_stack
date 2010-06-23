@@ -35,7 +35,7 @@
 @synthesize pageNumber = _pageNumber;
 
 - (id)initWithFrame:(CGRect)frame
-               book:(BlioMockBook *)aBook 
+               book:(BlioBook *)aBook 
            animated:(BOOL)animated 
 {
     if((self = [super initWithFrame:frame])) {

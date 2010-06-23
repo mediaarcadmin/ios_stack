@@ -13,7 +13,7 @@
 #import <QuartzCore/CATransaction.h>
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/THPair.h>
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioParagraphSource.h"
 
 @interface BlioSpeedReadView ()
@@ -30,7 +30,7 @@
 @synthesize pageNumber, currentWordOffset, currentParagraphID, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
 - (id)initWithFrame:(CGRect)frame
-               book:(BlioMockBook *)aBook 
+               book:(BlioBook *)aBook 
            animated:(BOOL)animated {
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
         book = [aBook retain];

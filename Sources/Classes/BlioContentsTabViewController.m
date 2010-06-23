@@ -22,24 +22,24 @@ typedef enum {
 
 
 @interface BlioContentsTabBookmarksViewController : UITableViewController {
-    BlioMockBook *book;
+    BlioBook *book;
     NSManagedObject *selectedBookmark;
     UIView<BlioBookView> *bookView;
 }
 
-@property (nonatomic, retain) BlioMockBook *book;
+@property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, retain) NSManagedObject *selectedBookmark;
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 
 @end
 
 @interface BlioContentsTabNotesViewController : UITableViewController {
-    BlioMockBook *book;
+    BlioBook *book;
     NSManagedObject *selectedNote;
     UIView<BlioBookView> *bookView;
 }
 
-@property (nonatomic, retain) BlioMockBook *book;
+@property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, retain) NSManagedObject *selectedNote;
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 
@@ -61,7 +61,7 @@ typedef enum {
     [super dealloc];
 }
 
-- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioMockBook *)aBook {
+- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook {
         
     UIViewController *aRootVC = [[UIViewController alloc] init];
     

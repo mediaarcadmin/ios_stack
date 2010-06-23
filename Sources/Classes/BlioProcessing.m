@@ -7,7 +7,7 @@
 //
 
 #import "BlioProcessing.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 
 NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
 NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
@@ -108,8 +108,8 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     }
     
     NSFetchRequest *aRequest = [[NSFetchRequest alloc] init];
-    [aRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-    [aRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]];
+    [aRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [aRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
     
     // Block whilst we calculate the position so that other threads don't perform the same
     // check at the same time
@@ -120,7 +120,7 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
             NSLog(@"Failed to retrieve book count with error: %@, %@", anError, [anError userInfo]);
         } else {
             [book setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];
-            [book setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateComplete] forKey:@"processingState"];
+            [book setValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
         }
         
         NSError *anError;
