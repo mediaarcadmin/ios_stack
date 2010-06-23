@@ -1078,36 +1078,36 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)showSettings:(id)sender {    
 	BlioAppSettingsController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
     
-	// TEMPORARY: test code, will be moved
-	
-	// Get license for a book.
-	NSString* xpsBook = @"The Tale of Peter Rabbit.drm.xps";
-	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsBook ofType:nil inDirectory:@"PDFs"];
-	BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookPath:xpsPath];
-	
-	// Decrypt a fixed page from the book.
-	unsigned char* decryptedBuff;	
-	NSInteger decryptedBuffSz;
-	void* xpsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsPath];
-	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] xpsFileHandle:xpsHandle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
-	// If successful, decrypted content is now in the buffer.
-	// Do something with it.  Don't forget you now have the size of the buffer too.
-	NSLog(@"Decrypted page: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
-	// You are responsible for freeing (not releasing) the buffer.
-	free(decryptedBuff);
-	
-	// Decrypt a textflow file for the book.
-	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"] xpsFileHandle:xpsHandle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
-	// If successful, decrypted content is now in the buffer.
-	// Do something with it.  Don't forget you now have the size of the buffer too.
-	NSLog(@"Decrypted textflow: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
-	// You are responsible for freeing (not releasing) the buffer.
-	free(decryptedBuff);
-	
-	// Close the xps file.
-	[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsHandle];
-	
-	// END temporary code
+//	// TEMPORARY: test code, will be moved
+//	
+//	// Get license for a book.
+//	NSString* xpsBook = @"The Tale of Peter Rabbit.drm.xps";
+//	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsBook ofType:nil inDirectory:@"PDFs"];
+//	BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookPath:xpsPath];
+//	
+//	// Decrypt a fixed page from the book.
+//	unsigned char* decryptedBuff;	
+//	NSInteger decryptedBuffSz;
+//	void* xpsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsPath];
+//	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] xpsFileHandle:xpsHandle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+//	// If successful, decrypted content is now in the buffer.
+//	// Do something with it.  Don't forget you now have the size of the buffer too.
+//	NSLog(@"Decrypted page: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
+//	// You are responsible for freeing (not releasing) the buffer.
+//	free(decryptedBuff);
+//	
+//	// Decrypt a textflow file for the book.
+//	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"] xpsFileHandle:xpsHandle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+//	// If successful, decrypted content is now in the buffer.
+//	// Do something with it.  Don't forget you now have the size of the buffer too.
+//	NSLog(@"Decrypted textflow: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
+//	// You are responsible for freeing (not releasing) the buffer.
+//	free(decryptedBuff);
+//	
+//	// Close the xps file.
+//	[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsHandle];
+//	
+//	// END temporary code
 	
 	[self presentModalViewController:settingsController animated:YES];
     [settingsController release];    
@@ -1117,7 +1117,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-	NSLog(@"buttonIndex: %i",buttonIndex);
+//	NSLog(@"buttonIndex: %i",buttonIndex);
 	if (buttonIndex == actionSheet.cancelButtonIndex) {
 			NSLog(@"Sort Sheet cancelled");
 			return;
