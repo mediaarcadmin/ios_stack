@@ -650,8 +650,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 -(NSInteger)numberOfItemsInGridView:(MRGridView*)gridView{
     NSArray *sections = [self.fetchedResultsController sections];
     NSUInteger bookCount = 0;
-	id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:0];
-	bookCount = [sectionInfo numberOfObjects];
+	if ([sections count]) {
+		id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:0];
+		bookCount = [sectionInfo numberOfObjects];
+	}
 	return bookCount;
 }
 
