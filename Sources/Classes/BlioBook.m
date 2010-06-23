@@ -20,24 +20,26 @@
 
 @implementation BlioBook
 
+// Dynamic properties (map to core data attributes)
 @dynamic title;
 @dynamic author;
+@dynamic progress;
+@dynamic processingState;
+@dynamic sourceID;
+@dynamic sourceSpecificID;
+
+
+// Legacy dynamic properties TODO: remove these
 @dynamic coverFilename;
 @dynamic epubFilename;
 @dynamic pdfFilename;
-@dynamic progress;
-@dynamic processingState;
 @dynamic libraryPosition;
 @dynamic layoutPageEquivalentCount;
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
 @dynamic textFlowFilename;
-@dynamic sourceID;
-@dynamic sourceSpecificID;
-@dynamic placeInBook;
 @dynamic xpsFilename;
-
 
 // Lazily instantiated - see getters below.
 @synthesize textFlow;
@@ -51,6 +53,120 @@
     [paragraphSource release];
     
     [super dealloc];
+}
+
+#pragma mark -
+#pragma mark Convenience accessors
+
+- (BlioBookmarkPoint *)implicitBookmarkPoint
+{
+    BlioBookmarkPoint *ret;
+    
+    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
+    if(placeInBook) {
+        ret = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[[placeInBook valueForKey:@"range"] valueForKey:@"startPoint"]];
+    } else {
+        ret = [[[BlioBookmarkPoint alloc] init] autorelease];
+        ret.layoutPage = 1;
+    }
+    return ret;
+}
+
+- (void)setImplicitBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
+    if(placeInBook) {
+        NSManagedObject *persistentBookmarkRange = [placeInBook valueForKey:@"range"];
+        
+        NSNumber *layoutPageNumber = [NSNumber numberWithInteger:bookmarkPoint.layoutPage];
+        NSNumber *layoutBlockOffset = [NSNumber numberWithInteger:bookmarkPoint.blockOffset];
+        NSNumber *layoutWordOffset = [NSNumber numberWithInteger:bookmarkPoint.wordOffset];
+        NSNumber *layoutElementOffset = [NSNumber numberWithInteger:bookmarkPoint.elementOffset];   
+        
+        NSManagedObject *bookmarkStartPoint = [persistentBookmarkRange valueForKey:@"startPoint"];
+        [bookmarkStartPoint setValue:layoutPageNumber forKey:@"layoutPage"];
+        [bookmarkStartPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
+        [bookmarkStartPoint setValue:layoutWordOffset forKey:@"wordOffset"];
+        [bookmarkStartPoint setValue:layoutElementOffset forKey:@"elementOffset"];
+        
+        NSManagedObject *bookmarkEndPoint = [persistentBookmarkRange valueForKey:@"endPoint"];
+        [bookmarkEndPoint setValue:layoutPageNumber forKey:@"layoutPage"];
+        [bookmarkEndPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
+        [bookmarkEndPoint setValue:layoutWordOffset forKey:@"wordOffset"];
+        [bookmarkEndPoint setValue:layoutElementOffset forKey:@"elementOffset"];
+    } else {
+        placeInBook = [NSEntityDescription
+                       insertNewObjectForEntityForName:@"BlioPlaceInBook"
+                       inManagedObjectContext:[self managedObjectContext]];
+        [self setValue:placeInBook forKey:@"placeInBook"];
+        
+        BlioBookmarkRange *bookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
+        
+        NSManagedObject *persistentBookmarkRange = [bookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+        [placeInBook setValue:persistentBookmarkRange forKey:@"range"];
+    }     
+}
+
+- (BlioTextFlow *)textFlow {
+    
+    if (nil == textFlow) {
+        NSSet *pageRanges = [self valueForKey:@"textFlowPageRanges"];
+        if (pageRanges) { 
+            BlioTextFlow *myTextFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
+            self.textFlow = myTextFlow;
+            [myTextFlow release];
+        }
+    }
+    
+    return textFlow;
+}
+
+- (EucBUpeBook *)ePubBook {
+    if (nil == ePubBook) {
+        NSString *ePubPath = self.ePubPath;
+        if (ePubPath) {
+            EucBUpeBook *myEPubBook = [[EucBUpeBook alloc] initWithPath:[self ePubPath]];
+            [myEPubBook setPersistsPositionAutomatically:NO];
+            [myEPubBook setCacheDirectoryPath:[self.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"]];
+            self.ePubBook = myEPubBook;
+            [myEPubBook release];
+        }
+    }
+    return ePubBook;    
+}
+
+- (id<BlioParagraphSource>)paragraphSource {
+    if (nil == paragraphSource) {
+        BlioTextFlow *myTextFlow = self.textFlow;
+        id<BlioParagraphSource> myParagraphSource = nil;
+        if (myTextFlow) {
+            myParagraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
+        } else {
+            EucBUpeBook *myEPubBook = self.ePubBook;
+            if(myEPubBook) {
+                myParagraphSource = [[BlioEPubParagraphSource alloc] initWitBUpeBook:myEPubBook];
+            }
+        }
+        if(myParagraphSource) {
+            self.paragraphSource = myParagraphSource;
+            [myParagraphSource release];
+        }
+    }
+    return paragraphSource;
+}
+
+- (NSString *)bookCacheDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
+    return bookPath;
+}
+
+- (NSString *)bookTempDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
+    return bookPath;
 }
 
 - (NSString *)coverPath {
@@ -165,53 +281,6 @@
     return [UIImage imageWithData:imageData];
 }
 
-- (BlioTextFlow *)textFlow {
-        
-    if (nil == textFlow) {
-        NSSet *pageRanges = [self valueForKey:@"textFlowPageRanges"];
-        if (pageRanges) { 
-            BlioTextFlow *myTextFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
-            self.textFlow = myTextFlow;
-            [myTextFlow release];
-        }
-    }
-    
-    return textFlow;
-}
-
-- (EucBUpeBook *)ePubBook {
-    if (nil == ePubBook) {
-        NSString *ePubPath = self.ePubPath;
-        if (ePubPath) {
-            EucBUpeBook *myEPubBook = [[EucBUpeBook alloc] initWithPath:[self ePubPath]];
-            [myEPubBook setPersistsPositionAutomatically:NO];
-            [myEPubBook setCacheDirectoryPath:[self.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"]];
-            self.ePubBook = myEPubBook;
-            [myEPubBook release];
-        }
-    }
-    return ePubBook;    
-}
-
-- (id<BlioParagraphSource>)paragraphSource {
-    if (nil == paragraphSource) {
-        BlioTextFlow *myTextFlow = self.textFlow;
-        id<BlioParagraphSource> myParagraphSource = nil;
-        if (myTextFlow) {
-            myParagraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
-        } else {
-            EucBUpeBook *myEPubBook = self.ePubBook;
-            if(myEPubBook) {
-                myParagraphSource = [[BlioEPubParagraphSource alloc] initWitBUpeBook:myEPubBook];
-            }
-        }
-        if(myParagraphSource) {
-            self.paragraphSource = myParagraphSource;
-            [myParagraphSource release];
-        }
-    }
-    return paragraphSource;
-}
 
 - (void)flushCaches
 {
@@ -424,68 +493,6 @@ static void sortedHighlightRangePredicateInit() {
     } else {
         return nil;
     }
-}
-
-- (NSString *)bookCacheDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
-    return bookPath;
-}
-- (NSString *)bookTempDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
-    return bookPath;
-}
-
-- (BlioBookmarkPoint *)implicitBookmarkPoint
-{
-    BlioBookmarkPoint *ret;
-    
-    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
-    if(placeInBook) {
-        ret = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[[placeInBook valueForKey:@"range"] valueForKey:@"startPoint"]];
-    } else {
-        ret = [[[BlioBookmarkPoint alloc] init] autorelease];
-        ret.layoutPage = 1;
-    }
-    return ret;
-}
-
-- (void)setImplicitBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
-{
-    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
-    if(placeInBook) {
-        NSManagedObject *persistentBookmarkRange = [placeInBook valueForKey:@"range"];
-        
-        NSNumber *layoutPageNumber = [NSNumber numberWithInteger:bookmarkPoint.layoutPage];
-        NSNumber *layoutBlockOffset = [NSNumber numberWithInteger:bookmarkPoint.blockOffset];
-        NSNumber *layoutWordOffset = [NSNumber numberWithInteger:bookmarkPoint.wordOffset];
-        NSNumber *layoutElementOffset = [NSNumber numberWithInteger:bookmarkPoint.elementOffset];   
-        
-        NSManagedObject *bookmarkStartPoint = [persistentBookmarkRange valueForKey:@"startPoint"];
-        [bookmarkStartPoint setValue:layoutPageNumber forKey:@"layoutPage"];
-        [bookmarkStartPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
-        [bookmarkStartPoint setValue:layoutWordOffset forKey:@"wordOffset"];
-        [bookmarkStartPoint setValue:layoutElementOffset forKey:@"elementOffset"];
-        
-        NSManagedObject *bookmarkEndPoint = [persistentBookmarkRange valueForKey:@"endPoint"];
-        [bookmarkEndPoint setValue:layoutPageNumber forKey:@"layoutPage"];
-        [bookmarkEndPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
-        [bookmarkEndPoint setValue:layoutWordOffset forKey:@"wordOffset"];
-        [bookmarkEndPoint setValue:layoutElementOffset forKey:@"elementOffset"];
-    } else {
-        placeInBook = [NSEntityDescription
-                       insertNewObjectForEntityForName:@"BlioPlaceInBook"
-                       inManagedObjectContext:[self managedObjectContext]];
-        [self setValue:placeInBook forKey:@"placeInBook"];
-        
-        BlioBookmarkRange *bookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
-        
-        NSManagedObject *persistentBookmarkRange = [bookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
-        [placeInBook setValue:persistentBookmarkRange forKey:@"range"];
-    }     
 }
 
 #pragma mark -
