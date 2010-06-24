@@ -51,9 +51,6 @@ static const NSInteger kBlioBookProcessingStateComplete = 4;
 @property (nonatomic, retain) NSString *textFlowFilename;
 
 // Legacy core data attribute-backed convenience accessors TODO: remove these
-@property (nonatomic, assign, readonly) UIImage *coverImage;
-@property (nonatomic, assign, readonly) UIImage *coverThumbForGrid;
-@property (nonatomic, assign, readonly) UIImage *coverThumbForList;
 @property (nonatomic, assign, readonly) NSString *ePubPath;
 @property (nonatomic, assign, readonly) NSString *pdfPath;
 @property (nonatomic, assign, readonly) NSString *xpsPath;
@@ -73,6 +70,9 @@ static const NSInteger kBlioBookProcessingStateComplete = 4;
 @property (nonatomic, assign, readonly) NSString* bookTempDirectory;
 
 // Book manifest-backed convenience accessors
+@property (nonatomic, assign, readonly) UIImage *coverImage;
+@property (nonatomic, assign, readonly) UIImage *coverThumbForGrid;
+@property (nonatomic, assign, readonly) UIImage *coverThumbForList;
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow, ePub book etc.)
@@ -85,5 +85,7 @@ static const NSInteger kBlioBookProcessingStateComplete = 4;
 - (NSArray *)sortedHighlightRangesForRange:(BlioBookmarkRange *)range;
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range;
 
+- (void)setManifestValue:(id)value forKey:(NSString *)key;
+- (NSData *)manifestDataForKey:(NSString *)key;
 
 @end

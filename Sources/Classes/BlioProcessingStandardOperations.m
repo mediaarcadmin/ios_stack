@@ -453,7 +453,13 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 
         }
 		else {
-			[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+			//[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:(NSString *)uniqueString forKey:@"path"];
+            
+            [self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+            [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
 			self.operationSuccess = YES;
 			self.percentageComplete = 100;
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
@@ -745,19 +751,20 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     }
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *coverFile = [self getBookValueForKey:@"coverFilename"]; 
-    NSString *coverPath = [self.cacheDirectory stringByAppendingPathComponent:coverFile];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:coverPath]) {
-        NSLog(@"Could not create thumbs because cover file did not exist at path: %@.", coverPath);
-        [pool drain];
-        return;
-    }
+    //NSString *coverFile = [self getBookValueForKey:@"coverFilename"]; 
+    //NSString *coverPath = [self.cacheDirectory stringByAppendingPathComponent:coverFile];
+    //if (![[NSFileManager defaultManager] fileExistsAtPath:coverPath]) {
+     //   NSLog(@"Could not create thumbs because cover file did not exist at path: %@.", coverPath);
+     //   [pool drain];
+     //   return;
+    //}
     
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:coverPath];
+    //NSData *imageData = [NSData dataWithContentsOfMappedFile:coverPath];
+    NSData *imageData = [self getBookManifestDataForKey:@"coverFilename"];    
     UIImage *cover = [UIImage imageWithData:imageData];
     
     if (nil == cover) {
-        NSLog(@"Could not create thumbs because cover image at path %@ was not an image.", coverPath);
+        NSLog(@"Could not create thumbs because cover image was not an image.");
         [pool drain];
         return;
     }
@@ -772,7 +779,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"gridThumb.png"];
     [gridData writeToFile:gridThumbPath atomically:YES];
     [gridThumb release]; // this is giving an ERROR (TODO)
-    [self setBookValue:@"gridThumb.png" forKey:@"gridThumbFilename"];
+    
+    NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
+    [gridThumbManifestEntry setValue:@"fileSystem" forKey:@"location"];
+    [gridThumbManifestEntry setValue:@"gridThumb.png" forKey:@"path"];
+    [self setBookManifestValue:gridThumbManifestEntry forKey:@"gridThumbFilename"];
 
     if ([self isCancelled]) {
         [pool drain];
@@ -784,7 +795,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     NSString *listThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"listThumb.png"];
     [listData writeToFile:listThumbPath atomically:YES];
     [listThumb release];
-    [self setBookValue:@"listThumb.png" forKey:@"listThumbFilename"];
+    
+    NSDictionary *listThumbManifestEntry = [NSMutableDictionary dictionary];
+    [listThumbManifestEntry setValue:@"fileSystem" forKey:@"location"];
+    [listThumbManifestEntry setValue:@"listThumb.png" forKey:@"path"];
+    [self setBookManifestValue:listThumbManifestEntry forKey:@"listThumbFilename"];
 	self.operationSuccess = YES;
 	self.percentageComplete = 100;
     

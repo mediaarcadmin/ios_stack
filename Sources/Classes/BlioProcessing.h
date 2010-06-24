@@ -46,6 +46,9 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 @property (nonatomic, retain) NSString *tempDirectory;
 @property (nonatomic) BOOL operationSuccess;
 
+- (void)setBookManifestValue:(id)value forKey:(NSString *)key;
+- (NSData *)getBookManifestDataForKey:(NSString *)key;
+
 - (void)setBookValue:(id)value forKey:(NSString *)key;
 - (id)getBookValueForKey:(NSString *)key;
 

@@ -34,6 +34,29 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     [super dealloc];
 }
 
+- (void)setBookManifestValue:(id)value forKey:(NSString *)key {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+    [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
+    @synchronized (self.storeCoordinator) {
+        BlioBook *book = (BlioBook *)[moc objectWithID:self.bookID];
+        if (nil == book) {
+            NSLog(@"Failed to retrieve book");
+        } else {
+            [book setManifestValue:value forKey:key];
+        }
+        
+        NSError *anError;
+        if (![moc save:&anError]) {
+            NSLog(@"[BlioProcessingOperation setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
+        }
+    }
+    [moc release];
+    
+    [pool drain];
+}
+
 - (void)setBookValue:(id)value forKey:(NSString *)key {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
@@ -54,6 +77,26 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     [moc release];
     
     [pool drain];
+}
+
+- (NSData *)getBookManifestDataForKey:(NSString *)key {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+    [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
+    BlioBook *book = (BlioBook *)[moc objectWithID:self.bookID];
+    
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book");
+        [moc release];
+        [pool drain];
+        return nil;
+    } 
+    
+    NSData *data = [[book manifestDataForKey:key] retain];
+    [moc release];
+    [pool drain];
+    return [data autorelease];
 }
 
 - (id)getBookValueForKey:(NSString *)key {

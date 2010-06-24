@@ -169,36 +169,6 @@
     return bookPath;
 }
 
-- (NSString *)coverPath {
-    NSString *filename = [self valueForKey:@"coverFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)thumbForGridPath {
-    NSString *filename = [self valueForKey:@"gridThumbFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)thumbForListPath {
-    NSString *filename = [self valueForKey:@"listThumbFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
 - (NSString *)ePubPath {
     NSString *filename = [self valueForKey:@"epubFilename"];
     if (filename) {
@@ -264,20 +234,17 @@
 }
 
 - (UIImage *)coverImage {
-    NSString *path = [self coverPath];
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:path];
+    NSData *imageData = [self manifestDataForKey:@"coverFilename"];
     return [UIImage imageWithData:imageData];
 }
 
 - (UIImage *)coverThumbForGrid {
-    NSString *path = [self thumbForGridPath];
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:path];
+    NSData *imageData = [self manifestDataForKey:@"gridThumbFilename"];
     return [UIImage imageWithData:imageData];
 }
 
 - (UIImage *)coverThumbForList {
-    NSString *path = [self thumbForListPath];
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:path];
+    NSData *imageData = [self manifestDataForKey:@"listThumbFilename"];
     return [UIImage imageWithData:imageData];
 }
 
@@ -454,6 +421,50 @@ static void sortedHighlightRangePredicateInit() {
         [highlightRanges addObject:range];
     }
     return highlightRanges;
+}
+
+- (void)setManifestValue:(id)value forKey:(NSString *)key {
+    NSMutableDictionary *manifest = nil;
+    NSDictionary *currentManifest = [self valueForKey:@"manifest"];
+    if (currentManifest) {
+        manifest = [NSMutableDictionary dictionaryWithDictionary:currentManifest];
+    } else {
+        manifest = [NSMutableDictionary dictionary];
+    }
+    
+    [manifest setValue:value forKey:key];
+    [self setValue:manifest forKeyPath:@"manifest"];
+}
+
+- (NSData *)dataFromFileSystemAtPath:(NSString *)path {
+    NSData *data = nil;
+    NSString *filePath = [self.bookCacheDirectory stringByAppendingPathComponent:path];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
+        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", filePath);
+    else
+        data = [NSData dataWithContentsOfMappedFile:filePath];
+    
+    return data;
+}
+
+- (NSData *)dataFromXPSAtPath:(NSString *)path {
+    return nil;
+}
+
+- (NSData *)manifestDataForKey:(NSString *)key {
+    NSData *data = nil;
+    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        NSString *location = [manifestEntry objectForKey:@"location"];
+        NSString *path = [manifestEntry objectForKey:@"path"];
+        if (location && path) {
+            if ([location isEqualToString:@"fileSystem"])
+                data = [self dataFromFileSystemAtPath:path];
+            else if ([location isEqualToString:@"xps"])
+                data = [self dataFromXPSAtPath:path];
+        }
+    }
+    return data;
 }
 
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range {

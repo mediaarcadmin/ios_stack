@@ -32,8 +32,7 @@
     NSString *platformString = [self blioDevicePlatform];
     
     CGFloat layoutZoom = 2;
-    //CGFloat highLayoutZoom = 4;
-    CGFloat highLayoutZoom = 32;
+    CGFloat highLayoutZoom = 4;
   
     // Devices newer than iPhone 3G or iPod 2G will be able to handle higher zoom levels
     if ([[self model] isEqualToString:@"iPhone"]) {
