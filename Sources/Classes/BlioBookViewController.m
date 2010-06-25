@@ -199,8 +199,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
         } 
-        // Force - TODO remove this
-        lastLayout = kBlioPageLayoutPageLayout;
         
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {

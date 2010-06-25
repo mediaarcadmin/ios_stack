@@ -29,7 +29,10 @@
         self.author = blioBook.author;
         self.path = blioBook.bookCacheDirectory;
         self.etextNumber = nil;
-        self.coverPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:blioBook.coverFilename];
+        // TODO ePubs will need to use [blioBook coverImage] of [blioBook manifestDataForKey:@"coverFilename"]
+        //self.coverPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:blioBook.coverFilename];
+        self.coverPath = [blioBook manifestPathForKey:@"coverFilename"];
+        
     }
     
     return self;

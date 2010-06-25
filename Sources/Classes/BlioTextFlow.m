@@ -907,10 +907,10 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *filename = [self getBookValueForKey:@"textFlowFilename"];
-    NSString *path = [[self.cacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:filename];
+    NSString *path = [self getBookManifestPathForKey:@"textFlowFilename"];
+    //NSString *path = [[self.cacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:filename];
     
-    if (!filename || ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+    if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist at path: %@.", path);
         [pool drain];
         return;

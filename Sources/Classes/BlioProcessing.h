@@ -48,6 +48,7 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 
 - (void)setBookManifestValue:(id)value forKey:(NSString *)key;
 - (NSData *)getBookManifestDataForKey:(NSString *)key;
+- (NSString *)getBookManifestPathForKey:(NSString *)key;
 
 - (void)setBookValue:(id)value forKey:(NSString *)key;
 - (id)getBookValueForKey:(NSString *)key;

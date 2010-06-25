@@ -16,6 +16,9 @@
 @property (nonatomic, retain) BlioTextFlow *textFlow;
 @property (nonatomic, retain) EucBUpeBook *ePubBook;
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
+
+- (NSString *)manifestPathForKey:(NSString *)key; // this should not be made public
+
 @end
 
 @implementation BlioBook
@@ -27,19 +30,19 @@
 @dynamic processingState;
 @dynamic sourceID;
 @dynamic sourceSpecificID;
-
+@dynamic layoutPageEquivalentCount;
+@dynamic libraryPosition;
 
 // Legacy dynamic properties TODO: remove these
-@dynamic coverFilename;
-@dynamic epubFilename;
-@dynamic pdfFilename;
-@dynamic libraryPosition;
-@dynamic layoutPageEquivalentCount;
+//@dynamic coverFilename;
+//@dynamic epubFilename;
+//@dynamic pdfFilename;
+//@dynamic textFlowFilename;
+//@dynamic xpsFilename;
+
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
-@dynamic textFlowFilename;
-@dynamic xpsFilename;
 
 // Lazily instantiated - see getters below.
 @synthesize textFlow;
@@ -170,23 +173,11 @@
 }
 
 - (NSString *)ePubPath {
-    NSString *filename = [self valueForKey:@"epubFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
+    return [self manifestPathForKey:@"epubFilename"];
 }
 
-- (NSString *)pdfPath {
-    NSString *filename = [self valueForKey:@"pdfFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-        
-    return nil;
+- (NSString *)pdfPath {        
+    return [self manifestPathForKey:@"pdfFilename"];
 }
 
 - (NSString *)audiobookPath {
@@ -213,24 +204,13 @@
     return [[self valueForKey:@"hasAudioRights"] boolValue];
 }
 
-- (NSString *)textFlowPath {
-    NSString *filename = [self valueForKey:@"textFlowFilename"];
-    if (filename) {
-        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
+
+- (NSString *)textFlowPath {        
+    return [self manifestPathForKey:@"textFlowFilename"];
 }
 
 - (NSString *)xpsPath {
-    NSString *filename = [self valueForKey:@"xpsFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
+    return [self manifestPathForKey:@"xpsFilename"];
 }
 
 - (UIImage *)coverImage {
@@ -436,11 +416,23 @@ static void sortedHighlightRangePredicateInit() {
     [self setValue:manifest forKeyPath:@"manifest"];
 }
 
+- (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path {
+    return [self.bookCacheDirectory stringByAppendingPathComponent:path];
+}
+
+- (NSString *)fullPathOfXPSItemAtPath:(NSString *)path {
+    return nil;
+}
+
+- (NSString *)fullPathOfTextFlowItemAtPath:(NSString *)path {
+    return [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:path];
+}
+
 - (NSData *)dataFromFileSystemAtPath:(NSString *)path {
     NSData *data = nil;
-    NSString *filePath = [self.bookCacheDirectory stringByAppendingPathComponent:path];
+    NSString *filePath = [self fullPathOfFileSystemItemAtPath:path];
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
-        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", filePath);
+        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
     else
         data = [NSData dataWithContentsOfMappedFile:filePath];
     
@@ -448,7 +440,47 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (NSData *)dataFromXPSAtPath:(NSString *)path {
-    return nil;
+    NSData *data = nil;
+    NSString *filePath = [self fullPathOfXPSItemAtPath:path];
+    if (filePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
+        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
+    else
+        data = [NSData dataWithContentsOfMappedFile:filePath];
+    
+    return data;
+}
+
+- (NSString *)manifestPathForKey:(NSString *)key {
+    NSString *filePath = nil;
+    
+    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        NSString *location = [manifestEntry objectForKey:@"location"];
+        NSString *path = [manifestEntry objectForKey:@"path"];
+        if (location && path) {
+            // TODO - we shouldn't need to check if path is a URL, the manifest entry should be different
+            if ([location isEqualToString:@"fileSystem"]) {
+                NSURL *fileUrl = [NSURL URLWithString:path];
+                NSString *fileUrlPath = [fileUrl path];
+                if (fileUrl && fileUrlPath && [[NSFileManager defaultManager] fileExistsAtPath:fileUrlPath]) {
+                    filePath = path;              
+                } else if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                    filePath = path;
+                } else if ([[NSFileManager defaultManager] fileExistsAtPath:[self fullPathOfFileSystemItemAtPath:path]]) {
+                    filePath = [self fullPathOfFileSystemItemAtPath:path];
+                } else {
+                    filePath = path;
+                }
+            } else if ([location isEqualToString:@"xps"]) {
+                filePath = [self fullPathOfXPSItemAtPath:path];
+            } else if ([location isEqualToString:@"textflow"]) {
+                filePath = [self fullPathOfTextFlowItemAtPath:path];
+            }
+
+        }
+    }
+    
+    return filePath;
 }
 
 - (NSData *)manifestDataForKey:(NSString *)key {

@@ -79,6 +79,26 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     [pool drain];
 }
 
+- (NSString *)getBookManifestPathForKey:(NSString *)key {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+    [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
+    BlioBook *book = (BlioBook *)[moc objectWithID:self.bookID];
+    
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book");
+        [moc release];
+        [pool drain];
+        return nil;
+    } 
+    
+    NSString *path = [[book manifestPathForKey:key] retain];
+    [moc release];
+    [pool drain];
+    return [path autorelease];
+}
+
 - (NSData *)getBookManifestDataForKey:(NSString *)key {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     

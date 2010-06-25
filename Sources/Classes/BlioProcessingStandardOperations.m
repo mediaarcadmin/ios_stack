@@ -110,7 +110,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	}
 	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore) {
 		NSLog(@"ERROR: Title (%@) is not an online store title!",[self getBookValueForKey:@"title"]);
-		NSLog(@"xpsFilename: %@", [self getBookValueForKey:@"xpsFilename"]);
+		NSLog(@"xpsFilename: %@", [self getBookManifestPathForKey:@"xpsFilename"]);
 		// TODO: remove the following two lines for final version (we're bypassing for now since Three Little Pigs doesn't need a license)
 		self.operationSuccess = YES;
 		self.percentageComplete = 100;
@@ -119,7 +119,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
 			NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
-			self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookPath:[self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"xpsFilename"]]];
+			self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookPath:[self getBookManifestPathForKey:@"xpsFilename"]];
 			attemptsMade++;
 		}
 	}
@@ -549,7 +549,13 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
             return;
         }
 		else {
-			[self setBookValue:self.localFilename forKey:self.filenameKey];
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:self.localFilename forKey:@"path"];
+            
+            [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
+            
+            //[self setBookValue:self.localFilename forKey:self.filenameKey];
 			self.operationSuccess = YES;
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
 		}
@@ -751,20 +757,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     }
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    //NSString *coverFile = [self getBookValueForKey:@"coverFilename"]; 
-    //NSString *coverPath = [self.cacheDirectory stringByAppendingPathComponent:coverFile];
-    //if (![[NSFileManager defaultManager] fileExistsAtPath:coverPath]) {
-     //   NSLog(@"Could not create thumbs because cover file did not exist at path: %@.", coverPath);
-     //   [pool drain];
-     //   return;
-    //}
-    
-    //NSData *imageData = [NSData dataWithContentsOfMappedFile:coverPath];
     NSData *imageData = [self getBookManifestDataForKey:@"coverFilename"];    
     UIImage *cover = [UIImage imageWithData:imageData];
     
     if (nil == cover) {
-        NSLog(@"Could not create thumbs because cover image was not an image.");
+        NSLog(@"    because cover image was not an image.");
         [pool drain];
         return;
     }
@@ -889,7 +886,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 				return;
 			}			
             else {
-				[self setBookValue:rootFile forKey:self.filenameKey];
+                NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+                [manifestEntry setValue:@"textflow" forKey:@"location"];
+                [manifestEntry setValue:rootFile forKey:@"path"];
+				[self setBookManifestValue:manifestEntry forKey:self.filenameKey];
 				self.operationSuccess = YES;
 				self.percentageComplete = 100;
 			}

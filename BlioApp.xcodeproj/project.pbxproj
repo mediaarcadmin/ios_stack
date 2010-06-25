@@ -2635,6 +2635,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Matthew Farrugia (9B2SKNH6HU)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2665,6 +2666,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BC32EDD8-24F4-44B8-B78D-BA7919153E1F";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -2673,6 +2675,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Matthew Farrugia (9B2SKNH6HU)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
@@ -2701,6 +2704,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BC32EDD8-24F4-44B8-B78D-BA7919153E1F";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

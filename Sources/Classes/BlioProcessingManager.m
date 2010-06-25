@@ -122,13 +122,43 @@
         [aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
         if (placeholderOnly) [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed] forKey:@"processingState"];
         else [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
-				
-		if (coverURL != nil) [aBook setValue:[coverURL absoluteString] forKey:@"coverFilename"];
-		if (ePubURL != nil) [aBook setValue:[ePubURL absoluteString] forKey:@"epubFilename"];
-		if (pdfURL != nil) [aBook setValue:[pdfURL absoluteString] forKey:@"pdfFilename"];
-        if (xpsURL != nil) [aBook setValue:[xpsURL absoluteString] forKey:@"xpsFilename"];
-		if (textFlowURL != nil) [aBook setValue:[textFlowURL absoluteString] forKey:@"textFlowFilename"];
-		if (audiobookURL != nil) [aBook setValue:[audiobookURL absoluteString] forKey:@"audiobookFilename"];
+        
+        if (coverURL != nil) {
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:[coverURL absoluteString] forKey:@"path"];
+            [aBook setManifestValue:manifestEntry forKey:@"coverFilename"];
+        }
+		 if (ePubURL != nil) {
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:[ePubURL absoluteString] forKey:@"path"];
+            [aBook setManifestValue:manifestEntry forKey:@"epubFilename"];
+        }
+        if (pdfURL != nil) {
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:[pdfURL absoluteString] forKey:@"path"];
+            [aBook setManifestValue:manifestEntry forKey:@"pdfFilename"];
+        }
+        if (xpsURL != nil) {
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:[xpsURL absoluteString] forKey:@"path"];
+            [aBook setManifestValue:manifestEntry forKey:@"xpsFilename"];
+        }
+        if (textFlowURL != nil) {
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:[textFlowURL absoluteString] forKey:@"path"];
+            [aBook setManifestValue:manifestEntry forKey:@"textFlowFilename"];
+        }
+        if (audiobookURL != nil) {
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:[audiobookURL absoluteString] forKey:@"path"];
+            [aBook setManifestValue:manifestEntry forKey:@"audiobookFilename"];
+        }
 		
 		if ([aBook valueForKey:@"uuid"] == nil)
 		{
@@ -216,7 +246,7 @@
 	NSString * stringURL = nil;
 	NSUInteger alreadyCompletedOperations = 0;
 	
-	stringURL = [aBook valueForKey:@"coverFilename"];
+	stringURL = [aBook manifestPathForKey:@"coverFilename"];
 	if (stringURL) {
 		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 		else {
@@ -228,7 +258,7 @@
 			coverOp.bookID = bookID;
 			coverOp.sourceID = sourceID;
 			coverOp.sourceSpecificID = sourceSpecificID;
-			coverOp.localFilename = [aBook valueForKey:coverOp.filenameKey];
+			coverOp.localFilename = [aBook manifestPathForKey:coverOp.filenameKey];
 			coverOp.storeCoordinator = [moc persistentStoreCoordinator];
 			coverOp.cacheDirectory = cacheDir;
 			coverOp.tempDirectory = tempDir;
@@ -252,8 +282,8 @@
 			[thumbsOp release];
 		}
 	}
-	stringURL = [aBook valueForKey:@"epubFilename"];
-	if (stringURL && nil == [aBook valueForKey:@"textFlowFilename"] && !placeholderOnly) {
+	stringURL = [aBook manifestPathForKey:@"epubFilename"];
+	if (stringURL && nil == [aBook manifestPathForKey:@"textFlowFilename"] && !placeholderOnly) {
 		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 		else {
 			alreadyCompletedOperations++;
@@ -272,7 +302,7 @@
 				ePubOp.bookID = bookID;
 				ePubOp.sourceID = sourceID;
 				ePubOp.sourceSpecificID = sourceSpecificID;
-				ePubOp.localFilename = [aBook valueForKey:ePubOp.filenameKey];
+				ePubOp.localFilename = [aBook manifestPathForKey:ePubOp.filenameKey];
 				ePubOp.storeCoordinator = [moc persistentStoreCoordinator];
 				ePubOp.cacheDirectory = cacheDir;
 				ePubOp.tempDirectory = tempDir;
@@ -305,7 +335,7 @@
 			
 		}                    
 	}
-    stringURL = [aBook valueForKey:@"pdfFilename"];
+    stringURL = [aBook manifestPathForKey:@"pdfFilename"];
 	if (stringURL && !placeholderOnly) {
 		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 		else {
@@ -326,7 +356,7 @@
 				pdfOp.bookID = bookID;
 				pdfOp.sourceID = sourceID;
 				pdfOp.sourceSpecificID = sourceSpecificID;
-				pdfOp.localFilename = [aBook valueForKey:pdfOp.filenameKey];
+				pdfOp.localFilename = [aBook manifestPathForKey:pdfOp.filenameKey];
 				pdfOp.storeCoordinator = [moc persistentStoreCoordinator];
 				pdfOp.cacheDirectory = cacheDir;
 				pdfOp.tempDirectory = tempDir;
@@ -339,7 +369,7 @@
 		}
 	}
 	
-	stringURL = [aBook valueForKey:@"textFlowFilename"];
+	stringURL = [aBook manifestPathForKey:@"textFlowFilename"];
 	if (stringURL && !placeholderOnly) {
 		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
 		else {
@@ -358,7 +388,7 @@
 				textFlowOp.bookID = bookID; 
 				textFlowOp.sourceID = sourceID;
 				textFlowOp.sourceSpecificID = sourceSpecificID;
-				textFlowOp.localFilename = [aBook valueForKey:textFlowOp.filenameKey];
+				textFlowOp.localFilename = [aBook manifestPathForKey:textFlowOp.filenameKey];
 				textFlowOp.storeCoordinator = [moc persistentStoreCoordinator];
 				textFlowOp.cacheDirectory = cacheDir;
 				textFlowOp.tempDirectory = tempDir;
@@ -414,7 +444,7 @@
 			}				
 		}                    			
 	}
-	stringURL = [aBook valueForKey:@"audiobookFilename"];
+	stringURL = [aBook manifestPathForKey:@"audiobookFilename"];
 	if (stringURL && !placeholderOnly) {
 		
 		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
@@ -434,7 +464,7 @@
 				audiobookOp.bookID = bookID;
 				audiobookOp.sourceID = sourceID;
 				audiobookOp.sourceSpecificID = sourceSpecificID;
-				audiobookOp.localFilename = [aBook valueForKey:audiobookOp.filenameKey];
+				audiobookOp.localFilename = [aBook manifestPathForKey:audiobookOp.filenameKey];
 				audiobookOp.storeCoordinator = [moc persistentStoreCoordinator];
 				audiobookOp.cacheDirectory = cacheDir;
 				audiobookOp.tempDirectory = tempDir;
@@ -450,7 +480,7 @@
 	
 	// paid books only. for now, we are assuming that all XPS files are paid books requiring decryption.
 	
-	stringURL = [aBook valueForKey:@"xpsFilename"];
+	stringURL = [aBook manifestPathForKey:@"xpsFilename"];
 	if (stringURL && !placeholderOnly) {
 		
 		if ([stringURL rangeOfString:@"://"].location != NSNotFound) url = [NSURL URLWithString:stringURL];
@@ -470,7 +500,7 @@
 				paidBookOp.bookID = bookID;
 				paidBookOp.sourceID = sourceID;
 				paidBookOp.sourceSpecificID = sourceSpecificID;
-				paidBookOp.localFilename = [aBook valueForKey:paidBookOp.filenameKey];
+				paidBookOp.localFilename = [aBook manifestPathForKey:paidBookOp.filenameKey];
 				paidBookOp.storeCoordinator = [moc persistentStoreCoordinator];
 				paidBookOp.cacheDirectory = cacheDir;
 				paidBookOp.tempDirectory = tempDir;

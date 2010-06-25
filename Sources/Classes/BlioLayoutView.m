@@ -340,7 +340,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cacheThumbImage:) name:@"BlioLayoutThumbLayerContentsAvailable" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         // Set the page number to 1 initially whilst the layout mode is set

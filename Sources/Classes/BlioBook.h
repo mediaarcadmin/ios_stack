@@ -37,26 +37,17 @@ static const NSInteger kBlioBookProcessingStateComplete = 4;
 @property (nonatomic, retain) NSNumber *processingState;
 @property (nonatomic, retain) NSNumber *sourceID;
 @property (nonatomic, retain) NSString *sourceSpecificID;
-
-// Legacy core data attribute-backed dynamic properties TODO: remove these
-@property (nonatomic, retain) NSString *coverFilename;
-@property (nonatomic, retain) NSString *epubFilename;
-@property (nonatomic, retain) NSString *pdfFilename;
-@property (nonatomic, retain) NSString *xpsFilename;
 @property (nonatomic, retain) NSNumber *layoutPageEquivalentCount;
 @property (nonatomic, retain) NSNumber *libraryPosition;
+
+// Legacy core data attribute-backed dynamic properties TODO: remove these
 @property (nonatomic, retain) NSNumber *hasAudioRights;
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
-@property (nonatomic, retain) NSString *textFlowFilename;
 
 // Legacy core data attribute-backed convenience accessors TODO: remove these
-@property (nonatomic, assign, readonly) NSString *ePubPath;
-@property (nonatomic, assign, readonly) NSString *pdfPath;
-@property (nonatomic, assign, readonly) NSString *xpsPath;
 @property (nonatomic, assign, readonly) NSString *audiobookPath;
 @property (nonatomic, assign, readonly) NSString *timingIndicesPath;
-@property (nonatomic, assign, readonly) NSString *textFlowPath;
 @property (nonatomic, assign, readonly) BOOL audioRights;
 
 // Lazily instantiated convenience accessors
@@ -73,6 +64,10 @@ static const NSInteger kBlioBookProcessingStateComplete = 4;
 @property (nonatomic, assign, readonly) UIImage *coverImage;
 @property (nonatomic, assign, readonly) UIImage *coverThumbForGrid;
 @property (nonatomic, assign, readonly) UIImage *coverThumbForList;
+@property (nonatomic, assign, readonly) NSString *ePubPath;
+@property (nonatomic, assign, readonly) NSString *pdfPath;
+@property (nonatomic, assign, readonly) NSString *xpsPath;
+@property (nonatomic, assign, readonly) NSString *textFlowPath;
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow, ePub book etc.)
@@ -87,5 +82,6 @@ static const NSInteger kBlioBookProcessingStateComplete = 4;
 
 - (void)setManifestValue:(id)value forKey:(NSString *)key;
 - (NSData *)manifestDataForKey:(NSString *)key;
+- (NSString *)manifestPathForKey:(NSString *)key;
 
 @end
