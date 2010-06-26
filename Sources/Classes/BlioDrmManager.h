@@ -14,18 +14,28 @@
 
 @interface BlioDrmManager : NSObject {
 	BOOL drmInitialized;
+	void* bookHandle;
+	BOOL bookChanged;
 	BlioXpsClient* xpsClient;
 }
 
 @property (nonatomic, assign) BOOL drmInitialized;
+@property (nonatomic, assign) BOOL bookChanged;
+@property (nonatomic, assign) void* bookHandle;
 @property (nonatomic, retain) BlioXpsClient* xpsClient;
 
 + (BlioDrmManager*)getDrmManager;
 
 - (void)initialize;
 
-- (BOOL)getLicenseForBookPath:(NSString*)xpsPath;
+- (void)setBook:(void*)xpsHandle;
 
-- (BOOL)decryptComponentInBook:(NSString*)component xpsFileHandle:(void*)fileHandle decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz;
+- (BOOL)getLicense;
+
+- (BOOL)decryptComponent:(NSString*)component decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz;
+
+//- (BOOL)getLicenseForBookPath:(NSString*)xpsPath;
+
+//- (BOOL)decryptComponentInBook:(NSString*)component xpsFileHandle:(void*)fileHandle decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz;
 
 @end
