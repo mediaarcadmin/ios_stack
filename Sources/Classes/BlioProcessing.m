@@ -47,10 +47,10 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
             [book setManifestValue:value forKey:key];
         }
         
-        NSError *anError;
-        if (![moc save:&anError]) {
-            NSLog(@"[BlioProcessingOperation setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
-        }
+        //NSError *anError;
+//        if (![moc save:&anError]) {
+//            NSLog(@"[BlioProcessingOperation setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
+//        }
     }
     [moc release];
     

@@ -24,6 +24,8 @@ static const NSInteger kBlioBookProcessingStateComplete = 4;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end
 
+@class BlioTextFlow;
+
 @interface BlioBook : NSManagedObject <BlioBookText> {
     BlioTextFlow *textFlow;
     EucBUpeBook *ePubBook;

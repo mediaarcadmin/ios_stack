@@ -115,7 +115,7 @@
     if (nil == textFlow) {
         NSSet *pageRanges = [self valueForKey:@"textFlowPageRanges"];
         if (pageRanges) { 
-            BlioTextFlow *myTextFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
+            BlioTextFlow *myTextFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges storeCoordinator:self.managedObjectContext.persistentStoreCoordinator bookID:self.objectID];
             self.textFlow = myTextFlow;
             [myTextFlow release];
         }
@@ -414,6 +414,11 @@ static void sortedHighlightRangePredicateInit() {
     
     [manifest setValue:value forKey:key];
     [self setValue:manifest forKeyPath:@"manifest"];
+    
+    NSError *anError;
+    if (![self.managedObjectContext save:&anError]) {
+        NSLog(@"setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
+    }
 }
 
 - (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path {
@@ -442,6 +447,17 @@ static void sortedHighlightRangePredicateInit() {
 - (NSData *)dataFromXPSAtPath:(NSString *)path {
     NSData *data = nil;
     NSString *filePath = [self fullPathOfXPSItemAtPath:path];
+    if (filePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
+        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
+    else
+        data = [NSData dataWithContentsOfMappedFile:filePath];
+    
+    return data;
+}
+
+- (NSData *)dataFromTextFlowAtPath:(NSString *)path {
+    NSData *data = nil;
+    NSString *filePath = [self fullPathOfTextFlowItemAtPath:path];
     if (filePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
         NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
     else
@@ -490,10 +506,13 @@ static void sortedHighlightRangePredicateInit() {
         NSString *location = [manifestEntry objectForKey:@"location"];
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
-            if ([location isEqualToString:@"fileSystem"])
+            if ([location isEqualToString:@"fileSystem"]) {
                 data = [self dataFromFileSystemAtPath:path];
-            else if ([location isEqualToString:@"xps"])
+            } else if ([location isEqualToString:@"xps"]) {
                 data = [self dataFromXPSAtPath:path];
+            } else if ([location isEqualToString:@"textflow"]) {
+                data = [self dataFromTextFlowAtPath:path];
+            }
         }
     }
     return data;
