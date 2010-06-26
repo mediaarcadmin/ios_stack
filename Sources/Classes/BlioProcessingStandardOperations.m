@@ -119,7 +119,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
 			NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
-			self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookPath:[self getBookManifestPathForKey:@"xpsFilename"]];
+			void* xpsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:[self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"xpsFilename"]]];
+			[[BlioDrmManager getDrmManager] setBook:xpsHandle];
+			self.operationSuccess = [[BlioDrmManager getDrmManager] getLicense];
+			[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsHandle];
 			attemptsMade++;
 		}
 	}
