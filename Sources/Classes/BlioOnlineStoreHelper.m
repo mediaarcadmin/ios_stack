@@ -95,7 +95,7 @@
 	NSInteger newISBNs = 0;
 	for (NSString * isbn in _isbns) {
 		
-		// check to see if BlioMockBook record is already in the persistent store
+		// check to see if BlioBook record is already in the persistent store
 		
 		if ([[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:isbn] == nil) {
 			newISBNs++;

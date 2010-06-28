@@ -151,7 +151,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize book, scrollView, contentView, currentPageLayer, tiltScroller, disableScrollUpdating, pageNumber, pageCount, selector;
+@synthesize book, scrollView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
@@ -211,7 +211,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark BlioBookView
 
 - (id)initWithFrame:(CGRect)frame
-               book:(BlioMockBook *)aBook 
+               book:(BlioBook *)aBook 
            animated:(BOOL)animated {
 
     if (!([aBook pdfPath] || [aBook xpsPath])) {
@@ -340,7 +340,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cacheThumbImage:) name:@"BlioLayoutThumbLayerContentsAvailable" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         // Set the page number to 1 initially whilst the layout mode is set
@@ -445,14 +444,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (void)setDelegate:(id<BlioBookViewDelegate>)newDelegate {
     [self.scrollView setBookViewDelegate:newDelegate];
     delegate = newDelegate;
-}
-
-#pragma mark -
-#pragma mark Tilt Scroller
-
-- (void)setTiltScroller:(MSTiltScroller*)ts {
-    tiltScroller = ts;
-    [tiltScroller setScrollView:self.scrollView];
 }
 
 #pragma mark -
@@ -1534,7 +1525,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [self clearSnapshots];
         [self.selector setShouldHideMenu:NO];
     }
-    if (tiltScroller) [tiltScroller resetAngle];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {

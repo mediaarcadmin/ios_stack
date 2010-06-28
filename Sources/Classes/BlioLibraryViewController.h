@@ -8,7 +8,7 @@
 
 #import <CoreData/CoreData.h>
 #import "MRGridView.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 
 @class BlioTestBlockWords;
 
@@ -97,16 +97,16 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIImageView *imageView;
     UIImageView *textureView;
     UIView *highlightView;
-    BlioMockBook *book;
+    BlioBook *book;
 }
 
 @property (nonatomic, retain) UIImageView *imageView;
 @property (nonatomic, retain) UIImageView *textureView;
 @property (nonatomic, retain) UIView *highlightView;
-@property (nonatomic, retain) BlioMockBook *book;
+@property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, readonly) UIImage *image;
 
-- (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout;
+- (void)setBook:(BlioBook *)newBook forLayout:(BlioLibraryLayout)layout;
 
 @end
 
@@ -144,7 +144,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIProgressView *progressView;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) UIButton *resumeButton;
-@property (nonatomic, assign) BlioMockBook *book;
+@property (nonatomic, assign) BlioBook *book;
 @property (nonatomic, assign) UILabel *pausedLabel;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) NSArray *accessibilityElements;
@@ -175,7 +175,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIProgressView *progressView;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) UIButton *resumeButton;
-@property (nonatomic, assign) BlioMockBook *book;
+@property (nonatomic, assign) BlioBook *book;
 @property (nonatomic, assign) id delegate;
 
 -(void)resetAuthorText;

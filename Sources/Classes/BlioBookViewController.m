@@ -85,7 +85,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize audioPlaying = _audioPlaying;
 @synthesize managedObjectContext = _managedObjectContext;
 
-@synthesize tiltScroller, tapDetector, motionControlsEnabled;
+@synthesize motionControlsEnabled;
 @synthesize rotationLocked;
 
 @synthesize searchController;
@@ -129,7 +129,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return [self init];
 }
 
-- (id)initWithBook:(BlioMockBook *)newBook {
+- (id)initWithBook:(BlioBook *)newBook {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         self.book = newBook;
 
@@ -184,8 +184,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         _pageJumpView = nil;
         
-        tiltScroller = [[MSTiltScroller alloc] init];
-        tapDetector = [[MSTapDetector alloc] init];
         motionControlsEnabled = kBlioTapTurnOff;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapToNextPage) name:@"TapToNextPage" object:nil];
         
@@ -199,8 +197,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         } else if (![newBook ePubPath] && ![newBook textFlowPath] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
         } 
-        // Force - TODO remove this
-        lastLayout = kBlioPageLayoutPageLayout;
         
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
@@ -765,8 +761,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
 	if (_pageJumpButton) [_pageJumpButton release];
-    [tapDetector release];
-    [tiltScroller release];
     
     self.searchController = nil;
     
@@ -1188,30 +1182,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark -
 #pragma mark AccelerometerControl Methods
 
-- (void)setupTiltScrollerWithBookView {
-    if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
-        [(BlioLayoutView *)self.bookView setTiltScroller:tiltScroller];
-    }    
-}
-
-- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acc {    
-    if (!motionControlsEnabled) return;
-    
-    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-    if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]]) {
-        if (![(BlioLayoutView *)bookViewController.bookView tiltScroller]) [self setupTiltScrollerWithBookView];
-        [tiltScroller accelerometer:accelerometer didAccelerate:acc];        
-    } else {
-        [tapDetector updateFilterWithAcceleration:acc];
-    }
-    
-    /*    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-     [tapDetector updateHistoryWithX:acc.x Y:acc.y Z:acc.z];
-     } else if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-     [tiltScroller accelerometer:accelerometer didAccelerate:acc];
-     }
-     */    
-}
 
 - (void)tapToNextPage {
     if ([self.bookView isKindOfClass:[BlioFlowView class]]) {
@@ -1331,31 +1301,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
         }
     }
-    
-    //Dave added this to control the tiltscrolling direction settings!
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-        switch ([sender selectedSegmentIndex]) {
-            case 0:
-                tiltScroller.directionModifierH = 1;
-                tiltScroller.directionModifierV = 1;                
-                break;
-            case 1:
-                tiltScroller.directionModifierH = -1;
-                tiltScroller.directionModifierV = -1;                
-                break;
-            case 3:
-                tiltScroller.directionModifierH = 1;
-                tiltScroller.directionModifierV = -1;                
-                break;
-            case 4:
-                tiltScroller.directionModifierH = -1;
-                tiltScroller.directionModifierV = 1;                
-                break;                
-            default:
-                break;
-        }
-        
-    }
 }
 
 - (void)setCurrentPageColor:(BlioPageColor)newColor
@@ -1380,26 +1325,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];
 }
 
-- (BlioTapTurn)currentTapTurn {
-    return motionControlsEnabled;
-
-}
-
-- (void)changeTapTurn {
-    if (motionControlsEnabled == kBlioTapTurnOff) {
-        motionControlsEnabled = kBlioTapTurnOn;
-        [tiltScroller resetAngle];
-        [self setupTiltScrollerWithBookView];
-        
-        [[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / 40)];
-        [[UIAccelerometer sharedAccelerometer] setDelegate:self];   
-    } else {
-        motionControlsEnabled = kBlioTapTurnOff;
-        [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
-        [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
-    }
-    [[NSUserDefaults standardUserDefaults] setInteger:motionControlsEnabled forKey:kBlioLastTapAdvanceDefaultsKey];
-}
 
 #pragma mark -
 #pragma mark KVO Callback

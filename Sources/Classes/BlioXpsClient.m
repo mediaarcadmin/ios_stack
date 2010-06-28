@@ -8,6 +8,8 @@
 
 #import "BlioXpsClient.h"
 
+#define SHORT_PTR(b,ofs) ((uShort *)&b[ofs])
+
 @implementation BlioXpsClient
 
 - (id)init {

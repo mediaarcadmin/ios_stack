@@ -492,9 +492,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	NSManagedObjectContext * moc = [self managedObjectContext];
 	
 	NSFetchRequest *maxFetch = [[NSFetchRequest alloc] init];
-	[maxFetch setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+	[maxFetch setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
 	[maxFetch setResultType:NSDictionaryResultType];
- 	[maxFetch setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
+ 	[maxFetch setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete]]];
 	
 	NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:@"layoutPageEquivalentCount"];
 	NSExpression *maxExpression = [NSExpression expressionForFunction:@"max:" arguments: [NSArray arrayWithObject:keyPathExpression]];
@@ -551,7 +551,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		upperBounds = fromPosition;
 	}
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
 	
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"libraryPosition >= %@ && libraryPosition <= %@", [NSNumber numberWithInt:lowerBounds],[NSNumber numberWithInt:upperBounds]]];
 	
@@ -564,7 +564,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		return;
 	}
 	
-	for (BlioMockBook* aBook in results) {
+	for (BlioBook* aBook in results) {
 		if ([aBook.libraryPosition intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"libraryPosition"];
         else {
 			NSInteger newPosition = [aBook.libraryPosition intValue];
@@ -602,9 +602,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	NSArray *sorters = [NSArray arrayWithObject:sortDescriptor]; 
     
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
-    [request setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
+    [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
- 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateIncomplete]]];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete]]];
     
 	self.fetchedResultsController = [[[NSFetchedResultsController alloc]
 									  initWithFetchRequest:request
@@ -650,8 +650,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 -(NSInteger)numberOfItemsInGridView:(MRGridView*)gridView{
     NSArray *sections = [self.fetchedResultsController sections];
     NSUInteger bookCount = 0;
-	id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:0];
-	bookCount = [sectionInfo numberOfObjects];
+	if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:0];
+        bookCount = [sectionInfo numberOfObjects];
+    }
 	return bookCount;
 }
 
@@ -661,8 +663,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex {
 	_didEdit = YES;
 //	NSLog(@"fromIndex: %i, toIndex: %i",fromIndex,toIndex);
-	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndex];
-	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndex];
+	BlioBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndex];
+	BlioBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndex];
 	NSInteger fromPosition = [fromBook.libraryPosition intValue];
 	NSInteger toPosition = [toBook.libraryPosition intValue];
 //	NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
@@ -671,7 +673,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
 	for (NSInteger i = 0; i < fetchedResultsCount; i++)
 	{
-		BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+		BlioBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
 		NSLog(@"index: %i, libraryPosition: %i, title: %@",i,[aBook.libraryPosition intValue],aBook.title);
 		
 	}
@@ -695,7 +697,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 		// Delete the book from the data source.
 		
-		BlioMockBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:index];
+		BlioBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:index];
 		
 		[self.processingDelegate deleteBook:bookToBeDeleted shouldSave:YES];
 
@@ -711,7 +713,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)gridView:(MRGridView *)gridView didSelectCellAtIndex:(NSInteger)index{
 //	NSLog(@"selected cell %i",index);
 	BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:index];
-	if ([[cell.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStateComplete) {
+	if ([[cell.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		[self bookSelected:cell.bookView];
 	}
 }
@@ -805,7 +807,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BlioMockBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
     BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook];
     
     if (nil != bookViewController) {
@@ -832,8 +834,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
 //	NSLog(@"tableView moveRowAtIndexPath fromIndexPath: %i, toIndexPath: %i",fromIndexPath.row,toIndexPath.row);
 	_didEdit = YES;
-	BlioMockBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndexPath.row];
-	BlioMockBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndexPath.row];
+	BlioBook * fromBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:fromIndexPath.row];
+	BlioBook * toBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:toIndexPath.row];
 	NSInteger fromPosition = [fromBook.libraryPosition intValue];
 	NSInteger toPosition = [toBook.libraryPosition intValue];
 //		NSLog(@"fromPosition: %i, toPosition: %i",fromPosition,toPosition);
@@ -842,7 +844,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //	NSInteger fetchedResultsCount = [self.fetchedResultsController.fetchedObjects count];
 //	 for (NSInteger i = 0; i < fetchedResultsCount; i++)
 //	 {
-//	 BlioMockBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
+//	 BlioBook * aBook = [[self.fetchedResultsController fetchedObjects] objectAtIndex:i];
 //	 NSLog(@"PRE index: %i, libraryPosition: %i, title: %@",i,[aBook.libraryPosition intValue],aBook.title);
 //	 
 //	 }
@@ -878,7 +880,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
  - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	 if (editingStyle == UITableViewCellEditingStyleDelete) {
 		 // Delete the row from the data source.
-		 BlioMockBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];		 
+		 BlioBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];		 
 		 NSUInteger bookLayoutPageEquivalentCount = [bookToBeDeleted.layoutPageEquivalentCount unsignedIntValue];
 		 [self.processingDelegate deleteBook:bookToBeDeleted shouldSave:YES];
 		 if (bookLayoutPageEquivalentCount == maxLayoutPageEquivalentCount) [self calculateMaxLayoutPageEquivalentCount];
@@ -932,7 +934,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
 	   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
 	  newIndexPath:(NSIndexPath *)newIndexPath {
-//	BlioMockBook * book = (BlioMockBook*)anObject;
+//	BlioBook * book = (BlioBook*)anObject;
 //	NSLog(@"controller didChangeObject. type: %i, _didEdit: %i title: %@, libraryPosition: %i",type,_didEdit,book.title,[book.libraryPosition intValue]);
 	
 	switch(type) {
@@ -1078,36 +1080,64 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)showSettings:(id)sender {    
 	BlioAppSettingsController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
     
-	// TEMPORARY: test code, will be moved
+/*	// TEMPORARY: test code, will be moved
 	
-	// Get license for a book.
-	NSString* xpsBook = @"The Tale of Peter Rabbit.drm.xps";
-	NSString* xpsPath = [[NSBundle mainBundle] pathForResource:xpsBook ofType:nil inDirectory:@"PDFs"];
-	BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookPath:xpsPath];
+	// Get a license for a book.
+	NSString* xpsIslandsBook = @"Virgin Islands.drm.xps";
+	NSString* xpsIslandsPath = [[NSBundle mainBundle] pathForResource:xpsIslandsBook ofType:nil inDirectory:@"PDFs"];
+	void* xpsIslandsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsIslandsPath];
+	// Always call setBook for first DRM operation.
+	[[BlioDrmManager getDrmManager] setBook:xpsIslandsHandle];
+	BOOL success = [[BlioDrmManager getDrmManager] getLicense];
 	
-	// Decrypt a fixed page from the book.
+	// Get license for another book.
+	NSString* xpsRabbitBook = @"The Tale of Peter Rabbit.drm.xps"; 
+	NSString* xpsRabbitPath = [[NSBundle mainBundle] pathForResource:xpsRabbitBook ofType:nil inDirectory:@"PDFs"];
+	void* xpsRabbitHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsRabbitPath];
+	// Since we last did a DRM operation on a different book, we call setBook again.
+	[[BlioDrmManager getDrmManager] setBook:xpsRabbitHandle];
+	success = [[BlioDrmManager getDrmManager] getLicense];
+	
+	// Decrypt a textflow file for Virgin Islands. 
 	unsigned char* decryptedBuff;	
 	NSInteger decryptedBuffSz;
-	void* xpsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsPath];
-	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] xpsFileHandle:xpsHandle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+	// Again we call setBook since we are switching books again.
+	[[BlioDrmManager getDrmManager] setBook:xpsIslandsHandle];
+	success = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"] decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
 	// If successful, decrypted content is now in the buffer.
-	// Do something with it.  Don't forget you now have the size of the buffer too.
-	NSLog(@"Decrypted page: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
-	// You are responsible for freeing (not releasing) the buffer.
+	//	// Do something with it.  Don't forget you now have the size of the buffer too.
+	NSLog(@"Decrypted textflow: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
+	//	// You are responsible for freeing (not releasing) the buffer.
 	free(decryptedBuff);
 	
-	// Decrypt a textflow file for the book.
-	success = [[BlioDrmManager getDrmManager] decryptComponentInBook:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"] xpsFileHandle:xpsHandle decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+	//	// Decrypt a fixed page for Virgin Islands.
+	// No need to call setBook.
+	success = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
+	//	// If successful, decrypted content is now in the buffer.
+	//	// Do something with it.  Don't forget you now have the size of the buffer too.
+	NSLog(@"Decrypted page: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
+	//	// You are responsible for freeing (not releasing) the buffer.
+	free(decryptedBuff);
+	
+	// Close the Virgin Islands xps.
+	[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsIslandsHandle];
+	
+	// Decrypt a textflow file for Peter Rabbit.
+	// Must call setBook.
+	[[BlioDrmManager getDrmManager] setBook:xpsRabbitHandle];
+	success = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"] decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
 	// If successful, decrypted content is now in the buffer.
 	// Do something with it.  Don't forget you now have the size of the buffer too.
 	NSLog(@"Decrypted textflow: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
 	// You are responsible for freeing (not releasing) the buffer.
 	free(decryptedBuff);
 	
-	// Close the xps file.
-	[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsHandle];
+	// Close the Peter Rabbit xps.
+	[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsRabbitHandle];
 	
+	//	
 	// END temporary code
+ */
 	
 	[self presentModalViewController:settingsController animated:YES];
     [settingsController release];    
@@ -1117,7 +1147,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-	NSLog(@"buttonIndex: %i",buttonIndex);
+//	NSLog(@"buttonIndex: %i",buttonIndex);
 	if (buttonIndex == actionSheet.cancelButtonIndex) {
 			NSLog(@"Sort Sheet cancelled");
 			return;
@@ -1129,10 +1159,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 #pragma mark -
 #pragma mark Library Actions
 
--(void) pauseProcessingForBook:(BlioMockBook*)book {
+-(void) pauseProcessingForBook:(BlioBook*)book {
 		[self.processingDelegate pauseProcessingForBook:book];
 }
--(void) enqueueBook:(BlioMockBook*)book {
+-(void) enqueueBook:(BlioBook*)book {
 		[self.processingDelegate enqueueBook:book];
 }
 
@@ -1256,7 +1286,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         [self.tableView setUserInteractionEnabled:YES];
         [self.tableView setAlpha:1.0f];
         
-        BlioMockBook *currentBook = [self.currentBookView book];
+        BlioBook *currentBook = [self.currentBookView book];
         BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:currentBook];
         
         CGRect coverRect;
@@ -1433,11 +1463,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     return [self.imageView image];
 }
 
-- (void)setBook:(BlioMockBook *)newBook {
+- (void)setBook:(BlioBook *)newBook {
     [self setBook:newBook forLayout:kBlioLibraryLayoutGrid];
 }
 
-- (void)setBook:(BlioMockBook *)newBook forLayout:(BlioLibraryLayout)layout {
+- (void)setBook:(BlioBook *)newBook forLayout:(BlioLibraryLayout)layout {
     [newBook retain];
     [book release];
     book = newBook;
@@ -1601,11 +1631,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     return [self.accessibilityElements indexOfObject:element];
 }
 
-- (BlioMockBook *)book {
+- (BlioBook *)book {
     return [(BlioLibraryBookView *)self.bookView book];
 }
 
-- (void)setBook:(BlioMockBook *)newBook {
+- (void)setBook:(BlioBook *)newBook {
 	[self stopListeningToProcessingNotifications];
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:0];
     self.titleLabel.text = [newBook title];
@@ -1619,20 +1649,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     //self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
     [self setNeedsLayout];
 //	NSLog(@"[[self.book valueForKey:@processingState] intValue]: %i",[[self.book valueForKey:@"processingState"] intValue]);
-	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
+	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
 		self.progressBackgroundView.hidden = YES;
 		self.progressView.hidden = YES;
 		self.pauseButton.hidden = YES;
 		self.resumeButton.hidden = NO;
 		self.pausedLabel.hidden = YES;
 	}	
-	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioMockBookProcessingStateComplete) {
+	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
 		[self listenToProcessingNotifications];
 		// set appearance to reflect incomplete state
 		self.bookView.alpha = 0.35f;
 		self.progressBackgroundView.hidden = NO;
 		
-		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStateIncomplete) {
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			self.progressView.hidden = NO;
 			BlioProcessingCompleteOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 			if (completeOp) {
@@ -1647,7 +1677,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			self.resumeButton.hidden = YES;
 			self.pausedLabel.hidden = YES;
 		}
-		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePaused) {
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
 			self.resumeButton.hidden = NO;
 			self.pausedLabel.hidden = NO;
 			self.progressView.hidden = YES;
@@ -1820,11 +1850,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
 }
 
-- (BlioMockBook *)book {
+- (BlioBook *)book {
     return [(BlioLibraryBookView *)self.bookView book];
 }
 
-- (void)setBook:(BlioMockBook *)newBook {
+- (void)setBook:(BlioBook *)newBook {
 	[self stopListeningToProcessingNotifications];
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
@@ -1833,17 +1863,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 	[self resetProgressSlider];
 	
-	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePlaceholderOnly) {
+	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
 		self.progressView.hidden = YES;
 		self.accessoryView = resumeButton;
 		[self resetAuthorText];
 		self.progressSlider.hidden = NO;
 	}			
-	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioMockBookProcessingStateComplete) {
+	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
 		[self listenToProcessingNotifications];
 		// set appearance to reflect incomplete state
 		// self.bookView.alpha = 0.35f;
-		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStateIncomplete) {
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			self.progressView.hidden = NO;
 			self.progressSlider.hidden = YES;
 			BlioProcessingCompleteOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
@@ -1858,7 +1888,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			self.accessoryView = pauseButton;
 			self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
 		}
-		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioMockBookProcessingStatePaused) {
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
 			self.accessoryView = resumeButton;
 			self.authorLabel.text = @"Paused...";
 			self.progressSlider.hidden = YES;

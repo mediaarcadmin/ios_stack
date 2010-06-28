@@ -36,7 +36,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 @synthesize fontSizeSegment;
 @synthesize pageColorSegment;
 @synthesize lockButtonSegment;
-@synthesize tapTurnButtonSegment;
 @synthesize doneButton;
 @synthesize tapTurnOnImage, tapTurnOffImage, lockRotationImage, unlockRotationImage;
 @synthesize viewSettingsDelegate;
@@ -48,7 +47,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     self.fontSizeSegment = nil;
     self.pageColorSegment = nil;
     self.lockButtonSegment = nil;
-    self.tapTurnButtonSegment = nil;
     self.doneButton = nil;
     self.tapTurnOnImage = nil;
     self.tapTurnOffImage = nil;
@@ -222,32 +220,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         [self.lockButtonSegment addTarget:self action:@selector(changeLockRotation:) forControlEvents:UIControlEventValueChanged];  
         
-        BlioAccessibilitySegmentedControl *aTapTurnButtonSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] init];
-        aTapTurnButtonSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aTapTurnButtonSegmentedControl.tintColor = [UIColor darkGrayColor];
-        aTapTurnButtonSegmentedControl.momentary = YES;
-        [self addSubview:aTapTurnButtonSegmentedControl];
-        self.tapTurnButtonSegment = aTapTurnButtonSegmentedControl;
-        [aTapTurnButtonSegmentedControl release];
-        
-        self.tapTurnOnImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tilt Advance On" font:defaultFont color:white textInset:inset];
-        self.tapTurnOffImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-finger.png"] string:@"Tilt Advance Off" font:defaultFont color:white textInset:inset];
-        
-        BlioTapTurn currentTapTurn = [self.viewSettingsDelegate currentTapTurn];
-        if (currentTapTurn == kBlioTapTurnOff) {
-            [aTapTurnButtonSegmentedControl insertSegmentWithImage:self.tapTurnOffImage atIndex:0 animated:NO];
-            [[aTapTurnButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Tilt advance off", @"Accessibility label for View Settings Tilt Advance Off button")];
-            [[aTapTurnButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
-        } else {
-            [aTapTurnButtonSegmentedControl insertSegmentWithImage:self.tapTurnOnImage atIndex:0 animated:NO];
-            [aTapTurnButtonSegmentedControl setTintColor:kBlioViewSettingsGreenButton];
-            [[aTapTurnButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Tilt advance on", @"Accessibility label for View Settings Tilt Advance On button")];
-            [[aTapTurnButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
-        }
-        
-        [self.tapTurnButtonSegment addTarget:self action:@selector(changeTapTurn:) forControlEvents:UIControlEventValueChanged];  
-        
-        
         UIButton *aDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
         aDoneButton.showsTouchWhenHighlighted = NO;
         [aDoneButton setTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") forState:UIControlStateNormal];
@@ -281,7 +253,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     [self.pageColorLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.fontSizeSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
     [self.pageColorSegment setFrame:CGRectMake(CGRectGetMaxX([self.pageColorLabel frame]), CGRectGetMinY([self.pageColorLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.pageColorLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
     [self.lockButtonSegment setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageColorSegment frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - kBlioViewSettingsRowSpacing)/2.0f, kBlioViewSettingsSegmentButtonHeight)];
-    [self.tapTurnButtonSegment setFrame:CGRectMake(CGRectGetMaxX([self.lockButtonSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetMinY([self.lockButtonSegment frame]), CGRectGetWidth([self.lockButtonSegment frame]), kBlioViewSettingsSegmentButtonHeight)];
     [self.doneButton setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.lockButtonSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset, kBlioViewSettingsDoneButtonHeight)];
     
     [super layoutSubviews];
@@ -311,24 +282,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [[sender imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
     }
     
-    
-}
-
-- (void)changeTapTurn:(id)sender {
-    [self.viewSettingsDelegate changeTapTurn];
-    
-    BlioTapTurn currentTapTurn = [self.viewSettingsDelegate currentTapTurn];
-    if (currentTapTurn == kBlioTapTurnOn) {
-        [sender setImage:self.tapTurnOnImage forSegmentAtIndex:0];
-        [sender setTintColor:kBlioViewSettingsGreenButton];
-        [[sender imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Tilt advance on", @"Accessibility label for View Settings Tilt Advance On button")];
-        [[sender imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
-    } else {
-        [sender setImage:self.tapTurnOffImage forSegmentAtIndex:0];
-        [[sender imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Tilt advance off", @"Accessibility label for View Settings Tilt Advance Off button")];
-        [[sender imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
-        [sender setTintColor:[UIColor darkGrayColor]];
-    }
     
 }
 

@@ -7,7 +7,7 @@
 //
 
 #import "BlioProcessing.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 
 NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
 NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
@@ -34,6 +34,29 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     [super dealloc];
 }
 
+- (void)setBookManifestValue:(id)value forKey:(NSString *)key {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+    [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
+    @synchronized (self.storeCoordinator) {
+        BlioBook *book = (BlioBook *)[moc objectWithID:self.bookID];
+        if (nil == book) {
+            NSLog(@"Failed to retrieve book");
+        } else {
+            [book setManifestValue:value forKey:key];
+        }
+        
+        //NSError *anError;
+//        if (![moc save:&anError]) {
+//            NSLog(@"[BlioProcessingOperation setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
+//        }
+    }
+    [moc release];
+    
+    [pool drain];
+}
+
 - (void)setBookValue:(id)value forKey:(NSString *)key {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
@@ -54,6 +77,46 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     [moc release];
     
     [pool drain];
+}
+
+- (NSString *)getBookManifestPathForKey:(NSString *)key {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+    [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
+    BlioBook *book = (BlioBook *)[moc objectWithID:self.bookID];
+    
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book");
+        [moc release];
+        [pool drain];
+        return nil;
+    } 
+    
+    NSString *path = [[book manifestPathForKey:key] retain];
+    [moc release];
+    [pool drain];
+    return [path autorelease];
+}
+
+- (NSData *)getBookManifestDataForKey:(NSString *)key {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
+    [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
+    BlioBook *book = (BlioBook *)[moc objectWithID:self.bookID];
+    
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book");
+        [moc release];
+        [pool drain];
+        return nil;
+    } 
+    
+    NSData *data = [[book manifestDataForKey:key] retain];
+    [moc release];
+    [pool drain];
+    return [data autorelease];
 }
 
 - (id)getBookValueForKey:(NSString *)key {
@@ -108,8 +171,8 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
     }
     
     NSFetchRequest *aRequest = [[NSFetchRequest alloc] init];
-    [aRequest setEntity:[NSEntityDescription entityForName:@"BlioMockBook" inManagedObjectContext:moc]];
-    [aRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@", [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]];
+    [aRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [aRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
     
     // Block whilst we calculate the position so that other threads don't perform the same
     // check at the same time
@@ -120,7 +183,7 @@ NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOpe
             NSLog(@"Failed to retrieve book count with error: %@, %@", anError, [anError userInfo]);
         } else {
             [book setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];
-            [book setValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateComplete] forKey:@"processingState"];
+            [book setValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
         }
         
         NSError *anError;

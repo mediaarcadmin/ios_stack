@@ -35,7 +35,7 @@
 @synthesize pageNumber = _pageNumber;
 
 - (id)initWithFrame:(CGRect)frame
-               book:(BlioMockBook *)aBook 
+               book:(BlioBook *)aBook 
            animated:(BOOL)animated 
 {
     if((self = [super initWithFrame:frame])) {
@@ -45,7 +45,7 @@
         
         self.opaque = YES;
         
-        if([aBook textFlowFilename]) {
+        if([aBook textFlowPath]) {
             eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:aBook];
             eucBook.persistsPositionAutomatically = NO;
             eucBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];

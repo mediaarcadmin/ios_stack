@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import "BlioBookView.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioBookmark.h"
 
 @protocol BlioContentsTabViewControllerDelegate <NSObject>
@@ -38,7 +38,7 @@
     UIView<BlioBookView> *bookView;
     id <BlioContentsTabViewControllerDelegate> delegate;
     UIBarButtonItem *doneButton;
-    BlioMockBook *book;
+    BlioBook *book;
     UISegmentedControl *tabSegment;
 }
 
@@ -48,9 +48,9 @@
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic, assign) id <BlioContentsTabViewControllerDelegate> delegate;
 @property (nonatomic, retain) UIBarButtonItem *doneButton;
-@property (nonatomic, retain) BlioMockBook *book;
+@property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, retain) UISegmentedControl *tabSegment;
 
-- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioMockBook *)aBook;
+- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook;
 
 @end

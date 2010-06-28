@@ -9,7 +9,7 @@
 #import "BlioFlowPaginateOperation.h"
 #import "BlioProcessing.h"
 
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioFlowEucBook.h"
 
 #import <libEucalyptus/EucBUpeBook.h>
@@ -75,7 +75,7 @@
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
         	
-    NSString *epubPath = [self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"epubFilename"]];
+    NSString *epubPath = [self getBookManifestPathForKey:@"epubFilename"];
     NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
 
     if(self.forceReprocess) {
@@ -85,22 +85,23 @@
     
     // Create a EucBook for the paginator.
     EucBUpeLocalBookReference<EucBook> *eucBook = nil;
-    if([self getBookValueForKey:@"textFlowFilename"]) {
+    if([self getBookManifestPathForKey:@"textFlowFilename"]) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
         NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
         [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
         
-        eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:(BlioMockBook *)[moc objectWithID:self.bookID]];
+        eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:(BlioBook *)[moc objectWithID:self.bookID]];
         [moc release];
         
         [pool drain];
-    } else if([self getBookValueForKey:@"epubFilename"]) {
+    //} else if([self getBookValueForKey:@"epubFilename"]) {
+    } else if([self getBookManifestPathForKey:@"epubFilename"]) {
         eucBook = [[EucBUpeBook alloc] initWithPath:epubPath];
     }
     eucBook.cacheDirectoryPath = paginationPath;
-
-    if([eucBook paginationIsComplete]) {
+    
+    if([eucBook paginationIsComplete] || eucBook == nil) {
         // This book is already fully paginated!
         self.operationSuccess = YES;
         [self finish];

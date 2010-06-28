@@ -44,7 +44,7 @@
 @protocol EucBookContentsTableViewControllerDataSource;
 @class BlioBookmarkPoint;
 @class BlioBookmarkRange;
-@class BlioMockBook;
+@class BlioBook;
 
 @protocol BlioBookView <NSObject>
 
@@ -61,7 +61,7 @@
 - (NSString *)pageLabelForPageNumber:(NSInteger)pageNumber;
 
 - (id)initWithFrame:(CGRect)frame
-               book:(BlioMockBook *)aBook 
+               book:(BlioBook *)aBook 
            animated:(BOOL)animated;
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
