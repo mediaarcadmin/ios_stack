@@ -406,15 +406,29 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)_createTextureIn:(GLuint *)textureRef 
                     from:(id)viewOrImage
    setTextureCoordinates:(TextureCoordinates *)coordinates
-{    
-    CGSize rawSize;
+{   
+    CGFloat scaleFactor;
+    if([self respondsToSelector:@selector(contentScaleFactor)]) {
+        scaleFactor = self.contentScaleFactor;
+    } else {
+        scaleFactor = 1.0f;
+    }
+    
+    CGSize scaledSize, rawSize;
     if([viewOrImage isKindOfClass:[UIView class]]) {
         rawSize = [(UIView *)viewOrImage bounds].size;
     } else {
         rawSize = [(UIImage *)viewOrImage size];
     }
     
-    CGSize powerOfTwoSize = CGSizeMake(nextPowerOfTwo(rawSize.width), nextPowerOfTwo(rawSize.height));
+    if(scaleFactor != 1.0f) {
+        scaledSize.width = rawSize.width * scaleFactor;
+        scaledSize.height = rawSize.height * scaleFactor;
+    } else {
+        scaledSize = rawSize;
+    }
+    
+    CGSize powerOfTwoSize = CGSizeMake(nextPowerOfTwo(scaledSize.width), nextPowerOfTwo(scaledSize.height));
 
     GLuint powerOfTwoWidth = powerOfTwoSize.height;
     GLuint powerOfTwoHeight = powerOfTwoSize.width;
@@ -432,15 +446,15 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         if([view respondsToSelector:@selector(drawRect:inContext:)] && !view.layer.sublayers) {
             CGContextSetFillColorSpace(textureContext, colorSpace);
             CGContextSetStrokeColorSpace(textureContext, colorSpace); 
-            
-            [(UIView<THUIViewThreadSafeDrawing> *)view drawRect:CGRectMake(0, 0, rawSize.width,rawSize.height)
+            CGContextScaleCTM(textureContext, scaleFactor, scaleFactor);
+            [(UIView<THUIViewThreadSafeDrawing> *)view drawRect:CGRectMake(0, 0, rawSize.width, rawSize.height)
                                                       inContext:textureContext];
         } else {
             [view.layer renderInContext:textureContext];
         }
     } else {
         CGImageRef image = ((UIImage *)viewOrImage).CGImage;
-        CGContextDrawImage(textureContext, CGRectMake(0, 0, rawSize.width,rawSize.height), image);
+        CGContextDrawImage(textureContext, CGRectMake(0, 0, scaledSize.width,scaledSize.height), image);
     }
     
     /*  
@@ -468,10 +482,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     free(textureData);
     
-    if(coordinates && coordinates->innerPixelWidth != rawSize.width && coordinates -> innerPixelHeight != rawSize.height) {
-        CGFloat po2WidthScale = powerOfTwoSize.width / rawSize.width;
-        CGFloat po2HeightScale = powerOfTwoSize.height / rawSize.height;
-        GLfloat yAddition = (powerOfTwoSize.height - rawSize.height) / powerOfTwoSize.height;
+    if(coordinates && coordinates->innerPixelWidth != scaledSize.width && coordinates -> innerPixelHeight != scaledSize.height) {
+        CGFloat po2WidthScale = powerOfTwoSize.width / scaledSize.width;
+        CGFloat po2HeightScale = powerOfTwoSize.height / scaledSize.height;
+        GLfloat yAddition = (powerOfTwoSize.height - scaledSize.height) / powerOfTwoSize.height;
         for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
             for(int column = 0; column < X_VERTEX_COUNT; ++column) {
                 GLfloat x = _pageVertices[row][column].x / PAGE_WIDTH / po2WidthScale;

@@ -36,6 +36,10 @@
 
 - (BOOL)_eaglViewInternalInit
 {
+    if([self respondsToSelector:@selector(setContentScaleFactor:)]) {
+        [self setContentScaleFactor:[UIScreen mainScreen].scale];
+    }    
+    
     // Get the layer
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
     
