@@ -390,7 +390,7 @@
     if([self.delegate respondsToSelector:@selector(bookViewNonToolbarRect:)]) {
         bounds = [self.delegate bookViewNonToolbarRect:self];
     } else {
-        bounds = bounds;
+        bounds = self.bounds;
     }
     return [self convertRect:bounds toView:nil];
 }
