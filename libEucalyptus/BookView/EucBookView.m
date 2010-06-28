@@ -20,6 +20,7 @@
 #import "EucSelectorRange.h"
 #import "EucHighlightRange.h"
 
+#import "THUIDeviceAdditions.h"
 #import "THUIViewAdditions.h"
 #import "THRoundRectView.h"
 #import "THCopyWithCoder.h"
@@ -1302,11 +1303,17 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _pageSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
-    leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
+    leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:0];
     [_pageSlider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
     
     UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
-    rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+        // Work around a bug in 4.0 (+?) where the cap is used as a right cap in
+        // the image when it's used in a slider.
+        rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:rightCapImage.size.width - 1 topCapHeight:0];
+    } else {
+        rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    }
     [_pageSlider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
     
     UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob.png"];

@@ -145,6 +145,16 @@ static CGContextRef CreateGrayscaleBitmapContext (CGImageRef inImage)
                         size:(CGSize)size       // Size of the desired image.
                        color:(UIColor *)color
 {
+    CGFloat scaleFactor;
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    if([mainScreen respondsToSelector:@selector(scale)]) {
+        scaleFactor = [mainScreen scale];
+        size.width *= scaleFactor;
+        size.height *= scaleFactor;
+    } else {
+        scaleFactor = 1;
+    }
+    
     // Create a context to render into.
     UIGraphicsBeginImageContext(size);
     
@@ -198,10 +208,10 @@ static CGContextRef CreateGrayscaleBitmapContext (CGImageRef inImage)
     // Now, go through the pixels one-by-one working out the area in which the
     // image is not still blank.
     size_t minx = size.width, maxx = 0, miny = size.height, maxy = 0;
-    uint8_t *rowBase = bitmap;
-    for(size_t y = 0; y < size.height; ++y, rowBase += rowBytes) {
-        uint8_t *component = rowBase;
-        for(size_t x = 0; x < size.width; ++x, component += 4) {    
+    uint32_t *rowBase = (uint32_t *)bitmap;
+    for(size_t y = 0; y < size.height; ++y, rowBase += rowBytes / sizeof(uint32_t)) {
+        uint32_t *component = rowBase;
+        for(size_t x = 0; x < size.width; ++x, component += 1) {    
             if(*component != 0) {
                 if(x < minx) {
                     minx = x;
@@ -264,6 +274,13 @@ static CGContextRef CreateGrayscaleBitmapContext (CGImageRef inImage)
     // (Don't forget to end the image context first though!)
     UIImage *retImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    
+    if(scaleFactor != 1) {
+        retImage = [UIImage imageWithCGImage:[retImage CGImage]
+                                       scale:scaleFactor 
+                                 orientation:retImage.imageOrientation];
+    }
+    
     return retImage;
 }
 
@@ -295,7 +312,11 @@ static CGContextRef CreateGrayscaleBitmapContext (CGImageRef inImage)
 + (UIImage *)imageWithView:(UIView *)view
 {
     CGRect bounds = [view bounds];
-    UIGraphicsBeginImageContext(bounds.size);
+    if(UIGraphicsBeginImageContextWithOptions) {
+        UIGraphicsBeginImageContextWithOptions(bounds.size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(bounds.size);
+    }
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

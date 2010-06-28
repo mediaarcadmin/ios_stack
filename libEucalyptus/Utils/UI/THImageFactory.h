@@ -14,10 +14,13 @@
     NSMutableData *_backingData;
     CGColorSpaceRef _colorSpace;
     CGContextRef _CGContext;
+    CGFloat _scaleFactor;
 }
 
 @property (nonatomic, readonly) CGContextRef CGContext;
+@property (nonatomic, readonly) CGFloat scaleFactor;
 
+- (id)initWithSize:(CGSize)size scaleFactor:(CGFloat)scaleFactor;
 - (id)initWithSize:(CGSize)size;
 - (CGImageRef)snapshotCGImage;
 - (UIImage *)snapshotUIImage;

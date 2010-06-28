@@ -12,13 +12,24 @@
 @implementation THImageFactory
 
 @synthesize CGContext = _CGContext;
+@synthesize scaleFactor = _scaleFactor;
 
-- (id)initWithSize:(CGSize)size {
+- (id)initWithSize:(CGSize)size scaleFactor:(CGFloat)scaleFactor {
     if((self = [super init])) {
         _size = size;
-        size_t width = (size_t)size.width;
-        size_t height = (size_t)size.height;
-
+        if(!scaleFactor) {
+            UIScreen *screen = [UIScreen mainScreen];
+            if([screen respondsToSelector:@selector(scale)]) {
+                scaleFactor = [[UIScreen mainScreen] scale];
+            } else {
+                scaleFactor = 1.0f;
+            }
+        }
+        _scaleFactor = scaleFactor;
+        
+        size_t width = (size_t)size.width * scaleFactor;
+        size_t height = (size_t)size.height * scaleFactor;
+        
         if((_backingData = [[NSMutableData alloc] initWithLength:4 * width * height])) {
             if((_colorSpace = CGColorSpaceCreateDeviceRGB())) {
                 _CGContext =  CGBitmapContextCreate([_backingData mutableBytes],
@@ -34,10 +45,16 @@
             self = nil;
         } else {
             CGContextSetFillColorSpace(_CGContext, _colorSpace);
-            CGContextSetStrokeColorSpace(_CGContext, _colorSpace);   
+            CGContextSetStrokeColorSpace(_CGContext, _colorSpace);
+            
+            CGContextScaleCTM(_CGContext, scaleFactor, scaleFactor);
         } 
     }
     return self;
+}
+
+- (id)initWithSize:(CGSize)size {
+    return [self initWithSize:size scaleFactor:1.0f];
 }
 
 - (void)dealloc
@@ -49,11 +66,13 @@
     [super dealloc];
 }
 
-- (CGImageRef)_newSnapshotCGImage
+- (CGImageRef)_createSnapshotCGImage
 {
     CGContextFlush(_CGContext);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)_backingData);
-    CGImageRef ret =  CGImageCreate(_size.width, _size.height, 8, 32, 4 * _size.width, 
+    CGFloat width = _size.width * _scaleFactor;
+    CGFloat height = _size.height * _scaleFactor;
+    CGImageRef ret =  CGImageCreate(width, height, 8, 32, 4 * width, 
                                     _colorSpace, 
                                     kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, 
                                     dataProvider, NULL, YES, kCGRenderingIntentDefault);
@@ -63,15 +82,20 @@
 
 - (UIImage *)snapshotUIImage
 {
-    CGImageRef image = [self _newSnapshotCGImage];
-    UIImage *ret = [UIImage imageWithCGImage:image];
+    CGImageRef image = [self _createSnapshotCGImage];
+    UIImage *ret;
+    if(_scaleFactor && [UIImage respondsToSelector:@selector(imageWithCGImage:scale:orientation:)]) {
+        ret = [UIImage imageWithCGImage:image scale:_scaleFactor orientation:UIImageOrientationUp];
+    } else {
+        ret = [UIImage imageWithCGImage:image];
+    }
     CGImageRelease(image);
     return ret;
 }
 
 - (CGImageRef)snapshotCGImage
 {
-    return (CGImageRef)[(id)[self _newSnapshotCGImage] autorelease];
+    return (CGImageRef)[(id)[self _createSnapshotCGImage] autorelease];
 }
 
 @end

@@ -7,6 +7,8 @@
 //
 
 #import "THNavigationButton.h"
+#import "THUIImageAdditions.h"
+#import "THImageFactory.h"
 
 @implementation THNavigationButton
 
@@ -40,7 +42,7 @@
 {
     // Image from the iPhoneButtons sample code (for web developers).
     UIImage *buttonImage = [self _templateImageForBarStyle:barStyle];
-    UIImage *stretchableImage = [buttonImage stretchableImageWithLeftCapWidth:4 topCapHeight:12];
+    UIImage *stretchableImage = [buttonImage midpointStretchableImage];
     
     // Work out which string is longer - base the button size on this.
     UIFont *font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]-1];
@@ -50,34 +52,30 @@
     
     // These statistics worked out from examining a screenshot of the iPod app
     // (found at <http://www.flickr.com/photos/maduarte/1837341115/sizes/o/>).
-    CGRect frame = CGRectMake(0, 0, textWidth + 22, 30);
+    CGRect bounds = CGRectMake(0, 0, textWidth + 22, 30);
 
     // Create a bitmap to render the button image into.
-    NSMutableData *bitmapData = [[NSMutableData alloc] initWithLength:4 * frame.size.width * frame.size.height];    
-    CGColorSpaceRef deviceColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef myContext = CGBitmapContextCreate([bitmapData mutableBytes],
-                                                   frame.size.width,
-                                                   frame.size.height,
-                                                   8,
-                                                   4 * frame.size.width,
-                                                   deviceColorSpace,
-                                                   kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
+    THImageFactory *imageFactory;
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        imageFactory = [[THImageFactory alloc] initWithSize:bounds.size scaleFactor:[[UIScreen mainScreen] scale]];
+    } else {
+        imageFactory = [[THImageFactory alloc] initWithSize:bounds.size];
+    }    
+    CGContextRef myContext = imageFactory.CGContext;
     
     // We need to flip the bitmap, because we're goung to draw with UIKit routines
     // and they have the opposite coordinate system.
-    CGContextTranslateCTM(myContext, 0, frame.size.height);
+    CGContextTranslateCTM(myContext, 0, bounds.size.height);
     CGContextScaleCTM(myContext, 1, -1);
-
-    CGContextClearRect(myContext, frame);
 
     UIGraphicsPushContext(myContext);
 
-    [stretchableImage drawInRect:frame];
+    [stretchableImage drawInRect:bounds];
     
     // Draw the text, both lines seperately.
     // Again, hard-coded offsets worked out by examining screenshots.
     
-    CGRect textRect = frame;
+    CGRect textRect = bounds;
     textRect.size.width -= 7;
     
     [[[UIColor blackColor] colorWithAlphaComponent:0.5f] set];
@@ -98,21 +96,9 @@
     [secondLine drawInRect:textRect withFont:font lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
     
     // Done drawing!
+    UIImage *renderedImage = imageFactory.snapshotUIImage;
     UIGraphicsPopContext();
-    CGContextRelease(myContext);
-
-    // Create a CGImage around our bitmap data, and create a UIImage from that.
-    CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)bitmapData);
-    CGImageRef newImageRef = CGImageCreate(frame.size.width, frame.size.height, 8, 32, 4 * frame.size.width, 
-                                           deviceColorSpace, 
-                                           kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, 
-                                           dataProvider, NULL, YES, kCGRenderingIntentDefault);
-    UIImage *renderedImage = [UIImage imageWithCGImage:newImageRef];
-    CGImageRelease(newImageRef);
-    CGColorSpaceRelease(deviceColorSpace);
-    CGDataProviderRelease(dataProvider);
-    [bitmapData release];
-
+    [imageFactory release];
     return renderedImage;
 }
 
@@ -122,8 +108,15 @@
     UIImage *stretchableImage = [buttonImage stretchableImageWithLeftCapWidth:4 topCapHeight:15];
     CGRect stretchedImageFrame = CGRectMake(0, 0, 41, 30);
     
-    UIGraphicsBeginImageContext(stretchedImageFrame.size);
+    // Create a bitmap to render the button image into.
+    if(UIGraphicsBeginImageContextWithOptions) {
+        UIGraphicsBeginImageContextWithOptions(stretchedImageFrame.size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(stretchedImageFrame.size);
+    }    
+    
     CGContextRef myContext = UIGraphicsGetCurrentContext();
+    
     // Mirror the drawing - we want a left-facing arrow.
     CGContextScaleCTM(myContext, -1, 1);
     CGContextTranslateCTM(myContext, -stretchedImageFrame.size.width, 0);
@@ -131,7 +124,12 @@
     UIImage *stretchedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    UIGraphicsBeginImageContext(frame.size);
+    // Create a bitmap to render the button image into.
+    if(UIGraphicsBeginImageContextWithOptions) {
+        UIGraphicsBeginImageContextWithOptions(frame.size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(frame.size);
+    }    
     myContext = UIGraphicsGetCurrentContext();
     CGContextClearRect(myContext, frame);
     [stretchedImage drawInRect:frame];
@@ -148,7 +146,6 @@
     CGPathAddLineToPoint(arrowPath, NULL, 10,  9);
     CGPathAddLineToPoint(arrowPath, NULL, -0.5,0);
     CGPathCloseSubpath(arrowPath);
-    
     
     [[[UIColor blackColor] colorWithAlphaComponent:0.5f] set];
     CGContextTranslateCTM(myContext, 11, floorf(frame.size.height/2.0f)-1);
@@ -223,7 +220,6 @@
 {
     if((self = [super init])) {
         [self setBarStyle:barStyle frame:aFrame];
-        //self.barStyle = barStyle;
         
         self.adjustsImageWhenHighlighted = YES;
         self.showsTouchWhenHighlighted = NO;
