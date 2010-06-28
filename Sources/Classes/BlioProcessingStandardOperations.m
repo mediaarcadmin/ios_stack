@@ -96,7 +96,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 }
 
 - (void)main {
-	NSLog(@"BlioProcessingLicenseAcquisitionOperation main entered");
+//	NSLog(@"BlioProcessingLicenseAcquisitionOperation main entered");
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;

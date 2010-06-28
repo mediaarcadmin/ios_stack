@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "BlioStoreBooksSourceParser.h"
+#import "BlioAppAppDelegate.h"
 
-
-@interface BlioStoreFeedBooksNonGDataParser : BlioStoreBooksSourceParser {
+@interface BlioStoreFeedBooksNonGDataParser : BlioStoreBooksSourceParser BLIO_NSXMLPARSER_DELEGATE {
     NSMutableString *currentString;
     BlioStoreParsedCategory *currentCategory;
     BlioStoreParsedEntity *currentEntity;

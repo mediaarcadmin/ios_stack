@@ -14979,12 +14979,12 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 }
 - (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
 {
-	xmlNodePtr root = xmlDocGetRootElement(doc);
+//	xmlNodePtr root = xmlDocGetRootElement(doc);
 	
-	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+//	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
 	
 	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
-	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"ContentCafe:RequestItem");
+//	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"ContentCafe:RequestItem");
 	
 	[self addAttributesToNode:node];
 	
@@ -16193,12 +16193,12 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 }
 - (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
 {
-	xmlNodePtr root = xmlDocGetRootElement(doc);
+//	xmlNodePtr root = xmlDocGetRootElement(doc);
 	
-	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+//	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
 	
 	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
-	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"ContentCafe:RequestItems");
+//	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"ContentCafe:RequestItems");
 	
 	[self addAttributesToNode:node];
 	
@@ -16347,12 +16347,12 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 }
 - (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
 {
-	xmlNodePtr root = xmlDocGetRootElement(doc);
+//	xmlNodePtr root = xmlDocGetRootElement(doc);
 	
-	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+//	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
 	
 	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
-	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"ContentCafe:ContentCafeXML");
+//	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"ContentCafe:ContentCafeXML");
 	
 	[self addAttributesToNode:node];
 	
@@ -17631,12 +17631,13 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 }
 - (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
 {
-	xmlNodePtr root = xmlDocGetRootElement(doc);
+//	xmlNodePtr root = xmlDocGetRootElement(doc);
 	
-	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+//	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
 	
 	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
-	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"ContentCafe:XmlClass");
+//	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"ContentCafe:XmlClass");
+	xmlSetNsProp(node, nil, (const xmlChar*)"xmlns", (const xmlChar*)"http://ContentCafe2.btol.com");
 	
 	[self addAttributesToNode:node];
 	
@@ -18372,6 +18373,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 		[request setAllHTTPHeaderFields:[NSHTTPCookie requestHeaderFieldsWithCookies:cookies]];
 	}
 	[request setValue:@"wsdl2objc" forHTTPHeaderField:@"User-Agent"];
+	[request setValue:@"close" forHTTPHeaderField:@"Connection"];
 	[request setValue:soapAction forHTTPHeaderField:@"SOAPAction"];
 	// originally:
 	//[request setValue:@"application/soap+xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
@@ -18451,7 +18453,8 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	
 	binding.cookies = cookies;
 	[cookies release];
-  if ([urlResponse.MIMEType rangeOfString:@"application/soap+xml"].length == 0) {
+//	if ([urlResponse.MIMEType rangeOfString:@"application/soap+xml"].length == 0) {
+	if ([urlResponse.MIMEType rangeOfString:@"text/xml"].length == 0) { // the baker-taylor's service responds with text/xml.
 		NSError *error = nil;
 		[connection cancel];
 		if ([httpResponse statusCode] >= 400) {
@@ -18479,7 +18482,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
 	if (binding.logXMLInOut) {
-		NSLog(@"ResponseError:\n%@", error);
+		NSLog(@"ResponseError:\n%@\n%@", error,[error userInfo]);
 	}
 	response.error = error;
 	[delegate operation:self completedWithResponse:response];
@@ -19262,7 +19265,8 @@ static ContentCafeSoap_envelope *ContentCafeSoapSharedEnvelopeInstance = nil;
 	xmlNodePtr root = xmlNewDocNode(doc, NULL, (const xmlChar*)"Envelope", NULL);
 	xmlDocSetRootElement(doc, root);
 	
-	xmlNsPtr soapEnvelopeNs = xmlNewNs(root, (const xmlChar*)"http://www.w3.org/2003/05/soap-envelope", (const xmlChar*)"soap");
+//	xmlNsPtr soapEnvelopeNs = xmlNewNs(root, (const xmlChar*)"http://www.w3.org/2003/05/soap-envelope", (const xmlChar*)"soap");
+	xmlNsPtr soapEnvelopeNs = xmlNewNs(root, (const xmlChar*)"http://schemas.xmlsoap.org/soap/envelope/", (const xmlChar*)"soap");
 	xmlSetNs(root, soapEnvelopeNs);
 	
 	xmlNsPtr xslNs = xmlNewNs(root, (const xmlChar*)"http://www.w3.org/1999/XSL/Transform", (const xmlChar*)"xsl");

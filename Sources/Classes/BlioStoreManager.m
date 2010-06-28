@@ -10,7 +10,6 @@
 #import "BlioOnlineStoreHelper.h"
 #import "BlioLoginViewController.h"
 
-BlioStoreManager * sharedLoginManager = nil;
 
 @implementation BlioStoreManager
 
@@ -19,11 +18,12 @@ BlioStoreManager * sharedLoginManager = nil;
 
 +(BlioStoreManager*)sharedInstance
 {
-	if (sharedLoginManager == nil) {
-		sharedLoginManager = [[BlioStoreManager alloc] init];
+	static BlioStoreManager * sharedStoreManager = nil;
+	if (sharedStoreManager == nil) {
+		sharedStoreManager = [[BlioStoreManager alloc] init];
 	}
 	
-	return sharedLoginManager;
+	return sharedStoreManager;
 }
 - (id) init {
 	if((self = [super init])) {
@@ -55,7 +55,17 @@ BlioStoreManager * sharedLoginManager = nil;
 }
 -(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID {
 	self.loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
-	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:[[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease] animated:YES];
+	
+	UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
+	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+		modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+	}
+#endif	
+	
+	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
 	isShowingLoginView = YES;	
 }
 -(void)loginFinishedForSourceID:(BlioBookSourceID)sourceID {

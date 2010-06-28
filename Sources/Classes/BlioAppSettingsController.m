@@ -16,6 +16,11 @@
 - (BlioAppSettingsController*)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		self.title = @"Settings";
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
+		}
+#endif
     }
     return self;
 }
@@ -23,20 +28,24 @@
 - (void)loadView {
 	[super loadView];
 	
-	self.navigationItem.titleView = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)];
-	[(UILabel*)self.navigationItem.titleView setText:NSLocalizedString(@"Settings",@"\"Settings\" view controller header")];
-	[(UILabel*)self.navigationItem.titleView setBackgroundColor:[UIColor clearColor]];
-	[(UILabel*)self.navigationItem.titleView setTextColor:[UIColor whiteColor]];
-	[(UILabel*)self.navigationItem.titleView setTextAlignment:UITextAlignmentCenter];
-	[(UILabel*)self.navigationItem.titleView setFont:[UIFont boldSystemFontOfSize:18.0f]];
-	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
+												   initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
+												   style:UIBarButtonItemStyleDone 
+												   target:self
+												   action:@selector(dismissSettingsView:)]
+												  autorelease];		
+	}
+#else
 	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
-											  initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
-											  style:UIBarButtonItemStyleDone 
-											  target:self
+											   initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
+											   style:UIBarButtonItemStyleDone 
+											   target:self
 											   action:@selector(dismissSettingsView:)]
 											  autorelease];
- 
+#endif
+	
 }
 
 - (void) dismissSettingsView: (id) sender {
@@ -46,7 +55,6 @@
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-	
 }
 
 // Override to allow orientations other than the default portrait orientation.

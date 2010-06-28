@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioStoreFeed.h"
+#import "BlioStoreBookViewController.h"
 #import <CoreData/CoreData.h>
 
 static const NSInteger kBlioStoreCategoriesTag = 1;
@@ -28,12 +29,14 @@ static const NSInteger kBlioMoreResultsCellActivityIndicatorViewWidth = 16;
 	NSManagedObjectContext *managedObjectContext;
 	UIActivityIndicatorView * activityIndicatorView;
 	BlioStoreFeedTableViewDataSource * storeFeedTableViewDataSource;
+	BlioStoreBookViewController * detailViewController;
 }
 
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, assign) NSMutableArray *feeds;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic, retain) BlioStoreBookViewController *detailViewController;
 @property (nonatomic, readonly) BlioStoreFeedTableViewDataSource * storeFeedTableViewDataSource;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath feed:(BlioStoreFeed*)feed;

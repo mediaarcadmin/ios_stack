@@ -11,6 +11,13 @@
 #import "BlioMockBook.h"
 #import "Reachability.h"
 
+#undef BLIO_NSXMLPARSER_DELEGATE
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 40000)
+ #define BLIO_NSXMLPARSER_DELEGATE <NSXMLParserDelegate>
+#else
+ #define BLIO_NSXMLPARSER_DELEGATE 
+#endif
+
 @class BlioLibraryViewController;
 
 @interface BlioAppAppDelegate : NSObject <UIApplicationDelegate> {

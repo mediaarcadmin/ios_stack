@@ -9,6 +9,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 #import "BlioAudioManager.h"
+#import "BlioAppAppDelegate.h"
 
 #define PAGE_TIMING_DELTA 250
 
@@ -18,7 +19,7 @@ typedef enum {
     kAudioRefIndex = 2,
 } AudioSegmentInfo;
 
-@interface BlioAudioBookManager : BlioAudioManager {
+@interface BlioAudioBookManager : BlioAudioManager BLIO_NSXMLPARSER_DELEGATE {
 	NSMutableArray* wordTimes;
 	NSInteger timeStarted;
 	NSInteger timeIx;

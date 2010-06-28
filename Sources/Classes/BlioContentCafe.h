@@ -1892,7 +1892,8 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 @interface ContentCafe_RequestItem : NSObject {
 	
 /* elements */
-	ContentCafe_Key * Key;
+//	ContentCafe_Key * Key;
+	NSString * Key;
 	NSMutableArray *Content;
 	ContentCafe_Environment * Environment;
 	ContentCafe_MemberItem * MemberItem;
@@ -1933,7 +1934,8 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 - (void)deserializeAttributesFromNode:(xmlNodePtr)cur;
 - (void)deserializeElementsFromNode:(xmlNodePtr)cur;
 /* elements */
-@property (retain) ContentCafe_Key * Key;
+//@property (retain) ContentCafe_Key * Key;
+@property (retain) NSString * Key;
 - (void)addContent:(ContentCafe_Content *)toAdd;
 @property (readonly) NSMutableArray * Content;
 @property (retain) ContentCafe_Environment * Environment;

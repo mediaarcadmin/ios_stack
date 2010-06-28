@@ -21,8 +21,6 @@ static NSString * BlioVoiceDataURLKey = @"url";
 
 NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNotification";
 
-BlioAcapelaAudioManager * sharedAcapelaAudioManager = nil;
-
 @implementation BlioAcapelaAudioManager
 
 @synthesize setupData, engine, ttsLicense,downloadQueue,voiceData,sampleAudioPlayer;
@@ -30,6 +28,7 @@ BlioAcapelaAudioManager * sharedAcapelaAudioManager = nil;
 
 +(BlioAcapelaAudioManager*)sharedAcapelaAudioManager
 {
+	static BlioAcapelaAudioManager * sharedAcapelaAudioManager = nil;
 	if (sharedAcapelaAudioManager == nil) {
 		sharedAcapelaAudioManager = [[BlioAcapelaAudioManager alloc] init];
 	}

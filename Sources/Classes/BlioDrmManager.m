@@ -12,16 +12,16 @@
 #import "DrmGlobals.h"
 #import "XpsSdk.h"
 
-static BlioDrmManager* drmManager = nil; 
 
 @implementation BlioDrmManager
 
 @synthesize drmInitialized, xpsClient;
 
 + (BlioDrmManager*)getDrmManager {
+	static BlioDrmManager* drmManager = nil; 
 	if ( drmManager == nil ) {
 		drmManager = [[BlioDrmManager alloc] init];
-		drmManager.xpsClient = [[BlioXpsClient alloc] init];
+		drmManager.xpsClient = [[[BlioXpsClient alloc] init] autorelease];
 	}
 	return drmManager;
 }

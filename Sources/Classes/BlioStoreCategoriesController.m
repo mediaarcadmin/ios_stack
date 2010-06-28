@@ -16,10 +16,12 @@
 
 @implementation BlioStoreCategoriesController
 
-@synthesize processingDelegate, managedObjectContext,activityIndicatorView;
+@synthesize processingDelegate, managedObjectContext,activityIndicatorView,detailViewController;
 
 - (void)dealloc {
     self.processingDelegate = nil;
+	self.detailViewController = nil;
+	self.activityIndicatorView = nil;
 	if (storeFeedTableViewDataSource) [storeFeedTableViewDataSource release];
     [super dealloc];
 }
@@ -180,30 +182,34 @@
 		[aFeed release];
 		
 		[aCategoriesController setProcessingDelegate:self.processingDelegate];
+
+		aCategoriesController.detailViewController = self.detailViewController;
 		
 		[aCategoriesController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
 		[self.navigationController pushViewController:aCategoriesController animated:YES];
 		[aCategoriesController release];
-	} else { // Entity cell selected
+		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	} 
+	else { // Entity cell selected
 		row -= [feed.categories count];
 		if (row < [feed.entities count]) {
 			BlioStoreParsedEntity *entity = [feed.entities objectAtIndex:[indexPath row]];
-			BlioStoreBookViewController *aEntityController = [[BlioStoreBookViewController alloc] initWithNibName:@"BlioStoreBookView"
-																										   bundle:[NSBundle mainBundle]];
+			BlioStoreBookViewController *aEntityController = nil;
+			if (self.detailViewController) aEntityController = self.detailViewController;
+			else {
+				aEntityController = [[BlioStoreBookViewController alloc] initWithNibName:@"BlioStoreBookView" bundle:[NSBundle mainBundle]];
+				[aEntityController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
+				[self.navigationController pushViewController:aEntityController animated:YES];
+				[aEntityController release];
+				[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+			}
 			[aEntityController setProcessingDelegate:self.processingDelegate];
 			[aEntityController setManagedObjectContext:self.managedObjectContext];
 			[aEntityController setTitle:[entity title]];
 			[aEntityController setEntity:entity];
 			[aEntityController setFeed:feed];
-			[aEntityController.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];
-			
-			[self.navigationController pushViewController:aEntityController animated:YES];
-			[aEntityController release];
 		}                
 	}
-	
-	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
 }
 
 #pragma mark -
