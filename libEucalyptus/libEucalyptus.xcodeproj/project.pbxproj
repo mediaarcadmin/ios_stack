@@ -418,6 +418,8 @@
 		7DD48EFD10C2E69E0001203D /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DD48EFE10C2E6A50001203D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */; };
+		7DE9F47011D8FCF80083089E /* BookPaperBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE9F46F11D8FCF80083089E /* BookPaperBlack.png */; };
+		7DE9F47111D8FCF80083089E /* BookPaperBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE9F46F11D8FCF80083089E /* BookPaperBlack.png */; };
 		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF012B0103EDD5600DAA9DA /* THTextFittingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */; };
 		7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF58B5D10DA9005004E3DBB /* EucBookView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1054,6 +1056,7 @@
 		7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
 		7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
 		7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = reverseAnimatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
+		7DE9F46F11D8FCF80083089E /* BookPaperBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaperBlack.png; sourceTree = "<group>"; };
 		7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTextFittingLabel.h; sourceTree = "<group>"; };
 		7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTextFittingLabel.m; sourceTree = "<group>"; };
 		7DF58B5D10DA9005004E3DBB /* EucBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookView.h; sourceTree = "<group>"; };
@@ -2394,6 +2397,7 @@
 				7DD48EC510C2E61E0001203D /* BookEdge.pvrtc */,
 				7DD48EC610C2E61E0001203D /* BookPaper.png */,
 				7DD48EC710C2E61E0001203D /* BookPaperWhite.png */,
+				7DE9F46F11D8FCF80083089E /* BookPaperBlack.png */,
 				7D5BE20E118F152B003BE69B /* Square256X256BookPaper.pvrtc */,
 				7DD48EC810C2E61E0001203D /* ContentsButton.png */,
 				7DD48EC910C2E61E0001203D /* EPubDefault.css */,
@@ -2933,6 +2937,7 @@
 				7D81C2301151BAAC008248F1 /* Down and out in the Magic Kingdom in Resources */,
 				7D5BE20F118F152B003BE69B /* Square256X256BookPaper.pvrtc in Resources */,
 				7D653B8111AFD17000C47DC6 /* EucConfiguration.plist in Resources */,
+				7DE9F47111D8FCF80083089E /* BookPaperBlack.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2966,6 +2971,7 @@
 				7D2CCB0A114DA3A2007FDEAF /* Aliases in Resources */,
 				7DBBC892114FACF500225E51 /* Down and out in the Magic Kingdom in Resources */,
 				7D653B8211AFD17000C47DC6 /* EucConfiguration.plist in Resources */,
+				7DE9F47011D8FCF80083089E /* BookPaperBlack.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
