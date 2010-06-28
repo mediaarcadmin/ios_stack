@@ -272,7 +272,6 @@
 		7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9F11499DCE004F64DC /* EucCSSXMLTreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D53BDA011499DCE004F64DC /* EucCSSXMLTreeNode.m */; };
 		7D53BE301149AE6D004F64DC /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
-		7D5BE20F118F152B003BE69B /* Square256X256BookPaper.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D5BE20E118F152B003BE69B /* Square256X256BookPaper.pvrtc */; };
 		7D5D69C410C2D33200BBF826 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libEucalyptus.a */; };
 		7D5D69C710C2D33200BBF826 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D5D69C810C2D33200BBF826 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
@@ -944,7 +943,6 @@
 		7D53BD9811499DC0004F64DC /* EucCSSXMLTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSXMLTree.m; sourceTree = "<group>"; };
 		7D53BD9F11499DCE004F64DC /* EucCSSXMLTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSXMLTreeNode.h; sourceTree = "<group>"; };
 		7D53BDA011499DCE004F64DC /* EucCSSXMLTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSXMLTreeNode.m; sourceTree = "<group>"; };
-		7D5BE20E118F152B003BE69B /* Square256X256BookPaper.pvrtc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Square256X256BookPaper.pvrtc; sourceTree = "<group>"; };
 		7D5EC94E113196380054F657 /* LineLoupeHigh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeHigh.png; sourceTree = "<group>"; };
 		7D5EC94F113196380054F657 /* LineLoupeLow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeLow.png; sourceTree = "<group>"; };
 		7D5EC950113196380054F657 /* LineLoupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeMask.png; sourceTree = "<group>"; };
@@ -2398,7 +2396,6 @@
 				7DD48EC610C2E61E0001203D /* BookPaper.png */,
 				7DD48EC710C2E61E0001203D /* BookPaperWhite.png */,
 				7DE9F46F11D8FCF80083089E /* BookPaperBlack.png */,
-				7D5BE20E118F152B003BE69B /* Square256X256BookPaper.pvrtc */,
 				7DD48EC810C2E61E0001203D /* ContentsButton.png */,
 				7DD48EC910C2E61E0001203D /* EPubDefault.css */,
 				7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */,
@@ -2935,7 +2932,6 @@
 				7D5EC953113196380054F657 /* LineLoupeMask.png in Resources */,
 				7D2CCB09114DA3A2007FDEAF /* Aliases in Resources */,
 				7D81C2301151BAAC008248F1 /* Down and out in the Magic Kingdom in Resources */,
-				7D5BE20F118F152B003BE69B /* Square256X256BookPaper.pvrtc in Resources */,
 				7D653B8111AFD17000C47DC6 /* EucConfiguration.plist in Resources */,
 				7DE9F47111D8FCF80083089E /* BookPaperBlack.png in Resources */,
 			);

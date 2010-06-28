@@ -76,7 +76,6 @@
 		7D5EC9571131963F0054F657 /* LineLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9541131963F0054F657 /* LineLoupeHigh.png */; };
 		7D5EC9581131963F0054F657 /* LineLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9551131963F0054F657 /* LineLoupeLow.png */; };
 		7D5EC9591131963F0054F657 /* LineLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D5EC9561131963F0054F657 /* LineLoupeMask.png */; };
-		7D6F38B31106332600C92A69 /* Square256X256BookPaper.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */; };
 		7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		7D79183610F2257C00C4D839 /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
 		7D79CF7D117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79CF7C117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m */; };
@@ -304,7 +303,6 @@
 		C9AF1A071147A772007D7AFC /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 556D1D5A10F3BE580019315C /* Icon.png */; };
 		C9AF1A081147A772007D7AFC /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
 		C9AF1A091147A772007D7AFC /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
-		C9AF1A0A1147A772007D7AFC /* Square256X256BookPaper.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */; };
 		C9AF1A0B1147A772007D7AFC /* speedread-background-dark-portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 553E98F91107B8E600FB309D /* speedread-background-dark-portrait.png */; };
 		C9AF1A0C1147A772007D7AFC /* speedread-thumb.png in Resources */ = {isa = PBXBuildFile; fileRef = 553E98FA1107B8E600FB309D /* speedread-thumb.png */; };
 		C9AF1A0F1147A772007D7AFC /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7DB27110F662600403651 /* SelectionKnob.png */; };
@@ -694,7 +692,6 @@
 		7D5EC9541131963F0054F657 /* LineLoupeHigh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeHigh.png; sourceTree = "<group>"; };
 		7D5EC9551131963F0054F657 /* LineLoupeLow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeLow.png; sourceTree = "<group>"; };
 		7D5EC9561131963F0054F657 /* LineLoupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineLoupeMask.png; sourceTree = "<group>"; };
-		7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Square256X256BookPaper.pvrtc; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
 		7D79183410F2257C00C4D839 /* BlioFlowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowView.h; sourceTree = "<group>"; };
@@ -1464,7 +1461,6 @@
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CCD10D93023008D34E2 /* animatedBookTurnVertices.vertexData */,
 				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
-				7D6F38B21106332600C92A69 /* Square256X256BookPaper.pvrtc */,
 				7D381CDF10D93023008D34E2 /* EPubDefault.css */,
 				7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */,
 				7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */,
@@ -2182,7 +2178,6 @@
 				556D1D5B10F3BE580019315C /* Icon.png in Resources */,
 				7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */,
 				7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */,
-				7D6F38B31106332600C92A69 /* Square256X256BookPaper.pvrtc in Resources */,
 				553E98FB1107B8E600FB309D /* speedread-background-dark-portrait.png in Resources */,
 				553E98FC1107B8E600FB309D /* speedread-thumb.png in Resources */,
 				A349F06B110E31CC009A8F89 /* AudioBooks in Resources */,
@@ -2327,7 +2322,6 @@
 				C9AF1A071147A772007D7AFC /* Icon.png in Resources */,
 				C9AF1A081147A772007D7AFC /* scrubber-icon.png in Resources */,
 				C9AF1A091147A772007D7AFC /* Lighting.xib in Resources */,
-				C9AF1A0A1147A772007D7AFC /* Square256X256BookPaper.pvrtc in Resources */,
 				C9AF1A0B1147A772007D7AFC /* speedread-background-dark-portrait.png in Resources */,
 				C9AF1A0C1147A772007D7AFC /* speedread-thumb.png in Resources */,
 				C9AF1A0F1147A772007D7AFC /* SelectionKnob.png in Resources */,
