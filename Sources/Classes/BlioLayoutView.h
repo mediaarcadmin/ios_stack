@@ -10,7 +10,6 @@
 #import "BlioBookView.h"
 #import "BlioSelectableBookView.h"
 #import "BlioBook.h"
-#import "MSTiltScroller.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucSelector.h>
 #import "XpsSdk.h"
@@ -61,7 +60,6 @@ typedef enum BlioLayoutPageMode {
     NSInteger visiblePageIndex;
     BlioLayoutPageLayer *currentPageLayer;
     BOOL disableScrollUpdating;
-    MSTiltScroller *tiltScroller;
     NSInteger pageNumber;
     NSInteger pageCount;
     CGFloat lastZoomScale;
@@ -99,7 +97,6 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic, retain) BlioLayoutScrollView *scrollView;
 @property (nonatomic, retain) BlioLayoutContentView *contentView;
 @property (nonatomic, retain) BlioLayoutPageLayer *currentPageLayer;
-@property (nonatomic, assign) MSTiltScroller *tiltScroller;
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;

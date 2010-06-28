@@ -19,7 +19,6 @@
     BlioAccessibilitySegmentedControl *fontSizeSegment;
     BlioAccessibilitySegmentedControl *pageColorSegment;
     BlioAccessibilitySegmentedControl *lockButtonSegment;
-    BlioAccessibilitySegmentedControl *tapTurnButtonSegment;
     UIButton *doneButton;
     UIImage *tapTurnOnImage;
     UIImage *tapTurnOffImage;
@@ -34,7 +33,6 @@
 @property (nonatomic, retain) UISegmentedControl *fontSizeSegment;
 @property (nonatomic, retain) UISegmentedControl *pageColorSegment;
 @property (nonatomic, retain) UISegmentedControl *lockButtonSegment;
-@property (nonatomic, retain) UISegmentedControl *tapTurnButtonSegment;
 @property (nonatomic, retain) UIButton *doneButton;
 @property (nonatomic, assign) id<BlioViewSettingsDelegate> viewSettingsDelegate;
 

@@ -151,7 +151,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize book, scrollView, contentView, currentPageLayer, tiltScroller, disableScrollUpdating, pageNumber, pageCount, selector;
+@synthesize book, scrollView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
@@ -444,14 +444,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (void)setDelegate:(id<BlioBookViewDelegate>)newDelegate {
     [self.scrollView setBookViewDelegate:newDelegate];
     delegate = newDelegate;
-}
-
-#pragma mark -
-#pragma mark Tilt Scroller
-
-- (void)setTiltScroller:(MSTiltScroller*)ts {
-    tiltScroller = ts;
-    [tiltScroller setScrollView:self.scrollView];
 }
 
 #pragma mark -
@@ -1533,7 +1525,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [self clearSnapshots];
         [self.selector setShouldHideMenu:NO];
     }
-    if (tiltScroller) [tiltScroller resetAngle];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {

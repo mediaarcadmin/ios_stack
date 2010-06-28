@@ -22,8 +22,6 @@
 		555CAF2F10F3B950007B1885 /* AccelerometerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */; };
 		555CAF3D10F3B991007B1885 /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */; };
 		556D1D5B10F3BE580019315C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 556D1D5A10F3BE580019315C /* Icon.png */; };
-		55822E1A10F276E0008614FD /* MSTiltScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 55822E1710F276E0008614FD /* MSTiltScroller.m */; };
-		55822E1B10F276E0008614FD /* MSTapDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 55822E1910F276E0008614FD /* MSTapDetector.m */; };
 		55822EF210F2860F008614FD /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EEF10F2860F008614FD /* Default.png */; };
 		55822EF410F2860F008614FD /* librarybackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EF110F2860F008614FD /* librarybackground.png */; };
 		55822F0510F286BB008614FD /* button-list.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F0310F286BB008614FD /* button-list.png */; };
@@ -355,8 +353,6 @@
 		C9AF1A3C1147A772007D7AFC /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		C9AF1A3D1147A772007D7AFC /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
 		C9AF1A3E1147A772007D7AFC /* BlioUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */; };
-		C9AF1A3F1147A772007D7AFC /* MSTiltScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 55822E1710F276E0008614FD /* MSTiltScroller.m */; };
-		C9AF1A401147A772007D7AFC /* MSTapDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 55822E1910F276E0008614FD /* MSTapDetector.m */; };
 		C9AF1A411147A772007D7AFC /* AccelerometerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */; };
 		C9AF1A421147A772007D7AFC /* Blio.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = C9C546F110F7802F00ECE126 /* Blio.xcdatamodel */; };
 		C9AF1A431147A772007D7AFC /* BlioContentsTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */; };
@@ -649,10 +645,6 @@
 		555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccelerometerFilter.m; sourceTree = "<group>"; };
 		555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryGridViewController.png; sourceTree = "<group>"; };
 		556D1D5A10F3BE580019315C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		55822E1610F276E0008614FD /* MSTiltScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTiltScroller.h; sourceTree = "<group>"; };
-		55822E1710F276E0008614FD /* MSTiltScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTiltScroller.m; sourceTree = "<group>"; };
-		55822E1810F276E0008614FD /* MSTapDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTapDetector.h; sourceTree = "<group>"; };
-		55822E1910F276E0008614FD /* MSTapDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTapDetector.m; sourceTree = "<group>"; };
 		55822EEF10F2860F008614FD /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		55822EF110F2860F008614FD /* librarybackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = librarybackground.png; sourceTree = "<group>"; };
 		55822F0310F286BB008614FD /* button-list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-list.png"; sourceTree = "<group>"; };
@@ -1255,10 +1247,6 @@
 				C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */,
 				7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */,
 				7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */,
-				55822E1610F276E0008614FD /* MSTiltScroller.h */,
-				55822E1710F276E0008614FD /* MSTiltScroller.m */,
-				55822E1810F276E0008614FD /* MSTapDetector.h */,
-				55822E1910F276E0008614FD /* MSTapDetector.m */,
 				555CAF2D10F3B950007B1885 /* AccelerometerFilter.h */,
 				555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */,
 				A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */,
@@ -2419,8 +2407,6 @@
 				7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */,
 				7D79183610F2257C00C4D839 /* BlioFlowView.m in Sources */,
 				C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */,
-				55822E1A10F276E0008614FD /* MSTiltScroller.m in Sources */,
-				55822E1B10F276E0008614FD /* MSTapDetector.m in Sources */,
 				555CAF2F10F3B950007B1885 /* AccelerometerFilter.m in Sources */,
 				C9C546F210F7802F00ECE126 /* Blio.xcdatamodel in Sources */,
 				C990F9C6110065CB00C82CA8 /* BlioContentsTabViewController.m in Sources */,
@@ -2517,8 +2503,6 @@
 				C9AF1A3C1147A772007D7AFC /* BlioBookViewController.m in Sources */,
 				C9AF1A3D1147A772007D7AFC /* BlioFlowView.m in Sources */,
 				C9AF1A3E1147A772007D7AFC /* BlioUIImageAdditions.m in Sources */,
-				C9AF1A3F1147A772007D7AFC /* MSTiltScroller.m in Sources */,
-				C9AF1A401147A772007D7AFC /* MSTapDetector.m in Sources */,
 				C9AF1A411147A772007D7AFC /* AccelerometerFilter.m in Sources */,
 				C9AF1A421147A772007D7AFC /* Blio.xcdatamodel in Sources */,
 				C9AF1A431147A772007D7AFC /* BlioContentsTabViewController.m in Sources */,
