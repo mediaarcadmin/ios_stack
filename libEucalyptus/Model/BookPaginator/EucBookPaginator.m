@@ -22,6 +22,7 @@
 #import "THImageFactory.h"
 
 #import <fcntl.h>
+#import <unistd.h>
 #import <sys/stat.h>
 
 NSString * const EucBookBookPaginatorProgressNotification = @"EucBookPaginatorProgressNotification";

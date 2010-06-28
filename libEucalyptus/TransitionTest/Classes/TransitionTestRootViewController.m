@@ -116,14 +116,17 @@
     if(row < 2) {
         NSString *bookPath = nil;
         NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
-        for(NSString *resource in [[NSFileManager defaultManager] directoryContentsAtPath:resourcePath]) {
-            NSString *fullPath = [resourcePath stringByAppendingPathComponent:resource];
-            BOOL isDirectory = YES;
-            if([[NSFileManager defaultManager] fileExistsAtPath:[fullPath stringByAppendingPathComponent:@"META-INF"] isDirectory:&isDirectory] && isDirectory) {
-                bookPath = fullPath;
-                break;
-            }
-        }        
+        NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:resourcePath error:nil];
+        if(contents) {
+            for(NSString *resource in contents) {
+                NSString *fullPath = [resourcePath stringByAppendingPathComponent:resource];
+                BOOL isDirectory = YES;
+                if([[NSFileManager defaultManager] fileExistsAtPath:[fullPath stringByAppendingPathComponent:@"META-INF"] isDirectory:&isDirectory] && isDirectory) {
+                    bookPath = fullPath;
+                    break;
+                }
+            }        
+        }
         if(bookPath) {
             EucBUpeBook *book = [[EucBUpeBook alloc] initWithPath:bookPath];
             EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
