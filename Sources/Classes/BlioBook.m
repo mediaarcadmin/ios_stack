@@ -6,38 +6,43 @@
 //  Copyright 2009 BitWink. All rights reserved.
 //
 
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioTextFlowParagraphSource.h"
 #import "BlioEPubParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <pthread.h>
 
-@interface BlioMockBook ()
+@interface BlioBook ()
 @property (nonatomic, retain) BlioTextFlow *textFlow;
 @property (nonatomic, retain) EucBUpeBook *ePubBook;
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
+
+- (NSString *)manifestPathForKey:(NSString *)key; // this should not be made public
+
 @end
 
-@implementation BlioMockBook
+@implementation BlioBook
 
+// Dynamic properties (map to core data attributes)
 @dynamic title;
 @dynamic author;
-@dynamic coverFilename;
-@dynamic epubFilename;
-@dynamic pdfFilename;
 @dynamic progress;
 @dynamic processingState;
-@dynamic libraryPosition;
+@dynamic sourceID;
+@dynamic sourceSpecificID;
 @dynamic layoutPageEquivalentCount;
+@dynamic libraryPosition;
+
+// Legacy dynamic properties TODO: remove these
+//@dynamic coverFilename;
+//@dynamic epubFilename;
+//@dynamic pdfFilename;
+//@dynamic textFlowFilename;
+//@dynamic xpsFilename;
+
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
-@dynamic textFlowFilename;
-@dynamic sourceID;
-@dynamic sourceSpecificID;
-@dynamic placeInBook;
-@dynamic xpsFilename;
-
 
 // Lazily instantiated - see getters below.
 @synthesize textFlow;
@@ -53,124 +58,64 @@
     [super dealloc];
 }
 
-- (NSString *)coverPath {
-    NSString *filename = [self valueForKey:@"coverFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
+#pragma mark -
+#pragma mark Convenience accessors
+
+- (BlioBookmarkPoint *)implicitBookmarkPoint
+{
+    BlioBookmarkPoint *ret;
     
-    return nil;
+    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
+    if(placeInBook) {
+        ret = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[[placeInBook valueForKey:@"range"] valueForKey:@"startPoint"]];
+    } else {
+        ret = [[[BlioBookmarkPoint alloc] init] autorelease];
+        ret.layoutPage = 1;
+    }
+    return ret;
 }
 
-- (NSString *)thumbForGridPath {
-    NSString *filename = [self valueForKey:@"gridThumbFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)thumbForListPath {
-    NSString *filename = [self valueForKey:@"listThumbFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)ePubPath {
-    NSString *filename = [self valueForKey:@"epubFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)pdfPath {
-    NSString *filename = [self valueForKey:@"pdfFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
+- (void)setImplicitBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
+    if(placeInBook) {
+        NSManagedObject *persistentBookmarkRange = [placeInBook valueForKey:@"range"];
         
-    return nil;
-}
-
-- (NSString *)audiobookPath {
-    NSString *filename = [self valueForKey:@"audiobookFilename"];
-    if (filename) {
-        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)timingIndicesPath {
-    NSString *filename = [self valueForKey:@"timingIndicesFilename"];
-    if (filename) {
-        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (BOOL)audioRights {
-    return [[self valueForKey:@"hasAudioRights"] boolValue];
-}
-
-- (NSString *)textFlowPath {
-    NSString *filename = [self valueForKey:@"textFlowFilename"];
-    if (filename) {
-        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)xpsPath {
-    NSString *filename = [self valueForKey:@"xpsFilename"];
-    if (filename) {
-        NSString *path = [self.bookCacheDirectory stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (UIImage *)coverImage {
-    NSString *path = [self coverPath];
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:path];
-    return [UIImage imageWithData:imageData];
-}
-
-- (UIImage *)coverThumbForGrid {
-    NSString *path = [self thumbForGridPath];
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:path];
-    return [UIImage imageWithData:imageData];
-}
-
-- (UIImage *)coverThumbForList {
-    NSString *path = [self thumbForListPath];
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:path];
-    return [UIImage imageWithData:imageData];
+        NSNumber *layoutPageNumber = [NSNumber numberWithInteger:bookmarkPoint.layoutPage];
+        NSNumber *layoutBlockOffset = [NSNumber numberWithInteger:bookmarkPoint.blockOffset];
+        NSNumber *layoutWordOffset = [NSNumber numberWithInteger:bookmarkPoint.wordOffset];
+        NSNumber *layoutElementOffset = [NSNumber numberWithInteger:bookmarkPoint.elementOffset];   
+        
+        NSManagedObject *bookmarkStartPoint = [persistentBookmarkRange valueForKey:@"startPoint"];
+        [bookmarkStartPoint setValue:layoutPageNumber forKey:@"layoutPage"];
+        [bookmarkStartPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
+        [bookmarkStartPoint setValue:layoutWordOffset forKey:@"wordOffset"];
+        [bookmarkStartPoint setValue:layoutElementOffset forKey:@"elementOffset"];
+        
+        NSManagedObject *bookmarkEndPoint = [persistentBookmarkRange valueForKey:@"endPoint"];
+        [bookmarkEndPoint setValue:layoutPageNumber forKey:@"layoutPage"];
+        [bookmarkEndPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
+        [bookmarkEndPoint setValue:layoutWordOffset forKey:@"wordOffset"];
+        [bookmarkEndPoint setValue:layoutElementOffset forKey:@"elementOffset"];
+    } else {
+        placeInBook = [NSEntityDescription
+                       insertNewObjectForEntityForName:@"BlioPlaceInBook"
+                       inManagedObjectContext:[self managedObjectContext]];
+        [self setValue:placeInBook forKey:@"placeInBook"];
+        
+        BlioBookmarkRange *bookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
+        
+        NSManagedObject *persistentBookmarkRange = [bookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+        [placeInBook setValue:persistentBookmarkRange forKey:@"range"];
+    }     
 }
 
 - (BlioTextFlow *)textFlow {
-        
+    
     if (nil == textFlow) {
         NSSet *pageRanges = [self valueForKey:@"textFlowPageRanges"];
         if (pageRanges) { 
-            BlioTextFlow *myTextFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges basePath:[[self bookCacheDirectory] stringByAppendingPathComponent:@"TextFlow"]];
+            BlioTextFlow *myTextFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges storeCoordinator:self.managedObjectContext.persistentStoreCoordinator bookID:self.objectID];
             self.textFlow = myTextFlow;
             [myTextFlow release];
         }
@@ -212,6 +157,77 @@
     }
     return paragraphSource;
 }
+
+- (NSString *)bookCacheDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
+    return bookPath;
+}
+
+- (NSString *)bookTempDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
+    return bookPath;
+}
+
+- (NSString *)ePubPath {
+    return [self manifestPathForKey:@"epubFilename"];
+}
+
+- (NSString *)pdfPath {        
+    return [self manifestPathForKey:@"pdfFilename"];
+}
+
+- (NSString *)audiobookPath {
+    NSString *filename = [self valueForKey:@"audiobookFilename"];
+    if (filename) {
+        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByAppendingPathComponent:filename];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
+    }
+    
+    return nil;
+}
+
+- (NSString *)timingIndicesPath {
+    NSString *filename = [self valueForKey:@"timingIndicesFilename"];
+    if (filename) {
+        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByAppendingPathComponent:filename];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
+    }
+    
+    return nil;
+}
+
+- (BOOL)audioRights {
+    return [[self valueForKey:@"hasAudioRights"] boolValue];
+}
+
+
+- (NSString *)textFlowPath {        
+    return [self manifestPathForKey:@"textFlowFilename"];
+}
+
+- (NSString *)xpsPath {
+    return [self manifestPathForKey:@"xpsFilename"];
+}
+
+- (UIImage *)coverImage {
+    NSData *imageData = [self manifestDataForKey:@"coverFilename"];
+    return [UIImage imageWithData:imageData];
+}
+
+- (UIImage *)coverThumbForGrid {
+    NSData *imageData = [self manifestDataForKey:@"gridThumbFilename"];
+    return [UIImage imageWithData:imageData];
+}
+
+- (UIImage *)coverThumbForList {
+    NSData *imageData = [self manifestDataForKey:@"listThumbFilename"];
+    return [UIImage imageWithData:imageData];
+}
+
 
 - (void)flushCaches
 {
@@ -387,6 +403,121 @@ static void sortedHighlightRangePredicateInit() {
     return highlightRanges;
 }
 
+- (void)setManifestValue:(id)value forKey:(NSString *)key {
+    NSMutableDictionary *manifest = nil;
+    NSDictionary *currentManifest = [self valueForKey:@"manifest"];
+    if (currentManifest) {
+        manifest = [NSMutableDictionary dictionaryWithDictionary:currentManifest];
+    } else {
+        manifest = [NSMutableDictionary dictionary];
+    }
+    
+    [manifest setValue:value forKey:key];
+    [self setValue:manifest forKeyPath:@"manifest"];
+    
+    NSError *anError;
+    if (![self.managedObjectContext save:&anError]) {
+        NSLog(@"setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
+    }
+}
+
+- (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path {
+    return [self.bookCacheDirectory stringByAppendingPathComponent:path];
+}
+
+- (NSString *)fullPathOfXPSItemAtPath:(NSString *)path {
+    return nil;
+}
+
+- (NSString *)fullPathOfTextFlowItemAtPath:(NSString *)path {
+    return [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:path];
+}
+
+- (NSData *)dataFromFileSystemAtPath:(NSString *)path {
+    NSData *data = nil;
+    NSString *filePath = [self fullPathOfFileSystemItemAtPath:path];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
+        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
+    else
+        data = [NSData dataWithContentsOfMappedFile:filePath];
+    
+    return data;
+}
+
+- (NSData *)dataFromXPSAtPath:(NSString *)path {
+    NSData *data = nil;
+    NSString *filePath = [self fullPathOfXPSItemAtPath:path];
+    if (filePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
+        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
+    else
+        data = [NSData dataWithContentsOfMappedFile:filePath];
+    
+    return data;
+}
+
+- (NSData *)dataFromTextFlowAtPath:(NSString *)path {
+    NSData *data = nil;
+    NSString *filePath = [self fullPathOfTextFlowItemAtPath:path];
+    if (filePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
+        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
+    else
+        data = [NSData dataWithContentsOfMappedFile:filePath];
+    
+    return data;
+}
+
+- (NSString *)manifestPathForKey:(NSString *)key {
+    NSString *filePath = nil;
+    
+    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        NSString *location = [manifestEntry objectForKey:@"location"];
+        NSString *path = [manifestEntry objectForKey:@"path"];
+        if (location && path) {
+            // TODO - we shouldn't need to check if path is a URL, the manifest entry should be different
+            if ([location isEqualToString:@"fileSystem"]) {
+                NSURL *fileUrl = [NSURL URLWithString:path];
+                NSString *fileUrlPath = [fileUrl path];
+                if (fileUrl && fileUrlPath && [[NSFileManager defaultManager] fileExistsAtPath:fileUrlPath]) {
+                    filePath = path;              
+                } else if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                    filePath = path;
+                } else if ([[NSFileManager defaultManager] fileExistsAtPath:[self fullPathOfFileSystemItemAtPath:path]]) {
+                    filePath = [self fullPathOfFileSystemItemAtPath:path];
+                } else {
+                    filePath = path;
+                }
+            } else if ([location isEqualToString:@"xps"]) {
+                filePath = [self fullPathOfXPSItemAtPath:path];
+            } else if ([location isEqualToString:@"textflow"]) {
+                filePath = [self fullPathOfTextFlowItemAtPath:path];
+            }
+
+        }
+    }
+    
+    return filePath;
+}
+
+- (NSData *)manifestDataForKey:(NSString *)key {
+    NSData *data = nil;
+    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        NSString *location = [manifestEntry objectForKey:@"location"];
+        NSString *path = [manifestEntry objectForKey:@"path"];
+        if (location && path) {
+            if ([location isEqualToString:@"fileSystem"]) {
+                data = [self dataFromFileSystemAtPath:path];
+            } else if ([location isEqualToString:@"xps"]) {
+                data = [self dataFromXPSAtPath:path];
+            } else if ([location isEqualToString:@"textflow"]) {
+                data = [self dataFromTextFlowAtPath:path];
+            }
+        }
+    }
+    return data;
+}
+
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range {
     NSManagedObjectContext *moc = [self managedObjectContext]; 
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
@@ -424,68 +555,6 @@ static void sortedHighlightRangePredicateInit() {
     } else {
         return nil;
     }
-}
-
-- (NSString *)bookCacheDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
-    return bookPath;
-}
-- (NSString *)bookTempDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-    NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
-    return bookPath;
-}
-
-- (BlioBookmarkPoint *)implicitBookmarkPoint
-{
-    BlioBookmarkPoint *ret;
-    
-    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
-    if(placeInBook) {
-        ret = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[[placeInBook valueForKey:@"range"] valueForKey:@"startPoint"]];
-    } else {
-        ret = [[[BlioBookmarkPoint alloc] init] autorelease];
-        ret.layoutPage = 1;
-    }
-    return ret;
-}
-
-- (void)setImplicitBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
-{
-    NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
-    if(placeInBook) {
-        NSManagedObject *persistentBookmarkRange = [placeInBook valueForKey:@"range"];
-        
-        NSNumber *layoutPageNumber = [NSNumber numberWithInteger:bookmarkPoint.layoutPage];
-        NSNumber *layoutBlockOffset = [NSNumber numberWithInteger:bookmarkPoint.blockOffset];
-        NSNumber *layoutWordOffset = [NSNumber numberWithInteger:bookmarkPoint.wordOffset];
-        NSNumber *layoutElementOffset = [NSNumber numberWithInteger:bookmarkPoint.elementOffset];   
-        
-        NSManagedObject *bookmarkStartPoint = [persistentBookmarkRange valueForKey:@"startPoint"];
-        [bookmarkStartPoint setValue:layoutPageNumber forKey:@"layoutPage"];
-        [bookmarkStartPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
-        [bookmarkStartPoint setValue:layoutWordOffset forKey:@"wordOffset"];
-        [bookmarkStartPoint setValue:layoutElementOffset forKey:@"elementOffset"];
-        
-        NSManagedObject *bookmarkEndPoint = [persistentBookmarkRange valueForKey:@"endPoint"];
-        [bookmarkEndPoint setValue:layoutPageNumber forKey:@"layoutPage"];
-        [bookmarkEndPoint setValue:layoutBlockOffset forKey:@"blockOffset"];
-        [bookmarkEndPoint setValue:layoutWordOffset forKey:@"wordOffset"];
-        [bookmarkEndPoint setValue:layoutElementOffset forKey:@"elementOffset"];
-    } else {
-        placeInBook = [NSEntityDescription
-                       insertNewObjectForEntityForName:@"BlioPlaceInBook"
-                       inManagedObjectContext:[self managedObjectContext]];
-        [self setValue:placeInBook forKey:@"placeInBook"];
-        
-        BlioBookmarkRange *bookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
-        
-        NSManagedObject *persistentBookmarkRange = [bookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
-        [placeInBook setValue:persistentBookmarkRange forKey:@"range"];
-    }     
 }
 
 #pragma mark -

@@ -12,14 +12,12 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import "BlioAcapelaAudioManager.h"
 #import "BlioAudioBookManager.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioBookView.h"
 #import "BlioViewSettingsSheet.h"
 #import "BlioNotesView.h"
 #import "BlioContentsTabViewController.h"
 #import "BlioWebToolsViewController.h"
-#import "MSTiltScroller.h"
-#import "MSTapDetector.h"
 #import "BlioBookSearchController.h"
 #import "BlioBookSearchViewController.h"
 
@@ -56,8 +54,6 @@ typedef enum BlioFontSize {
 - (BOOL)isRotationLocked;
 - (void)changeLockRotation;
 - (BlioPageLayout)currentPageLayout;
-- (BlioTapTurn)currentTapTurn;
-- (void)changeTapTurn;
 - (BlioPageColor)currentPageColor;
 - (BlioFontSize)currentFontSize;
 @end
@@ -74,7 +70,7 @@ typedef enum {
 @interface BlioBookViewController : UIViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
     BOOL _firstAppearance;
     
-    BlioMockBook *_book;
+    BlioBook *_book;
     
     UIView<BlioBookView> *_bookView;
     
@@ -112,8 +108,6 @@ typedef enum {
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
     
-    MSTiltScroller *tiltScroller;
-    MSTapDetector *tapDetector;
     BOOL motionControlsEnabled;
     
     BlioPageColor _currentPageColor;
@@ -130,9 +124,9 @@ typedef enum {
 }
 
 // Designated initializers.
-- (id)initWithBook:(BlioMockBook *)newBook;
+- (id)initWithBook:(BlioBook *)newBook;
 
-@property (nonatomic, retain) BlioMockBook *book;
+@property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, assign) BOOL toolbarsVisibleAfterAppearance;
 
 @property (nonatomic, assign) UIBarStyle returnToNavigationBarStyle;
@@ -145,8 +139,6 @@ typedef enum {
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic, assign) BOOL audioPlaying;
 
-@property (nonatomic, retain) MSTiltScroller *tiltScroller;
-@property (nonatomic, retain) MSTapDetector *tapDetector;
 @property (nonatomic, assign) BOOL motionControlsEnabled;
 
 @property (nonatomic, retain) UIView *pageJumpView;
@@ -156,7 +148,6 @@ typedef enum {
 
 @property (nonatomic, getter=isRotationLocked) BOOL rotationLocked;
 
-- (void)setupTiltScrollerWithBookView;
 - (void)tapToNextPage;
 - (void)stopAudio;
 

@@ -7,7 +7,7 @@
 //
 
 #import "BlioFlowEucBook.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "BlioTextFlow.h"
 #import "BlioTextFlowFlowTree.h"
 
@@ -21,7 +21,7 @@
 
 @synthesize textFlow;
 
-- (id)initWithBlioBook:(BlioMockBook *)blioBook;
+- (id)initWithBlioBook:(BlioBook *)blioBook;
 {
     if((self = [super init])) {
         textFlow = [blioBook.textFlow retain];
@@ -29,7 +29,10 @@
         self.author = blioBook.author;
         self.path = blioBook.bookCacheDirectory;
         self.etextNumber = nil;
-        self.coverPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:blioBook.coverFilename];
+        // TODO ePubs will need to use [blioBook coverImage] of [blioBook manifestDataForKey:@"coverFilename"]
+        //self.coverPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:blioBook.coverFilename];
+        self.coverPath = [blioBook manifestPathForKey:@"coverFilename"];
+        
     }
     
     return self;

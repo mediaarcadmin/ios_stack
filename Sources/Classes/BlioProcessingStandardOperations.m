@@ -42,8 +42,8 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		NSLog(@"Failed to delete download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
 	}
 	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
-    if (currentProcessingState == kBlioMockBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioMockBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
-	else [self setBookValue:[NSNumber numberWithInt:kBlioMockBookProcessingStateComplete] forKey:@"processingState"];
+    if (currentProcessingState == kBlioBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
+	else [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
     // The following condition is done in order to prevent a thread's first-time access to [self getBookValueForKey:@"title"] (which happens when there are no dependencies- theoretically that should never happen, but a crash would occur in artificial tests so a safeguard is warranted)... could also be avoided by simply not accessing the MOC in this method for the NSLog.
     if ([NSThread isMainThread]) NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
 	else NSLog(@"Processing complete for book with sourceID:%i sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
@@ -110,7 +110,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	}
 	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore) {
 		NSLog(@"ERROR: Title (%@) is not an online store title!",[self getBookValueForKey:@"title"]);
-		NSLog(@"xpsFilename: %@", [self getBookValueForKey:@"xpsFilename"]);
+		NSLog(@"xpsFilename: %@", [self getBookManifestPathForKey:@"xpsFilename"]);
 		// TODO: remove the following two lines for final version (we're bypassing for now since Three Little Pigs doesn't need a license)
 		self.operationSuccess = YES;
 		self.percentageComplete = 100;
@@ -119,7 +119,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
 			NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
-			self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookPath:[self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"xpsFilename"]]];
+			void* xpsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:[self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"xpsFilename"]]];
+			[[BlioDrmManager getDrmManager] setBook:xpsHandle];
+			self.operationSuccess = [[BlioDrmManager getDrmManager] getLicense];
+			[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsHandle];
 			attemptsMade++;
 		}
 	}
@@ -453,7 +456,13 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 
         }
 		else {
-			[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+			//[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:(NSString *)uniqueString forKey:@"path"];
+            
+            [self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+            [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
 			self.operationSuccess = YES;
 			self.percentageComplete = 100;
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
@@ -543,7 +552,13 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
             return;
         }
 		else {
-			[self setBookValue:self.localFilename forKey:self.filenameKey];
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:self.localFilename forKey:@"path"];
+            
+            [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
+            
+            //[self setBookValue:self.localFilename forKey:self.filenameKey];
 			self.operationSuccess = YES;
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
 		}
@@ -745,19 +760,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     }
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *coverFile = [self getBookValueForKey:@"coverFilename"]; 
-    NSString *coverPath = [self.cacheDirectory stringByAppendingPathComponent:coverFile];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:coverPath]) {
-        NSLog(@"Could not create thumbs because cover file did not exist at path: %@.", coverPath);
-        [pool drain];
-        return;
-    }
-    
-    NSData *imageData = [NSData dataWithContentsOfMappedFile:coverPath];
+    NSData *imageData = [self getBookManifestDataForKey:@"coverFilename"];    
     UIImage *cover = [UIImage imageWithData:imageData];
     
     if (nil == cover) {
-        NSLog(@"Could not create thumbs because cover image at path %@ was not an image.", coverPath);
+        NSLog(@"    because cover image was not an image.");
         [pool drain];
         return;
     }
@@ -772,7 +779,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"gridThumb.png"];
     [gridData writeToFile:gridThumbPath atomically:YES];
     [gridThumb release]; // this is giving an ERROR (TODO)
-    [self setBookValue:@"gridThumb.png" forKey:@"gridThumbFilename"];
+    
+    NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
+    [gridThumbManifestEntry setValue:@"fileSystem" forKey:@"location"];
+    [gridThumbManifestEntry setValue:@"gridThumb.png" forKey:@"path"];
+    [self setBookManifestValue:gridThumbManifestEntry forKey:@"gridThumbFilename"];
 
     if ([self isCancelled]) {
         [pool drain];
@@ -784,7 +795,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     NSString *listThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"listThumb.png"];
     [listData writeToFile:listThumbPath atomically:YES];
     [listThumb release];
-    [self setBookValue:@"listThumb.png" forKey:@"listThumbFilename"];
+    
+    NSDictionary *listThumbManifestEntry = [NSMutableDictionary dictionary];
+    [listThumbManifestEntry setValue:@"fileSystem" forKey:@"location"];
+    [listThumbManifestEntry setValue:@"listThumb.png" forKey:@"path"];
+    [self setBookManifestValue:listThumbManifestEntry forKey:@"listThumbFilename"];
 	self.operationSuccess = YES;
 	self.percentageComplete = 100;
     
@@ -874,7 +889,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 				return;
 			}			
             else {
-				[self setBookValue:rootFile forKey:self.filenameKey];
+                NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+                [manifestEntry setValue:@"textflow" forKey:@"location"];
+                [manifestEntry setValue:rootFile forKey:@"path"];
+				[self setBookManifestValue:manifestEntry forKey:self.filenameKey];
 				self.operationSuccess = YES;
 				self.percentageComplete = 100;
 			}

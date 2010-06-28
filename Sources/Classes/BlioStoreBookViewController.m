@@ -10,7 +10,7 @@
 #import "BlioStoreBookViewController.h"
 #import "BlioProcessingStandardOperations.h"
 #import <libEucalyptus/THUIImageAdditions.h>
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 
 #define AUTHORPADDINGABOVE 4
 #define AUTHORPADDINGBELOW 9
@@ -210,15 +210,15 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     }
 	
 	// check data to see if downloadState must be changed:
-	// access processing manager to see if the corresponding BlioMockBook is already in library
+	// access processing manager to see if the corresponding BlioBook is already in library
 	
-	BlioMockBook * resultBook = [self.processingDelegate bookWithSourceID:self.feed.sourceID sourceSpecificID:[self.entity id]];
+	BlioBook * resultBook = [self.processingDelegate bookWithSourceID:self.feed.sourceID sourceSpecificID:[self.entity id]];
 
 	if (resultBook != nil) {
 		// then update button options accordingly to prevent possible duplication of entries.
 		NSLog(@"Found Book in context already"); 
-		if ([[resultBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioMockBookProcessingStateComplete]]) {
-			NSLog(@"and processingState is kBlioMockBookProcessingStateComplete."); 
+		if ([[resultBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]) {
+			NSLog(@"and processingState is kBlioBookProcessingStateComplete."); 
 			
 			[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
 		}

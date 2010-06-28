@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <expat/expat.h>
+#import "BlioBook.h"
 #import "BlioBookmark.h"
 #import "BlioProcessingManager.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
@@ -49,7 +50,7 @@
     // NSCoding compliant
     NSInteger startPageIndex;
     NSInteger endPageIndex;
-    NSString *path;
+    NSString *fileName;
     NSMutableSet *pageMarkers;
     
     // Transient
@@ -59,7 +60,7 @@
 
 @property (nonatomic) NSInteger startPageIndex;
 @property (nonatomic) NSInteger endPageIndex;
-@property (nonatomic, retain) NSString *path;
+@property (nonatomic, retain) NSString *fileName;
 @property (nonatomic, retain) NSMutableSet *pageMarkers;
 
 - (NSArray *)sortedPageMarkers;
@@ -93,13 +94,13 @@
 
 @interface BlioTextFlowSection : NSObject {
     NSString *name;
-    NSString *flowSourcePath;
+    NSString *flowSourceFileName;
     NSUInteger startPage;
     NSUInteger endPage;
 }
 
 @property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *flowSourcePath;
+@property (nonatomic, retain) NSString *flowSourceFileName;
 @property (nonatomic) NSUInteger startPage;
 
 @end
@@ -108,9 +109,11 @@
 
 @interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider, EucBookContentsTableViewControllerDataSource> {
     NSSet *pageRanges;
-    NSString *basePath;
     
     NSMutableArray *sections;
+    
+    NSManagedObjectID *bookID;
+    NSPersistentStoreCoordinator *storeCoordinator;
     
     NSInteger pageIndexCache[kTextFlowPageBlocksCacheCapacity];
     NSArray *pageBlocksCache[kTextFlowPageBlocksCacheCapacity];
@@ -118,8 +121,11 @@
 }
 
 @property (nonatomic, retain, readonly) NSMutableArray *sections;
+@property (nonatomic, assign, readonly) BlioBook *book;
+@property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, retain) NSPersistentStoreCoordinator *storeCoordinator;
 
-- (id)initWithPageRanges:(NSSet *)pageRangesSet basePath:(NSString *)aBasePath;
+- (id)initWithPageRanges:(NSSet *)pageRangesSet storeCoordinator:(NSPersistentStoreCoordinator *)aStoreCoordinator bookID:(NSManagedObjectID *)aBookID;
 
 - (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex;
 - (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex;

@@ -8,7 +8,7 @@
 
 #import <CoreData/CoreData.h>
 #import "BlioProcessingManager.h"
-#import "BlioMockBook.h"
+#import "BlioBook.h"
 #import "Reachability.h"
 
 #undef BLIO_NSXMLPARSER_DELEGATE
