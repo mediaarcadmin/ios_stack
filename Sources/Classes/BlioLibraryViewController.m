@@ -1171,11 +1171,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 #pragma mark - UIPopoverControllerDelegate
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	// N.B. - from Apple's documentation: The popover controller does not call this method in response to programmatic calls to the dismissPopoverAnimated: method.
 	self.settingsPopoverController = nil;
 }
+
+#endif
 
 #pragma mark - UIActionSheetDelegate
 
