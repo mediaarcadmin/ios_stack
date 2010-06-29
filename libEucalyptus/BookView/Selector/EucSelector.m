@@ -489,7 +489,12 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             [loupeLayer addAnimation:loupePopUp forKey:@"EucSelectorLoupePopUp"];
             [loupePopUp release];
             
-            loupeContentsImageFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
+            UIScreen *mainScreen = [UIScreen mainScreen];
+            if([mainScreen respondsToSelector:@selector(scale)]) {
+                loupeContentsImageFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize scaleFactor:mainScreen.scale];
+            } else {
+                loupeContentsImageFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize];
+            }
             self.loupeContentsImageFactory = loupeContentsImageFactory;
             [loupeContentsImageFactory release];
         }
