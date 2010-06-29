@@ -119,6 +119,26 @@
 		7DB732F311DA055500D00601 /* rightButtonBlackTranslucent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732F111DA055500D00601 /* rightButtonBlackTranslucent@2x.png */; };
 		7DB732F511DA055C00D00601 /* rightButtonBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732F411DA055C00D00601 /* rightButtonBlue@2x.png */; };
 		7DB732F611DA055C00D00601 /* rightButtonBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732F411DA055C00D00601 /* rightButtonBlue@2x.png */; };
+		7DB736E211DA5E1F00D00601 /* MenuArrowBottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736D811DA5E1F00D00601 /* MenuArrowBottom@2x.png */; };
+		7DB736E311DA5E1F00D00601 /* MenuArrowBottomHighlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736D911DA5E1F00D00601 /* MenuArrowBottomHighlighted@2x.png */; };
+		7DB736E411DA5E1F00D00601 /* MenuArrowTop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DA11DA5E1F00D00601 /* MenuArrowTop@2x.png */; };
+		7DB736E511DA5E1F00D00601 /* MenuArrowTopHighlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DB11DA5E1F00D00601 /* MenuArrowTopHighlighted@2x.png */; };
+		7DB736E611DA5E1F00D00601 /* MenuBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DC11DA5E1F00D00601 /* MenuBackground@2x.png */; };
+		7DB736E711DA5E1F00D00601 /* MenuBackgroundHighlighted@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DD11DA5E1F00D00601 /* MenuBackgroundHighlighted@2.png */; };
+		7DB736E811DA5E1F00D00601 /* MenuBottomShadowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DE11DA5E1F00D00601 /* MenuBottomShadowLeft@2x.png */; };
+		7DB736E911DA5E1F00D00601 /* MenuBottomShadowMiddle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DF11DA5E1F00D00601 /* MenuBottomShadowMiddle@2x.png */; };
+		7DB736EA11DA5E1F00D00601 /* MenuBottomShadowRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736E011DA5E1F00D00601 /* MenuBottomShadowRight@2x.png */; };
+		7DB736EB11DA5E1F00D00601 /* MenuRidge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736E111DA5E1F00D00601 /* MenuRidge@2x.png */; };
+		7DB736EC11DA5E1F00D00601 /* MenuArrowBottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736D811DA5E1F00D00601 /* MenuArrowBottom@2x.png */; };
+		7DB736ED11DA5E1F00D00601 /* MenuArrowBottomHighlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736D911DA5E1F00D00601 /* MenuArrowBottomHighlighted@2x.png */; };
+		7DB736EE11DA5E1F00D00601 /* MenuArrowTop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DA11DA5E1F00D00601 /* MenuArrowTop@2x.png */; };
+		7DB736EF11DA5E1F00D00601 /* MenuArrowTopHighlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DB11DA5E1F00D00601 /* MenuArrowTopHighlighted@2x.png */; };
+		7DB736F011DA5E1F00D00601 /* MenuBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DC11DA5E1F00D00601 /* MenuBackground@2x.png */; };
+		7DB736F111DA5E1F00D00601 /* MenuBackgroundHighlighted@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DD11DA5E1F00D00601 /* MenuBackgroundHighlighted@2.png */; };
+		7DB736F211DA5E1F00D00601 /* MenuBottomShadowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DE11DA5E1F00D00601 /* MenuBottomShadowLeft@2x.png */; };
+		7DB736F311DA5E1F00D00601 /* MenuBottomShadowMiddle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736DF11DA5E1F00D00601 /* MenuBottomShadowMiddle@2x.png */; };
+		7DB736F411DA5E1F00D00601 /* MenuBottomShadowRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736E011DA5E1F00D00601 /* MenuBottomShadowRight@2x.png */; };
+		7DB736F511DA5E1F00D00601 /* MenuRidge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB736E111DA5E1F00D00601 /* MenuRidge@2x.png */; };
 		7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F93F10F39FF60010DF0B /* logo-bevel.png */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
@@ -739,6 +759,16 @@
 		7DB732EE11DA055100D00601 /* rightButtonBlackOpaque@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightButtonBlackOpaque@2x.png"; sourceTree = "<group>"; };
 		7DB732F111DA055500D00601 /* rightButtonBlackTranslucent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightButtonBlackTranslucent@2x.png"; sourceTree = "<group>"; };
 		7DB732F411DA055C00D00601 /* rightButtonBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightButtonBlue@2x.png"; sourceTree = "<group>"; };
+		7DB736D811DA5E1F00D00601 /* MenuArrowBottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottom@2x.png"; sourceTree = "<group>"; };
+		7DB736D911DA5E1F00D00601 /* MenuArrowBottomHighlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottomHighlighted@2x.png"; sourceTree = "<group>"; };
+		7DB736DA11DA5E1F00D00601 /* MenuArrowTop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowTop@2x.png"; sourceTree = "<group>"; };
+		7DB736DB11DA5E1F00D00601 /* MenuArrowTopHighlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowTopHighlighted@2x.png"; sourceTree = "<group>"; };
+		7DB736DC11DA5E1F00D00601 /* MenuBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackground@2x.png"; sourceTree = "<group>"; };
+		7DB736DD11DA5E1F00D00601 /* MenuBackgroundHighlighted@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackgroundHighlighted@2.png"; sourceTree = "<group>"; };
+		7DB736DE11DA5E1F00D00601 /* MenuBottomShadowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBottomShadowLeft@2x.png"; sourceTree = "<group>"; };
+		7DB736DF11DA5E1F00D00601 /* MenuBottomShadowMiddle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBottomShadowMiddle@2x.png"; sourceTree = "<group>"; };
+		7DB736E011DA5E1F00D00601 /* MenuBottomShadowRight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBottomShadowRight@2x.png"; sourceTree = "<group>"; };
+		7DB736E111DA5E1F00D00601 /* MenuRidge@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuRidge@2x.png"; sourceTree = "<group>"; };
 		7DB9F57C10F345450010DF0B /* BlioBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookView.h; sourceTree = "<group>"; };
 		7DB9F93F10F39FF60010DF0B /* logo-bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-bevel.png"; sourceTree = "<group>"; };
 		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
@@ -1533,6 +1563,16 @@
 				7D35ADF111217AD200A7AC62 /* MenuBottomShadowMiddle.png */,
 				7D35ADF211217AD200A7AC62 /* MenuBottomShadowRight.png */,
 				7D35ADF311217AD200A7AC62 /* MenuRidge.png */,
+				7DB736D811DA5E1F00D00601 /* MenuArrowBottom@2x.png */,
+				7DB736D911DA5E1F00D00601 /* MenuArrowBottomHighlighted@2x.png */,
+				7DB736DA11DA5E1F00D00601 /* MenuArrowTop@2x.png */,
+				7DB736DB11DA5E1F00D00601 /* MenuArrowTopHighlighted@2x.png */,
+				7DB736DC11DA5E1F00D00601 /* MenuBackground@2x.png */,
+				7DB736DD11DA5E1F00D00601 /* MenuBackgroundHighlighted@2.png */,
+				7DB736DE11DA5E1F00D00601 /* MenuBottomShadowLeft@2x.png */,
+				7DB736DF11DA5E1F00D00601 /* MenuBottomShadowMiddle@2x.png */,
+				7DB736E011DA5E1F00D00601 /* MenuBottomShadowRight@2x.png */,
+				7DB736E111DA5E1F00D00601 /* MenuRidge@2x.png */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -2300,6 +2340,16 @@
 				7DB732F011DA055100D00601 /* rightButtonBlackOpaque@2x.png in Resources */,
 				7DB732F311DA055500D00601 /* rightButtonBlackTranslucent@2x.png in Resources */,
 				7DB732F611DA055C00D00601 /* rightButtonBlue@2x.png in Resources */,
+				7DB736EC11DA5E1F00D00601 /* MenuArrowBottom@2x.png in Resources */,
+				7DB736ED11DA5E1F00D00601 /* MenuArrowBottomHighlighted@2x.png in Resources */,
+				7DB736EE11DA5E1F00D00601 /* MenuArrowTop@2x.png in Resources */,
+				7DB736EF11DA5E1F00D00601 /* MenuArrowTopHighlighted@2x.png in Resources */,
+				7DB736F011DA5E1F00D00601 /* MenuBackground@2x.png in Resources */,
+				7DB736F111DA5E1F00D00601 /* MenuBackgroundHighlighted@2.png in Resources */,
+				7DB736F211DA5E1F00D00601 /* MenuBottomShadowLeft@2x.png in Resources */,
+				7DB736F311DA5E1F00D00601 /* MenuBottomShadowMiddle@2x.png in Resources */,
+				7DB736F411DA5E1F00D00601 /* MenuBottomShadowRight@2x.png in Resources */,
+				7DB736F511DA5E1F00D00601 /* MenuRidge@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2426,6 +2476,16 @@
 				7DB732EF11DA055100D00601 /* rightButtonBlackOpaque@2x.png in Resources */,
 				7DB732F211DA055500D00601 /* rightButtonBlackTranslucent@2x.png in Resources */,
 				7DB732F511DA055C00D00601 /* rightButtonBlue@2x.png in Resources */,
+				7DB736E211DA5E1F00D00601 /* MenuArrowBottom@2x.png in Resources */,
+				7DB736E311DA5E1F00D00601 /* MenuArrowBottomHighlighted@2x.png in Resources */,
+				7DB736E411DA5E1F00D00601 /* MenuArrowTop@2x.png in Resources */,
+				7DB736E511DA5E1F00D00601 /* MenuArrowTopHighlighted@2x.png in Resources */,
+				7DB736E611DA5E1F00D00601 /* MenuBackground@2x.png in Resources */,
+				7DB736E711DA5E1F00D00601 /* MenuBackgroundHighlighted@2.png in Resources */,
+				7DB736E811DA5E1F00D00601 /* MenuBottomShadowLeft@2x.png in Resources */,
+				7DB736E911DA5E1F00D00601 /* MenuBottomShadowMiddle@2x.png in Resources */,
+				7DB736EA11DA5E1F00D00601 /* MenuBottomShadowRight@2x.png in Resources */,
+				7DB736EB11DA5E1F00D00601 /* MenuRidge@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
