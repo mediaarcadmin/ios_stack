@@ -407,18 +407,20 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                     from:(id)viewOrImage
    setTextureCoordinates:(TextureCoordinates *)coordinates
 {   
-    CGFloat scaleFactor;
-    if([self respondsToSelector:@selector(contentScaleFactor)]) {
-        scaleFactor = self.contentScaleFactor;
-    } else {
-        scaleFactor = 1.0f;
-    }
-    
+    CGFloat scaleFactor = 1.0f;
     CGSize scaledSize, rawSize;
     if([viewOrImage isKindOfClass:[UIView class]]) {
-        rawSize = [(UIView *)viewOrImage bounds].size;
+        UIView *view = (UIView *)viewOrImage;
+        rawSize = view.bounds.size;
+        if([view respondsToSelector:@selector(contentScaleFactor)]) {
+            scaleFactor = view.contentScaleFactor;
+        }
     } else {
-        rawSize = [(UIImage *)viewOrImage size];
+        UIImage *image = (UIImage *)viewOrImage;
+        rawSize = [image size];
+        if([image respondsToSelector:@selector(scale)]) {
+            scaleFactor = image.scale;
+        }        
     }
     
     if(scaleFactor != 1.0f) {
@@ -495,6 +497,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             }
         }     
     }
+    
+    THLog(@"CreatedTexture of scaled size (%f, %f) from point size (%f, %f)", scaledSize.width, scaledSize.height, rawSize.width, rawSize.height);
 }
 
 - (void)_setView:(UIView *)view forPage:(int)page
