@@ -204,7 +204,7 @@ ErrorExit:
 	}
 	DRM_RESULT dr = DRM_SUCCESS;
 	const DRM_CONST_STRING *rgpdstrRights[1] = {0};
-    DRM_DECRYPT_CONTEXT     oDecryptContext  = {0};
+    DRM_DECRYPT_CONTEXT     oDecryptContext  = {{0}};
     DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
 	
 	if ( self.bookChanged ) {

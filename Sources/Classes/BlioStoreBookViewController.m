@@ -80,7 +80,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 
 
  - (id)initWithStyle {
- if (self = [super init]) {
+ if ((self = [super init])) {
 	 self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
 	 self.entity = nil;
  }

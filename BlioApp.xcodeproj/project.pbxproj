@@ -111,6 +111,14 @@
 		7DABAD2C112C9A7F0036BA8D /* MagnificationLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD29112C9A7F0036BA8D /* MagnificationLoupeHigh.png */; };
 		7DABAD2D112C9A7F0036BA8D /* MagnificationLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD2A112C9A7F0036BA8D /* MagnificationLoupeLow.png */; };
 		7DABAD2E112C9A7F0036BA8D /* MagnificationLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DABAD2B112C9A7F0036BA8D /* MagnificationLoupeMask.png */; };
+		7DB732EC11DA054500D00601 /* iPodLikeSliderKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732EB11DA054500D00601 /* iPodLikeSliderKnob@2x.png */; };
+		7DB732ED11DA054500D00601 /* iPodLikeSliderKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732EB11DA054500D00601 /* iPodLikeSliderKnob@2x.png */; };
+		7DB732EF11DA055100D00601 /* rightButtonBlackOpaque@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732EE11DA055100D00601 /* rightButtonBlackOpaque@2x.png */; };
+		7DB732F011DA055100D00601 /* rightButtonBlackOpaque@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732EE11DA055100D00601 /* rightButtonBlackOpaque@2x.png */; };
+		7DB732F211DA055500D00601 /* rightButtonBlackTranslucent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732F111DA055500D00601 /* rightButtonBlackTranslucent@2x.png */; };
+		7DB732F311DA055500D00601 /* rightButtonBlackTranslucent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732F111DA055500D00601 /* rightButtonBlackTranslucent@2x.png */; };
+		7DB732F511DA055C00D00601 /* rightButtonBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732F411DA055C00D00601 /* rightButtonBlue@2x.png */; };
+		7DB732F611DA055C00D00601 /* rightButtonBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB732F411DA055C00D00601 /* rightButtonBlue@2x.png */; };
 		7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F93F10F39FF60010DF0B /* logo-bevel.png */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
@@ -139,7 +147,7 @@
 		A37A586C113C45640003CCFF /* back-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A5869113C45640003CCFF /* back-gray.png */; };
 		A37A586D113C45640003CCFF /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
 		A37A586E113C45640003CCFF /* forward-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586B113C45640003CCFF /* forward-gray.png */; };
-		A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37DADCF11B1E52A005F949A /* BlioDrmManager.m */; };
+		A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37DADCF11B1E52A005F949A /* BlioDrmManager.m */; settings = {COMPILER_FLAGS = "-Wno-unused-function"; }; };
 		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
 		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
@@ -727,6 +735,10 @@
 		7DABAD29112C9A7F0036BA8D /* MagnificationLoupeHigh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeHigh.png; sourceTree = "<group>"; };
 		7DABAD2A112C9A7F0036BA8D /* MagnificationLoupeLow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeLow.png; sourceTree = "<group>"; };
 		7DABAD2B112C9A7F0036BA8D /* MagnificationLoupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MagnificationLoupeMask.png; sourceTree = "<group>"; };
+		7DB732EB11DA054500D00601 /* iPodLikeSliderKnob@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob@2x.png"; sourceTree = "<group>"; };
+		7DB732EE11DA055100D00601 /* rightButtonBlackOpaque@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightButtonBlackOpaque@2x.png"; sourceTree = "<group>"; };
+		7DB732F111DA055500D00601 /* rightButtonBlackTranslucent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightButtonBlackTranslucent@2x.png"; sourceTree = "<group>"; };
+		7DB732F411DA055C00D00601 /* rightButtonBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightButtonBlue@2x.png"; sourceTree = "<group>"; };
 		7DB9F57C10F345450010DF0B /* BlioBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookView.h; sourceTree = "<group>"; };
 		7DB9F93F10F39FF60010DF0B /* logo-bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-bevel.png"; sourceTree = "<group>"; };
 		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
@@ -1499,14 +1511,18 @@
 				7D381CCF10D93023008D34E2 /* iPodLikeSliderBlueLeftCap.png */,
 				7D381CD010D93023008D34E2 /* iPodLikeSliderKnob-Small.png */,
 				7D381CD110D93023008D34E2 /* iPodLikeSliderKnob.png */,
+				7DB732EB11DA054500D00601 /* iPodLikeSliderKnob@2x.png */,
 				7D381CD210D93023008D34E2 /* iPodLikeSliderWhiteRightCap.png */,
 				7D381CD310D93023008D34E2 /* PurchaseButton.png */,
 				7D381CD410D93023008D34E2 /* PurchaseButtonPressed.png */,
 				7D381CD510D93023008D34E2 /* PurchaseConfirmButton.png */,
 				7D381CD610D93023008D34E2 /* PurchaseConfirmButtonPressed.png */,
 				7D381CD710D93023008D34E2 /* rightButtonBlackOpaque.png */,
+				7DB732EE11DA055100D00601 /* rightButtonBlackOpaque@2x.png */,
 				7D381CD810D93023008D34E2 /* rightButtonBlackTranslucent.png */,
+				7DB732F111DA055500D00601 /* rightButtonBlackTranslucent@2x.png */,
 				7D381CD910D93023008D34E2 /* rightButtonBlue.png */,
+				7DB732F411DA055C00D00601 /* rightButtonBlue@2x.png */,
 				7D35ADEA11217AD200A7AC62 /* MenuArrowBottom.png */,
 				7D35ADEB11217AD200A7AC62 /* MenuArrowBottomHighlighted.png */,
 				7D35ADEC11217AD200A7AC62 /* MenuArrowTop.png */,
@@ -2280,6 +2296,10 @@
 				A3C7437E11CAC178005A2219 /* paper-neutral@2x.png in Resources */,
 				A3C7437F11CAC178005A2219 /* paper-white@2x.png in Resources */,
 				DC48C4E911D3199C00C5D186 /* librarybackground-iPad.png in Resources */,
+				7DB732ED11DA054500D00601 /* iPodLikeSliderKnob@2x.png in Resources */,
+				7DB732F011DA055100D00601 /* rightButtonBlackOpaque@2x.png in Resources */,
+				7DB732F311DA055500D00601 /* rightButtonBlackTranslucent@2x.png in Resources */,
+				7DB732F611DA055C00D00601 /* rightButtonBlue@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2402,6 +2422,10 @@
 				DC48C2D211D2C00F00C5D186 /* Icon-iPad.png in Resources */,
 				DC48C2D411D2C01700C5D186 /* Default-Portrait.png in Resources */,
 				DC48C4EA11D3199C00C5D186 /* librarybackground-iPad.png in Resources */,
+				7DB732EC11DA054500D00601 /* iPodLikeSliderKnob@2x.png in Resources */,
+				7DB732EF11DA055100D00601 /* rightButtonBlackOpaque@2x.png in Resources */,
+				7DB732F211DA055500D00601 /* rightButtonBlackTranslucent@2x.png in Resources */,
+				7DB732F511DA055C00D00601 /* rightButtonBlue@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2646,7 +2670,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
@@ -2682,7 +2705,6 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
@@ -2714,38 +2736,36 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv6;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
-				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphoneos4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				WARNING_CFLAGS = "";
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv6;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
-				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphoneos4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				WARNING_CFLAGS = "";
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Release;
 		};
@@ -2758,7 +2778,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
@@ -2793,7 +2812,6 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
