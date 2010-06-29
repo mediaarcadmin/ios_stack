@@ -53,7 +53,7 @@ extern NSString * const BlioProcessingOperationCompleteNotification;
     IBOutlet UILabel *publisherLabel;
     NSUInteger downloadState;
 	NSArray * downloadStateLabels;
-	
+	UILabel *noBookSelectedView;
     id <BlioProcessingDelegate> processingDelegate;
 	NSManagedObjectContext *managedObjectContext;
 
@@ -63,7 +63,7 @@ extern NSString * const BlioProcessingOperationCompleteNotification;
 
 @property (nonatomic, retain) NSOperationQueue *fetchThumbQueue;
 @property (nonatomic, retain) BlioStoreFeed *feed;
-@property (nonatomic, retain) BlioStoreParsedEntity *entity;
+@property (nonatomic, assign) BlioStoreParsedEntity *entity;
 @property (nonatomic, retain) IBOutlet UIScrollView *scroller;
 @property (nonatomic, retain) IBOutlet UIView *container;
 @property (nonatomic, retain) IBOutlet UIView *downloadButtonContainer;
@@ -84,6 +84,7 @@ extern NSString * const BlioProcessingOperationCompleteNotification;
 @property (nonatomic, retain) IBOutlet UILabel *publicationDateLabel;
 @property (nonatomic, retain) IBOutlet UILabel *pagesLabel;
 @property (nonatomic, retain) IBOutlet UILabel *publisherLabel;
+@property (nonatomic, retain) IBOutlet UILabel *noBookSelectedView;
 @property (nonatomic, retain) NSArray *downloadStateLabels;
 
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;

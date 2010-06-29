@@ -11,9 +11,11 @@
 #import "BlioStoreCategoriesController.h"
 #import "BlioStoreSearchController.h"
 #import "BlioStoreArchiveViewController.h"
-//#import "BlioStoreDownloadsController.h"
 #import "BlioStoreWebsiteViewController.h"
 #import "BlioStoreFreeBooksViewController.h"
+#import "BlioStoreBookViewController.h"
+
+#import "BlioSplitViewController.h"
 
 @interface BlioStoreTabViewController()
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
@@ -55,6 +57,8 @@
 //        [vc1.navigationItem setRightBarButtonItem:aDoneButton];
 //        [vc1 release];
 
+		UIViewController * freeBooksViewController = nil; 
+
 		BlioStoreFreeBooksViewController* vc1 = [[BlioStoreFreeBooksViewController alloc] init];
 		[vc1 setManagedObjectContext:self.managedObjectContext];
         NSURL *featuredFeedURL = [NSURL URLWithString:@"http://www.feedbooks.com/userbooks/top.atom?range=week"];
@@ -74,40 +78,72 @@
         [theItem release];
 		
 		UINavigationController* nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-        [vc1.navigationItem setRightBarButtonItem:aDoneButton];
-        [vc1 release];
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			BlioSplitViewController * aSplitViewController = [[[BlioSplitViewController alloc] init] autorelease];
+			aSplitViewController.tabBarItem = theItem;
+			BlioStoreBookViewController *aEntityController = [[[BlioStoreBookViewController alloc] initWithNibName:@"BlioStoreBookView"
+																										   bundle:[NSBundle mainBundle]] autorelease];
+			[aEntityController setProcessingDelegate:self.processingDelegate];
+			[aEntityController setManagedObjectContext:self.managedObjectContext];
+//			[aEntityController setTitle:[entity title]];
+//			[aEntityController setEntity:entity];
+//			[aEntityController setFeed:feed];
+			[aEntityController.navigationItem setRightBarButtonItem:aDoneButton];
+			
+			vc1.detailViewController = aEntityController;
+			
+			[aSplitViewController setViewControllers:[NSArray arrayWithObjects:nc1,[[[UINavigationController alloc] initWithRootViewController:aEntityController] autorelease],nil]];
+			freeBooksViewController = aSplitViewController;
+
+		}
+		else {
+			[vc1.navigationItem setRightBarButtonItem:aDoneButton];
+			freeBooksViewController = nc1;
+			freeBooksViewController.tabBarItem = theItem;
+
+		}
 		
-        BlioStoreCategoriesController* vc2 = [[BlioStoreCategoriesController alloc] init];
-		[vc2 setManagedObjectContext:self.managedObjectContext];
-        NSURL *feedbooksFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"feedbooks" ofType:@"atom" inDirectory:@"Feeds"]];
-        BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
-        [feedBooksFeed setTitle:@"Feedbooks"];
-        [feedBooksFeed setFeedURL:feedbooksFeedURL];
-        [feedBooksFeed setParserClass:[BlioStoreLocalParser class]];
-		feedBooksFeed.sourceID = BlioBookSourceFeedbooks;
-        NSURL *googleFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"googlebooks" ofType:@"atom" inDirectory:@"Feeds"]];
-        BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
-        [googleBooksFeed setTitle:@"Google Books"];
-        [googleBooksFeed setFeedURL:googleFeedURL];
-        [googleBooksFeed setParserClass:[BlioStoreLocalParser class]];
-		googleBooksFeed.sourceID = BlioBookSourceGoogleBooks;
-        [vc2 setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
-        [feedBooksFeed release];
-        [googleBooksFeed release];
-        
-        [vc2 setProcessingDelegate:self.processingDelegate];
-        
-        UINavigationController* nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-        [vc2.navigationItem setRightBarButtonItem:aDoneButton];
-        [vc2 release];
-        
-        BlioStoreSearchController* vc3 = [[BlioStoreSearchController alloc] init];
-		[vc3 setManagedObjectContext:self.managedObjectContext];
-        [vc3 setProcessingDelegate:self.processingDelegate];
-        
-        UINavigationController* nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
-        [vc3.navigationItem setRightBarButtonItem:aDoneButton];
-        [vc3 release];
+#else
+		[vc1.navigationItem setRightBarButtonItem:aDoneButton];
+        freeBooksViewController = nc1;
+#endif		
+		
+		[vc1 release];
+		
+		
+//        BlioStoreCategoriesController* vc2 = [[BlioStoreCategoriesController alloc] init];
+//		[vc2 setManagedObjectContext:self.managedObjectContext];
+//        NSURL *feedbooksFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"feedbooks" ofType:@"atom" inDirectory:@"Feeds"]];
+//        BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
+//        [feedBooksFeed setTitle:@"Feedbooks"];
+//        [feedBooksFeed setFeedURL:feedbooksFeedURL];
+//        [feedBooksFeed setParserClass:[BlioStoreLocalParser class]];
+//		feedBooksFeed.sourceID = BlioBookSourceFeedbooks;
+//        NSURL *googleFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"googlebooks" ofType:@"atom" inDirectory:@"Feeds"]];
+//        BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
+//        [googleBooksFeed setTitle:@"Google Books"];
+//        [googleBooksFeed setFeedURL:googleFeedURL];
+//        [googleBooksFeed setParserClass:[BlioStoreLocalParser class]];
+//		googleBooksFeed.sourceID = BlioBookSourceGoogleBooks;
+//        [vc2 setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
+//        [feedBooksFeed release];
+//        [googleBooksFeed release];
+//        
+//        [vc2 setProcessingDelegate:self.processingDelegate];
+//        
+//        UINavigationController* nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
+//        [vc2.navigationItem setRightBarButtonItem:aDoneButton];
+//        [vc2 release];
+//        
+//        BlioStoreSearchController* vc3 = [[BlioStoreSearchController alloc] init];
+//		[vc3 setManagedObjectContext:self.managedObjectContext];
+//        [vc3 setProcessingDelegate:self.processingDelegate];
+//        
+//        UINavigationController* nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
+//        [vc3.navigationItem setRightBarButtonItem:aDoneButton];
+//        [vc3 release];
         
         BlioStoreArchiveViewController* vc4 = [[BlioStoreArchiveViewController alloc] init];
 		vc4.managedObjectContext = self.managedObjectContext;
@@ -127,12 +163,12 @@
         [vc5 release];
         
 		
-        NSArray* controllers = [NSArray arrayWithObjects:nc5, nc1, nc4, nil];
+        NSArray* controllers = [NSArray arrayWithObjects:nc5, freeBooksViewController, nc4, nil];
         self.viewControllers = controllers;
         
         [nc1 release];
-        [nc2 release];
-        [nc3 release];
+//        [nc2 release];
+//        [nc3 release];
         [nc4 release];
         [nc5 release];
         

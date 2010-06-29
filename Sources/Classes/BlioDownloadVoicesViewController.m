@@ -23,7 +23,12 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
     if ((self = [super initWithStyle:style])) {
-		self.title = NSLocalizedString(@"Text to Speech",@"\"Text to Speech\" view controller title.");
+		self.title = NSLocalizedString(@"Download Voices",@"\"Download Voices\" view controller title.");
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
+		}
+#endif
     }
     return self;
 }
@@ -69,13 +74,13 @@
     [super viewDidDisappear:animated];
 }
 */
-/*
+
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
-*/
+
 
 #pragma mark -
 #pragma mark Table view data source

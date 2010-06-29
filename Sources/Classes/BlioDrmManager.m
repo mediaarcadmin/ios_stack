@@ -20,7 +20,7 @@
 	static BlioDrmManager* drmManager = nil;  
 	if ( drmManager == nil ) {
 		drmManager = [[BlioDrmManager alloc] init];
-		drmManager.xpsClient = [[BlioXpsClient alloc] init];
+		drmManager.xpsClient = [[[BlioXpsClient alloc] init] autorelease];
 	}
 	return drmManager;
 }

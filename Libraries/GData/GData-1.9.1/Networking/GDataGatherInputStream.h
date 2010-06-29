@@ -25,13 +25,17 @@
 
 #import <Foundation/Foundation.h>
 
+#if MAC_OS_X_VERSION_10_6 > MAC_OS_X_VERSION_MAX_ALLOWED || (__IPHONE_OS_VERSION_MAX_ALLOWED < 40000)
+@protocol NSStreamDelegate <NSObject> @end
+#endif
+
 #if (MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4) || defined(GDATA_TARGET_NAMESPACE)
   // we need NSInteger for the 10.4 SDK, or we're using target namespace macros
   #import "GDataDefines.h"
 #endif
 
 #undef GDATA_NSSTREAM_DELEGATE
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE && (MAC_OS_X_VERSION_MAX_ALLOWED >= 1060)
+#if TARGET_OS_MAC && (MAC_OS_X_VERSION_MAX_ALLOWED >= 1060) || TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 40000)
  #define GDATA_NSSTREAM_DELEGATE <NSStreamDelegate>
 #else
  #define GDATA_NSSTREAM_DELEGATE

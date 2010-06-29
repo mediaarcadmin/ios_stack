@@ -16,6 +16,7 @@
 #import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioDrmManager.h"
+#import <unistd.h>
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -35,6 +36,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 #pragma mark Application lifecycle
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {    
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     // Override point for customization after app launch   
 	//[window addSubview:[navigationController view]];
 
@@ -48,23 +50,56 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
     // the filesystem in case the PNG is corrupt.
     unlink([dynamicDefaultPngPath fileSystemRepresentation]);
     
-    if(!imageData) {
-        imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"LibraryGridViewController.png"]];
-    }
-    
-    UIImage *dynamicDefaultImage = [UIImage imageWithData:imageData];
-    if(!dynamicDefaultImage) {
-        NSLog(@"Could not load dynamic default.png");
-    } else {
-        window.backgroundColor = [UIColor colorWithPatternImage:dynamicDefaultImage];
-    }
-    
+//    if(!imageData) {
+//		NSLog(@"No Dynamic PNG data available, showing image of library view...");
+//        imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"LibraryGridViewController.png"]];
+//    }
+//    
+//    UIImage *dynamicDefaultImage = [UIImage imageWithData:imageData];
+//    if(!dynamicDefaultImage) {
+//        NSLog(@"Could not load dynamic default.png");
+//    } else {
+//        window.backgroundColor = [UIColor colorWithPatternImage:dynamicDefaultImage];
+//    }
+
+	[window addSubview:[navigationController view]];
+    [window sendSubviewToBack:[navigationController view]];
+    window.backgroundColor = [UIColor blackColor];
+	
+	// Rotates the view.
+	CGAffineTransform transform = CGAffineTransformIdentity;
+			
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+//		if ( ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft) || ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) )
+//		{
+//			NSLog(@"Using landscape image");
+//			imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default-Landscape.png"]];
+//			transform = CGAffineTransformMakeRotation(3.14159/2);
+//		}
+//		else
+//		{
+//			NSLog(@"Using portrait image");
+//			imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default-Portrait.png"]];
+//		}
+		imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default-Portrait.png"]];
+
+	}
+	else {
+		imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default.png"]];
+	}
+
+//	[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+#else
     imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default.png"]];
+#endif
+	
+	
     realDefaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:imageData]];
     CGRect defaultFrame = realDefaultImageView.frame;
     defaultFrame.origin.y = CGRectGetHeight(window.bounds) - CGRectGetHeight(defaultFrame);
     [realDefaultImageView setFrame:defaultFrame];
-    
+    [realDefaultImageView setTransform:transform];
     [window addSubview:realDefaultImageView];
     [window makeKeyAndVisible];
 
@@ -77,10 +112,10 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 	
     [libraryController setManagedObjectContext:moc];
     [libraryController setProcessingDelegate:[self processingManager]];
-	@synchronized ([BlioDrmManager getDrmManager]) {
-		[[BlioDrmManager getDrmManager] initialize];
-	}
 
+	[[BlioDrmManager getDrmManager] initialize];
+
+	
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
 }
 
@@ -167,11 +202,7 @@ static void *background_init_thread(void * arg) {
 	// TEMPORARY CODE END
 	
 	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
-	
-    [window addSubview:[navigationController view]];
-    [window sendSubviewToBack:[navigationController view]];
-    window.backgroundColor = [UIColor blackColor];
-    
+	    
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 
@@ -233,7 +264,7 @@ static void *background_init_thread(void * arg) {
 		{
 			// ALERT user to what just happened.
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-															message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")]
+															message:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")
 														   delegate:self
 												  cancelButtonTitle:@"OK"
 												  otherButtonTitles:nil];

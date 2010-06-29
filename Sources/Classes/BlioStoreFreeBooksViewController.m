@@ -138,6 +138,9 @@
 	[googleBooksFeed release];
 	
 	[vc2 setProcessingDelegate:self.processingDelegate];
+	
+	vc2.detailViewController = self.detailViewController;
+
 	[vc2.navigationItem setRightBarButtonItem:self.navigationItem.rightBarButtonItem];	
 
 	[self.navigationController pushViewController:vc2 animated:YES];

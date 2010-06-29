@@ -7,12 +7,11 @@
 
 #import "BlioAlertManager.h"
 
-BlioAlertManager * sharedAlertManager = nil;
-
 @implementation BlioAlertManager
 
 +(BlioAlertManager*)sharedInstance
 {
+	static BlioAlertManager * sharedAlertManager = nil;
 	if (sharedAlertManager == nil) {
 		sharedAlertManager = [[BlioAlertManager alloc] init];
 	}

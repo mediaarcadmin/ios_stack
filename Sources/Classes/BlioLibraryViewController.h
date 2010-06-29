@@ -35,8 +35,11 @@ static const CGFloat kBlioLibraryListProgressViewWidth = 150;
 static const CGFloat kBlioLibraryGridRowHeight = 140;
 static const CGFloat kBlioLibraryGridBookHeight = 140;
 static const CGFloat kBlioLibraryGridBookWidth = 106;
+static const CGFloat kBlioLibraryGridBookHeightPad = 210;
+static const CGFloat kBlioLibraryGridBookWidthPad = 140;
 static const CGFloat kBlioLibraryGridProgressViewWidth = 60;
 static const CGFloat kBlioLibraryGridBookSpacing = 0;
+static const CGFloat kBlioLibraryGridBookSpacingPad = 40;
 
 static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
 static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
@@ -51,7 +54,22 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @protocol BlioProcessingDelegate;
 
-@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource> {
+#undef BLIO_POPOVERCONTROLLER_DELEGATE
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 30200)
+#define BLIO_POPOVERCONTROLLER_DELEGATE UIPopoverControllerDelegate
+#else
+#define BLIO_POPOVERCONTROLLER_DELEGATE
+#endif
+
+#undef POPOVERCONTROLLER_DELEGATE_DELIMITER
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 30200)
+#define POPOVERCONTROLLER_DELEGATE_DELIMITER ,
+#else
+#define POPOVERCONTROLLER_DELEGATE_DELIMITER
+#endif
+
+
+@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
     BlioLibraryBookView *_currentBookView;
     UIImageView *_currentPoppedBookCover;
     BOOL _bookCoverPopped;
@@ -69,6 +87,9 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	NSUInteger maxLayoutPageEquivalentCount;
 	NSInteger _keyValueOfCellToBeDeleted;
 	BlioLibrarySortType librarySortType;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+	UIPopoverController * settingsPopoverController;
+#endif
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -84,6 +105,10 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 @property (nonatomic, assign) BlioLibrarySortType librarySortType;
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+@property (nonatomic, retain) UIPopoverController * settingsPopoverController;
+#endif
 
 -(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;
 -(void)configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index;

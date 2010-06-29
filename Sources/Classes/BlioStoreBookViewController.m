@@ -35,12 +35,13 @@ NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available"
 @interface BlioStoreBookViewController (PRIVATE)
 - (void)_getBook;
 - (void)layoutViews;
+-(void)displayBookView;
 @end
 
 @implementation BlioStoreBookViewController
 
-@synthesize fetchThumbQueue, feed, entity, scroller, container, bookThumb, bookTitle, bookShadow, bookPlaceholder, authors, download, summary, releaseDate, publicationDate,
-pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherLabel, belowSummaryDetails,downloadStateLabels,downloadButtonContainer,downloadButtonBackgroundView;
+@synthesize fetchThumbQueue, feed, scroller, container, bookThumb, bookTitle, bookShadow, bookPlaceholder, authors, download, summary, releaseDate, publicationDate,
+pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherLabel, belowSummaryDetails,downloadStateLabels,downloadButtonContainer,downloadButtonBackgroundView,noBookSelectedView;
 @synthesize processingDelegate;
 @synthesize managedObjectContext;
 
@@ -49,7 +50,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     [self.fetchThumbQueue cancelAllOperations];
     self.fetchThumbQueue = nil;
 	self.feed = nil;
-    self.entity = nil;
+    if (entity) [entity release];
     self.scroller = nil;
     self.container = nil;
 	self.bookThumb = nil;
@@ -73,24 +74,46 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 	self.downloadButtonBackgroundView = nil;
     self.processingDelegate = nil;
 	self.managedObjectContext = nil;
+	self.noBookSelectedView = nil;
     [super dealloc];
 }
 
-/*
- - (id)initWithStyle:(UITableViewStyle)style {
- // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
- if (self = [super initWithStyle:style]) {
+
+ - (id)initWithStyle {
+ if (self = [super init]) {
+	 self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
+	 self.entity = nil;
  }
  return self;
- }
- */
+}
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-	self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
-
+	self.noBookSelectedView.text = NSLocalizedString(@"No Book Selected", @"Label shown to user when Book Store View has no book entity set.");
+}
+- (void)viewWillAppear:(BOOL)animated {
+	if (self.entity) {
+		self.noBookSelectedView.hidden = YES;
+		[self displayBookView];
+	}
+	else {
+		self.noBookSelectedView.hidden = NO;
+	}
+}
+-(void)setEntity:(BlioStoreParsedEntity *)aEntity {
+	if (entity) {
+		[entity release];
+		entity = nil;
+	}
+	entity = [aEntity retain];
+	self.noBookSelectedView.hidden = YES;
+	[self displayBookView];
+}
+-(BlioStoreParsedEntity *)entity {
+	return entity;
+}
+-(void)displayBookView {
 	NSMutableArray * validFieldViews = [NSMutableArray array];
     self.bookTitle.text = [self.entity title];
     if ([self.entity author]) {

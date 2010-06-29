@@ -190,12 +190,27 @@
 - (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn {
 	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
 	cafeBinding.logXMLInOut = YES;
-	ContentCafe_Single* singleRequest = [[ContentCafe_Single new] autorelease];
-	singleRequest.userID = @"KNFB98704"; 
-	singleRequest.password = @"CC19811";
-	singleRequest.key = isbn;
-	singleRequest.content = @"ProductDetail";
-	ContentCafeSoapResponse* response = [cafeBinding SingleUsingParameters:singleRequest];
+//	ContentCafe_Single* singleRequest = [[ContentCafe_Single new] autorelease];
+//	singleRequest.userID = @"KNFB98704"; 
+//	singleRequest.password = @"CC19811";
+//	singleRequest.key = isbn;
+//	singleRequest.content = @"ProductDetail";
+//	ContentCafeSoapResponse* response = [cafeBinding SingleUsingParameters:singleRequest];
+
+	ContentCafe_XmlClass * xmlRequest = [[ContentCafe_XmlClass new] autorelease];
+	xmlRequest.ContentCafe = [[[ContentCafe_ContentCafeXML alloc] init] autorelease];
+	xmlRequest.ContentCafe.RequestItems = [[[ContentCafe_RequestItems alloc] init] autorelease];
+	xmlRequest.ContentCafe.RequestItems.UserID = @"KNFB98704";
+	xmlRequest.ContentCafe.RequestItems.Password = @"CC19811";
+	ContentCafe_RequestItem * xmlRequestItem = [[[ContentCafe_RequestItem alloc] init] autorelease];
+	xmlRequestItem.Key = isbn;
+//	xmlRequestItem.Key = [[[ContentCafe_Key alloc] init] autorelease];
+//	xmlRequestItem.Key.Type = ContentCafe_KeyType_ISBN;
+//	xmlRequestItem.Key.Original = isbn;
+	[xmlRequestItem.Content addObject:@"ProductDetail"];
+	[xmlRequest.ContentCafe.RequestItems.RequestItem addObject:xmlRequestItem];
+	ContentCafeSoapResponse* response = [cafeBinding XmlClassUsingParameters:xmlRequest];
+	
 	[cafeBinding release];
 	NSArray *responseBodyParts = response.bodyParts;
 	if (responseBodyParts == nil) {
@@ -206,7 +221,7 @@
 	for(id bodyPart in responseBodyParts) {
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error for ContentCafeSingle: %s",err);
+			NSLog(@"SOAP error for ContentCafe_XmlClassResponse: %s",err);
 			// TODO: Message
 			return nil;
 		}
@@ -216,7 +231,7 @@
 			return productItem;
 		}
 		else {
-			NSLog(@"ContentCafeSingle error.");
+			NSLog(@"ContentCafe_XmlClassResponse error.");
 			// TODO: Message
 		}
 		
