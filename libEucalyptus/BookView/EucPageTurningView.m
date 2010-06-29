@@ -372,26 +372,37 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 {
     CGRect bounds = self.bounds;
     
-    CFIndex capacity = bounds.size.width * bounds.size.height * 4;
+    CFIndex capacity = _backingWidth * _backingHeight * 4;
     CFMutableDataRef newBitmapData = CFDataCreateMutable(kCFAllocatorDefault, capacity);
     CFDataIncreaseLength(newBitmapData, capacity);
-
+    
     _atRenderScreenshotBuffer = CFDataGetMutableBytePtr(newBitmapData);
     
     [self drawView];
     
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(newBitmapData);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGImageRef newImageRef = CGImageCreate(bounds.size.width, bounds.size.height,
-                                           8, 32, 4 * bounds.size.width, 
+    CGImageRef newImageRef = CGImageCreate(_backingWidth, _backingHeight,
+                                           8, 32, 4 * _backingWidth, 
                                            colorSpace, 
                                            kCGBitmapByteOrderDefault | kCGImageAlphaLast, 
                                            dataProvider, NULL, YES, kCGRenderingIntentDefault);
     CGDataProviderRelease(dataProvider);
     CGColorSpaceRelease(colorSpace);
     
+    CGFloat scaleFactor;
+    if([self respondsToSelector:@selector(contentScaleFactor)]) {
+        scaleFactor = self.contentScaleFactor;
+    } else {
+        scaleFactor = 1.0f;
+    }
+        
     // The image is upside-down and back-to-front if we use it directly...
-    UIGraphicsBeginImageContext(bounds.size);
+    if(scaleFactor != 1.0f) {
+        UIGraphicsBeginImageContextWithOptions(bounds.size, NO, scaleFactor);
+    } else {
+        UIGraphicsBeginImageContext(bounds.size);
+    }
     CGContextRef cgContext = UIGraphicsGetCurrentContext();
     CGContextDrawImage(cgContext, bounds, newImageRef);    
     UIImage *ret = UIGraphicsGetImageFromCurrentImageContext();
@@ -444,11 +455,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                                         colorSpace, kCGImageAlphaPremultipliedLast);
     
     if([viewOrImage isKindOfClass:[UIView class]]) {
+        CGContextSetFillColorSpace(textureContext, colorSpace);
+        CGContextSetStrokeColorSpace(textureContext, colorSpace);
+        if(scaleFactor != 1.0f) {
+            CGContextScaleCTM(textureContext, scaleFactor, scaleFactor);   
+        }
         UIView *view = (UIView *)viewOrImage;
         if([view respondsToSelector:@selector(drawRect:inContext:)] && !view.layer.sublayers) {
-            CGContextSetFillColorSpace(textureContext, colorSpace);
-            CGContextSetStrokeColorSpace(textureContext, colorSpace); 
-            CGContextScaleCTM(textureContext, scaleFactor, scaleFactor);
             [(UIView<THUIViewThreadSafeDrawing> *)view drawRect:CGRectMake(0, 0, rawSize.width, rawSize.height)
                                                       inContext:textureContext];
         } else {
@@ -1027,10 +1040,9 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glActiveTexture(GL_TEXTURE0);
     
     if(_atRenderScreenshotBuffer) {
-        CGRect bounds = self.bounds;
-        glReadPixels(0, 0, bounds.size.width, bounds.size.height, GL_RGBA, GL_UNSIGNED_BYTE, _atRenderScreenshotBuffer);
+        glReadPixels(0, 0, _backingWidth, _backingHeight, GL_RGBA, GL_UNSIGNED_BYTE, _atRenderScreenshotBuffer);
     }
-        
+    
     glBindRenderbufferOES(GL_RENDERBUFFER_OES, _viewRenderbuffer);
     [eaglContext presentRenderbuffer:GL_RENDERBUFFER_OES];
 
