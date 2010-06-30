@@ -19,6 +19,8 @@
 #import "THPair.h"
 #import "THImageFactory.h"
 #import "THLog.h"
+#import "THLog.h"
+#import "THRegex.h"
 
 static const CGFloat sLoupePopUpDuration = 0.05f;
 static const CGFloat sLoupePopDownDuration = 0.1f;
@@ -56,8 +58,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 @property (nonatomic, retain) EucMenuController *menuController;
 @property (nonatomic, assign) BOOL menuShouldBeAvailable;
-
-- (CGImageRef)_cgImageNamed:(NSString *)name;
 
 - (void)_trackTouch:(UITouch *)touch;
 
@@ -322,16 +322,17 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (THPair *)highlightEndLayers
 {
     if(!_highlightEndLayers)  {
-        CGImageRef endImage = [self _cgImageNamed:@"SelectionEnd.png"];
+        UIImage *endImage = [UIImage imageNamed:@"SelectionEnd.png"];
         
-        CGFloat imageWidth = CGImageGetWidth(endImage);
+        CGFloat imageWidth = endImage.size.width;
+        CGImageRef endCGImage = endImage.CGImage;
         
         CALayer *highlightEndLayer1 = [[CALayer alloc] init];
-        highlightEndLayer1.contents = (id)endImage;
+        highlightEndLayer1.contents = (id)endCGImage;
         highlightEndLayer1.bounds = CGRectMake(0.0f, 0.0f, imageWidth, 1.0f);
         
         CALayer *highlightEndLayer2 = [[CALayer alloc] init];
-        highlightEndLayer2.contents = (id)endImage;
+        highlightEndLayer2.contents = (id)endCGImage;
         highlightEndLayer2.bounds = CGRectMake(0.0f, 0.0f, imageWidth, 1.0f);
         
         _highlightEndLayers = [[THPair alloc] initWithFirst:highlightEndLayer1 second:highlightEndLayer2];
@@ -345,18 +346,17 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (THPair *)highlightKnobLayers
 {
     if(!_highlightKnobLayers) {
-        CGImageRef knobImage = [self _cgImageNamed:@"SelectionKnob.png"];
-        
-        CGFloat imageWidth = CGImageGetWidth(knobImage);
-        CGFloat imageHeight = CGImageGetHeight(knobImage);
+        UIImage *knobImage = [UIImage imageNamed:@"SelectionKnob.png"];
+        CGSize imageSize = knobImage.size;
+        CGImageRef knobCGImage = knobImage.CGImage;
         
         CALayer *highlightKnobLayer1 = [[CALayer alloc] init];
-        highlightKnobLayer1.contents = (id)knobImage;
-        highlightKnobLayer1.bounds = CGRectMake(0.0f, 0.0f, imageWidth, imageHeight);
+        highlightKnobLayer1.contents = (id)knobCGImage;
+        highlightKnobLayer1.bounds = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
         
         CALayer *highlightKnobLayer2 = [[CALayer alloc] init];
-        highlightKnobLayer2.contents = (id)knobImage;
-        highlightKnobLayer2.bounds = CGRectMake(0.0f, 0.0f, imageWidth, imageHeight);
+        highlightKnobLayer2.contents = (id)knobCGImage;
+        highlightKnobLayer2.bounds = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
         
         _highlightKnobLayers = [[THPair alloc] initWithFirst:highlightKnobLayer1 second:highlightKnobLayer2];
         
@@ -428,12 +428,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     self.loupeContentsImageFactory = nil;
         
     if(loupeKind != nil) {
-        CGImageRef highImage = [self _cgImageNamed:[NSString stringWithFormat:@"%@LoupeHigh.png", loupeKind]];
-        CGImageRef lowImage = [self _cgImageNamed:[NSString stringWithFormat:@"%@LoupeLow.png", loupeKind]];
-        CGImageRef maskImage = [self _cgImageNamed:[NSString stringWithFormat:@"%@LoupeMask.png", loupeKind]];
+        UIImage *highImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@LoupeHigh.png", loupeKind]];
+        UIImage *lowImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@LoupeLow.png", loupeKind]];
+        UIImage *maskImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@LoupeMask.png", loupeKind]];
             
-        CGSize magnificationLoupeSize = CGSizeMake(CGImageGetWidth(highImage),
-                                                   CGImageGetHeight(highImage));
+        CGSize magnificationLoupeSize = highImage.size;
         CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
         
         CALayer *topmostLayer = self.attachedLayer.topmostLayer;
@@ -447,12 +446,12 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             loupeLayer.bounds = magnificationLoupeRect;
             self.loupeLayer = loupeLayer;
             
-            loupeLayer.contents = (id)lowImage;
+            loupeLayer.contents = (id)(lowImage.CGImage);
             
             CALayer *contentsMaskLayer = [[CALayer alloc] init];
             contentsMaskLayer.bounds = magnificationLoupeRect;
             contentsMaskLayer.position = magnificationLoupeCenter;
-            contentsMaskLayer.contents = (id)maskImage;
+            contentsMaskLayer.contents = (id)(maskImage.CGImage);
             
             loupeContentsLayer = [[CALayer alloc] init];
             loupeContentsLayer.bounds = magnificationLoupeRect;
@@ -468,7 +467,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             // The top of the glass.
             CALayer *highLayer = [[CALayer alloc] init];
             highLayer.bounds = magnificationLoupeRect;
-            highLayer.contents = (id)highImage;
+            highLayer.contents = (id)(highImage.CGImage);
             [loupeLayer addSublayer:highLayer];
             highLayer.position = CGPointMake(magnificationLoupeSize.width * 0.5f, magnificationLoupeSize.height * 0.5f);
             [highLayer release];
@@ -1423,15 +1422,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             }
         }
     }
-}
-
-
-- (CGImageRef)_cgImageNamed:(NSString *)name
-{
-    NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[EucSelector class]] pathForResource:name ofType:nil]];
-    CGImageRef ret = CGImageRetain([UIImage imageWithData:data].CGImage);
-    [data release];
-    return (CGImageRef)[(id)ret autorelease];
 }
 
 @end

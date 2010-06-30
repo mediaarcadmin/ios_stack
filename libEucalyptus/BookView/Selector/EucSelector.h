@@ -65,6 +65,8 @@ typedef enum EucSelectorTrackingStage {
     CFMutableDictionaryRef _cachedBlockIdentifierToRects;
     CFMutableDictionaryRef _cachedBlockAndElementIdentifierToRects;
     NSArray *_cachedHighlightRanges;
+    
+    CGFloat _screenScaleFactor;
 }
 
 @property (nonatomic, assign) BOOL selectionDisabled;
