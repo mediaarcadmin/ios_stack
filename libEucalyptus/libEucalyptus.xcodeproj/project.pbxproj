@@ -860,6 +860,9 @@
 		7D2CCB08114DA3A2007FDEAF /* Aliases */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Aliases; sourceTree = "<group>"; };
 		7D412B2D1149666C00C003BB /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		7D412B2F1149667300C003BB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		7D4AFE1B11DB9FC900DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderBlueLeftCap@2.png"; sourceTree = "<group>"; };
+		7D4AFE1C11DB9FCE00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small@2x.png"; sourceTree = "<group>"; };
+		7D4AFE1D11DB9FD300DDA5B7 /* iPodLikeSliderWhiteRightCap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderWhiteRightCap@2x.png"; sourceTree = "<group>"; };
 		7D4E9977114AB2520044C513 /* EucBUpePageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpePageTextView.h; sourceTree = "<group>"; };
 		7D4E9978114AB2520044C513 /* EucBUpePageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBUpePageTextView.m; sourceTree = "<group>"; };
 		7D4E9AAE114D33910044C513 /* THNSURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSURLAdditions.h; sourceTree = "<group>"; };
@@ -2451,10 +2454,13 @@
 			isa = PBXGroup;
 			children = (
 				7DF1AD7711D90F8B00506BD5 /* iPodLikeSliderBlueLeftCap.png */,
+				7D4AFE1B11DB9FC900DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png */,
 				7DF1AD7811D90F8C00506BD5 /* iPodLikeSliderKnob-Small.png */,
+				7D4AFE1C11DB9FCE00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png */,
 				7DF1AD7911D90F8C00506BD5 /* iPodLikeSliderKnob.png */,
 				7DF1AD7A11D90F8C00506BD5 /* iPodLikeSliderKnob@2x.png */,
 				7DF1AD7B11D90F8C00506BD5 /* iPodLikeSliderWhiteRightCap.png */,
+				7D4AFE1D11DB9FD300DDA5B7 /* iPodLikeSliderWhiteRightCap@2x.png */,
 				7DF1AD7C11D90F8C00506BD5 /* LineLoupeHigh.png */,
 				7DF1AD7D11D90F8C00506BD5 /* LineLoupeLow.png */,
 				7DF1AD7E11D90F8C00506BD5 /* LineLoupeMask.png */,
