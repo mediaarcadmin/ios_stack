@@ -203,6 +203,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             [(id)(_componentInfos[i].component) release];
             [(id)(_componentInfos[i].component2) release];
         }
+        [_componentInfos[i].documentNode release];
     }
     free(_componentInfos);
     free(_wordToComponent);
@@ -273,7 +274,9 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     
     info->point.word = _wordsCount;
     info->point.element = _currentWordElementCount;
-        
+    
+    [info->documentNode retain];
+    
     _componentInfos[_componentsCount] = *info;
     
     ++_componentsCount;
