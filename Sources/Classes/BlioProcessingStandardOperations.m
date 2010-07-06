@@ -237,9 +237,9 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		// Just copy the local files to save time
         NSError *error;
         NSString *fromPath = [[[self.url absoluteURL] path] stringByStandardizingPath];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:fromPath]) NSLog(@"file exists at fromPath: %@",fromPath);
+//        if ([[NSFileManager defaultManager] fileExistsAtPath:fromPath]) NSLog(@"file exists at fromPath: %@",fromPath);
 		NSString *toPath = [cachedPath stringByStandardizingPath];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:toPath]) NSLog(@"file exists at toPath: %@",toPath);
+//        if ([[NSFileManager defaultManager] fileExistsAtPath:toPath]) NSLog(@"file exists at toPath: %@",toPath);
         
         if (![[NSFileManager defaultManager] copyItemAtPath:fromPath toPath:toPath error:&error]) {
             NSLog(@"Failed to copy file from %@ to %@ with error %@ : %@", fromPath, toPath, error, [error userInfo]);
@@ -520,8 +520,8 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		if (![aZipArchive UnzipFileTo:temporaryPath2 overWrite:YES]) {
             NSLog(@"Failed to unzip file from %@ to %@", temporaryPath, temporaryPath2);
         } else {
-			NSLog(@"Successfully unzipped file from %@ to %@",temporaryPath,temporaryPath2);
-			if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath2]) NSLog(@"file exists at temporaryPath2: %@",temporaryPath2);
+//			NSLog(@"Successfully unzipped file from %@ to %@",temporaryPath,temporaryPath2);
+//			if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath2]) NSLog(@"file exists at temporaryPath2: %@",temporaryPath2);
 			unzipSuccess = YES;
         }
 
@@ -550,14 +550,14 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
 		NSString *targetFilename = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
 		NSError *anError;
-		if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) NSLog(@"file exists at temporaryPath: %@",temporaryPath);
-		else NSLog(@"ERROR: file does NOT exist at temporaryPath: %@",temporaryPath);
+//		if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) NSLog(@"file exists at temporaryPath: %@",temporaryPath);
+//		else NSLog(@"ERROR: file does NOT exist at temporaryPath: %@",temporaryPath);
         if ([[NSFileManager defaultManager] fileExistsAtPath:targetFilename]) {
-			NSLog(@"WARNING: file exists at targetFilename: %@, deleting file...",targetFilename);
+			NSLog(@"WARNING: file already exists at targetFilename: %@, writing over file...",targetFilename);
 			if (![[NSFileManager defaultManager] removeItemAtPath:targetFilename error:&anError])
 				NSLog(@"ERROR: Failed to delete targetFilename %@ with error: %@, %@", targetFilename, anError, [anError userInfo]);
 		}
-		else NSLog(@"ERROR: file does NOT exist at targetFilename: %@",targetFilename);
+//		else NSLog(@"file does NOT exist at targetFilename: %@",targetFilename);
 		
         if (![[NSFileManager defaultManager] moveItemAtPath:temporaryPath toPath:targetFilename error:&anError]) {
             NSLog(@"BlioProcessingDownloadAndUnzipOperation: Error whilst attempting to move file %@ to %@: %@, %@", temporaryPath, targetFilename,anError,[anError userInfo]);
@@ -897,14 +897,14 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         
         if (nil != rootFile) {
 
-			if ([[NSFileManager defaultManager] fileExistsAtPath:cachedFilename]) NSLog(@"file exists at cachedFilename: %@",cachedFilename);
-			else NSLog(@"ERROR: file does NOT exist at cachedFilename: %@",cachedFilename);
+			if (![[NSFileManager defaultManager] fileExistsAtPath:cachedFilename]) NSLog(@"ERROR: file does NOT exist at cachedFilename: %@",cachedFilename);
+//			else NSLog(@"file exists at cachedFilename: %@",cachedFilename);			
 			if ([[NSFileManager defaultManager] fileExistsAtPath:targetFilename]) {
-				NSLog(@"WARNING: file exists at targetFilename: %@, deleting file...",targetFilename);
+				NSLog(@"WARNING: file already exists at targetFilename: %@, writing over file...",targetFilename);
 				if (![[NSFileManager defaultManager] removeItemAtPath:targetFilename error:&anError])
 					NSLog(@"ERROR: Failed to delete targetFilename %@ with error: %@, %@", targetFilename, anError, [anError userInfo]);
 			}
-			else NSLog(@"ERROR: file does NOT exist at targetFilename: %@",targetFilename);
+//			else NSLog(@"file does not exist at targetFilename: %@",targetFilename);
 
 			
 			if (![[NSFileManager defaultManager] moveItemAtPath:cachedFilename toPath:targetFilename error:&anError]) {
@@ -966,14 +966,14 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
             }
         }
 		
-		if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) NSLog(@"file exists at temporaryPath: %@",temporaryPath);
-		else NSLog(@"ERROR: file does NOT exist at temporaryPath: %@",temporaryPath);
-        if ([[NSFileManager defaultManager] fileExistsAtPath:targetFilename]) {
-			NSLog(@"WARNING: file exists at targetFilename: %@, deleting file...",targetFilename);
+		if (![[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) NSLog(@"ERROR: file does NOT exist at temporaryPath: %@",temporaryPath);
+//        else NSLog(@"file exists at temporaryPath: %@",temporaryPath);		
+		if ([[NSFileManager defaultManager] fileExistsAtPath:targetFilename]) {
+			NSLog(@"WARNING: file already exists at targetFilename: %@, writing over file...",targetFilename);
 			if (![[NSFileManager defaultManager] removeItemAtPath:targetFilename error:&anError])
 				NSLog(@"ERROR: Failed to delete targetFilename %@ with error: %@, %@", targetFilename, anError, [anError userInfo]);
 		}
-		else NSLog(@"ERROR: file does NOT exist at targetFilename: %@",targetFilename);
+//		else NSLog(@"file does not exist at targetFilename: %@",targetFilename);
 		
 		// For now keep the old key names.
         if (audioMetadataFilename && audioReferencesFilename) {
