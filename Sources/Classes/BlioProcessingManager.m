@@ -125,37 +125,37 @@
         
         if (coverURL != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
             [manifestEntry setValue:[coverURL absoluteString] forKey:@"path"];
             [aBook setManifestValue:manifestEntry forKey:@"coverFilename"];
         }
 		 if (ePubURL != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
             [manifestEntry setValue:[ePubURL absoluteString] forKey:@"path"];
             [aBook setManifestValue:manifestEntry forKey:@"epubFilename"];
         }
         if (pdfURL != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
             [manifestEntry setValue:[pdfURL absoluteString] forKey:@"path"];
             [aBook setManifestValue:manifestEntry forKey:@"pdfFilename"];
         }
         if (xpsURL != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
             [manifestEntry setValue:[xpsURL absoluteString] forKey:@"path"];
             [aBook setManifestValue:manifestEntry forKey:@"xpsFilename"];
         }
         if (textFlowURL != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
             [manifestEntry setValue:[textFlowURL absoluteString] forKey:@"path"];
             [aBook setManifestValue:manifestEntry forKey:@"textFlowFilename"];
         }
         if (audiobookURL != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
             [manifestEntry setValue:[audiobookURL absoluteString] forKey:@"path"];
             [aBook setManifestValue:manifestEntry forKey:@"audiobookFilename"];
         }

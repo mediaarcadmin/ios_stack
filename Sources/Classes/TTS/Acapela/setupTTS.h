@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AcapelaSpeech.h"
 
 @interface setupTTS : NSObject {
 	NSArray *voices;

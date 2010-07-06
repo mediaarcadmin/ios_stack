@@ -475,7 +475,7 @@ static void sortedHighlightRangePredicateInit() {
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
             // TODO - we shouldn't need to check if path is a URL, the manifest entry should be different
-            if ([location isEqualToString:@"fileSystem"]) {
+            if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
                 NSURL *fileUrl = [NSURL URLWithString:path];
                 NSString *fileUrlPath = [fileUrl path];
                 if (fileUrl && fileUrlPath && [[NSFileManager defaultManager] fileExistsAtPath:fileUrlPath]) {
@@ -487,9 +487,9 @@ static void sortedHighlightRangePredicateInit() {
                 } else {
                     filePath = path;
                 }
-            } else if ([location isEqualToString:@"xps"]) {
+            } else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
                 filePath = [self fullPathOfXPSItemAtPath:path];
-            } else if ([location isEqualToString:@"textflow"]) {
+            } else if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
                 filePath = [self fullPathOfTextFlowItemAtPath:path];
             }
 
@@ -506,11 +506,11 @@ static void sortedHighlightRangePredicateInit() {
         NSString *location = [manifestEntry objectForKey:@"location"];
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
-            if ([location isEqualToString:@"fileSystem"]) {
+            if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
                 data = [self dataFromFileSystemAtPath:path];
-            } else if ([location isEqualToString:@"xps"]) {
+            } else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
                 data = [self dataFromXPSAtPath:path];
-            } else if ([location isEqualToString:@"textflow"]) {
+            } else if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
                 data = [self dataFromTextFlowAtPath:path];
             }
         }

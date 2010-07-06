@@ -237,7 +237,9 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		// Just copy the local files to save time
         NSError *error;
         NSString *fromPath = [[[self.url absoluteURL] path] stringByStandardizingPath];
-        NSString *toPath = [cachedPath stringByStandardizingPath];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:fromPath]) NSLog(@"file exists at fromPath: %@",fromPath);
+		NSString *toPath = [cachedPath stringByStandardizingPath];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:toPath]) NSLog(@"file exists at toPath: %@",toPath);
         
         if (![[NSFileManager defaultManager] copyItemAtPath:fromPath toPath:toPath error:&error]) {
             NSLog(@"Failed to copy file from %@ to %@ with error %@ : %@", fromPath, toPath, error, [error userInfo]);
@@ -458,7 +460,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		else {
 			//[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
             [manifestEntry setValue:(NSString *)uniqueString forKey:@"path"];
             
             [self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
@@ -518,7 +520,9 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		if (![aZipArchive UnzipFileTo:temporaryPath2 overWrite:YES]) {
             NSLog(@"Failed to unzip file from %@ to %@", temporaryPath, temporaryPath2);
         } else {
-            unzipSuccess = YES;
+			NSLog(@"Successfully unzipped file from %@ to %@",temporaryPath,temporaryPath2);
+			if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath2]) NSLog(@"file exists at temporaryPath2: %@",temporaryPath2);
+			unzipSuccess = YES;
         }
 
 		[aZipArchive UnzipCloseFile];
@@ -546,14 +550,23 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
 		NSString *targetFilename = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
 		NSError *anError;
+		if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) NSLog(@"file exists at temporaryPath: %@",temporaryPath);
+		else NSLog(@"ERROR: file does NOT exist at temporaryPath: %@",temporaryPath);
+        if ([[NSFileManager defaultManager] fileExistsAtPath:targetFilename]) {
+			NSLog(@"WARNING: file exists at targetFilename: %@, deleting file...",targetFilename);
+			if (![[NSFileManager defaultManager] removeItemAtPath:targetFilename error:&anError])
+				NSLog(@"ERROR: Failed to delete targetFilename %@ with error: %@, %@", targetFilename, anError, [anError userInfo]);
+		}
+		else NSLog(@"ERROR: file does NOT exist at targetFilename: %@",targetFilename);
+		
         if (![[NSFileManager defaultManager] moveItemAtPath:temporaryPath toPath:targetFilename error:&anError]) {
-            NSLog(@"Error whilst attempting to move file %@ to %@", temporaryPath, targetFilename);
+            NSLog(@"BlioProcessingDownloadAndUnzipOperation: Error whilst attempting to move file %@ to %@: %@, %@", temporaryPath, targetFilename,anError,[anError userInfo]);
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
             return;
         }
 		else {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"fileSystem" forKey:@"location"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
             [manifestEntry setValue:self.localFilename forKey:@"path"];
             
             [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
@@ -781,7 +794,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     [gridThumb release]; // this is giving an ERROR (TODO)
     
     NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
-    [gridThumbManifestEntry setValue:@"fileSystem" forKey:@"location"];
+    [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
     [gridThumbManifestEntry setValue:@"gridThumb.png" forKey:@"path"];
     [self setBookManifestValue:gridThumbManifestEntry forKey:@"gridThumbFilename"];
 
@@ -797,7 +810,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     [listThumb release];
     
     NSDictionary *listThumbManifestEntry = [NSMutableDictionary dictionary];
-    [listThumbManifestEntry setValue:@"fileSystem" forKey:@"location"];
+    [listThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
     [listThumbManifestEntry setValue:@"listThumb.png" forKey:@"path"];
     [self setBookManifestValue:listThumbManifestEntry forKey:@"listThumbFilename"];
 	self.operationSuccess = YES;
@@ -883,9 +896,19 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         }
         
         if (nil != rootFile) {
+
+			if ([[NSFileManager defaultManager] fileExistsAtPath:cachedFilename]) NSLog(@"file exists at cachedFilename: %@",cachedFilename);
+			else NSLog(@"ERROR: file does NOT exist at cachedFilename: %@",cachedFilename);
+			if ([[NSFileManager defaultManager] fileExistsAtPath:targetFilename]) {
+				NSLog(@"WARNING: file exists at targetFilename: %@, deleting file...",targetFilename);
+				if (![[NSFileManager defaultManager] removeItemAtPath:targetFilename error:&anError])
+					NSLog(@"ERROR: Failed to delete targetFilename %@ with error: %@, %@", targetFilename, anError, [anError userInfo]);
+			}
+			else NSLog(@"ERROR: file does NOT exist at targetFilename: %@",targetFilename);
+
+			
 			if (![[NSFileManager defaultManager] moveItemAtPath:cachedFilename toPath:targetFilename error:&anError]) {
-				NSLog(@"Error whilst attempting to move file %@ to %@", cachedFilename, targetFilename);
-				
+				NSLog(@"BlioProcessingDownloadTextFlowOperation: Error whilst attempting to move file %@ to %@: %@, %@", cachedFilename, targetFilename,anError,[anError userInfo]);
 				return;
 			}			
             else {
@@ -917,8 +940,8 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         NSError *anError;
         
         // Rename the unzipped folder to be Audiobook
-        NSString *temporaryPath = [self.tempDirectory stringByAppendingPathComponent:self.localFilename];
-        NSString *targetFilename = [self.cacheDirectory stringByAppendingPathComponent:@"Audiobook"];
+        NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
+        NSString *targetFilename = [[self.cacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByStandardizingPath];
                 
         // Identify Audiobook root files        
         // TODO These checks (especially for the root rtx file) are not robust
@@ -942,10 +965,20 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 				audioReferencesFilename = audioFile;
             }
         }
+		
+		if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) NSLog(@"file exists at temporaryPath: %@",temporaryPath);
+		else NSLog(@"ERROR: file does NOT exist at temporaryPath: %@",temporaryPath);
+        if ([[NSFileManager defaultManager] fileExistsAtPath:targetFilename]) {
+			NSLog(@"WARNING: file exists at targetFilename: %@, deleting file...",targetFilename);
+			if (![[NSFileManager defaultManager] removeItemAtPath:targetFilename error:&anError])
+				NSLog(@"ERROR: Failed to delete targetFilename %@ with error: %@, %@", targetFilename, anError, [anError userInfo]);
+		}
+		else NSLog(@"ERROR: file does NOT exist at targetFilename: %@",targetFilename);
+		
 		// For now keep the old key names.
         if (audioMetadataFilename && audioReferencesFilename) {
 			if (![[NSFileManager defaultManager] moveItemAtPath:temporaryPath toPath:targetFilename error:&anError]) {
-				NSLog(@"Error whilst attempting to move file %@ to %@", temporaryPath, targetFilename);
+				NSLog(@"BlioProcessingDownloadAudiobookOperation: Error whilst attempting to move file %@ to %@: %@, %@", temporaryPath, targetFilename,anError,[anError userInfo]);
 				return;
 			}
 			else {
