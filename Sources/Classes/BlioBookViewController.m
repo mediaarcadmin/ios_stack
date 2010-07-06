@@ -821,7 +821,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     // Set the fade state
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateNoneVisible:
+        case kBlioLibraryToolbarsStateStatusBarVisible:
         case kBlioLibraryToolbarsStatePauseButtonVisible:
+        //case kBlioLibraryToolbarsStateStatusBarVisible:
             _fadeState = BookViewControlleUIFadeStateFadingOut;
             break;
         default:
@@ -833,12 +835,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateStatusBarVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-			if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-			else [(id)[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // typecast as id to mask deprecation warnings.							
-#else
-			[[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // original code
-#endif
+			if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
+                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+			else 
+                [(id)[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // typecast as id to mask deprecation warnings.							
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
             break;
         default:
@@ -904,7 +904,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-    
 }
 
 - (void)togglePauseButton {
@@ -1389,8 +1388,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)showViewSettings:(id)sender {
-    // Hide toolbars so the view settings don't overlap them
-    [self setToolbarsForModalOverlayActive:YES];
+    if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        // Hide toolbars so the view settings don't overlap them
+        [self setToolbarsForModalOverlayActive:YES];
+    }
     
     BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
     UIToolbar *toolbar = self.navigationController.toolbar;

@@ -35,7 +35,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {    
+- (void)applicationDidFinishLaunching:(UIApplication *)application {  
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     // Override point for customization after app launch   
 	//[window addSubview:[navigationController view]];
@@ -68,38 +68,45 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 	
 	// Rotates the view.
 	CGAffineTransform transform = CGAffineTransformIdentity;
-			
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+    
+    UIScreen *screen = [UIScreen mainScreen];
+    NSString *uiScaleAdditionString = @"";
+    if([screen respondsToSelector:@selector(scale)]) {
+        CGFloat scale = [screen scale];
+        if(scale != 1.0f) {
+            uiScaleAdditionString = [NSString stringWithFormat:@"@%ldx", (long)scale]; 
+        }
+    }
+    
+tryAgain:
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 //		if ( ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft) || ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) )
 //		{
 //			NSLog(@"Using landscape image");
-//			imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default-Landscape.png"]];
+//			imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Default-Landscape%@.png", uiScaleAdditionString]]];
 //			transform = CGAffineTransformMakeRotation(3.14159/2);
 //		}
 //		else
 //		{
 //			NSLog(@"Using portrait image");
-//			imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default-Portrait.png"]];
+//			imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Default-Portrait%@.png", uiScaleAdditionString]]];
 //		}
-		imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default-Portrait.png"]];
-
+		imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Default-Portrait%@.png", uiScaleAdditionString]]];
+	} else {
+		imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Default%@.png", uiScaleAdditionString]]];
 	}
-	else {
-		imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default.png"]];
-	}
+        
+    if(!imageData && ![uiScaleAdditionString isEqualToString:@""]) {
+        // If we didn't find a good image to use, try again with no scale factor.
+        // Sorry about the goto, seemed clearer than other ways...
+        uiScaleAdditionString = @"";
+        goto tryAgain;
+    }
 
-//	[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-#else
-    imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Default.png"]];
-#endif
-	
-	
     realDefaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:imageData]];
-    CGRect defaultFrame = realDefaultImageView.frame;
-    defaultFrame.origin.y = CGRectGetHeight(window.bounds) - CGRectGetHeight(defaultFrame);
-    [realDefaultImageView setFrame:defaultFrame];
-    [realDefaultImageView setTransform:transform];
+    realDefaultImageView.frame = window.bounds;
+    realDefaultImageView.contentMode = UIViewContentModeScaleToFill;
+    realDefaultImageView.transform = transform;
     [window addSubview:realDefaultImageView];
     [window makeKeyAndVisible];
 
@@ -115,8 +122,9 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
 	[[BlioDrmManager getDrmManager] initialize];
 
-	
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
+    
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
 -(void)loginDismissed:(NSNotification*)note {
