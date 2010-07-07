@@ -7,15 +7,14 @@
 //
 
 #import "BlioBook.h"
+#import "BlioBookManager.h"
 #import "BlioTextFlowParagraphSource.h"
 #import "BlioEPubParagraphSource.h"
+#import "BlioEPubBook.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <pthread.h>
 
 @interface BlioBook ()
-@property (nonatomic, retain) BlioTextFlow *textFlow;
-@property (nonatomic, retain) EucBUpeBook *ePubBook;
-@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 
 - (NSString *)manifestPathForKey:(NSString *)key; // this should not be made public
 
@@ -44,16 +43,7 @@
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
 
-// Lazily instantiated - see getters below.
-@synthesize textFlow;
-@synthesize ePubBook;
-@synthesize paragraphSource;
-
 - (void)dealloc {
-
-    [textFlow release];
-	[ePubBook release];
-    [paragraphSource release];
     
     [super dealloc];
 }
@@ -111,51 +101,15 @@
 }
 
 - (BlioTextFlow *)textFlow {
-    
-    if (nil == textFlow) {
-        NSSet *pageRanges = [self valueForKey:@"textFlowPageRanges"];
-        if (pageRanges) { 
-            BlioTextFlow *myTextFlow = [[BlioTextFlow alloc] initWithPageRanges:pageRanges storeCoordinator:self.managedObjectContext.persistentStoreCoordinator bookID:self.objectID];
-            self.textFlow = myTextFlow;
-            [myTextFlow release];
-        }
-    }
-    
-    return textFlow;
+    return [[BlioBookManager sharedBookManager] textFlowForBookWithID:self.objectID];
 }
 
-- (EucBUpeBook *)ePubBook {
-    if (nil == ePubBook) {
-        NSString *ePubPath = self.ePubPath;
-        if (ePubPath) {
-            EucBUpeBook *myEPubBook = [[EucBUpeBook alloc] initWithPath:[self ePubPath]];
-            [myEPubBook setPersistsPositionAutomatically:NO];
-            [myEPubBook setCacheDirectoryPath:[self.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"]];
-            self.ePubBook = myEPubBook;
-            [myEPubBook release];
-        }
-    }
-    return ePubBook;    
+- (BlioEPubBook *)ePubBook {
+    return [[BlioBookManager sharedBookManager] ePubBookForBookWithID:self.objectID];
 }
 
 - (id<BlioParagraphSource>)paragraphSource {
-    if (nil == paragraphSource) {
-        BlioTextFlow *myTextFlow = self.textFlow;
-        id<BlioParagraphSource> myParagraphSource = nil;
-        if (myTextFlow) {
-            myParagraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
-        } else {
-            EucBUpeBook *myEPubBook = self.ePubBook;
-            if(myEPubBook) {
-                myParagraphSource = [[BlioEPubParagraphSource alloc] initWitBUpeBook:myEPubBook];
-            }
-        }
-        if(myParagraphSource) {
-            self.paragraphSource = myParagraphSource;
-            [myParagraphSource release];
-        }
-    }
-    return paragraphSource;
+    return [[BlioBookManager sharedBookManager] paragraphSourceForBookWithID:self.objectID];
 }
 
 - (NSString *)bookCacheDirectory {
@@ -231,9 +185,7 @@
 
 - (void)flushCaches
 {
-    self.textFlow = nil;
-    self.ePubBook = nil;
-    self.paragraphSource = nil;
+    // Nothing to do any more!
 }
 
 - (NSArray *)sortedBookmarks {
@@ -464,6 +416,11 @@ static void sortedHighlightRangePredicateInit() {
         data = [NSData dataWithContentsOfMappedFile:filePath];
     
     return data;
+}
+
+- (BOOL)hasManifestValueForKey:(NSString *)key
+{
+    return [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] != nil;
 }
 
 - (NSString *)manifestPathForKey:(NSString *)key {

@@ -7,6 +7,7 @@
 //
 
 #import "BlioSpeedReadView.h"
+#import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import <QuartzCore/QuartzCore.h>
 #import <QuartzCore/CALayer.h>
@@ -27,13 +28,13 @@
 
 @implementation BlioSpeedReadView
 
-@synthesize pageNumber, currentWordOffset, currentParagraphID, book, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize pageNumber, currentWordOffset, currentParagraphID, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 
 - (id)initWithFrame:(CGRect)frame
-               book:(BlioBook *)aBook 
+             bookID:(NSManagedObjectID *)bookID 
            animated:(BOOL)animated {
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
-        book = [aBook retain];
+        BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:bookID];
         paragraphSource = [aBook.paragraphSource retain];
         
         [self setMultipleTouchEnabled:YES];
@@ -426,7 +427,6 @@
     [backgroundImage release];
     [currentParagraphID release];
     [paragraphSource release];
-    [book release];    
     [super dealloc];
 }
 

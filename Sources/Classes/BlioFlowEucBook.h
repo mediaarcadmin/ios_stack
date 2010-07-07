@@ -7,16 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 #import <libEucalyptus/EucBUpeBook.h>
 
 @class BlioBook, BlioTextFlow;
 
 @interface BlioFlowEucBook : EucBUpeBook {
+    NSManagedObjectID *bookID;
+    BOOL hasCover;
     BlioTextFlow *textFlow;
 }
 
-@property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
-
-- (id)initWithBlioBook:(BlioBook *)blioBook;
+- (id)initWithBookID:(NSManagedObjectID *)blioBookID;
 
 @end

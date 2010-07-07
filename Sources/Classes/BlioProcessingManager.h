@@ -10,15 +10,9 @@
 #import "BlioProcessing.h"
 
 @interface BlioProcessingManager : NSObject <BlioProcessingDelegate> {
-    NSManagedObjectContext *managedObjectContext;
-    
     NSOperationQueue *preAvailabilityQueue;
     NSOperationQueue *postAvailabilityQueue;
 }
-
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext;
 
 @end
 

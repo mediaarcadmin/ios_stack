@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioTextFlow.h"
 #import "BlioBookView.h"
 #import "BlioSelectableBookView.h"
-#import "BlioBook.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucSelector.h>
 #import "XpsSdk.h"
@@ -53,7 +53,8 @@ typedef enum BlioLayoutPageMode {
 @end
 
 @interface BlioLayoutView : BlioSelectableBookView <BlioLayoutRenderingDelegate, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
-    BlioBook *book;
+    NSManagedObjectID *bookID;
+    BlioTextFlow *textFlow;
     CGPDFDocumentRef pdf;
     BlioLayoutScrollView *scrollView;
     BlioLayoutContentView *contentView;
@@ -93,7 +94,8 @@ typedef enum BlioLayoutPageMode {
     id<BlioLayoutDataSource> dataSource;
 }
 
-@property (nonatomic, retain) BlioBook *book;
+@property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, retain) BlioTextFlow *textFlow;
 @property (nonatomic, retain) BlioLayoutScrollView *scrollView;
 @property (nonatomic, retain) BlioLayoutContentView *contentView;
 @property (nonatomic, retain) BlioLayoutPageLayer *currentPageLayer;

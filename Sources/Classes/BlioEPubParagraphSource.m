@@ -8,6 +8,8 @@
 
 #import "BlioEPubParagraphSource.h"
 #import "BlioBookmark.h"
+#import "BlioEPubBook.h"
+#import "BlioBookManager.h"
 
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBUpePageLayoutController.h>
@@ -28,7 +30,7 @@
 
 @synthesize bUpeBook = _bUpeBook;
 
-- (id)initWitBUpeBook:(EucBUpeBook *)bUpeBook
+- (id)initWithEPubBook:(BlioEPubBook *)bUpeBook
 {
     if((self = [super init])) {
         _bUpeBook = [bUpeBook retain];
@@ -38,6 +40,8 @@
 
 - (void)dealloc
 {
+    [[BlioBookManager sharedBookManager] paragraphSourceIsDeallocingForBookWithID:_bUpeBook.blioBookID];
+    
     [_layoutController release];
     [_bUpeBook dealloc];
     

@@ -27,9 +27,7 @@
     id<BlioParagraphSource> paragraphSource;
     id currentParagraphID;
 	uint32_t currentWordOffset;
-    
-    BlioBook *book;
-    
+        
     UIView *fingerImageHolder;
     CALayer *fingerImage;
     CALayer *backgroundImage;
@@ -63,8 +61,6 @@
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 @property (nonatomic, readonly) CGRect firstPageRect;
-
-@property (nonatomic, retain) BlioBook *book;
 
 @property (nonatomic, retain) UIView *fingerImageHolder;
 @property (nonatomic, retain) CALayer *fingerImage;

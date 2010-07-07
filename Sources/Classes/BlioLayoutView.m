@@ -7,6 +7,8 @@
 //
 #import <QuartzCore/QuartzCore.h>
 #import "BlioLayoutView.h"
+#import "BlioBook.h"
+#import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import "BlioWebToolsViewController.h"
 #import <libEucalyptus/EucMenuItem.h>
@@ -151,7 +153,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize book, scrollView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
+@synthesize bookID, textFlow, scrollView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
@@ -170,7 +172,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     self.delegate = nil;
     
-    self.book = nil;
+    self.bookID = nil;
+    self.textFlow = nil;
     self.scrollView = nil;
     self.currentPageLayer = nil;
     self.pageCropsCache = nil;
@@ -211,9 +214,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark BlioBookView
 
 - (id)initWithFrame:(CGRect)frame
-               book:(BlioBook *)aBook 
+             bookID:(NSManagedObjectID *)aBookID 
            animated:(BOOL)animated {
 
+    BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
     if (!([aBook pdfPath] || [aBook xpsPath])) {
         return nil;
     }
@@ -235,7 +239,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if ((self = [super initWithFrame:rotatedFrame])) {
         // Initialization code
         isCancelled = NO;
-        self.book = aBook;
+        self.bookID = aBookID;
+        self.textFlow = aBook.textFlow;
         self.clearsContextBeforeDrawing = NO; // Performance optimisation;
         self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];    
         self.autoresizesSubviews = YES;
@@ -383,7 +388,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    [self goToPageNumber:[self.book.textFlow pageNumberForSectionUuid:uuid] animated:animated];
+    [self goToPageNumber:[self.textFlow pageNumberForSectionUuid:uuid] animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
@@ -415,10 +420,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (NSString *)pageLabelForPageNumber:(NSInteger)page {
     NSString *ret = nil;
     
-    BlioTextFlow *textFlow = self.book.textFlow;
-    NSString* section = [textFlow sectionUuidForPageNumber:page];
-    THPair* chapter = [textFlow presentationNameAndSubTitleForSectionUuid:section];
-    NSString* pageStr = [textFlow displayPageNumberForPageNumber:page];
+    BlioTextFlow *myTextFlow = self.textFlow;
+    NSString* section = [myTextFlow sectionUuidForPageNumber:page];
+    THPair* chapter = [myTextFlow presentationNameAndSubTitleForSectionUuid:section];
+    NSString* pageStr = [myTextFlow displayPageNumberForPageNumber:page];
 
     if (section && chapter.first) {
         if (pageStr) {
@@ -430,7 +435,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         if (pageStr) {
             ret = [NSString stringWithFormat:@"Page %@ of %lu", pageStr, (unsigned long)self.pageCount];
         } else {
-            ret = self.book.title;
+            ret = [[BlioBookManager sharedBookManager] bookWithID:self.bookID].title;
         }
     } // of no section name
     
@@ -837,7 +842,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = aPageNumber - 1;
     NSMutableArray *allHighlights = [NSMutableArray array];
     NSArray *highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         
@@ -989,7 +994,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (NSArray *)bookmarkRangesForCurrentPage {
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     NSUInteger maxOffset = [pageBlocks count];
     
     BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
@@ -1059,7 +1064,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
     NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     return [pageBlocks valueForKey:@"blockID"];
 }
 
@@ -1070,7 +1075,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     // We say "YES" to includingFolioBlocks here because we know that we're not going
     // to be asked about a folio block anyway, and getting all the blocks is more
     // efficient than getting just the non-folio blocks. 
-    for (BlioTextFlowBlock *candidateBlock in [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
         if (candidateBlock.blockID == blockID) {
             block = candidateBlock;
             break;
@@ -1085,7 +1090,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
     
     BlioTextFlowBlock *block = nil;
-    for (BlioTextFlowBlock *candidateBlock in [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
         if (candidateBlock.blockID == blockID) {
             block = candidateBlock;
             break;
@@ -1105,7 +1110,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
     
     BlioTextFlowBlock *block = nil;
-    for (BlioTextFlowBlock *candidateBlock in [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
         if (candidateBlock.blockID == blockID) {
             block = candidateBlock;
             break;
@@ -1234,7 +1239,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
     if(bookmarkPoint) {
         NSInteger pageIndex = bookmarkPoint.layoutPage - 1;
-        NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+        NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
         BlioTextFlowBlock *currentBlock = [pageBlocks objectAtIndex:bookmarkPoint.blockOffset];
 
         NSInteger targetPageNumber = pageIndex + 1;
@@ -1481,7 +1486,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
-    return self.book.textFlow;
+    return self.textFlow;
 }
 
 #pragma mark -
@@ -1629,17 +1634,17 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     // Work out targetBlock on the current page
     if (self.lastBlock) {
         if (!reversed) {
-            targetBlock = [self.book.textFlow nextBlockForBlock:self.lastBlock 
+            targetBlock = [self.textFlow nextBlockForBlock:self.lastBlock 
                                            includingFolioBlocks:NO
                                                      onSamePage:YES];                
         } else {
-            targetBlock = [self.book.textFlow previousBlockForBlock:self.lastBlock 
+            targetBlock = [self.textFlow previousBlockForBlock:self.lastBlock 
                                                includingFolioBlocks:NO
                                                          onSamePage:YES];        
         }
     } else {
         if (!reversed) {
-            NSArray *pageBlocks = [self.book.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+            NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
             if (pageBlocks.count > 0) {
                 targetBlock = [pageBlocks objectAtIndex:0];
             }
@@ -1669,7 +1674,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             // Zoom to the last block on the previous page, if there are any
             // blocks on it, otherwise zoom to the page.
             NSInteger newPageIndex = pageIndex - 1;
-            NSArray *pageBlocks = [self.book.textFlow blocksForPageAtIndex:newPageIndex includingFolioBlocks:NO];
+            NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:newPageIndex includingFolioBlocks:NO];
             
             if (pageBlocks.count > 0) {
                 targetBlock = [pageBlocks lastObject];
@@ -1721,7 +1726,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = targetPage - 1;
     
     self.disableScrollUpdating = YES;
-    NSArray *blocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    NSArray *blocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
 
     [self.scrollView setPagingEnabled:NO];
     [self.scrollView setBounces:NO];
@@ -1960,7 +1965,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [self.scrollView setIsAccessibilityElement:YES];
         
         NSInteger pageIndex = currentPage - 1;
-        NSArray *nonFolioPageBlocks = [[self.book textFlow] blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
         
         NSMutableString *allWords = [NSMutableString string];
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {

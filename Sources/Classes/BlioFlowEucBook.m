@@ -8,6 +8,7 @@
 
 #import "BlioFlowEucBook.h"
 #import "BlioBook.h"
+#import "BlioBookManager.h"
 #import "BlioTextFlow.h"
 #import "BlioTextFlowFlowTree.h"
 
@@ -15,24 +16,35 @@
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THRegex.h>
 
+#import <CoreData/CoreData.h>
 #import <sys/stat.h>
+
+@interface BlioFlowEucBook ()
+
+@property (nonatomic, assign) NSManagedObjectID *bookID;
+@property (nonatomic, assign) BOOL hasCover;
+@property (nonatomic, retain) BlioTextFlow *textFlow;
+
+@end
 
 @implementation BlioFlowEucBook
 
+@synthesize bookID;
+@synthesize hasCover;
 @synthesize textFlow;
 
-- (id)initWithBlioBook:(BlioBook *)blioBook;
+- (id)initWithBookID:(NSManagedObjectID *)blioBookID
 {
     if((self = [super init])) {
-        textFlow = [blioBook.textFlow retain];
+        self.bookID = blioBookID;
+        BlioBook *blioBook = [[BlioBookManager sharedBookManager] bookWithID:blioBookID];
+        self.textFlow = blioBook.textFlow;
+        self.hasCover = [blioBook hasManifestValueForKey:@"coverFilename"];
+        
         self.title = blioBook.title;
         self.author = blioBook.author;
         self.path = blioBook.bookCacheDirectory;
         self.etextNumber = nil;
-        // TODO ePubs will need to use [blioBook coverImage] of [blioBook manifestDataForKey:@"coverFilename"]
-        //self.coverPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:blioBook.coverFilename];
-        self.coverPath = [blioBook manifestPathForKey:@"coverFilename"];
-        
     }
     
     return self;
@@ -40,7 +52,9 @@
 
 - (void)dealloc
 {
-    [textFlow release];
+    self.bookID = nil;
+    self.textFlow = nil;
+    
     [super dealloc];
 }
 
@@ -50,7 +64,7 @@
     
     NSArray *sections = self.textFlow.sections; 
     long index = 0;
-    if(self.coverPath) {
+    if(self.hasCover) {
         [navPoints addPairWithFirst:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
                              second:[NSString stringWithFormat:@"textflow:$ld", (long)index]];
         ++index;
@@ -75,13 +89,13 @@
 
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    return indexPoint.source == 0 && self.coverPath != nil;
+    return indexPoint.source == 0 && self.hasCover;
 }
 
 - (NSData *)dataForURL:(NSURL *)url
 {
     if([[url absoluteString] isEqualToString:@"textflow:coverimage"]) {
-        return [NSData dataWithContentsOfMappedFile:self.coverPath];
+        return [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] manifestDataForKey:@"coverFilename"];
     }
     return [super dataForURL:url];
 }
@@ -92,7 +106,7 @@
     NSString *indexString = [[[url absoluteString] matchPOSIXRegex:@"^textflow:(.*)$"] match:1];
     if(indexString) {
         NSUInteger section = [indexString integerValue];
-        if(self.coverPath) {
+        if(self.hasCover) {
             if(section == 0) {
                 NSURL *coverHTMLFile = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"]];
                 tree = [super documentTreeForURL:coverHTMLFile];

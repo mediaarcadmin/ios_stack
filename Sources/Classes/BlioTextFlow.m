@@ -9,6 +9,7 @@
 #import "BlioTextFlow.h"
 #import "BlioTextFlowFlowTree.h"
 #import "BlioProcessing.h"
+#import "BlioBookManager.h"
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/EucChapterNameFormatting.h>
 
@@ -204,13 +205,11 @@
 
 @interface BlioTextFlow()
 
+@property (nonatomic, assign, readonly) BlioBook *book;
 @property (nonatomic, retain) NSSet *pageRanges;
-//@property (nonatomic, retain) NSString *basePath;
-
 @property (nonatomic, retain) NSMutableArray *sections;
 
 - (NSArray *)blocksForPage:(NSInteger)pageIndex inPageRange:(BlioTextFlowPageRange *)pageRange targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker;
-
 
 @end
 
@@ -218,9 +217,11 @@
 
 @synthesize pageRanges;
 @synthesize sections; // Lazily loaded - see -(NSArray *)sections
-@synthesize bookID, storeCoordinator;
+@synthesize bookID;
 
 - (void)dealloc {
+    [[BlioBookManager sharedBookManager] textFlowIsDeallocingForBookWithID:self.bookID];
+    
     self.pageRanges = nil;
     self.sections = nil;
     [pageBlocksCacheLock release];
@@ -230,16 +231,14 @@
     }
     
     self.bookID = nil;
-    self.storeCoordinator = nil;
     
     [super dealloc];
 }
 
-- (id)initWithPageRanges:(NSSet *)pageRangesSet storeCoordinator:(NSPersistentStoreCoordinator *)aStoreCoordinator bookID:(NSManagedObjectID *)aBookID {
+- (id)initWithBookID:(NSManagedObjectID *)aBookID {
     if ((self = [super init])) {
         self.bookID = aBookID;
-        self.storeCoordinator = aStoreCoordinator;
-        self.pageRanges = pageRangesSet;
+        self.pageRanges = [self.book valueForKey:@"textFlowPageRanges"] ;
         pageBlocksCacheLock = [[NSLock alloc] init];
     }
     return self;
@@ -490,15 +489,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 }
 
 - (BlioBook *)book {
-    BlioBook *aBook = nil;
-    
-    NSManagedObjectContext *moc = [[[NSManagedObjectContext alloc] init] autorelease]; 
-    [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
-    @synchronized (self.storeCoordinator) {
-       aBook = (BlioBook *)[moc objectWithID:self.bookID];
-    }
-    
-    return aBook;
+    return [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
 }
 
 - (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex

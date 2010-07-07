@@ -202,7 +202,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             case kBlioPageLayoutSpeedRead: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
                     BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds 
-                                                                                       book:newBook 
+                                                                                     bookID:newBook.objectID
                                                                                    animated:YES];
                     self.bookView = aBookView; 
                     [aBookView release];
@@ -215,7 +215,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             case kBlioPageLayoutPageLayout: {
                 if ([newBook pdfPath] || [newBook xpsPath]) {
                     BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds 
-                                                                                 book:newBook 
+                                                                               bookID:newBook.objectID
                                                                              animated:YES];
                     aBookView.delegate = self;
                     self.bookView = aBookView;
@@ -229,7 +229,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             default: {
                 if ([newBook ePubPath] || [newBook textFlowPath]) {
                     BlioFlowView *aBookView = [[BlioFlowView alloc] initWithFrame:self.view.bounds 
-                                                                             book:newBook 
+                                                                           bookID:newBook.objectID
                                                                          animated:YES];
                     aBookView.delegate = self;
                     self.bookView = aBookView;
@@ -351,7 +351,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     if(_bookView != bookView) {
         if(_bookView) {
-            if (bookView != nil) [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
+            //if (bookView != nil) [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
             [_bookView removeObserver:self forKeyPath:@"pageNumber"];
             [_bookView removeObserver:self forKeyPath:@"pageCount"];        
             if(_bookView.superview) {
@@ -364,10 +364,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         [_bookView release];
-        
-        // Could do this here to get rid of e.g. paragraph sources if they're 
-        // not needed - causes a bit of a stall though.
-        //[self.book flushCaches];
         
         _bookView = [bookView retain];
         
@@ -401,10 +397,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                            context:nil];   
             
-            [self addObserver:_bookView 
-                        forKeyPath:@"audioPlaying" 
-                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
-                           context:nil];
+            /*[self addObserver:_bookView 
+                   forKeyPath:@"audioPlaying" 
+                      options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
+                      context:nil];*/
         }
     }
 }
@@ -660,7 +656,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [_bookView performSelector:@selector(stopAnimation)];
             }
             
-            [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
+            //[self removeObserver:_bookView forKeyPath:@"audioPlaying"];
             
             if([_bookView isKindOfClass:[BlioSpeedReadView class]]) {
                 // We do this because the current point is usually only saved on a 
@@ -1239,20 +1235,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			self.audioPlaying = NO;  
 		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book ePubPath] || [self.book textFlowPath])) {
-            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds book:self.book animated:NO];
+            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && ([self.book pdfPath] || [self.book xpsPath])) {
-            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds book:self.book animated:NO];
+            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutSpeedRead && ([self.book ePubPath] || [self.book textFlowPath])) {
-            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds book:self.book animated:NO];
+            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];

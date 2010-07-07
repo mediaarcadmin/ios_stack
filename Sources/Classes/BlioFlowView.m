@@ -9,6 +9,7 @@
 #import "BlioFlowView.h"
 #import "BlioFlowPaginateOperation.h"
 #import "BlioFlowEucBook.h"
+#import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import "BlioParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
@@ -35,7 +36,7 @@
 @synthesize pageNumber = _pageNumber;
 
 - (id)initWithFrame:(CGRect)frame
-               book:(BlioBook *)aBook 
+             bookID:(NSManagedObjectID *)bookID 
            animated:(BOOL)animated 
 {
     if((self = [super initWithFrame:frame])) {
@@ -45,8 +46,9 @@
         
         self.opaque = YES;
         
+        BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:bookID];
         if([aBook textFlowPath]) {
-            eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:aBook];
+            eucBook = [[BlioFlowEucBook alloc] initWithBookID:bookID];
             eucBook.persistsPositionAutomatically = NO;
             eucBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
         } else {

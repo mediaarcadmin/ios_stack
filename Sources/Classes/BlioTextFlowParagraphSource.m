@@ -13,6 +13,8 @@
 #import "BlioTextFlowParagraph.h"
 #import "BlioTextFlowParagraphWords.h"
 
+#import "BlioBookManager.h"
+
 @interface BlioTextFlowParagraphSource ()
 
 @property (nonatomic, assign) NSUInteger currentFlowTreeSection;
@@ -38,6 +40,8 @@
 
 - (void)dealloc
 {
+    [[BlioBookManager sharedBookManager] paragraphSourceIsDeallocingForBookWithID:self.textFlow.bookID];
+    
     free(sectionScaleFactors);
     [textFlow release];
     [currentFlowTree release];
@@ -204,6 +208,5 @@
 {
     return self.textFlow.lastPageIndex + 1;
 }
-
 
 @end
