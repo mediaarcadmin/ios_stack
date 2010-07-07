@@ -20,6 +20,14 @@ static const NSInteger kBlioBookProcessingStateIncomplete = 2;
 static const NSInteger kBlioBookProcessingStatePaused = 3;
 static const NSInteger kBlioBookProcessingStateComplete = 4;
 
+static NSString * const BlioManifestEntryLocationFileSystem = @"fileSystem";
+static NSString * const BlioManifestEntryLocationXPS = @"xps";
+static NSString * const BlioManifestEntryLocationTextflow = @"textflow";
+static NSString * const BlioManifestEntryLocationWeb = @"web";
+static NSString * const BlioManifestEntryLocationBundle = @"bundle";
+
+
+
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end

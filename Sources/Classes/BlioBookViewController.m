@@ -1414,7 +1414,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             // This probably means that the block was empty.  
             // Pretend that we have read everything from it (which, in effect, 
             // we have).
-            [self speechSynthesizer:_acapelaAudioManager.engine didFinishSpeaking:YES];
+		// TODO: uncomment below when we have a new library from Acapela
+//            [self speechSynthesizer:_acapelaAudioManager.engine didFinishSpeaking:YES];
         }
 	}
 }
@@ -1511,34 +1512,34 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue]; // need to subtract one...
 	return YES;
 }
-
+// TODO: uncomment these delegate methods when we get a new library from Acapela
 #pragma mark -
 #pragma mark Acapela Delegate Methods 
 
-- (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
-{
-	if (finishedSpeaking) {
-		// Reached end of block.  Start on the next.
-		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:YES]; 
-	}
-	//else stop button pushed before end of block.
-}
-
-- (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
-				 ofString:(NSString*)string 
-{
-    if(characterRange.location + characterRange.length <= string.length) {
-        NSUInteger wordOffset = [_acapelaAudioManager wordOffsetForCharacterRange:characterRange];
-        
-        id<BlioBookView> bookView = self.bookView;
-        if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
-                                                                                   wordOffset:wordOffset];
-            [bookView highlightWordAtBookmarkPoint:point];
-        }
-        [_acapelaAudioManager setCurrentWordOffset:wordOffset];
-    }
-}
+//- (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
+//{
+//	if (finishedSpeaking) {
+//		// Reached end of block.  Start on the next.
+//		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:YES]; 
+//	}
+//	//else stop button pushed before end of block.
+//}
+//
+//- (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
+//				 ofString:(NSString*)string 
+//{
+//    if(characterRange.location + characterRange.length <= string.length) {
+//        NSUInteger wordOffset = [_acapelaAudioManager wordOffsetForCharacterRange:characterRange];
+//        
+//        id<BlioBookView> bookView = self.bookView;
+//        if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
+//            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
+//                                                                                   wordOffset:wordOffset];
+//            [bookView highlightWordAtBookmarkPoint:point];
+//        }
+//        [_acapelaAudioManager setCurrentWordOffset:wordOffset];
+//    }
+//}
 
 #pragma mark -
 #pragma mark AVAudioPlayer Delegate Methods 

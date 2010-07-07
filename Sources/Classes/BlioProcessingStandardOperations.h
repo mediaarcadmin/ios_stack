@@ -39,8 +39,8 @@
 
 @property (nonatomic, retain) NSURL *url;
 @property (nonatomic, copy) NSString *filenameKey;
-@property (nonatomic, retain) NSString *localFilename;
-@property (nonatomic, retain) NSString *tempFilename;
+@property (nonatomic, copy) NSString *localFilename;
+@property (nonatomic, copy) NSString *tempFilename;
 @property (nonatomic, retain) NSURLConnection *connection;
 @property (nonatomic, retain) NSURLConnection *headConnection;
 @property (nonatomic, retain) NSFileHandle *downloadFile;

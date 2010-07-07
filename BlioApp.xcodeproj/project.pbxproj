@@ -223,7 +223,6 @@
 		A37A586D113C45640003CCFF /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
 		A37A586E113C45640003CCFF /* forward-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586B113C45640003CCFF /* forward-gray.png */; };
 		A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37DADCF11B1E52A005F949A /* BlioDrmManager.m */; settings = {COMPILER_FLAGS = "-Wno-unused-function"; }; };
-		A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
 		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
 		A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
@@ -243,7 +242,6 @@
 		A3A672B611304D7700138097 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
 		A3A67376113078E300138097 /* BlioAudioSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioAudioSettingsController.m */; };
 		A3AF018E11C26974004DAB03 /* BlioXpsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A3AF018D11C26974004DAB03 /* BlioXpsClient.m */; };
-		A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		A3C7437011CAC178005A2219 /* freebooks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436011CAC178005A2219 /* freebooks@2x.png */; };
 		A3C7437111CAC178005A2219 /* icon-cart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436111CAC178005A2219 /* icon-cart@2x.png */; };
 		A3C7437211CAC178005A2219 /* icon-contents@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436211CAC178005A2219 /* icon-contents@2x.png */; };
@@ -450,9 +448,7 @@
 		C9AF1A701147A772007D7AFC /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		C9AF1A711147A772007D7AFC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
 		C9AF1A721147A772007D7AFC /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */; };
-		C9AF1A731147A772007D7AFC /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		C9AF1A741147A772007D7AFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5467510F77EDD00ECE126 /* CoreData.framework */; };
-		C9AF1A751147A772007D7AFC /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		C9AF1A761147A772007D7AFC /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		C9AF1A771147A772007D7AFC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B61FF41137AF840012CE7E /* libz.dylib */; };
 		C9AF1A781147A772007D7AFC /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
@@ -1237,9 +1233,7 @@
 				7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */,
 				7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */,
 				7D381B9B10D92F2C008D34E2 /* libstdc++.6.dylib in Frameworks */,
-				A37FC33010EA781700F3DC5A /* libBabTTSFat.a in Frameworks */,
 				C9C5467610F77EDD00ECE126 /* CoreData.framework in Frameworks */,
-				A3B16AC21104F65C00E2EA97 /* libMobilityStaticFat.a in Frameworks */,
 				C9B61FF51137AF840012CE7E /* libz.dylib in Frameworks */,
 				C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */,
 				C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */,
@@ -1270,9 +1264,7 @@
 				C9AF1A701147A772007D7AFC /* OpenGLES.framework in Frameworks */,
 				C9AF1A711147A772007D7AFC /* QuartzCore.framework in Frameworks */,
 				C9AF1A721147A772007D7AFC /* libstdc++.6.dylib in Frameworks */,
-				C9AF1A731147A772007D7AFC /* libBabTTSFat.a in Frameworks */,
 				C9AF1A741147A772007D7AFC /* CoreData.framework in Frameworks */,
-				C9AF1A751147A772007D7AFC /* libMobilityStaticFat.a in Frameworks */,
 				C9AF1A761147A772007D7AFC /* AVFoundation.framework in Frameworks */,
 				C9AF1A771147A772007D7AFC /* libz.dylib in Frameworks */,
 				C9AF1A781147A772007D7AFC /* CFNetwork.framework in Frameworks */,

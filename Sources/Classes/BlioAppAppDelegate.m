@@ -13,7 +13,7 @@
 #import "BlioAlertManager.h"
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
-#import "AcapelaSpeech.h"
+// #import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioDrmManager.h"
 #import "BlioBookManager.h"
@@ -214,8 +214,9 @@ static void *background_init_thread(void * arg) {
 	}
 		
 	// TEMPORARY CODE END
-	
-	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
+		
+	// TODO: uncomment line below when we get a new library from Acapela
+//	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
 	    
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
