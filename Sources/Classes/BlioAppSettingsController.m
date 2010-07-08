@@ -9,6 +9,7 @@
 #import "BlioAppSettingsController.h"
 #import "BlioAudioSettingsController.h"
 #import "BlioWebToolSettingsController.h"
+#import "BlioPaidBooksSettingsController.h"
 
 @implementation BlioAppSettingsController
 
@@ -68,7 +69,7 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 
@@ -95,6 +96,9 @@
 		case 1:
 			[cell.textLabel setText:@"Web Tools"];
 			break;
+		case 2:
+			[cell.textLabel setText:@"Paid Books"];
+			break;
 		default:
 			break;
 	}
@@ -107,6 +111,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	BlioAudioSettingsController *audioController;
 	BlioWebToolSettingsController *webToolController;
+	BlioPaidBooksSettingsController *paidBooksController;
 	switch ( [indexPath section] ) {
 		case 0:
 			audioController = [[BlioAudioSettingsController alloc] initWithStyle:UITableViewStyleGrouped];
@@ -117,6 +122,11 @@
 			webToolController = [[BlioWebToolSettingsController alloc] init];
 			[self.navigationController pushViewController:webToolController animated:YES];
 			[webToolController release];
+			break;
+		case 2:
+			paidBooksController = [[BlioPaidBooksSettingsController alloc] init];
+			[self.navigationController pushViewController:paidBooksController animated:YES];
+			[paidBooksController release];
 			break;
 		default:
 			break;

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class BlioBook, BlioTextFlow, BlioEPubBook;
+@class BlioBook, BlioTextFlow, BlioEPubBook, BlioXPSProvider;
 @protocol BlioParagraphSource;
 
 @interface BlioBookManager : NSObject {
@@ -55,9 +55,8 @@
 - (id <BlioParagraphSource>)checkOutParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
 - (void)checkInParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
 
-/*
-- (BlioXPSProvider *)XPSProviderForBookWithID:(NSManagedObjectID *)aBookID;
-- (void)checkInXPSProvideForBookWithID:(NSManagedObjectID *)aBookID;
-*/
+// Returns a thread-safe object; May be passed between threads.
+- (BlioXPSProvider *)xpsProviderForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)xpsProviderIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
 
 @end
