@@ -18,8 +18,11 @@
 @interface BlioBookManager ()
 
 @property (nonatomic, retain) NSMutableDictionary *cachedTextFlows;
+@property (nonatomic, retain) NSCountedSet *cachedTextFlowCheckoutCounts;
 @property (nonatomic, retain) NSMutableDictionary *cachedEPubBooks;
+@property (nonatomic, retain) NSCountedSet *cachedEPubBookCheckoutCounts;
 @property (nonatomic, retain) NSMutableDictionary *cachedParagraphSources;
+@property (nonatomic, retain) NSCountedSet *cachedParagraphSourceCheckoutCounts;
 
 @end
 
@@ -28,8 +31,11 @@
 @synthesize persistentStoreCoordinator;
 
 @synthesize cachedTextFlows;
+@synthesize cachedTextFlowCheckoutCounts;
 @synthesize cachedEPubBooks;
+@synthesize cachedEPubBookCheckoutCounts;
 @synthesize cachedParagraphSources;
+@synthesize cachedParagraphSourceCheckoutCounts;
 
 static BlioBookManager *sSharedBookManager = nil;
 static pthread_key_t sManagedObjectContextKey;
@@ -105,96 +111,180 @@ static pthread_key_t sManagedObjectContextKey;
 }
 
 
-- (BlioTextFlow *)textFlowForBookWithID:(NSManagedObjectID *)aBookID
+- (BlioTextFlow *)checkOutTextFlowForBookWithID:(NSManagedObjectID *)aBookID
 {
-    NSValue *previouslyCachedTextFlow = [self.cachedTextFlows objectForKey:aBookID];
-    if(previouslyCachedTextFlow) {
-        NSLog(@"Returning cached TextFlow for book with ID %@", aBookID);
-        return [[[previouslyCachedTextFlow nonretainedObjectValue] retain] autorelease];
-    } else {
-        BlioBook *book = [self bookWithID:aBookID];
-        if(book.textFlowPath) {
-            BlioTextFlow *textFlow = [[BlioTextFlow alloc] initWithBookID:aBookID];
-            if(textFlow) {
-                NSLog(@"Creating and caching text flow for book with ID %@", aBookID);
-                [self.cachedTextFlows setObject:[NSValue valueWithNonretainedObject:textFlow]
-                                         forKey:aBookID];
-                return [textFlow autorelease];
-            }
-        }
-    }
-    return nil;
-}
-
-- (void)textFlowIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID
-{
-    NSLog(@"Releasing cached text flow for book with ID %@", aBookID);
-    [self.cachedTextFlows removeObjectForKey:aBookID];
-}
-
-
-- (BlioEPubBook *)ePubBookForBookWithID:(NSManagedObjectID *)aBookID
-{
-    NSValue *previouslyCachedEPubBook = [self.cachedEPubBooks objectForKey:aBookID];
-    if(previouslyCachedEPubBook) {
-        NSLog(@"Returning cached ePub book for book with ID %@", aBookID);
-        return [[[previouslyCachedEPubBook nonretainedObjectValue] retain] autorelease];
-    } else {
-        BlioBook *book = [self bookWithID:aBookID];
-        if(book.ePubPath) {
-            BlioEPubBook *myEPubBook = [[BlioEPubBook alloc] initWithPath:book.ePubPath];
-            if(myEPubBook) {
-                NSLog(@"Creating and caching ePub book for book with ID %@", aBookID);
-                myEPubBook.blioBookID = aBookID;
-                myEPubBook.persistsPositionAutomatically = NO;
-                myEPubBook.cacheDirectoryPath = [book.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
-                [self.cachedEPubBooks setObject:[NSValue valueWithNonretainedObject:myEPubBook]
-                                         forKey:aBookID];
-                return [myEPubBook autorelease];
-            }
-        }
-    }
-    return nil;
-}
-
-- (void)ePubBookIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID
-{
-    NSLog(@"Releasing cached ePub book for book with ID %@", aBookID);
-    [self.cachedEPubBooks removeObjectForKey:aBookID];
-}
-
-
-- (id<BlioParagraphSource>)paragraphSourceForBookWithID:(NSManagedObjectID *)aBookID
-{   
-    NSValue *previouslyCachedParagraphSource = [self.cachedParagraphSources objectForKey:aBookID];
-    if(previouslyCachedParagraphSource) {
-        NSLog(@"Returning cached paragraph source for book with ID %@", aBookID);
-        return [[[previouslyCachedParagraphSource nonretainedObjectValue] retain] autorelease];
-    } else {
-        BlioTextFlow *myTextFlow = [self textFlowForBookWithID:aBookID];
-        id<BlioParagraphSource> myParagraphSource = nil;
-        if (myTextFlow) {
-            myParagraphSource = [[BlioTextFlowParagraphSource alloc] initWithTextFlow:myTextFlow];
+    NSMutableDictionary *myCachedTextFlows = self.cachedTextFlows;
+    @synchronized(myCachedTextFlows) {
+        BlioTextFlow *previouslyCachedTextFlow = [myCachedTextFlows objectForKey:aBookID];
+        if(previouslyCachedTextFlow) {
+            NSLog(@"Returning cached TextFlow for book with ID %@", aBookID);
+            [self.cachedTextFlowCheckoutCounts addObject:aBookID];
+            return previouslyCachedTextFlow;
         } else {
-            BlioEPubBook *myEPubBook = [self ePubBookForBookWithID:aBookID];
-            if(myEPubBook) {
-                myParagraphSource = [[BlioEPubParagraphSource alloc] initWithEPubBook:myEPubBook];
+            BlioBook *book = [self bookWithID:aBookID];
+            if(book.textFlowPath) {
+                BlioTextFlow *textFlow = [[BlioTextFlow alloc] initWithBookID:aBookID];
+                if(textFlow) {
+                    NSLog(@"Creating and caching TextFlow for book with ID %@", aBookID);
+                    NSCountedSet *myCachedTextFlowCheckoutCounts = self.cachedTextFlowCheckoutCounts;
+                    if(!myCachedTextFlowCheckoutCounts) {
+                        myCachedTextFlowCheckoutCounts = [NSCountedSet set];
+                        self.cachedTextFlowCheckoutCounts = myCachedTextFlowCheckoutCounts;
+                    }
+                    [myCachedTextFlows setObject:textFlow forKey:aBookID];
+                    [myCachedTextFlowCheckoutCounts addObject:aBookID];
+                    [textFlow release];
+                    return textFlow;
+                }
             }
-        }
-        if(myParagraphSource) {
-            NSLog(@"Creating and caching paragraph source for book with ID %@", aBookID);
-            [self.cachedParagraphSources setObject:[NSValue valueWithNonretainedObject:myParagraphSource]
-                                            forKey:aBookID];
-            return [myParagraphSource autorelease];
         }
     }
     return nil;
 }
 
-- (void)paragraphSourceIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID
+- (void)checkInTextFlowForBookWithID:(NSManagedObjectID *)aBookID
 {
-    NSLog(@"Releasing cached paragraph source for book with ID %@", aBookID);
-    [self.cachedParagraphSources removeObjectForKey:aBookID];
+    NSMutableDictionary *myCachedTextFlows = self.cachedTextFlows;
+    @synchronized(myCachedTextFlows) {
+        NSCountedSet *myCachedTextFlowCheckoutCounts = self.cachedTextFlowCheckoutCounts;
+        NSUInteger count = [myCachedTextFlowCheckoutCounts countForObject:aBookID];
+        if(count == 0) {
+            NSLog(@"Warning! Unexpected checkin of non-checked-out TextFlow");
+        } else {
+            [myCachedTextFlowCheckoutCounts removeObject:aBookID];
+            if (count == 1) {
+                NSLog(@"Releasing cached TextFlow for book with ID %@", aBookID);
+                [myCachedTextFlows removeObjectForKey:aBookID];
+                if(myCachedTextFlowCheckoutCounts.count == 0) {
+                    // May as well release the set.
+                    self.cachedTextFlowCheckoutCounts = nil;
+                }
+            }
+        }
+    }
+}
+
+
+- (BlioEPubBook *)checkOutEPubBookForBookWithID:(NSManagedObjectID *)aBookID
+{
+    NSMutableDictionary *myCachedEPubBooks = self.cachedEPubBooks;
+    @synchronized(myCachedEPubBooks) {
+        BlioEPubBook *previouslyCachedEPubBook = [cachedEPubBooks objectForKey:aBookID];
+        if(previouslyCachedEPubBook) {
+            NSLog(@"Returning cached EPubBook for book with ID %@", aBookID);
+            [self.cachedEPubBookCheckoutCounts addObject:aBookID];
+            return previouslyCachedEPubBook;
+        } else {
+            BlioBook *book = [self bookWithID:aBookID];
+            if(book.textFlowPath) {
+                BlioEPubBook *ePubBook = [[BlioEPubBook alloc] initWithPath:book.ePubPath];
+                if(ePubBook) {
+                    ePubBook.blioBookID = aBookID;
+                    ePubBook.persistsPositionAutomatically = NO;
+                    ePubBook.cacheDirectoryPath = [book.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
+                    
+                    NSLog(@"Creating and caching EPubBook for book with ID %@", aBookID);
+                    NSCountedSet *myCachedEPubBookCheckoutCounts = self.cachedEPubBookCheckoutCounts;
+                    if(!myCachedEPubBookCheckoutCounts) {
+                        myCachedEPubBookCheckoutCounts = [NSCountedSet set];
+                        cachedEPubBookCheckoutCounts = myCachedEPubBookCheckoutCounts;
+                    }
+                    [myCachedEPubBooks setObject:ePubBook forKey:aBookID];
+                    [myCachedEPubBookCheckoutCounts addObject:aBookID];
+                    [ePubBook release];
+                    return ePubBook;
+                }
+            }
+        }
+    }
+    return nil;
+}
+
+- (void)checkInEPubBookForBookWithID:(NSManagedObjectID *)aBookID
+{
+    NSMutableDictionary *myCachedEPubBooks = self.cachedEPubBooks;
+    @synchronized(myCachedEPubBooks) {
+        NSCountedSet *myCachedEPubBookCheckoutCounts = self.cachedEPubBookCheckoutCounts;
+        NSUInteger count = [myCachedEPubBookCheckoutCounts countForObject:aBookID];
+        if(count == 0) {
+            NSLog(@"Warning! Unexpected checkin of non-checked-out ePub book");
+        } else {
+            [myCachedEPubBookCheckoutCounts removeObject:aBookID];
+            if (count == 1) {
+                NSLog(@"Releasing cached ePub book for book with ID %@", aBookID);
+                [myCachedEPubBooks removeObjectForKey:aBookID];
+                if(myCachedEPubBookCheckoutCounts.count == 0) {
+                    // May as well release the set.
+                    self.cachedEPubBookCheckoutCounts = nil;
+                }
+            }
+        }
+    }
+}
+
+
+- (id<BlioParagraphSource>)checkOutParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID
+{   
+    NSMutableDictionary *myCachedParagraphSources = self.cachedParagraphSources;
+    @synchronized(myCachedParagraphSources) {
+        id<BlioParagraphSource> previouslyCachedParagraphSource = [myCachedParagraphSources objectForKey:aBookID];
+        if(previouslyCachedParagraphSource) {
+            NSLog(@"Returning cached ParagraphSource for book with ID %@", aBookID);
+            [self.cachedParagraphSourceCheckoutCounts addObject:aBookID];
+            return previouslyCachedParagraphSource;
+        } else {
+            BlioBook *book = [self bookWithID:aBookID];
+            if(book.textFlowPath) {
+                BlioTextFlow *textFlow = [self checkOutTextFlowForBookWithID:aBookID];
+                id<BlioParagraphSource> paragraphSource = nil;
+                if(textFlow) {
+                    paragraphSource = [[BlioTextFlowParagraphSource alloc] initWithBookID:aBookID];
+                    [self checkInTextFlowForBookWithID:aBookID];
+                } else {
+                    BlioEPubBook *myEPubBook = [self checkOutEPubBookForBookWithID:aBookID];
+                    if(myEPubBook) {
+                        paragraphSource = [[BlioEPubParagraphSource alloc] initWithBookID:aBookID];
+                        [self checkInEPubBookForBookWithID:aBookID];
+                    }
+                }
+                if(paragraphSource) {
+                    NSLog(@"Creating and caching ParagraphSource for book with ID %@", aBookID);
+                    NSCountedSet *myCachedParagraphSourceCheckoutCounts = self.cachedParagraphSourceCheckoutCounts;
+                    if(!myCachedParagraphSourceCheckoutCounts) {
+                        myCachedParagraphSourceCheckoutCounts = [NSCountedSet set];
+                        self.cachedParagraphSourceCheckoutCounts = myCachedParagraphSourceCheckoutCounts;
+                    }
+                    [myCachedParagraphSources setObject:textFlow forKey:aBookID];
+                    [myCachedParagraphSourceCheckoutCounts addObject:aBookID];
+                    [paragraphSource release];
+                    return paragraphSource;
+                }
+            }
+        }
+    }
+    return nil;
+}
+
+- (void)checkInParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID
+{
+    NSMutableDictionary *myCachedParagraphSources = self.cachedParagraphSources;
+    @synchronized(myCachedParagraphSources) {
+        NSCountedSet *myCachedParagraphSourceCheckoutCounts = self.cachedParagraphSourceCheckoutCounts;
+        NSUInteger count = [myCachedParagraphSourceCheckoutCounts countForObject:aBookID];
+        if(count == 0) {
+            NSLog(@"Warning! Unexpected checkin of non-checked-out paragraph source");
+        } else {
+            [myCachedParagraphSourceCheckoutCounts removeObject:aBookID];
+            if (count == 1) {
+                NSLog(@"Releasing cached paragraph source for book with ID %@", aBookID);
+                [myCachedParagraphSources removeObjectForKey:aBookID];
+                if(myCachedParagraphSourceCheckoutCounts.count == 0) {
+                    // May as well release the set.
+                    self.cachedParagraphSourceCheckoutCounts = nil;
+                }
+            }
+        }
+    }
 }
 
 @end

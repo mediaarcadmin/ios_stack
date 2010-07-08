@@ -15,7 +15,6 @@
 
 - (void)dealloc
 {
-    [[BlioBookManager sharedBookManager] ePubBookIsDeallocingForBookWithID:self.blioBookID];
     self.blioBookID = nil;
     
     [super dealloc];

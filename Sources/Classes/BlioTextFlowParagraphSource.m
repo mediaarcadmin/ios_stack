@@ -17,6 +17,7 @@
 
 @interface BlioTextFlowParagraphSource ()
 
+@property (nonatomic, retain) BlioTextFlow *textFlow;
 @property (nonatomic, assign) NSUInteger currentFlowTreeSection;
 @property (nonatomic, retain) BlioTextFlowFlowTree *currentFlowTree;
 
@@ -30,20 +31,21 @@
 @synthesize currentFlowTreeSection;
 @synthesize currentFlowTree;
 
-- (id)initWithTextFlow:(BlioTextFlow *)textFlowIn
+- (id)initWithBookID:(NSManagedObjectID *)bookID
 {
     if((self = [super init])) {
-        textFlow = [textFlowIn retain];
+        textFlow = [[[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:bookID] retain];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[BlioBookManager sharedBookManager] paragraphSourceIsDeallocingForBookWithID:self.textFlow.bookID];
-    
+    if(textFlow) {
+        [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:textFlow.bookID];
+        [textFlow release];
+    }
     free(sectionScaleFactors);
-    [textFlow release];
     [currentFlowTree release];
     
     [super dealloc];

@@ -7,15 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 #import "BlioParagraphSource.h"
 
 @class BlioEPubBook, EucBUpePageLayoutController;
 
 @interface BlioEPubParagraphSource : NSObject <BlioParagraphSource> {
+    NSManagedObjectID *_bookID;
     BlioEPubBook *_bUpeBook;
     EucBUpePageLayoutController *_layoutController;
 }
 
-- (id)initWithEPubBook:(BlioEPubBook *)bUpeBook;
+- (id)initWithBookID:(NSManagedObjectID *)bookID;
 
 @end

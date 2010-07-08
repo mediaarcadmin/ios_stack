@@ -32,9 +32,12 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end
 
-@class BlioTextFlow;
+@class BlioTextFlow, BlioEPubBook, BlioParagraphSource;
 
 @interface BlioBook : NSManagedObject <BlioBookText> {
+    BlioTextFlow *textFlow;
+    BlioEPubBook *ePubBook;
+    id<BlioParagraphSource> paragraphSource;
 }
 
 // Core data attribute-backed dynamic properties

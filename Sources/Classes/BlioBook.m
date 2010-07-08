@@ -43,8 +43,9 @@
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
 
-- (void)dealloc {
-    
+- (void)dealloc {    
+    [self flushCaches];
+
     [super dealloc];
 }
 
@@ -101,15 +102,44 @@
 }
 
 - (BlioTextFlow *)textFlow {
-    return [[BlioBookManager sharedBookManager] textFlowForBookWithID:self.objectID];
+    if(!textFlow) {
+        textFlow = [[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:self.objectID];
+    }
+    return textFlow;
 }
 
 - (BlioEPubBook *)ePubBook {
-    return [[BlioBookManager sharedBookManager] ePubBookForBookWithID:self.objectID];
+    if(!ePubBook) {
+        ePubBook = [[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:self.objectID];
+    }
+    return ePubBook;
 }
 
 - (id<BlioParagraphSource>)paragraphSource {
-    return [[BlioBookManager sharedBookManager] paragraphSourceForBookWithID:self.objectID];
+    if(!paragraphSource) {
+        paragraphSource = [[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.objectID];
+    }
+    return paragraphSource;
+}
+
+- (void)flushCaches
+{
+    BlioBookManager *manager = [BlioBookManager sharedBookManager];
+    if(textFlow) {
+        [textFlow release];
+        textFlow = nil;
+        [manager checkInTextFlowForBookWithID:self.objectID];
+    }
+    if(ePubBook) {
+        [ePubBook release];
+        ePubBook = nil;
+        [manager checkInEPubBookForBookWithID:self.objectID];
+    }
+    if(paragraphSource) {
+        [paragraphSource release];
+        paragraphSource = nil;
+        [manager checkInParagraphSourceForBookWithID:self.objectID];
+    }
 }
 
 - (NSString *)bookCacheDirectory {
@@ -180,12 +210,6 @@
 - (UIImage *)coverThumbForList {
     NSData *imageData = [self manifestDataForKey:@"listThumbFilename"];
     return [UIImage imageWithData:imageData];
-}
-
-
-- (void)flushCaches
-{
-    // Nothing to do any more!
 }
 
 - (NSArray *)sortedBookmarks {

@@ -41,25 +41,23 @@
 // Public methods - however, generally, using the accessors in BlioBook for 
 // these if you already have a BlioBook instance is preferrable:
 
-// Returns a thread-safe object; May be passed between threads.
-- (BlioTextFlow *)textFlowForBookWithID:(NSManagedObjectID *)aBookID;
+// A check-out must be balanced with a check-in.
 
 // Returns a thread-safe object; May be passed between threads.
-- (BlioEPubBook *)ePubBookForBookWithID:(NSManagedObjectID *)aBookID;
+- (BlioTextFlow *)checkOutTextFlowForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInTextFlowForBookWithID:(NSManagedObjectID *)aBookID;
 
 // Returns a thread-safe object; May be passed between threads.
-- (id <BlioParagraphSource>)paragraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
+- (BlioEPubBook *)checkOutEPubBookForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInEPubBookForBookWithID:(NSManagedObjectID *)aBookID;
+
+// Returns a thread-safe object; May be passed between threads.
+- (id <BlioParagraphSource>)checkOutParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
 
 /*
-- (BlioXPSProvider *)xpsProviderForBookWithID:(NSManagedObjectID *)aBookID;
-*/
-
-- (void)textFlowIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
-- (void)ePubBookIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
-- (void)paragraphSourceIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
-
-/*
-- (void)xpsProviderIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
+- (BlioXPSProvider *)XPSProviderForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInXPSProvideForBookWithID:(NSManagedObjectID *)aBookID;
 */
 
 @end

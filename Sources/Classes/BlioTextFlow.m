@@ -220,8 +220,6 @@
 @synthesize bookID;
 
 - (void)dealloc {
-    [[BlioBookManager sharedBookManager] textFlowIsDeallocingForBookWithID:self.bookID];
-    
     self.pageRanges = nil;
     self.sections = nil;
     [pageBlocksCacheLock release];
