@@ -151,7 +151,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize book, scrollView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
+@synthesize book, scrollView, containerView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
@@ -193,6 +193,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     self.xpsPath = nil;
     [self.contentView abortRendering];
     self.contentView = nil;
+    self.containerView = nil;
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
     
@@ -317,8 +318,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.scrollView = aScrollView;
         [aScrollView release];
         
+        UIView *aContainerView = [[UIView alloc] initWithFrame:self.bounds];
+        [self.scrollView addSubview:aContainerView];
+        aContainerView.backgroundColor = [UIColor clearColor];
+        aContainerView.autoresizesSubviews = NO;
+        self.containerView = aContainerView;
+        [aContainerView release];
+        
         BlioLayoutContentView *aContentView = [[BlioLayoutContentView alloc] initWithFrame:self.bounds];
-        [self.scrollView addSubview:aContentView];
+        [self.containerView addSubview:aContentView];
         aContentView.renderingDelegate = self;
         aContentView.backgroundColor = [UIColor clearColor];
         aContentView.clipsToBounds = NO;
@@ -515,10 +523,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     [self setFrame:newFrame];
+    [self.contentView setFrame:newFrame];
     [self.scrollView setZoomScale:1];
     
     CGSize newContentSize = [self currentContentSize];
-    [self.contentView setFrame:CGRectMake(0,0, newFrame.size.width, ceilf(newContentSize.height))];
+    [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
     [self.scrollView setContentSize:newContentSize];
     [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:1]];
     
@@ -1380,7 +1389,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [self.contentView addPage:targetPage - 1 retainPages:nil];
         [self.contentView addPage:targetPage + 1 retainPages:nil];
 
-        [self.scrollView setContentSize:[self currentContentSize]];
+        CGSize newContentSize = [self currentContentSize];
+        [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+        [self.scrollView setContentSize:newContentSize];
         [self.scrollView setContentOffset:[self contentOffsetToCenterPage:targetPage zoomScale:self.scrollView.zoomScale]]; 
         self.pageNumber = targetPage;
         [self didChangeValueForKey:@"pageNumber"];
@@ -1399,7 +1410,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (shouldZoomOut) {
         [self.scrollView setMinimumZoomScale:kBlioPDFGoToZoomTransitionScale];
         [self.scrollView setZoomScale:kBlioPDFGoToZoomTransitionScale];
-        [self.scrollView setContentSize:[self currentContentSize]];
+        CGSize newContentSize = [self currentContentSize];
+        [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+        [self.scrollView setContentSize:newContentSize];
         [self.scrollView setContentOffset:[self contentOffsetToCenterPage:fromPage zoomScale:kBlioPDFGoToZoomTransitionScale]]; 
     } else {
         [UIView setAnimationDuration:0.0f];
@@ -1438,7 +1451,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [self.scrollView setMinimumZoomScale:1];
     [self.scrollView setZoomScale:targetZoomScale];
-    [self.scrollView setContentSize:[self currentContentSize]];
+    CGSize newContentSize = [self currentContentSize];
+    [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+    [self.scrollView setContentSize:newContentSize];
     if (CGPointEqualToPoint(targetContentOffset, CGPointZero))
         [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale]]; 
     else
@@ -1488,7 +1503,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Container UIScrollView Delegate
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
-    return self.contentView;
+    return self.containerView;
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)aScrollView withView:(UIView *)view atScale:(float)scale {
@@ -1536,7 +1551,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger currentPageNumber;
     
     if (sender.zoomScale != lastZoomScale) {
-        [sender setContentSize:[self currentContentSize]];
+        CGSize newContentSize = [self currentContentSize];
+        [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+        [sender setContentSize:newContentSize];
         self.lastZoomScale = sender.zoomScale;
         
         // If we are zooming, don't update the page number - (contentOffset gets set to zero so it wouldn't work)
@@ -1776,7 +1793,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
             
             [self.scrollView setZoomScale:zoomScale];
-            [self.scrollView setContentSize:[self currentContentSize]];
+            CGSize newContentSize = [self currentContentSize];
+            [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+            [self.scrollView setContentSize:newContentSize];
             [self.scrollView setContentOffset:newContentOffset];
             self.lastZoomScale = self.scrollView.zoomScale;
             [UIView commitAnimations];
@@ -1806,7 +1825,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
             
             [self.scrollView setZoomScale:zoomScale];
-            [self.scrollView setContentSize:[self currentContentSize]];
+            CGSize newContentSize = [self currentContentSize];
+            [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+            [self.scrollView setContentSize:newContentSize];
             [self.scrollView setContentOffset:newContentOffset];
             self.lastZoomScale = self.scrollView.zoomScale;
             [UIView commitAnimations];
@@ -1833,7 +1854,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [self.scrollView setZoomScale:1];
-    [self.scrollView setContentSize:[self currentContentSize]];
+    CGSize newContentSize = [self currentContentSize];
+    [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+    [self.scrollView setContentSize:newContentSize];
     [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:1]]; 
     self.lastZoomScale = 1;
     [UIView commitAnimations];
@@ -1848,7 +1871,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [self.scrollView setZoomScale:2.0f];
-    [self.scrollView setContentSize:[self currentContentSize]];
+    CGSize newContentSize = [self currentContentSize];
+    [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+    [self.scrollView setContentSize:newContentSize];
     
     CGFloat pageWidth = CGRectGetWidth(self.bounds) * self.scrollView.zoomScale;
     CGFloat pageWidthExpansion = pageWidth - CGRectGetWidth(self.bounds);
@@ -2034,7 +2059,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     // If we are querying the accessibility mode, force us to zoom out to page
         if ([self.scrollView zoomScale] != kBlioPDFGoToZoomTargetScale) {
             [self.scrollView setZoomScale:kBlioPDFGoToZoomTargetScale animated:NO];
-            [self.scrollView setContentSize:[self currentContentSize]];
+            CGSize newContentSize = [self currentContentSize];
+            [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+            [self.scrollView setContentSize:newContentSize];
         }
         
         CGPoint centeredOffset = [self contentOffsetToCenterPage:self.currentPageLayer.pageNumber zoomScale:kBlioPDFGoToZoomTargetScale];

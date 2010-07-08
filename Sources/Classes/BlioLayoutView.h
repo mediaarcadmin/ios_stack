@@ -56,6 +56,7 @@ typedef enum BlioLayoutPageMode {
     BlioBook *book;
     CGPDFDocumentRef pdf;
     BlioLayoutScrollView *scrollView;
+    UIView *containerView;
     BlioLayoutContentView *contentView;
     NSInteger visiblePageIndex;
     BlioLayoutPageLayer *currentPageLayer;
@@ -95,6 +96,7 @@ typedef enum BlioLayoutPageMode {
 
 @property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, retain) BlioLayoutScrollView *scrollView;
+@property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) BlioLayoutContentView *contentView;
 @property (nonatomic, retain) BlioLayoutPageLayer *currentPageLayer;
 @property (nonatomic) BOOL disableScrollUpdating;
