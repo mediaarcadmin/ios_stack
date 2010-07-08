@@ -69,7 +69,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-	NSString *title;
+	NSString *title = nil;
 	switch (section)
 	{
 		case 0:
