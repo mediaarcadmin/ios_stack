@@ -13,6 +13,7 @@
 #import "BlioParagraphSource.h"
 #import "BlioTextFlowParagraphSource.h"
 #import "BlioEPubParagraphSource.h"
+#import "BlioXPSProvider.h"
 #import <pthread.h>
 
 @interface BlioBookManager ()
@@ -20,6 +21,7 @@
 @property (nonatomic, retain) NSMutableDictionary *cachedTextFlows;
 @property (nonatomic, retain) NSMutableDictionary *cachedEPubBooks;
 @property (nonatomic, retain) NSMutableDictionary *cachedParagraphSources;
+@property (nonatomic, retain) NSMutableDictionary *cachedXpsProviders;
 
 @end
 
@@ -30,6 +32,7 @@
 @synthesize cachedTextFlows;
 @synthesize cachedEPubBooks;
 @synthesize cachedParagraphSources;
+@synthesize cachedXpsProviders;
 
 static BlioBookManager *sSharedBookManager = nil;
 static pthread_key_t sManagedObjectContextKey;
@@ -40,6 +43,7 @@ static pthread_key_t sManagedObjectContextKey;
         self.cachedTextFlows = [NSMutableDictionary dictionary];
         self.cachedEPubBooks = [NSMutableDictionary dictionary];
         self.cachedParagraphSources = [NSMutableDictionary dictionary];
+        self.cachedXpsProviders = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -130,6 +134,33 @@ static pthread_key_t sManagedObjectContextKey;
 {
     NSLog(@"Releasing cached text flow for book with ID %@", aBookID);
     [self.cachedTextFlows removeObjectForKey:aBookID];
+}
+
+- (BlioXPSProvider *)xpsProviderForBookWithID:(NSManagedObjectID *)aBookID
+{
+    NSValue *previouslyCachedXpsProvider = [self.cachedXpsProviders objectForKey:aBookID];
+    if(previouslyCachedXpsProvider) {
+        NSLog(@"Returning cached XpsProvider for book with ID %@", aBookID);
+        return [[[previouslyCachedXpsProvider nonretainedObjectValue] retain] autorelease];
+    } else {
+        BlioBook *book = [self bookWithID:aBookID];
+        if(book.xpsPath) {
+            BlioXPSProvider *xpsProvider = [[BlioXPSProvider alloc] initWithBookID:aBookID];
+            if(xpsProvider) {
+                NSLog(@"Creating and caching xps provider for book with ID %@", aBookID);
+                [self.cachedXpsProviders setObject:[NSValue valueWithNonretainedObject:xpsProvider]
+                                         forKey:aBookID];
+                return [xpsProvider autorelease];
+            }
+        }
+    }
+    return nil;
+}
+
+- (void)xpsProviderIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID
+{
+    NSLog(@"Releasing cached xps provider for book with ID %@", aBookID);
+    [self.cachedXpsProviders removeObjectForKey:aBookID];
 }
 
 

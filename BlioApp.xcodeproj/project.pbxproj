@@ -492,6 +492,8 @@
 		C9DA71B311E5D02500F584A1 /* paper-neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */; };
 		C9DA71B411E5D02700F584A1 /* paper-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436F11CAC178005A2219 /* paper-white@2x.png */; };
 		C9DA71B511E5D02700F584A1 /* PDFs in Resources */ = {isa = PBXBuildFile; fileRef = C94D27B510DBCF4C00F30AFE /* PDFs */; };
+		C9DA72B911E60C9400F584A1 /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
+		C9DA72BA11E60C9400F584A1 /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
 		C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E1FA24110EE4D500999587 /* BlioTextFlow.m */; };
 		C9E1FAAA110F26DB00999587 /* TextFlows in Resources */ = {isa = PBXBuildFile; fileRef = C9E1FAA7110F26DB00999587 /* TextFlows */; };
 		C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
@@ -1176,6 +1178,8 @@
 		C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioUIImageAdditions.m; sourceTree = "<group>"; };
 		C9D8A57810F2289D00FD5F22 /* icon-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-lock.png"; sourceTree = "<group>"; };
 		C9D8A57910F2289D00FD5F22 /* icon-finger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-finger.png"; sourceTree = "<group>"; };
+		C9DA72B711E60C9400F584A1 /* BlioXPSProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioXPSProvider.h; sourceTree = "<group>"; };
+		C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioXPSProvider.m; sourceTree = "<group>"; };
 		C9E1FA23110EE4D500999587 /* BlioTextFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlow.h; sourceTree = "<group>"; };
 		C9E1FA24110EE4D500999587 /* BlioTextFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlow.m; sourceTree = "<group>"; };
 		C9E1FAA7110F26DB00999587 /* TextFlows */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TextFlows; sourceTree = "<group>"; };
@@ -1999,6 +2003,8 @@
 				A3AF018C11C26974004DAB03 /* BlioXpsClient.h */,
 				A3AF018D11C26974004DAB03 /* BlioXpsClient.m */,
 				C98CCAAB119D8352002E9A8E /* XpsSdk.h */,
+				C9DA72B711E60C9400F584A1 /* BlioXPSProvider.h */,
+				C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */,
 			);
 			name = XPS;
 			sourceTree = "<group>";
@@ -2698,6 +2704,7 @@
 				7DCD8E5511E32EFF00BA3255 /* BlioBookManager.m in Sources */,
 				7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */,
 				7DF429D311E4EC5B00B8227E /* BlioNSObjectAdditions.m in Sources */,
+				C9DA72B911E60C9400F584A1 /* BlioXPSProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2797,6 +2804,7 @@
 				7DCD8E5411E32EFF00BA3255 /* BlioBookManager.m in Sources */,
 				7DCD8FB811E3452800BA3255 /* BlioEPubBook.m in Sources */,
 				7DF429D211E4EC5B00B8227E /* BlioNSObjectAdditions.m in Sources */,
+				C9DA72BA11E60C9400F584A1 /* BlioXPSProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
