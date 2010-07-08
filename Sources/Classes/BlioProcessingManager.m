@@ -6,6 +6,7 @@
 //  Copyright 2010 BitWink. All rights reserved.
 //
 
+#import "BlioBookManager.h"
 #import "BlioProcessingManager.h"
 #import "BlioProcessingStandardOperations.h"
 #import "BlioFlowView.h"
@@ -19,21 +20,18 @@
 
 @implementation BlioProcessingManager
 
-@synthesize managedObjectContext, preAvailabilityQueue, postAvailabilityQueue;
+@synthesize preAvailabilityQueue, postAvailabilityQueue;
 
 - (void)dealloc {
     [self.preAvailabilityQueue cancelAllOperations];
     [self.postAvailabilityQueue cancelAllOperations];
     self.preAvailabilityQueue = nil;
     self.postAvailabilityQueue = nil;
-    self.managedObjectContext = nil;
     [super dealloc];
 }
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext {
+- (id)init{
     if ((self = [super init])) {
-        self.managedObjectContext = aManagedObjectContext;
-        
         NSOperationQueue *aPreAvailabilityQueue = [[NSOperationQueue alloc] init];
 		[aPreAvailabilityQueue setMaxConcurrentOperationCount:3];
         self.preAvailabilityQueue = aPreAvailabilityQueue;
@@ -66,7 +64,7 @@
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverURL:(NSURL *)coverURL 
                      ePubURL:(NSURL *)ePubURL pdfURL:(NSURL *)pdfURL  xpsURL:(NSURL *)xpsURL textFlowURL:(NSURL *)textFlowURL 
                 audiobookURL:(NSURL *)audiobookURL sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
-    NSManagedObjectContext *moc = self.managedObjectContext;
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (nil != moc) {
         
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -183,7 +181,7 @@
 //	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
-    NSManagedObjectContext *moc = self.managedObjectContext;
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (moc == nil) {
 		NSLog(@"WARNING: enqueueing book attempted while Processing Manager MOC == nil!");
 		return;
@@ -259,7 +257,6 @@
 			coverOp.sourceID = sourceID;
 			coverOp.sourceSpecificID = sourceSpecificID;
 			coverOp.localFilename = [aBook manifestPathForKey:coverOp.filenameKey];
-			coverOp.storeCoordinator = [moc persistentStoreCoordinator];
 			coverOp.cacheDirectory = cacheDir;
 			coverOp.tempDirectory = tempDir;
 			[coverOp setQueuePriority:NSOperationQueuePriorityHigh];
@@ -270,7 +267,6 @@
 			thumbsOp.bookID = bookID;
 			thumbsOp.sourceID = sourceID;
 			thumbsOp.sourceSpecificID = sourceSpecificID;
-			thumbsOp.storeCoordinator = [moc persistentStoreCoordinator];
 			thumbsOp.cacheDirectory = cacheDir;
 			thumbsOp.tempDirectory = tempDir;
 			[thumbsOp addDependency:coverOp];
@@ -303,7 +299,6 @@
 				ePubOp.sourceID = sourceID;
 				ePubOp.sourceSpecificID = sourceSpecificID;
 				ePubOp.localFilename = [aBook manifestPathForKey:ePubOp.filenameKey];
-				ePubOp.storeCoordinator = [moc persistentStoreCoordinator];
 				ePubOp.cacheDirectory = cacheDir;
 				ePubOp.tempDirectory = tempDir;
 				[self.preAvailabilityQueue addOperation:ePubOp];
@@ -321,7 +316,6 @@
 				preAvailOp.bookID = bookID;
 				preAvailOp.sourceID = sourceID;
 				preAvailOp.sourceSpecificID = sourceSpecificID;
-				preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
 				preAvailOp.cacheDirectory = cacheDir;
 				preAvailOp.tempDirectory = tempDir;
 				if (ePubOp && usedPreExistingOperation == NO) [preAvailOp addDependency:ePubOp];
@@ -357,7 +351,6 @@
 				pdfOp.sourceID = sourceID;
 				pdfOp.sourceSpecificID = sourceSpecificID;
 				pdfOp.localFilename = [aBook manifestPathForKey:pdfOp.filenameKey];
-				pdfOp.storeCoordinator = [moc persistentStoreCoordinator];
 				pdfOp.cacheDirectory = cacheDir;
 				pdfOp.tempDirectory = tempDir;
 				[self.preAvailabilityQueue addOperation:pdfOp];
@@ -389,7 +382,6 @@
 				textFlowOp.sourceID = sourceID;
 				textFlowOp.sourceSpecificID = sourceSpecificID;
 				textFlowOp.localFilename = [aBook manifestPathForKey:textFlowOp.filenameKey];
-				textFlowOp.storeCoordinator = [moc persistentStoreCoordinator];
 				textFlowOp.cacheDirectory = cacheDir;
 				textFlowOp.tempDirectory = tempDir;
 				[self.preAvailabilityQueue addOperation:textFlowOp];
@@ -409,7 +401,6 @@
 				preAvailOp.bookID = bookID;
 				preAvailOp.sourceID = sourceID;
 				preAvailOp.sourceSpecificID = sourceSpecificID;
-				preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
 				preAvailOp.cacheDirectory = cacheDir;
 				preAvailOp.tempDirectory = tempDir;
 				if (textFlowOp) [preAvailOp addDependency:textFlowOp];
@@ -429,7 +420,6 @@
 			BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!preExist || preExist.isCancelled) {
 				preAvailOp.bookID = bookID;
-				preAvailOp.storeCoordinator = [moc persistentStoreCoordinator];
 				preAvailOp.cacheDirectory = cacheDir;
 				preAvailOp.tempDirectory = tempDir;
 				for(BlioProcessingOperation *beforeOp in newTextFlowPreAvailOps) {
@@ -465,7 +455,6 @@
 				audiobookOp.sourceID = sourceID;
 				audiobookOp.sourceSpecificID = sourceSpecificID;
 				audiobookOp.localFilename = [aBook manifestPathForKey:audiobookOp.filenameKey];
-				audiobookOp.storeCoordinator = [moc persistentStoreCoordinator];
 				audiobookOp.cacheDirectory = cacheDir;
 				audiobookOp.tempDirectory = tempDir;
 				[self.preAvailabilityQueue addOperation:audiobookOp];
@@ -501,7 +490,6 @@
 				paidBookOp.sourceID = sourceID;
 				paidBookOp.sourceSpecificID = sourceSpecificID;
 				paidBookOp.localFilename = [aBook manifestPathForKey:paidBookOp.filenameKey];
-				paidBookOp.storeCoordinator = [moc persistentStoreCoordinator];
 				paidBookOp.cacheDirectory = cacheDir;
 				paidBookOp.tempDirectory = tempDir;
 				[self.preAvailabilityQueue addOperation:paidBookOp];
@@ -518,7 +506,6 @@
 			licenseOp.bookID = bookID;
 			licenseOp.sourceID = sourceID;
 			licenseOp.sourceSpecificID = sourceSpecificID;
-			licenseOp.storeCoordinator = [moc persistentStoreCoordinator];
 			licenseOp.cacheDirectory = cacheDir;
 			licenseOp.tempDirectory = tempDir;
 			if (paidBookOp && usedPreExistingOperation == NO) [licenseOp addDependency:paidBookOp];
@@ -538,7 +525,6 @@
 	completeOp.bookID = bookID;
 	completeOp.sourceID = sourceID;
 	completeOp.sourceSpecificID = sourceSpecificID;
-	completeOp.storeCoordinator = [moc persistentStoreCoordinator];
 	completeOp.cacheDirectory = cacheDir;
 	completeOp.tempDirectory = tempDir;
 	
@@ -563,7 +549,7 @@
 }
     
 - (void) resumeProcessing {
-    NSManagedObjectContext *moc = [self managedObjectContext];
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
 	// resume previous processing operations
 	
@@ -593,7 +579,7 @@
 	// end resume previous processing operations
 }
 -(void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource {
-	NSManagedObjectContext *moc = [self managedObjectContext];
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
 	// resume previous processing operations
 	
@@ -641,7 +627,7 @@
 
 }
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
-	NSManagedObjectContext *moc = [self managedObjectContext];
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
@@ -664,7 +650,7 @@
 }
 - (void)pauseProcessingForBook:(BlioBook*)aBook {
 	NSLog(@"BlioProcessingManager pauseProcessingForBook entered");
-    NSManagedObjectContext *moc = self.managedObjectContext;
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (moc == nil) {
 		NSLog(@"WARNING: pause processing attempted while Processing Manager MOC == nil!");
 		return;
@@ -677,7 +663,7 @@
 	}			
 }
 - (void)stopProcessingForBook:(BlioBook*)aBook {
-    NSManagedObjectContext *moc = self.managedObjectContext;
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (moc == nil) {
 		NSLog(@"WARNING: stop processing for book attempted while Processing Manager MOC == nil!");
 		return;
@@ -693,7 +679,7 @@
 	// if book is processing, stop all associated operations
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) [self stopProcessingForBook:aBook];
 	
-    NSManagedObjectContext *moc = self.managedObjectContext;
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	NSError * error;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	

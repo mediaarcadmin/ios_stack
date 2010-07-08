@@ -10,6 +10,7 @@
 #import "BlioProcessing.h"
 
 #import "BlioBook.h"
+#import "BlioBookManager.h"
 #import "BlioFlowEucBook.h"
 
 #import <libEucalyptus/EucBUpeBook.h>
@@ -86,16 +87,7 @@
     // Create a EucBook for the paginator.
     EucBUpeLocalBookReference<EucBook> *eucBook = nil;
     if([self getBookManifestPathForKey:@"textFlowFilename"]) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-        NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] init]; 
-        [moc setPersistentStoreCoordinator:self.storeCoordinator]; 
-        
-        eucBook = [[BlioFlowEucBook alloc] initWithBlioBook:(BlioBook *)[moc objectWithID:self.bookID]];
-        [moc release];
-        
-        [pool drain];
-    //} else if([self getBookValueForKey:@"epubFilename"]) {
+        eucBook = [[BlioFlowEucBook alloc] initWithBookID:self.bookID];
     } else if([self getBookManifestPathForKey:@"epubFilename"]) {
         eucBook = [[EucBUpeBook alloc] initWithPath:epubPath];
     }

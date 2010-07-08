@@ -12,7 +12,7 @@
 #import "BlioParagraphSource.h"
 #import "BlioBookmark.h"
 
-@class EucBUpeBook;
+@class BlioEPubBook;
 
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
@@ -35,9 +35,6 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 @class BlioTextFlow;
 
 @interface BlioBook : NSManagedObject <BlioBookText> {
-    BlioTextFlow *textFlow;
-    EucBUpeBook *ePubBook;
-    id<BlioParagraphSource> paragraphSource;
 }
 
 // Core data attribute-backed dynamic properties
@@ -60,10 +57,10 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 @property (nonatomic, assign, readonly) NSString *timingIndicesPath;
 @property (nonatomic, assign, readonly) BOOL audioRights;
 
-// Lazily instantiated convenience accessors
+// Lazily convenience accessors
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
-@property (nonatomic, retain, readonly) EucBUpeBook *ePubBook;
+@property (nonatomic, retain, readonly) BlioEPubBook *ePubBook;
 @property (nonatomic, retain, readonly) id<BlioParagraphSource> paragraphSource;
 
 // Core data attribute-backed convenience accessors
@@ -91,6 +88,7 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range;
 
 - (void)setManifestValue:(id)value forKey:(NSString *)key;
+- (BOOL)hasManifestValueForKey:(NSString *)key;
 - (NSData *)manifestDataForKey:(NSString *)key;
 - (NSString *)manifestPathForKey:(NSString *)key;
 

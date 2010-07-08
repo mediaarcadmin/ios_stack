@@ -113,7 +113,6 @@
     NSMutableArray *sections;
     
     NSManagedObjectID *bookID;
-    NSPersistentStoreCoordinator *storeCoordinator;
     
     NSInteger pageIndexCache[kTextFlowPageBlocksCacheCapacity];
     NSArray *pageBlocksCache[kTextFlowPageBlocksCacheCapacity];
@@ -121,11 +120,9 @@
 }
 
 @property (nonatomic, retain, readonly) NSMutableArray *sections;
-@property (nonatomic, assign, readonly) BlioBook *book;
 @property (nonatomic, retain) NSManagedObjectID *bookID;
-@property (nonatomic, retain) NSPersistentStoreCoordinator *storeCoordinator;
 
-- (id)initWithPageRanges:(NSSet *)pageRangesSet storeCoordinator:(NSPersistentStoreCoordinator *)aStoreCoordinator bookID:(NSManagedObjectID *)aBookID;
+- (id)initWithBookID:(NSManagedObjectID *)aBookID;
 
 - (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex;
 - (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex;

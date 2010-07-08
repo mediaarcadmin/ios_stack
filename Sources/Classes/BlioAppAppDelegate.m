@@ -16,6 +16,7 @@
 // #import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioDrmManager.h"
+#import "BlioBookManager.h"
 #import <unistd.h>
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
@@ -115,10 +116,15 @@ tryAgain:
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
 	[self.internetReach startNotifer];
 	
+    NSPersistentStoreCoordinator *psc = [self persistentStoreCoordinator];
 	NSManagedObjectContext *moc = [self managedObjectContext];
-	
-    [libraryController setManagedObjectContext:moc];
-    [libraryController setProcessingDelegate:[self processingManager]];
+
+    BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+    bookManager.persistentStoreCoordinator = psc;
+    bookManager.managedObjectContextForCurrentThread = moc; // Use our managed object contest for calls that are made on the main thread.
+    
+    libraryController.managedObjectContext = moc;
+    libraryController.processingDelegate = self.processingManager;
 
 	[[BlioDrmManager getDrmManager] initialize];
 
@@ -395,7 +401,7 @@ static void *background_init_thread(void * arg) {
         return processingManager;
     }
 	
-    processingManager = [[BlioProcessingManager alloc] initWithManagedObjectContext:[self managedObjectContext]];
+    processingManager = [[BlioProcessingManager alloc] init];
    	
     return processingManager;
 }
