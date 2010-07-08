@@ -56,7 +56,7 @@
 - (void)checkInParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
 
 // Returns a thread-safe object; May be passed between threads.
-- (BlioXPSProvider *)xpsProviderForBookWithID:(NSManagedObjectID *)aBookID;
-- (void)xpsProviderIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
+- (BlioXPSProvider *)checkOutXPSProviderForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInXPSProviderForBookWithID:(NSManagedObjectID *)aBookID;
 
 @end

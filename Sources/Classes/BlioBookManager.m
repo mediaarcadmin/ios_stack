@@ -24,7 +24,8 @@
 @property (nonatomic, retain) NSCountedSet *cachedEPubBookCheckoutCounts;
 @property (nonatomic, retain) NSMutableDictionary *cachedParagraphSources;
 @property (nonatomic, retain) NSCountedSet *cachedParagraphSourceCheckoutCounts;
-@property (nonatomic, retain) NSMutableDictionary *cachedXpsProviders;
+@property (nonatomic, retain) NSMutableDictionary *cachedXPSProviders;
+@property (nonatomic, retain) NSCountedSet *cachedXPSProviderCheckoutCounts;
 
 @end
 
@@ -38,7 +39,8 @@
 @synthesize cachedEPubBookCheckoutCounts;
 @synthesize cachedParagraphSources;
 @synthesize cachedParagraphSourceCheckoutCounts;
-@synthesize cachedXpsProviders;
+@synthesize cachedXPSProviders;
+@synthesize cachedXPSProviderCheckoutCounts;
 
 static BlioBookManager *sSharedBookManager = nil;
 static pthread_key_t sManagedObjectContextKey;
@@ -49,7 +51,7 @@ static pthread_key_t sManagedObjectContextKey;
         self.cachedTextFlows = [NSMutableDictionary dictionary];
         self.cachedEPubBooks = [NSMutableDictionary dictionary];
         self.cachedParagraphSources = [NSMutableDictionary dictionary];
-        self.cachedXpsProviders = [NSMutableDictionary dictionary];
+        self.cachedXPSProviders = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -168,32 +170,6 @@ static pthread_key_t sManagedObjectContextKey;
     }
 }
 
-- (BlioXPSProvider *)xpsProviderForBookWithID:(NSManagedObjectID *)aBookID
-{
-    NSValue *previouslyCachedXpsProvider = [self.cachedXpsProviders objectForKey:aBookID];
-    if(previouslyCachedXpsProvider) {
-        NSLog(@"Returning cached XpsProvider for book with ID %@", aBookID);
-        return [[[previouslyCachedXpsProvider nonretainedObjectValue] retain] autorelease];
-    } else {
-        BlioBook *book = [self bookWithID:aBookID];
-        if(book.xpsPath) {
-            BlioXPSProvider *xpsProvider = [[BlioXPSProvider alloc] initWithBookID:aBookID];
-            if(xpsProvider) {
-                NSLog(@"Creating and caching xps provider for book with ID %@", aBookID);
-                [self.cachedXpsProviders setObject:[NSValue valueWithNonretainedObject:xpsProvider]
-                                         forKey:aBookID];
-                return [xpsProvider autorelease];
-            }
-        }
-    }
-    return nil;
-}
-
-- (void)xpsProviderIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID
-{
-    NSLog(@"Releasing cached xps provider for book with ID %@", aBookID);
-    [self.cachedXpsProviders removeObjectForKey:aBookID];
-}
 
 - (BlioEPubBook *)checkOutEPubBookForBookWithID:(NSManagedObjectID *)aBookID
 {
@@ -311,6 +287,60 @@ static pthread_key_t sManagedObjectContextKey;
                 if(myCachedParagraphSourceCheckoutCounts.count == 0) {
                     // May as well release the set.
                     self.cachedParagraphSourceCheckoutCounts = nil;
+                }
+            }
+        }
+    }
+}
+
+
+- (BlioXPSProvider *)checkOutXPSProviderForBookWithID:(NSManagedObjectID *)aBookID
+{
+    NSMutableDictionary *myCachedXPSProviders = self.cachedXPSProviders;
+    @synchronized(myCachedXPSProviders) {
+        BlioXPSProvider *previouslyCachedXPSProvider = [myCachedXPSProviders objectForKey:aBookID];
+        if(previouslyCachedXPSProvider) {
+            NSLog(@"Returning cached XPSProvider for book with ID %@", aBookID);
+            [self.cachedXPSProviderCheckoutCounts addObject:aBookID];
+            return previouslyCachedXPSProvider;
+        } else {
+            BlioBook *book = [self bookWithID:aBookID];
+            if(book.xpsPath) {
+                BlioXPSProvider *xpsProvider = [[BlioXPSProvider alloc] initWithBookID:aBookID];
+                if(xpsProvider) {
+                    NSLog(@"Creating and caching XPSProvider for book with ID %@", aBookID);
+                    NSCountedSet *myCachedXPSProviderCheckoutCounts = self.cachedXPSProviderCheckoutCounts;
+                    if(!myCachedXPSProviderCheckoutCounts) {
+                        myCachedXPSProviderCheckoutCounts = [NSCountedSet set];
+                        self.cachedXPSProviderCheckoutCounts = myCachedXPSProviderCheckoutCounts;
+                    }
+                    [myCachedXPSProviders setObject:xpsProvider forKey:aBookID];
+                    [myCachedXPSProviderCheckoutCounts addObject:aBookID];
+                    [xpsProvider release];
+                    return xpsProvider;
+                }
+            }
+        }
+    }
+    return nil;
+}
+
+- (void)checkInXPSProviderForBookWithID:(NSManagedObjectID *)aBookID
+{
+    NSMutableDictionary *myCachedXPSProviders = self.cachedXPSProviders;
+    @synchronized(myCachedXPSProviders) {
+        NSCountedSet *myCachedXPSProviderCheckoutCounts = self.cachedXPSProviderCheckoutCounts;
+        NSUInteger count = [myCachedXPSProviderCheckoutCounts countForObject:aBookID];
+        if(count == 0) {
+            NSLog(@"Warning! Unexpected checkin of non-checked-out XPSProvider");
+        } else {
+            [myCachedXPSProviderCheckoutCounts removeObject:aBookID];
+            if (count == 1) {
+                NSLog(@"Releasing cached XPSProvider for book with ID %@", aBookID);
+                [myCachedXPSProviders removeObjectForKey:aBookID];
+                if(myCachedXPSProviderCheckoutCounts.count == 0) {
+                    // May as well release the set.
+                    self.cachedXPSProviderCheckoutCounts = nil;
                 }
             }
         }

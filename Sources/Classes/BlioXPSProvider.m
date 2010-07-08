@@ -21,8 +21,6 @@
 @synthesize bookID;
 
 - (void)dealloc {
-    [[BlioBookManager sharedBookManager] xpsProviderIsDeallocingForBookWithID:self.bookID];
-    
     self.bookID = nil;
     
     [super dealloc];
