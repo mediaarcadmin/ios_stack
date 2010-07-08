@@ -153,7 +153,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize bookID, textFlow, scrollView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
+@synthesize bookID, textFlow, scrollView, containerView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
 @synthesize pdfPath, pdfData, lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
