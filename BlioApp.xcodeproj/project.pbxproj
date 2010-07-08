@@ -487,15 +487,11 @@
 		C9DA71AC11E5CFFA00F584A1 /* icon-speedread@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436B11CAC178005A2219 /* icon-speedread@2x.png */; };
 		C9DA71AD11E5CFFB00F584A1 /* icon-vault@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436C11CAC178005A2219 /* icon-vault@2x.png */; };
 		C9DA71AE11E5CFFC00F584A1 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D311C9155F00CFEB88 /* Icon@2x.png */; };
-		C9DA71AF11E5D00900F584A1 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
-		C9DA71B011E5D01000F584A1 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		C9DA71B111E5D01A00F584A1 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */; };
 		C9DA71B211E5D02500F584A1 /* paper-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436D11CAC178005A2219 /* paper-black@2x.png */; };
 		C9DA71B311E5D02500F584A1 /* paper-neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */; };
 		C9DA71B411E5D02700F584A1 /* paper-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436F11CAC178005A2219 /* paper-white@2x.png */; };
 		C9DA71B511E5D02700F584A1 /* PDFs in Resources */ = {isa = PBXBuildFile; fileRef = C94D27B510DBCF4C00F30AFE /* PDFs */; };
-		C9DA71BE11E5D28E00F584A1 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
-		C9DA71BF11E5D29300F584A1 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E1FA24110EE4D500999587 /* BlioTextFlow.m */; };
 		C9E1FAAA110F26DB00999587 /* TextFlows in Resources */ = {isa = PBXBuildFile; fileRef = C9E1FAA7110F26DB00999587 /* TextFlows */; };
 		C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
@@ -1266,8 +1262,6 @@
 				A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */,
 				DC5320DF11C09EF40042D3EA /* AudioToolbox.framework in Frameworks */,
 				C944EC0211C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */,
-				C9DA71BE11E5D28E00F584A1 /* libMobilityStaticFat.a in Frameworks */,
-				C9DA71BF11E5D29300F584A1 /* libBabTTSFat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1299,8 +1293,6 @@
 				C93317A211B53C560057E0BE /* libPlayReadyPK.a in Frameworks */,
 				DC5320E011C09EF40042D3EA /* AudioToolbox.framework in Frameworks */,
 				C944EC0311C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */,
-				C9DA71AF11E5D00900F584A1 /* libBabTTSFat.a in Frameworks */,
-				C9DA71B011E5D01000F584A1 /* libMobilityStaticFat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
