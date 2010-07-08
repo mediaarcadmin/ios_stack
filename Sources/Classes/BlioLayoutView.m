@@ -528,11 +528,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     [self setFrame:newFrame];
-    [self.contentView setFrame:newFrame];
     [self.scrollView setZoomScale:1];
     
     CGSize newContentSize = [self currentContentSize];
     [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
+    [self.contentView setFrame:CGRectMake(0,0, newFrame.size.width, ceilf(newContentSize.height))];
     [self.scrollView setContentSize:newContentSize];
     [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:1]];
     
