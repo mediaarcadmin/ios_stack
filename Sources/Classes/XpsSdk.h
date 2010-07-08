@@ -404,6 +404,15 @@ typedef struct {
 	const XPSCHAR *	uri[1];	///< list of component URIs.
 } UriList;
 
+/** @brief File within Zip package info
+*/
+typedef struct {
+
+	int compression_type; ///< compression type 8 = deflate, 0 = uncompressed
+	int length;				///< number of bytes 
+	void *pComponentData;	///< pointer to data for this component
+} XPS_FILE_PACKAGE_INFO;
+
 /** @brief Document contents information
 */
 typedef UriList DocumentContents;
@@ -1709,8 +1718,11 @@ XPSSDK int  XPS_inflateInit(void * v);
 XPSSDK int  XPS_inflateInit2(void * v,int wb);
 XPSSDK int XPS_inflateEnd(void * v);	
 
-XPSSDK int XPSCALL XPS_GetPackageDir(XPS_HANDLE handle,void **p);
+	
+XPSSDK int XPSCALL XPS_GetComponentInfo(XPS_HANDLE handle, XPSCHAR * uri, XPS_FILE_PACKAGE_INFO *pFilePackageInfo);
 
+XPSSDK int XPSCALL XPS_GetPackageDir(XPS_HANDLE handle,void **p);
+XPSSDK int XPSCALL XPS_RegisterDrmHandler(XPS_HANDLE handle, XPS_URI_PLUGIN_INFO *pUriInfo);
 /*@}*/		// apifunc
 
 #if defined __cplusplus
