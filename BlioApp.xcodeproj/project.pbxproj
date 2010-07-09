@@ -188,7 +188,6 @@
 		7DAA2FF911512A91006634CC /* libcss.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF501150F39A00430710 /* libcss.a */; };
 		7DAA30C411512B1C006634CC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
 		7DAA30C511512B1C006634CC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
-		7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F93F10F39FF60010DF0B /* logo-bevel.png */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
 		7DCD8E5411E32EFF00BA3255 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
@@ -367,7 +366,6 @@
 		C9AF19FC1147A772007D7AFC /* icon-play.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1C10F2891B008614FD /* icon-play.png */; };
 		C9AF19FD1147A772007D7AFC /* icon-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1D10F2891B008614FD /* icon-plus.png */; };
 		C9AF19FE1147A772007D7AFC /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1E10F2891B008614FD /* icon-search.png */; };
-		C9AF1A031147A772007D7AFC /* logo-bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F93F10F39FF60010DF0B /* logo-bevel.png */; };
 		C9AF1A041147A772007D7AFC /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		C9AF1A051147A772007D7AFC /* booktextureandshadowsubtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */; };
 		C9AF1A061147A772007D7AFC /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */; };
@@ -827,7 +825,6 @@
 		7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraph.m; sourceTree = "<group>"; };
 		7DAA30C311512B1C006634CC /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		7DB9F57C10F345450010DF0B /* BlioBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookView.h; sourceTree = "<group>"; };
-		7DB9F93F10F39FF60010DF0B /* logo-bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-bevel.png"; sourceTree = "<group>"; };
 		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
 		7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scrubber-icon.png"; sourceTree = "<group>"; };
 		7DCD8E5211E32EFF00BA3255 /* BlioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookManager.h; sourceTree = "<group>"; };
@@ -1482,7 +1479,6 @@
 				5590D316111C8E7D00CE0C4F /* roundedcorners.png */,
 				553E98FA1107B8E600FB309D /* speedread-thumb.png */,
 				7DB9F95210F3A08C0010DF0B /* logo-white.png */,
-				7DB9F93F10F39FF60010DF0B /* logo-bevel.png */,
 				55822F0310F286BB008614FD /* button-list.png */,
 				55822F0410F286BB008614FD /* button-grid.png */,
 				556D1D5A10F3BE580019315C /* Icon.png */,
@@ -2316,7 +2312,6 @@
 				55822F2210F2891B008614FD /* icon-play.png in Resources */,
 				55822F2310F2891B008614FD /* icon-plus.png in Resources */,
 				55822F2410F2891B008614FD /* icon-search.png in Resources */,
-				7DB9F94010F39FF60010DF0B /* logo-bevel.png in Resources */,
 				7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */,
 				555CAF2C10F3B943007B1885 /* booktextureandshadowsubtle.png in Resources */,
 				555CAF3D10F3B991007B1885 /* LibraryGridViewController.png in Resources */,
@@ -2485,7 +2480,6 @@
 				C9AF19FC1147A772007D7AFC /* icon-play.png in Resources */,
 				C9AF19FD1147A772007D7AFC /* icon-plus.png in Resources */,
 				C9AF19FE1147A772007D7AFC /* icon-search.png in Resources */,
-				C9AF1A031147A772007D7AFC /* logo-bevel.png in Resources */,
 				C9AF1A041147A772007D7AFC /* logo-white.png in Resources */,
 				C9AF1A051147A772007D7AFC /* booktextureandshadowsubtle.png in Resources */,
 				C9AF1A061147A772007D7AFC /* LibraryGridViewController.png in Resources */,

@@ -15,7 +15,11 @@
 + (UIImage *)imageWithString:(NSString *)string font:(UIFont *)font color:(UIColor *)color{
     CGSize size = [string sizeWithFont:font];
     
-    UIGraphicsBeginImageContext(size);
+    if(UIGraphicsBeginImageContextWithOptions) {
+        UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(size);
+    }
     [color set];
     [string drawInRect:CGRectIntegral(CGRectMake(0,0,size.width, size.height)) withFont:font];
     UIImage *retImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -34,7 +38,11 @@
     imageRect.origin.y = floor((combinedRect.size.height - imageRect.size.height)/2.0f);
     textRect = CGRectIntegral(textRect);
     imageRect = CGRectIntegral(imageRect);
-    UIGraphicsBeginImageContext(combinedRect.size);
+    if(UIGraphicsBeginImageContextWithOptions) {
+        UIGraphicsBeginImageContextWithOptions(combinedRect.size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(combinedRect.size);
+    }
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
     CGContextBeginTransparencyLayer(ctx, NULL);
@@ -52,7 +60,11 @@
 
 + (UIImage *)imageWithShadow:(UIImage *)image inset:(UIEdgeInsets)inset color:(UIColor *)color {
     CGRect imageRect = CGRectIntegral(CGRectMake(inset.left, inset.top, image.size.width + inset.right, image.size.height + (inset.top + inset.bottom)));
-    UIGraphicsBeginImageContext(imageRect.size);
+    if(UIGraphicsBeginImageContextWithOptions) {
+        UIGraphicsBeginImageContextWithOptions(imageRect.size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(imageRect.size);
+    }
     imageRect.size.width -= (inset.right);
     imageRect.size.height -= (inset.top + inset.bottom);
     imageRect = CGRectIntegral(imageRect);
@@ -71,7 +83,11 @@
     CGSize originalSize = image.size;
     CGSize newSize = originalSize;
     newSize.height++;
-    UIGraphicsBeginImageContext(newSize);
+    if(UIGraphicsBeginImageContextWithOptions) {
+        UIGraphicsBeginImageContextWithOptions(newSize, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(newSize);
+    }
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextSaveGState(context);
