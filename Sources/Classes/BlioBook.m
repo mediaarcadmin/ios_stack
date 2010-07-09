@@ -31,14 +31,6 @@
 @dynamic sourceSpecificID;
 @dynamic layoutPageEquivalentCount;
 @dynamic libraryPosition;
-
-// Legacy dynamic properties TODO: remove these
-//@dynamic coverFilename;
-//@dynamic epubFilename;
-//@dynamic pdfFilename;
-//@dynamic textFlowFilename;
-//@dynamic xpsFilename;
-
 @dynamic hasAudioRights;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
@@ -115,6 +107,13 @@
     return ePubBook;
 }
 
+- (BlioXPSProvider *)xpsProvider {
+    if(!xpsProvider) {
+        xpsProvider = [[[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:self.objectID] retain];
+    }
+    return xpsProvider;
+}
+
 - (id<BlioParagraphSource>)paragraphSource {
     if(!paragraphSource) {
         paragraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.objectID] retain];
@@ -139,6 +138,11 @@
         [paragraphSource release];
         paragraphSource = nil;
         [manager checkInParagraphSourceForBookWithID:self.objectID];
+    }
+    if(xpsProvider) {
+        [xpsProvider release];
+        xpsProvider = nil;
+        [manager checkInXPSProviderForBookWithID:self.objectID];
     }
 }
 

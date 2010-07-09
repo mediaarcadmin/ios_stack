@@ -12,7 +12,8 @@
 #import "BlioSelectableBookView.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucSelector.h>
-#import "XpsSdk.h"
+#import "BlioLayoutDataSource.h"
+#import "BlioXPSProvider.h"
 
 static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the go to animations to look right
 
@@ -34,24 +35,6 @@ typedef enum BlioLayoutPageMode {
 
 @end
 
-
-@protocol BlioLayoutDataSource
-@required
-
-@property(nonatomic, readonly) NSInteger pageCount;
-
-- (CGRect)cropRectForPage:(NSInteger)page;
-- (CGRect)mediaRectForPage:(NSInteger)page;
-- (CGFloat)dpiRatio;
-
-- (void)openDocumentIfRequired;
-- (void)closeDocumentIfRequired;
-- (void)closeDocument;
-
-- (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect;
-
-@end
-
 @interface BlioLayoutView : BlioSelectableBookView <BlioLayoutRenderingDelegate, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
     NSManagedObjectID *bookID;
     BlioTextFlow *textFlow;
@@ -70,8 +53,6 @@ typedef enum BlioLayoutPageMode {
     BOOL shouldZoomOut;
     CALayer *sharpLayer;
     EucSelector *selector;
-    NSString *pdfPath;
-    NSData *pdfData;
     NSDictionary *pageCropsCache;
     NSDictionary *viewTransformsCache;
     UIImage *checkerBoard;
@@ -89,9 +70,8 @@ typedef enum BlioLayoutPageMode {
     NSMutableArray *accessibilityElements;
     NSArray *previousAccessibilityElements;
     BOOL accessibilityRefreshRequired;
-    NSString *xpsPath;
-    RasterImageInfo *imageInfo;
-    XPS_HANDLE xpsHandle;
+    
+    BlioXPSProvider *xpsProvider;
     id<BlioLayoutDataSource> dataSource;
 }
 
@@ -106,12 +86,10 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic, retain) EucSelector *selector;
 @property (nonatomic, retain) NSDictionary *pageCropsCache;
 @property (nonatomic, retain) NSDictionary *viewTransformsCache;
-@property (nonatomic, retain) NSString *pdfPath;
 @property (nonatomic, retain) UIImage *checkerBoard;
 @property (nonatomic, retain) UIImage *shadowBottom;
 @property (nonatomic, retain) UIImage *shadowTop;
 @property (nonatomic, retain) UIImage *shadowLeft;
 @property (nonatomic, retain) UIImage *shadowRight;
-@property (nonatomic, retain) NSString *xpsPath;
 
 @end

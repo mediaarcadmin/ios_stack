@@ -1180,6 +1180,7 @@
 		C9D8A57910F2289D00FD5F22 /* icon-finger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-finger.png"; sourceTree = "<group>"; };
 		C9DA72B711E60C9400F584A1 /* BlioXPSProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioXPSProvider.h; sourceTree = "<group>"; };
 		C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioXPSProvider.m; sourceTree = "<group>"; };
+		C9DA75B511E71FA500F584A1 /* BlioLayoutDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutDataSource.h; sourceTree = "<group>"; };
 		C9E1FA23110EE4D500999587 /* BlioTextFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlow.h; sourceTree = "<group>"; };
 		C9E1FA24110EE4D500999587 /* BlioTextFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlow.m; sourceTree = "<group>"; };
 		C9E1FAA7110F26DB00999587 /* TextFlows */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TextFlows; sourceTree = "<group>"; };
@@ -2019,6 +2020,7 @@
 				C9985C02113E84E9009E5263 /* BlioLayoutScrollView.m */,
 				C9985D6E113EB0A2009E5263 /* BlioLayoutContentView.h */,
 				C9985D6F113EB0A2009E5263 /* BlioLayoutContentView.m */,
+				C9DA75B511E71FA500F584A1 /* BlioLayoutDataSource.h */,
 			);
 			name = LayoutView;
 			sourceTree = "<group>";

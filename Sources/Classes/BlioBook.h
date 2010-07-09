@@ -12,7 +12,7 @@
 #import "BlioParagraphSource.h"
 #import "BlioBookmark.h"
 
-@class BlioEPubBook;
+@class BlioEPubBook, BlioXPSProvider;
 
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
@@ -37,6 +37,7 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 @interface BlioBook : NSManagedObject <BlioBookText> {
     BlioTextFlow *textFlow;
     BlioEPubBook *ePubBook;
+    BlioXPSProvider *xpsProvider;
     id<BlioParagraphSource> paragraphSource;
 }
 
@@ -62,8 +63,11 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 
 // Lazily convenience accessors
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
+// These convenience acessors are not guranteed to exists after a memory warning
+// If you need to retain the result in your object use the checkout methods in BlioBookManager
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
 @property (nonatomic, retain, readonly) BlioEPubBook *ePubBook;
+@property (nonatomic, retain, readonly) BlioXPSProvider *xpsProvider;
 @property (nonatomic, retain, readonly) id<BlioParagraphSource> paragraphSource;
 
 // Core data attribute-backed convenience accessors

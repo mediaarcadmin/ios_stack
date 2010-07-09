@@ -39,7 +39,9 @@
 
 
 // Public methods - however, generally, using the accessors in BlioBook for 
-// these if you already have a BlioBook instance is preferrable:
+// these if you already have a BlioBook instance is preferrable. However if you wish to retain
+// the returned value then it should be checked out and checked back in to guarantee that a cacheFlush
+// doesn't remove it
 
 // A check-out must be balanced with a check-in.
 
