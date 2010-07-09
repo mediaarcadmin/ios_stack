@@ -39,24 +39,26 @@
 
 
 // Public methods - however, generally, using the accessors in BlioBook for 
-// these if you already have a BlioBook instance is preferrable:
+// these if you already have a BlioBook instance is preferrable. However if you wish to retain
+// the returned value then it should be checked out and checked back in to guarantee that a cacheFlush
+// doesn't remove it
+
+// A check-out must be balanced with a check-in.
 
 // Returns a thread-safe object; May be passed between threads.
-- (BlioTextFlow *)textFlowForBookWithID:(NSManagedObjectID *)aBookID;
+- (BlioTextFlow *)checkOutTextFlowForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInTextFlowForBookWithID:(NSManagedObjectID *)aBookID;
 
 // Returns a thread-safe object; May be passed between threads.
-- (BlioEPubBook *)ePubBookForBookWithID:(NSManagedObjectID *)aBookID;
+- (BlioEPubBook *)checkOutEPubBookForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInEPubBookForBookWithID:(NSManagedObjectID *)aBookID;
 
 // Returns a thread-safe object; May be passed between threads.
-- (id <BlioParagraphSource>)paragraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
+- (id <BlioParagraphSource>)checkOutParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID;
 
 // Returns a thread-safe object; May be passed between threads.
-- (BlioXPSProvider *)xpsProviderForBookWithID:(NSManagedObjectID *)aBookID;
-
-
-- (void)textFlowIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
-- (void)ePubBookIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
-- (void)paragraphSourceIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
-- (void)xpsProviderIsDeallocingForBookWithID:(NSManagedObjectID *)aBookID;
+- (BlioXPSProvider *)checkOutXPSProviderForBookWithID:(NSManagedObjectID *)aBookID;
+- (void)checkInXPSProviderForBookWithID:(NSManagedObjectID *)aBookID;
 
 @end

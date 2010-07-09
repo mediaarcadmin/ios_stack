@@ -32,9 +32,13 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end
 
-@class BlioTextFlow;
+@class BlioTextFlow, BlioEPubBook, BlioParagraphSource;
 
 @interface BlioBook : NSManagedObject <BlioBookText> {
+    BlioTextFlow *textFlow;
+    BlioEPubBook *ePubBook;
+    BlioXPSProvider *xpsProvider;
+    id<BlioParagraphSource> paragraphSource;
 }
 
 // Core data attribute-backed dynamic properties
@@ -59,6 +63,8 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 
 // Lazily convenience accessors
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
+// These convenience acessors are not guranteed to exists after a memory warning
+// If you need to retain the result in your object use the checkout methods in BlioBookManager
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
 @property (nonatomic, retain, readonly) BlioEPubBook *ePubBook;
 @property (nonatomic, retain, readonly) BlioXPSProvider *xpsProvider;

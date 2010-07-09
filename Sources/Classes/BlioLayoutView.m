@@ -17,7 +17,6 @@
 #import "BlioLayoutScrollView.h"
 #import "BlioLayoutContentView.h"
 #import "UIDevice+BlioAdditions.h"
-#import "BlioXPSProvider.h"
 
 @interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource> {
     NSData *data;
@@ -156,7 +155,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     self.delegate = nil;
     
-    self.bookID = nil;
+    self.accessibilityElements = nil;
+    self.previousAccessibilityElements = nil;
     self.textFlow = nil;
     self.scrollView = nil;
     self.currentPageLayer = nil;
@@ -181,8 +181,17 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
     
-    self.accessibilityElements = nil;
-    self.previousAccessibilityElements = nil;
+    if(textFlow) {
+        [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:textFlow.bookID];
+        [textFlow release];
+    }
+    
+    if(xpsProvider) {
+        [[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:xpsProvider.bookID];
+        [xpsProvider release];
+    }
+    
+    self.bookID = nil;
     
     [super dealloc];
 }
@@ -222,7 +231,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         // Initialization code
         isCancelled = NO;
         self.bookID = aBookID;
-        self.textFlow = aBook.textFlow;
+        
+        // Prefer the checkout over calling [aBook textFlow] because we wat to retain the result
+        textFlow = [[[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:self.bookID] retain];
+        
         self.clearsContextBeforeDrawing = NO; // Performance optimisation;
         self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];    
         self.autoresizesSubviews = YES;
@@ -238,7 +250,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         accessibilityRefreshRequired = YES;
         
         if ([aBook xpsPath]) {
-            self.dataSource = [aBook xpsProvider];
+            // Prefer the checkout over calling [aBook xpsProvider] because we wat to retain the result
+            xpsProvider = [[[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:self.bookID] retain];
+            self.dataSource = xpsProvider;
         } else if ([aBook pdfPath]) {
             BlioLayoutPDFDataSource *aPDFDataSource = [[BlioLayoutPDFDataSource alloc] initWithPath:[aBook pdfPath]];
             self.dataSource = aPDFDataSource;

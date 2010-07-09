@@ -13,6 +13,7 @@
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucSelector.h>
 #import "BlioLayoutDataSource.h"
+#import "BlioXPSProvider.h"
 
 static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the go to animations to look right
 
@@ -69,6 +70,8 @@ typedef enum BlioLayoutPageMode {
     NSMutableArray *accessibilityElements;
     NSArray *previousAccessibilityElements;
     BOOL accessibilityRefreshRequired;
+    
+    BlioXPSProvider *xpsProvider;
     id<BlioLayoutDataSource> dataSource;
 }
 

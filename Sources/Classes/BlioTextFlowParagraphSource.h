@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 #import "BlioParagraphSource.h"
 
 @class BlioTextFlow, BlioTextFlowFlowTree;
@@ -20,8 +21,6 @@
     float *sectionScaleFactors;
 }
 
-@property (nonatomic, retain) BlioTextFlow *textFlow;
-
-- (id)initWithTextFlow:(BlioTextFlow *)textFlowIn;
+- (id)initWithBookID:(NSManagedObjectID *)bookID;
 
 @end

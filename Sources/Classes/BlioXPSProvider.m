@@ -23,9 +23,7 @@
 @synthesize bookID;
 @synthesize tempDirectory, imageInfo;
 
-- (void)dealloc {
-    [[BlioBookManager sharedBookManager] xpsProviderIsDeallocingForBookWithID:self.bookID];
-    
+- (void)dealloc {    
     XPS_Cancel(xpsHandle);
     XPS_Close(xpsHandle);
     XPS_End();

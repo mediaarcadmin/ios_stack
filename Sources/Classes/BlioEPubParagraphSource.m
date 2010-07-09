@@ -30,18 +30,22 @@
 
 @synthesize bUpeBook = _bUpeBook;
 
-- (id)initWithEPubBook:(BlioEPubBook *)bUpeBook
+- (id)initWithBookID:(NSManagedObjectID *)bookID;
 {
     if((self = [super init])) {
-        _bUpeBook = [bUpeBook retain];
+        _bookID = [bookID retain];
+        _bUpeBook = [[[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:bookID] retain];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[BlioBookManager sharedBookManager] paragraphSourceIsDeallocingForBookWithID:_bUpeBook.blioBookID];
-    
+    if(_bUpeBook) {
+        [_bUpeBook release];
+        [[BlioBookManager sharedBookManager] checkInEPubBookForBookWithID:_bookID];
+    }
+    [_bookID release];
     [_layoutController release];
     [_bUpeBook dealloc];
     
