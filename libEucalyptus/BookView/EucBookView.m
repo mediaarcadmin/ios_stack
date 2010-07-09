@@ -1330,16 +1330,27 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     _pageSlider.center = CGPointMake(toolbarBounds.size.width / 2.0f, toolbarMarginHeight + toolbarNonMarginHeight * 0.5f);
     
     pageSliderFrame = _pageSlider.frame;
+
+    UIScreen *mainScreen = [UIScreen mainScreen];
     
     UIProgressView *behindSlider = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     CGRect behindSliderFrame = behindSlider.frame;
-    behindSliderFrame.size.width = pageSliderFrame.size.width - 4;
+    if([mainScreen respondsToSelector:@selector(scale)] && mainScreen.scale == 2.0f) {
+        behindSliderFrame.size.width = pageSliderFrame.size.width - 2;
+    } else {
+        behindSliderFrame.size.width = pageSliderFrame.size.width - 4;
+    }
     behindSlider.frame = behindSliderFrame;
     behindSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    behindSlider.contentMode = UIViewContentModeRedraw; // Seems strange that thi is necessary - without it, the view is just stretched on resize.
     behindSlider.isAccessibilityElement = NO;
     
     CGPoint pageSliderCenter = _pageSlider.center;
-    pageSliderCenter.y += 1.5;
+    if([mainScreen respondsToSelector:@selector(scale)] && mainScreen.scale == 2.0f) {
+        pageSliderCenter.y += 1.5f;
+    } else {
+        pageSliderCenter.y += 1.5f;
+    }
     behindSlider.center = pageSliderCenter;
     
     [toolbar addSubview:behindSlider];

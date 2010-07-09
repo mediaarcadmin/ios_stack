@@ -6,11 +6,12 @@
 //  Copyright 2009 Things Made Out Of Other Things Ltd. All rights reserved.
 //
 
-//  Portions from:
+//  Portions originally from:
 //  http://stackoverflow.com/questions/400965/how-to-customize-the-background-border-colors-of-a-grouped-table-view
 //  Created by Mike Akers on 11/21/08.
 
 #import "EucBookContentsTableViewCellBackground.h"
+#import "THUIDeviceAdditions.h"
 #import "THRoundRects.h"
 
 @implementation EucBookContentsTableViewCellBackground
@@ -71,20 +72,32 @@
     
     CGContextSetStrokeColorWithColor(c, [borderColor CGColor]);
     
-    
-    
     // Set line width to 1, and inset by 0.5 piels to get our lines in the
     // center of pixels.
     CGContextSetLineWidth(c, 1);  
     CGRect strokeRect = CGRectInset(bounds, 0.5, 0.5);
 
-    if(position != EucBookContentsTableViewCellPositionSingle &&
-       position != EucBookContentsTableViewCellPositionBottom) {
-        // Only single or bottom cells actually draw their own bottom
-        // borders (others use the top border of the next cell), so we'll expand
-        // the height of the box we're drawing by one and it'lll be clipped out.
-        strokeRect.size.height += 1;
-    }        
+    // The behaviour of the default cell drawing changed slightly changed
+    // as of iOS 4 - hence this if.  Whatever the OS, we eed to match the 
+    // default to ensure that highlighting o tap looks correct.
+    if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+        if(position != EucBookContentsTableViewCellPositionSingle &&
+           position != EucBookContentsTableViewCellPositionTop) {
+            // Only single or top cells actually draw their own top
+            // borders (others use the top border of the next cell), so we'll expand
+            // the height of the box we're drawing by one and it'lll be clipped out.
+            strokeRect.size.height += 1;
+            strokeRect.origin.y -= 1;
+        }        
+    } else {        
+        if(position != EucBookContentsTableViewCellPositionSingle &&
+           position != EucBookContentsTableViewCellPositionBottom) {
+            // Only single or bottom cells actually draw their own bottom
+            // borders (others use the top border of the next cell), so we'll expand
+            // the height of the box we're drawing by one and it'lll be clipped out.
+            strokeRect.size.height += 1;
+        }       
+    }
     
     if(position != EucBookContentsTableViewCellPositionSingle) {
         // Some of the corners are square, so 
