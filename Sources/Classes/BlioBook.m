@@ -108,6 +108,10 @@
     return [[BlioBookManager sharedBookManager] ePubBookForBookWithID:self.objectID];
 }
 
+- (BlioXPSProvider *)xpsProvider {
+    return [[BlioBookManager sharedBookManager] xpsProviderForBookWithID:self.objectID];
+}
+
 - (id<BlioParagraphSource>)paragraphSource {
     return [[BlioBookManager sharedBookManager] paragraphSourceForBookWithID:self.objectID];
 }

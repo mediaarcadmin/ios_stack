@@ -8,9 +8,20 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "BlioLayoutDataSource.h"
+#import "XpsSdk.h"
 
-@interface BlioXPSProvider : NSObject {
+@interface BlioXPSProvider : NSObject <BlioLayoutDataSource> {
     NSManagedObjectID *bookID;
+    
+    NSLock *renderingLock;
+    NSLock *contentsLock;
+    
+    NSString *tempDirectory;
+    NSInteger pageCount;
+    RasterImageInfo *imageInfo;
+    XPS_HANDLE xpsHandle;
+    FixedPageProperties properties;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;

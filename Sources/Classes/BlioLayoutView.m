@@ -17,6 +17,7 @@
 #import "BlioLayoutScrollView.h"
 #import "BlioLayoutContentView.h"
 #import "UIDevice+BlioAdditions.h"
+#import "BlioXPSProvider.h"
 
 @interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource> {
     NSData *data;
@@ -25,21 +26,6 @@
 }
 
 @property (nonatomic, retain) NSData *data;
-
-- (id)initWithPath:(NSString *)aPath;
-
-@end
-
-@interface BlioLayoutXPSDataSource : NSObject<BlioLayoutDataSource> {
-    NSString *path;
-    RasterImageInfo *imageInfo;
-    XPS_HANDLE xpsHandle;
-    NSInteger pageCount;
-    FixedPageProperties properties;
-}
-
-@property (nonatomic, retain) NSString *path;
-@property (nonatomic, assign) RasterImageInfo *imageInfo;
 
 - (id)initWithPath:(NSString *)aPath;
 
@@ -85,7 +71,6 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic) CGFloat lastZoomScale;
-@property (nonatomic, retain) NSData *pdfData;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) UIImage *pageSnapshot;
 @property (nonatomic, retain) UIImage *highlightsSnapshot;
@@ -154,11 +139,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 @synthesize bookID, textFlow, scrollView, containerView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
-@synthesize pdfPath, pdfData, lastZoomScale;
+@synthesize lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
 @synthesize accessibilityElements, previousAccessibilityElements;
-@synthesize xpsPath;
 @synthesize dataSource;
 
 - (void)dealloc {
@@ -191,9 +175,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.selector detatch];
     self.selector = nil;
     
-    self.pdfPath = nil;
-    self.pdfData = nil;
-    self.xpsPath = nil;
     [self.contentView abortRendering];
     self.contentView = nil;
     self.containerView = nil;
@@ -257,9 +238,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         accessibilityRefreshRequired = YES;
         
         if ([aBook xpsPath]) {
-            BlioLayoutXPSDataSource *aXPSDataSource = [[BlioLayoutXPSDataSource alloc] initWithPath:[aBook xpsPath]];
-            self.dataSource = aXPSDataSource;
-            [aXPSDataSource release];
+            self.dataSource = [aBook xpsProvider];
         } else if ([aBook pdfPath]) {
             BlioLayoutPDFDataSource *aPDFDataSource = [[BlioLayoutPDFDataSource alloc] initWithPath:[aBook pdfPath]];
             self.dataSource = aPDFDataSource;
@@ -2165,7 +2144,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 @implementation BlioLayoutPDFDataSource
 
-@synthesize data, pageCount;
+@synthesize data;
 
 - (void)dealloc {
     if (pdf) CGPDFDocumentRelease(pdf);
@@ -2185,6 +2164,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [aData release];
     }
     return self;
+}
+
+- (NSInteger)pageCount {
+    return pageCount;
 }
 
 - (CGRect)cropRectForPage:(NSInteger)page {
@@ -2228,220 +2211,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (void)closeDocumentIfRequired {
     [self closeDocument];
-}
-
-@end
-
-@implementation BlioLayoutXPSDataSource
-
-@synthesize path, pageCount, imageInfo;
-
-- (void)dealloc {
-    //NSLog(@"*************** dealloc called for xps datasource");
-    if (xpsHandle) {
-        XPS_Cancel(xpsHandle);
-        XPS_Close(xpsHandle);
-        XPS_End();
-    }
-    
-    self.path = nil;
-    self.imageInfo = nil;
-
-    [super dealloc];
-}
-
-- (id)initWithPath:(NSString *)aPath {
-    if ((self = [super init])) {
-        CFUUIDRef theUUID = CFUUIDCreate(NULL);
-        CFStringRef UUIDString = CFUUIDCreateString(NULL, theUUID); 
-        self.path = [NSTemporaryDirectory() stringByAppendingPathComponent:(NSString *)UUIDString];
-        CFRelease(theUUID);
-        CFRelease(UUIDString);
-
-        NSError *error;
-        
-        if (![[NSFileManager defaultManager] fileExistsAtPath:self.path]) {
-            if (![[NSFileManager defaultManager] createDirectoryAtPath:self.path withIntermediateDirectories:YES attributes:nil error:&error]) {
-                NSLog(@"Unable to create directory at path %@ with error %@ %@", self.path, error, [error userInfo]);
-            } else {
-                NSLog(@"Directory created at path %@", self.path);
-            }
-        } else {
-            NSLog(@"Directory exists at path %@", self.path);
-        }
-        
-        XPS_Start();
-        xpsHandle = XPS_Open([aPath UTF8String], [self.path UTF8String]);
-
-        XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
-        //NSLog(@"XPS opened");
-        pageCount = XPS_GetNumberPages(xpsHandle, 0);
-        
-        //NSLog(@"XPS page count retrieved");
-        
-    }
-    return self;
-}
-
-- (CGRect)cropRectForPage:(NSInteger)page {
-    memset(&properties,0,sizeof(properties));
-    XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
-    return CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
-}
-
-- (CGRect)mediaRectForPage:(NSInteger)page {
-    memset(&properties,0,sizeof(properties));
-    XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
-    return CGRectMake(0, 0, properties.width, properties.height);
-}
-
-- (CGFloat)dpiRatio {
-    return 1;
-}
-
-void RenderCallback1(void *userdata, RasterImageInfo *data) {
-    //NSLog(@"XPS_RegisterPageCompleteCallback");
-	BlioLayoutXPSDataSource *dataSource = (BlioLayoutXPSDataSource *)userdata;	
-	dataSource.imageInfo = data;
-}
-
-static void dataReleaseCallback(void *info, const void *data, size_t size) {
-	XPS_ReleaseImageMemory((void *)data);
-}
-
-- (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
-    //fprintf(stderr, "\n");
-    CGAffineTransform ctm = CGContextGetCTM(ctx);
-    
-    //NSLog(@"ctm %@", NSStringFromCGAffineTransform(ctm));
-    //NSLog(@"bounds: %@", NSStringFromCGRect(bounds));
-    CGRect insetBounds = CGRectInset(bounds, inset, inset);
-    
-    // FOR RANDAIR
-    // Stage 1. Retrieve the page size
-    memset(&properties,0,sizeof(properties));
-    XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
-    CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
-    //NSLog(@"pageCropRect: %@", NSStringFromCGRect(pageCropRect));
-    
-    // FOR RANDAIR
-    // Stage 2. Calculate the scale to fit this page inside a rectangle that is the 288x 448, then multiply the scale by the tile scale factor
-    // This gives us the page scale, i.e. teh size we want to scale the pageCropRect calculated in 1.
-    CGFloat widthScale = (CGRectGetWidth(insetBounds) / CGRectGetWidth(pageCropRect)) * ctm.a;
-    CGFloat heightScale = (CGRectGetHeight(insetBounds) / CGRectGetHeight(pageCropRect)) * ctm.d;
-    CGFloat pageScale = MIN(widthScale, heightScale);
-    if (aspect) widthScale = heightScale = pageScale;
-    
-    
-    // FOR RANDAIR
-    // Stage 3. Calculate the size of the page when it is scaled, and the subsequent size once it is truncated
-    CGRect scaledPage = CGRectMake(pageCropRect.origin.x, pageCropRect.origin.y, pageCropRect.size.width * widthScale, pageCropRect.size.height * heightScale);
-    CGRect truncatedPage = CGRectMake(scaledPage.origin.x, scaledPage.origin.y, floorf(scaledPage.size.width), floorf(scaledPage.size.height));
-    CGFloat horizontalPageOffset = (CGRectGetWidth(bounds) * ctm.a - CGRectGetWidth(truncatedPage))/2.0f; 
-    CGFloat verticalPageOffset = (CGRectGetHeight(bounds) * ctm.d  - CGRectGetHeight(truncatedPage))/2.0f; 
-    
-    // FOR RANDAIR
-    // Stage 4. Calculate the tile we currently want, includng it's offset
-    CGRect clipRect = CGContextGetClipBoundingBox(ctx);
-    CGRect tileRect = CGRectApplyAffineTransform(clipRect, ctm); 
-    tileRect.origin = CGPointMake(clipRect.origin.x * ctm.a, clipRect.origin.y * ctm.d);
-    //NSLog(@"tileRect: %@", NSStringFromCGRect(tileRect));
-    
-    // FOR RANDAIR
-    // Stage 5. Calculate the pagesizescalewidth & pagesizescaleheight to produce an image that should match the tile size
-    // This is where we use the truncated page size
-    CGFloat pagesizescalewidth = (CGRectGetWidth(tileRect))/ CGRectGetWidth(truncatedPage);
-    CGFloat pagesizescaleheight = (CGRectGetHeight(tileRect))/ CGRectGetHeight(truncatedPage);
-    
-    CGContextConcatCTM(ctx, CGAffineTransformInvert(ctm));
-    
-    CGRect maskRect = CGRectMake(ctm.tx + horizontalPageOffset, ctm.ty + verticalPageOffset, truncatedPage.size.width, truncatedPage.size.height);
-    //NSLog(@"maskRect: %@", NSStringFromCGRect(maskRect));
-    CGContextClipToRect(ctx, maskRect);
-    //CGContextClipToRect(ctx, CGRectMake(horizontalPageOffset*ctm.a, verticalPageOffset*ctm.d, truncatedPage.size.width, truncatedPage.size.height));
-
-    
-    OutputFormat format;
-    memset(&format,0,sizeof(format));
-    
-    // FOR RANDAIR
-    // Stage 6. Calculate where the top left of the tile is offset from the bottom left of the screen
-    // These values are used to translate the page
-    CGPoint topLeftOfTileOffsetFromBottomLeft = CGPointMake(tileRect.origin.x, CGRectGetHeight(bounds)*ctm.d - CGRectGetMaxY(tileRect));
-    //NSLog(@"topLeftOfTile %@", NSStringFromCGPoint(topLeftOfTileOffsetFromBottomLeft));
-    
-    XPS_ctm render_ctm = { widthScale, 0, 0, heightScale, -topLeftOfTileOffsetFromBottomLeft.x + horizontalPageOffset, -topLeftOfTileOffsetFromBottomLeft.y + verticalPageOffset };
-    //XPS_ctm render_ctm = { pageScale, 0, 0, pageScale, -topLeftOfTileOffsetFromBottomLeft.x, -topLeftOfTileOffsetFromBottomLeft.y };
-    //NSLog(@"render_ctm { %f, %f, %f, %f, %f, %f }", render_ctm.a, render_ctm.b, render_ctm.c, render_ctm.d, render_ctm.tx, render_ctm.ty);
-    format.xResolution = 96;			
-    format.yResolution = 96;	
-    format.colorDepth = 8;
-    format.colorSpace = XPS_COLORSPACE_RGB;
-    format.pagesizescale = 1;	
-    format.pagesizescalewidth = pagesizescalewidth * widthScale;		
-    format.pagesizescaleheight = pagesizescaleheight * heightScale;
-    
-    format.ctm = &render_ctm;				
-    format.formatType = OutputFormat_RAW;
-    imageInfo = NULL;
-    
-    XPS_RegisterPageCompleteCallback(xpsHandle, RenderCallback1);
-    XPS_SetUserData(xpsHandle, self);
-    
-    XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-    
-    if (imageInfo) {
-        size_t width  = imageInfo->widthInPixels;
-        size_t height = imageInfo->height;
-        size_t dataLength = width * height * 3;
-        
-        CGDataProviderRef providerRef = CGDataProviderCreateWithData(self, imageInfo->pBits, dataLength, dataReleaseCallback);
-        CGImageRef imageRef =
-        CGImageCreate(width, height, 8, 24, width * 3, CGColorSpaceCreateDeviceRGB(), 
-                      kCGImageAlphaNone
-                      , providerRef, NULL, true, 
-                      kCGRenderingIntentDefault);
-        
-        //NSLog(@"imageInfo->widthInPixels: %d", imageInfo->widthInPixels);
-        //NSLog(@"imageInfo->height: %d", imageInfo->height);
-        
-        // FOR RANDAIR
-        // Stage 7. Remove the transform and interpolation currently applied to the context so we guarantee we get 1:1 pixel calculation when we draw the image
-        CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
-        
-        // FOR RANDAIR
-        // Stage 8. If the image is taller than the tile then offset the image by the difference in height
-        // We want the top left of the image to be drawn at the top left of the tile but the origin is at the bottom left
-        CGRect imageRect = CGRectMake(0, tileRect.size.height - height, width, height);
-        //NSLog(@"imageRect: %@", NSStringFromCGRect(imageRect));
-        
-        
-        CGContextDrawImage(ctx, imageRect, imageRef);
-        
-        CGDataProviderRelease(providerRef);
-        CGImageRelease(imageRef);        
-        
-    }
-    
-}
-
-- (void)openDocumentIfRequired {
-    // Not required as XPS document stays open
-    return;
-}
-
-- (void)closeDocument {
-    if (xpsHandle) {
-        XPS_Cancel(xpsHandle);
-        XPS_Close(xpsHandle);
-        XPS_End();
-        xpsHandle = NULL;
-    }
-}
-
-- (void)closeDocumentIfRequired {
-    // Not required as XPS document stays open
-    return;
 }
 
 @end

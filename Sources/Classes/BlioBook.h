@@ -12,7 +12,7 @@
 #import "BlioParagraphSource.h"
 #import "BlioBookmark.h"
 
-@class BlioEPubBook;
+@class BlioEPubBook, BlioXPSProvider;
 
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
@@ -61,6 +61,7 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
 @property (nonatomic, retain, readonly) BlioEPubBook *ePubBook;
+@property (nonatomic, retain, readonly) BlioXPSProvider *xpsProvider;
 @property (nonatomic, retain, readonly) id<BlioParagraphSource> paragraphSource;
 
 // Core data attribute-backed convenience accessors
