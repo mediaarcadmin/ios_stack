@@ -103,21 +103,21 @@
 
 - (BlioTextFlow *)textFlow {
     if(!textFlow) {
-        textFlow = [[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:self.objectID];
+        textFlow = [[[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:self.objectID] retain];
     }
     return textFlow;
 }
 
 - (BlioEPubBook *)ePubBook {
     if(!ePubBook) {
-        ePubBook = [[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:self.objectID];
+        ePubBook = [[[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:self.objectID] retain];
     }
     return ePubBook;
 }
 
 - (id<BlioParagraphSource>)paragraphSource {
     if(!paragraphSource) {
-        paragraphSource = [[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.objectID];
+        paragraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.objectID] retain];
     }
     return paragraphSource;
 }

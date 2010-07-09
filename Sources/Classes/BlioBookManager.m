@@ -260,7 +260,7 @@ static pthread_key_t sManagedObjectContextKey;
                         myCachedParagraphSourceCheckoutCounts = [NSCountedSet set];
                         self.cachedParagraphSourceCheckoutCounts = myCachedParagraphSourceCheckoutCounts;
                     }
-                    [myCachedParagraphSources setObject:textFlow forKey:aBookID];
+                    [myCachedParagraphSources setObject:paragraphSource forKey:aBookID];
                     [myCachedParagraphSourceCheckoutCounts addObject:aBookID];
                     [paragraphSource release];
                     return paragraphSource;
