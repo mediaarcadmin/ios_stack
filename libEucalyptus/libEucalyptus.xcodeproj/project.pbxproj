@@ -175,7 +175,7 @@
 		7D412B2A1149664C00C003BB /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900981149490E00375803 /* libwapcaplet.a */; };
 		7D412B2E1149666C00C003BB /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2D1149666C00C003BB /* ApplicationServices.framework */; };
 		7D4A003511DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000011DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png */; };
-		7D4A003611DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png */; };
+		7D4A003611DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */; };
 		7D4A003711DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000211DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png */; };
 		7D4A003811DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000311DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png */; };
 		7D4A003911DBA34E00DDA5B7 /* iPodLikeSliderKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000411DBA34E00DDA5B7 /* iPodLikeSliderKnob.png */; };
@@ -228,7 +228,7 @@
 		7D4A006811DBA34E00DDA5B7 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A003311DBA34E00DDA5B7 /* SelectionKnob.png */; };
 		7D4A006911DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A003411DBA34E00DDA5B7 /* SelectionKnob@2x.png */; };
 		7D4A006A11DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000011DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png */; };
-		7D4A006B11DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png */; };
+		7D4A006B11DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */; };
 		7D4A006C11DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000211DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png */; };
 		7D4A006D11DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000311DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png */; };
 		7D4A006E11DBA34E00DDA5B7 /* iPodLikeSliderKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000411DBA34E00DDA5B7 /* iPodLikeSliderKnob.png */; };
@@ -901,7 +901,7 @@
 		7D412B2D1149666C00C003BB /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		7D412B2F1149667300C003BB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7D4A000011DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderBlueLeftCap.png; sourceTree = "<group>"; };
-		7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderBlueLeftCap@2.png"; sourceTree = "<group>"; };
+		7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderBlueLeftCap@2x.png"; sourceTree = "<group>"; };
 		7D4A000211DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small.png"; sourceTree = "<group>"; };
 		7D4A000311DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small@2x.png"; sourceTree = "<group>"; };
 		7D4A000411DBA34E00DDA5B7 /* iPodLikeSliderKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderKnob.png; sourceTree = "<group>"; };
@@ -2509,7 +2509,7 @@
 			isa = PBXGroup;
 			children = (
 				7D4A000011DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png */,
-				7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png */,
+				7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */,
 				7D4A000211DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png */,
 				7D4A000311DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png */,
 				7D4A000411DBA34E00DDA5B7 /* iPodLikeSliderKnob.png */,
@@ -3029,7 +3029,7 @@
 				7DF1AD7411D90F6E00506BD5 /* ContentsButton@2x.png in Resources */,
 				7DF1AD7511D90F6E00506BD5 /* BookButton@2x.png in Resources */,
 				7D4A003511DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */,
-				7D4A003611DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png in Resources */,
+				7D4A003611DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */,
 				7D4A003711DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */,
 				7D4A003811DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png in Resources */,
 				7D4A003911DBA34E00DDA5B7 /* iPodLikeSliderKnob.png in Resources */,
@@ -3106,7 +3106,7 @@
 				7DF1AD7211D90F6E00506BD5 /* ContentsButton@2x.png in Resources */,
 				7DF1AD7311D90F6E00506BD5 /* BookButton@2x.png in Resources */,
 				7D4A006A11DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */,
-				7D4A006B11DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2.png in Resources */,
+				7D4A006B11DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */,
 				7D4A006C11DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */,
 				7D4A006D11DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small@2x.png in Resources */,
 				7D4A006E11DBA34E00DDA5B7 /* iPodLikeSliderKnob.png in Resources */,
