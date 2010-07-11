@@ -163,7 +163,8 @@
 {   
 	if (!resultsDisplayed) {
 		// TODO: Check if difference between OS versions, or between device idioms.
-		if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 3.2) {
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+//		if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 3.2) {
 			[controller.searchResultsTableView setBackgroundColor:[UIColor colorWithWhite:0.0 alpha:0.5]];
 		}
 		else {

@@ -98,5 +98,5 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 - (BOOL)hasManifestValueForKey:(NSString *)key;
 - (NSData *)manifestDataForKey:(NSString *)key;
 - (NSString *)manifestPathForKey:(NSString *)key;
-
+- (NSString *)manifestLocationForKey:(NSString *)key;
 @end

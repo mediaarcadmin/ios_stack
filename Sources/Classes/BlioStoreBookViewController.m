@@ -79,14 +79,22 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 }
 
 
- - (id)initWithStyle {
- if ((self = [super init])) {
-	 self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
-	 self.entity = nil;
- }
- return self;
+// - (id)init {
+// if ((self = [super init])) {
+//	 NSLog(@"BlioStoreBookViewController init entered");
+//	 self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
+//	 self.entity = nil;
+// }
+// return self;
+//}
+-(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+		NSLog(@"BlioStoreBookViewController init entered");
+		self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
+		self.entity = nil;
+	}
+	return self;	
 }
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -201,6 +209,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
         
     // Fetch bookThumb
     if (nil != [self.entity thumbUrl]) {
+		[self.bookThumb setAlpha:0.0f];
+        [self.bookShadow setAlpha:0.0f];
         BlioStoreFetchThumbOperation *anOperation = [[BlioStoreFetchThumbOperation alloc] initWithThumbUrl:[self.entity thumbUrl] target:self action:@selector(updateThumb:)];
         NSOperationQueue* aQueue = [[NSOperationQueue alloc] init];
         [aQueue addOperation:anOperation];
@@ -273,15 +283,15 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     summaryFrame.size.height = 200;
     CGRect belowSummaryFrame = self.belowSummaryDetails.frame;
     CGSize summarySize = [self.summary.text sizeWithFont:self.summary.font constrainedToSize:summaryFrame.size lineBreakMode:UILineBreakModeWordWrap];
-    summaryFrame.size = summarySize;
+    summaryFrame.size.height = summarySize.height;
     belowSummaryFrame.origin.y = CGRectGetMaxY(summaryFrame);
     [self.summary setFrame:summaryFrame];
     [self.belowSummaryDetails setFrame:belowSummaryFrame];
 
     CGFloat newHeight = CGRectGetMaxY(belowSummaryFrame) > self.view.frame.size.height ? CGRectGetMaxY(belowSummaryFrame) : self.view.frame.size.height;
     containerFrame.size.height = newHeight;
-    [self.container setFrame:containerFrame];
-    [self.scroller setContentSize:containerFrame.size];
+//    [self.container setFrame:containerFrame];
+ //   [self.scroller setContentSize:containerFrame.size];
     
 }
 
@@ -310,15 +320,17 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 	else if (downloadState == kBlioStoreDownloadButtonStateConfirm) {
 //		NSLog(@"button pressed while in Confirm state");
 		// start processing download decision
-				
+		NSLog(@"coverPath: %@",self.entity.coverUrl);		
+		NSLog(@"ePubPath: %@",self.entity.ePubUrl);		
+		NSLog(@"pdfPath: %@",self.entity.pdfUrl);		
 		[self.processingDelegate enqueueBookWithTitle:self.entity.title 
 											  authors:[NSArray arrayWithObject:self.entity.author]
-											 coverURL:self.entity.coverUrl ? [NSURL URLWithString:self.entity.coverUrl] : nil
-											  ePubURL:self.entity.ePubUrl ? [NSURL URLWithString:self.entity.ePubUrl] : nil 
-											   pdfURL:self.entity.pdfUrl ? [NSURL URLWithString:self.entity.pdfUrl] : nil
-                                               xpsURL:nil
-                                          textFlowURL:nil
-										 audiobookURL:nil
+											coverPath:self.entity.coverUrl ? self.entity.coverUrl : nil
+											 ePubPath:self.entity.ePubUrl ? self.entity.ePubUrl : nil 
+											  pdfPath:self.entity.pdfUrl ? self.entity.pdfUrl : nil
+											  xpsPath:nil
+										 textFlowPath:nil
+										audiobookPath:nil
 											 sourceID:self.feed.sourceID
 									 sourceSpecificID:self.entity.id
 		 ];
@@ -349,7 +361,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 }
 			 
 - (void) setDownloadState:(NSUInteger)state animated:(BOOL)animationStatus {
-	// NSLog(@"BlioStoreBookViewController setDownloadState:%i entered",state);
+	 NSLog(@"BlioStoreBookViewController setDownloadState:%i entered",state);
 
 	if (downloadState != state) {
 		downloadState = state;
@@ -369,6 +381,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 /*
 				NSLog(@"current label text: %@", button.titleLabel.text);
 				NSLog(@"oldLabelSize width:%f height:%f",oldLabelSize.width,oldLabelSize.height);
+		NSLog(@"[downloadStateLabels objectAtIndex:downloadState]: %@",[downloadStateLabels objectAtIndex:downloadState]);
 				NSLog(@"new label text: %@", newLabelText);
 				NSLog(@"newLabelSize width:%f height:%f",newLabelSize.width,newLabelSize.height);
 				NSLog(@"widthDelta: %f",widthDelta);
