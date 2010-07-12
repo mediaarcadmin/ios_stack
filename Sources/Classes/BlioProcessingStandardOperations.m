@@ -96,7 +96,6 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 }
 
 - (void)main {
-//	NSLog(@"BlioProcessingLicenseAcquisitionOperation main entered");
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
@@ -119,14 +118,12 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
 			NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
-			void* xpsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:[self.cacheDirectory stringByAppendingPathComponent:[self getBookValueForKey:@"xpsFilename"]]];
-			[[BlioDrmManager getDrmManager] setBook:xpsHandle];
-			self.operationSuccess = [[BlioDrmManager getDrmManager] getLicense];
-			[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsHandle];
+            self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:self.bookID];
 			attemptsMade++;
 		}
 	}
 	if (self.operationSuccess) self.percentageComplete = 100;
+
 }
 @end
 

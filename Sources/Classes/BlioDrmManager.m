@@ -8,26 +8,33 @@
 
 #import "BlioDrmManager.h"
 #import "BlioLicenseClient.h"
-#import "BlioXpsClient.h"
 #import "DrmGlobals.h"
 #import "XpsSdk.h"
+#import "BlioBook.h"
+#import "BlioXPSProvider.h"
+
+@interface BlioDrmManager()
+
+@property (nonatomic, retain) NSManagedObjectID *bookID;
+
+@end
 
 @implementation BlioDrmManager
 
-@synthesize drmInitialized, bookChanged, bookHandle, xpsClient;
+@synthesize drmInitialized;
+@synthesize bookID;
 
 + (BlioDrmManager*)getDrmManager {
 	static BlioDrmManager* drmManager = nil;  
 	if ( drmManager == nil ) {
 		drmManager = [[BlioDrmManager alloc] init];
-		drmManager.xpsClient = [[[BlioXpsClient alloc] init] autorelease];
 	}
 	return drmManager;
 }
 
 -(void) dealloc {
 	Oem_MemFree([DrmGlobals getDrmGlobals].drmAppContext);
-	self.xpsClient = nil;
+    self.bookID = nil;
 	[super dealloc];
 }
 
@@ -79,12 +86,8 @@ ErrorExit:
 	self.drmInitialized = YES;
 }
 
-- (void)setBook:(void*)xpsHandle {
-	self.bookHandle = xpsHandle;  // TODO: guard against reassigning the same book, could lead to an error
-	self.bookChanged = YES;
-}
-
 - (DRM_RESULT)getDRMLicense {
+
     DRM_RESULT dr = DRM_SUCCESS;
     DRM_CHAR rgchURL[MAX_URL_SIZE];
     DRM_DWORD cchUrl = MAX_URL_SIZE;
@@ -107,6 +110,8 @@ ErrorExit:
 										  pbChallenge,
 										  &cbChallenge );
 	
+    
+
     if( dr == DRM_E_BUFFERTOOSMALL )
     {
         pbChallenge = Oem_MemAlloc( cbChallenge );
@@ -127,17 +132,25 @@ ErrorExit:
     {
         ChkDR( dr );
     }
-	
-	NSLog(@"DRM license challenge: %s",(unsigned char*)pbChallenge);
-
+	//NSLog(@"DRM license challenge: %s",(unsigned char*)pbChallenge);
+    
 	BlioLicenseClient* licenseClient = [[BlioLicenseClient alloc] initWithMessage:(const void*)pbChallenge 
 																	  messageSize:cbChallenge];
-	if ( ![licenseClient getResponse:(unsigned char**)&pbResponse responseSize:(unsigned int*)&cbResponse] ) {
-		return DRM_S_FALSE;
-	}
-	
-	NSLog(@"DRM license response: %s",(unsigned char*)pbResponse);
-	
+    
+    
+    NSData *drmResponse = [licenseClient getResponseSynchronously];
+    
+    if (drmResponse == nil) {
+        return DRM_S_FALSE;
+    } else {
+        pbResponse = (DRM_BYTE *)[drmResponse bytes];
+        cbResponse = [drmResponse length];
+    }
+
+    [licenseClient release];
+
+	//NSLog(@"DRM license response: %s",(unsigned char*)pbResponse);
+		
     ChkDR( Drm_LicenseAcq_ProcessResponse( [DrmGlobals getDrmGlobals].drmAppContext,
 										  NULL,
 										  NULL,
@@ -153,20 +166,13 @@ ErrorExit:
 	return dr;
 }
 
-- (DRM_RESULT)setHeader:(void*)fileHandle {
+- (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID {
 	DRM_RESULT dr = DRM_SUCCESS;
-	void* compHandle = [xpsClient openComponent:fileHandle componentPath:@"/Documents/1/Other/KNFB/DrmpHeader.bin"];
-	NSMutableData* headerData = [[NSMutableData alloc] init];
-	unsigned char buffer[4096];
-	int bytesRead = [xpsClient readComponent:compHandle componentBuffer:buffer componentLen:sizeof(buffer)];
-	while (1) {
-		NSData* data = [[NSData alloc] initWithBytes:(const void*)buffer length:bytesRead];
-		[headerData appendData:data];
-		if ( bytesRead != sizeof(buffer) )
-			break;
-		bytesRead = [xpsClient readComponent:compHandle componentBuffer:buffer componentLen:sizeof(buffer)]; 
-	}
-	[xpsClient closeComponent:compHandle];
+    
+    BlioXPSProvider *xpsProvider = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] xpsProvider];
+    NSString *headerPath = @"/Documents/1/Other/KNFB/DrmpHeader.bin";
+    NSData *headerData = [xpsProvider dataForComponentAtPath:headerPath];
+        
 	unsigned char* headerBuff = (unsigned char*)[headerData bytes]; 
 	
 	ChkDR( Drm_Reinitialize([DrmGlobals getDrmGlobals].drmAppContext) );
@@ -175,96 +181,31 @@ ErrorExit:
 								   headerBuff,   
 								   [headerData length] ) );
 ErrorExit:
-	self.bookChanged = NO;
+	self.bookID = nil;
 	return dr;
 }
 
-- (BOOL)getLicense {
-	if ( !self.drmInitialized ) {
+- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID {
+   
+    if ( !self.drmInitialized ) {
 		NSLog(@"DRM error: license cannot be acquired because DRM is not initialized.");
 		return NO;
-	}	
-	DRM_RESULT dr = DRM_SUCCESS;
-	if ( self.bookChanged ) { 
-		ChkDR( [self setHeader:self.bookHandle] );
 	}
+     
+    DRM_RESULT dr = DRM_SUCCESS;
+	if ( ![self.bookID isEqual:aBookID] ) { 
+		ChkDR( [self setHeaderForBookWithID:aBookID] );
+        self.bookID = aBookID;
+	}
+    
 	ChkDR( [self getDRMLicense] );
+    
 ErrorExit:
 	if ( dr != DRM_SUCCESS ) {
 		NSLog(@"DRM license error: %d",dr);
 		return NO;
 	}
-	return YES;
-}
-
-- (BOOL)decryptComponent:(NSString*)component decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz {
-	if ( !self.drmInitialized ) {
-		NSLog(@"DRM error: content cannot be decrypted because DRM is not initialized.");
-		return NO;
-	}
-	DRM_RESULT dr = DRM_SUCCESS;
-	const DRM_CONST_STRING *rgpdstrRights[1] = {0};
-    DRM_DECRYPT_CONTEXT     oDecryptContext  = {{0}};
-    DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
-	
-	if ( self.bookChanged ) {
-		// Set the header property so we know what license to bind to.
-		ChkDR( [self setHeader:self.bookHandle] );
-	}
-	// Roundabout assignment needed to get around compiler complaint.
-	DRM_CONST_STRING readRight;
-	readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
-	readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
-	rgpdstrRights[0] = &readRight; 
-	ChkDR( Drm_Reader_Bind( [DrmGlobals getDrmGlobals].drmAppContext,
-						   rgpdstrRights,
-						   NO_OF(rgpdstrRights),
-						   NULL, 
-						   NULL,
-						   &oDecryptContext ) );
-	//}
-	
-	// Get encrypted page from XPS file.
-	void* compHandle = [xpsClient openComponent:self.bookHandle componentPath:component];
-	NSMutableData* fpData = [[NSMutableData alloc] init];
-	unsigned char buff[4096];
-	int bytesRead = [xpsClient readComponent:compHandle componentBuffer:buff componentLen:sizeof(buff)];
-	while (1) {
-		NSData* data = [[NSData alloc] initWithBytes:(const void*)buff length:bytesRead];
-		[fpData appendData:data];
-		if ( bytesRead != sizeof(buff) )
-			break;
-		bytesRead = [xpsClient readComponent:compHandle componentBuffer:buff componentLen:sizeof(buff)]; 
-	}
-	[xpsClient closeComponent:compHandle];
- 	unsigned char *buffer = (unsigned char*)[fpData bytes];
-	
-	ChkDR(Drm_Reader_Decrypt (&oDecryptContext,
-							  &oCtrContext,
-							  buffer, 
-							  [fpData length]));
-	
-	// At this point, the buffer is PlayReady-decrypted.
-	
-	ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
-							 NULL, 
-							 NULL ) );   
-	
-	// This XOR step is to undo an additional encryption step that was needed for .NET environment.
-	for (int i=0;i<[fpData length];++i)
-		buffer[i] ^= 0xA0;
-	
-	// The buffer is fully decrypted now, but gzip compressed; so must decompress.
-	[xpsClient decompress:buffer inBufferSz:[fpData length] outBuffer:decrBuff outBufferSz:decrBuffSz];
-	
-	[fpData release];
-	
-ErrorExit:
-	if ( dr != DRM_SUCCESS ) {
-		unsigned int drInt = (unsigned int)dr;
-		NSLog(@"DRM decryption error: %d",drInt);
-		return NO;
-	}
+    NSLog(@"DRM license successfully acquired for bookID: %@", self.bookID);
 	return YES;
 }
 

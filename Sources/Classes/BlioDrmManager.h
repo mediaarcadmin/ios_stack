@@ -7,35 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BlioXpsClient.h"
+#import "BlioBookManager.h"
 
 #define HDS_STORE_FILE  L".\\playready.hds"
 #define MAX_URL_SIZE	1024
 
 @interface BlioDrmManager : NSObject {
 	BOOL drmInitialized;
-	void* bookHandle;
-	BOOL bookChanged;
-	BlioXpsClient* xpsClient;
+    NSManagedObjectID *bookID;
 }
 
 @property (nonatomic, assign) BOOL drmInitialized;
-@property (nonatomic, assign) BOOL bookChanged;
-@property (nonatomic, assign) void* bookHandle;
-@property (nonatomic, retain) BlioXpsClient* xpsClient;
 
 + (BlioDrmManager*)getDrmManager;
-
 - (void)initialize;
-
-- (void)setBook:(void*)xpsHandle;
-
-- (BOOL)getLicense;
-
-- (BOOL)decryptComponent:(NSString*)component decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz;
-
-//- (BOOL)getLicenseForBookPath:(NSString*)xpsPath;
-
-//- (BOOL)decryptComponentInBook:(NSString*)component xpsFileHandle:(void*)fileHandle decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz;
+- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)bookID;
 
 @end
