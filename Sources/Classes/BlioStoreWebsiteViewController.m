@@ -38,45 +38,81 @@
     return label;
 }
 
-- (void)createControls
-{
-	// Display instructions for website.
-	CGFloat yPlacement = kTopMargin;
-	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
-	[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Vault for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.")]];
-	
-	// blioreader.com button.
-	yPlacement += kTweenMargin + 5*kLabelHeight;
-	launchButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-	launchButton.frame = CGRectMake(self.view.bounds.size.width/2 - ((2.6)*kStdButtonWidth)/2, yPlacement, (2.6)*kStdButtonWidth, kStdButtonHeight);
-    launchButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-	[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
-	launchButton.backgroundColor = [UIColor clearColor];
-	[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:launchButton];
-	[launchButton release];
-	
-}
-
 - (void)loadView
 {	
 	// create a gradient-based content view	
-	UIView *contentView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+	self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
 	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-		contentView.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
+		self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
+		self.view.autoresizesSubviews = YES;
+		
+		// Display instructions for website.
+		CGFloat yPlacement = kTopMargin;
+		CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
+		[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Vault for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.")]];
+		
+		// blioreader.com button.
+		yPlacement += kTweenMargin + 5*kLabelHeight;
+		launchButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		launchButton.frame = CGRectMake(self.view.bounds.size.width/2 - ((2.6)*kStdButtonWidth)/2, yPlacement, (2.6)*kStdButtonWidth, kStdButtonHeight);
+		launchButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+		launchButton.backgroundColor = [UIColor clearColor];
+		[self.view addSubview:launchButton];
+		
 	}
 	else {
-		contentView.backgroundColor = [UIColor colorWithRed:224.0f/255.0f green:226.0f/255.0f blue:232.0f/255.0f alpha:1.0f]; // the default background color of grouped tableview on iPad
-	}
-#else
-	contentView.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
-#endif
+		self.view.backgroundColor = [UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f]; // the default background color of grouped tableview on iPad
+		self.view.autoresizesSubviews = YES;
+		
+		UIView * contentView = [[[UIView alloc] initWithFrame:CGRectMake(0,0,650,450)] autorelease];
+		[self.view addSubview:contentView];
+		contentView.center = CGPointMake(self.view.frame.size.width/2,self.view.frame.size.height/2);
+		contentView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+		contentView.autoresizesSubviews = NO;
 
-	contentView.autoresizesSubviews = YES;
-	self.view = contentView;
-	[contentView release];
-	[self createControls];	
+		// screenshot image
+		UIImageView * screenshotView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"store-screenshot.png"]] autorelease];
+		screenshotView.frame = CGRectMake(0,70,350,375);
+		[contentView addSubview:screenshotView];
+		
+		// Header
+		UILabel * headerLabel = [[[UILabel alloc] initWithFrame:CGRectMake(30,10,575,60)] autorelease];
+		[contentView addSubview:headerLabel];
+		headerLabel.font = [UIFont boldSystemFontOfSize:45.0f];
+		headerLabel.backgroundColor = [UIColor clearColor];
+		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
+		// sub-header
+		UILabel * subHeaderLabel = [[[UILabel alloc] initWithFrame:CGRectMake(125,60,480,40)] autorelease];
+		[contentView addSubview:subHeaderLabel];
+		subHeaderLabel.font = [UIFont systemFontOfSize:30.0f];
+		subHeaderLabel.textColor = [UIColor grayColor];
+		subHeaderLabel.backgroundColor = [UIColor clearColor];
+		subHeaderLabel.text = NSLocalizedString(@"Over 75,000 Books, Available Now",@"Buy Books View Sub-Header");
+
+		// explanation
+		UILabel * explanationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(360,140,285,230)] autorelease];
+		[contentView addSubview:explanationLabel];
+		explanationLabel.font = [UIFont boldSystemFontOfSize:12.0f];
+		explanationLabel.textColor = [UIColor blackColor];
+		explanationLabel.backgroundColor = [UIColor clearColor];
+		explanationLabel.numberOfLines = 320;
+		CGRect explanationFrame = explanationLabel.frame;
+		NSString * explanationText = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION_IPAD",nil,[NSBundle mainBundle],@"Enjoy a vast selection of cookbooks, travel guides, how-to books, schoolbooks, art books, children's stories, and magazines. Relax, learn, work, or play! The smart display lets you insert highlights, notes, videos, and even webpages. Selected books also go hands-free with Blio's read-aloud feature.\n\nFlexible & accessible. Shop endless titles, right from the Blio Bookstore, with access to over one million free books and a huge library of today's bestsellers. Then, take your library on the road by syncing to your favorite on-the-go mobile device.",@"Explanation text for how to buy books through the website/mobile Safari (for iPad)");
+		CGSize explanationSize = [explanationText sizeWithFont:explanationLabel.font constrainedToSize:explanationLabel.frame.size lineBreakMode:UILineBreakModeWordWrap];
+		explanationFrame.size.height = explanationSize.height;
+		explanationLabel.frame = explanationFrame;
+		explanationLabel.text = explanationText;
+		
+		// blioreader.com button.
+		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		launchButton.frame = CGRectMake(355,380,298,50);
+		launchButton.backgroundColor = [UIColor clearColor];
+		[launchButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
+		[contentView addSubview:launchButton];
+	}
+	[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
+	[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
+
 }
 
 - (void)launchWebsite:(id)sender {	

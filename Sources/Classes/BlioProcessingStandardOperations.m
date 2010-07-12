@@ -910,7 +910,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			}			
             else {
                 NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-                [manifestEntry setValue:@"textflow" forKey:@"location"];
+                [manifestEntry setValue:BlioManifestEntryLocationTextflow forKey:@"location"];
                 [manifestEntry setValue:rootFile forKey:@"path"];
 				[self setBookManifestValue:manifestEntry forKey:self.filenameKey];
 				self.operationSuccess = YES;

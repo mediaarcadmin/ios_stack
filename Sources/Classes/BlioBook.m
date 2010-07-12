@@ -1,5 +1,5 @@
 //
-//  MockBook.m
+//  BlioBook.m
 //  LibraryView
 //
 //  Created by matt on 15/12/2009.
@@ -460,28 +460,43 @@ static void sortedHighlightRangePredicateInit() {
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
             // TODO - we shouldn't need to check if path is a URL, the manifest entry should be different
-            if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
-                NSURL *fileUrl = [NSURL URLWithString:path];
-                NSString *fileUrlPath = [fileUrl path];
-                if (fileUrl && fileUrlPath && [[NSFileManager defaultManager] fileExistsAtPath:fileUrlPath]) {
-                    filePath = path;              
-                } else if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-                    filePath = path;
-                } else if ([[NSFileManager defaultManager] fileExistsAtPath:[self fullPathOfFileSystemItemAtPath:path]]) {
-                    filePath = [self fullPathOfFileSystemItemAtPath:path];
-                } else {
-                    filePath = path;
-                }
-            } else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
+			if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
                 filePath = [self fullPathOfXPSItemAtPath:path];
             } else if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
                 filePath = [self fullPathOfTextFlowItemAtPath:path];
-            }
+            } else if ([location isEqualToString:BlioManifestEntryLocationBundle]) {
+				filePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:path];
+            } else if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
+				filePath = [self fullPathOfFileSystemItemAtPath:path];
+			} else filePath = path;
+//			else if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
+//				NSURL *fileUrl = [NSURL URLWithString:path];
+//				NSString *fileUrlPath = [fileUrl path];
+//				if (fileUrl && fileUrlPath && [[NSFileManager defaultManager] fileExistsAtPath:fileUrlPath]) {
+//					filePath = path;              
+//				} else if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+//					filePath = path;
+//				} else if ([[NSFileManager defaultManager] fileExistsAtPath:[self fullPathOfFileSystemItemAtPath:path]]) {
+//					filePath = [self fullPathOfFileSystemItemAtPath:path];
+//				} else {
+//					filePath = path;
+//				}
+//			}
 
         }
     }
     
     return filePath;
+}
+
+- (NSString *)manifestLocationForKey:(NSString *)key {
+    NSString *fileLocation = nil;
+    
+    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        fileLocation = [manifestEntry objectForKey:@"location"];
+    }
+    return fileLocation;
 }
 
 - (NSData *)manifestDataForKey:(NSString *)key {

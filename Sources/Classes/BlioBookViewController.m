@@ -8,6 +8,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioBookViewController.h"
 #import <libEucalyptus/THNavigationButton.h>
+#import <libEucalyptus/THUIDeviceAdditions.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
@@ -605,12 +606,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIApplication *application = [UIApplication sharedApplication];
         if(self.toolbarsVisibleAfterAppearance) {
             if([application isStatusBarHidden]) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-				else [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
-#else
-                [application setStatusBarHidden:NO animated:YES]; // original code
-#endif
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
+                    [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+				else
+                    [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
                 [self.navigationController setNavigationBarHidden:YES animated:YES];
                 [self.navigationController setNavigationBarHidden:NO animated:NO];
             }
@@ -627,12 +626,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleBlackTranslucent;  
             if(![application isStatusBarHidden]) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-				else [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
-#else
-				[application setStatusBarHidden:YES animated:YES]; // original code
-#endif
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
+                    [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+				else 
+                    [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
             }            
         }
     }
@@ -703,12 +700,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                       animated:YES];
             }                        
             if(_returnToStatusBarHidden != application.isStatusBarHidden){
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [application setStatusBarHidden:_returnToStatusBarHidden withAnimation:UIStatusBarAnimationFade];
-				else [(id)application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // typecast as id to mask deprecation warnings.							
-#else
-				[application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // original code
-#endif
+				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
+                    [application setStatusBarHidden:_returnToStatusBarHidden withAnimation:UIStatusBarAnimationFade];
+				else 
+                    [(id)application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // typecast as id to mask deprecation warnings.							
             }           
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleDefault;
@@ -791,12 +786,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)_fadeWillStart
 {
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-		else [(id)[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
-#else
-		[[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // original code 
-#endif
+		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
+            [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		else
+            [(id)[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
     } 
 }
 
@@ -1087,11 +1080,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         _pageJumpSlider = slider;
         
         UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
-        leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:leftCapImage.size.height];
+        leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:0];
         [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
         
         UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
-        rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            // Work around a bug in 4.0 (+?) where the cap is used as a right cap in
+            // the image when it's used in a slider.
+            rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:rightCapImage.size.width - 1 topCapHeight:0];
+        } else {
+            rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+        }
         [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
         
         UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];

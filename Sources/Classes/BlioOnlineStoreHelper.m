@@ -112,12 +112,12 @@
 				
 				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
 													 authors:[NSArray arrayWithObject:author] 
-													coverURL:[NSURL URLWithString:coverURL] 
-													 ePubURL:nil 
-													  pdfURL:nil 
-                                                      xpsURL:nil
-												 textFlowURL:nil 
-												audiobookURL:nil 
+													coverPath:coverURL
+													 ePubPath:nil 
+													  pdfPath:nil 
+                                                      xpsPath:nil
+												 textFlowPath:nil 
+												audiobookPath:nil 
 													sourceID:BlioBookSourceOnlineStore 
 											sourceSpecificID:isbn
 											 placeholderOnly:NO
