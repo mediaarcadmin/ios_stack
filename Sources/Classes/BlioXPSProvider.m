@@ -414,18 +414,25 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 #pragma mark DRM Handler
 
 - (NSDictionary *)openDRMRenderingComponentAtPath:(NSString *)path {
+    NSMutableData *componentData = nil;
+    int compressionType = 0;
+    
     XPS_FILE_PACKAGE_INFO packageInfo;
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
-    NSLog(@"open %@ returned %d, compression %d, length %d", path, ret, packageInfo.compression_type, packageInfo.length);
     
-    //NSMutableData *componentData = [NSMutableData dataWithBytesNoCopy:packageInfo.pComponentData length:packageInfo.length freeWhenDone:NO];
-    NSMutableData *componentData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
-
+    if (!ret) {
+        NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
+        return nil;
+    }
+    componentData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
+    compressionType = packageInfo.compression_type;
+    
+    
     NSMutableDictionary *xpsDataDict = [NSMutableDictionary dictionaryWithCapacity:3];
     [xpsDataDict setValue:[NSValue valueWithNonretainedObject:self] forKey:@"xpsProvider"];
     [xpsDataDict setObject:path forKey:@"xpsPath"];
     
-    switch (packageInfo.compression_type) {
+    switch (compressionType) {
         case 0:
             [xpsDataDict setValue:componentData forKey:@"xpsData"];
             break;
@@ -436,8 +443,6 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 //            NSData *inflatedData = [NSData dataWithBytesNoCopy:decryptedBuff length:decryptedBuffSz freeWhenDone:NO];
 //            [xpsDataDict setValue:inflatedData forKey:@"xpsData"];
             
-            unsigned char* decrBuff;	
-            NSInteger decrBuffSz;
             unsigned char *buffer = (unsigned char*)[componentData bytes];
             
             // This XOR step is to undo an additional encryption step that was needed for .NET environment.
@@ -445,15 +450,12 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
                 buffer[i] ^= 0xA0;
             
             // The buffer is fully decrypted now, but gzip compressed; so must decompress.
-            [self decompress:buffer inBufferSz:[componentData length] outBuffer:&decrBuff outBufferSz:&decrBuffSz];
-            
-            NSLog(@"Inflated data is length %d", decrBuffSz);
-            NSData *inflatedData = [NSData dataWithBytesNoCopy:decrBuff length:decrBuffSz freeWhenDone:NO];
+            NSData *inflatedData = [self decompress:componentData];
             [xpsDataDict setValue:inflatedData forKey:@"xpsData"];
             
         }   break;
         default:
-            NSLog(@"Unrecognise compression type %d encountered at path %@", packageInfo.compression_type, path);
+            NSLog(@"Unrecognise compression type %d encountered at path %@", compressionType, path);
             [xpsDataDict setValue:componentData forKey:@"xpsData"];
             break;
     }

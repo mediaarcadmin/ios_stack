@@ -1224,7 +1224,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     // Decrypt a textflow file for Virgin Islands.
     decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"] forBookWithID:virginID];
     NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-
+    
     // Decrypt a fixed page for Virgin Islands.
     decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] forBookWithID:virginID];
     NSLog(@"Virgin Islands decrypted fixed page length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
