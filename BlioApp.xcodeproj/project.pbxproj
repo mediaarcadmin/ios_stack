@@ -295,9 +295,6 @@
 		C944EC0311C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
 		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		C94D27B910DBCF4C00F30AFE /* PDFs in Resources */ = {isa = PBXBuildFile; fileRef = C94D27B510DBCF4C00F30AFE /* PDFs */; };
-		C94D864110E78E140094B9C5 /* button-getbooks.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863E10E78E140094B9C5 /* button-getbooks.png */; };
-		C94D864210E78E140094B9C5 /* button-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863F10E78E140094B9C5 /* button-settings.png */; };
-		C94D864310E78E140094B9C5 /* button-sync.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D864010E78E140094B9C5 /* button-sync.png */; };
 		C9726387111C595F001BCC0B /* BlioStoreTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726386111C595F001BCC0B /* BlioStoreTabViewController.m */; };
 		C97263A3111C6146001BCC0B /* BlioStoreFeaturedController.m in Sources */ = {isa = PBXBuildFile; fileRef = C97263A2111C6146001BCC0B /* BlioStoreFeaturedController.m */; };
 		C9726466111C760B001BCC0B /* BlioStoreCategoriesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9726465111C760B001BCC0B /* BlioStoreCategoriesController.m */; };
@@ -350,9 +347,6 @@
 		C9AF19E91147A772007D7AFC /* icon-layout.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466810E22BCD002305A2 /* icon-layout.png */; };
 		C9AF19EA1147A772007D7AFC /* done-button-down.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477110E244FE002305A2 /* done-button-down.png */; };
 		C9AF19EB1147A772007D7AFC /* done-button-up.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477210E244FE002305A2 /* done-button-up.png */; };
-		C9AF19EC1147A772007D7AFC /* button-getbooks.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863E10E78E140094B9C5 /* button-getbooks.png */; };
-		C9AF19ED1147A772007D7AFC /* button-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D863F10E78E140094B9C5 /* button-settings.png */; };
-		C9AF19EE1147A772007D7AFC /* button-sync.png in Resources */ = {isa = PBXBuildFile; fileRef = C94D864010E78E140094B9C5 /* button-sync.png */; };
 		C9AF19EF1147A772007D7AFC /* paper-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2310E90C220016D44A /* paper-black.png */; };
 		C9AF19F01147A772007D7AFC /* paper-neutral.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2410E90C220016D44A /* paper-neutral.png */; };
 		C9AF19F11147A772007D7AFC /* paper-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2510E90C220016D44A /* paper-white.png */; };
@@ -1106,9 +1100,6 @@
 		C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutView.h; sourceTree = "<group>"; };
 		C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutView.m; sourceTree = "<group>"; };
 		C94D27B510DBCF4C00F30AFE /* PDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PDFs; sourceTree = "<group>"; };
-		C94D863E10E78E140094B9C5 /* button-getbooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-getbooks.png"; sourceTree = "<group>"; };
-		C94D863F10E78E140094B9C5 /* button-settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-settings.png"; sourceTree = "<group>"; };
-		C94D864010E78E140094B9C5 /* button-sync.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-sync.png"; sourceTree = "<group>"; };
 		C9726385111C595F001BCC0B /* BlioStoreTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreTabViewController.h; sourceTree = "<group>"; };
 		C9726386111C595F001BCC0B /* BlioStoreTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreTabViewController.m; sourceTree = "<group>"; };
 		C97263A1111C6146001BCC0B /* BlioStoreFeaturedController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreFeaturedController.h; sourceTree = "<group>"; };
@@ -1501,9 +1492,6 @@
 				7D81ED2310E90C220016D44A /* paper-black.png */,
 				7D81ED2410E90C220016D44A /* paper-neutral.png */,
 				7D81ED2510E90C220016D44A /* paper-white.png */,
-				C94D863E10E78E140094B9C5 /* button-getbooks.png */,
-				C94D863F10E78E140094B9C5 /* button-settings.png */,
-				C94D864010E78E140094B9C5 /* button-sync.png */,
 				C985477110E244FE002305A2 /* done-button-down.png */,
 				C985477210E244FE002305A2 /* done-button-up.png */,
 				DCA65A4511503CF6006534F4 /* icon-categories.png */,
@@ -2308,9 +2296,6 @@
 				C985466B10E22BCD002305A2 /* icon-layout.png in Resources */,
 				C985477310E244FE002305A2 /* done-button-down.png in Resources */,
 				C985477410E244FE002305A2 /* done-button-up.png in Resources */,
-				C94D864110E78E140094B9C5 /* button-getbooks.png in Resources */,
-				C94D864210E78E140094B9C5 /* button-settings.png in Resources */,
-				C94D864310E78E140094B9C5 /* button-sync.png in Resources */,
 				7D81ED2610E90C220016D44A /* paper-black.png in Resources */,
 				7D81ED2710E90C220016D44A /* paper-neutral.png in Resources */,
 				7D81ED2810E90C220016D44A /* paper-white.png in Resources */,
@@ -2479,9 +2464,6 @@
 				C9AF19E91147A772007D7AFC /* icon-layout.png in Resources */,
 				C9AF19EA1147A772007D7AFC /* done-button-down.png in Resources */,
 				C9AF19EB1147A772007D7AFC /* done-button-up.png in Resources */,
-				C9AF19EC1147A772007D7AFC /* button-getbooks.png in Resources */,
-				C9AF19ED1147A772007D7AFC /* button-settings.png in Resources */,
-				C9AF19EE1147A772007D7AFC /* button-sync.png in Resources */,
 				C9AF19EF1147A772007D7AFC /* paper-black.png in Resources */,
 				C9AF19F01147A772007D7AFC /* paper-neutral.png in Resources */,
 				C9AF19F11147A772007D7AFC /* paper-white.png in Resources */,
