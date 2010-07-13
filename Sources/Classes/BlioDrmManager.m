@@ -214,4 +214,144 @@ ErrorExit:
     return ret;
 }
 
+//- (BOOL)decryptComponent:(NSString*)component decryptedBuffer:(unsigned char**)decrBuff decryptedBufferSz:(NSInteger*)decrBuffSz {
+- (NSData *)decryptComponent:(NSString*)component forBookWithID:(NSManagedObjectID *)aBookID {
+    
+    if ( !self.drmInitialized ) {
+        NSLog(@"DRM error: content cannot be decrypted because DRM is not initialized.");
+        return nil;
+    }
+    
+    BlioXPSProvider *xpsProvider;
+    NSData *componentData;
+    NSData *uncompressedData;
+    unsigned char* componentBuff;
+    
+    DRM_RESULT dr = DRM_SUCCESS;
+    
+    @synchronized (self) {
+        if ( ![self.bookID isEqual:aBookID] ) { 
+            ChkDR( [self setHeaderForBookWithID:aBookID] );
+            self.bookID = aBookID;
+        }
+        
+        const DRM_CONST_STRING *rgpdstrRights[1] = {0};
+        DRM_DECRYPT_CONTEXT     oDecryptContext  = {{0}};
+        DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
+        
+        // Roundabout assignment needed to get around compiler complaint.
+        DRM_CONST_STRING readRight;
+        readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
+        readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
+        rgpdstrRights[0] = &readRight; 
+        ChkDR( Drm_Reader_Bind( [DrmGlobals getDrmGlobals].drmAppContext,
+                               rgpdstrRights,
+                               NO_OF(rgpdstrRights),
+                               NULL, 
+                               NULL,
+                               &oDecryptContext ) );
+        
+        xpsProvider = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] xpsProvider];
+        componentData = [xpsProvider dataForComponentAtPath:component];
+        
+        componentBuff = (unsigned char*)[componentData bytes]; 
+        
+        ChkDR(Drm_Reader_Decrypt (&oDecryptContext,
+                                  &oCtrContext,
+                                  componentBuff, 
+                                  [componentData length]));
+        
+        // At this point, the buffer is PlayReady-decrypted.
+        
+        ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
+                                 NULL, 
+                                 NULL ) ); 
+    }
+    
+    // This XOR step is to undo an additional encryption step that was needed for .NET environment.
+    for (int i=0;i<[componentData length];++i)
+        componentBuff[i] ^= 0xA0;
+    
+    // The buffer is fully decrypted now, but gzip compressed; so must decompress.
+    //[BlioXpsClient decompress:buffer inBufferSz:[componentData length] outBuffer:decrBuff outBufferSz:decrBuffSz];
+    uncompressedData = [xpsProvider decompress:componentData];
+    NSLog(@"Uncompressed length %d, from %d", [uncompressedData length], [componentData length]);
+
+        
+ErrorExit:
+    if ( (uncompressedData != nil) && (dr != DRM_SUCCESS) ) {
+        unsigned int drInt = (unsigned int)dr;
+        NSLog(@"DRM decryption error: %d",drInt);
+        return nil;
+    }
+    return uncompressedData;
+    
+#if false   
+    DRM_RESULT dr = DRM_SUCCESS;
+    const DRM_CONST_STRING *rgpdstrRights[1] = {0};
+    DRM_DECRYPT_CONTEXT     oDecryptContext  = {{0}};
+    DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
+    
+    if ( self.bookChanged ) {
+        // Set the header property so we know what license to bind to.
+        ChkDR( [self setHeader:self.bookHandle] );
+    }
+    // Roundabout assignment needed to get around compiler complaint.
+    DRM_CONST_STRING readRight;
+    readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
+    readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
+    rgpdstrRights[0] = &readRight; 
+    ChkDR( Drm_Reader_Bind( [DrmGlobals getDrmGlobals].drmAppContext,
+                           rgpdstrRights,
+                           NO_OF(rgpdstrRights),
+                           NULL, 
+                           NULL,
+                           &oDecryptContext ) );
+    //}
+    
+    // Get encrypted page from XPS file.
+    void* compHandle = [xpsClient openComponent:self.bookHandle componentPath:component];
+    NSMutableData* fpData = [[NSMutableData alloc] init];
+    unsigned char buff[4096];
+    int bytesRead = [xpsClient readComponent:compHandle componentBuffer:buff componentLen:sizeof(buff)];
+    while (1) {
+        NSData* data = [[NSData alloc] initWithBytes:(const void*)buff length:bytesRead];
+        [fpData appendData:data];
+        if ( bytesRead != sizeof(buff) )
+            break;
+        bytesRead = [xpsClient readComponent:compHandle componentBuffer:buff componentLen:sizeof(buff)]; 
+    }
+    [xpsClient closeComponent:compHandle];
+    unsigned char *buffer = (unsigned char*)[fpData bytes];
+    
+    ChkDR(Drm_Reader_Decrypt (&oDecryptContext,
+                              &oCtrContext,
+                              buffer, 
+                              [fpData length]));
+    
+    // At this point, the buffer is PlayReady-decrypted.
+    
+    ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
+                             NULL, 
+                             NULL ) );   
+    
+    // This XOR step is to undo an additional encryption step that was needed for .NET environment.
+    for (int i=0;i<[fpData length];++i)
+        buffer[i] ^= 0xA0;
+    
+    // The buffer is fully decrypted now, but gzip compressed; so must decompress.
+    [xpsClient decompress:buffer inBufferSz:[fpData length] outBuffer:decrBuff outBufferSz:decrBuffSz];
+    
+    [fpData release];
+    
+ErrorExit:
+    if ( dr != DRM_SUCCESS ) {
+        unsigned int drInt = (unsigned int)dr;
+        NSLog(@"DRM decryption error: %d",drInt);
+        return NO;
+    }
+    return YES;
+#endif
+}
+
 @end

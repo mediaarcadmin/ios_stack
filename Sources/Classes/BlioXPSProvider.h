@@ -16,6 +16,7 @@
     
     NSLock *renderingLock;
     NSLock *contentsLock;
+    NSLock *inflateLock;
     
     NSString *tempDirectory;
     NSInteger pageCount;
@@ -30,5 +31,6 @@
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (NSData *)dataForComponentAtPath:(NSString *)path;
+- (NSData *)decompress:(NSData *)data;
 
 @end
