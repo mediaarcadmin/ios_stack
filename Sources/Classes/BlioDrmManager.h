@@ -21,6 +21,7 @@
 
 + (BlioDrmManager*)getDrmManager;
 - (void)initialize;
-- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)bookID;
+- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID;
+- (NSData *)decryptComponent:(NSString*)component forBookWithID:(NSManagedObjectID *)aBookID;
 
 @end

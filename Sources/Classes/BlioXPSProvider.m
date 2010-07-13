@@ -52,6 +52,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     
     [renderingLock release];
     [contentsLock release];
+    [inflateLock release];
     
     [super dealloc];
 }
@@ -61,6 +62,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         self.bookID = aBookID;
         renderingLock = [[NSLock alloc] init];
         contentsLock = [[NSLock alloc] init];
+        inflateLock = [[NSLock alloc] init];
         
         CFUUIDRef theUUID = CFUUIDCreate(NULL);
         CFStringRef UUIDString = CFUUIDCreateString(NULL, theUUID);
@@ -78,23 +80,23 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         XPS_Start();
         xpsHandle = XPS_Open([[self.book xpsPath] UTF8String], [self.tempDirectory UTF8String]);
         
-        XPS_URI_PLUGIN_INFO	upi = {
-            XPS_URI_SOURCE_PLUGIN,
-            sizeof(XPS_URI_PLUGIN_INFO),
-            "F7550D8B-9A90-4839-B191-AD03C8914895",
-            self,
-            BlioXPSProviderDRMOpen,
-            NULL,
-            BlioXPSProviderDRMRewind,
-            BlioXPSProviderDRMSkip,
-            BlioXPSProviderDRMRead,
-            BlioXPSProviderDRMSize,
-            BlioXPSProviderDRMClose
-        };
+        //XPS_URI_PLUGIN_INFO	upi = {
+//            XPS_URI_SOURCE_PLUGIN,
+//            sizeof(XPS_URI_PLUGIN_INFO),
+//            "F7550D8B-9A90-4839-B191-AD03C8914895",
+//            self,
+//            BlioXPSProviderDRMOpen,
+//            NULL,
+//            BlioXPSProviderDRMRewind,
+//            BlioXPSProviderDRMSkip,
+//            BlioXPSProviderDRMRead,
+//            BlioXPSProviderDRMSize,
+//            BlioXPSProviderDRMClose
+//        };
         
         CFRelease(UUIDString);
         
-        XPS_RegisterDrmHandler(xpsHandle, &upi);
+        //XPS_RegisterDrmHandler(xpsHandle, &upi);
         
         XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
         pageCount = XPS_GetNumberPages(xpsHandle, 0);
@@ -293,7 +295,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	strm.opaque = Z_NULL;
 	strm.avail_in = 0;
 	strm.next_in = Z_NULL;
-	
+	    
 	ret = [self inflateInit:&strm]; 
 	
 	if (ret != Z_OK)
@@ -335,6 +337,76 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 		return Z_OK;
 	return Z_DATA_ERROR;
 }
+
+- (NSData *)decompress:(NSData *)data {
+
+	int ret;
+	unsigned bytesDecompressed;
+	z_stream strm;
+	const int BUFSIZE=16384;
+	unsigned char outbuf[BUFSIZE];
+	NSMutableData* outData = [[NSMutableData alloc] init];
+	
+	// Read the gzip header.
+	// TESTING
+	//unsigned char ID1 = inBuffer[0];  // should be x1f
+	//unsigned char ID2 = inBuffer[1];  // should be x8b
+	//unsigned char CM = inBuffer[2];   // should be 8
+	
+	// Allocate inflate state.
+	strm.zalloc = Z_NULL;
+	strm.zfree = Z_NULL;
+	strm.opaque = Z_NULL;
+	strm.avail_in = 0;
+	strm.next_in = Z_NULL;
+	
+    [inflateLock lock];
+
+    ret = XPS_inflateInit2(&strm,31); // second argument = 15 (default window size) + 16 (for gzip decoding)	
+	//ret = [self inflateInit:&strm]; 
+	
+	if (ret != Z_OK) {
+        [inflateLock unlock];
+		return nil;
+    }
+	
+	strm.avail_in = [data length];
+	// if (strm.avail_in == 0)
+	//	  break;
+	strm.next_in = (Bytef *)[data bytes];
+	// Inflate until the output buffer isn't full
+	do {
+		strm.avail_out = BUFSIZE;
+		strm.next_out = outbuf;
+		ret = XPS_inflate(&strm,Z_NO_FLUSH); 
+		// ret should be Z_STREAM_END
+		switch (ret) {
+			case Z_NEED_DICT:
+				ret = Z_DATA_ERROR;
+			case Z_DATA_ERROR:
+			case Z_MEM_ERROR:
+				XPS_inflateEnd(&strm);
+                [inflateLock unlock];
+				return nil;
+		}
+		bytesDecompressed = BUFSIZE - strm.avail_out;
+		NSData* data = [[NSData alloc] initWithBytes:(const void*)outbuf length:bytesDecompressed];
+		[outData appendData:data];
+	}
+	while (strm.avail_out == 0);
+	XPS_inflateEnd(&strm);
+	
+    [inflateLock unlock];
+
+	// TESTING
+	//NSString* testStr = [[NSString alloc] initWithData:outData encoding:NSASCIIStringEncoding];
+	//NSLog(@"Unencrypted buffer: %s",testStr);
+	
+	if (ret == Z_STREAM_END)
+		return [outData autorelease];
+	return nil;
+}
+
 
 #pragma mark -
 #pragma mark DRM Handler

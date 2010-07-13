@@ -491,7 +491,21 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-		
+    
+        
+		[self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
+                                              authors:[NSArray arrayWithObjects:@"Lynne M. Sullivan", nil]
+											coverPath:@"MockCovers/VirginIslands.png"
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"PDFs/Virgin Islands.drm.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
     }
     
 	
@@ -1181,64 +1195,46 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)showSettings:(id)sender {    
 	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
     
-/*	// TEMPORARY: test code, will be moved
-	
-	// Get a license for a book.
-	NSString* xpsIslandsBook = @"Virgin Islands.drm.xps";
-	NSString* xpsIslandsPath = [[NSBundle mainBundle] pathForResource:xpsIslandsBook ofType:nil inDirectory:@"PDFs"];
-	void* xpsIslandsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsIslandsPath];
-	// Always call setBook for first DRM operation.
-	[[BlioDrmManager getDrmManager] setBook:xpsIslandsHandle];
-	BOOL success = [[BlioDrmManager getDrmManager] getLicense];
-	
-	// Get license for another book.
-	NSString* xpsRabbitBook = @"The Tale of Peter Rabbit.drm.xps"; 
-	NSString* xpsRabbitPath = [[NSBundle mainBundle] pathForResource:xpsRabbitBook ofType:nil inDirectory:@"PDFs"];
-	void* xpsRabbitHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsRabbitPath];
-	// Since we last did a DRM operation on a different book, we call setBook again.
-	[[BlioDrmManager getDrmManager] setBook:xpsRabbitHandle];
-	success = [[BlioDrmManager getDrmManager] getLicense];
-	
-	// Decrypt a textflow file for Virgin Islands. 
-	unsigned char* decryptedBuff;	
-	NSInteger decryptedBuffSz;
-	// Again we call setBook since we are switching books again.
-	[[BlioDrmManager getDrmManager] setBook:xpsIslandsHandle];
-	success = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"] decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
-	// If successful, decrypted content is now in the buffer.
-	//	// Do something with it.  Don't forget you now have the size of the buffer too.
-	NSLog(@"Decrypted textflow: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
-	//	// You are responsible for freeing (not releasing) the buffer.
-	free(decryptedBuff);
-	
-	//	// Decrypt a fixed page for Virgin Islands.
-	// No need to call setBook.
-	success = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
-	//	// If successful, decrypted content is now in the buffer.
-	//	// Do something with it.  Don't forget you now have the size of the buffer too.
-	NSLog(@"Decrypted page: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
-	//	// You are responsible for freeing (not releasing) the buffer.
-	free(decryptedBuff);
-	
-	// Close the Virgin Islands xps.
-	[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsIslandsHandle];
+	// TEMPORARY: test code, will be moved
+    
+    // Fetch all paid books
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sourceID == %@", [NSNumber numberWithInt:BlioBookSourceOnlineStore]];
+    [request setPredicate:predicate];
+    
+    NSError *error;
+    NSArray *paidBooks = [self.managedObjectContext executeFetchRequest:request error:&error];
+    NSManagedObjectID *virginID, *rabbitID;
+    
+    // Iterate through the books getting their licenses
+    for (NSManagedObject *book in paidBooks) {
+        BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:book.objectID];
+        NSLog(@"License retrieval for paid book '%@' %@.", [book valueForKey:@"title"], success ? @"succeeded" : @"failed");
+        
+        if ([[book valueForKey:@"title"] isEqualToString:@"Virgin Islands"])
+            virginID = book.objectID;
+        else if ([[book valueForKey:@"title"] isEqualToString:@"The Tale of Peter Rabbit"])
+            rabbitID = book.objectID;
+    }
+    
+    NSData *decryptedData;
+    
+    // Decrypt a textflow file for Virgin Islands.
+    decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"] forBookWithID:virginID];
+    NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+
+    // Decrypt a fixed page for Virgin Islands.
+    decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] forBookWithID:virginID];
+    NSLog(@"Virgin Islands decrypted fixed page length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
 	
 	// Decrypt a textflow file for Peter Rabbit.
-	// Must call setBook.
-	[[BlioDrmManager getDrmManager] setBook:xpsRabbitHandle];
-	success = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"] decryptedBuffer:&decryptedBuff decryptedBufferSz:&decryptedBuffSz];
-	// If successful, decrypted content is now in the buffer.
-	// Do something with it.  Don't forget you now have the size of the buffer too.
-	NSLog(@"Decrypted textflow: %s",decryptedBuff);  // Not null-terminated, but gives an idea.
-	// You are responsible for freeing (not releasing) the buffer.
-	free(decryptedBuff);
-	
-	// Close the Peter Rabbit xps.
-	[[[BlioDrmManager getDrmManager] xpsClient] closeFile:xpsRabbitHandle];
-	
+    decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"] forBookWithID:rabbitID];
+    NSLog(@"Peter Rabbit decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+
 	//	
 	// END temporary code
- */
 	
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
