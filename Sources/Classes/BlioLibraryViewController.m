@@ -172,10 +172,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	NSMutableArray *libraryItems = [NSMutableArray array];
     UIBarButtonItem *item;
 	
-	item = [[UIBarButtonItem alloc] initWithTitle:@"Sort"
+	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Sort", @"Label for Library View Sort button")
 	                                        style:UIBarButtonItemStyleBordered
 	                                       target:self 
 	                                       action:@selector(showSortOptions:)];
+    item.width = 69.0f;
 	[item setAccessibilityLabel:NSLocalizedString(@"Sort", @"Accessibility label for Library View Sort button")];
 	[item setAccessibilityHint:NSLocalizedString(@"Provides options for sorting the library", @"Accessibility label for Library View Sort hint")];
 	[libraryItems addObject:item];
@@ -185,7 +186,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[libraryItems addObject:item];
 	[item release];
 	
-	item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-getbooks.png"]
+	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"\u2193 Get Books", @"Label for Library View Sort button")
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showStore:)];
@@ -198,11 +199,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[item release];
 	
 	
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button-settings.png"]
+    item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", @"Label for Library View Settings button")
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showSettings:)];
-    
+    item.width = 69.0f;
     [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Library View Settings button")];
 	
     [libraryItems addObject:item];
