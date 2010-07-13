@@ -224,6 +224,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
+        if (0) {
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Bill Willingham"]
 											coverPath:@"MockCovers/FablesLegendsInExile.png"
@@ -476,7 +477,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        
+        }
+        //if (0) {
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
 											coverPath:@"MockCovers/Peter Rabbit.png"
@@ -490,7 +492,21 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-		
+    //}
+        
+		[self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
+                                              authors:[NSArray arrayWithObjects:@"Unknown", nil]
+											coverPath:@"MockCovers/VirginIslands.png"
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"PDFs/Virgin Islands.drm.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
     }
     
 	

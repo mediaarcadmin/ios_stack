@@ -186,27 +186,32 @@ ErrorExit:
 }
 
 - (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID {
-   
+    BOOL ret = NO;
+    
     if ( !self.drmInitialized ) {
 		NSLog(@"DRM error: license cannot be acquired because DRM is not initialized.");
-		return NO;
+		return ret;
 	}
      
-    DRM_RESULT dr = DRM_SUCCESS;
-	if ( ![self.bookID isEqual:aBookID] ) { 
-		ChkDR( [self setHeaderForBookWithID:aBookID] );
-        self.bookID = aBookID;
-	}
-    
-	ChkDR( [self getDRMLicense] );
-    
-ErrorExit:
-	if ( dr != DRM_SUCCESS ) {
-		NSLog(@"DRM license error: %d",dr);
-		return NO;
-	}
-    NSLog(@"DRM license successfully acquired for bookID: %@", self.bookID);
-	return YES;
+    @synchronized (self) {
+        DRM_RESULT dr = DRM_SUCCESS;
+        if ( ![self.bookID isEqual:aBookID] ) { 
+            ChkDR( [self setHeaderForBookWithID:aBookID] );
+            self.bookID = aBookID;
+        }
+        
+        ChkDR( [self getDRMLicense] );
+        
+    ErrorExit:
+        if ( dr != DRM_SUCCESS ) {
+            NSLog(@"DRM license error: %d",dr);
+            ret = NO;
+        } else {
+            NSLog(@"DRM license successfully acquired for bookID: %@", self.bookID);
+            ret = YES;
+        }
+    }
+    return ret;
 }
 
 @end
