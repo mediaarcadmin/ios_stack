@@ -80,23 +80,25 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         XPS_Start();
         xpsHandle = XPS_Open([[self.book xpsPath] UTF8String], [self.tempDirectory UTF8String]);
         
-        //XPS_URI_PLUGIN_INFO	upi = {
-//            XPS_URI_SOURCE_PLUGIN,
-//            sizeof(XPS_URI_PLUGIN_INFO),
-//            "F7550D8B-9A90-4839-B191-AD03C8914895",
-//            self,
-//            BlioXPSProviderDRMOpen,
-//            NULL,
-//            BlioXPSProviderDRMRewind,
-//            BlioXPSProviderDRMSkip,
-//            BlioXPSProviderDRMRead,
-//            BlioXPSProviderDRMSize,
-//            BlioXPSProviderDRMClose
-//        };
+        XPS_URI_PLUGIN_INFO	upi = {
+            XPS_URI_SOURCE_PLUGIN,
+            sizeof(XPS_URI_PLUGIN_INFO),
+            "",
+            self,
+            BlioXPSProviderDRMOpen,
+            NULL,
+            BlioXPSProviderDRMRewind,
+            BlioXPSProviderDRMSkip,
+            BlioXPSProviderDRMRead,
+            BlioXPSProviderDRMSize,
+            BlioXPSProviderDRMClose
+        };
+        
+        strncpy(upi.guid, [(NSString *)UUIDString UTF8String], [(NSString *)UUIDString length]);
         
         CFRelease(UUIDString);
         
-        //XPS_RegisterDrmHandler(xpsHandle, &upi);
+        XPS_RegisterDrmHandler(xpsHandle, &upi);
         
         XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
         pageCount = XPS_GetNumberPages(xpsHandle, 0);
