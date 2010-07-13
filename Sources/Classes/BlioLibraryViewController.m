@@ -224,7 +224,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
-        if (0) {
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Bill Willingham"]
 											coverPath:@"MockCovers/FablesLegendsInExile.png"
@@ -477,8 +476,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        }
-        //if (0) {
+        
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
 											coverPath:@"MockCovers/Peter Rabbit.png"
@@ -492,7 +490,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-    //}
+    
         
 		[self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
                                               authors:[NSArray arrayWithObjects:@"Unknown", nil]
@@ -1196,15 +1194,32 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)showSettings:(id)sender {    
 	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
     
-/*	// TEMPORARY: test code, will be moved
-	
+	// TEMPORARY: test code, will be moved
+    
+    // Fetch all paid books
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sourceID == %@", [NSNumber numberWithInt:BlioBookSourceOnlineStore]];
+    [request setPredicate:predicate];
+    
+    NSError *error;
+    NSArray *paidBooks = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
+    // Iterate through the books getting their licenses
+    for (NSManagedObject *book in paidBooks) {
+        BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:book.objectID];
+        NSLog(@"License retrieval for paid book '%@' %@.", [book valueForKey:@"title"], success ? @"succeeded" : @"failed");
+    }
+    
+	/*
 	// Get a license for a book.
 	NSString* xpsIslandsBook = @"Virgin Islands.drm.xps";
 	NSString* xpsIslandsPath = [[NSBundle mainBundle] pathForResource:xpsIslandsBook ofType:nil inDirectory:@"PDFs"];
 	void* xpsIslandsHandle = [[[BlioDrmManager getDrmManager] xpsClient] openFile:xpsIslandsPath];
 	// Always call setBook for first DRM operation.
-	[[BlioDrmManager getDrmManager] setBook:xpsIslandsHandle];
-	BOOL success = [[BlioDrmManager getDrmManager] getLicense];
+	[[BlioDrmManager getDrmManager] setBook:xpsIslandsHandle];    
+	BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginBookId];
 	
 	// Get license for another book.
 	NSString* xpsRabbitBook = @"The Tale of Peter Rabbit.drm.xps"; 
