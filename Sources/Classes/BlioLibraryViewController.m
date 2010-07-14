@@ -225,6 +225,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
+        if (0){
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Bill Willingham"]
 											coverPath:@"MockCovers/FablesLegendsInExile.png"
@@ -238,14 +239,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        
+        }
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
                                               authors:[NSArray arrayWithObject:@"Stella Blackstone"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
 											 ePubPath:nil
 		 //                                   pdfPath:@"PDFs/Three Little Pigs.pdf
 											  pdfPath:nil
-											  xpsPath:@"PDFs/Three Little Pigs.pdf"
+											  xpsPath:@"PDFs/Three Little Pigs.xps"
 										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
 										audiobookPath:@"AudioBooks/Three Little Pigs.zip"
 											 sourceID:BlioBookSourceLocalBundle
@@ -253,7 +254,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-		
+		if (0) {
         [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
                                               authors:[NSArray arrayWithObject:@"David J. Hunter"]
 											coverPath:@"MockCovers/Essentials_of_Discrete_Mathematics.png"
@@ -477,7 +478,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        
+        }
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
 											coverPath:@"MockCovers/Peter Rabbit.png"
@@ -506,6 +507,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
+        
     }
     
 	
@@ -1210,8 +1212,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
     // Iterate through the books getting their licenses
     for (NSManagedObject *book in paidBooks) {
-        BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:book.objectID];
-        NSLog(@"License retrieval for paid book '%@' %@.", [book valueForKey:@"title"], success ? @"succeeded" : @"failed");
+        //BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:book.objectID];
+       // NSLog(@"License retrieval for paid book '%@' %@.", [book valueForKey:@"title"], success ? @"succeeded" : @"failed");
         
         if ([[book valueForKey:@"title"] isEqualToString:@"Virgin Islands"])
             virginID = book.objectID;
@@ -1220,6 +1222,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     }
     
     NSData *decryptedData;
+    
+    
+    BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
+    NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
+    success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
+    NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
     
     // Decrypt a textflow file for Virgin Islands.
     decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"] forBookWithID:virginID];
@@ -1483,18 +1491,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)blioCoverPageDidFinishRenderAfterDelay:(NSNotification *)notification {
-    self.firstPageRendered = YES;
     
-    if (self.bookCoverPopped) {
+    if (self.bookCoverPopped && !self.firstPageRendered) {
+        self.firstPageRendered = YES;
         [self removeShrinkBookAnimation:[self.currentPoppedBookCover superview]];
         [(BlioBookViewController *)self.navigationController.topViewController toggleToolbars];
         
         self.currentPoppedBookCover = nil;
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                        name:@"blioCoverPageDidFinishRender" 
+                                                      object:nil];
     }    
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:@"blioCoverPageDidFinishRender" 
-                                                  object:nil];
+    
 	
 }
 

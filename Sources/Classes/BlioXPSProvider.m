@@ -10,7 +10,14 @@
 #import "BlioBook.h"
 #import "BlioXPSProvider.h"
 #import "BlioBookManager.h"
+#import "BlioDrmManager.h"
 #import "zlib.h"
+
+static NSString* const BlioXPSProviderEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages/";
+static NSString* const BlioXPSProviderEncryptedPagesExtension = @"bin";
+
+static NSString * const BlioXPSProviderComponentExtensionFPage = @"fpage";
+static NSString * const BlioXPSProviderComponentExtensionRels = @"rels";
 
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
 void BlioXPSProviderDRMRewind(URI_HANDLE h);
@@ -30,6 +37,8 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @property (nonatomic, retain) NSMutableDictionary *xpsData;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
+- (NSData *)decompressWithRawDeflate:(NSData *)data;
+//- (NSData *)decompressWithGZipCompression:(NSData *)data;
 
 @end
 
@@ -68,37 +77,48 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         CFStringRef UUIDString = CFUUIDCreateString(NULL, theUUID);
         CFRelease(theUUID);
         self.tempDirectory = [NSTemporaryDirectory() stringByAppendingPathComponent:(NSString *)UUIDString];
+        //NSLog(@"temp string is %@ for book with ID %@", (NSString *)UUIDString, self.bookID);
         
         NSError *error;
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:self.tempDirectory]) {
             if (![[NSFileManager defaultManager] createDirectoryAtPath:self.tempDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
                 NSLog(@"Unable to create temp XPS directory at path %@ with error %@ : %@", self.tempDirectory, error, [error userInfo]);
+                return nil;
             }
         }
         
         XPS_Start();
-        xpsHandle = XPS_Open([[self.book xpsPath] UTF8String], [self.tempDirectory UTF8String]);
+        NSString *xpsPath = [self.book xpsPath];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:xpsPath]) {
+            NSLog(@"Error creating xpsProvider. File does not exist at path: %@", xpsPath);
+            return nil;
+        }
         
-        XPS_URI_PLUGIN_INFO	upi = {
-            XPS_URI_SOURCE_PLUGIN,
-            sizeof(XPS_URI_PLUGIN_INFO),
-            "",
-            self,
-            BlioXPSProviderDRMOpen,
-            NULL,
-            BlioXPSProviderDRMRewind,
-            BlioXPSProviderDRMSkip,
-            BlioXPSProviderDRMRead,
-            BlioXPSProviderDRMSize,
-            BlioXPSProviderDRMClose
-        };
+        xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
-        strncpy(upi.guid, [(NSString *)UUIDString UTF8String], [(NSString *)UUIDString length]);
+        if ([[self.book valueForKey:@"sourceID"] isEqual:[NSNumber numberWithInt:BlioBookSourceOnlineStore]]) {
+            XPS_URI_PLUGIN_INFO	upi = {
+                XPS_URI_SOURCE_PLUGIN,
+                sizeof(XPS_URI_PLUGIN_INFO),
+                "",
+                self,
+                BlioXPSProviderDRMOpen,
+                NULL,
+                BlioXPSProviderDRMRewind,
+                BlioXPSProviderDRMSkip,
+                BlioXPSProviderDRMRead,
+                BlioXPSProviderDRMSize,
+                BlioXPSProviderDRMClose
+            };
+            
+            strncpy(upi.guid, [(NSString *)UUIDString UTF8String], [(NSString *)UUIDString length]);
+            
+            CFRelease(UUIDString);
         
-        CFRelease(UUIDString);
-        
-        XPS_RegisterDrmHandler(xpsHandle, &upi);
+            XPS_RegisterDrmHandler(xpsHandle, &upi);
+            //NSLog(@"Registered drm handler for book %@ with handle %p with userdata %p", [self.book valueForKey:@"title"], xpsHandle, self);
+        }
         
         XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
         pageCount = XPS_GetNumberPages(xpsHandle, 0);
@@ -340,8 +360,243 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	return Z_DATA_ERROR;
 }
 
-- (NSData *)decompress:(NSData *)data {
+#pragma mark -
+#pragma mark DRM Handler
 
+- (NSDictionary *)openDRMRenderingComponentAtPath:(NSString *)path {
+    NSLog(@"Open %@", path);
+    
+    NSString *extension = [path pathExtension];
+    NSString *componentPath = path;
+    
+    
+    if ([extension isEqualToString:@"ODTTF"]) {    
+        
+        XPS_FILE_PACKAGE_INFO packageInfo;
+        int ret = XPS_GetComponentInfo(xpsHandle, (char *)[componentPath UTF8String], &packageInfo);
+        if (!ret) {
+            NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
+            return nil;
+        }
+        NSData *unencryptedData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
+        //NSData *componentData = [self decompressWithRawDeflate:unencryptedData];
+        
+        //NSData *componentData = [self dataForComponentAtPath:path];
+        NSMutableDictionary *xpsDataDict = [NSMutableDictionary dictionaryWithCapacity:3];
+        [xpsDataDict setValue:[NSValue valueWithNonretainedObject:self] forKey:@"xpsProvider"];
+        [xpsDataDict setObject:path forKey:@"xpsPath"];
+        [xpsDataDict setValue:[NSNumber numberWithInt:0] forKey:@"xpsByteOffset"];
+        [xpsDataDict setValue:unencryptedData forKey:@"xpsData"];    
+        [self.xpsData setObject:xpsDataDict forKey:path];
+    
+        return xpsDataDict;
+    }
+    
+    BOOL encrypted = NO;
+    //BOOL deflated = NO;
+    BOOL gzipped = NO;
+    
+    if ([extension isEqualToString:BlioXPSProviderComponentExtensionFPage]) {
+        encrypted = YES;
+        gzipped = YES;
+        componentPath = [[BlioXPSProviderEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
+    } else if ([extension isEqualToString:@"jpg"]) { 
+        encrypted = YES;
+        componentPath = [path stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
+    }
+    
+    NSData *componentData;
+    
+    if (encrypted) {
+        componentData = [[BlioDrmManager getDrmManager] decryptComponent:componentPath forBookWithID:self.bookID];
+    } else {
+        XPS_FILE_PACKAGE_INFO packageInfo;
+        int ret = XPS_GetComponentInfo(xpsHandle, (char *)[componentPath UTF8String], &packageInfo);
+        if (!ret) {
+            NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
+            return nil;
+        }
+        NSData *unencryptedData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
+        componentData = [self decompressWithRawDeflate:unencryptedData];
+    }
+
+    NSMutableDictionary *xpsDataDict = [NSMutableDictionary dictionaryWithCapacity:3];
+    [xpsDataDict setValue:[NSValue valueWithNonretainedObject:self] forKey:@"xpsProvider"];
+    [xpsDataDict setObject:path forKey:@"xpsPath"];
+    [xpsDataDict setValue:[NSNumber numberWithInt:0] forKey:@"xpsByteOffset"];
+    [xpsDataDict setValue:componentData forKey:@"xpsData"];
+    [self.xpsData setObject:xpsDataDict forKey:path];
+
+    
+    NSLog(@"openedComponent at path %@ from request for %@", componentPath, path);
+    
+    return xpsDataDict;
+    
+    if (0) {
+    int compressionType = 0;
+    NSMutableData *componentData = nil;
+    XPS_FILE_PACKAGE_INFO packageInfo;
+    int ret = XPS_GetComponentInfo(xpsHandle, (char *)[componentPath UTF8String], &packageInfo);
+    
+    if (!ret) {
+        NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
+        return nil;
+    }
+    componentData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
+    compressionType = packageInfo.compression_type;
+    
+    
+    
+    
+    NSMutableDictionary *xpsDataDict = [NSMutableDictionary dictionaryWithCapacity:3];
+    [xpsDataDict setValue:[NSValue valueWithNonretainedObject:self] forKey:@"xpsProvider"];
+    [xpsDataDict setObject:path forKey:@"xpsPath"];
+    
+    switch (compressionType) {
+        case 0:
+            [xpsDataDict setValue:componentData forKey:@"xpsData"];
+            break;
+        case 8: {
+            //unsigned char* decryptedBuff;	
+//            NSInteger decryptedBuffSz;
+//            [self decompress:(unsigned char *)[componentData bytes] inBufferSz:[componentData length] outBuffer:&decryptedBuff outBufferSz:&decryptedBuffSz];
+//            NSData *inflatedData = [NSData dataWithBytesNoCopy:decryptedBuff length:decryptedBuffSz freeWhenDone:NO];
+//            [xpsDataDict setValue:inflatedData forKey:@"xpsData"];
+            
+            unsigned char *buffer = (unsigned char*)[componentData bytes];
+            
+            // This XOR step is to undo an additional encryption step that was needed for .NET environment.
+            for (int i=0;i<[componentData length];++i)
+                buffer[i] ^= 0xA0;
+            
+            // The buffer is fully decrypted now, but gzip compressed; so must decompress.
+            NSData *inflatedData = [self decompressWithGZipCompression:componentData];
+            [xpsDataDict setValue:inflatedData forKey:@"xpsData"];
+            
+        }   break;
+        default:
+            NSLog(@"Unrecognise compression type %d encountered at path %@", compressionType, path);
+            [xpsDataDict setValue:componentData forKey:@"xpsData"];
+            break;
+    }
+    
+    // Add to dictionary to retain object until BlioXPSProviderDRMClose
+    // The xpsProvider and xpsPath are used to identify and remove the object on DRMClose
+    [self.xpsData setObject:xpsDataDict forKey:path];
+    
+    return xpsDataDict;
+    }
+}
+
+- (void)closeDRMRenderingComponentAtPath:(NSString *)path {
+    NSLog(@"Close %@", path);
+    [self.xpsData removeObjectForKey:path];
+} 
+
+URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data) {
+    NSString *path = [NSString stringWithCString:pszURI encoding:NSUTF8StringEncoding];
+    BlioXPSProvider *provider = (BlioXPSProvider *)data;
+    NSLog(@"BlioXPSProviderDRMOpen %@ with userdata %p", path, provider);
+    
+    
+    if ([[path pathExtension] isEqualToString:BlioXPSProviderComponentExtensionRels]) {
+        // This is a bug in the XPS library, we shouldn't be asked for this but it happens
+        // On XPS_Open when a DRM Handler was previously registered for another handle, even
+        // if that handle is no longer valid
+        return NULL;
+    }
+    
+    NSDictionary *xpsDataDict = [provider openDRMRenderingComponentAtPath:path];
+    
+    return xpsDataDict;
+}
+
+void BlioXPSProviderDRMRewind(URI_HANDLE h) {
+    NSLog(@"BlioXPSProviderDRMRewind");
+    NSDictionary *xpsDataDict = (NSDictionary *)h;
+    [xpsDataDict setValue:[NSNumber numberWithInt:0] forKey:@"xpsByteOffset"];
+}
+
+size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb) {
+    NSLog(@"BlioXPSProviderDRMSkip");
+    NSDictionary *xpsDataDict = (NSDictionary *)h;
+    NSData *xpsFileData = [xpsDataDict valueForKey:@"xpsData"];
+    NSUInteger byteOffset = [[xpsDataDict valueForKey:@"xpsByteOffset"] integerValue];
+    NSUInteger bytesRemaining = [xpsFileData length] - byteOffset;
+    NSUInteger bytesToSkip = MIN(cb, bytesRemaining);
+    
+    [xpsDataDict setValue:[NSNumber numberWithInt:byteOffset+bytesToSkip] forKey:@"xpsByteOffset"];
+    
+    return 0;
+}
+
+size_t BlioXPSProviderDRMSeek(DATAOUT_HANDLE h, size_t cb, XPS_SEEK_RELATIVE rel) {
+    NSLog(@"BlioXPSProviderDRMSeek");
+    return 0;
+}
+
+size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb) {
+
+    NSDictionary *xpsDataDict = (NSDictionary *)h;
+    NSData *xpsFileData = [xpsDataDict valueForKey:@"xpsData"];
+    NSUInteger byteOffset = [[xpsDataDict valueForKey:@"xpsByteOffset"] integerValue];
+    
+    NSLog(@"BlioXPSProviderDRMRead %d bytes from %d", cb, byteOffset);
+    if (byteOffset == 1337) {
+        NSLog(@"About to fail");
+    }
+    
+    if (nil != xpsFileData) {
+        NSUInteger bytesRemaining = [xpsFileData length] - byteOffset;
+        NSUInteger bytesToRead = MIN(cb, bytesRemaining);
+        
+        //[xpsFileData getBytes:(void *)pb length:bytesToRead];
+        [xpsFileData getBytes:(void *)pb range:NSMakeRange(byteOffset, bytesToRead)];
+        [xpsDataDict setValue:[NSNumber numberWithInt:byteOffset+bytesToRead] forKey:@"xpsByteOffset"];
+        return bytesToRead;
+    }
+    return 0;
+}
+
+size_t BlioXPSProviderDRMWrite(DATAOUT_HANDLE h, unsigned char * pb, size_t cb) {
+    NSLog(@"BlioXPSProviderDRMWrite");
+	return 0;
+}
+
+size_t BlioXPSProviderDRMSize(URI_HANDLE h){
+    
+    NSDictionary *xpsDataDict = (NSDictionary *)h;
+    NSData *xpsFileData = [xpsDataDict valueForKey:@"xpsData"];
+
+    if (nil != xpsFileData) {
+        NSLog(@"BlioXPSProviderDRMSize %d", [xpsFileData length]);
+        return [xpsFileData length];
+    }
+    NSLog(@"BlioXPSProviderDRMSize failed");
+    return 0;
+}
+
+size_t BlioXPSProviderDRMPosition(DATAOUT_HANDLE h) {
+    NSLog(@"BlioXPSProviderDRMPosition");
+	return 0;
+}
+
+void BlioXPSProviderDRMClose(URI_HANDLE h) {
+    NSLog(@"BlioXPSProviderDRMClose");
+    NSDictionary *xpsDataDict = (NSDictionary *)h;
+    BlioXPSProvider *xpsProvider = [[xpsDataDict valueForKey:@"xpsProvider"] nonretainedObjectValue];
+    NSString *path = [xpsDataDict valueForKey:@"xpsPath"];
+    
+    NSLog(@"BlioXPSProviderDRMClose path %@", path);
+    
+    [xpsProvider closeDRMRenderingComponentAtPath:path];
+}
+
+#pragma mark -
+#pragma mark Decompress methods
+
+- (NSData *)decompress:(NSData *)data windowBits:(NSInteger)windowBits {
+    
 	int ret;
 	unsigned bytesDecompressed;
 	z_stream strm;
@@ -363,9 +618,10 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	strm.next_in = Z_NULL;
 	
     [inflateLock lock];
-
-    ret = XPS_inflateInit2(&strm,31); // second argument = 15 (default window size) + 16 (for gzip decoding)	
-	//ret = [self inflateInit:&strm]; 
+    
+    //ret = XPS_inflateInit2(&strm,31); // second argument = 15 (default window size) + 16 (for gzip decoding)	
+	ret = XPS_inflateInit2(&strm, windowBits);
+    //ret = [self inflateInit:&strm]; 
 	
 	if (ret != Z_OK) {
         [inflateLock unlock];
@@ -399,7 +655,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	XPS_inflateEnd(&strm);
 	
     [inflateLock unlock];
-
+    
 	// TESTING
 	//NSString* testStr = [[NSString alloc] initWithData:outData encoding:NSASCIIStringEncoding];
 	//NSLog(@"Unencrypted buffer: %s",testStr);
@@ -409,124 +665,12 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	return nil;
 }
 
-
-#pragma mark -
-#pragma mark DRM Handler
-
-- (NSDictionary *)openDRMRenderingComponentAtPath:(NSString *)path {
-    NSMutableData *componentData = nil;
-    int compressionType = 0;
-    
-    XPS_FILE_PACKAGE_INFO packageInfo;
-    int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
-    
-    if (!ret) {
-        NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
-        return nil;
-    }
-    componentData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
-    compressionType = packageInfo.compression_type;
-    
-    
-    NSMutableDictionary *xpsDataDict = [NSMutableDictionary dictionaryWithCapacity:3];
-    [xpsDataDict setValue:[NSValue valueWithNonretainedObject:self] forKey:@"xpsProvider"];
-    [xpsDataDict setObject:path forKey:@"xpsPath"];
-    
-    switch (compressionType) {
-        case 0:
-            [xpsDataDict setValue:componentData forKey:@"xpsData"];
-            break;
-        case 8: {
-            //unsigned char* decryptedBuff;	
-//            NSInteger decryptedBuffSz;
-//            [self decompress:(unsigned char *)[componentData bytes] inBufferSz:[componentData length] outBuffer:&decryptedBuff outBufferSz:&decryptedBuffSz];
-//            NSData *inflatedData = [NSData dataWithBytesNoCopy:decryptedBuff length:decryptedBuffSz freeWhenDone:NO];
-//            [xpsDataDict setValue:inflatedData forKey:@"xpsData"];
-            
-            unsigned char *buffer = (unsigned char*)[componentData bytes];
-            
-            // This XOR step is to undo an additional encryption step that was needed for .NET environment.
-            for (int i=0;i<[componentData length];++i)
-                buffer[i] ^= 0xA0;
-            
-            // The buffer is fully decrypted now, but gzip compressed; so must decompress.
-            NSData *inflatedData = [self decompress:componentData];
-            [xpsDataDict setValue:inflatedData forKey:@"xpsData"];
-            
-        }   break;
-        default:
-            NSLog(@"Unrecognise compression type %d encountered at path %@", compressionType, path);
-            [xpsDataDict setValue:componentData forKey:@"xpsData"];
-            break;
-    }
-    
-    // Add to dictionary to retain object until BlioXPSProviderDRMClose
-    // The xpsProvider and xpsPath are used to identify and remove the object on DRMClose
-    [self.xpsData setObject:xpsDataDict forKey:path];
-    
-    return xpsDataDict;
+- (NSData *)decompressWithRawDeflate:(NSData *)data {
+    return [self decompress:data windowBits:-15];
 }
 
-- (void)closeDRMRenderingComponentAtPath:(NSString *)path {
-    NSLog(@"Close %@", path);
-    [self.xpsData removeObjectForKey:path];
-} 
-
-URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data) {
-    BlioXPSProvider *provider = (BlioXPSProvider *)data;
-    NSString *path = [NSString stringWithCString:pszURI encoding:NSUTF8StringEncoding];
-    NSDictionary *xpsDataDict = [provider openDRMRenderingComponentAtPath:path];
-    
-    return xpsDataDict;
-}
-
-void BlioXPSProviderDRMRewind(URI_HANDLE h) {
-    
-}
-
-size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb) {
-    return 0;
-}
-
-size_t BlioXPSProviderDRMSeek(DATAOUT_HANDLE h, size_t cb, XPS_SEEK_RELATIVE rel) {
-    return 0;
-}
-
-size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb) {
-    NSDictionary *xpsDataDict = (NSDictionary *)h;
-    NSData *xpsFileData = [xpsDataDict valueForKey:@"xpsData"];
-    
-    if (nil != xpsFileData) {
-        [xpsFileData getBytes:(void *)pb length:cb];
-        return 1;
-    }
-    return 0;
-}
-
-size_t BlioXPSProviderDRMWrite(DATAOUT_HANDLE h, unsigned char * pb, size_t cb) {
-	return 0;
-}
-
-size_t BlioXPSProviderDRMSize(URI_HANDLE h){
-    NSDictionary *xpsDataDict = (NSDictionary *)h;
-    NSData *xpsFileData = [xpsDataDict valueForKey:@"xpsData"];
-
-    if (nil != xpsFileData) {
-        return [xpsFileData length];
-    }
-    return 0;
-}
-
-size_t BlioXPSProviderDRMPosition(DATAOUT_HANDLE h) {
-	return 0;
-}
-
-void BlioXPSProviderDRMClose(URI_HANDLE h) {
-    NSDictionary *xpsDataDict = (NSDictionary *)h;
-    BlioXPSProvider *xpsProvider = [[xpsDataDict valueForKey:@"xpsProvider"] nonretainedObjectValue];
-    NSString *path = [xpsDataDict valueForKey:@"xpsPath"];
-    
-    [xpsProvider closeDRMRenderingComponentAtPath:path];
+- (NSData *)decompressWithGZipCompression:(NSData *)data {
+    return [self decompress:data windowBits:31];
 }
 
 @end

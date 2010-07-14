@@ -31,6 +31,6 @@
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (NSData *)dataForComponentAtPath:(NSString *)path;
-- (NSData *)decompress:(NSData *)data;
+- (NSData *)decompressWithGZipCompression:(NSData *)data; // Make this private
 
 @end

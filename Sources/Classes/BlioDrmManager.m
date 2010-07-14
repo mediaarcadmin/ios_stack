@@ -272,7 +272,7 @@ ErrorExit:
         componentBuff[i] ^= 0xA0;
     
     // The buffer is fully decrypted now, but gzip compressed; so must decompress.
-    uncompressedData = [xpsProvider decompress:componentData];
+    uncompressedData = [xpsProvider decompressWithGZipCompression:componentData];
     NSLog(@"Uncompressed %d to %d", [componentData length], [uncompressedData length]);
 
         
