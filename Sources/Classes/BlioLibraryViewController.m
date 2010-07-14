@@ -225,7 +225,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
-        if (0){
+
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Bill Willingham"]
 											coverPath:@"MockCovers/FablesLegendsInExile.png"
@@ -239,7 +239,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        }
+
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
                                               authors:[NSArray arrayWithObject:@"Stella Blackstone"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
@@ -254,7 +254,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-		if (0) {
+
         [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
                                               authors:[NSArray arrayWithObject:@"David J. Hunter"]
 											coverPath:@"MockCovers/Essentials_of_Discrete_Mathematics.png"
@@ -478,7 +478,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        }
+            
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
 											coverPath:@"MockCovers/Peter Rabbit.png"
@@ -1209,36 +1209,39 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     NSError *error;
     NSArray *paidBooks = [self.managedObjectContext executeFetchRequest:request error:&error];
     NSManagedObjectID *virginID, *rabbitID;
-    
-    // Iterate through the books getting their licenses
+
+    // Iterate through the paid books getting their ids
     for (NSManagedObject *book in paidBooks) {
-        //BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:book.objectID];
-       // NSLog(@"License retrieval for paid book '%@' %@.", [book valueForKey:@"title"], success ? @"succeeded" : @"failed");
-        
         if ([[book valueForKey:@"title"] isEqualToString:@"Virgin Islands"])
             virginID = book.objectID;
         else if ([[book valueForKey:@"title"] isEqualToString:@"The Tale of Peter Rabbit"])
             rabbitID = book.objectID;
     }
     
-    NSData *decryptedData;
-    
-    
     BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
     NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
     success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
     NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
     
+    BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
+    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
+    
+    NSData *decryptedData;
+    
     // Decrypt a textflow file for Virgin Islands.
-    decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"] forBookWithID:virginID];
+    decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
     NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
     
     // Decrypt a fixed page for Virgin Islands.
-    decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"] forBookWithID:virginID];
-    NSLog(@"Virgin Islands decrypted fixed page length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
+    NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
 	
+    // Decrypt a fixed page for Virgin Islands by requesting the dummy page
+    decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
+    NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+
 	// Decrypt a textflow file for Peter Rabbit.
-    decryptedData = [[BlioDrmManager getDrmManager] decryptComponent:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"] forBookWithID:rabbitID];
+    decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"]];
     NSLog(@"Peter Rabbit decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
 
 	//	
