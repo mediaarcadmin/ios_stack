@@ -16,16 +16,21 @@
     
     NSLock *renderingLock;
     NSLock *contentsLock;
+    NSLock *inflateLock;
     
     NSString *tempDirectory;
     NSInteger pageCount;
     RasterImageInfo *imageInfo;
     XPS_HANDLE xpsHandle;
     FixedPageProperties properties;
+    
+    NSMutableDictionary *xpsData;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
+- (NSData *)dataForComponentAtPath:(NSString *)path;
+- (NSData *)decompress:(NSData *)data;
 
 @end

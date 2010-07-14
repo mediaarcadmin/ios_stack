@@ -1084,8 +1084,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
         
         UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
-        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-            // Work around a bug in 4.0 (+?) where the cap is used as a right cap in
+        if([[UIDevice currentDevice] compareSystemVersion:@"3.2"] >= NSOrderedSame) {
+            // Work around a bug in 3.2+ where the cap is used as a right cap in
             // the image when it's used in a slider.
             rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:rightCapImage.size.width - 1 topCapHeight:0];
         } else {

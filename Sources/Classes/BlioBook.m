@@ -406,7 +406,7 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (NSString *)fullPathOfXPSItemAtPath:(NSString *)path {
-    return nil;
+    return [self.xpsPath stringByAppendingPathComponent:path];
 }
 
 - (NSString *)fullPathOfTextFlowItemAtPath:(NSString *)path {

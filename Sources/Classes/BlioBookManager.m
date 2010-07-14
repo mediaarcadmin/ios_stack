@@ -182,8 +182,9 @@ static pthread_key_t sManagedObjectContextKey;
             return previouslyCachedEPubBook;
         } else {
             BlioBook *book = [self bookWithID:aBookID];
-            if(book.textFlowPath) {
-                BlioEPubBook *ePubBook = [[BlioEPubBook alloc] initWithPath:book.ePubPath];
+            NSString *ePubPath = book.ePubPath;
+            if(ePubPath) {
+                BlioEPubBook *ePubBook = [[BlioEPubBook alloc] initWithPath:ePubPath];
                 if(ePubBook) {
                     ePubBook.blioBookID = aBookID;
                     ePubBook.persistsPositionAutomatically = NO;
@@ -193,7 +194,7 @@ static pthread_key_t sManagedObjectContextKey;
                     NSCountedSet *myCachedEPubBookCheckoutCounts = self.cachedEPubBookCheckoutCounts;
                     if(!myCachedEPubBookCheckoutCounts) {
                         myCachedEPubBookCheckoutCounts = [NSCountedSet set];
-                        cachedEPubBookCheckoutCounts = myCachedEPubBookCheckoutCounts;
+                        self.cachedEPubBookCheckoutCounts = myCachedEPubBookCheckoutCounts;
                     }
                     [myCachedEPubBooks setObject:ePubBook forKey:aBookID];
                     [myCachedEPubBookCheckoutCounts addObject:aBookID];

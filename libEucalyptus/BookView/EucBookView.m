@@ -252,16 +252,6 @@
 #pragma mark -
 #pragma mark Properties
 
-- (NSString *)displayPageNumber
-{
-    return [_pageLayoutController displayPageNumberForPageNumber:self.pageNumber];
-}
-
-- (NSString *)pageDescription
-{
-    return [_pageLayoutController pageDescriptionForPageNumber:self.pageNumber];
-}
-
 - (CGFloat)fontPointSize
 {
     return _pageLayoutController.fontPointSize;

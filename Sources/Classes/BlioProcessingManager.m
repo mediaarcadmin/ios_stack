@@ -201,7 +201,8 @@
 	
 	// TODO: Create BlioBookSource objects that contain a BOOL that indicates whether or not login is necessary for this book source.
 	if ([[aBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		if (0) { // TODO  reinstate the logged in check
+        //if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 // N.B. - we aren't showing a login view here since we now show one at the launch of the app (if valid login credentials are not present).
 //			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 //			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
