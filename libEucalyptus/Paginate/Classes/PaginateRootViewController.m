@@ -10,7 +10,7 @@
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndex.h>
 #import <libEucalyptus/EucBookPaginator.h>
-#import <sys/stat.h>
+#import <unistd.h>
 #import <sys/fcntl.h>
 #import <glob.h>
 
@@ -187,7 +187,7 @@
         
         toPaginate = [[NSMutableArray alloc] init];
         NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
-        for(NSString *resource in [[NSFileManager defaultManager] directoryContentsAtPath:resourcePath]) {
+        for(NSString *resource in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:resourcePath error:nil]) {
             NSString *fullPath = [resourcePath stringByAppendingPathComponent:resource];
             BOOL isDirectory = YES;
             if([[NSFileManager defaultManager] fileExistsAtPath:[fullPath stringByAppendingPathComponent:@"META-INF"] isDirectory:&isDirectory] && isDirectory) {

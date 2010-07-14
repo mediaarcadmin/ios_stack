@@ -60,7 +60,7 @@ static void *PaginationThread(void *self)
 static const NSUInteger sDesiredPointSizes[] = { 14, 16, 18, 20, 22 };
 static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / sizeof(sDesiredPointSizes[0]));
 
-static const CGSize sDesiredPageSizes[] = { {320, 480}, {480, 320} };
+static const CGSize sDesiredPageSizes[] = { {320, 480}, {480, 320}, {768, 1024}, {1024, 768} };
 static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / sizeof(sDesiredPageSizes[0]));
 
 - (void)_paginationThread

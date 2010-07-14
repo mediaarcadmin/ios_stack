@@ -90,8 +90,6 @@ typedef struct EucRange {
 
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, readonly) NSInteger pageCount;
-@property (nonatomic, readonly) NSString *displayPageNumber;
-@property (nonatomic, readonly) NSString *pageDescription;
 
 @property (nonatomic, assign) CGFloat fontPointSize;
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
