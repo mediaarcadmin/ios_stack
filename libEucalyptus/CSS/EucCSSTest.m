@@ -16,6 +16,18 @@
 #import "THLog.h"
 #import "THTimer.h"
 
+@interface SimpleEucCSSIntermediateDocumentDataSource : NSObject <EucCSSIntermediateDocumentDataSource> {}
+@end
+
+@implementation SimpleEucCSSIntermediateDocumentDataSource
+
+- (NSData *)dataForURL:(NSURL *)url
+{
+    return [NSData dataWithContentsOfURL:url];
+}
+
+@end
+
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
@@ -31,14 +43,18 @@ int main (int argc, const char * argv[]) {
        cssInitialised = YES;
     }    
         
-    NSString xmlPath = [NSString stringWithUTF8String:argv[3]];
+    NSString *xmlPath = [NSString stringWithUTF8String:argv[3]];
     NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:xmlPath];
     EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData];
     [xmlData release];
     
+    SimpleEucCSSIntermediateDocumentDataSource *dataSource = [[SimpleEucCSSIntermediateDocumentDataSource alloc] init];
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:xmlTree
                                                                                              forURL:[NSURL fileURLWithPath:xmlPath]
-                                                                                        baseCSSPath:[NSString stringWithUTF8String:argv[2]]];
+                                                                                         dataSource:dataSource
+                                                                                        baseCSSPath:[NSString stringWithUTF8String:argv[2]]
+                                                                                             isHTML:YES];
+    [dataSource release];
     
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     layouter.document = document;

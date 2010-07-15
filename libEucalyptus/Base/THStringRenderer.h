@@ -6,6 +6,7 @@
 //  Copyright 2008 Things Made Out Of Other Things Ltd. All rights reserved.
 //
 
+#import <TargetConditionals.h>
 #if TARGET_OS_IPHONE
     #import <UIKit/UIKit.h>
 #else

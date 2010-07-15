@@ -6,7 +6,12 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
 
 #import "EucCSSLayoutLine.h"
 #import "EucCSSIntermediateDocumentNode.h"
@@ -192,7 +197,7 @@
                 }
                 xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
-                renderItem->item = [(UIImage *)info->component retain];
+                renderItem->item = (id)CFRetain((CGImageRef)info->component);
                 renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, info->pointSize);
                 renderItem->point = info->point;
                 renderItem->altText = [[info->documentNode altText] retain];

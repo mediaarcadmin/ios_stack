@@ -6,6 +6,13 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
+
 #import "EucCSSLayouter_Package.h"
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutDocumentRun_Package.h"
@@ -28,6 +35,7 @@
 
 #import <memory>
 #import <vector>
+
 
 using namespace std;
 using namespace Hyphenate;
@@ -283,7 +291,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     ++_currentWordElementCount;
 }
 
-- (CGSize)_computedSizeForImage:(UIImage *)image
+- (CGSize)_computedSizeForImage:(CGImageRef)image
                  specifiedWidth:(CGFloat)specifiedWidth
                 specifiedHeight:(CGFloat)specifiedHeight
                        maxWidth:(CGFloat)maxWidth
@@ -291,7 +299,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                       maxHeight:(CGFloat)maxHeight
                       minHeight:(CGFloat)minHeight
 {
-    CGSize imageSize = image.size;
+    CGSize imageSize = { CGImageGetWidth(image), CGImageGetHeight(image) };
 
     // Sanitise the input.
     if(minHeight > maxHeight) {
@@ -371,8 +379,19 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     NSData *imageData = [subnode.document.dataSource dataForURL:[subnode imageSrc]];
 
     if(imageData) {
-        UIImage *image = [[UIImage alloc] initWithData:imageData];
-        
+        CGImageRef image = NULL;
+#if TARGET_OS_IPHONE
+        image = [UIImage imageWithData:imageData].CGImage;
+        if(image) {
+            CFRetain(image);
+        }
+#else
+        CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)imageData, NULL);
+        if(imageSource) {
+            image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+            CFRelease(imageSource);
+        }
+#endif
         if(image) {
             EucCSSLayoutDocumentRunComponentInfo info = { EucCSSLayoutDocumentRunComponentKindNone };
             info.documentNode = subnode;
@@ -388,7 +407,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             _previousInlineCharacterWasSpace = NO;
             _seenNonSpace = YES;
             
-            [image release];
+            CFRelease(image);
         }
     }
 }
@@ -398,7 +417,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     for(NSNumber *indexNumber in _sizeDependentComponentIndexes) {
         size_t offset = [indexNumber integerValue];
         
-        UIImage *image = (UIImage *)(_componentInfos[offset].component);
+        CGImageRef image = (CGImageRef)(_componentInfos[offset].component);
         EucCSSIntermediateDocumentNode *subnode = _componentInfos[offset].documentNode;
         
         CGFloat specifiedWidth = CGFLOAT_MAX;

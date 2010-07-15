@@ -42,6 +42,18 @@
 - (void)_renderPositionedBlock:(EucCSSLayoutPositionedBlock *)block
 {
     THLogVerbose(@"Positioned Block: %@", NSStringFromCGRect(block.frame));
+    
+    CGRect borderRect = block.borderRect;
+    CGRect paddingRect = block.paddingRect;
+    if(!CGRectEqualToRect(borderRect, paddingRect)) {        
+        // Non-zero border width.
+        CGContextSaveGState(_cgContext);
+        
+        // Top.
+        
+        
+        CGContextRestoreGState(_cgContext);
+    }
     for(id subEntity in block.subEntities) {
         
         //CGContextStrokeRectWithWidth(_cgContext, block.frame, 2);
@@ -76,13 +88,14 @@
                                          inContext:_cgContext 
                                            atPoint:renderItem->rect.origin
                                          pointSize:renderItem->pointSize];
-        } else if([item isKindOfClass:[UIImage class]]) {
+        } else {
+            // It's an image.
             CGRect rect = renderItem->rect;
             CGContextSaveGState(_cgContext);
             CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
             CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
             CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
-            CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), [(UIImage *)item CGImage]);
+            CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), (CGImageRef)item);
             CGContextRestoreGState(_cgContext);
         }
     }

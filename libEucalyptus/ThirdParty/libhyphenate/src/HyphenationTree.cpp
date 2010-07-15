@@ -232,7 +232,7 @@ auto_ptr<vector<const HyphenationRule*> > HyphenationTree::applyPatterns
    
    /* Copy the results to a shorter vector. */
    auto_ptr<vector<const HyphenationRule*> > output_rules(
-      new vector<const HyphenationRule*>(wordLength, NULL));
+      new vector<const HyphenationRule*>(wordLength, static_cast<const HyphenationRule*>(NULL)));
    
    /* We honor the safe areas at the start and end of each word here. */
    /* Please note that the incongruence between start and end is due

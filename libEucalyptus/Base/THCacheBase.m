@@ -9,6 +9,10 @@
 #import "THCacheBase.h"
 #import "THLog.h"
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
+
 static BOOL sDontReallyCache;
 static pthread_once_t sDontReallyCacheOnceControl = PTHREAD_ONCE_INIT;
 
@@ -59,10 +63,12 @@ static const CFSetCallBacks THCacheSetCallBacks = {
     if((self = [super init])) {
         pthread_once(&sDontReallyCacheOnceControl, readDontReallyCacheDefault);
         pthread_mutex_init(&_cacheMutex, NULL);
+#if TARGET_OS_IPHONE
         [[NSNotificationCenter defaultCenter] addObserver:self 
                                                  selector:@selector(_didReceiveMemoryWarning)
                                                      name:UIApplicationDidReceiveMemoryWarningNotification
                                                    object:[UIApplication sharedApplication]];
+#endif        
         _cacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
     }
     return self;
@@ -70,9 +76,11 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 
 - (void)dealloc
 {    
+#if TARGET_OS_IPHONE
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidReceiveMemoryWarningNotification
                                                   object:[UIApplication sharedApplication]];
+#endif
     
     CFRelease(_cacheSet);
     
