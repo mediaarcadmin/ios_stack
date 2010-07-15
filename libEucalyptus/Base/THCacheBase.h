@@ -6,7 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import <pthread.h>
 
 @interface THCacheBase : NSObject {

@@ -5,10 +5,10 @@
 	<key>EucFontSizes</key>
 	<array>
 		<integer>14</integer>
-		<string>16</string>
-		<string>18</string>
-		<string>20</string>
-		<string>22</string>
+		<integer>16</integer>
+		<integer>18</integer>
+		<integer>20</integer>
+		<integer>22</integer>
 	</array>
 	<key>EucDefaultFontSize</key>
 	<string>18</string>
