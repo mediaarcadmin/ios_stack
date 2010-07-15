@@ -125,7 +125,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
             CFRelease(UUIDString);
         
             XPS_RegisterDrmHandler(xpsHandle, &upi);
-            //NSLog(@"Registered drm handler for book %@ with handle %p with userdata %p", [self.book valueForKey:@"title"], xpsHandle, self);
+            NSLog(@"Registered drm handler for book %@ with handle %p with userdata %p", [self.book valueForKey:@"title"], xpsHandle, self);
         }
         
         XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
@@ -351,7 +351,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 #pragma mark DRM Handler
 
 - (NSDictionary *)openDRMRenderingComponentAtPath:(NSString *)path {
-    NSLog(@"Open %@", path);
+    //NSLog(@"Open %@", path);
     
     NSData *componentData = [self dataForComponentAtPath:path renderer:YES];
     
@@ -366,7 +366,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 }
 
 - (void)closeDRMRenderingComponentAtPath:(NSString *)path {
-    NSLog(@"Close %@", path);
+    //NSLog(@"Close %@", path);
     [self.xpsData removeObjectForKey:path];
 } 
 
@@ -389,13 +389,13 @@ URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data) {
 }
 
 void BlioXPSProviderDRMRewind(URI_HANDLE h) {
-    NSLog(@"BlioXPSProviderDRMRewind");
+    //NSLog(@"BlioXPSProviderDRMRewind");
     NSDictionary *xpsDataDict = (NSDictionary *)h;
     [xpsDataDict setValue:[NSNumber numberWithInt:0] forKey:@"xpsByteOffset"];
 }
 
 size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb) {
-    NSLog(@"BlioXPSProviderDRMSkip");
+    //NSLog(@"BlioXPSProviderDRMSkip");
     NSDictionary *xpsDataDict = (NSDictionary *)h;
     NSData *xpsFileData = [xpsDataDict valueForKey:@"xpsData"];
     NSUInteger byteOffset = [[xpsDataDict valueForKey:@"xpsByteOffset"] integerValue];
@@ -408,7 +408,7 @@ size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb) {
 }
 
 size_t BlioXPSProviderDRMSeek(DATAOUT_HANDLE h, size_t cb, XPS_SEEK_RELATIVE rel) {
-    NSLog(@"BlioXPSProviderDRMSeek");
+    //NSLog(@"BlioXPSProviderDRMSeek");
     return 0;
 }
 
@@ -418,7 +418,7 @@ size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb) {
     NSData *xpsFileData = [xpsDataDict valueForKey:@"xpsData"];
     NSUInteger byteOffset = [[xpsDataDict valueForKey:@"xpsByteOffset"] integerValue];
     
-    NSLog(@"BlioXPSProviderDRMRead %d bytes from %d", cb, byteOffset);
+   // NSLog(@"BlioXPSProviderDRMRead %d bytes from %d", cb, byteOffset);
     
     if (nil != xpsFileData) {
         NSUInteger bytesRemaining = [xpsFileData length] - byteOffset;
@@ -443,7 +443,7 @@ size_t BlioXPSProviderDRMSize(URI_HANDLE h){
     NSData *xpsFileData = [xpsDataDict valueForKey:@"xpsData"];
 
     if (nil != xpsFileData) {
-        NSLog(@"BlioXPSProviderDRMSize %d", [xpsFileData length]);
+        //NSLog(@"BlioXPSProviderDRMSize %d", [xpsFileData length]);
         return [xpsFileData length];
     }
     NSLog(@"BlioXPSProviderDRMSize failed");
