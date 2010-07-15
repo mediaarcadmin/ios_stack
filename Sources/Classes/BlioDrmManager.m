@@ -220,7 +220,7 @@ ErrorExit:
     }
     
     DRM_RESULT dr = DRM_SUCCESS;
-    unsigned char* dataBuff;
+    unsigned char* dataBuff = NULL;
     
     @synchronized (self) {
         if ( ![self.bookID isEqual:aBookID] ) { 

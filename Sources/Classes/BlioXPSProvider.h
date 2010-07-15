@@ -11,7 +11,7 @@
 #import "BlioLayoutDataSource.h"
 #import "XpsSdk.h"
 
-@interface BlioXPSProvider : NSObject <BlioLayoutDataSource> {
+@interface BlioXPSProvider : NSObject <BlioLayoutDataSource, NSXMLParserDelegate> {
     NSManagedObjectID *bookID;
     
     NSLock *renderingLock;
@@ -25,6 +25,8 @@
     FixedPageProperties properties;
     
     NSMutableDictionary *xpsData;
+    NSMutableArray *uriMap;
+    NSMutableString *currentUriString;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;

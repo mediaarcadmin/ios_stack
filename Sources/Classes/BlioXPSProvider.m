@@ -13,7 +13,9 @@
 #import "BlioDrmManager.h"
 #import "zlib.h"
 
+static NSString* const BlioXPSProviderEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMap.xml";
 static NSString* const BlioXPSProviderEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages";
+static NSString* const BlioXPSProviderEncryptedImagesDir = @"/Resources";
 static NSString* const BlioXPSProviderEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/Flow";
 static NSString* const BlioXPSProviderEncryptedPagesExtension = @"bin";
 
@@ -36,6 +38,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @property (nonatomic, retain) NSString *tempDirectory;
 @property (nonatomic, assign) RasterImageInfo *imageInfo;
 @property (nonatomic, retain) NSMutableDictionary *xpsData;
+@property (nonatomic, retain) NSMutableArray *uriMap;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -47,7 +50,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @implementation BlioXPSProvider
 
 @synthesize bookID;
-@synthesize tempDirectory, imageInfo, xpsData;
+@synthesize tempDirectory, imageInfo, xpsData, uriMap;
 
 - (void)dealloc {    
     [renderingLock lock];
@@ -66,6 +69,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     self.imageInfo = nil;
     self.bookID = nil;
     self.xpsData = nil;
+    self.uriMap = nil;
+    
+    if (currentUriString) {
+        [currentUriString release];
+    }
     
     [renderingLock release];
     [contentsLock release];
@@ -105,7 +113,8 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         
         xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
-        if ([[self.book valueForKey:@"sourceID"] isEqual:[NSNumber numberWithInt:BlioBookSourceOnlineStore]]) {
+        if (1) {
+        //if ([[self.book valueForKey:@"sourceID"] isEqual:[NSNumber numberWithInt:BlioBookSourceOnlineStore]]) {
             XPS_URI_PLUGIN_INFO	upi = {
                 XPS_URI_SOURCE_PLUGIN,
                 sizeof(XPS_URI_PLUGIN_INFO),
@@ -276,6 +285,48 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 #pragma mark -
 #pragma mark XPS Component Data
 
+- (NSData *)replaceMappedResources:(NSData *)data {
+    NSString *inputString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSMutableString *outputString = [[NSMutableString alloc] initWithCapacity:[inputString length]];
+        
+    NSString *GRIDROW = @"Grid.Row=\"";
+    NSString *CLOSINGQUOTE = @"\"";
+    
+    NSScanner *aScanner = [NSScanner scannerWithString:inputString];
+    
+    while ([aScanner isAtEnd] == NO)
+    {
+        NSString *prefix;
+        [aScanner scanUpToString:GRIDROW intoString:&prefix];
+        [outputString appendString:prefix];
+        
+        if ([aScanner isAtEnd] == NO) {
+            // Skip the gridrow entry
+            [aScanner scanString:GRIDROW intoString:NULL];
+            
+            // Read the row digit, insert the lookup and advance passed the closing quote
+            NSInteger anInteger;
+            if ([aScanner scanInteger:&anInteger]) {
+                if (anInteger < [self.uriMap count]) {
+                    [outputString appendString:[NSString stringWithFormat:@"ImageSource=\"%@\" ", [self.uriMap objectAtIndex:anInteger]]];
+                } else {
+                    NSLog(@"Warning: could not find mapped resource for Grid.Row %d. Mapping count is %d", anInteger, [self.uriMap count]);
+                }
+            }
+            // Skip the closing quote
+            [aScanner scanString:CLOSINGQUOTE intoString:NULL];
+        }
+    }
+    [inputString release];
+    
+    if ([outputString length]) {
+        data = [outputString dataUsingEncoding:NSUTF8StringEncoding];
+    }
+    [outputString release];
+    
+    return data;
+}
+
 - (NSData *)rawDataForComponentAtPath:(NSString *)path {
     NSData *rawData = nil;
     
@@ -286,6 +337,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         return nil;
     } else {
         rawData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
+        NSLog(@"Raw data length %d (%d) with compression %d", [rawData length], packageInfo.length, packageInfo.compression_type);
         if (packageInfo.compression_type == 8) {
             rawData = [self decompressWithRawDeflate:rawData];
         }
@@ -302,14 +354,50 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 
     BOOL encrypted = NO;
     BOOL gzipped = NO;
+    BOOL mapped = NO;
     
-    if ([filename isEqualToString:@"Rights.xml"]) {
+    if (0) {
+    if ([path isEqualToString:BlioXPSProviderEncryptedUriMap]) {
         encrypted = YES;
-    } else if ([path isEqualToString:@"Documents/1/Other/KNFB/UriMap.xml"]) {
+        gzipped = YES;
+    }
+    
+    if ([extension isEqualToString:BlioXPSProviderComponentExtensionFPage]) {
+        NSString *page1Path = [[NSBundle mainBundle] pathForResource:@"FPage1_Unencrypted" ofType:@"txt"];
+        NSData *page1 = [NSData dataWithContentsOfFile:page1Path];
+        return page1;
+        NSString *encryptedPath = [[BlioXPSProviderEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
+        if ([self rawDataForComponentAtPath:encryptedPath]) {
+            componentPath = encryptedPath;
+            encrypted = YES;
+            gzipped = YES;
+            mapped = YES;
+        }
+    }
+    
+    if ([directory isEqualToString:BlioXPSProviderEncryptedImagesDir] && [extension isEqualToString:@"jpg"]) { 
+        NSString *image1Path = [[NSBundle mainBundle] pathForResource:@"Page1_Image" ofType:@"jpg"];
+        NSData *image1 = [NSData dataWithContentsOfFile:image1Path];
+        return image1;
+        
+        if (fromRenderer) {
+            NSString *encryptedPath = [path stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
+            if ([self rawDataForComponentAtPath:encryptedPath]) {
+                componentPath = encryptedPath;
+                encrypted = YES;
+            }
+        }
+    }
+    }
+    
+    if (1) {
+    // TODO Make sure these checks are ordered from most common to least common for efficiency
+    if ([filename isEqualToString:@"Rights.xml"]) {
         encrypted = YES;
     } else if ([extension isEqualToString:BlioXPSProviderComponentExtensionFPage]) {
         encrypted = YES;
         gzipped = YES;
+        mapped = YES;
         componentPath = [[BlioXPSProviderEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
     } else if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"png"]) { 
         if (fromRenderer) {
@@ -324,10 +412,13 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     } else if ([directory isEqualToString:BlioXPSProviderEncryptedPagesDir]) {
         encrypted = YES;
         gzipped = YES;
+    } else if ([path isEqualToString:BlioXPSProviderEncryptedUriMap]) {
+        encrypted = YES;
+        gzipped = YES;
     }
-    
+    }
     NSData *componentData = [self rawDataForComponentAtPath:componentPath];
-    
+             
     if (encrypted) {
         if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
             NSLog(@"Error whilst decrypting data at path %@", componentPath);
@@ -339,6 +430,18 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         componentData = [self decompressWithGZipCompression:componentData];
     }
     
+    if (mapped) {
+        componentData = [self replaceMappedResources:componentData];
+    }
+    
+    NSLog(@"BlioXPSProviderDRMOpen %@ length = %d", componentPath, [componentData length]);
+    if (0) {
+    if ([extension isEqualToString:BlioXPSProviderComponentExtensionFPage]) {
+        NSString *dataString = [[NSString alloc] initWithData:componentData encoding:NSUTF8StringEncoding];
+        NSLog(@"FPage contents: %@ length = %d", dataString, [dataString length]);
+        [dataString release];
+    }
+    }
     return componentData;
     
 }
@@ -373,7 +476,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data) {
     NSString *path = [NSString stringWithCString:pszURI encoding:NSUTF8StringEncoding];
     BlioXPSProvider *provider = (BlioXPSProvider *)data;
-    NSLog(@"BlioXPSProviderDRMOpen %@ with userdata %p", path, provider);
+    //NSLog(@"BlioXPSProviderDRMOpen %@ with userdata %p", path, provider);
     
     
     if ([[path pathExtension] isEqualToString:BlioXPSProviderComponentExtensionRels]) {
@@ -433,7 +536,7 @@ size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb) {
 }
 
 size_t BlioXPSProviderDRMWrite(DATAOUT_HANDLE h, unsigned char * pb, size_t cb) {
-    NSLog(@"BlioXPSProviderDRMWrite");
+    //NSLog(@"BlioXPSProviderDRMWrite");
 	return 0;
 }
 
@@ -456,12 +559,12 @@ size_t BlioXPSProviderDRMPosition(DATAOUT_HANDLE h) {
 }
 
 void BlioXPSProviderDRMClose(URI_HANDLE h) {
-    NSLog(@"BlioXPSProviderDRMClose");
+    //NSLog(@"BlioXPSProviderDRMClose");
     NSDictionary *xpsDataDict = (NSDictionary *)h;
     BlioXPSProvider *xpsProvider = [[xpsDataDict valueForKey:@"xpsProvider"] nonretainedObjectValue];
     NSString *path = [xpsDataDict valueForKey:@"xpsPath"];
     
-    NSLog(@"BlioXPSProviderDRMClose path %@", path);
+    //NSLog(@"BlioXPSProviderDRMClose path %@", path);
     
     [xpsProvider closeDRMRenderingComponentAtPath:path];
 }
@@ -545,6 +648,51 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 
 - (NSData *)decompressWithGZipCompression:(NSData *)data {
     return [self decompress:data windowBits:31];
+}
+
+#pragma mark -
+#pragma mark UriMap.xml Parsing
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
+    if (currentUriString) {
+        [currentUriString release];
+        currentUriString = nil;
+    }
+}
+
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+    if (!currentUriString) {
+        currentUriString = [[NSMutableString alloc] initWithCapacity:50];
+    }
+    [currentUriString appendString:string];
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {    
+    if ( [elementName isEqualToString:@"string"] ) {
+        [self.uriMap addObject:currentUriString];
+    }
+    
+    if (currentUriString) {
+        [currentUriString release];
+        currentUriString = nil;
+    }
+}
+
+- (NSMutableArray *)uriMap {
+    if (nil == uriMap) {
+        NSData *uriMapData = [self dataForComponentAtPath:BlioXPSProviderEncryptedUriMap];
+        if (uriMapData) {
+            self.uriMap = [NSMutableArray arrayWithCapacity:51];
+            NSXMLParser *uriMapParser = [[NSXMLParser alloc] initWithData:uriMapData];
+            [uriMapParser setDelegate:self];
+            [uriMapParser setShouldResolveExternalEntities:NO];
+            BOOL success = [uriMapParser parse];
+            if (!success) {
+                self.uriMap = nil;
+            }
+        }
+    }
+    return uriMap;
 }
 
 @end

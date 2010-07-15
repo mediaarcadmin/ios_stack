@@ -493,6 +493,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										   fromBundle:YES
 		 ];
     
+        [self.processingDelegate enqueueBookWithTitle:@"Unencrypted Rabbit" 
+                                              authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
+											coverPath:@"MockCovers/Peter Rabbit.png"
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"PDFs/rabbit.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Unencrypted Rabbit" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
         
 		[self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
                                               authors:[NSArray arrayWithObjects:@"Lynne M. Sullivan", nil]
@@ -1203,12 +1216,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sourceID == %@", [NSNumber numberWithInt:BlioBookSourceOnlineStore]];
-    [request setPredicate:predicate];
+//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sourceID == %@", [NSNumber numberWithInt:BlioBookSourceOnlineStore]];
+//    [request setPredicate:predicate];
     
     NSError *error;
     NSArray *paidBooks = [self.managedObjectContext executeFetchRequest:request error:&error];
-    NSManagedObjectID *virginID, *rabbitID;
+    NSManagedObjectID *virginID = nil;
+    NSManagedObjectID *rabbitID = nil;
+    NSManagedObjectID *unencryptedID = nil;
 
     // Iterate through the paid books getting their ids
     for (NSManagedObject *book in paidBooks) {
@@ -1216,6 +1231,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             virginID = book.objectID;
         else if ([[book valueForKey:@"title"] isEqualToString:@"The Tale of Peter Rabbit"])
             rabbitID = book.objectID;
+        else if ([[book valueForKey:@"title"] isEqualToString:@"Unencrypted Rabbit"])
+            unencryptedID = book.objectID;
     }
     
     BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
@@ -1225,9 +1242,18 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
     BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
     BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
-    
+    //BlioXPSProvider *unencryptedXPS = [[[BlioBookManager sharedBookManager] bookWithID:unencryptedID] xpsProvider];
+
     NSData *decryptedData;
     
+//    decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedImagesDir stringByAppendingString:@"4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF"]];
+//    NSLog(@"Rabbit decrypted font length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+//
+//    decryptedData = [unencryptedXPS dataForComponentAtPath:[encryptedImagesDir stringByAppendingString:@"4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF"]];
+//    NSLog(@"Unencrypted font length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    
+    
+    //return;
     // Decrypt a textflow file for Virgin Islands.
     decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
     NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
