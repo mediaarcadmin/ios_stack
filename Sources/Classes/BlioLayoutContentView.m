@@ -449,7 +449,7 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    //NSLog(@"Draw tiled layer for page %d with transform %@ and clipbounds %@ and layerbounds %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)), NSStringFromCGRect(self.frame));
+    NSLog(@"Draw tiled layer for page %d with transform %@ and clipbounds %@ and layerbounds %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)), NSStringFromCGRect(self.frame));
     
     if (!self.cached) {
         self.cached = YES;
@@ -458,8 +458,10 @@
         [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:nil cacheReadySelector:nil];
     }
     
-    if (pageNumber == 1) 
+    if (pageNumber == 1) {
+        NSLog(@"Finished rendering page 1");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
+    }
 
 }
 

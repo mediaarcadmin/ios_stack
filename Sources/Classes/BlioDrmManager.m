@@ -181,7 +181,6 @@ ErrorExit:
 								   headerBuff,   
 								   [headerData length] ) );
 ErrorExit:
-	self.bookID = nil;
 	return dr;
 }
 
@@ -214,19 +213,14 @@ ErrorExit:
     return ret;
 }
 
-- (NSData *)decryptComponent:(NSString*)component forBookWithID:(NSManagedObjectID *)aBookID {
-    
+- (BOOL)decryptData:(NSData *)data forBookWithID:(NSManagedObjectID *)aBookID {
     if ( !self.drmInitialized ) {
         NSLog(@"DRM error: content cannot be decrypted because DRM is not initialized.");
-        return nil;
+        return FALSE;
     }
     
-    BlioXPSProvider *xpsProvider;
-    NSData *componentData;
-    NSData *uncompressedData;
-    unsigned char* componentBuff;
-    
     DRM_RESULT dr = DRM_SUCCESS;
+    unsigned char* dataBuff;
     
     @synchronized (self) {
         if ( ![self.bookID isEqual:aBookID] ) { 
@@ -249,16 +243,13 @@ ErrorExit:
                                NULL, 
                                NULL,
                                &oDecryptContext ) );
-        
-        xpsProvider = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] xpsProvider];
-        componentData = [xpsProvider dataForComponentAtPath:component];
-        
-        componentBuff = (unsigned char*)[componentData bytes]; 
+                
+        dataBuff = (unsigned char*)[data bytes]; 
         
         ChkDR(Drm_Reader_Decrypt (&oDecryptContext,
                                   &oCtrContext,
-                                  componentBuff, 
-                                  [componentData length]));
+                                  dataBuff, 
+                                  [data length]));
         
         // At this point, the buffer is PlayReady-decrypted.
         
@@ -267,23 +258,19 @@ ErrorExit:
                                  NULL ) ); 
     }
     
-    // This XOR step is to undo an additional encryption step that was needed for .NET environment.
-    for (int i=0;i<[componentData length];++i)
-        componentBuff[i] ^= 0xA0;
-    
-    // The buffer is fully decrypted now, but gzip compressed; so must decompress.
-    uncompressedData = [xpsProvider decompress:componentData];
-    NSLog(@"Uncompressed %d to %d", [componentData length], [uncompressedData length]);
-
-        
 ErrorExit:
-    if ( (uncompressedData != nil) && (dr != DRM_SUCCESS) ) {
+    if (dr != DRM_SUCCESS) {
         unsigned int drInt = (unsigned int)dr;
         NSLog(@"DRM decryption error: %d",drInt);
-        return nil;
+        self.bookID = nil;
+        return NO;
     }
-    return uncompressedData;
     
+    // This XOR step is to undo an additional encryption step that was needed for .NET environment.
+    for (int i=0;i<[data length];++i)
+        dataBuff[i] ^= 0xA0;
+    
+    return YES;
 }
 
 @end
