@@ -393,7 +393,7 @@
 
 - (NSString *)accessibilityHint
 {
-    return NSLocalizedString(@"Double tap to read page.", "Accessibility label for libEucalyptus page view");
+    return NSLocalizedString(@"Double tap to read page with VoiceOver.", "Accessibility label for libEucalyptus page view");
 }
 
 - (BOOL)isAccessibilityElement
