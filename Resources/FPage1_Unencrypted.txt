@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FixedPage xmlns="http://schemas.microsoft.com/xps/2005/06" xmlns:x="http://schemas.microsoft.com/xps/2005/06/resourcedictionary-key" xml:lang="en-us" Width="816" Height="1056">
+  <Glyphs UnicodeString="The" Fill="#000000" OriginX="237.15" OriginY="108.24" FontRenderingEmSize="64" FontUri="/Resources/4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF" Indices=",62;,66;" />
+  <Glyphs UnicodeString="Tale" Fill="#000000" OriginX="372.83" OriginY="108.24" FontRenderingEmSize="64" FontUri="/Resources/4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF" Indices=",62;,58;,30;" />
+  <Glyphs UnicodeString="of" Fill="#000000" OriginX="522.59" OriginY="108.24" FontRenderingEmSize="64" FontUri="/Resources/4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF" Indices=",56;" />
+  <Glyphs UnicodeString="Peter" Fill="#000000" OriginX="119.04" OriginY="238.27" FontRenderingEmSize="96" FontUri="/Resources/4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF" Indices=",62;,52;,38;,52;" />
+  <Glyphs UnicodeString="Rabbit" Fill="#000000" OriginX="387.84" OriginY="238.27" FontRenderingEmSize="96" FontUri="/Resources/4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF" Indices=",72;,58;,62;,62;,30;" />
+  <Glyphs UnicodeString="BY" Fill="#000000" OriginX="389.63" OriginY="315.71" FontRenderingEmSize="26.64" FontUri="/Resources/4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF" Indices=",73.874;" />
+  <Glyphs UnicodeString="BEATRIX" Fill="#000000" OriginX="121.28" OriginY="400.27" FontRenderingEmSize="64" FontUri="/Resources/4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF" Indices=",74;,72;,68;,62;,72;,34;" />
+  <Glyphs UnicodeString="POTTER" Fill="#000000" OriginX="432.32" OriginY="400.27" FontRenderingEmSize="64" FontUri="/Resources/4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF" Indices=",62;,80;,62;,62;,72;" />
+  <Path Data="F1M197.66,473.62L197.66,870.3L620.94,870.3L620.94,473.62Z">
+    <Path.Fill>
+      <ImageBrush ImageSource="/Resources/c0502e42-709a-4424-beb4-be578e6ce2c9.jpg" ViewboxUnits="Absolute" ViewportUnits="Absolute" Viewbox="0,0,584,546" Viewport="197.666666,473.626668,423.266665,396.666665" />
+    </Path.Fill>
+  </Path>
+</FixedPage>
