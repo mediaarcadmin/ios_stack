@@ -90,15 +90,18 @@ ErrorExit:
 }
 
 - (void)reportReading {
+    NSLog(@"Report reading for book.");
 	DRM_RESULT dr = DRM_SUCCESS;
-	ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
-	                         NULL, 
-	                         NULL ) ); 
-ErrorExit:
-	if (dr != DRM_SUCCESS) {
-		unsigned int drInt = (unsigned int)dr;
-		NSLog(@"DRM commit error: %d",drInt);
-	}
+    @synchronized(self) {
+        ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
+                                 NULL, 
+                                 NULL ) ); 
+    ErrorExit:
+        if (dr != DRM_SUCCESS) {
+            unsigned int drInt = (unsigned int)dr;
+            NSLog(@"DRM commit error: %d",drInt);
+        }
+    }
 }
 
 - (DRM_RESULT)getDRMLicense {

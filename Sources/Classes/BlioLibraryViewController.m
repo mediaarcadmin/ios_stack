@@ -1269,7 +1269,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	// Decrypt a textflow file for Peter Rabbit.
     decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"]];
     NSLog(@"Peter Rabbit decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-
+    
+    decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
+    NSLog(@"Peter Rabbit decrypted fixed page length (%d): %s", [decryptedData length], [decryptedData bytes]); 
 	//	
 	// END temporary code
 	
