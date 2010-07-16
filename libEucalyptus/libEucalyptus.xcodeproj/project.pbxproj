@@ -487,6 +487,8 @@
 		7DF1AD7511D90F6E00506BD5 /* BookButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DF1AD7111D90F6E00506BD5 /* BookButton@2x.png */; };
 		7DF1AF9B11D9168F00506BD5 /* THUIDeviceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF1AF9A11D9168F00506BD5 /* THUIDeviceAdditions.m */; };
 		7DF1AF9D11D9169700506BD5 /* THUIDeviceAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF1AF9C11D9169700506BD5 /* THUIDeviceAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DF4A38611F057BE00F6A4DD /* EucLibCSSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF4A34A11EF839C00F6A4DD /* EucLibCSSUtils.m */; };
+		7DF4A38711F057C300F6A4DD /* EucLibCSSUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF4A34911EF839C00F6A4DD /* EucLibCSSUtils.h */; };
 		7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF58B5D10DA9005004E3DBB /* EucBookView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF58B6010DA9005004E3DBB /* EucBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF58B5E10DA9005004E3DBB /* EucBookView.m */; };
 		7DF8BC3311B526E3003B7A97 /* THBaseEAGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -499,28 +501,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D5170771028AD1B005F3C46 /* libhyphenate */;
+			remoteGlobalIDString = 7D5170771028AD1B005F3C46;
 			remoteInfo = libhyphenate;
 		};
 		7D3F4C3111EF29CF0065A5F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D3F4BF611EF29600065A5F7 /* libEucalyptusBase */;
+			remoteGlobalIDString = 7D3F4BF611EF29600065A5F7;
 			remoteInfo = libEucalyptusBase;
 		};
 		7D3F4C3511EF29DD0065A5F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D3F4BF611EF29600065A5F7 /* libEucalyptusBase */;
+			remoteGlobalIDString = 7D3F4BF611EF29600065A5F7;
 			remoteInfo = libEucalyptusBase;
 		};
 		7D3F4E6A11EF3CFE0065A5F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D5171BC1028B6AE005F3C46 /* expat */;
+			remoteGlobalIDString = 7D5171BC1028B6AE005F3C46;
 			remoteInfo = expat;
 		};
 		7D412B10114965E100C003BB /* PBXContainerItemProxy */ = {
@@ -1178,6 +1180,8 @@
 		7DF1AD7111D90F6E00506BD5 /* BookButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BookButton@2x.png"; sourceTree = "<group>"; };
 		7DF1AF9A11D9168F00506BD5 /* THUIDeviceAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THUIDeviceAdditions.m; sourceTree = "<group>"; };
 		7DF1AF9C11D9169700506BD5 /* THUIDeviceAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THUIDeviceAdditions.h; sourceTree = "<group>"; };
+		7DF4A34911EF839C00F6A4DD /* EucLibCSSUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLibCSSUtils.h; sourceTree = "<group>"; };
+		7DF4A34A11EF839C00F6A4DD /* EucLibCSSUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucLibCSSUtils.m; sourceTree = "<group>"; };
 		7DF58B5D10DA9005004E3DBB /* EucBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookView.h; sourceTree = "<group>"; };
 		7DF58B5E10DA9005004E3DBB /* EucBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookView.m; sourceTree = "<group>"; };
 		7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THBaseEAGLView.h; sourceTree = "<group>"; };
@@ -2104,6 +2108,8 @@
 				7D2341461149602300C318E7 /* EucCSSInternal.c */,
 				7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */,
 				7D23416B1149602300C318E7 /* LWCNSStringAdditions.m */,
+				7DF4A34911EF839C00F6A4DD /* EucLibCSSUtils.h */,
+				7DF4A34A11EF839C00F6A4DD /* EucLibCSSUtils.m */,
 				7D53BD8D11499D68004F64DC /* XMLTree */,
 				7D2341401149602300C318E7 /* DocumentTree */,
 				7D2341511149602300C318E7 /* IntermediateDocument */,
@@ -2697,6 +2703,7 @@
 				7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */,
 				7DCF831B114E64A400603379 /* EucCSS.h in Headers */,
 				7D79D072117F75C90081F554 /* EucCSSLayoutRunExtractor.h in Headers */,
+				7DF4A38711F057C300F6A4DD /* EucLibCSSUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3322,6 +3329,7 @@
 				7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */,
 				7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */,
 				7D79D073117F75C90081F554 /* EucCSSLayoutRunExtractor.m in Sources */,
+				7DF4A38611F057BE00F6A4DD /* EucLibCSSUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

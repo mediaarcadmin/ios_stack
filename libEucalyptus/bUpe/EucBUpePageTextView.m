@@ -212,7 +212,7 @@
     if(positionedBlock) {
         EucCSSRenderer *renderer = [[EucCSSRenderer alloc] init];
         renderer.cgContext = cgContext;
-        [renderer render:self.positionedBlock];
+        [renderer _render:self.positionedBlock];
         [renderer release];
     }
 }

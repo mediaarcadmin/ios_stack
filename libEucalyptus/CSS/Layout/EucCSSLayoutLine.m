@@ -111,9 +111,13 @@
         }
     }
     
-    
     _baseline = currentBaseline;
     _size = CGSizeMake(width, lineBoxHeight);
+}
+
+- (CGFloat)minimumNeededWidth
+{
+    return _componentWidth + _indent;
 }
 
 - (CGRect)frame
