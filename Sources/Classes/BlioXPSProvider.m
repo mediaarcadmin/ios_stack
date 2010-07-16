@@ -52,7 +52,8 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize bookID;
 @synthesize tempDirectory, imageInfo, xpsData, uriMap;
 
-- (void)dealloc {    
+- (void)dealloc {   
+	[[BlioDrmManager getDrmManager] reportReading];
     [renderingLock lock];
     [contentsLock lock];
     [inflateLock lock];

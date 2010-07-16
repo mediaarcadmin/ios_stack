@@ -13,6 +13,9 @@
 #import "BlioBook.h"
 #import "BlioXPSProvider.h"
 
+// Unfortunately can't go in DrmGlobals and shouldn't be part of interface.
+DRM_DECRYPT_CONTEXT  oDecryptContext;
+
 @interface BlioDrmManager()
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -84,6 +87,18 @@ ErrorExit:
 		return;
 	}
 	self.drmInitialized = YES;
+}
+
+- (void)reportReading {
+	DRM_RESULT dr = DRM_SUCCESS;
+	ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
+	                         NULL, 
+	                         NULL ) ); 
+ErrorExit:
+	if (dr != DRM_SUCCESS) {
+		unsigned int drInt = (unsigned int)dr;
+		NSLog(@"DRM commit error: %d",drInt);
+	}
 }
 
 - (DRM_RESULT)getDRMLicense {
@@ -220,42 +235,39 @@ ErrorExit:
     }
     
     DRM_RESULT dr = DRM_SUCCESS;
-    unsigned char* dataBuff = NULL;
+	unsigned char* dataBuff = NULL;
     
     @synchronized (self) {
         if ( ![self.bookID isEqual:aBookID] ) { 
             ChkDR( [self setHeaderForBookWithID:aBookID] );
             self.bookID = aBookID;
+			// Search for a license to bind to with the Read right.
+			const DRM_CONST_STRING *rgpdstrRights[1] = {0};
+			DRM_CONST_STRING readRight;
+			readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
+			readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
+			// Roundabout assignment needed to get around compiler complaint.
+			rgpdstrRights[0] = &readRight; 
+			int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
+			for (int i=0;i<bufferSz;++i)
+				oDecryptContext.rgbBuffer[i] = 0;
+			ChkDR( Drm_Reader_Bind( [DrmGlobals getDrmGlobals].drmAppContext,
+								   rgpdstrRights,
+								   NO_OF(rgpdstrRights),
+								   NULL, 
+								   NULL,
+								   &oDecryptContext ) );
         }
         
-        const DRM_CONST_STRING *rgpdstrRights[1] = {0};
-        DRM_DECRYPT_CONTEXT     oDecryptContext  = {{0}};
         DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
-        
-        // Roundabout assignment needed to get around compiler complaint.
-        DRM_CONST_STRING readRight;
-        readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
-        readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
-        rgpdstrRights[0] = &readRight; 
-        ChkDR( Drm_Reader_Bind( [DrmGlobals getDrmGlobals].drmAppContext,
-                               rgpdstrRights,
-                               NO_OF(rgpdstrRights),
-                               NULL, 
-                               NULL,
-                               &oDecryptContext ) );
-                
         dataBuff = (unsigned char*)[data bytes]; 
-        
         ChkDR(Drm_Reader_Decrypt (&oDecryptContext,
                                   &oCtrContext,
                                   dataBuff, 
                                   [data length]));
         
         // At this point, the buffer is PlayReady-decrypted.
-        
-        ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
-                                 NULL, 
-                                 NULL ) ); 
+		
     }
     
 ErrorExit:
