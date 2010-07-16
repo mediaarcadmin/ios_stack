@@ -11,6 +11,7 @@
 #import "BlioBookViewController.h"
 #import "BlioDownloadVoicesViewController.h"
 #import "BlioAcapelaAudioManager.h"
+#import "AcapelaSpeech.h"
 
 @interface BlioAudioSettingsController(PRIVATE)
 - (void)layoutControlsForOrientation:(UIInterfaceOrientation)orientation;
@@ -212,8 +213,8 @@
 	[super loadView];
 	// create a gradient-based content view	
 	self.contentView = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
-//	[AcapelaSpeech refreshVoiceList];
-//	self.availableVoices = [AcapelaSpeech availableVoices];
+	[AcapelaSpeech refreshVoiceList];
+	self.availableVoices = [AcapelaSpeech availableVoices];
 	[self createControls];	
 }
 
@@ -226,7 +227,7 @@
 
 -(void)onVoiceListRefreshedNotification:(NSNotification*)note {
 	NSLog(@"BlioAudioSettingsController onVoiceListRefreshedNotification entered");
-//	self.availableVoices = [AcapelaSpeech availableVoices];
+	self.availableVoices = [AcapelaSpeech availableVoices];
 	[self.tableView reloadData];
 }
 

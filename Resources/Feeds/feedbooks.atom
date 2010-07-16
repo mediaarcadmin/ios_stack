@@ -14,7 +14,7 @@
 <entry>
   <title>Subjects</title>
   <id>BlioStoreFeedBooksParser</id>
-  <link type="application/atom+xml" href="http://www.feedbooks.com/types.atom"/>
+  <link type="application/atom+xml" href="http://www.feedbooks.com/books/categories.atom"/>
 </entry>
 <entry>
   <title>Languages</title>

@@ -12,14 +12,14 @@
 #import "setupTTS.h"
 #import "BlioAudioManager.h"
 #import "BlioProcessingStandardOperations.h"
-// #import "AcapelaSpeech.h"
+#import "AcapelaSpeech.h"
 
 extern NSString * const BlioVoiceListRefreshedNotification;
 
 @interface BlioAcapelaAudioManager : BlioAudioManager<TTSManager> {
 	setupTTS* setupData;
-//	AcapelaSpeech* engine;
-//	AcapelaLicense* ttsLicense;
+	AcapelaSpeech* engine;
+	AcapelaLicense* ttsLicense;
     NSOperationQueue *downloadQueue;
 	NSDictionary * voiceData;
     CFAttributedStringRef currentStringWithWordOffsets;
@@ -27,8 +27,8 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 }
 
 @property (nonatomic, retain) setupTTS* setupData;
-// @property (nonatomic, retain) AcapelaSpeech* engine;
-// @property (nonatomic, retain) AcapelaLicense* ttsLicense;
+@property (nonatomic, retain) AcapelaSpeech* engine;
+@property (nonatomic, retain) AcapelaLicense* ttsLicense;
 @property (nonatomic, retain) NSOperationQueue *downloadQueue;
 @property (nonatomic, retain) NSDictionary *voiceData;
 @property (nonatomic, retain) AVAudioPlayer *sampleAudioPlayer;

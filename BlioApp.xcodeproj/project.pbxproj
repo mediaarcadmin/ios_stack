@@ -516,6 +516,10 @@
 		DC2A3E67116C5DF80049A97E /* MRGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5D116C5DF80049A97E /* MRGridView.m */; };
 		DC2A3E68116C5DF80049A97E /* MRGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */; };
 		DC2A3E69116C5DF80049A97E /* MRGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E61116C5DF80049A97E /* MRGridViewController.m */; };
+		DC41ACEF11F0DA4800D13308 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
+		DC41ACF011F0DA4900D13308 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
+		DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
+		DC41ACF211F0DA5100D13308 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		DC48C2C811D2BF9100C5D186 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D611C9159000CFEB88 /* Default-Landscape.png */; };
 		DC48C2D211D2C00F00C5D186 /* Icon-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D811C9159000CFEB88 /* Icon-iPad.png */; };
 		DC48C2D411D2C01700C5D186 /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D711C9159000CFEB88 /* Default-Portrait.png */; };
@@ -1280,6 +1284,8 @@
 				A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */,
 				DC5320DF11C09EF40042D3EA /* AudioToolbox.framework in Frameworks */,
 				C944EC0211C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */,
+				DC41ACEF11F0DA4800D13308 /* libMobilityStaticFat.a in Frameworks */,
+				DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1311,6 +1317,8 @@
 				C93317A211B53C560057E0BE /* libPlayReadyPK.a in Frameworks */,
 				DC5320E011C09EF40042D3EA /* AudioToolbox.framework in Frameworks */,
 				C944EC0311C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */,
+				DC41ACF011F0DA4900D13308 /* libMobilityStaticFat.a in Frameworks */,
+				DC41ACF211F0DA5100D13308 /* libBabTTSFat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

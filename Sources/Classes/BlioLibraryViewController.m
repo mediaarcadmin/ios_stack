@@ -1234,44 +1234,56 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         else if ([[book valueForKey:@"title"] isEqualToString:@"Unencrypted Rabbit"])
             unencryptedID = book.objectID;
     }
+	BOOL success = NO;
+	NSData *decryptedData = nil;
+    if (virginID != nil) {
+		success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
+		NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
+		BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
+		
+		// Decrypt a textflow file for Virgin Islands.
+		decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
+		NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+		
+		// Decrypt a fixed page for Virgin Islands.
+		decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
+		NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+		
+		// Decrypt a fixed page for Virgin Islands by requesting the dummy page
+		decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
+		NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+		
+	}
+	else NSLog(@"TEST ERROR: virginID is nil!");
+	
+	if (rabbitID != nil) {
+		success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
+		NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
     
-    BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
-    NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
-    success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
-    NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
-    
-    BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
-    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
-    //BlioXPSProvider *unencryptedXPS = [[[BlioBookManager sharedBookManager] bookWithID:unencryptedID] xpsProvider];
+		BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
+		
+		//    decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedImagesDir stringByAppendingString:@"4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF"]];
+		//    NSLog(@"Rabbit decrypted font length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
 
-    NSData *decryptedData;
-    
-//    decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedImagesDir stringByAppendingString:@"4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF"]];
-//    NSLog(@"Rabbit decrypted font length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-//
+		// Decrypt a textflow file for Peter Rabbit.
+		decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"]];
+		NSLog(@"Peter Rabbit decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+		
+		decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
+		NSLog(@"Peter Rabbit decrypted fixed page length (%d): %s", [decryptedData length], [decryptedData bytes]); 
+		
+	}
+	else NSLog(@"TEST ERROR: rabbitID is nil!");
+
+	if (unencryptedID != nil) {
+	//BlioXPSProvider *unencryptedXPS = [[[BlioBookManager sharedBookManager] bookWithID:unencryptedID] xpsProvider];
+
 //    decryptedData = [unencryptedXPS dataForComponentAtPath:[encryptedImagesDir stringByAppendingString:@"4729f730-bf02-4cc8-9945-fab00acaa782.ODTTF"]];
 //    NSLog(@"Unencrypted font length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
     
-    
-    //return;
-    // Decrypt a textflow file for Virgin Islands.
-    decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
-    NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-    
-    // Decrypt a fixed page for Virgin Islands.
-    decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
-    NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-	
-    // Decrypt a fixed page for Virgin Islands by requesting the dummy page
-    decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
-    NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    }
+	else NSLog(@"TEST ERROR: unencryptedID is nil!");
 
-	// Decrypt a textflow file for Peter Rabbit.
-    decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"]];
-    NSLog(@"Peter Rabbit decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-    
-    decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
-    NSLog(@"Peter Rabbit decrypted fixed page length (%d): %s", [decryptedData length], [decryptedData bytes]); 
 	//	
 	// END temporary code
 	
