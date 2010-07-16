@@ -209,7 +209,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
            animated:(BOOL)animated {
 
     BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
-    if (!([aBook pdfPath] || [aBook xpsPath])) {
+    if (!([aBook hasPdf] || [aBook hasXps])) {
         return nil;
     }
     
@@ -249,11 +249,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         lastZoomScale = 1;
         accessibilityRefreshRequired = YES;
         
-        if ([aBook xpsPath]) {
+        if ([aBook hasXps]) {
             // Prefer the checkout over calling [aBook xpsProvider] because we wat to retain the result
             xpsProvider = [[[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:self.bookID] retain];
             self.dataSource = xpsProvider;
-        } else if ([aBook pdfPath]) {
+        } else if ([aBook hasPdf]) {
             BlioLayoutPDFDataSource *aPDFDataSource = [[BlioLayoutPDFDataSource alloc] initWithPath:[aBook pdfPath]];
             self.dataSource = aPDFDataSource;
             [aPDFDataSource release];

@@ -13,15 +13,6 @@
 #import "BlioDrmManager.h"
 #import "zlib.h"
 
-static NSString* const BlioXPSProviderEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMap.xml";
-static NSString* const BlioXPSProviderEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages";
-static NSString* const BlioXPSProviderEncryptedImagesDir = @"/Resources";
-static NSString* const BlioXPSProviderEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/Flow";
-static NSString* const BlioXPSProviderEncryptedPagesExtension = @"bin";
-
-static NSString * const BlioXPSProviderComponentExtensionFPage = @"fpage";
-static NSString * const BlioXPSProviderComponentExtensionRels = @"rels";
-
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
 void BlioXPSProviderDRMRewind(URI_HANDLE h);
 size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb);
@@ -43,7 +34,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
 - (NSData *)decompressWithGZipCompression:(NSData *)data;
-- (NSData *)dataForComponentAtPath:(NSString *)path renderer:(BOOL)fromRenderer;
 
 @end
 
@@ -338,7 +328,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         return nil;
     } else {
         rawData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
-        NSLog(@"Raw data length %d (%d) with compression %d", [rawData length], packageInfo.length, packageInfo.compression_type);
+        //NSLog(@"Raw data length %d (%d) with compression %d", [rawData length], packageInfo.length, packageInfo.compression_type);
         if (packageInfo.compression_type == 8) {
             rawData = [self decompressWithRawDeflate:rawData];
         }
@@ -347,77 +337,40 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     return rawData;
 }
 
-- (NSData *)dataForComponentAtPath:(NSString *)path renderer:(BOOL)fromRenderer {
+- (NSData *)dataForComponentAtPath:(NSString *)path {
     NSString *componentPath = path;
     NSString *directory = [path stringByDeletingLastPathComponent];
     NSString *filename  = [path lastPathComponent];
-    NSString *extension = [path pathExtension];
+    NSString *extension = [[path pathExtension] uppercaseString];
 
     BOOL encrypted = NO;
     BOOL gzipped = NO;
     BOOL mapped = NO;
     
-    if (0) {
-    if ([path isEqualToString:BlioXPSProviderEncryptedUriMap]) {
-        encrypted = YES;
-        gzipped = YES;
-    }
-    
-    if ([extension isEqualToString:BlioXPSProviderComponentExtensionFPage]) {
-        NSString *page1Path = [[NSBundle mainBundle] pathForResource:@"FPage1_Unencrypted" ofType:@"txt"];
-        NSData *page1 = [NSData dataWithContentsOfFile:page1Path];
-        return page1;
-        NSString *encryptedPath = [[BlioXPSProviderEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
-        if ([self rawDataForComponentAtPath:encryptedPath]) {
-            componentPath = encryptedPath;
-            encrypted = YES;
-            gzipped = YES;
-            mapped = YES;
-        }
-    }
-    
-    if ([directory isEqualToString:BlioXPSProviderEncryptedImagesDir] && [extension isEqualToString:@"jpg"]) { 
-        NSString *image1Path = [[NSBundle mainBundle] pathForResource:@"Page1_Image" ofType:@"jpg"];
-        NSData *image1 = [NSData dataWithContentsOfFile:image1Path];
-        return image1;
-        
-        if (fromRenderer) {
-            NSString *encryptedPath = [path stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
-            if ([self rawDataForComponentAtPath:encryptedPath]) {
-                componentPath = encryptedPath;
-                encrypted = YES;
-            }
-        }
-    }
-    }
-    
-    if (1) {
     // TODO Make sure these checks are ordered from most common to least common for efficiency
     if ([filename isEqualToString:@"Rights.xml"]) {
         encrypted = YES;
-    } else if ([extension isEqualToString:BlioXPSProviderComponentExtensionFPage]) {
+    } else if ([extension isEqualToString:[BlioXPSComponentExtensionFPage uppercaseString]]) {
         encrypted = YES;
         gzipped = YES;
         mapped = YES;
-        componentPath = [[BlioXPSProviderEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
-    } else if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"png"]) { 
-        if (fromRenderer) {
-            encrypted = YES;
-            componentPath = [path stringByAppendingPathExtension:BlioXPSProviderEncryptedPagesExtension];
-        }
-    } else if ([directory isEqualToString:BlioXPSProviderEncryptedTextFlowDir]) {  
+        componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
+    } else if ([directory isEqualToString:BlioXPSEncryptedImagesDir] && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
+        encrypted = YES;
+        componentPath = [path stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
+    } else if ([directory isEqualToString:BlioXPSEncryptedTextFlowDir]) {  
         if (![path isEqualToString:@"/Documents/1/Other/KNFB/Flow/Sections.xml"]) {
             encrypted = YES;
             gzipped = YES;
         }
-    } else if ([directory isEqualToString:BlioXPSProviderEncryptedPagesDir]) {
+    } else if ([directory isEqualToString:BlioXPSEncryptedPagesDir]) {
         encrypted = YES;
         gzipped = YES;
-    } else if ([path isEqualToString:BlioXPSProviderEncryptedUriMap]) {
+    } else if ([path isEqualToString:BlioXPSEncryptedUriMap]) {
         encrypted = YES;
         gzipped = YES;
     }
-    }
+    
     NSData *componentData = [self rawDataForComponentAtPath:componentPath];
              
     if (encrypted) {
@@ -435,20 +388,8 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         componentData = [self replaceMappedResources:componentData];
     }
     
-    NSLog(@"BlioXPSProviderDRMOpen %@ length = %d", componentPath, [componentData length]);
-    if (0) {
-    if ([extension isEqualToString:BlioXPSProviderComponentExtensionFPage]) {
-        NSString *dataString = [[NSString alloc] initWithData:componentData encoding:NSUTF8StringEncoding];
-        NSLog(@"FPage contents: %@ length = %d", dataString, [dataString length]);
-        [dataString release];
-    }
-    }
     return componentData;
     
-}
-
-- (NSData *)dataForComponentAtPath:(NSString *)path {
-    return [self dataForComponentAtPath:path renderer:NO];
 }
 
 #pragma mark -
@@ -457,7 +398,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 - (NSDictionary *)openDRMRenderingComponentAtPath:(NSString *)path {
     //NSLog(@"Open %@", path);
     
-    NSData *componentData = [self dataForComponentAtPath:path renderer:YES];
+    NSData *componentData = [self dataForComponentAtPath:path];
     
     NSMutableDictionary *xpsDataDict = [NSMutableDictionary dictionaryWithCapacity:3];
     [xpsDataDict setValue:[NSValue valueWithNonretainedObject:self] forKey:@"xpsProvider"];
@@ -470,7 +411,6 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 }
 
 - (void)closeDRMRenderingComponentAtPath:(NSString *)path {
-    //NSLog(@"Close %@", path);
     [self.xpsData removeObjectForKey:path];
 } 
 
@@ -478,14 +418,6 @@ URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data) {
     NSString *path = [NSString stringWithCString:pszURI encoding:NSUTF8StringEncoding];
     BlioXPSProvider *provider = (BlioXPSProvider *)data;
     //NSLog(@"BlioXPSProviderDRMOpen %@ with userdata %p", path, provider);
-    
-    
-    if ([[path pathExtension] isEqualToString:BlioXPSProviderComponentExtensionRels]) {
-        // This is a bug in the XPS library, we shouldn't be asked for this but it happens
-        // On XPS_Open when a DRM Handler was previously registered for another handle, even
-        // if that handle is no longer valid
-        return NULL;
-    }
     
     NSDictionary *xpsDataDict = [provider openDRMRenderingComponentAtPath:path];
     
@@ -681,7 +613,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 
 - (NSMutableArray *)uriMap {
     if (nil == uriMap) {
-        NSData *uriMapData = [self dataForComponentAtPath:BlioXPSProviderEncryptedUriMap];
+        NSData *uriMapData = [self dataForComponentAtPath:BlioXPSEncryptedUriMap];
         if (uriMapData) {
             self.uriMap = [NSMutableArray arrayWithCapacity:51];
             NSXMLParser *uriMapParser = [[NSXMLParser alloc] initWithData:uriMapData];

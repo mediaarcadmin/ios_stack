@@ -16,6 +16,10 @@
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
 @property (nonatomic, retain) NSOperationQueue *postAvailabilityQueue;
+
+- (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
+- (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
+
 @end
 
 @implementation BlioProcessingManager
@@ -265,40 +269,10 @@
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem]) {
 			url = nil;
 			alreadyCompletedOperations++;
-		}
-		else {
-			stringURL = [aBook manifestPathForKey:@"coverFilename"];
-			if (stringURL != nil) {
-				if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
-					url = [NSURL fileURLWithPath:stringURL];
-				}
-				else url = [NSURL URLWithString:stringURL];
-				BlioProcessingDownloadCoverOperation *coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:url];
-				coverOp.bookID = bookID;
-				coverOp.sourceID = sourceID;
-				coverOp.sourceSpecificID = sourceSpecificID;
-				coverOp.localFilename = [aBook manifestPathForKey:coverOp.filenameKey];
-				coverOp.cacheDirectory = cacheDir;
-				coverOp.tempDirectory = tempDir;
-				[coverOp setQueuePriority:NSOperationQueuePriorityHigh];
-				[self.preAvailabilityQueue addOperation:coverOp];
-				[bookOps addObject:coverOp];
-				
-				BlioProcessingGenerateCoverThumbsOperation *thumbsOp = [[BlioProcessingGenerateCoverThumbsOperation alloc] init];
-				thumbsOp.bookID = bookID;
-				thumbsOp.sourceID = sourceID;
-				thumbsOp.sourceSpecificID = sourceSpecificID;
-				thumbsOp.cacheDirectory = cacheDir;
-				thumbsOp.tempDirectory = tempDir;
-				[thumbsOp addDependency:coverOp];
-				[thumbsOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
-				[self.preAvailabilityQueue addOperation:thumbsOp];
-				[bookOps addObject:thumbsOp];
-				
-				[coverOp release];
-				[thumbsOp release];
-			}
-		}
+		} else if (![manifestLocation isEqualToString:BlioManifestEntryLocationXPS]) {
+            // Don't handle the cover for a paid book here - we do it in paid book processing
+            [self addCoverOpToBookOps:bookOps forBook:aBook manifestLocation:manifestLocation withDependency:nil];
+        }
 	}
 	
 	manifestLocation = [aBook manifestLocationForKey:@"epubFilename"];
@@ -405,75 +379,7 @@
 			url = nil;
 		}
 		else {
-			stringURL = [aBook manifestPathForKey:@"textFlowFilename"];
-			BOOL usedPreExistingOperation = NO;
-			BlioProcessingDownloadTextFlowOperation * textFlowOp = nil;
-			
-			if (stringURL != nil) {
-				// we still need to finish downloading this file
-				// so check to see if operation already exists
-				textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadTextFlowOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-				if (!textFlowOp || textFlowOp.isCancelled) {
-					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
-						url = [NSURL fileURLWithPath:stringURL];
-					}
-					else url = [NSURL URLWithString:stringURL];				
-					textFlowOp = [[[BlioProcessingDownloadTextFlowOperation alloc] initWithUrl:url] autorelease];
-					textFlowOp.bookID = bookID; 
-					textFlowOp.sourceID = sourceID;
-					textFlowOp.sourceSpecificID = sourceSpecificID;
-					textFlowOp.localFilename = [aBook manifestPathForKey:textFlowOp.filenameKey];
-					textFlowOp.cacheDirectory = cacheDir;
-					textFlowOp.tempDirectory = tempDir;
-					[self.preAvailabilityQueue addOperation:textFlowOp];
-				}
-				else {
-					// we reuse existing one
-					usedPreExistingOperation = YES;
-				}
-				[bookOps addObject:textFlowOp];
-			}
-			NSArray *textFlowPreAvailOps = [BlioTextFlow preAvailabilityOperations];
-			NSMutableArray * newTextFlowPreAvailOps = [NSMutableArray array];
-			for (BlioProcessingOperation *preAvailOp in textFlowPreAvailOps) {
-				BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-				if (!preExist || preExist.isCancelled) {
-					
-					preAvailOp.bookID = bookID;
-					preAvailOp.sourceID = sourceID;
-					preAvailOp.sourceSpecificID = sourceSpecificID;
-					preAvailOp.cacheDirectory = cacheDir;
-					preAvailOp.tempDirectory = tempDir;
-					if (textFlowOp) [preAvailOp addDependency:textFlowOp];
-					[self.preAvailabilityQueue addOperation:preAvailOp];
-					[bookOps addObject:preAvailOp];
-					[newTextFlowPreAvailOps addObject:preAvailOp];
-				}
-				else {
-					// if it already exists, it is dependent on a completed operation
-					[bookOps addObject:preExist];
-					[newTextFlowPreAvailOps addObject:preExist];
-				}
-			}
-			
-			NSArray *flowViewPreAvailOps = [BlioFlowView preAvailabilityOperations];
-			for (BlioProcessingOperation *preAvailOp in flowViewPreAvailOps) {
-				BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-				if (!preExist || preExist.isCancelled) {
-					preAvailOp.bookID = bookID;
-					preAvailOp.cacheDirectory = cacheDir;
-					preAvailOp.tempDirectory = tempDir;
-					for(BlioProcessingOperation *beforeOp in newTextFlowPreAvailOps) {
-						[preAvailOp addDependency:beforeOp];
-					}
-					[self.preAvailabilityQueue addOperation:preAvailOp];
-					[bookOps addObject:preAvailOp];
-				}
-				else {
-					// if it already exists, it is dependent on a completed operation
-					[bookOps addObject:preExist];
-				}				
-			}                    			
+			[self addTextFlowOpToBookOps:bookOps forBook:aBook manifestLocation:manifestLocation withDependency:nil];                  			
 		}
 	}
 	
@@ -550,7 +456,15 @@
 				}
 				[bookOps addObject:paidBookOp];
 			}
-			BlioProcessingOperation * licenseOp = [self operationByClass:NSClassFromString(@"BlioProcessingLicenseAcquisitionOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+            
+            if ([[aBook manifestLocationForKey:@"coverFilename"] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+                alreadyCompletedOperations++;
+                url = nil;
+            } else {
+                [self addCoverOpToBookOps:bookOps forBook:aBook manifestLocation:nil withDependency:paidBookOp];
+            }
+            
+            BlioProcessingOperation * licenseOp = [self operationByClass:NSClassFromString(@"BlioProcessingLicenseAcquisitionOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!licenseOp || licenseOp.isCancelled) {
 				licenseOp = [[[BlioProcessingLicenseAcquisitionOperation alloc] init] autorelease];
 				licenseOp.bookID = bookID;
@@ -565,6 +479,13 @@
 			else {
 				// if it already exists, it is dependent on a completed operation
 			}
+
+            if ([[aBook manifestLocationForKey:@"textFlowFilename"] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+                alreadyCompletedOperations++;
+                url = nil;
+            } else {
+                [self addTextFlowOpToBookOps:bookOps forBook:aBook manifestLocation:nil withDependency:licenseOp];                  			
+            }
 			
 		}	
 	}
@@ -596,6 +517,132 @@
 			NSLog(@"[BlioProcessingManager enqueueBook:placeholderOnly:] (changing state to incomplete) Save failed with error: %@, %@", error, [error userInfo]);
 		}			
 	}		
+}
+
+- (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {
+    
+    NSString *stringURL = [aBook manifestPathForKey:@"coverFilename"];
+    BlioProcessingDownloadCoverOperation * coverOp = nil;
+    
+    NSURL *url = nil;
+    NSManagedObjectID *bookID = [aBook objectID];
+	NSString *cacheDir = [aBook bookCacheDirectory];
+	NSString *tempDir = [aBook bookTempDirectory];
+	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
+	NSString *sourceSpecificID = [aBook sourceSpecificID];
+    
+    if ((stringURL != nil) && (manifestLocation != nil)) {
+        if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
+            url = [NSURL fileURLWithPath:stringURL];
+        }
+        else url = [NSURL URLWithString:stringURL];
+        coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:url];
+        coverOp.bookID = bookID;
+        coverOp.sourceID = sourceID;
+        coverOp.sourceSpecificID = sourceSpecificID;
+        coverOp.localFilename = [aBook manifestPathForKey:coverOp.filenameKey];
+        coverOp.cacheDirectory = cacheDir;
+        coverOp.tempDirectory = tempDir;
+        [coverOp setQueuePriority:NSOperationQueuePriorityHigh];
+        [self.preAvailabilityQueue addOperation:coverOp];
+        [bookOps addObject:coverOp];
+        [coverOp release];
+    }
+        
+        BlioProcessingGenerateCoverThumbsOperation *thumbsOp = [[BlioProcessingGenerateCoverThumbsOperation alloc] init];
+        thumbsOp.bookID = bookID;
+        thumbsOp.sourceID = sourceID;
+        thumbsOp.sourceSpecificID = sourceSpecificID;
+        thumbsOp.cacheDirectory = cacheDir;
+        thumbsOp.tempDirectory = tempDir;
+        if (coverOp) [thumbsOp addDependency:coverOp];
+        if (dependencyOp) [thumbsOp addDependency:dependencyOp];
+        [thumbsOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+        [self.preAvailabilityQueue addOperation:thumbsOp];
+        [bookOps addObject:thumbsOp];
+        
+        [thumbsOp release];
+    
+}
+
+- (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {
+    NSString *stringURL = [aBook manifestPathForKey:@"textFlowFilename"];
+    BOOL usedPreExistingOperation = NO;
+    BlioProcessingDownloadTextFlowOperation * textFlowOp = nil;
+    NSURL *url = nil;
+    NSManagedObjectID *bookID = [aBook objectID];
+	NSString *cacheDir = [aBook bookCacheDirectory];
+	NSString *tempDir = [aBook bookTempDirectory];
+	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
+	NSString *sourceSpecificID = [aBook sourceSpecificID];
+    
+    if ((stringURL != nil) && (manifestLocation != nil)) {
+        // we still need to finish downloading this file
+        // so check to see if operation already exists
+        textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadTextFlowOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+        if (!textFlowOp || textFlowOp.isCancelled) {
+            if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
+                url = [NSURL fileURLWithPath:stringURL];
+            }
+            else url = [NSURL URLWithString:stringURL];				
+            textFlowOp = [[[BlioProcessingDownloadTextFlowOperation alloc] initWithUrl:url] autorelease];
+            textFlowOp.bookID = bookID; 
+            textFlowOp.sourceID = sourceID;
+            textFlowOp.sourceSpecificID = sourceSpecificID;
+            textFlowOp.localFilename = [aBook manifestPathForKey:textFlowOp.filenameKey];
+            textFlowOp.cacheDirectory = cacheDir;
+            textFlowOp.tempDirectory = tempDir;
+            if (dependencyOp) [textFlowOp addDependency:dependencyOp];
+            [self.preAvailabilityQueue addOperation:textFlowOp];
+        }
+        else {
+            // we reuse existing one
+            usedPreExistingOperation = YES;
+        }
+        [bookOps addObject:textFlowOp];
+    }
+    NSArray *textFlowPreAvailOps = [BlioTextFlow preAvailabilityOperations];
+    NSMutableArray * newTextFlowPreAvailOps = [NSMutableArray array];
+    for (BlioProcessingOperation *preAvailOp in textFlowPreAvailOps) {
+        BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+        if (!preExist || preExist.isCancelled) {
+            
+            preAvailOp.bookID = bookID;
+            preAvailOp.sourceID = sourceID;
+            preAvailOp.sourceSpecificID = sourceSpecificID;
+            preAvailOp.cacheDirectory = cacheDir;
+            preAvailOp.tempDirectory = tempDir;
+            if (textFlowOp) [preAvailOp addDependency:textFlowOp];
+            if (dependencyOp) [preAvailOp addDependency:dependencyOp];
+            [self.preAvailabilityQueue addOperation:preAvailOp];
+            [bookOps addObject:preAvailOp];
+            [newTextFlowPreAvailOps addObject:preAvailOp];
+        }
+        else {
+            // if it already exists, it is dependent on a completed operation
+            [bookOps addObject:preExist];
+            [newTextFlowPreAvailOps addObject:preExist];
+        }
+    }
+    
+    NSArray *flowViewPreAvailOps = [BlioFlowView preAvailabilityOperations];
+    for (BlioProcessingOperation *preAvailOp in flowViewPreAvailOps) {
+        BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+        if (!preExist || preExist.isCancelled) {
+            preAvailOp.bookID = bookID;
+            preAvailOp.cacheDirectory = cacheDir;
+            preAvailOp.tempDirectory = tempDir;
+            for(BlioProcessingOperation *beforeOp in newTextFlowPreAvailOps) {
+                [preAvailOp addDependency:beforeOp];
+            }
+            [self.preAvailabilityQueue addOperation:preAvailOp];
+            [bookOps addObject:preAvailOp];
+        }
+        else {
+            // if it already exists, it is dependent on a completed operation
+            [bookOps addObject:preExist];
+        }				
+    }  
 }
     
 - (void) resumeProcessing {

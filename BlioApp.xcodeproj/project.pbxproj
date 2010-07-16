@@ -494,8 +494,6 @@
 		C9E1FAAA110F26DB00999587 /* TextFlows in Resources */ = {isa = PBXBuildFile; fileRef = C9E1FAA7110F26DB00999587 /* TextFlows */; };
 		C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
 		C9E5DC13117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
-		C9EA6CE711EF422F00095969 /* FPage1_Unencrypted.txt in Resources */ = {isa = PBXBuildFile; fileRef = C9EA6CE611EF422F00095969 /* FPage1_Unencrypted.txt */; };
-		C9EA6D0011EF43D900095969 /* Page1_Image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C9EA6CFF11EF43D900095969 /* Page1_Image.jpg */; };
 		C9F42DC511C14189000B6D8C /* BlioLicenseClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */; };
 		C9F47A0E1129BC7E00563348 /* downloadButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0A1129BC7E00563348 /* downloadButton.png */; };
 		C9F47A0F1129BC7E00563348 /* downloadButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */; };
@@ -1193,8 +1191,6 @@
 		C9E1FA24110EE4D500999587 /* BlioTextFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlow.m; sourceTree = "<group>"; };
 		C9E1FAA7110F26DB00999587 /* TextFlows */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TextFlows; sourceTree = "<group>"; };
 		C9E5DBF8117C6F9900950BA0 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		C9EA6CE611EF422F00095969 /* FPage1_Unencrypted.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FPage1_Unencrypted.txt; sourceTree = "<group>"; };
-		C9EA6CFF11EF43D900095969 /* Page1_Image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Page1_Image.jpg; sourceTree = "<group>"; };
 		C9F47A0A1129BC7E00563348 /* downloadButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downloadButton.png; sourceTree = "<group>"; };
 		C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downloadButtonPressed.png; sourceTree = "<group>"; };
 		C9F748581140100100680E93 /* shadow-bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow-bottom.png"; sourceTree = "<group>"; };
@@ -1445,8 +1441,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C9EA6CFF11EF43D900095969 /* Page1_Image.jpg */,
-				C9EA6CE611EF422F00095969 /* FPage1_Unencrypted.txt */,
 				DC2EB05411C96E28006AC1B6 /* DRM */,
 				A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */,
 				A3C7436111CAC178005A2219 /* icon-cart@2x.png */,
@@ -2461,8 +2455,6 @@
 				DC795B2F11E7E21B000DA04D /* button-buybooks.png in Resources */,
 				DC795B3011E7E21B000DA04D /* store-screenshot.png in Resources */,
 				7DB5F71111EC65BF00D33185 /* logo-white@2x.png in Resources */,
-				C9EA6CE711EF422F00095969 /* FPage1_Unencrypted.txt in Resources */,
-				C9EA6D0011EF43D900095969 /* Page1_Image.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

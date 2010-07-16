@@ -102,6 +102,7 @@ ErrorExit:
             NSLog(@"DRM commit error: %d",drInt);
         }
     }
+    NSLog(@"Report reading exited.");
 }
 
 - (DRM_RESULT)getDRMLicense {
@@ -244,6 +245,7 @@ ErrorExit:
         if ( ![self.bookID isEqual:aBookID] ) { 
             ChkDR( [self setHeaderForBookWithID:aBookID] );
             self.bookID = aBookID;
+        }
 			// Search for a license to bind to with the Read right.
 			const DRM_CONST_STRING *rgpdstrRights[1] = {0};
 			DRM_CONST_STRING readRight;
@@ -260,7 +262,7 @@ ErrorExit:
 								   NULL, 
 								   NULL,
 								   &oDecryptContext ) );
-        }
+        
         
         DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
         dataBuff = (unsigned char*)[data bytes]; 
@@ -276,7 +278,7 @@ ErrorExit:
 ErrorExit:
     if (dr != DRM_SUCCESS) {
         unsigned int drInt = (unsigned int)dr;
-        NSLog(@"DRM decryption error: %d",drInt);
+        NSLog(@"DRM decryption error: %08X",drInt);
         self.bookID = nil;
         return NO;
     }
