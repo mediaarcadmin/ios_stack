@@ -55,6 +55,7 @@ typedef struct EucCSSLayoutLineRenderItem
 @property (nonatomic, assign) uint8_t align;
 
 @property (nonatomic, readonly) CGFloat componentWidth;
+@property (nonatomic, readonly) CGFloat minimumNeededWidth;
 
 - (void)sizeToFitInWidth:(CGFloat)width;
 

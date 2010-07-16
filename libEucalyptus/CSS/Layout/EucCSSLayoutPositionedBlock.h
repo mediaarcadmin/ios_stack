@@ -13,6 +13,8 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+struct css_computed_style;
+
 @class EucCSSIntermediateDocumentNode;
 
 @interface EucCSSLayoutPositionedBlock : NSObject {
@@ -31,6 +33,8 @@
 
 @property (nonatomic, retain) EucCSSIntermediateDocumentNode *documentNode;
 @property (nonatomic, assign) EucCSSLayoutPositionedBlock *parent;
+
+@property (nonatomic, readonly) struct css_computed_style *computedStyle;
 
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, assign) CGRect borderRect;
