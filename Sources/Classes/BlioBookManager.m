@@ -249,7 +249,7 @@ static pthread_key_t sManagedObjectContextKey;
             return previouslyCachedParagraphSource;
         } else {
             BlioBook *book = [self bookWithID:aBookID];
-            if(book.textFlowPath) {
+            if([book hasTextFlow]) {
                 BlioTextFlow *textFlow = [self checkOutTextFlowForBookWithID:aBookID];
                 id<BlioParagraphSource> paragraphSource = nil;
                 if(textFlow) {

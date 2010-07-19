@@ -90,7 +90,6 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, assign, readonly) NSString *ePubPath;
 @property (nonatomic, assign, readonly) NSString *pdfPath;
 @property (nonatomic, assign, readonly) NSString *xpsPath;
-@property (nonatomic, assign, readonly) NSString *textFlowPath;
 @property (nonatomic, assign, readonly) BOOL hasEPub;
 @property (nonatomic, assign, readonly) BOOL hasPdf;
 @property (nonatomic, assign, readonly) BOOL hasXps;

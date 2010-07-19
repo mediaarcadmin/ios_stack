@@ -193,10 +193,6 @@
     return [self manifestPathForKey:@"pdfFilename"];
 }
 
-- (NSString *)textFlowPath {        
-    return [self manifestPathForKey:@"textFlowFilename"];
-}
-
 - (NSString *)xpsPath {
     return [self manifestPathForKey:@"xpsFilename"];
 }

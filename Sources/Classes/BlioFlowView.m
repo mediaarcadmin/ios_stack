@@ -47,7 +47,7 @@
         self.opaque = YES;
         
         BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:bookID];
-        if([aBook textFlowPath]) {
+        if([aBook hasTextFlow]) {
             eucBook = [[BlioFlowEucBook alloc] initWithBookID:bookID];
             eucBook.persistsPositionAutomatically = NO;
             eucBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
