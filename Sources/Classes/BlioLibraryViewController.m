@@ -239,7 +239,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        if (0) {
+
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
                                               authors:[NSArray arrayWithObject:@"Stella Blackstone"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
@@ -254,7 +254,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        }   
+
         [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
                                               authors:[NSArray arrayWithObject:@"David J. Hunter"]
 											coverPath:@"MockCovers/Essentials_of_Discrete_Mathematics.png"
@@ -478,7 +478,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        
+
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
 											coverPath:nil
@@ -492,7 +492,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-        if (0) {
+        
         [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
                                               authors:[NSArray arrayWithObjects:@"Lynne M. Sullivan", nil]
 											coverPath:nil
@@ -506,11 +506,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-        }
     }
-    
-	
-    
 	
 }
 
@@ -1178,6 +1174,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
 }
+
 - (void)showSortOptions:(id)sender {    
 	// show sheet interface
 	NSString * sheetTitle = NSLocalizedString(@"Select Sort Order:",@"\"Select Sort Order:\" sort sheet title");
@@ -1202,8 +1199,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
-//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sourceID == %@", [NSNumber numberWithInt:BlioBookSourceOnlineStore]];
-//    [request setPredicate:predicate];
     
     NSError *error;
     NSArray *paidBooks = [self.managedObjectContext executeFetchRequest:request error:&error];
@@ -1218,28 +1213,28 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             rabbitID = book.objectID;
     }
     
-    //BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
-    //NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
-    BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
+    BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
+    NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
+    success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
     NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
     
-   // BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
+    BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
     BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
 
     NSData *decryptedData;
 
 
     // Decrypt a textflow file for Virgin Islands.
-    //decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
-    //NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
+    NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
     
     // Decrypt a fixed page for Virgin Islands.
-    //decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
-    //NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
+    NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
 	
     // Decrypt a fixed page for Virgin Islands by requesting the dummy page
-    //decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
-    //NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
+    NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
 
 	// Decrypt a textflow file for Peter Rabbit.
     decryptedData = [rabbitXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_0.xml"]];

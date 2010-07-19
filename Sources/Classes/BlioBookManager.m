@@ -317,7 +317,7 @@ static pthread_key_t sManagedObjectContextKey;
             if(book.xpsPath) {
                 BlioXPSProvider *xpsProvider = [[BlioXPSProvider alloc] initWithBookID:aBookID];
                 if(xpsProvider) {
-                    NSLog(@"Creating and caching XPSProvider for book with ID %@", aBookID);
+                    NSLog(@"Creating and caching XPSProvider for book with title %@ and ID %@", [book title], aBookID);
                     NSCountedSet *myCachedXPSProviderCheckoutCounts = self.cachedXPSProviderCheckoutCounts;
                     if(!myCachedXPSProviderCheckoutCounts) {
                         myCachedXPSProviderCheckoutCounts = [NSCountedSet set];

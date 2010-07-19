@@ -104,8 +104,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         
         xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
-        if (1) {
-        //if ([[self.book valueForKey:@"sourceID"] isEqual:[NSNumber numberWithInt:BlioBookSourceOnlineStore]]) {
+        if ([[self.book valueForKey:@"sourceID"] isEqual:[NSNumber numberWithInt:BlioBookSourceOnlineStore]]) {
             XPS_URI_PLUGIN_INFO	upi = {
                 XPS_URI_SOURCE_PLUGIN,
                 sizeof(XPS_URI_PLUGIN_INFO),

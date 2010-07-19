@@ -420,9 +420,50 @@
 			}
 		}
 	}
-	// paid books only. for now, we are assuming that all XPS files are paid books requiring decryption.
+    
+    // non-encrypted XPS books
+    manifestLocation = [aBook manifestLocationForKey:@"xpsFilename"];
+	if (manifestLocation && (sourceID != BlioBookSourceOnlineStore)) {
+		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
+			alreadyCompletedOperations++;
+			url = nil;
+		}
+		else {
+			stringURL = [aBook manifestPathForKey:@"xpsFilename"];
+			BOOL usedPreExistingOperation = NO;
+			BlioProcessingDownloadXPSOperation * xpsOp = nil;
+			
+			if (stringURL != nil) {
+				// we still need to finish downloading this file
+				// so check to see if operation already exists
+				xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (!xpsOp || xpsOp.isCancelled) {
+					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
+						url = [NSURL fileURLWithPath:stringURL];
+					}
+					else url = [NSURL URLWithString:stringURL];				
+					xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
+					xpsOp.bookID = bookID;
+					xpsOp.sourceID = sourceID;
+					xpsOp.sourceSpecificID = sourceSpecificID;
+					xpsOp.localFilename = [aBook manifestPathForKey:xpsOp.filenameKey];
+					xpsOp.cacheDirectory = cacheDir;
+					xpsOp.tempDirectory = tempDir;
+					[self.preAvailabilityQueue addOperation:xpsOp];
+				}
+				else {
+					// we reuse existing one
+					usedPreExistingOperation = YES;
+				}
+				[bookOps addObject:xpsOp];
+			}
+		}	
+	}
+    
+    
+	// paid books only.
 	manifestLocation = [aBook manifestLocationForKey:@"xpsFilename"];
-	if (manifestLocation) {
+	if (manifestLocation && (sourceID == BlioBookSourceOnlineStore)) {
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
