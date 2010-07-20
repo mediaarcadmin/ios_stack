@@ -672,7 +672,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             } 
             
             // Save the current progress, for UI display purposes.
-            float bookProgress = (float)(_bookView.pageNumber - 1) / (float)(_bookView.pageCount);
+            // Subtract 1 from pageNumber and count so that when we are on page 0 we actually get progress of 0
+            float bookProgress = (float)(_bookView.pageNumber - 1) / (float)(_bookView.pageCount - 1);
             self.book.progress = [NSNumber numberWithFloat:bookProgress];
             
             [self.navigationController setToolbarHidden:YES animated:NO];

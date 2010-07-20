@@ -1939,16 +1939,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.authorLabel = aAuthorLabel;
         [aAuthorLabel release];
         
-        UISlider *aSlider = [[UISlider alloc] init];
+        BlioProgressView *aSlider = [[BlioProgressView alloc] init];
         [aSlider setIsAccessibilityElement:NO];
-        UIImage *minImage = [[UIImage imageNamed:@"minimum-progress.png"] stretchableImageWithLeftCapWidth:2 topCapHeight:0];
-        //UIImage *maxImage = [[UIImage imageNamed:@"maximum-progress.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
-        [aSlider setMinimumTrackImage:minImage forState:UIControlStateNormal];
-        [aSlider setMaximumTrackImage:[UIImage imageNamed:@"maximum-progress.png"] forState:UIControlStateNormal];
         aSlider.userInteractionEnabled = NO;
         aSlider.value = 0.0f;
-        [aSlider.layer setBorderColor:[UIColor colorWithRed:0.424f green:0.424f blue:0.443f alpha:0.25f].CGColor];
-        [aSlider.layer setBorderWidth:2.0f];
         [aSlider setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 54, kBlioLibraryListContentWidth, 9)];
         [self.contentView addSubview:aSlider];
         self.progressSlider = aSlider;
@@ -2161,3 +2155,37 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 @end
+
+@implementation BlioProgressView
+
+@synthesize value;
+
+- (id)init {
+    if ((self = [super init])) {
+        self.backgroundColor = [UIColor clearColor];
+    }
+    return self;
+}
+
+- (void)setValue:(CGFloat)newValue {
+    value = newValue;
+    [self setNeedsDisplay];
+}
+
+- (void)drawRect:(CGRect)rect {
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextClearRect(ctx, rect);
+    
+    CGRect progressRect = CGRectInset(rect, 3, 3);
+    progressRect.size.width = progressRect.size.width * self.value;
+    [[UIColor blackColor] set];
+    CGContextFillRect(ctx, progressRect);
+    
+    [[UIColor colorWithRed:0.424f green:0.424f blue:0.443f alpha:0.25f] set];
+    CGContextSetLineWidth(ctx, 2);
+    CGContextStrokeRect(ctx, CGRectInset(rect, 1, 1));
+    
+}
+
+@end
+
