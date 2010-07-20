@@ -1882,6 +1882,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 @end
 
+@interface BlioLibraryListCell (PRIVATE)
+- (void)createProgressView;
+- (void)destroyProgressView;
+@end
+
 @implementation BlioLibraryListCell
 
 @synthesize bookView, titleLabel, authorLabel, progressSlider,proportionalProgressView, delegate,progressView,pauseButton,resumeButton;
@@ -1941,12 +1946,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         [self.contentView addSubview:aSlider];
         self.progressSlider = aSlider;
         [aSlider release];
-		
-		progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-		progressView.frame = CGRectMake(68, 52, kBlioLibraryListProgressViewWidth, 10);
-		progressView.hidden = YES;
-		[self.contentView addSubview:progressView];
-		
+				
 		pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
 		[pauseButton setImage:[UIImage imageNamed:@"library-pausebutton.png"] forState:UIControlStateNormal];
 		pauseButton.showsTouchWhenHighlighted = YES;
@@ -1967,6 +1967,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.accessoryView = nil;
 	progressView.hidden = YES;
 	progressSlider.hidden = YES;
+	[self destroyProgressView];
+}
+-(void)createProgressView {
+	self.progressView = [[[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault] autorelease];
+	progressView.frame = CGRectMake(68, 52, kBlioLibraryListProgressViewWidth, 10);
+	progressView.hidden = NO;
+	[self.contentView addSubview:progressView];
+}
+-(void)destroyProgressView {
+	if (self.progressView) [self.progressView removeFromSuperview];
+	self.progressView = nil;
 }
 -(void)onPauseButtonPressed:(id)sender {
 	[delegate pauseProcessingForBook:[self book]];
@@ -1999,7 +2010,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self resetProgressSlider];
 	
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
-		self.progressView.hidden = YES;
+		[self destroyProgressView];
 		self.accessoryView = resumeButton;
 		[self resetAuthorText];
 		self.progressSlider.hidden = NO;
@@ -2009,7 +2020,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		// set appearance to reflect incomplete state
 		// self.bookView.alpha = 0.35f;
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
-			self.progressView.hidden = NO;
+			[self createProgressView];
 			self.progressSlider.hidden = YES;
 			BlioProcessingCompleteOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 			if (completeOp) {
@@ -2031,7 +2042,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 	else {
 		self.progressSlider.hidden = NO;
-		progressView.hidden = YES;
+		[self destroyProgressView];
 		[self resetAuthorText];
 		self.accessoryView = nil;
 	}
@@ -2099,6 +2110,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		BlioProcessingCompleteOperation * completeOp = [note object];
 		//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
+		if (!self.progressView) [self createProgressView];
 		progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 	}
 }
