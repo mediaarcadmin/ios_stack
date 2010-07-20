@@ -1220,7 +1220,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
     
     BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
-    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
+//    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
 
     NSData *decryptedData;
 
