@@ -186,7 +186,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[libraryItems addObject:item];
 	[item release];
 	
-	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"\u2193 Get Books", @"Label for Library View Sort button")
+	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Get Books", @"Label for Library View Sort button")
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showStore:)];
@@ -239,7 +239,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        if (0) {
+
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
                                               authors:[NSArray arrayWithObject:@"Stella Blackstone"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
@@ -254,7 +254,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
-        }   
+
         [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
                                               authors:[NSArray arrayWithObject:@"David J. Hunter"]
 											coverPath:@"MockCovers/Essentials_of_Discrete_Mathematics.png"
@@ -492,7 +492,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-        if (0) {
+    
         [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
                                               authors:[NSArray arrayWithObjects:@"Lynne M. Sullivan", nil]
 											coverPath:nil
@@ -506,11 +506,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-        }
+        
     }
-    
-	
-    
 	
 }
 
@@ -1178,6 +1175,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
 }
+
 - (void)showSortOptions:(id)sender {    
 	// show sheet interface
 	NSString * sheetTitle = NSLocalizedString(@"Select Sort Order:",@"\"Select Sort Order:\" sort sheet title");
@@ -1202,8 +1200,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
-//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sourceID == %@", [NSNumber numberWithInt:BlioBookSourceOnlineStore]];
-//    [request setPredicate:predicate];
     
     NSError *error;
     NSArray *paidBooks = [self.managedObjectContext executeFetchRequest:request error:&error];
@@ -1217,29 +1213,29 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         else if ([[book valueForKey:@"title"] isEqualToString:@"The Tale of Peter Rabbit"])
             rabbitID = book.objectID;
     }
-
-    //BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
-    //NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
-    BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
+    
+    BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
+    NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
+    success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
     NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
     
-   // BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
-//    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
+    BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
+    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
 
-//    NSData *decryptedData;
+    NSData *decryptedData;
 
 
     // Decrypt a textflow file for Virgin Islands.
-    //decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
-    //NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
+    NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
     
     // Decrypt a fixed page for Virgin Islands.
-    //decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
-    //NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
+    NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
 	
     // Decrypt a fixed page for Virgin Islands by requesting the dummy page
-    //decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
-    //NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
+    decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
+    NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
 
 	//	
 	// END temporary code
@@ -1937,16 +1933,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.authorLabel = aAuthorLabel;
         [aAuthorLabel release];
         
-        UISlider *aSlider = [[UISlider alloc] init];
+        BlioProgressView *aSlider = [[BlioProgressView alloc] init];
         [aSlider setIsAccessibilityElement:NO];
-        UIImage *minImage = [[UIImage imageNamed:@"minimum-progress.png"] stretchableImageWithLeftCapWidth:2 topCapHeight:0];
-        //UIImage *maxImage = [[UIImage imageNamed:@"maximum-progress.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
-        [aSlider setMinimumTrackImage:minImage forState:UIControlStateNormal];
-        [aSlider setMaximumTrackImage:[UIImage imageNamed:@"maximum-progress.png"] forState:UIControlStateNormal];
         aSlider.userInteractionEnabled = NO;
         aSlider.value = 0.0f;
-        [aSlider.layer setBorderColor:[UIColor colorWithRed:0.424f green:0.424f blue:0.443f alpha:0.25f].CGColor];
-        [aSlider.layer setBorderWidth:2.0f];
         [aSlider setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 54, kBlioLibraryListContentWidth, 9)];
         [self.contentView addSubview:aSlider];
         self.progressSlider = aSlider;
@@ -2159,3 +2149,37 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 @end
+
+@implementation BlioProgressView
+
+@synthesize value;
+
+- (id)init {
+    if ((self = [super init])) {
+        self.backgroundColor = [UIColor clearColor];
+    }
+    return self;
+}
+
+- (void)setValue:(CGFloat)newValue {
+    value = newValue;
+    [self setNeedsDisplay];
+}
+
+- (void)drawRect:(CGRect)rect {
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextClearRect(ctx, rect);
+    
+    CGRect progressRect = CGRectInset(rect, 3, 3);
+    progressRect.size.width = progressRect.size.width * self.value;
+    [[UIColor blackColor] set];
+    CGContextFillRect(ctx, progressRect);
+    
+    [[UIColor colorWithRed:0.424f green:0.424f blue:0.443f alpha:0.25f] set];
+    CGContextSetLineWidth(ctx, 2);
+    CGContextStrokeRect(ctx, CGRectInset(rect, 1, 1));
+    
+}
+
+@end
+

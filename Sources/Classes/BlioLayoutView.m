@@ -388,6 +388,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return NO;
 }
 
+- (void)didFinishReading {
+    if (xpsProvider) {
+        [xpsProvider reportReading]; 
+    }
+}
+
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
     [self goToPageNumber:[self.textFlow pageNumberForSectionUuid:uuid] animated:animated];
 }

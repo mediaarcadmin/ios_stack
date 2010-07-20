@@ -21,7 +21,7 @@
 
 + (BlioDrmManager*)getDrmManager;
 - (void)initialize;
-- (void)reportReading;
+- (void)reportReadingForBookWithID:(NSManagedObjectID *)aBookID;
 - (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID;
 - (BOOL)decryptData:(NSData *)data forBookWithID:(NSManagedObjectID *)aBookID;
 

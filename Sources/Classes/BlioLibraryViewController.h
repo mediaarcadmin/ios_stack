@@ -146,11 +146,19 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @end
 
+@interface BlioProgressView : UIView {
+    CGFloat value;
+}
+
+@property (nonatomic, assign) CGFloat value;
+
+@end
+
 @interface BlioLibraryGridViewCell : MRGridViewCell {
     BlioLibraryBookView *bookView;
     UILabel *titleLabel;
     UILabel *authorLabel;
-    UISlider *progressSlider;
+    BlioProgressView *progressSlider;
     UIImageView *progressBackgroundView;
     UIProgressView *progressView;
     UIButton * pauseButton;
@@ -164,7 +172,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UILabel *authorLabel;
-@property (nonatomic, retain) UISlider *progressSlider;
+@property (nonatomic, retain) BlioProgressView *progressSlider;
 @property (nonatomic, retain) UIImageView *progressBackgroundView;
 @property (nonatomic, retain) UIProgressView *progressView;
 @property (nonatomic, retain) UIButton *pauseButton;
@@ -183,7 +191,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     BlioLibraryBookView *bookView;
     UILabel *titleLabel;
     UILabel *authorLabel;
-	UISlider *progressSlider;
+	BlioProgressView *progressSlider;
 	BlioProportionalProgressView *proportionalProgressView;
     UIProgressView *progressView;
     UIButton * pauseButton;
@@ -195,7 +203,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UILabel *authorLabel;
-@property (nonatomic, retain) UISlider *progressSlider;
+@property (nonatomic, retain) BlioProgressView *progressSlider;
 @property (nonatomic, retain) BlioProportionalProgressView *proportionalProgressView;
 @property (nonatomic, retain) UIProgressView *progressView;
 @property (nonatomic, retain) UIButton *pauseButton;

@@ -95,5 +95,6 @@
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 - (BOOL)toolbarShowShouldBeSuppressed;
+- (void)didFinishReading;
 
 @end

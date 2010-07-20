@@ -43,7 +43,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize tempDirectory, imageInfo, xpsData, uriMap;
 
 - (void)dealloc {   
-	[[BlioDrmManager getDrmManager] reportReading];
     [renderingLock lock];
     [contentsLock lock];
     [inflateLock lock];
@@ -104,8 +103,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         
         xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
-        if (1) {
-        //if ([[self.book valueForKey:@"sourceID"] isEqual:[NSNumber numberWithInt:BlioBookSourceOnlineStore]]) {
+        if ([[self.book valueForKey:@"sourceID"] isEqual:[NSNumber numberWithInt:BlioBookSourceOnlineStore]]) {
             XPS_URI_PLUGIN_INFO	upi = {
                 XPS_URI_SOURCE_PLUGIN,
                 sizeof(XPS_URI_PLUGIN_INFO),
@@ -134,6 +132,10 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         self.xpsData = [NSMutableDictionary dictionary];
     }
     return self;
+}
+
+- (void)reportReading {
+    [[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
 }
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path {

@@ -37,8 +37,9 @@
 {
     if((self = [super init])) {
         self.bookID = blioBookID;
-        BlioBook *blioBook = [[BlioBookManager sharedBookManager] bookWithID:blioBookID];
-        self.textFlow = blioBook.textFlow;
+        BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+        BlioBook *blioBook = [bookManager bookWithID:blioBookID];
+        self.textFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
         self.hasCover = [blioBook hasManifestValueForKey:@"coverFilename"];
         
         self.title = blioBook.title;
@@ -52,8 +53,9 @@
 
 - (void)dealloc
 {
-    self.bookID = nil;
     self.textFlow = nil;
+    [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:self.bookID];
+    self.bookID = nil;
     
     [super dealloc];
 }
