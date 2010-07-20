@@ -84,23 +84,23 @@
         [[NSFileManager defaultManager] removeItemAtPath:paginationPath error:NULL];
     }
     
-    BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    
     EucBUpeBook *eucBook = nil;
+    BOOL checkInEPubBook = NO;
     
     // Create a EucBook for the paginator.
     {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         
+        BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
         
         NSLog(@"Paginating book %@", book.title);
         
         if([book hasTextFlow]) {
             eucBook = [[BlioFlowEucBook alloc] initWithBookID:self.bookID];
         } else if([book hasEPub]) {
-            NSString *ePubPath = book.ePubPath;
-            if(ePubPath) {
-                eucBook = [[BlioEPubBook alloc] initWithPath:ePubPath];
-            }
+            eucBook = [[[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:self.bookID] retain];
+            checkInEPubBook = YES;
         }
         eucBook.cacheDirectoryPath = paginationPath;
         
@@ -148,8 +148,12 @@
             [paginator paginateBookInBackground:eucBook saveImagesTo:nil];
         }
     }
+    
     [eucBook release];
-    [book flushCaches];
+
+    if(checkInEPubBook) {
+        [[BlioBookManager sharedBookManager] checkInEPubBookForBookWithID:self.bookID];
+    }    
     
     [pool drain];
 }

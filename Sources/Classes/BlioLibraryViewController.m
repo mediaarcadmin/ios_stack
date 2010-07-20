@@ -186,7 +186,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[libraryItems addObject:item];
 	[item release];
 	
-	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"\u2193 Get Books", @"Label for Library View Sort button")
+	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Get Books", @"Label for Library View Sort button")
                                             style:UIBarButtonItemStyleBordered
                                            target:self 
                                            action:@selector(showStore:)];
