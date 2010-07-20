@@ -111,8 +111,16 @@ static pthread_key_t sManagedObjectContextKey;
     // - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification
     // on the other threads when it saved.
     NSManagedObjectContext *context = self.managedObjectContextForCurrentThread;
-    BlioBook *book = (BlioBook *)[context objectWithID:aBookID];
-    [context refreshObject:book mergeChanges:YES];
+    BlioBook *book = nil;
+    
+    if (aBookID) {
+        book = (BlioBook *)[context objectWithID:aBookID];
+    }
+    
+    if (book) {
+        [context refreshObject:book mergeChanges:YES];
+    }
+    
     return book;
 }
 
@@ -128,7 +136,7 @@ static pthread_key_t sManagedObjectContextKey;
             return previouslyCachedTextFlow;
         } else {
             BlioBook *book = [self bookWithID:aBookID];
-            if(book.textFlowPath) {
+            if([book hasTextFlow]) {
                 BlioTextFlow *textFlow = [[BlioTextFlow alloc] initWithBookID:aBookID];
                 if(textFlow) {
                     NSLog(@"Creating and caching TextFlow for book with ID %@", aBookID);

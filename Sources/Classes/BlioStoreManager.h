@@ -18,17 +18,25 @@ typedef enum  {
     BlioLoginResultError,
 } BlioLoginResult;
 
+typedef enum  {
+	BlioDeviceRegisteredStatusUnregistered = -1,
+    BlioDeviceRegisteredStatusUndefined = 0,
+    BlioDeviceRegisteredStatusRegistered = 1,
+} BlioDeviceRegisteredStatus;
+
 static NSString * const BlioLoginFinished = @"BlioLoginFinished";
 
 @interface BlioStoreManager : NSObject<BlioStoreHelperDelegate> {
 	BOOL isShowingLoginView;
 	NSMutableDictionary * storeHelpers;
+	NSMutableDictionary * deviceRegistrationPromptAlertViews;
 	UIViewController * rootViewController;
 	BlioLoginViewController *loginViewController;
     id<BlioProcessingDelegate> _processingDelegate;
 }
 
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;
+@property (nonatomic, retain) NSMutableDictionary* deviceRegistrationPromptAlertViews;
 @property (nonatomic, retain) UIViewController* rootViewController;
 @property (nonatomic, retain) BlioLoginViewController* loginViewController;
 @property (nonatomic) BOOL isShowingLoginView;
@@ -36,6 +44,7 @@ static NSString * const BlioLoginFinished = @"BlioLoginFinished";
 
 +(BlioStoreManager*)sharedInstance;
 -(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
+-(BlioStoreHelper*)storeHelperForSourceID:(BlioBookSourceID)sourceID;
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID;
 -(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID;
 -(BOOL)isLoggedInForSourceID:(BlioBookSourceID)sourceID;

@@ -33,6 +33,13 @@
 	// abstract method	
 	return NO;
 }
+-(BlioDeviceRegisteredStatus)deviceRegistered {
+	// abstract method	
+	return BlioDeviceRegisteredStatusUndefined;
+}
+-(void)setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
+	// abstract method	
+}
 -(void)retrieveBooks {
 	// abstract method	
 }

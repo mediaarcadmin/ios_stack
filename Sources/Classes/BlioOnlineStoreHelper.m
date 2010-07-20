@@ -10,6 +10,7 @@
 #import "BlioBookVault.h"
 #import "BlioStoreManager.h"
 #import "BlioAlertManager.h"
+#import "BlioAppSettingsConstants.h"
 
 @interface BlioOnlineStoreHelper (PRIVATE)
 - (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
@@ -74,6 +75,14 @@
 	if (self.token == nil) return NO;
 	if ([self.timeout compare:[NSDate date]] == NSOrderedDescending) return YES;
 	return NO;
+}
+-(BlioDeviceRegisteredStatus)deviceRegistered {
+	return [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey];
+}
+-(void) setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
+	NSLog(@"setDeviceRegistered: %i",status);
+	[[NSUserDefaults standardUserDefaults] setInteger:status forKey:kBlioDeviceRegisteredDefaultsKey];
+	NSLog(@"deviceRegistered: %i", [self deviceRegistered]);
 }
 - (void)logout {
 	self.token = nil;

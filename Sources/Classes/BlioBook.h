@@ -26,7 +26,16 @@ static NSString * const BlioManifestEntryLocationTextflow = @"textflow";
 static NSString * const BlioManifestEntryLocationWeb = @"web";
 static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 
+static NSString * const BlioXPSEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMap.xml";
+static NSString * const BlioXPSEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages";
+static NSString * const BlioXPSEncryptedImagesDir = @"/Resources";
+static NSString * const BlioXPSEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/Flow";
+static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.jpg";
+static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
 
+static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
+static NSString * const BlioXPSComponentExtensionRels = @"rels";
+static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
@@ -82,6 +91,10 @@ static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 @property (nonatomic, assign, readonly) NSString *pdfPath;
 @property (nonatomic, assign, readonly) NSString *xpsPath;
 @property (nonatomic, assign, readonly) NSString *textFlowPath;
+@property (nonatomic, assign, readonly) BOOL hasEPub;
+@property (nonatomic, assign, readonly) BOOL hasPdf;
+@property (nonatomic, assign, readonly) BOOL hasXps;
+@property (nonatomic, assign, readonly) BOOL hasTextFlow;
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow, ePub book etc.)

@@ -482,6 +482,22 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     return self;
 }
 
+- (void)downloadDidFinishSuccessfully:(BOOL)success {
+    if (success) {
+        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+        [manifestEntry setValue:BlioXPSTextFlowSectionsFile forKey:@"path"];
+        [self setBookManifestValue:manifestEntry forKey:@"textFlowFilename"];
+        
+        manifestEntry = [NSMutableDictionary dictionary];
+        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+        [manifestEntry setValue:BlioXPSCoverImage forKey:@"path"];
+        [self setBookManifestValue:manifestEntry forKey:@"coverFilename"];
+    }
+
+    [super downloadDidFinishSuccessfully:success];
+}
+
 @end
 
 #pragma mark -
@@ -774,7 +790,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     UIImage *cover = [UIImage imageWithData:imageData];
     
     if (nil == cover) {
-        NSLog(@"    because cover image was not an image.");
+        NSLog(@"Failed to create generate cover thumbs because cover image was not an image.");
         [pool drain];
         return;
     }

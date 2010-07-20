@@ -18,8 +18,8 @@
 
 -(id)init {
 	autoMode = FALSE;
-	self.voices = [AcapelaSpeech availableVoices];
-	self.voices = [NSArray array];
+	self.voices = nil;
+//	self.voices = [AcapelaSpeech availableVoices];
 	if (voices.count > 0) {
 		[self setCurrentVoice:[[NSUserDefaults standardUserDefaults] stringForKey:kBlioLastVoiceDefaultsKey]];
 	}

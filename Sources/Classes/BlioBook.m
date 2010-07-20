@@ -11,6 +11,7 @@
 #import "BlioTextFlowParagraphSource.h"
 #import "BlioEPubParagraphSource.h"
 #import "BlioEPubBook.h"
+#import "BlioXPSProvider.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <pthread.h>
 
@@ -160,14 +161,6 @@
     return bookPath;
 }
 
-- (NSString *)ePubPath {
-    return [self manifestPathForKey:@"epubFilename"];
-}
-
-- (NSString *)pdfPath {        
-    return [self manifestPathForKey:@"pdfFilename"];
-}
-
 - (NSString *)audiobookPath {
     NSString *filename = [self valueForKey:@"audiobookFilename"];
     if (filename) {
@@ -192,6 +185,13 @@
     return [[self valueForKey:@"hasAudioRights"] boolValue];
 }
 
+- (NSString *)ePubPath {
+    return [self manifestPathForKey:@"epubFilename"];
+}
+
+- (NSString *)pdfPath {        
+    return [self manifestPathForKey:@"pdfFilename"];
+}
 
 - (NSString *)textFlowPath {        
     return [self manifestPathForKey:@"textFlowFilename"];
@@ -199,6 +199,22 @@
 
 - (NSString *)xpsPath {
     return [self manifestPathForKey:@"xpsFilename"];
+}
+
+- (BOOL)hasEPub {
+    return [self hasManifestValueForKey:@"epubFilename"];
+}
+
+- (BOOL)hasPdf {
+    return [self hasManifestValueForKey:@"pdfFilename"];
+}
+
+- (BOOL)hasXps {
+    return [self hasManifestValueForKey:@"xpsFilename"];
+}
+
+- (BOOL)hasTextFlow {
+    return [self hasManifestValueForKey:@"textFlowFilename"];
 }
 
 - (UIImage *)coverImage {
@@ -405,10 +421,6 @@ static void sortedHighlightRangePredicateInit() {
     return [self.bookCacheDirectory stringByAppendingPathComponent:path];
 }
 
-- (NSString *)fullPathOfXPSItemAtPath:(NSString *)path {
-    return [self.xpsPath stringByAppendingPathComponent:path];
-}
-
 - (NSString *)fullPathOfTextFlowItemAtPath:(NSString *)path {
     return [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:path];
 }
@@ -425,23 +437,27 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (NSData *)dataFromXPSAtPath:(NSString *)path {
-    NSData *data = nil;
-    NSString *filePath = [self fullPathOfXPSItemAtPath:path];
-    if (filePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
-        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
-    else
-        data = [NSData dataWithContentsOfMappedFile:filePath];
-    
-    return data;
+    [path retain];
+    NSData *componentData = [[self xpsProvider] dataForComponentAtPath:path];
+    [path release];
+    return componentData;
+    //return [[self xpsProvider] dataForComponentAtPath:path];
 }
 
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path {
     NSData *data = nil;
-    NSString *filePath = [self fullPathOfTextFlowItemAtPath:path];
-    if (filePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) 
-        NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", path);
-    else
-        data = [NSData dataWithContentsOfMappedFile:filePath];
+    NSString *textFlowLocation = [self manifestLocationForKey:@"textFlowFilename"];
+    
+    if ([textFlowLocation isEqualToString:BlioManifestEntryLocationXPS]) {
+        data = [[self xpsProvider] dataForComponentAtPath:[BlioXPSEncryptedTextFlowDir stringByAppendingPathComponent:path]];
+    } else if ([textFlowLocation isEqualToString:BlioManifestEntryLocationTextflow]) {
+        NSString *filePath = [self fullPathOfTextFlowItemAtPath:path];
+        if (filePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+            NSLog(@"Error whilst retrieving data from the filesystem. No file exists at path %@", filePath);
+        } else {
+            data = [NSData dataWithContentsOfMappedFile:filePath];
+        }
+    }
     
     return data;
 }
@@ -460,29 +476,18 @@ static void sortedHighlightRangePredicateInit() {
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
             // TODO - we shouldn't need to check if path is a URL, the manifest entry should be different
-			if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
-                filePath = [self fullPathOfXPSItemAtPath:path];
-            } else if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
+            if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
                 filePath = [self fullPathOfTextFlowItemAtPath:path];
             } else if ([location isEqualToString:BlioManifestEntryLocationBundle]) {
 				filePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:path];
             } else if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
 				filePath = [self fullPathOfFileSystemItemAtPath:path];
-			} else filePath = path;
-//			else if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
-//				NSURL *fileUrl = [NSURL URLWithString:path];
-//				NSString *fileUrlPath = [fileUrl path];
-//				if (fileUrl && fileUrlPath && [[NSFileManager defaultManager] fileExistsAtPath:fileUrlPath]) {
-//					filePath = path;              
-//				} else if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-//					filePath = path;
-//				} else if ([[NSFileManager defaultManager] fileExistsAtPath:[self fullPathOfFileSystemItemAtPath:path]]) {
-//					filePath = [self fullPathOfFileSystemItemAtPath:path];
-//				} else {
-//					filePath = path;
-//				}
-//			}
-
+			} else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
+                // There is no such thing as a full-path to an XPS item - must be accessed via a data accessor
+                filePath = nil;
+            } else {
+                filePath = path;
+            }
         }
     }
     

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "BlioStoreHelperDelegate.h"
 #import "BlioProcessing.h"
+#import "BlioStoreManager.h"
 
 @interface BlioStoreHelper : NSObject {
 	BOOL isLoggedIn;
@@ -31,6 +32,8 @@
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password;
 - (void)logout;
 -(BOOL)hasValidToken;
+-(BlioDeviceRegisteredStatus)deviceRegistered;
+-(void)setDeviceRegistered:(BlioDeviceRegisteredStatus)status;
 -(void)retrieveBooks;
 -(NSURL*)URLForBookWithID:(NSString*)stringID;
 @end
