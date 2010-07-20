@@ -120,18 +120,20 @@ static void BlioTextFlowFlowTreeEndElementHandler(void *ctx, const XML_Char *nam
     if(strcmp("Words", name) != 0) { // Word nodes are not tracked in the context.
         if(strcmp("Paragraph", name) == 0) {
             NSMutableArray *nodes = context->nodes;
-
-            BlioTextFlowParagraph *paragraphNode = (BlioTextFlowParagraph *)currentNode;
-            BlioTextFlowParagraphWords *words = [[BlioTextFlowParagraphWords alloc] initWithTextFlow:context->textFlow 
-                                                                                           paragraph:paragraphNode 
-                                                                                              ranges:context->wordRangeAccumulator
-                                                                                                 key:nodes.count + 1];
-            paragraphNode.paragraphWords = words;
-            [context->wordRangeAccumulator release];
-            context->wordRangeAccumulator = nil;
             
-            [nodes addObject:words];
-            [words release];
+            if ([currentNode isKindOfClass:[BlioTextFlowParagraph class]]) {
+                BlioTextFlowParagraph *paragraphNode = (BlioTextFlowParagraph *)currentNode;
+                BlioTextFlowParagraphWords *words = [[BlioTextFlowParagraphWords alloc] initWithTextFlow:context->textFlow 
+                                                                                               paragraph:paragraphNode 
+                                                                                                  ranges:context->wordRangeAccumulator
+                                                                                                     key:nodes.count + 1];
+                paragraphNode.paragraphWords = words;
+                [context->wordRangeAccumulator release];
+                context->wordRangeAccumulator = nil;
+            
+                [nodes addObject:words];
+                [words release];
+            }
         }
 
         id<EucCSSDocumentTreeNode> parent = currentNode.parent;
