@@ -248,32 +248,33 @@ static pthread_key_t sManagedObjectContextKey;
             [self.cachedParagraphSourceCheckoutCounts addObject:aBookID];
             return previouslyCachedParagraphSource;
         } else {
+            id<BlioParagraphSource> paragraphSource = nil;
             BlioBook *book = [self bookWithID:aBookID];
             if([book hasTextFlow]) {
                 BlioTextFlow *textFlow = [self checkOutTextFlowForBookWithID:aBookID];
-                id<BlioParagraphSource> paragraphSource = nil;
                 if(textFlow) {
                     paragraphSource = [[BlioTextFlowParagraphSource alloc] initWithBookID:aBookID];
                     [self checkInTextFlowForBookWithID:aBookID];
-                } else {
-                    BlioEPubBook *myEPubBook = [self checkOutEPubBookForBookWithID:aBookID];
-                    if(myEPubBook) {
-                        paragraphSource = [[BlioEPubParagraphSource alloc] initWithBookID:aBookID];
-                        [self checkInEPubBookForBookWithID:aBookID];
-                    }
                 }
-                if(paragraphSource) {
-                    NSLog(@"Creating and caching ParagraphSource for book with ID %@", aBookID);
-                    NSCountedSet *myCachedParagraphSourceCheckoutCounts = self.cachedParagraphSourceCheckoutCounts;
-                    if(!myCachedParagraphSourceCheckoutCounts) {
-                        myCachedParagraphSourceCheckoutCounts = [NSCountedSet set];
-                        self.cachedParagraphSourceCheckoutCounts = myCachedParagraphSourceCheckoutCounts;
-                    }
-                    [myCachedParagraphSources setObject:paragraphSource forKey:aBookID];
-                    [myCachedParagraphSourceCheckoutCounts addObject:aBookID];
-                    [paragraphSource release];
-                    return paragraphSource;
+            } else if([book hasEPub]) {
+                BlioEPubBook *myEPubBook = [self checkOutEPubBookForBookWithID:aBookID];
+                if(myEPubBook) {
+                    paragraphSource = [[BlioEPubParagraphSource alloc] initWithBookID:aBookID];
+                    [self checkInEPubBookForBookWithID:aBookID];
                 }
+            }
+            
+            if(paragraphSource) {
+                NSLog(@"Creating and caching ParagraphSource for book with ID %@", aBookID);
+                NSCountedSet *myCachedParagraphSourceCheckoutCounts = self.cachedParagraphSourceCheckoutCounts;
+                if(!myCachedParagraphSourceCheckoutCounts) {
+                    myCachedParagraphSourceCheckoutCounts = [NSCountedSet set];
+                    self.cachedParagraphSourceCheckoutCounts = myCachedParagraphSourceCheckoutCounts;
+                }
+                [myCachedParagraphSources setObject:paragraphSource forKey:aBookID];
+                [myCachedParagraphSourceCheckoutCounts addObject:aBookID];
+                [paragraphSource release];
+                return paragraphSource;
             }
         }
     }
