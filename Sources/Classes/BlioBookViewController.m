@@ -362,6 +362,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     THEventCapturingWindow *window = (THEventCapturingWindow *)_bookView.window;
                     [window removeTouchObserver:self forView:_bookView];
                 }
+                
+                if([_bookView respondsToSelector:@selector(didFinishReading)]) {
+                    [_bookView performSelector:@selector(didFinishReading)];
+                }
+                
                 [_bookView removeFromSuperview];
             }
         }

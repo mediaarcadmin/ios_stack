@@ -43,7 +43,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize tempDirectory, imageInfo, xpsData, uriMap;
 
 - (void)dealloc {   
-	[[BlioDrmManager getDrmManager] reportReading];
     [renderingLock lock];
     [contentsLock lock];
     [inflateLock lock];
@@ -133,6 +132,10 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         self.xpsData = [NSMutableDictionary dictionary];
     }
     return self;
+}
+
+- (void)reportReading {
+    [[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
 }
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path {

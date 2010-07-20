@@ -20,6 +20,8 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
 
+- (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
+
 @end
 
 @implementation BlioDrmManager
@@ -89,10 +91,21 @@ ErrorExit:
 	self.drmInitialized = YES;
 }
 
-- (void)reportReading {
-    NSLog(@"Report reading for book.");
-	DRM_RESULT dr = DRM_SUCCESS;
-    @synchronized(self) {
+- (void)reportReadingForBookWithID:(NSManagedObjectID *)aBookID {
+    NSLog(@"Report reading for book with ID %@", aBookID);
+    
+    if ( !self.drmInitialized ) {
+        NSLog(@"DRM error: cannot report reading because DRM is not initialized.");
+        return;
+    }
+    
+    DRM_RESULT dr = DRM_SUCCESS;    
+    @synchronized (self) {
+        if ( ![self.bookID isEqual:aBookID] ) { 
+            ChkDR( [self setHeaderForBookWithID:aBookID] );
+            self.bookID = aBookID;
+        }
+
         ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
                                  NULL, 
                                  NULL ) ); 
@@ -102,7 +115,6 @@ ErrorExit:
             NSLog(@"DRM commit error: %d",drInt);
         }
     }
-    NSLog(@"Report reading exited.");
 }
 
 - (DRM_RESULT)getDRMLicense {
@@ -245,7 +257,7 @@ ErrorExit:
         if ( ![self.bookID isEqual:aBookID] ) { 
             ChkDR( [self setHeaderForBookWithID:aBookID] );
             self.bookID = aBookID;
-        }
+
 			// Search for a license to bind to with the Read right.
 			const DRM_CONST_STRING *rgpdstrRights[1] = {0};
 			DRM_CONST_STRING readRight;
@@ -263,7 +275,7 @@ ErrorExit:
 								   NULL,
 								   &oDecryptContext ) );
         
-        
+        }
         DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
         dataBuff = (unsigned char*)[data bytes]; 
         ChkDR(Drm_Reader_Decrypt (&oDecryptContext,

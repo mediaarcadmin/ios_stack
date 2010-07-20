@@ -33,5 +33,6 @@
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (NSData *)dataForComponentAtPath:(NSString *)path;
+- (void)reportReading;
 
 @end
