@@ -182,7 +182,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                     [self _addComponent:&currentComponentInfo];
                     [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
                 }
-                nextNode = [inlineNode nextDisplayableUnder:underNode];
+                //nextNode = [inlineNode nextDisplayableUnder:underNode];
             }
             if(nextNode) {
                 inlineNode = nextNode;

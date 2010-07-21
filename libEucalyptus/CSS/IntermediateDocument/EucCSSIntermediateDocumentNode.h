@@ -44,6 +44,8 @@ struct css_computed_style;
 @property (nonatomic, readonly) BOOL isImageNode;
 @property (nonatomic, readonly) NSURL *imageSrc;
 @property (nonatomic, readonly) NSString *altText;
+@property (nonatomic, readonly) NSString *name; // Will just return the class name - can be overridden to return e.g. 
+                                                // XML name of the underlying document node.  Just used for debugging.
 
 // Abstract:
 
