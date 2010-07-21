@@ -9,18 +9,18 @@
 #import "BlioBookSearchToolbar.h"
 
 @interface BlioBookSearchToolbar()
-@property (nonatomic, retain) UIToolbar *toolbar;
+@property (nonatomic, retain) UINavigationBar *navBar;
 @property (nonatomic, retain) UIBarButtonItem *doneButton;
 @end
 
 
 @implementation BlioBookSearchToolbar
 
-@synthesize searchBar, toolbar, doneButton, delegate;
+@synthesize searchBar, navBar, doneButton, delegate;
 
 - (void)dealloc {
     self.searchBar = nil;
-    self.toolbar = nil;
+    self.navBar = nil;
     self.doneButton = nil;
     self.delegate = nil;
     [super dealloc];
@@ -32,44 +32,42 @@
         [self setClipsToBounds:YES];
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         
-        UIToolbar *aToolbar = [[UIToolbar alloc] init];
-        [aToolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-        [self addSubview:aToolbar];
-        self.toolbar = aToolbar;
-        [aToolbar release];
-        
-        UIBarButtonItem *flexible = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
-        
+        UINavigationBar *aNavBar = [[UINavigationBar alloc] init];
+        [self addSubview:aNavBar];
+        self.navBar = aNavBar;
+        [self addSubview:aNavBar];
+        [aNavBar release];
+                
         UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(done:)];
-        [aToolbar setItems:[NSArray arrayWithObjects:done, flexible, nil]];
         self.doneButton = done;
         [done release];
         
+        UINavigationItem *aNavItem = [[UINavigationItem alloc] init];
+        [aNavItem setRightBarButtonItem:done];
+        [self.navBar setItems:[NSArray arrayWithObject:aNavItem] animated:NO];
+        [aNavItem release];
+        
         UISearchBar *aSearchBar = [[UISearchBar alloc] init];
         [aSearchBar setPlaceholder:NSLocalizedString(@"Search",@"\"Search\" placeholder text in Search bar")];
-        //UIColor *matchedTintColor = [UIColor colorWithHue:0.595 saturation:0.267 brightness:0.68 alpha:1];
-        //[aSearchBar setTintColor:matchedTintColor];
-        //[aSearchBar setDelegate:self];
         [aSearchBar setShowsCancelButton:NO];
+        
         [aSearchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-        //[self.navigationItem setTitleView:aSearchBar];
         [self addSubview:aSearchBar];
         self.searchBar = aSearchBar;
         [aSearchBar release];
-
     }
     return self;
 }
 
 - (void)layoutSubviews {
-    [self.toolbar setFrame:self.bounds];
     CGFloat doneWidth = [self.doneButton.title sizeWithFont:[UIFont boldSystemFontOfSize:12.0f]].width + 10*2 + 6*2;
-    [self.searchBar setFrame:CGRectMake(doneWidth, 1, CGRectGetWidth(self.bounds) - doneWidth, CGRectGetHeight(self.bounds))];
+    [self.navBar setFrame:CGRectMake(0, 0, doneWidth, CGRectGetHeight(self.bounds))];
+    [self.searchBar setFrame:CGRectMake(doneWidth, 0, CGRectGetWidth(self.bounds) - doneWidth, CGRectGetHeight(self.bounds))];
 }
 
 - (void)setTintColor:(UIColor *)tintColor {
     [self.searchBar setTintColor:tintColor];
-    [self.toolbar setTintColor:tintColor];
+    [self.navBar setTintColor:tintColor];
 }
 
 - (void)setDelegate:(id<BlioBookSearchToolbarDelegate>)newDelegate {
@@ -81,13 +79,5 @@
     if ([(NSObject *)self.delegate respondsToSelector:@selector(dismissSearchToolbar:)])
         [self.delegate dismissSearchToolbar:sender];
 }
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
-
 
 @end

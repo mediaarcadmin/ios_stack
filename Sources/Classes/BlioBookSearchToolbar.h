@@ -12,7 +12,7 @@
 
 @interface BlioBookSearchToolbar : UIView {
     UISearchBar *searchBar;
-    UIToolbar *toolbar;
+    UINavigationBar *navBar;
     UIBarButtonItem *doneButton;
     id <BlioBookSearchToolbarDelegate> delegate;
 }
