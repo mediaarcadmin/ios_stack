@@ -292,4 +292,9 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return nil;
 }
 
+- (NSString *)name
+{
+    return NSStringFromClass(self.class);
+}
+
 @end

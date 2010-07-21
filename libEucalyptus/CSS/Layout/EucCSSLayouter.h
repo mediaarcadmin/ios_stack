@@ -38,7 +38,8 @@ typedef struct EucCSSLayoutPoint
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                          inFrame:(CGRect)frame
                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                              returningCompleted:(BOOL *)returningCompleted;
+                              returningCompleted:(BOOL *)returningCompleted
+                                lastBlockNodeKey:(uint32_t)lastBlockNodeKey;
 
 - (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;
 
