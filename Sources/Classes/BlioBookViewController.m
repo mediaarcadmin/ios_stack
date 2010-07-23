@@ -50,7 +50,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @interface BlioBookViewController ()
 
-@property (nonatomic, retain) BlioBookSearchController *searchController;
+@property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
@@ -89,7 +89,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize motionControlsEnabled;
 @synthesize rotationLocked;
 
-@synthesize searchController;
+@synthesize searchViewController;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -167,7 +167,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [aPauseButton setAlpha:0];
                 [self.view addSubview:aPauseButton];
                 self.pauseButton = aPauseButton;
-                
+
                 if ([self.book audiobookFilename]) {
                     _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
                 } else {
@@ -420,6 +420,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		self.audioPlaying = NO;  
 	}
     _viewIsDisappearing = YES;
+    [self.searchViewController removeFromControllerAnimated:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -761,7 +762,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
 	if (_pageJumpButton) [_pageJumpButton release];
     
-    self.searchController = nil;
+    self.searchViewController = nil;
     
     self.bookView = nil;
     
@@ -781,6 +782,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
         self.navigationController.toolbarHidden = YES;
+        if ([self.searchViewController isSearchActive] == YES) {
+            self.searchViewController.toolbarHidden = YES;
+        }
         self.navigationController.navigationBar.hidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     } else {
@@ -803,12 +807,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)showToolbars
 {
-    if(self.navigationController.toolbarHidden)
+    //if(self.navigationController.toolbarHidden)
+    if (![self toolbarsVisible]) {
         [self toggleToolbars];
+    }
 }
 
 - (BOOL)toolbarsVisible {
-    return (self.navigationController.toolbarHidden == NO);
+    //return (self.navigationController.toolbarHidden == NO);
+    return ([[self.navigationController navigationBar] isHidden] == NO);
 }
 
 - (void)toggleToolbars:(BlioLibraryToolbarsState)toolbarState
@@ -846,9 +853,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateToolbarsVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
+            if ([self.searchViewController isSearchActive] == NO) {
+                self.navigationController.toolbarHidden = NO;
+            } else {
+                self.navigationController.toolbarHidden = YES;
+                self.searchViewController.toolbarHidden = NO;
+            }
             self.navigationController.navigationBarHidden = NO;
             self.navigationController.navigationBar.hidden = NO;
-            self.navigationController.toolbarHidden = NO;
+            
             break;
         default:
             break;
@@ -875,13 +888,23 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         case kBlioLibraryToolbarsStateToolbarsVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
             [UIView setAnimationDuration:0];
-            self.navigationController.toolbar.alpha = 1;          
+            if ([self.searchViewController isSearchActive] == NO) {
+                self.navigationController.toolbar.alpha = 1;
+            } else {
+                self.navigationController.toolbar.alpha = 0;
+                self.searchViewController.toolbar.alpha = 1;
+            }
+            
             self.pageJumpView.alpha = 1;
             self.navigationController.navigationBar.alpha = 1;
             break;
         default:
             [UIView setAnimationDuration:1.0/3.0];
             self.navigationController.toolbar.alpha = 0;
+            if ([self.searchViewController isSearchActive] == YES) {
+                self.searchViewController.toolbar.alpha = 0;
+            }
+            
             self.pageJumpView.alpha = 0;
             self.navigationController.navigationBar.alpha = 0;
             break;
@@ -974,12 +997,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     } else if(touch == _touch) {
         if(phase == UITouchPhaseMoved) { 
             _touchMoved = YES;
-            if(!self.navigationController.toolbarHidden) {
+            if([self toolbarsVisible]) {
                 [self toggleToolbars];
             }
         } else if(phase == UITouchPhaseEnded) {
             if(!_touchMoved) {
-                if(!self.navigationController.toolbarHidden ||
+                if([self toolbarsVisible] ||
                    ![self.bookView respondsToSelector:@selector(toolbarShowShouldBeSuppressed)] ||
                    ![self.bookView toolbarShowShouldBeSuppressed]) {
                     [self toggleToolbars];
@@ -1752,24 +1775,25 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)search:(id)sender {
-    if (!self.searchController) {
-        BlioBookSearchController *aSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
-        self.searchController = aSearchController;
-        [aSearchController release];
+    if (!self.searchViewController) {
+        BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+        [aBookSearchController setMaxPrefixAndMatchLength:20];
+        [aBookSearchController setMaxSuffixLength:100];
+        
+        BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
+        [aSearchViewController setTintColor:_returnToNavigationBarTint];
+        [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
+        [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
+        
+        self.searchViewController = aSearchViewController;
+        
+        [aSearchViewController release];
+        [aBookSearchController release];
     }
     
-    //[self.searchController cancel];
-//    BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-//    [self.searchController findString:@"Little" fromBookmarkPoint:currentBookmarkPoint];
+
+    [self.searchViewController showInController:self.navigationController animated:YES];
     
-    BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
-    [self.searchController setDelegate:aSearchViewController];
-    [aSearchViewController setBookSearchController:self.searchController];
-    [self.searchController setMaxPrefixAndMatchLength:20];
-    [self.searchController setMaxSuffixLength:100];
-    [aSearchViewController setTintColor:_returnToNavigationBarTint];
-    [self.navigationController presentModalViewController:aSearchViewController animated:YES];
-    [aSearchViewController release];
 }
     
 - (void)dummyShowParsedText:(id)sender {
@@ -1933,6 +1957,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
         [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    
+    [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -1947,6 +1973,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if ([self.bookView respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self.searchViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 #pragma mark -

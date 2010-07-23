@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "BlioBookSearchViewController.h"
+#import "BlioBookViewController.h"
 
 #define BLIOBOOKSEARCHCELLPAGETAG 1233
 #define BLIOBOOKSEARCHCELLPREFIXTAG 1234
@@ -15,6 +16,10 @@
 #define BLIOBOOKSEARCHCELLSUFFIXTAG 1236
 
 #define RESULTSPREFIXSTRINGMAXLENGTH 15
+
+static NSString * const BlioBookSearchDisplayOffScreenAnimation = @"BlioBookSearchDisplayOffScreenAnimation";
+static NSString * const BlioBookSearchSlideOffScreenAnimation = @"BlioBookSearchSlideOffScreenAnimation";
+static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchFadeOffScreenAnimation";
 
 @interface BlioBookSearchResults : NSObject {
     NSString *prefix;
@@ -27,26 +32,44 @@
 @property (nonatomic, retain) NSString *match;
 @property (nonatomic, retain) NSString *suffix;
 @property (nonatomic, retain) BlioBookmarkPoint *bookmark;
+@end
+
+@interface BlioBookSearchViewController()
+
+@property (nonatomic, assign) UINavigationController *navController;
+@property (nonatomic, assign) BOOL searchActive;
+
+- (CGRect)rotatedScreenRectWithOrientation:(UIInterfaceOrientation)orientation;
+- (CGRect)fullScreenRect;
+- (void)displayInToolbar:(BOOL)animated;
+- (void)displayFullScreen:(BOOL)animated;
+- (void)displayOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
+- (void)fadeOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
+- (void)slideOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
+- (void)displayStatusBarWithStyle:(UIStatusBarStyle)barStyle animated:(BOOL)animated;
+- (void)dismissSearchToolbarAnimated:(BOOL)animated;
 
 @end
 
-
 @implementation BlioBookSearchViewController
 
-@synthesize tableView, searchToolbar;
+@synthesize tableView, toolbar;
 @synthesize bookSearchController, searchController;
 @synthesize searchResults, savedSearchTerm;
 @synthesize noResultsLabel, noResultsMessage;
+@synthesize tintColor, navController;
+@synthesize toolbarHidden, searchActive;
 
 - (void)dealloc {
     self.tableView = nil;
-    self.searchToolbar = nil;
+    self.toolbar = nil;
     self.bookSearchController = nil;
     self.searchController = nil;
     self.searchResults = nil;
     self.savedSearchTerm = nil;
     self.noResultsLabel = nil;
     self.noResultsMessage = nil;
+    self.navController = nil;
     [super dealloc];
 }
 
@@ -59,41 +82,25 @@
         BlioBookSearchToolbar *aSearchToolbar = [[BlioBookSearchToolbar alloc] init];
         [aSearchToolbar setDelegate:self];
         [aSearchToolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-        self.searchToolbar = aSearchToolbar;
+        self.toolbar = aSearchToolbar;
         [aSearchToolbar release];
         
         self.searchResults = [NSMutableArray array];
-        //CGRect containerFrame = [[UIScreen mainScreen] applicationFrame];
-//        UIView *container = containerFrame
-//        UITableView *aTableView = [[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStylePlain];
-//        self.view = 
-//        UISearchBar *aSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-//        [aSearchBar setPlaceholder:NSLocalizedString(@"Search",@"\"Search\" placeholder text in Search bar")];
-//        UIColor *matchedTintColor = [UIColor colorWithHue:0.595 saturation:0.267 brightness:0.68 alpha:1];
-//        [aSearchBar setTintColor:matchedTintColor];
-//        [aSearchBar setDelegate:self];
-//        [aSearchBar setShowsCancelButton:YES];
-//        [aSearchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-//        [self.view addSubview:aSearchBar];
-//        [self.tableView setBounces:NO];
-//        //[self.tableView setContentInset:UIEdgeInsetsMake(CGRectGetHeight(aSearchBar.frame), 0, 0, 0)];
-//        self.searchBar = aSearchBar;
-//        [aSearchBar release];
-        
-        //UISearchDisplayController *aSearchController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-//        aSearchController.delegate = self;
-//        aSearchController.searchResultsDataSource = self;
-//        aSearchController.searchResultsDelegate = self;
-//        self.searchController = aSearchController;
-//        [aSearchController release];
-        
-        //[self.searchController setActive:YES];
-        //[self.searchBar sizeToFit];
+        currentSearchResult = -1;
     }
     return self;
 }
 
+#pragma mark -
+#pragma mark Toolbar
 
+- (BOOL)isToolbarHidden {
+    return [self.toolbar isHidden];
+}
+
+- (void)setToolbarHidden:(BOOL)hidden {
+    [self.toolbar setHidden:hidden];
+}
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -101,15 +108,15 @@
 - (void)loadView {
     CGRect appFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *container = [[UIView alloc] initWithFrame:appFrame];
-    container.backgroundColor = [UIColor blueColor];
+    container.backgroundColor = [UIColor clearColor];
     container.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.view = container;
     [container release];
     
-    [self.searchToolbar setFrame:CGRectMake(0, 0, CGRectGetWidth(appFrame), 44)];
-    [self.view addSubview:self.searchToolbar];
+    [self.toolbar setFrame:CGRectMake(0, 0, CGRectGetWidth(appFrame), 44)];
+    [self.view addSubview:self.toolbar];
     
-    UITableView *aTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.searchToolbar.frame), CGRectGetWidth(appFrame), CGRectGetHeight(appFrame) - CGRectGetMaxY(self.searchToolbar.frame)) style:UITableViewStylePlain];
+    UITableView *aTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.toolbar.frame), CGRectGetWidth(appFrame), CGRectGetHeight(appFrame) - CGRectGetMaxY(self.toolbar.frame)) style:UITableViewStylePlain];
     [aTableView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [aTableView setDataSource:self];
     [aTableView setDelegate:self];
@@ -118,56 +125,49 @@
     [aTableView release];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    //UISearchDisplayController *aSearchController = [[UISearchDisplayController alloc]
-//                        initWithSearchBar:self.searchToolbar.searchBar contentsController:self];
-//    aSearchController.delegate = self;
-//    aSearchController.searchResultsDataSource = self;
-//    aSearchController.searchResultsDelegate = self;
-//    self.searchController = aSearchController;
-//    [aSearchController release];
-    
-    
-    //[self.searchController setActive:YES];
-    // Uncomment the following line to preserve selection between presentations.
-    //self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+- (void)nextResult {
+    currentSearchResult++;
+    if (currentSearchResult >= [self.searchResults count]) {
+        currentSearchResult = 0;
+    }
+    BlioBookmarkPoint *searchBookmarkPoint = [[self.searchResults objectAtIndex:currentSearchResult] bookmark];
+    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] goToBookmarkPoint:searchBookmarkPoint animated:NO];
+    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] highlightWordAtBookmarkPoint:searchBookmarkPoint];
 }
 
-- (void)dismissSearchToolbar:(id)sender {
+- (void)previousResult {
+    currentSearchResult--;
+    if (currentSearchResult <= 0) {
+        currentSearchResult = [self.searchResults count] - 1;
+    }
+    BlioBookmarkPoint *searchBookmarkPoint = [[self.searchResults objectAtIndex:currentSearchResult] bookmark];
+    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] goToBookmarkPoint:searchBookmarkPoint animated:NO];
+    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] highlightWordAtBookmarkPoint:searchBookmarkPoint];
+}
+
+- (void)dismissSearchToolbar:(id)sender { 
+    [self dismissSearchToolbarAnimated:YES];
+}
+
+- (void)dismissSearchToolbarAnimated:(BOOL)animated {
     [self.bookSearchController cancel];
-    [self.parentViewController dismissModalViewControllerAnimated:YES];
+    [self.toolbar.searchBar resignFirstResponder];
+    self.searchActive = NO;
+        
+    if ([self.toolbar inlineMode]) {
+        [self fadeOffScreen:animated removedOnCompletion:YES];
+    } else {
+        [self.navController.toolbar setAlpha:1];
+        [self displayOffScreen:animated removedOnCompletion:YES];
+    }
 }
 
-- (void)setTintColor:(UIColor *)tintColor {
-    [self.searchToolbar setTintColor:tintColor];
+- (void)setTintColor:(UIColor *)newTintColor {
+    [newTintColor retain];
+    [tintColor release];
+    tintColor = newTintColor;
+    [self.toolbar setTintColor:tintColor];
 }
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    //[self.searchController setActive:YES animated:NO];
-
-}
-
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-*/
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-}
-*/
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -175,7 +175,257 @@
     return YES;
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    if (self.toolbar.inlineMode) {
+        CGRect rotatedScreen = [self rotatedScreenRectWithOrientation:toInterfaceOrientation];
+        CGRect collapsedFrame = rotatedScreen;
+        collapsedFrame.origin.y += rotatedScreen.size.height - CGRectGetHeight(self.toolbar.frame);
+            
+        CGRect offsetFrame = self.view.frame;
+        offsetFrame.origin.y = collapsedFrame.origin.y;
+            
+        [UIView beginAnimations:@"rotateViewInToolbar" context:nil];
+        [UIView setAnimationDuration:duration];
+        [self.view setFrame:offsetFrame];
+        [UIView commitAnimations];      
+    } else {
+        // Hide the toolbar during a rotation to prevent it animating in front of the search controller
+        [self.navController.navigationBar setAlpha:0];
+        [self.navController.toolbar setAlpha:0];
+    }
+}
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if (self.toolbar.inlineMode) {
+    } else {
+        [self.navController.navigationBar setAlpha:1];
+        [self.navController.toolbar setAlpha:1];
+    }
+}
+
+- (void)showInController:(UINavigationController *)controller animated:(BOOL)animated {
+    self.searchActive = YES;
+    self.toolbar.inlineMode = NO;
+    self.navController = controller;
+    [self.view setFrame:[self fullScreenRect]];
+    [self.navController.toolbar.superview addSubview:self.view];
+    [self displayFullScreen:animated];
+}
+
+- (void)removeFromControllerAnimated:(BOOL)animated {
+    [self.bookSearchController cancel];
+    [self.toolbar.searchBar resignFirstResponder];
+    self.searchActive = NO;
+    
+    if ([self.toolbar inlineMode]) {
+        [self slideOffScreen:animated removedOnCompletion:YES];
+    } else {
+        [self.navController.toolbar setAlpha:1];
+        [self displayOffScreen:animated removedOnCompletion:YES];
+    }
+    
+}
+
+- (CGRect)rotatedScreenRectWithOrientation:(UIInterfaceOrientation)orientation {
+    CGRect appFrame = [[UIScreen mainScreen] bounds];
+    CGAffineTransform screenTransform = self.navController.view.transform;
+    CGRect statusBarBounds = CGRectApplyAffineTransform([[UIApplication sharedApplication] statusBarFrame], screenTransform);
+    CGFloat statusBarHeight = CGRectGetHeight(statusBarBounds);
+    CGRect fullScreen;
+    
+    if (UIInterfaceOrientationIsPortrait(orientation)) {
+        fullScreen = CGRectMake(0, statusBarHeight, appFrame.size.width, appFrame.size.height - statusBarHeight);
+    } else {
+        fullScreen = CGRectMake(0, statusBarHeight, appFrame.size.height, appFrame.size.width - statusBarHeight);
+    }
+
+    return fullScreen;
+}
+    
+- (CGRect)fullScreenRect {
+    return [self rotatedScreenRectWithOrientation:self.navController.interfaceOrientation];
+}
+
+#pragma mark -
+#pragma mark Animations
+
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    if ([animationID isEqualToString:BlioBookSearchDisplayOffScreenAnimation]) {
+        [self.view removeFromSuperview];
+        [self.toolbar setTintColor:self.tintColor];
+        [self.toolbar setBarStyle:UIBarStyleDefault];
+    } else if ([animationID isEqualToString:BlioBookSearchFadeOffScreenAnimation]) {
+        [self.view removeFromSuperview];
+        [self.view setAlpha:1];
+        [self.toolbar setTintColor:self.tintColor];
+        [self.toolbar setBarStyle:UIBarStyleDefault];
+    } else if ([animationID isEqualToString:BlioBookSearchSlideOffScreenAnimation]) {
+        [self.view removeFromSuperview];
+        [self.view setAlpha:1];
+        [self.toolbar setTintColor:self.tintColor];
+        [self.toolbar setBarStyle:UIBarStyleDefault];
+    }
+}
+
+- (void)displayInToolbar:(BOOL)animated {  
+    
+    [self displayStatusBarWithStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+    [self.navController.toolbar setAlpha:0];
+    
+    CGRect fullScreen = [self fullScreenRect];
+    CGRect collapsedFrame = fullScreen;
+    collapsedFrame.origin.y += fullScreen.size.height - CGRectGetHeight(self.toolbar.frame);
+    
+    if (!CGRectEqualToRect(self.view.frame, collapsedFrame)) {
+        
+        if (animated) {
+            [UIView beginAnimations:@"collapseViewToToolbar" context:nil];
+            [UIView setAnimationDuration:0.35];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+        }
+        
+        [self.view setFrame:collapsedFrame];
+        [self.toolbar setTintColor:self.navController.toolbar.tintColor];
+        [self.toolbar setBarStyle:self.navController.toolbar.barStyle];
+        [self.toolbar setInlineMode:YES];
+        
+        if (animated) {
+            [UIView commitAnimations];
+        }
+    }
+}
+
+- (void)displayFullScreen:(BOOL)animated {
+    
+    [self displayStatusBarWithStyle:UIStatusBarStyleDefault animated:animated];
+    
+    CGRect fullScreen = [self fullScreenRect];
+    
+    if (animated) {
+        [UIView beginAnimations:@"searchViewPopUp" context:nil];
+        [UIView setAnimationDuration:0.35];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+        CGRect offscreen = fullScreen;
+        offscreen.origin.y += fullScreen.size.height;
+        [self.view setFrame:offscreen];
+    }
+    
+    [self.view setFrame:fullScreen];
+    [self.toolbar setTintColor:self.tintColor];
+    [self.toolbar setBarStyle:UIBarStyleDefault];
+    if (self.toolbar.inlineMode) {
+        [self.toolbar setInlineMode:NO];
+    }
+    
+    if (animated) {
+        [UIView commitAnimations];
+    }    
+}
+
+- (void)fadeOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove {
+    [self displayStatusBarWithStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+    
+    [self.navController setToolbarHidden:NO];
+    [self.navController.toolbar setAlpha:0];
+    
+    if (animated) {
+        [UIView beginAnimations:BlioBookSearchFadeOffScreenAnimation context:nil];
+        [UIView setAnimationDuration:0.35];
+        if (remove) {
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        }
+    }
+        
+    if (!animated && remove) {
+        [self.view removeFromSuperview];
+    } else {
+        [self.view setAlpha:0];
+    }
+    
+    [self.navController.toolbar setAlpha:1];
+    
+    if (animated) {
+        [UIView commitAnimations];
+    }
+}
+
+- (void)slideOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove {
+    [self displayStatusBarWithStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+    
+    [self.navController setToolbarHidden:NO];
+    [self.navController.toolbar setAlpha:0];
+    CGRect onScreen = self.view.frame;
+    CGRect offScreen = onScreen;
+    offScreen.origin.x += offScreen.size.width;
+    
+    if (animated) {
+        [UIView beginAnimations:BlioBookSearchSlideOffScreenAnimation context:nil];
+        [UIView setAnimationDuration:0.35];
+        if (remove) {
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        }
+    }
+    
+    if (!animated && remove) {
+        [self.view removeFromSuperview];
+    } else {
+        [self.view setAlpha:0];
+        [self.view setFrame:offScreen];
+    }
+    
+    [self.navController.toolbar setAlpha:1];
+    
+    if (animated) {
+        [UIView commitAnimations];
+    }
+}
+
+- (void)displayOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove {
+    [self displayStatusBarWithStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+    
+    [self.navController setToolbarHidden:NO];
+    
+    CGRect fullScreen = [self fullScreenRect];
+    CGRect collapsedFrame = fullScreen;
+    collapsedFrame.origin.y += fullScreen.size.height;
+    
+    if (!CGRectEqualToRect(self.view.frame, collapsedFrame)) {
+        
+        if (animated) {
+            [UIView beginAnimations:BlioBookSearchDisplayOffScreenAnimation context:nil];
+            [UIView setAnimationDuration:0.35];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+            if (remove) {
+                [UIView setAnimationDelegate:self];
+                [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+            }
+        }
+        
+        if (!animated && remove) {
+            [self.view removeFromSuperview];
+        } else {
+            [self.view setFrame:collapsedFrame];
+        }
+        
+        if (animated) {
+            [UIView commitAnimations];
+        }
+
+    }    
+}
+
+- (void)displayStatusBarWithStyle:(UIStatusBarStyle)barStyle animated:(BOOL)animated {
+    UIApplication *application = [UIApplication sharedApplication];
+    
+    [application setStatusBarStyle:barStyle animated:animated];
+    
+    if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
+        [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    else
+        [(id)application setStatusBarHidden:NO animated:animated]; // typecast as id to mask deprecation warnings.
+}
 
 #pragma mark -
 #pragma mark Table view data source
@@ -311,14 +561,9 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	/*
-	 <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-	 [self.navigationController pushViewController:detailViewController animated:YES];
-	 [detailViewController release];
-	 */
+    [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+    [self.toolbar.searchBar resignFirstResponder];
+    [self displayInToolbar:YES];
 }
 
 
@@ -339,9 +584,15 @@
 
 #pragma mark -
 #pragma mark BlioBookSearchDelegate
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    if ([self.toolbar inlineMode]) {
+        //[self expandViewFromToolbarAnimated:YES];
+        [self displayFullScreen:YES];
+    }
+}
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self.searchToolbar.searchBar resignFirstResponder];
+    [self.toolbar.searchBar resignFirstResponder];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {

@@ -11,16 +11,22 @@
 @protocol BlioBookSearchToolbarDelegate;
 
 @interface BlioBookSearchToolbar : UIView {
-    UISearchBar *searchBar;
-    UINavigationBar *navBar;
-    UIBarButtonItem *doneButton;
     id <BlioBookSearchToolbarDelegate> delegate;
+    UISearchBar *searchBar;
+    UINavigationBar *doneNavBar;
+    UIBarButtonItem *doneButton;
+    UINavigationBar *inlineNavBar;
+    UISegmentedControl *inlineSegmentedControl;
+    UIView *toolbarDecoration;
+    BOOL inlineMode;
 }
 
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, assign) id <BlioBookSearchToolbarDelegate> delegate;
+@property (nonatomic, assign) BOOL inlineMode;
 
 - (void)setTintColor:(UIColor *)tintColor;
+- (void)setBarStyle:(UIBarStyle)barStyle;
 
 @end
 
@@ -28,5 +34,7 @@
 
 @optional
 - (void)dismissSearchToolbar:(id)sender;
+- (void)nextResult;
+- (void)previousResult;
 
 @end

@@ -120,7 +120,7 @@ typedef enum {
     NSManagedObjectContext *_managedObjectContext;
     BOOL rotationLocked;
     
-    BlioBookSearchController *searchController;
+    BlioBookSearchViewController *searchViewController;
 }
 
 // Designated initializers.
