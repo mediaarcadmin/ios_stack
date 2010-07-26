@@ -328,10 +328,6 @@
 		C9AC49EB11C78FA6007B569B /* BlioXpsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A3AF018D11C26974004DAB03 /* BlioXpsClient.m */; };
 		C9AC4A8411C7A2BA007B569B /* BlioBookSearchToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AC4A8311C7A2BA007B569B /* BlioBookSearchToolbar.m */; };
 		C9AC4A8511C7A2BA007B569B /* BlioBookSearchToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AC4A8311C7A2BA007B569B /* BlioBookSearchToolbar.m */; };
-		C9AEAF6311F8AFF900EBD9CD /* back-white.png in Resources */ = {isa = PBXBuildFile; fileRef = C9AEAF6111F8AFF900EBD9CD /* back-white.png */; };
-		C9AEAF6411F8AFF900EBD9CD /* forward-white.png in Resources */ = {isa = PBXBuildFile; fileRef = C9AEAF6211F8AFF900EBD9CD /* forward-white.png */; };
-		C9AEAF6511F8AFF900EBD9CD /* back-white.png in Resources */ = {isa = PBXBuildFile; fileRef = C9AEAF6111F8AFF900EBD9CD /* back-white.png */; };
-		C9AEAF6611F8AFF900EBD9CD /* forward-white.png in Resources */ = {isa = PBXBuildFile; fileRef = C9AEAF6211F8AFF900EBD9CD /* forward-white.png */; };
 		C9AF19CC1147A772007D7AFC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
 		C9AF19CD1147A772007D7AFC /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		C9AF19CE1147A772007D7AFC /* animatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CCD10D93023008D34E2 /* animatedBookTurnVertices.vertexData */; };
@@ -502,6 +498,14 @@
 		C9F749441140261700680E93 /* shadow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749411140261700680E93 /* shadow-left.png */; };
 		C9F749451140261700680E93 /* shadow-top.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749421140261700680E93 /* shadow-top.png */; };
 		C9F936F0113530260047B985 /* BlioProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F936EF113530260047B985 /* BlioProcessingManager.m */; };
+		C9FD392911FD69FF008F1F50 /* buttonBarArrowDownSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392511FD69FF008F1F50 /* buttonBarArrowDownSmall.png */; };
+		C9FD392A11FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392611FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png */; };
+		C9FD392B11FD69FF008F1F50 /* buttonBarArrowUpSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392711FD69FF008F1F50 /* buttonBarArrowUpSmall.png */; };
+		C9FD392C11FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392811FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png */; };
+		C9FD392D11FD69FF008F1F50 /* buttonBarArrowDownSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392511FD69FF008F1F50 /* buttonBarArrowDownSmall.png */; };
+		C9FD392E11FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392611FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png */; };
+		C9FD392F11FD69FF008F1F50 /* buttonBarArrowUpSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392711FD69FF008F1F50 /* buttonBarArrowUpSmall.png */; };
+		C9FD393011FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392811FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png */; };
 		DC0B99381194E9190040CEFB /* BlioStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0B99371194E9190040CEFB /* BlioStoreManager.m */; };
 		DC0B99391194E9190040CEFB /* BlioStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0B99371194E9190040CEFB /* BlioStoreManager.m */; };
 		DC0B993E1194F03B0040CEFB /* BlioStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0B993D1194F03B0040CEFB /* BlioStoreHelper.m */; };
@@ -1159,8 +1163,6 @@
 		C99860DA113FD284009E5263 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		C9AC4A8211C7A2BA007B569B /* BlioBookSearchToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookSearchToolbar.h; sourceTree = "<group>"; };
 		C9AC4A8311C7A2BA007B569B /* BlioBookSearchToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookSearchToolbar.m; sourceTree = "<group>"; };
-		C9AEAF6111F8AFF900EBD9CD /* back-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-white.png"; sourceTree = "<group>"; };
-		C9AEAF6211F8AFF900EBD9CD /* forward-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward-white.png"; sourceTree = "<group>"; };
 		C9AF1A7D1147A772007D7AFC /* Blio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+BlioAdditions.h"; sourceTree = "<group>"; };
 		C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+BlioAdditions.m"; sourceTree = "<group>"; };
@@ -1203,6 +1205,10 @@
 		C9F749421140261700680E93 /* shadow-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow-top.png"; sourceTree = "<group>"; };
 		C9F936EE113530260047B985 /* BlioProcessingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioProcessingManager.h; sourceTree = "<group>"; };
 		C9F936EF113530260047B985 /* BlioProcessingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioProcessingManager.m; sourceTree = "<group>"; };
+		C9FD392511FD69FF008F1F50 /* buttonBarArrowDownSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonBarArrowDownSmall.png; sourceTree = "<group>"; };
+		C9FD392611FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonBarArrowDownSmall@2x.png"; sourceTree = "<group>"; };
+		C9FD392711FD69FF008F1F50 /* buttonBarArrowUpSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonBarArrowUpSmall.png; sourceTree = "<group>"; };
+		C9FD392811FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonBarArrowUpSmall@2x.png"; sourceTree = "<group>"; };
 		DC0B99361194E9190040CEFB /* BlioStoreManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreManager.h; sourceTree = "<group>"; };
 		DC0B99371194E9190040CEFB /* BlioStoreManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreManager.m; sourceTree = "<group>"; };
 		DC0B993C1194F03B0040CEFB /* BlioStoreHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreHelper.h; sourceTree = "<group>"; };
@@ -1449,6 +1455,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C9FD392511FD69FF008F1F50 /* buttonBarArrowDownSmall.png */,
+				C9FD392611FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png */,
+				C9FD392711FD69FF008F1F50 /* buttonBarArrowUpSmall.png */,
+				C9FD392811FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png */,
 				DC2EB05411C96E28006AC1B6 /* DRM */,
 				A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */,
 				A3C7436111CAC178005A2219 /* icon-cart@2x.png */,
@@ -1479,8 +1489,6 @@
 				A37A5869113C45640003CCFF /* back-gray.png */,
 				A37A586A113C45640003CCFF /* forward-black.png */,
 				A37A586B113C45640003CCFF /* forward-gray.png */,
-				C9AEAF6111F8AFF900EBD9CD /* back-white.png */,
-				C9AEAF6211F8AFF900EBD9CD /* forward-white.png */,
 				A37A584A113C36EF0003CCFF /* back-black.png */,
 				DC12F612117E563C0074B2D8 /* library-progress-background.png */,
 				DCC4548811B092A800CBD491 /* voice-sample-play-button.png */,
@@ -2461,8 +2469,10 @@
 				DC795B2F11E7E21B000DA04D /* button-buybooks.png in Resources */,
 				DC795B3011E7E21B000DA04D /* store-screenshot.png in Resources */,
 				7DB5F71111EC65BF00D33185 /* logo-white@2x.png in Resources */,
-				C9AEAF6311F8AFF900EBD9CD /* back-white.png in Resources */,
-				C9AEAF6411F8AFF900EBD9CD /* forward-white.png in Resources */,
+				C9FD392911FD69FF008F1F50 /* buttonBarArrowDownSmall.png in Resources */,
+				C9FD392A11FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png in Resources */,
+				C9FD392B11FD69FF008F1F50 /* buttonBarArrowUpSmall.png in Resources */,
+				C9FD392C11FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2626,8 +2636,10 @@
 				DC795B3111E7E21B000DA04D /* button-buybooks.png in Resources */,
 				DC795B3211E7E21B000DA04D /* store-screenshot.png in Resources */,
 				7DB5F71011EC65BF00D33185 /* logo-white@2x.png in Resources */,
-				C9AEAF6511F8AFF900EBD9CD /* back-white.png in Resources */,
-				C9AEAF6611F8AFF900EBD9CD /* forward-white.png in Resources */,
+				C9FD392D11FD69FF008F1F50 /* buttonBarArrowDownSmall.png in Resources */,
+				C9FD392E11FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png in Resources */,
+				C9FD392F11FD69FF008F1F50 /* buttonBarArrowUpSmall.png in Resources */,
+				C9FD393011FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

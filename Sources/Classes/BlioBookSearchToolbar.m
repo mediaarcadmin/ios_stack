@@ -64,8 +64,8 @@
         [aNavBar release];
                 
         NSArray *segmentImages = [NSArray arrayWithObjects:
-                                  [UIImage imageNamed:@"back-white.png"],
-                                  [UIImage imageNamed:@"forward-white.png"],
+                                  [UIImage imageNamed:@"buttonBarArrowUpSmall"],
+                                  [UIImage imageNamed:@"buttonBarArrowDownSmall"],
                                   nil];
         
         BlioAccessibilitySegmentedControl *aInlineSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
@@ -79,7 +79,7 @@
         [[aInlineSegmentedControl imageForSegmentAtIndex:1] setAccessibilityHint:NSLocalizedString(@"Searches forwards for the next occurence of the search term.", @"Accessibility hint for Book Search Find Next button")];
         
         CGRect segmentFrame = aInlineSegmentedControl.frame;
-        segmentFrame.size.width = [self.doneButton.title sizeWithFont:[UIFont boldSystemFontOfSize:12.0f]].width + 10*2;
+        segmentFrame.size.width = 88;
         [aInlineSegmentedControl setFrame:segmentFrame];
         self.inlineSegmentedControl = aInlineSegmentedControl;
         [aInlineSegmentedControl release];

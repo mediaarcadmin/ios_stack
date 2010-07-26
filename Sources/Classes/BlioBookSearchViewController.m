@@ -20,6 +20,7 @@
 static NSString * const BlioBookSearchDisplayOffScreenAnimation = @"BlioBookSearchDisplayOffScreenAnimation";
 static NSString * const BlioBookSearchSlideOffScreenAnimation = @"BlioBookSearchSlideOffScreenAnimation";
 static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchFadeOffScreenAnimation";
+static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSearchDisplayFullScreenAnimation";
 
 @interface BlioBookSearchResults : NSObject {
     NSString *prefix;
@@ -42,7 +43,7 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
 - (CGRect)rotatedScreenRectWithOrientation:(UIInterfaceOrientation)orientation;
 - (CGRect)fullScreenRect;
 - (void)displayInToolbar:(BOOL)animated;
-- (void)displayFullScreen:(BOOL)animated;
+- (void)displayFullScreen:(BOOL)animated becomeActive:(BOOL)becomeActive;
 - (void)displayOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
 - (void)fadeOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
 - (void)slideOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
@@ -129,6 +130,8 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
     currentSearchResult++;
     if (currentSearchResult >= [self.searchResults count]) {
         currentSearchResult = 0;
+    } else if (currentSearchResult <= 0) {
+        currentSearchResult = [self.searchResults count] - 1;
     }
     BlioBookmarkPoint *searchBookmarkPoint = [[self.searchResults objectAtIndex:currentSearchResult] bookmark];
     [(id)[(BlioBookViewController *)self.navController.topViewController bookView] goToBookmarkPoint:searchBookmarkPoint animated:NO];
@@ -139,6 +142,8 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
     currentSearchResult--;
     if (currentSearchResult <= 0) {
         currentSearchResult = [self.searchResults count] - 1;
+    } else if (currentSearchResult >= [self.searchResults count]) {
+        currentSearchResult = 0;
     }
     BlioBookmarkPoint *searchBookmarkPoint = [[self.searchResults objectAtIndex:currentSearchResult] bookmark];
     [(id)[(BlioBookViewController *)self.navController.topViewController bookView] goToBookmarkPoint:searchBookmarkPoint animated:NO];
@@ -209,7 +214,11 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
     self.navController = controller;
     [self.view setFrame:[self fullScreenRect]];
     [self.navController.toolbar.superview addSubview:self.view];
-    [self displayFullScreen:animated];
+    if ([self.searchResults count]) {
+        [self displayFullScreen:animated becomeActive:NO];
+    } else {
+        [self displayFullScreen:animated becomeActive:YES];
+    }
 }
 
 - (void)removeFromControllerAnimated:(BOOL)animated {
@@ -264,6 +273,8 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
         [self.view setAlpha:1];
         [self.toolbar setTintColor:self.tintColor];
         [self.toolbar setBarStyle:UIBarStyleDefault];
+    } else if ([animationID isEqualToString:BlioBookSearchDisplayFullScreenAnimation]) {
+        [self.toolbar.searchBar becomeFirstResponder];
     }
 }
 
@@ -295,16 +306,20 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
     }
 }
 
-- (void)displayFullScreen:(BOOL)animated {
+- (void)displayFullScreen:(BOOL)animated becomeActive:(BOOL)becomeActive {
     
     [self displayStatusBarWithStyle:UIStatusBarStyleDefault animated:animated];
     
     CGRect fullScreen = [self fullScreenRect];
     
     if (animated) {
-        [UIView beginAnimations:@"searchViewPopUp" context:nil];
+        [UIView beginAnimations:BlioBookSearchDisplayFullScreenAnimation context:nil];
         [UIView setAnimationDuration:0.35];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+        if (becomeActive) {
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        }
         CGRect offscreen = fullScreen;
         offscreen.origin.y += fullScreen.size.height;
         [self.view setFrame:offscreen];
@@ -315,6 +330,10 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
     [self.toolbar setBarStyle:UIBarStyleDefault];
     if (self.toolbar.inlineMode) {
         [self.toolbar setInlineMode:NO];
+    }
+    
+    if (!animated && becomeActive) {
+        [self.toolbar.searchBar becomeFirstResponder];
     }
     
     if (animated) {
@@ -586,8 +605,14 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
 #pragma mark BlioBookSearchDelegate
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     if ([self.toolbar inlineMode]) {
-        //[self expandViewFromToolbarAnimated:YES];
-        [self displayFullScreen:YES];
+        if ([[searchBar text] isEqualToString:@""]) {
+            // Resign immediately but become active in the animation completion
+            [self displayFullScreen:YES becomeActive:YES];
+            [self.toolbar.searchBar resignFirstResponder];
+        } else {
+            [self displayFullScreen:YES becomeActive:NO];
+            [self.toolbar.searchBar resignFirstResponder];
+        }
     }
 }
 
@@ -598,19 +623,21 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     [self.bookSearchController cancel];
     [self.searchResults removeAllObjects];
+    currentSearchResult = -1;
     [self.tableView reloadData];
     
     if (searchText) {
     //BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
         [self.bookSearchController findString:searchText fromBookmarkPoint:nil];
     }
+
 }
 
 #pragma mark -
 #pragma mark BlioBookSearchDelegate
 
 - (void)searchController:(BlioBookSearchController *)aSearchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint withPrefix:(NSString *)prefix withSuffix:(NSString *)suffix {
-    NSLog(@"searchController didFindString '%@' at page %d paragraph %d word %d element %d", searchString, bookmarkPoint.layoutPage, bookmarkPoint.blockOffset, bookmarkPoint.wordOffset, bookmarkPoint.elementOffset);
+    //NSLog(@"searchController didFindString '%@' at page %d paragraph %d word %d element %d", searchString, bookmarkPoint.layoutPage, bookmarkPoint.blockOffset, bookmarkPoint.wordOffset, bookmarkPoint.elementOffset);
     //NSString *prefixString = nil;
 //    NSString *resultString = searchString;
 //    
@@ -630,8 +657,8 @@ static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchF
     
     //resultString = [NSString stringWithFormat:@"%@ %@", resultString, [suffix componentsJoinedByString:@" "]];
     
-    NSString *resultString = [NSString stringWithFormat:@"%@%@%@", prefix, searchString, suffix];
-    NSLog(@"resultString: %@", resultString);
+    //NSString *resultString = [NSString stringWithFormat:@"%@%@%@", prefix, searchString, suffix];
+    //NSLog(@"resultString: %@", resultString);
     
     BlioBookSearchResults *result = [[BlioBookSearchResults alloc] init];
     result.prefix = prefix;
