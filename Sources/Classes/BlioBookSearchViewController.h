@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BlioBookSearchController.h"
 #import "BlioBookSearchToolbar.h"
+#import "BlioBookView.h"
 
 @interface BlioBookSearchViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, BlioBookSearchToolbarDelegate, BlioBookSearchDelegate> {
     UITableView *tableView;
@@ -23,6 +24,7 @@
     UINavigationController *navController;
     BOOL searchActive;
     NSInteger currentSearchResult;
+    id <BlioBookView> bookView;
 }
 
 @property (nonatomic, retain) UITableView *tableView;
@@ -36,6 +38,7 @@
 @property (nonatomic, retain) UIColor *tintColor;
 @property (nonatomic, getter=isToolbarHidden) BOOL toolbarHidden; // Defaults to YES, i.e. hidden.
 @property (nonatomic, readonly, getter=isSearchActive) BOOL searchActive;
+@property (nonatomic, assign) id <BlioBookView> bookView;
 
 - (void)showInController:(UINavigationController *)controller animated:(BOOL)animated;
 - (void)removeFromControllerAnimated:(BOOL)animated;

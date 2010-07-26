@@ -61,6 +61,7 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 @synthesize noResultsLabel, noResultsMessage;
 @synthesize tintColor, navController;
 @synthesize toolbarHidden, searchActive;
+@synthesize bookView;
 
 - (void)dealloc {
     self.tableView = nil;
@@ -72,6 +73,7 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     self.noResultsLabel = nil;
     self.noResultsMessage = nil;
     self.navController = nil;
+    self.bookView = nil;
     [super dealloc];
 }
 
@@ -503,7 +505,14 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     BlioBookSearchResults *result = [self.searchResults objectAtIndex:[indexPath row]];
     
     UILabel *page = (UILabel *)[cell.contentView viewWithTag:BLIOBOOKSEARCHCELLPAGETAG];
-    page.text = [NSString stringWithFormat:@"p.%d", result.bookmark.layoutPage];
+    
+    if (self.bookView) {
+        NSInteger pageNum = [self.bookView pageNumberForBookmarkPoint:result.bookmark];
+        NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
+        page.text = [NSString stringWithFormat:@"p.%@", displayPage];
+    } else {
+        page.text = [NSString stringWithFormat:@"p.%d", result.bookmark.layoutPage];
+    }
     [page sizeToFit];
     CGRect pageFrame = page.frame;
     pageFrame.origin = CGPointMake(5, (CGRectGetHeight(cell.contentView.frame) - pageFrame.size.height)/2.0f);
