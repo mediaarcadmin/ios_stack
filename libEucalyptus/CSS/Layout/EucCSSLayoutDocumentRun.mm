@@ -33,13 +33,6 @@
 #import <libcss/libcss.h>
 #import <pthread.h>
 
-#import <memory>
-#import <vector>
-
-
-using namespace std;
-using namespace Hyphenate;
-
 typedef struct EucCSSLayoutDocumentRunBreakInfo {
     EucCSSLayoutDocumentRunPoint point;
     BOOL consumesComponent;
