@@ -525,7 +525,10 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     uint8_t textAlign = [self _textAlign];
     
     // CSS3 may have a way of specifying this.
-    BOOL shouldHyphenate =  (textAlign == CSS_TEXT_ALIGN_LEFT || textAlign == CSS_TEXT_ALIGN_JUSTIFY);
+    BOOL shouldHyphenate =  (textAlign == CSS_TEXT_ALIGN_LEFT || textAlign == CSS_TEXT_ALIGN_JUSTIFY) && 
+                            !(whiteSpaceModel == CSS_WHITE_SPACE_PRE_LINE ||
+                              whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
+                              whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP);
     
     NSArray *preprocessedWords = subnode.preprocessedWords;
     if(preprocessedWords) {
@@ -639,15 +642,30 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                             }
                             _previousInlineCharacterWasSpace = YES;
                         }
-                        if(ch == 0x000A && 
-                           (whiteSpaceModel == CSS_WHITE_SPACE_PRE_LINE ||
-                            whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
-                            whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP)) {
-                               EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                               info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
-                               info.width = 0;
-                               [self _addComponent:&info];
-                               _alreadyInsertedSpace = YES;
+                        if(whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
+                           whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP ||
+                           whiteSpaceModel == CSS_WHITE_SPACE_PRE_LINE) {
+                            switch(ch) {
+                                case 0x000A:
+                                {
+                                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                                    info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
+                                    info.width = 0;
+                                    [self _addComponent:&info];
+                                    _alreadyInsertedSpace = YES;
+                                    break;  
+                                }
+                                case 0x0009:
+                                case 0x0020:
+                                {
+                                    if(whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
+                                       whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP) {
+                                        [self _addComponent:&spaceInfo];
+                                        _alreadyInsertedSpace = YES;
+                                    }
+                                    break;
+                                }
+                            }
                         }
                         break;
                     default:
@@ -707,6 +725,8 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
         }
         
+        enum css_white_space_e whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(currentInlineNodeWithStyle.computedStyle);
+        
         CGFloat lineSoFarWidth = 0.0f;
         CGFloat lastWordWidth = 0.0f;
         for(NSUInteger i = 0; i < _componentsCount; ++i) {
@@ -714,14 +734,17 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             switch(componentInfo.kind) {
                 case EucCSSLayoutDocumentRunComponentKindSpace:
                     {
-                        breaks[breaksCount].x0 = lineSoFarWidth;
-                        lineSoFarWidth += _componentInfos[i].width;
-                        breaks[breaksCount].x1 = lineSoFarWidth;
-                        breaks[breaksCount].penalty = 0;
-                        breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
-                        breakInfos[breaksCount].point = _componentInfos[i].point;
-                        breakInfos[breaksCount].consumesComponent = YES;
-                        ++breaksCount;
+                        if(whiteSpaceModel != CSS_WHITE_SPACE_PRE && 
+                           whiteSpaceModel != CSS_WHITE_SPACE_NOWRAP) {
+                            breaks[breaksCount].x0 = lineSoFarWidth;
+                            lineSoFarWidth += _componentInfos[i].width;
+                            breaks[breaksCount].x1 = lineSoFarWidth;
+                            breaks[breaksCount].penalty = 0;
+                            breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
+                            breakInfos[breaksCount].point = _componentInfos[i].point;
+                            breakInfos[breaksCount].consumesComponent = YES;
+                            ++breaksCount;
+                        }
                     }
                     break;
                 case EucCSSLayoutDocumentRunComponentKindHardBreak:
@@ -739,12 +762,14 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                 case EucCSSLayoutDocumentRunComponentKindOpenNode:
                     {
                         currentInlineNodeWithStyle = _componentInfos[i].documentNode;
+                        whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(currentInlineNodeWithStyle.computedStyle);
                     }
                     break;
                 case EucCSSLayoutDocumentRunComponentKindCloseNode:
                     {
                         NSParameterAssert(_componentInfos[i].documentNode == currentInlineNodeWithStyle);
                         currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
+                        whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(currentInlineNodeWithStyle.computedStyle);
                     }
                     break;
                 case EucCSSLayoutDocumentRunComponentKindWord:

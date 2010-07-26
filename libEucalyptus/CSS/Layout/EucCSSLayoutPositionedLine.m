@@ -57,18 +57,27 @@
     CGFloat currentBaseline = 0;
     
     size_t componentsCount = documentRun.componentsCount;
+    
     uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
-    uint32_t lastComponentOffset = [documentRun pointToComponentOffset:_endPoint] - 1;
+    uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
     EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
 
+    if(afterEndComponentOffset == startComponentOffset) {
+        // This is a line with no components, ending in a hard break.
+        // Set up to use the hard break itsself as the only component, so that
+        // we pick up the line height.
+        // This is a bit of a hack.
+        afterEndComponentOffset = startComponentOffset + 1;
+    }
+    
     EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
     uint32_t i;
     EucCSSLayoutDocumentRunComponentInfo *info;
     for(i = startComponentOffset, info = componentInfos;
-        i < componentsCount && i <= lastComponentOffset; 
+        i < componentsCount && i < afterEndComponentOffset; 
         ++i, ++info) {
         if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule 
-           || i == startComponentOffset || i == lastComponentOffset) {
+           || i == startComponentOffset || i == afterEndComponentOffset - 1) {
             if(info->documentNode != currentDocumentNode) {
                 CGFloat emBoxHeight = info->pointSize;
                 CGFloat inlineBoxHeight = info->lineHeight;
@@ -132,7 +141,7 @@
         
         size_t componentsCount = documentRun.componentsCount;
         uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
-        uint32_t lastComponentOffset = [documentRun pointToComponentOffset:_endPoint] - 1;
+        uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
         
         _renderItems = calloc(sizeof(EucCSSLayoutPositionedLineRenderItem), componentsCount);
         
@@ -159,7 +168,7 @@
                 break;
             case CSS_TEXT_ALIGN_JUSTIFY:
                 for(i = startComponentOffset, info = componentInfos;
-                    i < componentsCount && i <= lastComponentOffset; 
+                    i < componentsCount && i < afterEndComponentOffset; 
                     ++i, ++info) {
                     if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace) {
                         spacesRemaining++;
@@ -173,7 +182,7 @@
 
         EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
         for(i = startComponentOffset, info = componentInfos;
-            i < componentsCount && i <= lastComponentOffset; 
+            i < componentsCount && i < afterEndComponentOffset; 
             ++i, ++info) {
             
             if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
