@@ -31,6 +31,7 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextDisplayable;
 - (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under;
+- (EucCSSIntermediateDocumentNode *)displayableNodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *previousDisplayableSibling;
 

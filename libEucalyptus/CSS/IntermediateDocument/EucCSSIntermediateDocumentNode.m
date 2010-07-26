@@ -84,7 +84,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return [self nextUnder:nil];
 }
 
-- (EucCSSIntermediateDocumentNode *)_displayableNodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
+- (EucCSSIntermediateDocumentNode *)displayableNodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
 {
     uint32_t childCount =  self.childCount;
     if(childCount) {
@@ -110,7 +110,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     if(self == under) {
         return nil;
     }
-    return [self.parent _displayableNodeAfter:self under:under];
+    return [self.parent displayableNodeAfter:self under:under];
 }
 
 - (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under \
@@ -126,7 +126,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
             nextNode = [self.parent _displayableNodeAfter:self under:under];
         } 
     }*/
-    return [self _displayableNodeAfter:nil under:under];
+    return [self displayableNodeAfter:nil under:under];
 }
 
 - (EucCSSIntermediateDocumentNode *)nextDisplayable

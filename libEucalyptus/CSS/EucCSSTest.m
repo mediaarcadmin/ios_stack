@@ -86,7 +86,8 @@ int main (int argc, const char * argv[]) {
                                                                          inFrame:frame
                                                               returningNextPoint:&layoutPoint
                                                               returningCompleted:&completed
-                                                                lastBlockNodeKey:0];
+                                                                lastBlockNodeKey:0
+                                                           constructingAncestors:YES];
         
         CGContextSaveGState(renderingContext);
         const CGFloat white[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -94,7 +95,7 @@ int main (int argc, const char * argv[]) {
         CGContextFillRect(renderingContext, frame);
         CGContextRestoreGState(renderingContext);
         
-        [renderer render:positionedBlock];
+        [renderer render:positionedBlock atPoint:CGPointZero];
             
         CGImageRef image = CGBitmapContextCreateImage(renderingContext);
         

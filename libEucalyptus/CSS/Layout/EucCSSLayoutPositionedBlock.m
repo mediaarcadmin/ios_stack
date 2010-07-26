@@ -16,19 +16,19 @@
 
 @interface EucCSSLayoutPositionedBlock ()
 - (void)_collapseTopMarginUpwards;
+
+@property (nonatomic, assign) CGRect borderRect;
+@property (nonatomic, assign) CGRect paddingRect;
+@property (nonatomic, assign) CGRect contentRect;
 @end
 
 @implementation EucCSSLayoutPositionedBlock
 
 @synthesize documentNode = _documentNode;
-@synthesize parent = _parent;
 
-@synthesize frame = _frame;
 @synthesize borderRect = _borderRect;
 @synthesize paddingRect = _paddingRect;
 @synthesize contentRect = _contentRect;
-
-@synthesize subEntities = _subEntities;
 
 - (id)init
 {
@@ -41,7 +41,7 @@
                scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {
-        _subEntities = [[NSMutableArray alloc] init];
+        _children = [[NSMutableArray alloc] init];
         _documentNode = [documentNode retain];
         _scaleFactor = scaleFactor;
     }
@@ -50,7 +50,7 @@
 
 - (void)dealloc
 {
-    [_subEntities release];
+    [_children release];
     [_documentNode release];
     
     [super dealloc];
@@ -61,10 +61,12 @@
     return _documentNode.computedStyle;
 }
 
-- (void)positionInFrame:(CGRect)frame 
+- (void)positionInFrame:(CGRect)frame
  afterInternalPageBreak:(BOOL)afterInternalPageBreak
 {
-    _frame = frame;
+    self.frame = frame;
+    CGRect bounds = frame;
+    bounds.origin = CGPointZero;
     
     css_computed_style *computedStyle = self.documentNode.computedStyle;
     css_fixed fixed = 0;
@@ -72,15 +74,15 @@
     
     CGRect borderRect;
     if(afterInternalPageBreak) {
-        borderRect.origin.y = frame.origin.y;
+        borderRect.origin.y = 0;
     } else {
         css_computed_margin_top(computedStyle, &fixed, &unit);
-        borderRect.origin.y = frame.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor);
+        borderRect.origin.y = 0 + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, bounds.size.width, _scaleFactor);
     }
     css_computed_margin_left(computedStyle, &fixed, &unit);
-    borderRect.origin.x = frame.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor);
+    borderRect.origin.x = 0 + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, bounds.size.width, _scaleFactor);
     css_computed_margin_right(computedStyle, &fixed, &unit);
-    borderRect.size.width = CGRectGetMaxX(frame) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor) - borderRect.origin.x;
+    borderRect.size.width = CGRectGetMaxX(bounds) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, bounds.size.width, _scaleFactor) - borderRect.origin.x;
     borderRect.size.height = CGFLOAT_MAX;
     _borderRect = borderRect;
     
@@ -103,17 +105,17 @@
         contentRect.origin.y = paddingRect.origin.y;
     } else {
         css_computed_padding_top(computedStyle, &fixed, &unit);
-        contentRect.origin.y = paddingRect.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor);
+        contentRect.origin.y = paddingRect.origin.y + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, bounds.size.width, _scaleFactor);
     }    
     css_computed_padding_left(computedStyle, &fixed, &unit);
-    contentRect.origin.x = paddingRect.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor);
+    contentRect.origin.x = paddingRect.origin.x + EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, bounds.size.width, _scaleFactor);
     css_computed_padding_right(computedStyle, &fixed, &unit);
-    contentRect.size.width = CGRectGetMaxX(paddingRect) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, _scaleFactor) - contentRect.origin.x;
+    contentRect.size.width = CGRectGetMaxX(paddingRect) - EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, bounds.size.width, _scaleFactor) - contentRect.origin.x;
     contentRect.size.height = CGFLOAT_MAX;
     _contentRect = contentRect;    
     
-    if(frame.size.height != CGFLOAT_MAX) {
-        [self closeBottomFromYPoint:frame.size.height atInternalPageBreak:NO];
+    if(bounds.size.height != CGFLOAT_MAX) {
+        [self closeBottomWithContentHeight:bounds.size.height atInternalPageBreak:NO];
     }
 }
 
@@ -134,42 +136,49 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
     }
 }
 
-- (void)closeBottomFromYPoint:(CGFloat)point atInternalPageBreak:(BOOL)atInternalPageBreak
+- (void)closeBottomWithContentHeight:(CGFloat)height atInternalPageBreak:(BOOL)atInternalPageBreak
 {
-    _contentRect.size.height = point - _contentRect.origin.y;
+    _contentRect.size.height = height;
     
     if(atInternalPageBreak) {
-        _paddingRect.size.height = point - _paddingRect.origin.y;
-        _borderRect.size.height = point - _borderRect.origin.y;
-        _frame.size.height = point - _frame.origin.y;
+        _paddingRect.size.height = height + _contentRect.origin.y - _paddingRect.origin.y;
+        _borderRect.size.height = height + _contentRect.origin.y - _borderRect.origin.y;
+        CGRect frame = self.frame;
+        frame.size.height = height + _contentRect.origin.y;
+        self.frame = frame;
     } else {
         css_computed_style *computedStyle = self.documentNode.computedStyle;
         css_fixed fixed = 0;
         css_unit unit = 0;
         
         CGFloat width = self.frame.size.width;
-        css_computed_padding_bottom(computedStyle, &fixed, &unit);
-        point += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width, _scaleFactor);
-        _paddingRect.size.height = point - _paddingRect.origin.y;
         
+        height += (_contentRect.origin.y - _paddingRect.origin.y);
+        css_computed_padding_bottom(computedStyle, &fixed, &unit);
+        height += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width, _scaleFactor);
+        _paddingRect.size.height = height;
+        
+        height += (_paddingRect.origin.y - _borderRect.origin.y);
         css_computed_border_bottom_width(computedStyle, &fixed, &unit);
-        point += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, _scaleFactor);
-        _borderRect.size.height = point - _borderRect.origin.y;
+        height += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, _scaleFactor);
+        _borderRect.size.height = height;
         
         css_computed_margin_bottom(computedStyle, &fixed, &unit);
         CGFloat bottomMarginHeight = EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, width, _scaleFactor);
         
         // If we have a bottom margin, and the box is otherwise empty, the margin
         // should collapse upwards.
+        CGRect frame = self.frame;
         if(bottomMarginHeight != 0.0f && 
            _contentRect.size.height == 0.0f &&
            _paddingRect.size.height == 0.0f && 
            _borderRect.size.height == 0.0f) {
             
-            CGFloat oldTopMarginHeight = _borderRect.origin.y - _frame.origin.y;
+            CGFloat oldTopMarginHeight = _borderRect.origin.y;
             CGFloat newTopMargin = collapse(oldTopMarginHeight, bottomMarginHeight);
             CGFloat topMarginDifference = newTopMargin - oldTopMarginHeight;
             if(topMarginDifference) {
+                _contentRect.origin.y += topMarginDifference;
                 _paddingRect.origin.y += topMarginDifference;
                 _borderRect.origin.y += topMarginDifference;
                 if(oldTopMarginHeight == 0.0f) {
@@ -177,32 +186,33 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                     [self _collapseTopMarginUpwards];
                 }            
             }
-            _frame.size.height = 0.0f;
+            frame.size.height = 0.0f;
         } else {
-            point += bottomMarginHeight;
-            _frame.size.height = point - _frame.origin.y;
+            height += _borderRect.origin.y;
+            height += bottomMarginHeight;
+            frame.size.height = height;
         }
+        self.frame = frame;
     }
 }
 
-- (void)addSubEntity:(id)subEntity
+- (void)addChild:(EucCSSLayoutPositionedContainer *)child
 {
-    [_subEntities addObject:subEntity];
-    
-    if([subEntity isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
-        EucCSSLayoutPositionedBlock *subBlock = (EucCSSLayoutPositionedBlock *)subEntity;
-        subBlock.parent = self;
-        [subBlock _collapseTopMarginUpwards];
-    } else if([subEntity isKindOfClass:[EucCSSLayoutPositionedRun class]]) {
-        EucCSSLayoutPositionedRun *positionedRun = (EucCSSLayoutPositionedRun *)subEntity;
-        positionedRun.containingBlock = self;
+    [_children addObject:child];
+    child.parent = self;
+
+    if([child isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
+        EucCSSLayoutPositionedBlock *subBlock = (EucCSSLayoutPositionedBlock *)child;
+        if(css_computed_float(subBlock.documentNode.computedStyle) == CSS_FLOAT_NONE) {
+            [subBlock _collapseTopMarginUpwards];
+        }
     }
 }
 
 - (id)_previousSibling
 {
     id ret = nil;
-    NSArray *siblings = self.parent.subEntities;
+    NSArray *siblings = self.parent.children;
     NSUInteger myIndex = [siblings indexOfObject:self];
     if(myIndex != 0) {
         ret = [siblings objectAtIndex:myIndex - 1];
@@ -212,9 +222,9 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
 
 - (void)_collapseTopMarginUpwards
 {
-    NSParameterAssert(self.subEntities.count == 0);
+    NSParameterAssert(self.children.count == 0);
                       
-    CGFloat oldTopMarginHeight = _borderRect.origin.y - _frame.origin.y;
+    CGFloat oldTopMarginHeight = _borderRect.origin.y;
     if(oldTopMarginHeight) {
         NSMutableArray *blocksToAdjust = [NSMutableArray arrayWithObject:self];
         
@@ -232,10 +242,10 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                 break;
             }
             if(!potentiallyCollapseInto) {
-                potentiallyCollapseInto = previouslyExamining.parent;
+                potentiallyCollapseInto = (EucCSSLayoutPositionedBlock *)previouslyExamining.parent;
             }
             if(potentiallyCollapseInto) {
-                if(!potentiallyCollapseInto.frame.size.height) {
+                if(potentiallyCollapseInto.frame.size.height == 0.0f) {
                     [blocksToAdjust addObject:potentiallyCollapseInto];
                     previouslyExamining = potentiallyCollapseInto;
                 } else {
@@ -247,7 +257,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
         if(potentiallyCollapseInto) {
             CGRect potentiallyCollapseIntoFrame = potentiallyCollapseInto.frame;
             if(potentiallyCollapseIntoFrame.size.height) {
-                CGFloat collapseIntoBottomMarginHeight = CGRectGetMaxY(potentiallyCollapseIntoFrame) - CGRectGetMaxY(potentiallyCollapseInto.borderRect);
+                CGFloat collapseIntoBottomMarginHeight = CGRectGetHeight(potentiallyCollapseIntoFrame) - CGRectGetMaxY(potentiallyCollapseInto.borderRect);
                 if(collapseIntoBottomMarginHeight) {
                     CGFloat newBottomMarginHeight = collapse(oldTopMarginHeight, collapseIntoBottomMarginHeight);
                     if(collapseIntoBottomMarginHeight != newBottomMarginHeight) {
@@ -266,7 +276,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                     if(potentiallyCollapseIntoBorderRect.size.height == 0 &&
                        potentiallyCollapseIntoPaddingRect.size.height == 0 &&
                        potentiallyCollapseIntoContentRect.size.height == 0) {
-                        CGFloat collapseIntoTopMarginHeight = potentiallyCollapseIntoBorderRect.origin.y - potentiallyCollapseIntoFrame.origin.y;
+                        CGFloat collapseIntoTopMarginHeight = potentiallyCollapseIntoBorderRect.origin.y;
                         CGFloat newTopMarginHeight = collapse(oldTopMarginHeight, collapseIntoTopMarginHeight);
                         if(collapseIntoTopMarginHeight != newTopMarginHeight) {  
                             CGFloat marginDifference = newTopMarginHeight - collapseIntoTopMarginHeight;
@@ -279,7 +289,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                             potentiallyCollapseInto.borderRect = potentiallyCollapseIntoBorderRect;
                             
                             potentiallyCollapseIntoPaddingRect.origin.y += adjustBy;
-                            potentiallyCollapseInto.borderRect = potentiallyCollapseIntoPaddingRect;
+                            potentiallyCollapseInto.paddingRect = potentiallyCollapseIntoPaddingRect;
                             
                             potentiallyCollapseIntoContentRect.origin.y += adjustBy;
                             potentiallyCollapseInto.contentRect = potentiallyCollapseIntoContentRect;                            
@@ -303,18 +313,6 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                     CGRect rect = block.frame;
                     rect.origin.y += adjustBy;
                     block.frame = rect;
-                    
-                    rect = block.borderRect;
-                    rect.origin.y += adjustBy;
-                    block.borderRect = rect;
-
-                    rect = block.paddingRect;
-                    rect.origin.y += adjustBy;
-                    block.borderRect = rect;
-                    
-                    rect = block.contentRect;
-                    rect.origin.y += adjustBy;
-                    block.contentRect = rect;
                 }
             }
         }

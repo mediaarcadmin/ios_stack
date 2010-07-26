@@ -1,5 +1,5 @@
 //
-//  EucCSSLayoutLine.h
+//  EucCSSLayoutPositionedLine.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutPositionedContainer.h"
 
 @class EucCSSLayoutDocumentRun, EucCSSLayoutPositionedRun, THStringRenderer;
 
-typedef struct EucCSSLayoutLineRenderItem
+typedef struct EucCSSLayoutPositionedLineRenderItem
 {
     id item;
     CGRect rect;
@@ -19,16 +20,13 @@ typedef struct EucCSSLayoutLineRenderItem
     EucCSSLayoutDocumentRunPoint point;
     THStringRenderer *stringRenderer;
     NSString *altText;
-} EucCSSLayoutLineRenderItem;
+} EucCSSLayoutPositionedLineRenderItem;
 
-@interface EucCSSLayoutLine : NSObject {
+@interface EucCSSLayoutPositionedLine : EucCSSLayoutPositionedContainer {
     EucCSSLayoutPositionedRun *_positionedRun;
     
     EucCSSLayoutDocumentRunPoint _startPoint;
     EucCSSLayoutDocumentRunPoint _endPoint;
-
-    CGPoint _origin; 
-    CGSize _size;
     
     CGFloat _baseline;
     CGFloat _componentWidth;
@@ -36,18 +34,12 @@ typedef struct EucCSSLayoutLineRenderItem
     CGFloat _indent;
     uint8_t _align;
     
-    EucCSSLayoutLineRenderItem *_renderItems;
+    EucCSSLayoutPositionedLineRenderItem *_renderItems;
     size_t _renderItemCount;
 }
 
-@property (nonatomic, assign) EucCSSLayoutPositionedRun *containingRun;
-
 @property (nonatomic, assign) EucCSSLayoutDocumentRunPoint startPoint;
 @property (nonatomic, assign) EucCSSLayoutDocumentRunPoint endPoint;
-
-@property (nonatomic, assign) CGPoint origin;
-@property (nonatomic, assign) CGSize size;
-@property (nonatomic, assign, readonly) CGRect frame;
 
 @property (nonatomic, assign) CGFloat indent;
 @property (nonatomic, assign) CGFloat baseline;
@@ -60,6 +52,6 @@ typedef struct EucCSSLayoutLineRenderItem
 - (void)sizeToFitInWidth:(CGFloat)width;
 
 - (size_t)renderItemCount;
-- (EucCSSLayoutLineRenderItem *)renderItems;
+- (EucCSSLayoutPositionedLineRenderItem *)renderItems;
 
 @end
