@@ -430,7 +430,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode
                                                        returningInnermost:&currentPositionedBlock
                                                                   inFrame:bottomlessFrame
-                                                   afterInternalPageBreak:NO];
+                                                   afterInternalPageBreak:wordOffset != 0 || elementOffset != 0];
                 currentDocumentNode = currentDocumentNode.nextDisplayable;
             } 
         } else {
