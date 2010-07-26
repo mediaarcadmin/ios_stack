@@ -1844,6 +1844,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger targetPageNumber = [targetBlock pageIndex] + 1;
     CGFloat zoomScale;
     CGPoint newContentOffset = [self contentOffsetToFitRect:[targetBlock rect] onPage:targetPageNumber zoomScale:&zoomScale];
+    newContentOffset = CGPointMake(roundf(newContentOffset.x), roundf(newContentOffset.y));
     CGPoint currentContentOffset = [self.scrollView contentOffset];
     
     if (!CGPointEqualToPoint(newContentOffset, currentContentOffset)) {
