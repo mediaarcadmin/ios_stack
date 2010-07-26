@@ -49,6 +49,7 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 - (void)slideOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
 - (void)displayStatusBarWithStyle:(UIStatusBarStyle)barStyle animated:(BOOL)animated;
 - (void)dismissSearchToolbarAnimated:(BOOL)animated;
+- (void)highlightCurrentSearchResult;
 
 @end
 
@@ -126,28 +127,26 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     [aTableView release];
 }
 
-- (void)nextResult {
-    currentSearchResult++;
+- (void)highlightCurrentSearchResult {
     if (currentSearchResult >= [self.searchResults count]) {
         currentSearchResult = 0;
-    } else if (currentSearchResult <= 0) {
+    } else if (currentSearchResult < 0) {
         currentSearchResult = [self.searchResults count] - 1;
     }
+    
     BlioBookmarkPoint *searchBookmarkPoint = [[self.searchResults objectAtIndex:currentSearchResult] bookmark];
     [(id)[(BlioBookViewController *)self.navController.topViewController bookView] goToBookmarkPoint:searchBookmarkPoint animated:NO];
     [(id)[(BlioBookViewController *)self.navController.topViewController bookView] highlightWordAtBookmarkPoint:searchBookmarkPoint];
 }
 
+- (void)nextResult {
+    currentSearchResult++;
+    [self highlightCurrentSearchResult];
+}
+
 - (void)previousResult {
     currentSearchResult--;
-    if (currentSearchResult <= 0) {
-        currentSearchResult = [self.searchResults count] - 1;
-    } else if (currentSearchResult >= [self.searchResults count]) {
-        currentSearchResult = 0;
-    }
-    BlioBookmarkPoint *searchBookmarkPoint = [[self.searchResults objectAtIndex:currentSearchResult] bookmark];
-    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] goToBookmarkPoint:searchBookmarkPoint animated:NO];
-    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] highlightWordAtBookmarkPoint:searchBookmarkPoint];
+    [self highlightCurrentSearchResult];
 }
 
 - (void)dismissSearchToolbar:(id)sender { 
@@ -582,6 +581,8 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
     [self.toolbar.searchBar resignFirstResponder];
+    currentSearchResult = [indexPath row];
+    [self highlightCurrentSearchResult];
     [self displayInToolbar:YES];
 }
 
