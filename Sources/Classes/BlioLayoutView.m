@@ -818,6 +818,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self.dataSource drawPage:aPageNumber inBounds:aLayer.bounds withInset:kBlioLayoutShadow inContext:ctx inRect:cropRect withTransform:pageTransform observeAspect:YES];
 //            [self.dataSource drawPage:aPageNumber inContext:ctx inRect:cropRect withTransform:pageTransform];
         }
+        if (isCancelled) {
+            //[self.dataSource closeDocumentIfRequired];
+            return;
+        }
         [self.dataSource closeDocumentIfRequired];
 
     }

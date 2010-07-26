@@ -166,6 +166,7 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
         [self.navController.toolbar setAlpha:1];
         [self displayOffScreen:animated removedOnCompletion:YES];
     }
+    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] highlightWordAtBookmarkPoint:nil];
 }
 
 - (void)setTintColor:(UIColor *)newTintColor {
