@@ -22,6 +22,7 @@ static pthread_key_t sGraphicsContextKey;
 @implementation THStringRenderer
 
 @synthesize fauxBoldStrokeWidth = _fauxBoldStrokeWidth;
+@synthesize lineSpacingScaling = _lineSpacingScaling;
 
 static inline CGFloat PointsToPixels(CGFloat points)
 {
@@ -299,15 +300,9 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         _font = CGFontRetain((CGFontRef)mapAndFont.second);
         
         _unitsPerEm = CGFontGetUnitsPerEm(_font);
-        
-        int ascent = CGFontGetAscent(_font);
-        int descent = abs(CGFontGetDescent(_font));
-        int leading = CGFontGetLeading(_font);
-        
-        _lineSpacing = roundf((CGFloat)(ascent + descent + leading) * lineSpacing);
                 
-        _firstLineOffset = ascent;
-        
+        _lineSpacingScaling = lineSpacing;
+
         _fauxBoldStrokeWidth = 0.5f;
         
         _textTransform = CGAffineTransformMakeRotation(M_PI); // 8
@@ -332,9 +327,23 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     return [self initWithFontName:fontName lineSpacingScaling:1.0f];
 }
 
+- (CGFloat)leadingForPointSize:(CGFloat)pointSize
+{
+    CGFloat leading = GlyphSpaceToPixels(CGFontGetLeading(_font), pointSize, _unitsPerEm);
+
+    if(_lineSpacingScaling != 1.0f) {
+        CGFloat mainPart = [self ascenderForPointSize:pointSize] - [self descenderForPointSize:pointSize];
+        return roundf((mainPart + leading) * _lineSpacingScaling) - mainPart;
+    } else {
+        return roundf(leading);
+    }
+}
+
 - (CGFloat)lineSpacingForPointSize:(CGFloat)pointSize
 {
-    return roundf(GlyphSpaceToPixels(_lineSpacing, pointSize, _unitsPerEm));
+    return [self ascenderForPointSize:pointSize] 
+            - [self descenderForPointSize:pointSize] 
+            + [self leadingForPointSize:pointSize];
 }
 
 - (CGFloat)ascenderForPointSize:(CGFloat)pointSize
@@ -344,7 +353,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 
 - (CGFloat)descenderForPointSize:(CGFloat)pointSize
 {
-    return roundf(GlyphSpaceToPixels(CGFontGetDescent(_font), pointSize, _unitsPerEm));
+    return -roundf(-GlyphSpaceToPixels(CGFontGetDescent(_font), pointSize, _unitsPerEm));
 }
 
 - (CGContextRef)measuringContext
@@ -569,7 +578,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     
     int longestLineLength = 0;
     int previousLineStart = 0;
-    CGFloat lineHeight = roundf(GlyphSpaceToPixels(_lineSpacing, pointSize, _unitsPerEm));
+    CGFloat lineHeight = [self lineSpacingForPointSize:pointSize];
     CGFloat halfLineHeight = roundf(lineHeight * 0.5f);
     CGFloat totalHeight = 0.0f;
     for(int i = 0; i < _lastUsedBreakCount; ++i) {
@@ -613,7 +622,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     
     [self _setupFontForRenderingInContext:context pointSize:pointSize flags:0];
     
-    CGFloat lineOffset = roundf(GlyphSpaceToPixels(_firstLineOffset, pointSize, _unitsPerEm));
+    CGFloat lineOffset = [self leadingForPointSize:pointSize] * 0.5f + [self ascenderForPointSize:pointSize];
     
     CGContextSetTextPosition(context, originPoint.x, originPoint.y + lineOffset);
     
@@ -774,7 +783,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     
     [self _setupFontForRenderingInContext:context pointSize:pointSize flags:flags];
     
-    CGFloat drawOffset = roundf(GlyphSpaceToPixels(_firstLineOffset, pointSize, _unitsPerEm));
+    CGFloat drawOffset = [self leadingForPointSize:pointSize] * 0.5f + [self ascenderForPointSize:pointSize];
     CGPoint drawPosition = CGPointMake(originPoint.x, originPoint.y + drawOffset);
     int nextBreakIndexIndex = 0;
     int nextBreakIndex = _lastUsedBreaksIndexes[nextBreakIndexIndex++];
@@ -785,7 +794,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     unsigned randomSeed;
     THStringRendererFlags justificationFlags = flags & (THStringRendererFlagCenter | THStringRendererFlagRightJustify | THStringRendererFlagRoughJustify);
     if(justificationFlags == THStringRendererFlagCenter) {
-        justificationOffset = roundf((maxWidth - _lastBreaks[_lastUsedBreaksIndexes[0]].x0) * 0.5);
+        justificationOffset = roundf((maxWidth - _lastBreaks[_lastUsedBreaksIndexes[0]].x0) * 0.5f);
     } else if(justificationFlags == THStringRendererFlagRightJustify) {
         justificationOffset = roundf((maxWidth - _lastBreaks[_lastUsedBreaksIndexes[0]].x0));
     } else if(justificationFlags == THStringRendererFlagRoughJustify) {
@@ -808,7 +817,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         lineStart = 0;
     }
     
-    CGFloat lineHeight = roundf(GlyphSpaceToPixels(_lineSpacing, pointSize, _unitsPerEm));
+    CGFloat lineHeight = [self lineSpacingForPointSize:pointSize];
     CGFloat halfLineHeight = roundf(lineHeight * 0.5f);
     BOOL lineHadWords = NO;
     for(int i = 0; i < _lastBreakCount; ++i) {
@@ -818,7 +827,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
             lineStart = _lastBreaks[nextBreakIndex].x1;
             nextBreakIndex = _lastUsedBreaksIndexes[nextBreakIndexIndex++];
             if(justificationFlags == THStringRendererFlagCenter) {
-                justificationOffset = roundf((maxWidth - (_lastBreaks[nextBreakIndex].x0 - lineStart)) * 0.5);
+                justificationOffset = roundf((maxWidth - (_lastBreaks[nextBreakIndex].x0 - lineStart)) * 0.5f);
             } else if(justificationFlags == THStringRendererFlagRightJustify) {
                 justificationOffset = roundf((maxWidth - (_lastBreaks[nextBreakIndex].x0 - lineStart)));
             } else if(justificationFlags == THStringRendererFlagRoughJustify) {

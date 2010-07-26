@@ -17,7 +17,7 @@
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutDocumentRun_Package.h"
 #import "EucCSSLayoutPositionedRun.h"
-#import "EucCSSLayoutLine.h"
+#import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
@@ -182,7 +182,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                     [self _addComponent:&currentComponentInfo];
                     [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
                 }
-                //nextNode = [inlineNode nextDisplayableUnder:underNode];
+                nextNode = [inlineNode nextDisplayableUnder:underNode];
             }
             if(nextNode) {
                 inlineNode = nextNode;
@@ -863,18 +863,18 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
     int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, frame.size.width, 0, usedBreakIndexes);
 
-    CGPoint lineOrigin = frame.origin;
+    CGPoint lineOrigin = CGPointZero;
 
     uint8_t textAlign = [self _textAlign];
     
-    CGFloat lastLineMaxY = frame.origin.y;
+    CGFloat lastLineMaxY = 0;
     
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
     EucCSSLayoutDocumentRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
     for(int i = 0; i < usedBreakCount; ++i) {
         EucCSSLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
-        EucCSSLayoutLine *newLine = [[EucCSSLayoutLine alloc] init];
-        newLine.containingRun = ret;
+        EucCSSLayoutPositionedLine *newLine = [[EucCSSLayoutPositionedLine alloc] init];
+        newLine.parent = ret;
         if(lastLineBreakInfo.consumesComponent) {
             EucCSSLayoutDocumentRunPoint point = lastLineBreakInfo.point;
             uint32_t componentOffset = [self pointToComponentOffset:point];
@@ -894,8 +894,6 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             newLine.startPoint = lastLineBreakInfo.point;
         }
         newLine.endPoint = thisLineBreakInfo.point;
-
-        newLine.origin = lineOrigin;
         
         if(textIndent) {
             newLine.indent = textIndent;
@@ -907,10 +905,11 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         } else {
             newLine.align = textAlign;
         }
+        
+        newLine.frame = CGRectMake(lineOrigin.x, lineOrigin.y, 0, 0);
         [newLine sizeToFitInWidth:frame.size.width];
 
-        CGFloat newLineMaxY = lineOrigin.y + newLine.size.height;
-        lastLineMaxY = newLineMaxY;
+        lastLineMaxY = lineOrigin.y + newLine.frame.size.height;
         [lines addObject:newLine];
         [newLine release];        
     
@@ -919,8 +918,8 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     }
     
     if(lines.count) {
-        ret.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY - frame.origin.y);
-        ret.lines = lines;
+        ret.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY);
+        ret.children = lines;
     } else {
         [ret release];
         ret = nil;

@@ -9,15 +9,17 @@
 #import "EucCSSInternal.h"
 #import "EucCSSRenderer.h"
 #import "EucCSSIntermediateDocumentNode.h"
+#import "EucCSSLayoutPositionedContainer.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutDocumentRun_Package.h"
 #import "EucCSSLayoutPositionedRun.h"
-#import "EucCSSLayoutLine.h"
+#import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSRenderer.h"
 #import "THStringRenderer.h"
 #import "THLog.h"
 
+#import <objc/message.h>
 #import <libcss/libcss.h>
 
 @interface EucCSSRenderer ()
@@ -52,7 +54,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     CGContextSetStrokeColor(context, components);
 }
 
-- (void)render:(id)layoutEntity
+- (void)render:(EucCSSLayoutPositionedContainer *)layoutEntity atPoint:(CGPoint)point
 {
     // External generic entry point
     CGContextSaveGState(_cgContext);
@@ -65,48 +67,55 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     CGContextSetFillColorWithCSSColor(_cgContext, 0x000000FF);
     CGContextSetStrokeColorWithCSSColor(_cgContext, 0x000000FF);
     
+    CGContextTranslateCTM(_cgContext, point.x, point.y);
+    
     [self _render:(id)layoutEntity];
     
     CGContextRestoreGState(_cgContext);
 }
 
-- (void)_render:(id)layoutEntity
+- (void)_render:(EucCSSLayoutPositionedContainer *)layoutEntity 
 {
     // Generic entry point will work out the method to call to render a layout
     // entity of this class.
     
+    
+    CGContextStrokeRect(_cgContext, layoutEntity.frame);
+
+    CGContextSaveGState(_cgContext);
+    CGPoint point = layoutEntity.frame.origin;
+    CGContextTranslateCTM(_cgContext, point.x, point.y);
+    
     NSString *entityClassName = NSStringFromClass([layoutEntity class]);
-    if([entityClassName hasPrefix:@"EucCSSLayout"]) {
-        entityClassName = [entityClassName substringFromIndex:12];
-        SEL selector = NSSelectorFromString([NSString stringWithFormat:@"_render%@:", entityClassName]);
-        [self performSelector:selector withObject:layoutEntity];
-    } else {
-        THWarn(@"Attempt to render entity that's not of known class: \"%@\", %@", entityClassName, layoutEntity);
-    }
+    entityClassName = [entityClassName substringFromIndex:12]; // 12 for "EucCSSLayout"
+    SEL selector = NSSelectorFromString([NSString stringWithFormat:@"_render%@:", entityClassName]);
+    ((id(*)(id, SEL, id))objc_msgSend)(self, selector, layoutEntity);
+
+    CGContextRestoreGState(_cgContext);
 }
 
 
-- (void)_renderPositionedBlock:(EucCSSLayoutPositionedBlock *)block
+- (void)_renderPositionedBlock:(EucCSSLayoutPositionedBlock *)block 
 {
-    THLogVerbose(@"Positioned Block: %@", NSStringFromCGRect(block.frame));
+    THLogVerbose(@"Positioned Block: %@", NSStringFromCGRect(block.absoluteFrame));
     
+    CGRect borderRect = block.borderRect;
     css_computed_style *computedStyle = block.computedStyle;
     css_color color;
-    
     if(css_computed_background_color(computedStyle, &color) != CSS_BACKGROUND_COLOR_TRANSPARENT) {
+        //color = 0xff000000;
         CGContextSaveGState(_cgContext);
         CGContextSetFillColorWithCSSColor(_cgContext, color);  
-        CGContextFillRect(_cgContext, block.borderRect);
+        CGContextFillRect(_cgContext, borderRect);
         CGContextRestoreGState(_cgContext);
     }
     
-    CGRect borderRect = block.borderRect;
     CGRect paddingRect = block.paddingRect;
     if(!CGRectEqualToRect(borderRect, paddingRect)) {        
         // Non-zero border width.
         
         CGPoint maskPoints[4];
-        
+
         // Top.
         {
             enum css_border_style_e borderStyle;
@@ -213,48 +222,59 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     }
     
     CGContextSaveGState(_cgContext);
+    
+    CGRect contentRect = block.contentRect;
+    if(!CGPointEqualToPoint(contentRect.origin, CGPointZero)) {
+        CGContextTranslateCTM(_cgContext, contentRect.origin.x, contentRect.origin.y);
+    }
+    
     if(css_computed_color(computedStyle, &color) == CSS_COLOR_COLOR) {
         CGContextSetFillColorWithCSSColor(_cgContext, color);
         CGContextSetStrokeColorWithCSSColor(_cgContext, color);
     }
-    for(id subEntity in block.subEntities) {
+    for(id subEntity in block.children) {
         [self _render:subEntity];
     }
     CGContextRestoreGState(_cgContext);
-    
+        
     THLogVerbose(@"Positioned Block End");
 }
 
 
-- (void)_renderPositionedRun:(EucCSSLayoutPositionedRun *)run
+- (void)_renderPositionedRun:(EucCSSLayoutPositionedRun *)run 
 {
-    THLogVerbose(@"Positioned Run: %@", NSStringFromCGRect(run.frame));
-    //CGContextStrokeRectWithWidth(_cgContext, run.frame, 0.5);
+    THLogVerbose(@"Positioned Run: %@", NSStringFromCGRect(run.absoluteFrame));
+    //CGContextStrokeRectWithWidth(_cgContext, run.frame, 0.5)
 
-    for(EucCSSLayoutLine *line in run.lines) {
+    for(EucCSSLayoutPositionedLine *line in run.children) {
         [self _render:line];
     }
+    
     THLogVerbose(@"Positioned Run End");
 }
 
-- (void)_renderLine:(EucCSSLayoutLine *)line
+- (void)_renderPositionedLine:(EucCSSLayoutPositionedLine *)line 
 {
-    EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+    THLogVerbose(@"Positioned Line: %@", NSStringFromCGRect(line.absoluteFrame));
+
+    EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
     size_t renderItemsCount = line.renderItemCount;
     
-    CGContextStrokeRect(_cgContext, line.frame);
-    
-    EucCSSLayoutLineRenderItem* renderItem = renderItems;
+    EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         id item = renderItem->item;
+        CGRect rect = renderItem->rect;
+
+        CGContextStrokeRect(_cgContext, rect);
+        NSLog(@"Render item: %@", NSStringFromCGRect(rect));
+
         if([item isKindOfClass:[NSString class]]) {
             [renderItem->stringRenderer drawString:(NSString *)item
                                          inContext:_cgContext 
-                                           atPoint:renderItem->rect.origin
+                                           atPoint:rect.origin
                                          pointSize:renderItem->pointSize];
         } else {
             // It's an image.
-            CGRect rect = renderItem->rect;
             CGContextSaveGState(_cgContext);
             CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
             CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
@@ -263,6 +283,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
             CGContextRestoreGState(_cgContext);
         }
     }
+    
+    THLogVerbose(@"Positioned Line End");
 }
 
 @end
