@@ -507,7 +507,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     css_computed_style *subnodeStyle;
     subnodeStyle = [subnode.parent computedStyle];
     
-    css_white_space_e whiteSpaceModel = (css_white_space_e)css_computed_white_space(subnodeStyle);
+    enum css_white_space_e whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(subnodeStyle);
     
     THStringRenderer *stringRenderer = subnode.stringRenderer;
     
