@@ -493,6 +493,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
         [manifestEntry setValue:BlioXPSCoverImage forKey:@"path"];
         [self setBookManifestValue:manifestEntry forKey:@"coverFilename"];
+        
+        manifestEntry = [NSMutableDictionary dictionary];
+        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+        [manifestEntry setValue:BlioXPSMetaDataDir forKey:@"path"];
+        [self setBookManifestValue:manifestEntry forKey:@"thumbnailDirectory"];
     }
 
     [super downloadDidFinishSuccessfully:success];

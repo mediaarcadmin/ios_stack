@@ -458,7 +458,7 @@
     }
     
     if (pageNumber == 1) {
-        NSLog(@"Finished rendering page 1");
+        //NSLog(@"Finished rendering page 1");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
     }
 
@@ -496,32 +496,10 @@
     cacheLayer = aNewLayer;
 }
 
-- (void)updateContents:(NSNotification *)notification {
-    if ([[notification object] integerValue] == self.pageNumber) {
-        //NSLog(@"updateContents notification received on page %d for page %@", self.pageNumber, [notification object]);
-        if (nil == self.contents) {
-            NSDictionary *thumbDictionary = [notification userInfo];
-            if (nil != thumbDictionary) {
-                CGImageRef thumbImage = (CGImageRef)[thumbDictionary valueForKey:@"thumbImage"];
-                NSNumber *thumbPage = [thumbDictionary valueForKey:@"pageNumber"];
-                
-                if (thumbImage && thumbPage) {
-                    if ([thumbPage integerValue] == self.pageNumber) {
-                        
-                        self.contents = (id)thumbImage;
-                        [self setNeedsDisplay];
-                        NSLog(@"Set thumbLayer contents for page %d", self.pageNumber);
-                    }
-                }
-            }
-        }
-    }
-}
-
 - (void)drawInContext:(CGContextRef)ctx {
-    if (nil != cacheLayer) {
-        [self.renderingDelegate drawThumbLayer:self inContext:ctx forPage:self.pageNumber withCacheLayer:cacheLayer];  
-    }
+    //if (nil != cacheLayer) {
+    [self.renderingDelegate drawThumbLayer:self inContext:ctx forPage:self.pageNumber withCacheLayer:cacheLayer];  
+    //}
 }
 
 @end

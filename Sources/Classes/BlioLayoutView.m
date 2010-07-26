@@ -709,14 +709,30 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx  forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer {
-    CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
-    if (CGRectEqualToRect(cropRect, CGRectZero)) return;
-    cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
-    
-    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-    CGContextFillRect(ctx, cropRect);
-    CGContextDrawLayerInRect(ctx, cropRect, cacheLayer);
+    UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
+    if (thumbImage) {
+        CGRect cropRect;
+        CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+        if (CGRectEqualToRect(cropRect, CGRectZero)) return;
+        cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+        
+        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        CGContextFillRect(ctx, cropRect);
+        
+        CGContextSetInterpolationQuality(ctx, kCGInterpolationLow);
+        CGContextDrawImage(ctx, cropRect, thumbImage.CGImage);
+    } else {
+        if (cacheLayer) {
+            CGRect cropRect;
+            CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+            if (CGRectEqualToRect(cropRect, CGRectZero)) return;
+            cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
+            
+            CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+            CGContextFillRect(ctx, cropRect);
+            CGContextDrawLayerInRect(ctx, cropRect, cacheLayer);
+        }
+    }
 }
 
 - (void)drawTiledLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber cacheReadyTarget:(id)target cacheReadySelector:(SEL)readySelector {
@@ -753,14 +769,26 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         //CGContextConcatCTM(ctx, pageTransform);
         //if (false) {
         if (nil != target) {
-            CGRect cacheRect = CGRectIntegral(CGRectMake(0, 0, 160, 240));
-            CGAffineTransform cacheTransform = transformRectToFitRect(unscaledCropRect, cacheRect, false);
+            
+            UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
+            CGLayerRef aCGLayer;
+            
+            if (thumbImage) {
+                CGSize thumbSize = thumbImage.size;
+                CGRect cacheRect = CGRectMake(0, 0, thumbSize.width, thumbSize.height);
+                aCGLayer = CGLayerCreateWithContext(ctx, cacheRect.size, NULL);
+                CGContextRef cacheCtx = CGLayerGetContext(aCGLayer);
+                CGContextSetInterpolationQuality(cacheCtx, kCGInterpolationNone);
+                CGContextDrawImage(cacheCtx, cacheRect, thumbImage.CGImage);
+            } else {
+                CGRect cacheRect = CGRectIntegral(CGRectMake(0, 0, 160, 240));
+                CGAffineTransform cacheTransform = transformRectToFitRect(unscaledCropRect, cacheRect, false);
 //            cacheRect = CGRectApplyAffineTransform(unscaledCropRect, cacheTransform);
 //            cacheRect.origin = CGPointZero;
             //cacheTransform = transformRectToFitRect(unscaledCropRect, cacheRect);
             
-            CGLayerRef aCGLayer = CGLayerCreateWithContext(ctx, cacheRect.size, NULL);
-            CGContextRef cacheCtx = CGLayerGetContext(aCGLayer);
+                aCGLayer = CGLayerCreateWithContext(ctx, cacheRect.size, NULL);
+                CGContextRef cacheCtx = CGLayerGetContext(aCGLayer);
             //CGContextTranslateCTM(cacheCtx, 0, cacheRect.size.height);
             //CGContextScaleCTM(cacheCtx, 1, -1);
             
@@ -772,7 +800,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             //CGContextFillRect(cacheCtx, cacheRect);
             
 //            [self.dataSource drawPage:aPageNumber inContext:cacheCtx withTransform:CGAffineTransformConcat(pageTransform, cacheTransform)];
-            [self.dataSource drawPage:aPageNumber inBounds:cacheRect withInset:0 inContext:cacheCtx inRect:cacheRect withTransform:cacheTransform observeAspect:NO];
+                [self.dataSource drawPage:aPageNumber inBounds:cacheRect withInset:0 inContext:cacheCtx inRect:cacheRect withTransform:cacheTransform observeAspect:NO];
+            }
             
             if ([target respondsToSelector:readySelector])
                 [target performSelectorOnMainThread:readySelector withObject:(id)aCGLayer waitUntilDone:NO];
@@ -780,7 +809,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             CGLayerRelease(aCGLayer);
             
             if (isCancelled) {
-                [self.dataSource closeDocumentIfRequired];
+                //[self.dataSource closeDocumentIfRequired];
                 return;
             }
             [self.dataSource drawPage:aPageNumber inBounds:aLayer.bounds withInset:kBlioLayoutShadow inContext:ctx inRect:cropRect withTransform:pageTransform observeAspect:YES];
@@ -1258,6 +1287,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         NSUInteger wordOffset = bookmarkPoint.wordOffset;
         BlioTextFlowPositionedWord *word = [[currentBlock words] objectAtIndex:wordOffset];
         [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:currentBlock.blockID animated:YES];
+        
     } else {
         [self.selector removeTemporaryHighlight];
     }
@@ -2222,6 +2252,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.data);
     pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
     CGDataProviderRelease(pdfProvider);
+}
+
+- (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
+    return nil;
 }
 
 - (void)closeDocument {

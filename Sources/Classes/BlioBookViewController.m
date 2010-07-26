@@ -167,7 +167,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [aPauseButton setAlpha:0];
                 [self.view addSubview:aPauseButton];
                 self.pauseButton = aPauseButton;
-
+                //if (0) {
                 if ([self.book audiobookFilename]) {
                     _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
                 } else {
@@ -177,6 +177,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         [_acapelaAudioManager setDelegate:self];
                     } 
                 }
+                //}
             }
         } else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];
@@ -1283,6 +1284,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
         }
+        
+        // Reset the search resultsi
+        self.searchViewController = nil;
     }
 }
 
@@ -1782,9 +1786,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
         [aSearchViewController setTintColor:_returnToNavigationBarTint];
+        [aSearchViewController setBookView:self.bookView];
         [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
         [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
-        
         self.searchViewController = aSearchViewController;
         
         [aSearchViewController release];

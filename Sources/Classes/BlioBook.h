@@ -30,6 +30,7 @@ static NSString * const BlioXPSEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMa
 static NSString * const BlioXPSEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages";
 static NSString * const BlioXPSEncryptedImagesDir = @"/Resources";
 static NSString * const BlioXPSEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/Flow";
+static NSString * const BlioXPSMetaDataDir = @"/Documents/1/Metadata";
 static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.jpg";
 static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
 
@@ -111,4 +112,5 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (NSData *)manifestDataForKey:(NSString *)key;
 - (NSString *)manifestPathForKey:(NSString *)key;
 - (NSString *)manifestLocationForKey:(NSString *)key;
+   
 @end

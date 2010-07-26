@@ -266,6 +266,19 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     [renderingLock unlock];
 }
 
+- (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
+    UIImage *thumbnail = nil;
+    NSString *thumbnailsLocation = [self.book manifestLocationForKey:@"thumbnailDirectory"];
+    if ([thumbnailsLocation isEqualToString:BlioManifestEntryLocationXPS]) {
+        NSString *thumbPath = [BlioXPSMetaDataDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.jpg", pageNumber]];
+        NSData *thumbData = [self dataForComponentAtPath:thumbPath];
+        if (thumbData) {
+            thumbnail = [UIImage imageWithData:thumbData];
+        }
+    }
+    return thumbnail;
+}
+
 // Not required as XPS document stays open during rendering
 - (void)openDocumentIfRequired {}
 

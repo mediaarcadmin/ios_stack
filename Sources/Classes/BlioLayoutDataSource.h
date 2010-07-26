@@ -21,5 +21,6 @@
 - (void)closeDocument;
 
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect;
+- (UIImage *)thumbnailForPage:(NSInteger)page;
 
 @end
