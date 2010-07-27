@@ -82,7 +82,9 @@
         self.positionedBlock = [layouter layoutFromPoint:layoutPoint
                                                  inFrame:[self bounds]
                                       returningNextPoint:&layoutPoint
-                                      returningCompleted:&isComplete];
+                                      returningCompleted:&isComplete
+                                        lastBlockNodeKey:0
+                                   constructingAncestors:YES];
         
         if(isComplete) {
             ret = [[EucBookPageIndexPoint alloc] init];
@@ -155,7 +157,7 @@
         NSMutableArray *array = [NSMutableArray array];
         uint32_t lastWordId = UINT32_MAX;
 
-        for(EucCSSLayoutPositionedLine *line in run.lines) {
+        for(EucCSSLayoutPositionedLine *line in run.children) {
             EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
             size_t renderItemsCount = line.renderItemCount;
             
@@ -181,7 +183,7 @@
     uint32_t wantedWordId = [(NSNumber *)elementId intValue];
     
     NSMutableArray *array = [NSMutableArray array];
-    for(EucCSSLayoutPositionedLine *line in run.lines) {
+    for(EucCSSLayoutPositionedLine *line in run.children) {
         EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
         size_t renderItemsCount = line.renderItemCount;
         
@@ -212,7 +214,7 @@
     if(positionedBlock) {
         EucCSSRenderer *renderer = [[EucCSSRenderer alloc] init];
         renderer.cgContext = cgContext;
-        [renderer _render:self.positionedBlock];
+        [renderer render:self.positionedBlock atPoint:CGPointZero];
         [renderer release];
     }
 }
@@ -238,7 +240,7 @@
             element.accessibilityFrame = frame;
             
             NSMutableString *buildString = [NSMutableString string];
-            for(EucCSSLayoutPositionedLine *line in run.lines) {
+            for(EucCSSLayoutPositionedLine *line in run.children) {
                 EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
                 size_t renderItemsCount = line.renderItemCount;
                     
