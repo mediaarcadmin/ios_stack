@@ -499,28 +499,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D5170771028AD1B005F3C46 /* libhyphenate */;
+			remoteGlobalIDString = 7D5170771028AD1B005F3C46;
 			remoteInfo = libhyphenate;
 		};
 		7D3F4C3111EF29CF0065A5F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D3F4BF611EF29600065A5F7 /* libEucalyptusBase */;
+			remoteGlobalIDString = 7D3F4BF611EF29600065A5F7;
 			remoteInfo = libEucalyptusBase;
 		};
 		7D3F4C3511EF29DD0065A5F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D3F4BF611EF29600065A5F7 /* libEucalyptusBase */;
+			remoteGlobalIDString = 7D3F4BF611EF29600065A5F7;
 			remoteInfo = libEucalyptusBase;
 		};
 		7D3F4E6A11EF3CFE0065A5F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D5171BC1028B6AE005F3C46 /* expat */;
+			remoteGlobalIDString = 7D5171BC1028B6AE005F3C46;
 			remoteInfo = expat;
 		};
 		7D412B10114965E100C003BB /* PBXContainerItemProxy */ = {
@@ -4458,6 +4458,250 @@
 			};
 			name = AppStore;
 		};
+		A381375611FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+					i386,
+					x86_64,
+				);
+				ARM_NOT_THUMB = "";
+				"ARM_NOT_THUMB[sdk=iphoneos*][arch=*]" = "-marm";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PREBINDING = NO;
+				SDKROOT = iphoneos4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Distribution;
+		};
+		A381375711FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				PRODUCT_NAME = Eucalyptus;
+				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+			};
+			name = Distribution;
+		};
+		A381375811FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				PRODUCT_NAME = EucalyptusBase;
+				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		A381375911FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				PRODUCT_NAME = EucalyptusBUpe;
+				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		A381375A11FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				PRODUCT_NAME = EucalyptusCSS;
+				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		A381375B11FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_EXPAT_CONFIG_H;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/\"";
+				INSTALL_PATH = /usr/local/lib;
+				PRIVATE_HEADERS_FOLDER_PATH = include/expat;
+				PRODUCT_NAME = expat;
+				PUBLIC_HEADERS_FOLDER_PATH = include/expat;
+				USE_HEADERMAP = NO;
+			};
+			name = Distribution;
+		};
+		A381375C11FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/libEucalyptus.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = hyphenate;
+			};
+			name = Distribution;
+		};
+		A381375D11FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				PREBINDING = NO;
+				PRODUCT_NAME = wapcaplet;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"";
+				USE_HEADERMAP = NO;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		A381375E11FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NDEBUG,
+					WITH_ICONV_FILTER,
+				);
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libparserutils/include\"";
+				PREBINDING = NO;
+				PRODUCT_NAME = parserutils;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libparserutils/src\"";
+				USE_HEADERMAP = NO;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		A381375F11FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = css;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libcss/src\"";
+				USE_HEADERMAP = NO;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		A381376011FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/include";
+				INFOPLIST_FILE = "TransitionTest/TransitionTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = TransitionTest;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		A381376111FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "Paginate/Paginate-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Paginate;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		A381376211FF2E4A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/ThirdParty/libwapcaplet/include\"",
+					"\"$(SRCROOT)/ThirdParty/libparserutils/include\"",
+					"\"$(SRCROOT)/ThirdParty/libcss/include\"",
+					"\"$(SRCROOT)/ThirdParty/hubbub/include\"",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = CSSTest;
+				SDKROOT = macosx10.6;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -4466,6 +4710,7 @@
 			buildConfigurations = (
 				1DEB921F08733DC00010E9CD /* Debug */,
 				1DEB922008733DC00010E9CD /* Release */,
+				A381375711FF2E4A0041F02A /* Distribution */,
 				7DA921F510C1861700F18134 /* Beta */,
 				7DA921FB10C1861800F18134 /* AppStore */,
 			);
@@ -4477,6 +4722,7 @@
 			buildConfigurations = (
 				1DEB922308733DC00010E9CD /* Debug */,
 				1DEB922408733DC00010E9CD /* Release */,
+				A381375611FF2E4A0041F02A /* Distribution */,
 				7DA921F410C1861700F18134 /* Beta */,
 				7DA921FA10C1861800F18134 /* AppStore */,
 			);
@@ -4488,6 +4734,7 @@
 			buildConfigurations = (
 				7D034F8C10C2CCBF0085778B /* Debug */,
 				7D034F8D10C2CCBF0085778B /* Release */,
+				A381376011FF2E4A0041F02A /* Distribution */,
 				7D034F8E10C2CCBF0085778B /* Beta */,
 				7D034F8F10C2CCBF0085778B /* AppStore */,
 			);
@@ -4499,6 +4746,7 @@
 			buildConfigurations = (
 				7D1900991149490F00375803 /* Debug */,
 				7D19009A1149490F00375803 /* Release */,
+				A381375D11FF2E4A0041F02A /* Distribution */,
 				7D19009B1149490F00375803 /* Beta */,
 				7D19009C1149490F00375803 /* AppStore */,
 			);
@@ -4510,6 +4758,7 @@
 			buildConfigurations = (
 				7D1900CE11494A0C00375803 /* Debug */,
 				7D1900CF11494A0C00375803 /* Release */,
+				A381375E11FF2E4A0041F02A /* Distribution */,
 				7D1900D011494A0C00375803 /* Beta */,
 				7D1900D111494A0C00375803 /* AppStore */,
 			);
@@ -4521,6 +4770,7 @@
 			buildConfigurations = (
 				7D19025311494BE900375803 /* Debug */,
 				7D19025411494BE900375803 /* Release */,
+				A381375F11FF2E4A0041F02A /* Distribution */,
 				7D19025511494BE900375803 /* Beta */,
 				7D19025611494BE900375803 /* AppStore */,
 			);
@@ -4532,6 +4782,7 @@
 			buildConfigurations = (
 				7D2341991149615000C318E7 /* Debug */,
 				7D23419A1149615000C318E7 /* Release */,
+				A381375A11FF2E4A0041F02A /* Distribution */,
 				7D23419B1149615000C318E7 /* Beta */,
 				7D23419C1149615000C318E7 /* AppStore */,
 			);
@@ -4543,6 +4794,7 @@
 			buildConfigurations = (
 				7D3F4C2A11EF29600065A5F7 /* Debug */,
 				7D3F4C2B11EF29600065A5F7 /* Release */,
+				A381375811FF2E4A0041F02A /* Distribution */,
 				7D3F4C2C11EF29600065A5F7 /* Beta */,
 				7D3F4C2D11EF29600065A5F7 /* AppStore */,
 			);
@@ -4554,6 +4806,7 @@
 			buildConfigurations = (
 				7D412B0A114965C800C003BB /* Debug */,
 				7D412B0B114965C800C003BB /* Release */,
+				A381376211FF2E4A0041F02A /* Distribution */,
 				7D412B0C114965C800C003BB /* Beta */,
 				7D412B0D114965C800C003BB /* AppStore */,
 			);
@@ -4565,6 +4818,7 @@
 			buildConfigurations = (
 				7D5170CC1028AD1B005F3C46 /* Debug */,
 				7D5170CD1028AD1B005F3C46 /* Release */,
+				A381375C11FF2E4A0041F02A /* Distribution */,
 				7DA921F610C1861700F18134 /* Beta */,
 				7DA921FC10C1861800F18134 /* AppStore */,
 			);
@@ -4576,6 +4830,7 @@
 			buildConfigurations = (
 				7D5171C81028B6AE005F3C46 /* Debug */,
 				7D5171C91028B6AE005F3C46 /* Release */,
+				A381375B11FF2E4A0041F02A /* Distribution */,
 				7DA921F810C1861700F18134 /* Beta */,
 				7DA921FE10C1861800F18134 /* AppStore */,
 			);
@@ -4587,6 +4842,7 @@
 			buildConfigurations = (
 				7D9A96D510D7E41100C2E00A /* Debug */,
 				7D9A96D610D7E41100C2E00A /* Release */,
+				A381376111FF2E4A0041F02A /* Distribution */,
 				7D9A96D710D7E41100C2E00A /* Beta */,
 				7D9A96D810D7E41100C2E00A /* AppStore */,
 			);
@@ -4598,6 +4854,7 @@
 			buildConfigurations = (
 				7D9AA9CA114A8F6B0055C381 /* Debug */,
 				7D9AA9CB114A8F6B0055C381 /* Release */,
+				A381375911FF2E4A0041F02A /* Distribution */,
 				7D9AA9CC114A8F6B0055C381 /* Beta */,
 				7D9AA9CD114A8F6B0055C381 /* AppStore */,
 			);
