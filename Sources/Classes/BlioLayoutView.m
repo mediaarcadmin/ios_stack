@@ -153,8 +153,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.selector removeObserver:self forKeyPath:@"trackingStage"];
     [self removeObserver:self forKeyPath:@"currentPageLayer"];
     
-    self.delegate = nil;
-    
     self.accessibilityElements = nil;
     self.previousAccessibilityElements = nil;
     self.textFlow = nil;
@@ -180,6 +178,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     self.containerView = nil;
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
+    self.delegate = nil;
     
     if(textFlow) {
         [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:textFlow.bookID];
@@ -192,6 +191,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     self.bookID = nil;
+    [layoutCacheLock release];
     
     [super dealloc];
 }
@@ -230,6 +230,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if ((self = [super initWithFrame:rotatedFrame])) {
         // Initialization code
         isCancelled = NO;
+        layoutCacheLock = [[NSLock alloc] init];
         self.bookID = aBookID;
         
         // Prefer the checkout over calling [aBook textFlow] because we wat to retain the result
@@ -262,38 +263,38 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         pageCount = [self.dataSource pageCount];
         
         // Populate the cache of page sizes and viewTransforms
-        NSMutableDictionary *aPageCropsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
-        NSMutableDictionary *aViewTransformsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
-        
-        CGFloat inset = -kBlioLayoutShadow;
-        CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-        
-        CGFloat dpiRatio = [self.dataSource dpiRatio];
-        CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
-        
-        [self.dataSource openDocumentIfRequired];
-        //NSLog(@"Document opened");
-        
-        for (int i = 1; i <= pageCount; i++) {
-            CGRect cropRect = [self.dataSource cropRectForPage:i];
-            CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
-            CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
-            [aPageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:i]];
-            
-            CGRect mediaRect = [self.dataSource mediaRectForPage:i];
-            CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
-            CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
-            CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
-            [aViewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:i]];
-        }
-        //NSLog(@"Rects calculated");
-        
-        [self.dataSource closeDocumentIfRequired];
-        
-        self.pageCropsCache = [NSDictionary dictionaryWithDictionary:aPageCropsCache];
-        self.viewTransformsCache = [NSDictionary dictionaryWithDictionary:aViewTransformsCache];
-        [aPageCropsCache release];
-        [aViewTransformsCache release];
+//        NSMutableDictionary *aPageCropsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
+//        NSMutableDictionary *aViewTransformsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
+//        
+//        CGFloat inset = -kBlioLayoutShadow;
+//        CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+//        
+//        CGFloat dpiRatio = [self.dataSource dpiRatio];
+//        CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
+//        
+//        [self.dataSource openDocumentIfRequired];
+//        //NSLog(@"Document opened");
+//        
+//        for (int i = 1; i <= pageCount; i++) {
+//            CGRect cropRect = [self.dataSource cropRectForPage:i];
+//            CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
+//            CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
+//            [aPageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:i]];
+//            
+//            CGRect mediaRect = [self.dataSource mediaRectForPage:i];
+//            CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
+//            CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
+//            CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
+//            [aViewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:i]];
+//        }
+//        //NSLog(@"Rects calculated");
+//        
+//        [self.dataSource closeDocumentIfRequired];
+//        
+//        self.pageCropsCache = [NSDictionary dictionaryWithDictionary:aPageCropsCache];
+//        self.viewTransformsCache = [NSDictionary dictionaryWithDictionary:aViewTransformsCache];
+//        [aPageCropsCache release];
+//        [aViewTransformsCache release];
         
         BlioLayoutScrollView *aScrollView = [[BlioLayoutScrollView alloc] initWithFrame:self.bounds];
         aScrollView.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
@@ -672,37 +673,69 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         return NO;
 }
 
-- (CGRect)cropForPage:(NSInteger)page {
-    if (nil == pageCropsCache) return CGRectZero;
-    NSValue *pageCropValue;
+- (void)createLayoutCacheForPage:(NSInteger)page {
+    // N.B. please ensure this is only called with a [layoutCacheLock lock] acquired
     
-    @synchronized (pageCropsCache) {
-        pageCropValue = [pageCropsCache objectForKey:[NSNumber numberWithInt:page]];
+    if (nil == self.pageCropsCache) {
+        self.pageCropsCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
+    }
+    if (nil == self.viewTransformsCache) {
+        self.viewTransformsCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
     }
     
-    if (nil == pageCropValue) return CGRectZero;
+    CGFloat inset = -kBlioLayoutShadow;
+    CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
+    CGFloat dpiRatio = [self.dataSource dpiRatio];
+    CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
+    
+    CGRect cropRect = [self.dataSource cropRectForPage:page];
+    CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
+    CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
+    [pageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:page]];
+    
+    CGRect mediaRect = [self.dataSource mediaRectForPage:page];
+    CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
+    CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
+    CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
+    [viewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:page]];
+}
+
+- (CGRect)cropForPage:(NSInteger)page {
+    
+    [layoutCacheLock lock];
+    
+    NSValue *pageCropValue = [self.pageCropsCache objectForKey:[NSNumber numberWithInt:page]];
+    
+    if (nil == pageCropValue) {
+        [self createLayoutCacheForPage:page];
+        pageCropValue = [self.pageCropsCache objectForKey:[NSNumber numberWithInt:page]];
+    }
+    
+    [layoutCacheLock unlock];
     
     return [pageCropValue CGRectValue];
 }
 
-- (CGAffineTransform)blockTransformForPage:(NSInteger)aPageNumber {
-    if (cachedViewTransformPage != aPageNumber) {
+- (CGAffineTransform)blockTransformForPage:(NSInteger)page {
+    if (cachedViewTransformPage != page) {
         
-        if (nil == viewTransformsCache) return CGAffineTransformIdentity;
-        NSValue *viewTransformValue;
+        [layoutCacheLock lock];
         
-        @synchronized (viewTransformsCache) {
-            viewTransformValue = [viewTransformsCache objectForKey:[NSNumber numberWithInt:aPageNumber]];
+        NSValue *blockTransformValue = [self.viewTransformsCache objectForKey:[NSNumber numberWithInt:page]];
+
+        if (nil == blockTransformValue) {
+            [self createLayoutCacheForPage:page];
+            blockTransformValue = [self.viewTransformsCache objectForKey:[NSNumber numberWithInt:page]];
         }
         
-        if (nil == viewTransformValue) return CGAffineTransformIdentity;
+        [layoutCacheLock unlock];
         
-        CGAffineTransform viewTransform = [viewTransformValue CGAffineTransformValue];
+        CGAffineTransform blockTransform = [blockTransformValue CGAffineTransformValue];
         
         CGRect cropRect;
-        CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];  
-        cachedViewTransform = CGAffineTransformConcat(viewTransform, boundsTransform);
-        cachedViewTransformPage = aPageNumber;
+        CGAffineTransform boundsTransform = [self boundsTransformForPage:page cropRect:&cropRect];  
+        cachedViewTransform = CGAffineTransformConcat(blockTransform, boundsTransform);
+        cachedViewTransformPage = page;
     }
     
     return cachedViewTransform;
@@ -2226,6 +2259,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (CGRect)cropRectForPage:(NSInteger)page {
+    if (nil == pdf) {
+        [self openDocumentIfRequired];
+    }
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
     return CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
 }

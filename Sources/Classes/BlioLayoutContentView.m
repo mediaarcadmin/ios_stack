@@ -330,7 +330,7 @@
 }
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
-    //NSLog(@"set page number and cancel force");
+    NSLog(@"set page number and cancel force");
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
     [self.cacheQueue cancelAllOperations];
     
@@ -449,7 +449,7 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    //NSLog(@"Draw tiled layer for page %d with transform %@ and clipbounds %@ and layerbounds %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)), NSStringFromCGRect(self.frame));
+    NSLog(@"Draw tiled layer for page %d with transform %@ and clipbounds %@ and layerbounds %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)), NSStringFromCGRect(self.frame));
     if (!self.cached) {
         self.cached = YES;
         [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
@@ -519,7 +519,7 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
-    //NSLog(@"Draw shadow for page %d", self.pageNumber);
+    NSLog(@"Draw shadow for page %d", self.pageNumber);
     [self.renderingDelegate drawShadowLayer:self inContext:ctx forPage:self.pageNumber];    
 }
 

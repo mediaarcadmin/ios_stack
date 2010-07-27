@@ -53,8 +53,8 @@ typedef enum BlioLayoutPageMode {
     BOOL shouldZoomOut;
     CALayer *sharpLayer;
     EucSelector *selector;
-    NSDictionary *pageCropsCache;
-    NSDictionary *viewTransformsCache;
+    NSMutableDictionary *pageCropsCache;
+    NSMutableDictionary *viewTransformsCache;
     UIImage *checkerBoard;
     UIImage *shadowBottom;
     UIImage *shadowTop;
@@ -73,6 +73,8 @@ typedef enum BlioLayoutPageMode {
     
     BlioXPSProvider *xpsProvider;
     id<BlioLayoutDataSource> dataSource;
+    
+    NSLock *layoutCacheLock;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -84,8 +86,8 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic) BOOL disableScrollUpdating;
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
-@property (nonatomic, retain) NSDictionary *pageCropsCache;
-@property (nonatomic, retain) NSDictionary *viewTransformsCache;
+@property (nonatomic, retain) NSMutableDictionary *pageCropsCache;
+@property (nonatomic, retain) NSMutableDictionary *viewTransformsCache;
 @property (nonatomic, retain) UIImage *checkerBoard;
 @property (nonatomic, retain) UIImage *shadowBottom;
 @property (nonatomic, retain) UIImage *shadowTop;

@@ -231,6 +231,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     
     CGPoint topLeftOfTileOffsetFromBottomLeft = CGPointMake(tileRect.origin.x, CGRectGetHeight(bounds)*ctm.d - CGRectGetMaxY(tileRect));
     XPS_ctm render_ctm = { widthScale, 0, 0, heightScale, -topLeftOfTileOffsetFromBottomLeft.x + horizontalPageOffset, -topLeftOfTileOffsetFromBottomLeft.y + verticalPageOffset };
+    NSLog(@"render_ctm = { %f, %f, %f, %f, %f, %f }", render_ctm.a, render_ctm.b, render_ctm.c, render_ctm.d, render_ctm.tx, render_ctm.ty);
     format.xResolution = 96;			
     format.yResolution = 96;	
     format.colorDepth = 8;
@@ -238,6 +239,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     format.pagesizescale = 1;	
     format.pagesizescalewidth = pagesizescalewidth * widthScale;		
     format.pagesizescaleheight = pagesizescaleheight * heightScale;
+    NSLog(@"pagesScaleWidth %f, pagesScaleHeight %f", format.pagesizescalewidth, format.pagesizescaleheight);
     format.ctm = &render_ctm;				
     format.formatType = OutputFormat_RAW;
     imageInfo = NULL;
@@ -411,7 +413,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 #pragma mark DRM Handler
 
 - (NSDictionary *)openDRMRenderingComponentAtPath:(NSString *)path {
-    //NSLog(@"Open %@", path);
+    NSLog(@"openDRMRenderingComponentAtPath: %@", path);
     
     NSData *componentData = [self dataForComponentAtPath:path];
     
