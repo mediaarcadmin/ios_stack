@@ -30,7 +30,7 @@ typedef enum EucSelectorTrackingStage {
     CALayer *_attachedLayer;
     CALayer *_snapshotLayer;
      
-    THPair *_temporaryHighlightedElement;
+    EucSelectorRange *_temporarilyHighlightedRange;
     NSMutableArray *_temporaryHighlightLayers;
 
     UITouch *_trackingTouch;
@@ -91,6 +91,7 @@ typedef enum EucSelectorTrackingStage {
 - (void)attachToLayer:(CALayer *)view;
 - (void)detatch;
 
+- (void)temporarilyHighlightSelectorRange:(EucSelectorRange *)range animated:(BOOL)animated;
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 - (void)removeTemporaryHighlight;
 
