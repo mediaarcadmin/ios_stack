@@ -266,9 +266,17 @@
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
-    [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+    [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
 }
 
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated
+{
+    EucHighlightRange *eucRange = [[EucHighlightRange alloc] init];
+    eucRange.startPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.startPoint];
+    eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
+    [_eucBookView highlightWordsInHighlightRange:eucRange animated:animated];
+    [eucRange release];
+}
 
 #pragma mark -
 #pragma mark EucBookView delegate methods
