@@ -41,7 +41,9 @@
                scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {
-        _children = [[NSMutableArray alloc] init];
+        NSMutableArray *forChildren = [[NSMutableArray alloc] init];
+        self.children = forChildren;
+        [forChildren release];
         _documentNode = [documentNode retain];
         _scaleFactor = scaleFactor;
     }
@@ -50,7 +52,6 @@
 
 - (void)dealloc
 {
-    [_children release];
     [_documentNode release];
     
     [super dealloc];
@@ -198,7 +199,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
 
 - (void)addChild:(EucCSSLayoutPositionedContainer *)child
 {
-    [_children addObject:child];
+    [self.children addObject:child];
     child.parent = self;
 
     if([child isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
