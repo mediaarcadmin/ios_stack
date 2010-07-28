@@ -31,7 +31,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @property (nonatomic, retain) CALayer *attachedLayer;
 @property (nonatomic, retain) CALayer *snapshotLayer;
 
-@property (nonatomic, retain) THPair *temporaryHighlightedElement;
+@property (nonatomic, retain) EucSelectorRange *temporarilyHighlightedRange;
 @property (nonatomic, retain) NSMutableArray *temporaryHighlightLayers;
 
 @property (nonatomic, assign) BOOL selectedRangeIsHighlight;
@@ -66,6 +66,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (NSArray *)_blockIdentifiers;
 - (NSArray *)_identifiersForElementsOfBlockWithIdentifier:(id)blockId;
 - (NSArray *)_highlightRanges;
+- (NSArray *)_highlightRectsForRange:(EucSelectorRange *)selectedRange;
 
 @end
 
@@ -83,7 +84,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 @synthesize selectedRange = _selectedRange;
 
-@synthesize temporaryHighlightedElement = _temporaryHighlightedElement;
+@synthesize temporarilyHighlightedRange = _temporarilyHighlightedRange;
 @synthesize temporaryHighlightLayers = _temporaryHighlightLayers;
 
 @synthesize selectedRangeIsHighlight = _selectedRangeIsHighlight;
@@ -199,13 +200,20 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)temporarilyHighlightElementWithIdentfier:(id)elementId inBlockWithIdentifier:(id)blockId animated:(BOOL)animated;
 {    
-    THPair *currentTemporaryHighlightedElement = self.temporaryHighlightedElement;
-    THPair *newTemporaryHighlightedElement = [[THPair alloc] initWithFirst:blockId second:elementId];
-    if(!currentTemporaryHighlightedElement || ![currentTemporaryHighlightedElement isEqual:newTemporaryHighlightedElement]) {
-        // Don't use the caches in this method, they're only valid during a selection!
-        NSArray *rects = [self.dataSource eucSelector:self
-                           rectsForElementWithIdentifier:elementId
-                                   ofBlockWithIdentifier:blockId];
+    EucSelectorRange *range = [[EucSelectorRange alloc] init];
+    range.startBlockId = blockId;
+    range.startElementId = blockId;
+    range.endBlockId = elementId;
+    range.endElementId = elementId;
+    [self temporarilyHighlightSelectorRange:range animated:animated];
+    [range release];
+}
+
+- (void)temporarilyHighlightSelectorRange:(EucSelectorRange *)newTemporarilyHighlightedRange animated:(BOOL)animated
+{
+    EucSelectorRange *currentTemporarilyHighlightedRange = self.temporarilyHighlightedRange;
+    if(!currentTemporarilyHighlightedRange || ![currentTemporarilyHighlightedRange isEqual:newTemporarilyHighlightedRange]) {
+        NSArray *rects = [self _highlightRectsForRange:newTemporarilyHighlightedRange];
         
         NSMutableArray *temporaryHighlightLayers = self.temporaryHighlightLayers;
         NSMutableArray *newTemporaryHighlightLayers = [[NSMutableArray alloc] initWithCapacity:2];
@@ -300,9 +308,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         }
         self.temporaryHighlightLayers = newTemporaryHighlightLayers;
         [newTemporaryHighlightLayers release];
-        self.temporaryHighlightedElement = newTemporaryHighlightedElement;
+        self.temporarilyHighlightedRange = newTemporarilyHighlightedRange;
+        
+        [self _clearSelectionCaches];
     }
-    [newTemporaryHighlightedElement release];
 }
 
 - (void)removeTemporaryHighlight
@@ -311,7 +320,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         [layer removeFromSuperlayer];
     }
     self.temporaryHighlightLayers = nil;
-    self.temporaryHighlightedElement = nil;
+    self.temporarilyHighlightedRange = nil;
 }
 
 
@@ -995,7 +1004,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     return ret;
 }
 
-- (NSArray *)highlightRectsForRange:(EucSelectorRange *)selectedRange 
+- (NSArray *)_highlightRectsForRange:(EucSelectorRange *)selectedRange 
 {           
     NSArray *ret = nil;
     NSArray *blockIds = [self _blockIdentifiers];
@@ -1071,7 +1080,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
         // Work out he rects to highlight
-        NSArray *highlightRects = [self highlightRectsForRange:selectedRange];
+        NSArray *highlightRects = [self _highlightRectsForRange:selectedRange];
         
         // Highlight them, reusing the current highlight layers if possible.
         CALayer *attachedLayer = self.attachedLayer;
