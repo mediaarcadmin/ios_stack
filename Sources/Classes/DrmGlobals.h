@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "drmmanager.h"
+#import "KeychainItemWrapper.h"
 
 @interface DrmGlobals : NSObject {
 	// The path to the device cert and other assets.
@@ -26,12 +27,18 @@
 	// App context.
 	DRM_APP_CONTEXT* drmAppContext;
 	
+	// Keychain items.
+	KeychainItemWrapper* devKeyEncryptItem;
+	KeychainItemWrapper* devKeySignItem;
+	
 }
 
 @property (nonatomic, assign) DRM_STRING drmPath;
 @property (nonatomic, assign) DRM_STRING dataStore;
 @property (nonatomic, assign) DRM_STRING readRight;
 @property (nonatomic, assign) DRM_APP_CONTEXT* drmAppContext;
+@property (nonatomic, retain) KeychainItemWrapper* devDecryptKeyItem;
+@property (nonatomic, retain) KeychainItemWrapper* devSignKeyItem;
 
 
 + (DrmGlobals*)getDrmGlobals;

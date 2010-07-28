@@ -2545,7 +2545,7 @@
 		4F1AD6540B7025B000DC0485 /* GDataGoogleBaseAttribute.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = GDataGoogleBaseAttribute.m; path = Clients/GoogleBase/GDataGoogleBaseAttribute.m; sourceTree = "<group>"; };
 		4F1AD7200B71484F00DC0485 /* GDataEntryGoogleBase.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = GDataEntryGoogleBase.h; path = Clients/GoogleBase/GDataEntryGoogleBase.h; sourceTree = "<group>"; };
 		4F1AD7220B71485800DC0485 /* GDataEntryGoogleBase.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = GDataEntryGoogleBase.m; path = Clients/GoogleBase/GDataEntryGoogleBase.m; sourceTree = "<group>"; };
-		4F1AD9020B71603F00DC0485 /* DevelopmentTestTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DevelopmentTestTool; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F1AD9020B71603F00DC0485 /* DevelopmentTestTool */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = DevelopmentTestTool; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F1AD90C0B71607400DC0485 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Tests/main.m; sourceTree = "<group>"; };
 		4F1AD9830B71659E00DC0485 /* GDataFeedGoogleBase.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = GDataFeedGoogleBase.m; path = Clients/GoogleBase/GDataFeedGoogleBase.m; sourceTree = "<group>"; };
 		4F1AD9870B7165A700DC0485 /* GDataFeedGoogleBase.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = GDataFeedGoogleBase.h; path = Clients/GoogleBase/GDataFeedGoogleBase.h; sourceTree = "<group>"; };
@@ -2660,7 +2660,7 @@
 		4F36EE8E0FFD7DAD00980D30 /* GDataFeedYouTubeCaptionTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GDataFeedYouTubeCaptionTrack.h; path = Clients/YouTube/GDataFeedYouTubeCaptionTrack.h; sourceTree = "<group>"; };
 		4F37E9F30B7972920019C173 /* GDataQueryGoogleBase.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = GDataQueryGoogleBase.h; path = Clients/GoogleBase/GDataQueryGoogleBase.h; sourceTree = "<group>"; };
 		4F37E9F40B7972920019C173 /* GDataQueryGoogleBase.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = GDataQueryGoogleBase.m; path = Clients/GoogleBase/GDataQueryGoogleBase.m; sourceTree = "<group>"; };
-		4F38F6A60B66E91D00B24B81 /* GData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F38F6A60B66E91D00B24B81 /* GData */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.framework; path = GData; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F38F8520B66F98500B24B81 /* GDataWhen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = GDataWhen.h; path = Elements/GDataWhen.h; sourceTree = "<group>"; };
 		4F3C881F0EC2469E009C18C4 /* GDataTargetNamespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDataTargetNamespace.h; sourceTree = "<group>"; };
 		4F45A7ED0D4E950100004F37 /* GDataEntryYouTubeVideoMessage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = GDataEntryYouTubeVideoMessage.m; path = Clients/YouTube/GDataEntryYouTubeVideoMessage.m; sourceTree = "<group>"; };
@@ -2844,7 +2844,7 @@
 		4F82A8F70FD0868400C477D4 /* FeedSpreadsheetRecordTest1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = FeedSpreadsheetRecordTest1.xml; path = Tests/FeedSpreadsheetRecordTest1.xml; sourceTree = "<group>"; };
 		4F82A8F80FD0869100C477D4 /* FeedSpreadsheetTableTest1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = FeedSpreadsheetTableTest1.xml; path = Tests/FeedSpreadsheetTableTest1.xml; sourceTree = "<group>"; };
 		4F848C6D0D887A2A007ECFCD /* GDataDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDataDefines.h; sourceTree = "<group>"; };
-		4F85E018103B83B700B4C418 /* GDataIPhoneUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GDataIPhoneUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F85E018103B83B700B4C418 /* GDataTouchUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GDataTouchUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F9044450F2694F7000097B1 /* GDataServiceACL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GDataServiceACL.h; path = ACL/GDataServiceACL.h; sourceTree = "<group>"; };
 		4F9044460F2694F7000097B1 /* GDataServiceACL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GDataServiceACL.m; path = ACL/GDataServiceACL.m; sourceTree = "<group>"; };
 		4F9044680F26973A000097B1 /* GDataACL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GDataACL.h; path = ACL/GDataACL.h; sourceTree = "<group>"; };
@@ -3148,11 +3148,11 @@
 		19C28FB8FE9D52D311CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4F38F6A60B66E91D00B24B81 /* GData.framework */,
+				4F38F6A60B66E91D00B24B81 /* GData */,
 				4F1AD9020B71603F00DC0485 /* DevelopmentTestTool */,
 				4F1C6E0F1027B3CE00B46459 /* libGDataTouchStaticLib.a */,
 				4F14A9DD0B1276B70072EBB8 /* GDataUnitTests.octest */,
-				4F85E018103B83B700B4C418 /* GDataIPhoneUnitTests.octest */,
+				4F85E018103B83B700B4C418 /* GDataTouchUnitTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4509,7 +4509,7 @@
 			);
 			name = GDataFramework;
 			productName = GDataFramework;
-			productReference = 4F38F6A60B66E91D00B24B81 /* GData.framework */;
+			productReference = 4F38F6A60B66E91D00B24B81 /* GData */;
 			productType = "com.apple.product-type.framework";
 		};
 		4F85DEE0103B83B700B4C418 /* GDataIPhoneUnitTests */ = {
@@ -4528,7 +4528,7 @@
 			);
 			name = GDataIPhoneUnitTests;
 			productName = GDataUnitTests;
-			productReference = 4F85E018103B83B700B4C418 /* GDataIPhoneUnitTests.octest */;
+			productReference = 4F85E018103B83B700B4C418 /* GDataTouchUnitTests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -6111,10 +6111,7 @@
 		1DEB913F08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = NO;
@@ -6130,6 +6127,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*][arch=x86_64]" = 10.5;
 				OTHER_CFLAGS = "-DDEBUG=1";
+				SDKROOT = iphoneos4.0;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Werror",
@@ -6143,10 +6141,7 @@
 		1DEB914008733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
@@ -6161,6 +6156,7 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*][arch=x86_64]" = 10.5;
+				SDKROOT = iphoneos4.0;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Werror",
@@ -6257,7 +6253,7 @@
 					"-DGDATA_IPHONE=1",
 				);
 				PRODUCT_NAME = GDataTouchStaticLib;
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Debug;
 		};
@@ -6274,7 +6270,7 @@
 					"-DGDATA_INCLUDE_BOOKS_SERVICE=1",
 				);
 				PRODUCT_NAME = GDataTouchStaticLib;
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Release;
 		};
@@ -6383,6 +6379,141 @@
 			};
 			name = Release;
 		};
+		A381363411FF2E1A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*][arch=x86_64]" = 10.5;
+				SDKROOT = iphoneos4.0;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Werror",
+					"-Wendif-labels",
+					"-Wnewline-eof",
+				);
+			};
+			name = Distribution;
+		};
+		A381363511FF2E1A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "Resources/GDataFramework-Info.plist";
+				INSTALL_PATH = "@loader_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = GData;
+				STRIP_STYLE = "non-global";
+			};
+			name = Distribution;
+		};
+		A381363611FF2E1A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				GCC_ENABLE_OBJC_GC = unsupported;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DGDATA_IPHONE=1",
+					"-DGDATA_REQUIRE_SERVICE_INCLUDES=1",
+					"-DGDATA_INCLUDE_BOOKS_SERVICE=1",
+				);
+				PRODUCT_NAME = GDataTouchStaticLib;
+				SDKROOT = iphoneos4.0;
+			};
+			name = Distribution;
+		};
+		A381363711FF2E1A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(value)",
+					"$(DEVELOPER_FRAMEWORKS_DIR_QUOTED)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "Resources/GDataUnitTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OTHER_LDFLAGS = (
+					"-lxml2",
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = GDataUnitTests;
+				SDKROOT = macosx10.5;
+				STRIP_STYLE = "non-global";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Distribution;
+		};
+		A381363811FF2E1A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(value)",
+					"$(DEVELOPER_FRAMEWORKS_DIR_QUOTED)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OTHER_CFLAGS = (
+					"-DGDATA_IPHONE=1",
+					"-DSTRIP_GDATA_FETCH_LOGGING=0",
+				);
+				OTHER_LDFLAGS = (
+					"-lxml2",
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = GDataTouchUnitTests;
+				SDKROOT = macosx10.5;
+				STRIP_STYLE = "non-global";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Distribution;
+		};
+		A381363911FF2E1A0041F02A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_OBJC_GC = unsupported;
+				INFOPLIST_FILE = "Resources/DevelopmentTestApplication-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OTHER_LDFLAGS = "-lxml2";
+				PRODUCT_NAME = DevelopmentTestTool;
+			};
+			name = Distribution;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -6391,6 +6522,7 @@
 			buildConfigurations = (
 				1DEB913F08733D840010E9CD /* Debug */,
 				1DEB914008733D840010E9CD /* Release */,
+				A381363411FF2E1A0041F02A /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -6400,6 +6532,7 @@
 			buildConfigurations = (
 				4F14A9E00B1276B70072EBB8 /* Debug */,
 				4F14A9E10B1276B70072EBB8 /* Release */,
+				A381363711FF2E1A0041F02A /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -6409,6 +6542,7 @@
 			buildConfigurations = (
 				4F1AD9090B71606100DC0485 /* Debug */,
 				4F1AD90A0B71606100DC0485 /* Release */,
+				A381363911FF2E1A0041F02A /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -6418,6 +6552,7 @@
 			buildConfigurations = (
 				4F1C6E101027B3CF00B46459 /* Debug */,
 				4F1C6E111027B3CF00B46459 /* Release */,
+				A381363611FF2E1A0041F02A /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -6427,6 +6562,7 @@
 			buildConfigurations = (
 				4F38F7120B66EF2C00B24B81 /* Debug */,
 				4F38F7130B66EF2C00B24B81 /* Release */,
+				A381363511FF2E1A0041F02A /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -6436,6 +6572,7 @@
 			buildConfigurations = (
 				4F85E016103B83B700B4C418 /* Debug */,
 				4F85E017103B83B700B4C418 /* Release */,
+				A381363811FF2E1A0041F02A /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
