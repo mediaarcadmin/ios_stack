@@ -202,8 +202,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {    
     EucSelectorRange *range = [[EucSelectorRange alloc] init];
     range.startBlockId = blockId;
-    range.startElementId = blockId;
-    range.endBlockId = elementId;
+    range.startElementId = elementId;
+    range.endBlockId = blockId;
     range.endElementId = elementId;
     [self temporarilyHighlightSelectorRange:range animated:animated];
     [range release];
