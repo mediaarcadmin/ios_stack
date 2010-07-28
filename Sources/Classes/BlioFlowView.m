@@ -68,7 +68,6 @@
                 
                 [self addSubview:_eucBookView];
             }
-            [eucBook release];
         }
         
         if(!_eucBookView) {
@@ -85,15 +84,15 @@
     [_eucBookView removeObserver:self forKeyPath:@"pageCount"];
     [_eucBookView removeObserver:self forKeyPath:@"pageNumber"];
     [_eucBookView release];
-    
+     
     BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+
+    [_paragraphSource release];
+    [bookManager checkInParagraphSourceForBookWithID:self.bookID];    
     [bookManager checkInEucBookForBookWithID:self.bookID];  
     
-    [_paragraphSource release];
-    [bookManager checkInParagraphSourceForBookWithID:self.bookID];
-    
     [_bookID release];
-     
+    
     [super dealloc];
 }
 
