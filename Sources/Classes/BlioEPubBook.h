@@ -15,4 +15,6 @@
 
 @property (nonatomic, retain) NSManagedObjectID *blioBookID;
 
+- (id)initWithBookID:(NSManagedObjectID *)aBookID;
+
 @end

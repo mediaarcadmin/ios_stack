@@ -29,6 +29,8 @@
 
 @implementation BlioFlowView
 
+@synthesize bookID = _bookID;
+
 @synthesize paragraphSource = _paragraphSource;
 @synthesize delegate = _delegate;
 
@@ -40,23 +42,15 @@
            animated:(BOOL)animated 
 {
     if((self = [super initWithFrame:frame])) {
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
-        EucBUpeBook *eucBook = nil;
-        
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;        
         self.opaque = YES;
+        self.bookID = bookID;
         
-        BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:bookID];
-        if([aBook hasTextFlow]) {
-            eucBook = [[BlioFlowEucBook alloc] initWithBookID:bookID];
-            eucBook.persistsPositionAutomatically = NO;
-            eucBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
-        } else {
-            eucBook = [aBook.ePubBook retain];
-        }
+        BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+        EucBUpeBook *eucBook = [bookManager checkOutEucBookForBookWithID:bookID];
         
         if(eucBook) {
-            self.paragraphSource = aBook.paragraphSource;
+            self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
 
             if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:eucBook])) {
                 _eucBookView.delegate = self;
@@ -66,7 +60,8 @@
                 if(animated) {
                     _eucBookView.appearAtCoverThenOpen = YES;
                 }
-                [self goToBookmarkPoint:aBook.implicitBookmarkPoint animated:NO];
+                
+                [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO];
                 
                 [_eucBookView addObserver:self forKeyPath:@"pageCount" options:NSKeyValueObservingOptionInitial context:NULL];
                 [_eucBookView addObserver:self forKeyPath:@"pageNumber" options:NSKeyValueObservingOptionInitial context:NULL];
@@ -90,7 +85,15 @@
     [_eucBookView removeObserver:self forKeyPath:@"pageCount"];
     [_eucBookView removeObserver:self forKeyPath:@"pageNumber"];
     [_eucBookView release];
+    
+    BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+    [bookManager checkInEucBookForBookWithID:self.bookID];  
+    
     [_paragraphSource release];
+    [bookManager checkInParagraphSourceForBookWithID:self.bookID];
+    
+    [_bookID release];
+     
     [super dealloc];
 }
 

@@ -13,6 +13,8 @@
 #import "BlioSelectableBookView.h"
 
 @interface BlioFlowView : BlioSelectableBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
+    NSManagedObjectID *_bookID;
+    
     EucBookView *_eucBookView;
     id<BlioParagraphSource> _paragraphSource;
     BOOL _pageViewIsTurning;
@@ -24,5 +26,6 @@
 }
 
 @property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
+@property (nonatomic, retain) NSManagedObjectID *bookID;
 
 @end

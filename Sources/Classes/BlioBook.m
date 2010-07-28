@@ -8,9 +8,6 @@
 
 #import "BlioBook.h"
 #import "BlioBookManager.h"
-#import "BlioTextFlowParagraphSource.h"
-#import "BlioEPubParagraphSource.h"
-#import "BlioEPubBook.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <pthread.h>
@@ -101,13 +98,6 @@
     return textFlow;
 }
 
-- (BlioEPubBook *)ePubBook {
-    if(!ePubBook) {
-        ePubBook = [[[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:self.objectID] retain];
-    }
-    return ePubBook;
-}
-
 - (BlioXPSProvider *)xpsProvider {
     if(!xpsProvider) {
         xpsProvider = [[[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:self.objectID] retain];
@@ -129,11 +119,6 @@
         [textFlow release];
         textFlow = nil;
         [manager checkInTextFlowForBookWithID:self.objectID];
-    }
-    if(ePubBook) {
-        [ePubBook release];
-        ePubBook = nil;
-        [manager checkInEPubBookForBookWithID:self.objectID];
     }
     if(paragraphSource) {
         [paragraphSource release];

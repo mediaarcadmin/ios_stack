@@ -12,7 +12,7 @@
 #import "BlioParagraphSource.h"
 #import "BlioBookmark.h"
 
-@class BlioEPubBook, BlioXPSProvider;
+@class BlioXPSProvider;
 
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
@@ -42,11 +42,10 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end
 
-@class BlioTextFlow, BlioEPubBook, BlioParagraphSource;
+@class BlioTextFlow, BlioParagraphSource;
 
 @interface BlioBook : NSManagedObject <BlioBookText> {
     BlioTextFlow *textFlow;
-    BlioEPubBook *ePubBook;
     BlioXPSProvider *xpsProvider;
     id<BlioParagraphSource> paragraphSource;
 }
@@ -76,7 +75,6 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 // These convenience acessors are not guranteed to exists after a memory warning
 // If you need to retain the result in your object use the checkout methods in BlioBookManager
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
-@property (nonatomic, retain, readonly) BlioEPubBook *ePubBook;
 @property (nonatomic, retain, readonly) BlioXPSProvider *xpsProvider;
 @property (nonatomic, retain, readonly) id<BlioParagraphSource> paragraphSource;
 
@@ -97,7 +95,7 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, assign, readonly) BOOL hasTextFlow;
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
-// (textflow, ePub book etc.)
+// (textflow etc.)
 - (void)flushCaches;
 
 - (NSArray *)sortedBookmarks;

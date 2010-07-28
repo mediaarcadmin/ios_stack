@@ -86,7 +86,6 @@
     
     
     EucBUpeBook *eucBook = nil;
-    BOOL checkInEPubBook = NO;
     
     // Create a EucBook for the paginator.
     {
@@ -96,13 +95,7 @@
         
         NSLog(@"Paginating book %@", book.title);
         
-        if([book hasTextFlow]) {
-            eucBook = [[BlioFlowEucBook alloc] initWithBookID:self.bookID];
-        } else if([book hasEPub]) {
-            eucBook = [[[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:self.bookID] retain];
-            checkInEPubBook = YES;
-        }
-        eucBook.cacheDirectoryPath = paginationPath;
+        eucBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID] retain];
         
         [pool drain];
     }
@@ -150,10 +143,7 @@
     }
     
     [eucBook release];
-
-    if(checkInEPubBook) {
-        [[BlioBookManager sharedBookManager] checkInEPubBookForBookWithID:self.bookID];
-    }    
+    [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
     
     [pool drain];
 }
