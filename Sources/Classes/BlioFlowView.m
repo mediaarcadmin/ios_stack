@@ -176,18 +176,14 @@
             NSIndexPath *paragraphID = nil;
             uint32_t wordOffset = 0;
             
-            if(bookmarkPoint.layoutPage == 1 && bookmarkPoint.blockOffset == 0 && bookmarkPoint.wordOffset == 0 && bookmarkPoint.elementOffset == 0) {
-                // This is the start of the book.  Leave the eucIndexPoint empty
-                // so that we refer to the the cover.
-            } else {
-                [self.paragraphSource bookmarkPoint:bookmarkPoint
-                                      toParagraphID:&paragraphID 
-                                         wordOffset:&wordOffset];
-                eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
-                eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
-                eucIndexPoint.word = wordOffset;
-                eucIndexPoint.element = bookmarkPoint.elementOffset;
-            }
+            [self.paragraphSource bookmarkPoint:bookmarkPoint
+                                  toParagraphID:&paragraphID 
+                                     wordOffset:&wordOffset];
+            
+            eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
+            eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
+            eucIndexPoint.word = wordOffset;
+            eucIndexPoint.element = bookmarkPoint.elementOffset;
         }    
         
         // EucIndexPoint words start with word 0 == before the first word,
@@ -206,7 +202,18 @@
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
 {
-    [_eucBookView goToIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:animated];
+    EucBookPageIndexPoint *eucIndexPoint;
+    if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
+       bookmarkPoint.layoutPage == 1 && bookmarkPoint.blockOffset == 0 && 
+       bookmarkPoint.wordOffset == 0 && bookmarkPoint.elementOffset == 0) {
+        // This is the start of the book.  Leave the eucIndexPoint empty
+        // so that we refer to the the cover.
+        eucIndexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
+    } else {
+        eucIndexPoint = [self bookPageIndexPointFromBookmarkPoint:bookmarkPoint];
+    }
+    
+    [_eucBookView goToIndexPoint:eucIndexPoint animated:animated];
 }
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
