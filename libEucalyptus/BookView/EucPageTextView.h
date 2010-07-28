@@ -17,7 +17,6 @@
 @property (nonatomic, assign) id<EucPageTextViewDelegate> delegate;
 @property (nonatomic, assign) CGFloat pointSize;
 @property (nonatomic, assign) BOOL allowScaledImageDistortion;
-@property (nonatomic, assign) BOOL backgroundIsDark;
 
 - (id)initWithFrame:(CGRect)frame pointSize:(CGFloat)pointSize;
 

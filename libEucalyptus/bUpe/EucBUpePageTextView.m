@@ -34,7 +34,6 @@
 @synthesize delegate = _delegate;
 @synthesize pointSize = _pointSize;
 @synthesize allowScaledImageDistortion = _allowScaledImageDistortion;
-@synthesize backgroundIsDark = _backgroundIsDark;
 
 @synthesize positionedBlock = _positionedBlock;
 

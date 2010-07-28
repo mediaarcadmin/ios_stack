@@ -171,20 +171,14 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     
     CGContextSaveGState(currentContext);
     
-    static const CGFloat white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
     static const CGFloat black[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    if(_bookTextView.backgroundIsDark) {
-        CGContextSetFillColor(currentContext, white);        
-        CGContextSetBlendMode(currentContext, kCGBlendModeDifference);
-    } else {
-        CGContextSetFillColor(currentContext, black);        
-        CGContextSetBlendMode(currentContext, kCGBlendModeMultiply);
-    }
+
+    CGContextSetFillColor(currentContext, black);        
+    CGContextSetBlendMode(currentContext, kCGBlendModeMultiply);
     
     if(!_fullBleed && _titleLinePosition != EucPageViewTitleLinePositionNone) {
         THStringRenderer *titleRenderer = _titleRenderer;
         THStringRenderer *pageNumberRenderer = _pageNumberRenderer;
-        
 
         NSString *pageNumberString = _pageNumber ? _pageNumber : @"";
         NSString *titleString = self.title;

@@ -344,6 +344,9 @@
                 if(newPageNumber != self.pageNumber) {
                     [self _removeTemporaryHighlights];
                     [self _goToPageNumber:newPageNumber animated:animated];
+                    if(!animated) {
+                        [self _displayTemporaryHighlightsAnimated:animated];
+                    }
                 } else {
                     [self _displayTemporaryHighlightsAnimated:animated];
                 }
@@ -743,7 +746,7 @@ typedef enum {
 
 - (THPair *)_pageViewAndIndexPointRangeForBookPageNumber:(NSInteger)pageNumber
 {          
-    THPair *ret = [_pageLayoutController viewAndIndexPointRangeForPageNumber:pageNumber withPageTexture:self.pageTexture isDark:self.pageTextureIsDark];
+    THPair *ret = [_pageLayoutController viewAndIndexPointRangeForPageNumber:pageNumber];
     EucPageView *pageView = (EucPageView *)ret.first;
     pageView.delegate = self;
     [pageView.layer setValue:ret.second forKey:@"EucBookViewIndexPointRange"];

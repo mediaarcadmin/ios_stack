@@ -213,6 +213,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     EucSelectorRange *currentTemporarilyHighlightedRange = self.temporarilyHighlightedRange;
     if(!currentTemporarilyHighlightedRange || ![currentTemporarilyHighlightedRange isEqual:newTemporarilyHighlightedRange]) {
+        if(!animated) {
+            [CATransaction begin];
+            [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+        }
+        
         NSArray *rects = [self _highlightRectsForRange:newTemporarilyHighlightedRange];
         
         NSMutableArray *temporaryHighlightLayers = self.temporaryHighlightLayers;
@@ -258,20 +263,22 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             
             CGRect newBounds = CGRectMake(0, 0, rect.size.width, rect.size.height);
             
-            CABasicAnimation *move = [CABasicAnimation animation];
-            move.keyPath = @"position";
-            move.fromValue = [NSValue valueWithCGPoint:layer.position];
-            move.toValue = [NSValue valueWithCGPoint:newCenter];
-            CABasicAnimation *shape = [CABasicAnimation animation];
-            shape.keyPath = @"bounds";
-            shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
-            shape.toValue = [NSValue valueWithCGRect:newBounds];
-            
-            CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
-            animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
-            animationGroup.duration = 0.2f;
-            
-            [layer addAnimation:animationGroup forKey:nil];
+            if(animated) {
+                CABasicAnimation *move = [CABasicAnimation animation];
+                move.keyPath = @"position";
+                move.fromValue = [NSValue valueWithCGPoint:layer.position];
+                move.toValue = [NSValue valueWithCGPoint:newCenter];
+                CABasicAnimation *shape = [CABasicAnimation animation];
+                shape.keyPath = @"bounds";
+                shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
+                shape.toValue = [NSValue valueWithCGRect:newBounds];
+                
+                CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+                animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
+                animationGroup.duration = 0.2f;
+                
+                [layer addAnimation:animationGroup forKey:nil];
+            }
             
             layer.position = newCenter;
             layer.bounds = newBounds;
@@ -285,23 +292,25 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                                             frame.origin.y + frame.size.height / 2.0f);
             CGRect newBounds = CGRectMake(0, 0, 1, frame.size.height);
             
-            CABasicAnimation *move = [CABasicAnimation animation];
-            move.keyPath = @"position";
-            move.fromValue = [NSValue valueWithCGPoint:layer.position];
-            move.toValue = [NSValue valueWithCGPoint:newCenter];
-            CABasicAnimation *shape = [CABasicAnimation animation];
-            shape.keyPath = @"bounds";
-            shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
-            shape.toValue = [NSValue valueWithCGRect:newBounds];
-            
-            CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
-            animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
-            animationGroup.duration = 0.2f;
-            animationGroup.delegate = self;
-            
-            [animationGroup setValue:@"EucSelectorEndOfLineHighlight" forKey:@"THName"];
-            [animationGroup setValue:layer forKey:@"THLayer"];
-            [layer addAnimation:animationGroup forKey:@"EucSelectorEndOfLineHighlight"]; 
+            if(animated) {
+                CABasicAnimation *move = [CABasicAnimation animation];
+                move.keyPath = @"position";
+                move.fromValue = [NSValue valueWithCGPoint:layer.position];
+                move.toValue = [NSValue valueWithCGPoint:newCenter];
+                CABasicAnimation *shape = [CABasicAnimation animation];
+                shape.keyPath = @"bounds";
+                shape.fromValue = [NSValue valueWithCGRect:layer.bounds];
+                shape.toValue = [NSValue valueWithCGRect:newBounds];
+                
+                CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+                animationGroup.animations = [NSArray arrayWithObjects:move, shape, nil];
+                animationGroup.duration = 0.2f;
+                animationGroup.delegate = self;
+                
+                [animationGroup setValue:@"EucSelectorEndOfLineHighlight" forKey:@"THName"];
+                [animationGroup setValue:layer forKey:@"THLayer"];
+                [layer addAnimation:animationGroup forKey:@"EucSelectorEndOfLineHighlight"]; 
+            }
             
             layer.position = newCenter;
             layer.bounds = newBounds;
@@ -309,6 +318,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         self.temporaryHighlightLayers = newTemporaryHighlightLayers;
         [newTemporaryHighlightLayers release];
         self.temporarilyHighlightedRange = newTemporarilyHighlightedRange;
+        
+        if(!animated) {
+            [CATransaction commit];
+        }        
         
         [self _clearSelectionCaches];
     }

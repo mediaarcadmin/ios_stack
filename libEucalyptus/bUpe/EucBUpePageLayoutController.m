@@ -180,8 +180,6 @@
 }
 
 - (THPair *)viewAndIndexPointRangeForPageNumber:(NSUInteger)pageNumber 
-                                withPageTexture:(UIImage *)pageTexture 
-                                         isDark:(BOOL)dark
 {
     THPair *ret = nil;
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
@@ -190,11 +188,9 @@
         
         CGRect frame = CGRectMake(0, 0, _pageSize.width, _pageSize.height);
         EucPageView *pageView = [[self class] blankPageViewWithFrame:frame
-                                                        forPointSize:_fontPointSize 
-                                                        withPageTexture:pageTexture];
+                                                        forPointSize:_fontPointSize];
         pageView.titleLinePosition = EucPageViewTitleLinePositionTop;
         pageView.titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
-        pageView.bookTextView.backgroundIsDark = dark;
         pageView.pageNumberString = [self displayPageNumberForPageNumber:pageNumber];
         pageView.title = _book.title;
         if([_book respondsToSelector:@selector(fullBleedPageForIndexPoint:)]) {
@@ -226,16 +222,7 @@
 
 + (EucPageView *)blankPageViewWithFrame:(CGRect)frame
                            forPointSize:(CGFloat)pointSize
-                        withPageTexture:(UIImage *)pageTexture
-{
-    if(!pageTexture) {
-        static UIImage *sPaperImage = nil;
-        if(!sPaperImage) {
-            sPaperImage = [[UIImage imageNamed:@"BookPaperWhite.png"] retain];
-        }
-        pageTexture = sPaperImage;
-    }
-    
+{    
     NSString *fontFamily = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
     return [[[EucPageView alloc] initWithFrame:frame
                                      pointSize:pointSize 
