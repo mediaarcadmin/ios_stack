@@ -1316,23 +1316,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
-    // TEMP CODE TODO: REMOVE
-    NSInteger pageIndex = bookmarkRange.startPoint.layoutPage - 1;
-    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
-    BlioTextFlowBlock *currentBlock = [pageBlocks objectAtIndex:bookmarkRange.startPoint.blockOffset];
-    
-    NSInteger targetPageNumber = pageIndex + 1;
-    if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
-        [self goToPageNumber:targetPageNumber animated:animated];
-    }
-    
-    NSUInteger wordOffset = bookmarkRange.startPoint.wordOffset;
-    BlioTextFlowPositionedWord *word = [[currentBlock words] objectAtIndex:wordOffset];
-    [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:currentBlock.blockID animated:animated];
-    
-    
-    // DONE
-#if false
     if (bookmarkRange) {
         if ((self.pageNumber != bookmarkRange.startPoint.layoutPage) && !self.disableScrollUpdating) {
             [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
@@ -1342,7 +1325,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     } else {
         [self.selector removeTemporaryHighlight];
     }
-#endif
 }
 
 #pragma mark -

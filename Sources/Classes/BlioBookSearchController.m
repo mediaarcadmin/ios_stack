@@ -152,19 +152,14 @@
                     endElementOffset = currentElementOffset - characterOffset;
                     break;
                 }
-            }
-            characterOffset += [word length] + 1;
-            beginningWordOffset++;
-            endWordOffset++;
                 
-            //if ((characterOffset + [word length]) > foundRange.location) {
-//                elementOffset = foundRange.location - characterOffset;
-//                prefix = [word substringWithRange:NSMakeRange(0, elementOffset)];
-//                break;
-//            } else {
-//                characterOffset += [word length] + 1;
-//                wordOffset++;
-//            }
+                characterOffset += [word length] + 1;
+                endWordOffset++;
+            } else {
+                characterOffset += [word length] + 1;
+                beginningWordOffset++;
+                endWordOffset++;
+            }
         }
         
         NSString *matchString = [currentParagraphString substringWithRange:foundRange];
