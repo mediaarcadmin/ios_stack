@@ -286,13 +286,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             [newTemporaryHighlightLayers addObject:layer];
             [layer release];
         }
+        
+        // Make any non-reused layers disappear.
         for(CALayer *layer in temporaryHighlightLayers) {
-            CGRect frame = layer.frame;
-            CGPoint newCenter = CGPointMake(frame.origin.x + frame.size.width - 1.0f, 
-                                            frame.origin.y + frame.size.height / 2.0f);
-            CGRect newBounds = CGRectMake(0, 0, 1, frame.size.height);
-            
             if(animated) {
+                CGRect frame = layer.frame;
+                CGPoint newCenter = CGPointMake(frame.origin.x + frame.size.width - 1.0f, 
+                                                frame.origin.y + frame.size.height / 2.0f);
+                CGRect newBounds = CGRectMake(0, 0, 1, frame.size.height);
+            
                 CABasicAnimation *move = [CABasicAnimation animation];
                 move.keyPath = @"position";
                 move.fromValue = [NSValue valueWithCGPoint:layer.position];
@@ -310,10 +312,14 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [animationGroup setValue:@"EucSelectorEndOfLineHighlight" forKey:@"THName"];
                 [animationGroup setValue:layer forKey:@"THLayer"];
                 [layer addAnimation:animationGroup forKey:@"EucSelectorEndOfLineHighlight"]; 
+                
+                layer.position = newCenter;
+                layer.bounds = newBounds;
+                
+                // Will remove layer in animation callback.
+            } else {
+                [layer removeFromSuperlayer];
             }
-            
-            layer.position = newCenter;
-            layer.bounds = newBounds;
         }
         self.temporaryHighlightLayers = newTemporaryHighlightLayers;
         [newTemporaryHighlightLayers release];

@@ -338,7 +338,11 @@
                 pageRange.endPoint = indexPointRange.second;
                 
                 NSInteger newPageNumber = self.pageNumber;
-                if(![pageRange intersects:highlightRange]) { 
+                if(![pageRange intersects:_temporaryHighlightRange] || 
+                   [pageRange.endPoint isEqual:_temporaryHighlightRange.startPoint]) { 
+                    // Or clause because highlight ranges are inclusive, but the
+                    // ranges stored in EucBookViewIndexPointRange are exclusive
+                    // of the end point...
                     newPageNumber = [_pageLayoutController pageNumberForIndexPoint:highlightRange.startPoint];
                 }
                 if(newPageNumber != self.pageNumber) {
@@ -1042,7 +1046,11 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         pageRange.startPoint = indexPointRange.first;
         pageRange.endPoint = indexPointRange.second;
         
-        if([pageRange intersects:_temporaryHighlightRange]) { 
+        if([pageRange intersects:_temporaryHighlightRange] && 
+           ![pageRange.endPoint isEqual:_temporaryHighlightRange.startPoint]) { 
+            // And clause because highlight ranges are inclusive, but the
+            // ranges stored in EucBookViewIndexPointRange are exclusive
+            // of the end point...
             [self _displayTemporaryHighlightsAnimated:YES];
         }
         [pageRange release];
