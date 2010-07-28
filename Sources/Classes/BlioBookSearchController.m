@@ -148,8 +148,8 @@
                     prefix = [word substringWithRange:NSMakeRange(0, beginningElementOffset)];
                 }
                 
-                if (endOfWord > currentElementOffset) {
-                    endElementOffset = currentElementOffset - characterOffset;
+                if (endOfWord >= currentElementOffset) {
+                    endElementOffset = currentElementOffset - characterOffset - 1;
                     break;
                 }
                 

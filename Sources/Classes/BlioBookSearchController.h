@@ -32,7 +32,7 @@
 	BOOL searching;
 }
 
-@property (nonatomic, assign) id<BlioParagraphSource> paragraphSource;
+@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 @property (nonatomic, assign) id<BlioBookSearchDelegate> delegate;
 @property (nonatomic, readonly, getter=isSearching) BOOL searching;
 @property (nonatomic, assign) NSUInteger maxPrefixAndMatchLength;

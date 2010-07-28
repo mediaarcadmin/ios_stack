@@ -539,7 +539,8 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     
     UILabel *suffix = (UILabel *)[cell.contentView viewWithTag:BLIOBOOKSEARCHCELLSUFFIXTAG];
     suffix.text = result.suffix;
-    suffix.frame = CGRectMake(CGRectGetMaxX(matchFrame), matchFrame.origin.y, CGRectGetWidth(cell.contentView.frame) - CGRectGetMaxX(matchFrame) - 10, prefixFrame.size.height);
+    [suffix sizeToFit];
+    suffix.frame = CGRectMake(CGRectGetMaxX(matchFrame), (CGRectGetHeight(cell.contentView.frame) - suffix.frame.size.height)/2.0f, CGRectGetWidth(cell.contentView.frame) - CGRectGetMaxX(matchFrame) - 10, suffix.frame.size.height);
     //suffix.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.3];
     
     return cell;
@@ -639,8 +640,8 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     [self.tableView reloadData];
     
     if (searchText) {
-    //BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-        [self.bookSearchController findString:searchText fromBookmarkPoint:nil];
+        BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
+        [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
     }
 
 }
