@@ -53,7 +53,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     [contentsLock unlock];
     [inflateLock unlock];
     
-    [self performSelectorOnMainThread:@selector(deleteTemporaryDirectoryAtPath:) withObject:self.tempDirectory waitUntilDone:YES];
+    [self deleteTemporaryDirectoryAtPath:self.tempDirectory];
     
     self.tempDirectory = nil;
     self.imageInfo = nil;
@@ -140,14 +140,18 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path {
     // Should have been deleted by XPS cleanup but remove if not
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSError *error;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+    NSFileManager *threadSafeManager = [[NSFileManager alloc] init];
+    if ([threadSafeManager fileExistsAtPath:path]) {
         NSLog(@"Removing temp XPS directory at path %@");
 
-        if (![[NSFileManager defaultManager] removeItemAtPath:path error:&error]) {
+        if (![threadSafeManager removeItemAtPath:path error:&error]) {
             NSLog(@"Error removing temp XPS directory at path %@ with error %@ : %@", path, error, [error userInfo]);
         }
     }
+    [threadSafeManager release];
+    [pool drain];
 }
 
 - (BlioBook *)book {
