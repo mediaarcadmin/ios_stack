@@ -167,7 +167,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [aPauseButton setAlpha:0];
                 [self.view addSubview:aPauseButton];
                 self.pauseButton = aPauseButton;
-                //if (0) {
+
                 if ([self.book audiobookFilename]) {
                     _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
                 } else {
@@ -177,7 +177,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         [_acapelaAudioManager setDelegate:self];
                     } 
                 }
-                //}
+                
             }
         } else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];

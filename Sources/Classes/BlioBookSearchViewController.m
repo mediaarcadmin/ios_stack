@@ -26,13 +26,13 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     NSString *prefix;
     NSString *match;
     NSString *suffix;
-    BlioBookmarkPoint *bookmark;
+    BlioBookmarkRange *bookmarkRange;
 }
 
 @property (nonatomic, retain) NSString *prefix;
 @property (nonatomic, retain) NSString *match;
 @property (nonatomic, retain) NSString *suffix;
-@property (nonatomic, retain) BlioBookmarkPoint *bookmark;
+@property (nonatomic, retain) BlioBookmarkRange *bookmarkRange;
 @end
 
 @interface BlioBookSearchViewController()
@@ -136,9 +136,10 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
         currentSearchResult = [self.searchResults count] - 1;
     }
     
-    BlioBookmarkPoint *searchBookmarkPoint = [[self.searchResults objectAtIndex:currentSearchResult] bookmark];
-    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] goToBookmarkPoint:searchBookmarkPoint animated:NO];
-    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] highlightWordAtBookmarkPoint:searchBookmarkPoint];
+    BlioBookmarkRange *searchBookmarkRange = [[self.searchResults objectAtIndex:currentSearchResult] bookmarkRange];
+    if ([self.bookView respondsToSelector:@selector(highlightWordsInBookmarkRange:animated:)]) {
+        [self.bookView highlightWordsInBookmarkRange:searchBookmarkRange animated:NO];
+    }
 }
 
 - (void)nextResult {
@@ -508,11 +509,11 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     UILabel *page = (UILabel *)[cell.contentView viewWithTag:BLIOBOOKSEARCHCELLPAGETAG];
     
     if (self.bookView) {
-        NSInteger pageNum = [self.bookView pageNumberForBookmarkPoint:result.bookmark];
+        NSInteger pageNum = [self.bookView pageNumberForBookmarkPoint:result.bookmarkRange.startPoint];
         NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
         page.text = [NSString stringWithFormat:@"p.%@", displayPage];
     } else {
-        page.text = [NSString stringWithFormat:@"p.%d", result.bookmark.layoutPage];
+        page.text = [NSString stringWithFormat:@"p.%d", result.bookmarkRange.startPoint.layoutPage];
     }
     [page sizeToFit];
     CGRect pageFrame = page.frame;
@@ -647,7 +648,7 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 #pragma mark -
 #pragma mark BlioBookSearchDelegate
 
-- (void)searchController:(BlioBookSearchController *)aSearchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint withPrefix:(NSString *)prefix withSuffix:(NSString *)suffix {
+- (void)searchController:(BlioBookSearchController *)aSearchController didFindString:(NSString *)searchString atBookmarkRange:(BlioBookmarkRange *)bookmarkRange withPrefix:(NSString *)prefix withSuffix:(NSString *)suffix {
     //NSLog(@"searchController didFindString '%@' at page %d paragraph %d word %d element %d", searchString, bookmarkPoint.layoutPage, bookmarkPoint.blockOffset, bookmarkPoint.wordOffset, bookmarkPoint.elementOffset);
     //NSString *prefixString = nil;
 //    NSString *resultString = searchString;
@@ -675,12 +676,14 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     result.prefix = prefix;
     result.match  = searchString;
     result.suffix = suffix;
-    result.bookmark = bookmarkPoint;
+    result.bookmarkRange = bookmarkRange;
     
-//    [self.searchResults addObject:[NSString stringWithFormat:@"p.%d %@", bookmarkPoint.layoutPage, resultString]];
     [self.searchResults addObject:result];
     [result release];
-    [self.tableView reloadData];
+
+    NSIndexPath *newRow = [NSIndexPath indexPathForRow:([self.searchResults count] - 1) inSection:0];
+    [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newRow] withRowAnimation:UITableViewRowAnimationBottom];
+
     [aSearchController findNextOccurrence];
 }
 
@@ -697,13 +700,13 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 
 @implementation BlioBookSearchResults
 
-@synthesize prefix, match, suffix, bookmark;
+@synthesize prefix, match, suffix, bookmarkRange;
 
 - (void)dealloc {
     self.prefix = nil;
     self.match = nil;
     self.suffix = nil;
-    self.bookmark = nil;
+    self.bookmarkRange = nil;
     [super dealloc];
 }
 

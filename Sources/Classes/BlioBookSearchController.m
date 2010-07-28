@@ -134,19 +134,37 @@
         self.currentElementOffset = foundRange.location + foundRange.length;
         
         NSUInteger characterOffset = 0;
-        NSUInteger wordOffset = 0;
-        NSUInteger elementOffset = NSNotFound;
+        NSUInteger beginningWordOffset = 0;
+        NSUInteger endWordOffset = 0;
+        NSUInteger beginningElementOffset = NSNotFound;
+        NSUInteger endElementOffset = NSNotFound;
         NSString *prefix = @"";
         
         for (NSString *word in self.currentParagraphWords) {
-            if ((characterOffset + [word length]) > foundRange.location) {
-                elementOffset = foundRange.location - characterOffset;
-                prefix = [word substringWithRange:NSMakeRange(0, elementOffset)];
-                break;
-            } else {
-                characterOffset += [word length] + 1;
-                wordOffset++;
+            NSUInteger endOfWord = characterOffset + [word length];
+            if (endOfWord > foundRange.location) {
+                if (beginningElementOffset == NSNotFound) {
+                    beginningElementOffset = foundRange.location - characterOffset;
+                    prefix = [word substringWithRange:NSMakeRange(0, beginningElementOffset)];
+                }
+                
+                if (endOfWord > currentElementOffset) {
+                    endElementOffset = currentElementOffset - characterOffset;
+                    break;
+                }
             }
+            characterOffset += [word length] + 1;
+            beginningWordOffset++;
+            endWordOffset++;
+                
+            //if ((characterOffset + [word length]) > foundRange.location) {
+//                elementOffset = foundRange.location - characterOffset;
+//                prefix = [word substringWithRange:NSMakeRange(0, elementOffset)];
+//                break;
+//            } else {
+//                characterOffset += [word length] + 1;
+//                wordOffset++;
+//            }
         }
         
         NSString *matchString = [currentParagraphString substringWithRange:foundRange];
@@ -156,7 +174,7 @@
         NSInteger prefixLength = self.maxPrefixAndMatchLength - foundRange.length;
         
         if (prefixLength > 0) {
-            NSArray *prefixWords = [self.currentParagraphWords subarrayWithRange:NSMakeRange(0, wordOffset)] ;
+            NSArray *prefixWords = [self.currentParagraphWords subarrayWithRange:NSMakeRange(0, beginningWordOffset)] ;
             NSEnumerator *reversedWords = [prefixWords reverseObjectEnumerator];
             
             for (NSString *prefixWord in reversedWords) {
@@ -167,16 +185,21 @@
             }
         }
         
-        BlioBookmarkPoint *foundBookmarkPoint = nil;
-        if (elementOffset != NSNotFound) {
-            foundBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:wordOffset];
-            foundBookmarkPoint.elementOffset = elementOffset;
+        BlioBookmarkRange *foundBookmarkRange = nil;
+        if ((beginningElementOffset != NSNotFound) && (endElementOffset != NSNotFound)) {
+            BlioBookmarkPoint *foundBookmarkBeginningPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:beginningWordOffset];
+            foundBookmarkBeginningPoint.elementOffset = beginningElementOffset;
+            BlioBookmarkPoint *foundBookmarkEndPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:endWordOffset];
+            foundBookmarkEndPoint.elementOffset = endElementOffset;
+            foundBookmarkRange = [[[BlioBookmarkRange alloc] init] autorelease];
+            foundBookmarkRange.startPoint = foundBookmarkBeginningPoint;
+            foundBookmarkRange.endPoint = foundBookmarkEndPoint;
         }
         
         [self searchStopped];
         
-        if ([(NSObject *)self.delegate respondsToSelector:@selector(searchController:didFindString:atBookmarkPoint:withPrefix:withSuffix:)])
-            [self.delegate searchController:self didFindString:matchString atBookmarkPoint:foundBookmarkPoint withPrefix:prefix withSuffix:suffix];
+        if ([(NSObject *)self.delegate respondsToSelector:@selector(searchController:didFindString:atBookmarkRange:withPrefix:withSuffix:)])
+            [self.delegate searchController:self didFindString:matchString atBookmarkRange:foundBookmarkRange withPrefix:prefix withSuffix:suffix];
         
     } else {
         self.currentParagraphID = [self.paragraphSource nextParagraphIdForParagraphWithID:self.currentParagraphID];

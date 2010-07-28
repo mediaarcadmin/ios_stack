@@ -1311,23 +1311,38 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark TTS
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    if(bookmarkPoint) {
-        NSInteger pageIndex = bookmarkPoint.layoutPage - 1;
-        NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
-        BlioTextFlowBlock *currentBlock = [pageBlocks objectAtIndex:bookmarkPoint.blockOffset];
+    BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
+    [self highlightWordsInBookmarkRange:range animated:YES];
+}
 
-        NSInteger targetPageNumber = pageIndex + 1;
-        if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
-            [self goToPageNumber:targetPageNumber animated:YES];
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
+    // TEMP CODE TODO: REMOVE
+    NSInteger pageIndex = bookmarkRange.startPoint.layoutPage - 1;
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+    BlioTextFlowBlock *currentBlock = [pageBlocks objectAtIndex:bookmarkRange.startPoint.blockOffset];
+    
+    NSInteger targetPageNumber = pageIndex + 1;
+    if ((self.pageNumber != targetPageNumber) && !self.disableScrollUpdating) {
+        [self goToPageNumber:targetPageNumber animated:animated];
+    }
+    
+    NSUInteger wordOffset = bookmarkRange.startPoint.wordOffset;
+    BlioTextFlowPositionedWord *word = [[currentBlock words] objectAtIndex:wordOffset];
+    [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:currentBlock.blockID animated:animated];
+    
+    
+    // DONE
+#if false
+    if (bookmarkRange) {
+        if ((self.pageNumber != bookmarkRange.startPoint.layoutPage) && !self.disableScrollUpdating) {
+            [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
         }
-        
-        NSUInteger wordOffset = bookmarkPoint.wordOffset;
-        BlioTextFlowPositionedWord *word = [[currentBlock words] objectAtIndex:wordOffset];
-        [self.selector temporarilyHighlightElementWithIdentfier:[word wordID] inBlockWithIdentifier:currentBlock.blockID animated:YES];
-        
+        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:bookmarkRange];
+        [self.selector temporarilyHighlightSelectorRange:range animated:animated];
     } else {
         [self.selector removeTemporaryHighlight];
     }
+#endif
 }
 
 #pragma mark -

@@ -49,7 +49,7 @@
 @protocol BlioBookSearchDelegate
 
 @optional
-- (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint withPrefix:(NSString *)prefix withSuffix:(NSString *)suffix;
+- (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkRange:(BlioBookmarkRange *)bookmarkRange withPrefix:(NSString *)prefix withSuffix:(NSString *)suffix;
 - (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)searchController;
 - (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)searchController;
 
