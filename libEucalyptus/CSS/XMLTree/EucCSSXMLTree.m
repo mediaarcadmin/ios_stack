@@ -17,6 +17,7 @@
 
 typedef struct EucCSSXMLTreeContext
 {
+    Class xmlTreeNodeClass;
     NSMutableArray *nodes;
     NSMutableDictionary *idToNode;
     EucCSSXMLTreeNode *currentNode;
@@ -28,7 +29,7 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
     NSMutableArray *nodes = context->nodes;
     EucCSSXMLTreeNode *currentNode = context->currentNode;
     
-    EucCSSXMLTreeNode *newNode = [[EucCSSXMLTreeNode alloc] initWithKey:nodes.count + 1
+    EucCSSXMLTreeNode *newNode = [[context->xmlTreeNodeClass alloc] initWithKey:nodes.count + 1
                                                                    kind:EucCSSDocumentTreeNodeKindElement];
     
     newNode.name = [NSString stringWithUTF8String:name];
@@ -72,7 +73,7 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
     EucCSSXMLTreeContext *context = (EucCSSXMLTreeContext *)ctx;
     NSMutableArray *nodes = context->nodes;
     EucCSSXMLTreeNode *currentNode = context->currentNode;
-    EucCSSXMLTreeNode *newNode = [[EucCSSXMLTreeNode alloc] initWithKey:nodes.count + 1
+    EucCSSXMLTreeNode *newNode = [[context->xmlTreeNodeClass alloc] initWithKey:nodes.count + 1
                                                                    kind:EucCSSDocumentTreeNodeKindText];
     NSData *characterData = [[NSData alloc] initWithBytes:chars length:len];
     newNode.characters = characterData;
@@ -85,12 +86,19 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
 
 - (id)initWithData:(NSData *)xmlData
 {
+    return [self initWithData:xmlData xmlTreeNodeClass:[EucCSSXMLTreeNode class]];
+}
+
+
+- (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass
+{
     if((self = [super init])) {
+        _xmlTreeNodeClass = xmlTreeNodeClass;
         NSUInteger xmlLength = xmlData.length;
         if(xmlLength) {
             NSMutableArray *buildNodes = [[NSMutableArray alloc] init];
             NSMutableDictionary *buildIdToNodes = [[NSMutableDictionary alloc] init];
-            EucCSSXMLTreeContext context = { buildNodes, buildIdToNodes, NULL };
+            EucCSSXMLTreeContext context = { _xmlTreeNodeClass, buildNodes, buildIdToNodes, NULL };
             
             XML_Parser parser = XML_ParserCreate("UTF-8");
             XML_SetUserData(parser, &context);    

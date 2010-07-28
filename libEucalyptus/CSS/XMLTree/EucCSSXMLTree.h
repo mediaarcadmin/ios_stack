@@ -11,7 +11,8 @@
 
 @class EucCSSXMLTreeNode;
 
-@interface EucCSSXMLTree : NSObject <EucCSSDocumentTree> {
+@interface EucCSSXMLTree : NSObject <EucCSSDocumentTree> { 
+    Class _xmlTreeNodeClass;
     NSArray *_nodes;
     NSDictionary *_idToNode;
 }
@@ -19,5 +20,6 @@
 @property (nonatomic, readonly) NSDictionary *idToNode;
 
 - (id)initWithData:(NSData *)xmlData;
+- (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass;
 
 @end
