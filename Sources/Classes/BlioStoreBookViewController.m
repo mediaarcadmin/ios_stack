@@ -324,7 +324,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 		NSLog(@"ePubPath: %@",self.entity.ePubUrl);		
 		NSLog(@"pdfPath: %@",self.entity.pdfUrl);		
 		[self.processingDelegate enqueueBookWithTitle:self.entity.title 
-											  authors:[NSArray arrayWithObject:self.entity.author]
+											  authors:self.entity.author ? [NSArray arrayWithObject:self.entity.author] : [NSArray array]
 											coverPath:self.entity.coverUrl ? self.entity.coverUrl : nil
 											 ePubPath:self.entity.ePubUrl ? self.entity.ePubUrl : nil 
 											  pdfPath:self.entity.pdfUrl ? self.entity.pdfUrl : nil
