@@ -87,4 +87,14 @@
     }
 }
 
+- (BOOL)isImageNode
+{
+    return [@"img" caseInsensitiveCompare:self.name] == NSOrderedSame;
+}
+
+- (NSString *)imageSourceURL
+{
+    return [self attributeWithName:@"src"];
+}    
+
 @end

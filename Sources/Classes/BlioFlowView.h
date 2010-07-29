@@ -11,8 +11,11 @@
 #import "BlioBookViewController.h"
 #import "BlioProcessingManager.h"
 #import "BlioSelectableBookView.h"
+#import "BlioTextFlow.h"
 
 @interface BlioFlowView : BlioSelectableBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
+    NSManagedObjectID *_bookID;
+    
     EucBookView *_eucBookView;
     id<BlioParagraphSource> _paragraphSource;
     BOOL _pageViewIsTurning;
@@ -21,8 +24,11 @@
     
     NSInteger _pageCount;
     NSInteger _pageNumber;
+    
+    BlioTextFlowFlowTreeKind _textFlowFlowTreeKind;
 }
 
 @property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
+@property (nonatomic, retain) NSManagedObjectID *bookID;
 
 @end

@@ -282,7 +282,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return NO;
 }
 
-- (NSURL *)imageSrc
+- (NSURL *)imageSource
 {
     return nil;
 }

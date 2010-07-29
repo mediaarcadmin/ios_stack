@@ -11,6 +11,8 @@
 #import "BlioBookManager.h"
 #import "BlioTextFlow.h"
 #import "BlioTextFlowFlowTree.h"
+#import "BlioTextFlowXAMLTree.h"
+#import "BlioXPSProvider.h"
 
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/THPair.h>
@@ -22,7 +24,7 @@
 @interface BlioFlowEucBook ()
 
 @property (nonatomic, assign) NSManagedObjectID *bookID;
-@property (nonatomic, assign) BOOL hasCover;
+@property (nonatomic, assign) BOOL fakeCover;
 @property (nonatomic, retain) BlioTextFlow *textFlow;
 
 @end
@@ -30,7 +32,7 @@
 @implementation BlioFlowEucBook
 
 @synthesize bookID;
-@synthesize hasCover;
+@synthesize fakeCover;
 @synthesize textFlow;
 
 - (id)initWithBookID:(NSManagedObjectID *)blioBookID
@@ -40,7 +42,7 @@
         BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
         BlioBook *blioBook = [bookManager bookWithID:blioBookID];
         self.textFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
-        self.hasCover = [blioBook hasManifestValueForKey:@"coverFilename"];
+        self.fakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:@"coverFilename"];
         
         self.title = blioBook.title;
         self.author = blioBook.author;
@@ -66,7 +68,7 @@
     
     NSArray *sections = self.textFlow.sections; 
     long index = 0;
-    if(self.hasCover) {
+    if(self.fakeCover) {
         [navPoints addPairWithFirst:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
                              second:[NSString stringWithFormat:@"textflow:$ld", (long)index]];
         ++index;
@@ -83,7 +85,9 @@
 - (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
-        return [[NSBundle mainBundle] pathForResource:@"TextFlow" ofType:@"css"];
+        return [[NSBundle mainBundle] pathForResource:@"TextFlowFlow" ofType:@"css"];
+    } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
+        return [[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"];
     } else {
         return [super baseCSSPathForDocumentTree:documentTree];
     }
@@ -91,13 +95,18 @@
 
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    return indexPoint.source == 0 && self.hasCover;
+    return indexPoint.source == 0 && self.fakeCover;
 }
 
 - (NSData *)dataForURL:(NSURL *)url
 {
     if([[url absoluteString] isEqualToString:@"textflow:coverimage"]) {
         return [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] manifestDataForKey:@"coverFilename"];
+    } else if([[url scheme] isEqualToString:@"textflow"]) {
+        BlioXPSProvider *provider = [[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:self.bookID];
+        NSData *ret = [provider dataForComponentAtPath:[[url absoluteURL] path]];
+        [[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:self.bookID];
+        return ret;
     }
     return [super dataForURL:url];
 }
@@ -108,7 +117,7 @@
     NSString *indexString = [[[url absoluteString] matchPOSIXRegex:@"^textflow:(.*)$"] match:1];
     if(indexString) {
         NSUInteger section = [indexString integerValue];
-        if(self.hasCover) {
+        if(self.fakeCover) {
             if(section == 0) {
                 NSURL *coverHTMLFile = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"]];
                 tree = [super documentTreeForURL:coverHTMLFile];
@@ -118,6 +127,9 @@
         }
         if(!tree) {
             tree = [self.textFlow flowTreeForSectionIndex:section];
+            if(!tree) {
+                tree = [self.textFlow xamlTreeForSectionIndex:section];
+            }
         }
     }
     return tree;

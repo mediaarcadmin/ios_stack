@@ -29,6 +29,8 @@
 
 @implementation BlioFlowView
 
+@synthesize bookID = _bookID;
+
 @synthesize paragraphSource = _paragraphSource;
 @synthesize delegate = _delegate;
 
@@ -40,23 +42,15 @@
            animated:(BOOL)animated 
 {
     if((self = [super initWithFrame:frame])) {
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
-        EucBUpeBook *eucBook = nil;
-        
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;        
         self.opaque = YES;
+        self.bookID = bookID;
         
-        BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:bookID];
-        if([aBook hasTextFlow]) {
-            eucBook = [[BlioFlowEucBook alloc] initWithBookID:bookID];
-            eucBook.persistsPositionAutomatically = NO;
-            eucBook.cacheDirectoryPath = [aBook.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
-        } else {
-            eucBook = [aBook.ePubBook retain];
-        }
+        BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+        EucBUpeBook *eucBook = [bookManager checkOutEucBookForBookWithID:bookID];
         
         if(eucBook) {
-            self.paragraphSource = aBook.paragraphSource;
+            self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
 
             if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:eucBook])) {
                 _eucBookView.delegate = self;
@@ -66,14 +60,20 @@
                 if(animated) {
                     _eucBookView.appearAtCoverThenOpen = YES;
                 }
-                [self goToBookmarkPoint:aBook.implicitBookmarkPoint animated:NO];
+                
+                [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO];
                 
                 [_eucBookView addObserver:self forKeyPath:@"pageCount" options:NSKeyValueObservingOptionInitial context:NULL];
                 [_eucBookView addObserver:self forKeyPath:@"pageNumber" options:NSKeyValueObservingOptionInitial context:NULL];
                 
                 [self addSubview:_eucBookView];
+                
+                if([eucBook isKindOfClass:[BlioFlowEucBook class]]) {
+                    BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:bookID];
+                    _textFlowFlowTreeKind = textFlow.flowTreeKind;
+                    [bookManager checkInTextFlowForBookWithID:bookID];
+                }
             }
-            [eucBook release];
         }
         
         if(!_eucBookView) {
@@ -90,7 +90,15 @@
     [_eucBookView removeObserver:self forKeyPath:@"pageCount"];
     [_eucBookView removeObserver:self forKeyPath:@"pageNumber"];
     [_eucBookView release];
+     
+    BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+
     [_paragraphSource release];
+    [bookManager checkInParagraphSourceForBookWithID:self.bookID];    
+    [bookManager checkInEucBookForBookWithID:self.bookID];  
+    
+    [_bookID release];
+    
     [super dealloc];
 }
 
@@ -130,12 +138,8 @@
         eucIndexPoint.word -= 1;
     }
     
-    if(![_eucBookView.book isKindOfClass:[BlioFlowEucBook class]]) {
-        ret.layoutPage = eucIndexPoint.source;
-        ret.blockOffset = eucIndexPoint.block;
-        ret.wordOffset = eucIndexPoint.word;
-        ret.elementOffset = eucIndexPoint.element;
-    } else {
+    if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
+       _textFlowFlowTreeKind == BlioTextFlowFlowTreeKindFlow) {
         if(eucIndexPoint.source == 0) {
             // This is the cover section.
             ret.layoutPage = 1;
@@ -153,6 +157,11 @@
             ret.wordOffset = bookmarkPoint.wordOffset;
             ret.elementOffset = eucIndexPoint.element;
         }
+    } else {
+        ret.layoutPage = eucIndexPoint.source;
+        ret.blockOffset = eucIndexPoint.block;
+        ret.wordOffset = eucIndexPoint.word;
+        ret.elementOffset = eucIndexPoint.element;
     }
     
     [eucIndexPoint release];
@@ -167,12 +176,9 @@
     } else {
         EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
         
-        if(![_eucBookView.book isKindOfClass:[BlioFlowEucBook class]]) {
-            eucIndexPoint.source = bookmarkPoint.layoutPage;
-            eucIndexPoint.block = bookmarkPoint.blockOffset;
-            eucIndexPoint.word = bookmarkPoint.wordOffset;
-            eucIndexPoint.element = bookmarkPoint.elementOffset;
-        } else {
+        
+        if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
+           _textFlowFlowTreeKind == BlioTextFlowFlowTreeKindFlow) {
             NSIndexPath *paragraphID = nil;
             uint32_t wordOffset = 0;
             
@@ -183,6 +189,11 @@
             eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
             eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
             eucIndexPoint.word = wordOffset;
+            eucIndexPoint.element = bookmarkPoint.elementOffset;
+        } else {
+            eucIndexPoint.source = bookmarkPoint.layoutPage;
+            eucIndexPoint.block = bookmarkPoint.blockOffset;
+            eucIndexPoint.word = bookmarkPoint.wordOffset;
             eucIndexPoint.element = bookmarkPoint.elementOffset;
         }    
         
@@ -204,6 +215,7 @@
 {
     EucBookPageIndexPoint *eucIndexPoint;
     if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
+       _textFlowFlowTreeKind == BlioTextFlowFlowTreeKindFlow &&
        bookmarkPoint.layoutPage == 1 && bookmarkPoint.blockOffset == 0 && 
        bookmarkPoint.wordOffset == 0 && bookmarkPoint.elementOffset == 0) {
         // This is the start of the book.  Leave the eucIndexPoint empty

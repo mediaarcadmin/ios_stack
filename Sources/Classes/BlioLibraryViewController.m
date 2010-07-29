@@ -1219,7 +1219,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
     NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
     
-    BlioXPSProvider *virginXPS = [[[BlioBookManager sharedBookManager] bookWithID:virginID] xpsProvider];
+    BlioXPSProvider *virginXPS = [[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:virginID];
 //    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
 
     NSData *decryptedData;
@@ -1236,7 +1236,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     // Decrypt a fixed page for Virgin Islands by requesting the dummy page
     decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
     NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-
+    
+    [[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:virginID];
+    //[[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:rabbitID];
+    
 	//	
 	// END temporary code
 	

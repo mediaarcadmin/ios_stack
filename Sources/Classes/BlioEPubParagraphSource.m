@@ -34,7 +34,7 @@
 {
     if((self = [super init])) {
         _bookID = [bookID retain];
-        _bUpeBook = [[[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:bookID] retain];
+        _bUpeBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID] retain];
     }
     return self;
 }
@@ -43,7 +43,7 @@
 {
     if(_bUpeBook) {
         [_bUpeBook release];
-        [[BlioBookManager sharedBookManager] checkInEPubBookForBookWithID:_bookID];
+        [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:_bookID];
     }
     [_bookID release];
     [_layoutController release];

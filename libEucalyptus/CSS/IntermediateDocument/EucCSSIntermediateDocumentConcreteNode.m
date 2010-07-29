@@ -96,12 +96,12 @@
 
 - (BOOL)isImageNode
 {
-    return [@"img" caseInsensitiveCompare:_documentTreeNode.name] == NSOrderedSame;
+    return _documentTreeNode.isImageNode;
 }
 
-- (NSURL *)imageSrc
+- (NSURL *)imageSource
 {
-    NSString *src = [_documentTreeNode attributeWithName:@"src"];
+    NSString *src = _documentTreeNode.imageSourceURL;
     if(src) {
         return [NSURL URLWithString:src relativeToURL:_document.url];
     }
@@ -112,7 +112,6 @@
 {
     return [_documentTreeNode attributeWithName:@"alt"];
 }
-
 
 - (css_computed_style *)_createComputedStyleForPseudoElement:(enum css_pseudo_element)pseudoElement
                                             usingInlineStyle:(const css_stylesheet *)inlineStyle

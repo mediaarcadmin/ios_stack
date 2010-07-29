@@ -13,7 +13,7 @@
 #import "BlioProcessingManager.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 
-@class BlioTextFlowFlowTree;
+@class BlioTextFlowFlowTree, BlioTextFlowXAMLTree;
 
 @interface BlioTextFlowPositionedWord : NSObject {
     NSString *string;
@@ -107,6 +107,13 @@
 
 #define kTextFlowPageBlocksCacheCapacity 5
 
+typedef enum BlioTextFlowFlowTreeKind
+{
+    BlioTextFlowFlowTreeKindUnknown = 0,
+    BlioTextFlowFlowTreeKindFlow,
+    BlioTextFlowFlowTreeKindXaml,
+} BlioTextFlowFlowTreeKind;
+
 @interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider, EucBookContentsTableViewControllerDataSource> {
     NSSet *pageRanges;
     
@@ -117,14 +124,18 @@
     NSInteger pageIndexCache[kTextFlowPageBlocksCacheCapacity];
     NSArray *pageBlocksCache[kTextFlowPageBlocksCacheCapacity];
     NSLock *pageBlocksCacheLock;
+    
+    BlioTextFlowFlowTreeKind flowTreeKind;
 }
 
 @property (nonatomic, retain, readonly) NSMutableArray *sections;
 @property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, assign, readonly) BlioTextFlowFlowTreeKind flowTreeKind;
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 
 - (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex;
+- (BlioTextFlowXAMLTree *)xamlTreeForSectionIndex:(NSUInteger)sectionIndex;
 - (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex;
 
 // Convenience methods
