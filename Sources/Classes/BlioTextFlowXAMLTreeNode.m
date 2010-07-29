@@ -32,6 +32,8 @@
                 NSMutableString *constructionString = [[NSMutableString alloc] init];
                 for(NSString *key in [myAttributes keyEnumerator]) {
                     if([key isEqualToString:@"Margin"]) {
+                        // The margin attributes are in order left, top, right, bottom.
+                        // CSS margins are in order top, right, bottom, left...
                         NSArray *elements = [[myAttributes objectForKey:key] componentsSeparatedByString:@","];
                         NSUInteger elementCount = [elements count];
                         if(elementCount == 1) {
@@ -73,11 +75,7 @@
 
 - (NSString *)imageSourceURL
 {
-    NSString *source = [self attributeWithName:@"Source"];
-   /* if([source characterAtIndex:0] == '/') {
-        return [self.
-    }*/
-    return source;
+    return [self attributeWithName:@"Source"];
 }
 
 
