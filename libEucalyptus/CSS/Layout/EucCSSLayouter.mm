@@ -483,7 +483,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 potentialFrame.origin.y = nextY;
                                 
                 if(currentDocumentNode.isImageNode) {
-                    THLog(@"Image: %@", [currentDocumentNode.imageSrc absoluteString]);
+                    THLog(@"Image: %@", [currentDocumentNode.imageSource absoluteString]);
                 }
                 EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
                 [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];

@@ -42,7 +42,7 @@ struct css_computed_style;
 @property (nonatomic, readonly) NSArray *preprocessedWords; // Default: nil - optional.
 
 @property (nonatomic, readonly) BOOL isImageNode;
-@property (nonatomic, readonly) NSURL *imageSrc;
+@property (nonatomic, readonly) NSURL *imageSource;
 @property (nonatomic, readonly) NSString *altText;
 
 // Abstract:

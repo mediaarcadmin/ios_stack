@@ -376,7 +376,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
 
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode
 {
-    NSData *imageData = [subnode.document.dataSource dataForURL:[subnode imageSrc]];
+    NSData *imageData = [subnode.document.dataSource dataForURL:[subnode imageSource]];
 
     if(imageData) {
         CGImageRef image = NULL;
@@ -460,6 +460,15 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                     maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, 0, _scaleFactor);
                 }
             } 
+        }
+        /*
+        if(specifiedWidth == CGFLOAT_MAX) {
+            [subnode 
+        }
+        */
+        
+        if(maxWidth == CGFLOAT_MAX) {
+            maxWidth = frame.size.width;
         }
         
         CGSize calculatedSize = [self _computedSizeForImage:image
