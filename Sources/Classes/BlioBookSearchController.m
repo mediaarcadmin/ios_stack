@@ -17,13 +17,13 @@
 @property (nonatomic, retain) id currentParagraphID;
 @property (nonatomic, assign) NSUInteger currentCharacterOffset;
 @property (nonatomic, retain) NSArray *currentParagraphWords;
-@property (nonatomic, assign) BOOL hasLooped;
+@property (nonatomic, assign) BOOL hasWrapped;
 
 @end
 
 @implementation BlioBookSearchController
 
-@synthesize paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentCharacterOffset, currentParagraphWords, hasLooped;
+@synthesize paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentCharacterOffset, currentParagraphWords, hasWrapped;
 
 - (void)dealloc {
     [self cancel];
@@ -46,7 +46,7 @@
 
 - (void)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint {
     self.searchString = string;
-    self.hasLooped = NO;
+    self.hasWrapped = NO;
     
     if (!startBookmarkPoint) startBookmarkPoint = [self.paragraphSource bookmarkPointForPageNumber:1];
     
@@ -95,7 +95,7 @@
     
     self.currentParagraphID = paragraphID;
     self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
-    self.hasLooped = YES;
+    self.hasWrapped = YES;
     
     if ([(NSObject *)self.delegate respondsToSelector:@selector(searchControllerDidReachEndOfBook:)])
         [self.delegate searchControllerDidReachEndOfBook:self];
@@ -111,7 +111,7 @@
     self.searching = YES;
     
     // TODO - confirm that paragraphIDs observe the comparison correctly
-    if ((self.hasLooped) &&
+    if ((self.hasWrapped) &&
         ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedSame) &&
         (self.currentCharacterOffset >= self.startElementOffset)) {
         
@@ -208,7 +208,7 @@
             self.currentCharacterOffset = 0;
             
             // TODO - confirm that paragraphIDs observe the comparison correctly
-            if (self.hasLooped && ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedDescending)) {
+            if (self.hasWrapped && ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedDescending)) {
                 [self searchCompleted];
                 return;
             } else {

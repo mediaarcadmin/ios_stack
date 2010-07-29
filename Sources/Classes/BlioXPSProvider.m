@@ -355,6 +355,11 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         }
     }
     
+    if ([rawData length] == 0) {
+        NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
+        return nil;
+    }
+    
     return rawData;
 }
 
@@ -408,7 +413,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     if (mapped) {
         componentData = [self replaceMappedResources:componentData];
     }
-    
+    if (![componentData length]) {
+        NSLog(@"Zero length data returned in dataForComponentAtPath: %@", path);
+    }
     return componentData;
     
 }

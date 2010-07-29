@@ -11,8 +11,11 @@
 #import "BlioBookSearchToolbar.h"
 #import "BlioBookView.h"
 
+@class BlioBookSearchStatusView;
+
 @interface BlioBookSearchViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, BlioBookSearchToolbarDelegate, BlioBookSearchDelegate> {
     UITableView *tableView;
+    UIView      *dimmingView;
     BlioBookSearchToolbar *toolbar;
     BlioBookSearchController *bookSearchController;
     UISearchDisplayController *searchController;
@@ -25,6 +28,7 @@
     BOOL searchActive;
     NSInteger currentSearchResult;
     id <BlioBookView> bookView;
+    BlioBookSearchStatusView *statusView;
 }
 
 @property (nonatomic, retain) UITableView *tableView;
@@ -37,8 +41,8 @@
 @property (nonatomic, retain) NSString *noResultsMessage;
 @property (nonatomic, retain) UIColor *tintColor;
 @property (nonatomic, getter=isToolbarHidden) BOOL toolbarHidden; // Defaults to YES, i.e. hidden.
-@property (nonatomic, readonly, getter=isSearchActive) BOOL searchActive;
 @property (nonatomic, assign) id <BlioBookView> bookView;
+@property (nonatomic, readonly, getter=isSearchActive) BOOL searchActive;
 
 - (void)showInController:(UINavigationController *)controller animated:(BOOL)animated;
 - (void)removeFromControllerAnimated:(BOOL)animated;

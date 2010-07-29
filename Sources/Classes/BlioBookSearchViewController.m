@@ -35,10 +35,40 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 @property (nonatomic, retain) BlioBookmarkRange *bookmarkRange;
 @end
 
+typedef enum {
+    kBlioBookSearchStatusIdle = 0,
+    kBlioBookSearchStatusInProgress = 1,
+    kBlioBookSearchStatusInProgressHasWrapped = 2,
+    kBlioBookSearchStatusComplete = 3,
+    kBlioBookSearchStatusStopped = 4
+} BlioBookSearchStatus;
+
+@interface BlioBookSearchStatusView : UIView {
+    UILabel *statusLabel;
+    UILabel *matchesLabel;
+    UIActivityIndicatorView *activityView;
+    BlioBookSearchStatus status;
+    id target;
+    SEL action;
+}
+
+@property (nonatomic, retain) UILabel *statusLabel;
+@property (nonatomic, retain) UILabel *matchesLabel;
+@property (nonatomic, retain) UIActivityIndicatorView *activityView;
+@property (nonatomic, readonly) BlioBookSearchStatus status;
+@property (nonatomic, retain) id target;
+@property (nonatomic, assign) SEL action;
+
+- (void)setStatus:(BlioBookSearchStatus)newStatus matches:(NSUInteger)matches;
+
+@end
+
 @interface BlioBookSearchViewController()
 
 @property (nonatomic, assign) UINavigationController *navController;
 @property (nonatomic, assign) BOOL searchActive;
+@property (nonatomic, retain) UIView *dimmingView;
+@property (nonatomic, retain) BlioBookSearchStatusView *statusView;
 
 - (CGRect)rotatedScreenRectWithOrientation:(UIInterfaceOrientation)orientation;
 - (CGRect)fullScreenRect;
@@ -50,12 +80,13 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 - (void)displayStatusBarWithStyle:(UIStatusBarStyle)barStyle animated:(BOOL)animated;
 - (void)dismissSearchToolbarAnimated:(BOOL)animated;
 - (void)highlightCurrentSearchResult;
+- (void)setSearchStatus:(BlioBookSearchStatus)newStatus;
 
 @end
 
 @implementation BlioBookSearchViewController
 
-@synthesize tableView, toolbar;
+@synthesize tableView, dimmingView, toolbar, statusView;
 @synthesize bookSearchController, searchController;
 @synthesize searchResults, savedSearchTerm;
 @synthesize noResultsLabel, noResultsMessage;
@@ -65,6 +96,7 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 
 - (void)dealloc {
     self.tableView = nil;
+    self.dimmingView = nil;
     self.toolbar = nil;
     self.bookSearchController = nil;
     self.searchController = nil;
@@ -74,6 +106,7 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     self.noResultsMessage = nil;
     self.navController = nil;
     self.bookView = nil;
+    self.statusView = nil;
     [super dealloc];
 }
 
@@ -121,12 +154,30 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     [self.view addSubview:self.toolbar];
     
     UITableView *aTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.toolbar.frame), CGRectGetWidth(appFrame), CGRectGetHeight(appFrame) - CGRectGetMaxY(self.toolbar.frame)) style:UITableViewStylePlain];
-    [aTableView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    [aTableView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     [aTableView setDataSource:self];
     [aTableView setDelegate:self];
     [self.view addSubview:aTableView];
     self.tableView = aTableView;
     [aTableView release];
+    
+    UIView *aDimmingView = [[UIView alloc] initWithFrame:aTableView.frame];
+    [aDimmingView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+    [aDimmingView setBackgroundColor:[UIColor colorWithHue:0 saturation:0 brightness:0.2f alpha:1]];
+    [aDimmingView setAlpha:0];
+    [self.view addSubview:aDimmingView];
+    self.dimmingView = aDimmingView;
+    [aDimmingView release];
+    
+    BlioBookSearchStatusView *aStatusView = [[BlioBookSearchStatusView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(aTableView.frame), self.tableView.rowHeight * 1.5f)];
+    [aStatusView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    [aStatusView setStatus:kBlioBookSearchStatusIdle matches:0];
+    [aStatusView setBackgroundColor:[UIColor colorWithHue:0 saturation:0 brightness:0.9f alpha:1]];
+    [aStatusView setTarget:self];
+    [aStatusView setAction:@selector(continueSearching)];
+    [self.tableView setTableFooterView:aStatusView];
+    self.statusView = aStatusView;
+    [aStatusView release];
 }
 
 - (void)highlightCurrentSearchResult {
@@ -160,6 +211,7 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     [self.bookSearchController cancel];
     [self.toolbar.searchBar resignFirstResponder];
     self.searchActive = NO;
+    [self setSearchStatus:kBlioBookSearchStatusStopped];
         
     if ([self.toolbar inlineMode]) {
         [self fadeOffScreen:animated removedOnCompletion:YES];
@@ -256,6 +308,35 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     
 - (CGRect)fullScreenRect {
     return [self rotatedScreenRectWithOrientation:self.navController.interfaceOrientation];
+}
+
+#pragma mark -
+#pragma mark Search Status
+- (void)setSearchStatus:(BlioBookSearchStatus)newStatus {
+    
+    // Show/hide the dim view
+    switch (newStatus) {
+        case kBlioBookSearchStatusIdle:
+            [self.dimmingView setAlpha:1];
+            break;
+        default:
+            [self.dimmingView setAlpha:0];
+            break;
+    }
+    
+    [self.statusView setStatus:newStatus matches:[self.searchResults count]];
+}
+
+- (void)continueSearching {
+    BlioBookSearchStatus status = self.statusView.status;
+    if ((status == kBlioBookSearchStatusIdle) || (status == kBlioBookSearchStatusStopped)) {
+        [self.bookSearchController findNextOccurrence];
+        if (self.bookSearchController.hasWrapped) {
+            [self setSearchStatus:kBlioBookSearchStatusInProgressHasWrapped];
+        } else {
+            [self setSearchStatus:kBlioBookSearchStatusInProgress];
+        }
+    }    
 }
 
 #pragma mark -
@@ -474,6 +555,11 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
+        UIView *aBackgroundView = [[UIView alloc] init];
+        aBackgroundView.backgroundColor = [UIColor whiteColor];
+        cell.backgroundView = aBackgroundView;
+        [aBackgroundView release];
+        
         UILabel *page = [[UILabel alloc] init];
         page.font = [UIFont systemFontOfSize:17];
         page.adjustsFontSizeToFitWidth = YES;
@@ -639,9 +725,12 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     currentSearchResult = -1;
     [self.tableView reloadData];
     
-    if (searchText) {
+    if ([searchText length] > 0) {
         BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
         [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
+        [self setSearchStatus:kBlioBookSearchStatusInProgress];
+    } else {
+        [self setSearchStatus:kBlioBookSearchStatusIdle];
     }
 
 }
@@ -683,18 +772,22 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
     [result release];
 
     NSIndexPath *newRow = [NSIndexPath indexPathForRow:([self.searchResults count] - 1) inSection:0];
-    [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newRow] withRowAnimation:UITableViewRowAnimationBottom];
+    [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newRow] withRowAnimation:UITableViewRowAnimationFade];
 
-    [aSearchController findNextOccurrence];
+    if (([self.searchResults count] % 100) == 0) {
+        [self setSearchStatus:kBlioBookSearchStatusStopped];
+    } else {
+        [aSearchController findNextOccurrence];
+    }
 }
 
 - (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)aSearchController {
-    NSLog(@"Search reached end of book");
     [aSearchController findNextOccurrence];
+    [self setSearchStatus:kBlioBookSearchStatusInProgressHasWrapped];
 }
 
 - (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)aSearchController {
-    NSLog(@"Search complete");
+    [self setSearchStatus:kBlioBookSearchStatusComplete];
 }
     
 @end
@@ -712,4 +805,157 @@ static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSea
 }
 
 @end
+
+@implementation BlioBookSearchStatusView
+
+@synthesize statusLabel, matchesLabel, activityView, status;
+@synthesize target, action;
+
+- (void)dealloc {
+    self.statusLabel = nil;
+    self.matchesLabel = nil;
+    self.activityView = nil;
+    self.target = nil;
+    self.action = nil;
+    [super dealloc];
+}
+
+- (id)initWithFrame:(CGRect)frame {
+    if ((self == [super initWithFrame:frame])) {
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        
+        UIActivityIndicatorView *aActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        aActivityView.hidesWhenStopped = YES;
+        [self addSubview:aActivityView];
+        self.activityView = aActivityView;
+        [aActivityView release];
+        
+        UILabel *aStatusLabel = [[UILabel alloc] init];
+        [aStatusLabel setBackgroundColor:[UIColor clearColor]];
+        [aStatusLabel setFont:[UIFont boldSystemFontOfSize:16]];
+        [self addSubview:aStatusLabel];
+        self.statusLabel = aStatusLabel;
+        [aStatusLabel release];
+        
+        UILabel *aMatchesLabel = [[UILabel alloc] init];
+        [aMatchesLabel setBackgroundColor:[UIColor clearColor]];
+        [aMatchesLabel setFont:[UIFont systemFontOfSize:14]];
+        [self addSubview:aMatchesLabel];
+        self.matchesLabel = aMatchesLabel;
+        [aMatchesLabel release];
+        
+        [self setHidden:YES];
+    }
+    return self;
+}
+
+- (void)setStatus:(BlioBookSearchStatus)newStatus matches:(NSUInteger)matches {
+    
+    if ((newStatus == kBlioBookSearchStatusStopped) && (status == kBlioBookSearchStatusComplete)) {
+        return; // Cannot cancel a search that is complete
+    }
+    
+    status = newStatus;
+        
+    NSString *matchString;
+    switch (matches) {
+        case 0:
+            matchString = @"No matches";
+            break;
+        case 1:
+            matchString = @"1 match found";
+            break;
+        default:
+            matchString = [NSString stringWithFormat:@"%d matches found", matches];
+            break;
+    }
+    
+    switch (status) {
+        case kBlioBookSearchStatusInProgress:
+            [self.activityView startAnimating];
+            [self.statusLabel setText:@"Searching..."];
+            [self.matchesLabel setText:nil];
+            [self setHidden:NO];
+            break;
+        case kBlioBookSearchStatusInProgressHasWrapped:
+            [self.activityView startAnimating];
+            [self.statusLabel setText:@"Search Wrapped..."];
+            [self.matchesLabel setText:nil];
+            [self setHidden:NO];
+            break;
+        case kBlioBookSearchStatusComplete:
+            [self.activityView stopAnimating];
+            [self.statusLabel setText:@"Search Completed"];
+            [self.matchesLabel setText:matchString];
+            [self setHidden:NO];
+            break;
+        case kBlioBookSearchStatusStopped:
+            [self.activityView stopAnimating];
+            [self.statusLabel setText:@"Load More..."];
+            [self.matchesLabel setText:matchString];
+            [self setHidden:NO];
+            break;
+        default:
+            [self setHidden:YES];
+            break;
+    }
+    [self setNeedsLayout];    
+}
+
+- (void)layoutSubviews {
+    [self.statusLabel sizeToFit];
+    [self.matchesLabel sizeToFit];
+
+    CGRect statusLabelFrame = self.statusLabel.frame;
+    CGRect matchesLabelFrame = self.matchesLabel.frame;
+    CGRect activityFrame = self.activityView.frame;
+    CGFloat spacing = 10;
+        
+    if ([self.activityView isAnimating]) {
+        statusLabelFrame.size.width = MIN(CGRectGetWidth(statusLabelFrame), CGRectGetWidth(self.bounds) - CGRectGetWidth(activityFrame) - spacing);
+        CGFloat combinedWidth = CGRectGetWidth(activityFrame) + spacing + CGRectGetWidth(statusLabelFrame);
+        CGFloat padding = (CGRectGetWidth(self.bounds) - combinedWidth)/2.0f;
+        activityFrame.origin.x = floorf(padding);
+        activityFrame.origin.y = floorf((CGRectGetHeight(self.bounds) - CGRectGetHeight(activityFrame))/2.0f);
+        statusLabelFrame.origin.x = CGRectGetMaxX(activityFrame) + spacing;
+    } else {
+        statusLabelFrame.size.width = MIN(CGRectGetWidth(statusLabelFrame), CGRectGetWidth(self.bounds));
+        CGFloat padding = (CGRectGetWidth(self.bounds) - CGRectGetWidth(statusLabelFrame))/2.0f;
+        statusLabelFrame.origin.x = floorf(padding);
+    }
+    
+    matchesLabelFrame.size.width = MIN(CGRectGetWidth(matchesLabelFrame), CGRectGetWidth(self.bounds));
+    CGFloat padding = (CGRectGetWidth(self.bounds) - CGRectGetWidth(matchesLabelFrame))/2.0f;
+    matchesLabelFrame.origin.x = floorf(padding);
+    
+    statusLabelFrame.origin.y = floorf((CGRectGetHeight(self.bounds) - (CGRectGetHeight(statusLabelFrame) + CGRectGetHeight(matchesLabelFrame)))/2.0f);
+    matchesLabelFrame.origin.y = ceilf(CGRectGetMaxY(statusLabelFrame));
+
+    self.activityView.frame = activityFrame;
+    self.statusLabel.frame = statusLabelFrame;
+    self.matchesLabel.frame = matchesLabelFrame;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    CGPoint point = [[touches anyObject] locationInView:self];
+    if ([self pointInside:point withEvent:nil]) {
+        if ([self.target respondsToSelector:self.action]) {
+            [self.target performSelector:self.action];
+        }
+    }
+}
+
+- (void)drawRect:(CGRect)rect {
+    [super drawRect:rect];
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSetRGBStrokeColor(ctx, 0.878f, 0.878f, 0.878f, 1);
+    CGContextSetLineWidth(ctx, 1);
+    CGContextBeginPath(ctx);
+    CGContextMoveToPoint(ctx, 0, CGRectGetMaxY(rect));
+    CGContextAddLineToPoint(ctx, CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+    CGContextStrokePath(ctx);
+}
+
+@end
+
 

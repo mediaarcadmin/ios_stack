@@ -28,7 +28,7 @@
     NSUInteger currentCharacterOffset;
     NSArray *currentParagraphWords;
     
-    BOOL hasLooped;
+    BOOL hasWrapped;
 	BOOL searching;
 }
 
@@ -38,6 +38,7 @@
 @property (nonatomic, assign) NSUInteger maxPrefixAndMatchLength;
 @property (nonatomic, assign) NSUInteger maxSuffixLength;
 @property (nonatomic, assign) NSStringCompareOptions searchOptions;
+@property (nonatomic, readonly) BOOL hasWrapped;
 
 - (id)initWithParagraphSource:(id<BlioParagraphSource>)aParagraphSource;
 - (void)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint;
