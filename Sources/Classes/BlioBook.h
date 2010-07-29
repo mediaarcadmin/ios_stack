@@ -33,6 +33,7 @@ static NSString * const BlioXPSEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/
 static NSString * const BlioXPSMetaDataDir = @"/Documents/1/Metadata";
 static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.jpg";
 static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
+static NSString * const BlioXPSKNFBMetadataFile = @"/Documents/1/Other/KNFB/Metadata.xml";
 
 static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
 static NSString * const BlioXPSComponentExtensionRels = @"rels";

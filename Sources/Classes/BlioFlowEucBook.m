@@ -11,6 +11,7 @@
 #import "BlioBookManager.h"
 #import "BlioTextFlow.h"
 #import "BlioTextFlowFlowTree.h"
+#import "BlioTextFlowXAMLTree.h"
 
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/THPair.h>
@@ -83,7 +84,9 @@
 - (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
-        return [[NSBundle mainBundle] pathForResource:@"TextFlow" ofType:@"css"];
+        return [[NSBundle mainBundle] pathForResource:@"TextFlowFlow" ofType:@"css"];
+    } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
+        return [[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"];
     } else {
         return [super baseCSSPathForDocumentTree:documentTree];
     }
@@ -118,6 +121,9 @@
         }
         if(!tree) {
             tree = [self.textFlow flowTreeForSectionIndex:section];
+            if(!tree) {
+                tree = [self.textFlow xamlTreeForSectionIndex:section];
+            }
         }
     }
     return tree;
