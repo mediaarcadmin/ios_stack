@@ -19,7 +19,6 @@
 		553E98FC1107B8E600FB309D /* speedread-thumb.png in Resources */ = {isa = PBXBuildFile; fileRef = 553E98FA1107B8E600FB309D /* speedread-thumb.png */; };
 		553E99011107B8F200FB309D /* BlioSpeedReadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E99001107B8F200FB309D /* BlioSpeedReadView.m */; };
 		555CAF2C10F3B943007B1885 /* booktextureandshadowsubtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */; };
-		555CAF2F10F3B950007B1885 /* AccelerometerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */; };
 		555CAF3D10F3B991007B1885 /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */; };
 		556D1D5B10F3BE580019315C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 556D1D5A10F3BE580019315C /* Icon.png */; };
 		55822EF210F2860F008614FD /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EEF10F2860F008614FD /* Default.png */; };
@@ -399,7 +398,6 @@
 		C9AF1A3C1147A772007D7AFC /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		C9AF1A3D1147A772007D7AFC /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
 		C9AF1A3E1147A772007D7AFC /* BlioUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */; };
-		C9AF1A411147A772007D7AFC /* AccelerometerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */; };
 		C9AF1A421147A772007D7AFC /* Blio.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = C9C546F110F7802F00ECE126 /* Blio.xcdatamodel */; };
 		C9AF1A431147A772007D7AFC /* BlioContentsTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */; };
 		C9AF1A441147A772007D7AFC /* BlioBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */; };
@@ -739,8 +737,6 @@
 		553E98FF1107B8F200FB309D /* BlioSpeedReadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSpeedReadView.h; sourceTree = "<group>"; };
 		553E99001107B8F200FB309D /* BlioSpeedReadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSpeedReadView.m; sourceTree = "<group>"; };
 		555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = booktextureandshadowsubtle.png; sourceTree = "<group>"; };
-		555CAF2D10F3B950007B1885 /* AccelerometerFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccelerometerFilter.h; sourceTree = "<group>"; };
-		555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccelerometerFilter.m; sourceTree = "<group>"; };
 		555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryGridViewController.png; sourceTree = "<group>"; };
 		556D1D5A10F3BE580019315C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		55822EEF10F2860F008614FD /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -1401,8 +1397,6 @@
 				C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */,
 				7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */,
 				7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */,
-				555CAF2D10F3B950007B1885 /* AccelerometerFilter.h */,
-				555CAF2E10F3B950007B1885 /* AccelerometerFilter.m */,
 				A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */,
 				A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */,
 				A3169287111488C9005AAE5E /* BlioAudioManager.h */,
@@ -2683,7 +2677,6 @@
 				7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */,
 				7D79183610F2257C00C4D839 /* BlioFlowView.m in Sources */,
 				C9D8A4A310F20E4800FD5F22 /* BlioUIImageAdditions.m in Sources */,
-				555CAF2F10F3B950007B1885 /* AccelerometerFilter.m in Sources */,
 				C9C546F210F7802F00ECE126 /* Blio.xcdatamodel in Sources */,
 				C990F9C6110065CB00C82CA8 /* BlioContentsTabViewController.m in Sources */,
 				7D4CE4751100C64C0061BDF2 /* BlioBookmark.m in Sources */,
@@ -2788,7 +2781,6 @@
 				C9AF1A3C1147A772007D7AFC /* BlioBookViewController.m in Sources */,
 				C9AF1A3D1147A772007D7AFC /* BlioFlowView.m in Sources */,
 				C9AF1A3E1147A772007D7AFC /* BlioUIImageAdditions.m in Sources */,
-				C9AF1A411147A772007D7AFC /* AccelerometerFilter.m in Sources */,
 				C9AF1A421147A772007D7AFC /* Blio.xcdatamodel in Sources */,
 				C9AF1A431147A772007D7AFC /* BlioContentsTabViewController.m in Sources */,
 				C9AF1A441147A772007D7AFC /* BlioBookmark.m in Sources */,
