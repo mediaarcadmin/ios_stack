@@ -25,7 +25,7 @@
     NSUInteger startElementOffset;
     
     id currentParagraphID;
-    NSUInteger currentElementOffset;
+    NSUInteger currentCharacterOffset;
     NSArray *currentParagraphWords;
     
     BOOL hasLooped;

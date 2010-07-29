@@ -15,7 +15,7 @@
 @property (nonatomic, retain) id startParagraphID;
 @property (nonatomic, assign) NSUInteger startElementOffset;
 @property (nonatomic, retain) id currentParagraphID;
-@property (nonatomic, assign) NSUInteger currentElementOffset;
+@property (nonatomic, assign) NSUInteger currentCharacterOffset;
 @property (nonatomic, retain) NSArray *currentParagraphWords;
 @property (nonatomic, assign) BOOL hasLooped;
 
@@ -23,7 +23,7 @@
 
 @implementation BlioBookSearchController
 
-@synthesize paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentElementOffset, currentParagraphWords, hasLooped;
+@synthesize paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentCharacterOffset, currentParagraphWords, hasLooped;
 
 - (void)dealloc {
     [self cancel];
@@ -65,10 +65,10 @@
             break;
         }
     }
-    self.currentElementOffset = elementOffset;
+    self.currentCharacterOffset = elementOffset;
     
     self.startParagraphID = self.currentParagraphID;
-    self.startElementOffset = self.currentElementOffset;
+    self.startElementOffset = self.currentCharacterOffset;
     
     [self findNextOccurrence];
 }
@@ -113,7 +113,7 @@
     // TODO - confirm that paragraphIDs observe the comparison correctly
     if ((self.hasLooped) &&
         ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedSame) &&
-        (self.currentElementOffset >= self.startElementOffset)) {
+        (self.currentCharacterOffset >= self.startElementOffset)) {
         
         [self searchCompleted];
         return;
@@ -122,34 +122,36 @@
     NSString *currentParagraphString = [self.currentParagraphWords componentsJoinedByString:@" "];
     
     NSRange foundRange = NSMakeRange(NSNotFound, 0);
-    NSInteger searchLength = [currentParagraphString length] - 1 - self.currentElementOffset;
+    NSInteger searchLength = [currentParagraphString length] - 1 - self.currentCharacterOffset;
     
     if (searchLength > 0) {
-        NSRange searchRange = NSMakeRange(self.currentElementOffset, searchLength);
+        NSRange searchRange = NSMakeRange(self.currentCharacterOffset, searchLength);
         foundRange = [currentParagraphString rangeOfString:self.searchString options:self.searchOptions range:searchRange];
 //        NSLog(@"%@", [currentParagraphString substringWithRange:searchRange]);
     }
     
     if (foundRange.location != NSNotFound) {
-        self.currentElementOffset = foundRange.location + foundRange.length;
+        self.currentCharacterOffset = foundRange.location + foundRange.length;
         
         NSUInteger characterOffset = 0;
         NSUInteger beginningWordOffset = 0;
         NSUInteger endWordOffset = 0;
-        NSUInteger beginningElementOffset = NSNotFound;
-        NSUInteger endElementOffset = NSNotFound;
+        // Although we calculate the beginning & end character offsets for teh range they are 
+        // discarded because BlioBookmarkRange does not store charcters just element offsets (to handle hyphenation)
+        NSUInteger beginningCharacterOffset = NSNotFound;
+        NSUInteger endCharacterOffset = NSNotFound;
         NSString *prefix = @"";
         
         for (NSString *word in self.currentParagraphWords) {
             NSUInteger endOfWord = characterOffset + [word length];
             if (endOfWord > foundRange.location) {
-                if (beginningElementOffset == NSNotFound) {
-                    beginningElementOffset = foundRange.location - characterOffset;
-                    prefix = [word substringWithRange:NSMakeRange(0, beginningElementOffset)];
+                if (beginningCharacterOffset == NSNotFound) {
+                    beginningCharacterOffset = foundRange.location - characterOffset;
+                    prefix = [word substringWithRange:NSMakeRange(0, beginningCharacterOffset)];
                 }
                 
-                if (endOfWord >= currentElementOffset) {
-                    endElementOffset = currentElementOffset - characterOffset - 1;
+                if (endOfWord >= currentCharacterOffset) {
+                    endCharacterOffset = currentCharacterOffset - characterOffset - 1;
                     break;
                 }
                 
@@ -181,11 +183,11 @@
         }
         
         BlioBookmarkRange *foundBookmarkRange = nil;
-        if ((beginningElementOffset != NSNotFound) && (endElementOffset != NSNotFound)) {
+        if ((beginningCharacterOffset != NSNotFound) && (endCharacterOffset != NSNotFound)) {
             BlioBookmarkPoint *foundBookmarkBeginningPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:beginningWordOffset];
-            foundBookmarkBeginningPoint.elementOffset = beginningElementOffset;
+            foundBookmarkBeginningPoint.elementOffset = 0; // see note about character offsets above
             BlioBookmarkPoint *foundBookmarkEndPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:endWordOffset];
-            foundBookmarkEndPoint.elementOffset = endElementOffset;
+            foundBookmarkEndPoint.elementOffset = 0; // see note about character offsets above
             foundBookmarkRange = [[[BlioBookmarkRange alloc] init] autorelease];
             foundBookmarkRange.startPoint = foundBookmarkBeginningPoint;
             foundBookmarkRange.endPoint = foundBookmarkEndPoint;
@@ -203,7 +205,7 @@
             [self searchReachedEndOfBook];
         } else {
             self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
-            self.currentElementOffset = 0;
+            self.currentCharacterOffset = 0;
             
             // TODO - confirm that paragraphIDs observe the comparison correctly
             if (self.hasLooped && ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedDescending)) {
