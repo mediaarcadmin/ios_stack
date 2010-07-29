@@ -153,4 +153,14 @@
     return YES;
 }
 
+- (BOOL)isImageNode
+{
+    return NO;
+}
+
+- (NSString *)imageSourceURL
+{
+    return nil;
+}
+
 @end

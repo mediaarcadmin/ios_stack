@@ -45,6 +45,11 @@
                         [constructionString appendFormat:@"font-size:%@px;", [myAttributes objectForKey:key]];
                     } else if([key isEqualToString:@"TextIndent"]) {
                         [constructionString appendFormat:@"text-indent:%@px;", [myAttributes objectForKey:key]];
+                    } else if([key isEqualToString:@"Stretch"]) {
+                        NSString *value = [myAttributes objectForKey:key];
+                        if([value isEqualToString:@"Fill"]) {
+                            [constructionString appendString:@"width:100%; height:100%;"];
+                        }
                     }
                 }
                 if(constructionString.length) {
@@ -60,5 +65,20 @@
         return [super attributeWithName:attributeName];
     }
 }
+
+- (BOOL)isImageNode
+{
+    return [@"Image" isEqualToString:self.name];
+}
+
+- (NSString *)imageSourceURL
+{
+    NSString *source = [self attributeWithName:@"Source"];
+   /* if([source characterAtIndex:0] == '/') {
+        return [self.
+    }*/
+    return source;
+}
+
 
 @end

@@ -418,11 +418,7 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (NSData *)dataFromXPSAtPath:(NSString *)path {
-    [path retain];
-    NSData *componentData = [[self xpsProvider] dataForComponentAtPath:path];
-    [path release];
-    return componentData;
-    //return [[self xpsProvider] dataForComponentAtPath:path];
+    return [[self xpsProvider] dataForComponentAtPath:path];
 }
 
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path {
@@ -487,8 +483,8 @@ static void sortedHighlightRangePredicateInit() {
 
 - (NSData *)manifestDataForKey:(NSString *)key {
     NSData *data = nil;
-    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
-    if (manifestEntry) {
+    NSDictionary *manifestEntry = [[self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] retain];
+    if(manifestEntry) {
         NSString *location = [manifestEntry objectForKey:@"location"];
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
@@ -501,6 +497,7 @@ static void sortedHighlightRangePredicateInit() {
             }
         }
     }
+    [manifestEntry release];
     return data;
 }
 

@@ -14,7 +14,7 @@
 
 @interface BlioFlowEucBook : EucBUpeBook {
     NSManagedObjectID *bookID;
-    BOOL hasCover;
+    BOOL fakeCover;
     BlioTextFlow *textFlow;
 }
 
