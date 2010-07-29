@@ -201,7 +201,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             lastLayout = kBlioPageLayoutPageLayout;
         } 
         
-        if ([newBook hasXps]) lastLayout = kBlioPageLayoutPageLayout; // TODO: remove this forced option
+        if (lastLayout == kBlioPageLayoutSpeedRead && [newBook hasXps]) lastLayout = kBlioPageLayoutPageLayout; // TODO: remove this forced option
 
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
