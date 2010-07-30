@@ -80,7 +80,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     // entity of this class.
     
     
-    CGContextStrokeRect(_cgContext, layoutEntity.frame);
+    //CGContextStrokeRect(_cgContext, layoutEntity.frame);
 
     CGContextSaveGState(_cgContext);
     CGPoint point = layoutEntity.frame.origin;
