@@ -139,6 +139,14 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
 
 - (void)closeBottomWithContentHeight:(CGFloat)height atInternalPageBreak:(BOOL)atInternalPageBreak
 {
+    css_computed_style *computedStyle = self.documentNode.computedStyle;
+    css_fixed fixed = 0;
+    css_unit unit = 0;
+    
+    if(css_computed_height(computedStyle, &fixed, &unit) != CSS_HEIGHT_AUTO && unit != CSS_UNIT_PCT) {
+        CGFloat specifiedHeight = EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, _scaleFactor);
+        height = MAX(specifiedHeight, height);
+    }
     _contentRect.size.height = height;
     
     if(atInternalPageBreak) {
@@ -223,8 +231,13 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
 
 - (void)_collapseTopMarginUpwards
 {
-    NSParameterAssert(self.children.count == 0);
-                      
+    //NSParameterAssert(self.children.count == 0);
+    if(self.children.count != 0) {
+        for(EucCSSLayoutPositionedContainer *child in self.children) {
+            NSParameterAssert(child.frame.size.height == 0);
+        }
+    }
+    
     CGFloat oldTopMarginHeight = _borderRect.origin.y;
     if(oldTopMarginHeight) {
         NSMutableArray *blocksToAdjust = [NSMutableArray arrayWithObject:self];
