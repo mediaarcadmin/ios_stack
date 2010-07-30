@@ -261,14 +261,15 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     size_t renderItemsCount = line.renderItemCount;
     
     EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
+    Class nsStringClass = [NSString class];
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         id item = renderItem->item;
         CGRect rect = renderItem->rect;
 
-        CGContextStrokeRect(_cgContext, rect);
-        NSLog(@"Render item: %@", NSStringFromCGRect(rect));
+        //CGContextStrokeRect(_cgContext, rect);
+        //THLog(@"Render item: %@", NSStringFromCGRect(rect));
 
-        if([item isKindOfClass:[NSString class]]) {
+        if([item isKindOfClass:nsStringClass]) {
             [renderItem->stringRenderer drawString:(NSString *)item
                                          inContext:_cgContext 
                                            atPoint:rect.origin

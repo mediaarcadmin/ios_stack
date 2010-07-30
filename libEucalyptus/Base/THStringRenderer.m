@@ -483,7 +483,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         CGContextShowText(context, " ", 1);
     }
     CGPoint endPoint = CGContextGetTextPosition(context);
-    int spaceWidth = roundf(endPoint.x);
+    int spaceWidth = endPoint.x;
     
     _lastBreakCount = 0;
     
@@ -541,7 +541,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
             
             endPoint = CGContextGetTextPosition(context);
 
-            int wordWidth = roundf(endPoint.x);
+            int wordWidth = endPoint.x;
             
             lineSoFarWidth += wordWidth;
             
@@ -600,7 +600,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         }            
     }
     
-    _lastSize = CGSizeMake(longestLineLength, totalHeight);
+    _lastSize = CGSizeMake(ceilf(longestLineLength), totalHeight);
     
     CGContextRestoreGState(context);
     

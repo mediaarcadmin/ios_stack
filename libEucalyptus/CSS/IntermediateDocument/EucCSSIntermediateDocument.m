@@ -134,7 +134,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             css_select_ctx_append_sheet(_selectCtx, stylesheet);
         } else {
             css_stylesheet_destroy(stylesheet);
-            NSLog(@"Error %ld parsing stylesheet", (long)err);
+            THWarn(@"Error %ld parsing stylesheet", (long)err);
         }
     }        
     

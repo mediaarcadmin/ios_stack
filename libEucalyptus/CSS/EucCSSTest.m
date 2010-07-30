@@ -37,7 +37,7 @@ int main (int argc, const char * argv[]) {
 
     css_error cssErr = css_initialise(argv[1], EucRealloc, NULL);
     if(cssErr != CSS_OK) {
-        NSLog(@"Error \"%s\" setting up libCSS", css_error_to_string(cssErr));
+        THWarn(@"Error \"%s\" setting up libCSS", css_error_to_string(cssErr));
         goto bail;
     } else {
        cssInitialised = YES;
