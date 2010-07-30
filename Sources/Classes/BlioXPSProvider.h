@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "BlioLayoutDataSource.h"
+#import "BlioTimeOrderedCache.h"
 #import "XpsSdk.h"
 
 @interface BlioXPSProvider : NSObject <BlioLayoutDataSource, NSXMLParserDelegate> {
@@ -27,6 +28,8 @@
     NSMutableDictionary *xpsData;
     NSMutableArray *uriMap;
     NSMutableString *currentUriString;
+    
+    BlioTimeOrderedCache *componentCache;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
