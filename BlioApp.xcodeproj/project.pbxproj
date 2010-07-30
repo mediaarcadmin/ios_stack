@@ -326,6 +326,10 @@
 		C9867C461125A54C0070A03E /* BlioStoreLocalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867C451125A54C0070A03E /* BlioStoreLocalParser.m */; };
 		C9867DE61127164F0070A03E /* BlioStoreBookView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9867DE51127164F0070A03E /* BlioStoreBookView.xib */; };
 		C9867F6C112964A70070A03E /* BlioStoreFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867F6B112964A70070A03E /* BlioStoreFeed.m */; };
+		C988573A1202ED54006905CF /* navigationBarBlackTranslucentButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */; };
+		C988573B1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */; };
+		C988573C1202ED54006905CF /* navigationBarBlackTranslucentButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */; };
+		C988573D1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */; };
 		C990F9C6110065CB00C82CA8 /* BlioContentsTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */; };
 		C9985C03113E84E9009E5263 /* BlioLayoutScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9985C02113E84E9009E5263 /* BlioLayoutScrollView.m */; };
 		C9985D70113EB0A2009E5263 /* BlioLayoutContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9985D6F113EB0A2009E5263 /* BlioLayoutContentView.m */; };
@@ -1166,6 +1170,8 @@
 		C9867DE51127164F0070A03E /* BlioStoreBookView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = BlioStoreBookView.xib; path = ../Sources/Classes/BlioStoreBookView.xib; sourceTree = "<group>"; };
 		C9867F6A112964A70070A03E /* BlioStoreFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreFeed.h; sourceTree = "<group>"; };
 		C9867F6B112964A70070A03E /* BlioStoreFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFeed.m; sourceTree = "<group>"; };
+		C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navigationBarBlackTranslucentButton.png; sourceTree = "<group>"; };
+		C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "navigationBarBlackTranslucentButton@2x.png"; sourceTree = "<group>"; };
 		C98CCAAB119D8352002E9A8E /* XpsSdk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XpsSdk.h; sourceTree = "<group>"; };
 		C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioContentsTabViewController.h; sourceTree = "<group>"; };
 		C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioContentsTabViewController.m; sourceTree = "<group>"; };
@@ -1469,6 +1475,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */,
+				C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */,
 				C9FD392511FD69FF008F1F50 /* buttonBarArrowDownSmall.png */,
 				C9FD392611FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png */,
 				C9FD392711FD69FF008F1F50 /* buttonBarArrowUpSmall.png */,
@@ -2495,6 +2503,8 @@
 				C9FD392B11FD69FF008F1F50 /* buttonBarArrowUpSmall.png in Resources */,
 				C9FD392C11FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png in Resources */,
 				7DBD0EDD12018E78009CD9DA /* TextFlowXAML.css in Resources */,
+				C988573A1202ED54006905CF /* navigationBarBlackTranslucentButton.png in Resources */,
+				C988573B1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2663,6 +2673,8 @@
 				C9FD392F11FD69FF008F1F50 /* buttonBarArrowUpSmall.png in Resources */,
 				C9FD393011FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png in Resources */,
 				7DBD0EE112018F34009CD9DA /* TextFlowXAML.css in Resources */,
+				C988573C1202ED54006905CF /* navigationBarBlackTranslucentButton.png in Resources */,
+				C988573D1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

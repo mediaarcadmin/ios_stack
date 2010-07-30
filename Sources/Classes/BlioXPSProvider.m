@@ -348,10 +348,15 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
         return nil;
     } else {
-        rawData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
+        NSData *packageData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
         //NSLog(@"Raw data length %d (%d) with compression %d", [rawData length], packageInfo.length, packageInfo.compression_type);
         if (packageInfo.compression_type == 8) {
-            rawData = [self decompressWithRawDeflate:rawData];
+            rawData = [self decompressWithRawDeflate:packageData];
+            if ([rawData length] == 0) {
+                NSLog(@"Error decompressing component at path %@ for book with ID %@", path, self.bookID);
+            }
+        } else {
+            rawData = packageData;
         }
     }
     
@@ -557,9 +562,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	
     [inflateLock lock];
     
-    //ret = XPS_inflateInit2(&strm,31); // second argument = 15 (default window size) + 16 (for gzip decoding)	
 	ret = XPS_inflateInit2(&strm, windowBits);
-    //ret = [self inflateInit:&strm]; 
 	
 	if (ret != Z_OK) {
         [inflateLock unlock];
@@ -567,8 +570,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
     }
 	
 	strm.avail_in = [data length];
-	// if (strm.avail_in == 0)
-	//	  break;
 	strm.next_in = (Bytef *)[data bytes];
 	// Inflate until the output buffer isn't full
 	do {
@@ -593,13 +594,10 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	XPS_inflateEnd(&strm);
 	
     [inflateLock unlock];
-    
-	// TESTING
-	//NSString* testStr = [[NSString alloc] initWithData:outData encoding:NSASCIIStringEncoding];
-	//NSLog(@"Unencrypted buffer: %s",testStr);
 	
-	if (ret == Z_STREAM_END)
+	if (ret == Z_STREAM_END || ret == Z_OK)
 		return [outData autorelease];
+    
 	return nil;
 }
 

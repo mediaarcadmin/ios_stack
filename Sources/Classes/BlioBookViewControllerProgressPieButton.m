@@ -140,14 +140,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 - (void)drawRect:(CGRect)rect {    
     // Drawing code
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextTranslateCTM(ctx, 0.0, CGRectGetMaxY(rect));
-    CGContextScaleCTM(ctx, 1.0, -1.0);
     
     CGFloat yButtonPadding = rect.size.height - 19;
     if (yButtonPadding > 7) yButtonPadding = 7;
-    //    
-    //CGFloat xButtonPadding = yButtonPadding;
-    //CGFloat yButtonPadding = 7.0f;
+
     CGFloat xButtonPadding = 7.0f;
     CGFloat wedgePadding = 2.0f;
     CGRect inRect = CGRectInset(rect, xButtonPadding, yButtonPadding);
@@ -165,36 +161,19 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
         height = height - 2 * insetY;
     }
     
-    //CGRect outerSquare = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY + 1, width, height));
     CGRect outerFrame = CGRectIntegral(CGRectMake(inRect.origin.x + insetX, inRect.origin.y + insetY, width, height));
-    
     CGRect innerSquare = CGRectInset(outerFrame, wedgePadding, wedgePadding);
-    CGRect buttonSquare = CGRectInset(outerFrame, -xButtonPadding, -yButtonPadding);
-    //buttonSquare.origin.y -= 1;
-    backgroundFrame = UIEdgeInsetsInsetRect(buttonSquare, UIEdgeInsetsMake(1, 0, 0, 0));
+    backgroundFrame = CGRectInset(outerFrame, -xButtonPadding, -yButtonPadding);
     
-    CGContextClipToRect(ctx, buttonSquare);
+    CGContextClipToRect(ctx, backgroundFrame);
+        
+    UIImage *buttonImage = [UIImage imageNamed:@"navigationBarBlackTranslucentButton"];
+    UIImage *stretchImage = [buttonImage stretchableImageWithLeftCapWidth:floorf(buttonImage.size.width/2.0f) topCapHeight:floorf(buttonImage.size.height/2.0f)];
     
+    [stretchImage drawInRect:backgroundFrame];
     
-    if ([self isHighlighted] || toggled) {
-        CGContextSetShadowWithColor(ctx, CGSizeMake(0,-1), 0, [UIColor colorWithWhite:0.5f alpha:0.25f].CGColor);
-    } else {
-        CGContextSetShadowWithColor(ctx, CGSizeMake(0,-1), 0, [UIColor colorWithWhite:1.0f alpha:0.25f].CGColor);
-    }
-    
-    CGContextBeginTransparencyLayer(ctx, NULL);
-    addRoundedRectToPath(ctx, 6.0f, backgroundFrame);
-    CGContextClip(ctx);
-    
-    CGContextSetFillColorWithColor(ctx, tintColor.CGColor);
-    CGContextFillRect(ctx, backgroundFrame);
-    drawGlossGradient(ctx, backgroundFrame);
-    
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0,-0.5f), 0.5f, [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
-    CGContextSetLineWidth(ctx, 1.0f);
-    addRoundedRectToPath(ctx, 6.0f, backgroundFrame);
-    CGContextStrokePath(ctx);
+    CGContextTranslateCTM(ctx, 0, CGRectGetMaxY(rect));
+    CGContextScaleCTM(ctx, 1, -1);
     
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:1.0f alpha:1.0f].CGColor);
     CGContextSetLineWidth(ctx, 2.0f);
@@ -210,11 +189,10 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     }
     
     if ([self isHighlighted] || toggled) {
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.0f alpha:0.25f].CGColor);
-        CGContextFillRect(ctx, backgroundFrame);
+        CGContextSetBlendMode(ctx, kCGBlendModeSourceAtop);
+        CGContextSetRGBFillColor(ctx, 0, 0, 0, 0.465f);
+        CGContextFillRect(ctx, rect);
     }
-    
-    CGContextEndTransparencyLayer(ctx);
 }
 
 - (BOOL)isAccessibilityElement {
