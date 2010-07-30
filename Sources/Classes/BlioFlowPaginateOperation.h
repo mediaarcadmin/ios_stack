@@ -16,7 +16,8 @@
     BOOL finished;
     
     EucBookPaginator *paginator;
+    NSString *bookTitle;
+    CFAbsoluteTime startTime;
 }
-@property (nonatomic, retain) EucBookPaginator *paginator;
 
 @end
