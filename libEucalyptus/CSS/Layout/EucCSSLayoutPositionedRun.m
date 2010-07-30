@@ -12,9 +12,6 @@
 @implementation EucCSSLayoutPositionedRun
 
 @synthesize documentRun = _documentRun;
-@synthesize containingBlock = _containingBlock;
-@synthesize frame = _frame;
-@synthesize lines = _lines;
 
 - (id)initWithDocumentRun:(EucCSSLayoutDocumentRun *)documentRun
 {
@@ -27,10 +24,11 @@
 
 - (void)dealloc
 {
-    [_lines release];
     [_documentRun release];
     
     [super dealloc];
 }
+
+
 
 @end

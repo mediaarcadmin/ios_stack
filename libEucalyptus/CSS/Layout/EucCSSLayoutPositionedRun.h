@@ -13,19 +13,15 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+#import "EucCSSLayoutPositionedContainer.h"
+
 @class EucCSSLayoutDocumentRun, EucCSSLayoutPositionedBlock;
 
-@interface EucCSSLayoutPositionedRun : NSObject {
+@interface EucCSSLayoutPositionedRun : EucCSSLayoutPositionedContainer {
     EucCSSLayoutDocumentRun *_documentRun;
-    EucCSSLayoutPositionedBlock *_containingBlock;
-    NSArray *_lines;
-    CGRect _frame;
 }
 
 @property (nonatomic, retain, readonly) EucCSSLayoutDocumentRun *documentRun;
-@property (nonatomic, assign) EucCSSLayoutPositionedBlock *containingBlock;
-@property (nonatomic, retain) NSArray *lines;
-@property (nonatomic, assign) CGRect frame;
 
 - (id)initWithDocumentRun:(EucCSSLayoutDocumentRun *)documentRun;
 

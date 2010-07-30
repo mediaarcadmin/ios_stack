@@ -166,7 +166,6 @@
 		7D81ED2610E90C220016D44A /* paper-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2310E90C220016D44A /* paper-black.png */; };
 		7D81ED2710E90C220016D44A /* paper-neutral.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2410E90C220016D44A /* paper-neutral.png */; };
 		7D81ED2810E90C220016D44A /* paper-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2510E90C220016D44A /* paper-white.png */; };
-		7D905E2011590AAC0011272A /* PageIndexes in Resources */ = {isa = PBXBuildFile; fileRef = 7D905DA611590AAC0011272A /* PageIndexes */; };
 		7D9147C91151497900BCBB23 /* BlioFlowPaginateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */; };
 		7D9147CA1151497900BCBB23 /* BlioFlowPaginateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */; };
 		7D9148D4115159E400BCBB23 /* Aliases in Resources */ = {isa = PBXBuildFile; fileRef = 7D9148D3115159E400BCBB23 /* Aliases */; };
@@ -2385,7 +2384,6 @@
 				7D9148D4115159E400BCBB23 /* Aliases in Resources */,
 				7DF2A58B115381EF00FC2045 /* TextFlowFlow.css in Resources */,
 				7D529C111158DC1100548C00 /* TextFlowCover.xhtml in Resources */,
-				7D905E2011590AAC0011272A /* PageIndexes in Resources */,
 				A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */,
 				C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */,
 				DC12F613117E563C0074B2D8 /* library-progress-background.png in Resources */,
