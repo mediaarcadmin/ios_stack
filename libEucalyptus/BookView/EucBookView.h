@@ -64,8 +64,7 @@ typedef struct EucRange {
     
     UIView *_pageSliderTrackingInfoView;    
     
-    NSInteger _temporaryHighlightPage;
-    EucBookPageIndexPoint *_temporaryHighlightIndexPoint;
+    EucHighlightRange *_temporaryHighlightRange;
     BOOL _temporaryHighlightingDisabled;
     
     BOOL _allowsSelection;
@@ -119,7 +118,8 @@ typedef struct EucRange {
 - (NSInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (NSInteger)pageNumberForUuid:(NSString *)uuid;
 
-- (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint;
+- (void)highlightWordAtIndexPoint:(EucBookPageIndexPoint *)indexPoint animated:(BOOL)animated;
+- (void)highlightWordsInHighlightRange:(EucHighlightRange *)highlightRange animated:(BOOL)animated;
 
 - (void)refreshHighlights;
 

@@ -70,7 +70,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                               relativeToURL:sheetUrl];
 
             css_stylesheet *import;
-            if(css_stylesheet_create(CSS_LEVEL_21,
+            if(css_stylesheet_create(CSS_LEVEL_3,
                                      NULL, [[resolvedImportUrl absoluteString] UTF8String], NULL,
                                      CSS_ORIGIN_AUTHOR, importMedia, false, 
                                      false, _lwcContext, 
@@ -114,7 +114,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     NSData *baseSheet = [NSData dataWithContentsOfMappedFile:basePath];
     
     css_stylesheet *stylesheet;
-    if(css_stylesheet_create(CSS_LEVEL_21, "UTF-8",
+    if(css_stylesheet_create(CSS_LEVEL_3, "UTF-8",
                              "", "", CSS_ORIGIN_UA, 
                              CSS_MEDIA_ALL, false,
                              false, _lwcContext,
@@ -134,7 +134,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
             css_select_ctx_append_sheet(_selectCtx, stylesheet);
         } else {
             css_stylesheet_destroy(stylesheet);
-            NSLog(@"Error %ld parsing stylesheet", (long)err);
+            THWarn(@"Error %ld parsing stylesheet", (long)err);
         }
     }        
     
@@ -178,7 +178,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                     if([@"style" caseInsensitiveCompare:examiningNode.name] == NSOrderedSame) {
                         id<EucCSSDocumentTreeNode> styleContents = examiningNode.firstChild;
                         if(styleContents && styleContents.kind == EucCSSDocumentTreeNodeKindText) {
-                            css_error err = css_stylesheet_create(CSS_LEVEL_21, 
+                            css_error err = css_stylesheet_create(CSS_LEVEL_3, 
                                                                   "UTF-8", myUrl, "", 
                                                                   CSS_ORIGIN_AUTHOR, 
                                                                   CSS_MEDIA_ALL, false,
@@ -237,7 +237,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                         NSData *stylesheetData = [_dataSource dataForURL:stylesheetUrl];
                                         if(stylesheetData) {
                                             NSString *title = [examiningNode attributeWithName:@"title"];
-                                            css_error err = css_stylesheet_create(CSS_LEVEL_21, 
+                                            css_error err = css_stylesheet_create(CSS_LEVEL_3, 
                                                                                   NULL, 
                                                                                   [[stylesheetUrl absoluteString] UTF8String],
                                                                                   [title UTF8String], 

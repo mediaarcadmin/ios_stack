@@ -22,6 +22,7 @@
 #import "BlioBookmark.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioAlertManager.h"
+#import "BlioBookManager.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -177,6 +178,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         [_acapelaAudioManager setDelegate:self];
                     } 
                 }
+                
             }
         } else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];
@@ -199,7 +201,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             lastLayout = kBlioPageLayoutPageLayout;
         } 
         
-        if ([newBook hasXps]) lastLayout = kBlioPageLayoutPageLayout; // TODO: remove this forced option
+        if (lastLayout == kBlioPageLayoutSpeedRead && [newBook hasXps]) lastLayout = kBlioPageLayoutPageLayout; // TODO: remove this forced option
 
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
@@ -1283,6 +1285,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
         }
+        
+        // Reset the search resultsi
+        self.searchViewController = nil;
     }
 }
 
@@ -1782,9 +1787,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
         [aSearchViewController setTintColor:_returnToNavigationBarTint];
+        [aSearchViewController setBookView:self.bookView];
         [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
         [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
-        
         self.searchViewController = aSearchViewController;
         
         [aSearchViewController release];
@@ -1796,37 +1801,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
 }
     
-- (void)dummyShowParsedText:(id)sender {
-    if ([self.bookView isKindOfClass:[BlioLayoutView class]]) {
-        UITextView *aTextView = [[UITextView alloc] initWithFrame:self.view.bounds];
-        [aTextView setEditable:NO];
-        [aTextView setContentInset:UIEdgeInsetsMake(10, 0, 10, 0)];
-        NSInteger pageIndex = self.bookView.pageNumber - 1;
-        [aTextView setText:[[self.book textFlow] stringForPageAtIndex:pageIndex]];
-        [aTextView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
-        UIViewController *aVC = [[UIViewController alloc] init];
-        aVC.view = aTextView;
-        [aTextView release];
-        UINavigationController *aNC = [[UINavigationController alloc] initWithRootViewController:aVC];
-        [self presentModalViewController:aNC animated:YES];
-        aVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleDone target:self action:@selector(dummyDismissParsedText:)];                                                 
-        aVC.navigationItem.title = [NSString stringWithFormat:@"Page %d Text", self.bookView.pageNumber];
-        aNC.navigationBar.tintColor = _returnToNavigationBarTint;
-        [aVC release];
-        [aNC release];
-    } else if([self.bookView isKindOfClass:[BlioFlowView class]]) {
-        BlioLightSettingsViewController *controller = [[BlioLightSettingsViewController alloc] initWithNibName:@"Lighting"
-                                                                                                        bundle:[NSBundle mainBundle]];
-        controller.pageTurningView = [[self.bookView valueForKey:@"eucBookView"] valueForKey:@"pageTurningView"];
-        [self.navigationController presentModalViewController:controller animated:YES];
-        [controller release];
-    }
-}
-                                                  
-- (void)dummyDismissParsedText:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
-}
-
 #pragma mark -
 #pragma mark Add ActionSheet Methods
 

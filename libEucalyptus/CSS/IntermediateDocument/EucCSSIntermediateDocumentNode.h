@@ -31,6 +31,7 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextDisplayable;
 - (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under;
+- (EucCSSIntermediateDocumentNode *)displayableNodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *previousDisplayableSibling;
 
@@ -42,8 +43,10 @@ struct css_computed_style;
 @property (nonatomic, readonly) NSArray *preprocessedWords; // Default: nil - optional.
 
 @property (nonatomic, readonly) BOOL isImageNode;
-@property (nonatomic, readonly) NSURL *imageSrc;
+@property (nonatomic, readonly) NSURL *imageSource;
 @property (nonatomic, readonly) NSString *altText;
+@property (nonatomic, readonly) NSString *name; // Will just return the class name - can be overridden to return e.g. 
+                                                // XML name of the underlying document node.  Just used for debugging.
 
 // Abstract:
 

@@ -12,6 +12,7 @@
 #import "BlioFlowView.h"
 #import "BlioStoreManager.h"
 #import "BlioAlertManager.h"
+#import "NSString+BlioAdditions.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -176,12 +177,8 @@
 		
 		if ([aBook valueForKey:@"uuid"] == nil)
 		{
-			// generate uuid
-			CFUUIDRef theUUID = CFUUIDCreate(NULL);
-			CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
-			CFRelease(theUUID);
-			[aBook setValue:(NSString *)uniqueString forKey:@"uuid"];
-			CFRelease(uniqueString);
+            NSString *uniqueString = [NSString uniqueStringWithBaseString:title];
+			[aBook setValue:uniqueString forKey:@"uuid"];
 		}        
         if (![moc save:&error]) {
             NSLog(@"[BlioProcessingManager enqueueBookWithTitle:] (saving UUID) Save failed with error: %@, %@", error, [error userInfo]);

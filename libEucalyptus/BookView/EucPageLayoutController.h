@@ -31,15 +31,14 @@
 - (NSUInteger)nextSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber;
 
-- (THPair *)viewAndIndexPointRangeForPageNumber:(NSUInteger)pageNumber withPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+- (THPair *)viewAndIndexPointRangeForPageNumber:(NSUInteger)pageNumber;
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (EucBookPageIndexPoint *)indexPointForPageNumber:(NSUInteger)pageNumber;
 
 - (BOOL)viewShouldBeRigid:(UIView *)view;
 
 + (EucPageView *)blankPageViewWithFrame:(CGRect)frame
-                           forPointSize:(CGFloat)pointSize
-                        withPageTexture:(UIImage *)pageTexture;
+                           forPointSize:(CGFloat)pointSize;
 
 // A full description.
 // i.e. page 3 might be "1 of 300", to discount the cover and inner licence page.

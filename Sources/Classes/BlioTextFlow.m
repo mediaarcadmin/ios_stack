@@ -8,6 +8,7 @@
 
 #import "BlioTextFlow.h"
 #import "BlioTextFlowFlowTree.h"
+#import "BlioTextFlowXAMLTree.h"
 #import "BlioProcessing.h"
 #import "BlioBookManager.h"
 #import <libEucalyptus/THPair.h>
@@ -208,6 +209,8 @@
 @property (nonatomic, assign, readonly) BlioBook *book;
 @property (nonatomic, retain) NSSet *pageRanges;
 @property (nonatomic, retain) NSMutableArray *sections;
+
+@property (nonatomic, assign) BlioTextFlowFlowTreeKind flowTreeKind;
 
 - (NSArray *)blocksForPage:(NSInteger)pageIndex inPageRange:(BlioTextFlowPageRange *)pageRange targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker;
 
@@ -490,28 +493,89 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
 }
 
-- (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex
-{
-    BlioTextFlowFlowTree *tree = nil;
-    
-    NSArray *allSections = self.sections;
-    if(sectionIndex < allSections.count) {
-        BlioTextFlowSection *section = [self.sections objectAtIndex:sectionIndex];
+#pragma mark -
+#pragma mark Flow Tree
 
-        NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
-        
-        if(data) {
-            tree = [[BlioTextFlowFlowTree alloc] initWithTextFlow:self
-                                                             data:data];
+@synthesize flowTreeKind;
+
+static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) {
+    if(strcmp("Source", name) == 0) {
+        BlioTextFlow *self = (BlioTextFlow *)ctx;
+        for(int i = 0; atts[i]; i+=2) {
+            if(strcmp("Type", atts[i]) == 0) {
+                if(strcasecmp("epub", atts[i+1]) == 0) {
+                    self.flowTreeKind = BlioTextFlowFlowTreeKindXaml;
+                }
+            }
         }
-
     }
-    
-    return [tree autorelease];
 }
 
-- (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex
-{
+- (BlioTextFlowFlowTreeKind)flowTreeKind {
+    if(flowTreeKind == BlioTextFlowFlowTreeKindUnknown) {
+        NSData *data = [self.book manifestDataForKey:@"KNFBMetadataFliename"];
+        if(data) {
+            XML_Parser metadataParser = XML_ParserCreate(NULL);
+            XML_SetStartElementHandler(metadataParser, metadataXMLParsingStartElementHandler);
+            XML_SetUserData(metadataParser, (void *)self);    
+            if(!XML_Parse(metadataParser, [data bytes], [data length], XML_TRUE)) {
+                char *anError = (char *)XML_ErrorString(XML_GetErrorCode(metadataParser));
+                NSLog(@"TextFlow parsing error: '%s' in metadata file", anError);
+            }
+            XML_ParserFree(metadataParser);
+        } 
+        // We didn't find another format - assume flow format.
+        if(flowTreeKind == BlioTextFlowFlowTreeKindUnknown) {
+            flowTreeKind = BlioTextFlowFlowTreeKindFlow;
+        }
+    }
+    return flowTreeKind;
+}
+
+- (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex {
+    BlioTextFlowFlowTree *tree = nil;
+ 
+    if(self.flowTreeKind == BlioTextFlowFlowTreeKindFlow) {
+        NSArray *allSections = self.sections;
+        if(sectionIndex < allSections.count) {
+            BlioTextFlowSection *section = [self.sections objectAtIndex:sectionIndex];
+
+            NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
+            
+            if(data) {
+                tree = [[BlioTextFlowFlowTree alloc] initWithTextFlow:self
+                                                                 data:data];
+            }
+
+        }
+        [tree autorelease];
+    }
+    
+    return tree;
+}
+
+- (BlioTextFlowXAMLTree *)xamlTreeForSectionIndex:(NSUInteger)sectionIndex {
+    BlioTextFlowXAMLTree *tree = nil;
+    
+    if(self.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
+        NSArray *allSections = self.sections;
+        if(sectionIndex < allSections.count) {
+            BlioTextFlowSection *section = [self.sections objectAtIndex:sectionIndex];
+            
+            NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
+            
+            if(data) {
+                tree = [[BlioTextFlowXAMLTree alloc] initWithData:data];
+            }
+            
+        }
+        [tree autorelease];
+    }
+    
+    return tree;    
+}
+
+- (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex {
     BlioTextFlowSection *section = [self.sections objectAtIndex:sectionIndex];
     size_t length = 0;
     NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];

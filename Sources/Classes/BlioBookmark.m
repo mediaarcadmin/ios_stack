@@ -132,11 +132,15 @@
 }
 
 + (BlioBookmarkRange *)bookmarkRangeWithBookmarkPoint:(BlioBookmarkPoint *)point {
-    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
-    range.startPoint = point;
-    range.endPoint = point;
+    if (point) {
+        BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+        range.startPoint = point;
+        range.endPoint = point;
     
-    return [range autorelease];
+        return [range autorelease];
+    } else {
+        return nil;
+    }
 }
 
 + (BlioBookmarkRange *)bookmarkRangeWithPersistentBookmarkRange:(NSManagedObject *)persistedBookmarkRange {

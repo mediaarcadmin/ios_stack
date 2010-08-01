@@ -25,19 +25,20 @@
     NSUInteger startElementOffset;
     
     id currentParagraphID;
-    NSUInteger currentElementOffset;
+    NSUInteger currentCharacterOffset;
     NSArray *currentParagraphWords;
     
-    BOOL hasLooped;
+    BOOL hasWrapped;
 	BOOL searching;
 }
 
-@property (nonatomic, assign) id<BlioParagraphSource> paragraphSource;
+@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 @property (nonatomic, assign) id<BlioBookSearchDelegate> delegate;
 @property (nonatomic, readonly, getter=isSearching) BOOL searching;
 @property (nonatomic, assign) NSUInteger maxPrefixAndMatchLength;
 @property (nonatomic, assign) NSUInteger maxSuffixLength;
 @property (nonatomic, assign) NSStringCompareOptions searchOptions;
+@property (nonatomic, readonly) BOOL hasWrapped;
 
 - (id)initWithParagraphSource:(id<BlioParagraphSource>)aParagraphSource;
 - (void)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint;
@@ -49,7 +50,7 @@
 @protocol BlioBookSearchDelegate
 
 @optional
-- (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint withPrefix:(NSString *)prefix withSuffix:(NSString *)suffix;
+- (void)searchController:(BlioBookSearchController *)searchController didFindString:(NSString *)searchString atBookmarkRange:(BlioBookmarkRange *)bookmarkRange withPrefix:(NSString *)prefix withSuffix:(NSString *)suffix;
 - (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)searchController;
 - (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)searchController;
 

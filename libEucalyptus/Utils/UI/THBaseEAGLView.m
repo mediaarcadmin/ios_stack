@@ -10,6 +10,7 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import <objc/message.h>
 
+#import "THLog.h"
 #import "THBaseEAGLView.h"
 
 @interface THBaseEAGLView ()
@@ -137,7 +138,7 @@
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, _depthRenderbuffer);
 
     if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES) {
-        NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
+        THWarn(@"failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
         return NO;
     }
     

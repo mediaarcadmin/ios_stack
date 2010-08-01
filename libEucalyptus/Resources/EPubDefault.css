@@ -44,8 +44,8 @@ blockquote      { margin-left: 40px; margin-right: 40px }
 i, cite, em,
 var, address    { font-style: italic }
 pre, tt, code,
-kbd, samp       { font-family: monospace }
-pre             { white-space: pre }
+kbd, samp       { font-family: monospace; text-align: left }
+pre             { white-space: pre-wrap }
 button, textarea,
 input, select   { display: inline-block }
 big             { font-size: 1.17em }

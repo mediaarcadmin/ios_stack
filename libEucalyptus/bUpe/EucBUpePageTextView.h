@@ -18,7 +18,6 @@
     CGFloat _pointSize;
     CGFloat _scaleFactor;
     BOOL _allowScaledImageDistortion;
-    BOOL _backgroundIsDark;
     
     EucCSSLayoutPositionedBlock *_positionedBlock;
     NSArray *_runs;

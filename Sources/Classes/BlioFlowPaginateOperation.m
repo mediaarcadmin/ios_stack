@@ -17,9 +17,19 @@
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPaginator.h>
 
+@interface BlioFlowPaginateOperation ()
+
+@property (nonatomic, retain) EucBookPaginator *paginator;
+@property (nonatomic, copy) NSString *bookTitle;
+@property (nonatomic, assign) CFAbsoluteTime startTime;
+
+@end
+
 @implementation BlioFlowPaginateOperation
 
 @synthesize paginator;
+@synthesize bookTitle;
+@synthesize startTime;
 
 - (BOOL)isConcurrent {
     return YES;
@@ -73,6 +83,7 @@
         return;
     }
     
+    
     [self willChangeValueForKey:@"isExecuting"];
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
@@ -84,25 +95,20 @@
         [[NSFileManager defaultManager] removeItemAtPath:paginationPath error:NULL];
     }
     
-    
+    self.startTime = CFAbsoluteTimeGetCurrent();
+
     EucBUpeBook *eucBook = nil;
-    BOOL checkInEPubBook = NO;
-    
     // Create a EucBook for the paginator.
     {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         
         BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
         
-        NSLog(@"Paginating book %@", book.title);
+        self.bookTitle = book.title;
         
-        if([book hasTextFlow]) {
-            eucBook = [[BlioFlowEucBook alloc] initWithBookID:self.bookID];
-        } else if([book hasEPub]) {
-            eucBook = [[[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:self.bookID] retain];
-            checkInEPubBook = YES;
-        }
-        eucBook.cacheDirectoryPath = paginationPath;
+        NSLog(@"Paginating book %@", self.bookTitle);
+        
+        eucBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID] retain];
         
         [pool drain];
     }
@@ -150,10 +156,7 @@
     }
     
     [eucBook release];
-
-    if(checkInEPubBook) {
-        [[BlioBookManager sharedBookManager] checkInEPubBookForBookWithID:self.bookID];
-    }    
+    [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
     
     [pool drain];
 }
@@ -177,6 +180,9 @@
     self.percentageComplete = 100;
     self.operationSuccess = YES;
     
+    CFAbsoluteTime elapsedTime = CFAbsoluteTimeGetCurrent() - self.startTime;
+    NSLog(@"Pagination of book %@ took %ld seconds", self.bookTitle, (long)round(elapsedTime));
+    
     [self finish];
 }
 
@@ -186,8 +192,11 @@
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
     self.percentageComplete = roundf(percentagePaginated);
 }
+
 -(void) dealloc {
+    self.bookTitle = nil;
 	self.paginator = nil;
 	[super dealloc];
 }
+
 @end

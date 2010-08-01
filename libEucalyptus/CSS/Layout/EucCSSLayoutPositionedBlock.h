@@ -13,31 +13,29 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+#import "EucCSSLayoutPositionedContainer.h"
+
+struct css_computed_style;
+
 @class EucCSSIntermediateDocumentNode;
 
-@interface EucCSSLayoutPositionedBlock : NSObject {
+@interface EucCSSLayoutPositionedBlock : EucCSSLayoutPositionedContainer {
     EucCSSIntermediateDocumentNode *_documentNode;
-    EucCSSLayoutPositionedBlock *_parent;
     
     CGFloat _scaleFactor;
     
-    CGRect _frame;
     CGRect _borderRect;
     CGRect _paddingRect;
     CGRect _contentRect;
-        
-    NSMutableArray *_subEntities;
 }
 
 @property (nonatomic, retain) EucCSSIntermediateDocumentNode *documentNode;
-@property (nonatomic, assign) EucCSSLayoutPositionedBlock *parent;
 
-@property (nonatomic, assign) CGRect frame;
-@property (nonatomic, assign) CGRect borderRect;
-@property (nonatomic, assign) CGRect paddingRect;
-@property (nonatomic, assign) CGRect contentRect;
+@property (nonatomic, assign, readonly) struct css_computed_style *computedStyle;
 
-@property (nonatomic, retain) NSArray *subEntities;
+@property (nonatomic, assign, readonly) CGRect borderRect;
+@property (nonatomic, assign, readonly) CGRect paddingRect;
+@property (nonatomic, assign, readonly) CGRect contentRect;
 
 - (id)initWithDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode
                scaleFactor:(CGFloat)scaleFactor;
@@ -45,8 +43,8 @@
 - (void)positionInFrame:(CGRect)frame
  afterInternalPageBreak:(BOOL)afterInternalPageBreak;
 
-- (void)closeBottomFromYPoint:(CGFloat)point atInternalPageBreak:(BOOL)atInternalPageBreak;
+- (void)closeBottomWithContentHeight:(CGFloat)height atInternalPageBreak:(BOOL)atInternalPageBreak;
 
-- (void)addSubEntity:(id)subEntity;
+- (void)addChild:(EucCSSLayoutPositionedContainer *)child;
 
 @end

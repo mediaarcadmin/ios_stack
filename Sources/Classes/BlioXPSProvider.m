@@ -53,7 +53,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     [contentsLock unlock];
     [inflateLock unlock];
     
-    [self performSelectorOnMainThread:@selector(deleteTemporaryDirectoryAtPath:) withObject:self.tempDirectory waitUntilDone:YES];
+    [self deleteTemporaryDirectoryAtPath:self.tempDirectory];
     
     self.tempDirectory = nil;
     self.imageInfo = nil;
@@ -140,14 +140,18 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path {
     // Should have been deleted by XPS cleanup but remove if not
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSError *error;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+    NSFileManager *threadSafeManager = [[NSFileManager alloc] init];
+    if ([threadSafeManager fileExistsAtPath:path]) {
         NSLog(@"Removing temp XPS directory at path %@");
 
-        if (![[NSFileManager defaultManager] removeItemAtPath:path error:&error]) {
+        if (![threadSafeManager removeItemAtPath:path error:&error]) {
             NSLog(@"Error removing temp XPS directory at path %@ with error %@ : %@", path, error, [error userInfo]);
         }
     }
+    [threadSafeManager release];
+    [pool drain];
 }
 
 - (BlioBook *)book {
@@ -231,6 +235,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     
     CGPoint topLeftOfTileOffsetFromBottomLeft = CGPointMake(tileRect.origin.x, CGRectGetHeight(bounds)*ctm.d - CGRectGetMaxY(tileRect));
     XPS_ctm render_ctm = { widthScale, 0, 0, heightScale, -topLeftOfTileOffsetFromBottomLeft.x + horizontalPageOffset, -topLeftOfTileOffsetFromBottomLeft.y + verticalPageOffset };
+    //NSLog(@"render_ctm = { %f, %f, %f, %f, %f, %f }", render_ctm.a, render_ctm.b, render_ctm.c, render_ctm.d, render_ctm.tx, render_ctm.ty);
     format.xResolution = 96;			
     format.yResolution = 96;	
     format.colorDepth = 8;
@@ -238,6 +243,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     format.pagesizescale = 1;	
     format.pagesizescalewidth = pagesizescalewidth * widthScale;		
     format.pagesizescaleheight = pagesizescaleheight * heightScale;
+    //NSLog(@"pagesScaleWidth %f, pagesScaleHeight %f", format.pagesizescalewidth, format.pagesizescaleheight);
     format.ctm = &render_ctm;				
     format.formatType = OutputFormat_RAW;
     imageInfo = NULL;
@@ -264,6 +270,19 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
             CGImageRelease(imageRef);        
         }
     [renderingLock unlock];
+}
+
+- (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
+    UIImage *thumbnail = nil;
+    NSString *thumbnailsLocation = [self.book manifestLocationForKey:@"thumbnailDirectory"];
+    if ([thumbnailsLocation isEqualToString:BlioManifestEntryLocationXPS]) {
+        NSString *thumbPath = [BlioXPSMetaDataDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.jpg", pageNumber]];
+        NSData *thumbData = [self dataForComponentAtPath:thumbPath];
+        if (thumbData) {
+            thumbnail = [UIImage imageWithData:thumbData];
+        }
+    }
+    return thumbnail;
 }
 
 // Not required as XPS document stays open during rendering
@@ -329,11 +348,21 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
         return nil;
     } else {
-        rawData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
+        NSData *packageData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
         //NSLog(@"Raw data length %d (%d) with compression %d", [rawData length], packageInfo.length, packageInfo.compression_type);
         if (packageInfo.compression_type == 8) {
-            rawData = [self decompressWithRawDeflate:rawData];
+            rawData = [self decompressWithRawDeflate:packageData];
+            if ([rawData length] == 0) {
+                NSLog(@"Error decompressing component at path %@ for book with ID %@", path, self.bookID);
+            }
+        } else {
+            rawData = packageData;
         }
+    }
+    
+    if ([rawData length] == 0) {
+        NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
+        return nil;
     }
     
     return rawData;
@@ -389,7 +418,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     if (mapped) {
         componentData = [self replaceMappedResources:componentData];
     }
-    
+    if (![componentData length]) {
+        NSLog(@"Zero length data returned in dataForComponentAtPath: %@", path);
+    }
     return componentData;
     
 }
@@ -398,7 +429,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 #pragma mark DRM Handler
 
 - (NSDictionary *)openDRMRenderingComponentAtPath:(NSString *)path {
-    //NSLog(@"Open %@", path);
+    //NSLog(@"openDRMRenderingComponentAtPath: %@", path);
     
     NSData *componentData = [self dataForComponentAtPath:path];
     
@@ -531,9 +562,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	
     [inflateLock lock];
     
-    //ret = XPS_inflateInit2(&strm,31); // second argument = 15 (default window size) + 16 (for gzip decoding)	
 	ret = XPS_inflateInit2(&strm, windowBits);
-    //ret = [self inflateInit:&strm]; 
 	
 	if (ret != Z_OK) {
         [inflateLock unlock];
@@ -541,8 +570,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
     }
 	
 	strm.avail_in = [data length];
-	// if (strm.avail_in == 0)
-	//	  break;
 	strm.next_in = (Bytef *)[data bytes];
 	// Inflate until the output buffer isn't full
 	do {
@@ -567,13 +594,10 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	XPS_inflateEnd(&strm);
 	
     [inflateLock unlock];
-    
-	// TESTING
-	//NSString* testStr = [[NSString alloc] initWithData:outData encoding:NSASCIIStringEncoding];
-	//NSLog(@"Unencrypted buffer: %s",testStr);
 	
-	if (ret == Z_STREAM_END)
+	if (ret == Z_STREAM_END || ret == Z_OK)
 		return [outData autorelease];
+    
 	return nil;
 }
 

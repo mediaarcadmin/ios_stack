@@ -17,7 +17,7 @@
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutDocumentRun.h"
-#import "EucCSSLayoutLine.h"
+#import "EucCSSLayoutPositionedLine.h"
 
 #import "THStringRenderer.h"
 #import "THLog.h"
@@ -57,7 +57,7 @@ CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style,
         case CSS_UNIT_CM:  
             ret *= 10.0f;          // Convert to mm.
         case CSS_UNIT_MM:
-            ret *= 0.155828221f; // mm per dot on an iPhone screen.
+            ret *= 0.155828221f; // mm per point on an iPhone screen.
             break;
         case CSS_UNIT_PC:
             ret *= 12.0f;
@@ -117,9 +117,9 @@ Block completion status.
 */
 
 - (EucCSSLayoutPositionedBlock *)_constructBlockAndAncestorsForNode:(EucCSSIntermediateDocumentNode *)node
-                                                  returningInnermost:(EucCSSLayoutPositionedBlock **)innermost
-                                                             inFrame:(CGRect)frame
-                                              afterInternalPageBreak:(BOOL)afterInternalPageBreak
+                                                 returningInnermost:(EucCSSLayoutPositionedBlock **)innermost
+                                                            inFrame:(CGRect)frame
+                                             afterInternalPageBreak:(BOOL)afterInternalPageBreak
 {
     EucCSSLayoutPositionedBlock *newContainer;
     EucCSSLayoutPositionedBlock *outermost;
@@ -134,9 +134,10 @@ Block completion status.
         
         newContainer = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:_scaleFactor];
         newContainer.documentNode = node;
-        [newContainer positionInFrame:parentContainer.contentRect afterInternalPageBreak:afterInternalPageBreak];
+        CGRect potentialFrame = parentContainer.contentBounds;
+        [newContainer positionInFrame:potentialFrame afterInternalPageBreak:afterInternalPageBreak];
         
-        [parentContainer addSubEntity:newContainer];
+        [parentContainer addChild:newContainer];
         [newContainer release];
     } else {
         newContainer = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:_scaleFactor];
@@ -153,91 +154,94 @@ Block completion status.
 
 -   (BOOL)_trimBlockToFrame:(CGRect)frame 
          returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                 pageBreaks:(vector< pair< EucCSSLayoutPoint, id> > *)pageBreaks
+                 pageBreaks:(vector< pair< EucCSSLayoutPoint, EucCSSLayoutPositionedContainer *> > *)pageBreaks
 pageBreaksDisallowedByRuleA:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByRuleA
 pageBreaksDisallowedByRuleB:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByRuleB
 pageBreaksDisallowedByRuleC:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByRuleC
 pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByRuleD
 {
-    vector< pair< EucCSSLayoutPoint, id> >::reverse_iterator pageBreakIt = pageBreaks->rbegin();
-    vector< pair< EucCSSLayoutPoint, id> >::reverse_iterator pageBreakItEnd = pageBreaks->rend();
+    vector< pair< EucCSSLayoutPoint, EucCSSLayoutPositionedContainer *> >::reverse_iterator pageBreakReverseIterator = pageBreaks->rbegin();
+    vector< pair< EucCSSLayoutPoint, EucCSSLayoutPositionedContainer *> >::reverse_iterator pageBreakReverseIteratorEnd = pageBreaks->rend();
 
     CGFloat maxY = CGRectGetMaxY(frame);
 
-    id element;
-    CGRect elementFrame;
+    EucCSSLayoutPositionedContainer *element;
+    CGRect elementAbsoluteFrame;
 
     if(THWillLogVerbose()) {
-        NSLog(@"All Breaks:");
-        while(pageBreakIt != pageBreakItEnd) {
-            EucCSSLayoutPoint point = pageBreakIt->first;
-            element = pageBreakIt->second;
-            elementFrame = [element frame];        
+        THLog(@"All Breaks:");
+        while(pageBreakReverseIterator != pageBreakReverseIteratorEnd) {
+            EucCSSLayoutPoint point = pageBreakReverseIterator->first;
+            element = pageBreakReverseIterator->second;
+            elementAbsoluteFrame = element.absoluteFrame;        
             
-            THLogVerbose(@"[%ld, %ld, %ld], %@, %@", point.nodeKey, point.word, point.element, NSStringFromCGRect(elementFrame), NSStringFromClass([element class]));
+            THLogVerbose(@"[%ld, %ld, %ld], %@, %@", point.nodeKey, point.word, point.element, NSStringFromCGRect(elementAbsoluteFrame), NSStringFromClass([element class]));
             
-            ++pageBreakIt;
+            ++pageBreakReverseIterator;
         } 
         
-        pageBreakIt = pageBreaks->rbegin();
+        pageBreakReverseIterator = pageBreaks->rbegin();
     }
     
     THLogVerbose(@"Choosing:");
-    while(pageBreakIt != pageBreakItEnd) {
-        element = pageBreakIt->second;
-        elementFrame = [element frame];        
+    while(pageBreakReverseIterator != pageBreakReverseIteratorEnd) {
+        element = pageBreakReverseIterator->second;
+        elementAbsoluteFrame = element.absoluteFrame;        
         
         if(THWillLogVerbose()) {
-            EucCSSLayoutPoint point = pageBreakIt->first;
-            THLogVerbose(@"[%ld, %ld, %ld], %f, %@, %@", point.nodeKey, point.word, point.element, maxY, NSStringFromCGRect(elementFrame), NSStringFromClass([element class]));
+            EucCSSLayoutPoint point = pageBreakReverseIterator->first;
+            THLogVerbose(@"[%ld, %ld, %ld], %f, %@, %@", point.nodeKey, point.word, point.element, maxY, NSStringFromCGRect(elementAbsoluteFrame), NSStringFromClass([element class]));
         }
-        if(elementFrame.origin.y <= maxY) {
+        if(elementAbsoluteFrame.origin.y <= maxY) {
             // The origin of the element after the break matches is the 
             // break's y position.  This break is the 'first' one on the page
             // (counting backwards through the possible breaks) so we should 
             // break at it, removing this element and all the ones after it.
             break;
         }
-        ++pageBreakIt;
+        ++pageBreakReverseIterator;
     } 
     
-    if(pageBreakIt != pageBreakItEnd) {
-        EucCSSLayoutPoint point = pageBreakIt->first;
-        id element = pageBreakIt->second;
+    if(pageBreakReverseIterator != pageBreakReverseIteratorEnd) {
+        EucCSSLayoutPoint point = pageBreakReverseIterator->first;
+        EucCSSLayoutPositionedContainer *element = pageBreakReverseIterator->second;
         
         EucCSSLayoutPositionedBlock *block;
         
         BOOL flattenBottomMargin = NO;
-        if([element isKindOfClass:[EucCSSLayoutLine class]]) {
-            EucCSSLayoutLine *line = (EucCSSLayoutLine *)element;
-            EucCSSLayoutPositionedRun *run = line.containingRun;
+        if([element isKindOfClass:[EucCSSLayoutPositionedLine class]]) {
+            EucCSSLayoutPositionedLine *line = (EucCSSLayoutPositionedLine *)element;
+            EucCSSLayoutPositionedRun *run = (EucCSSLayoutPositionedRun *)line.parent;
             
-            block = run.containingBlock;
+            block = (EucCSSLayoutPositionedBlock *)run.parent;
 
             // Remove all the lines from this one on from this run.
-            NSArray *lines = run.lines;
+            NSMutableArray *lines = run.children;
             NSUInteger lineIndex = [lines indexOfObject:line];
-            NSArray *newLines = [lines subarrayWithRange:NSMakeRange(0, lineIndex)];
-            run.lines = newLines;
+            [lines removeObjectsInRange:NSMakeRange(lineIndex, lines.count - lineIndex)];
             
             CGRect runFrame = run.frame;
-            runFrame.size.height = CGRectGetMaxY([newLines.lastObject frame]) - runFrame.origin.y;
+            runFrame.size.height = CGRectGetMaxY([lines.lastObject frame]) - runFrame.origin.y;
             run.frame = runFrame;
             
             // Remove all the runs after this one from the block.
-            NSArray *subEntities = block.subEntities;
-            NSUInteger runIndex = [subEntities indexOfObject:run];
-            if(runIndex < subEntities.count) {
-                block.subEntities = [subEntities subarrayWithRange:NSMakeRange(0, runIndex + 1)];
+            NSMutableArray *children = block.children;
+            NSUInteger runIndex = [children indexOfObject:run];
+            NSUInteger childrenCount = children.count;
+            if(runIndex < childrenCount) {
+                NSRange rangeToRemove;
+                rangeToRemove.location = runIndex + 1;
+                rangeToRemove.length = childrenCount - rangeToRemove.location;       
+                [children removeObjectsInRange:rangeToRemove];
             }
         } else {
             // Remove all the blocks from this one on from its parent.
             block = (EucCSSLayoutPositionedBlock *)element;
 
-            EucCSSLayoutPositionedBlock *blockParent = block.parent;
-            NSArray *blockParentChildren = blockParent.subEntities;
+            EucCSSLayoutPositionedBlock *blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
+            NSMutableArray *blockParentChildren = blockParent.children;
             NSUInteger blockIndex = [blockParentChildren indexOfObject:block];
-            blockParent.subEntities = [blockParentChildren subarrayWithRange:NSMakeRange(0, blockIndex)];
+            [blockParentChildren removeObjectsInRange:NSMakeRange(blockIndex, blockParentChildren.count - blockIndex)];
                         
             block = blockParent;
         }
@@ -245,22 +249,30 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         // Resize and close the 'last' block (the parent of the element we just
         // removed).
         CGFloat pageBottom = CGRectGetMaxY(frame);
-
-        [block closeBottomFromYPoint:pageBottom atInternalPageBreak:flattenBottomMargin];
-        EucCSSLayoutPositionedBlock *blockParent = block.parent;
+        CGFloat contentHeightToCloseAt = pageBottom - [block convertRect:block.contentBounds 
+                                                             toContainer:nil].origin.y;
+        [block closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:flattenBottomMargin];
         
         // Remove all the blocks after this one, and re-close all the parents
         // on the way up, stretching them down to the bottom of the page.
+        EucCSSLayoutPositionedBlock *blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
         while(blockParent) {
-            NSArray *blockParentChildren = blockParent.subEntities;
+            NSMutableArray *blockParentChildren = blockParent.children;
             NSUInteger blockIndex = [blockParentChildren indexOfObject:block];
-            if(blockIndex < blockParentChildren.count) {
-                blockParent.subEntities = [blockParentChildren subarrayWithRange:NSMakeRange(0, blockIndex + 1)];
+            NSUInteger blockParentChildrenCount = blockParentChildren.count;
+            if(blockIndex < blockParentChildrenCount) {
+                NSRange rangeToRemove;
+                rangeToRemove.location = blockIndex + 1;
+                rangeToRemove.length = blockParentChildrenCount - rangeToRemove.location;       
+                [blockParentChildren removeObjectsInRange:rangeToRemove];
             }
-            [blockParent closeBottomFromYPoint:pageBottom atInternalPageBreak:YES];
+            
+            CGFloat contentHeightToCloseAt = pageBottom - [blockParent convertRect:blockParent.contentBounds 
+                                                                            toContainer:nil].origin.y;
+            [blockParent closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:YES];
             
             block = blockParent;
-            blockParent = block.parent;
+            blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
         }
         
         *returningNextPoint = point;
@@ -322,14 +334,15 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 }
 
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
-                                          inFrame:(CGRect)frame
-                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                               returningCompleted:(BOOL *)returningCompleted
+                                         inFrame:(CGRect)frame
+                              returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
+                              returningCompleted:(BOOL *)returningCompleted
+                                lastBlockNodeKey:(uint32_t)lastBlockNodeKey
+                           constructingAncestors:(BOOL)constructingAncestors
 {
     EucCSSLayoutPositionedBlock *positionedRoot = nil;      
     
     /*
-     
         In the normal flow, page breaks can occur at the following places:
     
              1) In the vertical margin between block boxes. When an unforced 
@@ -377,7 +390,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
           
     */                
 
-    vector< pair< EucCSSLayoutPoint, id> > pageBreaks;
+    vector< pair< EucCSSLayoutPoint, EucCSSLayoutPositionedContainer *> > pageBreaks;
     vector< EucCSSLayoutPoint > pageBreaksDisallowedByRuleA;
     vector< EucCSSLayoutPoint > pageBreaksDisallowedByRuleB;
     vector< EucCSSLayoutPoint > pageBreaksDisallowedByRuleC;
@@ -389,166 +402,227 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     
     EucCSSIntermediateDocument *document = self.document;
     EucCSSIntermediateDocumentNode* currentDocumentNode = [self _layoutNodeForKey:nodeKey];
-                                                
+
+    
+    EucCSSIntermediateDocumentNode *lastBlockNode;
+    if(lastBlockNodeKey) {
+        lastBlockNode = [_document nodeForKey:lastBlockNodeKey];
+    } else {
+        lastBlockNode = nil;
+    }
+    
     if(currentDocumentNode) {
         css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
 
         CGRect bottomlessFrame = CGRectMake(frame.origin.x, frame.origin.x, frame.size.width, CGFLOAT_MAX);
         EucCSSLayoutPositionedBlock *currentPositionedBlock = nil;
-        if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-            EucCSSIntermediateDocumentNode *blockLevelParent = currentDocumentNode.blockLevelParent;
-            if(!blockLevelParent) {
-                blockLevelParent = document.rootNode;
-            }
-            positionedRoot = [self _constructBlockAndAncestorsForNode:blockLevelParent
-                                                   returningInnermost:&currentPositionedBlock
-                                                              inFrame:bottomlessFrame
-                                               afterInternalPageBreak:YES];               
+        if(constructingAncestors) {
+            if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                EucCSSIntermediateDocumentNode *blockLevelParent = currentDocumentNode.blockLevelParent;
+                if(!blockLevelParent) {
+                    blockLevelParent = document.rootNode;
+                }
+                positionedRoot = [self _constructBlockAndAncestorsForNode:blockLevelParent
+                                                       returningInnermost:&currentPositionedBlock
+                                                                  inFrame:bottomlessFrame
+                                                   afterInternalPageBreak:YES];               
+            } else {
+                positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode
+                                                       returningInnermost:&currentPositionedBlock
+                                                                  inFrame:bottomlessFrame
+                                                   afterInternalPageBreak:wordOffset != 0 || elementOffset != 0];
+                currentDocumentNode = currentDocumentNode.nextDisplayable;
+            } 
         } else {
-            positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode
-                                                   returningInnermost:&currentPositionedBlock
-                                                              inFrame:bottomlessFrame
-                                               afterInternalPageBreak:NO];
-            currentDocumentNode = currentDocumentNode.nextDisplayable;
+            positionedRoot = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode
+                                                                           scaleFactor:_scaleFactor];
         }
                 
+        BOOL closedLastNode = NO;
         BOOL reachedBottomOfFrame = NO;
         
         uint32_t nextRunNodeKey = nodeKey;
-        CGFloat nextY = frame.origin.y;
-        CGFloat maxY = CGRectGetMaxY(frame);
-        do {
-            CGRect potentialFrame = currentPositionedBlock.contentRect;
+        CGFloat nextAbsoluteY = frame.origin.y;
+        CGFloat maxAbsoluteY = CGRectGetMaxY(frame);
+        do {            
+            // Find the node's parent, closing open blocks until we reach it.
+            EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
+            EucCSSIntermediateDocumentNode *currentPositionedBlockNode;
+            while((currentPositionedBlockNode = currentPositionedBlock.documentNode) != currentDocumentNodeBlockLevelParent) {
+                if(currentPositionedBlockNode == lastBlockNode) {
+                    closedLastNode = YES;
+                    break;
+                }
+                CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
+                                                                                         toContainer:nil].origin.y;
+                [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:NO];
+                nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
+                currentPositionedBlock = (EucCSSLayoutPositionedBlock *)currentPositionedBlock.parent;
+            }
+
+            CGRect potentialFrame = currentPositionedBlock.contentBounds;
             NSParameterAssert(potentialFrame.size.height == CGFLOAT_MAX);
-            
-            potentialFrame.origin.y = nextY;
-            
-            css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
-            if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                //THLog(@"Inline: %@", [currentDocumentNode name]);
+
+            potentialFrame.origin.y = nextAbsoluteY - [currentPositionedBlock convertRect:potentialFrame 
+                                                                              toContainer:nil].origin.y;
+                        
+            if(!closedLastNode) {
+                css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
                 
-                // This is an inline element - start a run.
-                EucCSSLayoutDocumentRun *documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
-                                                                                     underLimitNode:currentDocumentNode.blockLevelParent
-                                                                                              forId:nextRunNodeKey
-                                                                                        scaleFactor:_scaleFactor];
-                
-                // Position it.
-                EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
-                                                                                   wordOffset:wordOffset
-                                                                                elementOffset:elementOffset];
-                if(positionedRun) {
-                    [currentPositionedBlock addSubEntity:positionedRun];
+                if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                    //THLog(@"Inline: %@", [currentDocumentNode name]);
                     
-                    BOOL first = YES; // Break before first line doesn't count.
-                    for(EucCSSLayoutLine *line in positionedRun.lines) {
-                        if(!first) {
-                            EucCSSLayoutDocumentRunPoint startPoint = line.startPoint;
-                            EucCSSLayoutPoint breakPoint = { nextRunNodeKey, startPoint.word, startPoint.element };
-                            pageBreaks.push_back(make_pair(breakPoint, line));
-                        } else {
-                            first = NO;
+                    // This is an inline element - start a run.
+                    EucCSSLayoutDocumentRun *documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
+                                                                                         underLimitNode:currentDocumentNode.blockLevelParent
+                                                                                                  forId:nextRunNodeKey
+                                                                                            scaleFactor:_scaleFactor];
+                    
+                    // Position it.
+                    EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
+                                                                                       wordOffset:wordOffset
+                                                                                    elementOffset:elementOffset];
+                    if(positionedRun) {
+                        [currentPositionedBlock addChild:positionedRun];
+                        
+                        BOOL first = YES; // Break before first line doesn't count.
+                        for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
+                            if(!first) {
+                                EucCSSLayoutDocumentRunPoint startPoint = line.startPoint;
+                                EucCSSLayoutPoint breakPoint = { nextRunNodeKey, startPoint.word, startPoint.element };
+                                pageBreaks.push_back(make_pair(breakPoint, line));
+                            } else {
+                                first = NO;
+                            }
+                        }
+                        nextAbsoluteY = CGRectGetMaxY([positionedRun absoluteFrame]);
+                    }
+                                 
+                    if(elementOffset) {
+                        elementOffset = 0;
+                    }
+                    if(wordOffset) {
+                        wordOffset = 0;
+                    }
+                    
+                    currentDocumentNode = documentRun.nextNodeInDocument;
+                    nextRunNodeKey = currentDocumentNode.key;
+                } else {
+                    //THLog(@"Block: %@", [currentDocumentNode name]);
+                    
+                    // This is a block-level element.
+                    
+                    uint8_t computedFloat = css_computed_float(currentNodeStyle);
+                    switch(computedFloat) {
+                        case CSS_FLOAT_RIGHT:
+                        case CSS_FLOAT_LEFT: {
+                           /* BOOL completed = NO;
+                            EucCSSLayoutPoint returnedPoint = { 0 };
+                            EucCSSLayoutPoint fromPoint = { currentDocumentNode.key, 0, 0 };
+                            EucCSSLayoutPositionedBlock *floatedBlock = [self layoutFromPoint:fromPoint
+                                                                                      inFrame:potentialFrame
+                                                                           returningNextPoint:&returnedPoint
+                                                                           returningCompleted:&completed 
+                                                                             lastBlockNodeKey:currentDocumentNode.key
+                                                                        constructingAncestors:NO];
+                            [currentPositionedBlock addChild:floatedBlock];
+
+                            if(THWillLog()) {
+                                NSParameterAssert(completed == YES);
+                                EucCSSIntermediateDocumentNode *afterFloat = [currentDocumentNode.parent displayableNodeAfter:currentDocumentNode
+                                                                                                                        under:nil];
+                                NSParameterAssert(returnedPoint.nodeKey == afterFloat.key);
+                            }    
+                            
+                            currentDocumentNode = [self.document nodeForKey:returnedPoint.nodeKey];
+                            break;*/
+                        }
+                        default: {
+                            THWarn(@"Unexpected uncomputed CSS_FLOAT, %ld", (long)computedFloat);
+                            // Fall through.
+                        }
+                        case CSS_FLOAT_NONE: {
+                            BOOL hasPreviousSibling = [currentPositionedBlock.children count] != 0;
+                            
+                            if(currentDocumentNode.isImageNode) {
+                                THLog(@"Image: %@", [currentDocumentNode.imageSource absoluteString]);
+                            }
+                            EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
+                            [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
+                            [currentPositionedBlock addChild:newBlock];                    
+
+                            nextAbsoluteY = [newBlock convertRect:newBlock.contentBounds toContainer:nil].origin.y;
+                            
+                            if(hasPreviousSibling) {
+                                EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
+                                pageBreaks.push_back(make_pair(breakPoint, newBlock));
+                            }                
+                            
+                            currentPositionedBlock = [newBlock autorelease];
+                            
+                            // First run in a block has the ID of the block it's in.
+                            nextRunNodeKey = currentDocumentNode.key;  
+                            
+                            currentDocumentNode = currentDocumentNode.nextDisplayable;
                         }
                     }
-                    nextY = CGRectGetMaxY(positionedRun.frame);
                 }
-                             
-                if(elementOffset) {
-                    elementOffset = 0;
-                }
-                if(wordOffset) {
-                    wordOffset = 0;
-                }
-                
-                
-                currentDocumentNode = documentRun.nextNodeInDocument;
-                nextRunNodeKey = ((EucCSSIntermediateDocumentConcreteNode *)currentDocumentNode).key;
             } else {
-                //THLog(@"Block: %@", [currentDocumentNode name]);
-                
-                // This is a block-level element.
-
-                // Find the block's parent, closing open nodes until we reach it.
-                BOOL hasPreviousSibling = NO;
-                EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
-                while(currentPositionedBlock.documentNode != currentDocumentNodeBlockLevelParent) {
-                    [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:NO];
-                    nextY = CGRectGetMaxY(currentPositionedBlock.frame);
-                    currentPositionedBlock = currentPositionedBlock.parent;
-                    hasPreviousSibling = YES;
-                }
-                CGRect potentialFrame = currentPositionedBlock.contentRect;
-                NSParameterAssert(potentialFrame.size.height == CGFLOAT_MAX);
-
-                potentialFrame.origin.y = nextY;
-                                
-                if(currentDocumentNode.isImageNode) {
-                    THLog(@"Image: %@", [currentDocumentNode.imageSrc absoluteString]);
-                }
-                EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
-                [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
-                [currentPositionedBlock addSubEntity:newBlock];                    
-                
-                currentPositionedBlock = [newBlock autorelease];
-
-                nextY = newBlock.contentRect.origin.y;
-                
-                if(hasPreviousSibling) {
-                    EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
-                    pageBreaks.push_back(make_pair(breakPoint, newBlock));
-                }                
-                
-                // First run in a block has the ID of the block it's in.
-                nextRunNodeKey = ((EucCSSIntermediateDocumentConcreteNode *)currentDocumentNode).key;  
-                
+                nextRunNodeKey = currentDocumentNode.key;
                 currentDocumentNode = currentDocumentNode.nextDisplayable;
             }
-            reachedBottomOfFrame = nextY >= maxY;
-        } while(!reachedBottomOfFrame && currentDocumentNode);
+            
+            reachedBottomOfFrame = nextAbsoluteY >= maxAbsoluteY;
+        } while(!reachedBottomOfFrame && !closedLastNode && currentDocumentNode);
         
-        if(!reachedBottomOfFrame) {
-            while(currentPositionedBlock) {
-                [currentPositionedBlock closeBottomFromYPoint:nextY atInternalPageBreak:reachedBottomOfFrame];
-                nextY = CGRectGetMaxY(currentPositionedBlock.frame);
-                currentPositionedBlock = currentPositionedBlock.parent;
-                CGRect potentialFrame = currentPositionedBlock.frame;
-                if(potentialFrame.size.height != CGFLOAT_MAX) {
-                    potentialFrame.size.height = CGRectGetMaxY(potentialFrame) - nextY;
-                }
-                potentialFrame.origin.y = nextY;
-            }
-            [positionedRoot closeBottomFromYPoint:nextY atInternalPageBreak:NO];
-        }
-    
-        CGFloat bottomY = positionedRoot.frame.size.height;
-        if(bottomY != CGFLOAT_MAX) {
-            bottomY += positionedRoot.frame.origin.y;
-        }
-        if(bottomY > maxY) {
-            *returningCompleted = NO;
-            EucCSSLayoutPoint nextPoint;
-            BOOL nextPointValid = [self _trimBlockToFrame:frame 
-                                       returningNextPoint:&nextPoint
-                                               pageBreaks:&pageBreaks
-                              pageBreaksDisallowedByRuleA:&pageBreaksDisallowedByRuleA
-                              pageBreaksDisallowedByRuleB:&pageBreaksDisallowedByRuleB
-                              pageBreaksDisallowedByRuleC:&pageBreaksDisallowedByRuleC
-                              pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
-            if(nextPointValid) {
-                *returningNextPoint = nextPoint;
-            } else {
-                // Couldn't find a break.
-                // Not entirely sure of the best thing to do here - for now
-                // just return the next node.
-                if(nextRunNodeKey) {
-                    EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
-                    *returningNextPoint = fakeNextPoint;
-                } else {
-                    *returningCompleted = YES;
-                }
-            }
-        } else {
+        if(closedLastNode) {
             *returningCompleted = YES;
+            EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
+            *returningNextPoint = fakeNextPoint;
+        } else {
+            if(!reachedBottomOfFrame) {
+                while(currentPositionedBlock) {
+                    CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
+                                                                                             toContainer:nil].origin.y;
+                    [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:reachedBottomOfFrame];
+                    nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
+                    currentPositionedBlock = (EucCSSLayoutPositionedBlock *)currentPositionedBlock.parent;
+                }
+                CGFloat contentHeightToCloseAt = nextAbsoluteY - [positionedRoot convertRect:positionedRoot.contentBounds 
+                                                                                 toContainer:nil].origin.y;
+                [positionedRoot closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:NO];
+            }
+        
+            CGFloat bottomY = positionedRoot.frame.size.height;
+            if(bottomY != CGFLOAT_MAX) {
+                bottomY += positionedRoot.frame.origin.y;
+            }
+            if(bottomY > maxAbsoluteY) {
+                *returningCompleted = NO;
+                EucCSSLayoutPoint nextPoint;
+                BOOL nextPointValid = [self _trimBlockToFrame:frame 
+                                           returningNextPoint:&nextPoint
+                                                   pageBreaks:&pageBreaks
+                                  pageBreaksDisallowedByRuleA:&pageBreaksDisallowedByRuleA
+                                  pageBreaksDisallowedByRuleB:&pageBreaksDisallowedByRuleB
+                                  pageBreaksDisallowedByRuleC:&pageBreaksDisallowedByRuleC
+                                  pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
+                if(nextPointValid) {
+                    *returningNextPoint = nextPoint;
+                } else {
+                    // Couldn't find a break.
+                    // Not entirely sure of the best thing to do here - for now
+                    // just return the next node.
+                    if(nextRunNodeKey) {
+                        EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
+                        *returningNextPoint = fakeNextPoint;
+                    } else {
+                        *returningCompleted = YES;
+                    }
+                }
+            } else {
+                *returningCompleted = YES;
+            }
         }
     } else {
         *returningNextPoint = point;

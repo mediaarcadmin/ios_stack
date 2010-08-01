@@ -1,5 +1,5 @@
 //
-//  EucCSSLayoutLine.m
+//  EucCSSLayoutPositionedLine.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
@@ -13,7 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-#import "EucCSSLayoutLine.h"
+#import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutDocumentRun.h"
@@ -22,15 +22,10 @@
 
 #import <libcss/libcss.h>
 
-@implementation EucCSSLayoutLine
-
-@synthesize containingRun = _positionedRun;
+@implementation EucCSSLayoutPositionedLine
 
 @synthesize startPoint = _startPoint;
 @synthesize endPoint = _endPoint;
-
-@synthesize origin = _origin;
-@synthesize size = _size;
 
 @synthesize componentWidth = _componentWidth;
 
@@ -41,8 +36,8 @@
 
 - (void)dealloc
 {    
-    EucCSSLayoutLineRenderItem *renderItem = _renderItems;
-    EucCSSLayoutLineRenderItem *renderItemEnd = _renderItems + _renderItemCount;
+    EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
+    EucCSSLayoutPositionedLineRenderItem *renderItemEnd = _renderItems + _renderItemCount;
     for(; renderItem < renderItemEnd; ++renderItem) {
         [renderItem->item release];
         [renderItem->stringRenderer release];
@@ -57,29 +52,37 @@
 
 - (void)sizeToFitInWidth:(CGFloat)width;
 {
-    EucCSSLayoutDocumentRun *documentRun = self.containingRun.documentRun;
-
+    EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
     CGFloat lineBoxHeight = 0;
     CGFloat currentBaseline = 0;
     
     size_t componentsCount = documentRun.componentsCount;
+    
     uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
-    uint32_t lastComponentOffset = [documentRun pointToComponentOffset:_endPoint] - 1;
+    uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
     EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
 
+    if(afterEndComponentOffset == startComponentOffset) {
+        // This is a line with no components, ending in a hard break.
+        // Set up to use the hard break itsself as the only component, so that
+        // we pick up the line height.
+        // This is a bit of a hack.
+        afterEndComponentOffset = startComponentOffset + 1;
+    }
+    
     EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
     uint32_t i;
     EucCSSLayoutDocumentRunComponentInfo *info;
     for(i = startComponentOffset, info = componentInfos;
-        i < componentsCount && i <= lastComponentOffset; 
+        i < componentsCount && i < afterEndComponentOffset; 
         ++i, ++info) {
         if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule 
-           || i == startComponentOffset || i == lastComponentOffset) {
+           || i == startComponentOffset || i == afterEndComponentOffset - 1) {
             if(info->documentNode != currentDocumentNode) {
                 CGFloat emBoxHeight = info->pointSize;
-                CGFloat halfLeading = (info->lineHeight - emBoxHeight) * 0.5f;
-                
                 CGFloat inlineBoxHeight = info->lineHeight;
+                
+                CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
                 
                 CGFloat baseline = info->ascender + halfLeading;
                 CGFloat descenderAndLineHeightAddition = inlineBoxHeight - baseline;
@@ -111,14 +114,16 @@
         }
     }
     
-    
     _baseline = currentBaseline;
-    _size = CGSizeMake(width, lineBoxHeight);
+    
+    CGRect frame = self.frame;
+    frame.size = CGSizeMake(width, lineBoxHeight);
+    self.frame = frame;
 }
 
-- (CGRect)frame
+- (CGFloat)minimumNeededWidth
 {
-    return CGRectMake(_origin.x, _origin.y, _size.width, _size.height);
+    return _componentWidth + _indent;
 }
 
 - (size_t)renderItemCount
@@ -129,19 +134,21 @@
     return _renderItemCount;
 }
 
-- (EucCSSLayoutLineRenderItem *)renderItems
+- (EucCSSLayoutPositionedLineRenderItem *)renderItems
 {
     if(!_renderItems) {
-        EucCSSLayoutDocumentRun *documentRun = self.containingRun.documentRun;
+        EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
         
         size_t componentsCount = documentRun.componentsCount;
         uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
-        uint32_t lastComponentOffset = [documentRun pointToComponentOffset:_endPoint] - 1;
+        uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
         
-        _renderItems = calloc(sizeof(EucCSSLayoutLineRenderItem), componentsCount);
+        _renderItems = calloc(sizeof(EucCSSLayoutPositionedLineRenderItem), componentsCount);
         
-        CGFloat xPosition = _origin.x;
-        CGFloat yPosition = _origin.y;
+        CGRect contentBounds = self.contentBounds;
+        CGSize size = contentBounds.size;
+        CGFloat xPosition = contentBounds.origin.x;
+        CGFloat yPosition = contentBounds.origin.y;
         CGFloat baseline = _baseline;        
         
         CGFloat extraWidthNeeded = 0.0f;
@@ -154,33 +161,37 @@
         
         switch(_align) {
             case CSS_TEXT_ALIGN_CENTER:
-                xPosition += (_size.width - _componentWidth) * 0.5f;
+                xPosition += (size.width - _componentWidth) * 0.5f;
                 break;
             case CSS_TEXT_ALIGN_RIGHT:
-                xPosition += _size.width - _componentWidth - _indent;
+                xPosition += size.width - _componentWidth - _indent;
                 break;
             case CSS_TEXT_ALIGN_JUSTIFY:
                 for(i = startComponentOffset, info = componentInfos;
-                    i < componentsCount && i <= lastComponentOffset; 
+                    i < componentsCount && i < afterEndComponentOffset; 
                     ++i, ++info) {
                     if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace) {
                         spacesRemaining++;
                     }
                 }    
-                extraWidthNeeded = _size.width - _indent - _componentWidth;
+                extraWidthNeeded = size.width - _indent - _componentWidth;
                 // Fall through.
             default:
                 xPosition += _indent;
         }
 
-        EucCSSLayoutLineRenderItem *renderItem = _renderItems;
+        EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
         for(i = startComponentOffset, info = componentInfos;
-            i < componentsCount && i <= lastComponentOffset; 
+            i < componentsCount && i < afterEndComponentOffset; 
             ++i, ++info) {
             
             if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
+                CGFloat emBoxHeight = info->pointSize;
+                CGFloat inlineBoxHeight = info->lineHeight;
+                CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
+                
                 renderItem->item = [(NSString *)info->component retain];
-                renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, _size.height);
+                renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender - halfLeading, info->width, size.height);
                 renderItem->pointSize = info->pointSize;
                 renderItem->point = info->point;
                 renderItem->stringRenderer = [info->documentNode.stringRenderer retain];
@@ -209,7 +220,7 @@
             if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
                 if (i == startComponentOffset) {
                     renderItem->item = [(NSString *)info->component2 retain];
-                    renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthAfterHyphen, _size.height);
+                    renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthAfterHyphen, size.height);
                     renderItem->pointSize = info->pointSize;
                     renderItem->point = info->point;
                     renderItem->stringRenderer = [info->documentNode.stringRenderer retain];
@@ -233,7 +244,7 @@
                 renderItem->altText = renderItem->item;
                 
                 renderItem->item = [(NSString *)info->component retain];
-                renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthBeforeHyphen, _size.height);
+                renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthBeforeHyphen, size.height);
                 renderItem->point = info->point;
                 ++renderItem;                
             }
@@ -242,7 +253,7 @@
     return _renderItems;
 }
 
-- (NSComparisonResult)compare:(EucCSSLayoutLine *)rhs 
+- (NSComparisonResult)compare:(EucCSSLayoutPositionedLine *)rhs 
 {
     return self < rhs ? NSOrderedAscending : (self > rhs ? NSOrderedDescending : NSOrderedSame);
 }

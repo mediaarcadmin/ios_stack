@@ -26,4 +26,7 @@
 - (NSString *)attributeWithName:(NSString *)attributeName;
 - (BOOL)getCharacterContents:(const char **)contents length:(size_t *)length;
 
+- (BOOL)isImageNode;
+- (NSString *)imageSourceURL;
+
 @end

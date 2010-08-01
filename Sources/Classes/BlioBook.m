@@ -8,9 +8,6 @@
 
 #import "BlioBook.h"
 #import "BlioBookManager.h"
-#import "BlioTextFlowParagraphSource.h"
-#import "BlioEPubParagraphSource.h"
-#import "BlioEPubBook.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <pthread.h>
@@ -101,13 +98,6 @@
     return textFlow;
 }
 
-- (BlioEPubBook *)ePubBook {
-    if(!ePubBook) {
-        ePubBook = [[[BlioBookManager sharedBookManager] checkOutEPubBookForBookWithID:self.objectID] retain];
-    }
-    return ePubBook;
-}
-
 - (BlioXPSProvider *)xpsProvider {
     if(!xpsProvider) {
         xpsProvider = [[[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:self.objectID] retain];
@@ -129,11 +119,6 @@
         [textFlow release];
         textFlow = nil;
         [manager checkInTextFlowForBookWithID:self.objectID];
-    }
-    if(ePubBook) {
-        [ePubBook release];
-        ePubBook = nil;
-        [manager checkInEPubBookForBookWithID:self.objectID];
     }
     if(paragraphSource) {
         [paragraphSource release];
@@ -433,11 +418,7 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (NSData *)dataFromXPSAtPath:(NSString *)path {
-    [path retain];
-    NSData *componentData = [[self xpsProvider] dataForComponentAtPath:path];
-    [path release];
-    return componentData;
-    //return [[self xpsProvider] dataForComponentAtPath:path];
+    return [[self xpsProvider] dataForComponentAtPath:path];
 }
 
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path {
@@ -502,8 +483,8 @@ static void sortedHighlightRangePredicateInit() {
 
 - (NSData *)manifestDataForKey:(NSString *)key {
     NSData *data = nil;
-    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
-    if (manifestEntry) {
+    NSDictionary *manifestEntry = [[self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] retain];
+    if(manifestEntry) {
         NSString *location = [manifestEntry objectForKey:@"location"];
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
@@ -516,6 +497,7 @@ static void sortedHighlightRangePredicateInit() {
             }
         }
     }
+    [manifestEntry release];
     return data;
 }
 

@@ -37,7 +37,7 @@ int main (int argc, const char * argv[]) {
 
     css_error cssErr = css_initialise(argv[1], EucRealloc, NULL);
     if(cssErr != CSS_OK) {
-        NSLog(@"Error \"%s\" setting up libCSS", css_error_to_string(cssErr));
+        THWarn(@"Error \"%s\" setting up libCSS", css_error_to_string(cssErr));
         goto bail;
     } else {
        cssInitialised = YES;
@@ -54,7 +54,6 @@ int main (int argc, const char * argv[]) {
                                                                                          dataSource:dataSource
                                                                                         baseCSSPath:[NSString stringWithUTF8String:argv[2]]
                                                                                              isHTML:YES];
-    [dataSource release];
     
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     layouter.document = document;
@@ -84,9 +83,11 @@ int main (int argc, const char * argv[]) {
         ++pageCount;
         THLog(@"Page %ld", pageCount);
         EucCSSLayoutPositionedBlock *positionedBlock = [layouter layoutFromPoint:layoutPoint
-                                                                          inFrame:frame
-                                                               returningNextPoint:&layoutPoint
-                                                               returningCompleted:&completed];
+                                                                         inFrame:frame
+                                                              returningNextPoint:&layoutPoint
+                                                              returningCompleted:&completed
+                                                                lastBlockNodeKey:0
+                                                           constructingAncestors:YES];
         
         CGContextSaveGState(renderingContext);
         const CGFloat white[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -94,7 +95,7 @@ int main (int argc, const char * argv[]) {
         CGContextFillRect(renderingContext, frame);
         CGContextRestoreGState(renderingContext);
         
-        [renderer render:positionedBlock];
+        [renderer render:positionedBlock atPoint:CGPointZero];
             
         CGImageRef image = CGBitmapContextCreateImage(renderingContext);
         
@@ -113,7 +114,8 @@ int main (int argc, const char * argv[]) {
     CGContextRelease(renderingContext);
     [layouter release];
     [document release];
-    
+    [dataSource release];
+
     [xmlTree release];
 
 bail:

@@ -15,15 +15,15 @@
 @property (nonatomic, retain) id startParagraphID;
 @property (nonatomic, assign) NSUInteger startElementOffset;
 @property (nonatomic, retain) id currentParagraphID;
-@property (nonatomic, assign) NSUInteger currentElementOffset;
+@property (nonatomic, assign) NSUInteger currentCharacterOffset;
 @property (nonatomic, retain) NSArray *currentParagraphWords;
-@property (nonatomic, assign) BOOL hasLooped;
+@property (nonatomic, assign) BOOL hasWrapped;
 
 @end
 
 @implementation BlioBookSearchController
 
-@synthesize paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentElementOffset, currentParagraphWords, hasLooped;
+@synthesize paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentCharacterOffset, currentParagraphWords, hasWrapped;
 
 - (void)dealloc {
     [self cancel];
@@ -46,7 +46,7 @@
 
 - (void)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint {
     self.searchString = string;
-    self.hasLooped = NO;
+    self.hasWrapped = NO;
     
     if (!startBookmarkPoint) startBookmarkPoint = [self.paragraphSource bookmarkPointForPageNumber:1];
     
@@ -65,10 +65,10 @@
             break;
         }
     }
-    self.currentElementOffset = elementOffset;
+    self.currentCharacterOffset = elementOffset;
     
     self.startParagraphID = self.currentParagraphID;
-    self.startElementOffset = self.currentElementOffset;
+    self.startElementOffset = self.currentCharacterOffset;
     
     [self findNextOccurrence];
 }
@@ -95,7 +95,7 @@
     
     self.currentParagraphID = paragraphID;
     self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
-    self.hasLooped = YES;
+    self.hasWrapped = YES;
     
     if ([(NSObject *)self.delegate respondsToSelector:@selector(searchControllerDidReachEndOfBook:)])
         [self.delegate searchControllerDidReachEndOfBook:self];
@@ -111,9 +111,9 @@
     self.searching = YES;
     
     // TODO - confirm that paragraphIDs observe the comparison correctly
-    if ((self.hasLooped) &&
+    if ((self.hasWrapped) &&
         ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedSame) &&
-        (self.currentElementOffset >= self.startElementOffset)) {
+        (self.currentCharacterOffset >= self.startElementOffset)) {
         
         [self searchCompleted];
         return;
@@ -122,30 +122,45 @@
     NSString *currentParagraphString = [self.currentParagraphWords componentsJoinedByString:@" "];
     
     NSRange foundRange = NSMakeRange(NSNotFound, 0);
-    NSInteger searchLength = [currentParagraphString length] - 1 - self.currentElementOffset;
+    NSInteger searchLength = [currentParagraphString length] - 1 - self.currentCharacterOffset;
     
     if (searchLength > 0) {
-        NSRange searchRange = NSMakeRange(self.currentElementOffset, searchLength);
+        NSRange searchRange = NSMakeRange(self.currentCharacterOffset, searchLength);
         foundRange = [currentParagraphString rangeOfString:self.searchString options:self.searchOptions range:searchRange];
 //        NSLog(@"%@", [currentParagraphString substringWithRange:searchRange]);
     }
     
     if (foundRange.location != NSNotFound) {
-        self.currentElementOffset = foundRange.location + foundRange.length;
+        self.currentCharacterOffset = foundRange.location + foundRange.length;
         
         NSUInteger characterOffset = 0;
-        NSUInteger wordOffset = 0;
-        NSUInteger elementOffset = NSNotFound;
+        NSUInteger beginningWordOffset = 0;
+        NSUInteger endWordOffset = 0;
+        // Although we calculate the beginning & end character offsets for teh range they are 
+        // discarded because BlioBookmarkRange does not store charcters just element offsets (to handle hyphenation)
+        NSUInteger beginningCharacterOffset = NSNotFound;
+        NSUInteger endCharacterOffset = NSNotFound;
         NSString *prefix = @"";
         
         for (NSString *word in self.currentParagraphWords) {
-            if ((characterOffset + [word length]) > foundRange.location) {
-                elementOffset = foundRange.location - characterOffset;
-                prefix = [word substringWithRange:NSMakeRange(0, elementOffset)];
-                break;
+            NSUInteger endOfWord = characterOffset + [word length];
+            if (endOfWord > foundRange.location) {
+                if (beginningCharacterOffset == NSNotFound) {
+                    beginningCharacterOffset = foundRange.location - characterOffset;
+                    prefix = [word substringWithRange:NSMakeRange(0, beginningCharacterOffset)];
+                }
+                
+                if (endOfWord >= currentCharacterOffset) {
+                    endCharacterOffset = currentCharacterOffset - characterOffset - 1;
+                    break;
+                }
+                
+                characterOffset += [word length] + 1;
+                endWordOffset++;
             } else {
                 characterOffset += [word length] + 1;
-                wordOffset++;
+                beginningWordOffset++;
+                endWordOffset++;
             }
         }
         
@@ -156,7 +171,7 @@
         NSInteger prefixLength = self.maxPrefixAndMatchLength - foundRange.length;
         
         if (prefixLength > 0) {
-            NSArray *prefixWords = [self.currentParagraphWords subarrayWithRange:NSMakeRange(0, wordOffset)] ;
+            NSArray *prefixWords = [self.currentParagraphWords subarrayWithRange:NSMakeRange(0, beginningWordOffset)] ;
             NSEnumerator *reversedWords = [prefixWords reverseObjectEnumerator];
             
             for (NSString *prefixWord in reversedWords) {
@@ -167,16 +182,21 @@
             }
         }
         
-        BlioBookmarkPoint *foundBookmarkPoint = nil;
-        if (elementOffset != NSNotFound) {
-            foundBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:wordOffset];
-            foundBookmarkPoint.elementOffset = elementOffset;
+        BlioBookmarkRange *foundBookmarkRange = nil;
+        if ((beginningCharacterOffset != NSNotFound) && (endCharacterOffset != NSNotFound)) {
+            BlioBookmarkPoint *foundBookmarkBeginningPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:beginningWordOffset];
+            foundBookmarkBeginningPoint.elementOffset = 0; // see note about character offsets above
+            BlioBookmarkPoint *foundBookmarkEndPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:endWordOffset];
+            foundBookmarkEndPoint.elementOffset = 0; // see note about character offsets above
+            foundBookmarkRange = [[[BlioBookmarkRange alloc] init] autorelease];
+            foundBookmarkRange.startPoint = foundBookmarkBeginningPoint;
+            foundBookmarkRange.endPoint = foundBookmarkEndPoint;
         }
         
         [self searchStopped];
         
-        if ([(NSObject *)self.delegate respondsToSelector:@selector(searchController:didFindString:atBookmarkPoint:withPrefix:withSuffix:)])
-            [self.delegate searchController:self didFindString:matchString atBookmarkPoint:foundBookmarkPoint withPrefix:prefix withSuffix:suffix];
+        if ([(NSObject *)self.delegate respondsToSelector:@selector(searchController:didFindString:atBookmarkRange:withPrefix:withSuffix:)])
+            [self.delegate searchController:self didFindString:matchString atBookmarkRange:foundBookmarkRange withPrefix:prefix withSuffix:suffix];
         
     } else {
         self.currentParagraphID = [self.paragraphSource nextParagraphIdForParagraphWithID:self.currentParagraphID];
@@ -185,10 +205,10 @@
             [self searchReachedEndOfBook];
         } else {
             self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
-            self.currentElementOffset = 0;
+            self.currentCharacterOffset = 0;
             
             // TODO - confirm that paragraphIDs observe the comparison correctly
-            if (self.hasLooped && ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedDescending)) {
+            if (self.hasWrapped && ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedDescending)) {
                 [self searchCompleted];
                 return;
             } else {
