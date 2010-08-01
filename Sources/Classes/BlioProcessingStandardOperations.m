@@ -421,6 +421,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	}
 }
 - (void)connection:(NSURLConnection *)aConnection didFailWithError:(NSError *)error {
+	NSLog(@"BlioProcessingDownloadOperation connection:%@ didFailWithError: %@, %@",aConnection,error,[error userInfo]);
     if (self.connection == aConnection) {
 		[self downloadDidFinishSuccessfully:NO];
 		[self finish];

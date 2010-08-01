@@ -111,4 +111,9 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (NSData *)manifestDataForKey:(NSString *)key;
 - (NSString *)manifestPathForKey:(NSString *)key;
 - (NSString *)manifestLocationForKey:(NSString *)key;
+- (NSString *)authorWithStandardFormat;
+
++(NSString*)standardNameFromCanonicalName:(NSString*)aName;
++(NSString*)canonicalNameFromStandardName:(NSString*)aName;
+
 @end

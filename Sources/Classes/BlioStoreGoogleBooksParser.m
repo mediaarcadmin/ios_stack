@@ -7,6 +7,7 @@
 //
 
 #import "BlioStoreGoogleBooksParser.h"
+#import "BlioBook.h"
 
 @implementation BlioStoreGoogleBooksParser
 
@@ -57,7 +58,7 @@
 }
 
 - (void)volumeFetchTicket:(GDataServiceTicket *)ticket finishedWithVolume:(GDataEntryVolume *)object error:(NSError *)error {
-    NSLog(@"BlioStoreGoogleBooksParser volumeFetchTicket:%@ finishedWithVolume: entered",ticket);
+    NSLog(@"BlioStoreGoogleBooksParser volumeFetchTicket:%@ finishedWithVolume:%@ error:%@ entered",ticket,object,error);
     // transfer the feed source to a property in the feed object
 	if ([entryServiceTickets containsObject:ticket]) {
 		[entryServiceTickets removeObject:ticket];
@@ -93,7 +94,7 @@
         }
 		aEntity.id = [entry identifier];
 		[aEntity setSummary:descriptions];
-        [aEntity setAuthor:[[[entry creators] lastObject] stringValue]];
+        [aEntity setAuthor:[BlioBook canonicalNameFromStandardName:[[[entry creators] lastObject] stringValue]]];
         [aEntity setEPubUrl:[[entry EPubDownloadLink] href]];
         [aEntity setCoverUrl:[[entry thumbnailLink] href]];
         [aEntity setThumbUrl:[[entry thumbnailLink] href]];                             

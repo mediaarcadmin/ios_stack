@@ -221,7 +221,12 @@
 
 	NSUInteger section = [indexPath section];
 
-    BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	NSMutableArray * contentFeeds = [NSMutableArray array];
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
+
 	[self tableView:tableView didSelectRowAtIndexPath:indexPath feed:feed];
 }
 
@@ -369,14 +374,24 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section 
 { 
-	return [[self.feeds objectAtIndex:section] title];
+	NSMutableArray * contentFeeds = [NSMutableArray array];	
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}	
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
+	
+	return [feed title];
 }
 
 
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	NSMutableArray * contentFeeds = [NSMutableArray array];
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
 	NSUInteger getMoreResultsCell = 0;
 	if (([feed.categories count] + [feed.entities count]) < feed.totalResults) getMoreResultsCell = 1; // our data is less than the totalResults, so we need a "Get More Results" option.
 	return [feed.categories count] + [feed.entities count] + getMoreResultsCell;
@@ -388,7 +403,11 @@
 	NSUInteger row = [indexPath row];
 	NSUInteger section = [indexPath section];
 	
-	BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	NSMutableArray * contentFeeds = [NSMutableArray array];	
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}	
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
 	
 	static NSString *MoreResultsCellIdentifier = @"MoreResultsCell";
 	static NSString *CategoryCellIdentifier = @"CategoryCell";
@@ -470,7 +489,13 @@
 }
 
 - (NSString *)getMoreCellLabelForSection:(NSUInteger) section {
-	return [[self.feeds objectAtIndex:section] title];
+	NSMutableArray * contentFeeds = [NSMutableArray array];
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
+	
+	return [feed title];
 }
 
 @end

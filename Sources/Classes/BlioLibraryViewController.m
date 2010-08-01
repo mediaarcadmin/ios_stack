@@ -227,7 +227,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         NSLog(@"Creating Mock Books");
 
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
-                                              authors:[NSArray arrayWithObject:@"Bill Willingham"]
+                                              authors:[NSArray arrayWithObject:@"Willingham, Bill"]
 											coverPath:@"MockCovers/FablesLegendsInExile.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Legends.pdf"
@@ -241,7 +241,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
 
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
-                                              authors:[NSArray arrayWithObject:@"Stella Blackstone"]
+                                              authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
 											 ePubPath:nil
 		 //                                   pdfPath:@"PDFs/Three Little Pigs.pdf
@@ -256,7 +256,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
 
         [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
-                                              authors:[NSArray arrayWithObject:@"David J. Hunter"]
+                                              authors:[NSArray arrayWithObject:@"Hunter, David J."]
 											coverPath:@"MockCovers/Essentials_of_Discrete_Mathematics.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Essentials_of_Discrete_Mathematics.pdf"
@@ -270,7 +270,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
-                                              authors:[NSArray arrayWithObject:@"Ward Just"]
+                                              authors:[NSArray arrayWithObject:@"Just, Ward"]
 											coverPath:@"MockCovers/Exiles In The Garden.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Exiles In The Garden.pdf"
@@ -284,7 +284,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
-                                              authors:[NSArray arrayWithObject:@"Marlene Perez"]
+                                              authors:[NSArray arrayWithObject:@"Perez, Marlene"]
 											coverPath:@"MockCovers/Dead Is So Last Year.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Dead Is So Last Year.pdf"
@@ -298,7 +298,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
-                                              authors:[NSArray arrayWithObject:@"Bruce Degen"]
+                                              authors:[NSArray arrayWithObject:@"Degen, Bruce"]
 											coverPath:@"MockCovers/Jamberry.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Jamberry.pdf"
@@ -312,7 +312,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
-                                              authors:[NSArray arrayWithObject:@"Christoph Niemann"]
+                                              authors:[NSArray arrayWithObject:@"Niemann, Christoph"]
 											coverPath:@"MockCovers/ChristophNiemann.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Pet Dragon.pdf"
@@ -326,7 +326,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
-                                              authors:[NSArray arrayWithObject:@"Neil Gaiman"]
+                                              authors:[NSArray arrayWithObject:@"Gaiman, Neil"]
 											coverPath:@"MockCovers/NeilGaiman.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Graveyard Book.pdf"
@@ -340,7 +340,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
-                                              authors:[NSArray arrayWithObject:@"Martha Stewart"]
+                                              authors:[NSArray arrayWithObject:@"Stewart, Martha"]
 											coverPath:@"MockCovers/Martha Stewart Cookies.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Martha Stewart Cookies.pdf"
@@ -354,7 +354,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
-                                              authors:[NSArray arrayWithObjects:@"Jennifer L. Holme", @"Matthew Holme", nil]
+                                              authors:[NSArray arrayWithObjects:@"Holme, Jennifer L.", @"Holme, Matthew", nil]
 											coverPath:@"MockCovers/Baby Mouse.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Baby Mouse.pdf"
@@ -368,7 +368,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
-                                              authors:[NSArray arrayWithObject:@"Marjane Satrapi"]
+                                              authors:[NSArray arrayWithObject:@"Satrapi, Marjane"]
 											coverPath:@"MockCovers/Persepolis 2.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Persepolis 2.pdf"
@@ -382,7 +382,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"The Art of the Band T-Shirt" 
-                                              authors:[NSArray arrayWithObjects:@"Amber Easby", @"Henry Oliver", nil]
+                                              authors:[NSArray arrayWithObjects:@"Easby, Amber", @"Oliver, Henry", nil]
 											coverPath:@"MockCovers/Art of the Band T-Shirt.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Art of the Band T-Shirt.pdf"
@@ -396,7 +396,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Sylvester and the Magic Pebble" 
-                                              authors:[NSArray arrayWithObject:@"William Steig"]
+                                              authors:[NSArray arrayWithObject:@"Steig, William"]
 											coverPath:@"MockCovers/Sylvester and the Magic Pebble.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Sylvester and the Magic Pebble.pdf"
@@ -410,7 +410,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"You On A Diet" 
-                                              authors:[NSArray arrayWithObjects:@"Michael F. Roizen, M.D.", @"Mehmet C. Oz, M.D.", nil]
+                                              authors:[NSArray arrayWithObjects:@"Roizen, M.D., Michael F.", @"Oz, M.D., Mehmet C.", nil]
 											coverPath:@"MockCovers/You On A Diet.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/You On A Diet.pdf"
@@ -424,7 +424,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
-                                              authors:[NSArray arrayWithObjects:@"Shirley O. Corriher", nil]
+                                              authors:[NSArray arrayWithObjects:@"Corriher, Shirley O.", nil]
 											coverPath:@"MockCovers/Bakewise.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Bakewise.pdf"
@@ -438,7 +438,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
-                                              authors:[NSArray arrayWithObjects:@"Bill Martin Jr", @"Joan Archambault", nil]
+                                              authors:[NSArray arrayWithObjects:@"Martin Jr, Bill", @"Archambault, Joan", nil]
 											coverPath:@"MockCovers/Chicka Chicka Boom Boom.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Chicka Chicka Boom Boom.pdf"
@@ -452,7 +452,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
-                                              authors:[NSArray arrayWithObjects:@"Matthew Reilly", nil]
+                                              authors:[NSArray arrayWithObjects:@"Reilly, Matthew", nil]
 											coverPath:@"MockCovers/Five Greatest Warriors.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Five Greatest Warriors.pdf"
@@ -466,7 +466,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
-                                              authors:[NSArray arrayWithObjects:@"Lisa Wheeler", @"Sophie Blackall", nil]
+                                              authors:[NSArray arrayWithObjects:@"Wheeler, Lisa", @"Blackall, Sophie", nil]
 											coverPath:@"MockCovers/Spinster Goose.png"
 											 ePubPath:nil
 											  pdfPath:@"PDFs/Spinster Goose.pdf"
@@ -480,7 +480,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
-                                              authors:[NSArray arrayWithObjects:@"Beatrix Potter", nil]
+                                              authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
@@ -494,7 +494,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
     
         [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
-                                              authors:[NSArray arrayWithObjects:@"Lynne M. Sullivan", nil]
+                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
@@ -1882,11 +1882,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 @end
 
-@interface BlioLibraryListCell (PRIVATE)
-- (void)createProgressView;
-- (void)destroyProgressView;
-@end
-
 @implementation BlioLibraryListCell
 
 @synthesize bookView, titleLabel, authorLabel, progressSlider,proportionalProgressView, delegate,progressView,pauseButton,resumeButton;
@@ -1946,7 +1941,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         [self.contentView addSubview:aSlider];
         self.progressSlider = aSlider;
         [aSlider release];
-				
+		
+		self.progressView = [[[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault] autorelease];
+		progressView.frame = CGRectMake(68, 52, kBlioLibraryListProgressViewWidth, 10);
+		progressView.hidden = NO;
+		[self.contentView addSubview:progressView];		
+		
 		pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
 		[pauseButton setImage:[UIImage imageNamed:@"library-pausebutton.png"] forState:UIControlStateNormal];
 		pauseButton.showsTouchWhenHighlighted = YES;
@@ -1965,19 +1965,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[super prepareForReuse];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.accessoryView = nil;
-	progressView.hidden = YES;
+//	progressView.hidden = YES;
 	progressSlider.hidden = YES;
-	[self destroyProgressView];
-}
--(void)createProgressView {
-	self.progressView = [[[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault] autorelease];
-	progressView.frame = CGRectMake(68, 52, kBlioLibraryListProgressViewWidth, 10);
-	progressView.hidden = NO;
-	[self.contentView addSubview:progressView];
-}
--(void)destroyProgressView {
-	if (self.progressView) [self.progressView removeFromSuperview];
-	self.progressView = nil;
+//	[self.progressView removeFromSuperview];
 }
 -(void)onPauseButtonPressed:(id)sender {
 	[delegate pauseProcessingForBook:[self book]];
@@ -1988,7 +1978,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (NSString *)accessibilityLabel {
     return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
-            [[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]];
+            [[self.bookView book] title], [[self.bookView book] authorWithStandardFormat], 100 * [[[self.bookView book] progress] floatValue]];
 	
 }
 
@@ -2010,7 +2000,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self resetProgressSlider];
 	
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
-		[self destroyProgressView];
+		[self.progressView removeFromSuperview];
 		self.accessoryView = resumeButton;
 		[self resetAuthorText];
 		self.progressSlider.hidden = NO;
@@ -2020,7 +2010,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		// set appearance to reflect incomplete state
 		// self.bookView.alpha = 0.35f;
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
-			[self createProgressView];
+			[self.contentView addSubview:self.progressView];
 			self.progressSlider.hidden = YES;
 			BlioProcessingCompleteOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 			if (completeOp) {
@@ -2042,7 +2032,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 	else {
 		self.progressSlider.hidden = NO;
-		[self destroyProgressView];
+		[self.progressView removeFromSuperview];
 		[self resetAuthorText];
 		self.accessoryView = nil;
 	}
@@ -2087,7 +2077,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, targetProgressWidth, progressFrame.size.height);	
 }
 -(void) resetAuthorText {
-    self.authorLabel.text = [[self.book author] uppercaseString];
+    self.authorLabel.text = [[self.book authorWithStandardFormat] uppercaseString];
     if ([self.book audioRights]) {
         self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
     }	
@@ -2110,7 +2100,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		BlioProcessingCompleteOperation * completeOp = [note object];
 		//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
-		if (!self.progressView) [self createProgressView];
+		[self.contentView addSubview:self.progressView];	
 		progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 	}
 }

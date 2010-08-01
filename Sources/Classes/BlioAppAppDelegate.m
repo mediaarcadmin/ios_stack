@@ -13,7 +13,7 @@
 #import "BlioAlertManager.h"
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
-// #import "AcapelaSpeech.h"
+#import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioDrmManager.h"
 #import "BlioBookManager.h"
@@ -206,17 +206,18 @@ static void *background_init_thread(void * arg) {
 		if (![[NSFileManager defaultManager] createDirectoryAtPath:voicesPath withIntermediateDirectories:YES attributes:nil error:&createTTSDirError]) {
 			NSLog(@"ERROR: could not create TTS directory in the Documents directory! %@, %@",createTTSDirError, [createTTSDirError userInfo]);
 		}
+		else NSLog(@"Created TTS directory within Documents...");
 	}
 	if ([[NSFileManager defaultManager] fileExistsAtPath:manualVoiceCopyPath] && ![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath]) {
 		NSError * manualVoiceCopyError = nil;
 		if (![[NSFileManager defaultManager] copyItemAtPath:manualVoiceCopyPath toPath:manualVoiceDestinationPath error:&manualVoiceCopyError]) 
 			NSLog(@"ERROR: could not manually copy the Heather voice directory to the Documents/TTS directory! %@, %@",manualVoiceCopyError, [manualVoiceCopyError userInfo]);
+		else NSLog(@"Copied Heather into TTS directory...");
 	}
 		
 	// TEMPORARY CODE END
-		
-	// TODO: uncomment line below when we get a new library from Acapela
-//	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
+	NSLog(@"voicesPath: %@",voicesPath);
+	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
 	    
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
@@ -259,6 +260,19 @@ static void *background_init_thread(void * arg) {
     if (![[self managedObjectContext] save:&error])
         NSLog(@"[BlioAppAppDelegate applicationWilTerminate] Save failed with error: %@, %@", error, [error userInfo]);
 }
+
+#pragma mark -
+#pragma mark UIApplicationDelegate - Background Tasks
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+
+-(void)applicationDidEnterBackground:(UIApplication *)application {
+    NSError *error;
+    if (![[self managedObjectContext] save:&error])
+        NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);	
+}
+
+#endif
 
 #pragma mark -
 #pragma mark Network Reachability
