@@ -15,6 +15,7 @@
 @property (nonatomic, retain) NSMutableDictionary *costStore;
 
 - (void)removeOldestObject;
+- (void)removeObjectWithoutLockingForKey:(id)key;
 
 @end
 
@@ -49,36 +50,40 @@
 }
 
 - (id)objectForKey:(id)key {
-    id cacheObject = [self.objectStore objectForKey:key];
-    
-    if (cacheObject) {
-        [self.accessStore setValue:[NSDate date] forKey:key];
+    @synchronized (self) {
+        id cacheObject = [self.objectStore objectForKey:key];
+        
+        if (cacheObject) {
+            [self.accessStore setValue:[NSDate date] forKey:key];
+        }
+        
+        return cacheObject;
     }
-    
-    return cacheObject;
 }
 
 - (void)setObject:(id)obj forKey:(id)key cost:(NSUInteger)g {
-    [self.objectStore setObject:obj forKey:key];
-    [self.accessStore setValue:[NSDate date] forKey:key];
-    [self.costStore setValue:[NSNumber numberWithInteger:g] forKey:key];
-    
-    totalCost += g;
-    
-    if (countLimit) {
-        while ([self.accessStore count] > countLimit) {
-            [self removeOldestObject];
+    @synchronized (self) {
+        [self.objectStore setObject:obj forKey:key];
+        [self.accessStore setValue:[NSDate date] forKey:key];
+        [self.costStore setValue:[NSNumber numberWithInteger:g] forKey:key];
+        
+        totalCost += g;
+        
+        if (countLimit) {
+            while ([self.accessStore count] > countLimit) {
+                [self removeOldestObject];
+            }
         }
-    }
-    
-    if (totalCostLimit) {
-        while ((totalCost > totalCostLimit) && ([self.accessStore count] >= 1)) {
-            [self removeOldestObject];
+        
+        if (totalCostLimit) {
+            while ((totalCost > totalCostLimit) && ([self.accessStore count] >= 1)) {
+                [self removeOldestObject];
+            }
         }
     }
 }
-
-- (void)removeObjectForKey:(id)key {
+                   
+- (void)removeObjectWithoutLockingForKey:(id)key {
     [self.objectStore removeObjectForKey:key];
     [self.accessStore removeObjectForKey:key];
     
@@ -89,17 +94,27 @@
     }
 }
 
+- (void)removeObjectForKey:(id)key {
+    @synchronized (self) {
+        [self removeObjectWithoutLockingForKey:key];
+    }
+}
+
 - (void)removeAllObjects {
-    [self.objectStore removeAllObjects];
-    [self.accessStore removeAllObjects];
-    [self.costStore removeAllObjects];
-    totalCost = 0;
+    @synchronized (self) {
+        [self.objectStore removeAllObjects];
+        [self.accessStore removeAllObjects];
+        [self.costStore removeAllObjects];
+        totalCost = 0;
+    }
 }
 
 - (void)removeOldestObject {
-    NSArray *sortedKeys = [self.accessStore keysSortedByValueUsingSelector:@selector(compare:)];
-    if ([sortedKeys count]) {
-        [self removeObjectForKey:[sortedKeys objectAtIndex:0]];
+    @synchronized (self) {
+        NSArray *sortedKeys = [self.accessStore keysSortedByValueUsingSelector:@selector(compare:)];
+        if ([sortedKeys count]) {
+            [self removeObjectWithoutLockingForKey:[sortedKeys objectAtIndex:0]];
+        }
     }
 }
 
