@@ -35,9 +35,10 @@ typedef enum THStringRendererFontStyleFlags {
     NSString *_fontName;
     CGFontRef _font;
     
+    CGFloat _fauxBoldStrokeWidth;
+    CGFloat _lineSpacingScaling;
+    
     int _unitsPerEm;
-    int _lineSpacing;
-    int _firstLineOffset;
     
     NSData *_fontMap;
     const uint16_t *_glyphMap;
@@ -55,7 +56,6 @@ typedef enum THStringRendererFontStyleFlags {
     int _lastUsedBreakCount;
     int *_lastUsedBreaksIndexes;
     THStringRendererFlags _lastFlags;
-    CGFloat _fauxBoldStrokeWidth;
     
     CGAffineTransform _textTransform;
     
@@ -63,7 +63,7 @@ typedef enum THStringRendererFontStyleFlags {
 }
 
 @property (nonatomic, assign) CGFloat fauxBoldStrokeWidth; // Default if 0.5f.
-
+@property (nonatomic, assign) CGFloat lineSpacingScaling;  // Default if 1.0f.
 
 - (id)initWithFontName:(NSString *)fontName;
 - (id)initWithFontName:(NSString *)fontName lineSpacingScaling:(CGFloat)lineSpacing;

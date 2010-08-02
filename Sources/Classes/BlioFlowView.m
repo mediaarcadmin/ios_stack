@@ -49,9 +49,15 @@
         BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
         EucBUpeBook *eucBook = [bookManager checkOutEucBookForBookWithID:bookID];
         
-        if(eucBook) {
+        if(eucBook) {            
             self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
 
+            if([eucBook isKindOfClass:[BlioFlowEucBook class]]) {
+                BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:bookID];
+                _textFlowFlowTreeKind = textFlow.flowTreeKind;
+                [bookManager checkInTextFlowForBookWithID:bookID];
+            }            
+            
             if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:eucBook])) {
                 _eucBookView.delegate = self;
                 _eucBookView.allowsSelection = YES;
@@ -67,12 +73,6 @@
                 [_eucBookView addObserver:self forKeyPath:@"pageNumber" options:NSKeyValueObservingOptionInitial context:NULL];
                 
                 [self addSubview:_eucBookView];
-                
-                if([eucBook isKindOfClass:[BlioFlowEucBook class]]) {
-                    BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:bookID];
-                    _textFlowFlowTreeKind = textFlow.flowTreeKind;
-                    [bookManager checkInTextFlowForBookWithID:bookID];
-                }
             }
         }
         

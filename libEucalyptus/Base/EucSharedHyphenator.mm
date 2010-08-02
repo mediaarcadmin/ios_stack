@@ -10,11 +10,24 @@
 #import "EucSharedHyphenator.h"
 #import "THPair.h"
 
+#import "Hyphenator.h"
+#import "HyphenationRule.h"
+
 #include <vector>
 #include <memory>
 
 using namespace std;
 using namespace Hyphenate;
+
+class SharedHyphenator : public Hyphenate::Hyphenator
+{
+private:
+    SharedHyphenator(const char *filename) : Hyphenate::Hyphenator(filename) {};
+    friend void initialise_shared_hyphenator_once();
+    
+public:
+    static SharedHyphenator* sharedHyphenator();
+};
 
 static pthread_once_t sHyphenatorOnceControl = PTHREAD_ONCE_INIT;
 static SharedHyphenator *sHyphenator;

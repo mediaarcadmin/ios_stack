@@ -18,7 +18,7 @@
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSRenderer.h"
 #import "EucCSSLayoutPositionedRun.h"
-#import "EucCSSLayoutLine.h"
+#import "EucCSSLayoutPositionedLine.h"
 
 #import "THPair.h"
 
@@ -81,7 +81,9 @@
         self.positionedBlock = [layouter layoutFromPoint:layoutPoint
                                                  inFrame:[self bounds]
                                       returningNextPoint:&layoutPoint
-                                      returningCompleted:&isComplete];
+                                      returningCompleted:&isComplete
+                                        lastBlockNodeKey:0
+                                   constructingAncestors:YES];
         
         if(isComplete) {
             ret = [[EucBookPageIndexPoint alloc] init];
@@ -105,7 +107,7 @@
 
 - (void)_accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)block intoArray:(NSMutableArray *)array
 {
-    for(id subBlock in block.subEntities) {
+    for(id subBlock in block.children) {
         if([subBlock isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
             [self _accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)subBlock intoArray:array];
         } else if([subBlock isKindOfClass:[EucCSSLayoutPositionedRun class]]) {
@@ -142,7 +144,7 @@
 {
     EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
     if(run) {
-        return run.frame;
+        return run.absoluteFrame;
     }
     return CGRectZero; 
 }
@@ -154,11 +156,11 @@
         NSMutableArray *array = [NSMutableArray array];
         uint32_t lastWordId = UINT32_MAX;
 
-        for(EucCSSLayoutLine *line in run.lines) {
-            EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+        for(EucCSSLayoutPositionedLine *line in run.children) {
+            EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
             size_t renderItemsCount = line.renderItemCount;
             
-            EucCSSLayoutLineRenderItem* renderItem = renderItems;
+            EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
             for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
                 if([renderItem->item isKindOfClass:[NSString class]]) {
                     uint32_t wordId = renderItem->point.word;
@@ -179,17 +181,26 @@
     EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
     uint32_t wantedWordId = [(NSNumber *)elementId intValue];
     
+    CGPoint runOrigin = run.absoluteFrame.origin;
+    
     NSMutableArray *array = [NSMutableArray array];
-    for(EucCSSLayoutLine *line in run.lines) {
-        EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+    for(EucCSSLayoutPositionedLine *line in run.children) {
+        EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
         size_t renderItemsCount = line.renderItemCount;
         
-        EucCSSLayoutLineRenderItem* renderItem = renderItems;
+        CGPoint lineOffset = line.frame.origin;
+        lineOffset.x += runOrigin.x;
+        lineOffset.y += runOrigin.y;
+        
+        EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
         for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
             if([renderItem->item isKindOfClass:[NSString class]]) {
                 uint32_t wordId = renderItem->point.word;
                 if(wordId == wantedWordId) {
-                    [array addObject:[NSValue valueWithCGRect:renderItem->rect]];
+                    CGRect itemRect = renderItem->rect;
+                    itemRect.origin.x += lineOffset.x;
+                    itemRect.origin.y += lineOffset.y;
+                    [array addObject:[NSValue valueWithCGRect:itemRect]];
                 } else if(wordId > wantedWordId) {
                     break;   
                 }
@@ -211,7 +222,7 @@
     if(positionedBlock) {
         EucCSSRenderer *renderer = [[EucCSSRenderer alloc] init];
         renderer.cgContext = cgContext;
-        [renderer render:self.positionedBlock];
+        [renderer render:self.positionedBlock atPoint:CGPointZero];
         [renderer release];
     }
 }
@@ -237,11 +248,11 @@
             element.accessibilityFrame = frame;
             
             NSMutableString *buildString = [NSMutableString string];
-            for(EucCSSLayoutLine *line in run.lines) {
-                EucCSSLayoutLineRenderItem* renderItems = line.renderItems;
+            for(EucCSSLayoutPositionedLine *line in run.children) {
+                EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
                 size_t renderItemsCount = line.renderItemCount;
                     
-                EucCSSLayoutLineRenderItem* renderItem = renderItems;
+                EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
                 for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
                     if(renderItem->altText) {
                         [buildString appendString:renderItem->altText];

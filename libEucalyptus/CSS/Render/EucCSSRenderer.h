@@ -13,12 +13,14 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+@class EucCSSLayoutPositionedContainer;
+
 @interface EucCSSRenderer : NSObject {
     CGContextRef _cgContext;
 }
 
 @property (nonatomic, assign) CGContextRef cgContext;
 
-- (void)render:(id)layoutEntity;
+- (void)render:(EucCSSLayoutPositionedContainer *)layoutEntity atPoint:(CGPoint)point;
 
 @end

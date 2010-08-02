@@ -13,25 +13,12 @@
 
 #ifdef __cplusplus
 
-#import "Hyphenator.h"
-#import "HyphenationRule.h"
-
-class SharedHyphenator : public Hyphenate::Hyphenator
-{
-private:
-    SharedHyphenator(const char *filename) : Hyphenate::Hyphenator(filename) {};
-    friend void initialise_shared_hyphenator_once();
-
-public:
-    static SharedHyphenator* sharedHyphenator();
-};
-
+class SharedHyphenator;
 extern "C" void initialise_shared_hyphenator();
 
 #else
 
-typedef void * SharedHyphenator;
-
+typedef void SharedHyphenator;
 void initialise_shared_hyphenator();
 
 #endif

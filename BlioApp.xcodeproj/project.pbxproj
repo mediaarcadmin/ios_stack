@@ -166,7 +166,6 @@
 		7D81ED2610E90C220016D44A /* paper-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2310E90C220016D44A /* paper-black.png */; };
 		7D81ED2710E90C220016D44A /* paper-neutral.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2410E90C220016D44A /* paper-neutral.png */; };
 		7D81ED2810E90C220016D44A /* paper-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2510E90C220016D44A /* paper-white.png */; };
-		7D905E2011590AAC0011272A /* PageIndexes in Resources */ = {isa = PBXBuildFile; fileRef = 7D905DA611590AAC0011272A /* PageIndexes */; };
 		7D9147C91151497900BCBB23 /* BlioFlowPaginateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */; };
 		7D9147CA1151497900BCBB23 /* BlioFlowPaginateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */; };
 		7D9148D4115159E400BCBB23 /* Aliases in Resources */ = {isa = PBXBuildFile; fileRef = 7D9148D3115159E400BCBB23 /* Aliases */; };
@@ -187,6 +186,9 @@
 		7DAA2FF911512A91006634CC /* libcss.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF501150F39A00430710 /* libcss.a */; };
 		7DAA30C411512B1C006634CC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
 		7DAA30C511512B1C006634CC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
+		7DB190EB120315A80001017D /* NSData+MBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB190EA120315A80001017D /* NSData+MBBase64.m */; };
+		7DB1913F12031BAA0001017D /* NSString+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */; };
+		7DB1914012031BAA0001017D /* NSString+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */; };
 		7DB5F71011EC65BF00D33185 /* logo-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */; };
 		7DB5F71111EC65BF00D33185 /* logo-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
@@ -846,6 +848,10 @@
 		7DA5665811529FE2000A849D /* BlioTextFlowParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraph.h; sourceTree = "<group>"; };
 		7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraph.m; sourceTree = "<group>"; };
 		7DAA30C311512B1C006634CC /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		7DB190E9120315A80001017D /* NSData+MBBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+MBBase64.h"; sourceTree = "<group>"; };
+		7DB190EA120315A80001017D /* NSData+MBBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+MBBase64.m"; sourceTree = "<group>"; };
+		7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+BlioAdditions.m"; sourceTree = "<group>"; };
+		7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+BlioAdditions.h"; sourceTree = "<group>"; };
 		7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white@2x.png"; sourceTree = "<group>"; };
 		7DB9F57C10F345450010DF0B /* BlioBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookView.h; sourceTree = "<group>"; };
 		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
@@ -1428,6 +1434,8 @@
 				C9336E7B1180854800D29256 /* BlioAccessibilitySegmentedControl.m */,
 				7DF429D011E4EC5400B8227E /* BlioNSObjectAdditions.h */,
 				7DF429D111E4EC5B00B8227E /* BlioNSObjectAdditions.m */,
+				7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */,
+				7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -1953,6 +1961,8 @@
 				A38161571164FB3E003A9709 /* NSDate+ISO8601Parsing.m */,
 				A38161581164FB3E003A9709 /* NSDate+ISO8601Unparsing.h */,
 				A38161591164FB3E003A9709 /* NSDate+ISO8601Unparsing.m */,
+				7DB190E9120315A80001017D /* NSData+MBBase64.h */,
+				7DB190EA120315A80001017D /* NSData+MBBase64.m */,
 				A381615A1164FB3E003A9709 /* USAdditions.h */,
 				A381615B1164FB3E003A9709 /* USAdditions.m */,
 				A381615C1164FB3E003A9709 /* USGlobals.h */,
@@ -2399,7 +2409,6 @@
 				7D9148D4115159E400BCBB23 /* Aliases in Resources */,
 				7DF2A58B115381EF00FC2045 /* TextFlowFlow.css in Resources */,
 				7D529C111158DC1100548C00 /* TextFlowCover.xhtml in Resources */,
-				7D905E2011590AAC0011272A /* PageIndexes in Resources */,
 				A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */,
 				C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */,
 				DC12F613117E563C0074B2D8 /* library-progress-background.png in Resources */,
@@ -2778,6 +2787,8 @@
 				7DBD0EEB120191F8009CD9DA /* BlioTextFlowXAMLTree.m in Sources */,
 				7DBD0F751201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m in Sources */,
 				C98857E512031B7B006905CF /* BlioTimeOrderedCache.m in Sources */,
+				7DB190EB120315A80001017D /* NSData+MBBase64.m in Sources */,
+				7DB1913F12031BAA0001017D /* NSString+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2878,6 +2889,7 @@
 				7DF429D211E4EC5B00B8227E /* BlioNSObjectAdditions.m in Sources */,
 				C9DA72BA11E60C9400F584A1 /* BlioXPSProvider.m in Sources */,
 				C98857E612031B7B006905CF /* BlioTimeOrderedCache.m in Sources */,
+				7DB1914012031BAA0001017D /* NSString+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,11 +6,11 @@
 //  Copyright 2008 LightSPEED Technologies. All rights reserved.
 //  Modified by Matthew Faupel on 2009-05-06 to use NSDate instead of NSCalendarDate (for iPhone compatibility).
 //  Modifications copyright (c) 2009 Micropraxis Ltd.
-//  NSData (MBBase64) category taken from "MiloBird" at http://www.cocoadev.com/index.pl?BaseSixtyFour
 //
 
 #import <Foundation/Foundation.h>
 #import <libxml/tree.h>
+#import "NSData+MBBase64.h"
 
 @interface NSString (USAdditions)
 
@@ -38,12 +38,6 @@
 - (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName;
 + (NSData *)deserializeNode:(xmlNodePtr)cur;
 
-@end
-
-@interface NSData (MBBase64)
-
-+ (id)dataWithBase64EncodedString:(NSString *)string;     //  Padding '=' characters are optional. Whitespace is ignored.
-- (NSString *)base64Encoding;
 @end
 
 @interface USBoolean : NSObject {

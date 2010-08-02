@@ -101,7 +101,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
              forId:(uint32_t)id
        scaleFactor:(CGFloat)scaleFactor;
 
-- (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)bounds
+- (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
                                           wordOffset:(uint32_t)wordOffset 
                                        elementOffset:(uint32_t)elementOffset;
 

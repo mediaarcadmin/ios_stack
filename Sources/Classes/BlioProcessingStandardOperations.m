@@ -9,6 +9,7 @@
 #import "BlioProcessingStandardOperations.h"
 #import "ZipArchive.h"
 #import "BlioDrmManager.h"
+#import "NSString+BlioAdditions.h"
 
 static const CGFloat kBlioCoverListThumbHeight = 76;
 static const CGFloat kBlioCoverListThumbWidth = 53;
@@ -442,12 +443,9 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	}
 	else {
 		// generate new filename
-		CFUUIDRef theUUID = CFUUIDCreate(NULL);
-		CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
-		CFRelease(theUUID);
-
+		NSString *uniqueString = [NSString uniqueStringWithBaseString:[self getBookValueForKey:@"title"]];
 		NSString *temporaryPath = [self temporaryPath];
-		NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:[NSString stringWithString:(NSString *)uniqueString]];
+		NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:uniqueString];
 		// copy file to final location (cachedPath)
 		NSError * error;
 		if (![[NSFileManager defaultManager] moveItemAtPath:temporaryPath toPath:cachedPath error:&error]) {
@@ -466,8 +464,6 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			self.percentageComplete = 100;
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
 		}
-		CFRelease(uniqueString);
-
 	}
 }
 
@@ -527,13 +523,8 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     }
 
 	// Generate a random filename
-	CFUUIDRef theUUID = CFUUIDCreate(NULL);
-	CFStringRef uniqueString = CFUUIDCreateString(NULL, theUUID);
-	CFRelease(theUUID);
-	NSString *unzippedFilename = [NSString stringWithString:(NSString *)uniqueString];
-	CFRelease(uniqueString);
-	
-	
+	NSString *unzippedFilename = [NSString uniqueStringWithBaseString:[self getBookValueForKey:@"title"]];
+    
     NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
     NSString *temporaryPath2 = [[self.tempDirectory stringByAppendingPathComponent:unzippedFilename] stringByStandardizingPath];
 
