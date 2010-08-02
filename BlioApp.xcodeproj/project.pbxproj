@@ -330,6 +330,8 @@
 		C988573B1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */; };
 		C988573C1202ED54006905CF /* navigationBarBlackTranslucentButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */; };
 		C988573D1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */; };
+		C98857E512031B7B006905CF /* BlioTimeOrderedCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C98857E412031B7B006905CF /* BlioTimeOrderedCache.m */; };
+		C98857E612031B7B006905CF /* BlioTimeOrderedCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C98857E412031B7B006905CF /* BlioTimeOrderedCache.m */; };
 		C990F9C6110065CB00C82CA8 /* BlioContentsTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */; };
 		C9985C03113E84E9009E5263 /* BlioLayoutScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9985C02113E84E9009E5263 /* BlioLayoutScrollView.m */; };
 		C9985D70113EB0A2009E5263 /* BlioLayoutContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9985D6F113EB0A2009E5263 /* BlioLayoutContentView.m */; };
@@ -1182,6 +1184,8 @@
 		C9867F6B112964A70070A03E /* BlioStoreFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFeed.m; sourceTree = "<group>"; };
 		C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navigationBarBlackTranslucentButton.png; sourceTree = "<group>"; };
 		C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "navigationBarBlackTranslucentButton@2x.png"; sourceTree = "<group>"; };
+		C98857E312031B7B006905CF /* BlioTimeOrderedCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTimeOrderedCache.h; sourceTree = "<group>"; };
+		C98857E412031B7B006905CF /* BlioTimeOrderedCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTimeOrderedCache.m; sourceTree = "<group>"; };
 		C98CCAAB119D8352002E9A8E /* XpsSdk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XpsSdk.h; sourceTree = "<group>"; };
 		C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioContentsTabViewController.h; sourceTree = "<group>"; };
 		C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioContentsTabViewController.m; sourceTree = "<group>"; };
@@ -2078,6 +2082,8 @@
 		C98CCAA9119D8343002E9A8E /* XPS */ = {
 			isa = PBXGroup;
 			children = (
+				C98857E312031B7B006905CF /* BlioTimeOrderedCache.h */,
+				C98857E412031B7B006905CF /* BlioTimeOrderedCache.m */,
 				A3AF018C11C26974004DAB03 /* BlioXpsClient.h */,
 				A3AF018D11C26974004DAB03 /* BlioXpsClient.m */,
 				C98CCAAB119D8352002E9A8E /* XpsSdk.h */,
@@ -2811,6 +2817,7 @@
 				A38CDD7111E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m in Sources */,
 				7DBD0EEB120191F8009CD9DA /* BlioTextFlowXAMLTree.m in Sources */,
 				7DBD0F751201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m in Sources */,
+				C98857E512031B7B006905CF /* BlioTimeOrderedCache.m in Sources */,
 				7DB190EB120315A80001017D /* NSData+MBBase64.m in Sources */,
 				7DB1913F12031BAA0001017D /* NSString+BlioAdditions.m in Sources */,
 			);
@@ -2912,6 +2919,7 @@
 				7DCD8FB811E3452800BA3255 /* BlioEPubBook.m in Sources */,
 				7DF429D211E4EC5B00B8227E /* BlioNSObjectAdditions.m in Sources */,
 				C9DA72BA11E60C9400F584A1 /* BlioXPSProvider.m in Sources */,
+				C98857E612031B7B006905CF /* BlioTimeOrderedCache.m in Sources */,
 				7DB1914012031BAA0001017D /* NSString+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
