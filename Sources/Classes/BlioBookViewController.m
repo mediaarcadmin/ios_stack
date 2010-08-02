@@ -677,8 +677,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             float bookProgress = (float)(_bookView.pageNumber - 1) / (float)(_bookView.pageCount - 1);
             self.book.progress = [NSNumber numberWithFloat:bookProgress];
             
-            [self.navigationController setToolbarHidden:YES animated:NO];
-            [self.navigationController setToolbarHidden:NO animated:NO];
+            //[self.navigationController setToolbarHidden:YES animated:NO];
+//            [self.navigationController setToolbarHidden:NO animated:NO];
             UIToolbar *toolbar = self.navigationController.toolbar;
             toolbar.translucent = _returnToToolbarTranslucent;
             toolbar.barStyle = _returnToToolbarStyle; 
@@ -1433,9 +1433,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     [self setToolbarsForModalOverlayActive:NO];
 }
-
-#pragma mark -
-#pragma mark Search
 
 #pragma mark -
 #pragma mark TTS Handling 

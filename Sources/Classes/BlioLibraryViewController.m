@@ -34,9 +34,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @end
 
-
-@interface BlioLibraryViewController (PRIVATE)
+@interface BlioLibraryViewController ()
 - (void)bookSelected:(BlioLibraryBookView *)bookView;
+@property (nonatomic, retain) BlioLogoView *logoView;
 @end
 
 @implementation BlioLibraryViewController
@@ -52,6 +52,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize gridView = _gridView;
 @synthesize tableView = _tableView;
 @synthesize maxLayoutPageEquivalentCount;
+@synthesize logoView;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @synthesize settingsPopoverController;
@@ -74,25 +75,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.tableView = nil;
 	self.gridView = nil;
     self.fetchedResultsController = nil;
+    self.logoView = nil;
 	
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	self.settingsPopoverController = nil;
 #endif
 
     [super dealloc];
-}
-
-- (void)awakeFromNib {
-//	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(orientationChanged:)
-//												 name:UIDeviceOrientationDidChangeNotification
-//											   object:nil];
-	
-}
-
-- (void)orientationChanged:(NSNotification *)notification {
-    [self.view setNeedsLayout];
 }
 
 - (void)loadView {
@@ -121,6 +110,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.tableView.dataSource = self;
 	MRGridView *aGridView = [[MRGridView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.gridView = aGridView;
+    
+    UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white.png"]];
+    BlioLogoView *aLogoView = [[BlioLogoView alloc] initWithFrame:CGRectMake(0, 0, logoImage.size.width, logoImage.size.height)];
+    aLogoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
+    [aLogoView setImage:logoImage];
+    self.logoView = aLogoView;
+    [aLogoView release];
 	
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -139,8 +135,15 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)viewDidLoad {
+    // N.B. on iOS 4.0 it is important to set the toolbar tint before adding the UIBarButtonItems
+    UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
+    [self.navigationController setToolbarHidden:NO ];
+    [self.navigationController.toolbar setTintColor:tintColor];
+    [self.navigationController.navigationBar setTintColor:tintColor];
     
     self.tableView.hidden = YES;
+	
+    self.navigationItem.titleView = self.logoView;
 	
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     UIEdgeInsets inset = UIEdgeInsetsMake(3, 0, 0, 0);
@@ -210,8 +213,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [item release];
     
     [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
-	
-	
+    
 	maxLayoutPageEquivalentCount = 0;
 	
     
@@ -511,38 +513,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-	UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
-    self.navigationController.toolbar.tintColor = tintColor;
-    self.navigationController.navigationBar.tintColor = tintColor;
-	
-    UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white.png"]];
-    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:logoImage];
-    logoImageView.contentMode = UIViewContentModeScaleAspectFit;
-    logoImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    [logoImageView setIsAccessibilityElement:YES];
-    NSUInteger bookCount = [self numberOfItemsInGridView:self.gridView];
-    if (bookCount == 0) {
-        [logoImageView setAccessibilityLabel:NSLocalizedString(@"Blio Library. No books", @"Accessibility label for Library View Blio label with no books")];
-    } else if (bookCount == 1) {
-        [logoImageView setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"Blio Library. %d book", @"Accessibility label for Library View Blio label with 1 book"), bookCount]];
-    } else {
-        [logoImageView setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"Blio Library. %d books", @"Accessibility label for Library View Blio label with more than 1 book"), bookCount]];
-    }
-	
-    [logoImageView setAccessibilityTraits:UIAccessibilityTraitStaticText | UIAccessibilityTraitSummaryElement];
-	
-    self.navigationItem.titleView = logoImageView;
-    [logoImageView release];
-    
-    [self.navigationController setToolbarHidden:NO];
-}
-
--(void)viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-}
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -885,6 +855,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     if ([sections count]) {
         id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:section];
         bookCount = [sectionInfo numberOfObjects];
+        self.logoView.numberOfBooksInLibrary = bookCount;
     }
 	return bookCount;
 }
@@ -2197,4 +2168,62 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 @end
+
+@implementation BlioLogoView
+
+@synthesize numberOfBooksInLibrary, imageView;
+
+- (id)initWithFrame:(CGRect)frame {
+    if ((self == [super initWithFrame:frame])) {
+        [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+        
+        UIImageView *aImageView = [[UIImageView alloc] initWithFrame:self.frame];
+        [aImageView setContentMode:UIViewContentModeScaleAspectFit];
+        [aImageView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+        [self addSubview:aImageView];
+        self.imageView = aImageView;
+        [aImageView release];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    self.imageView = nil;
+    [super dealloc];
+}
+
+- (void)setImage:(UIImage *)newImage {
+    [self.imageView setImage:newImage];
+}
+
+- (void)setFrame:(CGRect)newFrame {
+    // Override frame setting because when rotating in BookViewController the libraryView titleView gets an incorrect frame set
+    if (nil != self.superview) {
+        newFrame.origin.y = 4;
+        newFrame.size.height = self.superview.bounds.size.height - 7;
+    }
+    [super setFrame:newFrame];
+}
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+
+    if (numberOfBooksInLibrary == 0) {
+        return NSLocalizedString(@"Blio Library. No books", @"Accessibility label for Library View Blio label with no books");
+    } else if (numberOfBooksInLibrary == 1) {
+        return [NSString stringWithFormat:NSLocalizedString(@"Blio Library. %d book", @"Accessibility label for Library View Blio label with 1 book"), numberOfBooksInLibrary];
+    } else {
+        return [NSString stringWithFormat:NSLocalizedString(@"Blio Library. %d books", @"Accessibility label for Library View Blio label with more than 1 book"), numberOfBooksInLibrary];
+    }
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    return UIAccessibilityTraitStaticText | UIAccessibilityTraitSummaryElement;
+}
+
+@end
+
 
