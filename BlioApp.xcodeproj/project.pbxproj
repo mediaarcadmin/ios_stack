@@ -269,6 +269,13 @@
 		A3C7437E11CAC178005A2219 /* paper-neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */; };
 		A3C7437F11CAC178005A2219 /* paper-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436F11CAC178005A2219 /* paper-white@2x.png */; };
 		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
+		A3FE55B012074EBD0038DA0C /* BlioAboutSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55A912074EBD0038DA0C /* BlioAboutSettingsController.m */; };
+		A3FE55B112074EBD0038DA0C /* BlioEULATextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */; };
+		A3FE55B212074EBD0038DA0C /* BlioHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */; };
+		A3FE55B312074EBD0038DA0C /* BlioVersionController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */; };
+		A3FE55B712074EFA0038DA0C /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
+		A3FE55B812074EFA0038DA0C /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B512074EFA0038DA0C /* eula.html */; };
+		A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B612074EFA0038DA0C /* userdoc.html */; };
 		C901F8B8116B816A00A1858D /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */; };
 		C901F8BC116B819000A1858D /* BlioBookVault.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161551164FB3E003A9709 /* BlioBookVault.m */; };
 		C901F8BD116B819000A1858D /* NSDate+ISO8601Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161571164FB3E003A9709 /* NSDate+ISO8601Parsing.m */; };
@@ -1126,6 +1133,17 @@
 		A3F9387E116BD63500E53BD3 /* CellTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CellTextField.m; sourceTree = "<group>"; };
 		A3F9387F116BD63500E53BD3 /* EditableTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTableViewCell.h; sourceTree = "<group>"; };
 		A3F93880116BD63500E53BD3 /* EditableTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTableViewCell.m; sourceTree = "<group>"; };
+		A3FE55A812074EBD0038DA0C /* BlioAboutSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAboutSettingsController.h; sourceTree = "<group>"; };
+		A3FE55A912074EBD0038DA0C /* BlioAboutSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAboutSettingsController.m; sourceTree = "<group>"; };
+		A3FE55AA12074EBD0038DA0C /* BlioEULATextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEULATextController.h; sourceTree = "<group>"; };
+		A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioEULATextController.m; sourceTree = "<group>"; };
+		A3FE55AC12074EBD0038DA0C /* BlioHelpSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioHelpSettingsController.h; sourceTree = "<group>"; };
+		A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioHelpSettingsController.m; sourceTree = "<group>"; };
+		A3FE55AE12074EBD0038DA0C /* BlioVersionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVersionController.h; sourceTree = "<group>"; };
+		A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioVersionController.m; sourceTree = "<group>"; };
+		A3FE55B412074EFA0038DA0C /* credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = credits.html; sourceTree = "<group>"; };
+		A3FE55B512074EFA0038DA0C /* eula.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = eula.html; sourceTree = "<group>"; };
+		A3FE55B612074EFA0038DA0C /* userdoc.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = userdoc.html; sourceTree = "<group>"; };
 		C918B6971121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreFeedBooksNonGDataParser.h; sourceTree = "<group>"; };
 		C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFeedBooksNonGDataParser.m; sourceTree = "<group>"; };
 		C918B8B21122AEE1008B6ADC /* Feeds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Feeds; sourceTree = "<group>"; };
@@ -1368,6 +1386,14 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A3FE55A812074EBD0038DA0C /* BlioAboutSettingsController.h */,
+				A3FE55A912074EBD0038DA0C /* BlioAboutSettingsController.m */,
+				A3FE55AA12074EBD0038DA0C /* BlioEULATextController.h */,
+				A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */,
+				A3FE55AC12074EBD0038DA0C /* BlioHelpSettingsController.h */,
+				A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */,
+				A3FE55AE12074EBD0038DA0C /* BlioVersionController.h */,
+				A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */,
 				A38CDD6F11E60F9500C5C3D2 /* BlioPaidBooksSettingsController.h */,
 				A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */,
 				A37DADCD11B1E4DC005F949A /* DRM */,
@@ -1494,6 +1520,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3FE55B412074EFA0038DA0C /* credits.html */,
+				A3FE55B512074EFA0038DA0C /* eula.html */,
+				A3FE55B612074EFA0038DA0C /* userdoc.html */,
 				C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */,
 				C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */,
 				C9FD392511FD69FF008F1F50 /* buttonBarArrowDownSmall.png */,
@@ -2070,10 +2099,10 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData.framework */,
+				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2216,7 +2245,6 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "BlioApp" */;
 			compatibilityVersion = "Xcode 3.1";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -2323,10 +2351,10 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData.framework */ = {
+		C986765B112411060070A03E /* GData */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = GData.framework;
+			path = GData;
 			remoteRef = C986765A112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2344,10 +2372,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2537,6 +2565,9 @@
 				DC18E08A120517170077DF01 /* library-resumebutton@2x.png in Resources */,
 				DC18E08E120517800077DF01 /* logo-white@2x.png in Resources */,
 				DC18E092120517C20077DF01 /* library-progress-background@2x.png in Resources */,
+				A3FE55B712074EFA0038DA0C /* credits.html in Resources */,
+				A3FE55B812074EFA0038DA0C /* eula.html in Resources */,
+				A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2820,6 +2851,10 @@
 				C98857E512031B7B006905CF /* BlioTimeOrderedCache.m in Sources */,
 				7DB190EB120315A80001017D /* NSData+MBBase64.m in Sources */,
 				7DB1913F12031BAA0001017D /* NSString+BlioAdditions.m in Sources */,
+				A3FE55B012074EBD0038DA0C /* BlioAboutSettingsController.m in Sources */,
+				A3FE55B112074EBD0038DA0C /* BlioEULATextController.m in Sources */,
+				A3FE55B212074EBD0038DA0C /* BlioHelpSettingsController.m in Sources */,
+				A3FE55B312074EBD0038DA0C /* BlioVersionController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
