@@ -201,8 +201,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             lastLayout = kBlioPageLayoutPageLayout;
         } 
         
-        if (lastLayout == kBlioPageLayoutSpeedRead && [newBook hasXps]) lastLayout = kBlioPageLayoutPageLayout; // TODO: remove this forced option
-
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
                 if ([newBook hasEPub] || [newBook hasTextFlow]) {
