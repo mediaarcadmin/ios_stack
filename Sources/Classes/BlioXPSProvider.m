@@ -308,9 +308,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 #pragma mark XPS Component Data
 
 - (NSData *)replaceMappedResources:(NSData *)data {
-    NSString *inputString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *inputString = [[NSString alloc] initWithBytesNoCopy:(void *)[data bytes] length:[data length] encoding:NSUTF8StringEncoding freeWhenDone:NO];
     NSMutableString *outputString = [[NSMutableString alloc] initWithCapacity:[inputString length]];
-        
+
     NSString *GRIDROW = @"Grid.Row=\"";
     NSString *CLOSINGQUOTE = @"\"";
     
@@ -318,9 +318,11 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     
     while ([aScanner isAtEnd] == NO)
     {
-        NSString *prefix;
-        [aScanner scanUpToString:GRIDROW intoString:&prefix];
-        [outputString appendString:prefix];
+        NSUInteger startPos = [aScanner scanLocation];
+        [aScanner scanUpToString:GRIDROW intoString:NULL];
+        NSUInteger endPos = [aScanner scanLocation];
+        NSRange prefixRange = NSMakeRange(startPos, endPos - startPos);
+        [outputString appendString:[inputString substringWithRange:prefixRange]];
         
         if ([aScanner isAtEnd] == NO) {
             // Skip the gridrow entry
