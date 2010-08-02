@@ -21,6 +21,8 @@ static NSString * const BlioBookSearchDisplayOffScreenAnimation = @"BlioBookSear
 static NSString * const BlioBookSearchSlideOffScreenAnimation = @"BlioBookSearchSlideOffScreenAnimation";
 static NSString * const BlioBookSearchFadeOffScreenAnimation = @"BlioBookSearchFadeOffScreenAnimation";
 static NSString * const BlioBookSearchDisplayFullScreenAnimation = @"BlioBookSearchDisplayFullScreenAnimation";
+static NSString * const BlioBookSearchRotateViewInToolbarAnimation = @"BlioBookSearchRotateViewInToolbarAnimation";
+static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBookSearchCollapseViewToToolbarAnimation";
 
 @interface BlioBookSearchResults : NSObject {
     NSString *prefix;
@@ -244,7 +246,7 @@ typedef enum {
         CGRect offsetFrame = self.view.frame;
         offsetFrame.origin.y = collapsedFrame.origin.y;
             
-        [UIView beginAnimations:@"rotateViewInToolbar" context:nil];
+        [UIView beginAnimations:BlioBookSearchRotateViewInToolbarAnimation context:nil];
         [UIView setAnimationDuration:duration];
         [self.view setFrame:offsetFrame];
         [UIView commitAnimations];      
@@ -374,7 +376,7 @@ typedef enum {
     if (!CGRectEqualToRect(self.view.frame, collapsedFrame)) {
         
         if (animated) {
-            [UIView beginAnimations:@"collapseViewToToolbar" context:nil];
+            [UIView beginAnimations:BlioBookSearchCollapseViewToToolbarAnimation context:nil];
             [UIView setAnimationDuration:0.35];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
         }
@@ -632,47 +634,6 @@ typedef enum {
     return cell;
 }
 
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-
 #pragma mark -
 #pragma mark Table view delegate
 
@@ -682,22 +643,6 @@ typedef enum {
     currentSearchResult = [indexPath row];
     [self highlightCurrentSearchResult];
     [self displayInToolbar:YES];
-}
-
-
-#pragma mark -
-#pragma mark Memory management
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Relinquish ownership any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
 }
 
 #pragma mark -
@@ -739,28 +684,6 @@ typedef enum {
 #pragma mark BlioBookSearchDelegate
 
 - (void)searchController:(BlioBookSearchController *)aSearchController didFindString:(NSString *)searchString atBookmarkRange:(BlioBookmarkRange *)bookmarkRange withPrefix:(NSString *)prefix withSuffix:(NSString *)suffix {
-    //NSLog(@"searchController didFindString '%@' at page %d paragraph %d word %d element %d", searchString, bookmarkPoint.layoutPage, bookmarkPoint.blockOffset, bookmarkPoint.wordOffset, bookmarkPoint.elementOffset);
-    //NSString *prefixString = nil;
-//    NSString *resultString = searchString;
-//    
-//    for (int i = [prefix count] - 1; i >= 0; i--) {
-//        NSString *nextWord = [prefix objectAtIndex:i];
-//        if (([resultString length] + [nextWord length]) <= RESULTSPREFIXSTRINGMAXLENGTH) {
-//            if (prefixString) {
-//                prefixString = [NSString stringWithFormat:@"%@ %@", nextWord, prefixString];
-//            } else {
-//                prefixString = [NSString stringWithString:nextWord];
-//            }
-//            resultString = [NSString stringWithFormat:@"%@ %@", prefixString, searchString];
-//        } else {
-//            break;
-//        }
-//    }
-    
-    //resultString = [NSString stringWithFormat:@"%@ %@", resultString, [suffix componentsJoinedByString:@" "]];
-    
-    //NSString *resultString = [NSString stringWithFormat:@"%@%@%@", prefix, searchString, suffix];
-    //NSLog(@"resultString: %@", resultString);
     
     BlioBookSearchResults *result = [[BlioBookSearchResults alloc] init];
     result.prefix = prefix;
@@ -860,38 +783,38 @@ typedef enum {
     NSString *matchString;
     switch (matches) {
         case 0:
-            matchString = @"No matches";
+            matchString = NSLocalizedString(@"No matches", @"Book Search No matches");
             break;
         case 1:
-            matchString = @"1 match found";
+            matchString = NSLocalizedString(@"1 match found", @"Book Search 1 match");
             break;
         default:
-            matchString = [NSString stringWithFormat:@"%d matches found", matches];
+            matchString = [NSString stringWithFormat:NSLocalizedString(@"%d matches found", @"Book Search greater than 1 matches"), matches];
             break;
     }
     
     switch (status) {
         case kBlioBookSearchStatusInProgress:
             [self.activityView startAnimating];
-            [self.statusLabel setText:@"Searching..."];
+            [self.statusLabel setText:NSLocalizedString(@"Searching...", @"Book Search search in progress")];
             [self.matchesLabel setText:nil];
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusInProgressHasWrapped:
             [self.activityView startAnimating];
-            [self.statusLabel setText:@"Search Wrapped..."];
+            [self.statusLabel setText:NSLocalizedString(@"Search Wrapped...", @"Book Search search in progress, has reached end and is continuing from the start")];
             [self.matchesLabel setText:nil];
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusComplete:
             [self.activityView stopAnimating];
-            [self.statusLabel setText:@"Search Completed"];
+            [self.statusLabel setText:NSLocalizedString(@"Search Completed", @"Book Search search has completed")];
             [self.matchesLabel setText:matchString];
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusStopped:
             [self.activityView stopAnimating];
-            [self.statusLabel setText:@"Load More..."];
+            [self.statusLabel setText:NSLocalizedString(@"Load More...", @"Book Search load more results")];
             [self.matchesLabel setText:matchString];
             [self setHidden:NO];
             break;
@@ -957,5 +880,3 @@ typedef enum {
 }
 
 @end
-
-
