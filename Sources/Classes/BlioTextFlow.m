@@ -983,7 +983,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 		return;
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+	
     NSData *data = [self getBookManifestDataForKey:@"textFlowFilename"];
     
     if (nil == data) {
@@ -993,6 +993,11 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         return;
     }
     
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
+	}		
+	
     NSMutableSet *pageRangesSet = [NSMutableSet set];
     
     // Parse pageRange file
@@ -1047,6 +1052,11 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     [self setBookValue:[NSNumber numberWithInteger:[[sortedRanges lastObject] endPageIndex]]
                 forKey:@"layoutPageEquivalentCount"];
     
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		NSLog(@"ending background task...");
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}		
+	
     self.operationSuccess = YES;
 	self.percentageComplete = 100;
     

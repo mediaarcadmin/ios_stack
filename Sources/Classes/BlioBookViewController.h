@@ -150,5 +150,7 @@ typedef enum {
 
 - (void)tapToNextPage;
 - (void)stopAudio;
+- (void)pauseAudio;
+- (void)toggleAudio:(id)sender;
 
 @end

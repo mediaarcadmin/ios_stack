@@ -574,7 +574,6 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName {
-	NSLog(@"canonicalNameFromStandardName: %@",aName);
 	if (!aName) return nil;
 	//list of common suffixes.  Add more here if special case arises.
 	NSArray* suffixes = [NSArray arrayWithObjects:@"Jr.",@"Sr.",@"Jr",@"Sr",@"Esq.",@"Ph.D.",@"PhD",@"M.D.",@"MD",@"II",@"III",@"IV",@"V",nil];

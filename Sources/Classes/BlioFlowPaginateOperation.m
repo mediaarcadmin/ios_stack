@@ -87,7 +87,12 @@
     [self willChangeValueForKey:@"isExecuting"];
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
-        	
+    
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
+	}		
+	
     NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
 
     if(self.forceReprocess) {
@@ -177,6 +182,11 @@
         NSLog(@"Using layout equivalent page length of %ld for %@", layoutEquivalentPageCount, [self getBookValueForKey:@"title"]); 
     }
     
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}				
+	
     self.percentageComplete = 100;
     self.operationSuccess = YES;
     

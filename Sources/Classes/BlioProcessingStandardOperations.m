@@ -39,15 +39,25 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	// delete temp download dir
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
 	NSError * downloadDirError;
-	if (![[NSFileManager defaultManager] removeItemAtPath:dirPath error:&downloadDirError]) {
-		NSLog(@"Failed to delete download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
+	
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}
+	
 	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
     if (currentProcessingState == kBlioBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
 	else [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
-    // The following condition is done in order to prevent a thread's first-time access to [self getBookValueForKey:@"title"] (which happens when there are no dependencies- theoretically that should never happen, but a crash would occur in artificial tests so a safeguard is warranted)... could also be avoided by simply not accessing the MOC in this method for the NSLog.
-    if ([NSThread isMainThread]) NSLog(@"Processing complete for book %@", [self getBookValueForKey:@"title"]);
-	else NSLog(@"Processing complete for book with sourceID:%i sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
+	NSLog(@"Processing complete for book with sourceID:%i sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
+	
+	if (![[NSFileManager defaultManager] removeItemAtPath:dirPath error:&downloadDirError]) {
+		NSLog(@"Failed to delete download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
+	}
+	
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}
+			
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
 }
 - (void)addDependency:(NSOperation *)operation {
@@ -116,6 +126,12 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		self.percentageComplete = 100;
 		return;
 	}
+
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
+	}
+	
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
 			NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
@@ -123,6 +139,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			attemptsMade++;
 		}
 	}
+	
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}	
+	
 	if (self.operationSuccess) self.percentageComplete = 100;
 
 }
@@ -220,6 +241,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
 
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
+	}
+	
     // create temp download dir
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
 	NSError * downloadDirError;
@@ -262,6 +288,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	return [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
 }
 - (void)startDownload {
+	
     NSString *temporaryPath = [self temporaryPath];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	/*
@@ -311,6 +338,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 	[aRequest release];
 	
 	if (nil == aConnection) {
+		[self downloadDidFinishSuccessfully:NO];
 		[self finish];
 	} else {
 		self.connection = aConnection;
@@ -466,6 +494,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
 		}
 	}
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}	
 }
 
 @end
@@ -594,6 +626,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		NSLog(@"Unzip did not finish successfully");
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
 	}
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		NSLog(@"ending background task...");
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}	
 }
 
 @end
@@ -658,6 +695,13 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 }
 
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
+	
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		NSLog(@"ending background task...");
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}	
+	
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:self.voice forKey:@"voice"];
     if (success) {
@@ -802,6 +846,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         return;
     }
     
+	UIApplication *application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
+	}	
+	
     UIImage *gridThumb = [self createThumbFromImage:cover forSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
     NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"gridThumb.png"];
@@ -828,6 +877,11 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     [listThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
     [listThumbManifestEntry setValue:@"listThumb.png" forKey:@"path"];
     [self setBookManifestValue:listThumbManifestEntry forKey:@"listThumbFilename"];
+
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}			
+	
 	self.operationSuccess = YES;
 	self.percentageComplete = 100;
     
@@ -835,6 +889,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
     // This appears to be a simulator-only bug in Apple's framework as described here:
     // http://stackoverflow.com/questions/1424210/iphone-development-pointer-being-freed-was-not-allocated
     [pool drain];
+	
 }
                            
 @end
@@ -938,6 +993,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         else
             NSLog(@"Could not find root file in Textflow directory %@", cachedFilename);
     }
+	UIApplication * application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}				
 }
 
 @end
@@ -1007,6 +1066,10 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
             NSLog(@"Could not find required audiobook files in AudioBook directory %@", temporaryPath);
         }        
     }
+	UIApplication * application = [UIApplication sharedApplication];
+	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}					
 }
 
 @end

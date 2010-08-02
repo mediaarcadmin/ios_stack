@@ -89,7 +89,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 //}
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
 	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-		NSLog(@"BlioStoreBookViewController init entered");
+//		NSLog(@"BlioStoreBookViewController init entered");
 		self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
 		self.entity = nil;
 	}
@@ -125,7 +125,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 	NSMutableArray * validFieldViews = [NSMutableArray array];
     self.bookTitle.text = [self.entity title];
     if ([self.entity author]) {
-        self.authors.text = [[NSString stringWithFormat:@"By %@", [self.entity author]] uppercaseString];
+        self.authors.text = [[NSString stringWithFormat:@"By %@", [BlioBook standardNameFromCanonicalName:[self.entity author]]] uppercaseString];
     } else if ([self.entity publisher]) {
         self.authors.text = [[NSString stringWithFormat:@"By %@", [self.entity publisher]] uppercaseString];      
     } else {

@@ -178,7 +178,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         [_acapelaAudioManager setDelegate:self];
                     } 
                 }
-                
+                [[AVAudioSession sharedInstance] setDelegate:self];
             }
         } else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];
@@ -522,6 +522,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)viewWillAppear:(BOOL)animated
 {
+	if ([[UIApplication sharedApplication] respondsToSelector:@selector(beginReceivingRemoteControlEvents)]) {
+		NSLog(@"start receiving remote control events");
+		[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+		[self becomeFirstResponder];
+	}
     if(!self.modalViewController) {        
         UIApplication *application = [UIApplication sharedApplication];
         
@@ -649,6 +654,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+	if ([[UIApplication sharedApplication] respondsToSelector:@selector(endReceivingRemoteControlEvents)]) {
+		NSLog(@"stop receiving remote control events");
+		[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+		[self resignFirstResponder];
+	}	
     if(_viewIsDisappearing) {
         //        if(_contentsSheet) {
         //            [self performSelector:@selector(dismissContents)];
@@ -762,6 +772,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
+	[[AVAudioSession sharedInstance] setDelegate:nil];
 	if (_pageJumpButton) [_pageJumpButton release];
     
     self.searchViewController = nil;
@@ -1576,6 +1587,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 #pragma mark -
+#pragma mark AVAudioSession Delegate Methods 
+- (void)beginInterruption {
+
+}
+- (void)endInterruptionWithFlags:(NSUInteger)flags {
+
+}
+
+
+#pragma mark -
 #pragma mark AVAudioPlayer Delegate Methods 
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag { 
@@ -1639,6 +1660,44 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[_audioBookManager playAudio];
 }
 
+#pragma mark -
+#pragma mark UIResponder Event Handling 
+- (BOOL)canBecomeFirstResponder {
+	return YES;
+}
+
+-(void)remoteControlReceivedWithEvent:(UIEvent*)theEvent {
+	NSLog(@"remoteControlReceivedWithEvent");
+    if (theEvent.type == UIEventTypeRemoteControl) {
+        switch(theEvent.subtype) {
+            case UIEventSubtypeRemoteControlTogglePlayPause:
+				NSLog(@"UIEventSubtypeRemoteControlTogglePlayPause");
+				[self toggleAudio:nil];
+                break;
+            case UIEventSubtypeRemoteControlNextTrack:
+				NSLog(@"UIEventSubtypeRemoteControlNextTrack");				
+                break;
+            case UIEventSubtypeRemoteControlPreviousTrack:
+				NSLog(@"UIEventSubtypeRemoteControlPreviousTrack");
+                break;
+            case UIEventSubtypeRemoteControlPlay:
+				NSLog(@"UIEventSubtypeRemoteControlPlay");
+                break;
+            case UIEventSubtypeRemoteControlPause:
+				NSLog(@"UIEventSubtypeRemoteControlPause");
+                [self pauseAudio];
+				self.audioPlaying = NO;
+                break;
+            case UIEventSubtypeRemoteControlStop:
+				NSLog(@"UIEventSubtypeRemoteControlStop");
+                [self stopAudio];
+				self.audioPlaying = NO;
+                break;
+            default:
+                return;
+		}
+	}
+}
 #pragma mark -
 #pragma mark Audiobook and General Audio Handling 
 

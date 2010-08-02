@@ -6,6 +6,7 @@
 //  Copyright Things Made Out Of Other Things 2009. All rights reserved.
 //
 #import <QuartzCore/QuartzCore.h>
+#import <AVFoundation/AVFoundation.h>
 #import <libEucalyptus/EucSharedHyphenator.h>
 #import <pthread.h>
 #import "BlioAppAppDelegate.h"
@@ -38,6 +39,12 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {  
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+	NSError * audioError = nil;
+	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError];
+	if (audioError) {
+		NSLog(@"[ERROR: could not set AVAudioSessionCategory with error: %@, %@", audioError, [audioError userInfo]);
+	}
+		
     // Override point for customization after app launch   
 	//[window addSubview:[navigationController view]];
 
