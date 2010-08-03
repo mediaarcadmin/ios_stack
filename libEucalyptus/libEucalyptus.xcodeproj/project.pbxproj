@@ -168,6 +168,7 @@
 		7D3AED77114963560059C5B6 /* EucCSSLayoutPositionedRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341671149602300C318E7 /* EucCSSLayoutPositionedRun.m */; };
 		7D3AED78114963560059C5B6 /* EucCSSRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23416D1149602300C318E7 /* EucCSSRenderer.h */; };
 		7D3AED79114963560059C5B6 /* EucCSSRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23416E1149602300C318E7 /* EucCSSRenderer.m */; };
+		7D3E312C120849CD001F3B78 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F4C2E11EF29600065A5F7 /* libEucalyptusBase.a */; };
 		7D3F4C5311EF2B850065A5F7 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F4C2E11EF29600065A5F7 /* libEucalyptusBase.a */; };
 		7D3F4C6F11EF2C3C0065A5F7 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
 		7D3F4D2011EF38B80065A5F7 /* EucConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1211EF38B80065A5F7 /* EucConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1203,6 +1204,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D3E312C120849CD001F3B78 /* libEucalyptusBase.a in Frameworks */,
 				7DD48EFE10C2E6A50001203D /* Foundation.framework in Frameworks */,
 				7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */,
 				7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */,
