@@ -11,6 +11,7 @@
 #import "EucPageView.h"
 #import "EucPageTextView.h"
 #import "THStringRenderer.h"
+#import "THUIDeviceAdditions.h"
 
 @implementation EucPageView
 
@@ -100,8 +101,6 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 - (void)dealloc
 {
-    [_touch release];
-
     [_pageNumber release];
     [_pageNumberRenderer release];
     [_titleRenderer release];
@@ -322,14 +321,25 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 }
 
 
+// Don't like all this messing with the scale factor below...
+// Doesn't seem like it should be necessary.
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if(!_touch) {
         UITouch *touch = [touches anyObject];
         CGPoint location = [touch locationInView:self];
         
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            if(!self.superview) {
+                CGFloat scaleFactor = self.contentScaleFactor;
+                location.x /= scaleFactor;
+                location.y /= scaleFactor;
+            }
+        }
+        
         if(CGRectContainsPoint([_pageTextView frame], location)) {
-            _touch = [touch retain];
+            _touch = touch;
             
             CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
             [_pageTextView handleTouchBegan:_touch atLocation:locationInTextView];
@@ -340,16 +350,38 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if([touches containsObject:_touch]) {
-        [_pageTextView handleTouchMoved:_touch atLocation:[self convertPoint:[_touch locationInView:self] toView:_pageTextView]];
-
+        UITouch *touch = _touch;
+        CGPoint location = [touch locationInView:self];
+        
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            if(!self.superview) {
+                CGFloat scaleFactor = self.contentScaleFactor;
+                location.x /= scaleFactor;
+                location.y /= scaleFactor;
+            }
+        }
+        CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
+        
+        [_pageTextView handleTouchMoved:touch atLocation:locationInTextView];
     }
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if([touches containsObject:_touch]) {
-        [_pageTextView handleTouchCancelled:_touch atLocation:[self convertPoint:[_touch locationInView:self] toView:_pageTextView]];
-        [_touch release];
+        UITouch *touch = _touch;
+        CGPoint location = [touch locationInView:self];
+        
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            if(!self.superview) {
+                CGFloat scaleFactor = self.contentScaleFactor;
+                location.x /= scaleFactor;
+                location.y /= scaleFactor;
+            }
+        }
+        CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
+        
+        [_pageTextView handleTouchCancelled:touch atLocation:locationInTextView];
         _touch = nil;
     }
 }
@@ -357,11 +389,21 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if([touches containsObject:_touch]) {
-        UITouch *touch = [_touch retain]; // In case we're released as a result fo forwarding this
-        [_touch release];
+        UITouch *touch = _touch;
         _touch = nil;
-        [_pageTextView handleTouchEnded:touch atLocation:[self convertPoint:[touch locationInView:self] toView:_pageTextView]];
-        [touch release];
+        
+        CGPoint location = [touch locationInView:self];
+        
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            if(!self.superview) {
+                CGFloat scaleFactor = self.contentScaleFactor;
+                location.x /= scaleFactor;
+                location.y /= scaleFactor;
+            }
+        }
+        CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
+        
+        [_pageTextView handleTouchEnded:touch atLocation:locationInTextView];
     }
 }
 
