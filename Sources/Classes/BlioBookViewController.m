@@ -310,7 +310,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                    target:self 
                                                    action:@selector(toggleAudio:)];
             [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+            [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
             [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
             
         } else {
@@ -1149,6 +1149,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [_pageJumpView addSubview:slider];
         
         [self.view addSubview:_pageJumpView];
+	
     }
     
     CGSize sz = _pageJumpView.bounds.size;
@@ -1176,6 +1177,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     [UIView commitAnimations];
+	
+	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 
 }
 
@@ -1269,7 +1272,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
             [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+            [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
             [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
 
             [self stopAudio];
@@ -1478,7 +1481,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
         [item setImage:[UIImage imageNamed:@"icon-play.png"]];
         [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+        [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
         [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
 
         [self stopAudio];
@@ -1599,7 +1602,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 		[item setImage:[UIImage imageNamed:@"icon-play.png"]];
         [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+        [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
         [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
 
 		self.audioPlaying = NO;
@@ -1625,7 +1628,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
 			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
             [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+            [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
             [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
 
 			self.audioPlaying = NO;
@@ -1814,7 +1817,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 //    } else {
 //        audioImage = [UIImage imageNamed:@"icon-play.png"];
 //        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-//        [item setAccessibilityHint:NSLocalizedString(@"Starts audio playback.", @"Accessibility label for Book View Controller Play hint")];
+//        [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
 //        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
 //    }
        
@@ -2152,7 +2155,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type { 
 	NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
-    NSString *encodedParam = [[wordStrings componentsJoinedByString:@" "] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *encodedParam = [[[wordStrings componentsJoinedByString:@" "] 
+							   stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
+							  stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];	
 	NSString *queryString = nil;
 	NSString *titleString = nil;
 	switch (type) {
