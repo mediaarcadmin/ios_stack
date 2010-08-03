@@ -44,7 +44,7 @@ typedef enum BlioLayoutPageMode {
     BlioLayoutContentView *contentView;
     NSInteger visiblePageIndex;
     BlioLayoutPageLayer *currentPageLayer;
-    BOOL disableScrollUpdating;
+    BOOL scrollingAnimationInProgress;
     NSInteger pageNumber;
     NSInteger pageCount;
     CGFloat lastZoomScale;
@@ -83,7 +83,7 @@ typedef enum BlioLayoutPageMode {
 @property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) BlioLayoutContentView *contentView;
 @property (nonatomic, retain) BlioLayoutPageLayer *currentPageLayer;
-@property (nonatomic) BOOL disableScrollUpdating;
+@property (nonatomic) BOOL scrollingAnimationInProgress;
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
 @property (nonatomic, retain) NSMutableDictionary *pageCropsCache;
