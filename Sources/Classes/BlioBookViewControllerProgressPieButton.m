@@ -170,7 +170,18 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     UIImage *buttonImage = [UIImage imageNamed:@"navigationBarBlackTranslucentButton"];
     UIImage *stretchImage = [buttonImage stretchableImageWithLeftCapWidth:floorf(buttonImage.size.width/2.0f) topCapHeight:floorf(buttonImage.size.height/2.0f)];
     
-    [stretchImage drawInRect:backgroundFrame];
+    // Draw button image full-height then scale into backgroundRect
+    CGRect buttonRect = CGRectMake(0, 0, backgroundFrame.size.width, buttonImage.size.height);
+    if(UIGraphicsBeginImageContextWithOptions != nil) {
+        UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(buttonRect.size);
+    }
+    [stretchImage drawInRect:buttonRect];
+    UIImage *backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    [backgroundImage drawInRect:backgroundFrame];
     
     CGContextTranslateCTM(ctx, 0, CGRectGetMaxY(rect));
     CGContextScaleCTM(ctx, 1, -1);
