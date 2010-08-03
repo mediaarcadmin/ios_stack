@@ -262,6 +262,10 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     
     EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
     Class nsStringClass = [NSString class];
+    
+    BOOL currentUnderline = NO;
+    CGPoint underlinePoints[2] = { { 0 } };    
+    
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         id item = renderItem->item;
         CGRect rect = renderItem->rect;
@@ -269,7 +273,16 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
         //CGContextStrokeRect(_cgContext, rect);
         //THLog(@"Render item: %@", NSStringFromCGRect(rect));
 
-        if([item isKindOfClass:nsStringClass]) {
+        if(item == EucCSSLayoutPositionedLineRenderItemUnderlineStartItem) {
+            currentUnderline = YES;
+            underlinePoints[0] = renderItem->rect.origin;
+            underlinePoints[1].y = renderItem->rect.origin.y;
+        } else if (item == EucCSSLayoutPositionedLineRenderItemUnderlineEndItem) {
+            NSParameterAssert(currentUnderline);
+            underlinePoints[1].x = renderItem->rect.origin.x;
+            CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
+            currentUnderline = NO;
+        } else if([item isKindOfClass:nsStringClass]) {
             [renderItem->stringRenderer drawString:(NSString *)item
                                          inContext:_cgContext 
                                            atPoint:rect.origin
@@ -283,6 +296,11 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
             CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), (CGImageRef)item);
             CGContextRestoreGState(_cgContext);
         }
+    }
+    
+    if(currentUnderline) {
+        underlinePoints[1].x = CGRectGetMaxX((renderItem - 1)->rect);
+        CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);        
     }
     
     THLogVerbose(@"Positioned Line End");

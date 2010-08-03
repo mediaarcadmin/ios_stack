@@ -37,7 +37,7 @@ typedef enum EucPageViewTitleLineContents
 
     CGSize _margins;
     
-    UIView<EucPageTextView> *_bookTextView;
+    UIView<EucPageTextView> *_pageTextView;
     EucPageViewTitleLinePosition _titleLinePosition;
     EucPageViewTitleLineContents _titleLineContents;
     BOOL _fullBleed;
@@ -50,12 +50,12 @@ typedef enum EucPageViewTitleLineContents
 @property (nonatomic, assign) id<EucPageViewDelegate> delegate;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *pageNumberString;
-@property (nonatomic, readonly) UIView<EucPageTextView> *bookTextView;
+@property (nonatomic, readonly) UIView<EucPageTextView> *pageTextView;
 @property (nonatomic, assign) EucPageViewTitleLinePosition titleLinePosition;
 @property (nonatomic, assign) EucPageViewTitleLineContents titleLineContents;
 @property (nonatomic, assign) BOOL fullBleed;
 
-+ (CGRect)bookTextViewFrameForFrame:(CGRect)frame
++ (CGRect)pageTextViewFrameForFrame:(CGRect)frame
                        forPointSize:(CGFloat)pointSize;
 
 - (id)initWithFrame:(CGRect)frame

@@ -22,6 +22,9 @@
 
 #import <libcss/libcss.h>
 
+const NSObject * EucCSSLayoutPositionedLineRenderItemUnderlineStartItem;
+const NSObject * EucCSSLayoutPositionedLineRenderItemUnderlineEndItem;
+
 @implementation EucCSSLayoutPositionedLine
 
 @synthesize startPoint = _startPoint;
@@ -33,6 +36,12 @@
 @synthesize baseline = _baseline;
 
 @synthesize align = _align;
+
++ (void)initialize 
+{
+    EucCSSLayoutPositionedLineRenderItemUnderlineStartItem = [[NSObject alloc] init];
+    EucCSSLayoutPositionedLineRenderItemUnderlineEndItem = [[NSObject alloc] init];
+}
 
 - (void)dealloc
 {    
@@ -180,10 +189,30 @@
                 xPosition += _indent;
         }
 
+        BOOL currentUnderline = NO;
+        BOOL checkForUnderline = YES;
+        
         EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
         for(i = startComponentOffset, info = componentInfos;
             i < componentsCount && i < afterEndComponentOffset; 
             ++i, ++info) {
+            
+            if(checkForUnderline) {
+                css_computed_style *style = [info->documentNode computedStyle];
+                if(!style) {
+                    style = [(info->documentNode).parent computedStyle];
+                }
+                uint8_t decoration = css_computed_text_decoration(style);
+                BOOL shouldUnderline = (decoration == CSS_TEXT_DECORATION_UNDERLINE);
+                if(currentUnderline != shouldUnderline) {
+                    renderItem->item = [shouldUnderline ? EucCSSLayoutPositionedLineRenderItemUnderlineStartItem : EucCSSLayoutPositionedLineRenderItemUnderlineEndItem retain];
+                    renderItem->rect = CGRectMake(xPosition, yPosition + baseline + ceilf((info->lineHeight - info->pointSize) * 0.5f) + 0.5, 0, 0);
+                    ++renderItem;
+                    ++_renderItemCount;
+
+                    currentUnderline = shouldUnderline;
+                }
+            }
             
             if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
                 CGFloat emBoxHeight = info->pointSize;
@@ -216,8 +245,7 @@
                 ++_renderItemCount;
                 
                 xPosition += info->width;
-            }
-            if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
                 if (i == startComponentOffset) {
                     renderItem->item = [(NSString *)info->component2 retain];
                     renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthAfterHyphen, size.height);
@@ -229,6 +257,10 @@
                     
                     xPosition += info->widthAfterHyphen;
                 }
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
+                checkForUnderline = YES;
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode) {
+                checkForUnderline = YES;
             }
         }
         

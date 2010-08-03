@@ -17,7 +17,7 @@
 @synthesize title = _title;
 @synthesize pageNumberString = _pageNumber;
 @synthesize delegate = _delegate;
-@synthesize bookTextView = _bookTextView;
+@synthesize pageTextView = _pageTextView;
 @synthesize titleLinePosition = _titleLinePosition;
 @synthesize titleLineContents = _titleLineContents;
 @synthesize fullBleed = _fullBleed;
@@ -27,7 +27,7 @@
     return CGSizeMake(roundf(pointSize / 0.9f), roundf(pointSize / 1.2f));
 }
 
-+ (CGRect)bookTextViewFrameForFrame:(CGRect)frame
++ (CGRect)pageTextViewFrameForFrame:(CGRect)frame
                        forPointSize:(CGFloat)pointSize
 {
     CGSize margins = [self _marginsForPointSize:pointSize];
@@ -59,16 +59,16 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont styleFlags:pageNumberFontStyleFlags];
         _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont styleFlags:titleFontStyleFlags];
 
-        _bookTextView = [[textViewClass alloc] initWithFrame:[[self class] bookTextViewFrameForFrame:frame 
+        _pageTextView = [[textViewClass alloc] initWithFrame:[[self class] pageTextViewFrameForFrame:frame 
                                                                                         forPointSize:_titlePointSize] 
                                                    pointSize:pointSize];
 
-        _bookTextView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _bookTextView.backgroundColor = [UIColor clearColor];
-        _bookTextView.opaque = NO;
-        _bookTextView.delegate = self;
+        _pageTextView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _pageTextView.backgroundColor = [UIColor clearColor];
+        _pageTextView.opaque = NO;
+        _pageTextView.delegate = self;
         
-        //[self addSubview:_bookTextView];
+        //[self addSubview:_pageTextView];
         
         _titleLinePosition = EucPageViewTitleLinePositionTop;
         _titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
@@ -107,7 +107,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     [_titleRenderer release];
     
     [_title release];
-    [_bookTextView release];
+    [_pageTextView release];
     
     [_accessibilityElements release];
 
@@ -117,7 +117,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 - (void)setTitleLinePosition:(EucPageViewTitleLinePosition)position
 {
-    CGRect protoFrame = [[self class] bookTextViewFrameForFrame:self.frame
+    CGRect protoFrame = [[self class] pageTextViewFrameForFrame:self.frame
                                                    forPointSize:_textPointSize];
     if(position == EucPageViewTitleLinePositionTop) {
     } else if(position == EucPageViewTitleLinePositionBottom) {
@@ -127,7 +127,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         CGRect myBounds = self.bounds;
         protoFrame.origin.y = ceilf((myBounds.size.height - protoFrame.size.height) / 2);
     }
-    [_bookTextView setFrame:protoFrame];
+    [_pageTextView setFrame:protoFrame];
     _titleLinePosition = position;
 }
 
@@ -136,7 +136,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     if(_fullBleed != fullBleed) {
         _fullBleed = fullBleed;
         if(fullBleed) {
-            [_bookTextView setFrame:[self bounds]];
+            [_pageTextView setFrame:[self bounds]];
         } else {
             [self setTitleLinePosition:_titleLinePosition];
         }
@@ -164,9 +164,9 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
     CGRect bounds = [self bounds];
     
-    CGPoint origin = _bookTextView.frame.origin;
+    CGPoint origin = _pageTextView.frame.origin;
     CGContextTranslateCTM(currentContext, origin.x, origin.y);
-    [_bookTextView drawRect:rect inContext:currentContext];
+    [_pageTextView drawRect:rect inContext:currentContext];
     CGContextRestoreGState(currentContext);
     
     CGContextSaveGState(currentContext);
@@ -328,11 +328,11 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         UITouch *touch = [touches anyObject];
         CGPoint location = [touch locationInView:self];
         
-        if(CGRectContainsPoint([_bookTextView frame], location)) {
+        if(CGRectContainsPoint([_pageTextView frame], location)) {
             _touch = [touch retain];
             
-            CGPoint locationInTextView = [self convertPoint:location toView:_bookTextView];
-            [_bookTextView handleTouchBegan:_touch atLocation:locationInTextView];
+            CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
+            [_pageTextView handleTouchBegan:_touch atLocation:locationInTextView];
         }
     }
 }
@@ -340,7 +340,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if([touches containsObject:_touch]) {
-        [_bookTextView handleTouchMoved:_touch atLocation:[self convertPoint:[_touch locationInView:self] toView:_bookTextView]];
+        [_pageTextView handleTouchMoved:_touch atLocation:[self convertPoint:[_touch locationInView:self] toView:_pageTextView]];
 
     }
 }
@@ -348,7 +348,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if([touches containsObject:_touch]) {
-        [_bookTextView handleTouchCancelled:_touch atLocation:[self convertPoint:[_touch locationInView:self] toView:_bookTextView]];
+        [_pageTextView handleTouchCancelled:_touch atLocation:[self convertPoint:[_touch locationInView:self] toView:_pageTextView]];
         [_touch release];
         _touch = nil;
     }
@@ -360,12 +360,12 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         UITouch *touch = [_touch retain]; // In case we're released as a result fo forwarding this
         [_touch release];
         _touch = nil;
-        [_bookTextView handleTouchEnded:touch atLocation:[self convertPoint:[touch locationInView:self] toView:_bookTextView]];
+        [_pageTextView handleTouchEnded:touch atLocation:[self convertPoint:[touch locationInView:self] toView:_pageTextView]];
         [touch release];
     }
 }
 
-- (void)bookTextView:(UIView<EucPageTextView> *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
+- (void)pageTextView:(UIView<EucPageTextView> *)pageTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
 {
     if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapOnHyperlinkWithAttributes:)]) {
         [_delegate pageView:self didReceiveTapOnHyperlinkWithAttributes:attributes];
@@ -375,8 +375,8 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 - (NSArray *)accessibilityElements
 {
     if(!_accessibilityElements) {
-        if([_bookTextView respondsToSelector:@selector(accessibilityElements)]) {
-            _accessibilityElements = [[_bookTextView performSelector:@selector(accessibilityElements)] retain];
+        if([_pageTextView respondsToSelector:@selector(accessibilityElements)]) {
+            _accessibilityElements = [[_pageTextView performSelector:@selector(accessibilityElements)] retain];
         }
         for(UIAccessibilityElement *element in _accessibilityElements) {
             element.accessibilityContainer = self;
