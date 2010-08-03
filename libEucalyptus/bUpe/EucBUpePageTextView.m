@@ -162,8 +162,8 @@
             
             EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
             for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
-                if([renderItem->item isKindOfClass:[NSString class]]) {
-                    uint32_t wordId = renderItem->point.word;
+                if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                    uint32_t wordId = renderItem->item.stringItem.layoutPoint.word;
                     if(wordId != lastWordId) {
                         [array addObject:[NSNumber numberWithUnsignedInt:wordId]];
                         lastWordId = wordId;
@@ -194,10 +194,10 @@
         
         EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
         for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
-            if([renderItem->item isKindOfClass:[NSString class]]) {
-                uint32_t wordId = renderItem->point.word;
+            if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                uint32_t wordId = renderItem->item.stringItem.layoutPoint.word;
                 if(wordId == wantedWordId) {
-                    CGRect itemRect = renderItem->rect;
+                    CGRect itemRect = renderItem->item.stringItem.rect;
                     itemRect.origin.x += lineOffset.x;
                     itemRect.origin.y += lineOffset.y;
                     [array addObject:[NSValue valueWithCGRect:itemRect]];
@@ -256,8 +256,9 @@
                 for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
                     if(renderItem->altText) {
                         [buildString appendString:renderItem->altText];
-                    } else if(renderItem->point.element == 0) {
-                        [buildString appendString:renderItem->item];
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString &&
+                              renderItem->item.stringItem.layoutPoint.element == 0) {
+                        [buildString appendString:renderItem->item.stringItem.string];
                     }
                     [buildString appendString:@" "];
                 }
@@ -299,9 +300,37 @@
     return [[self accessibilityElements] indexOfObject:element];
 }
 
-- (void)handleTouchBegan:(UITouch *)touch atLocation:(CGPoint)location {}
-- (void)handleTouchMoved:(UITouch *)touch atLocation:(CGPoint)location {}
-- (void)handleTouchEnded:(UITouch *)touch atLocation:(CGPoint)location {}
-- (void)handleTouchCancelled:(UITouch *)touch atLocation:(CGPoint)location {}
+- (THPair *)hyperlinkRectsAndURLs
+{
+    return nil;
+}
+
+- (void)handleTouchBegan:(UITouch *)touch atLocation:(CGPoint)location 
+{
+    if(!_touch)  {
+        _touch = touch;
+    }
+}
+
+- (void)handleTouchMoved:(UITouch *)touch atLocation:(CGPoint)location 
+{
+    if(touch == _touch)  {
+
+    }
+}
+
+- (void)handleTouchEnded:(UITouch *)touch atLocation:(CGPoint)location 
+{
+    if(touch == _touch)  {
+        _touch = nil;
+    }
+}
+
+- (void)handleTouchCancelled:(UITouch *)touch atLocation:(CGPoint)location 
+{
+    if(touch == _touch)  {
+        _touch = nil;
+    }    
+}
 
 @end

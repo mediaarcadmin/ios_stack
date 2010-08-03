@@ -89,7 +89,6 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
     return [self initWithData:xmlData xmlTreeNodeClass:[EucCSSXMLTreeNode class]];
 }
 
-
 - (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass
 {
     if((self = [super init])) {

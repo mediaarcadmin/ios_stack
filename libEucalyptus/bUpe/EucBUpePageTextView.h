@@ -23,6 +23,8 @@
     NSArray *_runs;
     
     NSArray *_accessibilityElements;
+    
+    UITouch *_touch;
 }
 
 @end

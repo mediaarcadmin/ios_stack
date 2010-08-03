@@ -92,9 +92,22 @@
     return [@"img" caseInsensitiveCompare:self.name] == NSOrderedSame;
 }
 
-- (NSString *)imageSourceURL
+- (NSString *)imageSourceURLString
 {
     return [self attributeWithName:@"src"];
 }    
+
+- (BOOL)isHyperlinkNode
+{
+    if([@"a" caseInsensitiveCompare:self.name] == NSOrderedSame) {
+        return [self attributeWithName:@"href"].length != 0;
+    }
+    return NO;
+}
+
+- (NSString *)hyperlinkURLString
+{
+    return [self attributeWithName:@"href"];
+}
 
 @end
