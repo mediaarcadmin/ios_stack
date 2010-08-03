@@ -30,6 +30,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @property (nonatomic, assign) RasterImageInfo *imageInfo;
 @property (nonatomic, retain) NSMutableDictionary *xpsData;
 @property (nonatomic, retain) NSMutableArray *uriMap;
+@property (nonatomic, retain) BlioTimeOrderedCache *componentCache;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -41,6 +42,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 
 @synthesize bookID;
 @synthesize tempDirectory, imageInfo, xpsData, uriMap;
+@synthesize componentCache;
 
 - (void)dealloc {   
     [renderingLock lock];
@@ -68,6 +70,8 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     [renderingLock release];
     [contentsLock release];
     [inflateLock release];
+    
+    self.componentCache = nil;
     
     [super dealloc];
 }
@@ -130,6 +134,12 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         pageCount = XPS_GetNumberPages(xpsHandle, 0);
         
         self.xpsData = [NSMutableDictionary dictionary];
+        
+        BlioTimeOrderedCache *aCache = [[BlioTimeOrderedCache alloc] init];
+        aCache.countLimit = 30; // Arbitrary 30 object limit
+        aCache.totalCostLimit = 1024*1024; // Arbitrary 1MB limit. This may need wteaked or set on a per-device basis
+        self.componentCache = aCache;
+        [aCache release];
     }
     return self;
 }
@@ -298,9 +308,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 #pragma mark XPS Component Data
 
 - (NSData *)replaceMappedResources:(NSData *)data {
-    NSString *inputString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *inputString = [[NSString alloc] initWithBytesNoCopy:(void *)[data bytes] length:[data length] encoding:NSUTF8StringEncoding freeWhenDone:NO];
     NSMutableString *outputString = [[NSMutableString alloc] initWithCapacity:[inputString length]];
-        
+
     NSString *GRIDROW = @"Grid.Row=\"";
     NSString *CLOSINGQUOTE = @"\"";
     
@@ -308,9 +318,11 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     
     while ([aScanner isAtEnd] == NO)
     {
-        NSString *prefix;
-        [aScanner scanUpToString:GRIDROW intoString:&prefix];
-        [outputString appendString:prefix];
+        NSUInteger startPos = [aScanner scanLocation];
+        [aScanner scanUpToString:GRIDROW intoString:NULL];
+        NSUInteger endPos = [aScanner scanLocation];
+        NSRange prefixRange = NSMakeRange(startPos, endPos - startPos);
+        [outputString appendString:[inputString substringWithRange:prefixRange]];
         
         if ([aScanner isAtEnd] == NO) {
             // Skip the gridrow entry
@@ -377,6 +389,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     BOOL encrypted = NO;
     BOOL gzipped = NO;
     BOOL mapped = NO;
+    BOOL cached = NO;
     
     // TODO Make sure these checks are ordered from most common to least common for efficiency
     if ([filename isEqualToString:@"Rights.xml"]) {
@@ -385,21 +398,32 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         encrypted = YES;
         gzipped = YES;
         mapped = YES;
+        cached = YES;
         componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
     } else if ([directory isEqualToString:BlioXPSEncryptedImagesDir] && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
         encrypted = YES;
+        cached = YES;
         componentPath = [path stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
     } else if ([directory isEqualToString:BlioXPSEncryptedTextFlowDir]) {  
         if (![path isEqualToString:@"/Documents/1/Other/KNFB/Flow/Sections.xml"]) {
             encrypted = YES;
             gzipped = YES;
+            cached = YES;
         }
     } else if ([directory isEqualToString:BlioXPSEncryptedPagesDir]) {
         encrypted = YES;
         gzipped = YES;
+        cached = YES;
     } else if ([path isEqualToString:BlioXPSEncryptedUriMap]) {
         encrypted = YES;
         gzipped = YES;
+    }
+        
+    if (cached) {
+        NSData *cacheData = [self.componentCache objectForKey:componentPath];
+        if ([cacheData length]) {
+            return cacheData;
+        }
     }
     
     NSData *componentData = [self rawDataForComponentAtPath:componentPath];
@@ -418,9 +442,15 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     if (mapped) {
         componentData = [self replaceMappedResources:componentData];
     }
+    
+    if (cached) {
+        [self.componentCache setObject:componentData forKey:componentPath cost:[componentData length]];
+    }
+    
     if (![componentData length]) {
         NSLog(@"Zero length data returned in dataForComponentAtPath: %@", path);
     }
+    
     return componentData;
     
 }

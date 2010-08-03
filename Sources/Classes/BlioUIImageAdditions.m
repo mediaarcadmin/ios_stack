@@ -15,7 +15,7 @@
 + (UIImage *)imageWithString:(NSString *)string font:(UIFont *)font color:(UIColor *)color{
     CGSize size = [string sizeWithFont:font];
     
-    if(UIGraphicsBeginImageContextWithOptions) {
+    if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     } else {
         UIGraphicsBeginImageContext(size);
@@ -38,7 +38,7 @@
     imageRect.origin.y = floor((combinedRect.size.height - imageRect.size.height)/2.0f);
     textRect = CGRectIntegral(textRect);
     imageRect = CGRectIntegral(imageRect);
-    if(UIGraphicsBeginImageContextWithOptions) {
+    if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(combinedRect.size, NO, 0);
     } else {
         UIGraphicsBeginImageContext(combinedRect.size);
@@ -60,7 +60,7 @@
 
 + (UIImage *)imageWithShadow:(UIImage *)image inset:(UIEdgeInsets)inset color:(UIColor *)color {
     CGRect imageRect = CGRectIntegral(CGRectMake(inset.left, inset.top, image.size.width + inset.right, image.size.height + (inset.top + inset.bottom)));
-    if(UIGraphicsBeginImageContextWithOptions) {
+    if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(imageRect.size, NO, 0);
     } else {
         UIGraphicsBeginImageContext(imageRect.size);
@@ -83,7 +83,7 @@
     CGSize originalSize = image.size;
     CGSize newSize = originalSize;
     newSize.height++;
-    if(UIGraphicsBeginImageContextWithOptions) {
+    if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(newSize, NO, 0);
     } else {
         UIGraphicsBeginImageContext(newSize);

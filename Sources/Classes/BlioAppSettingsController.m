@@ -10,6 +10,8 @@
 #import "BlioAudioSettingsController.h"
 #import "BlioWebToolSettingsController.h"
 #import "BlioPaidBooksSettingsController.h"
+#import "BlioAboutSettingsController.h"
+#import "BlioHelpSettingsController.h"
 
 @implementation BlioAppSettingsController
 
@@ -69,7 +71,7 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 5;
 }
 
 
@@ -99,6 +101,12 @@
 		case 2:
 			[cell.textLabel setText:@"Paid Books"];
 			break;
+		case 3:
+			[cell.textLabel setText:@"Help"];
+			break;
+		case 4:
+			[cell.textLabel setText:@"About"];
+			break;
 		default:
 			break;
 	}
@@ -112,6 +120,8 @@
 	BlioAudioSettingsController *audioController;
 	BlioWebToolSettingsController *webToolController;
 	BlioPaidBooksSettingsController *paidBooksController;
+	BlioHelpSettingsController *helpController;
+	BlioAboutSettingsController *aboutController;
 	switch ( [indexPath section] ) {
 		case 0:
 			audioController = [[BlioAudioSettingsController alloc] initWithStyle:UITableViewStyleGrouped];
@@ -127,6 +137,16 @@
 			paidBooksController = [[BlioPaidBooksSettingsController alloc] init];
 			[self.navigationController pushViewController:paidBooksController animated:YES];
 			[paidBooksController release];
+			break;
+		case 3:
+			helpController = [[BlioHelpSettingsController alloc] init];
+			[self.navigationController pushViewController:helpController animated:YES];
+			[helpController release];
+			break;
+		case 4:
+			aboutController = [[BlioAboutSettingsController alloc] init];
+			[self.navigationController pushViewController:aboutController animated:YES];
+			[aboutController release];
 			break;
 		default:
 			break;

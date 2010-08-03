@@ -992,7 +992,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     snapSize.height *= 1.2;
     
     if (nil == self.pageSnapshot) {
-        UIGraphicsBeginImageContext(snapSize);
+        if(UIGraphicsBeginImageContextWithOptions != nil) {
+            UIGraphicsBeginImageContextWithOptions(snapSize, NO, 0);
+        } else {
+            UIGraphicsBeginImageContext(snapSize);
+        }
+
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:[self.scrollView.layer superlayer]];
         //CGContextTranslateCTM(ctx, 0, snapSize.height);
@@ -1009,7 +1014,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     if (nil == self.highlightsSnapshot) {
-        UIGraphicsBeginImageContext(snapSize);
+        if(UIGraphicsBeginImageContextWithOptions != nil) {
+            UIGraphicsBeginImageContextWithOptions(snapSize, NO, 0);
+        } else {
+            UIGraphicsBeginImageContext(snapSize);
+        }
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [self.pageSnapshot drawAtPoint:CGPointZero];
         CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:[self.scrollView.layer superlayer]];

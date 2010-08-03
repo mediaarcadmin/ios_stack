@@ -68,6 +68,17 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 #define POPOVERCONTROLLER_DELEGATE_DELIMITER
 #endif
 
+@interface BlioLogoView : UIView {
+    NSUInteger numberOfBooksInLibrary;
+    UIImageView *imageView;
+}
+
+@property (nonatomic, assign) NSUInteger numberOfBooksInLibrary;
+@property (nonatomic, retain) UIImageView *imageView;
+
+- (void)setImage:(UIImage *)newImage;
+
+@end
 
 @interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
     BlioLibraryBookView *_currentBookView;
@@ -76,6 +87,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     BOOL _firstPageRendered;
     BOOL _didEdit;
     BlioLibraryLayout _libraryLayout;
+    BlioLogoView *logoView;
     
     BlioTestBlockWords *_testBlockWords;
     NSManagedObjectContext *_managedObjectContext;

@@ -13,7 +13,7 @@
 
 
 @interface BlioProcessingCompleteOperation : BlioProcessingOperation {
-	NSUInteger alreadyCompletedOperations;	
+	NSUInteger alreadyCompletedOperations;
 }
 
 @property (nonatomic, assign) NSUInteger alreadyCompletedOperations;
@@ -34,7 +34,7 @@
     BOOL finished;
 	BOOL resume;
 	
-	long expectedContentLength;
+	long expectedContentLength;	
 }
 
 @property (nonatomic, retain) NSURL *url;

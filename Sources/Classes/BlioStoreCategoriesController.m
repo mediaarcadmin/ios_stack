@@ -8,6 +8,7 @@
 
 #import "BlioStoreCategoriesController.h"
 #import "BlioStoreBookViewController.h"
+#import "BlioBook.h"
 //#import "BlioStoreFeedBooksNonGDataParser.h"
 
 @interface BlioStoreCategoriesController()
@@ -221,7 +222,12 @@
 
 	NSUInteger section = [indexPath section];
 
-    BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	NSMutableArray * contentFeeds = [NSMutableArray array];
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
+
 	[self tableView:tableView didSelectRowAtIndexPath:indexPath feed:feed];
 }
 
@@ -369,14 +375,24 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section 
 { 
-	return [[self.feeds objectAtIndex:section] title];
+	NSMutableArray * contentFeeds = [NSMutableArray array];	
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}	
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
+	
+	return [feed title];
 }
 
 
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	NSMutableArray * contentFeeds = [NSMutableArray array];
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
 	NSUInteger getMoreResultsCell = 0;
 	if (([feed.categories count] + [feed.entities count]) < feed.totalResults) getMoreResultsCell = 1; // our data is less than the totalResults, so we need a "Get More Results" option.
 	return [feed.categories count] + [feed.entities count] + getMoreResultsCell;
@@ -388,7 +404,11 @@
 	NSUInteger row = [indexPath row];
 	NSUInteger section = [indexPath section];
 	
-	BlioStoreFeed *feed = [self.feeds objectAtIndex:section];
+	NSMutableArray * contentFeeds = [NSMutableArray array];	
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}	
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
 	
 	static NSString *MoreResultsCellIdentifier = @"MoreResultsCell";
 	static NSString *CategoryCellIdentifier = @"CategoryCell";
@@ -460,7 +480,7 @@
 		row -= [feed.categories count];
 		if (row < [feed.entities count]) {
 			cell.textLabel.text = [[feed.entities objectAtIndex:indexPath.row] title];
-			cell.detailTextLabel.text = [[feed.entities objectAtIndex:indexPath.row] author];
+			cell.detailTextLabel.text = [BlioBook standardNameFromCanonicalName:[[feed.entities objectAtIndex:indexPath.row] author]];
 			[cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@", @"Accessibility label for Store Categories Entity cell"), cell.textLabel.text, cell.detailTextLabel.text ? : @"Anon"]];
 			[cell setAccessibilityHint:nil];
 		}
@@ -470,7 +490,13 @@
 }
 
 - (NSString *)getMoreCellLabelForSection:(NSUInteger) section {
-	return [[self.feeds objectAtIndex:section] title];
+	NSMutableArray * contentFeeds = [NSMutableArray array];
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
+	
+	return [feed title];
 }
 
 @end

@@ -23,7 +23,7 @@ static pthread_mutex_t sBookMutationMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int mutationCount = 0;
 
-@synthesize bookID, sourceID, sourceSpecificID, forceReprocess, cacheDirectory,tempDirectory;
+@synthesize bookID, sourceID, sourceSpecificID, forceReprocess, cacheDirectory,tempDirectory,backgroundTaskIdentifier;
 
 - (id) init {
 	if((self = [super init])) {

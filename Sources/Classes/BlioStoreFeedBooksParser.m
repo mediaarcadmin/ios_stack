@@ -7,7 +7,7 @@
 //
 
 #import "BlioStoreFeedBooksParser.h"
-
+#import "BlioBook.h"
 
 @implementation BlioStoreFeedBooksParser
 
@@ -41,7 +41,7 @@
                 [aEntity setUrl:absoluteURL];
                 aEntity.id = [entry identifier];
                 [aEntity setSummary:[[entry summary] stringValue]];
-                [aEntity setAuthor:[[[entry authors] lastObject] name]];
+                [aEntity setAuthor:[BlioBook canonicalNameFromStandardName:[[[entry authors] lastObject] name]]];
                 [aEntity setEPubUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/acquisition" type:@"application/epub+zip" fromLinks:[entry links]] href]];
                 [aEntity setPdfUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/acquisition" type:@"application/pdf" fromLinks:[entry links]] href]];
                 [aEntity setCoverUrl:[[GDataLink linkWithRel:@"http://opds-spec.org/cover" type:@"image/png" fromLinks:[entry links]] href]];

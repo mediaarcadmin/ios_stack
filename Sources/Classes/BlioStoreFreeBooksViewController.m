@@ -109,7 +109,11 @@
     NSUInteger section = [indexPath section];
 
 	if (tableView == self.searchDisplayController.searchResultsTableView) {
-		BlioStoreFeed *feed = [self.storeSearchTableViewDataSource.feeds objectAtIndex:section];
+		NSMutableArray * contentFeeds = [NSMutableArray array];
+		for (BlioStoreFeed * aFeed in self.storeSearchTableViewDataSource.feeds) {
+			if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+		}
+		BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
 		[self tableView:tableView didSelectRowAtIndexPath:indexPath feed:feed];
 		return;
 	}
@@ -464,7 +468,13 @@
 @implementation BlioStoreSearchTableViewDataSource
 
 - (NSString *)getMoreCellLabelForSection:(NSUInteger) section {
-	return [NSString stringWithFormat:NSLocalizedString(@"%@ Results",@"\"%@ Results\" See More Cell label"),[[self.feeds objectAtIndex:section] title]];
+	NSMutableArray * contentFeeds = [NSMutableArray array];
+	for (BlioStoreFeed * aFeed in self.feeds) {
+		if ([aFeed.categories count] || [aFeed.entities count]) [contentFeeds addObject:aFeed];
+	}
+	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
+	
+	return [NSString stringWithFormat:NSLocalizedString(@"%@ Results",@"\"%@ Results\" See More Cell label"),[feed title]];
 }
 
 // Customize the number of rows in the table view.

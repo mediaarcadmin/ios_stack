@@ -1,5 +1,5 @@
 //
-//  MockBook.h
+//  BlioBook.h
 //  LibraryView
 //
 //  Created by matt on 15/12/2009.
@@ -111,5 +111,9 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (NSData *)manifestDataForKey:(NSString *)key;
 - (NSString *)manifestPathForKey:(NSString *)key;
 - (NSString *)manifestLocationForKey:(NSString *)key;
+- (NSString *)authorWithStandardFormat;
+
++(NSString*)standardNameFromCanonicalName:(NSString*)aName;
++(NSString*)canonicalNameFromStandardName:(NSString*)aName;
 
 @end

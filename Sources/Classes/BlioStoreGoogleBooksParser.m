@@ -7,6 +7,7 @@
 //
 
 #import "BlioStoreGoogleBooksParser.h"
+#import "BlioBook.h"
 
 @implementation BlioStoreGoogleBooksParser
 
@@ -32,7 +33,7 @@
 	[super dealloc];
 }
 - (void)volumeListFetchTicket:(GDataServiceTicket *)ticket finishedWithFeed:(GDataFeedVolume *)object error:(NSError *)error {
-    NSLog(@"BlioStoreGoogleBooksParser volumeFetchTicket:finishedWithFeed: entered");
+//    NSLog(@"BlioStoreGoogleBooksParser volumeFetchTicket:finishedWithFeed: entered");
     if (error == nil) {
         self.entryServiceTickets = [NSMutableArray array];
 		[self.delegate parser:self didParseTotalResults:[object totalResults]]; // pass over the total results number to the BlioStoreCategoriesController, so that it can assign the number to the respective feed.
@@ -57,7 +58,7 @@
 }
 
 - (void)volumeFetchTicket:(GDataServiceTicket *)ticket finishedWithVolume:(GDataEntryVolume *)object error:(NSError *)error {
-    NSLog(@"BlioStoreGoogleBooksParser volumeFetchTicket:%@ finishedWithVolume: entered",ticket);
+//    NSLog(@"BlioStoreGoogleBooksParser volumeFetchTicket:%@ finishedWithVolume:%@ error:%@ entered",ticket,object,error);
     // transfer the feed source to a property in the feed object
 	if ([entryServiceTickets containsObject:ticket]) {
 		[entryServiceTickets removeObject:ticket];
@@ -71,7 +72,7 @@
         
         [self parseEntry:object withBaseURL:baseURL];
     }
-	NSLog(@"[entryServiceTickets count]: %i",[entryServiceTickets count]);
+//	NSLog(@"[entryServiceTickets count]: %i",[entryServiceTickets count]);
 	if ([entryServiceTickets count] == 0) [self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
 }
 
@@ -93,7 +94,7 @@
         }
 		aEntity.id = [entry identifier];
 		[aEntity setSummary:descriptions];
-        [aEntity setAuthor:[[[entry creators] lastObject] stringValue]];
+        [aEntity setAuthor:[BlioBook canonicalNameFromStandardName:[[[entry creators] lastObject] stringValue]]];
         [aEntity setEPubUrl:[[entry EPubDownloadLink] href]];
         [aEntity setCoverUrl:[[entry thumbnailLink] href]];
         [aEntity setThumbUrl:[[entry thumbnailLink] href]];                             

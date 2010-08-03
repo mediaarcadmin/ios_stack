@@ -97,7 +97,7 @@
 
 	if (loginResult == BlioLoginResultSuccess) {
 		// TODO: "DeviceRegistered" key should be refactored with multiple stores in mind.
-		NSLog(@"[storeHelper deviceRegistered]: %i",[storeHelper deviceRegistered]);
+//		NSLog(@"[storeHelper deviceRegistered]: %i",[storeHelper deviceRegistered]);
 		if ([storeHelper deviceRegistered] == BlioDeviceRegisteredStatusUndefined) {
 			// ask end-user if he/she would like to register device
 			UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"This device is not registered...",@"\"This device is not registered...\" alert message title") 

@@ -34,6 +34,8 @@ extern NSString * const BlioProcessingOperationFailedNotification;
     NSString *cacheDirectory;
     NSString *tempDirectory;
     BOOL operationSuccess;
+	
+	UIBackgroundTaskIdentifier backgroundTaskIdentifier;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -44,6 +46,7 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 @property (nonatomic, retain) NSString *cacheDirectory;
 @property (nonatomic, retain) NSString *tempDirectory;
 @property (nonatomic) BOOL operationSuccess;
+@property (nonatomic) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
 
 - (void)setBookManifestValue:(id)value forKey:(NSString *)key;
 - (NSData *)getBookManifestDataForKey:(NSString *)key;
