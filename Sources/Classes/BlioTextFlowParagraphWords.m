@@ -158,7 +158,17 @@
     return NO;
 }
 
-- (NSString *)imageSourceURL
+- (NSString *)imageSourceURLString
+{
+    return nil;
+}
+
+- (BOOL)isHyperlinkNode
+{
+    return NO;
+}
+
+- (NSString *)hyperlinkURLString
 {
     return nil;
 }
