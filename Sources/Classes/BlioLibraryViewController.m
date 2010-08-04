@@ -1414,7 +1414,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
             return;
         }
-		
         
         if (!shrinkCover) {
             self.bookCoverPopped = YES;

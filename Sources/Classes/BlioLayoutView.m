@@ -251,10 +251,23 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
+        
+        self.pageTurningView.currentPageIndex = self.pageNumber - 1;
 
     }
 
     return self;
+}
+
+#pragma mark -
+#pragma mark EucPageTurningViewBitmapDataSource
+
+- (CGRect)pageTurningView:(EucPageTurningView *)aPageTurningView contentRectForPageAtIndex:(NSUInteger)index {
+    return [self cropForPage:index + 1];
+}
+
+- (CGContextRef)pageTurningView:(EucPageTurningView *)aPageTurningView RGBABitmapContextFromRect:(CGRect)rect minSize:(CGSize)size {
+    [self.dataSource RGBABitmapContextFromRect:rect minSize:size];
 }
 
 #pragma mark -

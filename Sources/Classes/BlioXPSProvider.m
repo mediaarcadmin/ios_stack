@@ -208,6 +208,10 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	XPS_ReleaseImageMemory((void *)data);
 }
 
+static void XPSBitmapReleaseCallback(void *info, const void *data) {
+	XPS_ReleaseImageMemory((void *)data);
+}
+
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
     
     CGAffineTransform ctm = CGContextGetCTM(ctx);
@@ -280,6 +284,53 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
             CGImageRelease(imageRef);        
         }
     [renderingLock unlock];
+}
+
+- (CGContextRef)RGBABitmapContextFromRect:(CGRect)rect minSize:(CGSize)size {
+    
+    [renderingLock lock];
+    memset(&properties,0,sizeof(properties));
+    XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
+    CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
+    [renderingLock unlock];
+    
+    OutputFormat format;
+    memset(&format,0,sizeof(format));
+    
+    CGFloat widthScale  = size.width / CGRectGetWidth(rect);
+    CGFloat heightScale = size.height / CGRectGetHeight(rect);
+
+    XPS_ctm render_ctm = { widthScale, 0, 0, heightScale, 0, 0 };
+    format.xResolution = 96;			
+    format.yResolution = 96;	
+    format.colorDepth = 8;
+    format.colorSpace = XPS_COLORSPACE_RGBA;
+    format.pagesizescale = 1;	
+    format.pagesizescalewidth = widthScale;		
+    format.pagesizescaleheight = heightScale;
+    format.ctm = &render_ctm;				
+    format.formatType = OutputFormat_RAW;
+    imageInfo = NULL;
+    
+    [renderingLock lock];
+    XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
+    XPS_SetUserData(xpsHandle, self);
+    XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
+    
+    CGContextRef bitmapContext = nil;
+    
+    if (imageInfo) {
+        size_t width  = imageInfo->widthInPixels;
+        size_t height = imageInfo->height;
+        size_t dataLength = width * height * 3;
+        
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        CGContextRef bitmapContext = CGBitmapContextCreateWithData(imageInfo->pBits, width, height, 8, width * 3, colorSpace, kCGImageAlphaLast, XPSBitmapReleaseCallback, NULL)
+        CGColorSpaceRelease(colorSpace);
+    }
+    [renderingLock unlock];
+    
+    return bitmapContext;
 }
 
 - (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
