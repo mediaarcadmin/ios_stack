@@ -287,6 +287,17 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return nil;
 }
 
+- (BOOL)isHyperlinkNode
+{
+    return NO;
+}
+
+- (NSURL *)hyperlinkURL
+{
+    return nil;
+}
+
+
 - (NSString *)altText
 {
     return nil;

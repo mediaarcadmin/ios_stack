@@ -821,7 +821,7 @@ typedef enum {
 }
 
 
-- (void)pageView:(EucPageView *)pageTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
+- (void)pageView:(EucPageView *)pageTextView didReceiveTapOnHyperlinkWithURL:(NSURL *)url
 {
    /* if(_touch) {
         // Stop tracking the touch - we don't want to show/hide the toolbar on a
@@ -829,8 +829,8 @@ typedef enum {
         [_touch release];
         _touch = nil;
     }*/
-    THLog(@"BookViewController received tap on hyperlink: %@", attributes);
-    [self _hyperlinkTapped:attributes];
+    THLog(@"EucBookView received tap on hyperlink: %@", url);
+    //[self _hyperlinkTapped:attributes];
 }
 
 #pragma mark -

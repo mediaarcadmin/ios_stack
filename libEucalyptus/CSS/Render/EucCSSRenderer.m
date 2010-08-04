@@ -261,45 +261,54 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     size_t renderItemsCount = line.renderItemCount;
     
     EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
-    Class nsStringClass = [NSString class];
     
     BOOL currentUnderline = NO;
     CGPoint underlinePoints[2] = { { 0 } };    
+    CGFloat lastMaxX = 0;
     
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
-        id item = renderItem->item;
-        CGRect rect = renderItem->rect;
-
-        //CGContextStrokeRect(_cgContext, rect);
-        //THLog(@"Render item: %@", NSStringFromCGRect(rect));
-
-        if(item == EucCSSLayoutPositionedLineRenderItemUnderlineStartItem) {
-            currentUnderline = YES;
-            underlinePoints[0] = renderItem->rect.origin;
-            underlinePoints[1].y = renderItem->rect.origin.y;
-        } else if (item == EucCSSLayoutPositionedLineRenderItemUnderlineEndItem) {
-            NSParameterAssert(currentUnderline);
-            underlinePoints[1].x = renderItem->rect.origin.x;
-            CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
-            currentUnderline = NO;
-        } else if([item isKindOfClass:nsStringClass]) {
-            [renderItem->stringRenderer drawString:(NSString *)item
-                                         inContext:_cgContext 
-                                           atPoint:rect.origin
-                                         pointSize:renderItem->pointSize];
-        } else {
-            // It's an image.
-            CGContextSaveGState(_cgContext);
-            CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
-            CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
-            CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
-            CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), (CGImageRef)item);
-            CGContextRestoreGState(_cgContext);
+        switch(renderItem->kind) {
+            case EucCSSLayoutPositionedLineRenderItemKindString: {
+                CGRect rect = renderItem->item.stringItem.rect;
+                [renderItem->item.stringItem.stringRenderer drawString:renderItem->item.stringItem.string
+                                                             inContext:_cgContext 
+                                                               atPoint:rect.origin
+                                                             pointSize:renderItem->item.stringItem.pointSize];
+                lastMaxX = CGRectGetMaxX(rect);
+                break;
+            }
+            case EucCSSLayoutPositionedLineRenderItemKindImage: {
+                CGRect rect = renderItem->item.stringItem.rect;
+                CGContextSaveGState(_cgContext);
+                CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
+                CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
+                CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
+                CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), renderItem->item.imageItem.image);
+                CGContextRestoreGState(_cgContext);
+                lastMaxX = CGRectGetMaxX(rect);
+                break;
+            }
+            case EucCSSLayoutPositionedLineRenderItemKindUnderlineStart: {
+                currentUnderline = YES;
+                underlinePoints[0] = renderItem->item.underlineItem.underlinePoint;
+                underlinePoints[1].y = renderItem->item.underlineItem.underlinePoint.y;                
+                break;
+            }
+            case EucCSSLayoutPositionedLineRenderItemKindUnderlineStop: {
+                NSParameterAssert(currentUnderline);
+                underlinePoints[1].x = renderItem->item.underlineItem.underlinePoint.x;
+                CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
+                currentUnderline = NO;                
+                break;
+            }
+            case EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart:
+            case EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop:
+                break;
         }
     }
-    
+
     if(currentUnderline) {
-        underlinePoints[1].x = CGRectGetMaxX((renderItem - 1)->rect);
+        underlinePoints[1].x = lastMaxX;
         CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);        
     }
     

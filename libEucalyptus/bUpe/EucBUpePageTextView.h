@@ -23,6 +23,11 @@
     NSArray *_runs;
     
     NSArray *_accessibilityElements;
+    
+    NSArray *_hyperlinkRectAndURLPairs;
+    
+    UITouch *_touch;
+    NSUInteger _touchHyperlinkIndex;
 }
 
 @end

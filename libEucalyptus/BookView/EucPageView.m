@@ -407,10 +407,10 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     }
 }
 
-- (void)pageTextView:(UIView<EucPageTextView> *)pageTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
+- (void)pageTextView:(UIView<EucPageTextView> *)pageTextView didReceiveTapOnHyperlinkWithURL:(NSURL *)url
 {
-    if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapOnHyperlinkWithAttributes:)]) {
-        [_delegate pageView:self didReceiveTapOnHyperlinkWithAttributes:attributes];
+    if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapOnHyperlinkWithURL:)]) {
+        [_delegate pageView:self didReceiveTapOnHyperlinkWithURL:url];
     }
 }
 

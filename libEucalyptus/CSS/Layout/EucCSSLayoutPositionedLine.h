@@ -12,18 +12,41 @@
 
 @class EucCSSLayoutDocumentRun, EucCSSLayoutPositionedRun, THStringRenderer;
 
+typedef enum EucCSSLayoutPositionedLineRenderItemKind
+{
+    EucCSSLayoutPositionedLineRenderItemKindString,
+    EucCSSLayoutPositionedLineRenderItemKindImage,
+    EucCSSLayoutPositionedLineRenderItemKindUnderlineStart,
+    EucCSSLayoutPositionedLineRenderItemKindUnderlineStop,
+    EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart,
+    EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop
+} EucCSSLayoutPositionedLineRenderItemKind;
+
 typedef struct EucCSSLayoutPositionedLineRenderItem
 {
-    id item;
-    CGRect rect;
-    CGFloat pointSize;
-    EucCSSLayoutDocumentRunPoint point;
-    THStringRenderer *stringRenderer;
+    EucCSSLayoutPositionedLineRenderItemKind kind;
+    union {
+        struct {
+            NSString *string;
+            CGRect rect;
+            CGFloat pointSize;
+            THStringRenderer *stringRenderer;
+            EucCSSLayoutDocumentRunPoint layoutPoint;
+        } stringItem;
+        struct {
+            CGImageRef image;
+            CGRect rect;
+            EucCSSLayoutDocumentRunPoint layoutPoint;
+        } imageItem;
+        struct {
+            CGPoint underlinePoint;
+        } underlineItem;
+        struct {
+            NSURL *url;
+        } hyperlinkItem;
+    } item;
     NSString *altText;
 } EucCSSLayoutPositionedLineRenderItem;
-
-extern const NSObject * EucCSSLayoutPositionedLineRenderItemUnderlineStartItem;
-extern const NSObject * EucCSSLayoutPositionedLineRenderItemUnderlineEndItem;
 
 @interface EucCSSLayoutPositionedLine : EucCSSLayoutPositionedContainer {
     EucCSSLayoutPositionedRun *_positionedRun;

@@ -101,12 +101,27 @@
 
 - (NSURL *)imageSource
 {
-    NSString *src = _documentTreeNode.imageSourceURL;
+    NSString *src = _documentTreeNode.imageSourceURLString;
     if(src) {
         return [NSURL URLWithString:src relativeToURL:_document.url];
     }
     return nil;
 }
+
+- (BOOL)isHyperlinkNode
+{
+    return _documentTreeNode.isHyperlinkNode;
+}
+
+- (NSURL *)hyperlinkURL
+{
+    NSString *href = _documentTreeNode.hyperlinkURLString;
+    if(href) {
+        return [NSURL URLWithString:href relativeToURL:_document.url];
+    }
+    return nil;
+}
+
 
 - (NSString *)altText
 {
