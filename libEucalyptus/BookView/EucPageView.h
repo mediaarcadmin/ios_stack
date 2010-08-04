@@ -76,6 +76,6 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 @protocol EucPageViewDelegate <NSObject>
 
 @optional
-- (void)pageView:(EucPageView *)pageView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes;
+- (void)pageView:(EucPageView *)pageView didReceiveTapOnHyperlinkWithURL:(NSURL *)url;
 
 @end

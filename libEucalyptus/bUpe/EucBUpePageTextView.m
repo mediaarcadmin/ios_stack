@@ -21,6 +21,7 @@
 #import "EucCSSLayoutPositionedLine.h"
 
 #import "THPair.h"
+#import "THGeometryUtils.h"
 
 @interface EucBUpePageTextView ()
     
@@ -300,28 +301,107 @@
     return [[self accessibilityElements] indexOfObject:element];
 }
 
-- (THPair *)hyperlinkRectsAndURLs
+- (NSArray *)_hyperlinkRectAndURLPairs
 {
-    return nil;
+    if(!_hyperlinkRectAndURLPairs) {
+        NSMutableArray *buildHyperlinkRectAndURLPairs = [[NSMutableArray alloc] init];
+
+        for(EucCSSLayoutPositionedRun *run in [self _runs]) {    
+            CGPoint runOrigin = run.absoluteFrame.origin;
+            for(EucCSSLayoutPositionedLine *line in run.children) {
+                EucCSSLayoutPositionedLineRenderItem* renderItem = line.renderItems;
+                size_t renderItemsCount = line.renderItemCount;
+                
+                CGPoint lineOffset = line.frame.origin;
+                lineOffset.x += runOrigin.x;
+                lineOffset.y += runOrigin.y;
+                
+                NSURL *currentHyperlinkURL = nil;
+                CGRect hyperlinkRect = CGRectZero;
+                for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
+                    if(currentHyperlinkURL) {
+                        if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                            if(CGRectIsEmpty(hyperlinkRect)) {
+                                hyperlinkRect = CGRectOffset(renderItem->item.stringItem.rect, lineOffset.x, lineOffset.y);
+                            } else {
+                                hyperlinkRect = CGRectUnion(hyperlinkRect, 
+                                                            CGRectOffset(renderItem->item.stringItem.rect, lineOffset.x, lineOffset.y));
+                            }
+                        } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindImage) {
+                            if(CGRectIsEmpty(hyperlinkRect)) {
+                                hyperlinkRect = CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y);
+                            } else {
+                                hyperlinkRect = CGRectUnion(hyperlinkRect, 
+                                                            CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y));
+                            }
+                        } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop) {
+                            NSParameterAssert([renderItem->item.hyperlinkItem.url isEqual:currentHyperlinkURL]);
+                            [buildHyperlinkRectAndURLPairs addPairWithFirst:[NSValue valueWithCGRect:hyperlinkRect]
+                                                                second:currentHyperlinkURL];
+                            currentHyperlinkURL = nil;
+                        }
+                    } else {
+                        if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart) {
+                            currentHyperlinkURL = renderItem->item.hyperlinkItem.url;
+                        }
+                    }
+                }
+                if(currentHyperlinkURL) {
+                    // Line ended with unclosed hyperlink
+                    [buildHyperlinkRectAndURLPairs addPairWithFirst:[NSValue valueWithCGRect:hyperlinkRect]
+                                                        second:currentHyperlinkURL];
+                }
+            }
+        }
+        
+        _hyperlinkRectAndURLPairs = buildHyperlinkRectAndURLPairs;
+    } 
+    return _hyperlinkRectAndURLPairs;
+}
+
+- (NSUInteger)_hyperlinkIndexForPoint:(CGPoint)point
+{
+    CGFloat bestDistance = CGFLOAT_MAX;
+    NSUInteger bestCandidate = NSUIntegerMax;
+    NSUInteger i = 0;
+    for(THPair *rectAndURL in [self _hyperlinkRectAndURLPairs]) {
+        CGFloat distance = CGPointDistanceFromRect(point, [rectAndURL.first CGRectValue]);
+        if(distance < bestDistance) {
+            bestDistance = distance;
+            bestCandidate = i;
+        }
+        ++i;
+    }
+    if(bestDistance < 10.0f) {
+        return bestCandidate;
+    } else {
+        return NSUIntegerMax;
+    }
 }
 
 - (void)handleTouchBegan:(UITouch *)touch atLocation:(CGPoint)location 
 {
     if(!_touch)  {
         _touch = touch;
+        _touchHyperlinkIndex = [self _hyperlinkIndexForPoint:location];
     }
 }
 
-- (void)handleTouchMoved:(UITouch *)touch atLocation:(CGPoint)location 
-{
-    if(touch == _touch)  {
-
-    }
-}
+- (void)handleTouchMoved:(UITouch *)touch atLocation:(CGPoint)location { }
 
 - (void)handleTouchEnded:(UITouch *)touch atLocation:(CGPoint)location 
 {
     if(touch == _touch)  {
+        if(_touchHyperlinkIndex != NSUIntegerMax) {
+            NSUInteger newTouchHyperlinkIndex = [self _hyperlinkIndexForPoint:location];
+            if(newTouchHyperlinkIndex == _touchHyperlinkIndex) {
+                id<EucPageTextViewDelegate> myDelegate = self.delegate;
+                if([myDelegate respondsToSelector:@selector(pageTextView:didReceiveTapOnHyperlinkWithURL:)]) {
+                    [myDelegate pageTextView:self 
+             didReceiveTapOnHyperlinkWithURL:((THPair *)[[self _hyperlinkRectAndURLPairs] objectAtIndex:_touchHyperlinkIndex]).second];
+                }
+            }
+        }
         _touch = nil;
     }
 }
