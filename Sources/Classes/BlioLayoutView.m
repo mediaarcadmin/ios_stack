@@ -566,7 +566,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     *cropRect = pageCropRect;
     CGRect contentBounds = self.contentView.bounds;
     CGRect insetBounds = UIEdgeInsetsInsetRect(contentBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
-    CGAffineTransform boundsTransform = transformRectToFitRectWidth(pageCropRect, insetBounds); 
+    
+    CGAffineTransform boundsTransform;
+    
+    if (self.frame.size.width > self.frame.size.height) {
+        boundsTransform = transformRectToFitRectWidth(pageCropRect, insetBounds);
+    } else {
+        boundsTransform = transformRectToFitRect(pageCropRect, insetBounds, TRUE);
+    }
     return boundsTransform;
 }
 
