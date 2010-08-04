@@ -137,7 +137,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return transform;
 }
 
-@synthesize bookID, textFlow, scrollView, containerView, contentView, currentPageLayer, disableScrollUpdating, pageNumber, pageCount, selector;
+@synthesize bookID, textFlow, scrollView, containerView, contentView, currentPageLayer, scrollingAnimationInProgress, pageNumber, pageCount, selector;
 @synthesize lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
@@ -466,7 +466,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     [self.selector setSelectedRange:nil];
 
-    self.disableScrollUpdating = YES;
+    self.scrollingAnimationInProgress = YES;
     self.lastBlock = nil;
     cachedViewTransformPage = -1;
     
@@ -1326,7 +1326,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
     if (bookmarkRange) {
-        if ((self.pageNumber != bookmarkRange.startPoint.layoutPage) && !self.disableScrollUpdating) {
+        if ((self.pageNumber != bookmarkRange.startPoint.layoutPage) && !self.scrollingAnimationInProgress) {
             [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
         }
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:bookmarkRange];
@@ -1345,6 +1345,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset {
+    
+    // Don't allow nested calls
+    if (self.scrollingAnimationInProgress) {
+        return;
+    }
+    
     //NSLog(@"Goto page %d : %d %d %f %@", targetPage, animated, zoomOut, targetZoom, NSStringFromCGPoint(targetOffset));
     if (targetPage < 1 )
         targetPage = 1;
@@ -1366,6 +1372,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         // 5. Zoom in the target page
         
         // 1. Move the current page and its adjacent pages next to the target page's adjacent pages
+        self.scrollingAnimationInProgress = YES;
         CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
         //NSInteger startPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
         NSInteger startPage = floor((self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
@@ -1376,7 +1383,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.pageNumber = targetPage;
         NSInteger pagesToGo = targetPage - startPage;
         
-        self.disableScrollUpdating = YES;
         [self.scrollView setPagingEnabled:NO]; // Paging affects the animations
         
         NSMutableSet *pageLayersToPreserve = [NSMutableSet set];
@@ -1555,7 +1561,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self performSelector:@selector(enableInteractions) withObject:nil afterDelay:0.1f];
         } else if ([animationID isEqualToString:@"BlioZoomToBlock"]) {
             [self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
-            self.disableScrollUpdating = NO;
+            self.scrollingAnimationInProgress = NO;
         }
     }
 } 
@@ -1608,7 +1614,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)enableInteractions {
-    self.disableScrollUpdating = NO;
+    self.scrollingAnimationInProgress = NO;
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
@@ -1623,7 +1629,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     //NSLog(@"scrollViewDidScroll");
     [self.selector setShouldHideMenu:YES];
 
-    if (self.disableScrollUpdating) return;
+    if (self.scrollingAnimationInProgress) return;
 
     NSInteger currentPageNumber;
     
@@ -1670,7 +1676,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     //NSLog(@"updateAfterScroll");
     [self clearSnapshots];
     [self.selector setShouldHideMenu:NO];
-    if (self.disableScrollUpdating) return;
+    if (self.scrollingAnimationInProgress) return;
     
     
 //    if (self.scrollToPageInProgress) {
@@ -1682,7 +1688,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-    self.disableScrollUpdating = NO;
+    self.scrollingAnimationInProgress = NO;
     [self updateAfterScroll];
 }
 
@@ -1713,7 +1719,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = targetPage - 1;
     if ([self.lastBlock pageIndex] != pageIndex) self.lastBlock = nil;
     
-    self.disableScrollUpdating = YES;
+    self.scrollingAnimationInProgress = YES;
     
     [self.scrollView setPagingEnabled:NO];
     [self.scrollView setBounces:NO];
@@ -1814,7 +1820,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger targetPage = [targetLayer pageNumber];
     NSInteger pageIndex = targetPage - 1;
     
-    self.disableScrollUpdating = YES;
+    self.scrollingAnimationInProgress = YES;
     NSArray *blocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
 
     [self.scrollView setPagingEnabled:NO];
@@ -1971,7 +1977,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Manual KVO overrides
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
-    if (!self.disableScrollUpdating) {
+    if (!self.scrollingAnimationInProgress) {
         [self willChangeValueForKey:@"pageNumber"];
         pageNumber=newPageNumber;
         [self didChangeValueForKey:@"pageNumber"];
@@ -2133,7 +2139,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [self createAccessibilityElements];
     }
     
-    if (!self.disableScrollUpdating) {
+    if (!self.scrollingAnimationInProgress) {
     // If we are querying the accessibility mode, force us to zoom out to page
         if ([self.scrollView zoomScale] != kBlioPDFGoToZoomTargetScale) {
             [self.scrollView setZoomScale:kBlioPDFGoToZoomTargetScale animated:NO];
