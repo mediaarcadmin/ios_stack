@@ -254,10 +254,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.pageNumber = page;
         
         self.pageTurningView.currentPageIndex = self.pageNumber - 1;
+        
+        [self performSelector:@selector(sendNotify) withObject:nil afterDelay:2];
 
     }
 
     return self;
+}
+- (void)sendNotify {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
 }
 
 #pragma mark -
