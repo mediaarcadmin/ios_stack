@@ -22,6 +22,9 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
     NSString *altText;
 } EucCSSLayoutPositionedLineRenderItem;
 
+extern const NSObject * EucCSSLayoutPositionedLineRenderItemUnderlineStartItem;
+extern const NSObject * EucCSSLayoutPositionedLineRenderItemUnderlineEndItem;
+
 @interface EucCSSLayoutPositionedLine : EucCSSLayoutPositionedContainer {
     EucCSSLayoutPositionedRun *_positionedRun;
     

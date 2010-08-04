@@ -170,7 +170,7 @@
     [toPaginate removeObjectAtIndex:0];
                                   
     if(![self paginateNextBook]) {
-        NSLog(@"Pagination done!");
+        NSLog(@"Pagination done in %f seconds!", CFAbsoluteTimeGetCurrent() - time);
         [toPaginate release];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:EucBookPaginatorCompleteNotification object:paginator];
         [paginator release];
@@ -204,6 +204,7 @@
         [[NSFileManager defaultManager] removeItemAtPath:PAGINATION_PATH error:nil];
         [[NSFileManager defaultManager] createDirectoryAtPath:PAGINATION_PATH withIntermediateDirectories:YES attributes:nil error:nil];
         
+        time = CFAbsoluteTimeGetCurrent();
         if([self paginateNextBook]) {
             self.paginationUnderway = YES;
         } else {

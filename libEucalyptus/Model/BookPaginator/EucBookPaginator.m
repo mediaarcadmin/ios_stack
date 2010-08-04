@@ -176,13 +176,13 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
 //         usleep(100000);
 #endif            
         
-        nextPoint = [pageViews[currentPointIndex].bookTextView layoutPageFromPoint:currentPoints[currentPointIndex] 
+        nextPoint = [pageViews[currentPointIndex].pageTextView layoutPageFromPoint:currentPoints[currentPointIndex] 
                                                                             inBook:_book];
         
         if(THWillLogVerbose()) {
             if(nextPoint) {
                 THLogVerbose(@"%f: [%ld, %ld, %ld, %ld] -> [%ld, %ld, %ld, %ld]", 
-                             pageViews[currentPointIndex].bookTextView.pointSize,
+                             pageViews[currentPointIndex].pageTextView.pointSize,
                              (long)currentPoints[currentPointIndex].source, 
                              (long)currentPoints[currentPointIndex].block, 
                              (long)currentPoints[currentPointIndex].word, 
@@ -193,7 +193,7 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
                              (long)nextPoint.element);
             } else {
                 THLogVerbose(@"%f: [%ld, %ld, %ld, %ld] -> NULL", 
-                             pageViews[currentPointIndex].bookTextView.pointSize,
+                             pageViews[currentPointIndex].pageTextView.pointSize,
                              (long)currentPoints[currentPointIndex].source, 
                              (long)currentPoints[currentPointIndex].block, 
                              (long)currentPoints[currentPointIndex].word, 
@@ -228,7 +228,7 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
             CGContextConcatCTM(context, flipVertical);            
             [pageViews[currentPointIndex] drawRect:pageViews[currentPointIndex].bounds inContext:context];
             NSString *imageName = [NSString stringWithFormat:@"%ld-(%ldx%ld)-%5d.png", 
-                                   (long)pageViews[currentPointIndex].bookTextView.pointSize,
+                                   (long)pageViews[currentPointIndex].pageTextView.pointSize,
                                    (long)frame.size.width,
                                    (long)frame.size.height,
                                    pageCount];
@@ -236,7 +236,7 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
             CGContextRestoreGState(context);
         }
         
-        [pageViews[currentPointIndex].bookTextView clear];
+        [pageViews[currentPointIndex].pageTextView clear];
         ++pageCount;
                          
         [pool drain];

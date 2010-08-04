@@ -40,7 +40,7 @@
 @protocol EucPageTextViewDelegate <NSObject>
 
 @optional
-- (void)bookTextView:(UIView<EucPageTextView> *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes;
-- (void)bookTextViewDidReceiveTapOnPage:(UIView<EucPageTextView> *)bookTextView;
+- (void)pageTextView:(UIView<EucPageTextView> *)pageTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes;
+- (void)pageTextViewDidReceiveTapOnPage:(UIView<EucPageTextView> *)pageTextView;
 
 @end

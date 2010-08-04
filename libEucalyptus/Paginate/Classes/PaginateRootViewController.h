@@ -17,6 +17,8 @@
     EucBookPaginator *paginator;
     
     BOOL saveImages;
+    
+    CFAbsoluteTime time;
 }
 
 @property (nonatomic, assign) BOOL paginationUnderway;
