@@ -91,4 +91,7 @@ static const CGFloat MRGridViewScrollOverlapHeight = 44.0;
 -(void)deleteIndices:(NSArray*)indices withCellAnimation:(MRGridViewCellAnimation)cellAnimation;
 
 - (void)setEditing:(BOOL)editingVal animated:(BOOL)animate;
+
+-(void)accessibilityFocusedOnCell:(id)object;
+
 @end

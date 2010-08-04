@@ -34,6 +34,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @end
 
+@interface BlioAccessibleGridBookElement : BlioAccessibleGridElement {
+	id delegate;
+}
+@property (nonatomic, assign) id delegate;
+
+@end
+
 @interface BlioLibraryViewController ()
 - (void)bookSelected:(BlioLibraryBookView *)bookView;
 @property (nonatomic, retain) BlioLogoView *logoView;
@@ -1718,8 +1725,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [accArray addObject:deleteElement];
         }
 		
-        BlioAccessibleGridElement *bookElement = [[BlioAccessibleGridElement alloc] initWithAccessibilityContainer:self];
+        BlioAccessibleGridBookElement *bookElement = [[BlioAccessibleGridBookElement alloc] initWithAccessibilityContainer:self];
         [bookElement setTarget:self];
+        bookElement.delegate = self.delegate;
         [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
 											[[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]]];
 		
@@ -2097,35 +2105,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @end
 
-@implementation BlioAccessibleGridElement
-
-@synthesize target, visibleRect;
-
-- (void)dealloc {
-    self.target = nil;
-    [super dealloc];
-}
-
-- (BOOL)isAccessibilityElement {
-    CGRect accFrame = [self.target accessibilityFrame];
-    CGPoint midPoint = CGPointMake(CGRectGetMidX(accFrame), CGRectGetMidY(accFrame));
-    if (CGRectContainsPoint(self.visibleRect, midPoint))
-        return YES;
-    else
-        return NO;
-}
-
-- (CGRect)accessibilityFrame {
-    CGRect accFrame = [self.target accessibilityFrame];
-	//    CGPoint midPoint = CGPointMake(CGRectGetMidX(accFrame), CGRectGetMidY(accFrame));
-	//    if (CGRectContainsPoint(self.visibleRect, midPoint))
-	return accFrame;
-	//    else
-	//        return CGRectMake(-1000, -1000, 0, 0);
-}
-
-@end
-
 @implementation BlioProgressView
 
 @synthesize value;
@@ -2217,3 +2196,44 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @end
 
 
+@implementation BlioAccessibleGridElement
+
+@synthesize target, visibleRect;
+
+- (void)dealloc {
+    self.target = nil;
+    [super dealloc];
+}
+
+- (BOOL)isAccessibilityElement {
+    CGRect accFrame = [self.target accessibilityFrame];
+    CGPoint midPoint = CGPointMake(CGRectGetMidX(accFrame), CGRectGetMidY(accFrame));
+    if (CGRectContainsPoint(self.visibleRect, midPoint))
+        return YES;
+    else
+        return NO;
+}
+
+- (CGRect)accessibilityFrame {
+    CGRect accFrame = [self.target accessibilityFrame];
+	return accFrame;
+}
+
+@end
+
+@implementation BlioAccessibleGridBookElement
+
+@synthesize delegate;
+
+- (CGRect)accessibilityFrame {
+    CGRect accFrame = [self.target accessibilityFrame];
+	CGRect insetFrame = CGRectInset(accFrame,10,10);
+	self.accessibilityFrame = insetFrame;
+	return insetFrame;
+}
+- (void)accessibilityElementDidBecomeFocused {
+	//	NSLog(@"BlioAccessibleGridBookElement accessibilityElementDidBecomeFocused entered.");
+	[[self.delegate gridView] accessibilityFocusedOnCell:self.target];
+}
+
+@end
