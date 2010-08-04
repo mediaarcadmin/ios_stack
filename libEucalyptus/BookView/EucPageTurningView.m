@@ -111,6 +111,7 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 #define PAGE_HEIGHT 6
 
 @synthesize delegate = _delegate;
+@synthesize viewDataSource = _viewDataSource;
 
 @synthesize shininess = _shininess;
 
@@ -530,9 +531,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)setCurrentPageView:(UIView *)newCurrentView;
 {
     if(newCurrentView != _pageViews[1]) {
-        [self _setView:[_delegate pageTurningView:self previousViewForView:newCurrentView] forPage:0];
+        [self _setView:[_viewDataSource pageTurningView:self previousViewForView:newCurrentView] forPage:0];
         [self _setView:newCurrentView forPage:1];
-        [self _setView:[_delegate pageTurningView:self nextViewForView:newCurrentView] forPage:2];
+        [self _setView:[_viewDataSource pageTurningView:self nextViewForView:newCurrentView] forPage:2];
     }
     _flatPageIndex = 1;
 }
@@ -1201,13 +1202,13 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             _pinchUnderway = YES;
         }        
         
-        if([_delegate respondsToSelector:@selector(pageTurningView:scaledViewForView:pinchStartedAt:pinchNowAt:currentScaledView:)]) {
+        if([_viewDataSource respondsToSelector:@selector(pageTurningView:scaledViewForView:pinchStartedAt:pinchNowAt:currentScaledView:)]) {
             CGPoint currentPinchPoints[2] = { [_pinchTouches[0] locationInView:self], [_pinchTouches[1] locationInView:self] };
-            UIView *scaledView = [_delegate pageTurningView:self 
-                                          scaledViewForView:_pageViews[1] 
-                                             pinchStartedAt:_pinchStartPoints
-                                                 pinchNowAt:currentPinchPoints
-                                          currentScaledView:_pageViews[3]];
+            UIView *scaledView = [_viewDataSource pageTurningView:self 
+                                                scaledViewForView:_pageViews[1] 
+                                                   pinchStartedAt:_pinchStartPoints
+                                                       pinchNowAt:currentPinchPoints
+                                                currentScaledView:_pageViews[3]];
             if(scaledView && scaledView != _pageViews[3]) {
                 [self _setView:scaledView forPage:3];
                 _flatPageIndex = 3;
@@ -1289,8 +1290,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                     [_delegate pageTurningView:self didScaleToView:_pageViews[1]];
                 }
                 
-                [self _setView:[_delegate pageTurningView:self previousViewForView:_pageViews[1]] forPage:0];
-                [self _setView:[_delegate pageTurningView:self nextViewForView:_pageViews[1]] forPage:2];
+                [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageViews[1]] forPage:0];
+                [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageViews[1]] forPage:2];
 
                 [self drawView];
             }
@@ -1709,7 +1710,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 - (void)_postAnimationViewAndTextureRecache
 {
     if(_recacheFlags[0]) {
-        [self _setView:[_delegate pageTurningView:self previousViewForView:_pageViews[1]] forPage:0];
+        [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageViews[1]] forPage:0];
         _recacheFlags[0] = NO;
     }     
     if(_recacheFlags[2]) {
@@ -1720,7 +1721,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             //[pool drain];
         //}
         //[timr report];
-        [self _setView:[_delegate pageTurningView:self nextViewForView:_pageViews[1]] forPage:2];
+        [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageViews[1]] forPage:2];
         _recacheFlags[2] = NO;
     }
     if([_delegate respondsToSelector:@selector(pageTurningView:didTurnToView:)]) {

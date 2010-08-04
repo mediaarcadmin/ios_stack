@@ -200,7 +200,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         } else if (![newBook hasEPub] && ![newBook hasTextFlow] && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
         } 
-        
+                
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
                 if ([newBook hasEPub] || [newBook hasTextFlow]) {

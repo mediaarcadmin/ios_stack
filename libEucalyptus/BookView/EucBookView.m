@@ -141,6 +141,7 @@
     if(!self.window) {
         _pageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
         _pageTurningView.delegate = self;
+        _pageTurningView.viewDataSource = self;
         _pageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         UIImage *pageTexture = self.pageTexture;
         if(!pageTexture) {

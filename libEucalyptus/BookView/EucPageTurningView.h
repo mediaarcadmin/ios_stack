@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "THBaseEAGLView.h"
 
-@protocol EucPageTurningViewDelegate;
+@protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource;
 
 #define X_VERTEX_COUNT 11
 #define Y_VERTEX_COUNT 16
@@ -82,6 +82,7 @@ typedef struct {
     BOOL _vibrated;
     
     id<EucPageTurningViewDelegate> _delegate;
+    id<EucPageTurningViewViewDataSource> _viewDataSource;
     
     EAGLContext *_textureUploadContext;
     UIView *_pageViews[4];
@@ -122,9 +123,7 @@ typedef struct {
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
-
-@property (nonatomic, readonly) NSArray *pageViews;
-@property (nonatomic, retain) UIView *currentPageView;
+@property (nonatomic, assign) id<EucPageTurningViewViewDataSource> viewDataSource;
 
 @property (nonatomic, assign) CGFloat dimQuotient;
 
@@ -144,20 +143,29 @@ typedef struct {
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
+// View based page contents:
+
+@property (nonatomic, readonly) NSArray *pageViews;
+@property (nonatomic, retain) UIView *currentPageView;
+
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 - (void)refreshView:(UIView *)view;
 
 @end
 
-
-@protocol EucPageTurningViewDelegate <NSObject>
+@protocol EucPageTurningViewViewDataSource <NSObject>
 
 @required
 - (UIView *)pageTurningView:(EucPageTurningView *)pageTurningView previousViewForView:(UIView *)view;
 - (UIView *)pageTurningView:(EucPageTurningView *)pageTurningView nextViewForView:(UIView *)view;
 
-@optional
 - (UIView *)pageTurningView:(EucPageTurningView *)pageTurningView scaledViewForView:(UIView *)view pinchStartedAt:(CGPoint[])startPinch pinchNowAt:(CGPoint[])currentPinch currentScaledView:(UIView *)currentScaledView;
+
+@end
+
+@protocol EucPageTurningViewDelegate <NSObject>
+
+@optional
 
 - (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView;
 - (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView;
