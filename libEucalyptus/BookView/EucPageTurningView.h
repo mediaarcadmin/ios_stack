@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "THBaseEAGLView.h"
 
-@protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource;
+@protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource, EucPageTurningViewBitmapDataSource;
 
 #define X_VERTEX_COUNT 11
 #define Y_VERTEX_COUNT 16
@@ -39,6 +39,13 @@ typedef struct {
     GLuint innerPixelHeight;
 } TextureCoordinates;
 
+typedef struct {
+    NSUInteger pageIndex;
+    UIView *view;
+    GLuint texture;
+    TextureCoordinates *textureCoordinates;
+} PageContentsInformation;
+
 @interface EucPageTurningView : THBaseEAGLView {
     GLfloat _touchVelocity;
     
@@ -58,9 +65,7 @@ typedef struct {
     
     VerletContstraint _constraints[CONSTRAINT_COUNT];
     int _constraintCount;
-    
-    TextureCoordinates _pageTextureCoordinates;
-    
+        
     BOOL _pageTextureIsDark;
     GLuint _blankPageTexture;
     TextureCoordinates _blankPageTextureCoordinates;
@@ -83,10 +88,11 @@ typedef struct {
     
     id<EucPageTurningViewDelegate> _delegate;
     id<EucPageTurningViewViewDataSource> _viewDataSource;
+    id<EucPageTurningViewBitmapDataSource> _bitmapDataSource;
     
     EAGLContext *_textureUploadContext;
-    UIView *_pageViews[4];
-    GLuint _pageTextures[4];
+    PageContentsInformation _pageContentsInformation[4];
+    
     int _flatPageIndex;
     BOOL _viewsNeedRecache;
     BOOL _recacheFlags[3];
@@ -123,7 +129,10 @@ typedef struct {
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
+
+// Only set one of these!
 @property (nonatomic, assign) id<EucPageTurningViewViewDataSource> viewDataSource;
+@property (nonatomic, assign) id<EucPageTurningViewBitmapDataSource> bitmapDataSource;
 
 @property (nonatomic, assign) CGFloat dimQuotient;
 
@@ -145,13 +154,18 @@ typedef struct {
 
 // View based page contents:
 
-@property (nonatomic, readonly) NSArray *pageViews;
 @property (nonatomic, retain) UIView *currentPageView;
-
+@property (nonatomic, readonly) NSArray *pageViews;
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 - (void)refreshView:(UIView *)view;
 
+// Bitmap based page contents:
+@property (nonatomic, assign) NSUInteger currentPageIndex;
+- (void)turnToPageAtIndex:(NSUInteger)newPageIndex forwards:(BOOL)forwards;
+- (void)refreshPageAtIndex:(NSUInteger)pageIndex;
+
 @end
+
 
 @protocol EucPageTurningViewViewDataSource <NSObject>
 
@@ -162,6 +176,18 @@ typedef struct {
 - (UIView *)pageTurningView:(EucPageTurningView *)pageTurningView scaledViewForView:(UIView *)view pinchStartedAt:(CGPoint[])startPinch pinchNowAt:(CGPoint[])currentPinch currentScaledView:(UIView *)currentScaledView;
 
 @end
+
+
+@protocol EucPageTurningViewBitmapDataSource <NSObject>
+
+- (CGRect)pageTurningView:(EucPageTurningView *)pageTurningView contentRectForPageAtIndex:(NSUInteger)index;
+- (CGContextRef)pageTurningView:(EucPageTurningView *)pageTurningView 
+RGBABitmapContextForPageAtIndex:(NSUInteger)index
+                       fromRect:(CGRect)rect
+                        minSize:(CGSize)rect;
+
+@end
+
 
 @protocol EucPageTurningViewDelegate <NSObject>
 

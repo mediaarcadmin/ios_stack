@@ -111,7 +111,9 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 #define PAGE_HEIGHT 6
 
 @synthesize delegate = _delegate;
+
 @synthesize viewDataSource = _viewDataSource;
+@synthesize bitmapDataSource = _bitmapDataSource;
 
 @synthesize shininess = _shininess;
 
@@ -157,7 +159,6 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
     memcpy(_diffuseLightColor, components, 4 * sizeof(GLfloat));
     [self setNeedsLayout];
 }
-
 
 - (void)setAnimating:(BOOL)animating
 {
@@ -332,6 +333,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     self.opaque = YES;
     self.userInteractionEnabled = YES;
     //tempFile = fopen("/tmp/vertexdata", "w");
+    
+    for(NSUInteger i = 0; i < 4; ++i) {
+        _pageContentsInformation[i].textureCoordinates = calloc(1, sizeof(TextureCoordinates));
+        _pageContentsInformation[i].pageIndex = NSUIntegerMax;
+    }
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -356,11 +362,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     [EAGLContext setCurrentContext:self.eaglContext];
     for(int i = 0; i < 4; ++i) {
-        [_pageViews[i] release];
-        if(_pageTextures[i]) {
-            glDeleteTextures(1, &(_pageTextures[i]));
+        [_pageContentsInformation[i].view release];
+        if(_pageContentsInformation[i].texture) {
+            glDeleteTextures(1, &(_pageContentsInformation[i].texture));
         }
-    }
+        free(_pageContentsInformation[i].textureCoordinates);
+    }    
     
     [_animatedTurnData release];
     [_reverseAnimatedTurnData release];
@@ -413,6 +420,66 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     CFRelease(newBitmapData);
     _atRenderScreenshotBuffer = nil;
     return ret;
+}
+
+- (void)_createTextureIn:(GLuint *)textureRef 
+   fromRGBABitmapContext:(CGContextRef)context
+   setTextureCoordinates:(TextureCoordinates *)coordinates
+{
+    BOOL flipCoordinates = NO;
+    
+    size_t contextWidth = CGBitmapContextGetWidth(context);
+    size_t contextHeight = CGBitmapContextGetHeight(context);
+
+    size_t powerOfTwoWidth = nextPowerOfTwo(contextWidth);
+    size_t powerOfTwoHeight = nextPowerOfTwo(contextHeight);
+    if(powerOfTwoWidth != contextWidth ||
+       powerOfTwoHeight != contextHeight) {
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        CGContextRef textureContext = CGBitmapContextCreate(NULL, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
+                                                            colorSpace, kCGImageAlphaPremultipliedLast);
+        CGImageRef image = CGBitmapContextCreateImage(context);
+        CGContextDrawImage(textureContext, CGRectMake(0, 0, contextWidth, contextHeight), image);
+        CGImageRelease(image);
+        CGColorSpaceRelease(colorSpace);
+        
+        context = (CGContextRef)[(id)textureContext autorelease];
+        
+        flipCoordinates = YES;
+    }
+    
+    [EAGLContext setCurrentContext:_textureUploadContext];
+    if(!*textureRef) { 
+        glGenTextures(1, textureRef);
+    }
+    glBindTexture(GL_TEXTURE_2D, *textureRef); 
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));
+    
+    if(coordinates && coordinates->innerPixelWidth != contextWidth && coordinates -> innerPixelHeight != contextHeight) {
+        CGFloat po2WidthScale = (CGFloat)contextWidth / (CGFloat)powerOfTwoWidth;
+        CGFloat po2HeightScale = (CGFloat)contextHeight / (CGFloat)powerOfTwoHeight;
+        GLfloat yAddition = (GLfloat)(powerOfTwoHeight - contextHeight) / (GLfloat)powerOfTwoHeight;
+        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+                GLfloat x = (_pageVertices[row][column].x / PAGE_WIDTH) * po2WidthScale;
+                coordinates->textureCoordinates[row][column].x = x;
+                GLfloat y;
+                if(flipCoordinates) {
+                    y = (_pageVertices[row][column].y / PAGE_HEIGHT) * po2HeightScale + yAddition;
+                } else {
+                    y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) * po2HeightScale + yAddition;
+                }
+                coordinates->textureCoordinates[row][column].y = y;
+            }
+        }     
+    }
 }
 
 - (void)_createTextureIn:(GLuint *)textureRef 
@@ -472,41 +539,24 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGImageRef image = ((UIImage *)viewOrImage).CGImage;
         CGContextDrawImage(textureContext, CGRectMake(0, 0, scaledSize.width,scaledSize.height), image);
     }
-    
-    /*  
-    CGImageRef image = CGBitmapContextCreateImage(textureContext);
-    static int num = 0;
-    [UIImagePNGRepresentation([UIImage imageWithCGImage:image]) writeToFile:[NSString stringWithFormat:@"/tmp/test%d.png", (int)num++] atomically:NO];
-    */
+        
+    [self _createTextureIn:textureRef
+                fromRGBABitmapContext:textureContext
+     setTextureCoordinates:nil];
     
     CGContextRelease(textureContext);
     CGColorSpaceRelease(colorSpace);
-
-    [EAGLContext setCurrentContext:_textureUploadContext];
-    if(!*textureRef) { 
-        glGenTextures(1, textureRef);
-    }
-    glBindTexture(GL_TEXTURE_2D, *textureRef); 
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
-    
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
-    
     free(textureData);
     
     if(coordinates && coordinates->innerPixelWidth != scaledSize.width && coordinates -> innerPixelHeight != scaledSize.height) {
-        CGFloat po2WidthScale = powerOfTwoSize.width / scaledSize.width;
-        CGFloat po2HeightScale = powerOfTwoSize.height / scaledSize.height;
+        CGFloat po2WidthScale = scaledSize.width / powerOfTwoSize.width;
+        CGFloat po2HeightScale = scaledSize.height / powerOfTwoSize.height;
         GLfloat yAddition = (powerOfTwoSize.height - scaledSize.height) / powerOfTwoSize.height;
         for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
             for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                GLfloat x = _pageVertices[row][column].x / PAGE_WIDTH / po2WidthScale;
+                GLfloat x = (_pageVertices[row][column].x / PAGE_WIDTH) * po2WidthScale;
                 coordinates->textureCoordinates[row][column].x = x;
-                GLfloat y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) / po2HeightScale + yAddition;
+                GLfloat y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) * po2HeightScale + yAddition;
                 coordinates->textureCoordinates[row][column].y = y;
             }
         }     
@@ -515,22 +565,35 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     THLog(@"CreatedTexture of scaled size (%f, %f) from point size (%f, %f)", scaledSize.width, scaledSize.height, rawSize.width, rawSize.height);
 }
 
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
+{
+    [self _createTextureIn:&_blankPageTexture 
+                      from:pageTexture
+     setTextureCoordinates:&_blankPageTextureCoordinates];
+    _pageTextureIsDark = isDark;
+}
+
 - (void)_setView:(UIView *)view forPage:(int)page
 {
-    if(_pageViews[page] != view) {
-        [_pageViews[page] release];
+    if(_pageContentsInformation[page].view != view) {
+        [_pageContentsInformation[page].view release];
         if(view) {
-            [self _createTextureIn:&_pageTextures[page]
+            [self _createTextureIn:&_pageContentsInformation[page].texture
                               from:view
-             setTextureCoordinates:&_pageTextureCoordinates];
+             setTextureCoordinates:_pageContentsInformation[page].textureCoordinates];
         }
-        _pageViews[page] = [view retain];
+        _pageContentsInformation[page].view = [view retain];
     }
+}
+
+- (UIView *)currentPageView
+{
+    return _pageContentsInformation[1].view;
 }
 
 - (void)setCurrentPageView:(UIView *)newCurrentView;
 {
-    if(newCurrentView != _pageViews[1]) {
+    if(newCurrentView != _pageContentsInformation[1].view) {
         [self _setView:[_viewDataSource pageTurningView:self previousViewForView:newCurrentView] forPage:0];
         [self _setView:newCurrentView forPage:1];
         [self _setView:[_viewDataSource pageTurningView:self nextViewForView:newCurrentView] forPage:2];
@@ -538,9 +601,18 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _flatPageIndex = 1;
 }
 
+- (NSArray *)pageViews
+{
+    return [NSArray arrayWithObjects:_pageContentsInformation[0].view,
+            _pageContentsInformation[1].view,
+            _pageContentsInformation[2].view,
+            _pageContentsInformation[3].view,
+            nil];
+}
+
 - (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
 {
-    if(newCurrentView != _pageViews[1]) {
+    if(newCurrentView != _pageContentsInformation[1].view) {
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         [self _setView:newCurrentView forPage:forwards ? 2 : 0];
         _isTurningAutomatically = YES;
@@ -575,19 +647,80 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
 }
 
-- (UIView *)currentPageView
+- (void)refreshView:(UIView *)view
 {
-    return _pageViews[1];
+    for(int i = 0; i < 4; ++i) {
+        if(view == _pageContentsInformation[i].view) {
+            [self _createTextureIn:&_pageContentsInformation[i].texture
+                              from:view
+             setTextureCoordinates:_pageContentsInformation[i].textureCoordinates];
+            break;
+        }
+    }
 }
 
-
-- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
-{
-    [self _createTextureIn:&_blankPageTexture 
-                      from:pageTexture
-     setTextureCoordinates:&_blankPageTextureCoordinates];
-    _pageTextureIsDark = isDark;
+- (NSUInteger)currentPageIndex {
+    return _pageContentsInformation[1].pageIndex;
 }
+
+- (void)setCurrentPageIndex:(NSUInteger)newPageIndex
+{
+    CGSize minSize = self.bounds.size;
+    if([self respondsToSelector:@selector(contentScaleFactor)]) {
+        CGFloat scaleFactor = self.contentScaleFactor;
+        minSize.width *= scaleFactor;
+        minSize.height *= scaleFactor;
+    }
+    if(newPageIndex != _pageContentsInformation[1].pageIndex) {
+        {
+            CGRect thisPageRect = [_bitmapDataSource pageTurningView:self contentRectForPageAtIndex:newPageIndex];
+            CGContextRef thisPageBitmap = [_bitmapDataSource pageTurningView:self
+                                             RGBABitmapContextForPageAtIndex:newPageIndex
+                                                                    fromRect:thisPageRect
+                                                                     minSize:minSize];
+            [self _createTextureIn:&_pageContentsInformation[1].texture
+             fromRGBABitmapContext:thisPageBitmap
+             setTextureCoordinates:_pageContentsInformation[1].textureCoordinates];
+            _pageContentsInformation[1].pageIndex = newPageIndex;
+        }
+        
+        {
+            CGRect thisPageRect = [_bitmapDataSource pageTurningView:self contentRectForPageAtIndex:newPageIndex-1];
+            if(!CGRectIsEmpty(thisPageRect)) {
+                CGContextRef thisPageBitmap = [_bitmapDataSource pageTurningView:self
+                                                 RGBABitmapContextForPageAtIndex:newPageIndex-1
+                                                                        fromRect:thisPageRect
+                                                                         minSize:minSize];
+                [self _createTextureIn:&_pageContentsInformation[0].texture
+                 fromRGBABitmapContext:thisPageBitmap
+                 setTextureCoordinates:_pageContentsInformation[0].textureCoordinates];
+                   _pageContentsInformation[0].pageIndex = newPageIndex-1; 
+           } else {
+               _pageContentsInformation[0].pageIndex = NSUIntegerMax; 
+           }
+        }
+        
+        {
+            CGRect thisPageRect = [_bitmapDataSource pageTurningView:self contentRectForPageAtIndex:newPageIndex+1];
+            if(!CGRectIsEmpty(thisPageRect)) {
+                CGContextRef thisPageBitmap = [_bitmapDataSource pageTurningView:self
+                                                 RGBABitmapContextForPageAtIndex:newPageIndex+1
+                                                                        fromRect:thisPageRect
+                                                                         minSize:minSize ];
+                [self _createTextureIn:&_pageContentsInformation[2].texture
+                 fromRGBABitmapContext:thisPageBitmap
+                 setTextureCoordinates:_pageContentsInformation[2].textureCoordinates];
+                _pageContentsInformation[2].pageIndex = newPageIndex+1; 
+            } else {
+                _pageContentsInformation[2].pageIndex = NSUIntegerMax; 
+            }
+        }
+    }
+    _flatPageIndex = 1;    
+}
+
+- (void)turnToPageAtIndex:(NSUInteger)newPageIndex forwards:(BOOL)forwards {};
+- (void)refreshPageAtIndex:(NSUInteger)pageIndex {};
 
 static inline GLfloatTriplet addVector(GLfloatTriplet a, GLfloatTriplet b)
 {
@@ -843,7 +976,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates.textureCoordinates);
     
     glClientActiveTexture(GL_TEXTURE1);
-    glTexCoordPointer(2, GL_FLOAT, 0, _pageTextureCoordinates.textureCoordinates);
     
     glActiveTexture(GL_TEXTURE0);
     glClientActiveTexture(GL_TEXTURE0);
@@ -853,7 +985,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     glActiveTexture(GL_TEXTURE1);
     glClientActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _pageTextures[_flatPageIndex]);
+    glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex].texture);
+    glTexCoordPointer(2, GL_FLOAT, 0, &_pageContentsInformation[_flatPageIndex].textureCoordinates->textureCoordinates);
     glVertexPointer(3, GL_FLOAT, 0, _stablePageVertices);
     glNormalPointer(GL_FLOAT, 0, _stablePageVertexNormals);
                 
@@ -862,7 +995,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     if(!shouldStopAnimating) {
         glClear(GL_DEPTH_BUFFER_BIT);
             
-        glBindTexture(GL_TEXTURE_2D, _pageTextures[_flatPageIndex-1]);
+        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);
+        glTexCoordPointer(2, GL_FLOAT, 0, &_pageContentsInformation[_flatPageIndex-1].textureCoordinates->textureCoordinates);
 
         const GLfloatTriplet *pageVertices, *pageVertexNormals;        
         if(!_isTurningAutomatically) {
@@ -984,26 +1118,16 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 _viewsNeedRecache = YES;
                 
                 if(_flatPageIndex == 2) {
-                    UIView *tempView = _pageViews[0];
-                    _pageViews[0] = _pageViews[1];
-                    _pageViews[1] = _pageViews[2];
-                    _pageViews[2] = tempView;
-                    
-                    GLuint tempTex = _pageTextures[0];
-                    _pageTextures[0] = _pageTextures[1];
-                    _pageTextures[1] = _pageTextures[2];
-                    _pageTextures[2] = tempTex;
+                    PageContentsInformation tempView = _pageContentsInformation[0];
+                    _pageContentsInformation[0] = _pageContentsInformation[1];
+                    _pageContentsInformation[1] = _pageContentsInformation[2];
+                    _pageContentsInformation[2] = tempView;
                     _flatPageIndex = 1;
                 } else {
-                    UIView *tempView = _pageViews[2];
-                    _pageViews[2] = _pageViews[1];
-                    _pageViews[1] = _pageViews[0];
-                    _pageViews[0] = tempView;
-                    
-                    GLuint tempTex = _pageTextures[2];
-                    _pageTextures[2] = _pageTextures[1];
-                    _pageTextures[1] = _pageTextures[0];
-                    _pageTextures[0] = tempTex;
+                    PageContentsInformation tempView = _pageContentsInformation[2];
+                    _pageContentsInformation[2] = _pageContentsInformation[1];
+                    _pageContentsInformation[1] = _pageContentsInformation[0];
+                    _pageContentsInformation[0] = tempView;
                 }
                 
                 _recacheFlags[0] = YES;
@@ -1115,7 +1239,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         NSMutableSet *unusedTouches = [touches mutableCopy];
         [unusedTouches removeObject:_touch];
         if(unusedTouches.count) {
-            [_pageViews[1] touchesBegan:unusedTouches withEvent:event];
+            [_pageContentsInformation[1].view touchesBegan:unusedTouches withEvent:event];
         }
         [unusedTouches release];
     } else {
@@ -1140,7 +1264,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             THLog(@"Pinch Began: %@, %@", NSStringFromCGPoint(_pinchStartPoints[0]), NSStringFromCGPoint(_pinchStartPoints[1]));
         }
         
-        [_pageViews[1] touchesBegan:touches withEvent:event];
+        [_pageContentsInformation[1].view touchesBegan:touches withEvent:event];
     }
 }
 
@@ -1159,7 +1283,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 CGPoint location = [_touch locationInView:self];
                 CGPoint previousLocation = [_touch previousLocationInView:self];
                 if(previousLocation.x < location.x) {
-                    if(_pageViews[0]) {
+                    if(_pageContentsInformation[0].view || _pageContentsInformation[0].pageIndex != NSUIntegerMax) {
                         for(int column = 1; column < X_VERTEX_COUNT; ++column) {
                             for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
                                 GLfloat radius = _pageVertices[row][column].x;                            
@@ -1171,14 +1295,14 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                         shouldAnimate = NO;
                     }
                 } else {
-                    if(_pageViews[2]) {
+                    if(_pageContentsInformation[2].view || _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
                         _flatPageIndex = 2;
                     } else {
                         shouldAnimate = NO;
                     }
                 }
                 if(!_vibrated) {
-                    [_pageViews[1] touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
+                    [_pageContentsInformation[1].view touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
                 }
                 if(shouldAnimate) {
                     _vibrated = NO;
@@ -1198,18 +1322,18 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     } else if([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]]) {
         if(!_pinchUnderway) {
             [THBackgroundProcessingMediator curtailBackgroundProcessing];
-            [_pageViews[1] touchesCancelled:[NSSet setWithObjects:_pinchTouches count:2] withEvent:event];
+            [_pageContentsInformation[1].view touchesCancelled:[NSSet setWithObjects:_pinchTouches count:2] withEvent:event];
             _pinchUnderway = YES;
         }        
         
         if([_viewDataSource respondsToSelector:@selector(pageTurningView:scaledViewForView:pinchStartedAt:pinchNowAt:currentScaledView:)]) {
             CGPoint currentPinchPoints[2] = { [_pinchTouches[0] locationInView:self], [_pinchTouches[1] locationInView:self] };
             UIView *scaledView = [_viewDataSource pageTurningView:self 
-                                                scaledViewForView:_pageViews[1] 
+                                                scaledViewForView:_pageContentsInformation[1].view 
                                                    pinchStartedAt:_pinchStartPoints
                                                        pinchNowAt:currentPinchPoints
-                                                currentScaledView:_pageViews[3]];
-            if(scaledView && scaledView != _pageViews[3]) {
+                                                currentScaledView:_pageContentsInformation[3].view];
+            if(scaledView && scaledView != _pageContentsInformation[3].view) {
                 [self _setView:scaledView forPage:3];
                 _flatPageIndex = 3;
                 
@@ -1232,11 +1356,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             [unusedTouches removeObject:_pinchTouches[1]];
         }
         if(unusedTouches.count) {
-            [_pageViews[1] touchesMoved:unusedTouches withEvent:event];
+            [_pageContentsInformation[1].view touchesMoved:unusedTouches withEvent:event];
         }
         [unusedTouches release];
     } else {
-        [_pageViews[1] touchesMoved:touches withEvent:event];
+        [_pageContentsInformation[1].view touchesMoved:touches withEvent:event];
     }    
 }
 
@@ -1274,24 +1398,20 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         
         if(_pinchUnderway) {
             _pinchUnderway = NO;            
-            if(_pageViews[3]) {
-                UIView *tempView = _pageViews[1];
-                _pageViews[1] = _pageViews[3];
-                _pageViews[3] = tempView;
-                
-                GLuint tempTex = _pageTextures[1];
-                _pageTextures[1] = _pageTextures[3];
-                _pageTextures[3] = tempTex;            
+            if(_pageContentsInformation[3].view || _pageContentsInformation[3].pageIndex != NSUIntegerMax) {
+                PageContentsInformation tempView = _pageContentsInformation[1];
+                _pageContentsInformation[1] = _pageContentsInformation[3];
+                _pageContentsInformation[3] = tempView;
                 
                 [self _setView:nil forPage:3];
                 _flatPageIndex = 1;
 
                 if([_delegate respondsToSelector:@selector(pageTurningView:didScaleToView:)]) {
-                    [_delegate pageTurningView:self didScaleToView:_pageViews[1]];
+                    [_delegate pageTurningView:self didScaleToView:_pageContentsInformation[1].view];
                 }
                 
-                [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageViews[1]] forPage:0];
-                [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageViews[1]] forPage:2];
+                [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageContentsInformation[1].view] forPage:0];
+                [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageContentsInformation[1].view] forPage:2];
 
                 [self drawView];
             }
@@ -1312,7 +1432,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             [unusedTouches removeObject:_touch];
         }
         if(unusedTouches.count) {
-            [_pageViews[1] touchesEnded:unusedTouches withEvent:event];
+            [_pageContentsInformation[1].view touchesEnded:unusedTouches withEvent:event];
         }
         [unusedTouches release];
     } else if(_pinchUnderway) {
@@ -1324,7 +1444,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             [unusedTouches removeObject:_pinchTouches[1]];
         }
         if(unusedTouches.count) {
-            [_pageViews[1] touchesEnded:unusedTouches withEvent:event];
+            [_pageContentsInformation[1].view touchesEnded:unusedTouches withEvent:event];
         }
         [unusedTouches release];     
     } else {
@@ -1334,12 +1454,12 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             BOOL turning = NO;
             
             CGPoint point = [_touch locationInView:self];
-            CGFloat tapTurnMargin = [self _tapTurnMarginForView:_pageViews[1]];
-            if(point.x < tapTurnMargin && _pageViews[0]) {
-                [self turnToPageView:_pageViews[0] forwards:NO pageCount:1];
+            CGFloat tapTurnMargin = [self _tapTurnMarginForView:_pageContentsInformation[1].view];
+            if(point.x < tapTurnMargin && _pageContentsInformation[0].view) {
+                [self turnToPageView:_pageContentsInformation[0].view forwards:NO pageCount:1];
                 turning = YES;
-            } else if(point.x > (_pageViews[1].bounds.size.width - tapTurnMargin) && _pageViews[2]) {
-                [self turnToPageView:_pageViews[2] forwards:YES pageCount:1];
+            } else if(point.x > (_pageContentsInformation[1].view.bounds.size.width - tapTurnMargin) && _pageContentsInformation[2].view) {
+                [self turnToPageView:_pageContentsInformation[2].view forwards:YES pageCount:1];
                 turning = YES;
             }
             
@@ -1349,15 +1469,15 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                     [unusedTouches removeObject:_touch];
                 }
                 if(unusedTouches.count) {
-                    [_pageViews[1] touchesEnded:unusedTouches withEvent:event];
+                    [_pageContentsInformation[1].view touchesEnded:unusedTouches withEvent:event];
                 }
                 [unusedTouches release];   
-                [_pageViews[1] touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
+                [_pageContentsInformation[1].view touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
             } else {
-                [_pageViews[1] touchesEnded:touches withEvent:event];
+                [_pageContentsInformation[1].view touchesEnded:touches withEvent:event];
             }
         } else {
-            [_pageViews[1] touchesEnded:touches withEvent:event];
+            [_pageContentsInformation[1].view touchesEnded:touches withEvent:event];
         }
     }
     [self _touchesEndedOrCancelled:touches withEvent:event];
@@ -1371,7 +1491,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             [unusedTouches removeObject:_touch];
         }
         if(unusedTouches.count) {
-            [_pageViews[1] touchesCancelled:unusedTouches withEvent:event];
+            [_pageContentsInformation[1].view touchesCancelled:unusedTouches withEvent:event];
         }
         [unusedTouches release];
     } else if(_pinchUnderway) {
@@ -1383,11 +1503,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             [unusedTouches removeObject:_pinchTouches[1]];
         }
         if(unusedTouches.count) {
-            [_pageViews[1] touchesCancelled:unusedTouches withEvent:event];
+            [_pageContentsInformation[1].view touchesCancelled:unusedTouches withEvent:event];
         }
         [unusedTouches release];        
     } else {
-        [_pageViews[1] touchesCancelled:touches withEvent:event];
+        [_pageContentsInformation[1].view touchesCancelled:touches withEvent:event];
     }
     [self _touchesEndedOrCancelled:touches withEvent:event];
 }
@@ -1418,12 +1538,12 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 {
     if(!_accessibilityElements) {
         NSArray *pageViewAccessibilityElements = nil;
-        if([_pageViews[1] respondsToSelector:@selector(accessibilityElements)]) {
-            pageViewAccessibilityElements = [_pageViews[1]  performSelector:@selector(accessibilityElements)];
+        if([_pageContentsInformation[1].view respondsToSelector:@selector(accessibilityElements)]) {
+            pageViewAccessibilityElements = [_pageContentsInformation[1].view  performSelector:@selector(accessibilityElements)];
         }
         NSMutableArray *accessibilityElements = [[NSMutableArray alloc] initWithCapacity:pageViewAccessibilityElements.count + 1];
         
-        CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageViews[1]];
+        CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageContentsInformation[1].view];
             
         for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
             element.accessibilityContainer = self;
@@ -1433,7 +1553,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         {
             UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if(!_pageViews[2])  {
+            if(!_pageContentsInformation[2].view)  {
                 nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
             }            
             CGRect frame = [self convertRect:self.bounds toView:nil];
@@ -1449,7 +1569,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         {
             UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if(!_pageViews[0])  {
+            if(!_pageContentsInformation[0].view)  {
                 previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
             }
             CGRect frame = [self convertRect:self.bounds toView:nil];
@@ -1560,7 +1680,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     BOOL pageHasRigidEdge;
     if([_delegate respondsToSelector:@selector(pageTurningView:viewEdgeIsRigid:)]) {
-        pageHasRigidEdge = [_delegate pageTurningView:self viewEdgeIsRigid:_pageViews[_flatPageIndex-1]];
+        pageHasRigidEdge = [_delegate pageTurningView:self viewEdgeIsRigid:_pageContentsInformation[_flatPageIndex-1].view];
     } else {
         pageHasRigidEdge = NO;
     }
@@ -1670,30 +1790,22 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             
             if(_flatPageIndex == 2) {
                 if(hasFlipped) {
-                    UIView *tempView = _pageViews[0];
-                    _pageViews[0] = _pageViews[1];
-                    _pageViews[1] = _pageViews[2];
-                    _pageViews[2] = tempView;
+                    PageContentsInformation tempView = _pageContentsInformation[0];
+                    _pageContentsInformation[0] = _pageContentsInformation[1];
+                    _pageContentsInformation[1] = _pageContentsInformation[2];
+                    _pageContentsInformation[2] = tempView;
                     
-                    GLuint tempTex = _pageTextures[0];
-                    _pageTextures[0] = _pageTextures[1];
-                    _pageTextures[1] = _pageTextures[2];
-                    _pageTextures[2] = tempTex;
                     _viewsNeedRecache = YES;
                     _recacheFlags[2] = YES;
                 } 
                 _flatPageIndex = 1;
             } else {
                 if(!hasFlipped) {
-                    UIView *tempView = _pageViews[2];
-                    _pageViews[2] = _pageViews[1];
-                    _pageViews[1] = _pageViews[0];
-                    _pageViews[0] = tempView;
+                    PageContentsInformation tempView = _pageContentsInformation[2];
+                    _pageContentsInformation[2] = _pageContentsInformation[1];
+                    _pageContentsInformation[1] = _pageContentsInformation[0];
+                    _pageContentsInformation[0] = tempView;
                     
-                    GLuint tempTex = _pageTextures[2];
-                    _pageTextures[2] = _pageTextures[1];
-                    _pageTextures[1] = _pageTextures[0];
-                    _pageTextures[0] = tempTex;
                     _viewsNeedRecache = YES;
                     _recacheFlags[0] = YES;
                 }
@@ -1710,7 +1822,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 - (void)_postAnimationViewAndTextureRecache
 {
     if(_recacheFlags[0]) {
-        [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageViews[1]] forPage:0];
+        [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageContentsInformation[1].view] forPage:0];
         _recacheFlags[0] = NO;
     }     
     if(_recacheFlags[2]) {
@@ -1721,11 +1833,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             //[pool drain];
         //}
         //[timr report];
-        [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageViews[1]] forPage:2];
+        [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageContentsInformation[1].view] forPage:2];
         _recacheFlags[2] = NO;
     }
     if([_delegate respondsToSelector:@selector(pageTurningView:didTurnToView:)]) {
-        [_delegate pageTurningView:self didTurnToView:_pageViews[1]];
+        [_delegate pageTurningView:self didTurnToView:_pageContentsInformation[1].view];
     }                    
     _viewsNeedRecache = NO;
     
@@ -1733,29 +1845,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
-- (NSArray *)pageViews
-{
-    return [NSArray arrayWithObjects:_pageViews count:_pageViews[3] ? 4 : 3];
-}
-
-- (void)refreshView:(UIView *)view
-{
-    for(int i = 0; i < sizeof(_pageViews); ++i) {
-        if(view == _pageViews[i]) {
-            [self _createTextureIn:&_pageTextures[i] 
-                              from:view
-             setTextureCoordinates:&_pageTextureCoordinates];
-            break;
-        }
-    }
-}
-
 - (void)_setNeedsAccessibilityElementsRebuild
 {
     [_accessibilityElements release];
     _accessibilityElements = nil;
 }
-
 
 - (void)setDimQuotient:(CGFloat)dimQuotient
 {
