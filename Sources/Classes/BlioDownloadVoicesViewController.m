@@ -217,6 +217,8 @@
 		sampleButton.frame = CGRectMake(0,0,44,self.bounds.size.height);
 		sampleButton.showsTouchWhenHighlighted = YES;
 		[sampleButton addTarget:self action:@selector(onPlaySampleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+		[sampleButton setAccessibilityLabel:NSLocalizedString(@"Play sample", @"Accessibility label for Voice Download Play button")];
+		
 		[self.contentView addSubview:sampleButton];
 		self.downloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		self.downloadButton.frame = CGRectMake(self.contentView.bounds.size.width - kBlioVoiceDownloadButtonWidth - kBlioVoiceDownloadButtonRightMargin, (self.bounds.size.height - kBlioVoiceDownloadButtonHeight)/2, kBlioVoiceDownloadButtonWidth, kBlioVoiceDownloadButtonHeight);

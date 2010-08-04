@@ -197,7 +197,7 @@
             pageView.fullBleed = [_book fullBleedPageForIndexPoint:indexPoint];
         }
         
-        [pageView.bookTextView layoutPageFromPoint:indexPoint
+        [pageView.pageTextView layoutPageFromPoint:indexPoint
                                             inBook:_book];
 
         ret = [THPair pairWithFirst:pageView second:indexPointRange];

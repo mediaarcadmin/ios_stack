@@ -73,7 +73,7 @@
     return [@"Image" isEqualToString:self.name];
 }
 
-- (NSString *)imageSourceURL
+- (NSString *)imageSourceURLString
 {
     return [self attributeWithName:@"Source"];
 }

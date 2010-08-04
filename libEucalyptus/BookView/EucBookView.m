@@ -571,8 +571,8 @@
 {                
     NSArray *ret = nil;
     
-    UIView<EucPageTextView> *bookTextView = pageView.bookTextView;
-    NSArray *blockIds = [bookTextView blockIdentifiers];
+    UIView<EucPageTextView> *pageTextView = pageView.pageTextView;
+    NSArray *blockIds = [pageTextView blockIdentifiers];
     NSUInteger blockIdsCount = blockIds.count;
     if(blockIdsCount) {
         THPair *pageIndexPointRange = [pageView.layer valueForKey:@"EucBookViewIndexPointRange"];
@@ -592,7 +592,7 @@
         EucBookPageIndexPoint *pageEndPoint = pageIndexPointRange.second;
         if([pageEndPoint compare:endPoint] != NSOrderedDescending) {
             endBlockId = [blockIds lastObject];
-            endElementId = [[bookTextView identifiersForElementsOfBlockWithIdentifier:endBlockId] lastObject];
+            endElementId = [[pageTextView identifiersForElementsOfBlockWithIdentifier:endBlockId] lastObject];
         } else {
             endBlockId = [NSNumber numberWithUnsignedInt:endPoint.block];
             endElementId = [NSNumber numberWithUnsignedInt:endPoint.word];
@@ -617,7 +617,7 @@
         while(!isLastBlock && blockIdIndex < blockIdsCount) {
             id blockId = [blockIds objectAtIndex:blockIdIndex];
             
-            NSArray *elementIds = [bookTextView identifiersForElementsOfBlockWithIdentifier:blockId];
+            NSArray *elementIds = [pageTextView identifiersForElementsOfBlockWithIdentifier:blockId];
             NSUInteger elementIdCount = elementIds.count;
             NSUInteger elementIdIndex = 0;
             
@@ -633,7 +633,7 @@
             
             do {
                 elementId = [elementIds objectAtIndex:elementIdIndex];
-                [nonCoalescedRects addObjectsFromArray:[bookTextView rectsForElementWithIdentifier:elementId
+                [nonCoalescedRects addObjectsFromArray:[pageTextView rectsForElementWithIdentifier:elementId
                                                                              ofBlockWithIdentifier:blockId]];
                 ++elementIdIndex;
             } while (isLastBlock ? 
@@ -687,13 +687,13 @@ typedef enum {
         newHighlightRanges = [self _highlightRangesForIndexPointRange:indexPointRange];
     }
     if(newHighlightRanges) {
-        UIView *bookTextView = pageView.bookTextView;
+        UIView *pageTextView = pageView.pageTextView;
         for(EucHighlightRange *highlightRange in newHighlightRanges) {
             if(!_rangeBeingEdited || ![highlightRange intersects:_rangeBeingEdited]) {                 
                 CGColorRef color = [highlightRange.color colorWithAlphaComponent:0.3f].CGColor;
                 NSArray *rects = [self _highlightRectsForRange:highlightRange inPageView:pageView];
                 for(NSValue *rectValue in rects) {
-                    CGRect rect  = CGRectIntegral([bookTextView convertRect:rectValue.CGRectValue toView:pageView]);
+                    CGRect rect  = CGRectIntegral([pageTextView convertRect:rectValue.CGRectValue toView:pageView]);
                     if(reuseIndex < reuseCount) {
                         CALayer *layer = [highlightLayersToReuse objectAtIndex:reuseIndex++];
                         layer.backgroundColor = color;
@@ -820,7 +820,7 @@ typedef enum {
 }
 
 
-- (void)pageView:(EucPageView *)bookTextView didReceiveTapOnHyperlinkWithAttributes:(NSDictionary *)attributes
+- (void)pageView:(EucPageView *)pageTextView didReceiveTapOnHyperlinkWithURL:(NSURL *)url
 {
    /* if(_touch) {
         // Stop tracking the touch - we don't want to show/hide the toolbar on a
@@ -828,8 +828,8 @@ typedef enum {
         [_touch release];
         _touch = nil;
     }*/
-    THLog(@"BookViewController received tap on hyperlink: %@", attributes);
-    [self _hyperlinkTapped:attributes];
+    THLog(@"EucBookView received tap on hyperlink: %@", url);
+    //[self _hyperlinkTapped:attributes];
 }
 
 #pragma mark -
@@ -1078,25 +1078,25 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    return [pageView.bookTextView blockIdentifiers];
+    return [pageView.pageTextView blockIdentifiers];
 }
 
 - (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)id
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    return [pageView convertRect:[pageView.bookTextView frameOfBlockWithIdentifier:id] fromView:pageView.bookTextView];    
+    return [pageView convertRect:[pageView.pageTextView frameOfBlockWithIdentifier:id] fromView:pageView.pageTextView];    
 }
 
 - (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)id;
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    return [pageView.bookTextView identifiersForElementsOfBlockWithIdentifier:id];
+    return [pageView.pageTextView identifiersForElementsOfBlockWithIdentifier:id];
 }
 
 - (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 {
     EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
-    UIView<EucPageTextView> *pageTextView = pageView.bookTextView;
+    UIView<EucPageTextView> *pageTextView = pageView.pageTextView;
     
     NSArray *rects = [pageTextView rectsForElementWithIdentifier:elementId
                                            ofBlockWithIdentifier:blockId];

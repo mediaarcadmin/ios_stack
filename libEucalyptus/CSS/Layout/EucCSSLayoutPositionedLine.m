@@ -39,11 +39,26 @@
     EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
     EucCSSLayoutPositionedLineRenderItem *renderItemEnd = _renderItems + _renderItemCount;
     for(; renderItem < renderItemEnd; ++renderItem) {
-        [renderItem->item release];
-        [renderItem->stringRenderer release];
-        if(renderItem->altText) {
-            [renderItem->altText release];   
+        switch (renderItem->kind) {
+            case EucCSSLayoutPositionedLineRenderItemKindString:
+                [renderItem->item.stringItem.string release];
+                [renderItem->item.stringItem.stringRenderer release];
+                break;
+            case EucCSSLayoutPositionedLineRenderItemKindImage:
+                CFRelease(renderItem->item.imageItem.image);
+                break;
+            case EucCSSLayoutPositionedLineRenderItemKindUnderlineStart:
+            case EucCSSLayoutPositionedLineRenderItemKindUnderlineStop:
+                break;
+            case EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart:
+            case EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop:
+                [renderItem->item.hyperlinkItem.url release];
+                break;
         }
+        if(renderItem->altText) {
+            [renderItem->altText release];
+        }
+
     }
     free(_renderItems);
     
@@ -180,21 +195,88 @@
                 xPosition += _indent;
         }
 
+        BOOL currentUnderline = NO;
+        BOOL checkForUnderline = YES;
+        
+        NSURL *currentHyperlink = nil;
+        BOOL checkForHyperlink = YES;
+        
         EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
         for(i = startComponentOffset, info = componentInfos;
             i < componentsCount && i < afterEndComponentOffset; 
             ++i, ++info) {
+            
+            if(checkForUnderline) {
+                css_computed_style *style = [info->documentNode computedStyle];
+                if(!style) {
+                    style = [(info->documentNode).parent computedStyle];
+                }
+                uint8_t decoration = css_computed_text_decoration(style);
+                BOOL shouldUnderline = (decoration == CSS_TEXT_DECORATION_UNDERLINE);
+                if(currentUnderline != shouldUnderline) {
+                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStart;
+                    renderItem->item.underlineItem.underlinePoint = CGPointMake(xPosition, yPosition + baseline + ceilf((info->lineHeight - info->pointSize) * 0.5f) + 0.5);
+                    ++renderItem;
+                    ++_renderItemCount;
+
+                    currentUnderline = shouldUnderline;
+                }
+            }
+            
+            if(checkForHyperlink) {
+                NSURL *href = nil;
+                EucCSSIntermediateDocumentNode *documentNode = info->documentNode;
+                while(!href && documentNode) {
+                    if(documentNode.isHyperlinkNode) {
+                        href = documentNode.hyperlinkURL;
+                    }
+                    documentNode = documentNode.parent;
+                }
+                if(href) {
+                    if(currentHyperlink) {
+                        if(![currentHyperlink isEqual:href]) {
+                            renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
+                            renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
+                            ++renderItem;
+                            ++_renderItemCount;
+                            [currentHyperlink release];
+                            currentHyperlink = [href retain];
+                            renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
+                            renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
+                            ++renderItem;
+                            ++_renderItemCount;
+                        }
+                    } else {
+                        currentHyperlink = [href retain];
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
+                        renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
+                        ++renderItem;
+                        ++_renderItemCount;                        
+                    }
+                } else {
+                    if(currentHyperlink) {
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
+                        renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
+                        ++renderItem;
+                        ++_renderItemCount;
+                        [currentHyperlink release];
+                        currentHyperlink = nil;
+                    }
+                }
+                checkForHyperlink = NO;
+            }
             
             if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
                 CGFloat emBoxHeight = info->pointSize;
                 CGFloat inlineBoxHeight = info->lineHeight;
                 CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
                 
-                renderItem->item = [(NSString *)info->component retain];
-                renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender - halfLeading, info->width, size.height);
-                renderItem->pointSize = info->pointSize;
-                renderItem->point = info->point;
-                renderItem->stringRenderer = [info->documentNode.stringRenderer retain];
+                renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
+                renderItem->item.stringItem.string = [(NSString *)info->component retain];
+                renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender - halfLeading, info->width, size.height);
+                renderItem->item.stringItem.pointSize = info->pointSize;
+                renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
+                renderItem->item.stringItem.layoutPoint = info->point;
                 ++renderItem;
                 ++_renderItemCount;
                 
@@ -208,27 +290,34 @@
                 }
                 xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
-                renderItem->item = (id)CFRetain((CGImageRef)info->component);
-                renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, info->pointSize);
-                renderItem->point = info->point;
+                renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindImage;
+                renderItem->item.imageItem.image = CGImageRetain((CGImageRef)info->component);
+                renderItem->item.imageItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, info->pointSize);
+                renderItem->item.imageItem.layoutPoint = info->point;
                 renderItem->altText = [[info->documentNode altText] retain];
                 ++renderItem;
                 ++_renderItemCount;
                 
                 xPosition += info->width;
-            }
-            if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
                 if (i == startComponentOffset) {
-                    renderItem->item = [(NSString *)info->component2 retain];
-                    renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthAfterHyphen, size.height);
-                    renderItem->pointSize = info->pointSize;
-                    renderItem->point = info->point;
-                    renderItem->stringRenderer = [info->documentNode.stringRenderer retain];
+                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
+                    renderItem->item.stringItem.string = [(NSString *)info->component2 retain];
+                    renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthAfterHyphen, size.height);
+                    renderItem->item.stringItem.pointSize = info->pointSize;
+                    renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
+                    renderItem->item.stringItem.layoutPoint = info->point;
                     ++renderItem;
                     ++_renderItemCount;
                     
                     xPosition += info->widthAfterHyphen;
                 }
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
+                checkForUnderline = YES;
+                checkForHyperlink = YES;
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode) {
+                checkForUnderline = YES;
+                checkForHyperlink = YES;
             }
         }
         
@@ -241,14 +330,16 @@
                 xPosition -= info->width;
                 
                 // Store the entire word in the alt text for accessibility.
-                renderItem->altText = renderItem->item;
+                renderItem->altText = renderItem->item.stringItem.string;
                 
-                renderItem->item = [(NSString *)info->component retain];
-                renderItem->rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthBeforeHyphen, size.height);
-                renderItem->point = info->point;
+                renderItem->item.stringItem.string = [(NSString *)info->component retain];
+                renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthBeforeHyphen, size.height);
+                renderItem->item.stringItem.layoutPoint = info->point;
                 ++renderItem;                
             }
         }
+        
+        [currentHyperlink release];
     }
     return _renderItems;
 }
