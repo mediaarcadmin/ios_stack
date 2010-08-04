@@ -208,8 +208,8 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	XPS_ReleaseImageMemory((void *)data);
 }
 
-static void XPSBitmapReleaseCallback(void *info, const void *data) {
-	XPS_ReleaseImageMemory((void *)data);
+static void XPSBitmapReleaseCallback(void *releaseInfo, void *data) {
+	XPS_ReleaseImageMemory(data);
 }
 
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
@@ -286,12 +286,14 @@ static void XPSBitmapReleaseCallback(void *info, const void *data) {
     [renderingLock unlock];
 }
 
-- (CGContextRef)RGBABitmapContextFromRect:(CGRect)rect minSize:(CGSize)size {
+- (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
+                                fromRect:(CGRect)rect
+                                 minSize:(CGSize)size {
     
     [renderingLock lock];
     memset(&properties,0,sizeof(properties));
     XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
-    CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
+    //CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
     [renderingLock unlock];
     
     OutputFormat format;
@@ -322,10 +324,10 @@ static void XPSBitmapReleaseCallback(void *info, const void *data) {
     if (imageInfo) {
         size_t width  = imageInfo->widthInPixels;
         size_t height = imageInfo->height;
-        size_t dataLength = width * height * 3;
         
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CGContextRef bitmapContext = CGBitmapContextCreateWithData(imageInfo->pBits, width, height, 8, width * 3, colorSpace, kCGImageAlphaLast, XPSBitmapReleaseCallback, NULL)
+        bitmapContext = CGBitmapContextCreateWithData(imageInfo->pBits, width, height, 8, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, XPSBitmapReleaseCallback, NULL);
+        
         CGColorSpaceRelease(colorSpace);
     }
     [renderingLock unlock];

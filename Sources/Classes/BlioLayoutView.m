@@ -242,6 +242,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         EucPageTurningView *aPageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
         aPageTurningView.delegate = self;
+        aPageTurningView.bitmapDataSource = self;
         aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self addSubview:aPageTurningView];
         self.pageTurningView = aPageTurningView;
@@ -266,8 +267,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return [self cropForPage:index + 1];
 }
 
-- (CGContextRef)pageTurningView:(EucPageTurningView *)aPageTurningView RGBABitmapContextFromRect:(CGRect)rect minSize:(CGSize)size {
-    [self.dataSource RGBABitmapContextFromRect:rect minSize:size];
+- (CGContextRef)pageTurningView:(EucPageTurningView *)aPageTurningView 
+RGBABitmapContextForPageAtIndex:(NSUInteger)index
+                       fromRect:(CGRect)rect 
+                        minSize:(CGSize)size {
+    return [self.dataSource RGBABitmapContextForPage:index + 1
+                                            fromRect:rect 
+                                             minSize:size];
 }
 
 #pragma mark -

@@ -24,7 +24,8 @@
 - (UIImage *)thumbnailForPage:(NSInteger)page;
 
 @optional
-- (CGContextRef)RGBABitmapContextFromRect:(CGRect)rect minSize:(CGSize)size;
-
+- (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
+                                fromRect:(CGRect)rect
+                                 minSize:(CGSize)size;
 
 @end
