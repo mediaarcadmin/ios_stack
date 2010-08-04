@@ -14,6 +14,7 @@
 #import <libEucalyptus/EucSelector.h>
 #import "BlioLayoutDataSource.h"
 #import "BlioXPSProvider.h"
+#import <libEucalyptus/EucPageTurningView.h>
 
 static const NSUInteger kBlioLayoutMaxPages = 6; // Must be at least 6 for the go to animations to look right
 
@@ -35,8 +36,12 @@ typedef enum BlioLayoutPageMode {
 
 @end
 
-@interface BlioLayoutView : BlioSelectableBookView <BlioLayoutRenderingDelegate, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
+@interface BlioLayoutView : BlioSelectableBookView <EucPageTurningViewDelegate, BlioLayoutRenderingDelegate, UIScrollViewDelegate, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
     NSManagedObjectID *bookID;
+    EucPageTurningView *pageTurningView;
+    UIImage *pageTexture;
+    BOOL pageTextureIsDark;
+    
     BlioTextFlow *textFlow;
     CGPDFDocumentRef pdf;
     BlioLayoutScrollView *scrollView;
@@ -78,6 +83,9 @@ typedef enum BlioLayoutPageMode {
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, retain) EucPageTurningView *pageTurningView;
+
+
 @property (nonatomic, retain) BlioTextFlow *textFlow;
 @property (nonatomic, retain) BlioLayoutScrollView *scrollView;
 @property (nonatomic, retain) UIView *containerView;
