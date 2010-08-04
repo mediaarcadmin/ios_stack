@@ -102,6 +102,9 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 - (void)displayHighlightsForLayer:(BlioLayoutPageLayer *)aLayer excluding:(BlioBookmarkRange *)excludedBookmark; 
 - (NSArray *)highlightRectsForPage:(NSInteger)aPageNumber excluding:(BlioBookmarkRange *)excludedBookmark;
 
+@property (nonatomic, retain) UIImage *pageTexture;
+@property (nonatomic, assign) BOOL pageTextureIsDark;
+
 @end
 
 @implementation BlioLayoutView
@@ -143,6 +146,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
 @synthesize accessibilityElements, previousAccessibilityElements;
 @synthesize dataSource;
+@synthesize pageTurningView, pageTexture, pageTextureIsDark;
 
 - (void)dealloc {
     NSLog(@"*************** dealloc called for layoutview");
@@ -169,6 +173,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     self.shadowRight = nil;
     
     self.lastBlock = nil;
+    self.pageTurningView = nil;
+    self.pageTexture = nil;
     
     [self.selector detatch];
     self.selector = nil;
@@ -204,51 +210,25 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark -
 #pragma mark BlioBookView
 
-- (id)initWithFrame:(CGRect)frame
-             bookID:(NSManagedObjectID *)aBookID 
-           animated:(BOOL)animated {
-
-    BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
+- (id)initWithFrame:(CGRect)frame bookID:(NSManagedObjectID *)aBookID animated:(BOOL)animated {
+    
+    BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+    
+    BlioBook *aBook = [bookManager bookWithID:aBookID];
     if (!([aBook hasPdf] || [aBook hasXps])) {
+        [self release];
         return nil;
     }
     
-    CGRect rotatedFrame = [UIScreen mainScreen].bounds;
-    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    
-    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
-        if (rotatedFrame.size.height > rotatedFrame.size.width)
-            rotatedFrame.size = CGSizeMake(rotatedFrame.size.height, rotatedFrame.size.width);
-    } else {
-        if (rotatedFrame.size.width > rotatedFrame.size.height)
-            rotatedFrame.size = CGSizeMake(rotatedFrame.size.height, rotatedFrame.size.width);
-    }
-    
-    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-
-    
-    if ((self = [super initWithFrame:rotatedFrame])) {
-        // Initialization code
-        isCancelled = NO;
-        layoutCacheLock = [[NSLock alloc] init];
+    if((self = [super initWithFrame:frame])) {
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;        
+        self.opaque = YES;
         self.bookID = aBookID;
+        
+        layoutCacheLock = [[NSLock alloc] init];
         
         // Prefer the checkout over calling [aBook textFlow] because we wat to retain the result
         textFlow = [[[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:self.bookID] retain];
-        
-        self.clearsContextBeforeDrawing = NO; // Performance optimisation;
-        self.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];    
-        self.autoresizesSubviews = YES;
-        
-        self.checkerBoard = [UIImage imageNamed:@"check.png"];
-        self.shadowBottom = [UIImage imageNamed:@"shadow-bottom.png"];
-        self.shadowTop = [UIImage imageNamed:@"shadow-top.png"];
-        self.shadowLeft = [UIImage imageNamed:@"shadow-left.png"];
-        self.shadowRight = [UIImage imageNamed:@"shadow-right.png"];
-        
-        
-        lastZoomScale = 1;
-        accessibilityRefreshRequired = YES;
         
         if ([aBook hasXps]) {
             // Prefer the checkout over calling [aBook xpsProvider] because we wat to retain the result
@@ -260,129 +240,34 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [aPDFDataSource release];
         }
         
+        EucPageTurningView *aPageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
+        aPageTurningView.delegate = self;
+        aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        [self addSubview:aPageTurningView];
+        self.pageTurningView = aPageTurningView;
+        [aPageTurningView release];
+        
         pageCount = [self.dataSource pageCount];
-        
-        // Populate the cache of page sizes and viewTransforms
-//        NSMutableDictionary *aPageCropsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
-//        NSMutableDictionary *aViewTransformsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
-//        
-//        CGFloat inset = -kBlioLayoutShadow;
-//        CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-//        
-//        CGFloat dpiRatio = [self.dataSource dpiRatio];
-//        CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
-//        
-//        [self.dataSource openDocumentIfRequired];
-//        //NSLog(@"Document opened");
-//        
-//        for (int i = 1; i <= pageCount; i++) {
-//            CGRect cropRect = [self.dataSource cropRectForPage:i];
-//            CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
-//            CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
-//            [aPageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:i]];
-//            
-//            CGRect mediaRect = [self.dataSource mediaRectForPage:i];
-//            CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
-//            CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
-//            CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
-//            [aViewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:i]];
-//        }
-//        //NSLog(@"Rects calculated");
-//        
-//        [self.dataSource closeDocumentIfRequired];
-//        
-//        self.pageCropsCache = [NSDictionary dictionaryWithDictionary:aPageCropsCache];
-//        self.viewTransformsCache = [NSDictionary dictionaryWithDictionary:aViewTransformsCache];
-//        [aPageCropsCache release];
-//        [aViewTransformsCache release];
-        
-        BlioLayoutScrollView *aScrollView = [[BlioLayoutScrollView alloc] initWithFrame:self.bounds];
-        aScrollView.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
-        aScrollView.pagingEnabled = YES;
-        aScrollView.minimumZoomScale = 1.0f;
-        aScrollView.maximumZoomScale = [[UIDevice currentDevice] blioDeviceMaximumLayoutZoom];
-        //aScrollView.maximumZoomScale = 8;
-        aScrollView.showsHorizontalScrollIndicator = NO;
-        aScrollView.showsVerticalScrollIndicator = NO;
-        aScrollView.clearsContextBeforeDrawing = NO;
-        aScrollView.directionalLockEnabled = YES;
-        aScrollView.bounces = YES;
-        aScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        aScrollView.autoresizesSubviews = YES;
-        aScrollView.scrollsToTop = NO;
-        aScrollView.delegate = self;
-        aScrollView.canCancelContentTouches = YES;
-        aScrollView.delaysContentTouches = NO;
-        [self addSubview:aScrollView];
-        self.scrollView = aScrollView;
-        [aScrollView release];
-        
-        UIView *aContainerView = [[UIView alloc] initWithFrame:self.bounds];
-        [self.scrollView addSubview:aContainerView];
-        aContainerView.backgroundColor = [UIColor clearColor];
-        aContainerView.autoresizesSubviews = NO;
-        self.containerView = aContainerView;
-        [aContainerView release];
-        
-        BlioLayoutContentView *aContentView = [[BlioLayoutContentView alloc] initWithFrame:self.bounds];
-        [self.containerView addSubview:aContentView];
-        aContentView.renderingDelegate = self;
-        aContentView.backgroundColor = [UIColor clearColor];
-        aContentView.clipsToBounds = NO;
-        self.contentView = aContentView;
-        [aContentView release];
-                
-        EucSelector *aSelector = [[EucSelector alloc] init];
-        [aSelector setShouldSniffTouches:NO];
-        aSelector.dataSource = self;
-        aSelector.delegate =  self;
-        aSelector.loupeBackgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
-        self.selector = aSelector;
-        [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
-        [aSelector addObserver:self forKeyPath:@"trackingStage" options:0 context:NULL];
-        [self.scrollView setSelector:aSelector];
-        [aSelector release];
-        
-        [self addObserver:self forKeyPath:@"currentPageLayer" options:0 context:NULL];
-        
         NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-        
-        // Set the page number to 1 initially whilst the layout mode is set
-        self.pageNumber = 1;
-        
-        BlioLayoutPageMode newLayoutMode;
-        if (self.frame.size.width > self.frame.size.height)
-            newLayoutMode = BlioLayoutPageModeLandscape;
-        else
-            newLayoutMode = BlioLayoutPageModePortrait;
-        [self setLayoutMode:newLayoutMode animated:NO];
-        
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
-        
-        if (animated) {
-            self.currentPageLayer = [self.contentView addPage:1 retainPages:nil];
-            [self.contentView addPage:2 retainPages:nil];
-            if (page == 1) {
-                for (int i = 2; i < kBlioLayoutMaxPages; i++) {
-                    [self.contentView addPage:i+1 retainPages:nil];
-                }
-            } else {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
-            }
-        } else {
-            self.currentPageLayer = [self.contentView addPage:self.pageNumber retainPages:nil];
-            for (int i = 0; i < kBlioLayoutMaxPages; i++) {
-                if (i != 1) [self.contentView addPage:(self.pageNumber - 1 + i) retainPages:nil];
-            }
-            
-            [self goToPageNumber:self.pageNumber animated:NO];
-        }
-        
+
     }
+
     return self;
+}
+
+#pragma mark -
+#pragma mark Visual Properties
+
+- (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDark
+{    
+    if (self.pageTexture != aPageTexture || self.pageTextureIsDark != isDark) {
+        self.pageTexture = aPageTexture;
+        self.pageTextureIsDark = isDark;
+        [self.pageTurningView setPageTexture:aPageTexture isDark:isDark];
+        [self.pageTurningView setNeedsDraw];
+    }
 }
 
 - (BOOL)wantsTouchesSniffed {
