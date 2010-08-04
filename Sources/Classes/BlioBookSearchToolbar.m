@@ -64,8 +64,8 @@
         [aNavBar release];
                 
         NSArray *segmentImages = [NSArray arrayWithObjects:
-                                  [UIImage imageNamed:@"buttonBarArrowUpSmall"],
-                                  [UIImage imageNamed:@"buttonBarArrowDownSmall"],
+                                  [UIImage imageNamed:@"buttonBarArrowUpSmall.png"],
+                                  [UIImage imageNamed:@"buttonBarArrowDownSmall.png"],
                                   nil];
         
         BlioAccessibilitySegmentedControl *aInlineSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
