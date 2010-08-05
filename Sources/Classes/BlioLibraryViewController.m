@@ -234,7 +234,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
-
+		
+#ifdef DEMO_MODE
+		
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Willingham, Bill"]
 											coverPath:@"MockCovers/FablesLegendsInExile.png"
@@ -245,21 +247,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Fables: Legends In Exile"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-
-        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
-                                              authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
-											coverPath:@"MockCovers/Three_Little_Pigs.png"
-											 ePubPath:nil
-		 //                                   pdfPath:@"PDFs/Three Little Pigs.pdf
-											  pdfPath:nil
-											  xpsPath:@"PDFs/Three Little Pigs.xps"
-										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
-										audiobookPath:@"AudioBooks/Three Little Pigs.zip"
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Three Little Pigs"
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
@@ -487,13 +474,30 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
+                                              authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
+											coverPath:@"MockCovers/Three_Little_Pigs.png"
+											 ePubPath:nil
+		 //                                   pdfPath:@"PDFs/Three Little Pigs.pdf
+											  pdfPath:nil
+											  xpsPath:@"XPS/Three Little Pigs.xps"
+										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
+										audiobookPath:@"AudioBooks/Three Little Pigs.zip"
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Three Little Pigs"
+									  placeholderOnly:NO
+										   fromBundle:YES		 
+		 ];
+		
+#endif // DEMO_MODE
         
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"PDFs/The Tale of Peter Rabbit.drm.xps"
+											  xpsPath:@"XPS/The Tale of Peter Rabbit.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceOnlineStore
@@ -507,7 +511,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"PDFs/Virgin Islands.drm.xps"
+											  xpsPath:@"XPS/Virgin Islands.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceOnlineStore

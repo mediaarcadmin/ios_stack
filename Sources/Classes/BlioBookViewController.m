@@ -201,6 +201,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             lastLayout = kBlioPageLayoutPageLayout;
         } 
         
+        // TODO: Remove this forced option for iPad
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            if ([newBook hasPdf] || [newBook hasXps]) {
+                lastLayout = kBlioPageLayoutPageLayout;
+            }
+        }
+        
         switch (lastLayout) {
             case kBlioPageLayoutSpeedRead: {
                 if ([newBook hasEPub] || [newBook hasTextFlow]) {
