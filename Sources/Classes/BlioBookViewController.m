@@ -1305,9 +1305,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
-    //Dave changed this line to connect the settings buttons to tilt scrolling directions!
-    //if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
-    if ([self currentPageLayout] == kBlioPageLayoutSpeedRead)    
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
         return NO;
     else
         return YES;

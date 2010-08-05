@@ -51,20 +51,17 @@
 	//		NSLog(@"[[indexes objectAtIndex:0] intValue]: %i",[[indexes objectAtIndex:0] intValue]);
 	if (indexes && [indexes count] > 1) rowIndex = floor([[indexes objectAtIndex:0] intValue]/numCellsInRow);
 	//		NSLog(@"rowIndex: %i",rowIndex);
-	CGFloat newContentOffsetY = (currCellSize.height+currBorderSize)*(rowIndex - 1);
+	CGFloat newContentOffsetY = (currCellSize.height+currBorderSize)*(rowIndex) + currCellSize.height/2 - self.frame.size.height/2;
 	//		NSLog(@"newContentOffsetY before: %f",newContentOffsetY);
 	if (newContentOffsetY < 0) newContentOffsetY = 0;
 	else if (newContentOffsetY > (self.contentSize.height - self.frame.size.height)) newContentOffsetY = (self.contentSize.height - self.frame.size.height);
 	//		NSLog(@"newContentOffsetY: %f",newContentOffsetY);
 	self.contentOffset = CGPointMake(self.contentOffset.x,newContentOffsetY);
 	
-	// TODO: consider sending accessibility notification?
+    // In OS 4.0 we should check if voice-over is active before sending this notification
+    // UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+	//    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 	
-	//		for (id key in cellIndices)
-	//		{
-	//			NSLog(@"updating accessibilityFrame...");
-	//			[[self.cellIndices objectForKey:key] updateBookAccessibilityFrame];
-	//		}
 }
 
 - (void) addCellAtIndex:(NSInteger)cellIndex {

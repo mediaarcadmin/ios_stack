@@ -27,7 +27,14 @@
     
     UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
-
+- (void)setEnabled:(BOOL)enabled {
+	[super setEnabled:enabled];
+	if (accessibleSegments) {
+		for (UIAccessibilityElement * element in accessibleSegments) {
+			[element setIsAccessibilityElement:enabled];
+		}
+	}
+}
 - (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)segment animated:(BOOL)animated {
     [super insertSegmentWithTitle:title atIndex:segment animated:animated];
     [self invalidateAccessibilitySegments];
@@ -76,7 +83,7 @@
             UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             id segmentItem = (id)[self imageForSegmentAtIndex:i] ? : (id)[self titleForSegmentAtIndex:i];
             if (nil != segmentItem) {
-                [element setIsAccessibilityElement:YES];
+                [element setIsAccessibilityElement:self.enabled];
                 NSString *label = [segmentItem accessibilityLabel];
                 if ((nil == label) && [segmentItem isKindOfClass:[NSString class]]) 
                     label = (NSString *)segmentItem;
