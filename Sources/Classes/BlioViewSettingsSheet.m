@@ -57,7 +57,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 }
 
 - (void)displayPageAttributes {
-    
     BOOL showPageAttributes = NO;
     
     if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowPageAttributeSettings)])
@@ -70,6 +69,10 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.pageColorSegment.enabled = YES;
         self.fontSizeSegment.alpha = 1.0f;
         self.pageColorSegment.alpha = 1.0f;
+
+		self.fontSizeLabel.isAccessibilityElement = YES;
+		self.pageColorLabel.isAccessibilityElement = YES;
+
     } else {
         self.fontSizeLabel.enabled = NO;
         self.pageColorLabel.enabled = NO;
@@ -77,8 +80,13 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.pageColorSegment.enabled = NO;
         self.fontSizeSegment.alpha = 0.35f;
         self.pageColorSegment.alpha = 0.35f;
-    }    
-    
+		
+		self.fontSizeLabel.isAccessibilityElement = NO;
+		self.pageColorLabel.isAccessibilityElement = NO;
+
+	}    
+	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+
 }
 
 - (id)initWithDelegate:(id)newDelegate {

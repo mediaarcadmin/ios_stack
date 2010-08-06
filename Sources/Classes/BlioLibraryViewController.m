@@ -34,6 +34,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @end
 
+@interface BlioAccessibleGridBookElement : BlioAccessibleGridElement {
+	id delegate;
+}
+@property (nonatomic, assign) id delegate;
+
+@end
+
 @interface BlioLibraryViewController ()
 
 @property (nonatomic, retain) BlioLogoView *logoView;
@@ -236,7 +243,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
         NSLog(@"Creating Mock Books");
-
+		
+#ifdef DEMO_MODE
+		
         [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
                                               authors:[NSArray arrayWithObject:@"Willingham, Bill"]
 											coverPath:@"MockCovers/FablesLegendsInExile.png"
@@ -247,21 +256,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Fables: Legends In Exile"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-
-        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
-                                              authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
-											coverPath:@"MockCovers/Three_Little_Pigs.png"
-											 ePubPath:nil
-		 //                                   pdfPath:@"PDFs/Three Little Pigs.pdf
-											  pdfPath:nil
-											  xpsPath:@"PDFs/Three Little Pigs.xps"
-										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
-										audiobookPath:@"AudioBooks/Three Little Pigs.zip"
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Three Little Pigs"
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
@@ -489,13 +483,30 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES		 
 		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
+                                              authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
+											coverPath:@"MockCovers/Three_Little_Pigs.png"
+											 ePubPath:nil
+		 //                                   pdfPath:@"PDFs/Three Little Pigs.pdf
+											  pdfPath:nil
+											  xpsPath:@"XPS/Three Little Pigs.xps"
+										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
+										audiobookPath:@"AudioBooks/Three Little Pigs.zip"
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Three Little Pigs"
+									  placeholderOnly:NO
+										   fromBundle:YES		 
+		 ];
+		
+#endif // DEMO_MODE
         
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"PDFs/The Tale of Peter Rabbit.drm.xps"
+											  xpsPath:@"XPS/The Tale of Peter Rabbit.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceOnlineStore
@@ -509,7 +520,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"PDFs/Virgin Islands.drm.xps"
+											  xpsPath:@"XPS/Virgin Islands.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceOnlineStore
@@ -1631,8 +1642,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [accArray addObject:deleteElement];
         }
 		
-        BlioAccessibleGridElement *bookElement = [[BlioAccessibleGridElement alloc] initWithAccessibilityContainer:self];
+        BlioAccessibleGridBookElement *bookElement = [[BlioAccessibleGridBookElement alloc] initWithAccessibilityContainer:self];
         [bookElement setTarget:self];
+        bookElement.delegate = self.delegate;
         [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
 											[[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]]];
 		
@@ -2010,35 +2022,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @end
 
-@implementation BlioAccessibleGridElement
-
-@synthesize target, visibleRect;
-
-- (void)dealloc {
-    self.target = nil;
-    [super dealloc];
-}
-
-- (BOOL)isAccessibilityElement {
-    CGRect accFrame = [self.target accessibilityFrame];
-    CGPoint midPoint = CGPointMake(CGRectGetMidX(accFrame), CGRectGetMidY(accFrame));
-    if (CGRectContainsPoint(self.visibleRect, midPoint))
-        return YES;
-    else
-        return NO;
-}
-
-- (CGRect)accessibilityFrame {
-    CGRect accFrame = [self.target accessibilityFrame];
-	//    CGPoint midPoint = CGPointMake(CGRectGetMidX(accFrame), CGRectGetMidY(accFrame));
-	//    if (CGRectContainsPoint(self.visibleRect, midPoint))
-	return accFrame;
-	//    else
-	//        return CGRectMake(-1000, -1000, 0, 0);
-}
-
-@end
-
 @implementation BlioProgressView
 
 @synthesize value;
@@ -2130,3 +2113,44 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @end
 
 
+@implementation BlioAccessibleGridElement
+
+@synthesize target, visibleRect;
+
+- (void)dealloc {
+    self.target = nil;
+    [super dealloc];
+}
+
+- (BOOL)isAccessibilityElement {
+    CGRect accFrame = [self.target accessibilityFrame];
+    CGPoint midPoint = CGPointMake(CGRectGetMidX(accFrame), CGRectGetMidY(accFrame));
+    if (CGRectContainsPoint(self.visibleRect, midPoint))
+        return YES;
+    else
+        return NO;
+}
+
+- (CGRect)accessibilityFrame {
+    CGRect accFrame = [self.target accessibilityFrame];
+	return accFrame;
+}
+
+@end
+
+@implementation BlioAccessibleGridBookElement
+
+@synthesize delegate;
+
+- (CGRect)accessibilityFrame {
+    CGRect accFrame = [self.target accessibilityFrame];
+	CGRect insetFrame = CGRectInset(accFrame,10,10);
+	self.accessibilityFrame = insetFrame;
+	return insetFrame;
+}
+- (void)accessibilityElementDidBecomeFocused {
+	//	NSLog(@"BlioAccessibleGridBookElement accessibilityElementDidBecomeFocused entered.");
+	[[self.delegate gridView] accessibilityFocusedOnCell:self.target];
+}
+
+@end

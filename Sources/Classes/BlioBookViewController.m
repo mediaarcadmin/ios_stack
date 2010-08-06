@@ -1474,6 +1474,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)goToPageNumberAnimated:(NSNumber *)pageNumber {
+	NSLog(@"BlioBookViewController goToPageNumber: %i",pageNumber);
     [self.bookView goToPageNumber:[pageNumber integerValue] animated:YES];
 }
 
@@ -1556,9 +1557,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
-    //Dave changed this line to connect the settings buttons to tilt scrolling directions!
-    //if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
-    if ([self currentPageLayout] == kBlioPageLayoutSpeedRead)    
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
         return NO;
     else
         return YES;
@@ -1871,7 +1870,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		for ( int i=layoutPage+1;i<=[self.bookView pageCount];++i ) {  
 			if ( [self loadAudioFiles:i segmentIndex:0] ) {
 				loadedFilesAhead = YES;
-				[self.bookView goToPageNumber:i animated:YES];
+				BOOL animatedPageChange = YES;
+				if ([[UIApplication sharedApplication] respondsToSelector:@selector(applicationState)]) {
+					if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) animatedPageChange = NO;
+				}
+				[self.bookView goToPageNumber:i animated:animatedPageChange];
 				break;
 			}
 		}
@@ -2037,7 +2040,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     for ( int i=[self.bookView.currentBookmarkPoint layoutPage]+1;;++i ) {
                         if ( [self loadAudioFiles:i segmentIndex:0] ) {
                             loadedFilesAhead = YES;
-                            [self.bookView goToPageNumber:i animated:YES];
+							BOOL animatedPageChange = YES;
+							if ([[UIApplication sharedApplication] respondsToSelector:@selector(applicationState)]) {
+								if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) animatedPageChange = NO;
+							}							
+                            [self.bookView goToPageNumber:i animated:animatedPageChange];
                             break;
                         }
                     }
