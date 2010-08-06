@@ -9,8 +9,10 @@
 #import <CoreData/CoreData.h>
 #import "MRGridView.h"
 #import "BlioBook.h"
+#import "BlioCoverView.h"
 
 @class BlioTestBlockWords;
+@class BlioBookViewController;
 
 typedef enum {
     kBlioLibraryLayoutUndefined = -1,
@@ -42,8 +44,6 @@ static const CGFloat kBlioLibraryGridBookSpacing = 0;
 static const CGFloat kBlioLibraryGridBookSpacingPad = 40;
 
 static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
-static const CGFloat kBlioLibraryShadowXInset = 0.10276f; // Nasty hack to work out proportion of texture image is shadow
-static const CGFloat kBlioLibraryShadowYInset = 0.07737f;
 
 static const CGFloat kBlioProportionalProgressBarInsetX = 3;
 static const CGFloat kBlioProportionalProgressBarInsetY = 3;
@@ -80,7 +80,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @end
 
-@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
+@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, BlioCoverViewDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
     BlioLibraryBookView *_currentBookView;
     UIImageView *_currentPoppedBookCover;
     BOOL _bookCoverPopped;
@@ -99,6 +99,8 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	NSUInteger maxLayoutPageEquivalentCount;
 	NSInteger _keyValueOfCellToBeDeleted;
 	BlioLibrarySortType librarySortType;
+    BlioLibraryBookView *selectedLibraryBookView;
+    BlioBookViewController *openBookViewController;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
 #endif
@@ -133,17 +135,19 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @interface BlioLibraryBookView : UIView {
     UIImageView *imageView;
     UIImageView *textureView;
-    UIView *highlightView;
+    UIView *errorView;
     BlioBook *book;
 }
 
 @property (nonatomic, retain) UIImageView *imageView;
 @property (nonatomic, retain) UIImageView *textureView;
-@property (nonatomic, retain) UIView *highlightView;
+@property (nonatomic, retain) UIView *errorView;
 @property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, readonly) UIImage *image;
 
 - (void)setBook:(BlioBook *)newBook forLayout:(BlioLibraryLayout)layout;
+- (BlioCoverView *)coverView;
+- (void)displayError;
 
 @end
 

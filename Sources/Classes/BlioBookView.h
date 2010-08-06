@@ -37,6 +37,8 @@
 @property (nonatomic, readonly) BOOL audioPlaying;
 
 - (CGRect)nonToolbarRect;
+- (void)firstPageDidRender;
+
 @end
 
 #pragma mark -

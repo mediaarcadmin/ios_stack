@@ -63,11 +63,10 @@
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;
                 _eucBookView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                if(animated) {
-                    _eucBookView.appearAtCoverThenOpen = YES;
+
+                if (!animated) {
+                    [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO];
                 }
-                
-                [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO];
                 
                 [_eucBookView addObserver:self forKeyPath:@"pageCount" options:NSKeyValueObservingOptionInitial context:NULL];
                 [_eucBookView addObserver:self forKeyPath:@"pageNumber" options:NSKeyValueObservingOptionInitial context:NULL];
