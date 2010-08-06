@@ -15,13 +15,18 @@
 #pragma mark -
 #pragma mark Initialization
 
+
+
 - (id)init
 {
 	self = [super init];
 	if (self)
 	{
 		self.title = NSLocalizedString(@"Version",@"\"Version and credits\" view controller title.");
-		NSString* versionText = [NSString stringWithFormat:@"<center><p style=font-family:arial;font-size:40px;>Blio</center></p><center><p style=font-family:arial;font-size:35px;><i>Beta version %@</i></p></center><p>",@"1.0"];  // number will come from a resource
+		// Get the marketing version from Info.plist.
+		NSString* version = (NSString*)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; // @"CFBundleVersion" for build number
+		//NSString* versionText = [NSString stringWithFormat:@"<center><p style=font-family:arial;font-size:50px;>Blio</center></p><center><p style=font-family:arial;font-size:35px;><i>Beta version %@</i></p></center><p>",version];  
+		NSString* versionText = [NSString stringWithFormat:@"<html><body style=\"margin:20px 30px;\"><center><p style=font-family:arial;font-size:40px;><strong>Blio</strong> | <i>Beta version %@</i></p><hr></center>",version];
 		NSString* creditsText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/credits.html"] encoding:NSUTF8StringEncoding error:NULL];
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
 		[textView loadHTMLString:[versionText stringByAppendingString:creditsText] baseURL:nil];
