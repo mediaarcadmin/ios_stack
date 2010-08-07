@@ -394,6 +394,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     // TODO Make sure these checks are ordered from most common to least common for efficiency
     if ([filename isEqualToString:@"Rights.xml"]) {
         encrypted = YES;
+        gzipped = YES;
     } else if ([extension isEqualToString:[BlioXPSComponentExtensionFPage uppercaseString]]) {
         encrypted = YES;
         gzipped = YES;

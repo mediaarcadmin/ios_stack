@@ -149,7 +149,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         _firstAppearance = YES;
         
         _TTSEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTTSEnabledDefaultsKey];
-        
         if (_TTSEnabled) {
             
             if ([self.book audioRights] && ![self.book audiobookFilename]) {
@@ -197,7 +196,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }            
         if (!([newBook hasPdf] || [newBook hasXps]) && (lastLayout == kBlioPageLayoutPageLayout)) {
             lastLayout = kBlioPageLayoutPlainText;
-        } else if (![newBook hasEPub] && ![newBook hasTextFlow] && (lastLayout == kBlioPageLayoutPlainText)) {
+        } else if (((![newBook hasEPub] && ![newBook hasTextFlow]) || ![newBook reflowEnabled]) && (lastLayout == kBlioPageLayoutPlainText)) {
             lastLayout = kBlioPageLayoutPageLayout;
         } 
         
@@ -1286,7 +1285,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self stopAudio];
 			self.audioPlaying = NO;  
 		}
-        if (newLayout == kBlioPageLayoutPlainText && ([self.book hasEPub] || [self.book hasTextFlow])) {
+        if (newLayout == kBlioPageLayoutPlainText && ([self.book hasEPub] || [self.book hasTextFlow]) && [self.book reflowEnabled]) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
             self.bookView = ePubView;
@@ -1339,6 +1338,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return fontSize;
 }
 
+- (BOOL)reflowEnabled {
+	return [self.book reflowEnabled];
+}
 - (void)changeFontSize:(id)sender {
     BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;

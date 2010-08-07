@@ -29,7 +29,8 @@
 @dynamic sourceSpecificID;
 @dynamic layoutPageEquivalentCount;
 @dynamic libraryPosition;
-@dynamic hasAudioRights;
+@dynamic hasAudiobookRights;
+@dynamic reflowRight;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
 
@@ -167,7 +168,10 @@
 }
 
 - (BOOL)audioRights {
-    return [[self valueForKey:@"hasAudioRights"] boolValue];
+    return [[self valueForKey:@"hasAudiobookRights"] boolValue];
+}
+- (BOOL)reflowEnabled {
+    return [[self valueForKey:@"reflowRight"] boolValue];
 }
 
 - (NSString *)ePubPath {

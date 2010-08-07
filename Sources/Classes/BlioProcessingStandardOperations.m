@@ -531,12 +531,64 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         manifestEntry = [NSMutableDictionary dictionary];
         [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
         [manifestEntry setValue:BlioXPSKNFBMetadataFile forKey:@"path"];
-        [self setBookManifestValue:manifestEntry forKey:@"KNFBMetadataFliename"];
-    }
+        [self setBookManifestValue:manifestEntry forKey:@"KNFBMetadataFilename"];
+
+		manifestEntry = [NSMutableDictionary dictionary];
+        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+        [manifestEntry setValue:BlioXPSKNFBRightsFile forKey:@"path"];
+        [self setBookManifestValue:manifestEntry forKey:@"rightsFilename"];
+		
+		// Parse Rights file and modify book attributes accordingly
+		
+		NSData * data = [self getBookManifestDataForKey:@"rightsFilename"];
+		BOOL isDRM = YES; // TODO: this should be determined in the future by checking to see if the XPS is encrypted!
+		if (data && isDRM) {
+//			// test to see if valid XML found
+//			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//			NSLog(@"stringData: %@",stringData);
+			
+			NSXMLParser * rightsParser = [[NSXMLParser alloc] initWithData:data];
+			NSLog(@"rightsParser: %@",rightsParser);
+			[rightsParser setDelegate:self];
+			[rightsParser parse];
+		}
+	}
 
     [super downloadDidFinishSuccessfully:success];
 }
 
+#pragma mark -
+#pragma mark NSXMLParserDelegate methods
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
+	NSLog(@"didStartElement: %@",elementName);
+	if ( [elementName isEqualToString:@"Audio"] ) {
+		NSString * attributeStringValue = [attributeDict objectForKey:@"TTSRead"];
+		if (attributeStringValue && [attributeStringValue isEqualToString:@"True"]) {
+			[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"hasAudiobookRights"]; 
+		}
+		else {
+			[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobookRights"]; 
+		}
+	}
+	else if ( [elementName isEqualToString:@"Reflow"] ) {
+		NSString * attributeStringValue = [attributeDict objectForKey:@"Enabled"];
+		if (attributeStringValue && [attributeStringValue isEqualToString:@"True"]) {
+			[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"]; 
+		}
+		else {
+			[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"reflowRight"]; 
+		}
+	}
+}
+
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+	NSLog(@"found characters: %@",string);
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {    
+	NSLog(@"didEndElement: %@",elementName);
+}
 @end
 
 #pragma mark -
@@ -1058,7 +1110,7 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 			else {
 				[self setBookValue:audioMetadataFilename forKey:self.filenameKey];
 				[self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"];
-				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudioRights"]; 
+				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobookRights"]; 
 				self.operationSuccess = YES;
 				self.percentageComplete = 100;
 			}

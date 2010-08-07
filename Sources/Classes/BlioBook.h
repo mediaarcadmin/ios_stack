@@ -34,6 +34,7 @@ static NSString * const BlioXPSMetaDataDir = @"/Documents/1/Metadata";
 static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.jpg";
 static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
 static NSString * const BlioXPSKNFBMetadataFile = @"/Documents/1/Other/KNFB/Metadata.xml";
+static NSString * const BlioXPSKNFBRightsFile = @"/Documents/1/Other/KNFB/Rights.xml";
 
 static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
 static NSString * const BlioXPSComponentExtensionRels = @"rels";
@@ -60,9 +61,10 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, retain) NSString *sourceSpecificID;
 @property (nonatomic, retain) NSNumber *layoutPageEquivalentCount;
 @property (nonatomic, retain) NSNumber *libraryPosition;
+@property (nonatomic, retain) NSNumber *reflowRight;
 
 // Legacy core data attribute-backed dynamic properties TODO: remove these
-@property (nonatomic, retain) NSNumber *hasAudioRights;
+@property (nonatomic, retain) NSNumber *hasAudiobookRights;
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 
@@ -70,6 +72,7 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, assign, readonly) NSString *audiobookPath;
 @property (nonatomic, assign, readonly) NSString *timingIndicesPath;
 @property (nonatomic, assign, readonly) BOOL audioRights;
+@property (nonatomic, assign, readonly) BOOL reflowEnabled;
 
 // Lazily convenience accessors
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
