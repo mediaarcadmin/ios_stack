@@ -42,8 +42,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @end
 
 @interface BlioLibraryViewController ()
-- (void)bookSelected:(BlioLibraryBookView *)bookView;
+
 @property (nonatomic, retain) BlioLogoView *logoView;
+@property (nonatomic, retain) BlioLibraryBookView *selectedLibraryBookView;
+@property (nonatomic, retain) BlioBookViewController *openBookViewController;
+
+- (void)bookSelected:(BlioLibraryBookView *)bookView;
+
 @end
 
 @implementation BlioLibraryViewController
@@ -60,6 +65,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize tableView = _tableView;
 @synthesize maxLayoutPageEquivalentCount;
 @synthesize logoView;
+@synthesize selectedLibraryBookView;
+@synthesize openBookViewController;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @synthesize settingsPopoverController;
@@ -83,6 +90,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.gridView = nil;
     self.fetchedResultsController = nil;
     self.logoView = nil;
+    self.selectedLibraryBookView = nil;
+    self.openBookViewController = nil;
 	
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	self.settingsPopoverController = nil;
@@ -904,13 +913,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook];
+    BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
     
-    if (nil != bookViewController) {
-        [bookViewController setManagedObjectContext:self.managedObjectContext];
-        bookViewController.toolbarsVisibleAfterAppearance = YES;
-        [self.navigationController pushViewController:bookViewController animated:YES];
-        [bookViewController release];
+    if (nil != aBookViewController) {
+        [aBookViewController setManagedObjectContext:self.managedObjectContext];
+        aBookViewController.toolbarsVisibleAfterAppearance = YES;
+        [self.navigationController pushViewController:aBookViewController animated:YES];
+        [aBookViewController release];
     }
     
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -1312,46 +1321,31 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
 }
 
-- (void)bookSelected:(BlioLibraryBookView *)bookView {
+- (void)bookSelected:(BlioLibraryBookView *)libraryBookView {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
-    bookView.alpha = 0.0f;
-    UIView *targetView = self.navigationController.view;
+    self.selectedLibraryBookView = libraryBookView;
+    [libraryBookView setHidden:YES];
+        
+    BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:[libraryBookView book] delegate:self];
+    self.openBookViewController = aBookViewController;
     
-    UIView *poppedImageView = [[UIView alloc] initWithFrame:[[bookView superview] convertRect:[bookView frame] toView:targetView]];
-    poppedImageView.backgroundColor = [UIColor clearColor];
-    UIImage *bookImage = [[bookView book] coverImage];
+    if (nil != aBookViewController) {
+        [aBookViewController setManagedObjectContext:self.managedObjectContext];
+        [aBookViewController setReturnToNavigationBarHidden:NO];
+        [aBookViewController setReturnToStatusBarStyle:UIStatusBarStyleDefault];
+    } else {
+        [libraryBookView displayError];
+        self.selectedLibraryBookView = nil;
+        self.openBookViewController = nil;
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    }
     
-    CGFloat xInset = poppedImageView.bounds.size.width * kBlioLibraryShadowXInset;
-    CGFloat yInset = poppedImageView.bounds.size.height * kBlioLibraryShadowYInset;
-    CGRect insetFrame = CGRectInset(poppedImageView.bounds, xInset, yInset);
-    UIImageView *aCoverImageView = [[UIImageView alloc] initWithFrame:insetFrame];
-    aCoverImageView.contentMode = UIViewContentModeScaleToFill;
-    aCoverImageView.image = bookImage;
-    aCoverImageView.backgroundColor = [UIColor clearColor];
-    aCoverImageView.autoresizesSubviews = YES;
-    aCoverImageView.autoresizingMask = 
-	UIViewAutoresizingFlexibleLeftMargin  |
-	UIViewAutoresizingFlexibleWidth       |
-	UIViewAutoresizingFlexibleRightMargin |
-	UIViewAutoresizingFlexibleTopMargin   |
-	UIViewAutoresizingFlexibleHeight      |
-	UIViewAutoresizingFlexibleBottomMargin;
+    [aBookViewController release];
     
-    [poppedImageView addSubview:aCoverImageView];
-    
-    UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:poppedImageView.bounds];
-    aTextureView.contentMode = UIViewContentModeScaleToFill;
-    aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
-    aTextureView.backgroundColor = [UIColor clearColor];
-    aTextureView.autoresizesSubviews = YES;
-    aTextureView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [poppedImageView addSubview:aTextureView];
-    
-    [targetView addSubview:poppedImageView];
-    
-    [UIView beginAnimations:@"popBook" context:poppedImageView];
-    [aCoverImageView release];
+    return;
+#if 0    
+    [UIView beginAnimations:@"popBook" context:coverView];
     [UIView setAnimationDuration:0.65f];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(popBookDidStop:finished:context:)];
@@ -1387,134 +1381,40 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.currentPoppedBookCover = aCoverImageView;
     self.bookCoverPopped = NO;
     self.firstPageRendered = NO;
+#endif
 }
 
-- (void)popBookWillStart:(NSString *)animationID context:(void *)context {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
-    [self.tableView setUserInteractionEnabled:NO];    
+- (UIView *)coverViewViewForOpening {
+    return [self.selectedLibraryBookView coverView];
 }
 
-- (void)popBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    if (finished) {        
-        // Reset table view and clicked book
-        [self.currentBookView setAlpha:1.0f]; // This is the current book in the grid or list which was hidden
-        [self.tableView setUserInteractionEnabled:YES];
-        [self.tableView setAlpha:1.0f];
-        
-        BlioBook *currentBook = [self.currentBookView book];
-        BlioBookViewController *bookViewController = [[BlioBookViewController alloc] initWithBook:currentBook];
-        
-        CGRect coverRect;
-        BOOL shrinkCover = NO;
-        
-        if (nil != bookViewController) {
-            [bookViewController setManagedObjectContext:self.managedObjectContext];
-            self.navigationController.navigationBarHidden = YES; // We already animated the cover over it.
-            coverRect = [[bookViewController bookView] firstPageRect];
-            if (!CGRectEqualToRect([[UIScreen mainScreen] bounds], coverRect)) shrinkCover = YES;
-            
-            bookViewController.toolbarsVisibleAfterAppearance = !shrinkCover;
-            bookViewController.returnToNavigationBarHidden = NO;
-            bookViewController.returnToStatusBarStyle = UIStatusBarStyleDefault;
-            [self.navigationController pushViewController:bookViewController animated:NO];
-            
-            [bookViewController release];
-        } else {
-            [(UIView *)context removeFromSuperview];
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-            return;
-        }
-		
-        
-        if (!shrinkCover) {
-            self.bookCoverPopped = YES;
-            self.firstPageRendered = YES;
-            [(UIView *)context removeFromSuperview];
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        } else {            
-            [UIView beginAnimations:@"shrinkBook" context:context];
-            [UIView setAnimationDuration:0.35f];
-            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-            [UIView setAnimationDelegate:self];
-            [UIView setAnimationDidStopSelector:@selector(shrinkBookDidStop:finished:context:)];
-            //[self.currentPoppedBookCover setBounds:CGRectMake(0,0, coverRect.size.width, coverRect.size.height)];
-            //UIView *targetView = self.navigationController.view;
-            //CGPoint midPoint = [self.currentPoppedBookCover convertPoint:CGPointMake(CGRectGetMidX(coverRect), CGRectGetMidY(coverRect)) fromView:targetView];
-            //CGRect viewCoverRect  = [self.currentPoppedBookCover convertRect:coverRect fromView:targetView];
-            [self.currentPoppedBookCover setBounds:coverRect];
-			//            [self.currentPoppedBookCover setCenter:midPoint];
-			//            [[self.currentPoppedBookCover superview] setCenter:CGPointMake(240,160)];
-            
-            [UIView commitAnimations];
-            
-            [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                     selector:@selector(blioCoverPageDidFinishRender:) 
-                                                         name:@"blioCoverPageDidFinishRender" object:nil];
-        }            
-		
-    }
+- (CGRect)coverViewRectForOpening {
+    CGRect frame = [self.selectedLibraryBookView frame];
+    CGFloat xInset = frame.size.width * kBlioLibraryShadowXInset;
+    CGFloat yInset = frame.size.height * kBlioLibraryShadowYInset;
+    CGRect insetFrame = CGRectInset(frame, xInset, yInset);
+    return [[self.selectedLibraryBookView superview] convertRect:insetFrame toView:self.navigationController.view];
 }
 
-- (void)fadeBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    if ([(UIView *)context superview])
-        [(UIView *)context removeFromSuperview];
+- (UIViewController *)coverViewViewControllerForOpening {
+    return self;
 }
 
-- (void)removeShrinkBookAnimation:(UIView *)viewToRemove {
-    [UIView beginAnimations:@"fadeCover" context:viewToRemove];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(fadeBookDidStop:finished:context:)];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-    [UIView setAnimationDuration:0.5f];
-    [viewToRemove setAlpha:0.0f];
-    [UIView commitAnimations];
+- (void)coverViewDidAnimatePop {
+    [self.selectedLibraryBookView setHidden:NO];
 }
 
-- (void)blioCoverPageDidFinishRenderAfterDelay:(NSNotification *)notification {
-    
-    if (self.bookCoverPopped && !self.firstPageRendered) {
-        self.firstPageRendered = YES;
-        [self removeShrinkBookAnimation:[self.currentPoppedBookCover superview]];
-        [(BlioBookViewController *)self.navigationController.topViewController toggleToolbars];
-        
-        self.currentPoppedBookCover = nil;
-        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        
-        [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                        name:@"blioCoverPageDidFinishRender" 
-                                                      object:nil];
-    }    
-    
-	
-}
-
-- (void)blioCoverPageDidFinishRenderOnMainThread:(NSNotification *)notification {
-    // To allow the tiled view to do its fading in.
-    [self performSelector:@selector(blioCoverPageDidFinishRenderAfterDelay:) withObject:notification afterDelay:0.25];
-}
-
-- (void)blioCoverPageDidFinishRender:(NSNotification *)notification  {
-    [self performSelectorOnMainThread:@selector(blioCoverPageDidFinishRenderOnMainThread:) withObject:notification waitUntilDone:YES];
-}
-
-- (void)shrinkBookDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    self.bookCoverPopped = YES;
-    
-    if (self.firstPageRendered) {
-        [self removeShrinkBookAnimation:[self.currentPoppedBookCover superview]];
-        [(BlioBookViewController *)self.navigationController.topViewController toggleToolbars];
-		
-        self.currentPoppedBookCover = nil;
-        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    }
+- (void)coverViewDidAnimateFade {
+    self.selectedLibraryBookView = nil;
+    self.openBookViewController = nil;
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
 @end
 
 @implementation BlioLibraryBookView
 
-@synthesize imageView, textureView, highlightView, book;
+@synthesize imageView, textureView, errorView, book;
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -1529,7 +1429,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         aTextureView.backgroundColor = [UIColor clearColor];
         aTextureView.alpha = 0.0f;
         aTextureView.userInteractionEnabled = NO;
-		//        aTextureView.userInteractionEnabled = NO;
         [self addSubview:aTextureView];
         self.textureView = aTextureView;
         [aTextureView release];
@@ -1541,19 +1440,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         aImageView.contentMode = UIViewContentModeScaleToFill;
         aImageView.backgroundColor = [UIColor clearColor];
         aImageView.userInteractionEnabled = NO;
-		//        aImageView.userInteractionEnabled = NO;
         [self insertSubview:aImageView belowSubview:self.textureView];
         self.imageView = aImageView;
         [aImageView release];
-		/*     
-		 UIView *aHighlightView = [[UIView alloc] initWithFrame:insetFrame];
-		 aHighlightView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
-		 aHighlightView.alpha = 0.0f;
-		 //        aHighlightView.userInteractionEnabled = NO;
-		 [self insertSubview:aHighlightView aboveSubview:self.imageView];
-		 self.highlightView = aHighlightView;
-		 [aHighlightView release];
-		 */  
     }
     return self;
 }
@@ -1562,6 +1451,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     self.imageView = nil;
     self.textureView = nil;
+    self.errorView = nil;
     self.book = nil;
     [super dealloc];
 }
@@ -1573,7 +1463,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     CGFloat yInset = self.textureView.bounds.size.height * kBlioLibraryShadowYInset;
     CGRect insetFrame = CGRectInset(self.textureView.bounds, xInset, yInset);
     [self.imageView setFrame:insetFrame];
-    [self.highlightView setFrame:insetFrame];
+    if (errorView) {
+        [errorView setFrame:insetFrame];
+    }
 }
 
 - (UIImage *)image {
@@ -1604,16 +1496,37 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
     [[self imageView] setNeedsDisplay];
 }
-/*
- - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
- self.highlightView.alpha = 1.0f;
- return YES;
- }
- 
- - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
- self.highlightView.alpha = 0.0f;
- }
- */
+
+- (BlioCoverView *)coverView {
+    BlioCoverView *coverView = [[BlioCoverView alloc] initWithFrame:self.frame coverImage:[[self book] coverImage]];
+    return [coverView autorelease];
+}
+
+- (void)displayError {
+    [self.errorView setFrame:self.imageView.frame];
+    CABasicAnimation *errorAnim = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    [errorAnim setDuration:0.25f];
+    [errorAnim setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [errorAnim setRepeatCount:2];
+    [errorAnim setAutoreverses:YES];
+    [errorAnim setFromValue:[NSNumber numberWithInt:0]];
+    [errorAnim setToValue:[NSNumber numberWithInt:1]];
+    [self.errorView.layer addAnimation:errorAnim forKey:@"displayErrorAnimation"];
+}
+
+- (UIView *)errorView {
+    if (!errorView) {
+        UIView *aErrorView = [[UIView alloc] initWithFrame:CGRectZero];
+        aErrorView.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.35];
+        aErrorView.layer.opacity = 0;
+        [self addSubview:aErrorView];
+        self.errorView = aErrorView;
+        [aErrorView release];
+    }
+    
+    return errorView;
+}
+
 @end
 
 @implementation BlioLibraryGridViewCell

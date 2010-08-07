@@ -255,6 +255,7 @@ ErrorExit:
     
     @synchronized (self) {
         if ( ![self.bookID isEqual:aBookID] ) { 
+			NSLog(@"Binding to license.");
             ChkDR( [self setHeaderForBookWithID:aBookID] );
             self.bookID = aBookID;
 

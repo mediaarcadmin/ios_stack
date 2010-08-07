@@ -262,40 +262,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         
         pageCount = [self.dataSource pageCount];
         
-        // Populate the cache of page sizes and viewTransforms
-//        NSMutableDictionary *aPageCropsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
-//        NSMutableDictionary *aViewTransformsCache = [[NSMutableDictionary alloc] initWithCapacity:pageCount];
-//        
-//        CGFloat inset = -kBlioLayoutShadow;
-//        CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-//        
-//        CGFloat dpiRatio = [self.dataSource dpiRatio];
-//        CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
-//        
-//        [self.dataSource openDocumentIfRequired];
-//        //NSLog(@"Document opened");
-//        
-//        for (int i = 1; i <= pageCount; i++) {
-//            CGRect cropRect = [self.dataSource cropRectForPage:i];
-//            CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
-//            CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
-//            [aPageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:i]];
-//            
-//            CGRect mediaRect = [self.dataSource mediaRectForPage:i];
-//            CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
-//            CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
-//            CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
-//            [aViewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:i]];
-//        }
-//        //NSLog(@"Rects calculated");
-//        
-//        [self.dataSource closeDocumentIfRequired];
-//        
-//        self.pageCropsCache = [NSDictionary dictionaryWithDictionary:aPageCropsCache];
-//        self.viewTransformsCache = [NSDictionary dictionaryWithDictionary:aViewTransformsCache];
-//        [aPageCropsCache release];
-//        [aViewTransformsCache release];
-        
         BlioLayoutScrollView *aScrollView = [[BlioLayoutScrollView alloc] initWithFrame:self.bounds];
         aScrollView.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
         aScrollView.pagingEnabled = YES;
@@ -369,9 +335,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 for (int i = 2; i < kBlioLayoutMaxPages; i++) {
                     [self.contentView addPage:i+1 retainPages:nil];
                 }
-            } else {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
             }
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
         } else {
             self.currentPageLayer = [self.contentView addPage:self.pageNumber retainPages:nil];
             for (int i = 0; i < kBlioLayoutMaxPages; i++) {
@@ -1383,7 +1348,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
         //NSInteger startPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
         NSInteger startPage = floor((self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
-        if (startPage == targetPage) return;
+        if (startPage == targetPage) {
+            self.scrollingAnimationInProgress = NO;
+            [self didChangeValueForKey:@"pageNumber"];
+            return;
+        }
         NSInteger fromPage = startPage;
         
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
@@ -2007,21 +1976,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark -
 #pragma mark Notification Callbacks
 
-- (void)blioCoverPageDidFinishRenderAfterDelay:(NSNotification *)notification {
-    [self goToPageNumber:self.pageNumber animated:YES];
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:@"blioCoverPageDidFinishRender" 
-                                                  object:nil];
-    
-}
-
-- (void)blioCoverPageDidFinishRenderOnMainThread:(NSNotification *)notification {
-    // To allow the tiled view to do its fading out.
-    [self performSelector:@selector(blioCoverPageDidFinishRenderAfterDelay:) withObject:notification afterDelay:0.75];
-}
-
 - (void)blioCoverPageDidFinishRender:(NSNotification *)notification  {
-    [self performSelectorOnMainThread:@selector(blioCoverPageDidFinishRenderOnMainThread:) withObject:notification waitUntilDone:YES];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"blioCoverPageDidFinishRender" object:nil];
+    [self.delegate firstPageDidRender];
 }
 
 #pragma mark -
