@@ -500,7 +500,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
 		
 #endif // DEMO_MODE
-        
+
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
 											coverPath:nil
@@ -525,6 +525,90 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										audiobookPath:nil
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+  
+        [self.processingDelegate enqueueBookWithTitle:@"Facebook for Dummies" 
+                                              authors:[NSArray arrayWithObjects:@"Pearlman, Lynne", @"Abram, Carolyn", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Facebook For Dummies.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"Facebook For Dummies" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Woodstock - Peace, Music, and Memories" 
+                                              authors:[NSArray arrayWithObjects:@"Littleproud, Brad", @"Hague, Joanne", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Woodstock - Peace, Music, and Memories.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"Woodstock - Peace, Music, and Memories" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Uncle John's Triumphant 20th Anniversary Bathroom Reader" 
+                                              authors:[NSArray arrayWithObjects:@"Bathroom Reader's Institute", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/UJBR Triumphant 20th.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"UJBR Triumphant 20th" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+        
+        //[self.processingDelegate enqueueBookWithTitle:@"St. Thomas Virgin Islands" 
+//                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
+//											coverPath:nil
+//											 ePubPath:nil
+//											  pdfPath:nil
+//											  xpsPath:@"XPS/St. Thomas Virgin Islands.xps"
+//										 textFlowPath:nil
+//										audiobookPath:nil
+//											 sourceID:BlioBookSourceOnlineStore
+//									 sourceSpecificID:@"St. Thomas Virgin Islands" // this should normally be ISBN number when downloaded from the Book Store
+//									  placeholderOnly:NO
+//										   fromBundle:YES
+//		 ];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
+                                              authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/OldLady.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Liberty And Tyranny" 
+                                              authors:[NSArray arrayWithObjects:@"Levin, Mark R.", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/LibertyTyranny.drm.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"LibertyTyranny" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
