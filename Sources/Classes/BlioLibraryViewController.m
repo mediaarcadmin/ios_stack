@@ -584,7 +584,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-#if JAMIEISFIXING        
+
         [self.processingDelegate enqueueBookWithTitle:@"Liberty And Tyranny" 
                                               authors:[NSArray arrayWithObjects:@"Levin, Mark R.", nil]
 											coverPath:nil
@@ -612,9 +612,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-#endif
     }
-	
 }
 
 - (void)didReceiveMemoryWarning {
