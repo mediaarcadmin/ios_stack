@@ -155,7 +155,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     [self.selector removeObserver:self forKeyPath:@"tracking"];
     [self.selector removeObserver:self forKeyPath:@"trackingStage"];
-    [self removeObserver:self forKeyPath:@"currentPageLayer"];
+    //[self removeObserver:self forKeyPath:@"currentPageLayer"];
     
     self.accessibilityElements = nil;
     self.previousAccessibilityElements = nil;
@@ -309,7 +309,21 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
-    [self goToPageNumber:targetPage animated:animated shouldZoomOut:YES targetZoomScale:kBlioPDFGoToZoomTargetScale targetContentOffset:CGPointZero];
+    if(self.pageTurningView) {
+        
+        
+        //NSInteger oldPageNumber = self.pageNumber;
+
+        //if(animated && oldPageNumber != targetPage) {
+        //    [pageTurningView turnToPageAtIndex:targetPage - 1 forwards:oldPageNumber < targetPage];
+        //} else {
+            [pageTurningView setCurrentPageIndex:targetPage - 1];      
+            [pageTurningView setNeedsDraw];
+        //}
+    
+        
+        self.pageNumber = targetPage;
+    }
 }
 
 - (BlioBookmarkPoint *)currentBookmarkPoint {
@@ -1488,15 +1502,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 } 
 
 - (CGRect)firstPageRect {
-    if ([self pageCount] > 0) {
-        CGRect cropRect;
-        CGAffineTransform boundsTransform = [self boundsTransformForPage:1 cropRect:&cropRect];
-        CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
-        //return self.contentView.frame;
-        return pageRect;
-    } else {
-        return self.contentView.frame;
-    }
+    return [[UIScreen mainScreen] bounds];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {

@@ -269,9 +269,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     bookReady = YES;
     
-    if (![self.bookView isKindOfClass:[BlioLayoutView class]]) {
+    //if (![self.bookView isKindOfClass:[BlioLayoutView class]]) {
         firstPageReady = YES;
-    }
+    //}
     
     [self animateCoverShrink];
 }
