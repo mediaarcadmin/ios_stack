@@ -30,6 +30,7 @@
     NSMutableString *currentUriString;
     
     BlioTimeOrderedCache *componentCache;
+    NSNumber *bookIsEncrypted;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;

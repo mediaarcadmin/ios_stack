@@ -126,6 +126,13 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 		self.percentageComplete = 100;
 		return;
 	}
+    
+    BOOL isEncrypted = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
+    if (!isEncrypted) {
+        self.operationSuccess = YES;
+		self.percentageComplete = 100;
+		return;
+    }
 
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
@@ -513,23 +520,31 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
     if (success) {
+        NSDictionary *manifestEntry;
+        
         BOOL hasDrmHeaderData = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
         if (hasDrmHeaderData) {
-            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            manifestEntry = [NSMutableDictionary dictionary];
             [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
             [manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
             [self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
         }
         
-        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-        [manifestEntry setValue:BlioXPSTextFlowSectionsFile forKey:@"path"];
-        [self setBookManifestValue:manifestEntry forKey:@"textFlowFilename"];
+        BOOL hasTextflowData = [self bookManifestPath:BlioXPSTextFlowSectionsFile existsForLocation:BlioManifestEntryLocationXPS];
+        if (hasTextflowData) {
+            manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+            [manifestEntry setValue:BlioXPSTextFlowSectionsFile forKey:@"path"];
+            [self setBookManifestValue:manifestEntry forKey:@"textFlowFilename"];
+        }
         
-        manifestEntry = [NSMutableDictionary dictionary];
-        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-        [manifestEntry setValue:BlioXPSCoverImage forKey:@"path"];
-        [self setBookManifestValue:manifestEntry forKey:@"coverFilename"];
+        BOOL hasCoverData = [self bookManifestPath:BlioXPSCoverImage existsForLocation:BlioManifestEntryLocationXPS];
+        if (hasCoverData) {
+            manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+            [manifestEntry setValue:BlioXPSCoverImage forKey:@"path"];
+            [self setBookManifestValue:manifestEntry forKey:@"coverFilename"];
+        }
         
         BOOL hasThumbnailData = [self bookManifestPath:BlioXPSMetaDataDir existsForLocation:BlioManifestEntryLocationXPS];
         if (hasThumbnailData) {

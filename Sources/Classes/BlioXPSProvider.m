@@ -28,6 +28,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @property (nonatomic, retain) NSMutableDictionary *xpsData;
 @property (nonatomic, retain) NSMutableArray *uriMap;
 @property (nonatomic, retain) BlioTimeOrderedCache *componentCache;
+@property (nonatomic, assign, readonly) BOOL bookIsEncrypted;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -142,7 +143,9 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 }
 
 - (void)reportReading {
-    [[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
+    if (self.bookIsEncrypted) {
+        [[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
+    }
 }
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path {
@@ -163,6 +166,14 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 
 - (BlioBook *)book {
     return [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+}
+
+- (BOOL)bookIsEncrypted {
+    if (nil == bookIsEncrypted) {
+        bookIsEncrypted = [NSNumber numberWithBool:[self.book isEncrypted]];
+    }
+    
+    return [bookIsEncrypted boolValue];
 }
 
 #pragma mark -
@@ -399,31 +410,43 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     
     // TODO: Make sure these checks are ordered from most common to least common for efficiency
     if ([filename isEqualToString:@"Rights.xml"]) {
-        encrypted = YES;
-        gzipped = YES;
+        if (self.bookIsEncrypted) {
+            encrypted = YES;
+            gzipped = YES;
+        }
     } else if ([extension isEqualToString:[BlioXPSComponentExtensionFPage uppercaseString]]) {
-        encrypted = YES;
-        gzipped = YES;
+        if (self.bookIsEncrypted) {
+            encrypted = YES;
+            gzipped = YES;
+        }
         mapped = YES;
         cached = YES;
         componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
     } else if ([directory isEqualToString:BlioXPSEncryptedImagesDir] && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
-        encrypted = YES;
+        if (self.bookIsEncrypted) {
+            encrypted = YES;
+        }
         cached = YES;
         componentPath = [path stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
     } else if ([directory isEqualToString:BlioXPSEncryptedTextFlowDir]) {  
         if (![path isEqualToString:@"/Documents/1/Other/KNFB/Flow/Sections.xml"]) {
-            encrypted = YES;
-            gzipped = YES;
+            if (self.bookIsEncrypted) {
+                encrypted = YES;
+                gzipped = YES;
+            }
             cached = YES;
         }
     } else if ([directory isEqualToString:BlioXPSEncryptedPagesDir]) {
-        encrypted = YES;
-        gzipped = YES;
+        if (self.bookIsEncrypted) {
+            encrypted = YES;
+            gzipped = YES;
+        }
         cached = YES;
     } else if ([path isEqualToString:BlioXPSEncryptedUriMap]) {
-        encrypted = YES;
-        gzipped = YES;
+        if (self.bookIsEncrypted) {
+            encrypted = YES;
+            gzipped = YES;
+        }
     }
         
     if (cached) {
@@ -450,7 +473,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         componentData = [self replaceMappedResources:componentData];
     }
     
-    if (cached) {
+    if (cached && [componentData length]) {
         [self.componentCache setObject:componentData forKey:componentPath cost:[componentData length]];
     }
     
