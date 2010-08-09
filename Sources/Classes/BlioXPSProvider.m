@@ -16,11 +16,8 @@
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
 void BlioXPSProviderDRMRewind(URI_HANDLE h);
 size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb);
-size_t BlioXPSProviderDRMSeek(DATAOUT_HANDLE h, size_t cb, XPS_SEEK_RELATIVE rel);
 size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb);
-size_t BlioXPSProviderDRMWrite(DATAOUT_HANDLE h, unsigned char * pb, size_t cb);
 size_t BlioXPSProviderDRMSize(URI_HANDLE h);
-size_t BlioXPSProviderDRMPosition(DATAOUT_HANDLE h);
 void BlioXPSProviderDRMClose(URI_HANDLE h);
 
 @interface BlioXPSProvider()
@@ -107,7 +104,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         
         xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
-        if ([[self.book valueForKey:@"sourceID"] isEqual:[NSNumber numberWithInt:BlioBookSourceOnlineStore]]) {
+        if ([self.book isEncrypted]) {
             XPS_URI_PLUGIN_INFO	upi = {
                 XPS_URI_SOURCE_PLUGIN,
                 sizeof(XPS_URI_PLUGIN_INFO),
@@ -127,7 +124,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
             CFRelease(UUIDString);
         
             XPS_RegisterDrmHandler(xpsHandle, &upi);
-            NSLog(@"Registered drm handler for book %@ with handle %p with userdata %p", [self.book valueForKey:@"title"], xpsHandle, self);
+            //NSLog(@"Registered drm handler for book %@ with handle %p with userdata %p", [self.book valueForKey:@"title"], xpsHandle, self);
         }
         
         XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
@@ -380,6 +377,15 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     return rawData;
 }
 
+- (BOOL)componentExistsAtPath:(NSString *)path {
+    XPS_FILE_PACKAGE_INFO packageInfo;
+    int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
+    if (ret && (packageInfo.length > 0)) {
+        return YES;
+    }
+    return NO;
+}
+
 - (NSData *)dataForComponentAtPath:(NSString *)path {
     NSString *componentPath = path;
     NSString *directory = [path stringByDeletingLastPathComponent];
@@ -391,7 +397,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     BOOL mapped = NO;
     BOOL cached = NO;
     
-    // TODO Make sure these checks are ordered from most common to least common for efficiency
+    // TODO: Make sure these checks are ordered from most common to least common for efficiency
     if ([filename isEqualToString:@"Rights.xml"]) {
         encrypted = YES;
         gzipped = YES;
@@ -507,11 +513,6 @@ size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb) {
     return 0;
 }
 
-size_t BlioXPSProviderDRMSeek(DATAOUT_HANDLE h, size_t cb, XPS_SEEK_RELATIVE rel) {
-    //NSLog(@"BlioXPSProviderDRMSeek");
-    return 0;
-}
-
 size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb) {
 
     NSDictionary *xpsDataDict = (NSDictionary *)h;
@@ -532,11 +533,6 @@ size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb) {
     return 0;
 }
 
-size_t BlioXPSProviderDRMWrite(DATAOUT_HANDLE h, unsigned char * pb, size_t cb) {
-    //NSLog(@"BlioXPSProviderDRMWrite");
-	return 0;
-}
-
 size_t BlioXPSProviderDRMSize(URI_HANDLE h){
     
     NSDictionary *xpsDataDict = (NSDictionary *)h;
@@ -546,13 +542,8 @@ size_t BlioXPSProviderDRMSize(URI_HANDLE h){
         //NSLog(@"BlioXPSProviderDRMSize %d", [xpsFileData length]);
         return [xpsFileData length];
     }
-    NSLog(@"BlioXPSProviderDRMSize failed");
+  
     return 0;
-}
-
-size_t BlioXPSProviderDRMPosition(DATAOUT_HANDLE h) {
-    NSLog(@"BlioXPSProviderDRMPosition");
-	return 0;
 }
 
 void BlioXPSProviderDRMClose(URI_HANDLE h) {

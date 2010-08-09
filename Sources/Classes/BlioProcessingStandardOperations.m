@@ -513,6 +513,14 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
 
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
     if (success) {
+        BOOL hasDrmHeaderData = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
+        if (hasDrmHeaderData) {
+            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+            [manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
+            [self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
+        }
+        
         NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
         [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
         [manifestEntry setValue:BlioXPSTextFlowSectionsFile forKey:@"path"];
@@ -523,34 +531,41 @@ static const CGFloat kBlioCoverGridThumbWidth = 102;
         [manifestEntry setValue:BlioXPSCoverImage forKey:@"path"];
         [self setBookManifestValue:manifestEntry forKey:@"coverFilename"];
         
-        manifestEntry = [NSMutableDictionary dictionary];
-        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-        [manifestEntry setValue:BlioXPSMetaDataDir forKey:@"path"];
-        [self setBookManifestValue:manifestEntry forKey:@"thumbnailDirectory"];
+        BOOL hasThumbnailData = [self bookManifestPath:BlioXPSMetaDataDir existsForLocation:BlioManifestEntryLocationXPS];
+        if (hasThumbnailData) {
+            manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+            [manifestEntry setValue:BlioXPSMetaDataDir forKey:@"path"];
+            [self setBookManifestValue:manifestEntry forKey:@"thumbnailDirectory"];
+        }
         
-        manifestEntry = [NSMutableDictionary dictionary];
-        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-        [manifestEntry setValue:BlioXPSKNFBMetadataFile forKey:@"path"];
-        [self setBookManifestValue:manifestEntry forKey:@"KNFBMetadataFilename"];
+        BOOL hasKNFBMetadata = [self bookManifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS];
+        if (hasKNFBMetadata) {
+            manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+            [manifestEntry setValue:BlioXPSKNFBMetadataFile forKey:@"path"];
+            [self setBookManifestValue:manifestEntry forKey:@"KNFBMetadataFilename"];
+        }
 
-		manifestEntry = [NSMutableDictionary dictionary];
-        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-        [manifestEntry setValue:BlioXPSKNFBRightsFile forKey:@"path"];
-        [self setBookManifestValue:manifestEntry forKey:@"rightsFilename"];
+        BOOL hasRightsData = [self bookManifestPath:BlioXPSKNFBRightsFile existsForLocation:BlioManifestEntryLocationXPS];
+        if (hasRightsData) {
+            manifestEntry = [NSMutableDictionary dictionary];
+            [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+            [manifestEntry setValue:BlioXPSKNFBRightsFile forKey:@"path"];
+            [self setBookManifestValue:manifestEntry forKey:@"rightsFilename"];
 		
-		// Parse Rights file and modify book attributes accordingly
-		
-		NSData * data = [self getBookManifestDataForKey:@"rightsFilename"];
-		BOOL isDRM = YES; // TODO: this should be determined in the future by checking to see if the XPS is encrypted!
-		if (data && isDRM) {
+            // Parse Rights file and modify book attributes accordingly
+            NSData * data = [self getBookManifestDataForKey:@"rightsFilename"];
+            if (data) {
 //			// test to see if valid XML found
 //			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //			NSLog(@"stringData: %@",stringData);
 			
-			NSXMLParser * rightsParser = [[NSXMLParser alloc] initWithData:data];
-			NSLog(@"rightsParser: %@",rightsParser);
-			[rightsParser setDelegate:self];
-			[rightsParser parse];
+                NSXMLParser * rightsParser = [[NSXMLParser alloc] initWithData:data];
+                NSLog(@"rightsParser: %@",rightsParser);
+                [rightsParser setDelegate:self];
+                [rightsParser parse];
+            }
 		}
 	}
 

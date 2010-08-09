@@ -35,6 +35,7 @@ static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.j
 static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
 static NSString * const BlioXPSKNFBMetadataFile = @"/Documents/1/Other/KNFB/Metadata.xml";
 static NSString * const BlioXPSKNFBRightsFile = @"/Documents/1/Other/KNFB/Rights.xml";
+static NSString * const BlioXPSKNFBDRMHeaderFile = @"/Documents/1/Other/KNFB/DrmpHeader.bin";
 
 static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
 static NSString * const BlioXPSComponentExtensionRels = @"rels";
@@ -97,6 +98,7 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, assign, readonly) BOOL hasPdf;
 @property (nonatomic, assign, readonly) BOOL hasXps;
 @property (nonatomic, assign, readonly) BOOL hasTextFlow;
+@property (nonatomic, assign, readonly) BOOL isEncrypted;
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow etc.)
@@ -112,6 +114,7 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (void)setManifestValue:(id)value forKey:(NSString *)key;
 - (BOOL)hasManifestValueForKey:(NSString *)key;
 - (NSData *)manifestDataForKey:(NSString *)key;
+- (BOOL)manifestPath:(NSString *)path existsForLocation:(NSString *)location;
 - (NSString *)manifestPathForKey:(NSString *)key;
 - (NSString *)manifestLocationForKey:(NSString *)key;
 - (NSString *)authorWithStandardFormat;

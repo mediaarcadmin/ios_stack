@@ -200,9 +200,7 @@ ErrorExit:
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID {
 	DRM_RESULT dr = DRM_SUCCESS;
     
-    BlioXPSProvider *xpsProvider = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] xpsProvider];
-    NSString *headerPath = @"/Documents/1/Other/KNFB/DrmpHeader.bin";
-    NSData *headerData = [xpsProvider dataForComponentAtPath:headerPath];
+    NSData *headerData = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] manifestDataForKey:@"drmHeaderFilename"];
         
 	unsigned char* headerBuff = (unsigned char*)[headerData bytes]; 
 	

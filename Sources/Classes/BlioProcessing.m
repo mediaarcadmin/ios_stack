@@ -111,6 +111,16 @@ static int mutationCount = 0;
     }
 }
 
+- (BOOL)bookManifestPath:(NSString *)path existsForLocation:(NSString *)location {
+    BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book");
+        return NO;
+    } else {
+        return [book manifestPath:path existsForLocation:location];
+    }
+}
+
 - (id)getBookValueForKey:(NSString *)key {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {

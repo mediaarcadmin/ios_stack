@@ -12,9 +12,13 @@
 #import <libEucalyptus/EucBUpeBook.h>
 #import <pthread.h>
 
-@interface BlioBook ()
-
-- (NSString *)manifestPathForKey:(NSString *)key; // this should not be made public
+@interface BlioBook (PRIVATE_DO_NOT_MAKE_PUBLIC)
+- (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path;
+- (NSString *)fullPathOfTextFlowItemAtPath:(NSString *)path;
+- (NSData *)dataFromFileSystemAtPath:(NSString *)path;
+- (NSData *)dataFromXPSAtPath:(NSString *)path;
+- (NSData *)dataFromTextFlowAtPath:(NSString *)path;
+- (BOOL)componentExistsInXPSAtPath:(NSString *)path;
 
 @end
 
@@ -202,6 +206,10 @@
     return [self hasManifestValueForKey:@"textFlowFilename"];
 }
 
+- (BOOL)isEncrypted {
+    return [self hasManifestValueForKey:@"drmHeaderFilename"];
+}
+
 - (UIImage *)coverImage {
     NSData *imageData = [self manifestDataForKey:@"coverFilename"];
     return [UIImage imageWithData:imageData];
@@ -384,6 +392,43 @@ static void sortedHighlightRangePredicateInit() {
     return highlightRanges;
 }
 
+- (BOOL)componentExistsInXPSAtPath:(NSString *)path {
+    // If the path is the drm header then flush the caches to refresh the xpsProvider
+    BOOL exists = [[self xpsProvider] componentExistsAtPath:path];
+    if ([path isEqualToString:BlioXPSKNFBDRMHeaderFile]) {
+        [self flushCaches];
+    }
+    return exists;
+}
+
+- (BOOL)manifestPath:(NSString *)path existsForLocation:(NSString *)location {
+    BOOL exists = NO;
+    NSString *filePath;
+    
+    if (location && path) {
+        if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
+            NSString *textFlowLocation = [self manifestLocationForKey:@"textFlowFilename"];
+            if ([textFlowLocation isEqualToString:BlioManifestEntryLocationXPS]) {
+                filePath = [BlioXPSEncryptedTextFlowDir stringByAppendingPathComponent:path];
+                exists = [self componentExistsInXPSAtPath:filePath];
+            } else if ([textFlowLocation isEqualToString:BlioManifestEntryLocationTextflow]) {
+                filePath = [self fullPathOfTextFlowItemAtPath:path];
+                exists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+            }
+        } else if ([location isEqualToString:BlioManifestEntryLocationBundle]) {
+            filePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:path];
+            exists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+        } else if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
+            filePath = [self fullPathOfFileSystemItemAtPath:path];
+            exists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+        } else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
+            exists = [self componentExistsInXPSAtPath:path];
+        }
+    }
+    
+    return exists;
+}
+
 - (void)setManifestValue:(id)value forKey:(NSString *)key {
     NSMutableDictionary *manifest = nil;
     NSDictionary *currentManifest = [self valueForKey:@"manifest"];
@@ -456,7 +501,7 @@ static void sortedHighlightRangePredicateInit() {
         NSString *location = [manifestEntry objectForKey:@"location"];
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
-            // TODO - we shouldn't need to check if path is a URL, the manifest entry should be different
+            // TODO: what if the textflow is in the XPS - this won't work? manifestPathForKey should have remained private
             if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
                 filePath = [self fullPathOfTextFlowItemAtPath:path];
             } else if ([location isEqualToString:BlioManifestEntryLocationBundle]) {
