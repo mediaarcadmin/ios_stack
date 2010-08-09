@@ -66,7 +66,7 @@
     [super dealloc];
 }
 
-- (CGImageRef)_createSnapshotCGImage
+- (CGImageRef)_copySnapshotCGImage
 {
     CGContextFlush(_CGContext);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)_backingData);
@@ -82,7 +82,7 @@
 
 - (UIImage *)snapshotUIImage
 {
-    CGImageRef image = [self _createSnapshotCGImage];
+    CGImageRef image = [self _copySnapshotCGImage];
     UIImage *ret;
     if(_scaleFactor && [UIImage respondsToSelector:@selector(imageWithCGImage:scale:orientation:)]) {
         ret = [UIImage imageWithCGImage:image scale:_scaleFactor orientation:UIImageOrientationUp];
@@ -95,7 +95,7 @@
 
 - (CGImageRef)snapshotCGImage
 {
-    return (CGImageRef)[(id)[self _createSnapshotCGImage] autorelease];
+    return (CGImageRef)[(id)[self _copySnapshotCGImage] autorelease];
 }
 
 @end
