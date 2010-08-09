@@ -167,7 +167,7 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     
     CGContextClipToRect(ctx, backgroundFrame);
         
-    UIImage *buttonImage = [UIImage imageNamed:@"navigationBarBlackTranslucentButton"];
+    UIImage *buttonImage = [UIImage imageNamed:@"navigationBarBlackTranslucentButton.png"];
     UIImage *stretchImage = [buttonImage stretchableImageWithLeftCapWidth:floorf(buttonImage.size.width/2.0f) topCapHeight:floorf(buttonImage.size.height/2.0f)];
     
     // Draw button image full-height then scale into backgroundRect

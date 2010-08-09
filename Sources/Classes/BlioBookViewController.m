@@ -28,8 +28,9 @@ static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
 static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
-static NSString * const kBlioLastTapAdvanceDefaultsKey = @"lastTapAdvance";
-static NSString * const kBlioLastTltScrollDefaultsKey = @"lastTiltScroll";
+static NSString * const kBlioBookViewControllerCoverPopAnimation = @"BlioBookViewControllerCoverPopAnimation";
+static NSString * const kBlioBookViewControllerCoverFillAnimation = @"BlioBookViewControllerCoverFillAnimation";
+static NSString * const kBlioBookViewControllerCoverShrinkAnimation = @"BlioBookViewControllerCoverShrinkAnimation";
 
 typedef enum {
     kBlioLibraryAddBookmarkAction = 0,
@@ -68,6 +69,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @end
 
+@interface BlioBookViewController()
+
+- (void)animateCoverPop;
+- (void)animateCoverShrink;
+- (void)animateCoverFade;
+- (void)initialiseControls;
+- (void)initialiseBookView;
+
+@end
 
 @implementation BlioBookViewController
 
@@ -91,6 +101,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize rotationLocked;
 
 @synthesize searchViewController;
+@synthesize delegate;
+@synthesize coverView;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -131,123 +143,362 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return [self init];
 }
 
-- (id)initWithBook:(BlioBook *)newBook {
-    if ((self = [super initWithNibName:nil bundle:nil])) {
-        self.book = newBook;
-
-        self.audioPlaying = NO;
-        self.wantsFullScreenLayout = YES;
-        
-        EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
-        CGRect frame = titleView.frame;
-        frame.size.width = [[UIScreen mainScreen] bounds].size.width;
-        [titleView setFrame:frame];
-        titleView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
-        self.navigationItem.titleView = titleView;
-        [titleView release];
-        
-        _firstAppearance = YES;
-        
-        _TTSEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTTSEnabledDefaultsKey];
-        
-        if (_TTSEnabled) {
-            
-            if ([self.book audioRights] && ![self.book audiobookFilename]) {
-                self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
-            } else {
-                self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
-                
-                UIButton *aPauseButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                UIImage *pauseImage = [UIImage imageNamed:@"button-tts-pause.png"];
-                [aPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
-                [aPauseButton addTarget:self action:@selector(toggleAudio:) forControlEvents:UIControlEventTouchUpInside];
-                [aPauseButton setFrame:CGRectMake(0, 0, pauseImage.size.width, pauseImage.size.height)];
-                [aPauseButton setShowsTouchWhenHighlighted:YES];
-                [aPauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
-                [aPauseButton setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
-                [aPauseButton setAlpha:0];
-                [self.view addSubview:aPauseButton];
-                self.pauseButton = aPauseButton;
-
-                if ([self.book audiobookFilename]) {
-                    _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
-                } else {
-					_acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
-                    if ( _acapelaAudioManager != nil )  {
-                        [_acapelaAudioManager setPageChanged:YES];
-                        [_acapelaAudioManager setDelegate:self];
-                    } 
-                }
-                [[AVAudioSession sharedInstance] setDelegate:self];
-            }
-        } else {
-            self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];
-        }
-
-        
-        _pageJumpView = nil;
-        
-        motionControlsEnabled = kBlioTapTurnOff;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapToNextPage) name:@"TapToNextPage" object:nil];
-        
-        BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
-        
-        if (!([newBook hasEPub] || [newBook hasTextFlow]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
-            lastLayout = kBlioPageLayoutPlainText;
-        }            
-        if (!([newBook hasPdf] || [newBook hasXps]) && (lastLayout == kBlioPageLayoutPageLayout)) {
-            lastLayout = kBlioPageLayoutPlainText;
-        } else if (![newBook hasEPub] && ![newBook hasTextFlow] && (lastLayout == kBlioPageLayoutPlainText)) {
-            lastLayout = kBlioPageLayoutPageLayout;
-        } 
-                
-        switch (lastLayout) {
-            case kBlioPageLayoutSpeedRead: {
-                if ([newBook hasEPub] || [newBook hasTextFlow]) {
-                    BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds 
-                                                                                     bookID:newBook.objectID
-                                                                                   animated:YES];
-                    self.bookView = aBookView; 
-                    [aBookView release];
-                } else {
-                    [self release];
-                    return nil;
-                }          
-            }
-                break;
-            case kBlioPageLayoutPageLayout: {
-                if ([newBook hasPdf] || [newBook hasXps]) {
-                    BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds 
-                                                                               bookID:newBook.objectID
-                                                                             animated:YES];
-                    aBookView.delegate = self;
-                    self.bookView = aBookView;
-                    [aBookView release];
-                } else {
-                    [self release];
-                    return nil;
-                }
-            }
-                break;
-            default: {
-                if ([newBook hasEPub] || [newBook hasTextFlow]) {
-                    BlioFlowView *aBookView = [[BlioFlowView alloc] initWithFrame:self.view.bounds 
-                                                                           bookID:newBook.objectID
-                                                                         animated:YES];
-                    aBookView.delegate = self;
-                    self.bookView = aBookView;
-                    self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
-                    [aBookView release];
-                } else {
-                    [self release];
-                    return nil;
-                }
-            } 
-                break;
-        }
-		
+- (id)initWithBook:(BlioBook *)newBook delegate:(id <BlioCoverViewDelegate>)aDelegate {
+    
+    if (!(newBook || aDelegate)) {
+        [self release];
+        return nil;
     }
+    
+    if ((self = [super initWithNibName:nil bundle:nil])) {
+        
+        self.book = newBook;
+        self.delegate = aDelegate;
+        self.wantsFullScreenLayout = YES;
+        [self initialiseControls];
+        
+        self.coverView = [self.delegate coverViewViewForOpening];
+        
+        if (self.coverView) {
+            [self animateCoverPop];
+            [self setToolbarsVisibleAfterAppearance:NO];
+        } else {
+            [self initialiseBookView];
+            [self setToolbarsVisibleAfterAppearance:YES];
+        }
+    } 
+    
     return self;
+} 
+ 
+- (void)initialiseControls {
+    EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
+    CGRect frame = titleView.frame;
+    frame.size.width = [[UIScreen mainScreen] bounds].size.width;
+    [titleView setFrame:frame];
+    titleView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
+    self.navigationItem.titleView = titleView;
+    [titleView release];
+    
+    _firstAppearance = YES;
+    
+    self.audioPlaying = NO;
+    
+    _TTSEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTTSEnabledDefaultsKey];
+    
+    if (_TTSEnabled) {
+        
+        if ([self.book audioRights] && ![self.book audiobookFilename]) {
+            self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
+        } else {
+            self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
+            
+            if ([self.book audiobookFilename]) {
+                _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
+            } else {
+                _acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
+                if ( _acapelaAudioManager != nil )  {
+                    [_acapelaAudioManager setPageChanged:YES];
+                    [_acapelaAudioManager setDelegate:self];
+                } 
+            }
+            [[AVAudioSession sharedInstance] setDelegate:self];
+        }
+    } else {
+        self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];
+    }
+    
+    _pageJumpView = nil;
+}
+
+- (void)initialiseBookView {
+   
+    BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
+    
+    if (!([self.book hasEPub] || [self.book hasTextFlow]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
+        lastLayout = kBlioPageLayoutPlainText;
+    }            
+    if (!([self.book hasPdf] || [self.book hasXps]) && (lastLayout == kBlioPageLayoutPageLayout)) {
+        lastLayout = kBlioPageLayoutPlainText;
+    } else if (((![self.book hasEPub] && ![self.book hasTextFlow]) || ![self.book reflowEnabled]) && (lastLayout == kBlioPageLayoutPlainText)) {
+        lastLayout = kBlioPageLayoutPageLayout;
+    } 
+    
+    // TODO: Remove this forced option for iPad
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if ([self.book hasPdf] || [self.book hasXps]) {
+            lastLayout = kBlioPageLayoutPageLayout;
+        }
+    }
+    
+    switch (lastLayout) {
+        case kBlioPageLayoutSpeedRead: {
+            if ([self.book hasEPub] || [self.book hasTextFlow]) {
+                BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds 
+                                                                                 bookID:self.book.objectID
+                                                                               animated:YES];
+                self.bookView = aBookView; 
+                [aBookView release];
+            }   
+        }
+            break;
+        case kBlioPageLayoutPageLayout: {
+            if ([self.book hasPdf] || [self.book hasXps]) {
+                BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds 
+                                                                           bookID:self.book.objectID
+                                                                         animated:YES];
+                aBookView.delegate = self;
+                self.bookView = aBookView;
+                [aBookView release];
+            }
+        }
+            break;
+        default: {
+            if ([self.book hasEPub] || [self.book hasTextFlow]) {
+                BlioFlowView *aBookView = [[BlioFlowView alloc] initWithFrame:self.view.bounds 
+                                                                       bookID:self.book.objectID
+                                                                     animated:YES];
+                aBookView.delegate = self;
+                self.bookView = aBookView;
+                self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+                [aBookView release];
+            }
+        } 
+            break;
+    }
+    
+    bookReady = YES;
+    
+    if (![self.bookView isKindOfClass:[BlioLayoutView class]]) {
+        firstPageReady = YES;
+    }
+    
+    [self animateCoverShrink];
+}
+
+- (void)firstPageDidRender {
+    firstPageReady = YES;
+}
+
+- (void)animateCoverPop {
+    CGRect coverFrame = [self.delegate coverViewRectForOpening];
+    [self.coverView setFrame:coverFrame];
+    UIViewController *controller = [self.delegate coverViewViewControllerForOpening];
+    [controller.navigationController.view insertSubview:self.coverView belowSubview:controller.navigationController.toolbar];
+
+    CGFloat zPosToolbar   = 1;
+    CGFloat zPosNavBar    = 1;
+    CGFloat zPosCoverOrig = 0;
+        
+    CGFloat fullScreenWidth = CGRectGetWidth(self.coverView.superview.bounds);
+    CGFloat fullScreenHeight = CGRectGetHeight(self.coverView.superview.bounds);
+    
+    BOOL landscape = (fullScreenWidth > fullScreenHeight);
+    
+    if (landscape) {
+        fullScreenHeight = fullScreenWidth * (fullScreenWidth / fullScreenHeight);
+    }
+    
+    CGFloat fullScreenXScale = fullScreenWidth / CGRectGetWidth(self.coverView.frame);
+    CGFloat fullScreenYScale = fullScreenHeight / CGRectGetHeight(self.coverView.frame);
+    
+    CGPoint midPosition = CGPointMake(fullScreenWidth/2.0f, fullScreenHeight / 2.0f);
+    CGPoint finalPosition = CGPointMake(fullScreenWidth/2.0f, fullScreenHeight / 2.0f);
+    
+    if (landscape) {
+        CGFloat landscapeScreenHeight = fullScreenWidth * (fullScreenWidth / fullScreenHeight);
+        midPosition = CGPointMake(fullScreenWidth/2.0f, landscapeScreenHeight / 2.0f);
+    }
+    
+    CGFloat xOffset = 0;
+    CGFloat yOffset = 30;
+    CGFloat offsetAngle = -2;
+    
+    if (CGRectGetMidX(self.coverView.frame) >= midPosition.x) {
+        xOffset *= -1;
+        offsetAngle *= -1;
+    }
+    
+    if (CGRectGetMidY(self.coverView.frame) >= midPosition.y) {
+        yOffset *= -1;
+    }
+    
+    if (landscape) {
+        if (CGRectGetMidY(self.coverView.frame) >= midPosition.y) {
+            zPosNavBar = 0;
+            zPosToolbar = 2;
+            zPosCoverOrig = 1;
+        } else {
+            zPosNavBar = 2;
+            zPosToolbar = 0;
+            zPosCoverOrig = 1;
+        }
+    }
+    
+    CAKeyframeAnimation *positionAnim = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+    [positionAnim setValues:[NSArray arrayWithObjects:
+                              [NSValue valueWithCGPoint:self.coverView.layer.position], 
+                              [NSValue valueWithCGPoint:CGPointMake(midPosition.x + xOffset, midPosition.y + yOffset)], 
+                              [NSValue valueWithCGPoint:CGPointMake(finalPosition.x, finalPosition.y)],
+                              nil]];
+    [positionAnim setKeyTimes:[NSArray arrayWithObjects:
+                                     [NSNumber numberWithFloat:0],
+                                     [NSNumber numberWithFloat:0.5f],
+                                     [NSNumber numberWithFloat:1], 
+                                     nil]];
+    [positionAnim setTimingFunctions:[NSArray arrayWithObjects:
+                                      [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                      [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                      [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                      nil]];
+    
+    CAKeyframeAnimation *scaleAndRotateAnim = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    [scaleAndRotateAnim setValues:[NSArray arrayWithObjects:
+                              [NSValue valueWithCATransform3D:CATransform3DIdentity], 
+                              [NSValue valueWithCATransform3D:CATransform3DConcat(CATransform3DMakeScale(2, 2, 1), CATransform3DMakeRotation(offsetAngle * M_PI / 180, 0, 0, 1))], 
+                              [NSValue valueWithCATransform3D:CATransform3DConcat(CATransform3DMakeScale(2 + (fullScreenXScale - 2)/2.0f, 2 + (fullScreenYScale - 2)/2.0f, 1), CATransform3DMakeRotation(offsetAngle * 0.5f * M_PI / 180, 0, 0, 1))], 
+                              [NSValue valueWithCATransform3D:CATransform3DMakeScale(fullScreenXScale, fullScreenYScale, 1)], 
+                              nil]];
+    [scaleAndRotateAnim setKeyTimes:[NSArray arrayWithObjects:
+                                     [NSNumber numberWithFloat:0], 
+                                     [NSNumber numberWithFloat:0.5f], 
+                                     [NSNumber numberWithFloat:0.75f],
+                                     [NSNumber numberWithFloat:1], 
+                                     nil]];
+    
+    CAKeyframeAnimation *zPositionAnim = [CAKeyframeAnimation animationWithKeyPath:@"zPosition"];
+    [zPositionAnim setValues:[NSArray arrayWithObjects:
+                              [NSNumber numberWithFloat:zPosCoverOrig], 
+                              [NSNumber numberWithFloat:zPosCoverOrig], 
+                              [NSNumber numberWithFloat:3], 
+                              [NSNumber numberWithFloat:3], 
+                              nil]];
+    [zPositionAnim setKeyTimes:[NSArray arrayWithObjects:
+                               [NSNumber numberWithFloat:0],
+                               [NSNumber numberWithFloat:0.5f],
+                               [NSNumber numberWithFloat:0.5f],
+                               [NSNumber numberWithFloat:1], 
+                               nil]];
+    
+    CAAnimationGroup *groupAnim = [CAAnimationGroup animation];
+    CGFloat popDuration = 1.0f;
+    [groupAnim setAnimations:[NSArray arrayWithObjects:positionAnim, scaleAndRotateAnim, zPositionAnim,  nil]];
+    [groupAnim setDuration:popDuration];
+    [groupAnim setRemovedOnCompletion:NO];
+    [groupAnim setFillMode:kCAFillModeForwards];
+    [groupAnim setDelegate:self];
+    [groupAnim setValue:@"coverPop" forKey:@"name"];
+    [self.coverView.layer addAnimation:groupAnim forKey:@"coverPop"];
+    
+    CAKeyframeAnimation *textureAnim = [CAKeyframeAnimation animationWithKeyPath:@"opacity"];
+    [textureAnim setValues:[NSArray arrayWithObjects:
+                            [NSNumber numberWithFloat:1], 
+                            [NSNumber numberWithFloat:1],
+                            [NSNumber numberWithFloat:0.5f],
+                            [NSNumber numberWithFloat:0], 
+                            nil]];
+    [textureAnim setDuration:popDuration];
+    [textureAnim setRemovedOnCompletion:NO];
+    [textureAnim setFillMode:kCAFillModeForwards];
+    [self.coverView.textureLayer addAnimation:textureAnim forKey:@"texturePop"];
+    
+    controller.navigationController.toolbar.layer.zPosition = zPosToolbar;
+    controller.navigationController.navigationBar.layer.zPosition = zPosNavBar;
+
+    [self performSelector:@selector(setStatusBarTranslucent) withObject:nil afterDelay:popDuration * 0.5f];
+}
+
+- (void)setStatusBarTranslucent {
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+}
+
+- (void)animateCoverShrink {
+    if (!(bookReady && coverReady)) {
+        [self performSelector:@selector(animateCoverShrink) withObject:nil afterDelay:0.2f];
+        return;
+    }
+    
+    CGRect coverRect = [[self bookView] firstPageRect];
+    CGFloat coverRectXScale = CGRectGetWidth(coverRect) / CGRectGetWidth(self.coverView.frame);
+    CGFloat coverRectYScale = CGRectGetHeight(coverRect) / CGRectGetHeight(self.coverView.frame);
+    
+    CABasicAnimation *shrinkAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+    [shrinkAnimation setToValue:[NSValue valueWithCATransform3D:CATransform3DMakeScale(coverRectXScale, coverRectYScale, 1)]];
+    if (CGRectEqualToRect(coverRect, self.coverView.frame)) {
+        [shrinkAnimation setDuration:0];
+    } else {
+        [shrinkAnimation setDuration:0.5f];
+    }
+    [shrinkAnimation setRemovedOnCompletion:NO];
+    [shrinkAnimation setFillMode:kCAFillModeForwards];
+    [shrinkAnimation setDelegate:self];
+    [shrinkAnimation setValue:@"coverShrink" forKey:@"name"];    
+ 
+    [self.coverView.layer setPosition:[(CALayer *)[self.coverView.layer presentationLayer] position]];
+    [self.coverView.layer setTransform:[(CALayer *)[self.coverView.layer presentationLayer] transform]];
+    //[self.coverView.layer setZPosition:[(CALayer *)[self.coverView.layer presentationLayer] zPosition]];
+    
+    [self.coverView.layer removeAllAnimations];
+    
+    [self.coverView.layer addAnimation:shrinkAnimation forKey:@"coverShrink"];        
+}
+
+- (void)animateCoverFade {   
+    if (!firstPageReady) {
+        [self performSelector:@selector(animateCoverFade) withObject:nil afterDelay:0.2f];
+        return;
+    }
+    
+    CABasicAnimation *fadeAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    [fadeAnimation setToValue:[NSNumber numberWithFloat:0]];
+    [fadeAnimation setDuration:0.5f];
+    [fadeAnimation setValue:@"coverFade" forKey:@"name"];
+    [fadeAnimation setDelegate:self];
+    [fadeAnimation setRemovedOnCompletion:NO];
+    [fadeAnimation setFillMode:kCAFillModeForwards];
+    
+    [self.coverView.layer setTransform:[(CALayer *)[self.coverView.layer presentationLayer] transform]];
+    
+    [self.coverView.layer removeAllAnimations];
+    [self.coverView.layer addAnimation:fadeAnimation forKey:@"coverFade"]; 
+}
+
+- (void)animationDidStart:(CAAnimation *)anim {
+    if ([[anim valueForKey:@"name"] isEqualToString:@"coverPop"]) {
+        [self initialiseBookView];
+    }
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+    if ([[anim valueForKey:@"name"] isEqualToString:@"coverPop"]) {
+        if ([self.delegate respondsToSelector:@selector(coverViewDidAnimatePop)]) {
+            [self.delegate coverViewDidAnimatePop];
+        }
+        
+        coverReady = YES;
+        
+        UIViewController *controller = [self.delegate coverViewViewControllerForOpening];
+        [controller.navigationController pushViewController:self animated:NO];
+                
+    } else if ([[anim valueForKey:@"name"] isEqualToString:@"coverShrink"]) {
+        if ([self.delegate respondsToSelector:@selector(coverViewDidAnimateShrink)]) {
+            [self.delegate coverViewDidAnimateShrink];
+        }
+        
+        [self animateCoverFade];
+    } else if ([[anim valueForKey:@"name"] isEqualToString:@"coverFade"]) {
+        if ([self.delegate respondsToSelector:@selector(coverViewDidAnimateFade)]) {
+            [self.delegate coverViewDidAnimateFade];
+        }
+        
+        [self.coverView removeFromSuperview];
+        self.coverView = nil;
+        
+        //[self.bookView goToPageNumber:10 animated:YES];
+        BlioBookmarkPoint *implicitPoint = [self.book implicitBookmarkPoint];
+        [self.bookView goToBookmarkPoint:implicitPoint animated:YES];
+        coverOpened = YES;
+    }
 }
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled {
@@ -466,9 +717,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.view = root;
     [root release];
     
-    if(!self.toolbarsVisibleAfterAppearance) {
-        [UIApplication sharedApplication].idleTimerDisabled = YES;
-    }    
+    UIButton *aPauseButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *pauseImage = [UIImage imageNamed:@"button-tts-pause.png"];
+    [aPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
+    [aPauseButton addTarget:self action:@selector(toggleAudio:) forControlEvents:UIControlEventTouchUpInside];
+    [aPauseButton setFrame:CGRectMake(0, 0, pauseImage.size.width, pauseImage.size.height)];
+    [aPauseButton setShowsTouchWhenHighlighted:YES];
+    [aPauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
+    [aPauseButton setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
+    [aPauseButton setAlpha:0];
+    [self.view addSubview:aPauseButton];
+    self.pauseButton = aPauseButton;
+    
 }
 
 - (void)layoutNavigationToolbar {
@@ -617,15 +877,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     if(_firstAppearance) {
         UIApplication *application = [UIApplication sharedApplication];
-        if(self.toolbarsVisibleAfterAppearance) {
+        //if(self.toolbarsVisibleAfterAppearance) {
             if([application isStatusBarHidden]) {
 				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
                     [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 				else
                     [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
-                [self.navigationController setNavigationBarHidden:YES animated:YES];
-                [self.navigationController setNavigationBarHidden:NO animated:NO];
+                
             }
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+        [self.navigationController setNavigationBarHidden:NO animated:NO];
+        [self.navigationController.toolbar setHidden:NO];
+        [self.navigationController setToolbarHidden:NO animated:NO];
             if(!animated) {
                 CGRect frame = self.navigationController.toolbar.frame;
                 frame.origin.y += frame.size.height;
@@ -635,16 +898,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 self.navigationController.toolbar.frame = frame;
                 [UIView commitAnimations];                
             }                    
-        } else {
-            UINavigationBar *navBar = self.navigationController.navigationBar;
-            navBar.barStyle = UIBarStyleBlackTranslucent;  
-            if(![application isStatusBarHidden]) {
-				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
-                    [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-				else 
-                    [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
-            }            
-        }
+        //} //else {
+//            UINavigationBar *navBar = self.navigationController.navigationBar;
+//            navBar.barStyle = UIBarStyleBlackTranslucent;  
+//            if(![application isStatusBarHidden]) {
+//				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
+//                    [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+//				else 
+//                    [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
+//            }            
+//        }
     }
     _firstAppearance = NO;
 }
@@ -784,6 +1047,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.pieButton = nil;
     self.pauseButton = nil;
     self.managedObjectContext = nil;
+    self.delegate = nil;
+    self.coverView = nil;
     
 	[super dealloc];
 }
@@ -1209,6 +1474,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)goToPageNumberAnimated:(NSNumber *)pageNumber {
+	NSLog(@"BlioBookViewController goToPageNumber: %i",pageNumber);
     [self.bookView goToPageNumber:[pageNumber integerValue] animated:YES];
 }
 
@@ -1216,19 +1482,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     _pageJumpLabel.text = [self.bookView pageLabelForPageNumber:page];
     [_pageJumpSlider setAccessibilityValue:_pageJumpLabel.text];
-}
-
-#pragma mark -
-#pragma mark AccelerometerControl Methods
-
-
-- (void)tapToNextPage {
-    if ([self.bookView isKindOfClass:[BlioFlowView class]]) {
-        int currentPage = [self.bookView pageNumber] + 1;
-        if (currentPage >= [self.bookView pageCount]) currentPage = [self.bookView pageCount];
-
-        [self.bookView goToPageNumber:currentPage animated:YES];
-    }
 }
 
 #pragma mark -
@@ -1278,7 +1531,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self stopAudio];
 			self.audioPlaying = NO;  
 		}
-        if (newLayout == kBlioPageLayoutPlainText && ([self.book hasEPub] || [self.book hasTextFlow])) {
+        if (newLayout == kBlioPageLayoutPlainText && ([self.book hasEPub] || [self.book hasTextFlow]) && [self.book reflowEnabled]) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
             self.bookView = ePubView;
@@ -1304,9 +1557,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)shouldShowPageAttributeSettings {
-    //Dave changed this line to connect the settings buttons to tilt scrolling directions!
-    //if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
-    if ([self currentPageLayout] == kBlioPageLayoutSpeedRead)    
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
         return NO;
     else
         return YES;
@@ -1333,6 +1584,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return fontSize;
 }
 
+- (BOOL)reflowEnabled {
+	return [self.book reflowEnabled];
+}
 - (void)changeFontSize:(id)sender {
     BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
@@ -1374,7 +1628,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSParameterAssert([NSThread isMainThread]);
     
-    if ([keyPath isEqual:@"pageNumber"]) {
+    if ([keyPath isEqual:@"pageNumber"] && coverOpened) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
         		
@@ -1392,7 +1646,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
     }
     
-    if ([keyPath isEqual:@"pageCount"]) {
+    if ([keyPath isEqual:@"pageCount"] && coverOpened) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
     }
@@ -1619,7 +1873,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		for ( int i=layoutPage+1;i<=[self.bookView pageCount];++i ) {  
 			if ( [self loadAudioFiles:i segmentIndex:0] ) {
 				loadedFilesAhead = YES;
-				[self.bookView goToPageNumber:i animated:YES];
+				BOOL animatedPageChange = YES;
+				if ([[UIApplication sharedApplication] respondsToSelector:@selector(applicationState)]) {
+					if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) animatedPageChange = NO;
+				}
+				[self.bookView goToPageNumber:i animated:animatedPageChange];
 				break;
 			}
 		}
@@ -1785,7 +2043,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     for ( int i=[self.bookView.currentBookmarkPoint layoutPage]+1;;++i ) {
                         if ( [self loadAudioFiles:i segmentIndex:0] ) {
                             loadedFilesAhead = YES;
-                            [self.bookView goToPageNumber:i animated:YES];
+							BOOL animatedPageChange = YES;
+							if ([[UIApplication sharedApplication] respondsToSelector:@selector(applicationState)]) {
+								if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) animatedPageChange = NO;
+							}							
+                            [self.bookView goToPageNumber:i animated:animatedPageChange];
                             break;
                         }
                     }

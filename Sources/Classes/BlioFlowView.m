@@ -47,27 +47,26 @@
         self.bookID = bookID;
         
         BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
-        EucBUpeBook *eucBook = [bookManager checkOutEucBookForBookWithID:bookID];
+        _eucBook = [[bookManager checkOutEucBookForBookWithID:bookID] retain];
         
-        if(eucBook) {            
+        if(_eucBook) {            
             self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
 
-            if([eucBook isKindOfClass:[BlioFlowEucBook class]]) {
+            if([_eucBook isKindOfClass:[BlioFlowEucBook class]]) {
                 BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:bookID];
                 _textFlowFlowTreeKind = textFlow.flowTreeKind;
                 [bookManager checkInTextFlowForBookWithID:bookID];
             }            
             
-            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:eucBook])) {
+            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:_eucBook])) {
                 _eucBookView.delegate = self;
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;
                 _eucBookView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                if(animated) {
-                    _eucBookView.appearAtCoverThenOpen = YES;
+
+                if (!animated) {
+                    [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO];
                 }
-                
-                [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO];
                 
                 [_eucBookView addObserver:self forKeyPath:@"pageCount" options:NSKeyValueObservingOptionInitial context:NULL];
                 [_eucBookView addObserver:self forKeyPath:@"pageNumber" options:NSKeyValueObservingOptionInitial context:NULL];
@@ -92,10 +91,14 @@
     [_eucBookView release];
      
     BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
-
-    [_paragraphSource release];
-    [bookManager checkInParagraphSourceForBookWithID:self.bookID];    
-    [bookManager checkInEucBookForBookWithID:self.bookID];  
+    if(_paragraphSource) {
+        [_paragraphSource release];
+        [bookManager checkInParagraphSourceForBookWithID:_bookID];   
+    }
+    if(_eucBook) {
+        [_eucBook release];
+        [bookManager checkInEucBookForBookWithID:_bookID];  
+    }
     
     [_bookID release];
     

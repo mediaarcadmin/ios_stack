@@ -57,7 +57,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 }
 
 - (void)displayPageAttributes {
-    
     BOOL showPageAttributes = NO;
     
     if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowPageAttributeSettings)])
@@ -70,6 +69,10 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.pageColorSegment.enabled = YES;
         self.fontSizeSegment.alpha = 1.0f;
         self.pageColorSegment.alpha = 1.0f;
+
+		self.fontSizeLabel.accessibilityLabel = self.fontSizeLabel.text;
+		self.pageColorLabel.accessibilityLabel = self.pageColorLabel.text;
+
     } else {
         self.fontSizeLabel.enabled = NO;
         self.pageColorLabel.enabled = NO;
@@ -77,8 +80,13 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.pageColorSegment.enabled = NO;
         self.fontSizeSegment.alpha = 0.35f;
         self.pageColorSegment.alpha = 0.35f;
-    }    
-    
+		
+		self.fontSizeLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.fontSizeLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];
+		self.pageColorLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.pageColorLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];
+
+	}    
+	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+
 }
 
 - (id)initWithDelegate:(id)newDelegate {
@@ -111,6 +119,10 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Fast layout", @"Accessibility label for View Settings Fast Layout button")];
         [[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityHint:NSLocalizedString(@"Switches to the fast reading view.", @"Accessibility hint for View Settings Fast Layout button")];
         
+		if (![self.viewSettingsDelegate reflowEnabled]) {
+			[aLayoutSegmentedControl setEnabled:NO forSegmentAtIndex:0];
+			[[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:[NSString stringWithFormat:@"%@ (%@)",[aLayoutSegmentedControl imageForSegmentAtIndex:0].accessibilityLabel,NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")]];
+		}		
         [self addSubview:aLayoutSegmentedControl];
         self.pageLayoutSegment = aLayoutSegmentedControl;
         [aLayoutSegmentedControl release];

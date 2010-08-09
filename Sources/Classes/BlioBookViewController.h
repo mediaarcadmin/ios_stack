@@ -20,6 +20,7 @@
 #import "BlioWebToolsViewController.h"
 #import "BlioBookSearchController.h"
 #import "BlioBookSearchViewController.h"
+#import "BlioCoverView.h"
 
 typedef enum BlioPageColor {
     kBlioPageColorWhite = 0,
@@ -56,6 +57,7 @@ typedef enum BlioFontSize {
 - (BlioPageLayout)currentPageLayout;
 - (BlioPageColor)currentPageColor;
 - (BlioFontSize)currentFontSize;
+- (BOOL)reflowEnabled;
 @end
 
 @class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton;
@@ -121,10 +123,17 @@ typedef enum {
     BOOL rotationLocked;
     
     BlioBookSearchViewController *searchViewController;
+    id <BlioCoverViewDelegate> delegate;
+    BlioCoverView *coverView;
+    
+    BOOL bookReady;
+    BOOL coverReady;
+    BOOL firstPageReady;
+    BOOL coverOpened;
 }
 
 // Designated initializers.
-- (id)initWithBook:(BlioBook *)newBook;
+- (id)initWithBook:(BlioBook *)newBook delegate:(id <BlioCoverViewDelegate>)aDelegate;
 
 @property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, assign) BOOL toolbarsVisibleAfterAppearance;
@@ -148,7 +157,9 @@ typedef enum {
 
 @property (nonatomic, getter=isRotationLocked) BOOL rotationLocked;
 
-- (void)tapToNextPage;
+@property (nonatomic, assign) id <BlioCoverViewDelegate> delegate;
+@property (nonatomic, retain) BlioCoverView *coverView;
+
 - (void)stopAudio;
 - (void)pauseAudio;
 - (void)toggleAudio:(id)sender;

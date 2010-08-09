@@ -201,9 +201,9 @@ static void *background_init_thread(void * arg) {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];
-	
-	// TEMPORARY CODE START (Installing Heather manually)
 
+#ifdef DEMO_MODE
+	
     NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
 	NSString *manualVoiceCopyPath = 
 	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
@@ -222,7 +222,8 @@ static void *background_init_thread(void * arg) {
 		else NSLog(@"Copied Heather into TTS directory...");
 	}
 		
-	// TEMPORARY CODE END
+#endif
+	
 	NSLog(@"voicesPath: %@",voicesPath);
 	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
 	    

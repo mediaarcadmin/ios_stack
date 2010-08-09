@@ -513,7 +513,7 @@ static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 
 - (BlioTextFlowFlowTreeKind)flowTreeKind {
     if(flowTreeKind == BlioTextFlowFlowTreeKindUnknown) {
-        NSData *data = [self.book manifestDataForKey:@"KNFBMetadataFliename"];
+        NSData *data = [self.book manifestDataForKey:@"KNFBMetadataFilename"];
         if(data) {
             XML_Parser metadataParser = XML_ParserCreate(NULL);
             XML_SetStartElementHandler(metadataParser, metadataXMLParsingStartElementHandler);

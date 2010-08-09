@@ -78,7 +78,7 @@
 
 @end
 
-@interface BlioProcessingDownloadPaidBookOperation : BlioProcessingDownloadOperation
+@interface BlioProcessingDownloadPaidBookOperation : BlioProcessingDownloadOperation <NSXMLParserDelegate>
 @end
 
 @interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation

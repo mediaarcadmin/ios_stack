@@ -475,7 +475,14 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     *cropRect = pageCropRect;
     CGRect contentBounds = self.contentView.bounds;
     CGRect insetBounds = UIEdgeInsetsInsetRect(contentBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
-    CGAffineTransform boundsTransform = transformRectToFitRectWidth(pageCropRect, insetBounds); 
+    
+    CGAffineTransform boundsTransform;
+    
+    if (self.frame.size.width > self.frame.size.height) {
+        boundsTransform = transformRectToFitRectWidth(pageCropRect, insetBounds);
+    } else {
+        boundsTransform = transformRectToFitRect(pageCropRect, insetBounds, TRUE);
+    }
     return boundsTransform;
 }
 
@@ -1286,7 +1293,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         CGFloat pageWidth = self.scrollView.contentSize.width / pageCount;
         //NSInteger startPage = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 2;
         NSInteger startPage = floor((self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds)/2.0f) / pageWidth) + 1;
-        if (startPage == targetPage) return;
+        if (startPage == targetPage) {
+            self.scrollingAnimationInProgress = NO;
+            [self didChangeValueForKey:@"pageNumber"];
+            return;
+        }
         NSInteger fromPage = startPage;
         
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
@@ -1910,21 +1921,9 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 #pragma mark -
 #pragma mark Notification Callbacks
 
-- (void)blioCoverPageDidFinishRenderAfterDelay:(NSNotification *)notification {
-    [self goToPageNumber:self.pageNumber animated:YES];
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:@"blioCoverPageDidFinishRender" 
-                                                  object:nil];
-    
-}
-
-- (void)blioCoverPageDidFinishRenderOnMainThread:(NSNotification *)notification {
-    // To allow the tiled view to do its fading out.
-    [self performSelector:@selector(blioCoverPageDidFinishRenderAfterDelay:) withObject:notification afterDelay:0.75];
-}
-
 - (void)blioCoverPageDidFinishRender:(NSNotification *)notification  {
-    [self performSelectorOnMainThread:@selector(blioCoverPageDidFinishRenderOnMainThread:) withObject:notification waitUntilDone:YES];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"blioCoverPageDidFinishRender" object:nil];
+    [self.delegate firstPageDidRender];
 }
 
 #pragma mark -

@@ -43,6 +43,27 @@
 	}
     return self;
 }
+
+-(void)accessibilityFocusedOnCell:(id)object {
+	//		NSLog(@"[BlioLibraryGridView accessibilityFocusedOnCell entered REPETITIVELY. object: %@",((BlioLibraryGridViewCell*)object).book.title);
+	NSArray * indexes = [self indexesForCellsInRect:[object frame]];
+	NSInteger rowIndex = -1;
+	//		NSLog(@"[[indexes objectAtIndex:0] intValue]: %i",[[indexes objectAtIndex:0] intValue]);
+	if (indexes && [indexes count] > 1) rowIndex = floor([[indexes objectAtIndex:0] intValue]/numCellsInRow);
+	//		NSLog(@"rowIndex: %i",rowIndex);
+	CGFloat newContentOffsetY = (currCellSize.height+currBorderSize)*(rowIndex) + currCellSize.height/2 - self.frame.size.height/2;
+	//		NSLog(@"newContentOffsetY before: %f",newContentOffsetY);
+	if (newContentOffsetY < 0) newContentOffsetY = 0;
+	else if (newContentOffsetY > (self.contentSize.height - self.frame.size.height)) newContentOffsetY = (self.contentSize.height - self.frame.size.height);
+	//		NSLog(@"newContentOffsetY: %f",newContentOffsetY);
+	self.contentOffset = CGPointMake(self.contentOffset.x,newContentOffsetY);
+	
+    // In OS 4.0 we should check if voice-over is active before sending this notification
+    // UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+	//    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+	
+}
+
 - (void) addCellAtIndex:(NSInteger)cellIndex {
 //	NSLog(@"addCellAtIndex: %i",cellIndex);
 //	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);

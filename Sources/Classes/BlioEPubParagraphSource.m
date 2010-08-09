@@ -47,7 +47,6 @@
     }
     [_bookID release];
     [_layoutController release];
-    [_bUpeBook dealloc];
     
     [super dealloc];
 }

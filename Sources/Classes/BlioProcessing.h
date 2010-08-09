@@ -48,6 +48,7 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 @property (nonatomic) BOOL operationSuccess;
 @property (nonatomic) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
 
+- (BOOL)bookManifestPath:(NSString *)path existsForLocation:(NSString *)location;
 - (void)setBookManifestValue:(id)value forKey:(NSString *)key;
 - (NSData *)getBookManifestDataForKey:(NSString *)key;
 - (NSString *)getBookManifestPathForKey:(NSString *)key;
