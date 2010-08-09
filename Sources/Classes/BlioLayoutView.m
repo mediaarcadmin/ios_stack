@@ -598,9 +598,10 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
     
     CGRect cropRect = [self.dataSource cropRectForPage:page];
+    [pageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:page]];
     CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
-    CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
-    [pageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:page]];
+    //CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
+    //[pageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:page]];
     
     CGRect mediaRect = [self.dataSource mediaRectForPage:page];
     CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
