@@ -444,7 +444,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         uint32_t nextRunNodeKey = nodeKey;
         CGFloat nextAbsoluteY = frame.origin.y;
         CGFloat maxAbsoluteY = CGRectGetMaxY(frame);
-        do {            
+        
+        while(!reachedBottomOfFrame && !closedLastNode && currentDocumentNode) {            
             // Find the node's parent, closing open blocks until we reach it.
             EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
             EucCSSIntermediateDocumentNode *currentPositionedBlockNode;
@@ -573,7 +574,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             }
             
             reachedBottomOfFrame = nextAbsoluteY >= maxAbsoluteY;
-        } while(!reachedBottomOfFrame && !closedLastNode && currentDocumentNode);
+        }
         
         if(closedLastNode) {
             *returningCompleted = YES;
