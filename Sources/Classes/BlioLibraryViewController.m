@@ -571,20 +571,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										   fromBundle:YES
 		 ];
         
-        //[self.processingDelegate enqueueBookWithTitle:@"St. Thomas Virgin Islands" 
-//                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
-//											coverPath:nil
-//											 ePubPath:nil
-//											  pdfPath:nil
-//											  xpsPath:@"XPS/St. Thomas Virgin Islands.xps"
-//										 textFlowPath:nil
-//										audiobookPath:nil
-//											 sourceID:BlioBookSourceOnlineStore
-//									 sourceSpecificID:@"St. Thomas Virgin Islands" // this should normally be ISBN number when downloaded from the Book Store
-//									  placeholderOnly:NO
-//										   fromBundle:YES
-//		 ];
-        
         [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
                                               authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
 											coverPath:nil
@@ -598,7 +584,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-        
+#if JAMIEISFIXING        
         [self.processingDelegate enqueueBookWithTitle:@"Liberty And Tyranny" 
                                               authors:[NSArray arrayWithObjects:@"Levin, Mark R.", nil]
 											coverPath:nil
@@ -613,6 +599,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										   fromBundle:YES
 		 ];
         
+        [self.processingDelegate enqueueBookWithTitle:@"St. Thomas Virgin Islands" 
+                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/St. Thomas Virgin Islands.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"St. Thomas Virgin Islands" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+#endif
     }
 	
 }
