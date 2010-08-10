@@ -210,19 +210,59 @@
     return [self hasManifestValueForKey:@"drmHeaderFilename"];
 }
 
+- (UIImage *)missingCoverImageOfSize:(CGSize)size {
+    if(UIGraphicsBeginImageContextWithOptions != nil) {
+        UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(size);
+    }
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    UIImage *missingCover = [UIImage imageNamed:@"booktexture-nocover.png"];
+    [missingCover drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    
+    NSString *titleString = [self title];
+    UIEdgeInsets titleInsets = UIEdgeInsetsMake(size.height * 0.2f, size.width * 0.2f, size.height * 0.2f, size.width * 0.1f);
+    CGRect titleRect = UIEdgeInsetsInsetRect(CGRectMake(0, 0, size.width, size.height), titleInsets);
+    
+    CGContextSetShadowWithColor(ctx, CGSizeMake(0, -MAX(size.height * 0.0005f, 0.5f)), MAX(size.height * 0.0005f, 0.5f), [UIColor blackColor].CGColor);
+    CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 0.9f, 1);
+    [titleString drawInRect:titleRect withFont:[UIFont fontWithName:@"Georgia" size:titleRect.size.height * 0.15f] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+    
+    UIImage *aCoverImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    return aCoverImage;
+}
+
 - (UIImage *)coverImage {
     NSData *imageData = [self manifestDataForKey:@"coverFilename"];
-    return [UIImage imageWithData:imageData];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        return [self missingCoverImageOfSize:CGSizeMake(kBlioMissingCoverWidth, kBlioMissingCoverHeight)];
+    }
 }
 
 - (UIImage *)coverThumbForGrid {
     NSData *imageData = [self manifestDataForKey:@"gridThumbFilename"];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
+    }
     return [UIImage imageWithData:imageData];
 }
 
 - (UIImage *)coverThumbForList {
     NSData *imageData = [self manifestDataForKey:@"listThumbFilename"];
-    return [UIImage imageWithData:imageData];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
+    }
 }
 
 - (NSArray *)sortedBookmarks {
