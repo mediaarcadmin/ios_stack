@@ -38,7 +38,9 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 - (id)init {
     if ((self = [super init])) {
-		[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd] autorelease]];
+		NSString* licenseStr = [[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding];
+		[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:licenseStr user:uid.userId passwd:uid.passwd] autorelease]];
+		[licenseStr release];
 		[self setSetupData:[[[setupTTS alloc] init] autorelease]];
 		[self setEngine:[[[AcapelaSpeech alloc] init]autorelease]];
 		[self setCurrentPage:-1];
@@ -272,6 +274,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 			voiceOperation.voice = aVoice;
 			NSLog(@"adding BlioProcessingDownloadAndUnzipVoiceOperation to queue...");
 			[self.downloadQueue addOperation:voiceOperation];
+			[voiceOperation release];
 		}
 	}
 }

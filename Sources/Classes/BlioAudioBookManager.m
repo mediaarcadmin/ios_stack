@@ -39,6 +39,7 @@
 		[fileTimes addObject:[NSNumber numberWithInt:lastTime]];
 	}
 	if ( thisTimeStr == nil ) {
+		[fileTimes release];
 		NSLog(@"Empty timing file, %s", [audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding]);
 		return NO;
 	}
