@@ -230,8 +230,8 @@
     
     THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"Georgia"];
 
-    CGSize fullSize = CGSizeMake(kBlioMissingCoverWidth, kBlioMissingCoverHeight);
-    CGFloat pointSize = kBlioMissingCoverPointSize;
+    CGSize fullSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat pointSize = roundf(fullSize.height / 12.5f); // 38pt/82pt on iphone/ipad
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(size.width / fullSize.width, size.height / fullSize.height);
     
     UIEdgeInsets titleInsets = UIEdgeInsetsMake(fullSize.height * 0.2f, fullSize.width * 0.2f, fullSize.height * 0.2f, fullSize.width * 0.1f);
@@ -268,7 +268,8 @@
     if (aCoverImage) {
         return aCoverImage;
     } else {
-        return [self missingCoverImageOfSize:CGSizeMake(kBlioMissingCoverWidth, kBlioMissingCoverHeight)];
+        CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+        return [self missingCoverImageOfSize:CGSizeMake(screenSize.width, screenSize.height)];
     }
 }
 

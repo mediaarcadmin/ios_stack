@@ -18,10 +18,6 @@ static const CGFloat kBlioCoverListThumbHeight = 76;
 static const CGFloat kBlioCoverListThumbWidth = 53;
 static const CGFloat kBlioCoverGridThumbHeight = 140;
 static const CGFloat kBlioCoverGridThumbWidth = 102;
-static const CGFloat kBlioMissingCoverHeight = 240;
-static const CGFloat kBlioMissingCoverWidth = 160;
-static const CGFloat kBlioMissingCoverPointSize = 20.0f;
-
 
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
