@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <regex.h>
-#import <THNSStringSmartQuotes.h>
+#import "THNSStringSmartQuotes.h"
 
 @interface NSString (THAdditions)
 
