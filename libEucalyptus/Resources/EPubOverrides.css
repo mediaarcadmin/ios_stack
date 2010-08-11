@@ -1,0 +1,3 @@
+/* Override ePub margins.  We'll do our own in the rendering code based on 
+screen size */
+body { margin: 0 !important }
