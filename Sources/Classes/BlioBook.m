@@ -10,6 +10,7 @@
 #import "BlioBookManager.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/THStringRenderer.h>
 #import <pthread.h>
 
 @interface BlioBook (PRIVATE_DO_NOT_MAKE_PUBLIC)
@@ -210,7 +211,7 @@
     return [self hasManifestValueForKey:@"drmHeaderFilename"];
 }
 
-- (UIImage *)missingCoverImageOfSize:(CGSize)size {
+- (UIImage *)missingCoverImageOfSize:(CGSize)size withPointSize:(CGFloat)pointSize {
     if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     } else {
@@ -222,12 +223,35 @@
     [missingCover drawInRect:CGRectMake(0, 0, size.width, size.height)];
     
     NSString *titleString = [self title];
+    NSUInteger maxTitleLength = 100;
+    if ([titleString length] > maxTitleLength) {
+        titleString = [NSString stringWithFormat:@"%@...", [titleString substringToIndex:maxTitleLength]];
+    }
+    
+    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"Georgia"];
+
     UIEdgeInsets titleInsets = UIEdgeInsetsMake(size.height * 0.2f, size.width * 0.2f, size.height * 0.2f, size.width * 0.1f);
     CGRect titleRect = UIEdgeInsetsInsetRect(CGRectMake(0, 0, size.width, size.height), titleInsets);
     
+    BOOL fits = NO;
+    
+    NSUInteger flags = THStringRendererFlagFairlySpaceLastLine | THStringRendererFlagCenter | THStringRendererFlagNoHinting;
+    
+    while (!fits && pointSize >= 2) {
+        CGSize size = [renderer sizeForString:titleString pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+        if ((size.height <= titleRect.size.height) && (size.width <= titleRect.size.width)) {
+            fits = YES;
+        } else {
+            pointSize -= 0.1f;
+        }
+    }
+    
+    CGContextClipToRect(ctx, titleRect); // if title won't fit at 2 points it gets clipped
     CGContextSetShadowWithColor(ctx, CGSizeMake(0, -MAX(size.height * 0.0005f, 0.5f)), MAX(size.height * 0.0005f, 0.5f), [UIColor blackColor].CGColor);
     CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 0.9f, 1);
-    [titleString drawInRect:titleRect withFont:[UIFont fontWithName:@"Georgia" size:titleRect.size.height * 0.15f] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+    //[titleString drawInRect:titleRect withFont:[UIFont fontWithName:@"Georgia" size:titleRect.size.height * 0.15f] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+    [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+    [renderer release];
     
     UIImage *aCoverImage = UIGraphicsGetImageFromCurrentImageContext();
     
@@ -240,7 +264,7 @@
     if (aCoverImage) {
         return aCoverImage;
     } else {
-        return [self missingCoverImageOfSize:CGSizeMake(kBlioMissingCoverWidth, kBlioMissingCoverHeight)];
+        return [self missingCoverImageOfSize:CGSizeMake(kBlioMissingCoverWidth, kBlioMissingCoverHeight) withPointSize:kBlioMissingCoverFullPointSize];
     }
 }
 
@@ -250,7 +274,7 @@
     if (aCoverImage) {
         return aCoverImage;
     } else {
-        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
+        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight) withPointSize:kBlioMissingCoverGridPointSize];
     }
     return [UIImage imageWithData:imageData];
 }
@@ -261,7 +285,7 @@
     if (aCoverImage) {
         return aCoverImage;
     } else {
-        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
+        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight) withPointSize:kBlioMissingCoverListPointSize];
     }
 }
 
