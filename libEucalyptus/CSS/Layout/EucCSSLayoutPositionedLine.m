@@ -136,9 +136,9 @@
     self.frame = frame;
 }
 
-- (CGFloat)minimumNeededWidth
+- (CGFloat)minimumWidth
 {
-    return _componentWidth + _indent;
+    return ceilf(_componentWidth + _indent);
 }
 
 - (size_t)renderItemCount

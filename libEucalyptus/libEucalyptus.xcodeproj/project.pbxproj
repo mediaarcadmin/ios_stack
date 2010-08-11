@@ -16,6 +16,8 @@
 		7D035BDB11ECD03B00F39592 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
 		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
 		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */; };
+		7D0D8FDC121238FD00CD994D /* THNSStringSmartQuotes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D14D1BD119C695800F4B5D3 /* EucHighlightRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */; };
 		7D14D1BE119C695D00F4B5D3 /* EucHighlightRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D1900B61149498500375803 /* libwapcaplet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1900A91149498500375803 /* libwapcaplet.h */; };
@@ -616,6 +618,8 @@
 		7D035B6811ECD03B00F39592 /* Pride and Prejudice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Pride and Prejudice"; sourceTree = "<group>"; };
 		7D0D818211075E2A00C672AC /* EucSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelector.h; sourceTree = "<group>"; };
 		7D0D818311075E2A00C672AC /* EucSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelector.m; sourceTree = "<group>"; };
+		7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSStringSmartQuotes.h; sourceTree = "<group>"; };
+		7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSStringSmartQuotes.m; sourceTree = "<group>"; };
 		7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHighlightRange.h; sourceTree = "<group>"; };
 		7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHighlightRange.m; sourceTree = "<group>"; };
 		7D1900981149490E00375803 /* libwapcaplet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwapcaplet.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2173,12 +2177,12 @@
 				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */,
 				7D58226711F858AB00D4150C /* EucCSSLayoutPositionedContainer.h */,
 				7D58226811F858AB00D4150C /* EucCSSLayoutPositionedContainer.m */,
-				7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */,
-				7D2341651149602300C318E7 /* EucCSSLayoutPositionedBlock.m */,
-				7D2341661149602300C318E7 /* EucCSSLayoutPositionedRun.h */,
-				7D2341671149602300C318E7 /* EucCSSLayoutPositionedRun.m */,
 				7D2341621149602300C318E7 /* EucCSSLayoutPositionedLine.h */,
 				7D2341631149602300C318E7 /* EucCSSLayoutPositionedLine.m */,
+				7D2341661149602300C318E7 /* EucCSSLayoutPositionedRun.h */,
+				7D2341671149602300C318E7 /* EucCSSLayoutPositionedRun.m */,
+				7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */,
+				7D2341651149602300C318E7 /* EucCSSLayoutPositionedBlock.m */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -2213,6 +2217,8 @@
 				7D3F4D1311EF38B80065A5F7 /* EucConfiguration.m */,
 				7D3F4D1411EF38B80065A5F7 /* EucSharedHyphenator.h */,
 				7D3F4D1511EF38B80065A5F7 /* EucSharedHyphenator.mm */,
+				7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */,
+				7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -2733,6 +2739,7 @@
 				7D3F4D2011EF38B80065A5F7 /* EucConfiguration.h in Headers */,
 				7D3F4D2211EF38B80065A5F7 /* EucSharedHyphenator.h in Headers */,
 				7D58226911F858AB00D4150C /* EucCSSLayoutPositionedContainer.h in Headers */,
+				7D0D8FDC121238FD00CD994D /* THNSStringSmartQuotes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3362,6 +3369,7 @@
 				7D3F4D2111EF38B80065A5F7 /* EucConfiguration.m in Sources */,
 				7D3F4D2311EF38B80065A5F7 /* EucSharedHyphenator.mm in Sources */,
 				7D58226A11F858AB00D4150C /* EucCSSLayoutPositionedContainer.m in Sources */,
+				7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

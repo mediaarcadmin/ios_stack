@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <regex.h>
+#import <THNSStringSmartQuotes.h>
 
 @interface NSString (THAdditions)
 
@@ -19,6 +20,5 @@
 - (NSComparisonResult)naturalCompare:(NSString *)aString;
 - (NSString *)stringForTitleSorting;
 - (NSComparisonResult)titleCompare:(NSString *)aString;
-- (NSString *)stringWithSmartQuotes;
 
 @end

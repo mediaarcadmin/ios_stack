@@ -13,7 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedRun, EucSharedHyphenator;
+@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
 struct THBreak;
 
 typedef struct EucCSSLayoutDocumentRunPoint {
@@ -102,6 +102,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
        scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
+                                         inContainer:(EucCSSLayoutPositionedBlock *)container
                                           wordOffset:(uint32_t)wordOffset 
                                        elementOffset:(uint32_t)elementOffset;
 

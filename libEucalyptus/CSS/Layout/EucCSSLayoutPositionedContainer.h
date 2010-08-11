@@ -26,7 +26,12 @@
 @property (nonatomic, assign, readonly) CGRect contentBounds;
 @property (nonatomic, retain) NSMutableArray *children;
 
+- (CGRect)frameInRelationTo:(EucCSSLayoutPositionedContainer *)otherContainer;
 - (CGRect)convertRect:(CGRect)rect toContainer:(EucCSSLayoutPositionedContainer *)container;
 - (CGRect)absoluteFrame;
+
+@property (nonatomic, assign, readonly) CGFloat minimumWidth; // Just returns the current width.
+- (void)sizeToFitInWidth:(CGFloat)width;                      // Default behaviour does nothing.
+- (void)shrinkToFit;
 
 @end

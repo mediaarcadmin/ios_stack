@@ -28,6 +28,19 @@
     [super dealloc];
 }
 
+- (CGRect)frameInRelationTo:(EucCSSLayoutPositionedContainer *)otherContainer
+{
+    if(self.parent == otherContainer) {
+        return self.frame;
+    } else{
+        CGRect myFrame = self.absoluteFrame;
+        CGRect theirFrame = otherContainer.absoluteFrame;
+        myFrame.origin.x -= theirFrame.origin.x;
+        myFrame.origin.y -= theirFrame.origin.y;
+        return myFrame;
+    }
+}
+
 - (CGRect)convertRect:(CGRect)rect toContainer:(EucCSSLayoutPositionedContainer *)container;
 {
     if(self == container) {
@@ -62,6 +75,18 @@
     CGRect contentBounds = self.contentRect;
     contentBounds.origin = CGPointZero;
     return contentBounds;
+}
+
+- (CGFloat)minimumWidth
+{  
+    return self.frame.size.width;
+}
+
+- (void)sizeToFitInWidth:(CGFloat)width {};
+
+- (void)shrinkToFit
+{
+    [self sizeToFitInWidth:self.minimumWidth];
 }
 
 @end

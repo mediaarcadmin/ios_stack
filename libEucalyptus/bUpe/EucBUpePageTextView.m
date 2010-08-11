@@ -82,9 +82,7 @@
         self.positionedBlock = [layouter layoutFromPoint:layoutPoint
                                                  inFrame:[self bounds]
                                       returningNextPoint:&layoutPoint
-                                      returningCompleted:&isComplete
-                                        lastBlockNodeKey:0
-                                   constructingAncestors:YES];
+                                      returningCompleted:&isComplete];
         
         if(isComplete) {
             ret = [[EucBookPageIndexPoint alloc] init];
