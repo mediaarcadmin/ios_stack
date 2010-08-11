@@ -118,7 +118,7 @@
 - (void)launchWebsite:(id)sender {	
 	UIButton* ctl = (UIButton*)sender;
 	if ( ctl == launchButton ) {
-		NSURL* url = [[NSURL alloc] initWithString:@"http://knfb.theretailerplace.net/KNFB/screens/index.jsp"];
+		NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
 		[[UIApplication sharedApplication] openURL:url];			  
 	}
 }

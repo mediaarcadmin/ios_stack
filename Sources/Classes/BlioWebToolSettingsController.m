@@ -116,5 +116,11 @@
         return YES;
 }
 
+- (void)dealloc {
+	[encyclopediaControl release];
+	[searchControl release];
+    [super dealloc];   
+}
+
 
 @end

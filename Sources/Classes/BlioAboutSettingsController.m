@@ -132,6 +132,7 @@
 
 
 - (void)dealloc {
+	[aboutTableView release];
     [super dealloc];
 }
 

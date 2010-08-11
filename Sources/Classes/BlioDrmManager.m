@@ -172,6 +172,7 @@ ErrorExit:
     NSData *drmResponse = [licenseClient getResponseSynchronously];
     
     if (drmResponse == nil) {
+		[licenseClient release];
         return DRM_S_FALSE;
     } else {
         pbResponse = (DRM_BYTE *)[drmResponse bytes];

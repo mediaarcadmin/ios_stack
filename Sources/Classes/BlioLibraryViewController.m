@@ -1509,7 +1509,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         aTextureView.contentMode = UIViewContentModeScaleToFill;
         aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
         aTextureView.backgroundColor = [UIColor clearColor];
-        aTextureView.alpha = 0.0f;
         aTextureView.userInteractionEnabled = NO;
         [self addSubview:aTextureView];
         self.textureView = aTextureView;
@@ -1564,23 +1563,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     book = newBook;
     
     UIImage *newImage;
-    if (layout == kBlioLibraryLayoutList)
+    
+    if (layout == kBlioLibraryLayoutList) {
         newImage = [newBook coverThumbForList];
-    else
+    } else {
         newImage = [newBook coverThumbForGrid];
+    }
     
-    [[self imageView] setImage:newImage];
-    
-    if (nil != newImage) 
-        self.textureView.alpha = 1.0f;
-    else
-        self.textureView.alpha = 0.0f;
-    
-    [[self imageView] setNeedsDisplay];
+    [self.imageView setImage:newImage];    
 }
 
 - (BlioCoverView *)coverView {
-    BlioCoverView *coverView = [[BlioCoverView alloc] initWithFrame:self.frame coverImage:[[self book] coverImage]];
+    UIImage *coverImage = [[self book] coverImage];
+
+    BlioCoverView *coverView = [[BlioCoverView alloc] initWithFrame:self.frame coverImage:coverImage];
     return [coverView autorelease];
 }
 
