@@ -20,6 +20,12 @@
 -(void) calculateProgress;
 @end
 
+@interface BlioProcessingPreAvailabilityCompleteOperation : BlioProcessingOperation {
+    NSString *filenameKey;
+}
+@property (nonatomic, copy) NSString *filenameKey;
+@end
+
 @interface BlioProcessingDownloadOperation : BlioProcessingOperation {
     NSURL *url;
     NSString *filenameKey;
@@ -78,7 +84,26 @@
 
 @end
 
-@interface BlioProcessingDownloadPaidBookOperation : BlioProcessingDownloadOperation <NSXMLParserDelegate>
+@interface BlioProcessingDownloadPaidBookOperation : BlioProcessingDownloadOperation 
+
+@end
+
+@interface BlioProcessingXPSManifestOperation : BlioProcessingOperation <NSXMLParserDelegate> {
+
+	NSXMLParser * audiobookReferencesParser;	
+	NSXMLParser * rightsParser;	
+	NSXMLParser * metadataParser;	
+	NSMutableArray * audioFiles;
+	NSMutableArray * timingFiles;
+	NSDictionary * featureCompatibilityDictionary;
+}
+@property (nonatomic, retain) NSXMLParser * audiobookReferencesParser;
+@property (nonatomic, retain) NSXMLParser * rightsParser;
+@property (nonatomic, retain) NSXMLParser * metadataParser;
+@property (nonatomic, retain) NSMutableArray * audioFiles;
+@property (nonatomic, retain) NSMutableArray * timingFiles;
+@property (nonatomic, retain) NSDictionary * featureCompatibilityDictionary;
+
 @end
 
 @interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation

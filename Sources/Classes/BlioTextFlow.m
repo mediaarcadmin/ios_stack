@@ -973,7 +973,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     // NSLog(@"BlioTextFlowPreParseOperation main entered");
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
-			NSLog(@"failed dependency found!");
+			NSLog(@"BlioTextFlowPreParseOperation: failed dependency found! op: %@",blioOp);
 			[self cancel];
 			break;
 		}
@@ -1053,7 +1053,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 forKey:@"layoutPageEquivalentCount"];
     
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
-		NSLog(@"ending background task...");
+//		NSLog(@"ending background task...");
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}		
 	

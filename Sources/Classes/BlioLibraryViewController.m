@@ -982,17 +982,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
-    
-    if (nil != aBookViewController) {
-        [aBookViewController setManagedObjectContext:self.managedObjectContext];
-        aBookViewController.toolbarsVisibleAfterAppearance = YES;
-        [self.navigationController pushViewController:aBookViewController animated:YES];
-        [aBookViewController release];
-    }
-    
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+		BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
+		if (nil != aBookViewController) {
+			[aBookViewController setManagedObjectContext:self.managedObjectContext];
+			aBookViewController.toolbarsVisibleAfterAppearance = YES;
+			[self.navigationController pushViewController:aBookViewController animated:YES];
+			[aBookViewController release];
+		}
+		
+		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	}    
+	else [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1596,7 +1598,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryGridViewCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,pausedLabel;
+@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel;
 @synthesize accessibilityElements;
 
 - (void)dealloc {
@@ -1609,7 +1611,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.pauseButton = nil;
 	self.resumeButton = nil;
 	self.progressBackgroundView = nil;
-	self.pausedLabel = nil;
+	self.stateLabel = nil;
     self.delegate = nil;
     self.accessibilityElements = nil;
     [super dealloc];
@@ -1638,14 +1640,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		progressBackgroundView.hidden = YES;
 		[self.contentView addSubview:progressBackgroundView];
 		
-		pausedLabel = [[UILabel alloc] initWithFrame:progressBackgroundView.bounds];
-		pausedLabel.textAlignment = UITextAlignmentCenter;
-		pausedLabel.backgroundColor = [UIColor clearColor];
-		pausedLabel.textColor = [UIColor whiteColor];
-		pausedLabel.text = NSLocalizedString(@"Paused...","\"Paused...\" status indicator in BlioLibraryGridViewCell");
-		pausedLabel.hidden = YES;
-		pausedLabel.font = [UIFont boldSystemFontOfSize:12.0];
-		[progressBackgroundView addSubview:pausedLabel];
+		stateLabel = [[UILabel alloc] initWithFrame:progressBackgroundView.bounds];
+		stateLabel.textAlignment = UITextAlignmentCenter;
+		stateLabel.backgroundColor = [UIColor clearColor];
+		stateLabel.textColor = [UIColor whiteColor];
+		stateLabel.hidden = YES;
+		stateLabel.font = [UIFont boldSystemFontOfSize:12.0];
+		[progressBackgroundView addSubview:stateLabel];
 		
 		progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
 		progressView.frame = CGRectMake(0, 0, kBlioLibraryGridProgressViewWidth, 10);
@@ -1680,7 +1681,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	progressView.hidden = YES;
 	pauseButton.hidden = YES;
 	resumeButton.hidden = YES;
-	pausedLabel.hidden = YES;
+	stateLabel.hidden = YES;
 	self.bookView.alpha = 1;
 }
 -(void)onPauseButtonPressed:(id)sender {
@@ -1759,7 +1760,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.progressView.hidden = YES;
 		self.pauseButton.hidden = YES;
 		self.resumeButton.hidden = NO;
-		self.pausedLabel.hidden = YES;
+		self.stateLabel.hidden = YES;
 	}	
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
 		[self listenToProcessingNotifications];
@@ -1780,18 +1781,26 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			}
 			self.pauseButton.hidden = NO;
 			self.resumeButton.hidden = YES;
-			self.pausedLabel.hidden = YES;
+			self.stateLabel.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
 			self.resumeButton.hidden = NO;
-			self.pausedLabel.hidden = NO;
+			self.stateLabel.hidden = NO;
+			self.stateLabel.text = NSLocalizedString(@"Paused...","\"Paused...\" status indicator in BlioLibraryGridViewCell");
+			self.progressView.hidden = YES;
+			self.pauseButton.hidden = YES;
+		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateFailed) {
+			self.resumeButton.hidden = NO;
+			self.stateLabel.hidden = NO;
+			self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
 			self.progressView.hidden = YES;
 			self.pauseButton.hidden = YES;
 		}
 	}
 	else {
 		self.resumeButton.hidden = YES;
-		self.pausedLabel.hidden = YES;
+		self.stateLabel.hidden = YES;
 		self.progressView.hidden = YES;
 		self.pauseButton.hidden = YES;
 		self.progressBackgroundView.hidden = YES;
@@ -1836,14 +1845,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		resumeButton.hidden = YES;	
 		progressView.hidden = YES;
 		bookView.alpha = 1;
-		self.pausedLabel.hidden = YES;
+		self.stateLabel.hidden = YES;
 	}
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
+		self.resumeButton.hidden = NO;
+		self.stateLabel.hidden = NO;
+		self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
+		self.progressView.hidden = YES;
+		self.pauseButton.hidden = YES;		
 	}
 }
+
 @end
 
 @implementation BlioLibraryListCell
@@ -1971,6 +1986,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}			
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
 		[self listenToProcessingNotifications];
+		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		// set appearance to reflect incomplete state
 		// self.bookView.alpha = 0.35f;
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
@@ -1991,6 +2007,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
 			self.accessoryView = resumeButton;
 			self.authorLabel.text = @"Paused...";
+			self.progressView.hidden = YES;
+			self.progressSlider.hidden = YES;
+		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateFailed) {
+			self.accessoryView = resumeButton;
+			self.authorLabel.text = @"Failed...";
+			self.progressView.hidden = YES;
 			self.progressSlider.hidden = YES;
 		}
 	}
@@ -1999,6 +2022,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.progressView removeFromSuperview];
 		[self resetAuthorText];
 		self.accessoryView = nil;
+		self.selectionStyle = UITableViewCellSelectionStyleGray;
 	}
     [self setNeedsLayout];
 }
@@ -2082,6 +2106,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)onProcessingFailedNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		NSLog(@"BlioLibraryListViewCell onProcessingFailedNotification entered");
+		self.accessoryView = resumeButton;
+		self.authorLabel.text = @"Failed...";
+		self.progressView.hidden = YES;
+		self.progressSlider.hidden = YES;		
 	}
 }
 

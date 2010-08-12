@@ -152,26 +152,6 @@
     return bookPath;
 }
 
-- (NSString *)audiobookPath {
-    NSString *filename = [self valueForKey:@"audiobookFilename"];
-    if (filename) {
-        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)timingIndicesPath {
-    NSString *filename = [self valueForKey:@"timingIndicesFilename"];
-    if (filename) {
-        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
 - (BOOL)audioRights {
     return [[self valueForKey:@"hasAudiobookRights"] boolValue];
 }
@@ -499,21 +479,22 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (void)setManifestValue:(id)value forKey:(NSString *)key {
-    NSMutableDictionary *manifest = nil;
-    NSDictionary *currentManifest = [self valueForKey:@"manifest"];
-    if (currentManifest) {
-        manifest = [NSMutableDictionary dictionaryWithDictionary:currentManifest];
-    } else {
-        manifest = [NSMutableDictionary dictionary];
-    }
-    
-    [manifest setValue:value forKey:key];
-    [self setValue:manifest forKeyPath:@"manifest"];
-    
-    NSError *anError;
-    if (![self.managedObjectContext save:&anError]) {
-        NSLog(@"setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
-    }
+//	NSLog(@"setManifestValue:forKey:%@ \n value: %@",key,value);
+		NSMutableDictionary *manifest = nil;
+		NSDictionary *currentManifest = [self valueForKey:@"manifest"];
+		if (currentManifest) {
+			manifest = [NSMutableDictionary dictionaryWithDictionary:currentManifest];
+		} else {
+			manifest = [NSMutableDictionary dictionary];
+		}
+		
+		[manifest setValue:value forKey:key];
+		[self setValue:manifest forKeyPath:@"manifest"];
+		
+		NSError *anError;
+		if (![self.managedObjectContext save:&anError]) {
+			NSLog(@"setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
+		}
 }
 
 - (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path {
@@ -579,6 +560,7 @@ static void sortedHighlightRangePredicateInit() {
 				filePath = [self fullPathOfFileSystemItemAtPath:path];
 			} else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
                 // There is no such thing as a full-path to an XPS item - must be accessed via a data accessor
+				NSLog(@"ERROR: manifest path tried to be obtained for an in-XPS item! key: %@, returning nil...",key);
                 filePath = nil;
             } else {
                 filePath = path;
@@ -589,6 +571,15 @@ static void sortedHighlightRangePredicateInit() {
     return filePath;
 }
 
+- (NSString *)manifestRelativePathForKey:(NSString *)key {
+	NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        NSString *path = [manifestEntry objectForKey:@"path"];
+        if (path) return path;
+    }
+    return nil;
+}
+
 - (NSString *)manifestLocationForKey:(NSString *)key {
     NSString *fileLocation = nil;
     
@@ -597,6 +588,16 @@ static void sortedHighlightRangePredicateInit() {
         fileLocation = [manifestEntry objectForKey:@"location"];
     }
     return fileLocation;
+}
+
+- (BOOL)manifestPreAvailabilityCompleteForKey:(NSString *)key {
+    BOOL fileStatus = false;
+    
+    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        fileStatus = [[manifestEntry objectForKey:@"preAvailabilityComplete"] boolValue];
+    }
+    return fileStatus;
 }
 
 - (NSData *)manifestDataForKey:(NSString *)key {
@@ -618,7 +619,30 @@ static void sortedHighlightRangePredicateInit() {
     [manifestEntry release];
     return data;
 }
-
+- (NSData *)manifestDataForKey:(NSString *)key pathIndex:(NSInteger)index {
+    NSData *data = nil;
+    NSDictionary *manifestEntry = [[self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] retain];
+    if(manifestEntry) {
+        NSString *location = [manifestEntry objectForKey:@"location"];
+		if ([[manifestEntry objectForKey:@"path"] isKindOfClass:[NSArray class]]) {
+			NSArray *pathArray = [manifestEntry objectForKey:@"path"];
+			NSString * path = nil;
+			if (index < [pathArray count]) path = [pathArray objectAtIndex:index];
+			if (location && path) {
+				if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
+					data = [self dataFromFileSystemAtPath:path];
+				} else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
+					data = [self dataFromXPSAtPath:path];
+				} else if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
+					data = [self dataFromTextFlowAtPath:path];
+				}
+			}
+		}
+		else NSLog(@"WARNING: manifestDataForKey:pathIndex: called, but path value is not an array!");
+    }
+    [manifestEntry release];
+    return data;	
+}
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range {
     NSManagedObjectContext *moc = [self managedObjectContext]; 
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 

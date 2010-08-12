@@ -227,7 +227,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 	if (resultBook != nil) {
 		// then update button options accordingly to prevent possible duplication of entries.
 		NSLog(@"Found Book in context already"); 
-		if ([[resultBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]) {
+		if ([[resultBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 			NSLog(@"and processingState is kBlioBookProcessingStateComplete."); 
 			
 			[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
@@ -261,6 +261,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 - (void)layoutViews {    
     // Layout views
     CGRect containerFrame = self.container.frame;
+	NSLog(@"containerFrame.origin.x:%f, containerFrame.origin.y:%f, containerFrame.size.width:%f, containerFrame.size.height:%f",containerFrame.origin.x,containerFrame.origin.y,containerFrame.size.width,containerFrame.size.height);
+
     CGRect bookTitleFrame = self.bookTitle.frame;
     bookTitleFrame.size.height = 47;
     bookTitleFrame.size.width = CGRectGetWidth(containerFrame) - 20 - CGRectGetMinX(bookTitleFrame);
@@ -288,10 +290,14 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     [self.summary setFrame:summaryFrame];
     [self.belowSummaryDetails setFrame:belowSummaryFrame];
 
+	CGFloat newWidth = self.view.frame.size.width;
     CGFloat newHeight = CGRectGetMaxY(belowSummaryFrame) > self.view.frame.size.height ? CGRectGetMaxY(belowSummaryFrame) : self.view.frame.size.height;
+    containerFrame.size.width = newWidth;
     containerFrame.size.height = newHeight;
-//    [self.container setFrame:containerFrame];
- //   [self.scroller setContentSize:containerFrame.size];
+	NSLog(@"containerFrame.origin.x:%f, containerFrame.origin.y:%f, containerFrame.size.width:%f, containerFrame.size.height:%f",containerFrame.origin.x,containerFrame.origin.y,containerFrame.size.width,containerFrame.size.height);
+
+    [self.container setFrame:containerFrame];
+    [self.scroller setContentSize:containerFrame.size];
     
 }
 

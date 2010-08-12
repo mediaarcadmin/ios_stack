@@ -7,72 +7,33 @@
 //
 
 #import "BlioAudioBookManager.h"
-
+#import "BlioBook.h"
+#import "BlioBookManager.h"
 
 @implementation BlioAudioBookManager
 
-@synthesize avPlayer, timeIx, timeStarted, pausedAtTime, wordTimes, pageSegmentVals, pageSegments, audioFiles, timeFiles, currDictKey, pagesDict;
+@synthesize avPlayer, timeIx, timeStarted, pausedAtTime, wordTimes, pageSegmentVals, pageSegments, audioFiles, timeFiles, currDictKey, pagesDict, bookID;
 
-- (BOOL)loadWordTimesFromFile:(NSString*)audioTimingPath {
-	FILE* timingFile = NULL;
-	char lineBuffer[BUFSIZ];
-	timingFile = fopen([audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding],"r");
-	if ( !timingFile ) {
-		NSLog(@"Timing file could not be opened.");
-		return NO;
-	}
-	NSMutableArray* fileTimes = [[NSMutableArray alloc] init];
-	NSString* thisTimeStr = nil;
-	int lastTime;
-	while (fgets(lineBuffer, sizeof(lineBuffer),timingFile)) {
-		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
-		NSRange initRange;
-		initRange.location = 0;
-		initRange.length = 2;
-		if ( [[thisLine substringWithRange:initRange] compare:@"05"] != NSOrderedSame )
-			continue;
-		NSRange timeRange;
-		timeRange.location = [thisLine rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location + 1;
-		timeRange.length = [[thisLine substringFromIndex:timeRange.location]  rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location;
-		thisTimeStr = [thisLine substringWithRange:timeRange];
-		lastTime = atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding]);
-		[fileTimes addObject:[NSNumber numberWithInt:lastTime]];
-	}
-	if ( thisTimeStr == nil ) {
-		[fileTimes release];
-		NSLog(@"Empty timing file, %s", [audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding]);
-		return NO;
-	}
-	self.wordTimes = fileTimes;
-    [fileTimes release];
-	fclose(timingFile);
-	return YES;
-}
-
-- (void)parseData:(NSString*)path  {
-	// Prepare to parse the xml file.
-	NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
-	NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:url];
-	[xmlParser setDelegate:self];
-	[url release];	
-	// Start the parse.
-	BOOL parsedReferences = [xmlParser parse];
-	[xmlParser release]; 
-	if ( !parsedReferences ) {
-		NSLog(@"Failed to parse audio data file: %s\n",path);
-		return;
-	}
-}
-
-- (id)initWithPath:(NSString*)referencesPath metadataPath:(NSString*)metadataPath{
+- (id)initWithBookID:(NSManagedObjectID*)aBookID {
 	if ( (self = [super init]) ) {
 		[self setAvPlayer:nil]; 
 		[self setWordTimes:[NSMutableArray array]];
 		[self setTimeFiles:[NSMutableArray array]];
 		[self setAudioFiles:[NSMutableArray array]];
 		[self setPagesDict:[NSMutableDictionary dictionary]];
-		[self parseData:referencesPath];
-		[self parseData:metadataPath];
+		[self setBookID:aBookID];
+		BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
+
+		NSData * referencesData = [book manifestDataForKey:@"audiobookReferencesFilename"];
+		if (referencesData) {
+			[self parseData:referencesData];
+		}
+		else NSLog(@"WARNING: Data could not be obtained from audiobook References XML file!");
+		NSData * audiobookMetadata = [book manifestDataForKey:@"audiobookMetadataFilename"];
+		if (audiobookMetadata) {
+			[self parseData:audiobookMetadata];
+		}
+		else NSLog(@"WARNING: Data could not be obtained from audiobook Metadata XML file!");
 		[self setStartedPlaying:NO]; 
 		[self setPausedAtTime:0]; 
 		[self setPageChanged:YES];
@@ -89,13 +50,18 @@
 	[currDictKey release];
 	[pageSegments release];
 	[pageSegmentVals release];
-    
+    self.bookID = nil;
     [super dealloc];   
 }
 
-- (BOOL)initAudioWithBook:(NSString*)audioBookPath {
+- (BOOL)initAudioWithIndex:(NSInteger)index {
 	NSError* err;
-    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:audioBookPath] 
+	
+	BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+
+//    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:audioBookPath] 
+//                                                                   error:&err];
+    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:[book manifestDataForKey:@"audiobookDataFiles" pathIndex:index]
                                                                    error:&err];
 	self.avPlayer = player;
     [player release];
@@ -106,6 +72,90 @@
 		return YES;
 	return NO;
 }
+
+- (BOOL)loadWordTimesWithIndex:(NSInteger)index {
+//	NSLog(@"BlioAudioBookManager loadWordTimesWithIndex:%i entered",index);
+//	FILE* timingFile = NULL;
+//	char lineBuffer[BUFSIZ];
+//	timingFile = fopen([audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding],"r");
+//	if ( !timingFile ) {
+//		NSLog(@"Timing file could not be opened.");
+//		return NO;
+//	}
+	NSString* thisTimeStr = nil;
+	int lastTime;
+	
+// OPENING FILE THROUGH MANIFEST
+//
+	BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+	NSMutableArray* fileTimes = [[NSMutableArray alloc] init];
+	NSData * timingData = [book manifestDataForKey:@"audiobookTimingFiles" pathIndex:index];
+	NSString * timingDataString = [[NSString alloc] initWithData:timingData encoding:NSASCIIStringEncoding];
+//	NSLog(@"timingDataString: %@",timingDataString);
+	NSArray * timingLines = [timingDataString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+//	NSLog(@"[timingLines count]: %i",[timingLines count]);
+
+	for (NSString * thisLine in timingLines) {
+		if ([thisLine length] > 0) {
+			NSRange initRange;
+			initRange.location = 0;
+			initRange.length = 2;
+			if ( [[thisLine substringWithRange:initRange] compare:@"05"] != NSOrderedSame )
+				continue;
+			NSRange timeRange;
+			timeRange.location = [thisLine rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location + 1;
+			timeRange.length = [[thisLine substringFromIndex:timeRange.location]  rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location;
+			thisTimeStr = [thisLine substringWithRange:timeRange];
+			lastTime = atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding]);
+			[fileTimes addObject:[NSNumber numberWithInt:lastTime]];
+		}
+	}
+
+// OPENING FILE DIRECTLY
+//
+//	while (fgets(lineBuffer, sizeof(lineBuffer),timingFile)) {
+//		NSString* thisLine = [NSString stringWithUTF8String:lineBuffer];
+//		NSRange initRange;
+//		initRange.location = 0;
+//		initRange.length = 2;
+//		if ( [[thisLine substringWithRange:initRange] compare:@"05"] != NSOrderedSame )
+//			continue;
+//		NSRange timeRange;
+//		timeRange.location = [thisLine rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location + 1;
+//		timeRange.length = [[thisLine substringFromIndex:timeRange.location]  rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location;
+//		thisTimeStr = [thisLine substringWithRange:timeRange];
+//		lastTime = atoi([thisTimeStr cStringUsingEncoding:NSASCIIStringEncoding]);
+//		[fileTimes addObject:[NSNumber numberWithInt:lastTime]];
+//	}
+	
+	if ( thisTimeStr == nil ) {
+//		NSLog(@"Empty timing file, %s", [audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding]);
+		NSLog(@"Empty timing data, %@", timingDataString);
+		return NO;
+	}
+	self.wordTimes = fileTimes;
+    [fileTimes release];
+	[timingDataString release];
+//	fclose(timingFile);
+	return YES;
+}
+
+- (void)parseData:(NSData*)data  {
+	// Prepare to parse the xml file.
+//	NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
+	NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithData:data];
+	[xmlParser setDelegate:self];
+//	[url release];	
+	// Start the parse.
+	BOOL parsedReferences = [xmlParser parse];
+	[xmlParser release]; 
+	if ( !parsedReferences ) {
+//		NSLog(@"Failed to parse audio data file: %s\n",path);
+		NSLog(@"Failed to parse audio data: %@",data);
+		return;
+	}
+}
+
 
 /*
 - (void)retrieveTimingIndices:(NSString*)timingIndicesFile {	

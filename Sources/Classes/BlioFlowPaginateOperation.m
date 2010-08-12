@@ -69,7 +69,7 @@
     }
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
-			NSLog(@"failed dependency found!");
+			NSLog(@"BlioFlowPaginateOperation: failed dependency found! op: %@",blioOp);
 			[self cancel];
 			break;
 		}
@@ -201,6 +201,12 @@
     NSDictionary *userInfo = [notification userInfo];
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
     self.percentageComplete = roundf(percentagePaginated);
+//	NSLog(@"Book %@ pagination progress: %u cancelled: %i",self.bookTitle,self.percentageComplete,[self isCancelled]);
+	if ([self isCancelled]) {
+		NSLog(@"Cancelling pagination...");
+		[paginator stop];
+		[self finish];	
+	}
 }
 
 -(void) dealloc {
