@@ -215,9 +215,6 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 }
 
 - (void)setVolume:(float)volume {
-	NSLog(@"setVolume: %f",volume);
-	NSLog(@"is speaking: %i",[engine isSpeaking]);
-	NSLog(@"engine: %@",[engine description]);
 	[engine setVolume:volume];
 }
 

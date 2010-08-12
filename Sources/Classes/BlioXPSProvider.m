@@ -460,7 +460,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
              
     if (encrypted) {
         if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
-            NSLog(@"Error whilst decrypting data at path %@", componentPath);
+            NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
             return nil;
         }
     }

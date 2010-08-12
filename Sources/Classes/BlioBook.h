@@ -17,8 +17,9 @@
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
 static const NSInteger kBlioBookProcessingStateIncomplete = 2;
-static const NSInteger kBlioBookProcessingStatePaused = 3;
-static const NSInteger kBlioBookProcessingStateComplete = 4;
+static const NSInteger kBlioBookProcessingStateFailed = 3;
+static const NSInteger kBlioBookProcessingStatePaused = 4;
+static const NSInteger kBlioBookProcessingStateComplete = 5;
 
 static NSString * const BlioManifestEntryLocationFileSystem = @"fileSystem";
 static NSString * const BlioManifestEntryLocationXPS = @"xps";
@@ -35,6 +36,9 @@ static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.j
 static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
 static NSString * const BlioXPSKNFBMetadataFile = @"/Documents/1/Other/KNFB/Metadata.xml";
 static NSString * const BlioXPSKNFBRightsFile = @"/Documents/1/Other/KNFB/Rights.xml";
+static NSString * const BlioXPSAudiobookDirectory = @"/Documents/1/Other/KNFB/Audio/";
+static NSString * const BlioXPSAudiobookMetadataFile = @"/Documents/1/Other/KNFB/Audio/Audio.xml";
+static NSString * const BlioXPSAudiobookReferencesFile = @"/Documents/1/Other/KNFB/Audio/References.xml";
 static NSString * const BlioXPSKNFBDRMHeaderFile = @"/Documents/1/Other/KNFB/DrmpHeader.bin";
 
 static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
@@ -70,8 +74,6 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 
 // Legacy core data attribute-backed convenience accessors TODO: remove these
-@property (nonatomic, assign, readonly) NSString *audiobookPath;
-@property (nonatomic, assign, readonly) NSString *timingIndicesPath;
 @property (nonatomic, assign, readonly) BOOL audioRights;
 @property (nonatomic, assign, readonly) BOOL reflowEnabled;
 
@@ -116,7 +118,10 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (NSData *)manifestDataForKey:(NSString *)key;
 - (BOOL)manifestPath:(NSString *)path existsForLocation:(NSString *)location;
 - (NSString *)manifestPathForKey:(NSString *)key;
+- (NSString *)manifestRelativePathForKey:(NSString *)key;
+- (NSData *)manifestDataForKey:(NSString *)key pathIndex:(NSInteger)index;
 - (NSString *)manifestLocationForKey:(NSString *)key;
+- (BOOL)manifestPreAvailabilityCompleteForKey:(NSString *)key;
 - (NSString *)authorWithStandardFormat;
 
 +(NSString*)standardNameFromCanonicalName:(NSString*)aName;

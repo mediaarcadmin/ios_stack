@@ -179,7 +179,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIProgressView *progressView;
     UIButton * pauseButton;
     UIButton * resumeButton;
-    UILabel * pausedLabel;
+    UILabel * stateLabel;
     id delegate;
     NSArray *accessibilityElements;
 	NSString * librarySortKey;
@@ -194,7 +194,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) UIButton *resumeButton;
 @property (nonatomic, assign) BlioBook *book;
-@property (nonatomic, assign) UILabel *pausedLabel;
+@property (nonatomic, assign) UILabel *stateLabel;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) NSArray *accessibilityElements;
 

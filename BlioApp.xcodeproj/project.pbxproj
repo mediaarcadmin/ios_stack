@@ -846,6 +846,9 @@
 		DC2A3E67116C5DF80049A97E /* MRGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5D116C5DF80049A97E /* MRGridView.m */; };
 		DC2A3E68116C5DF80049A97E /* MRGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */; };
 		DC2A3E69116C5DF80049A97E /* MRGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E61116C5DF80049A97E /* MRGridViewController.m */; };
+		DC2AB685121359F200E6C483 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2AB684121359F200E6C483 /* BlioFeatureCompatibility.plist */; };
+		DC2AB686121359F300E6C483 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2AB684121359F200E6C483 /* BlioFeatureCompatibility.plist */; };
+		DC2AB687121359F300E6C483 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2AB684121359F200E6C483 /* BlioFeatureCompatibility.plist */; };
 		DC41ACEF11F0DA4800D13308 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		DC41ACF011F0DA4900D13308 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
@@ -1597,6 +1600,7 @@
 		DC2A3E61116C5DF80049A97E /* MRGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRGridViewController.m; sourceTree = "<group>"; };
 		DC2A3E62116C5DF80049A97E /* MRGridViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewDataSource.h; sourceTree = "<group>"; };
 		DC2A3E63116C5DF80049A97E /* MRGridViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewDelegate.h; sourceTree = "<group>"; };
+		DC2AB684121359F200E6C483 /* BlioFeatureCompatibility.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioFeatureCompatibility.plist; sourceTree = "<group>"; };
 		DC2EB05411C96E28006AC1B6 /* DRM */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DRM; sourceTree = "<group>"; };
 		DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "librarybackground-iPad.png"; sourceTree = "<group>"; };
 		DC48C98C11D54A0100C5D186 /* BlioSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSplitViewController.h; sourceTree = "<group>"; };
@@ -1988,6 +1992,7 @@
 				7D529C101158DC1100548C00 /* TextFlowCover.xhtml */,
 				C9E5DC11117C741600950BA0 /* Localizable.strings */,
 				DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */,
+				DC2AB684121359F200E6C483 /* BlioFeatureCompatibility.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2455,7 +2460,7 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData */,
+				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
 				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
@@ -2620,6 +2625,7 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "BlioApp" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -2727,10 +2733,10 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData */ = {
+		C986765B112411060070A03E /* GData.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = GData;
+			path = GData.framework;
 			remoteRef = C986765A112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2944,6 +2950,7 @@
 				A3FE55B812074EFA0038DA0C /* eula.html in Resources */,
 				A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */,
 				A31E832E120B40CD00CB6657 /* XPS in Resources */,
+				DC2AB685121359F200E6C483 /* BlioFeatureCompatibility.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3121,6 +3128,7 @@
 				A36D356F120B136700E1A035 /* eula.html in Resources */,
 				A36D3570120B136700E1A035 /* userdoc.html in Resources */,
 				A31E832F120B40CD00CB6657 /* XPS in Resources */,
+				DC2AB687121359F300E6C483 /* BlioFeatureCompatibility.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3295,6 +3303,7 @@
 				DC18E087120517010077DF01 /* library-pausebutton@2x.png in Resources */,
 				DC18E08B120517170077DF01 /* library-resumebutton@2x.png in Resources */,
 				DC18E093120517C20077DF01 /* library-progress-background@2x.png in Resources */,
+				DC2AB686121359F300E6C483 /* BlioFeatureCompatibility.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3768,7 +3777,7 @@
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = "-Wall";
 			};
@@ -3996,7 +4005,7 @@
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = "-Wall";
 			};
@@ -4015,7 +4024,7 @@
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = "-Wall";
 			};

@@ -12,11 +12,6 @@
 
 #import <pthread.h>
 
-NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
-NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
-NSString * const BlioProcessingOperationCompleteNotification = @"BlioProcessingOperationCompleteNotification";
-NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOperationFailedNotification";
-
 @implementation BlioProcessingOperation
 
 static pthread_mutex_t sBookMutationMutex = PTHREAD_MUTEX_INITIALIZER;
