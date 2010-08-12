@@ -205,7 +205,7 @@
 	if ([self isCancelled]) {
 		NSLog(@"Cancelling pagination...");
 		[paginator stop];
-//		[self finish];	
+		[self finish];	
 	}
 }
 
