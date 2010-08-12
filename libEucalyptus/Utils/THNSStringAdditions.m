@@ -172,49 +172,4 @@ static void objectBackedAllocatorRegisterPointerAsBelongingTo(const void *ptr, i
                                                  NSWidthInsensitiveSearch | NSForcedOrderingSearch];
 }
 
-#define	kLeftApostrophe  0x2018
-#define kRightApostrophe 0x2019
-#define kLeftQuote       0x201C
-#define kRightQuote      0x201D
-
-- (NSString *)stringWithSmartQuotes
-{
-    NSMutableString *ret = nil;
-    NSString *searchString = self;
-    
-    NSCharacterSet *startSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-    NSCharacterSet *quoteSet = [NSCharacterSet characterSetWithCharactersInString:@"\"'"];
-    NSRange searchRange = NSMakeRange(0, searchString.length);
-    NSRange resultRange;
-    while((resultRange = [searchString rangeOfCharacterFromSet:quoteSet options:0 range:searchRange]).location != NSNotFound) {
-        if(resultRange.length == 1) {
-            UniChar theChar = [searchString characterAtIndex:resultRange.location];
-            UniChar prevChar = resultRange.location > 0 ? [searchString characterAtIndex:resultRange.location - 1] : 0;
-            // From http://www.pensee.com/dunham/smartQuotes.html
-            if (prevChar == 0 ||                                            // Beginning of text
-                prevChar == '(' || prevChar == '[' || prevChar == '{' ||	// Left thingies
-                prevChar == '<' || prevChar == 0x00AB ||                    // More left thingies
-                prevChar == 0x3008 || prevChar == 0x300A ||                 // Even more left thingies (we could add more Unicode)
-                (prevChar == kLeftQuote && theChar == '\'') ||              // Nest apostrophe inside quote
-                (prevChar == kLeftApostrophe && theChar == '"') ||          // Alternate nesting
-                [startSet characterIsMember:prevChar]                       // Beginning of word/line
-                ) {
-                theChar = (theChar == '"' ? kLeftQuote : kLeftApostrophe);
-            } else {
-                theChar = (theChar == '"' ? kRightQuote : kRightApostrophe);
-            }
-            if(!ret) {
-                ret = [[self mutableCopy] autorelease];
-                searchString = ret;
-            }
-            [ret replaceCharactersInRange:resultRange withString:[NSString stringWithCharacters:&theChar length:1]];
-            searchRange.location = resultRange.location + resultRange.length;
-            searchRange.length = searchString.length - searchRange.location;
-        }
-    }
-   
-    return searchString;
-}
-
-
 @end

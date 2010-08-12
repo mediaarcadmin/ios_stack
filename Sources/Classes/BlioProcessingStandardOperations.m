@@ -12,11 +12,6 @@
 #import "NSString+BlioAdditions.h"
 #import "BlioAlertManager.h"
 
-static const CGFloat kBlioCoverListThumbHeight = 76;
-static const CGFloat kBlioCoverListThumbWidth = 53;
-static const CGFloat kBlioCoverGridThumbHeight = 140;
-static const CGFloat kBlioCoverGridThumbWidth = 102;
-
 @implementation BlioProcessingCompleteOperation
 
 @synthesize alreadyCompletedOperations;

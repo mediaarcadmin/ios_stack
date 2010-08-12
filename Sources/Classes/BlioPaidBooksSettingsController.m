@@ -168,6 +168,7 @@
 
 
 - (void)dealloc {
+	[pbTableView release];
     [super dealloc];
 }
 

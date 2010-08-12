@@ -10,6 +10,7 @@
 #import "BlioBookManager.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/THStringRenderer.h>
 #import <pthread.h>
 
 @interface BlioBook (PRIVATE_DO_NOT_MAKE_PUBLIC)
@@ -190,19 +191,87 @@
     return [self hasManifestValueForKey:@"drmHeaderFilename"];
 }
 
+- (UIImage *)missingCoverImageOfSize:(CGSize)size {
+    if(UIGraphicsBeginImageContextWithOptions != nil) {
+        UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(size);
+    }
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    UIImage *missingCover = [UIImage imageNamed:@"booktexture-nocover.png"];
+    [missingCover drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    
+    NSString *titleString = [self title];
+    NSUInteger maxTitleLength = 100;
+    if ([titleString length] > maxTitleLength) {
+        titleString = [NSString stringWithFormat:@"%@...", [titleString substringToIndex:maxTitleLength]];
+    }
+    
+    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"Georgia"];
+
+    CGSize fullSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat pointSize = roundf(fullSize.height / 12.5f); // 38pt/82pt on iphone/ipad
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(size.width / fullSize.width, size.height / fullSize.height);
+    
+    UIEdgeInsets titleInsets = UIEdgeInsetsMake(fullSize.height * 0.2f, fullSize.width * 0.2f, fullSize.height * 0.2f, fullSize.width * 0.1f);
+    CGRect titleRect = UIEdgeInsetsInsetRect(CGRectMake(0, 0, fullSize.width, fullSize.height), titleInsets);
+    
+    BOOL fits = NO;
+    
+    NSUInteger flags = THStringRendererFlagFairlySpaceLastLine | THStringRendererFlagCenter;
+    
+    while (!fits && pointSize >= 2) {
+        CGSize size = [renderer sizeForString:titleString pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+        if ((size.height <= titleRect.size.height) && (size.width <= titleRect.size.width)) {
+            fits = YES;
+        } else {
+            pointSize -= 1.0f;
+        }
+    }
+    
+    CGContextConcatCTM(ctx, scaleTransform);
+    CGContextClipToRect(ctx, titleRect); // if title won't fit at 2 points it gets clipped
+    CGContextSetShadowWithColor(ctx, CGSizeMake(0, -MAX(fullSize.height * 0.0005f, 0.5f)), MAX(fullSize.height * 0.0005f, 0.5f), [UIColor blackColor].CGColor);
+    CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 0.9f, 1);
+    [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+    [renderer release];
+    
+    UIImage *aCoverImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    return aCoverImage;
+}
+
 - (UIImage *)coverImage {
     NSData *imageData = [self manifestDataForKey:@"coverFilename"];
-    return [UIImage imageWithData:imageData];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+        return [self missingCoverImageOfSize:CGSizeMake(screenSize.width, screenSize.height)];
+    }
 }
 
 - (UIImage *)coverThumbForGrid {
     NSData *imageData = [self manifestDataForKey:@"gridThumbFilename"];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
+    }
     return [UIImage imageWithData:imageData];
 }
 
 - (UIImage *)coverThumbForList {
     NSData *imageData = [self manifestDataForKey:@"listThumbFilename"];
-    return [UIImage imageWithData:imageData];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
+    }
 }
 
 - (NSArray *)sortedBookmarks {

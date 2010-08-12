@@ -18,12 +18,14 @@
 #import "EucCSSLayoutDocumentRun_Package.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
+#import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "THStringRenderer.h"
+#import "THNSStringSmartQuotes.h"
 #import "THPair.h"
 #import "THLog.h"
 #import "th_just_with_floats.h"
@@ -547,6 +549,8 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                     [self _addComponent:&spaceInfo];                                    
                 }
                 
+                word = [word stringWithSmartQuotes];
+                
                 EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                 info.kind = EucCSSLayoutDocumentRunComponentKindWord;
                 info.component = (void *)word;
@@ -603,6 +607,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             
             const UniChar *wordStart = cursor;
             
+            BOOL wordNeedsSmartQuotes = NO;
             BOOL sawNewline = NO;
             while(cursor < end) {
                 UniChar ch = *cursor;
@@ -622,6 +627,12 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                                                                                   wordStart, 
                                                                                   wordLength);
                                 if(string) {
+                                    if(wordNeedsSmartQuotes) {
+                                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotes];
+                                        CFRelease(string);
+                                        string = (CFStringRef)[smartQuoted retain];
+                                        wordNeedsSmartQuotes = NO;
+                                    }
                                     EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                                     info.kind = EucCSSLayoutDocumentRunComponentKindWord;
                                     info.component = (void *)string;
@@ -677,6 +688,11 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                             }
                         }
                         break;
+                        
+                    case '\'':
+                    case '"':
+                        wordNeedsSmartQuotes = YES;
+                        // Fall through.
                     default:
                         if(_previousInlineCharacterWasSpace) {
                             if(!_alreadyInsertedSpace) {
@@ -698,6 +714,12 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                                                                   wordStart, 
                                                                   cursor - wordStart);
                 if(string) {
+                    if(wordNeedsSmartQuotes) {
+                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotes];
+                        CFRelease(string);
+                        string = (CFStringRef)[smartQuoted retain];
+                        wordNeedsSmartQuotes = NO;
+                    }                    
                     EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                     info.kind = EucCSSLayoutDocumentRunComponentKindWord;
                     info.component = (void *)string;
@@ -835,9 +857,10 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
 }
 
 - (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
+                                         inContainer:(EucCSSLayoutPositionedBlock *)container
                                           wordOffset:(uint32_t)wordOffset 
                                        elementOffset:(uint32_t)elementOffset
-{
+{    
     if(_componentsCount == 0) {
         return nil;
     }    
@@ -852,17 +875,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         [self _recalculateSizeDependentComponentSizesForFrame:frame];
     }
     [self _ensurePotentialBreaksCalculated];
-    
-    size_t startBreakOffset = 0;
-    for(;;) {
-        EucCSSLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
-        if(point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset)) {
-            ++startBreakOffset;
-        } else {
-            break;
-        }
-    }
-    
+        
     CGFloat textIndent;
     if(elementOffset == 0 && wordOffset == 0) {
         textIndent = [self _textIndentInWidth:frame.size.width];
@@ -870,79 +883,169 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         textIndent = 0.0f;
     }
     
-    CGFloat indentationOffset;
-    uint32_t lineStartComponent;
-    if(startBreakOffset) {
-        indentationOffset = -_potentialBreaks[startBreakOffset].x1;
-        
-        EucCSSLayoutDocumentRunPoint point = { wordOffset, elementOffset };
-        lineStartComponent = [self pointToComponentOffset:point];
-        uint32_t firstBreakComponent = [self pointToComponentOffset:_potentialBreakInfos[startBreakOffset].point];
-        for(uint32_t i = lineStartComponent; i < firstBreakComponent; ++i) {
-            indentationOffset += _componentInfos[i].width;
-        }
-    } else {
-        lineStartComponent = 0;
-        indentationOffset = textIndent;
-    }
-    
-    int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
-    int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
-    int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, frame.size.width, 0, usedBreakIndexes);
-
+    NSMutableArray *lines = nil;
     CGPoint lineOrigin = CGPointZero;
-
-    uint8_t textAlign = [self _textAlign];
-    
     CGFloat lastLineMaxY = 0;
     
-    NSMutableArray *lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
-    EucCSSLayoutDocumentRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
-    for(int i = 0; i < usedBreakCount; ++i) {
-        EucCSSLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
-        EucCSSLayoutPositionedLine *newLine = [[EucCSSLayoutPositionedLine alloc] init];
-        newLine.parent = ret;
-        if(lastLineBreakInfo.consumesComponent) {
-            EucCSSLayoutDocumentRunPoint point = lastLineBreakInfo.point;
-            uint32_t componentOffset = [self pointToComponentOffset:point];
-            ++componentOffset;
-            if(componentOffset >= _componentsCount) {
-                // This is off the end of the components array.
-                // This must be an empty line at the end of a run.
-                // We remove this - the only way it can happen is if the last
-                // line ends in a newline (e.g. <br>), and we're about to add
-                // an implicit newline at tee end of the block anyway.
-                [newLine release];        
-                break;
+    CGFloat thisLineWidth = frame.size.width;
+    CGFloat lastLineUsedWidth = thisLineWidth;
+    BOOL firstTryAtLine = YES;
+    
+    do {
+        size_t startBreakOffset = 0;
+        for(;;) {
+            EucCSSLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
+            if(point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset)) {
+                ++startBreakOffset;
             } else {
-                newLine.startPoint = _componentInfos[componentOffset].point;
+                break;
+            }
+        }        
+        
+        CGFloat indentationOffset;
+        uint32_t lineStartComponent;
+        if(startBreakOffset) {
+            indentationOffset = -_potentialBreaks[startBreakOffset].x1;
+            
+            EucCSSLayoutDocumentRunPoint point = { wordOffset, elementOffset };
+            lineStartComponent = [self pointToComponentOffset:point];
+            uint32_t firstBreakComponent = [self pointToComponentOffset:_potentialBreakInfos[startBreakOffset].point];
+            for(uint32_t i = lineStartComponent; i < firstBreakComponent; ++i) {
+                indentationOffset += _componentInfos[i].width;
             }
         } else {
-            newLine.startPoint = lastLineBreakInfo.point;
-        }
-        newLine.endPoint = thisLineBreakInfo.point;
-        
-        if(textIndent) {
-            newLine.indent = textIndent;
-            textIndent = 0.0f;
-        }
-        if(textAlign == CSS_TEXT_ALIGN_JUSTIFY &&
-           (_potentialBreaks[usedBreakIndexes[i] + startBreakOffset].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) {
-            newLine.align = CSS_TEXT_ALIGN_DEFAULT;
-        } else {
-            newLine.align = textAlign;
+            lineStartComponent = 0;
+            indentationOffset = textIndent;
         }
         
-        newLine.frame = CGRectMake(lineOrigin.x, lineOrigin.y, 0, 0);
-        [newLine sizeToFitInWidth:frame.size.width];
+        int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
+        int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
+        int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, thisLineWidth, 0, usedBreakIndexes);
 
-        lastLineMaxY = lineOrigin.y + newLine.frame.size.height;
-        [lines addObject:newLine];
-        [newLine release];        
-    
-        lineOrigin.y = lastLineMaxY;
-        lastLineBreakInfo = thisLineBreakInfo;
-    }
+        uint8_t textAlign = [self _textAlign];
+        
+        if(!lines) {
+            lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
+        }
+        EucCSSLayoutDocumentRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
+        lastLineUsedWidth = thisLineWidth;
+        for(int i = 0; i < usedBreakCount && thisLineWidth == lastLineUsedWidth; ++i) {
+            EucCSSLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
+            EucCSSLayoutPositionedLine *newLine = [[EucCSSLayoutPositionedLine alloc] init];
+            newLine.parent = ret;
+            if(lastLineBreakInfo.consumesComponent) {
+                EucCSSLayoutDocumentRunPoint point = lastLineBreakInfo.point;
+                uint32_t componentOffset = [self pointToComponentOffset:point];
+                ++componentOffset;
+                if(componentOffset >= _componentsCount) {
+                    // This is off the end of the components array.
+                    // This must be an empty line at the end of a run.
+                    // We remove this - the only way it can happen is if the last
+                    // line ends in a newline (e.g. <br>), and we're about to add
+                    // an implicit newline at tee end of the block anyway.
+                    [newLine release];        
+                    break;
+                } else {
+                    newLine.startPoint = _componentInfos[componentOffset].point;
+                }
+            } else {
+                newLine.startPoint = lastLineBreakInfo.point;
+            }
+            newLine.endPoint = thisLineBreakInfo.point;
+            
+            if(textIndent) {
+                newLine.indent = textIndent;
+                textIndent = 0.0f;
+            }
+            if(textAlign == CSS_TEXT_ALIGN_JUSTIFY &&
+               (_potentialBreaks[usedBreakIndexes[i] + startBreakOffset].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) {
+                newLine.align = CSS_TEXT_ALIGN_DEFAULT;
+            } else {
+                newLine.align = textAlign;
+            }
+            
+            newLine.frame = CGRectMake(lineOrigin.x, lineOrigin.y, 0, 0);
+            [newLine sizeToFitInWidth:thisLineWidth];
+            
+            // Calculate available width for line of this height.
+            
+            CGFloat availableWidth;
+            THPair *floats = [container floatsOverlappingYPoint:lineOrigin.y + frame.origin.y height:newLine.frame.size.height];
+            if(floats) {
+                CGFloat leftX = 0;
+                CGFloat rightX = frame.size.width;
+                for(EucCSSLayoutPositionedContainer *thisFloat in floats.first) {
+                    CGRect floatFrame = [thisFloat frameInRelationTo:container];;
+                    CGFloat floatMaxX = CGRectGetMaxX(floatFrame);
+                    if(floatMaxX > leftX) {
+                        leftX = floatMaxX;
+                    }
+                }
+                for(EucCSSLayoutPositionedContainer *thisFloat in floats.second) {
+                    CGRect floatFrame = [thisFloat frameInRelationTo:container];
+                    CGFloat floatMinX = CGRectGetMinX(floatFrame);
+                    if(floatMinX < rightX) {
+                        rightX = floatMinX;
+                    }
+                }
+                availableWidth = rightX - leftX;
+                
+                CGRect newlineFrame = newLine.frame;
+                newlineFrame.origin.x = leftX;
+                newLine.frame = newlineFrame;
+            } else {
+                availableWidth = frame.size.width;
+            }
+            
+            // Is the available width != the used width?
+            if(availableWidth != thisLineWidth) { 
+                THLog(@"Recalculating for float");
+                if(!firstTryAtLine) {
+                    // We can't fit this line in the width.
+                    // We'll loop and try this line again after the first float
+                    // ends.
+                    CGFloat nextY = CGFLOAT_MAX;
+                    
+                    for(EucCSSLayoutPositionedContainer *thisFloat in floats.first) {
+                        CGRect floatFrame = thisFloat.frame;
+                        CGFloat floatMaxY = CGRectGetMaxY([thisFloat frameInRelationTo:container]);
+                        floatMaxY -= floatFrame.origin.y;
+                        if(floatMaxY < nextY) {
+                            nextY = floatMaxY;
+                        }
+                    }
+                    for(EucCSSLayoutPositionedContainer *thisFloat in floats.second) {
+                        CGRect floatFrame = thisFloat.frame;
+                        CGFloat floatMaxY = CGRectGetMaxY([thisFloat frameInRelationTo:container]);
+                        floatMaxY -= floatFrame.origin.y;
+                        if(floatMaxY < nextY) {
+                            nextY = floatMaxY;
+                        }
+                    }
+                    lineOrigin.y = nextY;
+                } else {
+                    // We'll loop and try this line again with the real available width.
+                    thisLineWidth = availableWidth;
+                }
+                wordOffset = newLine.startPoint.word;
+                elementOffset = newLine.startPoint.element;
+                firstTryAtLine = NO;
+            } else {
+                lastLineUsedWidth = thisLineWidth;
+                lastLineMaxY = lineOrigin.y + newLine.frame.size.height;
+                [lines addObject:newLine];
+                [newLine release];        
+            
+                lineOrigin.y = lastLineMaxY;
+                lastLineBreakInfo = thisLineBreakInfo;
+                if(!firstTryAtLine) {
+                    firstTryAtLine = YES;
+                }
+            }
+        } 
+        
+        free(usedBreakIndexes);
+    } while(lastLineUsedWidth != thisLineWidth);
     
     if(lines.count) {
         ret.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY);
@@ -951,7 +1054,6 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         [ret release];
         ret = nil;
     }
-    free(usedBreakIndexes);
         
     return [ret autorelease];
 }

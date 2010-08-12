@@ -136,9 +136,9 @@
     self.frame = frame;
 }
 
-- (CGFloat)minimumNeededWidth
+- (CGFloat)minimumWidth
 {
-    return _componentWidth + _indent;
+    return ceilf(_componentWidth + _indent);
 }
 
 - (size_t)renderItemCount
@@ -289,6 +289,23 @@
                     --spacesRemaining;
                 }
                 xPosition += info->width;
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+                if(i == startComponentOffset) {
+                    CGFloat emBoxHeight = info->pointSize;
+                    CGFloat inlineBoxHeight = info->lineHeight;
+                    CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
+
+                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
+                    renderItem->item.stringItem.string = [(NSString *)info->component2 retain];
+                    renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender - halfLeading, info->widthAfterHyphen, size.height);
+                    renderItem->item.stringItem.pointSize = info->pointSize;
+                    renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
+                    renderItem->item.stringItem.layoutPoint = info->point;
+                    ++renderItem;
+                    ++_renderItemCount;
+                    
+                    xPosition += info->widthAfterHyphen;
+                }
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
                 renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindImage;
                 renderItem->item.imageItem.image = CGImageRetain((CGImageRef)info->component);
@@ -299,19 +316,6 @@
                 ++_renderItemCount;
                 
                 xPosition += info->width;
-            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                if (i == startComponentOffset) {
-                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
-                    renderItem->item.stringItem.string = [(NSString *)info->component2 retain];
-                    renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthAfterHyphen, size.height);
-                    renderItem->item.stringItem.pointSize = info->pointSize;
-                    renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
-                    renderItem->item.stringItem.layoutPoint = info->point;
-                    ++renderItem;
-                    ++_renderItemCount;
-                    
-                    xPosition += info->widthAfterHyphen;
-                }
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
                 checkForUnderline = YES;
                 checkForHyperlink = YES;

@@ -31,14 +31,6 @@ typedef struct EucCSSLayoutPoint
 @interface EucCSSLayouter : NSObject {
     EucCSSIntermediateDocument *_document;
     CGFloat _scaleFactor;
-    
-#ifdef __cplusplus
-    std::vector<CGPoint> *_leftFloats;
-    std::vector<CGPoint> *_rightFloats;
-#else
-    void *_leftFloats;
-    void *_rightFloats;
-#endif 
 }
 
 @property (nonatomic, retain) EucCSSIntermediateDocument *document;
@@ -47,12 +39,17 @@ typedef struct EucCSSLayoutPoint
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document
            scaleFactor:(CGFloat)scaleFactor;
 
+- (EucCSSLayoutPositionedBlock *)_layoutFromPoint:(EucCSSLayoutPoint)point
+                                          inFrame:(CGRect)frame
+                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
+                               returningCompleted:(BOOL *)returningCompleted
+                                 lastBlockNodeKey:(uint32_t)lastBlockNodeKey
+                            constructingAncestors:(BOOL)constructingAncestors;
+
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                          inFrame:(CGRect)frame
                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                              returningCompleted:(BOOL *)returningCompleted
-                                lastBlockNodeKey:(uint32_t)lastBlockNodeKey
-                           constructingAncestors:(BOOL)constructingAncestors;
+                              returningCompleted:(BOOL *)returningCompleted;
 
 - (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;
 

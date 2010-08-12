@@ -73,9 +73,6 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
 @property (nonatomic, assign) uint8_t align;
 
 @property (nonatomic, readonly) CGFloat componentWidth;
-@property (nonatomic, readonly) CGFloat minimumNeededWidth;
-
-- (void)sizeToFitInWidth:(CGFloat)width;
 
 - (size_t)renderItemCount;
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems;

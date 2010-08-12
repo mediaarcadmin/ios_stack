@@ -17,7 +17,7 @@
 
 struct css_computed_style;
 
-@class EucCSSIntermediateDocumentNode;
+@class EucCSSIntermediateDocumentNode, THPair;
 
 @interface EucCSSLayoutPositionedBlock : EucCSSLayoutPositionedContainer {
     EucCSSIntermediateDocumentNode *_documentNode;
@@ -27,6 +27,12 @@ struct css_computed_style;
     CGRect _borderRect;
     CGRect _paddingRect;
     CGRect _contentRect;
+    
+    NSMutableArray *_leftFloatChildren;
+    NSMutableArray *_rightFloatChildren;
+    
+    NSArray *_intrudingLeftFloats;
+    NSArray *_intrudingRightFloats;
 }
 
 @property (nonatomic, retain) EucCSSIntermediateDocumentNode *documentNode;
@@ -37,6 +43,13 @@ struct css_computed_style;
 @property (nonatomic, assign, readonly) CGRect paddingRect;
 @property (nonatomic, assign, readonly) CGRect contentRect;
 
+@property (nonatomic, retain, readonly) NSArray *leftFloatChildren;
+@property (nonatomic, retain, readonly) NSArray *rightFloatChildren;
+
+@property (nonatomic, retain) NSArray *intrudingLeftFloats;
+@property (nonatomic, retain) NSArray *intrudingRightFloats;
+
+
 - (id)initWithDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode
                scaleFactor:(CGFloat)scaleFactor;
 
@@ -46,5 +59,10 @@ struct css_computed_style;
 - (void)closeBottomWithContentHeight:(CGFloat)height atInternalPageBreak:(BOOL)atInternalPageBreak;
 
 - (void)addChild:(EucCSSLayoutPositionedContainer *)child;
+- (void)addFloatChild:(EucCSSLayoutPositionedContainer *)child 
+           atContentY:(CGFloat)contentY
+               onLeft:(BOOL)onLeft;
+
+- (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height;
 
 @end
