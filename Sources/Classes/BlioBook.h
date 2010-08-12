@@ -118,6 +118,8 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (NSArray *)sortedHighlightRangesForRange:(BlioBookmarkRange *)range;
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range;
 
+- (NSData *)textFlowDataWithPath:(NSString *)path;
+
 - (void)setManifestValue:(id)value forKey:(NSString *)key;
 - (BOOL)hasManifestValueForKey:(NSString *)key;
 - (NSData *)manifestDataForKey:(NSString *)key;

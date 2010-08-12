@@ -486,7 +486,7 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (void)setManifestValue:(id)value forKey:(NSString *)key {
-//	NSLog(@"setManifestValue:forKey:%@ \n value: %@",key,value);
+//	NSLog(@"setManifestValue:forKey:%@ \n value: %@ for book with ID %@",key,value,self.objectID);
 		NSMutableDictionary *manifest = nil;
 		NSDictionary *currentManifest = [self valueForKey:@"manifest"];
 		if (currentManifest) {
@@ -545,6 +545,10 @@ static void sortedHighlightRangePredicateInit() {
     return data;
 }
 
+- (NSData *)textFlowDataWithPath:(NSString *)path {
+    return [self dataFromTextFlowAtPath:path];
+}
+
 - (BOOL)hasManifestValueForKey:(NSString *)key
 {
     return [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] != nil;
@@ -558,7 +562,7 @@ static void sortedHighlightRangePredicateInit() {
         NSString *location = [manifestEntry objectForKey:@"location"];
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
-            // TODO: what if the textflow is in the XPS - this won't work? manifestPathForKey should have remained private
+            // TODO: what if the textflow is in the XPS - this won't work? manifestPathForKey perhaps should have stayed private
             if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
                 filePath = [self fullPathOfTextFlowItemAtPath:path];
             } else if ([location isEqualToString:BlioManifestEntryLocationBundle]) {
@@ -650,6 +654,7 @@ static void sortedHighlightRangePredicateInit() {
     [manifestEntry release];
     return data;	
 }
+
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range {
     NSManagedObjectContext *moc = [self managedObjectContext]; 
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 

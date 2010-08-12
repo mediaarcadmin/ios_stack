@@ -48,8 +48,10 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 @property (nonatomic) BOOL operationSuccess;
 @property (nonatomic) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
 
+- (NSData *)getBookTextFlowDataWithPath:(NSString *)path;
 - (BOOL)bookManifestPath:(NSString *)path existsForLocation:(NSString *)location;
 - (void)setBookManifestValue:(id)value forKey:(NSString *)key;
+- (BOOL)hasBookManifestValueForKey:(NSString *)key;
 - (NSData *)getBookManifestDataForKey:(NSString *)key;
 - (NSString *)getBookManifestPathForKey:(NSString *)key;
 
