@@ -39,7 +39,7 @@ NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey = @"EucBoo
 - (void)_paginationThread;
 - (void)_paginationThreadComplete;
 - (void)_releasePaginationIvars;
-- (void)_sendPeriodicPaginationUpdate;
+- (void)_sendPeriodicPaginationUpdate:(void *)seqNo;
 
 @end
 
@@ -47,6 +47,20 @@ NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey = @"EucBoo
 
 @synthesize percentagePaginated = _percentagePaginated;
 @synthesize isPaginating = _continueParsing;
+
+- (id)init
+{
+    if((self = [super init])) {
+        pthread_mutex_init(&_paginationInfoMutex, NULL);   
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    pthread_mutex_destroy(&_paginationInfoMutex);
+    [super dealloc];
+}
 
 static void *PaginationThread(void *self) 
 {
@@ -206,12 +220,12 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
         
         [currentPoints[currentPointIndex] writeToOpenFD:pageIndexFDs[currentPointIndex]];
         
-        pthread_mutex_lock(&_countMutationMutex);
+        pthread_mutex_lock(&_paginationInfoMutex);
         ++_pageCounts[currentPointIndex];
         if((pageCount % 16) == 0) {
             _percentagePaginated = [_book estimatedPercentageForIndexPoint:currentPoints[currentPointIndex]];
         }        
-        pthread_mutex_unlock(&_countMutationMutex);
+        pthread_mutex_unlock(&_paginationInfoMutex);
 
         [currentPoints[currentPointIndex] release];
         currentPoints[currentPointIndex] = [nextPoint retain];
@@ -280,7 +294,6 @@ abandon:
     _continueParsing = YES;
     
     _pageCounts = calloc(sizeof(NSUInteger), sDesiredPointSizesCount * sDesiredPageSizesCount);
-    pthread_mutex_init(&_countMutationMutex, NULL);
     
     if(_saveImagesTo) {
         [[NSFileManager defaultManager] removeItemAtPath:_saveImagesTo error:nil];
@@ -292,9 +305,9 @@ abandon:
         pthread_create(&_paginationThread, NULL, PaginationThread, (void *)self);
         _monitoringTimer = [[NSTimer scheduledTimerWithTimeInterval:kThreadedProgressPollingDelay
                                                              target:self 
-                                                           selector:@selector(_sendPeriodicPaginationUpdate) 
-                                                       userInfo:nil 
-                                                        repeats:YES] retain];
+                                                           selector:@selector(_sendPeriodicPaginationUpdate:) 
+                                                           userInfo:_paginationSeqNo
+                                                            repeats:YES] retain];
         // Callers of this expect the indexes to be in aa usable state after return,
         // even if the paginator's running in the background, so we wait for the 
         // pagination thread to sigmal that it has created the indexes before 
@@ -320,10 +333,10 @@ abandon:
 }
 
 
-- (void)_sendPeriodicPaginationUpdate
+- (void)_sendPeriodicPaginationUpdate:(void *)seqNo
 {
-    pthread_mutex_lock(&_countMutationMutex);
-    if(_percentagePaginated) {
+    pthread_mutex_lock(&_paginationInfoMutex);
+    if(seqNo == _paginationSeqNo && _percentagePaginated) {
         NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
                                   _book, EucBookPaginatorNotificationBookKey,
                                   [NSNumber numberWithFloat:_percentagePaginated], EucBookPaginatorNotificationPercentagePaginatedKey, 
@@ -333,12 +346,18 @@ abandon:
                                                           userInfo:userInfo];
         [userInfo release];
     }
-    pthread_mutex_unlock(&_countMutationMutex);
+    pthread_mutex_unlock(&_paginationInfoMutex);
 }
 
     
 - (void)_releasePaginationIvars
 {
+    pthread_mutex_lock(&_paginationInfoMutex);
+    // Increment the secuence number to stop any progress notifications that
+    // might be started on another thread.
+    ++_paginationSeqNo;
+    pthread_mutex_unlock(&_paginationInfoMutex);
+    
     [_paginationStartedLock release];
     _paginationStartedLock = nil;
     [_monitoringTimer invalidate];
@@ -352,7 +371,6 @@ abandon:
     _pageCounts = nil;
     _percentagePaginated = 0.0f;
     _continueParsing = NO;
-    pthread_mutex_destroy(&_countMutationMutex);
 }
 
     
@@ -368,7 +386,7 @@ abandon:
     
 - (void)_paginationThreadComplete
 {
-    [self _sendPeriodicPaginationUpdate];
+    [self _sendPeriodicPaginationUpdate:_paginationSeqNo];
     
     [EucBookIndex markBookBundleAsIndexesConstructed:[_book cacheDirectoryPath]];
     
