@@ -231,7 +231,7 @@
     THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"Georgia"];
 
     CGSize fullSize = [[UIScreen mainScreen] bounds].size;
-    CGFloat pointSize = roundf(fullSize.height / 12.5f); // 38pt/82pt on iphone/ipad
+    CGFloat pointSize = roundf(fullSize.height / 8.0f);
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(size.width / fullSize.width, size.height / fullSize.height);
     
     UIEdgeInsets titleInsets = UIEdgeInsetsMake(fullSize.height * 0.2f, fullSize.width * 0.2f, fullSize.height * 0.2f, fullSize.width * 0.1f);
@@ -252,8 +252,15 @@
     
     CGContextConcatCTM(ctx, scaleTransform);
     CGContextClipToRect(ctx, titleRect); // if title won't fit at 2 points it gets clipped
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, -MAX(fullSize.height * 0.0005f, 0.5f)), MAX(fullSize.height * 0.0005f, 0.5f), [UIColor blackColor].CGColor);
-    CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 0.9f, 1);
+    
+    CGContextSetBlendMode(ctx, kCGBlendModeOverlay);
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0.919 green:0.888 blue:0.862 alpha:0.8f].CGColor);
+    CGContextBeginTransparencyLayer(ctx, NULL);
+    CGContextSetShadow(ctx, CGSizeMake(0, -1*scaleTransform.d), 0);
+    [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+    CGContextEndTransparencyLayer(ctx);
+    
+    CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 1, 0.8f);
     [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
     [renderer release];
     
