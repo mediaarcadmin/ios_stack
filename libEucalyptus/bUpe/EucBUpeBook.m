@@ -146,11 +146,14 @@ struct contentOpfParsingContext
     BOOL inIdentifier;
     BOOL inMeta;
     BOOL inSpine;
+    BOOL inGuide;
     
     BOOL inManifest;
     NSMutableDictionary *buildMeta;
     NSMutableDictionary *buildManifest;
     NSMutableArray *buildSpine;
+    
+    NSURL *guideCoverItemURL;
 };
 
 static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) 
@@ -215,6 +218,27 @@ static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const
         }
     }
     
+    if(context->inGuide) {
+        // The only thing we use the guide for is detecting the covrer page.
+        // TOC is provided by the ncx file.
+        if(strcmp("reference", name) == 0) {
+            const XML_Char *type = NULL;
+            const XML_Char *href = NULL;
+            for(int i = 0; atts[i]; i+=2) {
+                if(strcmp("type", atts[i]) == 0) {
+                    type = atts[i+1];
+                } else if(strcmp("href", atts[i]) == 0) {
+                    href = atts[i+1];
+                } 
+            }
+            if(type && href) {
+                if(strcmp("cover", type) == 0) {
+                    context->guideCoverItemURL = [NSURL URLWithString:[NSString stringWithUTF8String:href] relativeToURL:context->url];
+                }
+            }
+        }
+    }
+    
     if(strcmp("metadata", name) == 0) {
         context->inMetadata = YES;
     } else if(strcmp("manifest", name) == 0) {
@@ -227,6 +251,8 @@ static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const
             }
         }      
         context->inSpine = YES;
+    } else if(strcmp("guide", name) == 0) {
+        context->inGuide = YES;
     }
 }    
 
@@ -253,6 +279,10 @@ static void contentOpfEndElementHandler(void *ctx, const XML_Char *name)
     } else if(context->inSpine) {
         if(strcmp("spine", name) == 0) {
             context->inSpine = NO;
+        }        
+    } else if(context->inGuide) {
+        if(strcmp("guide", name) == 0) {
+            context->inGuide = NO;
         }        
     }
 }
@@ -318,6 +348,8 @@ static void contentOpfCharacterDataHandler(void *ctx, const XML_Char *chars, int
         _manifest = context.buildManifest;
         [_spine release];
         _spine = context.buildSpine;
+        [_guideCoverItemURL release];
+        _guideCoverItemURL = [[context.guideCoverItemURL absoluteURL] retain];
         
         if(!self->_tocNcxId) {
             // Some ePubs don't seem to specify the toc file as they should.
@@ -562,6 +594,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [_meta release];
     [_spine release];
     
+    [_guideCoverItemURL release];
     [_manifest release];
     [_manifestOverrides release];
     [_manifestUrlsToOverriddenUrls release];
@@ -580,6 +613,11 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 - (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     return [[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"];
+}
+
+- (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+{
+    return [[NSBundle mainBundle] pathForResource:@"EPubOverrides" ofType:@"css"];
 }
 
 - (NSString *)coverPath
@@ -931,7 +969,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         NSString *spineId = [_spine objectAtIndex:point.source];
         NSString *manifestPath = [_manifest objectForKey:spineId];
         if(manifestPath) {
-            return [NSURL URLWithString:manifestPath relativeToURL:_root];
+            return [[NSURL URLWithString:manifestPath relativeToURL:_root] absoluteURL];
         }
     }
     return nil;
@@ -967,6 +1005,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                                                                          forURL:url
                                                                      dataSource:self
                                                                     baseCSSPath:[self baseCSSPathForDocumentTree:documentTree]
+                                                                    userCSSPath:[self userCSSPathForDocumentTree:documentTree]
                                                                          isHTML:[self documentTreeIsHTML:documentTree]];
         }
     }
@@ -979,9 +1018,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return document;
 }
 
-- (EucCSSIntermediateDocument *)intermediateDocumentForIndexPoint:(EucBookPageIndexPoint *)point
+- (EucCSSIntermediateDocument *)intermediateDocumentForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    NSURL *url = [self documentURLForIndexPoint:point];
+    NSURL *url = [self documentURLForIndexPoint:indexPoint];
     if(url) {
         return [self _intermediateDocumentForURL:url];
     }
@@ -990,7 +1029,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    return NO;
+    NSURL *url = [self documentURLForIndexPoint:indexPoint];
+    return [url isEqual:_guideCoverItemURL];
 }
 
 - (NSString *)_persistedDataPath

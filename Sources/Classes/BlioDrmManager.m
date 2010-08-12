@@ -12,6 +12,7 @@
 #import "XpsSdk.h"
 #import "BlioBook.h"
 #import "BlioXPSProvider.h"
+#import "BlioAlertManager.h"
 
 // Unfortunately can't go in DrmGlobals and shouldn't be part of interface.
 DRM_DECRYPT_CONTEXT  oDecryptContext;
@@ -21,6 +22,7 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 @property (nonatomic, retain) NSManagedObjectID *bookID;
 
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
+-(void)decrementLicenseCooldownTimer:(NSTimer *)aTimer;
 
 @end
 
@@ -28,6 +30,8 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 
 @synthesize drmInitialized;
 @synthesize bookID;
+@synthesize licenseCooldownTime;
+@synthesize licenseCooldownTimer;
 
 + (BlioDrmManager*)getDrmManager {
 	static BlioDrmManager* drmManager = nil;  
@@ -40,6 +44,7 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 -(void) dealloc {
 	Oem_MemFree([DrmGlobals getDrmGlobals].drmAppContext);
     self.bookID = nil;
+	self.licenseCooldownTimer = nil;
 	[super dealloc];
 }
 
@@ -301,5 +306,28 @@ ErrorExit:
     
     return YES;
 }
-
+- (void)resetLicenseCooldownTimer {
+	licenseCooldownTime = BlioDrmManagerInitialLicenseCooldownTime;
+}
+- (void)startLicenseCooldownTimer {
+	if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(startLicenseCooldownTimer) withObject:nil waitUntilDone:NO];
+        return;
+    }
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+								 message:NSLocalizedStringWithDefaultValue(@"DRM_LICENSE_ACQUISITION_ERROR",nil,[NSBundle mainBundle],@"The Blio App experienced a problem during license acquisition for your paid books. Please try restarting your paid book downloads later.",@"Alert message informing the end-user that an issue occurred during license acquisition, and encouraging the user to restart the downloading process later.")
+								delegate:nil
+					   cancelButtonTitle:@"OK"
+					   otherButtonTitles:nil];	
+	self.licenseCooldownTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(decrementLicenseCooldownTimer:) userInfo:nil repeats:YES];
+}
+-(void)decrementLicenseCooldownTimer:(NSTimer *)aTimer {
+//	NSLog(@"decrementLicenseCooldownTimer entered. licenseCooldownTime: %i",licenseCooldownTime);
+	licenseCooldownTime--;
+	if (licenseCooldownTime <= 0) {
+		NSLog(@"BlioDrmManager is ready to receive license acquisition requests again.");
+		[aTimer performSelectorOnMainThread:@selector(invalidate) withObject:nil waitUntilDone:NO];
+		self.licenseCooldownTimer = nil;
+	}
+}
 @end

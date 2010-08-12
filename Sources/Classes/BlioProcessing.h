@@ -20,10 +20,10 @@ typedef enum {
 	BlioBookSourceGoogleBooks = 4
 } BlioBookSourceID;
 
-extern NSString * const BlioProcessingOperationStartNotification;
-extern NSString * const BlioProcessingOperationProgressNotification;
-extern NSString * const BlioProcessingOperationCompleteNotification;
-extern NSString * const BlioProcessingOperationFailedNotification;
+static NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
+static NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
+static NSString * const BlioProcessingOperationCompleteNotification = @"BlioProcessingOperationCompleteNotification";
+static NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOperationFailedNotification";
 
 @interface BlioProcessingOperation : NSOperation {
     NSManagedObjectID *bookID;

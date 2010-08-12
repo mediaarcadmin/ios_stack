@@ -188,13 +188,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if (_TTSEnabled) {
         
-        if ([self.book audioRights] && ![self.book audiobookFilename]) {
+        if ([self.book audioRights] && ![self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
         } else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
-            if ([self.book audiobookFilename]) {
-                _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
+            if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+//                _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
+                _audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
             } else {
                 _acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
                 if ( _acapelaAudioManager != nil )  {
@@ -781,7 +782,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)viewWillAppear:(BOOL)animated
 {
 	if ([[UIApplication sharedApplication] respondsToSelector:@selector(beginReceivingRemoteControlEvents)]) {
-		NSLog(@"start receiving remote control events");
+//		NSLog(@"start receiving remote control events");
 		[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 		[self becomeFirstResponder];
 	}
@@ -916,7 +917,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)viewWillDisappear:(BOOL)animated
 {
 	if ([[UIApplication sharedApplication] respondsToSelector:@selector(endReceivingRemoteControlEvents)]) {
-		NSLog(@"stop receiving remote control events");
+//		NSLog(@"stop receiving remote control events");
 		[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 		[self resignFirstResponder];
 	}	
@@ -1787,16 +1788,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	// Subtract 1 for now from page to match Blio layout page. Can't we have them match?
 	if ( !(segmentInfo = [(NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]] objectAtIndex:segmentIx]) )
 		return NO;
-	NSString* audiobooksPath = [self.book.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"];
+//	NSString* audiobooksPath = [self.book.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"];
 	// For testing
 	//NSString* audiobooksPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/AudioBooks/Graveyard Book/"];
-	NSString* timingPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.timeFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
-	if ( ![_audioBookManager loadWordTimesFromFile:timingPath] )  {
+//	NSString* timingPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.timeFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
+	if ( ![_audioBookManager loadWordTimesWithIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]] )  {
 		NSLog(@"Timing file could not be initialized.");
 		return NO;
 	}
-	NSString* audioPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.audioFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
-	if ( ![_audioBookManager initAudioWithBook:audioPath] ) {
+//	NSString* audioPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.audioFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
+	if ( ![_audioBookManager initAudioWithIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]] ) {
 		NSLog(@"Audio player could not be initialized.");
 		return NO;
 	}
@@ -1987,7 +1988,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)stopAudio {			
 		if (![self.book audioRights]) 
 			[_acapelaAudioManager stopSpeaking];
-		else if ([self.book audiobookFilename] != nil) 
+		else if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) 
 			[_audioBookManager stopAudio];
 }
 
@@ -1996,7 +1997,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[_acapelaAudioManager pauseSpeaking];
 		[_acapelaAudioManager setPageChanged:NO]; // In case speaking continued through a page turn.
 	}
-	else if ([self.book audiobookFilename] != nil) {
+	else if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
 		[_audioBookManager pauseAudio];
 		[_audioBookManager setPageChanged:NO];
 	}
@@ -2017,6 +2018,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         //if (!self.navigationController.toolbarHidden) {
 //            [self toggleToolbars];
 //        }
+		NSLog(@"[self.book audioRights]: %i",[self.book audioRights]);
+		NSLog(@"[self.book hasManifestValueForKey:audiobookMetadataFilename]: %i",[self.book hasManifestValueForKey:@"audiobookMetadataFilename"]);
+		
         if (![self.book audioRights]) {
 			if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse] count] > 0) {
 				[self prepareTTSEngine];
@@ -2033,7 +2037,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 				return;
 			}
         }
-        else if ([self.book audiobookFilename] != nil) {
+        else if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
                 // So far this only would work for fixed view.
                 if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {

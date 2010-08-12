@@ -32,6 +32,7 @@ typedef enum {
 	NSString* currDictKey;
 	NSMutableArray* pageSegments;
 	NSMutableArray* pageSegmentVals;
+	NSManagedObjectID * bookID;
 }
 
 @property (nonatomic, retain) NSMutableArray* wordTimes;
@@ -45,11 +46,15 @@ typedef enum {
 @property (nonatomic, assign) NSInteger timeIx;
 @property (nonatomic, assign) NSInteger pausedAtTime;
 @property (nonatomic, assign) NSInteger timeStarted;
+@property (nonatomic, retain) NSManagedObjectID * bookID;
 
-- (id)initWithPath:(NSString*)referencesPath metadataPath:(NSString*)metadataPath;
+- (void)parseData:(NSData*)data;
+//- (id)initWithPath:(NSString*)referencesPath metadataPath:(NSString*)metadataPath;
+- (id)initWithBookID:(NSManagedObjectID*)bookID;
 // - (void)loadTimesFromFile:(NSString*)audioTimingPath;
-- (BOOL)loadWordTimesFromFile:(NSString*)audioTimingPath;
-- (BOOL)initAudioWithBook:(NSString*)audioBookPath;
+- (BOOL)loadWordTimesWithIndex:(NSInteger)index;
+//- (BOOL)initAudioWithBook:(NSString*)audioBookPath;
+- (BOOL)initAudioWithIndex:(NSInteger)index;
 - (void)playAudio;
 - (void)stopAudio;
 - (void)pauseAudio;

@@ -116,7 +116,7 @@
 			aBook = [results objectAtIndex:0];
 			
 			
-			if ([[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]) {
+			if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 				NSLog(@"WARNING: enqueue method called on already complete book with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID);
 				NSLog(@"Aborting enqueue by prematurely returning...");
 				return;
@@ -232,17 +232,17 @@
 	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
 	NSString *sourceSpecificID = [aBook sourceSpecificID];
 	
-	if ([[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]) {
+	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		NSLog(@"WARNING: enqueue method called on already complete book!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
 		return;
 	}
-	if (![[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed]] && placeholderOnly) {
+	if (![[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed && placeholderOnly) {
 		NSLog(@"WARNING: enqueue method with placeholderOnly called on a book that is in a state other than NotProcessed!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
 		return;			
 	}
-	if ([[aBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete]]) {
+	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 		// status is incomplete; operations involved with this book may or may not be in the queue, so we'll cancel the CompleteOperation for this book if it exists and co-opt the other operations if they haven't been cancelled yet
 		BlioProcessingOperation * oldCompleteOperation = [self processingCompleteOperationForSourceID: sourceID sourceSpecificID:sourceSpecificID];
 		if (oldCompleteOperation) [oldCompleteOperation cancel];
@@ -274,13 +274,15 @@
 	
 	manifestLocation = [aBook manifestLocationForKey:@"epubFilename"];
 	if (manifestLocation) {
+
+		BOOL usedPreExistingOperation = NO;
+		BlioProcessingDownloadEPubOperation * ePubOp = nil;
+
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
 		}
 		else {
-			BOOL usedPreExistingOperation = NO;
-			BlioProcessingDownloadEPubOperation * ePubOp = nil;
 			stringURL = [aBook manifestPathForKey:@"epubFilename"];
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
@@ -308,7 +310,11 @@
 				}
 				[bookOps addObject:ePubOp];
 			}
+		}
+		
+		if (![aBook manifestPreAvailabilityCompleteForKey:@"epubFilename"]) {
 			NSArray *ePubPreAvailOps = [BlioFlowView preAvailabilityOperations];
+			NSMutableArray * epubOps = [NSMutableArray array];
 			for (BlioProcessingOperation *preAvailOp in ePubPreAvailOps) {
 				BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!preExist || preExist.isCancelled) {
@@ -320,14 +326,32 @@
 					if (ePubOp && usedPreExistingOperation == NO) [preAvailOp addDependency:ePubOp];
 					[self.preAvailabilityQueue addOperation:preAvailOp];
 					[bookOps addObject:preAvailOp];
+					[epubOps addObject:preAvailOp];
 				}
 				else {
 					// if it already exists, it is dependent on a completed operation
-					[bookOps addObject:preExist];
+					if (preExist) {
+						[bookOps addObject:preExist];
+						[epubOps addObject:preAvailOp];
+					}
 				}
-				
-			}                    
-		}
+			}
+			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
+			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+			preAvailabilityCompleteOp.filenameKey = @"epubFilename";
+			preAvailabilityCompleteOp.bookID = bookID;
+			preAvailabilityCompleteOp.sourceID = sourceID;
+			preAvailabilityCompleteOp.sourceSpecificID = sourceSpecificID;
+			preAvailabilityCompleteOp.cacheDirectory = cacheDir;
+			preAvailabilityCompleteOp.tempDirectory = tempDir;
+			
+			for (BlioProcessingOperation * op in epubOps) {
+				[preAvailabilityCompleteOp addDependency:op];
+			}
+			[bookOps addObject:preAvailabilityCompleteOp];
+			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];
+			[preAvailabilityCompleteOp release];
+		}		
 	}
 	
 	manifestLocation = [aBook manifestLocationForKey:@"pdfFilename"];
@@ -461,14 +485,16 @@
 	// paid books only.
 	manifestLocation = [aBook manifestLocationForKey:@"xpsFilename"];
 	if (manifestLocation && (sourceID == BlioBookSourceOnlineStore)) {
+		
+		BOOL usedPreExistingOperation = NO;
+		BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
+
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
 		}
 		else {
 			stringURL = [aBook manifestPathForKey:@"xpsFilename"];
-			BOOL usedPreExistingOperation = NO;
-			BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
 			
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
@@ -494,15 +520,12 @@
 				}
 				[bookOps addObject:paidBookOp];
 			}
-            
-            if ([[aBook manifestLocationForKey:@"coverFilename"] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
-                alreadyCompletedOperations++;
-                url = nil;
-            } else {
-                [self addCoverOpToBookOps:bookOps forBook:aBook manifestLocation:nil withDependency:paidBookOp];
-            }
-            
-            BlioProcessingOperation * licenseOp = [self operationByClass:NSClassFromString(@"BlioProcessingLicenseAcquisitionOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+		}	
+		if (![aBook manifestPreAvailabilityCompleteForKey:@"xpsFilename"]) {
+
+			NSMutableArray * xpsOps = [NSMutableArray array];
+
+			BlioProcessingOperation * licenseOp = [self operationByClass:NSClassFromString(@"BlioProcessingLicenseAcquisitionOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!licenseOp || licenseOp.isCancelled) {
 				licenseOp = [[[BlioProcessingLicenseAcquisitionOperation alloc] init] autorelease];
 				licenseOp.bookID = bookID;
@@ -510,22 +533,58 @@
 				licenseOp.sourceSpecificID = sourceSpecificID;
 				licenseOp.cacheDirectory = cacheDir;
 				licenseOp.tempDirectory = tempDir;
-				if (paidBookOp && usedPreExistingOperation == NO) [licenseOp addDependency:paidBookOp];
 				[self.preAvailabilityQueue addOperation:licenseOp];
-				[bookOps addObject:licenseOp];
 			}
-			else {
-				// if it already exists, it is dependent on a completed operation
-			}
-
-            if ([[aBook manifestLocationForKey:@"textFlowFilename"] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
-                alreadyCompletedOperations++;
-                url = nil;
-            } else {
-                [self addTextFlowOpToBookOps:bookOps forBook:aBook manifestLocation:nil withDependency:licenseOp];                  			
-            }
+			if (paidBookOp) [licenseOp addDependency:paidBookOp];
+			[xpsOps addObject:licenseOp];
+			[bookOps addObject:licenseOp];
 			
-		}	
+			BlioProcessingOperation * manifestOp = [self operationByClass:NSClassFromString(@"BlioProcessingXPSManifestOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			if (!manifestOp || manifestOp.isCancelled) {
+				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
+				manifestOp.bookID = bookID;
+				manifestOp.sourceID = sourceID;
+				manifestOp.sourceSpecificID = sourceSpecificID;
+				manifestOp.cacheDirectory = cacheDir;
+				manifestOp.tempDirectory = tempDir;
+				[self.preAvailabilityQueue addOperation:manifestOp];
+			}
+			[manifestOp addDependency:licenseOp];
+			[xpsOps addObject:manifestOp];
+			[bookOps addObject:manifestOp];
+
+			
+			if ([[aBook manifestLocationForKey:@"coverFilename"] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+				alreadyCompletedOperations++;
+				url = nil;
+			} else {
+				[self addCoverOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];
+			}
+			
+			if ([[aBook manifestLocationForKey:@"textFlowFilename"] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+				alreadyCompletedOperations++;
+				url = nil;
+			} else {
+				[self addTextFlowOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];                  			
+			}
+						
+			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
+			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+			preAvailabilityCompleteOp.filenameKey = @"xpsFilename";
+			preAvailabilityCompleteOp.bookID = bookID;
+			preAvailabilityCompleteOp.sourceID = sourceID;
+			preAvailabilityCompleteOp.sourceSpecificID = sourceSpecificID;
+			preAvailabilityCompleteOp.cacheDirectory = cacheDir;
+			preAvailabilityCompleteOp.tempDirectory = tempDir;
+			
+			for (BlioProcessingOperation * op in xpsOps) {
+				[preAvailabilityCompleteOp addDependency:op];
+			}
+			[bookOps addObject:preAvailabilityCompleteOp];
+			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];
+			[preAvailabilityCompleteOp release];
+			
+		}
 	}
 	
 	BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];
@@ -541,12 +600,7 @@
 	for (NSOperation *op in bookOps) {
 		[completeOp addDependency:op];
 	}
-	
-	[self.preAvailabilityQueue addOperation:completeOp];
-	[completeOp calculateProgress];
-	[completeOp release];
-	
-	// now that completeOp is in queue, we change the model (which in turn triggers a refresh in LibraryView; the gridcell can successfully find the completeOp in the queue and become a listener to it.
+	[moc refreshObject:aBook mergeChanges:YES];
 	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateIncomplete && [[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed) {
 		// if book is paused, reflect unpausing in state
 		[aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];			
@@ -554,7 +608,15 @@
 		if (![moc save:&error]) {
 			NSLog(@"[BlioProcessingManager enqueueBook:placeholderOnly:] (changing state to incomplete) Save failed with error: %@, %@", error, [error userInfo]);
 		}			
-	}		
+	}			
+	
+	[self.preAvailabilityQueue addOperation:completeOp];
+	[completeOp calculateProgress];
+	
+	// send notification to relevant library cells that progress is now available
+	
+	[completeOp release];
+	
 }
 
 - (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {
@@ -600,7 +662,6 @@
         [bookOps addObject:thumbsOp];
         
         [thumbsOp release];
-    
 }
 
 - (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {
@@ -668,6 +729,8 @@
         BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
         if (!preExist || preExist.isCancelled) {
             preAvailOp.bookID = bookID;
+			preAvailOp.sourceID = sourceID;
+			preAvailOp.sourceSpecificID = sourceSpecificID;
             preAvailOp.cacheDirectory = cacheDir;
             preAvailOp.tempDirectory = tempDir;
             for(BlioProcessingOperation *beforeOp in newTextFlowPreAvailOps) {
@@ -690,7 +753,7 @@
 	
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@ || processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete], [NSNumber numberWithInt:kBlioBookProcessingStateFailed]]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -700,7 +763,7 @@
     }
     else {
 		if ([results count] > 0) {
-			NSLog(@"Found non-paused incomplete book results, will resume..."); 
+			NSLog(@"Found non-paused incomplete or failed book results, will resume..."); 
 			for (BlioBook * book in results) {
 				[self enqueueBook:book];
 			}			
@@ -791,11 +854,11 @@
 		return;
 	}
     [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStatePaused] forKey:@"processingState"];
-	[self stopProcessingForBook:aBook];
 	NSError * error;
 	if (![moc save:&error]) {
 		NSLog(@"[BlioProcessingManager pauseProcessingForBook:] (set state to paused) Save failed in processing manager with error: %@, %@", error, [error userInfo]);
 	}			
+	[self stopProcessingForBook:aBook];
 }
 - (void)stopProcessingForBook:(BlioBook*)aBook {
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
@@ -806,7 +869,9 @@
 	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
 	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
+	NSLog(@"stopping %i operations...",[relatedOperations count]);
 	for (BlioProcessingOperation * op in relatedOperations) {
+		NSLog(@"Operation (%u complete): %@",op.percentageComplete,op);
 		[op cancel];
 	}
 }
@@ -915,12 +980,14 @@
 	return nil;
 }
 - (NSArray *)processingOperationsForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+	NSLog(@"processingOperationsForSourceID: %i sourceSpecificID: %@ entered.",sourceID,sourceSpecificID);
 	NSArray * operations = [preAvailabilityQueue operations];
 	NSMutableArray * tempArray = [NSMutableArray array];
 	for (BlioProcessingOperation * op in operations) {
 		if (sourceID == op.sourceID && [sourceSpecificID isEqualToString:op.sourceSpecificID]) {
 			[tempArray addObject:op];
 		}
+//		else NSLog(@"operation didn't match... sourceID: %i and sourceSpecificID: %@",op.sourceID,op.sourceSpecificID);
 	}
 	return tempArray;
 }
