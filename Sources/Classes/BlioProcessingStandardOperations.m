@@ -155,11 +155,16 @@
 	}
 	
 	BOOL isEncrypted = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
-    if (!isEncrypted) {
+	if (!isEncrypted) {
         self.operationSuccess = YES;
 		self.percentageComplete = 100;
 		return;
-    }
+	} else {
+        NSMutableDictionary *manifestEntry = [NSMutableDictionary dictionary];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+		[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
+		[self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
+	}
 	
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
@@ -610,15 +615,7 @@
 		return;
 	}
 	NSDictionary *manifestEntry;
-	
-	BOOL hasDrmHeaderData = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
-	if (hasDrmHeaderData) {
-		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
-		[self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
-	}
-	
+		
 	BOOL hasTextflowData = [self bookManifestPath:BlioXPSTextFlowSectionsFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasTextflowData) {
 		manifestEntry = [NSMutableDictionary dictionary];
