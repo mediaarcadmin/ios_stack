@@ -7546,7 +7546,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -8162,7 +8162,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -8856,7 +8856,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -9472,7 +9472,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -10127,7 +10127,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -10860,7 +10860,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -11554,7 +11554,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -12287,7 +12287,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -13101,7 +13101,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -13717,7 +13717,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -14333,7 +14333,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -14777,7 +14777,7 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	}
 	attrValue = xmlGetProp(cur, (const xmlChar *) "LastUpdated");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.LastUpdated = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}
@@ -16405,11 +16405,11 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 - (void)deserializeAttributesFromNode:(xmlNodePtr)cur
 {
 	xmlChar *attrValue = NULL;
-	NSString *attrString;
+	//NSString *attrString;
 	
 	attrValue = xmlGetProp(cur, (const xmlChar *) "DateTime");
 	if(attrValue != NULL) {
-		attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
+		//attrString = [NSString stringWithCString:(char*)attrValue encoding:NSUTF8StringEncoding];
 		//self.DateTime = [NSDate dateWithString:attrString];
 		xmlFree(attrValue);
 	}

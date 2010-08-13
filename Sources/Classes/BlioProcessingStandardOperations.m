@@ -1112,7 +1112,7 @@
     return transform;
 }
 
-- (UIImage *)createThumbFromImage:(UIImage *)image forSize:(CGSize)size {
+- (UIImage *)newThumbFromImage:(UIImage *)image forSize:(CGSize)size {
     
     CGAffineTransform transform = [self transformForOrientation:size orientation:image.imageOrientation];
     
@@ -1202,11 +1202,11 @@
 	}	
 #endif
 	
-    UIImage *gridThumb = [self createThumbFromImage:cover forSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
+    UIImage *gridThumb = [self newThumbFromImage:cover forSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
     NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"gridThumb.png"];
     [gridData writeToFile:gridThumbPath atomically:YES];
-    [gridThumb release]; // this is giving an ERROR (TODO)
+    [gridThumb release];
     
     NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
     [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
@@ -1218,7 +1218,7 @@
         return;
     }
     
-    UIImage *listThumb = [self createThumbFromImage:cover forSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
+    UIImage *listThumb = [self newThumbFromImage:cover forSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
     NSData *listData = UIImagePNGRepresentation(listThumb);
     NSString *listThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"listThumb.png"];
     [listData writeToFile:listThumbPath atomically:YES];

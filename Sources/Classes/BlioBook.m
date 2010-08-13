@@ -733,7 +733,7 @@ static void sortedHighlightRangePredicateInit() {
 	NSArray* suffixes = [NSArray arrayWithObjects:@"Jr.",@"Sr.",@"Jr",@"Sr",@"Esq.",@"Ph.D.",@"PhD",@"M.D.",@"MD",@"II",@"III",@"IV",@"V",nil];
 	
 	//split name string into pieces by spaces.  Array is mutable so it can be changed later in function
-	NSMutableArray* namePieces = [[aName componentsSeparatedByString:@" "]mutableCopy];
+	NSMutableArray* namePieces = [NSMutableArray arrayWithArray:[aName componentsSeparatedByString:@" "]];
 	
 	//Check Plato case: if single name, return single name unchanged
 	if ([namePieces count] == 1)

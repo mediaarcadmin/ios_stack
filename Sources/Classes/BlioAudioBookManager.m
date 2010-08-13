@@ -131,6 +131,8 @@
 	if ( thisTimeStr == nil ) {
 //		NSLog(@"Empty timing file, %s", [audioTimingPath cStringUsingEncoding:NSASCIIStringEncoding]);
 		NSLog(@"Empty timing data, %@", timingDataString);
+        [fileTimes release];
+        [timingDataString release];
 		return NO;
 	}
 	self.wordTimes = fileTimes;

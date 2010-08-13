@@ -1254,7 +1254,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)showSettings:(id)sender {    
-	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
+    BlioAppSettingsController *appSettingsController = [[BlioAppSettingsController alloc] init];
+	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:appSettingsController];
+    [appSettingsController release];
     
 	// TEMPORARY: test code, will be moved
     /*
@@ -1706,6 +1708,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [deleteElement setAccessibilityTraits:UIAccessibilityTraitButton];
             [deleteElement setVisibleRect:[self.delegate visibleRect]];
             [accArray addObject:deleteElement];
+            [deleteElement release];
         }
 		
         BlioAccessibleGridBookElement *bookElement = [[BlioAccessibleGridBookElement alloc] initWithAccessibilityContainer:self];
@@ -1722,6 +1725,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [bookElement setAccessibilityHint:NSLocalizedString(@"Opens book.", @"Accessibility hint for Library View cell book when not editing")];
         }
         [accArray addObject:bookElement];
+        [bookElement release];
         
         self.accessibilityElements = accArray;
     }
@@ -1890,6 +1894,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		dividerView.frame = CGRectMake(0,0,self.bounds.size.width,2);
 		[self.backgroundView addSubview:dividerView];
 		dividerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        [dividerView release];
         BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(8,0, kBlioLibraryListBookWidth, kBlioLibraryListBookHeight)];
 		//        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
 		//            forControlEvents:UIControlEventTouchUpInside];

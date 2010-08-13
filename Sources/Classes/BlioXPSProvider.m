@@ -92,6 +92,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         if (![[NSFileManager defaultManager] fileExistsAtPath:self.tempDirectory]) {
             if (![[NSFileManager defaultManager] createDirectoryAtPath:self.tempDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
                 NSLog(@"Unable to create temp XPS directory at path %@ with error %@ : %@", self.tempDirectory, error, [error userInfo]);
+                CFRelease(UUIDString);
                 return nil;
             }
         }
@@ -100,6 +101,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         NSString *xpsPath = [self.book xpsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:xpsPath]) {
             NSLog(@"Error creating xpsProvider. File does not exist at path: %@", xpsPath);
+            CFRelease(UUIDString);
             return nil;
         }
         
@@ -121,12 +123,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
             };
             
             strncpy(upi.guid, [(NSString *)UUIDString UTF8String], [(NSString *)UUIDString length]);
-            
-            CFRelease(UUIDString);
         
             XPS_RegisterDrmHandler(xpsHandle, &upi);
             //NSLog(@"Registered drm handler for book %@ with handle %p with userdata %p", [self.book valueForKey:@"title"], xpsHandle, self);
         }
+        CFRelease(UUIDString);
         
         XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
         pageCount = XPS_GetNumberPages(xpsHandle, 0);
@@ -277,10 +278,11 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
             size_t dataLength = width * height * 3;
         
             CGDataProviderRef providerRef = CGDataProviderCreateWithData(self, imageInfo->pBits, dataLength, XPSDataReleaseCallback);
+            CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
             CGImageRef imageRef =
-            CGImageCreate(width, height, 8, 24, width * 3, CGColorSpaceCreateDeviceRGB(), 
+            CGImageCreate(width, height, 8, 24, width * 3, rgbColorSpace, 
                           kCGImageAlphaNone, providerRef, NULL, true, kCGRenderingIntentDefault);
-        
+            CGColorSpaceRelease(rgbColorSpace);
             CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
             CGRect imageRect = CGRectMake(0, tileRect.size.height - height, width, height);
             CGContextDrawImage(ctx, imageRect, imageRef);
@@ -611,6 +613,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	
 	if (ret != Z_OK) {
         [inflateLock unlock];
+        [outData release];
 		return nil;
     }
 	
@@ -624,16 +627,18 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 		// ret should be Z_STREAM_END
 		switch (ret) {
 			case Z_NEED_DICT:
-				ret = Z_DATA_ERROR;
+				//ret = Z_DATA_ERROR;
 			case Z_DATA_ERROR:
 			case Z_MEM_ERROR:
 				XPS_inflateEnd(&strm);
                 [inflateLock unlock];
+                [outData release];
 				return nil;
 		}
 		bytesDecompressed = BUFSIZE - strm.avail_out;
-		NSData* data = [[NSData alloc] initWithBytes:(const void*)outbuf length:bytesDecompressed];
+		NSData* data = [[NSData alloc] initWithBytesNoCopy:outbuf length:bytesDecompressed freeWhenDone:NO];
 		[outData appendData:data];
+        [data release];
 	}
 	while (strm.avail_out == 0);
 	XPS_inflateEnd(&strm);
@@ -643,6 +648,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	if (ret == Z_STREAM_END || ret == Z_OK)
 		return [outData autorelease];
     
+    [outData release];
 	return nil;
 }
 

@@ -130,6 +130,7 @@ typedef enum {
         [self.notesController setToolbarItems:[NSArray arrayWithArray:tabItems]];
     }
     
+    [aRootVC release];
     [aContentsController release];
     [aBookmarksController release];
     [aNotesController release];

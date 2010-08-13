@@ -1695,11 +1695,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = targetPage - 1;
     if ([self.lastBlock pageIndex] != pageIndex) self.lastBlock = nil;
     
-    self.scrollingAnimationInProgress = YES;
-    
-    [self.scrollView setPagingEnabled:NO];
-    [self.scrollView setBounces:NO];
-    
     BlioTextFlowBlock *targetBlock = nil;
     
     // Work out targetBlock on the current page
@@ -1806,7 +1801,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGAffineTransform viewTransform = [self blockTransformForPage:targetPage];
     
     NSUInteger count = [blocks count];
-    NSUInteger targetIndex;
     
     if (count > 0) { 
         for (NSUInteger index = 0; index < count; index++) {
@@ -1815,7 +1809,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
             if (CGRectContainsPoint(pageRect, pointInTargetPage)) {
                 targetBlock = block;
-                targetIndex = index;
                 break;
             }
         }
@@ -1844,6 +1837,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         } else {
+            self.scrollingAnimationInProgress = YES;
+            [self.scrollView setPagingEnabled:NO];
+            [self.scrollView setBounces:NO];
+            
             [UIView beginAnimations:@"BlioZoomPage" context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationBeginsFromCurrentState:YES];
@@ -1877,6 +1874,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         } else {
+            self.scrollingAnimationInProgress = YES;
+            [self.scrollView setPagingEnabled:NO];
+            [self.scrollView setBounces:NO];
+            
             [UIView beginAnimations:@"BlioZoomToBlock" context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationBeginsFromCurrentState:YES];
