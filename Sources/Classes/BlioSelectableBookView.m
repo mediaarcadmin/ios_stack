@@ -67,7 +67,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     return ret;
 }
 
-- (NSArray *)highlightMenuItemsIncludingCopyItem:(BOOL)copy {
+- (NSArray *)highlightMenuItemsIncludingTextCpyItem:(BOOL)copy {
     EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu")                                                    
                                                             action:@selector(addNote:)] autorelease];
     
@@ -89,7 +89,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     return ret;
 }
 
-- (NSArray *)rootMenuItemsIncludingCopyItem:(BOOL)copy {
+- (NSArray *)rootMenuItemsIncludingTextCpyItem:(BOOL)copy {
     EucMenuItem *highlightItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Highlight\" option in popup menu")                                                              
                                                               action:@selector(highlight:)] autorelease];
     EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu")                                                    
@@ -110,9 +110,9 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 
 - (NSArray *)menuItemsForEucSelector:(EucSelector *)selector {
     if ([selector selectedRangeIsHighlight])
-        return [self highlightMenuItemsIncludingCopyItem:YES];
+        return [self highlightMenuItemsIncludingTextCpyItem:YES];
     else
-        return [self rootMenuItemsIncludingCopyItem:YES];
+        return [self rootMenuItemsIncludingTextCpyItem:YES];
 }
 
 
@@ -222,9 +222,9 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
         [self.delegate copyWithRange:copyRange];
         
         if ([self.selector selectedRangeIsHighlight])
-            [self.selector changeActiveMenuItemsTo:[self highlightMenuItemsIncludingCopyItem:NO]];
+            [self.selector changeActiveMenuItemsTo:[self highlightMenuItemsIncludingTextCpyItem:NO]];
         else
-            [self.selector changeActiveMenuItemsTo:[self rootMenuItemsIncludingCopyItem:NO]];
+            [self.selector changeActiveMenuItemsTo:[self rootMenuItemsIncludingTextCpyItem:NO]];
     }    
 }
 
