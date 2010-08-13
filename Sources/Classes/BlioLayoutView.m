@@ -329,6 +329,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.pageNumber = page;
         
         if (animated) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
+
             self.currentPageLayer = [self.contentView addPage:1 retainPages:nil];
             [self.contentView addPage:2 retainPages:nil];
             if (page == 1) {
@@ -336,7 +338,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                     [self.contentView addPage:i+1 retainPages:nil];
                 }
             }
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
         } else {
             self.currentPageLayer = [self.contentView addPage:self.pageNumber retainPages:nil];
             for (int i = 0; i < kBlioLayoutMaxPages; i++) {
@@ -763,7 +764,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     //CGContextFillRect(ctx, cropRect);
     //CGContextClipToRect(ctx, cropRect);
     
-    if (isCancelled) return;
+    if (isCancelled || (nil == self.dataSource)) return;
 
     @synchronized (self.dataSource) {
         [self.dataSource openDocumentIfRequired];
