@@ -16,7 +16,8 @@ static const NSInteger BlioDrmManagerInitialLicenseCooldownTime = 5;
 
 @interface BlioDrmManager : NSObject {
 	BOOL drmInitialized;
-    NSManagedObjectID *bookID;
+    NSManagedObjectID *headerBookID;
+    NSManagedObjectID *boundBookID;
 	NSInteger licenseCooldownTime;
 	NSTimer * licenseCooldownTimer;
 }

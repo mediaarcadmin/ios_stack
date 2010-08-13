@@ -664,8 +664,7 @@
         [thumbsOp release];
 }
 
-- (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {
-    NSString *stringURL = [aBook manifestPathForKey:@"textFlowFilename"];
+- (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {    
     BOOL usedPreExistingOperation = NO;
     BlioProcessingDownloadTextFlowOperation * textFlowOp = nil;
     NSURL *url = nil;
@@ -675,31 +674,36 @@
 	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
 	NSString *sourceSpecificID = [aBook sourceSpecificID];
     
-    if ((stringURL != nil) && (manifestLocation != nil)) {
-        // we still need to finish downloading this file
-        // so check to see if operation already exists
-        textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadTextFlowOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-        if (!textFlowOp || textFlowOp.isCancelled) {
-            if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
-                url = [NSURL fileURLWithPath:stringURL];
+    // If the TextFlow is in an XPS then we don't need to download it. Otherwise we do
+    if ((manifestLocation != nil) && ![manifestLocation isEqualToString:BlioManifestEntryLocationXPS]) {
+        NSString *stringURL = [aBook manifestPathForKey:@"textFlowFilename"];
+        if (nil != stringURL) {
+            // we still need to finish downloading this file
+            // so check to see if operation already exists
+            textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadTextFlowOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+            if (!textFlowOp || textFlowOp.isCancelled) {
+                if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
+                    url = [NSURL fileURLWithPath:stringURL];
+                }
+                else url = [NSURL URLWithString:stringURL];				
+                textFlowOp = [[[BlioProcessingDownloadTextFlowOperation alloc] initWithUrl:url] autorelease];
+                textFlowOp.bookID = bookID; 
+                textFlowOp.sourceID = sourceID;
+                textFlowOp.sourceSpecificID = sourceSpecificID;
+                textFlowOp.localFilename = [aBook manifestPathForKey:textFlowOp.filenameKey];
+                textFlowOp.cacheDirectory = cacheDir;
+                textFlowOp.tempDirectory = tempDir;
+                if (dependencyOp) [textFlowOp addDependency:dependencyOp];
+                [self.preAvailabilityQueue addOperation:textFlowOp];
             }
-            else url = [NSURL URLWithString:stringURL];				
-            textFlowOp = [[[BlioProcessingDownloadTextFlowOperation alloc] initWithUrl:url] autorelease];
-            textFlowOp.bookID = bookID; 
-            textFlowOp.sourceID = sourceID;
-            textFlowOp.sourceSpecificID = sourceSpecificID;
-            textFlowOp.localFilename = [aBook manifestPathForKey:textFlowOp.filenameKey];
-            textFlowOp.cacheDirectory = cacheDir;
-            textFlowOp.tempDirectory = tempDir;
-            if (dependencyOp) [textFlowOp addDependency:dependencyOp];
-            [self.preAvailabilityQueue addOperation:textFlowOp];
+            else {
+                // we reuse existing one
+                usedPreExistingOperation = YES;
+            }
+            [bookOps addObject:textFlowOp];
         }
-        else {
-            // we reuse existing one
-            usedPreExistingOperation = YES;
-        }
-        [bookOps addObject:textFlowOp];
     }
+    
     NSArray *textFlowPreAvailOps = [BlioTextFlow preAvailabilityOperations];
     NSMutableArray * newTextFlowPreAvailOps = [NSMutableArray array];
     for (BlioProcessingOperation *preAvailOp in textFlowPreAvailOps) {

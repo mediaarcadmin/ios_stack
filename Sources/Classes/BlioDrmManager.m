@@ -19,7 +19,8 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 
 @interface BlioDrmManager()
 
-@property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, retain) NSManagedObjectID *headerBookID;
+@property (nonatomic, retain) NSManagedObjectID *boundBookID;
 
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
 -(void)decrementLicenseCooldownTimer:(NSTimer *)aTimer;
@@ -29,7 +30,7 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 @implementation BlioDrmManager
 
 @synthesize drmInitialized;
-@synthesize bookID;
+@synthesize headerBookID, boundBookID;
 @synthesize licenseCooldownTime;
 @synthesize licenseCooldownTimer;
 
@@ -43,7 +44,8 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 
 -(void) dealloc {
 	Oem_MemFree([DrmGlobals getDrmGlobals].drmAppContext);
-    self.bookID = nil;
+    self.headerBookID = nil;
+    self.boundBookID = nil;
 	self.licenseCooldownTimer = nil;
 	[super dealloc];
 }
@@ -106,9 +108,8 @@ ErrorExit:
     
     DRM_RESULT dr = DRM_SUCCESS;    
     @synchronized (self) {
-        if ( ![self.bookID isEqual:aBookID] ) { 
+        if ( ![self.headerBookID isEqual:aBookID] ) { 
             ChkDR( [self setHeaderForBookWithID:aBookID] );
-            self.bookID = aBookID;
         }
 
         ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
@@ -205,7 +206,7 @@ ErrorExit:
 
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID {
 	DRM_RESULT dr = DRM_SUCCESS;
-    
+        
     NSData *headerData = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] manifestDataForKey:@"drmHeaderFilename"];
         
 	unsigned char* headerBuff = (unsigned char*)[headerData bytes]; 
@@ -215,6 +216,9 @@ ErrorExit:
 								   DRM_CSP_AUTODETECT_HEADER,
 								   headerBuff,   
 								   [headerData length] ) );
+    
+    self.headerBookID = aBookID;
+    
 ErrorExit:
 	return dr;
 }
@@ -229,19 +233,18 @@ ErrorExit:
      
     @synchronized (self) {
         DRM_RESULT dr = DRM_SUCCESS;
-        if ( ![self.bookID isEqual:aBookID] ) { 
+        if ( ![self.headerBookID isEqual:aBookID] ) { 
             ChkDR( [self setHeaderForBookWithID:aBookID] );
-            self.bookID = aBookID;
         }
         
         ChkDR( [self getDRMLicense] );
         
     ErrorExit:
         if ( dr != DRM_SUCCESS ) {
-            NSLog(@"DRM license error: %d",dr);
+            NSLog(@"DRM license error: %08X", dr);
             ret = NO;
         } else {
-            NSLog(@"DRM license successfully acquired for bookID: %@", self.bookID);
+            NSLog(@"DRM license successfully acquired for bookID: %@", aBookID);
             ret = YES;
         }
     }
@@ -258,10 +261,12 @@ ErrorExit:
 	unsigned char* dataBuff = NULL;
     
     @synchronized (self) {
-        if ( ![self.bookID isEqual:aBookID] ) { 
-			NSLog(@"Binding to license.");
+        if ( ![self.headerBookID isEqual:aBookID] ) { 
             ChkDR( [self setHeaderForBookWithID:aBookID] );
-            self.bookID = aBookID;
+        }
+        
+        if ( ![self.boundBookID isEqual:aBookID] ) { 
+            NSLog(@"Binding to license.");
 
 			// Search for a license to bind to with the Read right.
 			const DRM_CONST_STRING *rgpdstrRights[1] = {0};
@@ -279,6 +284,8 @@ ErrorExit:
 								   NULL, 
 								   NULL,
 								   &oDecryptContext ) );
+            
+            self.boundBookID = aBookID;
         
         }
         DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
@@ -289,15 +296,15 @@ ErrorExit:
                                   [data length]));
         
         // At this point, the buffer is PlayReady-decrypted.
-		
-    }
-    
+        
 ErrorExit:
-    if (dr != DRM_SUCCESS) {
-        unsigned int drInt = (unsigned int)dr;
-        NSLog(@"DRM decryption error: %08X",drInt);
-        self.bookID = nil;
-        return NO;
+		if (dr != DRM_SUCCESS) {
+            unsigned int drInt = (unsigned int)dr;
+            NSLog(@"DRM decryption error: %08X",drInt);
+            self.headerBookID = nil;
+            self.boundBookID = nil;
+            return NO;
+        }
     }
     
     // This XOR step is to undo an additional encryption step that was needed for .NET environment.
@@ -306,9 +313,11 @@ ErrorExit:
     
     return YES;
 }
+
 - (void)resetLicenseCooldownTimer {
 	licenseCooldownTime = BlioDrmManagerInitialLicenseCooldownTime;
 }
+
 - (void)startLicenseCooldownTimer {
 	if (![NSThread isMainThread]) {
         [self performSelectorOnMainThread:@selector(startLicenseCooldownTimer) withObject:nil waitUntilDone:NO];
@@ -321,6 +330,7 @@ ErrorExit:
 					   otherButtonTitles:nil];	
 	self.licenseCooldownTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(decrementLicenseCooldownTimer:) userInfo:nil repeats:YES];
 }
+
 -(void)decrementLicenseCooldownTimer:(NSTimer *)aTimer {
 //	NSLog(@"decrementLicenseCooldownTimer entered. licenseCooldownTime: %i",licenseCooldownTime);
 	licenseCooldownTime--;

@@ -1128,7 +1128,9 @@
 }
 
 - (void)main {
-	for (BlioProcessingOperation * blioOp in [self dependencies]) {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"BlioProcessingGenerateCoverThumbsOperation: failed dependency found! op: %@",blioOp);
 			[self cancel];
@@ -1137,13 +1139,21 @@
 	}	
     if ([self isCancelled]) {
 		NSLog(@"Operation cancelled, will prematurely abort start");
+        [pool drain];
 		return;
     }
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSData *imageData = [self getBookManifestDataForKey:@"coverFilename"]; 
+    NSData *imageData = nil;
+    BOOL hasCover = [self hasBookManifestValueForKey:@"coverFilename"];
+    
+    if (hasCover) {
+        imageData = [self getBookManifestDataForKey:@"coverFilename"];
+    }
+    
     if (nil == imageData) {
-        NSLog(@"Failed to create generate cover thumbs because cover image is nil.");
+        if (hasCover) {
+            NSLog(@"Failed to create generate cover thumbs because cover image from manifest value is nil.");
+        }
         [pool drain];
 		self.operationSuccess = YES;
 		self.percentageComplete = 100;

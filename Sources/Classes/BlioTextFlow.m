@@ -353,7 +353,8 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
 
 - (NSArray *)blocksForPage:(NSInteger)pageIndex inPageRange:(BlioTextFlowPageRange *)pageRange targetMarker:(BlioTextFlowPageMarker *)targetMarker firstMarker:(BlioTextFlowPageMarker *)firstMarker {
     
-    NSData *data = [self.book manifestDataForKey:[pageRange fileName]];
+    //NSData *data = [self.book manifestDataForKey:[pageRange fileName]];
+    NSData *data = [self.book textFlowDataWithPath:[pageRange fileName]];
     
         if (nil == data) return nil;
         
@@ -478,13 +479,6 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             XML_ParserFree(flowParser);
             //[data release];
         }
-        
-        for (BlioTextFlowSection *section in sections) {
-            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:@"textflow" forKey:@"location"];
-            [manifestEntry setValue:section.flowSourceFileName forKey:@"path"];
-            [aBook setManifestValue:manifestEntry forKey:section.flowSourceFileName];
-        }
     }
     return sections;
 }
@@ -540,7 +534,8 @@ static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         if(sectionIndex < allSections.count) {
             BlioTextFlowSection *section = [self.sections objectAtIndex:sectionIndex];
 
-            NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
+            //NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
+            NSData *data = [self.book textFlowDataWithPath:section.flowSourceFileName];
             
             if(data) {
                 tree = [[BlioTextFlowFlowTree alloc] initWithTextFlow:self
@@ -562,7 +557,8 @@ static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         if(sectionIndex < allSections.count) {
             BlioTextFlowSection *section = [self.sections objectAtIndex:sectionIndex];
             
-            NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
+           // NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
+            NSData *data = [self.book textFlowDataWithPath:section.flowSourceFileName];
             
             if(data) {
                 tree = [[BlioTextFlowXAMLTree alloc] initWithData:data];
@@ -580,7 +576,8 @@ static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     size_t length = 0;
     NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
 
-    NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
+    //NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
+    NSData *data = [self.book textFlowDataWithPath:section.flowSourceFileName];
     
     length = [data length];
     [innerPool drain];
@@ -1016,13 +1013,14 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 //    pool = [[NSAutoreleasePool alloc] init];
     
     for (BlioTextFlowPageRange *pageRange in pageRangesSet) {
-        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-        [manifestEntry setValue:@"textflow" forKey:@"location"];
-        [manifestEntry setValue:[pageRange fileName] forKey:@"path"];
-        [self setBookManifestValue:manifestEntry forKey:[pageRange fileName]];
+//        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+//        [manifestEntry setValue:@"textflow" forKey:@"location"];
+//        [manifestEntry setValue:[pageRange fileName] forKey:@"path"];
+//        [self setBookManifestValue:manifestEntry forKey:[pageRange fileName]];
         
         NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
-        NSData *data = [self getBookManifestDataForKey:[pageRange fileName]];
+        //NSData *data = [self getBookManifestDataForKey:[pageRange fileName]];
+        NSData *data = [self getBookTextFlowDataWithPath:[pageRange fileName]];
         
         if (!data) {
             NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist with name: %@.", [pageRange fileName]);

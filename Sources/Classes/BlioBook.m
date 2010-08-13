@@ -211,7 +211,7 @@
     THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"Georgia"];
 
     CGSize fullSize = [[UIScreen mainScreen] bounds].size;
-    CGFloat pointSize = roundf(fullSize.height / 12.5f); // 38pt/82pt on iphone/ipad
+    CGFloat pointSize = roundf(fullSize.height / 8.0f);
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(size.width / fullSize.width, size.height / fullSize.height);
     
     UIEdgeInsets titleInsets = UIEdgeInsetsMake(fullSize.height * 0.2f, fullSize.width * 0.2f, fullSize.height * 0.2f, fullSize.width * 0.1f);
@@ -232,8 +232,15 @@
     
     CGContextConcatCTM(ctx, scaleTransform);
     CGContextClipToRect(ctx, titleRect); // if title won't fit at 2 points it gets clipped
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, -MAX(fullSize.height * 0.0005f, 0.5f)), MAX(fullSize.height * 0.0005f, 0.5f), [UIColor blackColor].CGColor);
-    CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 0.9f, 1);
+    
+    CGContextSetBlendMode(ctx, kCGBlendModeOverlay);
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0.919 green:0.888 blue:0.862 alpha:0.8f].CGColor);
+    CGContextBeginTransparencyLayer(ctx, NULL);
+    CGContextSetShadow(ctx, CGSizeMake(0, -1*scaleTransform.d), 0);
+    [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+    CGContextEndTransparencyLayer(ctx);
+    
+    CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 1, 0.8f);
     [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
     [renderer release];
     
@@ -479,7 +486,7 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (void)setManifestValue:(id)value forKey:(NSString *)key {
-//	NSLog(@"setManifestValue:forKey:%@ \n value: %@",key,value);
+//	NSLog(@"setManifestValue:forKey:%@ \n value: %@ for book with ID %@",key,value,self.objectID);
 		NSMutableDictionary *manifest = nil;
 		NSDictionary *currentManifest = [self valueForKey:@"manifest"];
 		if (currentManifest) {
@@ -538,6 +545,10 @@ static void sortedHighlightRangePredicateInit() {
     return data;
 }
 
+- (NSData *)textFlowDataWithPath:(NSString *)path {
+    return [self dataFromTextFlowAtPath:path];
+}
+
 - (BOOL)hasManifestValueForKey:(NSString *)key
 {
     return [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] != nil;
@@ -551,7 +562,7 @@ static void sortedHighlightRangePredicateInit() {
         NSString *location = [manifestEntry objectForKey:@"location"];
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
-            // TODO: what if the textflow is in the XPS - this won't work? manifestPathForKey should have remained private
+            // TODO: what if the textflow is in the XPS - this won't work? manifestPathForKey perhaps should have stayed private
             if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
                 filePath = [self fullPathOfTextFlowItemAtPath:path];
             } else if ([location isEqualToString:BlioManifestEntryLocationBundle]) {
@@ -643,6 +654,7 @@ static void sortedHighlightRangePredicateInit() {
     [manifestEntry release];
     return data;	
 }
+
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range {
     NSManagedObjectContext *moc = [self managedObjectContext]; 
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
