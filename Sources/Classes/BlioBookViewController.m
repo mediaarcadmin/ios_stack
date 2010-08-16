@@ -1362,7 +1362,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         _pageJumpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _pageJumpLabel.textAlignment = UITextAlignmentCenter;
         _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
-        _pageJumpLabel.minimumFontSize = 6;
+        _pageJumpLabel.minimumFontSize = 11;
         _pageJumpLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
         _pageJumpLabel.shadowOffset = CGSizeMake(0, -1);
         
