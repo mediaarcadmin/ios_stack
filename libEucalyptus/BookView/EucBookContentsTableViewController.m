@@ -78,7 +78,7 @@
     }
 }
 */
-- (id)init;
+- (id)init
 {
     if((self = [super initWithStyle:UITableViewStyleGrouped])) {
         _paginationIsComplete = YES;
