@@ -18,6 +18,8 @@ static const CGFloat kBlioNotesViewTextXInset = 8;
 static const CGFloat kBlioNotesViewTextTopInset = 8;
 static const CGFloat kBlioNotesViewTextBottomInset = 24;
 
+static NSString * const BlioNotesViewShowFromTopAnimation = @"BlioNotesViewShowFromTopAnimation";
+static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToTopAnimation";
 
 @implementation BlioNotesView
 
@@ -133,7 +135,6 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     aTextView.backgroundColor = [UIColor clearColor];
     [aTextView setText:[self.note valueForKey:@"noteText"]];
     [aTextView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-    [aTextView becomeFirstResponder];
     [self addSubview:aTextView];
     self.textView = aTextView;
     [aTextView release];    
@@ -141,16 +142,20 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     if (animated) {
         CGFloat yOffscreen = -CGRectGetMaxY(self.frame);
         self.transform = CGAffineTransformMakeTranslation(0, yOffscreen);
-        [UIView beginAnimations:@"showFromTop" context:nil];
+        [UIView beginAnimations:BlioNotesViewShowFromTopAnimation context:nil];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationWillStartSelector:@selector(animationWillStart:context:)];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
         [UIView setAnimationDuration:0.35f];
         self.transform = CGAffineTransformIdentity;
         [UIView commitAnimations];
-    }    
+    } else {
+        [self.textView becomeFirstResponder];
+    }
+
 }
 
 - (void)layoutSubviews {
-    NSLog(@"Laying out note");
     [self layoutNote];
 }
 
@@ -184,7 +189,7 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     [self.textView resignFirstResponder];
     CGFloat yOffscreen = -CGRectGetMaxY(self.frame);
     
-    [UIView beginAnimations:@"exitToTop" context:self];
+    [UIView beginAnimations:BlioNotesViewExitToTopAnimation context:self];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
     [UIView setAnimationDuration:0.35f];
     [UIView setAnimationDelegate:self];
@@ -205,12 +210,22 @@ static const CGFloat kBlioNotesViewTextBottomInset = 24;
     
     [self dismiss:sender];
 }
-                                                  
+                
+- (void)animationWillStart:(NSString *)animationID context:(void *)context {
+    if ([animationID isEqualToString:BlioNotesViewShowFromTopAnimation]) {
+        [self.textView becomeFirstResponder];
+    }
+}
+
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    [(UIView *)context removeFromSuperview];
+     if ([animationID isEqualToString:BlioNotesViewExitToTopAnimation]) {
+        [(UIView *)context removeFromSuperview];
     
-    if ([self.delegate respondsToSelector:@selector(notesViewDismissed)])
-        [(NSObject *)self.delegate performSelector:@selector(notesViewDismissed) withObject:nil afterDelay:0.2f];
+        if ([self.delegate respondsToSelector:@selector(notesViewDismissed)])
+            [(NSObject *)self.delegate performSelector:@selector(notesViewDismissed) withObject:nil afterDelay:0.2f];
+    }
+    
+    
 }                                                  
 
 

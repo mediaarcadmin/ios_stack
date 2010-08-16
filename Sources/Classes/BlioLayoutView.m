@@ -329,6 +329,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.pageNumber = page;
         
         if (animated) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
+
             self.currentPageLayer = [self.contentView addPage:1 retainPages:nil];
             [self.contentView addPage:2 retainPages:nil];
             if (page == 1) {
@@ -336,7 +338,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                     [self.contentView addPage:i+1 retainPages:nil];
                 }
             }
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
         } else {
             self.currentPageLayer = [self.contentView addPage:self.pageNumber retainPages:nil];
             for (int i = 0; i < kBlioLayoutMaxPages; i++) {
@@ -763,7 +764,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     //CGContextFillRect(ctx, cropRect);
     //CGContextClipToRect(ctx, cropRect);
     
-    if (isCancelled) return;
+    if (isCancelled || (nil == self.dataSource)) return;
 
     @synchronized (self.dataSource) {
         [self.dataSource openDocumentIfRequired];
@@ -1695,11 +1696,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = targetPage - 1;
     if ([self.lastBlock pageIndex] != pageIndex) self.lastBlock = nil;
     
-    self.scrollingAnimationInProgress = YES;
-    
-    [self.scrollView setPagingEnabled:NO];
-    [self.scrollView setBounces:NO];
-    
     BlioTextFlowBlock *targetBlock = nil;
     
     // Work out targetBlock on the current page
@@ -1806,7 +1802,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGAffineTransform viewTransform = [self blockTransformForPage:targetPage];
     
     NSUInteger count = [blocks count];
-    NSUInteger targetIndex;
     
     if (count > 0) { 
         for (NSUInteger index = 0; index < count; index++) {
@@ -1815,7 +1810,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
             if (CGRectContainsPoint(pageRect, pointInTargetPage)) {
                 targetBlock = block;
-                targetIndex = index;
                 break;
             }
         }
@@ -1844,6 +1838,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         } else {
+            self.scrollingAnimationInProgress = YES;
+            [self.scrollView setPagingEnabled:NO];
+            [self.scrollView setBounces:NO];
+            
             [UIView beginAnimations:@"BlioZoomPage" context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationBeginsFromCurrentState:YES];
@@ -1877,6 +1875,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         } else {
+            self.scrollingAnimationInProgress = YES;
+            [self.scrollView setPagingEnabled:NO];
+            [self.scrollView setBounces:NO];
+            
             [UIView beginAnimations:@"BlioZoomToBlock" context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationBeginsFromCurrentState:YES];

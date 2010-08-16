@@ -331,7 +331,10 @@
 				NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
 				self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];		
 			}
-			else self.progressLabel.text = self.progressLabel.text = NSLocalizedString(@"Installing...",@"\"Installing...\" text label as temporary substitute for i of i MB progress label text.");
+			else {
+				self.progressLabel.text = self.progressLabel.text = NSLocalizedString(@"Installing...",@"\"Installing...\" text label as temporary substitute for i of i MB progress label text.");
+				self.progressView.progress = 1.0;
+			}
 		}
 	}
 }

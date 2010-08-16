@@ -286,6 +286,9 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("ID", atts[i]) == 0) {
+                if (newBlockIDString) {
+                    [newBlockIDString release];
+                }
                 newBlockIDString = [[NSString alloc] initWithUTF8String:atts[i+1]];
             } else if (strcmp("Folio", atts[i]) == 0) {
                 folio = (strcmp("True", atts[i+1]) == 0);
@@ -318,6 +321,9 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("Text", atts[i]) == 0) {
+                if (textString) {
+                    [textString release];
+                }
                 textString = [[NSString alloc] initWithUTF8String:atts[i+1]];
             } else if (strcmp("Rect", atts[i]) == 0) {
                 if (4 == sscanf(atts[i+1], " %ld , %ld , %ld , %ld ", &rect[0], &rect[1], &rect[2], &rect[3])) {
@@ -990,10 +996,12 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         return;
     }
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}		
+#endif
 	
     NSMutableSet *pageRangesSet = [NSMutableSet set];
     
@@ -1049,12 +1057,12 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     NSArray *sortedRanges = [[pageRangesSet allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortPageDescriptor]];
     [self setBookValue:[NSNumber numberWithInteger:[[sortedRanges lastObject] endPageIndex]]
                 forKey:@"layoutPageEquivalentCount"];
-    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 //		NSLog(@"ending background task...");
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}		
-	
+#endif	
     self.operationSuccess = YES;
 	self.percentageComplete = 100;
     

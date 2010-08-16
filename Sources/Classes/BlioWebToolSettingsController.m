@@ -117,8 +117,6 @@
 }
 
 - (void)dealloc {
-	[encyclopediaControl release];
-	[searchControl release];
     [super dealloc];   
 }
 

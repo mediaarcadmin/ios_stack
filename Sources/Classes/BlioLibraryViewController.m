@@ -1254,7 +1254,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)showSettings:(id)sender {    
-	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:[[BlioAppSettingsController alloc] init]];
+    BlioAppSettingsController *appSettingsController = [[BlioAppSettingsController alloc] init];
+	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:appSettingsController];
+    [appSettingsController release];
     
 	// TEMPORARY: test code, will be moved
     /*
@@ -1636,7 +1638,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.bookView = aBookView;
 		
 		progressBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"library-progress-background.png"]];
-		progressBackgroundView.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeight-25);
+		progressBackgroundView.center = CGPointMake(floor(self.frame.size.width/2), floor(kBlioLibraryGridBookHeight-25));
 		progressBackgroundView.hidden = YES;
 		[self.contentView addSubview:progressBackgroundView];
 		
@@ -1658,7 +1660,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[pauseButton setImage:[UIImage imageNamed:@"library-pausebutton.png"] forState:UIControlStateNormal];
 		pauseButton.showsTouchWhenHighlighted = YES;
 		[pauseButton addTarget:delegate action:@selector(onPauseButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-		pauseButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeight/2);
+		pauseButton.frame = CGRectMake(floor(self.frame.size.width/2 - pauseButton.frame.size.width/2), floor(self.frame.size.height/2 - pauseButton.frame.size.height/2), pauseButton.frame.size.width, pauseButton.frame.size.height);
 		pauseButton.hidden = YES;
 		[self.contentView addSubview:pauseButton];
 		
@@ -1666,7 +1668,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[resumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
 		resumeButton.showsTouchWhenHighlighted = YES;
 		[resumeButton addTarget:delegate action:@selector(onResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-		resumeButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeight/2);
+		resumeButton.frame = CGRectMake(floor(self.frame.size.width/2 - resumeButton.frame.size.width/2), floor(self.frame.size.height/2 - resumeButton.frame.size.height/2), resumeButton.frame.size.width, resumeButton.frame.size.height);
 		resumeButton.hidden = YES;
 		[self.contentView addSubview:resumeButton];
 		
@@ -1706,6 +1708,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [deleteElement setAccessibilityTraits:UIAccessibilityTraitButton];
             [deleteElement setVisibleRect:[self.delegate visibleRect]];
             [accArray addObject:deleteElement];
+            [deleteElement release];
         }
 		
         BlioAccessibleGridBookElement *bookElement = [[BlioAccessibleGridBookElement alloc] initWithAccessibilityContainer:self];
@@ -1722,6 +1725,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [bookElement setAccessibilityHint:NSLocalizedString(@"Opens book.", @"Accessibility hint for Library View cell book when not editing")];
         }
         [accArray addObject:bookElement];
+        [bookElement release];
         
         self.accessibilityElements = accArray;
     }
@@ -1890,6 +1894,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		dividerView.frame = CGRectMake(0,0,self.bounds.size.width,2);
 		[self.backgroundView addSubview:dividerView];
 		dividerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        [dividerView release];
         BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(8,0, kBlioLibraryListBookWidth, kBlioLibraryListBookHeight)];
 		//        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
 		//            forControlEvents:UIControlEventTouchUpInside];

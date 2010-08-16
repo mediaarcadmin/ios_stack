@@ -368,19 +368,19 @@
 
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseEntities:(NSArray *)parsedEntities {
 	BOOL standardFeed = NO;
-	BOOL searchFeed = NO;
+	//BOOL searchFeed = NO;
     for (BlioStoreFeed *feed in self.feeds) {
         if ([feed.parser isEqual:parser]) {
             [feed.entities addObjectsFromArray:parsedEntities];
 			standardFeed = YES;
 		}
     }
-    for (BlioStoreFeed *feed in self.storeSearchTableViewDataSource.feeds) {
-        if ([feed.parser isEqual:parser]) {
-            [feed.entities addObjectsFromArray:parsedEntities];
-			searchFeed = YES;
-		}
-    }
+    //for (BlioStoreFeed *feed in self.storeSearchTableViewDataSource.feeds) {
+//        if ([feed.parser isEqual:parser]) {
+//            [feed.entities addObjectsFromArray:parsedEntities];
+//			searchFeed = YES;
+//		}
+//    }
     // Three scroll view properties are checked to keep the user interface smooth during parse. 
     // When new objects are delivered by the parser, the table view is reloaded to display them. 
     // If the table is reloaded while the user is scrolling, this can result in eratic behavior. 

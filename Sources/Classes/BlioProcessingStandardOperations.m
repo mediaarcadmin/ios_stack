@@ -11,6 +11,7 @@
 #import "BlioDrmManager.h"
 #import "NSString+BlioAdditions.h"
 #import "BlioAlertManager.h"
+#import "BlioStoreManager.h"
 
 @implementation BlioProcessingCompleteOperation
 
@@ -43,10 +44,12 @@
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
 	NSError * downloadDirError;
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}
+#endif
 	
 	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
     if (currentProcessingState == kBlioBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
@@ -57,10 +60,12 @@
 		NSLog(@"Failed to delete download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
 	}
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}
-			
+#endif
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
 }
 - (void)addDependency:(NSOperation *)operation {
@@ -155,18 +160,17 @@
 	}
 	
 	BOOL isEncrypted = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
-    if (!isEncrypted) {
+	if (!isEncrypted) {
         self.operationSuccess = YES;
 		self.percentageComplete = 100;
 		return;
-    } else {
-        // Force create this entry to workaround bug - TODO: remove this when Don implements a processing fix
+	} else {
         NSMutableDictionary *manifestEntry = [NSMutableDictionary dictionary];
-        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-        [manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
-        [self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
-    }
-        
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+		[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
+		[self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
+	}
+	
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
@@ -180,10 +184,14 @@
 		return;
 	}
     
+	NSLog(@"TOKEN: %@",[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]);
+	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}
+#endif
 	
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		
@@ -205,9 +213,11 @@
 		}
 	}
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}	
+#endif
 	
 	if (self.operationSuccess) self.percentageComplete = 100;
 	else {
@@ -308,10 +318,12 @@
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}
+#endif
 	
     // create temp download dir
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
@@ -561,10 +573,13 @@
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
 		}
 	}
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}	
+#endif
+	
 }
 
 @end
@@ -616,15 +631,7 @@
 		return;
 	}
 	NSDictionary *manifestEntry;
-	
-	BOOL hasDrmHeaderData = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
-	if (hasDrmHeaderData) {
-		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
-		[self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
-	}
-	
+		
 	BOOL hasTextflowData = [self bookManifestPath:BlioXPSTextFlowSectionsFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasTextflowData) {
 		manifestEntry = [NSMutableDictionary dictionary];
@@ -944,11 +951,14 @@
 		NSLog(@"Unzip did not finish successfully");
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
 	}
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 //		NSLog(@"ending background task...");
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}	
+#endif
+	
 }
 
 @end
@@ -1014,11 +1024,13 @@
 
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 //		NSLog(@"ending background task...");
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
-	}	
+	}
+#endif
 	
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:self.voice forKey:@"voice"];
@@ -1100,7 +1112,7 @@
     return transform;
 }
 
-- (UIImage *)createThumbFromImage:(UIImage *)image forSize:(CGSize)size {
+- (UIImage *)newThumbFromImage:(UIImage *)image forSize:(CGSize)size {
     
     CGAffineTransform transform = [self transformForOrientation:size orientation:image.imageOrientation];
     
@@ -1183,16 +1195,18 @@
         return;
     }
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}	
+#endif
 	
-    UIImage *gridThumb = [self createThumbFromImage:cover forSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
+    UIImage *gridThumb = [self newThumbFromImage:cover forSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
     NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"gridThumb.png"];
     [gridData writeToFile:gridThumbPath atomically:YES];
-    [gridThumb release]; // this is giving an ERROR (TODO)
+    [gridThumb release];
     
     NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
     [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
@@ -1204,7 +1218,7 @@
         return;
     }
     
-    UIImage *listThumb = [self createThumbFromImage:cover forSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
+    UIImage *listThumb = [self newThumbFromImage:cover forSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
     NSData *listData = UIImagePNGRepresentation(listThumb);
     NSString *listThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"listThumb.png"];
     [listData writeToFile:listThumbPath atomically:YES];
@@ -1215,9 +1229,11 @@
     [listThumbManifestEntry setValue:@"listThumb.png" forKey:@"path"];
     [self setBookManifestValue:listThumbManifestEntry forKey:@"listThumbFilename"];
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}			
+#endif
 	
 	self.operationSuccess = YES;
 	self.percentageComplete = 100;
@@ -1330,10 +1346,12 @@
         else
             NSLog(@"Could not find root file in Textflow directory %@", cachedFilename);
     }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication * application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}				
+#endif
 }
 
 @end
@@ -1403,10 +1421,12 @@
             NSLog(@"Could not find required audiobook files in AudioBook directory %@", temporaryPath);
         }        
     }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication * application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}					
+#endif
 }
 
 @end

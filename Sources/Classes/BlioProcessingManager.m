@@ -533,9 +533,11 @@
 				licenseOp.sourceSpecificID = sourceSpecificID;
 				licenseOp.cacheDirectory = cacheDir;
 				licenseOp.tempDirectory = tempDir;
+                if (paidBookOp) [licenseOp addDependency:paidBookOp];
 				[self.preAvailabilityQueue addOperation:licenseOp];
-			}
-			if (paidBookOp) [licenseOp addDependency:paidBookOp];
+			} else {
+                if (paidBookOp) [licenseOp addDependency:paidBookOp];
+            }
 			[xpsOps addObject:licenseOp];
 			[bookOps addObject:licenseOp];
 			
@@ -547,9 +549,11 @@
 				manifestOp.sourceSpecificID = sourceSpecificID;
 				manifestOp.cacheDirectory = cacheDir;
 				manifestOp.tempDirectory = tempDir;
+                [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
-			}
-			[manifestOp addDependency:licenseOp];
+			} else {
+                [manifestOp addDependency:licenseOp];
+            }
 			[xpsOps addObject:manifestOp];
 			[bookOps addObject:manifestOp];
 
@@ -873,9 +877,9 @@
 	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
 	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
-	NSLog(@"stopping %i operations...",[relatedOperations count]);
+	NSLog(@"Stopping %i operations...",[relatedOperations count]);
 	for (BlioProcessingOperation * op in relatedOperations) {
-		NSLog(@"Operation (%u complete): %@",op.percentageComplete,op);
+		NSLog(@"Stopping Operation (%u complete): %@",op.percentageComplete,op);
 		[op cancel];
 	}
 }
