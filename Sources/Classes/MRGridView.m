@@ -167,7 +167,14 @@
 		}
 		else {
 //			NSLog(@"DID intersect");
-			if (currentHoveredIndex != [numberKey intValue] && [self cellAtGridIndex:[numberKey intValue]] != currDraggedCell) [self cellAtGridIndex:[numberKey intValue]].frame = [self frameForCellAtGridIndex:[numberKey intValue]];
+//			NSLog(@"currentHoveredIndex: %i",currentHoveredIndex);
+//			NSLog(@"currDraggedCell: %@",currDraggedCell);
+//			NSLog(@"[self cellAtGridIndex:[numberKey intValue]]: %@",[self cellAtGridIndex:[numberKey intValue]]);
+			
+			if (currentHoveredIndex != [numberKey intValue] && [self cellAtGridIndex:[numberKey intValue]] != currDraggedCell) {
+//				NSLog(@"resetting frame for cell...");
+				[self cellAtGridIndex:[numberKey intValue]].frame = [self frameForCellAtGridIndex:[numberKey intValue]];
+			}
 		}
 	}
 	for (NSNumber* index in cellIndexes){
@@ -354,14 +361,11 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesBegan:touches withEvent:event];
-//	NSLog(@"touchesBegan");
-//	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
-NSArray *touchArray = [touches allObjects];
+//	NSLog(@"touchesBegan, cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
+	NSArray *touchArray = [touches allObjects];
 //	NSLog(@"touchArray count: %i",[touchArray count]);
 	if (_activeTouch == nil) {
 		_activeTouch = [touchArray objectAtIndex:0];
-		CGPoint touchLoc = [_activeTouch locationInView:self];
-		self.currDraggedCell = (MRGridViewCell*)[self viewAtLocation:touchLoc];
 		self.exclusiveTouch = YES;
 		
 	}
@@ -369,6 +373,8 @@ NSArray *touchArray = [touches allObjects];
 	{
 	if (self.isEditing){
 		[self resetEditTimer];
+		CGPoint touchLoc = [_activeTouch locationInView:self];
+		self.currDraggedCell = (MRGridViewCell*)[self viewAtLocation:touchLoc];
 //		NSLog(@"self.currDraggedCell: %@",self.currDraggedCell);
 		currDraggedCellOriginalCenter = self.currDraggedCell.center;
 		currDraggedCellIndex = [self indexForTouchLocation:[_activeTouch locationInView:self]];
@@ -400,7 +406,7 @@ NSArray *touchArray = [touches allObjects];
 	[super touchesMoved:touches withEvent:event];
 	NSArray *touchArray = [touches allObjects];
 //	NSLog(@"touchesMoved... touchArray count: %i",[touchArray count]);
-//	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
+//	NSLog(@"touchesMoved, cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
 	UITouch *theTouch = nil;
 
 	for (UITouch * touch in touchArray)
@@ -483,8 +489,7 @@ NSArray *touchArray = [touches allObjects];
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	[super touchesEnded:touches withEvent:event];
-//	NSLog(@"touchesEnded");
-//	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
+//	NSLog(@"touchesEnded, cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
 	NSArray *touchArray = [touches allObjects];
 	// NSLog(@"touchArray count: %i",[touchArray count]);
 	UITouch *theTouch = nil;
