@@ -180,6 +180,8 @@ typedef enum {
     [self.tableView setTableFooterView:aStatusView];
     self.statusView = aStatusView;
     [aStatusView release];
+    
+    [self.view.layer setZPosition:100];
 }
 
 - (void)highlightCurrentSearchResult {
