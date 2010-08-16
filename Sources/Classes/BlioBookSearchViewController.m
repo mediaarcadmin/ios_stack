@@ -674,8 +674,8 @@ typedef enum {
     
     if ([searchText length] > 0) {
         BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-        [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
         [self setSearchStatus:kBlioBookSearchStatusInProgress];
+        [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
     } else {
         [self setSearchStatus:kBlioBookSearchStatusIdle];
     }
@@ -707,8 +707,8 @@ typedef enum {
 }
 
 - (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)aSearchController {
-    [aSearchController findNextOccurrence];
     [self setSearchStatus:kBlioBookSearchStatusInProgressHasWrapped];
+    [aSearchController findNextOccurrence];
 }
 
 - (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)aSearchController {

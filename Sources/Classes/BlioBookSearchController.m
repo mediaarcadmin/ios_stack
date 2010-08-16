@@ -111,12 +111,13 @@
     self.searching = YES;
     
     // TODO - confirm that paragraphIDs observe the comparison correctly
-    if ((self.hasWrapped) &&
-        ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedSame) &&
-        (self.currentCharacterOffset >= self.startElementOffset)) {
+    if (self.hasWrapped) {
+        if (([self.currentParagraphID compare:self.startParagraphID] == NSOrderedSame) &&
+            (self.currentCharacterOffset >= self.startElementOffset)) {
         
-        [self searchCompleted];
-        return;
+                [self searchCompleted];
+                return;
+            }
     }
     
     NSString *currentParagraphString = [self.currentParagraphWords componentsJoinedByString:@" "];
@@ -202,7 +203,13 @@
         self.currentParagraphID = [self.paragraphSource nextParagraphIdForParagraphWithID:self.currentParagraphID];
         
         if (!self.currentParagraphID) {
-            [self searchReachedEndOfBook];
+            if (self.hasWrapped) {
+                [self searchCompleted];
+                return;
+            } else {
+                [self searchReachedEndOfBook];
+                return;
+            }
         } else {
             self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
             self.currentCharacterOffset = 0;
