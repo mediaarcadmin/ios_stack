@@ -29,7 +29,7 @@ static const NSInteger BlioDrmManagerInitialLicenseCooldownTime = 10;
 + (BlioDrmManager*)getDrmManager;
 - (void)initialize;
 - (void)reportReadingForBookWithID:(NSManagedObjectID *)aBookID;
-- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID;
+- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID sessionToken:(NSString*)token;
 - (BOOL)decryptData:(NSData *)data forBookWithID:(NSManagedObjectID *)aBookID;
 - (void)startLicenseCooldownTimer;
 - (void)resetLicenseCooldownTimer;

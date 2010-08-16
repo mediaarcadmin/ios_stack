@@ -12,6 +12,11 @@
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
 
+#define KNFB_STORE 12151
+#define HP_STORE 12308
+#define TOSHIBA_STORE 12309
+#define DELL_STORE 12327
+
 @interface BlioOnlineStoreHelper (PRIVATE)
 - (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
 - (BOOL)fetchBookISBNArrayFromServer;
@@ -33,7 +38,7 @@
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
 	loginRequest.username = user;	
 	loginRequest.password = password; 
-	loginRequest.siteId =  [NSNumber numberWithInt:12151];		// hard-coded in Windows Blio
+	loginRequest.siteId =  [NSNumber numberWithInt:HP_STORE];
 	BookVaultSoapResponse * response = [vaultBinding LoginUsingParameters:loginRequest];
 	[vaultBinding release];
 			
