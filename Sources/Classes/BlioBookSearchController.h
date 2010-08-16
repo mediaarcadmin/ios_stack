@@ -29,7 +29,9 @@
     NSArray *currentParagraphWords;
     
     BOOL hasWrapped;
-	BOOL searching;
+	BOOL searching;    
+    
+    NSTimeInterval searchInterval;
 }
 
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;

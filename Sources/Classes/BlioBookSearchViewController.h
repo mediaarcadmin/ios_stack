@@ -29,6 +29,7 @@
     NSInteger currentSearchResult;
     id <BlioBookView> bookView;
     BlioBookSearchStatusView *statusView;
+    NSTimeInterval resultsInterval;
 }
 
 @property (nonatomic, retain) UITableView *tableView;

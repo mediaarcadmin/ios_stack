@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioBookSearchViewController.h"
 #import "BlioBookViewController.h"
+#import "UIDevice+BlioAdditions.h"
 
 #define BLIOBOOKSEARCHCELLPAGETAG 1233
 #define BLIOBOOKSEARCHCELLPREFIXTAG 1234
@@ -126,6 +127,8 @@ typedef enum {
         
         self.searchResults = [NSMutableArray array];
         currentSearchResult = -1;
+        
+        resultsInterval = [[UIDevice currentDevice] blioDeviceSearchInterval];
     }
     return self;
 }
@@ -664,6 +667,14 @@ typedef enum {
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [self.toolbar.searchBar resignFirstResponder];
+    
+    if ([self.statusView status] == kBlioBookSearchStatusIdle) {
+        if ([searchBar.text length] > 0) {
+            BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
+            [self setSearchStatus:kBlioBookSearchStatusInProgress];
+            [self.bookSearchController findString:searchBar.text fromBookmarkPoint:currentBookmarkPoint];
+        }
+    }
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -671,8 +682,8 @@ typedef enum {
     [self.searchResults removeAllObjects];
     currentSearchResult = -1;
     [self.tableView reloadData];
-    
-    if ([searchText length] > 0) {
+        
+    if (([searchText length] > 0) && ([[UIDevice currentDevice] blioDevicePerCharacterSearchEnabled])) {
         BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
         [self setSearchStatus:kBlioBookSearchStatusInProgress];
         [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
@@ -702,7 +713,7 @@ typedef enum {
     if (([self.searchResults count] % 100) == 0) {
         [self setSearchStatus:kBlioBookSearchStatusStopped];
     } else {
-        [aSearchController findNextOccurrence];
+        [aSearchController performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:resultsInterval];
     }
 }
 

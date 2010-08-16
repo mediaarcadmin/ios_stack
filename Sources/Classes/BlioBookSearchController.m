@@ -7,6 +7,7 @@
 //
 
 #import "BlioBookSearchController.h"
+#import "UIDevice+BlioAdditions.h"
 
 @interface BlioBookSearchController()
 
@@ -40,6 +41,7 @@
     if ((self = [super init])) {
         self.paragraphSource = aParagraphSource;
         self.searchOptions = NSCaseInsensitiveSearch;
+        searchInterval = [[UIDevice currentDevice] blioDeviceSearchInterval];
     }
     return self;
 }
@@ -95,6 +97,8 @@
     
     self.currentParagraphID = paragraphID;
     self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
+    self.currentCharacterOffset = 0;
+
     self.hasWrapped = YES;
     
     if ([(NSObject *)self.delegate respondsToSelector:@selector(searchControllerDidReachEndOfBook:)])
@@ -222,8 +226,8 @@
             
                 //BlioBookmarkPoint *debugBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:0];
                 //NSLog(@"Page %d paragraph %d has %d words", [debugBookmarkPoint layoutPage], [debugBookmarkPoint blockOffset], [self.currentParagraphWords count]);
-            
-                [self performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:0.01f];
+                // Need to always allow at least a 0.01f delay before finding teh next occureence otherwise the UI freezes
+                [self performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:searchInterval + 0.01f];
             }
         }
     }
