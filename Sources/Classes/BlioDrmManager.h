@@ -12,7 +12,7 @@
 #define HDS_STORE_FILE  L".\\playready.hds"
 #define MAX_URL_SIZE	1024
 
-static const NSInteger BlioDrmManagerInitialLicenseCooldownTime = 5;
+static const NSInteger BlioDrmManagerInitialLicenseCooldownTime = 10;
 
 @interface BlioDrmManager : NSObject {
 	BOOL drmInitialized;

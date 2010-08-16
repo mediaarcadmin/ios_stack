@@ -70,7 +70,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 - (NSArray *)highlightMenuItemsIncludingTextCpyItem:(BOOL)copy {
     EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu")                                                    
                                                             action:@selector(addNote:)] autorelease];
-    
+
     EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu")
                                                          action:@selector(copy:)] autorelease];
     
@@ -110,9 +110,11 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 
 - (NSArray *)menuItemsForEucSelector:(EucSelector *)selector {
     if ([selector selectedRangeIsHighlight])
-        return [self highlightMenuItemsIncludingTextCpyItem:YES];
+        // Disallowing copy because of DRM.
+		return [self highlightMenuItemsIncludingTextCpyItem:NO];
     else
-        return [self rootMenuItemsIncludingTextCpyItem:YES];
+        // Disallowing copy because of DRM.
+		return [self rootMenuItemsIncludingTextCpyItem:NO];
 }
 
 

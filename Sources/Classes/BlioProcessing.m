@@ -18,7 +18,10 @@ static pthread_mutex_t sBookMutationMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int mutationCount = 0;
 
-@synthesize bookID, sourceID, sourceSpecificID, forceReprocess, cacheDirectory,tempDirectory,backgroundTaskIdentifier;
+@synthesize bookID, sourceID, sourceSpecificID, forceReprocess, cacheDirectory,tempDirectory;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+@synthesize backgroundTaskIdentifier;
+#endif
 
 - (id) init {
 	if((self = [super init])) {

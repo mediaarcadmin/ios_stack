@@ -996,10 +996,12 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         return;
     }
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}		
+#endif
 	
     NSMutableSet *pageRangesSet = [NSMutableSet set];
     
@@ -1055,12 +1057,12 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     NSArray *sortedRanges = [[pageRangesSet allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortPageDescriptor]];
     [self setBookValue:[NSNumber numberWithInteger:[[sortedRanges lastObject] endPageIndex]]
                 forKey:@"layoutPageEquivalentCount"];
-    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 //		NSLog(@"ending background task...");
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}		
-	
+#endif	
     self.operationSuccess = YES;
 	self.percentageComplete = 100;
     

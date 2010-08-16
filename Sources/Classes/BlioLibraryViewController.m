@@ -1638,7 +1638,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.bookView = aBookView;
 		
 		progressBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"library-progress-background.png"]];
-		progressBackgroundView.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeight-25);
+		progressBackgroundView.center = CGPointMake(floor(self.frame.size.width/2), floor(kBlioLibraryGridBookHeight-25));
 		progressBackgroundView.hidden = YES;
 		[self.contentView addSubview:progressBackgroundView];
 		
@@ -1660,7 +1660,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[pauseButton setImage:[UIImage imageNamed:@"library-pausebutton.png"] forState:UIControlStateNormal];
 		pauseButton.showsTouchWhenHighlighted = YES;
 		[pauseButton addTarget:delegate action:@selector(onPauseButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-		pauseButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeight/2);
+		pauseButton.frame = CGRectMake(floor(self.frame.size.width/2 - pauseButton.frame.size.width/2), floor(self.frame.size.height/2 - pauseButton.frame.size.height/2), pauseButton.frame.size.width, pauseButton.frame.size.height);
 		pauseButton.hidden = YES;
 		[self.contentView addSubview:pauseButton];
 		
@@ -1668,7 +1668,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[resumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
 		resumeButton.showsTouchWhenHighlighted = YES;
 		[resumeButton addTarget:delegate action:@selector(onResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-		resumeButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeight/2);
+		resumeButton.frame = CGRectMake(floor(self.frame.size.width/2 - resumeButton.frame.size.width/2), floor(self.frame.size.height/2 - resumeButton.frame.size.height/2), resumeButton.frame.size.width, resumeButton.frame.size.height);
 		resumeButton.hidden = YES;
 		[self.contentView addSubview:resumeButton];
 		

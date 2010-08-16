@@ -35,7 +35,9 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
     NSString *tempDirectory;
     BOOL operationSuccess;
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIBackgroundTaskIdentifier backgroundTaskIdentifier;
+#endif
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -46,7 +48,9 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 @property (nonatomic, retain) NSString *cacheDirectory;
 @property (nonatomic, retain) NSString *tempDirectory;
 @property (nonatomic) BOOL operationSuccess;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 @property (nonatomic) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
+#endif
 
 - (NSData *)getBookTextFlowDataWithPath:(NSString *)path;
 - (BOOL)bookManifestPath:(NSString *)path existsForLocation:(NSString *)location;

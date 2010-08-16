@@ -11,6 +11,7 @@
 #import "BlioDrmManager.h"
 #import "NSString+BlioAdditions.h"
 #import "BlioAlertManager.h"
+#import "BlioStoreManager.h"
 
 @implementation BlioProcessingCompleteOperation
 
@@ -43,10 +44,12 @@
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
 	NSError * downloadDirError;
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}
+#endif
 	
 	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
     if (currentProcessingState == kBlioBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
@@ -57,10 +60,12 @@
 		NSLog(@"Failed to delete download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
 	}
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}
-			
+#endif
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
 }
 - (void)addDependency:(NSOperation *)operation {
@@ -179,10 +184,14 @@
 		return;
 	}
     
+	NSLog(@"TOKEN: %@",[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]);
+	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}
+#endif
 	
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		
@@ -204,9 +213,11 @@
 		}
 	}
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}	
+#endif
 	
 	if (self.operationSuccess) self.percentageComplete = 100;
 	else {
@@ -307,10 +318,12 @@
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}
+#endif
 	
     // create temp download dir
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
@@ -560,10 +573,13 @@
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
 		}
 	}
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}	
+#endif
+	
 }
 
 @end
@@ -935,11 +951,14 @@
 		NSLog(@"Unzip did not finish successfully");
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
 	}
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 //		NSLog(@"ending background task...");
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}	
+#endif
+	
 }
 
 @end
@@ -1005,11 +1024,13 @@
 
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 //		NSLog(@"ending background task...");
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
-	}	
+	}
+#endif
 	
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:self.voice forKey:@"voice"];
@@ -1174,10 +1195,12 @@
         return;
     }
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}	
+#endif
 	
     UIImage *gridThumb = [self newThumbFromImage:cover forSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
@@ -1206,9 +1229,11 @@
     [listThumbManifestEntry setValue:@"listThumb.png" forKey:@"path"];
     [self setBookManifestValue:listThumbManifestEntry forKey:@"listThumbFilename"];
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}			
+#endif
 	
 	self.operationSuccess = YES;
 	self.percentageComplete = 100;
@@ -1321,10 +1346,12 @@
         else
             NSLog(@"Could not find root file in Textflow directory %@", cachedFilename);
     }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication * application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}				
+#endif
 }
 
 @end
@@ -1394,10 +1421,12 @@
             NSLog(@"Could not find required audiobook files in AudioBook directory %@", temporaryPath);
         }        
     }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication * application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}					
+#endif
 }
 
 @end
