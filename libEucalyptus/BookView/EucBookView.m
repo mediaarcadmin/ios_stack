@@ -771,48 +771,47 @@ typedef enum {
     }
 }
 
-- (void)_hyperlinkTapped:(NSDictionary *)attributes
+- (void)_hyperlinkTapped:(NSURL *)url
 {
-    NSString *URLString = [attributes objectForKey:@"href"];
-    if(URLString) {
-        NSURL *url = [NSURL URLWithString:URLString];
-        if(url) {
-            NSString *scheme = url.scheme;
-            if(scheme) {
-                NSString *message = nil;
-                if([scheme caseInsensitiveCompare:@"internal"] == NSOrderedSame) {
-                    // This is an internal link - jump to the specified section.
-                    [self goToUuid:url.resourceSpecifier animated:YES];
-                } else {
-                    // See if our delegate wants to handle the link.
-                    if(![_delegate respondsToSelector:@selector(bookView:shouldHandleTapOnHyperlink:withAttributes:)] ||
-                       [_delegate bookView:self shouldHandleTapOnHyperlink:url withAttributes:attributes]) {
-                        if([scheme caseInsensitiveCompare:@"http"] == NSOrderedSame) {
-                            NSString *absolute = url.absoluteString;
-                            if([absolute matchPOSIXRegex:@"(itunes|phobos).*\\.com" flags:REG_EXTENDED | REG_ICASE]) {
-                                if([absolute matchPOSIXRegex:@"(viewsoftware|[/]app[/])" flags:REG_EXTENDED | REG_ICASE]) {
-                                    message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to an app in the App Store.\n\nDo you want to switch to the App Store to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked app hyperlink in the App Store"), url.host];
-                                } else {
-                                    message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped will open iTunes.\n\nDo you want to switch to iTunes now?", @"Message for sheet in book view asking if the user wants to open a clicked URL hyperlink in iTunes"), url.host];
-                                }
-                            } else {
-                                message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to a page at “%@”, on the Internet.\n\nDo you want to switch to Safari to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked URL hyperlink in Safari"), url.host];
-                            }
-                        } else if([scheme caseInsensitiveCompare:@"mailto"] == NSOrderedSame) {
-                            message = [NSString stringWithFormat:NSLocalizedString(@"Do you want to switch to the Mail application to write an email to “%@” now?", @"Message for sheet in book view askng if the user wants to open a clicked mailto hyperlink in Mail"), url.resourceSpecifier];
-                        } 
-                        
-                        if(message) {
-                            THAlertViewWithUserInfo *alertView = [[THAlertViewWithUserInfo alloc] initWithTitle:nil
-                                                                                                        message:message
-                                                                                                       delegate:self
-                                                                                              cancelButtonTitle:NSLocalizedString(@"Don’t Switch", @"Button to cancel opening of a clicked hyperlink") 
-                                                                                              otherButtonTitles:NSLocalizedString(@"Switch", @"Button to confirm opening of a clicked hyperlink"), nil];
-                            alertView.userInfo = url;
-                            [alertView show];
-                            [alertView release];
+    if(url) {
+        NSString *absolute = url.absoluteString;
+        EucBookPageIndexPoint *indexPoint = nil;
+        if([_book respondsToSelector:@selector(indexPointForId:)]) {
+            indexPoint = [_book indexPointForId:absolute];
+        }
+        if(indexPoint) {
+            // This is an internal link - jump to the specified section.
+            [self goToIndexPoint:indexPoint animated:YES];
+        } else {
+            NSString *message = nil;
+            
+            // See if our delegate wants to handle the link.
+            if(![_delegate respondsToSelector:@selector(bookView:shouldHandleTapOnHyperlink:)] ||
+               [_delegate bookView:self shouldHandleTapOnHyperlink:url]) {
+                NSString *scheme = [url scheme];
+                if([scheme caseInsensitiveCompare:@"http"] == NSOrderedSame) {
+                    if([absolute matchPOSIXRegex:@"(itunes|phobos).*\\.com" flags:REG_EXTENDED | REG_ICASE]) {
+                        if([absolute matchPOSIXRegex:@"(viewsoftware|[/]app[/])" flags:REG_EXTENDED | REG_ICASE]) {
+                            message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to an app in the App Store.\n\nDo you want to switch to the App Store to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked app hyperlink in the App Store"), url.host];
+                        } else {
+                            message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped will open iTunes.\n\nDo you want to switch to iTunes now?", @"Message for sheet in book view asking if the user wants to open a clicked URL hyperlink in iTunes"), url.host];
                         }
+                    } else {
+                        message = [NSString stringWithFormat:NSLocalizedString(@"The link you tapped points to a page at “%@”, on the Internet.\n\nDo you want to switch to Safari to view it now?", @"Message for sheet in book view askng if the user wants to open a clicked URL hyperlink in Safari"), url.host];
                     }
+                } else if([scheme caseInsensitiveCompare:@"mailto"] == NSOrderedSame) {
+                    message = [NSString stringWithFormat:NSLocalizedString(@"Do you want to switch to the Mail application to write an email to “%@” now?", @"Message for sheet in book view askng if the user wants to open a clicked mailto hyperlink in Mail"), url.resourceSpecifier];
+                } 
+                
+                if(message) {
+                    THAlertViewWithUserInfo *alertView = [[THAlertViewWithUserInfo alloc] initWithTitle:nil
+                                                                                                message:message
+                                                                                               delegate:self
+                                                                                      cancelButtonTitle:NSLocalizedString(@"Don’t Switch", @"Button to cancel opening of a clicked hyperlink") 
+                                                                                      otherButtonTitles:NSLocalizedString(@"Switch", @"Button to confirm opening of a clicked hyperlink"), nil];
+                    alertView.userInfo = url;
+                    [alertView show];
+                    [alertView release];
                 }
             }
         }
@@ -822,14 +821,14 @@ typedef enum {
 
 - (void)pageView:(EucPageView *)pageTextView didReceiveTapOnHyperlinkWithURL:(NSURL *)url
 {
-   /* if(_touch) {
+    /*if(_touch) {
         // Stop tracking the touch - we don't want to show/hide the toolbar on a
         // tap if it was on a hyperlink.
         [_touch release];
         _touch = nil;
     }*/
     THLog(@"EucBookView received tap on hyperlink: %@", url);
-    //[self _hyperlinkTapped:attributes];
+    [self _hyperlinkTapped:url];
 }
 
 #pragma mark -

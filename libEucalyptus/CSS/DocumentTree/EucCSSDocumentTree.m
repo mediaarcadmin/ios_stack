@@ -305,13 +305,7 @@ static css_error EucCSSDocumentTreeNodeIsLink(void *pw, void *node, bool *match)
 {
     id<EucCSSDocumentTree> tree = (id<EucCSSDocumentTree>)pw;
     uint32_t key = (uint32_t)((intptr_t)node);
-    id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
-    
-    NSString *name = treeNode.name;
-    *match = (name &&
-              [@"a" caseInsensitiveCompare:name] == NSOrderedSame && 
-              [treeNode attributeWithName:@"href"] != nil);
-        
+    *match = [[tree nodeForKey:key] isHyperlinkNode];
     return CSS_OK;
 }
 

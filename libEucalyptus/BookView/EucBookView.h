@@ -129,7 +129,7 @@ typedef struct EucRange {
 
 @protocol EucBookViewDelegate <NSObject>
 @optional
-- (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link withAttributes:(NSDictionary *)attributes;
+- (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link;
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView;
 - (void)bookViewPageTurnDidEnd:(EucBookView *)bookView;
 

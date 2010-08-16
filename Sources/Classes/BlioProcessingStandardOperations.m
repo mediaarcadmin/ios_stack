@@ -159,8 +159,14 @@
         self.operationSuccess = YES;
 		self.percentageComplete = 100;
 		return;
+    } else {
+        // Force create this entry to workaround bug - TODO: remove this when Don implements a processing fix
+        NSMutableDictionary *manifestEntry = [NSMutableDictionary dictionary];
+        [manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
+        [manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
+        [self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
     }
-	
+        
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;

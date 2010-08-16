@@ -29,6 +29,7 @@
 
 @optional
 
+- (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier;
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (void)persistCacheableData;
 

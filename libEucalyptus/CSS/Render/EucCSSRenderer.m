@@ -317,7 +317,9 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 NSParameterAssert(currentUnderline);
                 underlinePoints[1].x = renderItem->item.underlineItem.underlinePoint.x;
                 CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
-                currentUnderline = NO;                
+                currentUnderline = NO;    
+                
+                //NSLog(@"Underline: %@ -> %@", NSStringFromCGPoint(underlinePoints[0]), NSStringFromCGPoint(underlinePoints[1])); 
                 break;
             }
             case EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart:
@@ -328,7 +330,9 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 
     if(currentUnderline) {
         underlinePoints[1].x = lastMaxX;
-        CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);        
+        CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
+        
+        //NSLog(@"Underline: %@ -> %@", NSStringFromCGPoint(underlinePoints[0]), NSStringFromCGPoint(underlinePoints[1])); 
     }
     
     THLogVerbose(@"Positioned Line End");

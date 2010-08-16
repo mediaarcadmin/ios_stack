@@ -214,13 +214,20 @@
                 uint8_t decoration = css_computed_text_decoration(style);
                 BOOL shouldUnderline = (decoration == CSS_TEXT_DECORATION_UNDERLINE);
                 if(currentUnderline != shouldUnderline) {
-                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStart;
-                    renderItem->item.underlineItem.underlinePoint = CGPointMake(xPosition, yPosition + baseline + ceilf((info->lineHeight - info->pointSize) * 0.5f) + 0.5);
+                    if(shouldUnderline) {
+                        //NSLog(@"Underline On");
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStart;
+                        renderItem->item.underlineItem.underlinePoint = CGPointMake(floorf(xPosition), yPosition + baseline + floor((info->lineHeight - info->pointSize) * 0.5f) - 1);
+                    } else {
+                        //NSLog(@"Underline Off");
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStop;
+                        renderItem->item.underlineItem.underlinePoint = CGPointMake(ceilf(xPosition), yPosition + baseline + floorf((info->lineHeight - info->pointSize) * 0.5f) - 1);
+                    }
                     ++renderItem;
                     ++_renderItemCount;
-
                     currentUnderline = shouldUnderline;
                 }
+                checkForUnderline = NO;
             }
             
             if(checkForHyperlink) {
@@ -240,6 +247,8 @@
                             ++renderItem;
                             ++_renderItemCount;
                             [currentHyperlink release];
+                            //NSLog(@"Hyperlink Off");
+                            //NSLog(@"Hyperlink On");
                             currentHyperlink = [href retain];
                             renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                             renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
@@ -247,6 +256,7 @@
                             ++_renderItemCount;
                         }
                     } else {
+                        //NSLog(@"Hyperlink On");
                         currentHyperlink = [href retain];
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
@@ -255,6 +265,7 @@
                     }
                 } else {
                     if(currentHyperlink) {
+                        //NSLog(@"Hyperlink Off");
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
                         ++renderItem;
