@@ -145,7 +145,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize dataSource;
 
 - (void)dealloc {
-    NSLog(@"*************** dealloc called for layoutview");
+    //NSLog(@"*************** dealloc called for layoutview");
     isCancelled = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
@@ -174,11 +174,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     self.selector = nil;
     
     [self.contentView abortRendering];
+    [self.contentView removeFromSuperview];
     self.contentView = nil;
     self.containerView = nil;
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
-    self.delegate = nil;
     
     if(textFlow) {
         [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:textFlow.bookID];
@@ -189,6 +189,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:xpsProvider.bookID];
         [xpsProvider release];
     }
+    
+    self.delegate = nil;
     
     self.bookID = nil;
     [layoutCacheLock release];
@@ -329,6 +331,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.pageNumber = page;
         
         if (animated) {
+            //NSLog(@"registered for blioCoverPageDidFinishRender");
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blioCoverPageDidFinishRender:) name:@"blioCoverPageDidFinishRender" object:nil];
 
             self.currentPageLayer = [self.contentView addPage:1 retainPages:nil];
@@ -534,6 +537,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGRect insetBounds = UIEdgeInsetsInsetRect(contentBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
     
     CGAffineTransform boundsTransform;
+    
+    if (isCancelled) return CGAffineTransformIdentity;
     
     if (self.frame.size.width > self.frame.size.height) {
         boundsTransform = transformRectToFitRectWidth(pageCropRect, insetBounds);
@@ -767,6 +772,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (isCancelled || (nil == self.dataSource)) return;
 
     @synchronized (self.dataSource) {
+        if (isCancelled) return;
+        
         [self.dataSource openDocumentIfRequired];
         CGRect unscaledCropRect = [self.dataSource cropRectForPage:aPageNumber];
         //NSLog(@"unscaledCropRect %@", NSStringFromCGRect(unscaledCropRect));
@@ -885,10 +892,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Highlights
 
 - (NSArray *)highlightRectsForPage:(NSInteger)aPageNumber excluding:(BlioBookmarkRange *)excludedBookmark {
+    if (isCancelled) return nil;
     
     NSInteger pageIndex = aPageNumber - 1;
     NSMutableArray *allHighlights = [NSMutableArray array];
-    NSArray *highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
+    NSArray *highlightRanges = nil;
+    if (self.delegate) {
+        highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
+    }
+    if (isCancelled) return nil;
     NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
@@ -913,6 +925,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 }
             }
             
+            if (isCancelled) return nil;
             NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
             
             for (NSValue *rectValue in coalescedRects) {
@@ -927,6 +940,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
     
     }
+    if (isCancelled) return nil;
     
     return allHighlights;
 }
@@ -1456,10 +1470,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.pageNumber = targetPage;
         [self didChangeValueForKey:@"pageNumber"];
     }
+    //NSLog(@"Done go to");
 }
 
 - (void)performGoToPageStep1FromPage:(NSInteger)fromPage {
-
+    //NSLog(@"Perform go to step 1");
     CFTimeInterval shrinkDuration = 0.25f + (0.5f * (self.scrollView.zoomScale / self.scrollView.maximumZoomScale));
     [UIView beginAnimations:@"BlioLayoutGoToPageStep1" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
@@ -1478,9 +1493,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [UIView setAnimationDuration:0.0f];
     }
     [UIView commitAnimations];
+    //NSLog(@"Perform go to step 1 complete");
 }
     
 - (void)performGoToPageStep2 {
+    //NSLog(@"Perform go to step 2");
     CFTimeInterval scrollDuration = 0.75f;
     [UIView beginAnimations:@"BlioLayoutGoToPageStep2" context:nil];
     [UIView setAnimationBeginsFromCurrentState:YES];
@@ -1494,6 +1511,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
          [UIView setAnimationDuration:0.0f];
     }
     [UIView commitAnimations];
+    //NSLog(@"Perform go to step 2 complete");
 }
 
 - (void)performGoToPageStep3 {  
@@ -1979,6 +1997,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Notification Callbacks
 
 - (void)blioCoverPageDidFinishRender:(NSNotification *)notification  {
+    //NSLog(@"Received blioCoverPageDidFinishRender");
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"blioCoverPageDidFinishRender" object:nil];
     [self.delegate firstPageDidRender];
 }
