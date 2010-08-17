@@ -1032,6 +1032,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)dealloc 
 {
+    //NSLog(@"BookViewController dealloc");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
@@ -1326,7 +1327,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     CGPoint center = CGPointMake(CGRectGetMidX(_pageJumpView.bounds), 
                                  CGRectGetHeight(_pageJumpViewBounds) - (CGRectGetHeight(sliderBounds) / 2.0f + 2.0f) * scale);
     _pageJumpSlider.center = center;
-    NSLog(@"%@", NSStringFromCGPoint(center));
+    //NSLog(@"%@", NSStringFromCGPoint(center));
     _pageJumpSlider.transform = CGAffineTransformMakeScale(scale, scale); 
 }
 
@@ -1475,7 +1476,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)goToPageNumberAnimated:(NSNumber *)pageNumber {
-	NSLog(@"BlioBookViewController goToPageNumber: %i",pageNumber);
+	//NSLog(@"BlioBookViewController goToPageNumber: %i",pageNumber);
     [self.bookView goToPageNumber:[pageNumber integerValue] animated:YES];
 }
 
@@ -1924,7 +1925,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 -(void)remoteControlReceivedWithEvent:(UIEvent*)theEvent {
-	NSLog(@"remoteControlReceivedWithEvent");
+	//NSLog(@"remoteControlReceivedWithEvent");
     if (theEvent.type == UIEventTypeRemoteControl) {
         switch(theEvent.subtype) {
             case UIEventSubtypeRemoteControlTogglePlayPause:
