@@ -312,7 +312,7 @@ static CGContextRef CreateGrayscaleBitmapContext (CGImageRef inImage)
 + (UIImage *)imageWithView:(UIView *)view
 {
     CGRect bounds = [view bounds];
-    if(UIGraphicsBeginImageContextWithOptions) {
+    if(UIGraphicsBeginImageContextWithOptions != NULL) {
         UIGraphicsBeginImageContextWithOptions(bounds.size, NO, 0);
     } else {
         UIGraphicsBeginImageContext(bounds.size);

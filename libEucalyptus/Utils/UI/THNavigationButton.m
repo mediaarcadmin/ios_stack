@@ -109,7 +109,7 @@
     CGRect stretchedImageFrame = CGRectMake(0, 0, 41, 30);
     
     // Create a bitmap to render the button image into.
-    if(UIGraphicsBeginImageContextWithOptions) {
+    if(UIGraphicsBeginImageContextWithOptions != NULL) {
         UIGraphicsBeginImageContextWithOptions(stretchedImageFrame.size, NO, 0);
     } else {
         UIGraphicsBeginImageContext(stretchedImageFrame.size);
@@ -125,7 +125,7 @@
     UIGraphicsEndImageContext();
     
     // Create a bitmap to render the button image into.
-    if(UIGraphicsBeginImageContextWithOptions) {
+    if(UIGraphicsBeginImageContextWithOptions != NULL) {
         UIGraphicsBeginImageContextWithOptions(frame.size, NO, 0);
     } else {
         UIGraphicsBeginImageContext(frame.size);
