@@ -162,15 +162,18 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.navigationItem.titleView = self.logoView;
 	
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    UIEdgeInsets inset = UIEdgeInsetsMake(3, 0, 0, 0);
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage imageWithShadow:[UIImage imageNamed:@"button-grid.png"] inset:inset],
-                              [UIImage imageWithShadow:[UIImage imageNamed:@"button-list.png"] inset:inset],
+                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
+                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
                               nil];
     BlioAccessibilitySegmentedControl *segmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
+    
     segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     segmentedControl.frame = CGRectMake(0,0, kBlioLibraryLayoutButtonWidth, segmentedControl.frame.size.height);
+    [segmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:0];
+    [segmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
+
     [segmentedControl addTarget:self action:@selector(changeLibraryLayout:) forControlEvents:UIControlEventValueChanged];
     
     [segmentedControl setIsAccessibilityElement:NO];

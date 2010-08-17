@@ -23,6 +23,7 @@
 #import "BlioAppSettingsConstants.h"
 #import "BlioAlertManager.h"
 #import "BlioBookManager.h"
+#import "BlioBeveledView.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -1309,8 +1310,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)layoutPageJumpSlider {
+    _pageJumpSlider.transform = CGAffineTransformIdentity;    
+    [_pageJumpSlider sizeToFit];
+    
     CGRect sliderBounds = [_pageJumpSlider bounds];
-    sliderBounds.size.width = CGRectGetWidth(_pageJumpView.bounds) - 8;
+    sliderBounds.size.width = CGRectGetWidth(_pageJumpView.bounds) - 10;
     [_pageJumpSlider setBounds:sliderBounds];
     
     CGFloat scale = 1;
@@ -1318,15 +1322,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
         scale = 0.75f;
     
-    _pageJumpSlider.transform = CGAffineTransformMakeScale(scale, scale);
-    _pageJumpSlider.center = CGPointMake(_pageJumpView.center.x, CGRectGetHeight(_pageJumpView.frame) - ((CGRectGetHeight(sliderBounds) / 2.0f) * scale));
-
+    CGRect _pageJumpViewBounds = _pageJumpView.bounds;
+    CGPoint center = CGPointMake(CGRectGetMidX(_pageJumpView.bounds), 
+                                 CGRectGetHeight(_pageJumpViewBounds) - (CGRectGetHeight(sliderBounds) / 2.0f + 2.0f) * scale);
+    _pageJumpSlider.center = center;
+    NSLog(@"%@", NSStringFromCGPoint(center));
+    _pageJumpSlider.transform = CGAffineTransformMakeScale(scale, scale); 
 }
 
 - (void)layoutPageJumpLabelText {
     
-    NSInteger fontSize = 14;
-    CGSize constrainedSize = CGSizeMake(_pageJumpView.bounds.size.width, floorf(_pageJumpView.bounds.size.height / 2.0f) - 2);
+    NSInteger fontSize = [UIFont smallSystemFontSize] + 1;
+    CGSize constrainedSize = CGSizeMake(_pageJumpView.bounds.size.width, floorf(_pageJumpView.bounds.size.height / 2.0f) - 1);
     NSString *labelText = _pageJumpLabel.text ? : @"placeholder";
     
     CGSize stringSize;
@@ -1340,8 +1347,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     CGRect labelFrame = _pageJumpView.bounds;
-    labelFrame.size.height = stringSize.height;
-    labelFrame.origin = CGPointMake(0, 4);
+    labelFrame.size = constrainedSize;
+    labelFrame.origin = CGPointMake(5, 1);
+    labelFrame.size.width -= 10;
     [_pageJumpLabel setFrame:labelFrame];
     [_pageJumpLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
 }
@@ -1349,20 +1357,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) togglePageJumpPanel { 
     
     if(!_pageJumpView) {
-        self.pageJumpView = [[UIView alloc] init];
+        self.pageJumpView = [[BlioBeveledView alloc] init];
         [self.pageJumpView release];
         
         _pageJumpView.hidden = YES;
         [self layoutPageJumpView];
-        _pageJumpView.opaque = NO;
-        _pageJumpView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
         _pageJumpView.autoresizesSubviews = YES;
             
         // feedback label
         _pageJumpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _pageJumpLabel.textAlignment = UITextAlignmentCenter;
-        _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
         _pageJumpLabel.minimumFontSize = 11;
+        _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
         _pageJumpLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
         _pageJumpLabel.shadowOffset = CGSizeMake(0, -1);
         
@@ -1372,15 +1378,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         [self layoutPageJumpLabelText];
         [_pageJumpView addSubview:_pageJumpLabel];
-        
-        CGRect sliderFrame = _pageJumpView.bounds;
-        sliderFrame.origin.y = _pageJumpLabel.bounds.size.height + 2;
-        sliderFrame.origin.x = floorf(_pageJumpLabel.bounds.size.height / 10.0f);
-        sliderFrame.size.height = _pageJumpLabel.bounds.size.height;
-        sliderFrame.size.width -= 8;
-        
+
         // the slider
-        BlioBookSlider* slider = [[BlioBookSlider alloc] initWithFrame: sliderFrame];
+        BlioBookSlider* slider = [[BlioBookSlider alloc] initWithFrame: CGRectZero];
         slider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         [slider setAccessibilityLabel:NSLocalizedString(@"Progress", @"Accessibility label for Book View Controller Progress slider")];
         [slider setAccessibilityHint:NSLocalizedString(@"Jumps to new position in book.", @"Accessibility hint for Book View Controller Progress slider")];
@@ -2251,14 +2251,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return YES;
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
-        [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    
-    [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration 
+{
+    // Doing this here instead of in the 'didRotate' callback results in smoother
+    // animation that happens simultaneously with the rotate.
     [self layoutNavigationToolbar];
     [self layoutPauseButton];
     [self setNavigationBarButtons];
@@ -2267,7 +2263,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self layoutPageJumpLabelText];
         [self layoutPageJumpSlider];
     }
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
+        [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
+    [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {    
     if ([self.bookView respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
