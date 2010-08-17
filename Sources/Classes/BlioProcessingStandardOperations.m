@@ -332,34 +332,13 @@
 			NSLog(@"Failed to create download directory %@ with error %@ : %@", dirPath, downloadDirError, [downloadDirError userInfo]);
 		}
 	}
-    if([self.url isFileURL]) {
-		
-		NSString *cachedPath = [self.tempDirectory stringByAppendingPathComponent:self.filenameKey];
-        
-		// Just copy the local files to save time
-        NSError *error;
-        NSString *fromPath = [[[self.url absoluteURL] path] stringByStandardizingPath];
-//        if ([[NSFileManager defaultManager] fileExistsAtPath:fromPath]) NSLog(@"file exists at fromPath: %@",fromPath);
-		NSString *toPath = [cachedPath stringByStandardizingPath];
-//        if ([[NSFileManager defaultManager] fileExistsAtPath:toPath]) NSLog(@"file exists at toPath: %@",toPath);
-        
-        if (![[NSFileManager defaultManager] copyItemAtPath:fromPath toPath:toPath error:&error]) {
-            NSLog(@"Failed to copy file from %@ to %@ with error %@ : %@", fromPath, toPath, error, [error userInfo]);
-        }
-
-
-        [self downloadDidFinishSuccessfully:YES];
-        [self finish];
-    } else {
-		// net URL
-		
-		if (resume) {
-			// downloadHead first
-			[self headDownload];			
-		}
-		else {
-			[self startDownload];
-		}
+    
+    if (resume && ![self.url isFileURL]) {
+        // downloadHead first
+        [self headDownload];			
+    }
+    else {
+        [self startDownload];
     }
 }
 -(NSString*)temporaryPath {
@@ -439,13 +418,11 @@
 - (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
 //	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
 	self.expectedContentLength = [response expectedContentLength];
-	NSHTTPURLResponse * httpResponse;
+
+	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
 	
-	httpResponse = (NSHTTPURLResponse *) response;
-	assert( [httpResponse isKindOfClass:[NSHTTPURLResponse class]] );
-//	NSLog(@"response connection httpResponse.statusCode:%i",httpResponse.statusCode);
-	
-	if (theConnection == headConnection) {		
+	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] &&
+        theConnection == headConnection) {		
 		if (httpResponse.statusCode/100 != 2) {
 			// we are not getting valid response; try again from scratch.
 			resume = NO;
@@ -481,7 +458,8 @@
 		}
 	}
 	else if (theConnection == connection) {
-		if (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO) {
+		if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] &&  // i.e. we're not a file:// download
+            (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO)) {
 			// we are not getting partial content; try again from scratch.
 			// TODO: just erase previous progress and keep using this connection instead of starting from scratch
 			resume = NO;
