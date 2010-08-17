@@ -447,4 +447,13 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     return [[self accessibilityElements] indexOfObject:element];
 }
 
+- (CGRect)contentRect
+{
+    if([_pageTextView respondsToSelector:@selector(contentRect)]) {
+        return [_pageTextView contentRect];
+    } else {
+        return self.bounds;
+    }
+}
+
 @end

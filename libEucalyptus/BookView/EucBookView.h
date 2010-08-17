@@ -107,6 +107,7 @@ typedef struct EucRange {
 */
 
 @property (nonatomic, readonly) UIImage *currentPageImage;
+@property (nonatomic, assign, readonly) CGRect contentRect;
 
 - (IBAction)jumpForwards;
 - (IBAction)jumpBackwards;

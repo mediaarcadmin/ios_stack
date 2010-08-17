@@ -193,12 +193,15 @@
         pageView.titleLineContents = EucPageViewTitleLineContentsTitleAndPageNumber;
         pageView.pageNumberString = [self displayPageNumberForPageNumber:pageNumber];
         pageView.title = _book.title;
+        BOOL fullBleed = NO;
         if([_book respondsToSelector:@selector(fullBleedPageForIndexPoint:)]) {
-            pageView.fullBleed = [_book fullBleedPageForIndexPoint:indexPoint];
+            fullBleed = [_book fullBleedPageForIndexPoint:indexPoint];
+            pageView.fullBleed = fullBleed;
         }
         
-        [pageView.pageTextView layoutPageFromPoint:indexPoint
-                                            inBook:_book];
+        [(EucBUpePageTextView *)pageView.pageTextView layoutPageFromPoint:indexPoint
+                                                                   inBook:_book
+                                                             centerOnPage:fullBleed];
 
         ret = [THPair pairWithFirst:pageView second:indexPointRange];
     } 

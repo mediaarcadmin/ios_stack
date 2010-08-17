@@ -527,8 +527,10 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                                                   forId:nextRunNodeKey
                                                                                             scaleFactor:_scaleFactor];
                     
+                    CGRect frameWithMaxHeight = potentialFrame;
+                    frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
                     // Position it.
-                    EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
+                    EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:frameWithMaxHeight
                                                                                       inContainer:currentPositionedBlock
                                                                                        wordOffset:wordOffset
                                                                                     elementOffset:elementOffset];
@@ -661,13 +663,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         }
         
         if(!reachedBottomOfFrame) {
-            while(currentPositionedBlock) {
-                CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
-                                                                                         toContainer:nil].origin.y;
-                [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:reachedBottomOfFrame];
-                nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
-                currentPositionedBlock = (EucCSSLayoutPositionedBlock *)currentPositionedBlock.parent;
-            }
         }        
         
         if(closedLastNode) {
@@ -675,11 +670,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
             *returningNextPoint = fakeNextPoint;
         } else {
-            CGFloat bottomY = positionedRoot.frame.size.height;
-            if(bottomY != CGFLOAT_MAX) {
-                bottomY += positionedRoot.frame.origin.y;
-            }
-            if(bottomY > maxAbsoluteY) {
+            if(reachedBottomOfFrame) {
                 *returningCompleted = NO;
                 EucCSSLayoutPoint nextPoint;
                 BOOL nextPointValid = [self _trimBlockToFrame:frame 
@@ -691,6 +682,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                   pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
                 if(nextPointValid) {
                     *returningNextPoint = nextPoint;
+                    reachedBottomOfFrame = NO;
+                    closedLastNode = YES;
                 } else {
                     // Couldn't find a break.
                     // Not entirely sure of the best thing to do here - for now
@@ -705,6 +698,16 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             } else {
                 *returningCompleted = YES;
             }
+        }
+        
+        if(!closedLastNode) {
+            while(currentPositionedBlock) {
+                CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
+                                                                                         toContainer:nil].origin.y;
+                [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:reachedBottomOfFrame];
+                nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
+                currentPositionedBlock = (EucCSSLayoutPositionedBlock *)currentPositionedBlock.parent;
+            }            
         }
     } else {
         *returningNextPoint = point;

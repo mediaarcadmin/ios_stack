@@ -117,7 +117,6 @@
 {
     NSString *href = _documentTreeNode.hyperlinkURLString;
     if(href) {
-        NSLog(@"%@", [NSURL URLWithString:href relativeToURL:_document.url]);
         return [NSURL URLWithString:href relativeToURL:_document.url];
     }
     return nil;
