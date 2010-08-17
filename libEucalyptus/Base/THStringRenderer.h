@@ -80,7 +80,6 @@ typedef enum THStringRendererFontStyleFlags {
 - (CGFloat)roundedWidthOfString:(NSString *)string pointSize:(CGFloat)pointSize;
 - (CGPoint)drawString:(NSString *)string inContext:(CGContextRef)context atPoint:(CGPoint)originPoint pointSize:(CGFloat)pointSize;
 
-
 - (CGSize)sizeForString:(NSString *)string pointSize:(CGFloat)pointSize maxWidth:(CGFloat)maxWidth flags:(THStringRendererFlags)flags;
 - (CGSize)drawString:(NSString *)string atPoint:(CGPoint)originPoint pointSize:(CGFloat)pointSize maxWidth:(CGFloat)maxWidth flags:(THStringRendererFlags)flags;
 - (CGSize)sizeForString:(NSString *)string inContext:(CGContextRef)context pointSize:(CGFloat)pointSize maxWidth:(CGFloat)maxWidth flags:(THStringRendererFlags)flags;
