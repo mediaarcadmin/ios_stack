@@ -184,8 +184,7 @@
 		return;
 	}
     
-	NSLog(@"TOKEN: %@",[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]);
-	
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
@@ -204,7 +203,7 @@
 		
 		while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
 			NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
-            self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:self.bookID];
+            self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:self.bookID sessionToken:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]];
 			attemptsMade++;
 		}
 

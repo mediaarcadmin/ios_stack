@@ -288,38 +288,45 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     EucCSSIntermediateDocumentNode *currentNode = node;
     EucCSSLayoutDocumentRun *documentRun = nil;
     
-    while(currentNode && !documentRun) {
-        EucCSSIntermediateDocumentNode *previousSiblingNode = currentNode.previousDisplayableSibling;
-        if(previousSiblingNode) {
-            css_computed_style *previousSiblingStyle = previousSiblingNode.computedStyle;
-            if(previousSiblingStyle && (css_computed_display(previousSiblingStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
-                                                            underLimitNode:currentNode.blockLevelParent
-                                                                     forId:currentNode.key
-                                                               scaleFactor:_scaleFactor];
+    css_computed_style *nodeStyle = node.computedStyle;
+    if(nodeStyle && (css_computed_display(nodeStyle, false) & CSS_DISPLAY_BLOCK) == CSS_DISPLAY_BLOCK) {
+        ret.nodeKey = node.key;
+        ret.word = 0;
+        ret.element = 0;
+    } else {    
+        while(currentNode && !documentRun) {
+            EucCSSIntermediateDocumentNode *previousSiblingNode = currentNode.previousDisplayableSibling;
+            if(previousSiblingNode) {
+                css_computed_style *previousSiblingStyle = previousSiblingNode.computedStyle;
+                if(previousSiblingStyle && (css_computed_display(previousSiblingStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                    documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
+                                                                underLimitNode:currentNode.blockLevelParent
+                                                                         forId:currentNode.key
+                                                                   scaleFactor:_scaleFactor];
+                } else {
+                    currentNode = previousSiblingNode;
+                }
             } else {
-                currentNode = previousSiblingNode;
-            }
-        } else {
-            EucCSSIntermediateDocumentNode *parentNode = currentNode.parent;
-            css_computed_style *parentStyle = parentNode.computedStyle;
-            if(parentStyle && (css_computed_display(parentStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
-                                                            underLimitNode:parentNode
-                                                                     forId:parentNode.key
-                                                               scaleFactor:_scaleFactor];
-            } else {
-                currentNode = parentNode;
+                EucCSSIntermediateDocumentNode *parentNode = currentNode.parent;
+                css_computed_style *parentStyle = parentNode.computedStyle;
+                if(parentStyle && (css_computed_display(parentStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                    documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
+                                                                underLimitNode:parentNode
+                                                                         forId:parentNode.key
+                                                                   scaleFactor:_scaleFactor];
+                } else {
+                    currentNode = parentNode;
+                }
             }
         }
+        
+        if(documentRun) {
+            EucCSSLayoutDocumentRunPoint documentRunPoint = [documentRun pointForNode:node];
+            ret.nodeKey = documentRun.id;
+            ret.word = documentRunPoint.word;
+            ret.element = documentRunPoint.element;
+        }   
     }
-    
-    if(documentRun) {
-        EucCSSLayoutDocumentRunPoint documentRunPoint = [documentRun pointForNode:node];
-        ret.nodeKey = documentRun.id;
-        ret.word = documentRunPoint.word;
-        ret.element = documentRunPoint.element;
-    }   
 
     return ret;
 }

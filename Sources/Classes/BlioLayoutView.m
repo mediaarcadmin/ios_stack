@@ -401,7 +401,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
     if (section && chapter.first) {
         if (pageStr) {
-            ret = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
+            ret = [NSString stringWithFormat:@"Page %@ \u2013 %@", pageStr, chapter.first];
         } else {
             ret = [NSString stringWithFormat:@"%@", chapter.first];
         }

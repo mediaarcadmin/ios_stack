@@ -93,9 +93,23 @@
     }
 }
 
+- (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+{
+    if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
+        return nil;
+    } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
+        return nil;
+    } else {
+        return [super userCSSPathForDocumentTree:documentTree];
+    }
+}
+
 - (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    return indexPoint.source == 0 && self.fakeCover;
+    return indexPoint.source == 0 && 
+                (self.fakeCover || 
+                 (indexPoint.block == 0 && indexPoint.word == 0 && indexPoint.element == 0)
+                );
 }
 
 - (NSData *)dataForURL:(NSURL *)url
@@ -142,14 +156,15 @@
 
 - (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier
 {
-    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+    EucBookPageIndexPoint *indexPoint = nil;
     
-    NSString *indexString = [[identifier matchPOSIXRegex:@"^textflow:(.*)$"] match:1];
+    NSString *indexString = [[identifier matchPOSIXRegex:@"^textflow:([[:digit:]]+)$"] match:1];
     if(indexString) {
+        indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
         indexPoint.source = [indexString integerValue];
     }
     
-    return [indexPoint autorelease];
+    return indexPoint;
 }
 
 - (float *)indexSourceScaleFactors

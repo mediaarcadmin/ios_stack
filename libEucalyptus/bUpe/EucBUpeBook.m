@@ -153,7 +153,7 @@ struct contentOpfParsingContext
     NSMutableDictionary *buildManifest;
     NSMutableArray *buildSpine;
     
-    NSURL *guideCoverItemURL;
+    NSString *guideCoverItemHref;
 };
 
 static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) 
@@ -233,7 +233,7 @@ static void contentOpfStartElementHandler(void *ctx, const XML_Char *name, const
             }
             if(type && href) {
                 if(strcmp("cover", type) == 0) {
-                    context->guideCoverItemURL = [NSURL URLWithString:[NSString stringWithUTF8String:href] relativeToURL:context->url];
+                    context->guideCoverItemHref = [NSString stringWithUTF8String:href];
                 }
             }
         }
@@ -348,8 +348,40 @@ static void contentOpfCharacterDataHandler(void *ctx, const XML_Char *chars, int
         _manifest = context.buildManifest;
         [_spine release];
         _spine = context.buildSpine;
+        
         [_guideCoverItemURL release];
-        _guideCoverItemURL = [[context.guideCoverItemURL absoluteURL] retain];
+        _guideCoverItemURL = nil;
+        NSString *guideCoverHref = context.guideCoverItemHref; 
+        if(guideCoverHref) {
+            // Google Books have malformed guides that have href
+            // corresponding to  manifest IDs rather than relative URLs, so 
+            // we attempt to see if that's the case here and fix them up.
+
+            // First, look in the maniest to see if a file exists at the 
+            // specified href, as the spec requires.
+            NSURL *hrefUrl = [NSURL URLWithString:guideCoverHref relativeToURL:url];
+            NSString *relativeGuideCoverItemHref = [hrefUrl pathRelativeTo:_root];
+            BOOL coverItemHrefExistsInManifest = NO;
+            for(NSString *manifestEntry in _manifest) {
+                if([manifestEntry isEqual:relativeGuideCoverItemHref]) {
+                    coverItemHrefExistsInManifest = YES;
+                }
+            }
+            if(!coverItemHrefExistsInManifest) {
+                // If there's no file at the specified href, see if the 
+                // href instead refers to a valid manifest ID.
+                NSString *alternativePath = [_manifest objectForKey:guideCoverHref];
+                if(alternativePath) {
+                    hrefUrl = [NSURL URLWithString:alternativePath relativeToURL:_root];
+                } else {
+                    // We'll leave things as they are - there's the posibility
+                    // that this is a valid filename that's not in the manifest
+                    // (although the spec doesn't allow this either).
+                }
+            }
+            
+            _guideCoverItemURL = [[hrefUrl absoluteURL] retain];
+        }
         
         if(!self->_tocNcxId) {
             // Some ePubs don't seem to specify the toc file as they should.
@@ -457,7 +489,7 @@ static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)
                     if(text) {
                         [context->buildNavMap setObject:[THPair pairWithFirst:text 
                                                                        second:[[NSURL URLWithString:src 
-                                                                                      relativeToURL:context->url] pathRelativeTo:context->self->_root]]
+                                                                                      relativeToURL:context->url] absoluteString]]
                                                  forKey:[NSNumber numberWithUnsignedInteger:navPointInfo.playOrder]];
                     }
                 }
@@ -527,7 +559,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         }
     } else {
         [navPointsBuild addPairWithFirst:NSLocalizedString(@"Start of Book", @"Contents section name for a book with no defined sections or titles")
-                                  second:[_manifest objectForKey:[_spine objectAtIndex:0]]];
+                                  second:[[NSURL URLWithString:[_manifest objectForKey:[_spine objectAtIndex:0]] relativeToURL:_root] absoluteString]];
     }
     _navPoints = navPointsBuild;
     
@@ -554,7 +586,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             } 
             
             // TOC url is allowed to be nil.
-            NSString *tocPath = [_manifest objectForKey:_tocNcxId];\
+            NSString *tocPath = [_manifest objectForKey:_tocNcxId];
             NSURL *tocUrl = nil;
             if(tocPath) {
                 tocUrl = [NSURL URLWithString:tocPath relativeToURL:_root];
@@ -799,8 +831,11 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             document != nil;
             sourceIndexPoint.source = ++source, document = [self intermediateDocumentForIndexPoint:sourceIndexPoint]) {
             NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+            
             NSURL *documentUrl = document.url;
-            [buildIdToIndexPoint setObject:[[sourceIndexPoint copy] autorelease] forKey:[documentUrl pathRelativeTo:_root]];
+            EucBookPageIndexPoint *thisIndexPoint = [sourceIndexPoint copy];
+            [buildIdToIndexPoint setObject:thisIndexPoint forKey:[documentUrl absoluteString]];
+            [thisIndexPoint release];
             
             layouter.document = document;
             
@@ -820,7 +855,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                     
                     NSURL *globalUrl = [NSURL URLWithString:[documentUrlString stringByAppendingFormat:@"#%@", localId]];
                     
-                    [buildIdToIndexPoint setObject:indexPoint forKey:[globalUrl pathRelativeTo:_root]];
+                    [buildIdToIndexPoint setObject:indexPoint forKey:[globalUrl absoluteString]];
                     
                     [indexPoint release];
                     
@@ -1040,18 +1075,40 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return archivePath;
 }
 
-- (void)_restorePersistedCachableDataIfPossible
+- (void)persistCacheableData
 {
-    NSDictionary *persistedIdToIndexPoint = [NSKeyedUnarchiver unarchiveObjectWithFile:[self _persistedDataPath]];
-    if(persistedIdToIndexPoint) {
-        self.idToIndexPoint = persistedIdToIndexPoint;
+    NSDictionary *idToIndexPoint = self.idToIndexPoint;
+    if(idToIndexPoint.count) {
+        // We save this with IDs as paths relative to our root rather than URLs
+        // in case the book moves (i.e. when the UUID of the app is changed on
+        // a backup/restore).
+        NSMutableDictionary *toArchive = [[NSMutableDictionary alloc] initWithCapacity:idToIndexPoint.count];
+        for(NSString *key in [idToIndexPoint keyEnumerator]) {
+            NSURL *keyURL = [[NSURL alloc]  initWithString:key];
+            [toArchive setObject:[idToIndexPoint objectForKey:key]
+                          forKey:[keyURL pathRelativeTo:_root]];
+            [keyURL release];
+        }
+        [NSKeyedArchiver archiveRootObject:toArchive 
+                                    toFile:[self _persistedDataPath]];
+        [toArchive release];
     }
 }
 
-- (void)persistCacheableData
+- (void)_restorePersistedCachableDataIfPossible
 {
-    [NSKeyedArchiver archiveRootObject:self.idToIndexPoint 
-                                toFile:[self _persistedDataPath]];
+    NSDictionary *fromArchive = [NSKeyedUnarchiver unarchiveObjectWithFile:[self _persistedDataPath]];
+    if(fromArchive.count) {
+        NSMutableDictionary *idToIndexPoint = [[NSMutableDictionary alloc] initWithCapacity:fromArchive.count];
+        for(NSString *key in [fromArchive keyEnumerator]) {
+            NSURL *fullKeyURL = [[NSURL alloc] initWithString:key relativeToURL:_root];
+            [idToIndexPoint setObject:[fromArchive objectForKey:key]
+                               forKey:[fullKeyURL absoluteString]];
+            [fullKeyURL release];
+        }
+        self.idToIndexPoint = idToIndexPoint;
+        [idToIndexPoint release];
+    }
 }
 
 @end

@@ -39,7 +39,7 @@ NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey = @"EucBoo
 - (void)_paginationThread;
 - (void)_paginationThreadComplete;
 - (void)_releasePaginationIvars;
-- (void)_sendPeriodicPaginationUpdate:(void *)seqNo;
+- (void)_sendPeriodicPaginationUpdate:(NSTimer *)timer;
 
 @end
 
@@ -306,7 +306,7 @@ abandon:
         _monitoringTimer = [[NSTimer scheduledTimerWithTimeInterval:kThreadedProgressPollingDelay
                                                              target:self 
                                                            selector:@selector(_sendPeriodicPaginationUpdate:) 
-                                                           userInfo:_paginationSeqNo
+                                                           userInfo:[NSNumber numberWithInteger:_paginationSeqNo]
                                                             repeats:YES] retain];
         // Callers of this expect the indexes to be in aa usable state after return,
         // even if the paginator's running in the background, so we wait for the 
@@ -332,11 +332,10 @@ abandon:
     [self _paginateBook:book inBackground:NO saveImagesTo:nil];
 }
 
-
-- (void)_sendPeriodicPaginationUpdate:(void *)seqNo
+- (void)_sendPeriodicPaginationUpdate:(NSTimer *)timer
 {
     pthread_mutex_lock(&_paginationInfoMutex);
-    if(seqNo == _paginationSeqNo && _percentagePaginated) {
+    if([[timer userInfo] integerValue] == _paginationSeqNo && _percentagePaginated) {
         NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
                                   _book, EucBookPaginatorNotificationBookKey,
                                   [NSNumber numberWithFloat:_percentagePaginated], EucBookPaginatorNotificationPercentagePaginatedKey, 
@@ -386,7 +385,7 @@ abandon:
     
 - (void)_paginationThreadComplete
 {
-    [self _sendPeriodicPaginationUpdate:_paginationSeqNo];
+    [self _sendPeriodicPaginationUpdate:_monitoringTimer];
     
     [EucBookIndex markBookBundleAsIndexesConstructed:[_book cacheDirectoryPath]];
     

@@ -123,7 +123,7 @@ ErrorExit:
     }
 }
 
-- (DRM_RESULT)getDRMLicense {
+- (DRM_RESULT)getDRMLicense:(NSString*)token {
 
     DRM_RESULT dr = DRM_SUCCESS;
     DRM_CHAR rgchURL[MAX_URL_SIZE];
@@ -134,12 +134,17 @@ ErrorExit:
     DRM_DWORD cbResponse = 0;
     DRM_LICENSE_RESPONSE oLicenseResponse = {0};
 	
-    dr = Drm_LicenseAcq_GenerateChallenge( [DrmGlobals getDrmGlobals].drmAppContext,
+	DRM_CHAR* customData = token==nil? NULL:(DRM_CHAR*)[[[[NSString stringWithString:@"<CustomData><AuthToken>"] 
+							 stringByAppendingString:token] 
+							stringByAppendingString:@"</AuthToken></CustomData>"]
+							UTF8String];
+	DRM_DWORD customDataSz = token==nil? 0:(DRM_DWORD)(48 + [token length]);
+	dr = Drm_LicenseAcq_GenerateChallenge( [DrmGlobals getDrmGlobals].drmAppContext,
 										  NULL,
 										  0,
 										  NULL,
-										  NULL,
-										  0,
+										  customData,
+										  customDataSz,
 										  rgchURL,
 										  &cchUrl,
 										  NULL,
@@ -223,7 +228,7 @@ ErrorExit:
 	return dr;
 }
 
-- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID {
+- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID sessionToken:(NSString*)token {
     BOOL ret = NO;
     
     if ( !self.drmInitialized ) {
@@ -237,7 +242,7 @@ ErrorExit:
             ChkDR( [self setHeaderForBookWithID:aBookID] );
         }
         
-        ChkDR( [self getDRMLicense] );
+        ChkDR( [self getDRMLicense:token] );
         
     ErrorExit:
         if ( dr != DRM_SUCCESS ) {

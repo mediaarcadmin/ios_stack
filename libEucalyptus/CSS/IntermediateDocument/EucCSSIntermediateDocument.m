@@ -85,7 +85,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                                                    [stylesheetData bytes],
                                                                    [stylesheetData length]);
                         if(err != CSS_NEEDDATA) {
-                            THWarn(@"Unexpected error %ld parsing base stylesheet ar URL %@", err, [resolvedImportUrl absoluteString]);
+                            THWarn(@"Unexpected error %ld parsing stylesheet ar URL %@", err, [resolvedImportUrl absoluteString]);
                         }
                         err = css_stylesheet_data_done(import);
                         if(err == CSS_IMPORTS_PENDING) {
@@ -140,31 +140,32 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         }
     }        
     
-    NSData *userSheet = [NSData dataWithContentsOfMappedFile:userPath];
-    if(css_stylesheet_create(CSS_LEVEL_3, "UTF-8",
-                             "", "", CSS_ORIGIN_USER, 
-                             CSS_MEDIA_ALL, false,
-                             false, _lwcContext,
-                             EucRealloc, NULL,
-                             EucResolveURL, NULL,
-                             &stylesheet) == CSS_OK) {
-        css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)userSheet.bytes, userSheet.length);
-        if(err != CSS_NEEDDATA) {
-            THWarn(@"Unexpected error %ld parsing base stylesheet", err);
+    if(userPath) {
+        NSData *userSheet = [NSData dataWithContentsOfMappedFile:userPath];
+        if(css_stylesheet_create(CSS_LEVEL_3, "UTF-8",
+                                 "", "", CSS_ORIGIN_USER, 
+                                 CSS_MEDIA_ALL, false,
+                                 false, _lwcContext,
+                                 EucRealloc, NULL,
+                                 EucResolveURL, NULL,
+                                 &stylesheet) == CSS_OK) {
+            css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)userSheet.bytes, userSheet.length);
+            if(err != CSS_NEEDDATA) {
+                THWarn(@"Unexpected error %ld parsing user stylesheet", err);
+            }
+            err = css_stylesheet_data_done(stylesheet);
+            if (err == CSS_OK) {
+                ++_stylesheetsCount;
+                _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
+                _stylesheets[_stylesheetsCount-1] = stylesheet;
+                
+                css_select_ctx_append_sheet(_selectCtx, stylesheet);
+            } else {
+                css_stylesheet_destroy(stylesheet);
+                THWarn(@"Error %ld parsing stylesheet", (long)err);
+            }
         }
-        err = css_stylesheet_data_done(stylesheet);
-        if (err == CSS_OK) {
-            ++_stylesheetsCount;
-            _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
-            _stylesheets[_stylesheetsCount-1] = stylesheet;
-            
-            css_select_ctx_append_sheet(_selectCtx, stylesheet);
-        } else {
-            css_stylesheet_destroy(stylesheet);
-            THWarn(@"Error %ld parsing stylesheet", (long)err);
-        }
-    }        
-    
+    }    
     
     if(parseHead) {
         // Find the <head> node.
@@ -230,7 +231,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                         styleContents.kind == EucCSSDocumentTreeNodeKindText);
                             
                                 if(err != CSS_NEEDDATA) {
-                                    THWarn(@"Unexpected error %ld parsing base stylesheet", err);
+                                    THWarn(@"Unexpected error %ld parsing inline stylesheet", err);
                                 }
                                     
                                 err = css_stylesheet_data_done(stylesheet);
@@ -281,7 +282,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                                                                            [stylesheetData length]);
                                                 
                                                 if(err != CSS_NEEDDATA) {
-                                                    THWarn(@"Unexpected error %ld parsing base stylesheet", err);
+                                                    THWarn(@"Unexpected error %ld parsing stylesheet at URL %@", err, [stylesheetUrl absoluteString]);
                                                 }
                                                 
                                                 err = css_stylesheet_data_done(stylesheet);

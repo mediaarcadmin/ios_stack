@@ -78,5 +78,15 @@
     return [self attributeWithName:@"Source"];
 }
 
+- (BOOL)isHyperlinkNode
+{
+    return [@"Hyperlink" isEqualToString:self.name];
+}
+
+- (NSString *)hyperlinkURLString
+{
+    return [self attributeWithName:@"NavigateUri"];
+}
+
 
 @end

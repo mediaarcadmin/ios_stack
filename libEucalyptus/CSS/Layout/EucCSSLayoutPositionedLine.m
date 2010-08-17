@@ -98,6 +98,10 @@
                 CGFloat inlineBoxHeight = info->lineHeight;
                 
                 CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
+                if(halfLeading != floorf(halfLeading)) {
+                    halfLeading += 0.5f;
+                    inlineBoxHeight += 1.0f;
+                }
                 
                 CGFloat baseline = info->ascender + halfLeading;
                 CGFloat descenderAndLineHeightAddition = inlineBoxHeight - baseline;
@@ -214,13 +218,20 @@
                 uint8_t decoration = css_computed_text_decoration(style);
                 BOOL shouldUnderline = (decoration == CSS_TEXT_DECORATION_UNDERLINE);
                 if(currentUnderline != shouldUnderline) {
-                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStart;
-                    renderItem->item.underlineItem.underlinePoint = CGPointMake(xPosition, yPosition + baseline + ceilf((info->lineHeight - info->pointSize) * 0.5f) + 0.5);
+                    if(shouldUnderline) {
+                        //NSLog(@"Underline On");
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStart;
+                        renderItem->item.underlineItem.underlinePoint = CGPointMake(floorf(xPosition), yPosition + baseline + 1.5f);
+                    } else {
+                        //NSLog(@"Underline Off");
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStop;
+                        renderItem->item.underlineItem.underlinePoint = CGPointMake(ceilf(xPosition), yPosition + baseline + 1.5f);
+                    }
                     ++renderItem;
                     ++_renderItemCount;
-
                     currentUnderline = shouldUnderline;
                 }
+                checkForUnderline = NO;
             }
             
             if(checkForHyperlink) {
@@ -240,6 +251,8 @@
                             ++renderItem;
                             ++_renderItemCount;
                             [currentHyperlink release];
+                            //NSLog(@"Hyperlink Off");
+                            //NSLog(@"Hyperlink On");
                             currentHyperlink = [href retain];
                             renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                             renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
@@ -247,6 +260,7 @@
                             ++_renderItemCount;
                         }
                     } else {
+                        //NSLog(@"Hyperlink On");
                         currentHyperlink = [href retain];
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
@@ -255,6 +269,7 @@
                     }
                 } else {
                     if(currentHyperlink) {
+                        //NSLog(@"Hyperlink Off");
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
                         ++renderItem;
@@ -267,13 +282,9 @@
             }
             
             if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
-                CGFloat emBoxHeight = info->pointSize;
-                CGFloat inlineBoxHeight = info->lineHeight;
-                CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
-                
                 renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
                 renderItem->item.stringItem.string = [(NSString *)info->component retain];
-                renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender - halfLeading, info->width, size.height);
+                renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, size.height);
                 renderItem->item.stringItem.pointSize = info->pointSize;
                 renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                 renderItem->item.stringItem.layoutPoint = info->point;
@@ -291,13 +302,9 @@
                 xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
                 if(i == startComponentOffset) {
-                    CGFloat emBoxHeight = info->pointSize;
-                    CGFloat inlineBoxHeight = info->lineHeight;
-                    CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
-
                     renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
                     renderItem->item.stringItem.string = [(NSString *)info->component2 retain];
-                    renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender - halfLeading, info->widthAfterHyphen, size.height);
+                    renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthAfterHyphen, size.height);
                     renderItem->item.stringItem.pointSize = info->pointSize;
                     renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                     renderItem->item.stringItem.layoutPoint = info->point;
@@ -337,7 +344,7 @@
                 renderItem->altText = renderItem->item.stringItem.string;
                 
                 renderItem->item.stringItem.string = [(NSString *)info->component retain];
-                renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthBeforeHyphen, size.height);
+                renderItem->item.stringItem.rect.size.width = info->widthBeforeHyphen;
                 renderItem->item.stringItem.layoutPoint = info->point;
                 ++renderItem;                
             }

@@ -62,7 +62,8 @@
 - (id<EucCSSDocumentTree>)documentTreeForURL:(NSURL *)url;
 - (NSURL *)documentURLForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
-// Takes fragment IDs as paths relative to _root URL.
+// Takes absolute file:/// url strings (/not/ persistable - they 
+// may change on a iOS backup/restore).
 - (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier;
 
 // Default is YES.  Controls whether to look for a HEAD element in the supplied

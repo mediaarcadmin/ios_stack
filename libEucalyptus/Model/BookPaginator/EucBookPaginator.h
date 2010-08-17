@@ -32,7 +32,7 @@ extern NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey;
     BOOL _continueParsing;
     
     pthread_mutex_t _paginationInfoMutex;
-    void *_paginationSeqNo;
+    NSUInteger _paginationSeqNo;
     NSUInteger *_pageCounts;
     
     NSTimer *_monitoringTimer;

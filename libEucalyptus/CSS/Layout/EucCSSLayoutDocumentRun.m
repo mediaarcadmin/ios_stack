@@ -161,29 +161,29 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                 [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
                 currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
                 [self _addComponent:&currentComponentInfo];
-                if(inlineNode.childCount == 0) {
-                    currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
-                    [self _addComponent:&currentComponentInfo];
-                }
             }
             
-            EucCSSIntermediateDocumentNode *nextNode = [inlineNode nextDisplayableUnder:inlineNode.parent];
-            if(!nextNode) {
-                // Close this node.
-                if(!inlineNode.isTextNode && inlineNode.childCount > 0) {
-                    // If the node /doesn't/ have children, it's already closed,
-                    // above.
-                    currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
-                    [self _addComponent:&currentComponentInfo];
-                    [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
-                }
-                nextNode = [inlineNode nextDisplayableUnder:underNode];
-            }
+            EucCSSIntermediateDocumentNode *nextNode = nil;
+
+            nextNode = [inlineNode nextDisplayableUnder:underNode];
             if(nextNode) {
+                EucCSSIntermediateDocumentNode *nextNodeParent = nextNode.parent;
+                while(inlineNode != nextNodeParent && 
+                      inlineNode != underNode) {
+                    if(!inlineNode.isTextNode && !inlineNode.isImageNode) {
+                        // If the node /doesn't/ have children, it's already closed,
+                        // above.
+                        currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
+                        [self _addComponent:&currentComponentInfo];
+                        [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
+                    }                    
+                    inlineNode = inlineNode.parent;
+                }
+
                 inlineNode = nextNode;
                 inlineNodeStyle = inlineNode.computedStyle;
             } else {
-                inlineNode = inlineNode.nextDisplayable;
+                inlineNode = [inlineNode nextDisplayable];
                 reachedLimit = YES;
             }
         }    

@@ -389,7 +389,7 @@
     NSString* pageStr = [contentsSource displayPageNumberForPageNumber:page];
     
     if(chapter.first) {
-        ret = [NSString stringWithFormat:@"%@ - %@", pageStr, chapter.first];
+        ret = [NSString stringWithFormat:@"%@ \u2013 %@", pageStr, chapter.first];
     } else {
         ret = pageStr;
     } 

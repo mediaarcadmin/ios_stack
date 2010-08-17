@@ -161,7 +161,7 @@
             ret.elementOffset = eucIndexPoint.element;
         }
     } else {
-        ret.layoutPage = eucIndexPoint.source;
+        ret.layoutPage = eucIndexPoint.source + 1;
         ret.blockOffset = eucIndexPoint.block;
         ret.wordOffset = eucIndexPoint.word;
         ret.elementOffset = eucIndexPoint.element;
@@ -194,7 +194,7 @@
             eucIndexPoint.word = wordOffset;
             eucIndexPoint.element = bookmarkPoint.elementOffset;
         } else {
-            eucIndexPoint.source = bookmarkPoint.layoutPage;
+            eucIndexPoint.source = bookmarkPoint.layoutPage - 1;
             eucIndexPoint.block = bookmarkPoint.blockOffset;
             eucIndexPoint.word = bookmarkPoint.wordOffset;
             eucIndexPoint.element = bookmarkPoint.elementOffset;
@@ -262,7 +262,7 @@
     
     if (section && chapter.first) {
         if (pageStr) {
-            ret = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
+            ret = [NSString stringWithFormat:@"Page %@ \u2013 %@", pageStr, chapter.first];
         } else {
             ret = [NSString stringWithFormat:@"%@", chapter.first];
         }
