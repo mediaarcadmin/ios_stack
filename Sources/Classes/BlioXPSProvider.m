@@ -155,7 +155,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     NSError *error;
     NSFileManager *threadSafeManager = [[NSFileManager alloc] init];
     if ([threadSafeManager fileExistsAtPath:path]) {
-        NSLog(@"Removing temp XPS directory at path %@");
+        //NSLog(@"Removing temp XPS directory at path %@", path);
 
         if (![threadSafeManager removeItemAtPath:path error:&error]) {
             NSLog(@"Error removing temp XPS directory at path %@ with error %@ : %@", path, error, [error userInfo]);
