@@ -207,8 +207,8 @@
 			[aEntityController setProcessingDelegate:self.processingDelegate];
 			[aEntityController setManagedObjectContext:self.managedObjectContext];
 			[aEntityController setTitle:[entity title]];
+			[aEntityController setFeed:feed]; // N.B. - Feed should be set before entity, as the setting of the entity triggers display (which in turn requires the feed to be set by then).
 			[aEntityController setEntity:entity];
-			[aEntityController setFeed:feed];
 		}                
 	}
 }
