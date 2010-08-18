@@ -400,7 +400,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             [_sizeDependentComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];
             
             _previousInlineCharacterWasSpace = NO;
-            _seenNonSpace = YES;
+            //_seenNonSpace = YES;
             
             CFRelease(image);
         }
@@ -440,19 +440,19 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             
             uint8_t heightKind = css_computed_height(nodeStyle, &length, &unit);
             if (heightKind == CSS_HEIGHT_SET) {
-                if(unit == CSS_UNIT_PCT) {
+                if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
                     // Assume no intrinsic height;
                 } else {
-                    specifiedHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, 0, _scaleFactor);
+                    specifiedHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
                 }
             } 
         
             uint8_t maxHeightKind = css_computed_max_height(nodeStyle, &length, &unit);
             if (maxHeightKind == CSS_MAX_HEIGHT_SET) {
-                if(unit == CSS_UNIT_PCT) {
+                if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
                     // Assume no max height;
                 } else {
-                    maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, 0, _scaleFactor);
+                    maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
                 }
             } 
         }

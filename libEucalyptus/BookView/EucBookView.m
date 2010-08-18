@@ -291,6 +291,10 @@
     return [_pageTurningView screenshot];
 }
 
+- (CGRect)contentRect
+{
+    return [(EucPageView *)[_pageTurningView currentPageView] contentRect];
+}
 
 #pragma mark -
 #pragma mark Highlighting

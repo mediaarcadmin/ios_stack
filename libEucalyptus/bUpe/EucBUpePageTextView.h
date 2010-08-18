@@ -30,4 +30,8 @@
     NSUInteger _touchHyperlinkIndex;
 }
 
+- (EucBookPageIndexPoint *)layoutPageFromPoint:(EucBookPageIndexPoint *)point
+                                        inBook:(id<EucBook>)bookIn
+                                  centerOnPage:(BOOL)centerOnPage;
+
 @end

@@ -123,7 +123,7 @@
 
 - (CGRect)firstPageRect
 {
-    return [[UIScreen mainScreen] bounds];
+    return _eucBookView.contentRect;
 }
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint

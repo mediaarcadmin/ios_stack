@@ -67,77 +67,83 @@
 
 - (void)sizeToFitInWidth:(CGFloat)width;
 {
-    EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
-    CGFloat lineBoxHeight = 0;
-    CGFloat currentBaseline = 0;
-    
-    size_t componentsCount = documentRun.componentsCount;
-    
-    uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
-    uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
-    EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
+    if(!_componentWidth) {
+        EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
+        CGFloat lineBoxHeight = 0;
+        CGFloat currentBaseline = 0;
+        
+        size_t componentsCount = documentRun.componentsCount;
+        
+        uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
+        uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
+        EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
 
-    if(afterEndComponentOffset == startComponentOffset) {
-        // This is a line with no components, ending in a hard break.
-        // Set up to use the hard break itsself as the only component, so that
-        // we pick up the line height.
-        // This is a bit of a hack.
-        afterEndComponentOffset = startComponentOffset + 1;
-    }
-    
-    EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
-    uint32_t i;
-    EucCSSLayoutDocumentRunComponentInfo *info;
-    for(i = startComponentOffset, info = componentInfos;
-        i < componentsCount && i < afterEndComponentOffset; 
-        ++i, ++info) {
-        if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule 
-           || i == startComponentOffset || i == afterEndComponentOffset - 1) {
-            if(info->documentNode != currentDocumentNode) {
-                CGFloat emBoxHeight = info->pointSize;
-                CGFloat inlineBoxHeight = info->lineHeight;
-                
-                CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
-                if(halfLeading != floorf(halfLeading)) {
-                    halfLeading += 0.5f;
-                    inlineBoxHeight += 1.0f;
+        if(afterEndComponentOffset == startComponentOffset) {
+            // This is a line with no components, ending in a hard break.
+            // Set up to use the hard break itsself as the only component, so that
+            // we pick up the line height.
+            // This is a bit of a hack.
+            afterEndComponentOffset = startComponentOffset + 1;
+        }
+        
+        EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
+        uint32_t i;
+        EucCSSLayoutDocumentRunComponentInfo *info;
+        for(i = startComponentOffset, info = componentInfos;
+            i < componentsCount && i < afterEndComponentOffset; 
+            ++i, ++info) {
+            if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule 
+               || i == startComponentOffset || i == afterEndComponentOffset - 1) {
+                if(info->documentNode != currentDocumentNode) {
+                    CGFloat emBoxHeight = info->pointSize;
+                    CGFloat inlineBoxHeight = info->lineHeight;
+                    
+                    CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
+                    if(halfLeading != floorf(halfLeading)) {
+                        halfLeading += 0.5f;
+                        inlineBoxHeight += 1.0f;
+                    }
+                    
+                    CGFloat baseline = info->ascender + halfLeading;
+                    CGFloat descenderAndLineHeightAddition = inlineBoxHeight - baseline;
+                    if(baseline > currentBaseline) {
+                        currentBaseline = baseline;
+                    }
+                    CGFloat baselineAdjustedLineHeight = currentBaseline + descenderAndLineHeightAddition;
+                    if(baselineAdjustedLineHeight > lineBoxHeight) {
+                        lineBoxHeight = baselineAdjustedLineHeight;
+                    }
+                    currentDocumentNode = info->documentNode;
                 }
-                
-                CGFloat baseline = info->ascender + halfLeading;
-                CGFloat descenderAndLineHeightAddition = inlineBoxHeight - baseline;
-                if(baseline > currentBaseline) {
-                    currentBaseline = baseline;
+                if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+                    if(i == startComponentOffset) {
+                        _componentWidth += info->widthAfterHyphen;
+                    }
+                } else {
+                    _componentWidth += info->width;
                 }
-                CGFloat baselineAdjustedLineHeight = currentBaseline + descenderAndLineHeightAddition;
-                if(baselineAdjustedLineHeight > lineBoxHeight) {
-                    lineBoxHeight = baselineAdjustedLineHeight;
-                }
-                currentDocumentNode = info->documentNode;
             }
+        }
+        
+        // Stopping 'just before' a hyphen component really means that we stop
+        // after the first part of the hyphenated word.
+        if(i < documentRun.componentsCount) {
             if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                if(i == startComponentOffset) {
-                    _componentWidth += info->widthAfterHyphen;
-                }
-            } else {
-                _componentWidth += info->width;
+                _componentWidth -= info->width;
+                _componentWidth += info->widthBeforeHyphen;
             }
         }
+        
+        _baseline = currentBaseline;
+        
+        CGRect frame = self.frame;
+        frame.size = CGSizeMake(width, lineBoxHeight);
+        self.frame = frame;
+    } else {
+        CGRect frame = self.frame;
+        frame.size.width = width;
+        self.frame = frame;
     }
-    
-    // Stopping 'just before' a hyphen component really means that we stop
-    // after the first part of the hyphenated word.
-    if(i < documentRun.componentsCount) {
-        if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-            _componentWidth -= info->width;
-            _componentWidth += info->widthBeforeHyphen;
-        }
-    }
-    
-    _baseline = currentBaseline;
-    
-    CGRect frame = self.frame;
-    frame.size = CGSizeMake(width, lineBoxHeight);
-    self.frame = frame;
 }
 
 - (CGFloat)minimumWidth

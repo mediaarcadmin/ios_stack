@@ -63,11 +63,14 @@
 
 - (EucBookPageIndexPoint *)layoutPageFromPoint:(EucBookPageIndexPoint *)point
                                         inBook:(id<EucBook>)bookIn
+                                  centerOnPage:(BOOL)centerOnPage
 {
     EucBookPageIndexPoint *ret = nil;
     EucBUpeBook *book = (EucBUpeBook *)bookIn;
     
     EucCSSIntermediateDocument *document = [book intermediateDocumentForIndexPoint:point];
+    EucCSSLayoutPositionedBlock *positionedBlock = nil;
+    self.positionedBlock = nil;
     
     if(document) {
         EucCSSLayoutPoint layoutPoint;
@@ -79,10 +82,10 @@
                                                                 scaleFactor:_scaleFactor];
         
         BOOL isComplete = NO;
-        self.positionedBlock = [layouter layoutFromPoint:layoutPoint
-                                                 inFrame:[self bounds]
-                                      returningNextPoint:&layoutPoint
-                                      returningCompleted:&isComplete];
+        positionedBlock = [layouter layoutFromPoint:layoutPoint
+                                            inFrame:[self bounds]
+                                 returningNextPoint:&layoutPoint
+                                 returningCompleted:&isComplete];
         
         if(isComplete) {
             ret = [[EucBookPageIndexPoint alloc] init];
@@ -100,8 +103,26 @@
         }    
         
         [layouter release];
+        
+        if(centerOnPage && positionedBlock) {
+            [positionedBlock shrinkToFit];
+            CGRect bounds = self.bounds;
+            CGRect blockFrame = positionedBlock.frame;
+            blockFrame.origin.x = bounds.origin.x + floor((bounds.size.width - blockFrame.size.width) * 0.5f);
+            blockFrame.origin.y = bounds.origin.y + floor((bounds.size.height - blockFrame.size.height) * 0.5f);
+            positionedBlock.frame = blockFrame;
+        }
     }
+    
+    self.positionedBlock = positionedBlock;
+    
     return [ret autorelease];
+}
+
+- (EucBookPageIndexPoint *)layoutPageFromPoint:(EucBookPageIndexPoint *)point
+                                        inBook:(id<EucBook>)bookIn
+{
+    return [self layoutPageFromPoint:point inBook:bookIn centerOnPage:NO];
 }
 
 - (void)_accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)block intoArray:(NSMutableArray *)array
@@ -409,6 +430,11 @@
     if(touch == _touch)  {
         _touch = nil;
     }    
+}
+
+- (CGRect)contentRect
+{
+    return _positionedBlock.frame;
 }
 
 @end

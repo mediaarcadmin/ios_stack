@@ -87,7 +87,7 @@
     [self.objectStore removeObjectForKey:key];
     [self.accessStore removeObjectForKey:key];
     
-    NSNumber *cost = [self.costStore valueForKey:key];
+    NSNumber *cost = [self.costStore objectForKey:key];
     if (cost) {
         totalCost -= [cost integerValue];
         [self.costStore removeObjectForKey:key];

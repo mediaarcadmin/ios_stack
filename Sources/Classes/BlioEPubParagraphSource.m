@@ -55,7 +55,7 @@
 {
     EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
     
-    indexPoint.source = bookmarkPoint.layoutPage;
+    indexPoint.source = bookmarkPoint.layoutPage - 1;
     indexPoint.block = bookmarkPoint.blockOffset;
     indexPoint.word = bookmarkPoint.wordOffset + 1;
     indexPoint.element = bookmarkPoint.elementOffset;
@@ -67,7 +67,7 @@
 {
     BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
     
-    ret.layoutPage = indexPoint.source;
+    ret.layoutPage = indexPoint.source + 1;
     ret.blockOffset = indexPoint.block;
     ret.wordOffset = indexPoint.word;
     ret.elementOffset = indexPoint.element;

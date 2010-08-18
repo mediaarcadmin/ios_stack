@@ -26,12 +26,14 @@
     id <BlioLayoutRenderingDelegate> renderingDelegate;
     BOOL cached;
     id thumbLayer;
+    BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic) BOOL cached;
 @property (nonatomic, assign) id thumbLayer;
+@property (nonatomic, assign) BOOL isCancelled;
 
 @end
 
@@ -39,21 +41,25 @@
     NSInteger pageNumber;
     id <BlioLayoutRenderingDelegate> renderingDelegate;
     CGLayerRef cacheLayer;
+    BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic) CGLayerRef cacheLayer;
+@property (nonatomic, assign) BOOL isCancelled;
 
 @end
 
 @interface BlioLayoutShadowLayer : CALayer {
     NSInteger pageNumber;
     id <BlioLayoutRenderingDelegate> renderingDelegate;
+    BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
+@property (nonatomic, assign) BOOL isCancelled;
 
 @end
 
@@ -61,11 +67,13 @@
     NSInteger pageNumber;
     id <BlioLayoutRenderingDelegate> renderingDelegate;
     BlioBookmarkRange *excludedHighlight;
+    BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic, retain) BlioBookmarkRange *excludedHighlight;
+@property (nonatomic, assign) BOOL isCancelled;
 
 @end
 
@@ -86,6 +94,8 @@
 
 - (void)abortRendering {
     //NSLog(@"*************** abort called for contentView");
+    
+    [self.pageLayers makeObjectsPerformSelector:@selector(abortRendering)];
     self.renderingDelegate = nil;
     self.pageLayers = nil;
 }
@@ -242,21 +252,39 @@
 @synthesize pageNumber, tiledLayer, thumbLayer, shadowLayer, highlightsLayer, cacheQueue;
 
 - (void)dealloc {
+    //NSLog(@"Dealloc BlioLayoutPageLayer for page %d", self.pageNumber);
+    [self abortRendering];
     //NSLog(@"cancelPreviousPerformRequestsWithTarget during dealloc");
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
-
+    
     self.tiledLayer = nil;
     self.thumbLayer = nil;
     self.shadowLayer = nil;
     self.highlightsLayer = nil;
+    [super dealloc];
+    //NSLog(@"Dealloc BlioLayoutPageLayer for page %d complete", self.pageNumber);
+}
+
+- (void)abortRendering {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
     [self.cacheQueue cancelAllOperations];
     [self.cacheQueue waitUntilAllOperationsAreFinished];
     self.cacheQueue = nil;
-    [super dealloc];
+
+    isCancelled = YES;
+    [self.tiledLayer setIsCancelled:YES];
+    [self.thumbLayer setIsCancelled:YES];
+    [self.shadowLayer setIsCancelled:YES];
+    [self.highlightsLayer setIsCancelled:YES];
+    
+    [self removeFromSuperlayer];
 }
 
 - (void)layoutSublayersAfterBoundsChange {
 
+    if (isCancelled) {
+        return;
+    }
+    
     CGRect layerBounds = self.bounds;
     //NSLog(@"Laying out pageLayer sublayers at %@", NSStringFromCGRect(layerBounds));
     for (CALayer *subLayer in self.sublayers) {
@@ -265,21 +293,85 @@
     
     //[self setNeedsDisplay];
     //[self.shadowLayer setNeedsDisplay];
-    [self.tiledLayer setContents:nil];
+    
+    // NEW
+    BlioLayoutTiledLayer *aTiledLayer = [BlioLayoutTiledLayer layer];
+    aTiledLayer.renderingDelegate = self.tiledLayer.renderingDelegate;
+    aTiledLayer.frame = self.tiledLayer.bounds;
+    aTiledLayer.geometryFlipped = YES;
+    aTiledLayer.levelsOfDetail = self.tiledLayer.levelsOfDetail;
+    aTiledLayer.levelsOfDetailBias = self.tiledLayer.levelsOfDetailBias;
+    aTiledLayer.tileSize = self.tiledLayer.tileSize;
+    aTiledLayer.thumbLayer = (id)self.thumbLayer;
+    [aTiledLayer setNeedsDisplayOnBoundsChange:YES];
+    [self insertSublayer:aTiledLayer below:self.highlightsLayer];    
+    
+    [self.tiledLayer removeFromSuperlayer];
+    self.tiledLayer = aTiledLayer;
+    
+    // END
+    //[self.tiledLayer setContents:nil];
     [self.tiledLayer setNeedsDisplay];
     
-    [self.highlightsLayer setContents:nil];
+    // NEW
+    BlioLayoutHighlightsLayer *aHighlightsLayer = [BlioLayoutHighlightsLayer layer];
+    aHighlightsLayer.renderingDelegate = self.highlightsLayer.renderingDelegate;
+    aHighlightsLayer.frame = self.highlightsLayer.bounds;
+    aHighlightsLayer.levelsOfDetail = self.highlightsLayer.levelsOfDetail;
+    aHighlightsLayer.tileSize = self.highlightsLayer.tileSize;
+    [self addSublayer:aHighlightsLayer];
+    
+    [self.highlightsLayer removeFromSuperlayer];
+    self.highlightsLayer = aHighlightsLayer;
+    
+    // END
+    
+    //[self.highlightsLayer setContents:nil];
     //NSLog(@"Laying out pageLayer sublayers done");
 }
 
 - (void)setPageNumber:(NSInteger)newPageNumber {
+    if (isCancelled) {
+        return;
+    }
+    
     //NSLog(@"set page number and cancel force");
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
     [self.cacheQueue cancelAllOperations];
     
     pageNumber = newPageNumber;
+    
+    // NEW
+    //BlioLayoutThumbLayer *aThumbLayer = [BlioLayoutThumbLayer layer];
+//    aThumbLayer.renderingDelegate = self.thumbLayer.renderingDelegate;
+//    aThumbLayer.frame = self.thumbLayer.bounds;
+//    aThumbLayer.geometryFlipped = YES;
+//    [aThumbLayer setNeedsDisplayOnBoundsChange:YES];
+//    [self insertSublayer:aThumbLayer below:self.thumbLayer];
+//    
+//    [self.thumbLayer removeFromSuperlayer];
+//    self.thumbLayer = aThumbLayer;
+    
+    // END
     [self.thumbLayer setPageNumber:newPageNumber];
     [self.thumbLayer setNeedsDisplay];
+    
+    // NEW
+    BlioLayoutTiledLayer *aTiledLayer = [BlioLayoutTiledLayer layer];
+    aTiledLayer.renderingDelegate = self.tiledLayer.renderingDelegate;
+    aTiledLayer.frame = self.tiledLayer.bounds;
+    aTiledLayer.geometryFlipped = YES;
+    aTiledLayer.levelsOfDetail = self.tiledLayer.levelsOfDetail;
+    aTiledLayer.levelsOfDetailBias = self.tiledLayer.levelsOfDetailBias;
+    aTiledLayer.tileSize = self.tiledLayer.tileSize;
+    aTiledLayer.thumbLayer = (id)self.thumbLayer;
+    [aTiledLayer setNeedsDisplayOnBoundsChange:YES];
+    [self insertSublayer:aTiledLayer below:self.highlightsLayer];    
+    
+    [self.tiledLayer removeFromSuperlayer];
+    self.tiledLayer = aTiledLayer;
+    
+    // END
     
     [self.tiledLayer setPageNumber:newPageNumber];
     [self.tiledLayer setNeedsDisplay];
@@ -288,14 +380,33 @@
     [self.shadowLayer setNeedsDisplay];
     
     // To minimise load, Highlights are not fetched & rendered until the page becomes current
+    
+    // NEW
+    BlioLayoutHighlightsLayer *aHighlightsLayer = [BlioLayoutHighlightsLayer layer];
+    aHighlightsLayer.renderingDelegate = self.highlightsLayer.renderingDelegate;
+    aHighlightsLayer.frame = self.highlightsLayer.bounds;
+    aHighlightsLayer.levelsOfDetail = self.highlightsLayer.levelsOfDetail;
+    aHighlightsLayer.tileSize = self.highlightsLayer.tileSize;
+    [self addSublayer:aHighlightsLayer];
+    
+    [self.highlightsLayer removeFromSuperlayer];
+    self.highlightsLayer = aHighlightsLayer;
     [self.highlightsLayer setPageNumber:newPageNumber];
+    
+    // END
 }
 
 - (void)setExcludedHighlight:(BlioBookmarkRange *)excludedHighlight {
+    if (isCancelled) {
+        return;
+    }
     [self.highlightsLayer setExcludedHighlight:excludedHighlight];
 }
 
 - (void)refreshHighlights {
+    if (isCancelled) {
+        return;
+    }
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
     //[self.highlightsLayer setContents:nil];
@@ -304,6 +415,9 @@
 }
 
 - (void)forceThumbCacheAfterDelay:(NSTimeInterval)delay {
+    if (isCancelled) {
+        return;
+    }
     //return;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(forceThumbCache) object:nil];
     //NSLog(@"forceThumbCacheAfterDelay: %f for page %d", delay, self.pageNumber);
@@ -312,6 +426,9 @@
 }
 
 - (void)forceThumbCache {
+    if (isCancelled) {
+        return;
+    }
     //NSLog(@"forceThumbCache fired after delay for page %d", self.pageNumber);
     if (!self.tiledLayer.cached) {
         [self.cacheQueue cancelAllOperations];
@@ -336,7 +453,7 @@
 #pragma mark Accessibility
 
 - (BOOL)isAccessibilityElement {
-    return YES;
+    return NO;
 }
 
 //- (NSInteger)accessibilityElementCount
@@ -358,22 +475,24 @@
 //    return element;
 //}
 
-- (NSString *)accessibilityLabel {
-    return @"pageLayerLabel";
-}
-
-- (CGRect)accessibilityFrame {
-    CGRect pageRect = CGRectMake(100,100,100,100);
-    return pageRect;
-}
+//- (NSString *)accessibilityLabel {
+//    return @"pageLayerLabel";
+//}
+//
+//- (CGRect)accessibilityFrame {
+//    CGRect pageRect = CGRectMake(100,100,100,100);
+//    return pageRect;
+//}
 
 @end
 
 @implementation BlioLayoutTiledLayer
 
-@synthesize pageNumber, renderingDelegate, cached, thumbLayer;
+@synthesize pageNumber, renderingDelegate, cached, thumbLayer, isCancelled;
 
 - (void)dealloc {
+    //NSLog(@"Tiled layer dealloc for page %d", self.pageNumber);
+    self.isCancelled = YES;
     self.thumbLayer = nil;
     self.renderingDelegate = nil;
     [super dealloc];
@@ -381,18 +500,29 @@
 
 - (void)cacheReady:(id)aCacheLayer {
     //NSLog(@"Cache ready for page %d", pageNumber);
+    if (self.isCancelled) {
+        return;
+    }
     [self.thumbLayer setCacheLayer:(CGLayerRef)aCacheLayer];
     [self.thumbLayer setNeedsDisplay];
 }
 
 - (void)setPageNumber:(NSInteger)aPageNumber {
+    if (self.isCancelled) {
+        return;
+    }
     self.contents = nil;
     self.cached = NO;
     pageNumber = aPageNumber;
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
+    
     //NSLog(@"Draw tiled layer for page %d with transform %@ and clipbounds %@ and layerbounds %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)), NSStringFromCGRect(self.frame));
+    if (self.isCancelled) {
+        return;
+    }
+    
     if (!self.renderingDelegate) {
         return;
     }
@@ -401,14 +531,17 @@
         self.cached = YES;
         [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
     } else {
+        if (self.isCancelled) {
+            return;
+        }
         [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:nil cacheReadySelector:nil];
     }
     
     if (pageNumber == 1) {
-        //NSLog(@"Finished rendering page 1");
+        //NSLog(@"Finished rendering page 1 tile layer");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
     }
-
+    //NSLog(@"Draw tiled layer complete for page %d", self.pageNumber);
 }
 
 + (CFTimeInterval)fadeDuration {
@@ -419,9 +552,10 @@
 
 @implementation BlioLayoutThumbLayer
 
-@synthesize pageNumber, renderingDelegate, cacheLayer;
+@synthesize pageNumber, renderingDelegate, cacheLayer, isCancelled;
 
 - (void)dealloc {
+    self.isCancelled = YES;
     self.renderingDelegate = nil;
     if (nil != cacheLayer)
         CGLayerRelease(cacheLayer);
@@ -432,12 +566,18 @@
 
 - (void)setPageNumber:(NSInteger)aPageNumber {
     //NSLog(@"Updating layer from page %d to %d", pageNumber, aPageNumber);
+    if (self.isCancelled) {
+        return;
+    }
     [self setCacheLayer:nil];
     self.contents = nil;
     pageNumber = aPageNumber;
 }
 
 - (void)setCacheLayer:(CGLayerRef)aNewLayer {
+    if (self.isCancelled) {
+        return;
+    }
     CGLayerRetain(aNewLayer);
     CGLayerRelease(cacheLayer);
     cacheLayer = aNewLayer;
@@ -445,7 +585,15 @@
 
 - (void)drawInContext:(CGContextRef)ctx {
     //if (nil != cacheLayer) {
+    if (self.isCancelled) {
+        return;
+    }
     [self.renderingDelegate drawThumbLayer:self inContext:ctx forPage:self.pageNumber withCacheLayer:cacheLayer];  
+    
+    if (cacheLayer && pageNumber == 1) {
+        //NSLog(@"Finished rendering page 1 thumb layer");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
+    }
     //}
 }
 
@@ -453,19 +601,26 @@
 
 @implementation BlioLayoutShadowLayer
 
-@synthesize pageNumber, renderingDelegate;
+@synthesize pageNumber, renderingDelegate, isCancelled;
 
 - (void)dealloc {
+    self.isCancelled = YES;
     self.renderingDelegate = nil;
     [super dealloc];
 }
 
 - (void)setPageNumber:(NSInteger)aPageNumber {
+    if (self.isCancelled) {
+        return;
+    }
     self.contents = nil;
     pageNumber = aPageNumber;
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
+    if (self.isCancelled) {
+        return;
+    }
     //NSLog(@"Draw shadow for page %d", self.pageNumber);
     [self.renderingDelegate drawShadowLayer:self inContext:ctx forPage:self.pageNumber];    
 }
@@ -474,24 +629,34 @@
 
 @implementation BlioLayoutHighlightsLayer
 
-@synthesize pageNumber, renderingDelegate, excludedHighlight;
+@synthesize pageNumber, renderingDelegate, excludedHighlight, isCancelled;
 
 - (void)dealloc {
+    //NSLog(@"BlioLayoutHighlightsLayer dealloc for page %d", pageNumber);
+    self.isCancelled = YES;
     self.renderingDelegate = nil;
     self.excludedHighlight = nil;
     [super dealloc];
 }
 
 - (void)setPageNumber:(NSInteger)aPageNumber {
-    self.contents = nil;
+    if (self.isCancelled) {
+        return;
+    }
+    //self.contents = nil;
     pageNumber = aPageNumber;
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
+    if (self.isCancelled) {
+        return;
+    }
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
     //NSLog(@"Draw highlights for page %d", self.pageNumber);
-    [self.renderingDelegate drawHighlightsLayer:self inContext:ctx forPage:self.pageNumber excluding:self.excludedHighlight];
+    if (self.renderingDelegate != nil) {
+        [self.renderingDelegate drawHighlightsLayer:self inContext:ctx forPage:self.pageNumber excluding:self.excludedHighlight];
+    }
     [CATransaction commit];
 }
 
