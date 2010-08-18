@@ -517,6 +517,7 @@
 }
 
 - (void)drawInContext:(CGContextRef)ctx {
+    
     //NSLog(@"Draw tiled layer for page %d with transform %@ and clipbounds %@ and layerbounds %@", self.pageNumber, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)), NSStringFromCGRect(self.frame));
     if (self.isCancelled) {
         return;

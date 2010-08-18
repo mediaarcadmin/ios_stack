@@ -791,6 +791,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if (isCancelled || (nil == self.dataSource)) return;
 
     @synchronized (self.dataSource) {
+        
         if (isCancelled) return;
         
         [self.dataSource openDocumentIfRequired];
@@ -801,6 +802,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         //CGContextConcatCTM(ctx, pageTransform);
         //if (false) {
         if (nil != target) {
+            
+            [target retain];
             
             UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
             CGLayerRef aCGLayer;
@@ -835,8 +838,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 [self.dataSource drawPage:aPageNumber inBounds:cacheRect withInset:0 inContext:cacheCtx inRect:cacheRect withTransform:cacheTransform observeAspect:NO];
             }
             
+            if (isCancelled) {
+                [target release];
+                return;
+            }
+            
             if ([target respondsToSelector:readySelector])
                 [target performSelectorOnMainThread:readySelector withObject:(id)aCGLayer waitUntilDone:NO];
+            
+            [target release];
             
             CGLayerRelease(aCGLayer);
             
