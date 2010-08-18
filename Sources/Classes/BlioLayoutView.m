@@ -80,6 +80,8 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
 - (CGRect)cropForPage:(NSInteger)page;
+- (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
+- (CGAffineTransform)boundsTransformForPage:(NSInteger)aPageNumber cropRect:(CGRect *)cropRect allowEstimate:(BOOL)estimate;
 - (CGAffineTransform)blockTransformForPage:(NSInteger)page;
 - (CGSize)currentContentSize;
 - (void)setLayoutMode:(BlioLayoutPageMode)newLayoutMode animated:(BOOL)animated;
@@ -194,7 +196,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     self.bookID = nil;
     [layoutCacheLock release];
-    
+        
     [super dealloc];
 }
 
@@ -263,6 +265,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
         
         pageCount = [self.dataSource pageCount];
+        
+        // Cache the first page crop to allow fast estimating of crops
+        firstPageCrop = [self.dataSource cropRectForPage:1];
         
         BlioLayoutScrollView *aScrollView = [[BlioLayoutScrollView alloc] initWithFrame:self.bounds];
         aScrollView.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
@@ -531,7 +536,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (CGAffineTransform)boundsTransformForPage:(NSInteger)aPageNumber cropRect:(CGRect *)cropRect {
-    CGRect pageCropRect = [self cropForPage:aPageNumber];
+    return [self boundsTransformForPage:aPageNumber cropRect:cropRect allowEstimate:NO];
+}
+
+- (CGAffineTransform)boundsTransformForPage:(NSInteger)aPageNumber cropRect:(CGRect *)cropRect allowEstimate:(BOOL)estimate {
+    CGRect pageCropRect = [self cropForPage:aPageNumber allowEstimate:estimate];
+    //CGRect pageCropRect = [self cropForPage:aPageNumber];
     *cropRect = pageCropRect;
     CGRect contentBounds = self.contentView.bounds;
     CGRect insetBounds = UIEdgeInsetsInsetRect(contentBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
@@ -577,7 +587,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 - (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale {
     
     CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
     if (CGRectEqualToRect(cropRect, CGRectZero)) return CGPointZero;   
     CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     pageRect = [self fitRectToContentView:pageRect];
@@ -620,7 +630,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGFloat contentOffsetX = round(viewOrigin.x + (targetRect.origin.x * zoomScale));
     
     CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
     CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
     CGFloat contentOffsetY = round(targetRect.origin.y * zoomScale);
@@ -679,6 +689,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (CGRect)cropForPage:(NSInteger)page {
+    return [self cropForPage:page allowEstimate:NO];
+}
+
+- (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate {
+        
+    if (estimate) {
+        return firstPageCrop;
+    }
     
     [layoutCacheLock lock];
     
@@ -720,10 +738,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx  forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer {
-    UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
+    //UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
+    UIImage *thumbImage = nil;
     if (thumbImage) {
         CGRect cropRect;
-        CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+        CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
         if (CGRectEqualToRect(cropRect, CGRectZero)) return;
         cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
         
@@ -735,7 +754,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     } else {
         if (cacheLayer) {
             CGRect cropRect;
-            CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+            CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
             if (CGRectEqualToRect(cropRect, CGRectZero)) return;
             cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
             
@@ -847,7 +866,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGContextFillRect(ctx, layerBounds);
 
     CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
     if (CGRectEqualToRect(cropRect, CGRectZero)) return;
     cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
