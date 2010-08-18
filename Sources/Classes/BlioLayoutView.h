@@ -55,6 +55,7 @@ typedef enum BlioLayoutPageMode {
     EucSelector *selector;
     NSMutableDictionary *pageCropsCache;
     NSMutableDictionary *viewTransformsCache;
+    CGRect firstPageCrop;
     UIImage *checkerBoard;
     UIImage *shadowBottom;
     UIImage *shadowTop;

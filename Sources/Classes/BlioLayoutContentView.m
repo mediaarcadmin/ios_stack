@@ -293,10 +293,40 @@
     
     //[self setNeedsDisplay];
     //[self.shadowLayer setNeedsDisplay];
-    [self.tiledLayer setContents:nil];
+    
+    // NEW
+    BlioLayoutTiledLayer *aTiledLayer = [BlioLayoutTiledLayer layer];
+    aTiledLayer.renderingDelegate = self.tiledLayer.renderingDelegate;
+    aTiledLayer.frame = self.tiledLayer.bounds;
+    aTiledLayer.geometryFlipped = YES;
+    aTiledLayer.levelsOfDetail = self.tiledLayer.levelsOfDetail;
+    aTiledLayer.levelsOfDetailBias = self.tiledLayer.levelsOfDetailBias;
+    aTiledLayer.tileSize = self.tiledLayer.tileSize;
+    aTiledLayer.thumbLayer = (id)self.thumbLayer;
+    [aTiledLayer setNeedsDisplayOnBoundsChange:YES];
+    [self insertSublayer:aTiledLayer below:self.highlightsLayer];    
+    
+    [self.tiledLayer removeFromSuperlayer];
+    self.tiledLayer = aTiledLayer;
+    
+    // END
+    //[self.tiledLayer setContents:nil];
     [self.tiledLayer setNeedsDisplay];
     
-    [self.highlightsLayer setContents:nil];
+    // NEW
+    BlioLayoutHighlightsLayer *aHighlightsLayer = [BlioLayoutHighlightsLayer layer];
+    aHighlightsLayer.renderingDelegate = self.highlightsLayer.renderingDelegate;
+    aHighlightsLayer.frame = self.highlightsLayer.bounds;
+    aHighlightsLayer.levelsOfDetail = self.highlightsLayer.levelsOfDetail;
+    aHighlightsLayer.tileSize = self.highlightsLayer.tileSize;
+    [self addSublayer:aHighlightsLayer];
+    
+    [self.highlightsLayer removeFromSuperlayer];
+    self.highlightsLayer = aHighlightsLayer;
+    
+    // END
+    
+    //[self.highlightsLayer setContents:nil];
     //NSLog(@"Laying out pageLayer sublayers done");
 }
 
@@ -313,6 +343,23 @@
     [self.thumbLayer setPageNumber:newPageNumber];
     [self.thumbLayer setNeedsDisplay];
     
+    // NEW
+    BlioLayoutTiledLayer *aTiledLayer = [BlioLayoutTiledLayer layer];
+    aTiledLayer.renderingDelegate = self.tiledLayer.renderingDelegate;
+    aTiledLayer.frame = self.tiledLayer.bounds;
+    aTiledLayer.geometryFlipped = YES;
+    aTiledLayer.levelsOfDetail = self.tiledLayer.levelsOfDetail;
+    aTiledLayer.levelsOfDetailBias = self.tiledLayer.levelsOfDetailBias;
+    aTiledLayer.tileSize = self.tiledLayer.tileSize;
+    aTiledLayer.thumbLayer = (id)self.thumbLayer;
+    [aTiledLayer setNeedsDisplayOnBoundsChange:YES];
+    [self insertSublayer:aTiledLayer below:self.highlightsLayer];    
+    
+    [self.tiledLayer removeFromSuperlayer];
+    self.tiledLayer = aTiledLayer;
+    
+    // END
+    
     [self.tiledLayer setPageNumber:newPageNumber];
     [self.tiledLayer setNeedsDisplay];
     
@@ -320,7 +367,20 @@
     [self.shadowLayer setNeedsDisplay];
     
     // To minimise load, Highlights are not fetched & rendered until the page becomes current
+    
+    // NEW
+    BlioLayoutHighlightsLayer *aHighlightsLayer = [BlioLayoutHighlightsLayer layer];
+    aHighlightsLayer.renderingDelegate = self.highlightsLayer.renderingDelegate;
+    aHighlightsLayer.frame = self.highlightsLayer.bounds;
+    aHighlightsLayer.levelsOfDetail = self.highlightsLayer.levelsOfDetail;
+    aHighlightsLayer.tileSize = self.highlightsLayer.tileSize;
+    [self addSublayer:aHighlightsLayer];
+    
+    [self.highlightsLayer removeFromSuperlayer];
+    self.highlightsLayer = aHighlightsLayer;
     [self.highlightsLayer setPageNumber:newPageNumber];
+    
+    // END
 }
 
 - (void)setExcludedHighlight:(BlioBookmarkRange *)excludedHighlight {
@@ -457,6 +517,9 @@
         self.cached = YES;
         [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
     } else {
+        if (self.isCancelled) {
+            return;
+        }
         [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:nil cacheReadySelector:nil];
     }
     
@@ -566,7 +629,7 @@
     if (self.isCancelled) {
         return;
     }
-    self.contents = nil;
+    //self.contents = nil;
     pageNumber = aPageNumber;
 }
 
