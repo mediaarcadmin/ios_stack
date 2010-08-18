@@ -531,20 +531,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
-  
-        [self.processingDelegate enqueueBookWithTitle:@"Facebook for Dummies" 
-                                              authors:[NSArray arrayWithObjects:@"Pearlman, Lynne", @"Abram, Carolyn", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Facebook For Dummies.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
-									 sourceSpecificID:@"Facebook For Dummies" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-										   fromBundle:YES
-		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Woodstock - Peace, Music, and Memories" 
                                               authors:[NSArray arrayWithObjects:@"Littleproud, Brad", @"Hague, Joanne", nil]
@@ -556,20 +542,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										audiobookPath:nil
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"Woodstock - Peace, Music, and Memories" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-										   fromBundle:YES
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Uncle John's Triumphant 20th Anniversary Bathroom Reader" 
-                                              authors:[NSArray arrayWithObjects:@"Bathroom Reader's Institute", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/UJBR Triumphant 20th.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
-									 sourceSpecificID:@"UJBR Triumphant 20th" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
@@ -598,6 +570,34 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										audiobookPath:nil
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"LibertyTyranny" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Uncle John's Triumphant 20th Anniversary Bathroom Reader" 
+                                              authors:[NSArray arrayWithObjects:@"Bathroom Reader's Institute", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/UJBR Triumphant 20th.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"UJBR Triumphant 20th" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+        
+        [self.processingDelegate enqueueBookWithTitle:@"Facebook for Dummies" 
+                                              authors:[NSArray arrayWithObjects:@"Pearlman, Lynne", @"Abram, Carolyn", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Facebook For Dummies.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"Facebook For Dummies" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
