@@ -499,7 +499,7 @@
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingPaidBookDownloadOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadPaidBookOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!paidBookOp || paidBookOp.isCancelled) {
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
