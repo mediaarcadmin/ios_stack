@@ -340,6 +340,19 @@
     [self.cacheQueue cancelAllOperations];
     
     pageNumber = newPageNumber;
+    
+    // NEW
+    //BlioLayoutThumbLayer *aThumbLayer = [BlioLayoutThumbLayer layer];
+//    aThumbLayer.renderingDelegate = self.thumbLayer.renderingDelegate;
+//    aThumbLayer.frame = self.thumbLayer.bounds;
+//    aThumbLayer.geometryFlipped = YES;
+//    [aThumbLayer setNeedsDisplayOnBoundsChange:YES];
+//    [self insertSublayer:aThumbLayer below:self.thumbLayer];
+//    
+//    [self.thumbLayer removeFromSuperlayer];
+//    self.thumbLayer = aThumbLayer;
+    
+    // END
     [self.thumbLayer setPageNumber:newPageNumber];
     [self.thumbLayer setNeedsDisplay];
     

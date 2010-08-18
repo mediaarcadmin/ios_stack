@@ -679,13 +679,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGRect cropRect = [self.dataSource cropRectForPage:page];
     CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
     CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
-    [pageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:page]];
+    [self.pageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:page]];
     
     CGRect mediaRect = [self.dataSource mediaRectForPage:page];
     CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
     CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
     CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
-    [viewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:page]];
+    [self.viewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:page]];
 }
 
 - (CGRect)cropForPage:(NSInteger)page {
@@ -738,8 +738,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx  forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer {
-    //UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
-    UIImage *thumbImage = nil;
+    UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
+    //UIImage *thumbImage = nil;
     if (thumbImage) {
         CGRect cropRect;
         CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
