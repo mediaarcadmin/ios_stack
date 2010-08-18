@@ -746,7 +746,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
 - (void)_ensurePotentialBreaksCalculated
 {
     if(!_potentialBreaks) {
-        int breaksCapacity = _componentsCount;
+        int breaksCapacity = _componentsCount + 1;
         THBreak *breaks = (THBreak *)malloc(breaksCapacity * sizeof(THBreak));
         EucCSSLayoutDocumentRunBreakInfo *breakInfos = (EucCSSLayoutDocumentRunBreakInfo *)malloc(breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
         int breaksCount = 0;
