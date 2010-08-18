@@ -69,7 +69,8 @@ typedef enum BlioLayoutPageMode {
     CGAffineTransform cachedViewTransform;
     NSInteger cachedViewTransformPage;
     NSMutableArray *accessibilityElements;
-    NSArray *previousAccessibilityElements;
+    BlioTimeOrderedCache *accessibilityCache;
+    
     BOOL accessibilityRefreshRequired;
     
     BlioXPSProvider *xpsProvider;

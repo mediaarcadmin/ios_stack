@@ -74,7 +74,7 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 @property (nonatomic, retain) UIImage *pageSnapshot;
 @property (nonatomic, retain) UIImage *highlightsSnapshot;
 @property (nonatomic, retain) NSMutableArray *accessibilityElements;
-@property (nonatomic, retain) NSArray *previousAccessibilityElements;
+@property (nonatomic, retain) BlioTimeOrderedCache *accessibilityCache;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
@@ -143,7 +143,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
-@synthesize accessibilityElements, previousAccessibilityElements;
+@synthesize accessibilityElements, accessibilityCache;
 @synthesize dataSource;
 
 - (void)dealloc {
@@ -156,7 +156,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self removeObserver:self forKeyPath:@"currentPageLayer"];
     
     self.accessibilityElements = nil;
-    self.previousAccessibilityElements = nil;
+    self.accessibilityCache = nil;
     self.textFlow = nil;
     self.scrollView = nil;
     self.currentPageLayer = nil;
@@ -2142,7 +2142,17 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [accessibilityElement performSelector:@selector(setProxyContainer:) withObject:self];
     }
     
-    self.previousAccessibilityElements = self.accessibilityElements;
+    if (nil == self.accessibilityCache) {
+        BlioTimeOrderedCache *aCache = [[BlioTimeOrderedCache alloc] init];
+        aCache.countLimit = 5; // Arbitrary 5 object limit
+        self.accessibilityCache = aCache;
+        [aCache release];
+    }
+    
+    if (nil != self.accessibilityElements) {
+        [self.accessibilityCache setObject:self.accessibilityElements forKey:[NSDate date] cost:1];
+    }
+    
     self.accessibilityElements = elements;
     accessibilityRefreshRequired = NO;
     //[elements release];
