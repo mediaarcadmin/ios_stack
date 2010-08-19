@@ -365,7 +365,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     NSData *rawData = nil;
     
     XPS_FILE_PACKAGE_INFO packageInfo;
+    [contentsLock lock];
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
+    [contentsLock unlock];
     if (!ret) {
         NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
         return nil;
@@ -392,7 +394,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 
 - (BOOL)componentExistsAtPath:(NSString *)path {
     XPS_FILE_PACKAGE_INFO packageInfo;
+    [contentsLock lock];
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
+    [contentsLock unlock];
     if (ret && (packageInfo.length > 0)) {
         return YES;
     }
