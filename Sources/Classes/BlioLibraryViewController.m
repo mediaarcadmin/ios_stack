@@ -593,7 +593,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Facebook For Dummies.xps"
+											  xpsPath:@"XPS/Facebook For Dummies.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceOnlineStore
