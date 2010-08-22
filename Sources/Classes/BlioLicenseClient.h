@@ -8,13 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum  {
+	BlioSoapActionAcquireLicense = 0,
+    BlioSoapActionJoinDomain,
+    BlioSoapActionLeaveDomain,
+} BlioSoapActionType;
+
 @interface BlioLicenseClient : NSObject {
 	NSMutableURLRequest* request;
 }
 
 @property (nonatomic, retain) NSMutableURLRequest* request;
 
-- (id)initWithMessage:(const void*)msg messageSize:(NSUInteger)msgSize;
+- (id)initWithMessage:(const void*)msg messageSize:(NSUInteger)msgSize url:(NSString*)url soapAction:(BlioSoapActionType)action;
 - (NSData *)getResponseSynchronously;
 
 @end

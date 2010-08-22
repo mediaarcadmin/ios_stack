@@ -8,10 +8,12 @@
 
 #import "BlioPaidBooksSettingsController.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioStoreManager.h"
+#import "BlioDrmManager.h"
 
 @implementation BlioPaidBooksSettingsController
 
-@synthesize pbTableView;
+@synthesize pbTableView, activityIndicator, registrationOn;
 
 
 #pragma mark -
@@ -22,7 +24,7 @@
 	self = [super init];
 	if (self)
 	{
-		self.title = NSLocalizedString(@"Paid Books",@"\"Paid Books\" view controller title.");
+		self.title = NSLocalizedString(@"Device Registration",@"\"Device Registration\" view controller title.");
 //#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 //		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 //			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
@@ -41,7 +43,31 @@
 	pbTableView.autoresizesSubviews = YES;
 	self.view = pbTableView;
 	
+	activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+	[activityIndicator setCenter:CGPointMake(300.0f, 20.0f)];
+	[self.navigationController.navigationBar addSubview:activityIndicator];
+}
 
+
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	BlioDeviceRegisteredStatus status = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey];
+	if ( status == BlioDeviceRegisteredStatusRegistered ) {
+		if ( !self.registrationOn ) {
+			if ( ![[BlioDrmManager getDrmManager] leaveDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]] ) {
+				// TODO: alert
+				NSLog(@"Display alert: didn't leave domain");
+			}
+		}
+	}
+	else if ( self.registrationOn ) {
+		if (![[BlioDrmManager getDrmManager] joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
+			// TODO: alert
+			NSLog(@"Display alert: didn't join domain");
+		}
+	}	
+	[activityIndicator stopAnimating];
+	
 }
 
 #pragma mark -
@@ -105,16 +131,26 @@
 	if (cell == nil) {
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
 	}
-	
+
 	switch (indexPath.section)
 	{
 		case 0:
 		{
-			cell.textLabel.text = NSLocalizedString(@"Register Device","\"Register Device\" cell label");
-			if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] == 1 )
-				[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-			else 
-				[cell setAccessoryType:UITableViewCellAccessoryNone];
+			cell.textLabel.text = NSLocalizedString(@"Registration","\"Registration\" cell label");
+			UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(200.0f, 9.0f, 80.0f, 28.0f)];
+			[switchView setTag:997];
+			[cell addSubview:switchView];
+			// TODO: initially undefined, review this
+			if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] == BlioDeviceRegisteredStatusRegistered ) {
+				[switchView setOn:YES animated:NO];
+				self.registrationOn = YES;
+			}
+			else {
+				[switchView setOn:NO animated:NO];
+				self.registrationOn = NO;
+			}
+			[switchView addTarget:self action:@selector(changeRegistration:) forControlEvents:UIControlEventValueChanged];
+			[switchView release];
 			break;
 		}
 		//case 1:
@@ -133,22 +169,9 @@
 
 #pragma mark UITableViewDelegate Methods and helpers
 
-- (void)deselect:(id)sender
-{
-	[pbTableView deselectRowAtIndexPath:[pbTableView indexPathForSelectedRow] animated:YES];
-}
-
-- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)newIndexPath 
-{
-	if ([[tableView cellForRowAtIndexPath:newIndexPath] accessoryType] == UITableViewCellAccessoryCheckmark) {
-		[[tableView cellForRowAtIndexPath:newIndexPath] setAccessoryType:UITableViewCellAccessoryNone];
-		[[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDeviceRegisteredDefaultsKey];
-	}
-	else {
-		[[tableView cellForRowAtIndexPath:newIndexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
-		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kBlioDeviceRegisteredDefaultsKey];
-	}
-	[self performSelector:@selector(deselect:) withObject:nil afterDelay:0.0];
+- (void)changeRegistration:(UIControl*)sender {
+	self.registrationOn = !self.registrationOn;
+	[activityIndicator startAnimating];
 }
 
 #pragma mark -
@@ -169,6 +192,7 @@
 
 - (void)dealloc {
 	[pbTableView release];
+	[activityIndicator release];
     [super dealloc];
 }
 

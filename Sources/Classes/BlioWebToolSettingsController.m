@@ -18,7 +18,7 @@
 	self = [super init];
 	if (self)
 	{
-		self.title = @"Web Tools";
+		self.title = NSLocalizedString(@"Web Tools",@"\"Web Tools\" view controller title.");
 	}
 	return self;
 }

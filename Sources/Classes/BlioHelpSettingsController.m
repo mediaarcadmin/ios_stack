@@ -19,7 +19,7 @@
 	self = [super init];
 	if (self)
 	{
-		self.title = NSLocalizedString(@"Blio Help",@"\"User Documentation\" view controller title.");
+		self.title = NSLocalizedString(@"Help",@"\"Help\" view controller title.");
 		NSString* helpText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/userdoc.html"] encoding:NSUTF8StringEncoding error:NULL];
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
 		[textView loadHTMLString:helpText baseURL:nil];

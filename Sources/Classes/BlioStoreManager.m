@@ -9,7 +9,7 @@
 #import "BlioStoreManager.h"
 #import "BlioOnlineStoreHelper.h"
 #import "BlioLoginViewController.h"
-
+#import "BlioDrmManager.h"
 
 @implementation BlioStoreManager
 
@@ -122,8 +122,10 @@
 	if (keys && [keys count] > 0) {
 		[self.deviceRegistrationPromptAlertViews removeObjectForKey:[keys objectAtIndex:0]];
 		BlioStoreHelper * storeHelper = [self storeHelperForSourceID:[[keys objectAtIndex:0] intValue]];
-		if (storeHelper && buttonIndex == 1) [storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
-		else if (storeHelper && buttonIndex == 0) [storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
+		if (storeHelper && buttonIndex == 1) {
+			if ( [[BlioDrmManager getDrmManager] joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
+				[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
+		}
 	}
 }
 
