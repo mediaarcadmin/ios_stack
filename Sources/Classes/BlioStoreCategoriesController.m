@@ -20,6 +20,11 @@
 @synthesize processingDelegate, managedObjectContext,activityIndicatorView,detailViewController;
 
 - (void)dealloc {
+	if (self.feeds) {
+		for (BlioStoreFeed * feed in self.feeds) {
+			if (feed.parser) [feed.parser cancel];
+		}
+	}
     self.processingDelegate = nil;
 	self.detailViewController = nil;
 	self.activityIndicatorView = nil;

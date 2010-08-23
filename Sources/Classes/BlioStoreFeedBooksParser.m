@@ -8,6 +8,7 @@
 
 #import "BlioStoreFeedBooksParser.h"
 #import "BlioBook.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioStoreFeedBooksParser
 
@@ -69,6 +70,15 @@
         }
         [self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
     }
+	else {
+		NSLog(@"ERROR: BlioStoreFeedBooksParser: %@, %@",error,[error userInfo]);
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+									 message:[[error userInfo] objectForKey:NSLocalizedDescriptionKey]
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];				
+		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
+	}
 }
 
 - (NSURL *)queryUrlForString:(NSString *)queryString {

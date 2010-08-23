@@ -19,12 +19,15 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 @synthesize delegate;
 @synthesize service;
+@synthesize serviceTicket;
 @synthesize parsedCategories, parsedEntities;
 
 - (void)dealloc {
+	[self cancel];
     self.delegate = nil;
     [self.service clearLastModifiedDates];
     self.service = nil;  
+    self.serviceTicket = nil;  
     self.parsedCategories = nil;
     self.parsedEntities = nil;
     [super dealloc];
@@ -53,7 +56,7 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 	self.parsedCategories = [NSMutableArray array];
     self.parsedEntities = [NSMutableArray array];
     
-    [self.service fetchFeedWithURL:url
+    self.serviceTicket = [self.service fetchFeedWithURL:url
                           delegate:self
                  didFinishSelector:@selector(volumeListFetchTicket:finishedWithFeed:error:)];
 }
@@ -109,6 +112,9 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 }
 -(BOOL)isParsing {
 	return isParsing;
+}
+-(void)cancel {
+	if (self.serviceTicket) [self.serviceTicket cancelTicket];
 }
 @end
 

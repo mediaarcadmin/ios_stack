@@ -8,6 +8,7 @@
 
 #import "BlioStoreGoogleBooksParser.h"
 #import "BlioBook.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioStoreGoogleBooksParser
 
@@ -22,13 +23,14 @@
     GDataQueryBooks *query = [GDataQueryBooks booksQueryWithFeedURL:url];
     if ([[url absoluteString] rangeOfString:@"min-viewability=full"].location == NSNotFound) [query setMinimumViewability:kGDataGoogleBooksMinViewabilityFull];
     
-    [self.service fetchFeedWithQuery:query
+    self.serviceTicket = [self.service fetchFeedWithQuery:query
                             delegate:self
                    didFinishSelector:@selector(volumeListFetchTicket:finishedWithFeed:error:)];
     
 
 }
 -(void) dealloc {
+	[self cancel];
 	self.entryServiceTickets = nil;
 	[super dealloc];
 }
@@ -52,6 +54,12 @@
         }
     }
 	else {
+		NSLog(@"ERROR: BlioStoreGoogleBooksParser (feed): %@, %@",error,[error userInfo]);
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+									 message:[[error userInfo] objectForKey:NSLocalizedDescriptionKey]
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];		
 		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
 	}
 
@@ -72,6 +80,8 @@
         
         [self parseEntry:object withBaseURL:baseURL];
     }
+	else NSLog(@"ERROR: BlioStoreGoogleBooksParser (entry): %@, %@",error,[error userInfo]);
+
 //	NSLog(@"[entryServiceTickets count]: %i",[entryServiceTickets count]);
 	if ([entryServiceTickets count] == 0) [self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
 }
@@ -130,4 +140,13 @@
     [booksQuery setFullTextQueryString:queryString];
     return [booksQuery URL];
 }
+-(void)cancel {
+	if (self.entryServiceTickets) {
+		for (GDataServiceTicket * ticket in self.entryServiceTickets) {
+			[ticket cancelTicket];
+		}
+	}
+	if (self.serviceTicket) [self.serviceTicket cancelTicket];
+}
+
 @end
