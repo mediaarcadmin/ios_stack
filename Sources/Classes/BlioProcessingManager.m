@@ -130,7 +130,12 @@
         [aBook setValue:title forKey:@"title"];
         [aBook setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
         [aBook setValue:sourceSpecificID forKey:@"sourceSpecificID"];
-        [aBook setValue:[authors lastObject] forKey:@"author"];
+		NSString * authorsValue = @"";
+		for (int i = 0; i < [authors count]; i++) {
+			if (i != 0) authorsValue = [authorsValue stringByAppendingString:@"|"];
+			authorsValue = [authorsValue stringByAppendingString:[authors objectAtIndex:i]];
+		}
+		[aBook setValue:authorsValue forKey:@"author"];
         [aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
         if (placeholderOnly) [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed] forKey:@"processingState"];
         else [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];

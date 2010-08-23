@@ -139,12 +139,12 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 @implementation BlioStoreParsedEntity
 
-@synthesize title, author, url, summary, ePubUrl, pdfUrl, coverUrl, thumbUrl, releasedDate, publishedDate, publisher, pageCount,id;
+@synthesize title, authors, url, summary, ePubUrl, pdfUrl, coverUrl, thumbUrl, releasedDate, publishedDate, publisher, pageCount,id;
 
 - (void)dealloc {
     self.title = nil;
     self.id = nil;
-    self.author = nil;
+    self.authors = nil;
     self.url = nil;
     self.summary = nil;
     self.ePubUrl = nil;

@@ -1981,7 +1981,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (NSString *)accessibilityLabel {
     return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
-            [[self.bookView book] title], [[self.bookView book] authorWithStandardFormat], 100 * [[[self.bookView book] progress] floatValue]];
+            [[self.bookView book] title], [[self.bookView book] authorsWithStandardFormat], 100 * [[[self.bookView book] progress] floatValue]];
 	
 }
 
@@ -2093,7 +2093,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 }
 -(void) resetAuthorText {
-    self.authorLabel.text = [[self.book authorWithStandardFormat] uppercaseString];
+    self.authorLabel.text = [[self.book authorsWithStandardFormat] uppercaseString];
     if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
         self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
     }	

@@ -242,7 +242,8 @@ static const NSUInteger kBlioStoreFeedbooksParserAutoreleasePoolPurgeFrequency =
 - (void)finishedCurrentEntity {
     // Fill with any elements polpulated during parse
     [self.currentEntity setTitle:self.currentTitle];
-    [self.currentEntity setAuthor:self.currentAuthorName];
+	// TODO: if this class is used, the statement below will need to be modified for multiple author use
+    [self.currentEntity setAuthors:[NSArray arrayWithObject:self.currentAuthorName]];
     [self.currentEntity setSummary:self.currentSummary];
     [self.currentEntity setEPubUrl:self.currentEPubUrl];
     [self.currentEntity setPdfUrl:self.currentPdfUrl];

@@ -124,8 +124,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 -(void)displayBookView {
 	NSMutableArray * validFieldViews = [NSMutableArray array];
     self.bookTitle.text = [self.entity title];
-    if ([self.entity author]) {
-        self.authors.text = [[NSString stringWithFormat:@"By %@", [BlioBook standardNameFromCanonicalName:[self.entity author]]] uppercaseString];
+    if ([self.entity authors]) {
+        self.authors.text = [NSString stringWithFormat:@"By %@", [BlioBook standardNamesFromCanonicalNameArray:self.entity.authors]];
     } else if ([self.entity publisher]) {
         self.authors.text = [[NSString stringWithFormat:@"By %@", [self.entity publisher]] uppercaseString];      
     } else {
@@ -341,7 +341,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 			NSLog(@"There is no epub, so PDF URL will be used if available. resulting PDFPath: %@", modifiedPDFPath);
 		}
 		[self.processingDelegate enqueueBookWithTitle:self.entity.title 
-											  authors:self.entity.author ? [NSArray arrayWithObject:self.entity.author] : [NSArray array]
+											  authors:self.entity.authors ? self.entity.authors : [NSArray array]
 											coverPath:self.entity.coverUrl ? self.entity.coverUrl : nil
 											 ePubPath:self.entity.ePubUrl ? self.entity.ePubUrl : nil 
 											  pdfPath:modifiedPDFPath

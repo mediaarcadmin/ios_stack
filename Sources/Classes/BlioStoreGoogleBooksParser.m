@@ -104,7 +104,12 @@
         }
 		aEntity.id = [entry identifier];
 		[aEntity setSummary:descriptions];
-        [aEntity setAuthor:[BlioBook canonicalNameFromStandardName:[[[entry creators] lastObject] stringValue]]];
+		NSMutableArray * authorsArray = [NSMutableArray arrayWithCapacity:[[entry creators] count]];
+		for (GDataDCCreator * creator in [entry creators]) {
+			[authorsArray addObject:[BlioBook canonicalNameFromStandardName:[creator stringValue]]];
+		}
+		
+        [aEntity setAuthors:authorsArray];
         [aEntity setEPubUrl:[[entry EPubDownloadLink] href]];
 		
 		NSString * modifiedCoverUrl = [[entry thumbnailLink] href];

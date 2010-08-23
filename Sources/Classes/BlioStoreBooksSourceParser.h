@@ -26,7 +26,7 @@
 @interface BlioStoreParsedEntity : NSObject {
     NSString *title;
     NSString *id;
-    NSString *author;
+    NSArray *authors;
     NSURL *url;
     NSString *summary;
     NSString *ePubUrl;
@@ -41,7 +41,7 @@
 
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *id;
-@property (nonatomic, retain) NSString *author;
+@property (nonatomic, retain) NSArray *authors;
 @property (nonatomic, retain) NSURL *url;
 @property (nonatomic, retain) NSString *summary;
 @property (nonatomic, retain) NSString *ePubUrl;

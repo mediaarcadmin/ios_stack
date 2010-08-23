@@ -789,8 +789,12 @@ static void sortedHighlightRangePredicateInit() {
 #pragma mark -
 #pragma mark Author name conversion functions
 
-- (NSString *)authorWithStandardFormat {
-	return [BlioBook standardNameFromCanonicalName:self.author];
+- (NSString *)authorsWithStandardFormat {
+	if (self.author) {
+		NSArray * authorsArray = [self.author componentsSeparatedByString:@"|"];
+		return [BlioBook standardNamesFromCanonicalNameArray:authorsArray];
+	}
+	return nil;
 }
 
 +(NSString*)standardNameFromCanonicalName:(NSString*)aName {
@@ -807,6 +811,22 @@ static void sortedHighlightRangePredicateInit() {
 			[aName substringFromIndex:lastCommaLocation.location+lastCommaLocation.length ],
 			[aName substringToIndex:lastCommaLocation.location]];
 	
+}
++(NSString*)standardNamesFromCanonicalNameArray:(NSArray*)aNameArray {
+	if (aNameArray) {
+		NSString * authorsString = @"";
+		for (int i = 0; i < [aNameArray count]; i++) {
+			if (i != 0) {
+				if (i == ([aNameArray count] - 1)) {
+					authorsString = [authorsString stringByAppendingString:@" & "];
+				}
+				else authorsString = [authorsString stringByAppendingString:@", "];
+			}
+			authorsString = [authorsString stringByAppendingString:[BlioBook standardNameFromCanonicalName:[aNameArray objectAtIndex:i]]];
+		}		
+		return authorsString;
+	}
+	return nil;
 }
 
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName {
