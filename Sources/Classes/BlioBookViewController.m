@@ -635,7 +635,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if(self.isViewLoaded) {
                 EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
                 [titleView setTitle:[self.book title]];
-                [titleView setAuthor:[self.book author]];              
+                [titleView setAuthor:[self.book authorsWithStandardFormat]];              
                 
                 [self.view addSubview:_bookView];
                 [self.view sendSubviewToBack:_bookView];
@@ -871,7 +871,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
         [titleView setTitle:[self.book title]];
-        [titleView setAuthor:[self.book author]];
+        [titleView setAuthor:[self.book authorsWithStandardFormat]];
         
         [self setNavigationBarButtons];
         [self layoutPauseButton];
