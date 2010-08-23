@@ -11,8 +11,12 @@
 
 @interface BlioPaidBooksSettingsController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
 	UITableView *pbTableView;
+	UIActivityIndicatorView *activityIndicator;
+	BOOL registrationOn;
 }
 
 @property (nonatomic, retain) UITableView *pbTableView;
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, assign) BOOL registrationOn;
 
 @end

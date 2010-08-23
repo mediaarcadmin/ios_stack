@@ -40,6 +40,7 @@
         self.entryServiceTickets = [NSMutableArray array];
 		[self.delegate parser:self didParseTotalResults:[object totalResults]]; // pass over the total results number to the BlioStoreCategoriesController, so that it can assign the number to the respective feed.
 		// if nextLink is not nil, then send it back to the delegate in NSURL form
+		// TODO: make custom modifications to nextLink to start fetch at custom index and possibly obtain more results...
 		if ([object nextLink] != nil) [self.delegate parser:self didParseNextLink:[[object nextLink] URL]];
 		if ([object identifier] != nil) [self.delegate parser:self didParseIdentifier:[object identifier]];
 	
@@ -82,8 +83,10 @@
     }
 	else NSLog(@"ERROR: BlioStoreGoogleBooksParser (entry): %@, %@",error,[error userInfo]);
 
-//	NSLog(@"[entryServiceTickets count]: %i",[entryServiceTickets count]);
-	if ([entryServiceTickets count] == 0) [self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
+	if ([entryServiceTickets count] == 0) {
+		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
+		// TODO: initiate another connection if valid results are not enough.
+	}
 }
 
 - (void)parseEntry:(GDataEntryVolume *)entry withBaseURL:(NSURL *)baseURL {

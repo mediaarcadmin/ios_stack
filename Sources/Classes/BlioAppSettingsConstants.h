@@ -33,3 +33,5 @@ static NSString * const kBlioLastSearchEngineDefaultsKey = @"lastSearchEngine";
 static NSString * const kBlioLastEncyclopediaDefaultsKey = @"lastEncyclopedia";
 static NSString * const kBlioTTSEnabledDefaultsKey = @"TTSEnabled";
 static NSString * const kBlioDeviceRegisteredDefaultsKey = @"DeviceRegistered";
+static NSString * const kBlioServiceIDDefaultsKey = @"ServiceID";
+static NSString * const kBlioAccountIDDefaultsKey = @"AccountID";

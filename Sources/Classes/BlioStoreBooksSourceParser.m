@@ -75,14 +75,18 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 - (void)parsedEntity:(BlioStoreParsedEntity *)entity {
     NSAssert2([NSThread isMainThread], @"%s at line %d called on secondary thread", __FUNCTION__, __LINE__);
-    
-    [self.parsedEntities addObject:entity];
-    if (self.parsedEntities.count > kBlioStoreParserCountForNotification) {
-        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parser:didParseEntities:)]) {
-            [self.delegate parser:self didParseEntities:self.parsedEntities];
-        }
-        [self.parsedEntities removeAllObjects];
-    }
+	if (![entity ePubUrl] && ![entity pdfUrl]) {
+		NSLog(@"Encountered entry with neither ePubUrl nor pdfUrl; ignoring...");
+	}
+	else {
+		[self.parsedEntities addObject:entity];
+		if (self.parsedEntities.count > kBlioStoreParserCountForNotification) {
+			if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parser:didParseEntities:)]) {
+				[self.delegate parser:self didParseEntities:self.parsedEntities];
+			}
+			[self.parsedEntities removeAllObjects];
+		}
+	}
 }
 
 - (void)parseEnded {
@@ -98,6 +102,8 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
     }
     [self.parsedEntities removeAllObjects];
     
+	// TODO: initiate another connection if valid results are not enough.
+
     if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parserDidEndParsingData:)]) {
         [self.delegate parserDidEndParsingData:self];
     }

@@ -21,7 +21,7 @@ static const CGFloat kBlioVoiceDownloadButtonRightMargin = 10.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewWidth = 100.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewHeight = 10.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 30.0f;
-@interface BlioDownloadVoicesViewController : UITableViewController {
+@interface BlioDownloadVoicesViewController : UITableViewController <SKProductsRequestDelegate> {
 	NSArray * availableVoicesForDownload;
 }
 

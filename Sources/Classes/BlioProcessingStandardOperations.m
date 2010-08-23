@@ -438,7 +438,18 @@
 			[self startDownload];
 		}
 		else {
-			NSString * acceptRanges = [httpResponse.allHeaderFields objectForKey:@"Accept-Ranges"];
+			
+			
+			NSString * acceptRanges = nil;
+			for (NSString * key in httpResponse.allHeaderFields)
+			{
+				// TODO: check this code to make sure it is working properly when internet access is available.
+				NSLog(@"key: %@",key);
+				if ([[key lowercaseString] isEqualToString:[@"Accept-Ranges" lowercaseString]]) {
+					acceptRanges = [httpResponse.allHeaderFields objectForKey:key];
+					break;
+				}
+			}			
 			if (acceptRanges == nil) {
 //				NSLog(@"No Accept-Ranges available.");
 				//  most servers accept byte ranges without explicitly saying so- will try partial download.
