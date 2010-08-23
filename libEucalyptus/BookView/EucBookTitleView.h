@@ -10,8 +10,10 @@
 
 
 @interface EucBookTitleView : UIView {
-    UILabel *_title;
-    UILabel *_author;
+    UILabel *_titleLabel;
+    UILabel *_authorLabel;
+    NSString *_title;
+    NSString *_author;
 }
 
 - (id)init;
