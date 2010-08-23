@@ -48,7 +48,7 @@
 	[self.navigationController.navigationBar addSubview:activityIndicator];
 }
 
-
+/*
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
 	BlioDeviceRegisteredStatus status = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey];
@@ -67,8 +67,8 @@
 		}
 	}	
 	[activityIndicator stopAnimating];
-	
 }
+*/ 
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -100,7 +100,7 @@
 	{
 		case 0:
 		{
-			title = NSLocalizedString(@"You may register up to five devices for reading books purchased from the Blio book store.",@"\"Registration\" table header in Paid Books Settings View");
+			title = NSLocalizedString(@"You may register up to five devices for reading books purchased from the Blio book store.",@"\"Registration text\" table header in Paid Books Settings View");
 			break;
 		}
 		//case 1:
@@ -167,11 +167,37 @@
 	return cell;
 }
 
-#pragma mark UITableViewDelegate Methods and helpers
+#pragma mark Event handlers
 
 - (void)changeRegistration:(UIControl*)sender {
-	self.registrationOn = !self.registrationOn;
-	[activityIndicator startAnimating];
+	//self.registrationOn = !self.registrationOn;
+	
+	sender.enabled = NO;
+	[activityIndicator startAnimating];  // thread issue...
+	if ( [(UISwitch*)sender isOn] ) {
+		if ( ![[BlioDrmManager getDrmManager] joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
+			UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Registration failure",@"\"Registration failure\" alert message title") 
+																 message:NSLocalizedString(@"Unable to register device.\n  Try again later.",@"\"Domain join failure.\" alert message title") 
+																delegate:self 
+													   cancelButtonTitle:nil
+													   otherButtonTitles:@"OK", nil];
+			[alertView show];
+			[alertView release];
+		}
+	}
+	else {
+		if ( ![[BlioDrmManager getDrmManager] leaveDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]] ) {
+			UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Registration failure",@"\"Registration failure\" alert message title") 
+																 message:NSLocalizedString(@"Unable to unregister device.\n  Try again later.",@"\"Domain leave failure.\" alert message title") 
+																delegate:self 
+													   cancelButtonTitle:nil
+													   otherButtonTitles:@"OK", nil];
+			[alertView show];
+			[alertView release];
+		}
+	}
+	[activityIndicator stopAnimating];
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark -
