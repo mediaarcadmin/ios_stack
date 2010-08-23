@@ -64,9 +64,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @interface BlioBookSlider : UISlider {
     BOOL touchInProgress;
+    BlioBookViewController *bookViewController;
 }
 
 @property (nonatomic) BOOL touchInProgress;
+@property (nonatomic, assign) BlioBookViewController *bookViewController;
 
 @end
 
@@ -164,6 +166,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self animateCoverPop];
             [self setToolbarsVisibleAfterAppearance:NO];
         } else {
+            coverOpened = YES;
             [self initialiseBookView];
             [self setToolbarsVisibleAfterAppearance:YES];
         }
@@ -1368,7 +1371,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         // feedback label
         _pageJumpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _pageJumpLabel.textAlignment = UITextAlignmentCenter;
-        _pageJumpLabel.minimumFontSize = 11;
+        _pageJumpLabel.minimumFontSize = 12;
         _pageJumpLabel.adjustsFontSizeToFitWidth = YES;
         _pageJumpLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
         _pageJumpLabel.shadowOffset = CGSizeMake(0, -1);
@@ -1382,10 +1385,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
         // the slider
         BlioBookSlider* slider = [[BlioBookSlider alloc] initWithFrame: CGRectZero];
+        slider.bookViewController = self;
         slider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-        [slider setAccessibilityLabel:NSLocalizedString(@"Progress", @"Accessibility label for Book View Controller Progress slider")];
-        [slider setAccessibilityHint:NSLocalizedString(@"Jumps to new position in book.", @"Accessibility hint for Book View Controller Progress slider")];
-
+        [slider setAccessibilityLabel:NSLocalizedString(@"Page Chooser", @"Accessibility label for Book View Controller Progress slider")];
+        [slider setAccessibilityTraits:UIAccessibilityTraitAdjustable];
+        [slider setAccessibilityHint:NSLocalizedString(@"Double-tap and hold, then drag left or right to change the page", @"Accessibility hint for Book View Controller Progress slider")];
+        //[
         _pageJumpSlider = slider;
         
         UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
@@ -1480,10 +1485,34 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.bookView goToPageNumber:[pageNumber integerValue] animated:YES];
 }
 
+- (void)incrementPage {
+    NSInteger currentPage = self.bookView.pageNumber;
+    [self.bookView goToPageNumber:++currentPage animated:NO];
+}
+
+- (void)decrementPage {
+    NSInteger currentPage = self.bookView.pageNumber;
+    [self.bookView goToPageNumber:--currentPage animated:NO];
+}
+
 - (void) _updatePageJumpLabelForPage:(NSInteger)page
 {
     _pageJumpLabel.text = [self.bookView pageLabelForPageNumber:page];
-    [_pageJumpSlider setAccessibilityValue:_pageJumpLabel.text];
+    NSString *pageNumber = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:page];
+    NSString *currentValue = [_pageJumpSlider accessibilityValue];
+    NSString *newValue;
+                              
+    if (pageNumber) {
+        newValue = [NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Accessibility label for Page Jump Slider value format"), pageNumber];
+    } else {
+        newValue = _pageJumpLabel.text;
+    }
+    
+    if (![currentValue isEqualToString:newValue]) {
+        [_pageJumpSlider setAccessibilityValue:newValue];
+        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newValue);
+    }
+    
 }
 
 #pragma mark -
@@ -2571,7 +2600,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @implementation BlioBookSlider 
 
-@synthesize touchInProgress;
+@synthesize touchInProgress, bookViewController;
+
+- (void)dealloc {
+    self.bookViewController = nil;
+    [super dealloc];
+}
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = YES;
@@ -2586,6 +2620,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = NO;
     [super endTrackingWithTouch:touch withEvent:event];
+}
+
+- (void)accessibilityIncrement {
+    [self.bookViewController performSelectorOnMainThread:@selector(incrementPage) withObject:nil waitUntilDone:YES];
+}
+
+- (void)accessibilityDecrement {
+    [self.bookViewController performSelectorOnMainThread:@selector(decrementPage) withObject:nil waitUntilDone:YES];
 }
 
 @end

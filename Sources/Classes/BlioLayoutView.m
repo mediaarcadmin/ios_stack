@@ -1269,7 +1269,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
             if (![self.delegate audioPlaying]) {
-                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+                //UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
                 UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
                 accessibilityRefreshRequired = YES;
             }
