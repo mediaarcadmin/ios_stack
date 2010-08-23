@@ -617,6 +617,8 @@
 		DCA1B906122289EF0022D410 /* downloadButtonPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B904122289EF0022D410 /* downloadButtonPressed@2x.png */; };
 		DCA1B907122289EF0022D410 /* downloadButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B903122289EF0022D410 /* downloadButton@2x.png */; };
 		DCA1B908122289EF0022D410 /* downloadButtonPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B904122289EF0022D410 /* downloadButtonPressed@2x.png */; };
+		DCA1BD691222FD080022D410 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA1BD681222FD080022D410 /* StoreKit.framework */; };
+		DCA1BD6A1222FD080022D410 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA1BD681222FD080022D410 /* StoreKit.framework */; };
 		DCA4D09C11925AB30046CE51 /* BlioAlertManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */; };
 		DCA65A3A11503A4D006534F4 /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
 		DCA65A4711503CF6006534F4 /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
@@ -1340,6 +1342,7 @@
 		DCA1B8FF122289D20022D410 /* button-tts-pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-tts-pause@2x.png"; sourceTree = "<group>"; };
 		DCA1B903122289EF0022D410 /* downloadButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "downloadButton@2x.png"; sourceTree = "<group>"; };
 		DCA1B904122289EF0022D410 /* downloadButtonPressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "downloadButtonPressed@2x.png"; sourceTree = "<group>"; };
+		DCA1BD681222FD080022D410 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAlertManager.h; sourceTree = "<group>"; };
 		DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAlertManager.m; sourceTree = "<group>"; };
 		DCA65A3911503A4D006534F4 /* SearchCellDivider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SearchCellDivider.png; sourceTree = "<group>"; };
@@ -1395,6 +1398,7 @@
 				DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */,
 				A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */,
 				A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */,
+				DCA1BD691222FD080022D410 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1430,6 +1434,7 @@
 				A36D35F2120B136700E1A035 /* libBabTTSFat.a in Frameworks */,
 				A36D35F3120B136700E1A035 /* Security.framework in Frameworks */,
 				A36D35F4120B136700E1A035 /* libPlayReadyPK.a in Frameworks */,
+				DCA1BD6A1222FD080022D410 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1710,6 +1715,7 @@
 				7D381B9610D92F14008D34E2 /* QuartzCore.framework */,
 				7D381B9410D92F14008D34E2 /* OpenGLES.framework */,
 				A349F11B110E34DE009A8F89 /* AVFoundation.framework */,
+				DCA1BD681222FD080022D410 /* StoreKit.framework */,
 				7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */,
 				C9B61FF41137AF840012CE7E /* libz.dylib */,
 				7DAA30C311512B1C006634CC /* libiconv.dylib */,
@@ -2166,7 +2172,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
+				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2440,7 +2446,7 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = GDataIPhoneUnitTests.octest;

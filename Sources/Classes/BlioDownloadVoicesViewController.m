@@ -194,9 +194,9 @@
 	
 	[aConnection release];
 	
-	SKProductsRequest* productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:aSet];	
-	productsRequest.delegate = self;
-	[productsRequest start];
+//	SKProductsRequest* productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:aSet];	
+//	productsRequest.delegate = self;
+//	[productsRequest start];
 	
 }
 - (void)connection:(NSURLConnection *)aConnection didFailWithError:(NSError *)error {
@@ -277,7 +277,7 @@
 	//NSLog(@"Transaction state: %@ identifier %@",transaction.transactionState,transaction.transactionIdentifier);
 	
 //	NSString *receiptString = [EncryptorEncoder encode:(uint8_t*)[transaction.transactionReceipt bytes]
-												length:[transaction.transactionReceipt length]];
+//												length:[transaction.transactionReceipt length]];
 //	NSLog(@"%@", receiptString);
 	
 	//send purchase request to bible touch servers
