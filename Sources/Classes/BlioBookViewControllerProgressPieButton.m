@@ -227,11 +227,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (NSString *)accessibilityValue {
-    return  [NSString stringWithFormat:NSLocalizedString(@"%.0f%%", @"Accessibility label for Book View Controller Progress value"), self.progress * 100];
+    CGFloat percent = MIN(MAX(self.progress * 100, 0), 100);
+    return  [NSString stringWithFormat:NSLocalizedString(@"%.0f%%", @"Accessibility label for Book View Controller Progress value"), percent];
 }
 
 - (NSString *)accessibilityHint {
-    return  NSLocalizedString(@"Toggles book position slider.", @"Accessibility label for Book View Controller Progress hint");
+    return  NSLocalizedString(@"Toggles page chooser.", @"Accessibility label for Book View Controller Progress hint");
 }
 
 @end
