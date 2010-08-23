@@ -842,6 +842,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	if ([sections count]) {
         id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:0];
         bookCount = [sectionInfo numberOfObjects];
+        self.logoView.numberOfBooksInLibrary = bookCount;
     }
 	return bookCount;
 }
