@@ -249,7 +249,7 @@
 
 - (id)initWithUrl:(NSURL *)aURL {
     
-    if (nil == aURL) return nil;
+//    if (nil == aURL) return nil; // starting with paid books, URLs may be dynamically generated from server.
     
     if((self = [super init])) {
         self.url = aURL;
@@ -312,7 +312,15 @@
         [self didChangeValueForKey:@"isFinished"];
         return;
     }
-    
+
+	if (self.url == nil) {
+        [self willChangeValueForKey:@"isFinished"];
+		NSLog(@"URL is nil, will prematurely abort start");
+        finished = YES;
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }
+	
     [self willChangeValueForKey:@"isExecuting"];
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
@@ -570,7 +578,36 @@
     }
     return self;
 }
-
+- (void)start {
+	
+	if (self.url == nil) {
+		if ([[BlioStoreManager sharedInstance] tokenForSourceID:self.sourceID]) {
+			// app will contact Store for a new limited-lifetime URL.
+			NSURL * newXPSURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			if (newXPSURL) {
+				NSLog(@"new XPS URL: %@",[newXPSURL absoluteString]);
+				self.url = newXPSURL;
+				
+				// set manifest location for record-keeping purposes (though the app will likely request a new URL at a later time should this one fail now.)
+				NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:@"location"];
+				[manifestEntry setValue:[newXPSURL absoluteString] forKey:@"path"];
+				[self setBookManifestValue:manifestEntry forKey:@"xpsFilename"];		
+			}
+			else {
+				NSLog(@"new XPS URL was not able to be obtained from server! Cancelling BlioProcessingDownloadPaidBookOperation...");
+				[self cancel];
+				return;
+			}
+		}
+		else {
+			NSLog(@"App does not have valid token! Cancelling BlioProcessingDownloadPaidBookOperation...");
+			[self cancel];
+			return;
+		}
+	}
+	[super start];
+}
 @end
 
 #pragma mark -
@@ -1149,10 +1186,11 @@
     }
     
     if (nil == imageData) {
-        if (hasCover) {
+        if (!hasCover) {
             NSLog(@"Failed to create generate cover thumbs because cover image from manifest value is nil.");
         }
         [pool drain];
+		// not having a valid cover image should not trigger a book processing failure.
 		self.operationSuccess = YES;
 		self.percentageComplete = 100;
         return;
@@ -1162,6 +1200,7 @@
     if (nil == cover) {
         NSLog(@"Failed to create generate cover thumbs because cover image was not an image.");
         [pool drain];
+		// not having a valid cover image should not trigger a book processing failure.
 		self.operationSuccess = YES;
 		self.percentageComplete = 100;
         return;
@@ -1179,32 +1218,64 @@
 	}	
 #endif
 	
-    UIImage *gridThumb = [self newThumbFromImage:cover forSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
+	NSString * pixelSpecificKey = nil;
+	NSString * pixelSpecificFilename = nil;
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
+	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		targetThumbWidth = kBlioCoverGridThumbWidthPad;
+		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+	}
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	
+	pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	pixelSpecificFilename = [NSString stringWithFormat:@"%@.png",pixelSpecificKey];
+	
+    UIImage *gridThumb = [self newThumbFromImage:cover forSize:CGSizeMake(scaledTargetThumbWidth, scaledTargetThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
-    NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"gridThumb.png"];
+    NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:pixelSpecificFilename];
     [gridData writeToFile:gridThumbPath atomically:YES];
     [gridThumb release];
     
     NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
     [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
-    [gridThumbManifestEntry setValue:@"gridThumb.png" forKey:@"path"];
-    [self setBookManifestValue:gridThumbManifestEntry forKey:@"gridThumbFilename"];
+    [gridThumbManifestEntry setValue:pixelSpecificFilename forKey:@"path"];
+    [self setBookManifestValue:gridThumbManifestEntry forKey:pixelSpecificKey];
 
     if ([self isCancelled]) {
         [pool drain];
         return;
     }
     
-    UIImage *listThumb = [self newThumbFromImage:cover forSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
+
+	targetThumbWidth = kBlioCoverListThumbWidth;
+	targetThumbHeight = kBlioCoverListThumbHeight;
+
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	pixelSpecificFilename = [NSString stringWithFormat:@"%@.png",pixelSpecificKey];
+	
+    UIImage *listThumb = [self newThumbFromImage:cover forSize:CGSizeMake(scaledTargetThumbWidth, scaledTargetThumbHeight)];
     NSData *listData = UIImagePNGRepresentation(listThumb);
-    NSString *listThumbPath = [self.cacheDirectory stringByAppendingPathComponent:@"listThumb.png"];
+    NSString *listThumbPath = [self.cacheDirectory stringByAppendingPathComponent:pixelSpecificFilename];
     [listData writeToFile:listThumbPath atomically:YES];
     [listThumb release];
-    
+    	
     NSDictionary *listThumbManifestEntry = [NSMutableDictionary dictionary];
     [listThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
-    [listThumbManifestEntry setValue:@"listThumb.png" forKey:@"path"];
-    [self setBookManifestValue:listThumbManifestEntry forKey:@"listThumbFilename"];
+    [listThumbManifestEntry setValue:pixelSpecificFilename forKey:@"path"];
+    [self setBookManifestValue:listThumbManifestEntry forKey:pixelSpecificKey];
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {

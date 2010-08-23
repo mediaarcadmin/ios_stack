@@ -260,24 +260,106 @@
     }
 }
 
+- (BOOL)hasAppropriateCoverThumbForGrid {
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+	
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
+	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+	
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		targetThumbWidth = kBlioCoverGridThumbWidthPad;
+		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+	}
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+	if (aCoverImage) return YES;
+	return NO;
+}
 - (UIImage *)coverThumbForGrid {
-    NSData *imageData = [self manifestDataForKey:@"gridThumbFilename"];
+	
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
+	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		targetThumbWidth = kBlioCoverGridThumbWidthPad;
+		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+	}
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
         return aCoverImage;
     } else {
-        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
+        return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
     }
     return [UIImage imageWithData:imageData];
 }
+- (BOOL)hasAppropriateCoverThumbForList {
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+	
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
 
+	targetThumbWidth = kBlioCoverListThumbWidth;
+	targetThumbHeight = kBlioCoverListThumbHeight;
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+	if (aCoverImage) return YES;
+	return NO;
+}
 - (UIImage *)coverThumbForList {
-    NSData *imageData = [self manifestDataForKey:@"listThumbFilename"];
+	
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverListThumbWidth;
+	targetThumbHeight = kBlioCoverListThumbHeight;
+		
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
         return aCoverImage;
     } else {
-        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
+        return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
     }
 }
 

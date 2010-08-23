@@ -139,7 +139,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.gridView setCellSize:CGSizeMake(kBlioLibraryGridBookWidthPad,kBlioLibraryGridBookHeightPad) withBorderSize:kBlioLibraryGridBookSpacingPad];
 	}
 	else {
-		[self.gridView setCellSize:CGSizeMake(kBlioLibraryGridBookWidth,kBlioLibraryGridBookHeight) withBorderSize:kBlioLibraryGridBookSpacing];
+		[self.gridView setCellSize:CGSizeMake(kBlioLibraryGridBookWidthPhone,kBlioLibraryGridBookHeightPhone) withBorderSize:kBlioLibraryGridBookSpacing];
 	}
 #else
 	[self.gridView setCellSize:CGSizeMake(kBlioLibraryGridBookWidth,kBlioLibraryGridBookHeight) withBorderSize:kBlioLibraryGridBookSpacing];
@@ -627,7 +627,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         bounds.size.width = bounds.size.height;
         bounds.size.height = width;
     }
-    return round((bounds.size.width - kBlioLibraryGridBookSpacing*2) / (kBlioLibraryGridBookWidth+kBlioLibraryGridBookSpacing));
+    return round((bounds.size.width - kBlioLibraryGridBookSpacing*2) / (kBlioLibraryGridBookWidthPhone+kBlioLibraryGridBookSpacing));
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -1359,6 +1359,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 #pragma mark -
 #pragma mark Library Actions
 
+-(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook {
+	[self.processingDelegate reprocessCoverThumbnailsForBook:aBook];
+}
 -(void) pauseProcessingForBook:(BlioBook*)book {
 		[self.processingDelegate pauseProcessingForBook:book];
 }
@@ -1490,7 +1493,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryBookView
 
-@synthesize imageView, textureView, errorView, book;
+@synthesize imageView, textureView, errorView, book, delegate;
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -1557,14 +1560,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     book = newBook;
     
     UIImage *newImage;
-    
+    BOOL hasAppropriateCoverThumb = NO;
+	
     if (layout == kBlioLibraryLayoutList) {
+//		NSLog(@"Searching for appropriate cover for list...");
+		hasAppropriateCoverThumb = [newBook hasAppropriateCoverThumbForList];
         newImage = [newBook coverThumbForList];
     } else {
+//		NSLog(@"Searching for appropriate cover for grid...");
+		hasAppropriateCoverThumb = [newBook hasAppropriateCoverThumbForGrid];
         newImage = [newBook coverThumbForGrid];
-    }
-    
-    [self.imageView setImage:newImage];    
+    }    
+    [self.imageView setImage:newImage];
+	if (!hasAppropriateCoverThumb && [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+		NSLog(@"Does not have appropriate cover thumb for book: %@, reprocessing cover thumbnails...",[newBook title]);
+		[self.delegate reprocessCoverThumbnailsForBook:newBook];
+	}
 }
 
 - (BlioCoverView *)coverView {
@@ -1625,8 +1636,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (id)initWithFrame:(CGRect)frame reuseIdentifier: (NSString*) identifier{
     if ((self = [super initWithFrame:frame reuseIdentifier:identifier])) {
         
-		CGFloat bookWidth = kBlioLibraryGridBookWidth;
-		CGFloat bookHeight = kBlioLibraryGridBookHeight;
+		CGFloat bookWidth = kBlioLibraryGridBookWidthPhone;
+		CGFloat bookHeight = kBlioLibraryGridBookHeightPhone;
 		
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -1641,11 +1652,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.bookView = aBookView;
 		
 		progressBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"library-progress-background.png"]];
-		progressBackgroundView.center = CGPointMake(floor(self.frame.size.width/2), floor(kBlioLibraryGridBookHeight-25));
+		progressBackgroundView.center = CGPointMake(floor(self.frame.size.width/2), floor(kBlioLibraryGridBookHeightPhone-25));
 		progressBackgroundView.hidden = YES;
 		[self.contentView addSubview:progressBackgroundView];
 		
-		stateLabel = [[UILabel alloc] initWithFrame:progressBackgroundView.bounds];
+		stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, -1, progressBackgroundView.bounds.size.width, progressBackgroundView.bounds.size.height)];
 		stateLabel.textAlignment = UITextAlignmentCenter;
 		stateLabel.backgroundColor = [UIColor clearColor];
 		stateLabel.textColor = [UIColor whiteColor];
@@ -1750,6 +1761,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)setBook:(BlioBook *)newBook {
 	[self stopListeningToProcessingNotifications];
+	self.bookView.delegate = self.delegate;
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:0];
     self.titleLabel.text = [newBook title];
 	self.cellContentDescription = [newBook title];
@@ -1758,8 +1770,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
     }
     self.progressSlider.value = [[newBook progress] floatValue];
-    //CGRect progressFrame = self.progressSlider.frame;
-    //self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, [[newBook proportionateSize] floatValue] * kBlioLibraryListContentWidth, progressFrame.size.height);
     [self setNeedsLayout];
 //	NSLog(@"[[self.book valueForKey:@processingState] intValue]: %i",[[self.book valueForKey:@"processingState"] intValue]);
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
@@ -1891,6 +1901,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         self.selectionStyle = UITableViewCellSelectionStyleGray;
         
+		self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		
 		self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
 		self.backgroundView.autoresizesSubviews = YES;
 		UIImageView * dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
@@ -1905,17 +1917,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.bookView = aBookView;
         [aBookView release];
         
-        UILabel *aTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 12, kBlioLibraryListContentWidth, 20)];
+        UILabel *aTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 12, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin) - kBlioLibraryListAccessoryMargin, 20)];
         aTitleLabel.font = [UIFont boldSystemFontOfSize:17.0f];
         aTitleLabel.backgroundColor = [UIColor clearColor];
+		aTitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:aTitleLabel];
         self.titleLabel = aTitleLabel;
         [aTitleLabel release];
         
-        UILabel *aAuthorLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 28, kBlioLibraryListContentWidth, 20)];
+        UILabel *aAuthorLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 28, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin) - kBlioLibraryListAccessoryMargin, 20)];
         aAuthorLabel.font = [UIFont boldSystemFontOfSize:13.0f];
         aAuthorLabel.textColor = [UIColor colorWithRed:0.424f green:0.424f blue:0.443f alpha:1.0f];
         aAuthorLabel.backgroundColor = [UIColor clearColor];
+		aAuthorLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:aAuthorLabel];
         self.authorLabel = aAuthorLabel;
         [aAuthorLabel release];
@@ -1924,27 +1938,29 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         [aSlider setIsAccessibilityElement:NO];
         aSlider.userInteractionEnabled = NO;
         aSlider.value = 0.0f;
-        [aSlider setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + 6, 54, kBlioLibraryListContentWidth, 9)];
-        [self.contentView addSubview:aSlider];
+        [aSlider setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 54,  self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin) - kBlioLibraryListAccessoryMargin, 9)];
+        aSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		[self.contentView addSubview:aSlider];
         self.progressSlider = aSlider;
         [aSlider release];
 		
 		self.progressView = [[[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault] autorelease];
-		progressView.frame = CGRectMake(68, 52, kBlioLibraryListProgressViewWidth, 10);
+		progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
 		progressView.hidden = NO;
+		progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		[self.contentView addSubview:progressView];		
 		
-		pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
+		pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, kBlioLibraryListButtonWidth, kBlioLibraryListButtonHeight)];
 		[pauseButton setImage:[UIImage imageNamed:@"library-pausebutton.png"] forState:UIControlStateNormal];
 		pauseButton.showsTouchWhenHighlighted = YES;
 		[pauseButton addTarget:delegate action:@selector(onPauseButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-		pauseButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeight/2);
+		pauseButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeightPhone/2);
 		
-		resumeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
+		resumeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, kBlioLibraryListButtonWidth, kBlioLibraryListButtonHeight)];
 		[resumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
 		resumeButton.showsTouchWhenHighlighted = YES;
 		[resumeButton addTarget:delegate action:@selector(onResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-		resumeButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeight/2);
+		resumeButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeightPhone/2);
 	}
     return self;
 }
@@ -1979,6 +1995,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)setBook:(BlioBook *)newBook {
 	[self stopListeningToProcessingNotifications];
+	self.bookView.delegate = self.delegate;
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
 	layoutPageEquivalentCount = [self.book.layoutPageEquivalentCount unsignedIntValue];
@@ -1999,6 +2016,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		// self.bookView.alpha = 0.35f;
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			[self.contentView addSubview:self.progressView];
+			progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
+			progressView.hidden = NO;
 			self.progressSlider.hidden = YES;
 			BlioProcessingCompleteOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 			if (completeOp) {
@@ -2060,21 +2079,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if (targetProgressWidth > kBlioLibraryListContentWidth) {
 			NSLog(@"WARNING: this book's layoutPageEquivalentCount may be larger than maxLayoutPageEquivalentCount- which should never happen!");
 			targetProgressWidth = kBlioLibraryListContentWidth; // should never happen but this is a safeguard.
+			self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, targetProgressWidth, progressFrame.size.height);	
 		}
 	}
-	else {
-		
-		// N.B. this condition is for when maxLayoutPageEquivalentCount is NOT honored and progress bars should all be a standard size.
-		if ([self.book.progress floatValue] > 0) {
-			targetProgressWidth = kBlioLibraryListContentWidth;
-		}
-	}
+//	else {		
+//		// N.B. this condition is for when maxLayoutPageEquivalentCount is NOT honored and progress bars should all be a standard size.
+//		// use this snippet to only show progress slider for books that have been started by the end-user.
+//		if ([self.book.progress floatValue] > 0) { 
+//			targetProgressWidth = self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin);
+//			self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, targetProgressWidth, progressFrame.size.height);	
+//		}
+//	}
 	
-	self.progressSlider.frame = CGRectMake(progressFrame.origin.x, progressFrame.origin.y, targetProgressWidth, progressFrame.size.height);	
 }
 -(void) resetAuthorText {
     self.authorLabel.text = [[self.book authorWithStandardFormat] uppercaseString];
-    if ([self.book audioRights]) {
+    if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
         self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
     }	
 }
@@ -2096,7 +2116,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		BlioProcessingCompleteOperation * completeOp = [note object];
 		//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
-		[self.contentView addSubview:self.progressView];	
+		[self.contentView addSubview:self.progressView];
+		progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
 		progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 	}
 }

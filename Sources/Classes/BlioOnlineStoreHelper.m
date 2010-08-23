@@ -116,14 +116,13 @@
 			ContentCafe_ProductItem* productItem = [self getContentMetaDataFromISBN:isbn];
 			if (productItem) {
 				successfulResponseCount++;
-				// TODO: put in a book for display in the vault.
 				NSString* title = [[productItem Title] Value];
 				NSString* author = [productItem Author];
 				NSString* coverURL = [NSString stringWithFormat:@"http://images.btol.com/cc2images/Image.aspx?SystemID=knfb&IdentifierID=I&IdentifierValue=%@&Source=BT&Category=FC&Sequence=1&Size=L&NotFound=S",isbn];
 				NSLog(@"Title: %@", title);
 				NSLog(@"Author: %@", author);
 				NSLog(@"Cover: %@", coverURL);
-				
+				NSLog(@"URL: %@",[[self URLForBookWithID:isbn] absoluteString]);
 				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
 													 authors:[NSArray arrayWithObject:author] 
 													coverPath:coverURL
@@ -189,7 +188,7 @@
 		}
 		else if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
 			NSString* url = [bodyPart RequestDownloadWithTokenResult].Url;
-			NSLog(@"Book download url is %s",url);
+			NSLog(@"Book download url is %@",url);
 			return [NSURL URLWithString:url];
 		}
 		else {

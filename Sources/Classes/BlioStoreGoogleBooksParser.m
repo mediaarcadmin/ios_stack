@@ -96,8 +96,17 @@
 		[aEntity setSummary:descriptions];
         [aEntity setAuthor:[BlioBook canonicalNameFromStandardName:[[[entry creators] lastObject] stringValue]]];
         [aEntity setEPubUrl:[[entry EPubDownloadLink] href]];
-        [aEntity setCoverUrl:[[entry thumbnailLink] href]];
-        [aEntity setThumbUrl:[[entry thumbnailLink] href]];                             
+		
+		NSString * modifiedCoverUrl = [[entry thumbnailLink] href];
+		modifiedCoverUrl = [modifiedCoverUrl stringByReplacingOccurrencesOfString:@"zoom=" withString:@"zoom=9"];
+		modifiedCoverUrl = [modifiedCoverUrl stringByReplacingOccurrencesOfString:@"edge=curl" withString:@"edge=plain"];
+		
+        [aEntity setCoverUrl:modifiedCoverUrl];
+		
+		NSString * modifiedThumbUrl = [[entry thumbnailLink] href];
+		modifiedThumbUrl = [modifiedCoverUrl stringByReplacingOccurrencesOfString:@"edge=curl" withString:@"edge=plain"];
+		
+        [aEntity setThumbUrl:modifiedThumbUrl];                             
         [aEntity setPublishedDate:[[entry updatedDate] date]];
         [aEntity setReleasedDate:[[[[entry dates] lastObject] dateTimeValue] date]];
         [aEntity setPublisher:[[[entry publishers] lastObject] stringValue]];
