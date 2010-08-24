@@ -303,6 +303,7 @@
     aTiledLayer.levelsOfDetailBias = self.tiledLayer.levelsOfDetailBias;
     aTiledLayer.tileSize = self.tiledLayer.tileSize;
     aTiledLayer.thumbLayer = (id)self.thumbLayer;
+    aTiledLayer.pageNumber = self.tiledLayer.pageNumber;
     [aTiledLayer setNeedsDisplayOnBoundsChange:YES];
     [self insertSublayer:aTiledLayer below:self.highlightsLayer];    
     
