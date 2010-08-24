@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "THBaseEAGLView.h"
+#import "THAccessibilityElement.h"
 
 @protocol EucPageTurningViewDelegate;
 
@@ -39,7 +40,7 @@ typedef struct {
     GLuint innerPixelHeight;
 } TextureCoordinates;
 
-@interface EucPageTurningView : THBaseEAGLView {
+@interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate> {
     GLfloat _touchVelocity;
     
     CGSize _powerOf2Bounds;
@@ -119,6 +120,7 @@ typedef struct {
     GLfloatTriplet _lightPosition;
     
     NSArray *_accessibilityElements;
+    THAccessibilityElement *_nextPageTapZone;
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
