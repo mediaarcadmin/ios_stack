@@ -252,6 +252,22 @@
     [self drawRect:rect inContext:UIGraphicsGetCurrentContext()];
 }
 
+- (void)_addAccessibilityElementTo:(NSMutableArray *)array
+                            string:(NSString *)string
+                              rect:(CGRect)rect
+                            traits:(UIAccessibilityTraits)traits
+{
+    UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+    element.accessibilityFrame = rect;
+    NSString *labelString = [string copy];
+    element.accessibilityLabel = labelString;
+    [labelString release];
+    element.accessibilityTraits = traits;
+    [array addObject:element];
+    [element release];
+}
+    
+
 - (NSArray *)accessibilityElements
 {
     if(!_accessibilityElements) {
@@ -259,40 +275,72 @@
         NSArray *runs = [self _runs];
         
         NSMutableArray *buildAccessibilityElements = [[NSMutableArray alloc] initWithCapacity:runs.count];
+    
+        CGRect buildElementFrame = CGRectZero;
+        UIAccessibilityTraits buildElementTraits = UIAccessibilityTraitStaticText;
+        NSMutableString *buildElementString = [NSMutableString string];
+
+        CGRect itemFrame = CGRectZero;
+        
         for(EucCSSLayoutPositionedRun *run in runs) {
-            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            
-            CGRect frame = run.frame;
-            frame.origin.x += myFrame.origin.x;
-            frame.origin.y += myFrame.origin.y;
-            element.accessibilityFrame = frame;
-            
-            NSMutableString *buildString = [NSMutableString string];
+            CGPoint runOrigin = run.absoluteFrame.origin;
+            runOrigin.x += myFrame.origin.x;
+            runOrigin.y += myFrame.origin.y;
             for(EucCSSLayoutPositionedLine *line in run.children) {
+                CGPoint lineOffset = line.frame.origin;
+                lineOffset.x += runOrigin.x;
+                lineOffset.y += runOrigin.y;                
+                
                 EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
                 size_t renderItemsCount = line.renderItemCount;
                     
                 EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
-                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
-                    if(renderItem->altText) {
-                        [buildString appendString:renderItem->altText];
-                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString &&
-                              renderItem->item.stringItem.layoutPoint.element == 0) {
-                        [buildString appendString:renderItem->item.stringItem.string];
+                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {                    
+                    if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                       if(buildElementString.length) {
+                           [buildElementString appendString:@" "];
+                       }
+                       if(renderItem->item.stringItem.layoutPoint.element == 0) {
+                           [buildElementString appendString:renderItem->item.stringItem.string];
+                       } else if(i != 0) {
+                           // First part of a hyphenated word.  The full word
+                           // is placed in the altText.
+                           [buildElementString appendString:renderItem->altText];
+                       }
+                       itemFrame = renderItem->item.stringItem.rect;
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindImage) {
+                        if(buildElementString.length) {
+                            [self _addAccessibilityElementTo:buildAccessibilityElements
+                                                      string:buildElementString
+                                                        rect:buildElementFrame
+                                                      traits:buildElementTraits];
+                            [buildElementString setString:@""];
+                            buildElementFrame = CGRectZero;
+                        }
+                        [self _addAccessibilityElementTo:buildAccessibilityElements
+                                                  string:renderItem->altText
+                                                    rect:CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y)
+                                                  traits:buildElementTraits | UIAccessibilityTraitImage];
                     }
-                    [buildString appendString:@" "];
+                                        
+                    if(!CGRectIsEmpty(itemFrame)) {
+                        if(CGRectIsEmpty(buildElementFrame)) {
+                            buildElementFrame = CGRectOffset(itemFrame, lineOffset.x, lineOffset.y);
+                        } else {
+                            buildElementFrame = CGRectUnion(buildElementFrame, CGRectOffset(itemFrame, lineOffset.x, lineOffset.y));
+                        }
+                        itemFrame = CGRectZero;
+                    }
                 }
             }
-            NSUInteger stringLength = buildString.length;
-            if(stringLength) {
-                [buildString deleteCharactersInRange:NSMakeRange(stringLength - 1, 1)];
-            }            
-            element.accessibilityLabel = buildString;
-            
-            element.accessibilityTraits = UIAccessibilityTraitStaticText;
-            
-            [buildAccessibilityElements addObject:element];
-            [element release];
+            if(buildElementString.length) {
+                [self _addAccessibilityElementTo:buildAccessibilityElements
+                                          string:buildElementString
+                                            rect:buildElementFrame
+                                          traits:buildElementTraits];
+                [buildElementString setString:@""];
+                buildElementFrame = CGRectZero;                
+            }
         }
         
         _accessibilityElements = buildAccessibilityElements;
