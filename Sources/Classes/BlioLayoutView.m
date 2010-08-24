@@ -1686,15 +1686,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             self.currentPageLayer = aLayer;
             self.lastBlock = nil;
         
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+        if ([self.delegate respondsToSelector:@selector(toolbarsVisible)] && [self.delegate toolbarsVisible]) {
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        } else {
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+        }
         
-    } //else {
-//        if (nil != self.accessibilityElements) {
-//            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
-//            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-//            accessibilityRefreshRequired = YES;
-//        }
-//    }
+    }
 }
 
 - (void)updateAfterScroll {
