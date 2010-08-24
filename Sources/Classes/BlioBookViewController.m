@@ -568,7 +568,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                    action:@selector(toggleAudio:)];
             [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
             [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
-            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitStartsMediaSession];
             
         } else {
             audioImage = [UIImage imageNamed:@"icon-noTTS.png"];
@@ -578,7 +578,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                    action:nil];
             [item setEnabled:NO];
             [item setAccessibilityLabel:NSLocalizedString(@"Audio is not available for this book", @"Accessibility label for Book View Controller Audio unavailable button")];
-            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitNotEnabled];
+            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitStartsMediaSession| UIAccessibilityTraitNotEnabled];
         }
 
     [readingItems addObject:item];
@@ -672,10 +672,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)_backButtonTapped
 {
-	if (self.audioPlaying) {
-		[self stopAudio];
-		self.audioPlaying = NO;  
-	}
     _viewIsDisappearing = YES;
     [self.searchViewController removeFromControllerAnimated:YES];
     [self.navigationController popViewControllerAnimated:YES];
@@ -734,7 +730,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aPauseButton setAlpha:0];
     [self.view addSubview:aPauseButton];
     self.pauseButton = aPauseButton;
-    
 }
 
 - (void)layoutNavigationToolbar {
@@ -1090,14 +1085,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)showToolbars
 {
-    //if(self.navigationController.toolbarHidden)
     if (![self toolbarsVisible]) {
         [self toggleToolbars];
     }
 }
 
 - (BOOL)toolbarsVisible {
-    //return (self.navigationController.toolbarHidden == NO);
     return ([[self.navigationController navigationBar] isHidden] == NO);
 }
 
@@ -1205,11 +1198,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     [UIView commitAnimations];   
         
-    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
-- (void)togglePauseButton {
+- (void)updatePauseButton {
     if (self.audioPlaying)
         [self toggleToolbars:kBlioLibraryToolbarsStatePauseButtonVisible];
     else 
@@ -1509,11 +1501,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         newValue = _pageJumpLabel.text;
     }
     
-    if (![currentValue isEqualToString:newValue]) {
+    if(![currentValue isEqualToString:newValue]) {
         [_pageJumpSlider setAccessibilityValue:newValue];
-        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newValue);
+        if(self.toolbarsVisible && !_pageJumpView.isHidden) {
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newValue);
+        }
     }
-    
 }
 
 #pragma mark -
@@ -1553,16 +1546,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             // current SpeedRead paragraph starts on.
             self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
         }
-		if (self.audioPlaying) {
-			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
-            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-
-            [self stopAudio];
-			self.audioPlaying = NO;  
-		}
         if (newLayout == kBlioPageLayoutPlainText && ([self.book hasEPub] || [self.book hasTextFlow]) && [self.book reflowEnabled]) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
@@ -1764,14 +1747,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         audioMgr.currentWordOffset = 0;
         audioMgr.blockWords = nil;
         
-        UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-        [item setImage:[UIImage imageNamed:@"icon-play.png"]];
-        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
-        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-
         [self stopAudio];
         self.audioPlaying = NO;
+        [self updatePauseButton];
     }
 }
 
@@ -1885,13 +1863,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag { 
 	if (!flag) {
-		UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-		[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-        [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
-        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-
 		self.audioPlaying = NO;
+        [self updatePauseButton];
 		NSLog(@"Audio player terminated because of error.");
 		return;
 	}
@@ -1915,13 +1888,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		}
 		if ( !loadedFilesAhead ) {
 			// End of book.
-			UIBarButtonItem *item = (UIBarButtonItem *)[self.toolbarItems objectAtIndex:7];
-			[item setImage:[UIImage imageNamed:@"icon-play.png"]];
-            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
-            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-
 			self.audioPlaying = NO;
+            [self updatePauseButton];
 		}
 		else {
 			[self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:YES];
@@ -1949,7 +1917,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 #pragma mark -
-#pragma mark UIResponder Event Handling 
+#pragma mark UIResponder Event Handling
+
 - (BOOL)canBecomeFirstResponder {
 	return YES;
 }
@@ -1970,22 +1939,23 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 break;
             case UIEventSubtypeRemoteControlPlay:
 				NSLog(@"UIEventSubtypeRemoteControlPlay");
+                if(!self.audioPlaying) {
+                    [self toggleAudio:nil];
+                }                
                 break;
             case UIEventSubtypeRemoteControlPause:
-				NSLog(@"UIEventSubtypeRemoteControlPause");
-                [self pauseAudio];
-				self.audioPlaying = NO;
-                break;
             case UIEventSubtypeRemoteControlStop:
-				NSLog(@"UIEventSubtypeRemoteControlStop");
-                [self stopAudio];
-				self.audioPlaying = NO;
+				NSLog(@"UIEventSubtypeRemoteControlPause");
+                if(self.audioPlaying) {
+                    [self toggleAudio:nil];
+                }
                 break;
             default:
                 return;
 		}
 	}
 }
+
 #pragma mark -
 #pragma mark Audiobook and General Audio Handling 
 
@@ -2017,10 +1987,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)stopAudio {			
-		if (![self.book audioRights]) 
-			[_acapelaAudioManager stopSpeaking];
-		else if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) 
-			[_audioBookManager stopAudio];
+    if (![self.book audioRights]) 
+        [_acapelaAudioManager stopSpeaking];
+    else if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) 
+        [_audioBookManager stopAudio];
 }
 
 - (void)pauseAudio {			
@@ -2040,15 +2010,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)toggleAudio:(id)sender {
-    //UIBarButtonItem *item = (UIBarButtonItem *)sender;
-    //UIImage *audioImage = nil;
     if (self.audioPlaying) {
         [self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
         self.audioPlaying = NO;  
     } else { 
-        //if (!self.navigationController.toolbarHidden) {
-//            [self toggleToolbars];
-//        }
 		NSLog(@"[self.book audioRights]: %i",[self.book audioRights]);
 		NSLog(@"[self.book hasManifestValueForKey:audiobookMetadataFilename]: %i",[self.book hasManifestValueForKey:@"audiobookMetadataFilename"]);
 		
@@ -2104,21 +2069,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 							   otherButtonTitles: nil];
 			return;
         }
-    }
-    
-    [self togglePauseButton];
-    //if(self.audioPlaying) {
-//        audioImage = [UIImage imageNamed:@"icon-pause.png"];
-//        [item setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
-//        [item setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
-//    } else {
-//        audioImage = [UIImage imageNamed:@"icon-play.png"];
-//        [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-//        [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
-//        [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-//    }
-       
-    //[item setImage:audioImage];
+    }    
+    [self updatePauseButton];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {

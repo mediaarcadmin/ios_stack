@@ -466,4 +466,49 @@
     return [_eucBookView setPageTexture:pageTexture isDark:isDark];
 }
 
+
+#pragma mark -
+#pragma mark Accessibility/TTS interaction.
+
+- (BOOL)isAccessibilityElement 
+{
+    if([self.delegate audioPlaying]) {
+        return YES;
+    } else {
+        return [self.delegate toolbarsVisible];
+    }
+}
+
+- (CGRect)accessibilityFrame {
+    if([self.delegate audioPlaying]) {
+        return CGRectZero;
+    } else {
+        return [super accessibilityFrame];
+    }
+}
+
+- (NSInteger)accessibilityElementCount {
+    if([self.delegate audioPlaying]) {
+        return 0;
+    } else {
+        return [super accessibilityElementCount];
+    }
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index {
+    if([self.delegate audioPlaying]) {
+        return nil;
+    } else {
+        return [super accessibilityElementAtIndex:index];
+    }
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element {
+    if([self.delegate audioPlaying]) {
+        return NSNotFound;
+    } else {
+        return [super indexOfAccessibilityElement:element];
+    }
+}
+
 @end

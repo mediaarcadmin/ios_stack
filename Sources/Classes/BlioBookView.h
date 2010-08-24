@@ -30,7 +30,6 @@
 - (void)hideToolbars;
 - (void)hideToolbarsAndStatusBar:(BOOL)hidesStatusBar;
 - (void)toggleToolbars;
-- (void)togglePauseButton;
 - (BOOL)toolbarsVisible;
 - (BOOL)audioPlaying;
 
