@@ -892,7 +892,19 @@ static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
 {
     NSUInteger sectionIndex = [sectionUuid integerValue];
-    return [[[self.sections objectAtIndex:sectionIndex] name] splitAndFormattedChapterName];
+    NSString *sectionName = [[self.sections objectAtIndex:sectionIndex] name];
+    if (sectionName) {
+        return [sectionName splitAndFormattedChapterName];
+    } else {
+        NSString *sectionString;
+        NSUInteger startPage = [[self.sections objectAtIndex:sectionIndex] startPage];
+        if (startPage < 1) {
+            sectionString = NSLocalizedString(@"Front of Book", @"TOC section string for missing section name without page");
+        } else {
+            sectionString = [NSString stringWithFormat:NSLocalizedString(@"Page %@", @"TOC section string for missing section name with page number"), [self displayPageNumberForPageNumber:startPage]];
+        }
+        return [sectionString splitAndFormattedChapterName];
+    }
 }
 
 - (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid

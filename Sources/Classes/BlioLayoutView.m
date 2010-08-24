@@ -1269,7 +1269,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
             if (![self.delegate audioPlaying]) {
-                //UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
                 UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
                 accessibilityRefreshRequired = YES;
             }
@@ -1687,12 +1686,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             self.currentPageLayer = aLayer;
             self.lastBlock = nil;
         
-    } else {
-        if (nil != self.accessibilityElements) {
+        if ([self.delegate respondsToSelector:@selector(toolbarsVisible)] && [self.delegate toolbarsVisible]) {
             UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        } else {
             UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-            accessibilityRefreshRequired = YES;
         }
+        
     }
 }
 
@@ -2122,7 +2121,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
         [aProxy setTarget:self.scrollView];
         [aProxy setAccessibilityFrameProxy:cropRect];
-        [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page.", @"Accessibility hint for page swipe advance")];
+        [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page, double tap to return to controls.", @"Accessibility hint for page swipe advance and double tap to return to controls")];
         
         if ([nonFolioPageBlocks count] == 0)
             [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"Page %d is blank", @"Accessibility label for blank book page"), currentPage]];
@@ -2177,7 +2176,30 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             [self.scrollView setContentOffset:centeredOffset animated:NO]; 
         }
     }
-    return NO;
+    
+    if ([self.delegate respondsToSelector:@selector(toolbarsVisible)]) {
+        return [self.delegate toolbarsVisible];
+    } else {
+        return NO;
+    }
+}
+
+- (NSString *)accessibilityLabel {
+    return NSLocalizedString(@"Book Page", "Accessibility label for LayoutView page view");
+}
+
+- (NSString *)accessibilityHint {
+    return NSLocalizedString(@"Double tap to read page with VoiceOver.", "Accessibility label for Layout View page view");
+}
+
+- (CGRect)accessibilityFrame {
+    CGRect bounds;
+    if([self.delegate respondsToSelector:@selector(nonToolbarRect)]) {
+        bounds = [self.delegate nonToolbarRect];
+    } else {
+        bounds = self.bounds;
+    }
+    return [self convertRect:bounds toView:nil];
 }
 
 - (NSInteger)accessibilityElementCount {

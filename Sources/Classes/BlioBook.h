@@ -16,8 +16,10 @@
 
 static const CGFloat kBlioCoverListThumbHeight = 76;
 static const CGFloat kBlioCoverListThumbWidth = 53;
-static const CGFloat kBlioCoverGridThumbHeight = 140;
-static const CGFloat kBlioCoverGridThumbWidth = 102;
+static const CGFloat kBlioCoverGridThumbWidthPhone = 106;
+static const CGFloat kBlioCoverGridThumbHeightPhone = 140;
+static const CGFloat kBlioCoverGridThumbWidthPad = 140;
+static const CGFloat kBlioCoverGridThumbHeightPad = 210;
 
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
@@ -106,6 +108,9 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, assign, readonly) BOOL hasXps;
 @property (nonatomic, assign, readonly) BOOL hasTextFlow;
 @property (nonatomic, assign, readonly) BOOL isEncrypted;
+@property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForList;
+@property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForGrid;
+
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow etc.)
@@ -129,9 +134,10 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (NSData *)manifestDataForKey:(NSString *)key pathIndex:(NSInteger)index;
 - (NSString *)manifestLocationForKey:(NSString *)key;
 - (BOOL)manifestPreAvailabilityCompleteForKey:(NSString *)key;
-- (NSString *)authorWithStandardFormat;
+- (NSString *)authorsWithStandardFormat;
 
 +(NSString*)standardNameFromCanonicalName:(NSString*)aName;
++(NSString*)standardNamesFromCanonicalNameArray:(NSArray*)aNameArray;
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName;
 
 @end

@@ -231,7 +231,6 @@ static void *background_init_thread(void * arg) {
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 
 	if (self.networkStatus != NotReachable) {
-		[self.processingManager resumeProcessing];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
@@ -239,6 +238,7 @@ static void *background_init_thread(void * arg) {
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 		}		
+		[self.processingManager resumeProcessing];
 	}	
 	
 	[UIView beginAnimations:@"FadeOutRealDefault" context:nil];

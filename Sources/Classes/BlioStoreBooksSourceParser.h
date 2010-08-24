@@ -26,7 +26,7 @@
 @interface BlioStoreParsedEntity : NSObject {
     NSString *title;
     NSString *id;
-    NSString *author;
+    NSArray *authors;
     NSURL *url;
     NSString *summary;
     NSString *ePubUrl;
@@ -41,7 +41,7 @@
 
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *id;
-@property (nonatomic, retain) NSString *author;
+@property (nonatomic, retain) NSArray *authors;
 @property (nonatomic, retain) NSURL *url;
 @property (nonatomic, retain) NSString *summary;
 @property (nonatomic, retain) NSString *ePubUrl;
@@ -74,7 +74,7 @@
 @interface BlioStoreBooksSourceParser : NSObject {
     id <BlioStoreBooksSourceParserDelegate> delegate;
     GDataServiceGoogleBooks *service;
-    
+    GDataServiceTicket * serviceTicket;
     NSMutableArray *parsedCategories;
     NSMutableArray *parsedEntities;
 	
@@ -85,6 +85,7 @@
 @property (nonatomic, retain) NSMutableArray *parsedCategories;
 @property (nonatomic, retain) NSMutableArray *parsedEntities;
 @property (nonatomic, retain) GDataServiceGoogleBooks *service;
+@property (nonatomic, retain) GDataServiceTicket *serviceTicket;
 @property (nonatomic, readonly) BOOL isParsing;
 
 - (void)startWithURL:(NSURL *)url;
@@ -93,5 +94,5 @@
 - (NSURL *)queryUrlForString:(NSString *)queryString;
 // Subclasses must override these methods
 - (void)volumeListFetchTicket:(GDataServiceTicket *)ticket finishedWithFeed:(GDataFeedVolume *)object error:(NSError *)error;
-
+- (void)cancel;
 @end

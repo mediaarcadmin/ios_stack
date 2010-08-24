@@ -260,24 +260,106 @@
     }
 }
 
+- (BOOL)hasAppropriateCoverThumbForGrid {
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+	
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
+	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+	
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		targetThumbWidth = kBlioCoverGridThumbWidthPad;
+		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+	}
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+	if (aCoverImage) return YES;
+	return NO;
+}
 - (UIImage *)coverThumbForGrid {
-    NSData *imageData = [self manifestDataForKey:@"gridThumbFilename"];
+	
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
+	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		targetThumbWidth = kBlioCoverGridThumbWidthPad;
+		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+	}
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
         return aCoverImage;
     } else {
-        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverGridThumbWidth, kBlioCoverGridThumbHeight)];
+        return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
     }
     return [UIImage imageWithData:imageData];
 }
+- (BOOL)hasAppropriateCoverThumbForList {
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+	
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
 
+	targetThumbWidth = kBlioCoverListThumbWidth;
+	targetThumbHeight = kBlioCoverListThumbHeight;
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+	if (aCoverImage) return YES;
+	return NO;
+}
 - (UIImage *)coverThumbForList {
-    NSData *imageData = [self manifestDataForKey:@"listThumbFilename"];
+	
+	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverListThumbWidth;
+	targetThumbHeight = kBlioCoverListThumbHeight;
+		
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
         return aCoverImage;
     } else {
-        return [self missingCoverImageOfSize:CGSizeMake(kBlioCoverListThumbWidth, kBlioCoverListThumbHeight)];
+        return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
     }
 }
 
@@ -707,8 +789,12 @@ static void sortedHighlightRangePredicateInit() {
 #pragma mark -
 #pragma mark Author name conversion functions
 
-- (NSString *)authorWithStandardFormat {
-	return [BlioBook standardNameFromCanonicalName:self.author];
+- (NSString *)authorsWithStandardFormat {
+	if (self.author) {
+		NSArray * authorsArray = [self.author componentsSeparatedByString:@"|"];
+		return [BlioBook standardNamesFromCanonicalNameArray:authorsArray];
+	}
+	return nil;
 }
 
 +(NSString*)standardNameFromCanonicalName:(NSString*)aName {
@@ -725,6 +811,22 @@ static void sortedHighlightRangePredicateInit() {
 			[aName substringFromIndex:lastCommaLocation.location+lastCommaLocation.length ],
 			[aName substringToIndex:lastCommaLocation.location]];
 	
+}
++(NSString*)standardNamesFromCanonicalNameArray:(NSArray*)aNameArray {
+	if (aNameArray) {
+		NSString * authorsString = @"";
+		for (int i = 0; i < [aNameArray count]; i++) {
+			if (i != 0) {
+				if (i == ([aNameArray count] - 1)) {
+					authorsString = [authorsString stringByAppendingString:@" & "];
+				}
+				else authorsString = [authorsString stringByAppendingString:@", "];
+			}
+			authorsString = [authorsString stringByAppendingString:[BlioBook standardNameFromCanonicalName:[aNameArray objectAtIndex:i]]];
+		}		
+		return authorsString;
+	}
+	return nil;
 }
 
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName {

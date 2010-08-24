@@ -124,8 +124,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 -(void)displayBookView {
 	NSMutableArray * validFieldViews = [NSMutableArray array];
     self.bookTitle.text = [self.entity title];
-    if ([self.entity author]) {
-        self.authors.text = [[NSString stringWithFormat:@"By %@", [BlioBook standardNameFromCanonicalName:[self.entity author]]] uppercaseString];
+    if ([self.entity authors]) {
+        self.authors.text = [NSString stringWithFormat:@"By %@", [BlioBook standardNamesFromCanonicalNameArray:self.entity.authors]];
     } else if ([self.entity publisher]) {
         self.authors.text = [[NSString stringWithFormat:@"By %@", [self.entity publisher]] uppercaseString];      
     } else {
@@ -205,7 +205,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     self.download.titleLabel.shadowOffset = CGSizeMake(0, -1);
     [self.download setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];
 	
-//	NSLog(@"[self.entity thumbUrl]: %@",[self.entity thumbUrl]);
+	NSLog(@"[self.entity coverUrl]: %@",[self.entity coverUrl]);
+	NSLog(@"[self.entity thumbUrl]: %@",[self.entity thumbUrl]);
         
     // Fetch bookThumb
     if (nil != [self.entity thumbUrl]) {
@@ -221,8 +222,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 	
 	// check data to see if downloadState must be changed:
 	// access processing manager to see if the corresponding BlioBook is already in library
-	//	NSLog(@"[self.feed.sourceID]: %@",[self.feed.sourceID]);
-	//	NSLog(@"[self.entity id]: %@",[self.entity id]);
+	NSLog(@"self.feed.sourceID: %i",self.feed.sourceID);
+	NSLog(@"[self.entity id]: %@",[self.entity id]);
 	BlioBook * resultBook = [self.processingDelegate bookWithSourceID:self.feed.sourceID sourceSpecificID:[self.entity id]];
 
 	if (resultBook != nil) {
@@ -332,13 +333,15 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 		NSLog(@"coverPath: %@",self.entity.coverUrl);		
 		NSLog(@"ePubPath: %@",self.entity.ePubUrl);		
 		NSLog(@"pdfPath: %@",self.entity.pdfUrl);
+		NSLog(@"self.feed.sourceID: %i",self.feed.sourceID);
+		NSLog(@"self.entity.id: %@",self.entity.id);
 		NSString * modifiedPDFPath = nil;
 		if (self.entity.ePubUrl == nil) {
 			modifiedPDFPath = self.entity.pdfUrl;
 			NSLog(@"There is no epub, so PDF URL will be used if available. resulting PDFPath: %@", modifiedPDFPath);
 		}
 		[self.processingDelegate enqueueBookWithTitle:self.entity.title 
-											  authors:self.entity.author ? [NSArray arrayWithObject:self.entity.author] : [NSArray array]
+											  authors:self.entity.authors ? self.entity.authors : [NSArray array]
 											coverPath:self.entity.coverUrl ? self.entity.coverUrl : nil
 											 ePubPath:self.entity.ePubUrl ? self.entity.ePubUrl : nil 
 											  pdfPath:modifiedPDFPath

@@ -82,6 +82,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
 - (void) resumeProcessing;
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+-(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook;
 - (void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource;
 - (BlioProcessingCompleteOperation *)processingCompleteOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (NSArray *)processingOperationsForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
