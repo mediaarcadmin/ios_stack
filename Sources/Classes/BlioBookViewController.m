@@ -30,7 +30,7 @@ static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
 static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
 static NSString * const kBlioBookViewControllerCoverPopAnimation = @"BlioBookViewControllerCoverPopAnimation";
-static NSString * const kBlioBookViewControllerCoverFillAnimation = @"BlioBookViewControllerCoverFillAnimation";
+static NSString * const kBlioBookViewControllerCoverFadeAnimation = @"BlioBookViewControllerCoverFadeAnimation";
 static NSString * const kBlioBookViewControllerCoverShrinkAnimation = @"BlioBookViewControllerCoverShrinkAnimation";
 
 typedef enum {
@@ -169,6 +169,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             coverOpened = YES;
             [self initialiseBookView];
             [self setToolbarsVisibleAfterAppearance:YES];
+            BlioBookmarkPoint *implicitPoint = [newBook implicitBookmarkPoint];
+            [self.bookView goToBookmarkPoint:implicitPoint animated:NO];
         }
     } 
     
@@ -277,8 +279,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (![self.bookView isKindOfClass:[BlioLayoutView class]]) {
         firstPageReady = YES;
     }
-    
-    [self animateCoverShrink];
 }
 
 - (void)firstPageDidRender {
@@ -392,8 +392,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [groupAnim setRemovedOnCompletion:NO];
     [groupAnim setFillMode:kCAFillModeForwards];
     [groupAnim setDelegate:self];
-    [groupAnim setValue:@"coverPop" forKey:@"name"];
-    [self.coverView.layer addAnimation:groupAnim forKey:@"coverPop"];
+    [groupAnim setValue:kBlioBookViewControllerCoverPopAnimation forKey:@"name"];
+    [self.coverView.layer addAnimation:groupAnim forKey:kBlioBookViewControllerCoverPopAnimation];
     
     CAKeyframeAnimation *textureAnim = [CAKeyframeAnimation animationWithKeyPath:@"opacity"];
     [textureAnim setValues:[NSArray arrayWithObjects:
@@ -437,7 +437,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [shrinkAnimation setRemovedOnCompletion:NO];
     [shrinkAnimation setFillMode:kCAFillModeForwards];
     [shrinkAnimation setDelegate:self];
-    [shrinkAnimation setValue:@"coverShrink" forKey:@"name"];    
+    [shrinkAnimation setValue:kBlioBookViewControllerCoverShrinkAnimation forKey:@"name"];    
  
     [self.coverView.layer setPosition:[(CALayer *)[self.coverView.layer presentationLayer] position]];
     [self.coverView.layer setTransform:[(CALayer *)[self.coverView.layer presentationLayer] transform]];
@@ -445,7 +445,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     [self.coverView.layer removeAllAnimations];
     
-    [self.coverView.layer addAnimation:shrinkAnimation forKey:@"coverShrink"];        
+    [self.coverView.layer addAnimation:shrinkAnimation forKey:kBlioBookViewControllerCoverShrinkAnimation];        
 }
 
 - (void)animateCoverFade {   
@@ -457,7 +457,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     CABasicAnimation *fadeAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     [fadeAnimation setToValue:[NSNumber numberWithFloat:0]];
     [fadeAnimation setDuration:0.5f];
-    [fadeAnimation setValue:@"coverFade" forKey:@"name"];
+    [fadeAnimation setValue:kBlioBookViewControllerCoverFadeAnimation forKey:@"name"];
     [fadeAnimation setDelegate:self];
     [fadeAnimation setRemovedOnCompletion:NO];
     [fadeAnimation setFillMode:kCAFillModeForwards];
@@ -465,17 +465,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.coverView.layer setTransform:[(CALayer *)[self.coverView.layer presentationLayer] transform]];
     
     [self.coverView.layer removeAllAnimations];
-    [self.coverView.layer addAnimation:fadeAnimation forKey:@"coverFade"]; 
+    [self.coverView.layer addAnimation:fadeAnimation forKey:kBlioBookViewControllerCoverFadeAnimation]; 
 }
 
 - (void)animationDidStart:(CAAnimation *)anim {
-    if ([[anim valueForKey:@"name"] isEqualToString:@"coverPop"]) {
+    if ([[anim valueForKey:@"name"] isEqualToString:kBlioBookViewControllerCoverPopAnimation]) {
         [self initialiseBookView];
+        [self animateCoverShrink];
     }
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
-    if ([[anim valueForKey:@"name"] isEqualToString:@"coverPop"]) {
+    if ([[anim valueForKey:@"name"] isEqualToString:kBlioBookViewControllerCoverPopAnimation]) {
         if ([self.delegate respondsToSelector:@selector(coverViewDidAnimatePop)]) {
             [self.delegate coverViewDidAnimatePop];
         }
@@ -485,13 +486,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIViewController *controller = [self.delegate coverViewViewControllerForOpening];
         [controller.navigationController pushViewController:self animated:NO];
                 
-    } else if ([[anim valueForKey:@"name"] isEqualToString:@"coverShrink"]) {
+    } else if ([[anim valueForKey:@"name"] isEqualToString:kBlioBookViewControllerCoverShrinkAnimation]) {
         if ([self.delegate respondsToSelector:@selector(coverViewDidAnimateShrink)]) {
             [self.delegate coverViewDidAnimateShrink];
         }
         
         [self animateCoverFade];
-    } else if ([[anim valueForKey:@"name"] isEqualToString:@"coverFade"]) {
+    } else if ([[anim valueForKey:@"name"] isEqualToString:kBlioBookViewControllerCoverFadeAnimation]) {
         if ([self.delegate respondsToSelector:@selector(coverViewDidAnimateFade)]) {
             [self.delegate coverViewDidAnimateFade];
         }
@@ -874,7 +875,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [titleView setAuthor:[self.book authorsWithStandardFormat]];
         
         [self setNavigationBarButtons];
-        [self layoutPauseButton];
+        [self layoutPauseButton];        
     }
 }
 

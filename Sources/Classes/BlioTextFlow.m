@@ -892,7 +892,12 @@ static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
 {
     NSUInteger sectionIndex = [sectionUuid integerValue];
-    return [[[self.sections objectAtIndex:sectionIndex] name] splitAndFormattedChapterName];
+    NSString *sectionName = [[self.sections objectAtIndex:sectionIndex] name];
+    if (sectionName) {
+        return [sectionName splitAndFormattedChapterName];
+    } else {
+        return [@"" splitAndFormattedChapterName];
+    }
 }
 
 - (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
