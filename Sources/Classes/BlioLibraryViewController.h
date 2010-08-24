@@ -31,14 +31,17 @@ static const CGFloat kBlioLibraryToolbarHeight = 44;
 static const CGFloat kBlioLibraryListRowHeight = 76;
 static const CGFloat kBlioLibraryListBookHeight = 76;
 static const CGFloat kBlioLibraryListBookWidth = 53;
+static const CGFloat kBlioLibraryListBookMargin = 6;
+static const CGFloat kBlioLibraryListAccessoryMargin = 20;
 static const CGFloat kBlioLibraryListContentWidth = 220;
-static const CGFloat kBlioLibraryListProgressViewWidth = 150;
+static const CGFloat kBlioLibraryListButtonWidth = 33;
+static const CGFloat kBlioLibraryListButtonHeight = 33;
 
 static const CGFloat kBlioLibraryGridRowHeight = 140;
-static const CGFloat kBlioLibraryGridBookHeight = 140;
-static const CGFloat kBlioLibraryGridBookWidth = 106;
-static const CGFloat kBlioLibraryGridBookHeightPad = 210;
+static const CGFloat kBlioLibraryGridBookWidthPhone = 106;
+static const CGFloat kBlioLibraryGridBookHeightPhone = 140;
 static const CGFloat kBlioLibraryGridBookWidthPad = 140;
+static const CGFloat kBlioLibraryGridBookHeightPad = 210;
 static const CGFloat kBlioLibraryGridProgressViewWidth = 60;
 static const CGFloat kBlioLibraryGridBookSpacing = 0;
 static const CGFloat kBlioLibraryGridBookSpacingPad = 40;
@@ -137,6 +140,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIImageView *textureView;
     UIView *errorView;
     BlioBook *book;
+	id delegate;
 }
 
 @property (nonatomic, retain) UIImageView *imageView;
@@ -144,6 +148,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIView *errorView;
 @property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, readonly) UIImage *image;
+@property (nonatomic, assign) id delegate;
 
 - (void)setBook:(BlioBook *)newBook forLayout:(BlioLibraryLayout)layout;
 - (BlioCoverView *)coverView;

@@ -20,6 +20,11 @@
 @synthesize processingDelegate, managedObjectContext,activityIndicatorView,detailViewController;
 
 - (void)dealloc {
+	if (self.feeds) {
+		for (BlioStoreFeed * feed in self.feeds) {
+			if (feed.parser) [feed.parser cancel];
+		}
+	}
     self.processingDelegate = nil;
 	self.detailViewController = nil;
 	self.activityIndicatorView = nil;
@@ -480,7 +485,7 @@
 		row -= [feed.categories count];
 		if (row < [feed.entities count]) {
 			cell.textLabel.text = [[feed.entities objectAtIndex:indexPath.row] title];
-			cell.detailTextLabel.text = [BlioBook standardNameFromCanonicalName:[[feed.entities objectAtIndex:indexPath.row] author]];
+			cell.detailTextLabel.text = [BlioBook standardNamesFromCanonicalNameArray:[[feed.entities objectAtIndex:indexPath.row] authors]];
 			[cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@", @"Accessibility label for Store Categories Entity cell"), cell.textLabel.text, cell.detailTextLabel.text ? : @"Anon"]];
 			[cell setAccessibilityHint:nil];
 		}

@@ -8,6 +8,7 @@
 
 #import "BlioStoreGoogleBooksParser.h"
 #import "BlioBook.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioStoreGoogleBooksParser
 
@@ -22,13 +23,14 @@
     GDataQueryBooks *query = [GDataQueryBooks booksQueryWithFeedURL:url];
     if ([[url absoluteString] rangeOfString:@"min-viewability=full"].location == NSNotFound) [query setMinimumViewability:kGDataGoogleBooksMinViewabilityFull];
     
-    [self.service fetchFeedWithQuery:query
+    self.serviceTicket = [self.service fetchFeedWithQuery:query
                             delegate:self
                    didFinishSelector:@selector(volumeListFetchTicket:finishedWithFeed:error:)];
     
 
 }
 -(void) dealloc {
+	[self cancel];
 	self.entryServiceTickets = nil;
 	[super dealloc];
 }
@@ -38,6 +40,7 @@
         self.entryServiceTickets = [NSMutableArray array];
 		[self.delegate parser:self didParseTotalResults:[object totalResults]]; // pass over the total results number to the BlioStoreCategoriesController, so that it can assign the number to the respective feed.
 		// if nextLink is not nil, then send it back to the delegate in NSURL form
+		// TODO: make custom modifications to nextLink to start fetch at custom index and possibly obtain more results...
 		if ([object nextLink] != nil) [self.delegate parser:self didParseNextLink:[[object nextLink] URL]];
 		if ([object identifier] != nil) [self.delegate parser:self didParseIdentifier:[object identifier]];
 	
@@ -52,6 +55,12 @@
         }
     }
 	else {
+		NSLog(@"ERROR: BlioStoreGoogleBooksParser (feed): %@, %@",error,[error userInfo]);
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+									 message:[[error userInfo] objectForKey:NSLocalizedDescriptionKey]
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];		
 		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
 	}
 
@@ -72,8 +81,12 @@
         
         [self parseEntry:object withBaseURL:baseURL];
     }
-//	NSLog(@"[entryServiceTickets count]: %i",[entryServiceTickets count]);
-	if ([entryServiceTickets count] == 0) [self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
+	else NSLog(@"ERROR: BlioStoreGoogleBooksParser (entry): %@, %@",error,[error userInfo]);
+
+	if ([entryServiceTickets count] == 0) {
+		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
+		// TODO: initiate another connection if valid results are not enough.
+	}
 }
 
 - (void)parseEntry:(GDataEntryVolume *)entry withBaseURL:(NSURL *)baseURL {
@@ -94,10 +107,24 @@
         }
 		aEntity.id = [entry identifier];
 		[aEntity setSummary:descriptions];
-        [aEntity setAuthor:[BlioBook canonicalNameFromStandardName:[[[entry creators] lastObject] stringValue]]];
+		NSMutableArray * authorsArray = [NSMutableArray arrayWithCapacity:[[entry creators] count]];
+		for (GDataDCCreator * creator in [entry creators]) {
+			[authorsArray addObject:[BlioBook canonicalNameFromStandardName:[creator stringValue]]];
+		}
+		
+        [aEntity setAuthors:authorsArray];
         [aEntity setEPubUrl:[[entry EPubDownloadLink] href]];
-        [aEntity setCoverUrl:[[entry thumbnailLink] href]];
-        [aEntity setThumbUrl:[[entry thumbnailLink] href]];                             
+		
+		NSString * modifiedCoverUrl = [[entry thumbnailLink] href];
+		modifiedCoverUrl = [modifiedCoverUrl stringByReplacingOccurrencesOfString:@"zoom=" withString:@"zoom=9"];
+		modifiedCoverUrl = [modifiedCoverUrl stringByReplacingOccurrencesOfString:@"edge=curl" withString:@"edge=plain"];
+		
+        [aEntity setCoverUrl:modifiedCoverUrl];
+		
+		NSString * modifiedThumbUrl = [[entry thumbnailLink] href];
+		modifiedThumbUrl = [modifiedCoverUrl stringByReplacingOccurrencesOfString:@"edge=curl" withString:@"edge=plain"];
+		
+        [aEntity setThumbUrl:modifiedThumbUrl];                             
         [aEntity setPublishedDate:[[entry updatedDate] date]];
         [aEntity setReleasedDate:[[[[entry dates] lastObject] dateTimeValue] date]];
         [aEntity setPublisher:[[[entry publishers] lastObject] stringValue]];
@@ -121,4 +148,13 @@
     [booksQuery setFullTextQueryString:queryString];
     return [booksQuery URL];
 }
+-(void)cancel {
+	if (self.entryServiceTickets) {
+		for (GDataServiceTicket * ticket in self.entryServiceTickets) {
+			[ticket cancelTicket];
+		}
+	}
+	if (self.serviceTicket) [self.serviceTicket cancelTicket];
+}
+
 @end
