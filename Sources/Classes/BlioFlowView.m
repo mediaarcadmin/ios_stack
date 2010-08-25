@@ -287,7 +287,7 @@
 
 - (BOOL)toolbarShowShouldBeSuppressed
 {
-    return _pageViewIsTurning;
+    return _pageViewIsTurning || self.selector.tracking;
 }
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
