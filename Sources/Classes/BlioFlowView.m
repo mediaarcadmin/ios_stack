@@ -475,7 +475,7 @@
     if([self.delegate audioPlaying]) {
         return YES;
     } else {
-        return [self.delegate toolbarsVisible];
+        return [super isAccessibilityElement];
     }
 }
 
