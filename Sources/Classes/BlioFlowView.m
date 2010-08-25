@@ -287,7 +287,7 @@
 
 - (BOOL)toolbarShowShouldBeSuppressed
 {
-    return _pageViewIsTurning;
+    return _pageViewIsTurning || self.selector.tracking;
 }
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
@@ -475,7 +475,7 @@
     if([self.delegate audioPlaying]) {
         return YES;
     } else {
-        return [self.delegate toolbarsVisible];
+        return [super isAccessibilityElement];
     }
 }
 
