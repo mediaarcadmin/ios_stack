@@ -613,10 +613,10 @@
         _toolbar.hidden = YES;
         self.navigationController.navigationBar.hidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
-        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     } else {
         [UIApplication sharedApplication].idleTimerDisabled = NO;
-        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     }
     _fadeState = BookViewControlleUIFadeStateNone;
 }

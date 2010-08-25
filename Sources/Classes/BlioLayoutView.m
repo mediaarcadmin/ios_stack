@@ -472,9 +472,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 
-    //self.accessibilityElements = nil;
     accessibilityRefreshRequired = YES;
-
 }
 
 #pragma mark -
@@ -1264,21 +1262,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
     } else if (object == self) {
         if ([keyPath isEqualToString:@"currentPageLayer"]) {
-//            NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
+//          NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
-            if (![self.delegate audioPlaying]) {
-                UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
-                accessibilityRefreshRequired = YES;
-            }
-        }
-    } else if (object == self.delegate) {
-        if ([keyPath isEqualToString:@"audioPlaying"]) {
-            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
             accessibilityRefreshRequired = YES;
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         }
-    }
+    } 
 }
 
 - (BlioBookmarkRange *)selectedRange {
@@ -2034,12 +2025,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark Accessibility
 
 - (void)createAccessibilityElements {
-    NSMutableArray *elements = nil;
-    if (![self.delegate audioPlaying]) {
-        
-
-    
-    elements = [NSMutableArray array];
+    NSMutableArray *elements = [NSMutableArray array];
     NSInteger currentPage = self.pageNumber;
     
     CGRect cropRect;
@@ -2071,68 +2057,59 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         cropRect = newCropRect;
     }
     
-    //if (![self.delegate audioPlaying]) {
-//        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
-//        [element setAccessibilityFrame:cropRect];
-//        [self.scrollView setIsAccessibilityElement:NO];
-//        [elements addObject:element];        
-//    } else {
-        CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
-        
-        [self.scrollView setIsAccessibilityElement:YES];
-        
-        NSInteger pageIndex = currentPage - 1;
-        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-        
-        NSMutableString *allWords = [NSMutableString string];
-        for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-            [allWords appendString:[block string]];
-            BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
-            [aProxy setTarget:self.scrollView];
-            CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
-            if (layoutMode == BlioLayoutPageModeLandscape) {
-                //blockRect = CGRectMake(blockRect.origin.y-90, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
-                blockRect.origin.y -= self.scrollView.contentOffset.y;
-                blockRect = [self.window.layer convertRect:blockRect fromLayer:self.currentPageLayer];
-                blockRect.origin.x -= self.scrollView.contentOffset.y;
-                //if (CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) {
+    CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
+    
+    [self.scrollView setIsAccessibilityElement:YES];
+    
+    NSInteger pageIndex = currentPage - 1;
+    NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    
+    NSMutableString *allWords = [NSMutableString string];
+    for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
+        [allWords appendString:[block string]];
+        BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
+        [aProxy setTarget:self.scrollView];
+        CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
+        if (layoutMode == BlioLayoutPageModeLandscape) {
+            //blockRect = CGRectMake(blockRect.origin.y-90, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
+            blockRect.origin.y -= self.scrollView.contentOffset.y;
+            blockRect = [self.window.layer convertRect:blockRect fromLayer:self.currentPageLayer];
+            blockRect.origin.x -= self.scrollView.contentOffset.y;
+            //if (CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) {
 //                    CGFloat diff = CGRectGetWidth(blockRect) - CGRectGetHeight(self.scrollView.frame);
 //                    blockRect.origin.x += diff;
 //                    blockRect.size.width -= diff;
 //                }
-                if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMinX(blockRect) < CGRectGetMinY(self.scrollView.frame))) {
-                    CGFloat diff = CGRectGetMinY(self.scrollView.frame) - CGRectGetMinX(blockRect);
-                    blockRect.origin.x += diff;
-                    blockRect.size.width -= diff;
-                }
-                
-                if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMaxX(blockRect) > CGRectGetMaxY(self.scrollView.frame))) {
-                    CGFloat diff = CGRectGetMaxX(blockRect) - CGRectGetMaxY(self.scrollView.frame);
-                    blockRect.size.width -= diff;
-                }
+            if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMinX(blockRect) < CGRectGetMinY(self.scrollView.frame))) {
+                CGFloat diff = CGRectGetMinY(self.scrollView.frame) - CGRectGetMinX(blockRect);
+                blockRect.origin.x += diff;
+                blockRect.size.width -= diff;
             }
-                                
-            [aProxy setAccessibilityFrameProxy:blockRect];
-            [aProxy setAccessibilityLabelProxy:[block string]];
-            [elements addObject:aProxy];
-            [aProxy release];
+            
+            if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMaxX(blockRect) > CGRectGetMaxY(self.scrollView.frame))) {
+                CGFloat diff = CGRectGetMaxX(blockRect) - CGRectGetMaxY(self.scrollView.frame);
+                blockRect.size.width -= diff;
+            }
         }
-        
-        BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
-        [aProxy setTarget:self.scrollView];
-        [aProxy setAccessibilityFrameProxy:cropRect];
-        [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page, double tap to return to controls.", @"Accessibility hint for page swipe advance and double tap to return to controls")];
-        
-        if ([nonFolioPageBlocks count] == 0)
-            [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"Page %d is blank", @"Accessibility label for blank book page"), currentPage]];
-        else
-            [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"End of page %d", @"Accessibility label for end of page"), currentPage]];
-        
+                            
+        [aProxy setAccessibilityFrameProxy:blockRect];
+        [aProxy setAccessibilityLabelProxy:[block string]];
         [elements addObject:aProxy];
         [aProxy release];
-        
-   // }
     }
+    
+    BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
+    [aProxy setTarget:self.scrollView];
+    [aProxy setAccessibilityFrameProxy:cropRect];
+    [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page, double tap to return to controls.", @"Accessibility hint for page swipe advance and double tap to return to controls")];
+    
+    if ([nonFolioPageBlocks count] == 0)
+        [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"Page %d is blank", @"Accessibility label for blank book page"), currentPage]];
+    else
+        [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"End of page %d", @"Accessibility label for end of page"), currentPage]];
+    
+    [elements addObject:aProxy];
+    [aProxy release];
     
     // We keep around a copy of the previous accessibility elements because 
     // the OS doesn't retain them but can attempt to access them
@@ -2158,10 +2135,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (BOOL)isAccessibilityElement {
-    if (accessibilityRefreshRequired) {
-        [self createAccessibilityElements];
-    }
-    
     if (!self.scrollingAnimationInProgress) {
     // If we are querying the accessibility mode, force us to zoom out to page
         if ([self.scrollView zoomScale] != kBlioPDFGoToZoomTargetScale) {
@@ -2179,9 +2152,18 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     if ([self.delegate respondsToSelector:@selector(toolbarsVisible)]) {
         return [self.delegate toolbarsVisible];
-    } else {
-        return NO;
-    }
+    } 
+    
+    if([self.delegate audioPlaying]) {
+        // Working around a bug (or quirk?) in the frameworks:
+        // If we don't return YES here, it will still access the
+        // accesibility elements of out child
+        // views, so we return YES and give an empty frame,
+        // which the framework ignores...
+        return YES;
+    } 
+    
+    return NO;
 }
 
 - (NSString *)accessibilityLabel {
@@ -2193,37 +2175,51 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (CGRect)accessibilityFrame {
-    CGRect bounds;
-    if([self.delegate respondsToSelector:@selector(nonToolbarRect)]) {
-        bounds = [self.delegate nonToolbarRect];
+    if([self.delegate audioPlaying]) {
+        // See comments in -isAccessibilityElement
+        return CGRectZero;
     } else {
-        bounds = self.bounds;
+        CGRect bounds;
+        if([self.delegate respondsToSelector:@selector(nonToolbarRect)]) {
+            bounds = [self.delegate nonToolbarRect];
+        } else {
+            bounds = self.bounds;
+        }
+        return [self convertRect:bounds toView:nil];
     }
-    return [self convertRect:bounds toView:nil];
 }
 
 - (NSInteger)accessibilityElementCount {
-    if (accessibilityRefreshRequired) {
-        [self createAccessibilityElements];
+    if([self.delegate audioPlaying]) {
+        return 0;
+    } else {
+        if (accessibilityRefreshRequired) {
+            [self createAccessibilityElements];
+        }        
+        return [self.accessibilityElements count];
     }
-    
-    return [self.accessibilityElements count];
 }
 
-
 - (id)accessibilityElementAtIndex:(NSInteger)index {
-    if (accessibilityRefreshRequired) {
-        [self createAccessibilityElements];
+    if([self.delegate audioPlaying]) {
+        return nil;
+    } else {
+        if (accessibilityRefreshRequired) {
+            [self createAccessibilityElements];
+        }        
+        return [self.accessibilityElements objectAtIndex:index];
     }
-
-    return [self.accessibilityElements objectAtIndex:index];
 }
 
 - (NSInteger)indexOfAccessibilityElement:(id)element {
-    if (accessibilityRefreshRequired) {
-        [self createAccessibilityElements];
+    if([self.delegate audioPlaying]) {
+        return NSNotFound;
+    } else {
+        if (accessibilityRefreshRequired) {
+            [self createAccessibilityElements];
+        }        
+        return [self.accessibilityElements indexOfObject:element];
     }
-    return [self.accessibilityElements indexOfObject:element];
 }
 
 @end

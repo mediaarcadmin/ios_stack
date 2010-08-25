@@ -125,14 +125,32 @@
     return [self layoutPageFromPoint:point inBook:bookIn centerOnPage:NO];
 }
 
-- (void)_accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)block intoArray:(NSMutableArray *)array
+- (void)_accumulateRunsBelow:(EucCSSLayoutPositionedContainer *)block intoArray:(NSMutableArray *)array
 {
-    for(id subBlock in block.children) {
-        if([subBlock isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
-            [self _accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)subBlock intoArray:array];
-        } else if([subBlock isKindOfClass:[EucCSSLayoutPositionedRun class]]) {
-            [array addObject:subBlock];
+    if([block isKindOfClass:[EucCSSLayoutPositionedRun class]]) {
+        [array addObject:block];
+    } else {
+        for(EucCSSLayoutPositionedContainer * subBlock in ((EucCSSLayoutPositionedBlock *)block).leftFloatChildren) {
+            [self _accumulateRunsBelow:subBlock intoArray:array];   
         }
+        for(EucCSSLayoutPositionedContainer * subBlock in block.children) {
+            [self _accumulateRunsBelow:subBlock intoArray:array];   
+        }
+        for(EucCSSLayoutPositionedContainer * subBlock in ((EucCSSLayoutPositionedBlock *)block).rightFloatChildren) {
+            [self _accumulateRunsBelow:subBlock intoArray:array];   
+        } 
+    }
+}
+
+static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayoutPositionedRun *rhs, void *context) {
+    uint32_t lhsId = lhs.documentRun.id;
+    uint32_t rhsId = rhs.documentRun.id;
+    if(lhsId < rhsId) {
+        return NSOrderedAscending;
+    } else if (lhsId > rhsId) {
+        return NSOrderedDescending;
+    } else {
+        return NSOrderedSame;
     }
 }
 
@@ -140,7 +158,8 @@
 {
     if(!_runs) {
         _runs = [[NSMutableArray alloc] init];
-        [self _accumulateRunsBelowBlock:self.positionedBlock intoArray:(NSMutableArray *)_runs];
+        [self _accumulateRunsBelow:self.positionedBlock intoArray:(NSMutableArray *)_runs];
+        [(NSMutableArray *)_runs sortUsingFunction:(NSInteger (*)(id, id, void *))runCompare context:NULL];
     }
     return _runs;
 }

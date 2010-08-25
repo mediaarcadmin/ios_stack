@@ -887,9 +887,9 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     CGPoint lineOrigin = CGPointZero;
     CGFloat lastLineMaxY = 0;
     
-    CGFloat thisLineWidth = frame.size.width;
-    CGFloat lastLineUsedWidth = thisLineWidth;
     BOOL firstTryAtLine = YES;
+    CGFloat thisLineWidth = frame.size.width;
+    CGFloat lastLineUsedWidth;
     
     do {
         size_t startBreakOffset = 0;
@@ -970,7 +970,8 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             // Calculate available width for line of this height.
             
             CGFloat availableWidth;
-            THPair *floats = [container floatsOverlappingYPoint:lineOrigin.y + frame.origin.y height:newLine.frame.size.height];
+            THPair *floats = [container floatsOverlappingYPoint:lineOrigin.y + frame.origin.y 
+                                                         height:newLine.frame.size.height];
             if(floats) {
                 CGFloat leftX = 0;
                 CGFloat rightX = frame.size.width;
@@ -999,7 +1000,9 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             
             // Is the available width != the used width?
             if(availableWidth != thisLineWidth) { 
-                THLog(@"Recalculating for float");
+                [newLine release];        
+                
+                THLogVerbose(@"Recalculating for float");
                 if(!firstTryAtLine) {
                     // We can't fit this line in the width.
                     // We'll loop and try this line again after the first float
