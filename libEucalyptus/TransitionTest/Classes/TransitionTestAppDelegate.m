@@ -25,16 +25,6 @@
 	
 	[window addSubview:[navigationController view]];
     [window makeKeyAndVisible];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logNotification:) name:nil object:nil];
-    
-    
-    
-    
-}
-
-- (void)logNotification:(NSNotificationCenter *)note {
-    NSLog(@"NOTIFICATIONNNNNN = %@", note);
 }
 
 
