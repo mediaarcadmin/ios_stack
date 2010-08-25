@@ -600,6 +600,8 @@
 		DC2A3E66116C5DF80049A97E /* MRGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E61116C5DF80049A97E /* MRGridViewController.m */; };
 		DC2ABE411213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */; };
 		DC2ABE421213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */; };
+		DC32BF8D12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */; };
+		DC32BF8E12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */; };
 		DC41ACEF11F0DA4800D13308 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		DC48C4E911D3199C00C5D186 /* librarybackground-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */; };
@@ -1328,6 +1330,7 @@
 		DC2A3E63116C5DF80049A97E /* MRGridViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRGridViewDelegate.h; sourceTree = "<group>"; };
 		DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioFeatureCompatibility.plist; sourceTree = "<group>"; };
 		DC2EB05411C96E28006AC1B6 /* DRM */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DRM; sourceTree = "<group>"; };
+		DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "voice-sample-play-button@2x.png"; sourceTree = "<group>"; };
 		DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "librarybackground-iPad.png"; sourceTree = "<group>"; };
 		DC48C98C11D54A0100C5D186 /* BlioSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSplitViewController.h; sourceTree = "<group>"; };
 		DC48C98D11D54A0100C5D186 /* BlioSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSplitViewController.m; sourceTree = "<group>"; };
@@ -1623,6 +1626,7 @@
 				DC12F612117E563C0074B2D8 /* library-progress-background.png */,
 				DC18E091120517C20077DF01 /* library-progress-background@2x.png */,
 				DCC4548811B092A800CBD491 /* voice-sample-play-button.png */,
+				DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */,
 				DC795B2D11E7E21B000DA04D /* button-buybooks.png */,
 				DC795B2E11E7E21B000DA04D /* store-screenshot.png */,
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
@@ -2649,6 +2653,7 @@
 				DCA1B900122289D20022D410 /* button-tts-pause@2x.png in Resources */,
 				DCA1B905122289EF0022D410 /* downloadButton@2x.png in Resources */,
 				DCA1B906122289EF0022D410 /* downloadButtonPressed@2x.png in Resources */,
+				DC32BF8D12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2837,6 +2842,7 @@
 				A37E2F2E1222CDDA0004B11D /* ipadcert.dat in Resources */,
 				A37E2F2F1222CDDA0004B11D /* ipadzgpriv.dat in Resources */,
 				A37E2F301222CDDA0004B11D /* priv.dat in Resources */,
+				DC32BF8E12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

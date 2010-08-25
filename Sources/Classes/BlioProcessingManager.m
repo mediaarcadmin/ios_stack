@@ -806,17 +806,17 @@
 	
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:bookSource]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource]]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
     
     if (errorExecute) {
-        NSLog(@"Error getting incomplete paid book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
     }
     else {
 		if ([results count] > 0) {
-			NSLog(@"Found non-paused incomplete paid book results, will resume..."); 
+			NSLog(@"Found %i non-paused incomplete book results, will resume...",[results count]); 
 			for (BlioBook * book in results) {
 				[self enqueueBook:book];
 			}

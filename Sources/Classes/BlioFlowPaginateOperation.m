@@ -160,7 +160,7 @@
                                                        object:paginator];
                 
             
-            NSLog(@"Begining pagination for %@", eucBook.title);
+            NSLog(@"Beginning pagination for %@", eucBook.title);
             [paginator paginateBookInBackground:eucBook saveImagesTo:nil];
         }
     }

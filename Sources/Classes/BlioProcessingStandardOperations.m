@@ -429,13 +429,13 @@
 	}	
 }
 - (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
-//	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
+	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
 	self.expectedContentLength = [response expectedContentLength];
 
 	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
 	
-	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] &&
-        theConnection == headConnection) {		
+	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] && theConnection == headConnection) {		
+		NSLog(@"httpResponse.statusCode: %i",httpResponse.statusCode);
 		if (httpResponse.statusCode/100 != 2) {
 			// we are not getting valid response; try again from scratch.
 			resume = NO;
@@ -444,14 +444,15 @@
 		}
 		else {
 			
-			
+			NSLog(@"inspecting header fields...");
 			NSString * acceptRanges = nil;
-			for (NSString * key in httpResponse.allHeaderFields)
+			for (id key in httpResponse.allHeaderFields)
 			{
+				NSString * keyString = (NSString*)key;
 				// TODO: check this code to make sure it is working properly when internet access is available.
-				NSLog(@"key: %@",key);
-				if ([[key lowercaseString] isEqualToString:[@"Accept-Ranges" lowercaseString]]) {
-					acceptRanges = [httpResponse.allHeaderFields objectForKey:key];
+				NSLog(@"keyString: %@",keyString);
+				if ([[keyString lowercaseString] isEqualToString:[@"Accept-Ranges" lowercaseString]]) {
+					acceptRanges = [httpResponse.allHeaderFields objectForKey:keyString];
 					break;
 				}
 			}			
