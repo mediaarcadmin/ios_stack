@@ -754,7 +754,9 @@
         } else if(phase == UITouchPhaseEnded) {
             if(!_touchMoved) {
                 if(!_pageViewIsTurning) {
-                    [self _toggleToolbars];
+                    if(!_bookView.allowsSelection || !_bookView.selector.tracking) {
+                        [self _toggleToolbars];
+                    }
                 }
             }
             _touch = nil;
