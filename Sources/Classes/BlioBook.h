@@ -89,7 +89,6 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 // These convenience acessors are not guranteed to exists after a memory warning
 // If you need to retain the result in your object use the checkout methods in BlioBookManager
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
-@property (nonatomic, retain, readonly) BlioXPSProvider *xpsProvider;
 @property (nonatomic, retain, readonly) id<BlioParagraphSource> paragraphSource;
 
 // Core data attribute-backed convenience accessors

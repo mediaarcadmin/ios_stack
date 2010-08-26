@@ -140,6 +140,10 @@ static void ReleaseMoc(void *moc)
 {
     BlioTextFlow *ret = nil;
     
+    // Always check out an XPS Provider alongside a TextFlow to guarantee that we have the 
+    // same one underneath it for the duration of any decrypt operation
+    [self checkOutXPSProviderForBookWithID:aBookID];
+    
     [self.persistentStoreCoordinator lock];
     
     NSMutableDictionary *myCachedTextFlows = self.cachedTextFlows;
@@ -176,6 +180,10 @@ static void ReleaseMoc(void *moc)
 
 - (void)checkInTextFlowForBookWithID:(NSManagedObjectID *)aBookID
 {
+    // Always check in an XPS Provider alongside a TextFlow to match the fact 
+    // that we always check it out
+    [self checkInXPSProviderForBookWithID:aBookID];
+    
     NSMutableDictionary *myCachedTextFlows = self.cachedTextFlows;
     @synchronized(myCachedTextFlows) {
         NSCountedSet *myCachedTextFlowCheckoutCounts = self.cachedTextFlowCheckoutCounts;

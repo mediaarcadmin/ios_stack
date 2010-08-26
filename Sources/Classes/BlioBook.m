@@ -20,6 +20,7 @@
 - (NSData *)dataFromXPSAtPath:(NSString *)path;
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path;
 - (BOOL)componentExistsInXPSAtPath:(NSString *)path;
+- (BlioXPSProvider *)xpsProvider;
 
 @end
 
