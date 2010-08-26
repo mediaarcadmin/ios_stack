@@ -10,7 +10,7 @@
 
 @interface CALayer (THCALayerAdditions)
 
-- (CALayer *)topmostLayer;
+- (CATransform3D)absoluteTransform;
 - (CALayer *)windowLayer;
 - (CGSize)screenScaleFactors;
 

@@ -11,16 +11,14 @@
 
 @implementation CALayer (THCALayerAdditions)
 
-- (CALayer *)topmostLayer
-{    
-    CALayer *windowLayer = self;
-    CALayer *superLayer;
-    CALayer *oldSuperlayer = nil;
-    while((superLayer = windowLayer.superlayer)) {
-        oldSuperlayer = windowLayer;
-        windowLayer = superLayer;
+- (CATransform3D)absoluteTransform
+{
+    CALayer *superLayer = self.superlayer;
+    if(superLayer) {
+        return CATransform3DConcat(superLayer.absoluteTransform, self.transform);
+    } else {
+        return CATransform3DIdentity;
     }
-    return oldSuperlayer ?: windowLayer;
 }
 
 - (CALayer *)windowLayer
@@ -32,7 +30,6 @@
     }
     return windowLayer;
 }
-
 
 - (CGSize)screenScaleFactors
 {
