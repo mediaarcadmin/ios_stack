@@ -8,7 +8,8 @@
 
 #import "BlioProcessingStandardOperations.h"
 #import "ZipArchive.h"
-#import "BlioDrmManager.h"
+//#import "BlioDrmManager.h"
+#import "BlioDrmSessionManager.h"
 #import "NSString+BlioAdditions.h"
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
@@ -197,6 +198,7 @@
 	}
 #endif
 	
+/* 
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		
 		NSInteger cooldownTime = [[BlioDrmManager getDrmManager] licenseCooldownTime];
@@ -216,6 +218,26 @@
 			[[BlioDrmManager getDrmManager] resetLicenseCooldownTimer];
 		}
 	}
+*/
+	
+	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:self.bookID]; 
+	//NSInteger cooldownTime = [drmSessionManager licenseCooldownTime];
+	//if (cooldownTime > 0) {
+	//	NSLog(@"BlioDrmManager still cooling down (%i seconds to go), cancelling BlioProcessingLicenseAcquisitionOperation in the meantime...",cooldownTime);
+	//	[self cancel];		
+	//	return;
+	//}
+	
+	while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
+		NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
+		self.operationSuccess = [drmSessionManager getLicense:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]];
+		attemptsMade++;
+	}
+	
+	[drmSessionManager release];
+	//if (!self.operationSuccess) {
+	//	[drmSessionManager resetLicenseCooldownTimer];
+	//} 
 	
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
@@ -224,9 +246,11 @@
 #endif
 	
 	if (self.operationSuccess) self.percentageComplete = 100;
+/* RESTORE FOR OLD DRM INTERFACE
 	else {
 		[[BlioDrmManager getDrmManager] startLicenseCooldownTimer];				
 	}
+*/
 }
 @end
 
