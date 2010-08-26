@@ -215,6 +215,9 @@
     [super layoutSubviews];
     CGSize newSize = self.bounds.size;
     if(!CGSizeEqualToSize(newSize, _pageLayoutController.pageSize)) {
+        if(_selector.tracking) {
+            [_selector setSelectedRange:nil];
+        }        
         _pageLayoutController.pageSize = newSize;
         [self _redisplayCurrentPage];
     }
