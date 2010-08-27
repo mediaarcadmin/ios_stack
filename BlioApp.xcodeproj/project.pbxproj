@@ -400,7 +400,6 @@
 		A36D35BE120B136700E1A035 /* BlioStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0B993D1194F03B0040CEFB /* BlioStoreHelper.m */; };
 		A36D35BF120B136700E1A035 /* BlioSelectableBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */; };
 		A36D35C0120B136700E1A035 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
-		A36D35C1120B136700E1A035 /* BlioDrmManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37DADCF11B1E52A005F949A /* BlioDrmManager.m */; settings = {COMPILER_FLAGS = "-Wno-unused-function"; }; };
 		A36D35C2120B136700E1A035 /* BlioStoreFreeBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCE467411BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m */; };
 		A36D35C3120B136700E1A035 /* BlioBookSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = C93317AE11B5457D0057E0BE /* BlioBookSearchController.m */; };
 		A36D35C4120B136700E1A035 /* BlioLicenseClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */; };
@@ -458,7 +457,6 @@
 		A37A586C113C45640003CCFF /* back-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A5869113C45640003CCFF /* back-gray.png */; };
 		A37A586D113C45640003CCFF /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
 		A37A586E113C45640003CCFF /* forward-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586B113C45640003CCFF /* forward-gray.png */; };
-		A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37DADCF11B1E52A005F949A /* BlioDrmManager.m */; settings = {COMPILER_FLAGS = "-Wno-unused-function"; }; };
 		A37E2F2D1222CDD90004B11D /* devcerttemplate.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F291222CDD90004B11D /* devcerttemplate.dat */; };
 		A37E2F2E1222CDDA0004B11D /* ipadcert.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F2A1222CDD90004B11D /* ipadcert.dat */; };
 		A37E2F2F1222CDDA0004B11D /* ipadzgpriv.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F2B1222CDD90004B11D /* ipadzgpriv.dat */; };
@@ -990,8 +988,6 @@
 		A37A5869113C45640003CCFF /* back-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-gray.png"; sourceTree = "<group>"; };
 		A37A586A113C45640003CCFF /* forward-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward-black.png"; sourceTree = "<group>"; };
 		A37A586B113C45640003CCFF /* forward-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward-gray.png"; sourceTree = "<group>"; };
-		A37DADCE11B1E52A005F949A /* BlioDrmManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDrmManager.h; sourceTree = "<group>"; };
-		A37DADCF11B1E52A005F949A /* BlioDrmManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDrmManager.m; sourceTree = "<group>"; };
 		A37DADE611B2123D005F949A /* drmtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmtypes.h; path = DRM/drmtypes.h; sourceTree = "<group>"; };
 		A37DADE711B2123D005F949A /* drmutf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmutf.h; path = DRM/drmutf.h; sourceTree = "<group>"; };
 		A37DADE811B2123D005F949A /* drmwindowsenv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmwindowsenv.h; path = DRM/drmwindowsenv.h; sourceTree = "<group>"; };
@@ -1152,7 +1148,6 @@
 		A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioPaidBooksSettingsController.m; sourceTree = "<group>"; };
 		A3951B6411B31D4E000BCAC1 /* drmbcert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmbcert.h; path = DRM/drmbcert.h; sourceTree = "<group>"; };
 		A3951B6511B31D4E000BCAC1 /* ecurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ecurve.h; path = DRM/ecurve.h; sourceTree = "<group>"; };
-		A3951B6A11B31DCD000BCAC1 /* bigdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigdefs.h; path = DRM/bigdefs.h; sourceTree = "<group>"; };
 		A3951B6B11B31DCD000BCAC1 /* bignum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bignum.h; path = DRM/bignum.h; sourceTree = "<group>"; };
 		A3951B6C11B31DCD000BCAC1 /* bigpriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigpriv.h; path = DRM/bigpriv.h; sourceTree = "<group>"; };
 		A3951B6D11B31DCD000BCAC1 /* dblint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dblint.h; path = DRM/dblint.h; sourceTree = "<group>"; };
@@ -1192,6 +1187,7 @@
 		A3C7436F11CAC178005A2219 /* paper-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white@2x.png"; sourceTree = "<group>"; };
 		A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioBookManager.h; sourceTree = "<group>"; };
 		A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioBookManager.m; sourceTree = "<group>"; };
+		A3EC8A21122857E100D27D8C /* bigdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigdefs.h; path = DRM/bigdefs.h; sourceTree = "<group>"; };
 		A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLoginViewController.h; sourceTree = "<group>"; };
 		A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLoginViewController.m; sourceTree = "<group>"; };
 		A3F9387D116BD63500E53BD3 /* CellTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CellTextField.h; sourceTree = "<group>"; };
@@ -1901,8 +1897,6 @@
 				A39A8C8D11B97C0F00182D7E /* BlioLicenseClient.h */,
 				A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */,
 				A3951B7C11B31ED1000BCAC1 /* DrmGlobals.h */,
-				A37DADCE11B1E52A005F949A /* BlioDrmManager.h */,
-				A37DADCF11B1E52A005F949A /* BlioDrmManager.m */,
 			);
 			name = DRM;
 			sourceTree = "<group>";
@@ -1910,10 +1904,10 @@
 		A37DADE311B211DA005F949A /* DRM */ = {
 			isa = PBXGroup;
 			children = (
+				A3EC8A21122857E100D27D8C /* bigdefs.h */,
 				A3951B7311B31E39000BCAC1 /* drmxmr.h */,
 				A3951B7411B31E39000BCAC1 /* drmxmrbuilder.h */,
 				A3951B7511B31E39000BCAC1 /* drmxmrparser.h */,
-				A3951B6A11B31DCD000BCAC1 /* bigdefs.h */,
 				A3951B6B11B31DCD000BCAC1 /* bignum.h */,
 				A3951B6C11B31DCD000BCAC1 /* bigpriv.h */,
 				A3951B6D11B31DCD000BCAC1 /* dblint.h */,
@@ -2206,7 +2200,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2480,10 +2474,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2974,7 +2968,6 @@
 				DC0B993F1194F03B0040CEFB /* BlioStoreHelper.m in Sources */,
 				7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */,
 				DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */,
-				A37DADD011B1E52A005F949A /* BlioDrmManager.m in Sources */,
 				DCCE467511BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m in Sources */,
 				C93317AF11B5457D0057E0BE /* BlioBookSearchController.m in Sources */,
 				A39A8C8F11B97C0F00182D7E /* BlioLicenseClient.m in Sources */,
@@ -3086,7 +3079,6 @@
 				A36D35BE120B136700E1A035 /* BlioStoreHelper.m in Sources */,
 				A36D35BF120B136700E1A035 /* BlioSelectableBookView.m in Sources */,
 				A36D35C0120B136700E1A035 /* BlioDownloadVoicesViewController.m in Sources */,
-				A36D35C1120B136700E1A035 /* BlioDrmManager.m in Sources */,
 				A36D35C2120B136700E1A035 /* BlioStoreFreeBooksViewController.m in Sources */,
 				A36D35C3120B136700E1A035 /* BlioBookSearchController.m in Sources */,
 				A36D35C4120B136700E1A035 /* BlioLicenseClient.m in Sources */,
@@ -3243,7 +3235,7 @@
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
@@ -3444,7 +3436,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
@@ -3463,7 +3455,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;

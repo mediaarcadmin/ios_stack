@@ -457,7 +457,7 @@ DRM_API DRM_BOOL DRM_CALL multiply(const digit_t  a[],const DRM_DWORD lnga,const
 #else
 
 /****************************************************************************/
-DRMFORCEINLINE DRM_BOOL DRM_CALL multiply
+/*DRMFORCEINLINE*/ DRM_BOOL DRM_CALL multiply
         (const digit_t  a[],
          const DRM_DWORD lnga,
          const digit_t  b[],
@@ -546,7 +546,7 @@ DRM_API digit_t DRM_CALL sub_immediate(const digit_t *, const digit_t, digit_t *
  const DRM_DWORD    lng) __attribute__((always_inline));*/
 
 /***************************************************************************/
-DRMINLINE DRM_INT DRM_CALL compare_immediate
+/*DRMINLINE*/ DRM_INT DRM_CALL compare_immediate
         (const digit_t  a[],
          const digit_t  ivalue,
          const DRM_DWORD    lng) 
@@ -558,7 +558,7 @@ DRMINLINE DRM_INT DRM_CALL compare_immediate
 }
 /****************************************************************************/
 #define significant_digit_count significant_digit_count_inlined
-DRMINLINE DRM_DWORD DRM_CALL significant_digit_count
+/*DRMINLINE*/ DRM_DWORD DRM_CALL significant_digit_count
         (const digit_t  a[],
          const DRM_DWORD lng)
 /*

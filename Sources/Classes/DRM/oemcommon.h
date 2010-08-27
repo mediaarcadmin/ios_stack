@@ -454,7 +454,7 @@ __forceinline DRM_VOID * DRM_CALL DRMCRT_ScrubMemory(
 
 //AC: temporary implementation same as for Windows
 
-/*__forceinline*/static DRM_VOID * DRM_CALL DRMCRT_ScrubMemory(
+/*__forceinline*//*static*/ DRM_VOID * DRM_CALL DRMCRT_ScrubMemory(
 													 __in_ecount( f_cbCount ) DRM_VOID  *f_ptr,
 													 IN DRM_DWORD  f_cbCount  )
 {
