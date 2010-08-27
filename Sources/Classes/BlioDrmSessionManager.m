@@ -31,7 +31,6 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 @property (nonatomic, retain) NSManagedObjectID *headerBookID;
 @property (nonatomic, retain) NSManagedObjectID *boundBookID;
 
--(void)decrementLicenseCooldownTimer:(NSTimer *)aTimer;
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
 
 @end
@@ -64,41 +63,12 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 }
 
 - (void)initialize {
-	
-	// delete store from previous run.
-	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-	//NSString *documentsDirectory = [paths objectAtIndex:0];
-	//NSString* strDataStore = [documentsDirectory stringByAppendingString:@"/playready.hds"];
-	//int res = remove([strDataStore cStringUsingEncoding:NSASCIIStringEncoding]);
-	//if ( !res )
-	//	NSLog(@"DRM successfully deleted store from previous session.");
-
 
 	// TODO: move dstrDataStoreFile to DrmGlobals.
 	// Data store.
 	DRM_CONST_STRING  dstrDataStoreFile = CREATE_DRM_STRING( HDS_STORE_FILE );
 	dstrDataStoreFile.pwszString = [DrmGlobals getDrmGlobals].dataStore.pwszString;
 	dstrDataStoreFile.cchString = [DrmGlobals getDrmGlobals].dataStore.cchString;
-	
-/*  MOVED TO APP DELEGATE
-	// Copy certs to writeable directory.
-	NSError* err;	
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectory = [paths objectAtIndex:0];
-	NSString* rsrcWmModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/priv.dat"]; 
-	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:@"/priv.dat"];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelKey toPath:docsWmModelKey error:&err];
-	NSString* rsrcWmModelCert = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/devcerttemplate.dat"]; 
-	NSString* docsWmModelCert = [documentsDirectory stringByAppendingString:@"/devcerttemplate.dat"];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
-	NSString* rsrcPRModelCert = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/iphonecert.dat"]; 
-	NSString* docsPRModelCert = [documentsDirectory stringByAppendingString:@"/iphonecert.dat"];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];
-	NSString* rsrcPRModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/iphonezgpriv.dat"]; 
-	NSString* docsPRModelKey = [documentsDirectory stringByAppendingString:@"/iphonezgpriv.dat"];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelKey toPath:docsPRModelKey error:&err];
-
-*/
 	
 	// Initialize the session.
 	drmAppContext = Oem_MemAlloc( SIZEOF( DRM_APP_CONTEXT ) );
@@ -590,33 +560,6 @@ ErrorExit:
     return YES;
 }
 
-- (void)resetLicenseCooldownTimer {
-	;
-	//licenseCooldownTime = BlioDrmManagerInitialLicenseCooldownTime;
-}
-
-- (void)startLicenseCooldownTimer {
-	if (![NSThread isMainThread]) {
-        [self performSelectorOnMainThread:@selector(startLicenseCooldownTimer) withObject:nil waitUntilDone:NO];
-        return;
-    }
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-								 message:NSLocalizedStringWithDefaultValue(@"DRM_LICENSE_ACQUISITION_ERROR",nil,[NSBundle mainBundle],@"The Blio App experienced a problem during license acquisition for your paid books. Please try restarting your paid book downloads later.",@"Alert message informing the end-user that an issue occurred during license acquisition, and encouraging the user to restart the downloading process later.")
-								delegate:nil
-					   cancelButtonTitle:@"OK"
-					   otherButtonTitles:nil];	
-	self.licenseCooldownTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(decrementLicenseCooldownTimer:) userInfo:nil repeats:YES];
-}
-
--(void)decrementLicenseCooldownTimer:(NSTimer *)aTimer {
-	//	NSLog(@"decrementLicenseCooldownTimer entered. licenseCooldownTime: %i",licenseCooldownTime);
-	licenseCooldownTime--;
-	if (licenseCooldownTime <= 0) {
-		NSLog(@"BlioDrmManager is ready to receive license acquisition requests again.");
-		[aTimer performSelectorOnMainThread:@selector(invalidate) withObject:nil waitUntilDone:NO];
-		self.licenseCooldownTimer = nil;
-	}
-}
 
 @end
 
