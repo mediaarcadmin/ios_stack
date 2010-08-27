@@ -832,6 +832,7 @@
 	
 }
 - (void)loginDismissed:(NSNotification*)note {
+	NSLog(@"BlioProcessingManager loginDismissed entered");
 	BlioBookSourceID sourceID = [[[note userInfo] valueForKey:@"sourceID"] intValue];
 	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:sourceID]) {
 		[self resumeProcessingForSourceID:sourceID];

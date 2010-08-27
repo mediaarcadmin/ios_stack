@@ -172,8 +172,8 @@ tryAgain:
 }
 
 -(void)loginDismissed:(NSNotification*)note {
+	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
@@ -258,7 +258,9 @@ static void *background_init_thread(void * arg) {
 	
 	NSLog(@"voicesPath: %@",voicesPath);
 	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
-	    
+	   
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 
@@ -267,7 +269,6 @@ static void *background_init_thread(void * arg) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
 		else {
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 		}		
 		[self.processingManager resumeProcessing];
