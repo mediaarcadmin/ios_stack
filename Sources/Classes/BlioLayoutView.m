@@ -1001,10 +1001,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
     if (nil == snapLayer) return nil;
     
-    CGFloat scale = self.scrollView.zoomScale * 1.2;
+    CGFloat scale = self.scrollView.zoomScale * 1.;
     CGSize snapSize = self.bounds.size;
-    snapSize.width *= 1.2;
-    snapSize.height *= 1.2;
+    snapSize.width *= 1.;
+    snapSize.height *= 1.;
     
     if (nil == self.pageSnapshot) {
         if(UIGraphicsBeginImageContextWithOptions != nil) {
@@ -1014,14 +1014,17 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         }
 
         CGContextRef ctx = UIGraphicsGetCurrentContext();
+        
         CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:[self.scrollView.layer superlayer]];
-        //CGContextTranslateCTM(ctx, 0, snapSize.height);
-        CGContextTranslateCTM(ctx, -translatePoint.x*scale, (snapSize.height/1.2 - translatePoint.y)*scale);
-        
+        CGFloat offsetY = CGRectGetHeight([[self.scrollView.layer superlayer] bounds]) - CGRectGetHeight([snapLayer bounds]);
+
         CGContextScaleCTM(ctx, 1, -1);
-        
+
         CGContextScaleCTM(ctx, scale, scale);
-        //CGContextTranslateCTM(ctx, -translatePoint.x, snapSize.height -translatePoint.y);
+        CGContextTranslateCTM(ctx, 0, -snapSize.height + offsetY);
+
+        CGContextTranslateCTM(ctx, -translatePoint.x, translatePoint.y);
+        
         [[snapLayer shadowLayer] renderInContext:ctx];        
         [[snapLayer tiledLayer] renderInContext:ctx];
         self.pageSnapshot = UIGraphicsGetImageFromCurrentImageContext();
