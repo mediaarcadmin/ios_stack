@@ -1312,7 +1312,6 @@
 				7D9AA999114A8EB60055C381 /* bUpe */,
 				7D2340F51149602200C318E7 /* CSS */,
 				7D516E221028734C005F3C46 /* Utils */,
-				7D3F4D1111EF38B80065A5F7 /* Base */,
 				7D516E1710287300005F3C46 /* ThirdParty */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				7D53F30910C2CBD70042215C /* TransitionTest */,
@@ -2225,7 +2224,8 @@
 				7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */,
 				7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */,
 			);
-			path = Base;
+			name = Base;
+			path = ../Base;
 			sourceTree = "<group>";
 		};
 		7D516DFF102872A5005F3C46 /* BookView */ = {
@@ -2290,6 +2290,7 @@
 				7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */,
 				7DF1AF9C11D9169700506BD5 /* THUIDeviceAdditions.h */,
 				7DF1AF9A11D9168F00506BD5 /* THUIDeviceAdditions.m */,
+				7D3F4D1111EF38B80065A5F7 /* Base */,
 			);
 			path = Utils;
 			sourceTree = "<group>";

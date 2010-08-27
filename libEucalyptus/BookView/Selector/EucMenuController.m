@@ -9,14 +9,14 @@
 #import "EucMenuController.h"
 #import "EucMenuView.h"
 #import "EucMenuItem.h"
+#import "THCALayerAdditions.h"
 
 #import <QuartzCore/QuartzCore.h>
 
 @interface EucMenuController ()
 
 @property (nonatomic, assign) UIView *targetView;
-@property (nonatomic, assign) UIWindow *targetWindow;
-@property (nonatomic, assign) CGRect windowTargetRect;
+@property (nonatomic, assign) CGRect targetRect;
 @property (nonatomic, retain) EucMenuView *menuView;
 
 @end
@@ -26,9 +26,8 @@
 @synthesize menuItems = _menuItems;
 @synthesize menuVisible = _menuVisible;
 
-@synthesize targetWindow = _targetWindow;
 @synthesize targetView = _targetView;
-@synthesize windowTargetRect = _windowTargetRect;
+@synthesize targetRect = _targetRect;
 @synthesize menuView = _menuView;
 
 - (void)dealloc
@@ -42,13 +41,7 @@
 - (void)setTargetRect:(CGRect)targetRect inView:(UIView *)targetView
 {
     self.targetView = targetView;
-    
-    // This is rather hacky - if we're in Landscape mode, the window isn't
-    // transformed, but the first sub-view in it is, so we use that instead
-    // of the window to attach our menu to...
-    UIWindow *targetWindow = [targetView.window.subviews lastObject];
-    self.targetWindow = targetWindow;
-    self.windowTargetRect = [targetView convertRect:targetRect toView:targetWindow];
+    self.targetRect = targetRect;
 }
 
 - (void)setMenuItems:(NSArray *)menuItems
@@ -70,7 +63,7 @@
                 }
                 
                 menuView.selected = NO;
-                [menuView positionAndResizeForAttachingToRect:self.windowTargetRect];
+                [menuView positionAndResizeForAttachingToRect:self.targetRect fromView:self.targetView];
                 
                 CATransition *transition = [CATransition animation];
                 transition.type = kCATransitionFade;
@@ -91,7 +84,7 @@
                 menuView = [[EucMenuView alloc] initWithFrame:CGRectZero];
                 [menuView addTarget:self 
                              action:@selector(touchUpInsideMenu:)
-                   forControlEvents:UIControlEventTouchUpInside];
+                   forControlEvents:UIControlEventTouchUpInside];                
                 self.menuView = menuView;
                 [menuView release];
             } else {
@@ -101,8 +94,8 @@
             NSArray *menuItems = self.menuItems;
             menuView.titles = [menuItems valueForKey:@"title"];
             menuView.colors = [menuItems valueForKey:@"color"];
-            [self.targetWindow addSubview:menuView];
-            [menuView positionAndResizeForAttachingToRect:self.windowTargetRect];
+            [self.targetView.window addSubview:menuView];
+            [menuView positionAndResizeForAttachingToRect:self.targetRect fromView:self.targetView];
         } else {
             if(menuView) {
                 menuView.hidden = YES;
