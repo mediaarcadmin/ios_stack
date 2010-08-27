@@ -465,7 +465,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.selector attachToLayer:self.currentPageLayer];
     [self clearSnapshots];
     
-    [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
+    //[self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
     
     [self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
     [self performSelector:@selector(enableInteractions) withObject:nil afterDelay:0.1f];

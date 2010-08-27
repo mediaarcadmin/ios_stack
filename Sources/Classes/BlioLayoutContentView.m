@@ -238,6 +238,7 @@
         [pageLayer layoutSublayersAfterBoundsChange];
     }
     [CATransaction commit];
+    
     //NSLog(@"Laying out contentView subviews done");
 }
 
@@ -320,6 +321,7 @@
     aHighlightsLayer.frame = self.highlightsLayer.bounds;
     aHighlightsLayer.levelsOfDetail = self.highlightsLayer.levelsOfDetail;
     aHighlightsLayer.tileSize = self.highlightsLayer.tileSize;
+    aHighlightsLayer.pageNumber = self.highlightsLayer.pageNumber;
     [self addSublayer:aHighlightsLayer];
     
     [self.highlightsLayer removeFromSuperlayer];
