@@ -74,7 +74,7 @@ static NSString* domainUrl = @"http://prl.kreader.net/PlayReadyDomains/service/L
 	
 	// Copy certs to writeable directory.
 	NSError* err;	
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 	NSString* rsrcWmModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/priv.dat"]; 
 	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:@"/priv.dat"];

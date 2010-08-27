@@ -89,7 +89,7 @@
 }
 
 - (void*)openFile:(NSString*)xpsFile {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 	return (void*)XPS_Open([xpsFile cStringUsingEncoding:NSASCIIStringEncoding],
 						   [documentsDirectory cStringUsingEncoding:NSASCIIStringEncoding]);

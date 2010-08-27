@@ -66,7 +66,7 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 - (void)initialize {
 	
 	// delete store from previous run.
-	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	//NSString *documentsDirectory = [paths objectAtIndex:0];
 	//NSString* strDataStore = [documentsDirectory stringByAppendingString:@"/playready.hds"];
 	//int res = remove([strDataStore cStringUsingEncoding:NSASCIIStringEncoding]);
@@ -83,7 +83,7 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 /*  MOVED TO APP DELEGATE
 	// Copy certs to writeable directory.
 	NSError* err;	
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 	NSString* rsrcWmModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/priv.dat"]; 
 	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:@"/priv.dat"];

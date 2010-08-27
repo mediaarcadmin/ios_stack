@@ -139,7 +139,7 @@ tryAgain:
 	// This did happen in BlioDrmManager, but shouldn't happen in BlioDrmSessionManager.
 	// Copy DRM resources to writeable directory.
 	NSError* err;	
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 	NSString* rsrcWmModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/priv.dat"]; 
 	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:@"/priv.dat"];
@@ -217,7 +217,7 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];
 
@@ -276,7 +276,7 @@ static void *background_init_thread(void * arg) {
 }
 
 - (NSString *)dynamicDefaultPngPath {
-    NSString *tmpDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *tmpDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     return [tmpDir stringByAppendingPathComponent:@".BlioDynamicDefault.png"];
 }
 
@@ -402,7 +402,7 @@ static void *background_init_thread(void * arg) {
         return persistentStoreCoordinator;
     }
 	
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSURL *storeUrl = [NSURL fileURLWithPath: [basePath stringByAppendingPathComponent: @"Blio.sqlite"]];
 	
