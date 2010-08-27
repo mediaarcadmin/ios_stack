@@ -8,7 +8,8 @@
 
 #import "BlioProcessingStandardOperations.h"
 #import "ZipArchive.h"
-#import "BlioDrmManager.h"
+//#import "BlioDrmManager.h"
+#import "BlioDrmSessionManager.h"
 #import "NSString+BlioAdditions.h"
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
@@ -28,13 +29,14 @@
 		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
 	}
+	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:self.bookID forKey:@"bookID"];
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"BlioProcessingCompleteOperation: failed dependency found! Operation: %@ Sending Failed Notification...",blioOp);
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
-			[self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
+			if (currentProcessingState != kBlioBookProcessingStateNotSupported) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
 			[self cancel];
 			return;
 		}
@@ -51,9 +53,8 @@
 	}
 #endif
 	
-	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
     if (currentProcessingState == kBlioBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
-	else [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
+	else if (currentProcessingState != kBlioBookProcessingStateNotSupported) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
 	NSLog(@"Processing complete for book with sourceID:%i sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
 	
 	if (![[NSFileManager defaultManager] removeItemAtPath:dirPath error:&downloadDirError]) {
@@ -126,7 +127,7 @@
 	[manifestEntry setValue:[NSNumber numberWithBool:YES] forKey:@"preAvailabilityComplete"];
 	 // WARNING: this may need to change if more manifest keys are added to a manifest entry!
 	[self setBookManifestValue:manifestEntry forKey:self.filenameKey];
-	NSLog(@"BlioProcessingPreAvailabilityCompleteOperation complete for key: %@",self.filenameKey);
+//	NSLog(@"BlioProcessingPreAvailabilityCompleteOperation complete for key: %@",self.filenameKey);
 }
 
 - (void) dealloc {
@@ -197,6 +198,7 @@
 	}
 #endif
 	
+/* 
 	@synchronized ([BlioDrmManager getDrmManager]) {
 		
 		NSInteger cooldownTime = [[BlioDrmManager getDrmManager] licenseCooldownTime];
@@ -216,6 +218,26 @@
 			[[BlioDrmManager getDrmManager] resetLicenseCooldownTimer];
 		}
 	}
+*/
+	
+	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:self.bookID]; 
+	//NSInteger cooldownTime = [drmSessionManager licenseCooldownTime];
+	//if (cooldownTime > 0) {
+	//	NSLog(@"BlioDrmManager still cooling down (%i seconds to go), cancelling BlioProcessingLicenseAcquisitionOperation in the meantime...",cooldownTime);
+	//	[self cancel];		
+	//	return;
+	//}
+	
+	while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
+		NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
+		self.operationSuccess = [drmSessionManager getLicense:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]];
+		attemptsMade++;
+	}
+	
+	[drmSessionManager release];
+	//if (!self.operationSuccess) {
+	//	[drmSessionManager resetLicenseCooldownTimer];
+	//} 
 	
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
@@ -224,9 +246,11 @@
 #endif
 	
 	if (self.operationSuccess) self.percentageComplete = 100;
+/* RESTORE FOR OLD DRM INTERFACE
 	else {
 		[[BlioDrmManager getDrmManager] startLicenseCooldownTimer];				
 	}
+*/
 }
 @end
 
@@ -846,6 +870,7 @@
 													delegate:nil
 										   cancelButtonTitle:@"OK"
 										   otherButtonTitles:nil];
+						[self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotSupported] forKey:@"processingState"];
 						[self cancel];
 						[parser abortParsing];
 					}

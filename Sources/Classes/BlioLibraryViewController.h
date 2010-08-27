@@ -219,6 +219,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIButton * resumeButton;
     id delegate;
 	NSUInteger layoutPageEquivalentCount;
+	UIImageView * statusBadge;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
@@ -231,6 +232,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIButton *resumeButton;
 @property (nonatomic, assign) BlioBook *book;
 @property (nonatomic, assign) id delegate;
+@property (nonatomic, retain) UIImageView *statusBadge;
 
 -(void)resetAuthorText;
 -(void)resetProgressSlider;

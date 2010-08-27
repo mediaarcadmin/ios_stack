@@ -1,12 +1,12 @@
 //
-//  BlioDrmManager.m
+//  BlioDrmSessionManager.m
 //  BlioApp
 //
-//  Created by Arnold Chien on 5/29/10.
+//  Created by Arnold Chien on 8/25/10.
 //  Copyright 2010 Kurzweil Technologies Inc. All rights reserved.
 //
 
-#import "BlioDrmManager.h"
+#import "BlioDrmSessionManager.h"
 #import "BlioLicenseClient.h"
 #import "DrmGlobals.h"
 #import "XpsSdk.h"
@@ -16,44 +16,51 @@
 #import "BlioAppSettingsConstants.h"
 #import "BlioStoreHelper.h"
 
-// Unfortunately can't go in DrmGlobals, and shouldn't be part of interface.
-DRM_DECRYPT_CONTEXT  oDecryptContext;
 
 // Domain controller URL must be hard-coded instead of parsed from a book's header 
 // because registration can be done proactively from the UI.
 static NSString* domainUrl = @"http://prl.kreader.net/PlayReadyDomains/service/LicenseAcquisition.asmx";
 
-@interface BlioDrmManager()
+@interface BlioDrmSessionManager()
 
+DRM_APP_CONTEXT* drmAppContext;
+DRM_DECRYPT_CONTEXT  oDecryptContext;
+
+@property (nonatomic, assign) DRM_APP_CONTEXT* drmAppContext;
+@property (nonatomic, assign) DRM_DECRYPT_CONTEXT oDecryptContext;
 @property (nonatomic, retain) NSManagedObjectID *headerBookID;
 @property (nonatomic, retain) NSManagedObjectID *boundBookID;
 
-- (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
 -(void)decrementLicenseCooldownTimer:(NSTimer *)aTimer;
+- (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
 
 @end
 
-@implementation BlioDrmManager
+@implementation BlioDrmSessionManager
 
+@synthesize drmAppContext, oDecryptContext;
 @synthesize drmInitialized;
 @synthesize headerBookID, boundBookID;
 @synthesize licenseCooldownTime;
 @synthesize licenseCooldownTimer;
 
-+ (BlioDrmManager*)getDrmManager {
-	static BlioDrmManager* drmManager = nil;  
-	if ( drmManager == nil ) {
-		drmManager = [[BlioDrmManager alloc] init];
-	}
-	return drmManager;
-}
 
 -(void) dealloc {
-	Oem_MemFree([DrmGlobals getDrmGlobals].drmAppContext);
+	Drm_Uninitialize(drmAppContext); 
+	Oem_MemFree(drmAppContext);
     self.headerBookID = nil;
     self.boundBookID = nil;
 	self.licenseCooldownTimer = nil;
 	[super dealloc];
+}
+
+- (id)initWithBookID:(NSManagedObjectID *)aBookID 
+{
+    if((self = [super init])) {
+		self.headerBookID = aBookID;
+		[self initialize];
+    }
+    return self;
 }
 
 - (void)initialize {
@@ -65,13 +72,15 @@ static NSString* domainUrl = @"http://prl.kreader.net/PlayReadyDomains/service/L
 	//int res = remove([strDataStore cStringUsingEncoding:NSASCIIStringEncoding]);
 	//if ( !res )
 	//	NSLog(@"DRM successfully deleted store from previous session.");
-	
+
+
+	// TODO: move dstrDataStoreFile to DrmGlobals.
 	// Data store.
 	DRM_CONST_STRING  dstrDataStoreFile = CREATE_DRM_STRING( HDS_STORE_FILE );
 	dstrDataStoreFile.pwszString = [DrmGlobals getDrmGlobals].dataStore.pwszString;
 	dstrDataStoreFile.cchString = [DrmGlobals getDrmGlobals].dataStore.cchString;
-	[DrmGlobals getDrmGlobals].drmAppContext = Oem_MemAlloc( SIZEOF( DRM_APP_CONTEXT ) );
 	
+/*  MOVED TO APP DELEGATE
 	// Copy certs to writeable directory.
 	NSError* err;	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
@@ -88,24 +97,30 @@ static NSString* domainUrl = @"http://prl.kreader.net/PlayReadyDomains/service/L
 	NSString* rsrcPRModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/iphonezgpriv.dat"]; 
 	NSString* docsPRModelKey = [documentsDirectory stringByAppendingString:@"/iphonezgpriv.dat"];
 	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelKey toPath:docsPRModelKey error:&err];
-    
-	// Initialize the DRM runtime.
-	DRM_RESULT dr = DRM_SUCCESS;
-	ChkDR( Drm_Initialize( [DrmGlobals getDrmGlobals].drmAppContext,
-						  NULL,
-						  &dstrDataStoreFile ) );
+
+*/
+	
+	// Initialize the session.
+	drmAppContext = Oem_MemAlloc( SIZEOF( DRM_APP_CONTEXT ) );
+	DRM_RESULT dr = DRM_SUCCESS;	
+	@synchronized (self) {
+		ChkDR( Drm_Initialize( drmAppContext,
+							  NULL,
+							  &dstrDataStoreFile ) );
+		ChkDR( [self setHeaderForBookWithID:self.headerBookID] );
+	}
 	
 ErrorExit:
 	if ( dr != DRM_SUCCESS ) {
-		NSLog(@"DRM initialization error: %d",dr);
+		NSLog(@"DRM initialization error: %08X",dr);
 		self.drmInitialized = NO;
 		return;
 	}
 	self.drmInitialized = YES;
 }
 
-- (void)reportReadingForBookWithID:(NSManagedObjectID *)aBookID {
-    NSLog(@"Report reading for book with ID %@", aBookID);
+- (void)reportReading {
+    NSLog(@"Report reading for book with ID %@", self.headerBookID);
     
     if ( !self.drmInitialized ) {
         NSLog(@"DRM error: cannot report reading because DRM is not initialized.");
@@ -113,32 +128,33 @@ ErrorExit:
     }
     
     DRM_RESULT dr = DRM_SUCCESS;    
-    @synchronized (self) {
-        if ( ![self.headerBookID isEqual:aBookID] ) { 
-            ChkDR( [self setHeaderForBookWithID:aBookID] );
-        }
-
-        ChkDR( Drm_Reader_Commit( [DrmGlobals getDrmGlobals].drmAppContext,
+    //@synchronized (self) {
+        //if ( ![self.headerBookID isEqual:aBookID] ) { 
+        //    ChkDR( [self setHeaderForBookWithID:self.headerBookID] );
+        //}
+@synchronized (self) {		
+        ChkDR( Drm_Reader_Commit( drmAppContext,
                                  NULL, 
                                  NULL ) ); 
+		}
     ErrorExit:
         if (dr != DRM_SUCCESS) {
             unsigned int drInt = (unsigned int)dr;
-            NSLog(@"DRM commit error: %d",drInt);
+            NSLog(@"DRM commit error: %08X",drInt);
         }
-    }
+    //}
 }
 
 - (DRM_RESULT)getServerResponse:(NSString*)url challengeBuf:(DRM_BYTE*)pbChallenge 
-										challengeSz:(DRM_DWORD*)cbChallenge 
-										responseBuf:(DRM_BYTE**)pbResponse 
-										responseSz:(DRM_DWORD*)cbResponse
-										soapAction:(BlioSoapActionType)action
+					challengeSz:(DRM_DWORD*)cbChallenge 
+					responseBuf:(DRM_BYTE**)pbResponse 
+					 responseSz:(DRM_DWORD*)cbResponse
+					 soapAction:(BlioSoapActionType)action
 {
 	BlioLicenseClient* licenseClient = [[BlioLicenseClient alloc] initWithMessage:(const void*)pbChallenge 
-																  messageSize:*cbChallenge
-																		  url:url
-																	soapAction:action];
+																	  messageSize:*cbChallenge
+																			  url:url
+																	   soapAction:action];
 	NSData *drmResponse = [licenseClient getResponseSynchronously];
 	if (drmResponse == nil) {
 		[licenseClient release];
@@ -148,7 +164,7 @@ ErrorExit:
 		*pbResponse = (DRM_BYTE*)[drmResponse bytes];
 		*cbResponse = [drmResponse length];
 	}
-
+	
 	[licenseClient release];
 	return DRM_SUCCESS;
 }
@@ -192,9 +208,9 @@ ErrorExit:
 	}
 	
 	DRM_CHAR* customData = (DRM_CHAR*)[[[[NSString stringWithString:@"<CustomData><AuthToken>"] 
-																stringByAppendingString:token] 
-															   stringByAppendingString:@"</AuthToken></CustomData>"]
-															UTF8String];
+										 stringByAppendingString:token] 
+										stringByAppendingString:@"</AuthToken></CustomData>"]
+									   UTF8String];
 	DRM_DWORD customDataSz = (DRM_DWORD)(48 + [token length]);
 	
 	NSString* accountidStr = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioAccountIDDefaultsKey];
@@ -219,39 +235,43 @@ ErrorExit:
 	DRM_UTL_StringToGuid(&accountId,&oDomainID.m_oAccountID);
 	DRM_UTL_StringToGuid(&serviceId,&oDomainID.m_oServiceID);
 	
-     dr = Drm_LeaveDomain_GenerateChallenge( [DrmGlobals getDrmGlobals].drmAppContext,
-										  DRM_REGISTER_NULL_DATA,
-										  &oDomainID,
-										  customData,
-										  customDataSz,
-										  pbChallenge,
-										  &cbChallenge );
+	@synchronized(self) {
+	dr = Drm_LeaveDomain_GenerateChallenge( drmAppContext,
+										   DRM_REGISTER_NULL_DATA,
+										   &oDomainID,
+										   customData,
+										   customDataSz,
+										   pbChallenge,
+										   &cbChallenge );
 	
     if( dr == DRM_E_BUFFERTOOSMALL )
     {
 		ChkMem( pbChallenge = Oem_MemAlloc( cbChallenge ) );
 		// This returns 8004C509, DRM_E_DOMAIN_NOT_FOUND, if you're not joined to a domain
 		// or if the domain ID is bad.
-        ChkDR( Drm_LeaveDomain_GenerateChallenge( [DrmGlobals getDrmGlobals].drmAppContext,
-												DRM_REGISTER_NULL_DATA,
-												&oDomainID,
-												customData,
-												customDataSz,
-												pbChallenge,
-												&cbChallenge ) );
+        ChkDR( Drm_LeaveDomain_GenerateChallenge( drmAppContext,
+												 DRM_REGISTER_NULL_DATA,
+												 &oDomainID,
+												 customData,
+												 customDataSz,
+												 pbChallenge,
+												 &cbChallenge ) );
     }
     else
     {
         ChkDR( dr );
     }
+	}
 	
 	//NSLog(@"DRM leave domain challenge: %s",(unsigned char*)pbChallenge);
 	[self getServerResponse:domainUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionLeaveDomain];
 	//NSLog(@"DRM leave domain response: %s",(unsigned char*)pbResponse);
-	ChkDR( Drm_LeaveDomain_ProcessResponse( [DrmGlobals getDrmGlobals].drmAppContext,
-										  pbResponse,
-										  cbResponse,
-										  &dr2 ) );
+	@synchronized (self) {
+		ChkDR( Drm_LeaveDomain_ProcessResponse( drmAppContext,
+											   pbResponse,
+											   cbResponse,
+											   &dr2 ) );
+	}
     
 ErrorExit:
 	
@@ -290,15 +310,15 @@ ErrorExit:
 	}
 	
 	DRM_CHAR* customData = (DRM_CHAR*)[[[[[[NSString stringWithString:@"<CustomData><AuthToken>"] 
-																stringByAppendingString:token] 
-															   stringByAppendingString:@"</AuthToken><Category>"]
-															  stringByAppendingString:name]
-															 stringByAppendingString:@"</Category></CustomData>"]
-															UTF8String];
+										   stringByAppendingString:token] 
+										  stringByAppendingString:@"</AuthToken><Category>"]
+										 stringByAppendingString:name]
+										stringByAppendingString:@"</Category></CustomData>"]
+									   UTF8String];
 	
 	DRM_DWORD customDataSz = (DRM_DWORD)(69 + [name length] + [token length]);
-	
-    dr = Drm_JoinDomain_GenerateChallenge( [DrmGlobals getDrmGlobals].drmAppContext,
+	@synchronized (self) {
+    dr = Drm_JoinDomain_GenerateChallenge( drmAppContext,
 										  DRM_REGISTER_NULL_DATA,
 										  &oDomainID,
 										  NULL,
@@ -311,7 +331,7 @@ ErrorExit:
     if( dr == DRM_E_BUFFERTOOSMALL )
     {
 		ChkMem( pbChallenge = Oem_MemAlloc( cbChallenge ) );
-        ChkDR( Drm_JoinDomain_GenerateChallenge( [DrmGlobals getDrmGlobals].drmAppContext,
+        ChkDR( Drm_JoinDomain_GenerateChallenge( drmAppContext,
 												DRM_REGISTER_NULL_DATA,
 												&oDomainID,
 												NULL,
@@ -325,15 +345,18 @@ ErrorExit:
     {
         ChkDR( dr );
     }
-
+	}
+	
 	//NSLog(@"DRM join domain challenge: %s",(unsigned char*)pbChallenge);
 	[self getServerResponse:domainUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionJoinDomain];
 	//NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
-	ChkDR( Drm_JoinDomain_ProcessResponse( [DrmGlobals getDrmGlobals].drmAppContext,
-										  pbResponse,
-										  cbResponse,
-										  &dr2,
-										  &oDomainIdReturned ) );
+	@synchronized (self) {
+		ChkDR( Drm_JoinDomain_ProcessResponse( drmAppContext,
+											  pbResponse,
+											  cbResponse,
+											  &dr2,
+											  &oDomainIdReturned ) );
+	}
     
 ErrorExit:
 	
@@ -358,7 +381,7 @@ ErrorExit:
 }
 
 - (DRM_RESULT)getDRMLicense:(NSString*)token {
-
+	
     DRM_RESULT dr = DRM_SUCCESS;
     DRM_CHAR rgchURL[MAX_URL_SIZE];
     DRM_DWORD cchUrl = MAX_URL_SIZE;
@@ -373,11 +396,13 @@ ErrorExit:
 		return DRM_E_FAIL;
 	}
 	DRM_CHAR* customData = (DRM_CHAR*)[[[[NSString stringWithString:@"<CustomData><AuthToken>"] 
-							 stringByAppendingString:token] 
-							stringByAppendingString:@"</AuthToken></CustomData>"]
-							UTF8String];
+										 stringByAppendingString:token] 
+										stringByAppendingString:@"</AuthToken></CustomData>"]
+									   UTF8String];
 	DRM_DWORD customDataSz = (DRM_DWORD)(48 + [token length]);
-	dr = Drm_LicenseAcq_GenerateChallenge( [DrmGlobals getDrmGlobals].drmAppContext,
+	
+	@synchronized (self) {
+	dr = Drm_LicenseAcq_GenerateChallenge( drmAppContext,
 										  NULL,
 										  0,
 										  NULL,
@@ -391,11 +416,11 @@ ErrorExit:
 										  &cbChallenge );
 	
     
-
+	
     if( dr == DRM_E_BUFFERTOOSMALL )
     {
         pbChallenge = Oem_MemAlloc( cbChallenge );
-        ChkDR( Drm_LicenseAcq_GenerateChallenge( [DrmGlobals getDrmGlobals].drmAppContext,
+        ChkDR( Drm_LicenseAcq_GenerateChallenge( drmAppContext,
 												NULL,
 												0,
 												NULL,
@@ -412,19 +437,19 @@ ErrorExit:
     {
         ChkDR( dr );
     }
-	
+	}
 	//NSLog(@"DRM license challenge: %s",(unsigned char*)pbChallenge);
 	rgchURL[cchUrl] = '\0';
 	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 	//NSLog(@"DRM license response: %s",(unsigned char*)pbResponse);
-		
-    ChkDR( Drm_LicenseAcq_ProcessResponse( [DrmGlobals getDrmGlobals].drmAppContext,
+@synchronized (self) {
+    ChkDR( Drm_LicenseAcq_ProcessResponse( drmAppContext,
 										  NULL,
 										  NULL,
 										  pbResponse,
 										  cbResponse,
 										  &oLicenseResponse ) );
-	
+}
     ChkDR( oLicenseResponse.m_dwResult );
     for( int idx = 0; idx < oLicenseResponse.m_cAcks; idx++ )
 		ChkDR( oLicenseResponse.m_rgoAcks[idx].m_dwResult );
@@ -435,13 +460,13 @@ ErrorExit:
 
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID {
 	DRM_RESULT dr = DRM_SUCCESS;
-        
+	
     NSData *headerData = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] manifestDataForKey:@"drmHeaderFilename"];
-        
+	
 	unsigned char* headerBuff = (unsigned char*)[headerData bytes]; 
 	
-	ChkDR( Drm_Reinitialize([DrmGlobals getDrmGlobals].drmAppContext) );
-    ChkDR( Drm_Content_SetProperty( [DrmGlobals getDrmGlobals].drmAppContext,
+	//ChkDR( Drm_Reinitialize(drmAppContext) );
+    ChkDR( Drm_Content_SetProperty( drmAppContext,
 								   DRM_CSP_AUTODETECT_HEADER,
 								   headerBuff,   
 								   [headerData length] ) );
@@ -460,6 +485,7 @@ ErrorExit:
 	if( dr == DRM_E_SERVER_DOMAIN_REQUIRED || dr == DRM_E_XMLNOTFOUND )
     {
 		// TODO: really get the domain name from the license response
+		// TODO?:  ask the user (again?) if they want to register the device???
 		ChkDR( [self joinDomain:token domainName:@"novel"] );
         ChkDR( [self getDRMLicense:token] );
     }
@@ -470,7 +496,7 @@ ErrorExit:
 	return dr;
 }
 
-- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID sessionToken:(NSString*)token {
+- (BOOL)getLicense:(NSString*)token {
     BOOL ret = NO;
     
     if ( !self.drmInitialized ) {
@@ -481,12 +507,12 @@ ErrorExit:
 	// TESTING.  A real token won't work on the domain server for now.
 	NSString* testToken = @"0cac1444-f4a7-4d47-96c8-6a926bc10a00";
 	token = testToken;
-     
-    @synchronized (self) {
+	
+    //@synchronized (self) {
         DRM_RESULT dr = DRM_SUCCESS;
-        if ( ![self.headerBookID isEqual:aBookID] ) { 
-            ChkDR( [self setHeaderForBookWithID:aBookID] );
-        }
+        //if ( ![self.headerBookID isEqual:aBookID] ) { 
+        //    ChkDR( [self setHeaderForBookWithID:self.headerBookID] );
+        //}
         
 		ChkDR([self checkDomain:token]);
         
@@ -495,14 +521,14 @@ ErrorExit:
             NSLog(@"DRM license error: %08X", dr);
             ret = NO;
         } else {
-            NSLog(@"DRM license successfully acquired for bookID: %@", aBookID);
+            NSLog(@"DRM license successfully acquired for bookID: %@", self.headerBookID);
             ret = YES;
         }
-    }
+    //}
     return ret;
 }
 
-- (BOOL)decryptData:(NSData *)data forBookWithID:(NSManagedObjectID *)aBookID {
+- (BOOL)decryptData:(NSData *)data {
     if ( !self.drmInitialized ) {
         NSLog(@"DRM error: content cannot be decrypted because DRM is not initialized.");
         return FALSE;
@@ -511,14 +537,14 @@ ErrorExit:
     DRM_RESULT dr = DRM_SUCCESS;
 	unsigned char* dataBuff = NULL;
     
-    @synchronized (self) {
-        if ( ![self.headerBookID isEqual:aBookID] ) { 
-            ChkDR( [self setHeaderForBookWithID:aBookID] );
-        }
+    //@synchronized (self) {
+        //if ( ![self.headerBookID isEqual:aBookID] ) { 
+        //    ChkDR( [self setHeaderForBookWithID:aBookID] );
+        //}
         
-        if ( ![self.boundBookID isEqual:aBookID] ) { 
+        if ( ![self.boundBookID isEqual:self.headerBookID] ) { 
             NSLog(@"Binding to license.");
-
+			
 			// Search for a license to bind to with the Read right.
 			const DRM_CONST_STRING *rgpdstrRights[1] = {0};
 			DRM_CONST_STRING readRight;
@@ -529,15 +555,15 @@ ErrorExit:
 			int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
 			for (int i=0;i<bufferSz;++i)
 				oDecryptContext.rgbBuffer[i] = 0;
-			ChkDR( Drm_Reader_Bind( [DrmGlobals getDrmGlobals].drmAppContext,
+			ChkDR( Drm_Reader_Bind( drmAppContext,
 								   rgpdstrRights,
 								   NO_OF(rgpdstrRights),
 								   NULL, 
 								   NULL,
 								   &oDecryptContext ) );
             
-            self.boundBookID = aBookID;
-        
+            self.boundBookID = self.headerBookID;
+			
         }
         DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
         dataBuff = (unsigned char*)[data bytes]; 
@@ -548,14 +574,14 @@ ErrorExit:
         
         // At this point, the buffer is PlayReady-decrypted.
         
-ErrorExit:
+	ErrorExit:
 		if (dr != DRM_SUCCESS) {
             NSLog(@"DRM decryption error: %08X",dr);
             self.headerBookID = nil;
             self.boundBookID = nil;
             return NO;
         }
-    }
+    //}
     
     // This XOR step is to undo an additional encryption step that was needed for .NET environment.
     for (int i=0;i<[data length];++i)
@@ -565,7 +591,8 @@ ErrorExit:
 }
 
 - (void)resetLicenseCooldownTimer {
-	licenseCooldownTime = BlioDrmManagerInitialLicenseCooldownTime;
+	;
+	//licenseCooldownTime = BlioDrmManagerInitialLicenseCooldownTime;
 }
 
 - (void)startLicenseCooldownTimer {
@@ -582,7 +609,7 @@ ErrorExit:
 }
 
 -(void)decrementLicenseCooldownTimer:(NSTimer *)aTimer {
-//	NSLog(@"decrementLicenseCooldownTimer entered. licenseCooldownTime: %i",licenseCooldownTime);
+	//	NSLog(@"decrementLicenseCooldownTimer entered. licenseCooldownTime: %i",licenseCooldownTime);
 	licenseCooldownTime--;
 	if (licenseCooldownTime <= 0) {
 		NSLog(@"BlioDrmManager is ready to receive license acquisition requests again.");
@@ -590,4 +617,6 @@ ErrorExit:
 		self.licenseCooldownTimer = nil;
 	}
 }
+
 @end
+

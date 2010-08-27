@@ -10,7 +10,8 @@
 #import "BlioBook.h"
 #import "BlioXPSProvider.h"
 #import "BlioBookManager.h"
-#import "BlioDrmManager.h"
+//#import "BlioDrmManager.h"
+#import "BlioDrmSessionManager.h"
 #import "zlib.h"
 
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
@@ -29,6 +30,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @property (nonatomic, retain) NSMutableArray *uriMap;
 @property (nonatomic, retain) BlioTimeOrderedCache *componentCache;
 @property (nonatomic, assign, readonly) BOOL bookIsEncrypted;
+@property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -41,6 +43,13 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize bookID;
 @synthesize tempDirectory, imageInfo, xpsData, uriMap;
 @synthesize componentCache;
+@synthesize drmSessionManager;
+
+- (BlioDrmSessionManager*)drmSessionManager {
+	if ( !drmSessionManager ) 
+		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
+	return drmSessionManager;
+}
 
 - (void)dealloc {   
     [renderingLock lock];
@@ -70,6 +79,9 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     [inflateLock release];
     
     self.componentCache = nil;
+	
+	if ( drmSessionManager )
+		[drmSessionManager release];
     
     [super dealloc];
 }
@@ -77,6 +89,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 - (id)initWithBookID:(NSManagedObjectID *)aBookID {
     if ((self = [super init])) {
         self.bookID = aBookID;
+		
         renderingLock = [[NSLock alloc] init];
         contentsLock = [[NSLock alloc] init];
         inflateLock = [[NSLock alloc] init];
@@ -139,13 +152,16 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         aCache.totalCostLimit = 1024*1024; // Arbitrary 1MB limit. This may need wteaked or set on a per-device basis
         self.componentCache = aCache;
         [aCache release];
+		
+		drmSessionManager = nil;
     }
     return self;
 }
 
 - (void)reportReading {
     if (self.bookIsEncrypted) {
-        [[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
+		//[[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
+        [self.drmSessionManager reportReading];
     }
 }
 
@@ -465,8 +481,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     NSData *componentData = [self rawDataForComponentAtPath:componentPath];
              
     if (encrypted) {
-        if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
-            NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
+		//if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
+        if (![self.drmSessionManager decryptData:componentData] ) {
+			NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
             return nil;
         }
     }

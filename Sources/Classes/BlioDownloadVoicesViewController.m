@@ -361,6 +361,7 @@
 		
 		self.progressView = [[[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault] autorelease];
 		self.progressView.frame = CGRectMake(self.contentView.bounds.size.width - kBlioVoiceDownloadProgressViewWidth - kBlioVoiceDownloadProgressViewRightMargin, (self.bounds.size.height - kBlioVoiceDownloadProgressViewHeight)/2, kBlioVoiceDownloadProgressViewWidth, kBlioVoiceDownloadProgressViewHeight);
+		self.progressView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		[self.contentView addSubview:progressView];
 		[self.contentView bringSubviewToFront:progressView];
 		
@@ -368,6 +369,7 @@
 		self.progressLabel.center = CGPointMake(self.progressView.center.x, self.progressView.center.y + self.progressView.bounds.size.height);
 		self.progressLabel.font = [UIFont boldSystemFontOfSize:11];
 		self.progressLabel.textAlignment = UITextAlignmentCenter;
+		self.progressLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		[self.contentView addSubview:progressLabel];
 		[self.contentView bringSubviewToFront:progressLabel];
 		

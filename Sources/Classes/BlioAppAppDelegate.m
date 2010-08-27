@@ -16,7 +16,8 @@
 #import "BlioStoreManager.h"
 #import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
-#import "BlioDrmManager.h"
+// RESTORE FOR OLD DRM INTERFACE
+//#import "BlioDrmManager.h"
 #import "BlioBookManager.h"
 #import <unistd.h>
 
@@ -44,7 +45,19 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 	if (audioError) {
 		NSLog(@"[ERROR: could not set AVAudioSessionCategory with error: %@, %@", audioError, [audioError userInfo]);
 	}
-		
+	
+	NSArray * applicationSupportPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *applicationSupportPath = ([applicationSupportPaths count] > 0) ? [applicationSupportPaths objectAtIndex:0] : nil;
+
+	BOOL isDir;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:applicationSupportPath isDirectory:&isDir] || !isDir) {
+		NSError * createApplicationSupportDirError = nil;
+		if (![[NSFileManager defaultManager] createDirectoryAtPath:applicationSupportPath withIntermediateDirectories:YES attributes:nil error:&createApplicationSupportDirError]) {
+			NSLog(@"ERROR: could not create Application Support directory in the Library directory! %@, %@",createApplicationSupportDirError, [createApplicationSupportDirError userInfo]);
+		}
+		else NSLog(@"Created Application Support directory within Library...");
+	}
+	
     // Override point for customization after app launch   
 	//[window addSubview:[navigationController view]];
 
@@ -133,7 +146,25 @@ tryAgain:
     libraryController.managedObjectContext = moc;
     libraryController.processingDelegate = self.processingManager;
 
-	[[BlioDrmManager getDrmManager] initialize];
+	//[[BlioDrmManager getDrmManager] initialize];
+	
+	// This did happen in BlioDrmManager, but shouldn't happen in BlioDrmSessionManager.
+	// Copy DRM resources to writeable directory.
+	NSError* err;	
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	NSString* rsrcWmModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/priv.dat"]; 
+	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:@"/priv.dat"];
+	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelKey toPath:docsWmModelKey error:&err];
+	NSString* rsrcWmModelCert = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/devcerttemplate.dat"]; 
+	NSString* docsWmModelCert = [documentsDirectory stringByAppendingString:@"/devcerttemplate.dat"];
+	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
+	NSString* rsrcPRModelCert = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/iphonecert.dat"]; 
+	NSString* docsPRModelCert = [documentsDirectory stringByAppendingString:@"/iphonecert.dat"];
+	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];
+	NSString* rsrcPRModelKey = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DRM/iphonezgpriv.dat"]; 
+	NSString* docsPRModelKey = [documentsDirectory stringByAppendingString:@"/iphonezgpriv.dat"];
+	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelKey toPath:docsPRModelKey error:&err];
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
     
@@ -141,8 +172,8 @@ tryAgain:
 }
 
 -(void)loginDismissed:(NSNotification*)note {
+	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
@@ -198,23 +229,24 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];
 
-#ifdef DEMO_MODE
-	
-    NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
-	NSString *manualVoiceCopyPath = 
-	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
 	BOOL isDir;
-	if (![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath isDirectory:&isDir] || !isDir) {
+	if (![[NSFileManager defaultManager] fileExistsAtPath:voicesPath isDirectory:&isDir] || !isDir) {
 		NSError * createTTSDirError = nil;
 		if (![[NSFileManager defaultManager] createDirectoryAtPath:voicesPath withIntermediateDirectories:YES attributes:nil error:&createTTSDirError]) {
 			NSLog(@"ERROR: could not create TTS directory in the Documents directory! %@, %@",createTTSDirError, [createTTSDirError userInfo]);
 		}
 		else NSLog(@"Created TTS directory within Documents...");
 	}
+	
+#ifdef DEMO_MODE
+	
+    NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
+	NSString *manualVoiceCopyPath = 
+	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:manualVoiceCopyPath] && ![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath]) {
 		NSError * manualVoiceCopyError = nil;
 		if (![[NSFileManager defaultManager] copyItemAtPath:manualVoiceCopyPath toPath:manualVoiceDestinationPath error:&manualVoiceCopyError]) 
@@ -226,7 +258,9 @@ static void *background_init_thread(void * arg) {
 	
 	NSLog(@"voicesPath: %@",voicesPath);
 	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
-	    
+	   
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 
@@ -235,7 +269,6 @@ static void *background_init_thread(void * arg) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
 		else {
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 		}		
 		[self.processingManager resumeProcessing];
@@ -257,7 +290,7 @@ static void *background_init_thread(void * arg) {
 }
 
 - (NSString *)dynamicDefaultPngPath {
-    NSString *tmpDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *tmpDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     return [tmpDir stringByAppendingPathComponent:@".BlioDynamicDefault.png"];
 }
 
@@ -383,7 +416,7 @@ static void *background_init_thread(void * arg) {
         return persistentStoreCoordinator;
     }
 	
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSURL *storeUrl = [NSURL fileURLWithPath: [basePath stringByAppendingPathComponent: @"Blio.sqlite"]];
 	

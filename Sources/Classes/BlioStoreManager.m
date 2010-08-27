@@ -9,7 +9,9 @@
 #import "BlioStoreManager.h"
 #import "BlioOnlineStoreHelper.h"
 #import "BlioLoginViewController.h"
-#import "BlioDrmManager.h"
+// RESTORE FOR OLD DRM INTERFACE
+//#import "BlioDrmManager.h"
+#import "BlioDrmSessionManager.h"
 
 @implementation BlioStoreManager
 
@@ -123,8 +125,11 @@
 		[self.deviceRegistrationPromptAlertViews removeObjectForKey:[keys objectAtIndex:0]];
 		BlioStoreHelper * storeHelper = [self storeHelperForSourceID:[[keys objectAtIndex:0] intValue]];
 		if (storeHelper && buttonIndex == 1) {
-			if ( [[BlioDrmManager getDrmManager] joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
-				[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
+			//if ( [[BlioDrmManager getDrmManager] joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
+			BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
+			if ( [drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
+					[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
+			[drmSessionManager release];
 		}
 	}
 }
@@ -138,8 +143,9 @@
 	else NSLog(@"WARNING: Cannot retrieve books, there is no store helper for sourceID: %i",sourceID);
 }
 - (NSString*)tokenForSourceID:(BlioBookSourceID)sourceID {
-	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] && [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] hasValidToken]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] token];
-	return nil;
+	return @"0cac1444-f4a7-4d47-96c8-6a926bc10a00";
+	//if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] && [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] hasValidToken]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] token];
+	//return nil;
 }
 - (void)logoutForSourceID:(BlioBookSourceID)sourceID {
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] logout];

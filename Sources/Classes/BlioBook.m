@@ -20,6 +20,7 @@
 - (NSData *)dataFromXPSAtPath:(NSString *)path;
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path;
 - (BOOL)componentExistsInXPSAtPath:(NSString *)path;
+- (BlioXPSProvider *)xpsProvider;
 
 @end
 
@@ -139,7 +140,7 @@
 }
 
 - (NSString *)bookCacheDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
     return bookPath;
