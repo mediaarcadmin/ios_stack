@@ -8,6 +8,7 @@
 
 #import "EucMenuView.h"
 #import "THUIImageAdditions.h"
+#import <QuartzCore/QuartzCore.h>
 
 static const CGFloat sExtraEdgeMargins = 4.0f;
 static const CGFloat sInnerMargins = 14.0f;
@@ -95,8 +96,12 @@ static const CGFloat sOuterYPadding = 2.0f;
     return ret;
 }
 
-- (void)positionAndResizeForAttachingToRect:(CGRect)rect
+- (void)positionAndResizeForAttachingToRect:(CGRect)viewRect fromView:(UIView *)rectInView
 {
+    UIWindow *window = rectInView.window;
+    CGRect rect = [rectInView convertRect:viewRect toView:window];
+    rect = [window convertRect:rect toView:self.superview];
+    
     CGRect superBounds = self.superview.bounds;
     CGFloat height = self.mainImage.size.height + self.bottomArrowImage.size.height;
     
@@ -104,7 +109,7 @@ static const CGFloat sOuterYPadding = 2.0f;
     NSUInteger titlesCount = titles.count;
     
     free(_regionRects);
-    _regionRects = calloc(titlesCount, sizeof(CGRect));
+    _regionRects = malloc(titlesCount * sizeof(CGRect));
     
     CGFloat mainRectHeight = self.mainImage.size.height;
     CGFloat ridgeWidth  = self.ridgeImage.size.width;
@@ -146,10 +151,8 @@ static const CGFloat sOuterYPadding = 2.0f;
         minX = superBounds.origin.x;
     }
     
-    self.frame = CGRectMake(minX, 
-                            self.arrowAtTop ? fixationPoint.y : fixationPoint.y - height,
-                            width, 
-                            height);
+    self.layer.bounds = CGRectMake(0, 0, width, height);
+    self.layer.position = CGPointMake(minX + width * 0.5f, (self.arrowAtTop ? fixationPoint.y : fixationPoint.y - height) + height * 0.5f);
     self.arrowMidX = fixationPoint.x - minX;
     
     CGRect mainRect = CGRectMake(0.0f, 0.0f, width, mainRectHeight);

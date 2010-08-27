@@ -42,6 +42,6 @@
 @property (nonatomic, retain) NSArray *colors;
 @property (nonatomic, assign) NSUInteger selectedIndex;
 
-- (void)positionAndResizeForAttachingToRect:(CGRect)rect;
+- (void)positionAndResizeForAttachingToRect:(CGRect)rect fromView:(UIView *)view;
 
 @end

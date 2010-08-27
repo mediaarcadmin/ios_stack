@@ -15,8 +15,7 @@
     BOOL _menuVisible;
 
     UIView *_targetView;
-    UIWindow *_targetWindow;
-    CGRect _windowTargetRect;
+    CGRect _targetRect;
     
     EucMenuView *_menuView;
     

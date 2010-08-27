@@ -2120,9 +2120,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 -(void) resetAuthorText {
     self.authorLabel.text = [[self.book authorsWithStandardFormat] uppercaseString];
-    if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
-        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
-    }	
+//    if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+//        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
+//    }	
 }
 - (void)setDelegate:(id)newDelegate {
 	//    [self.bookView removeTarget:delegate action:@selector(bookTouched:)

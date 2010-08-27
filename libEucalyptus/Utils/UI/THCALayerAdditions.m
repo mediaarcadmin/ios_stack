@@ -7,27 +7,41 @@
 //
 
 #import "THCALayerAdditions.h"
-
+#import <UIKit/UIKit.h>
 
 @implementation CALayer (THCALayerAdditions)
 
 - (CATransform3D)absoluteTransform
-{
-    CALayer *superLayer = self.superlayer;
-    if(superLayer) {
-        return CATransform3DConcat(superLayer.absoluteTransform, self.transform);
-    } else {
-        return CATransform3DIdentity;
+{   
+    CATransform3D transform = self.transform;
+    CALayer *layer = self;
+    Class windowClass = [UIWindow class];
+    
+    // We check for a window with a UIWindow delegate, becase on the Retnia
+    // display, the window does in fact have a superlayer, which we don't 
+    // want to know about.
+    while(![layer.delegate isKindOfClass:windowClass] &&
+          (layer = layer.superlayer)) {
+        transform = CATransform3DConcat(layer.transform, transform);
     }
+    
+    return transform;    
 }
 
 - (CALayer *)windowLayer
 {    
     CALayer *windowLayer = self;
     CALayer *superLayer;
-    while((superLayer = windowLayer.superlayer)) {
+    Class windowClass = [UIWindow class];
+    
+    // We check for a window with a UIWindow delegate, becase on the Retnia
+    // display, the window does in fact have a superlayer, which we don't 
+    // want to know about.
+    while(![windowLayer.delegate isKindOfClass:windowClass] &&
+          (superLayer = windowLayer.superlayer)) {
         windowLayer = superLayer;
     }
+    
     return windowLayer;
 }
 
