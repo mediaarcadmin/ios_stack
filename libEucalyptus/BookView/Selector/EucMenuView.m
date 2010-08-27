@@ -8,6 +8,7 @@
 
 #import "EucMenuView.h"
 #import "THUIImageAdditions.h"
+#import "THCALayerAdditions.h"
 #import <QuartzCore/QuartzCore.h>
 
 static const CGFloat sExtraEdgeMargins = 4.0f;
@@ -98,11 +99,16 @@ static const CGFloat sOuterYPadding = 2.0f;
 
 - (void)positionAndResizeForAttachingToRect:(CGRect)viewRect fromView:(UIView *)rectInView
 {
-    UIWindow *window = rectInView.window;
-    CGRect rect = [rectInView convertRect:viewRect toView:window];
-    rect = [window convertRect:rect toView:self.superview];
+    // Set our transform to math that of the view we're attahed to, then 
+    // size ourselves to be the same size as the root window so that we 
+    // can use our conversion routines in calculations below.
+    self.layer.transform = rectInView.layer.absoluteTransform;
+    self.frame = self.superview.bounds;
     
-    CGRect superBounds = self.superview.bounds;
+    CGRect rect = [rectInView convertRect:viewRect toView:self.window];
+    rect = [self.window convertRect:rect toView:self];
+    
+    CGRect fullBounds = self.bounds;
     CGFloat height = self.mainImage.size.height + self.bottomArrowImage.size.height;
     
     NSArray *titles = self.titles;
@@ -132,27 +138,28 @@ static const CGFloat sOuterYPadding = 2.0f;
     width += sExtraEdgeMargins;
     
     CGPoint fixationPoint = CGPointMake(floorf(rect.origin.x + rect.size.width * 0.5), rect.origin.y - sOuterYPadding);
-    if(fixationPoint.y - height < superBounds.origin.y) {
+    if(fixationPoint.y - height < fullBounds.origin.y) {
         self.arrowAtTop = YES;
         fixationPoint.y = rect.origin.y + rect.size.height + sOuterYPadding;
-        if(fixationPoint.y + height > superBounds.size.height) {
+        if(fixationPoint.y + height > fullBounds.size.height) {
             self.arrowAtTop = NO;
-            fixationPoint.y = MIN(floorf(superBounds.size.height * 0.5f), superBounds.size.height - height);
+            fixationPoint.y = MIN(floorf(fullBounds.size.height * 0.5f), fullBounds.size.height - height);
         }
     } else {
         self.arrowAtTop = NO;
     }
     
     CGFloat minX = floorf(fixationPoint.x - width * 0.5f);
-    if(minX + width > superBounds.origin.x + superBounds.size.width) {
-        minX = superBounds.size.width - width;
+    if(minX + width > fullBounds.origin.x + fullBounds.size.width) {
+        minX = fullBounds.size.width - width;
     }
-    if(minX < superBounds.origin.x) {
-        minX = superBounds.origin.x;
+    if(minX < fullBounds.origin.x) {
+        minX = fullBounds.origin.x;
     }
     
+    self.layer.position = [self convertPoint:CGPointMake(minX + width * 0.5f, (self.arrowAtTop ? fixationPoint.y : fixationPoint.y - height) + height * 0.5f)
+                                      toView:self.superview];
     self.layer.bounds = CGRectMake(0, 0, width, height);
-    self.layer.position = CGPointMake(minX + width * 0.5f, (self.arrowAtTop ? fixationPoint.y : fixationPoint.y - height) + height * 0.5f);
     self.arrowMidX = fixationPoint.x - minX;
     
     CGRect mainRect = CGRectMake(0.0f, 0.0f, width, mainRectHeight);
