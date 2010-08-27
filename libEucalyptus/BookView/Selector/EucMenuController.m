@@ -17,6 +17,7 @@
 
 @property (nonatomic, assign) UIView *targetView;
 @property (nonatomic, assign) CGRect targetRect;
+@property (nonatomic, retain) UIView *menuAttachmentView;
 @property (nonatomic, retain) EucMenuView *menuView;
 
 @end
@@ -28,12 +29,14 @@
 
 @synthesize targetView = _targetView;
 @synthesize targetRect = _targetRect;
+@synthesize menuAttachmentView = _menuAttachmentView;
 @synthesize menuView = _menuView;
 
 - (void)dealloc
 {
     [_menuItems release];
     [_menuView release];
+    [_menuAttachmentView release];
     
     [super dealloc];
 }
@@ -74,10 +77,24 @@
     }
 }
 
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    if([[anim valueForKey:@"THName"] isEqualToString:@"MenuFadeOut"]) {
+        UIView *menuAttachmentView = self.menuAttachmentView;
+        if(menuAttachmentView && menuAttachmentView.isHidden) {
+            [self.menuView removeFromSuperview];
+            self.menuView = nil;
+            [menuAttachmentView removeFromSuperview];
+            self.menuAttachmentView = nil;
+        }
+    }
+}
+
 - (void)setMenuVisible:(BOOL)menuVisible animated:(BOOL)animated
 {
     if(menuVisible != _menuVisible) {
         [CATransaction begin];
+        UIView *menuAttachmentView = self.menuAttachmentView;
         EucMenuView *menuView = self.menuView;
         if(menuVisible) {
             if(!menuView) {
@@ -87,18 +104,29 @@
                    forControlEvents:UIControlEventTouchUpInside];                
                 self.menuView = menuView;
                 [menuView release];
+                
+                menuAttachmentView = [[UIView alloc] init];
+                [menuAttachmentView addSubview:menuView];
+                self.menuAttachmentView = menuAttachmentView;
+                
+                menuAttachmentView.backgroundColor = [[UIColor yellowColor] colorWithAlphaComponent:0.5f];
             } else {
-                menuView.hidden = NO;
+                menuAttachmentView.hidden = NO;
             }
             
             NSArray *menuItems = self.menuItems;
             menuView.titles = [menuItems valueForKey:@"title"];
             menuView.colors = [menuItems valueForKey:@"color"];
-            [self.targetView.window addSubview:menuView];
+            
+            UIWindow *attachmentWindow = self.targetView.window;
+            menuAttachmentView.layer.transform = [self.targetView.layer absoluteTransform];
+            [attachmentWindow addSubview:menuAttachmentView];
+            menuAttachmentView.frame = attachmentWindow.bounds;
+            
             [menuView positionAndResizeForAttachingToRect:self.targetRect fromView:self.targetView];
         } else {
             if(menuView) {
-                menuView.hidden = YES;
+                menuAttachmentView.hidden = YES;
                 menuView.selected = NO;
             }
         }
@@ -106,7 +134,9 @@
             CATransition *transition = [CATransition animation];
             transition.type = kCATransitionFade;
             transition.duration = 0.1f;
-            [menuView.layer addAnimation:transition forKey:@"fadeTransition"];
+            transition.delegate = self;
+            [transition setValue:@"MenuFadeOut" forKey:@"THName"];
+            [menuAttachmentView.layer addAnimation:transition forKey:@"MenuFadeOut"];
         }
         [CATransaction commit];
         

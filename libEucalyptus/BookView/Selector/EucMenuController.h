@@ -17,6 +17,7 @@
     UIView *_targetView;
     CGRect _targetRect;
     
+    UIView *_menuAttachmentView;    
     EucMenuView *_menuView;
     
     NSUInteger _menuSelectStepCount;
