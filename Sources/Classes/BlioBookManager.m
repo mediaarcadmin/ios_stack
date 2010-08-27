@@ -57,14 +57,6 @@ static pthread_key_t sManagedObjectContextKey;
     return self;
 }
 
-static void ReleaseMoc(void *moc) 
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSLog(@"ReleaseMoc %p, thread %p", moc, pthread_self());
-    [(NSManagedObjectContext *)moc release];
-    [pool drain];
-}
-
 + (BlioBookManager *)sharedBookManager
 {
     // We don't need to bother being thread-safe in the initialisation here,
@@ -74,9 +66,9 @@ static void ReleaseMoc(void *moc)
     if(!sSharedBookManager) {
         sSharedBookManager = [[self alloc] init];
         // By setting this, if we associate an object with sManagedObjectContextKey
-        // using pthread_setspecific, ReleaseMoc will be called on it before
+        // using pthread_setspecific, CFRelease will be called on it before
         // the thread terminates.
-        pthread_key_create(&sManagedObjectContextKey, ReleaseMoc);
+        pthread_key_create(&sManagedObjectContextKey, (void (*)(void *))CFRelease);
     }
     return sSharedBookManager;
 }
@@ -89,7 +81,6 @@ static void ReleaseMoc(void *moc)
         managedObjectContextForCurrentThread.persistentStoreCoordinator = self.persistentStoreCoordinator; 
         self.managedObjectContextForCurrentThread = managedObjectContextForCurrentThread;
         [managedObjectContextForCurrentThread release];
-        NSLog(@"CreateMoc %p, thread %p", managedObjectContextForCurrentThread, pthread_self());
     }
     return managedObjectContextForCurrentThread;
 }
@@ -150,7 +141,7 @@ static void ReleaseMoc(void *moc)
     @synchronized(myCachedTextFlows) {
         BlioTextFlow *previouslyCachedTextFlow = [myCachedTextFlows objectForKey:aBookID];
         if(previouslyCachedTextFlow) {
-            NSLog(@"Returning cached TextFlow for book with ID %@", aBookID);
+            //NSLog(@"Returning cached TextFlow for book with ID %@", aBookID);
             [self.cachedTextFlowCheckoutCounts addObject:aBookID];
             ret = previouslyCachedTextFlow;
         } else {
@@ -158,7 +149,7 @@ static void ReleaseMoc(void *moc)
             if([book hasTextFlow]) {
                 BlioTextFlow *textFlow = [[BlioTextFlow alloc] initWithBookID:aBookID];
                 if(textFlow) {
-                    NSLog(@"Creating and caching TextFlow for book with ID %@", aBookID);
+                    //NSLog(@"Creating and caching TextFlow for book with ID %@", aBookID);
                     NSCountedSet *myCachedTextFlowCheckoutCounts = self.cachedTextFlowCheckoutCounts;
                     if(!myCachedTextFlowCheckoutCounts) {
                         myCachedTextFlowCheckoutCounts = [NSCountedSet set];
@@ -193,7 +184,7 @@ static void ReleaseMoc(void *moc)
         } else {
             [myCachedTextFlowCheckoutCounts removeObject:aBookID];
             if (count == 1) {
-                NSLog(@"Releasing cached TextFlow for book with ID %@", aBookID);
+                //NSLog(@"Releasing cached TextFlow for book with ID %@", aBookID);
                 [myCachedTextFlows removeObjectForKey:aBookID];
                 if(myCachedTextFlowCheckoutCounts.count == 0) {
                     // May as well release the set.
@@ -215,7 +206,7 @@ static void ReleaseMoc(void *moc)
     @synchronized(myCachedEucBooks) {
         EucBUpeBook *previouslyCachedEucBook = [cachedEucBooks objectForKey:aBookID];
         if(previouslyCachedEucBook) {
-            NSLog(@"Returning cached EucBook for book with ID %@", aBookID);
+            //NSLog(@"Returning cached EucBook for book with ID %@", aBookID);
             [self.cachedEucBookCheckoutCounts addObject:aBookID];
             ret = previouslyCachedEucBook;
         } else {
@@ -228,7 +219,7 @@ static void ReleaseMoc(void *moc)
             }
             if(eucBook) {
                 eucBook.cacheDirectoryPath = [book.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
-                NSLog(@"Creating and caching EucBook for book with ID %@", aBookID);
+                //NSLog(@"Creating and caching EucBook for book with ID %@", aBookID);
                 NSCountedSet *myCachedEucBookCheckoutCounts = self.cachedEucBookCheckoutCounts;
                 if(!myCachedEucBookCheckoutCounts) {
                     myCachedEucBookCheckoutCounts = [NSCountedSet set];
@@ -258,7 +249,7 @@ static void ReleaseMoc(void *moc)
         } else {
             [myCachedEucBookCheckoutCounts removeObject:aBookID];
             if (count == 1) {
-                NSLog(@"Releasing cached Euc book for book with ID %@", aBookID);
+                //NSLog(@"Releasing cached Euc book for book with ID %@", aBookID);
                 [myCachedEucBooks removeObjectForKey:aBookID];
                 if(myCachedEucBookCheckoutCounts.count == 0) {
                     // May as well release the set.
@@ -280,7 +271,7 @@ static void ReleaseMoc(void *moc)
     @synchronized(myCachedParagraphSources) {
         id<BlioParagraphSource> previouslyCachedParagraphSource = [myCachedParagraphSources objectForKey:aBookID];
         if(previouslyCachedParagraphSource) {
-            NSLog(@"Returning cached ParagraphSource for book with ID %@", aBookID);
+            //NSLog(@"Returning cached ParagraphSource for book with ID %@", aBookID);
             [self.cachedParagraphSourceCheckoutCounts addObject:aBookID];
             ret= previouslyCachedParagraphSource;
         } else {
@@ -293,7 +284,7 @@ static void ReleaseMoc(void *moc)
             }
             
             if(paragraphSource) {
-                NSLog(@"Creating and caching ParagraphSource for book with ID %@", aBookID);
+                //NSLog(@"Creating and caching ParagraphSource for book with ID %@", aBookID);
                 NSCountedSet *myCachedParagraphSourceCheckoutCounts = self.cachedParagraphSourceCheckoutCounts;
                 if(!myCachedParagraphSourceCheckoutCounts) {
                     myCachedParagraphSourceCheckoutCounts = [NSCountedSet set];
@@ -323,7 +314,7 @@ static void ReleaseMoc(void *moc)
         } else {
             [myCachedParagraphSourceCheckoutCounts removeObject:aBookID];
             if (count == 1) {
-                NSLog(@"Releasing cached paragraph source for book with ID %@", aBookID);
+                //NSLog(@"Releasing cached paragraph source for book with ID %@", aBookID);
                 [myCachedParagraphSources removeObjectForKey:aBookID];
                 if(myCachedParagraphSourceCheckoutCounts.count == 0) {
                     // May as well release the set.
@@ -345,7 +336,7 @@ static void ReleaseMoc(void *moc)
     @synchronized(myCachedXPSProviders) {
         BlioXPSProvider *previouslyCachedXPSProvider = [myCachedXPSProviders objectForKey:aBookID];
         if(previouslyCachedXPSProvider) {
-            NSLog(@"Returning cached XPSProvider for book with ID %@", aBookID);
+            //NSLog(@"Returning cached XPSProvider for book with ID %@", aBookID);
             [self.cachedXPSProviderCheckoutCounts addObject:aBookID];
             ret = previouslyCachedXPSProvider;
         } else {
@@ -353,7 +344,7 @@ static void ReleaseMoc(void *moc)
             if(book.xpsPath) {
                 BlioXPSProvider *xpsProvider = [[BlioXPSProvider alloc] initWithBookID:aBookID];
                 if(xpsProvider) {
-                    NSLog(@"Creating and caching XPSProvider for book with title %@ and ID %@", [book title], aBookID);
+                    //NSLog(@"Creating and caching XPSProvider for book with title %@ and ID %@", [book title], aBookID);
                     NSCountedSet *myCachedXPSProviderCheckoutCounts = self.cachedXPSProviderCheckoutCounts;
                     if(!myCachedXPSProviderCheckoutCounts) {
                         myCachedXPSProviderCheckoutCounts = [NSCountedSet set];
@@ -384,7 +375,7 @@ static void ReleaseMoc(void *moc)
         } else {
             [myCachedXPSProviderCheckoutCounts removeObject:aBookID];
             if (count == 1) {
-                NSLog(@"Releasing cached XPSProvider for book with ID %@", aBookID);
+                //NSLog(@"Releasing cached XPSProvider for book with ID %@", aBookID);
                 [myCachedXPSProviders removeObjectForKey:aBookID];
                 if(myCachedXPSProviderCheckoutCounts.count == 0) {
                     // May as well release the set.
