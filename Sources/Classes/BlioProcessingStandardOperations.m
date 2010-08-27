@@ -28,13 +28,14 @@
 		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
 	}
+	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:self.bookID forKey:@"bookID"];
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"BlioProcessingCompleteOperation: failed dependency found! Operation: %@ Sending Failed Notification...",blioOp);
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
-			[self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
+			if (currentProcessingState != kBlioBookProcessingStateNotSupported) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
 			[self cancel];
 			return;
 		}
@@ -51,9 +52,8 @@
 	}
 #endif
 	
-	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
     if (currentProcessingState == kBlioBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
-	else [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
+	else if (currentProcessingState != kBlioBookProcessingStateNotSupported) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
 	NSLog(@"Processing complete for book with sourceID:%i sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
 	
 	if (![[NSFileManager defaultManager] removeItemAtPath:dirPath error:&downloadDirError]) {
@@ -846,6 +846,7 @@
 													delegate:nil
 										   cancelButtonTitle:@"OK"
 										   otherButtonTitles:nil];
+						[self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotSupported] forKey:@"processingState"];
 						[self cancel];
 						[parser abortParsing];
 					}

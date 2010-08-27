@@ -107,6 +107,7 @@
 	// add new book entries to PersistentStore as appropriate
 	NSInteger successfulResponseCount = 0;
 	NSInteger newISBNs = 0;
+	NSLog(@"ISBN count: %i",[_isbns count]);
 	for (NSString * isbn in _isbns) {
 		
 		// check to see if BlioBook record is already in the persistent store
@@ -134,7 +135,7 @@
 												audiobookPath:nil 
 													sourceID:BlioBookSourceOnlineStore 
 											sourceSpecificID:isbn
-											 placeholderOnly:NO
+											 placeholderOnly:YES
 				 ];
 			}
 			else {

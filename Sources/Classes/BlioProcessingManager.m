@@ -511,7 +511,6 @@
 						url = [NSURL fileURLWithPath:stringURL];
 					}
 					else {
-//						url = [NSURL URLWithString:stringURL];
 						url = nil; // if the app is not grabbing the XPS from the app bundle, then the app should contact the server for a new URL (which is done in BlioProcessingDownloadPaidBookOperation).
 					}
 					paidBookOp = [[[BlioProcessingDownloadPaidBookOperation alloc] initWithUrl:url] autorelease];
@@ -800,6 +799,7 @@
 	[self addCoverOpToBookOps:nil forBook:aBook manifestLocation:nil withDependency:nil];
 }
 -(void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource {
+	NSLog(@"BlioProcessingManager resumeProcessingForSourceID:%i entered",bookSource);
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
 	// resume previous processing operations

@@ -609,6 +609,18 @@
 		DC48C99111D54A0100C5D186 /* BlioSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC48C98F11D54A0100C5D186 /* BlioSplitView.m */; };
 		DC5077A1116A3F2800CD40B3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DC5077A0116A3F2800CD40B3 /* Reachability.m */; };
 		DC5320DF11C09EF40042D3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC5320DE11C09EF40042D3EA /* AudioToolbox.framework */; };
+		DC5FCDD21227640D003C57CA /* badge-audiobook.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCC1227640D003C57CA /* badge-audiobook.png */; };
+		DC5FCDD31227640D003C57CA /* badge-notsupported.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCD1227640D003C57CA /* badge-notsupported.png */; };
+		DC5FCDD41227640D003C57CA /* badge-tts.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCE1227640D003C57CA /* badge-tts.png */; };
+		DC5FCDD51227640D003C57CA /* badge-tts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCF1227640D003C57CA /* badge-tts@2x.png */; };
+		DC5FCDD61227640D003C57CA /* badge-notsupported@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDD01227640D003C57CA /* badge-notsupported@2x.png */; };
+		DC5FCDD71227640D003C57CA /* badge-audiobook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDD11227640D003C57CA /* badge-audiobook@2x.png */; };
+		DC5FCDD81227640D003C57CA /* badge-audiobook.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCC1227640D003C57CA /* badge-audiobook.png */; };
+		DC5FCDD91227640D003C57CA /* badge-notsupported.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCD1227640D003C57CA /* badge-notsupported.png */; };
+		DC5FCDDA1227640D003C57CA /* badge-tts.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCE1227640D003C57CA /* badge-tts.png */; };
+		DC5FCDDB1227640D003C57CA /* badge-tts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCF1227640D003C57CA /* badge-tts@2x.png */; };
+		DC5FCDDC1227640D003C57CA /* badge-notsupported@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDD01227640D003C57CA /* badge-notsupported@2x.png */; };
+		DC5FCDDD1227640D003C57CA /* badge-audiobook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDD11227640D003C57CA /* badge-audiobook@2x.png */; };
 		DC795B2F11E7E21B000DA04D /* button-buybooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DC795B2D11E7E21B000DA04D /* button-buybooks.png */; };
 		DC795B3011E7E21B000DA04D /* store-screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = DC795B2E11E7E21B000DA04D /* store-screenshot.png */; };
 		DCA1B8FD122289C60022D410 /* button-delete-red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FC122289C60022D410 /* button-delete-red@2x.png */; };
@@ -1339,6 +1351,12 @@
 		DC50779F116A3F2800CD40B3 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		DC5077A0116A3F2800CD40B3 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		DC5320DE11C09EF40042D3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		DC5FCDCC1227640D003C57CA /* badge-audiobook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-audiobook.png"; sourceTree = "<group>"; };
+		DC5FCDCD1227640D003C57CA /* badge-notsupported.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-notsupported.png"; sourceTree = "<group>"; };
+		DC5FCDCE1227640D003C57CA /* badge-tts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-tts.png"; sourceTree = "<group>"; };
+		DC5FCDCF1227640D003C57CA /* badge-tts@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-tts@2x.png"; sourceTree = "<group>"; };
+		DC5FCDD01227640D003C57CA /* badge-notsupported@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-notsupported@2x.png"; sourceTree = "<group>"; };
+		DC5FCDD11227640D003C57CA /* badge-audiobook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-audiobook@2x.png"; sourceTree = "<group>"; };
 		DC795B2D11E7E21B000DA04D /* button-buybooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-buybooks.png"; sourceTree = "<group>"; };
 		DC795B2E11E7E21B000DA04D /* store-screenshot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "store-screenshot.png"; sourceTree = "<group>"; };
 		DCA1B8FC122289C60022D410 /* button-delete-red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-red@2x.png"; sourceTree = "<group>"; };
@@ -1690,6 +1708,12 @@
 				DC18E089120517170077DF01 /* library-resumebutton@2x.png */,
 				DCFF6197117F703A00463427 /* library-pausebutton.png */,
 				DC18E085120517010077DF01 /* library-pausebutton@2x.png */,
+				DC5FCDCC1227640D003C57CA /* badge-audiobook.png */,
+				DC5FCDCD1227640D003C57CA /* badge-notsupported.png */,
+				DC5FCDCE1227640D003C57CA /* badge-tts.png */,
+				DC5FCDCF1227640D003C57CA /* badge-tts@2x.png */,
+				DC5FCDD01227640D003C57CA /* badge-notsupported@2x.png */,
+				DC5FCDD11227640D003C57CA /* badge-audiobook@2x.png */,
 				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				7DE7B5E21104B4FD0021F382 /* Lighting.xib */,
@@ -2176,7 +2200,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2450,10 +2474,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2654,6 +2678,12 @@
 				DCA1B905122289EF0022D410 /* downloadButton@2x.png in Resources */,
 				DCA1B906122289EF0022D410 /* downloadButtonPressed@2x.png in Resources */,
 				DC32BF8D12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */,
+				DC5FCDD21227640D003C57CA /* badge-audiobook.png in Resources */,
+				DC5FCDD31227640D003C57CA /* badge-notsupported.png in Resources */,
+				DC5FCDD41227640D003C57CA /* badge-tts.png in Resources */,
+				DC5FCDD51227640D003C57CA /* badge-tts@2x.png in Resources */,
+				DC5FCDD61227640D003C57CA /* badge-notsupported@2x.png in Resources */,
+				DC5FCDD71227640D003C57CA /* badge-audiobook@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2843,6 +2873,12 @@
 				A37E2F2F1222CDDA0004B11D /* ipadzgpriv.dat in Resources */,
 				A37E2F301222CDDA0004B11D /* priv.dat in Resources */,
 				DC32BF8E12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */,
+				DC5FCDD81227640D003C57CA /* badge-audiobook.png in Resources */,
+				DC5FCDD91227640D003C57CA /* badge-notsupported.png in Resources */,
+				DC5FCDDA1227640D003C57CA /* badge-tts.png in Resources */,
+				DC5FCDDB1227640D003C57CA /* badge-tts@2x.png in Resources */,
+				DC5FCDDC1227640D003C57CA /* badge-notsupported@2x.png in Resources */,
+				DC5FCDDD1227640D003C57CA /* badge-audiobook@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
