@@ -9,6 +9,7 @@
 #import "TransitionTestRootViewController.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookViewController.h>
+#import <libEucalyptus/EucMenuItem.h>
 
 @implementation TransitionTestRootViewController
 
@@ -133,6 +134,7 @@
             [book release];
             
             bookViewController.toolbarsVisibleAfterAppearance = (row == 0);
+            bookViewController.bookView.selectorDelegate = self;
             
             [self.navigationController pushViewController:bookViewController animated:YES];
             [bookViewController release];
@@ -143,6 +145,22 @@
     }
 }
 
+- (NSArray *)menuItemsForEucSelector:(EucSelector *)selector
+{
+    EucMenuItem *item1 = [[EucMenuItem alloc] initWithTitle:@"One" action:nil];
+    EucMenuItem *item2 = [[EucMenuItem alloc] initWithTitle:@"Two" action:nil];
+    EucMenuItem *item3 = [[EucMenuItem alloc] initWithTitle:@"Three" action:nil];
+    EucMenuItem *item4 = [[EucMenuItem alloc] initWithTitle:@"Four" action:nil];
+    
+    NSArray *ret = [NSArray arrayWithObjects:item1, item2, item3, item4, nil];
+    
+    [item1 release];
+    [item2 release];
+    [item3 release];
+    [item4 release];
+    
+    return ret;
+}
 
 
 /*
