@@ -59,7 +59,7 @@ static NSString* domainUrl = @"http://prl.kreader.net/PlayReadyDomains/service/L
 - (void)initialize {
 	
 	// delete store from previous run.
-	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	//NSString *documentsDirectory = [paths objectAtIndex:0];
 	//NSString* strDataStore = [documentsDirectory stringByAppendingString:@"/playready.hds"];
 	//int res = remove([strDataStore cStringUsingEncoding:NSASCIIStringEncoding]);

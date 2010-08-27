@@ -127,7 +127,7 @@
 	[manifestEntry setValue:[NSNumber numberWithBool:YES] forKey:@"preAvailabilityComplete"];
 	 // WARNING: this may need to change if more manifest keys are added to a manifest entry!
 	[self setBookManifestValue:manifestEntry forKey:self.filenameKey];
-	NSLog(@"BlioProcessingPreAvailabilityCompleteOperation complete for key: %@",self.filenameKey);
+//	NSLog(@"BlioProcessingPreAvailabilityCompleteOperation complete for key: %@",self.filenameKey);
 }
 
 - (void) dealloc {

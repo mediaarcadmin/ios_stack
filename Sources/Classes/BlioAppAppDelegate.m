@@ -45,7 +45,19 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 	if (audioError) {
 		NSLog(@"[ERROR: could not set AVAudioSessionCategory with error: %@, %@", audioError, [audioError userInfo]);
 	}
-		
+	
+	NSArray * applicationSupportPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *applicationSupportPath = ([applicationSupportPaths count] > 0) ? [applicationSupportPaths objectAtIndex:0] : nil;
+
+	BOOL isDir;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:applicationSupportPath isDirectory:&isDir] || !isDir) {
+		NSError * createApplicationSupportDirError = nil;
+		if (![[NSFileManager defaultManager] createDirectoryAtPath:applicationSupportPath withIntermediateDirectories:YES attributes:nil error:&createApplicationSupportDirError]) {
+			NSLog(@"ERROR: could not create Application Support directory in the Library directory! %@, %@",createApplicationSupportDirError, [createApplicationSupportDirError userInfo]);
+		}
+		else NSLog(@"Created Application Support directory within Library...");
+	}
+	
     // Override point for customization after app launch   
 	//[window addSubview:[navigationController view]];
 
@@ -221,19 +233,20 @@ static void *background_init_thread(void * arg) {
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];
 
-#ifdef DEMO_MODE
-	
-    NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
-	NSString *manualVoiceCopyPath = 
-	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
 	BOOL isDir;
-	if (![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath isDirectory:&isDir] || !isDir) {
+	if (![[NSFileManager defaultManager] fileExistsAtPath:voicesPath isDirectory:&isDir] || !isDir) {
 		NSError * createTTSDirError = nil;
 		if (![[NSFileManager defaultManager] createDirectoryAtPath:voicesPath withIntermediateDirectories:YES attributes:nil error:&createTTSDirError]) {
 			NSLog(@"ERROR: could not create TTS directory in the Documents directory! %@, %@",createTTSDirError, [createTTSDirError userInfo]);
 		}
 		else NSLog(@"Created TTS directory within Documents...");
 	}
+	
+#ifdef DEMO_MODE
+	
+    NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
+	NSString *manualVoiceCopyPath = 
+	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:manualVoiceCopyPath] && ![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath]) {
 		NSError * manualVoiceCopyError = nil;
 		if (![[NSFileManager defaultManager] copyItemAtPath:manualVoiceCopyPath toPath:manualVoiceDestinationPath error:&manualVoiceCopyError]) 
