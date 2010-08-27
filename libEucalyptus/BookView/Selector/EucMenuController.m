@@ -74,6 +74,17 @@
     }
 }
 
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    if([[anim valueForKey:@"THName"] isEqualToString:@"MenuFadeOut"]) {
+        UIView * menuView = self.menuView;
+        if(menuView && menuView.isHidden) {
+            [menuView removeFromSuperview];
+            self.menuView = nil;
+        }
+    }
+}
+
 - (void)setMenuVisible:(BOOL)menuVisible animated:(BOOL)animated
 {
     if(menuVisible != _menuVisible) {
@@ -106,7 +117,9 @@
             CATransition *transition = [CATransition animation];
             transition.type = kCATransitionFade;
             transition.duration = 0.1f;
-            [menuView.layer addAnimation:transition forKey:@"fadeTransition"];
+            transition.delegate = self;
+            [transition setValue:@"MenuFadeOut" forKey:@"THName"];
+            [menuView.layer addAnimation:transition forKey:@"MenuFadeOut"];
         }
         [CATransaction commit];
         
