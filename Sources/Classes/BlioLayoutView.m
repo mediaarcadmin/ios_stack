@@ -22,6 +22,7 @@
     NSData *data;
     NSInteger pageCount;
     CGPDFDocumentRef pdf;
+    NSLock *pdfLock;
 }
 
 @property (nonatomic, retain) NSData *data;
@@ -2289,8 +2290,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize data;
 
 - (void)dealloc {
+    [pdfLock lock];
     if (pdf) CGPDFDocumentRelease(pdf);
     self.data = nil;
+    [pdfLock unlock];
+    [pdfLock release];
     [super dealloc];
 }
 
@@ -2304,6 +2308,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         CGDataProviderRelease(pdfProvider);
         self.data = aData;
         [aData release];
+        
+        pdfLock = [[NSLock alloc] init];
     }
     return self;
 }
@@ -2312,17 +2318,44 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return pageCount;
 }
 
-- (CGRect)cropRectForPage:(NSInteger)page {
-    if (nil == pdf) {
-        [self openDocumentIfRequired];
+- (void)openDocumentWithoutLock {
+    if (self.data) {
+        CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.data);
+        pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
+        CGDataProviderRelease(pdfProvider);
     }
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    return CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
 }
 
-- (CGRect)mediaRectForPage:(NSInteger)page {
+- (CGRect)cropRectForPage:(NSInteger)page {
+    [pdfLock lock];
+    if (nil == pdf) {
+        [self openDocumentWithoutLock];
+        if (nil == pdf) {
+            [pdfLock unlock];
+            return CGRectZero;
+        }
+    }
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    return CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox);
+    CGRect cropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
+    [pdfLock unlock];
+    
+    return cropRect;
+}
+
+- (CGRect)mediaRectForPage:(NSInteger)page {    
+    [pdfLock lock];
+    if (nil == pdf) {
+        [self openDocumentWithoutLock];
+        if (nil == pdf) {
+            [pdfLock unlock];
+            return CGRectZero;
+        }
+    }
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
+    CGRect mediaRect = CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox);
+    [pdfLock unlock];
+    
+    return mediaRect;
 }
 
 - (CGFloat)dpiRatio {
@@ -2337,16 +2370,19 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGContextClipToRect(ctx, rect);
     
     CGContextConcatCTM(ctx, transform);
+    [pdfLock lock];
+    if (nil == pdf) return;
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
     CGPDFPageRetain(aPage);
     CGContextDrawPDFPage(ctx, aPage);
     CGPDFPageRelease(aPage);
+    [pdfLock unlock];
 }
 
 - (void)openDocumentIfRequired {
-    CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.data);
-    pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-    CGDataProviderRelease(pdfProvider);
+    [pdfLock lock];
+    [self openDocumentWithoutLock];
+    [pdfLock unlock];
 }
 
 - (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
@@ -2354,8 +2390,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)closeDocument {
+    [pdfLock lock];
     if (pdf) CGPDFDocumentRelease(pdf);
     pdf = NULL;
+    [pdfLock unlock];
 }
 
 - (void)closeDocumentIfRequired {
