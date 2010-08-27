@@ -102,7 +102,14 @@ static const CGFloat sOuterYPadding = 2.0f;
     // Set our transform to math that of the view we're attahed to, then 
     // size ourselves to be the same size as the root window so that we 
     // can use our conversion routines in calculations below.
-    self.layer.transform = rectInView.layer.absoluteTransform;
+    CATransform3D transform = rectInView.layer.absoluteTransform;
+    self.layer.transform = transform;
+    self.frame = self.superview.bounds;
+    
+    // Invert any scaling so that the menu is at the screen scale factor.
+    CGSize scaleFactor = [self.layer screenScaleFactors];
+    transform = CATransform3DConcat(transform, CATransform3DMakeScale(1.0f / scaleFactor.width, 1.0f / scaleFactor.width, 1.0f));
+    self.layer.transform = transform;
     self.frame = self.superview.bounds;
     
     CGRect rect = [rectInView convertRect:viewRect toView:self.window];
