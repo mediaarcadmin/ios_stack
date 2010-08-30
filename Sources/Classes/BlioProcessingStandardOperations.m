@@ -1274,7 +1274,11 @@
 		targetThumbWidth = kBlioCoverGridThumbWidthPad;
 		targetThumbHeight = kBlioCoverGridThumbHeightPad;
 	}
-	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+    
+    CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }	
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
