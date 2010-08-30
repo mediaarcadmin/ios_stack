@@ -15,9 +15,9 @@
     BOOL _menuVisible;
 
     UIView *_targetView;
-    UIWindow *_targetWindow;
-    CGRect _windowTargetRect;
+    CGRect _targetRect;
     
+    UIView *_menuAttachmentView;    
     EucMenuView *_menuView;
     
     NSUInteger _menuSelectStepCount;

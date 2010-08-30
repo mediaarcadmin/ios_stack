@@ -107,6 +107,7 @@ typedef struct EucRange {
 */
 
 @property (nonatomic, readonly) UIImage *currentPageImage;
+@property (nonatomic, assign, readonly) CGRect contentRect;
 
 - (IBAction)jumpForwards;
 - (IBAction)jumpBackwards;
@@ -129,7 +130,7 @@ typedef struct EucRange {
 
 @protocol EucBookViewDelegate <NSObject>
 @optional
-- (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link withAttributes:(NSDictionary *)attributes;
+- (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link;
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView;
 - (void)bookViewPageTurnDidEnd:(EucBookView *)bookView;
 

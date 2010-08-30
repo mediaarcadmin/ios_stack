@@ -22,6 +22,7 @@
     NSData *data;
     NSInteger pageCount;
     CGPDFDocumentRef pdf;
+    NSLock *pdfLock;
 }
 
 @property (nonatomic, retain) NSData *data;
@@ -74,12 +75,14 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 @property (nonatomic, retain) UIImage *pageSnapshot;
 @property (nonatomic, retain) UIImage *highlightsSnapshot;
 @property (nonatomic, retain) NSMutableArray *accessibilityElements;
-@property (nonatomic, retain) NSArray *previousAccessibilityElements;
+@property (nonatomic, retain) BlioTimeOrderedCache *accessibilityCache;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
 - (CGRect)cropForPage:(NSInteger)page;
+- (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
+- (CGAffineTransform)boundsTransformForPage:(NSInteger)aPageNumber cropRect:(CGRect *)cropRect allowEstimate:(BOOL)estimate;
 - (CGAffineTransform)blockTransformForPage:(NSInteger)page;
 - (CGSize)currentContentSize;
 - (void)setLayoutMode:(BlioLayoutPageMode)newLayoutMode animated:(BOOL)animated;
@@ -144,12 +147,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
 @synthesize lastBlock, pageSnapshot, highlightsSnapshot;
-@synthesize accessibilityElements, previousAccessibilityElements;
+@synthesize accessibilityElements, accessibilityCache;
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
 
 - (void)dealloc {
-    NSLog(@"*************** dealloc called for layoutview");
+    //NSLog(@"*************** dealloc called for layoutview");
     isCancelled = YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
@@ -158,7 +161,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     //[self removeObserver:self forKeyPath:@"currentPageLayer"];
     
     self.accessibilityElements = nil;
-    self.previousAccessibilityElements = nil;
+    self.accessibilityCache = nil;
     self.textFlow = nil;
     self.scrollView = nil;
     self.currentPageLayer = nil;
@@ -180,11 +183,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     self.selector = nil;
     
     [self.contentView abortRendering];
+    [self.contentView removeFromSuperview];
     self.contentView = nil;
     self.containerView = nil;
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
-    self.delegate = nil;
     
     if(textFlow) {
         [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:textFlow.bookID];
@@ -196,9 +199,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [xpsProvider release];
     }
     
+    self.delegate = nil;
+    
     self.bookID = nil;
     [layoutCacheLock release];
-    
+        
     [super dealloc];
 }
 
@@ -248,7 +253,58 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         self.pageTurningView = aPageTurningView;
         [aPageTurningView release];
         
-        pageCount = [self.dataSource pageCount];
+        // Cache the first page crop to allow fast estimating of crops
+        firstPageCrop = [self.dataSource cropRectForPage:1];
+        
+        BlioLayoutScrollView *aScrollView = [[BlioLayoutScrollView alloc] initWithFrame:self.bounds];
+        aScrollView.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
+        aScrollView.pagingEnabled = YES;
+        aScrollView.minimumZoomScale = 1.0f;
+        aScrollView.maximumZoomScale = [[UIDevice currentDevice] blioDeviceMaximumLayoutZoom];
+        //aScrollView.maximumZoomScale = 8;
+        aScrollView.showsHorizontalScrollIndicator = NO;
+        aScrollView.showsVerticalScrollIndicator = NO;
+        aScrollView.clearsContextBeforeDrawing = NO;
+        aScrollView.directionalLockEnabled = YES;
+        aScrollView.bounces = YES;
+        aScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        aScrollView.autoresizesSubviews = YES;
+        aScrollView.scrollsToTop = NO;
+        aScrollView.delegate = self;
+        aScrollView.canCancelContentTouches = YES;
+        aScrollView.delaysContentTouches = NO;
+        //[self addSubview:aScrollView];
+        self.scrollView = aScrollView;
+        [aScrollView release];
+        
+        UIView *aContainerView = [[UIView alloc] initWithFrame:self.bounds];
+        //[self.scrollView addSubview:aContainerView];
+        aContainerView.backgroundColor = [UIColor clearColor];
+        aContainerView.autoresizesSubviews = NO;
+        self.containerView = aContainerView;
+        [aContainerView release];
+        
+        BlioLayoutContentView *aContentView = [[BlioLayoutContentView alloc] initWithFrame:self.bounds];
+        //[self.containerView addSubview:aContentView];
+        aContentView.renderingDelegate = self;
+        aContentView.backgroundColor = [UIColor clearColor];
+        aContentView.clipsToBounds = NO;
+        self.contentView = aContentView;
+        [aContentView release];
+                
+        EucSelector *aSelector = [[EucSelector alloc] init];
+        [aSelector setShouldSniffTouches:NO];
+        aSelector.dataSource = self;
+        aSelector.delegate =  self;
+        aSelector.loupeBackgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
+        self.selector = aSelector;
+        [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
+        [aSelector addObserver:self forKeyPath:@"trackingStage" options:0 context:NULL];
+        [self.scrollView setSelector:aSelector];
+        [aSelector release];
+        
+        [self addObserver:self forKeyPath:@"currentPageLayer" options:0 context:NULL];
+        
         NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
@@ -358,7 +414,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
     if (section && chapter.first) {
         if (pageStr) {
-            ret = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
+            ret = [NSString stringWithFormat:@"Page %@ \u2013 %@", pageStr, chapter.first];
         } else {
             ret = [NSString stringWithFormat:@"%@", chapter.first];
         }
@@ -413,7 +469,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     [self.selector attachToLayer:self.currentPageLayer];
     [self clearSnapshots];
     
-    [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
+    //[self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
     
     [self scrollViewDidEndZooming:self.scrollView withView:self.scrollView atScale:self.scrollView.zoomScale];
     [self performSelector:@selector(enableInteractions) withObject:nil afterDelay:0.1f];
@@ -421,9 +477,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 
-    //self.accessibilityElements = nil;
     accessibilityRefreshRequired = YES;
-
 }
 
 #pragma mark -
@@ -485,12 +539,19 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (CGAffineTransform)boundsTransformForPage:(NSInteger)aPageNumber cropRect:(CGRect *)cropRect {
-    CGRect pageCropRect = [self cropForPage:aPageNumber];
+    return [self boundsTransformForPage:aPageNumber cropRect:cropRect allowEstimate:NO];
+}
+
+- (CGAffineTransform)boundsTransformForPage:(NSInteger)aPageNumber cropRect:(CGRect *)cropRect allowEstimate:(BOOL)estimate {
+    CGRect pageCropRect = [self cropForPage:aPageNumber allowEstimate:estimate];
+    //CGRect pageCropRect = [self cropForPage:aPageNumber];
     *cropRect = pageCropRect;
     CGRect contentBounds = self.contentView.bounds;
     CGRect insetBounds = UIEdgeInsetsInsetRect(contentBounds, UIEdgeInsetsMake(kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow, kBlioLayoutShadow));
     
     CGAffineTransform boundsTransform;
+    
+    if (isCancelled) return CGAffineTransformIdentity;
     
     if (self.frame.size.width > self.frame.size.height) {
         boundsTransform = transformRectToFitRectWidth(pageCropRect, insetBounds);
@@ -529,7 +590,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 - (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale {
     
     CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
     if (CGRectEqualToRect(cropRect, CGRectZero)) return CGPointZero;   
     CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     pageRect = [self fitRectToContentView:pageRect];
@@ -572,7 +633,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     CGFloat contentOffsetX = round(viewOrigin.x + (targetRect.origin.x * zoomScale));
     
     CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
     CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
     CGFloat contentOffsetY = round(targetRect.origin.y * zoomScale);
@@ -621,17 +682,25 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     CGRect cropRect = [self.dataSource cropRectForPage:page];
     [pageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:page]];
     CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
-    //CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
-    //[pageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:page]];
+    CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
+    [self.pageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:page]];
     
     CGRect mediaRect = [self.dataSource mediaRectForPage:page];
     CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
     CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
     CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
-    [viewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:page]];
+    [self.viewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:page]];
 }
 
 - (CGRect)cropForPage:(NSInteger)page {
+    return [self cropForPage:page allowEstimate:NO];
+}
+
+- (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate {
+        
+    if (estimate) {
+        return firstPageCrop;
+    }
     
     [layoutCacheLock lock];
     
@@ -674,9 +743,10 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 - (void)drawThumbLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx  forPage:(NSInteger)aPageNumber withCacheLayer:(CGLayerRef)cacheLayer {
     UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
+    //UIImage *thumbImage = nil;
     if (thumbImage) {
         CGRect cropRect;
-        CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+        CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
         if (CGRectEqualToRect(cropRect, CGRectZero)) return;
         cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
         
@@ -688,7 +758,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     } else {
         if (cacheLayer) {
             CGRect cropRect;
-            CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+            CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
             if (CGRectEqualToRect(cropRect, CGRectZero)) return;
             cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
             
@@ -722,9 +792,12 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     //CGContextFillRect(ctx, cropRect);
     //CGContextClipToRect(ctx, cropRect);
     
-    if (isCancelled) return;
+    if (isCancelled || (nil == self.dataSource)) return;
 
     @synchronized (self.dataSource) {
+        
+        if (isCancelled) return;
+        
         [self.dataSource openDocumentIfRequired];
         CGRect unscaledCropRect = [self.dataSource cropRectForPage:aPageNumber];
         //NSLog(@"unscaledCropRect %@", NSStringFromCGRect(unscaledCropRect));
@@ -733,6 +806,8 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         //CGContextConcatCTM(ctx, pageTransform);
         //if (false) {
         if (nil != target) {
+            
+            [target retain];
             
             UIImage *thumbImage = [self.dataSource thumbnailForPage:aPageNumber];
             CGLayerRef aCGLayer;
@@ -767,8 +842,15 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                 [self.dataSource drawPage:aPageNumber inBounds:cacheRect withInset:0 inContext:cacheCtx inRect:cacheRect withTransform:cacheTransform observeAspect:NO];
             }
             
+            if (isCancelled) {
+                [target release];
+                return;
+            }
+            
             if ([target respondsToSelector:readySelector])
                 [target performSelectorOnMainThread:readySelector withObject:(id)aCGLayer waitUntilDone:NO];
+            
+            [target release];
             
             CGLayerRelease(aCGLayer);
             
@@ -798,7 +880,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     CGContextFillRect(ctx, layerBounds);
 
     CGRect cropRect;
-    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect];
+    CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
     if (CGRectEqualToRect(cropRect, CGRectZero)) return;
     cropRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
@@ -843,10 +925,15 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 #pragma mark Highlights
 
 - (NSArray *)highlightRectsForPage:(NSInteger)aPageNumber excluding:(BlioBookmarkRange *)excludedBookmark {
+    if (isCancelled) return nil;
     
     NSInteger pageIndex = aPageNumber - 1;
     NSMutableArray *allHighlights = [NSMutableArray array];
-    NSArray *highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
+    NSArray *highlightRanges = nil;
+    if (self.delegate) {
+        highlightRanges = [self.delegate rangesToHighlightForLayoutPage:aPageNumber];
+    }
+    if (isCancelled) return nil;
     NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
@@ -871,6 +958,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                 }
             }
             
+            if (isCancelled) return nil;
             NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
             
             for (NSValue *rectValue in coalescedRects) {
@@ -885,6 +973,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         }
     
     }
+    if (isCancelled) return nil;
     
     return allHighlights;
 }
@@ -917,10 +1006,10 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     BlioLayoutPageLayer *snapLayer = self.currentPageLayer;
     if (nil == snapLayer) return nil;
     
-    CGFloat scale = self.scrollView.zoomScale * 1.2;
+    CGFloat scale = self.scrollView.zoomScale * 1.;
     CGSize snapSize = self.bounds.size;
-    snapSize.width *= 1.2;
-    snapSize.height *= 1.2;
+    snapSize.width *= 1.;
+    snapSize.height *= 1.;
     
     if (nil == self.pageSnapshot) {
         if(UIGraphicsBeginImageContextWithOptions != nil) {
@@ -930,14 +1019,17 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         }
 
         CGContextRef ctx = UIGraphicsGetCurrentContext();
+        
         CGPoint translatePoint = [snapLayer convertPoint:CGPointZero fromLayer:[self.scrollView.layer superlayer]];
-        //CGContextTranslateCTM(ctx, 0, snapSize.height);
-        CGContextTranslateCTM(ctx, -translatePoint.x*scale, (snapSize.height/1.2 - translatePoint.y)*scale);
-        
+        CGFloat offsetY = CGRectGetHeight([[self.scrollView.layer superlayer] bounds]) - CGRectGetHeight([snapLayer bounds]);
+
         CGContextScaleCTM(ctx, 1, -1);
-        
+
         CGContextScaleCTM(ctx, scale, scale);
-        //CGContextTranslateCTM(ctx, -translatePoint.x, snapSize.height -translatePoint.y);
+        CGContextTranslateCTM(ctx, 0, -snapSize.height + offsetY);
+
+        CGContextTranslateCTM(ctx, -translatePoint.x, translatePoint.y);
+        
         [[snapLayer shadowLayer] renderInContext:ctx];        
         [[snapLayer tiledLayer] renderInContext:ctx];
         self.pageSnapshot = UIGraphicsGetImageFromCurrentImageContext();
@@ -1179,22 +1271,14 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         }
     } else if (object == self) {
         if ([keyPath isEqualToString:@"currentPageLayer"]) {
-//            NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
+//          NSLog(@"pageLayer changed to page %d", self.currentPageLayer.pageNumber);
             [self.selector setSelectedRange:nil];
             [self.selector attachToLayer:self.currentPageLayer];
             [self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
-            if (![self.delegate audioPlaying]) {
-                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-                UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
-                accessibilityRefreshRequired = YES;
-            }
-        }
-    } else if (object == self.delegate) {
-        if ([keyPath isEqualToString:@"audioPlaying"]) {
-            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
             accessibilityRefreshRequired = YES;
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         }
-    }
+    } 
 }
 
 - (BlioBookmarkRange *)selectedRange {
@@ -1414,10 +1498,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         self.pageNumber = targetPage;
         [self didChangeValueForKey:@"pageNumber"];
     }
+    //NSLog(@"Done go to");
 }
 
 - (void)performGoToPageStep1FromPage:(NSInteger)fromPage {
-
+    //NSLog(@"Perform go to step 1");
     CFTimeInterval shrinkDuration = 0.25f + (0.5f * (self.scrollView.zoomScale / self.scrollView.maximumZoomScale));
     [UIView beginAnimations:@"BlioLayoutGoToPageStep1" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
@@ -1436,9 +1521,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         [UIView setAnimationDuration:0.0f];
     }
     [UIView commitAnimations];
+    //NSLog(@"Perform go to step 1 complete");
 }
     
 - (void)performGoToPageStep2 {
+    //NSLog(@"Perform go to step 2");
     CFTimeInterval scrollDuration = 0.75f;
     [UIView beginAnimations:@"BlioLayoutGoToPageStep2" context:nil];
     [UIView setAnimationBeginsFromCurrentState:YES];
@@ -1452,6 +1539,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
          [UIView setAnimationDuration:0.0f];
     }
     [UIView commitAnimations];
+    //NSLog(@"Perform go to step 2 complete");
 }
 
 - (void)performGoToPageStep3 {  
@@ -1590,12 +1678,12 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
             self.currentPageLayer = aLayer;
             self.lastBlock = nil;
         
-    } else {
-        if (nil != self.accessibilityElements) {
+        if ([self.delegate respondsToSelector:@selector(toolbarsVisible)] && [self.delegate toolbarsVisible]) {
             UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+        } else {
             UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-            accessibilityRefreshRequired = YES;
         }
+        
     }
 }
 
@@ -1645,11 +1733,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     NSInteger targetPage = [currentPageLayer pageNumber];
     NSInteger pageIndex = targetPage - 1;
     if ([self.lastBlock pageIndex] != pageIndex) self.lastBlock = nil;
-    
-    self.scrollingAnimationInProgress = YES;
-    
-    [self.scrollView setPagingEnabled:NO];
-    [self.scrollView setBounces:NO];
     
     BlioTextFlowBlock *targetBlock = nil;
     
@@ -1757,7 +1840,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     CGAffineTransform viewTransform = [self blockTransformForPage:targetPage];
     
     NSUInteger count = [blocks count];
-    NSUInteger targetIndex;
     
     if (count > 0) { 
         for (NSUInteger index = 0; index < count; index++) {
@@ -1766,7 +1848,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
             CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
             if (CGRectContainsPoint(pageRect, pointInTargetPage)) {
                 targetBlock = block;
-                targetIndex = index;
                 break;
             }
         }
@@ -1795,6 +1876,10 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
             [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         } else {
+            self.scrollingAnimationInProgress = YES;
+            [self.scrollView setPagingEnabled:NO];
+            [self.scrollView setBounces:NO];
+            
             [UIView beginAnimations:@"BlioZoomPage" context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationBeginsFromCurrentState:YES];
@@ -1828,6 +1913,10 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
             [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         } else {
+            self.scrollingAnimationInProgress = YES;
+            [self.scrollView setPagingEnabled:NO];
+            [self.scrollView setBounces:NO];
+            
             [UIView beginAnimations:@"BlioZoomToBlock" context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationBeginsFromCurrentState:YES];
@@ -1928,6 +2017,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 #pragma mark Notification Callbacks
 
 - (void)blioCoverPageDidFinishRender:(NSNotification *)notification  {
+    //NSLog(@"Received blioCoverPageDidFinishRender");
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"blioCoverPageDidFinishRender" object:nil];
     [self.delegate firstPageDidRender];
 }
@@ -1936,12 +2026,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 #pragma mark Accessibility
 
 - (void)createAccessibilityElements {
-    NSMutableArray *elements = nil;
-    if (![self.delegate audioPlaying]) {
-        
-
-    
-    elements = [NSMutableArray array];
+    NSMutableArray *elements = [NSMutableArray array];
     NSInteger currentPage = self.pageNumber;
     
     CGRect cropRect;
@@ -1973,68 +2058,59 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         cropRect = newCropRect;
     }
     
-    //if (![self.delegate audioPlaying]) {
-//        UIAccessibilityElement *element = [[[UIAccessibilityElement alloc] initWithAccessibilityContainer:self] autorelease];
-//        [element setAccessibilityFrame:cropRect];
-//        [self.scrollView setIsAccessibilityElement:NO];
-//        [elements addObject:element];        
-//    } else {
-        CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
-        
-        [self.scrollView setIsAccessibilityElement:YES];
-        
-        NSInteger pageIndex = currentPage - 1;
-        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-        
-        NSMutableString *allWords = [NSMutableString string];
-        for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-            [allWords appendString:[block string]];
-            BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
-            [aProxy setTarget:self.scrollView];
-            CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
-            if (layoutMode == BlioLayoutPageModeLandscape) {
-                //blockRect = CGRectMake(blockRect.origin.y-90, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
-                blockRect.origin.y -= self.scrollView.contentOffset.y;
-                blockRect = [self.window.layer convertRect:blockRect fromLayer:self.currentPageLayer];
-                blockRect.origin.x -= self.scrollView.contentOffset.y;
-                //if (CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) {
+    CGAffineTransform viewTransform = [self blockTransformForPage:currentPage];
+    
+    [self.scrollView setIsAccessibilityElement:YES];
+    
+    NSInteger pageIndex = currentPage - 1;
+    NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    
+    NSMutableString *allWords = [NSMutableString string];
+    for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
+        [allWords appendString:[block string]];
+        BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
+        [aProxy setTarget:self.scrollView];
+        CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
+        if (layoutMode == BlioLayoutPageModeLandscape) {
+            //blockRect = CGRectMake(blockRect.origin.y-90, blockRect.origin.x, blockRect.size.height, blockRect.size.width);
+            blockRect.origin.y -= self.scrollView.contentOffset.y;
+            blockRect = [self.window.layer convertRect:blockRect fromLayer:self.currentPageLayer];
+            blockRect.origin.x -= self.scrollView.contentOffset.y;
+            //if (CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) {
 //                    CGFloat diff = CGRectGetWidth(blockRect) - CGRectGetHeight(self.scrollView.frame);
 //                    blockRect.origin.x += diff;
 //                    blockRect.size.width -= diff;
 //                }
-                if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMinX(blockRect) < CGRectGetMinY(self.scrollView.frame))) {
-                    CGFloat diff = CGRectGetMinY(self.scrollView.frame) - CGRectGetMinX(blockRect);
-                    blockRect.origin.x += diff;
-                    blockRect.size.width -= diff;
-                }
-                
-                if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMaxX(blockRect) > CGRectGetMaxY(self.scrollView.frame))) {
-                    CGFloat diff = CGRectGetMaxX(blockRect) - CGRectGetMaxY(self.scrollView.frame);
-                    blockRect.size.width -= diff;
-                }
+            if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMinX(blockRect) < CGRectGetMinY(self.scrollView.frame))) {
+                CGFloat diff = CGRectGetMinY(self.scrollView.frame) - CGRectGetMinX(blockRect);
+                blockRect.origin.x += diff;
+                blockRect.size.width -= diff;
             }
-                                
-            [aProxy setAccessibilityFrameProxy:blockRect];
-            [aProxy setAccessibilityLabelProxy:[block string]];
-            [elements addObject:aProxy];
-            [aProxy release];
+            
+            if ((CGRectGetWidth(blockRect) > CGRectGetHeight(self.scrollView.frame)) && (CGRectGetMaxX(blockRect) > CGRectGetMaxY(self.scrollView.frame))) {
+                CGFloat diff = CGRectGetMaxX(blockRect) - CGRectGetMaxY(self.scrollView.frame);
+                blockRect.size.width -= diff;
+            }
         }
-        
-        BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
-        [aProxy setTarget:self.scrollView];
-        [aProxy setAccessibilityFrameProxy:cropRect];
-        [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page.", @"Accessibility hint for page swipe advance")];
-        
-        if ([nonFolioPageBlocks count] == 0)
-            [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"Page %d is blank", @"Accessibility label for blank book page"), currentPage]];
-        else
-            [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"End of page %d", @"Accessibility label for end of page"), currentPage]];
-        
+                            
+        [aProxy setAccessibilityFrameProxy:blockRect];
+        [aProxy setAccessibilityLabelProxy:[block string]];
         [elements addObject:aProxy];
         [aProxy release];
-        
-   // }
     }
+    
+    BlioLayoutScrollViewAccessibleProxy *aProxy = [BlioLayoutScrollViewAccessibleProxy alloc];
+    [aProxy setTarget:self.scrollView];
+    [aProxy setAccessibilityFrameProxy:cropRect];
+    [aProxy setAccessibilityHintProxy:NSLocalizedString(@"Swipe to advance page, double tap to return to controls.", @"Accessibility hint for page swipe advance and double tap to return to controls")];
+    
+    if ([nonFolioPageBlocks count] == 0)
+        [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"Page %d is blank", @"Accessibility label for blank book page"), currentPage]];
+    else
+        [aProxy setAccessibilityLabelProxy:[NSString stringWithFormat:NSLocalizedString(@"End of page %d", @"Accessibility label for end of page"), currentPage]];
+    
+    [elements addObject:aProxy];
+    [aProxy release];
     
     // We keep around a copy of the previous accessibility elements because 
     // the OS doesn't retain them but can attempt to access them
@@ -2043,17 +2119,23 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
             [accessibilityElement performSelector:@selector(setProxyContainer:) withObject:self];
     }
     
-    self.previousAccessibilityElements = self.accessibilityElements;
+    if (nil == self.accessibilityCache) {
+        BlioTimeOrderedCache *aCache = [[BlioTimeOrderedCache alloc] init];
+        aCache.countLimit = 5; // Arbitrary 5 object limit
+        self.accessibilityCache = aCache;
+        [aCache release];
+    }
+    
+    if (nil != self.accessibilityElements) {
+        [self.accessibilityCache setObject:self.accessibilityElements forKey:[NSDate date] cost:1];
+    }
+    
     self.accessibilityElements = elements;
     accessibilityRefreshRequired = NO;
     //[elements release];
 }
 
 - (BOOL)isAccessibilityElement {
-    if (accessibilityRefreshRequired) {
-        [self createAccessibilityElements];
-    }
-    
     if (!self.scrollingAnimationInProgress) {
     // If we are querying the accessibility mode, force us to zoom out to page
         if ([self.scrollView zoomScale] != kBlioPDFGoToZoomTargetScale) {
@@ -2068,31 +2150,77 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
             [self.scrollView setContentOffset:centeredOffset animated:NO]; 
         }
     }
+    
+    if ([self.delegate respondsToSelector:@selector(toolbarsVisible)]) {
+        return [self.delegate toolbarsVisible];
+    } 
+    
+    if([self.delegate audioPlaying]) {
+        // Working around a bug (or quirk?) in the frameworks:
+        // If we don't return YES here, it will still access the
+        // accesibility elements of out child
+        // views, so we return YES and give an empty frame,
+        // which the framework ignores...
+        return YES;
+    } 
+    
     return NO;
 }
 
-- (NSInteger)accessibilityElementCount {
-    if (accessibilityRefreshRequired) {
-        [self createAccessibilityElements];
-    }
-    
-    return [self.accessibilityElements count];
+- (NSString *)accessibilityLabel {
+    return NSLocalizedString(@"Book Page", "Accessibility label for LayoutView page view");
 }
 
+- (NSString *)accessibilityHint {
+    return NSLocalizedString(@"Double tap to read page with VoiceOver.", "Accessibility label for Layout View page view");
+}
+
+- (CGRect)accessibilityFrame {
+    if([self.delegate audioPlaying]) {
+        // See comments in -isAccessibilityElement
+        return CGRectZero;
+    } else {
+        CGRect bounds;
+        if([self.delegate respondsToSelector:@selector(nonToolbarRect)]) {
+            bounds = [self.delegate nonToolbarRect];
+        } else {
+            bounds = self.bounds;
+        }
+        return [self convertRect:bounds toView:nil];
+    }
+}
+
+- (NSInteger)accessibilityElementCount {
+    if([self.delegate audioPlaying]) {
+        return 0;
+    } else {
+        if (accessibilityRefreshRequired) {
+            [self createAccessibilityElements];
+        }        
+        return [self.accessibilityElements count];
+    }
+}
 
 - (id)accessibilityElementAtIndex:(NSInteger)index {
-    if (accessibilityRefreshRequired) {
-        [self createAccessibilityElements];
+    if([self.delegate audioPlaying]) {
+        return nil;
+    } else {
+        if (accessibilityRefreshRequired) {
+            [self createAccessibilityElements];
+        }        
+        return [self.accessibilityElements objectAtIndex:index];
     }
-
-    return [self.accessibilityElements objectAtIndex:index];
 }
 
 - (NSInteger)indexOfAccessibilityElement:(id)element {
-    if (accessibilityRefreshRequired) {
-        [self createAccessibilityElements];
+    if([self.delegate audioPlaying]) {
+        return NSNotFound;
+    } else {
+        if (accessibilityRefreshRequired) {
+            [self createAccessibilityElements];
+        }        
+        return [self.accessibilityElements indexOfObject:element];
     }
-    return [self.accessibilityElements indexOfObject:element];
 }
 
 @end
@@ -2162,8 +2290,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 @synthesize data;
 
 - (void)dealloc {
+    [pdfLock lock];
     if (pdf) CGPDFDocumentRelease(pdf);
     self.data = nil;
+    [pdfLock unlock];
+    [pdfLock release];
     [super dealloc];
 }
 
@@ -2177,6 +2308,8 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         CGDataProviderRelease(pdfProvider);
         self.data = aData;
         [aData release];
+        
+        pdfLock = [[NSLock alloc] init];
     }
     return self;
 }
@@ -2185,17 +2318,44 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return pageCount;
 }
 
-- (CGRect)cropRectForPage:(NSInteger)page {
-    if (nil == pdf) {
-        [self openDocumentIfRequired];
+- (void)openDocumentWithoutLock {
+    if (self.data) {
+        CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.data);
+        pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
+        CGDataProviderRelease(pdfProvider);
     }
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    return CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
 }
 
-- (CGRect)mediaRectForPage:(NSInteger)page {
+- (CGRect)cropRectForPage:(NSInteger)page {
+    [pdfLock lock];
+    if (nil == pdf) {
+        [self openDocumentWithoutLock];
+        if (nil == pdf) {
+            [pdfLock unlock];
+            return CGRectZero;
+        }
+    }
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    return CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox);
+    CGRect cropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
+    [pdfLock unlock];
+    
+    return cropRect;
+}
+
+- (CGRect)mediaRectForPage:(NSInteger)page {    
+    [pdfLock lock];
+    if (nil == pdf) {
+        [self openDocumentWithoutLock];
+        if (nil == pdf) {
+            [pdfLock unlock];
+            return CGRectZero;
+        }
+    }
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
+    CGRect mediaRect = CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox);
+    [pdfLock unlock];
+    
+    return mediaRect;
 }
 
 - (CGFloat)dpiRatio {
@@ -2210,16 +2370,19 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     CGContextClipToRect(ctx, rect);
     
     CGContextConcatCTM(ctx, transform);
+    [pdfLock lock];
+    if (nil == pdf) return;
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
     CGPDFPageRetain(aPage);
     CGContextDrawPDFPage(ctx, aPage);
     CGPDFPageRelease(aPage);
+    [pdfLock unlock];
 }
 
 - (void)openDocumentIfRequired {
-    CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.data);
-    pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-    CGDataProviderRelease(pdfProvider);
+    [pdfLock lock];
+    [self openDocumentWithoutLock];
+    [pdfLock unlock];
 }
 
 - (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
@@ -2227,8 +2390,10 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (void)closeDocument {
+    [pdfLock lock];
     if (pdf) CGPDFDocumentRelease(pdf);
     pdf = NULL;
+    [pdfLock unlock];
 }
 
 - (void)closeDocumentIfRequired {

@@ -16,6 +16,10 @@
 		7D035BDB11ECD03B00F39592 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
 		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
 		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */; };
+		7D0D8FDC121238FD00CD994D /* THNSStringSmartQuotes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D0D925512130F7F00CD994D /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D925412130F7F00CD994D /* EPubOverrides.css */; };
+		7D0D92851213185B00CD994D /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D925412130F7F00CD994D /* EPubOverrides.css */; };
 		7D14D1BD119C695800F4B5D3 /* EucHighlightRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */; };
 		7D14D1BE119C695D00F4B5D3 /* EucHighlightRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D1900B61149498500375803 /* libwapcaplet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1900A91149498500375803 /* libwapcaplet.h */; };
@@ -121,6 +125,8 @@
 		7D19047911494CEA00375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903EA11494CEA00375803 /* utils.h */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
+		7D27DC851223E161009E7B64 /* THAccessibilityElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D27DC641223DE5C009E7B64 /* THAccessibilityElement.m */; };
+		7D27DC861223E166009E7B64 /* THAccessibilityElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D27DC631223DE5C009E7B64 /* THAccessibilityElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D2CC986114D92EB007FDEAF /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2341981149614F00C318E7 /* libEucalyptusCSS.a */; };
 		7D2CC989114D92F8007FDEAF /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900CD11494A0C00375803 /* libparserutils.a */; };
 		7D2CC98A114D92FB007FDEAF /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900981149490E00375803 /* libwapcaplet.a */; };
@@ -450,8 +456,6 @@
 		7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */; };
 		7DB0901E1110C76B00CC5694 /* EucSelectorRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB35E3F120764DE0050BD91 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F4C2E11EF29600065A5F7 /* libEucalyptusBase.a */; };
-		7DB35E42120764EB0050BD91 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
-		7DB35E43120764F30050BD91 /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
 		7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
 		7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
@@ -616,6 +620,9 @@
 		7D035B6811ECD03B00F39592 /* Pride and Prejudice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Pride and Prejudice"; sourceTree = "<group>"; };
 		7D0D818211075E2A00C672AC /* EucSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelector.h; sourceTree = "<group>"; };
 		7D0D818311075E2A00C672AC /* EucSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelector.m; sourceTree = "<group>"; };
+		7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSStringSmartQuotes.h; sourceTree = "<group>"; };
+		7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSStringSmartQuotes.m; sourceTree = "<group>"; };
+		7D0D925412130F7F00CD994D /* EPubOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubOverrides.css; sourceTree = "<group>"; };
 		7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHighlightRange.h; sourceTree = "<group>"; };
 		7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHighlightRange.m; sourceTree = "<group>"; };
 		7D1900981149490E00375803 /* libwapcaplet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwapcaplet.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -928,6 +935,8 @@
 		7D2341981149614F00C318E7 /* libEucalyptusCSS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusCSS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
+		7D27DC631223DE5C009E7B64 /* THAccessibilityElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THAccessibilityElement.h; sourceTree = "<group>"; };
+		7D27DC641223DE5C009E7B64 /* THAccessibilityElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THAccessibilityElement.m; sourceTree = "<group>"; };
 		7D2CCB08114DA3A2007FDEAF /* Aliases */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Aliases; sourceTree = "<group>"; };
 		7D3F4C2E11EF29600065A5F7 /* libEucalyptusBase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusBase.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D3F4D1211EF38B80065A5F7 /* EucConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucConfiguration.h; sourceTree = "<group>"; };
@@ -1303,7 +1312,6 @@
 				7D9AA999114A8EB60055C381 /* bUpe */,
 				7D2340F51149602200C318E7 /* CSS */,
 				7D516E221028734C005F3C46 /* Utils */,
-				7D3F4D1111EF38B80065A5F7 /* Base */,
 				7D516E1710287300005F3C46 /* ThirdParty */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				7D53F30910C2CBD70042215C /* TransitionTest */,
@@ -2173,12 +2181,12 @@
 				7D23415E1149602300C318E7 /* EucCSSLayoutDocumentRun.m */,
 				7D58226711F858AB00D4150C /* EucCSSLayoutPositionedContainer.h */,
 				7D58226811F858AB00D4150C /* EucCSSLayoutPositionedContainer.m */,
-				7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */,
-				7D2341651149602300C318E7 /* EucCSSLayoutPositionedBlock.m */,
-				7D2341661149602300C318E7 /* EucCSSLayoutPositionedRun.h */,
-				7D2341671149602300C318E7 /* EucCSSLayoutPositionedRun.m */,
 				7D2341621149602300C318E7 /* EucCSSLayoutPositionedLine.h */,
 				7D2341631149602300C318E7 /* EucCSSLayoutPositionedLine.m */,
+				7D2341661149602300C318E7 /* EucCSSLayoutPositionedRun.h */,
+				7D2341671149602300C318E7 /* EucCSSLayoutPositionedRun.m */,
+				7D2341641149602300C318E7 /* EucCSSLayoutPositionedBlock.h */,
+				7D2341651149602300C318E7 /* EucCSSLayoutPositionedBlock.m */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -2213,8 +2221,11 @@
 				7D3F4D1311EF38B80065A5F7 /* EucConfiguration.m */,
 				7D3F4D1411EF38B80065A5F7 /* EucSharedHyphenator.h */,
 				7D3F4D1511EF38B80065A5F7 /* EucSharedHyphenator.mm */,
+				7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */,
+				7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */,
 			);
-			path = Base;
+			name = Base;
+			path = ../Base;
 			sourceTree = "<group>";
 		};
 		7D516DFF102872A5005F3C46 /* BookView */ = {
@@ -2279,6 +2290,7 @@
 				7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */,
 				7DF1AF9C11D9169700506BD5 /* THUIDeviceAdditions.h */,
 				7DF1AF9A11D9168F00506BD5 /* THUIDeviceAdditions.m */,
+				7D3F4D1111EF38B80065A5F7 /* Base */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2312,6 +2324,8 @@
 				7D51701A102879C7005F3C46 /* THGeometryUtils.c */,
 				7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */,
 				7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */,
+				7D27DC631223DE5C009E7B64 /* THAccessibilityElement.h */,
+				7D27DC641223DE5C009E7B64 /* THAccessibilityElement.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -2541,6 +2555,7 @@
 				7DD48EC810C2E61E0001203D /* ContentsButton.png */,
 				7DF1AD7011D90F6E00506BD5 /* ContentsButton@2x.png */,
 				7DD48EC910C2E61E0001203D /* EPubDefault.css */,
+				7D0D925412130F7F00CD994D /* EPubOverrides.css */,
 				7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */,
 				7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */,
 				7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */,
@@ -2733,6 +2748,7 @@
 				7D3F4D2011EF38B80065A5F7 /* EucConfiguration.h in Headers */,
 				7D3F4D2211EF38B80065A5F7 /* EucSharedHyphenator.h in Headers */,
 				7D58226911F858AB00D4150C /* EucCSSLayoutPositionedContainer.h in Headers */,
+				7D0D8FDC121238FD00CD994D /* THNSStringSmartQuotes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2833,6 +2849,7 @@
 				7D14D1BE119C695D00F4B5D3 /* EucHighlightRange.h in Headers */,
 				7DF8BC3311B526E3003B7A97 /* THBaseEAGLView.h in Headers */,
 				7DF1AF9D11D9169700506BD5 /* THUIDeviceAdditions.h in Headers */,
+				7D27DC861223E166009E7B64 /* THAccessibilityElement.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3158,6 +3175,7 @@
 				7D4A006811DBA34E00DDA5B7 /* SelectionKnob.png in Resources */,
 				7D4A006911DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */,
 				7D035BDA11ECD03B00F39592 /* Pride and Prejudice in Resources */,
+				7D0D925512130F7F00CD994D /* EPubOverrides.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3235,8 +3253,7 @@
 				7D4A009D11DBA34E00DDA5B7 /* SelectionKnob.png in Resources */,
 				7D4A009E11DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */,
 				7D035BDB11ECD03B00F39592 /* Pride and Prejudice in Resources */,
-				7DB35E42120764EB0050BD91 /* Down and out in the Magic Kingdom in Resources */,
-				7DB35E43120764F30050BD91 /* book in Resources */,
+				7D0D92851213185B00CD994D /* EPubOverrides.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3362,6 +3379,7 @@
 				7D3F4D2111EF38B80065A5F7 /* EucConfiguration.m in Sources */,
 				7D3F4D2311EF38B80065A5F7 /* EucSharedHyphenator.mm in Sources */,
 				7D58226A11F858AB00D4150C /* EucCSSLayoutPositionedContainer.m in Sources */,
+				7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3465,6 +3483,7 @@
 				7D14D1BD119C695800F4B5D3 /* EucHighlightRange.m in Sources */,
 				7DF8BC3411B526E3003B7A97 /* THBaseEAGLView.m in Sources */,
 				7DF1AF9B11D9168F00506BD5 /* THUIDeviceAdditions.m in Sources */,
+				7D27DC851223E161009E7B64 /* THAccessibilityElement.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

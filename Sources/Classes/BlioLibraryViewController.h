@@ -31,14 +31,17 @@ static const CGFloat kBlioLibraryToolbarHeight = 44;
 static const CGFloat kBlioLibraryListRowHeight = 76;
 static const CGFloat kBlioLibraryListBookHeight = 76;
 static const CGFloat kBlioLibraryListBookWidth = 53;
+static const CGFloat kBlioLibraryListBookMargin = 6;
+static const CGFloat kBlioLibraryListAccessoryMargin = 20;
 static const CGFloat kBlioLibraryListContentWidth = 220;
-static const CGFloat kBlioLibraryListProgressViewWidth = 150;
+static const CGFloat kBlioLibraryListButtonWidth = 33;
+static const CGFloat kBlioLibraryListButtonHeight = 33;
 
 static const CGFloat kBlioLibraryGridRowHeight = 140;
-static const CGFloat kBlioLibraryGridBookHeight = 140;
-static const CGFloat kBlioLibraryGridBookWidth = 106;
-static const CGFloat kBlioLibraryGridBookHeightPad = 210;
+static const CGFloat kBlioLibraryGridBookWidthPhone = 106;
+static const CGFloat kBlioLibraryGridBookHeightPhone = 140;
 static const CGFloat kBlioLibraryGridBookWidthPad = 140;
+static const CGFloat kBlioLibraryGridBookHeightPad = 210;
 static const CGFloat kBlioLibraryGridProgressViewWidth = 60;
 static const CGFloat kBlioLibraryGridBookSpacing = 0;
 static const CGFloat kBlioLibraryGridBookSpacingPad = 40;
@@ -137,6 +140,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIImageView *textureView;
     UIView *errorView;
     BlioBook *book;
+	id delegate;
 }
 
 @property (nonatomic, retain) UIImageView *imageView;
@@ -144,6 +148,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIView *errorView;
 @property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, readonly) UIImage *image;
+@property (nonatomic, assign) id delegate;
 
 - (void)setBook:(BlioBook *)newBook forLayout:(BlioLibraryLayout)layout;
 - (BlioCoverView *)coverView;
@@ -179,7 +184,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIProgressView *progressView;
     UIButton * pauseButton;
     UIButton * resumeButton;
-    UILabel * pausedLabel;
+    UILabel * stateLabel;
     id delegate;
     NSArray *accessibilityElements;
 	NSString * librarySortKey;
@@ -194,7 +199,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) UIButton *resumeButton;
 @property (nonatomic, assign) BlioBook *book;
-@property (nonatomic, assign) UILabel *pausedLabel;
+@property (nonatomic, assign) UILabel *stateLabel;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) NSArray *accessibilityElements;
 
@@ -214,6 +219,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIButton * resumeButton;
     id delegate;
 	NSUInteger layoutPageEquivalentCount;
+	UIImageView * statusBadge;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
@@ -226,6 +232,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIButton *resumeButton;
 @property (nonatomic, assign) BlioBook *book;
 @property (nonatomic, assign) id delegate;
+@property (nonatomic, retain) UIImageView *statusBadge;
 
 -(void)resetAuthorText;
 -(void)resetProgressSlider;

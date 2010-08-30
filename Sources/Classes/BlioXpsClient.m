@@ -43,8 +43,10 @@
 	
 	ret = [self inflateInit:&strm]; 
 	
-	if (ret != Z_OK)
+	if (ret != Z_OK) {
+		[outData release];
 		return ret;
+	}
 	
 	strm.avail_in = inBufSz;
 	// if (strm.avail_in == 0)
@@ -62,11 +64,13 @@
 			case Z_DATA_ERROR:
 			case Z_MEM_ERROR:
 				XPS_inflateEnd(&strm);
+				[outData release];
 				return ret;
 		}
 		bytesDecompressed = BUFSIZE - strm.avail_out;
 		NSData* data = [[NSData alloc] initWithBytes:(const void*)outbuf length:bytesDecompressed];
 		[outData appendData:data];
+		[data release];
 	}
 	while (strm.avail_out == 0);
 	XPS_inflateEnd(&strm);
@@ -77,6 +81,7 @@
 	*outBuf = (unsigned char*)malloc([outData length]);  
     [outData getBytes:*outBuf length:[outData length]];
 	*outBufSz = [outData length];
+	[outData release];
 	
 	if (ret == Z_STREAM_END)
 		return Z_OK;
@@ -84,7 +89,7 @@
 }
 
 - (void*)openFile:(NSString*)xpsFile {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 	return (void*)XPS_Open([xpsFile cStringUsingEncoding:NSASCIIStringEncoding],
 						   [documentsDirectory cStringUsingEncoding:NSASCIIStringEncoding]);

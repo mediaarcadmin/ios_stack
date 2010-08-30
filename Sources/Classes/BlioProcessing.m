@@ -12,18 +12,16 @@
 
 #import <pthread.h>
 
-NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
-NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
-NSString * const BlioProcessingOperationCompleteNotification = @"BlioProcessingOperationCompleteNotification";
-NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOperationFailedNotification";
-
 @implementation BlioProcessingOperation
 
 static pthread_mutex_t sBookMutationMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int mutationCount = 0;
 
-@synthesize bookID, sourceID, sourceSpecificID, forceReprocess, cacheDirectory,tempDirectory,backgroundTaskIdentifier;
+@synthesize bookID, sourceID, sourceSpecificID, forceReprocess, cacheDirectory,tempDirectory;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+@synthesize backgroundTaskIdentifier;
+#endif
 
 - (id) init {
 	if((self = [super init])) {
@@ -101,6 +99,16 @@ static int mutationCount = 0;
     }
 }
 
+- (BOOL)hasBookManifestValueForKey:(NSString *)key {
+    BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book");
+        return NO;
+    } else {
+        return [book hasManifestValueForKey:key];
+    }
+}
+
 - (NSData *)getBookManifestDataForKey:(NSString *)key {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {
@@ -108,6 +116,16 @@ static int mutationCount = 0;
         return nil;
     } else {
         return [book manifestDataForKey:key];
+    }
+}
+
+- (NSData *)getBookTextFlowDataWithPath:(NSString *)path {
+    BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book");
+        return nil;
+    } else {
+        return [book textFlowDataWithPath:path];
     }
 }
 

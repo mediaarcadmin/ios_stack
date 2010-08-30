@@ -22,7 +22,7 @@
 	self = [super init];
 	if (self)
 	{
-		self.title = NSLocalizedString(@"Version",@"\"Version and credits\" view controller title.");
+		self.title = NSLocalizedString(@"Version",@"\"Version\" view controller title.");
 		// Get the marketing version from Info.plist.
 		NSString* version = (NSString*)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; // @"CFBundleVersion" for build number
 		//NSString* versionText = [NSString stringWithFormat:@"<center><p style=font-family:arial;font-size:50px;>Blio</center></p><center><p style=font-family:arial;font-size:35px;><i>Beta version %@</i></p></center><p>",version];  
@@ -56,6 +56,7 @@
 
 
 - (void)dealloc {
+	[textView release];
     [super dealloc];
 }
 

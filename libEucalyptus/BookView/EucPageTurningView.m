@@ -10,6 +10,7 @@
 #import "THBackgroundProcessingMediator.h"
 #import "THTimer.h"
 #import "THUIViewThreadSafeDrawing.h"
+#import "THAccessibilityElement.h"
 #import "THLog.h"
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
@@ -372,6 +373,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [_animatedTurnData release];
     [_reverseAnimatedTurnData release];
 
+    [_accessibilityElements release];
+    [_nextPageTapZone release];
+    
     [super dealloc];
 }
 
@@ -1551,7 +1555,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         }
 
         {
-            UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            THAccessibilityElement *nextPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
             if(!_pageContentsInformation[2].view)  {
                 nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
@@ -1562,7 +1566,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             nextPageTapZone.accessibilityFrame = frame;
             nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");
             
+            nextPageTapZone.delegate = self;
+            
             [accessibilityElements addObject:nextPageTapZone];
+            _nextPageTapZone = [nextPageTapZone retain];
+            
             [nextPageTapZone release];
         }        
         
@@ -1620,6 +1628,16 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 - (NSInteger)indexOfAccessibilityElement:(id)element
 {
     return [[self accessibilityElements] indexOfObject:element];
+}
+
+- (void)thAccessibilityElementDidBecomeFocused:(THAccessibilityElement *)element
+{
+    // An attempt to auto-read the book.  Doesn't really work.
+    /*if(element == _nextPageTapZone) {
+        if(element.accessibilityElementIsFocused) {
+            [self turnToPageView:_pageViews[2] forwards:YES pageCount:1];
+        }
+    }*/
 }
 
 // Since gravity is the only force we're using, we just manually add it in 
@@ -1849,6 +1867,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 {
     [_accessibilityElements release];
     _accessibilityElements = nil;
+    [_nextPageTapZone release];
+    _nextPageTapZone = nil;
 }
 
 - (void)setDimQuotient:(CGFloat)dimQuotient

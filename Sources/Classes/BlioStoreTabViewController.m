@@ -88,8 +88,8 @@
 			[aEntityController setProcessingDelegate:self.processingDelegate];
 			[aEntityController setManagedObjectContext:self.managedObjectContext];
 //			[aEntityController setTitle:[entity title]];
-//			[aEntityController setEntity:entity];
 //			[aEntityController setFeed:feed];
+//			[aEntityController setEntity:entity];
 			[aEntityController.navigationItem setRightBarButtonItem:aDoneButton];
 			
 			vc1.detailViewController = aEntityController;

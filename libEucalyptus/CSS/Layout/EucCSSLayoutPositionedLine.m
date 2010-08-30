@@ -67,78 +67,88 @@
 
 - (void)sizeToFitInWidth:(CGFloat)width;
 {
-    EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
-    CGFloat lineBoxHeight = 0;
-    CGFloat currentBaseline = 0;
-    
-    size_t componentsCount = documentRun.componentsCount;
-    
-    uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
-    uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
-    EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
+    if(!_componentWidth) {
+        EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
+        CGFloat lineBoxHeight = 0;
+        CGFloat currentBaseline = 0;
+        
+        size_t componentsCount = documentRun.componentsCount;
+        
+        uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
+        uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
+        EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
 
-    if(afterEndComponentOffset == startComponentOffset) {
-        // This is a line with no components, ending in a hard break.
-        // Set up to use the hard break itsself as the only component, so that
-        // we pick up the line height.
-        // This is a bit of a hack.
-        afterEndComponentOffset = startComponentOffset + 1;
-    }
-    
-    EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
-    uint32_t i;
-    EucCSSLayoutDocumentRunComponentInfo *info;
-    for(i = startComponentOffset, info = componentInfos;
-        i < componentsCount && i < afterEndComponentOffset; 
-        ++i, ++info) {
-        if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule 
-           || i == startComponentOffset || i == afterEndComponentOffset - 1) {
-            if(info->documentNode != currentDocumentNode) {
-                CGFloat emBoxHeight = info->pointSize;
-                CGFloat inlineBoxHeight = info->lineHeight;
-                
-                CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
-                
-                CGFloat baseline = info->ascender + halfLeading;
-                CGFloat descenderAndLineHeightAddition = inlineBoxHeight - baseline;
-                if(baseline > currentBaseline) {
-                    currentBaseline = baseline;
+        if(afterEndComponentOffset == startComponentOffset) {
+            // This is a line with no components, ending in a hard break.
+            // Set up to use the hard break itsself as the only component, so that
+            // we pick up the line height.
+            // This is a bit of a hack.
+            afterEndComponentOffset = startComponentOffset + 1;
+        }
+        
+        EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
+        uint32_t i;
+        EucCSSLayoutDocumentRunComponentInfo *info;
+        for(i = startComponentOffset, info = componentInfos;
+            i < componentsCount && i < afterEndComponentOffset; 
+            ++i, ++info) {
+            if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule 
+               || i == startComponentOffset || i == afterEndComponentOffset - 1) {
+                if(info->documentNode != currentDocumentNode) {
+                    CGFloat emBoxHeight = info->pointSize;
+                    CGFloat inlineBoxHeight = info->lineHeight;
+                    
+                    CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
+                    if(halfLeading != floorf(halfLeading)) {
+                        halfLeading += 0.5f;
+                        inlineBoxHeight += 1.0f;
+                    }
+                    
+                    CGFloat baseline = info->ascender + halfLeading;
+                    CGFloat descenderAndLineHeightAddition = inlineBoxHeight - baseline;
+                    if(baseline > currentBaseline) {
+                        currentBaseline = baseline;
+                    }
+                    CGFloat baselineAdjustedLineHeight = currentBaseline + descenderAndLineHeightAddition;
+                    if(baselineAdjustedLineHeight > lineBoxHeight) {
+                        lineBoxHeight = baselineAdjustedLineHeight;
+                    }
+                    currentDocumentNode = info->documentNode;
                 }
-                CGFloat baselineAdjustedLineHeight = currentBaseline + descenderAndLineHeightAddition;
-                if(baselineAdjustedLineHeight > lineBoxHeight) {
-                    lineBoxHeight = baselineAdjustedLineHeight;
+                if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+                    if(i == startComponentOffset) {
+                        _componentWidth += info->widthAfterHyphen;
+                    }
+                } else {
+                    _componentWidth += info->width;
                 }
-                currentDocumentNode = info->documentNode;
             }
+        }
+        
+        // Stopping 'just before' a hyphen component really means that we stop
+        // after the first part of the hyphenated word.
+        if(i < documentRun.componentsCount) {
             if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                if(i == startComponentOffset) {
-                    _componentWidth += info->widthAfterHyphen;
-                }
-            } else {
-                _componentWidth += info->width;
+                _componentWidth -= info->width;
+                _componentWidth += info->widthBeforeHyphen;
             }
         }
+        
+        _baseline = currentBaseline;
+        
+        CGRect frame = self.frame;
+        frame.size = CGSizeMake(width, lineBoxHeight);
+        self.frame = frame;
+    } else {
+        CGRect frame = self.frame;
+        frame.size.width = width;
+        self.frame = frame;
     }
-    
-    // Stopping 'just before' a hyphen component really means that we stop
-    // after the first part of the hyphenated word.
-    if(i < documentRun.componentsCount) {
-        if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-            _componentWidth -= info->width;
-            _componentWidth += info->widthBeforeHyphen;
-        }
-    }
-    
-    _baseline = currentBaseline;
-    
-    CGRect frame = self.frame;
-    frame.size = CGSizeMake(width, lineBoxHeight);
-    self.frame = frame;
 }
 
-- (CGFloat)minimumNeededWidth
+- (CGFloat)minimumWidth
 {
-    return _componentWidth + _indent;
+    return ceilf(_componentWidth + _indent);
 }
 
 - (size_t)renderItemCount
@@ -214,13 +224,20 @@
                 uint8_t decoration = css_computed_text_decoration(style);
                 BOOL shouldUnderline = (decoration == CSS_TEXT_DECORATION_UNDERLINE);
                 if(currentUnderline != shouldUnderline) {
-                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStart;
-                    renderItem->item.underlineItem.underlinePoint = CGPointMake(xPosition, yPosition + baseline + ceilf((info->lineHeight - info->pointSize) * 0.5f) + 0.5);
+                    if(shouldUnderline) {
+                        //NSLog(@"Underline On");
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStart;
+                        renderItem->item.underlineItem.underlinePoint = CGPointMake(floorf(xPosition), yPosition + baseline + 1.5f);
+                    } else {
+                        //NSLog(@"Underline Off");
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStop;
+                        renderItem->item.underlineItem.underlinePoint = CGPointMake(ceilf(xPosition), yPosition + baseline + 1.5f);
+                    }
                     ++renderItem;
                     ++_renderItemCount;
-
                     currentUnderline = shouldUnderline;
                 }
+                checkForUnderline = NO;
             }
             
             if(checkForHyperlink) {
@@ -240,6 +257,8 @@
                             ++renderItem;
                             ++_renderItemCount;
                             [currentHyperlink release];
+                            //NSLog(@"Hyperlink Off");
+                            //NSLog(@"Hyperlink On");
                             currentHyperlink = [href retain];
                             renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                             renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
@@ -247,6 +266,7 @@
                             ++_renderItemCount;
                         }
                     } else {
+                        //NSLog(@"Hyperlink On");
                         currentHyperlink = [href retain];
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
@@ -255,6 +275,7 @@
                     }
                 } else {
                     if(currentHyperlink) {
+                        //NSLog(@"Hyperlink Off");
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
                         ++renderItem;
@@ -267,13 +288,9 @@
             }
             
             if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
-                CGFloat emBoxHeight = info->pointSize;
-                CGFloat inlineBoxHeight = info->lineHeight;
-                CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
-                
                 renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
                 renderItem->item.stringItem.string = [(NSString *)info->component retain];
-                renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender - halfLeading, info->width, size.height);
+                renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, size.height);
                 renderItem->item.stringItem.pointSize = info->pointSize;
                 renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                 renderItem->item.stringItem.layoutPoint = info->point;
@@ -289,18 +306,8 @@
                     --spacesRemaining;
                 }
                 xPosition += info->width;
-            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
-                renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindImage;
-                renderItem->item.imageItem.image = CGImageRetain((CGImageRef)info->component);
-                renderItem->item.imageItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, info->pointSize);
-                renderItem->item.imageItem.layoutPoint = info->point;
-                renderItem->altText = [[info->documentNode altText] retain];
-                ++renderItem;
-                ++_renderItemCount;
-                
-                xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                if (i == startComponentOffset) {
+                if(i == startComponentOffset) {
                     renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
                     renderItem->item.stringItem.string = [(NSString *)info->component2 retain];
                     renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthAfterHyphen, size.height);
@@ -312,6 +319,16 @@
                     
                     xPosition += info->widthAfterHyphen;
                 }
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
+                renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindImage;
+                renderItem->item.imageItem.image = CGImageRetain((CGImageRef)info->component);
+                renderItem->item.imageItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, info->pointSize);
+                renderItem->item.imageItem.layoutPoint = info->point;
+                renderItem->altText = [[info->documentNode altText] retain];
+                ++renderItem;
+                ++_renderItemCount;
+                
+                xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
                 checkForUnderline = YES;
                 checkForHyperlink = YES;
@@ -333,7 +350,7 @@
                 renderItem->altText = renderItem->item.stringItem.string;
                 
                 renderItem->item.stringItem.string = [(NSString *)info->component retain];
-                renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->widthBeforeHyphen, size.height);
+                renderItem->item.stringItem.rect.size.width = info->widthBeforeHyphen;
                 renderItem->item.stringItem.layoutPoint = info->point;
                 ++renderItem;                
             }

@@ -7,6 +7,7 @@
 //
 
 #import "BlioBookSearchController.h"
+#import "UIDevice+BlioAdditions.h"
 
 @interface BlioBookSearchController()
 
@@ -40,6 +41,7 @@
     if ((self = [super init])) {
         self.paragraphSource = aParagraphSource;
         self.searchOptions = NSCaseInsensitiveSearch;
+        searchInterval = [[UIDevice currentDevice] blioDeviceSearchInterval];
     }
     return self;
 }
@@ -95,6 +97,8 @@
     
     self.currentParagraphID = paragraphID;
     self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
+    self.currentCharacterOffset = 0;
+
     self.hasWrapped = YES;
     
     if ([(NSObject *)self.delegate respondsToSelector:@selector(searchControllerDidReachEndOfBook:)])
@@ -111,12 +115,13 @@
     self.searching = YES;
     
     // TODO - confirm that paragraphIDs observe the comparison correctly
-    if ((self.hasWrapped) &&
-        ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedSame) &&
-        (self.currentCharacterOffset >= self.startElementOffset)) {
+    if (self.hasWrapped) {
+        if (([self.currentParagraphID compare:self.startParagraphID] == NSOrderedSame) &&
+            (self.currentCharacterOffset >= self.startElementOffset)) {
         
-        [self searchCompleted];
-        return;
+                [self searchCompleted];
+                return;
+            }
     }
     
     NSString *currentParagraphString = [self.currentParagraphWords componentsJoinedByString:@" "];
@@ -202,7 +207,13 @@
         self.currentParagraphID = [self.paragraphSource nextParagraphIdForParagraphWithID:self.currentParagraphID];
         
         if (!self.currentParagraphID) {
-            [self searchReachedEndOfBook];
+            if (self.hasWrapped) {
+                [self searchCompleted];
+                return;
+            } else {
+                [self searchReachedEndOfBook];
+                return;
+            }
         } else {
             self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
             self.currentCharacterOffset = 0;
@@ -215,8 +226,8 @@
             
                 //BlioBookmarkPoint *debugBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:0];
                 //NSLog(@"Page %d paragraph %d has %d words", [debugBookmarkPoint layoutPage], [debugBookmarkPoint blockOffset], [self.currentParagraphWords count]);
-            
-                [self performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:0.01f];
+                // Need to always allow at least a 0.01f delay before finding teh next occureence otherwise the UI freezes
+                [self performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:searchInterval + 0.01f];
             }
         }
     }

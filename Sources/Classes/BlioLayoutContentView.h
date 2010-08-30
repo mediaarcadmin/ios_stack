@@ -21,6 +21,7 @@
     BlioLayoutShadowLayer *shadowLayer;
     BlioLayoutHighlightsLayer *highlightsLayer;
     NSOperationQueue *cacheQueue;
+    BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
@@ -32,6 +33,7 @@
 - (void)setExcludedHighlight:(BlioBookmarkRange *)excludedHighlight;
 - (void)refreshHighlights;
 - (void)forceThumbCacheAfterDelay:(NSTimeInterval)delay;
+- (void)abortRendering;
 
 @end
 

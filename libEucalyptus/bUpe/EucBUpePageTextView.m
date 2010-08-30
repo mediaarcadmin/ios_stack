@@ -63,11 +63,14 @@
 
 - (EucBookPageIndexPoint *)layoutPageFromPoint:(EucBookPageIndexPoint *)point
                                         inBook:(id<EucBook>)bookIn
+                                  centerOnPage:(BOOL)centerOnPage
 {
     EucBookPageIndexPoint *ret = nil;
     EucBUpeBook *book = (EucBUpeBook *)bookIn;
     
     EucCSSIntermediateDocument *document = [book intermediateDocumentForIndexPoint:point];
+    EucCSSLayoutPositionedBlock *positionedBlock = nil;
+    self.positionedBlock = nil;
     
     if(document) {
         EucCSSLayoutPoint layoutPoint;
@@ -79,12 +82,10 @@
                                                                 scaleFactor:_scaleFactor];
         
         BOOL isComplete = NO;
-        self.positionedBlock = [layouter layoutFromPoint:layoutPoint
-                                                 inFrame:[self bounds]
-                                      returningNextPoint:&layoutPoint
-                                      returningCompleted:&isComplete
-                                        lastBlockNodeKey:0
-                                   constructingAncestors:YES];
+        positionedBlock = [layouter layoutFromPoint:layoutPoint
+                                            inFrame:[self bounds]
+                                 returningNextPoint:&layoutPoint
+                                 returningCompleted:&isComplete];
         
         if(isComplete) {
             ret = [[EucBookPageIndexPoint alloc] init];
@@ -102,18 +103,54 @@
         }    
         
         [layouter release];
+        
+        if(centerOnPage && positionedBlock) {
+            [positionedBlock shrinkToFit];
+            CGRect bounds = self.bounds;
+            CGRect blockFrame = positionedBlock.frame;
+            blockFrame.origin.x = bounds.origin.x + floor((bounds.size.width - blockFrame.size.width) * 0.5f);
+            blockFrame.origin.y = bounds.origin.y + floor((bounds.size.height - blockFrame.size.height) * 0.5f);
+            positionedBlock.frame = blockFrame;
+        }
     }
+    
+    self.positionedBlock = positionedBlock;
+    
     return [ret autorelease];
 }
 
-- (void)_accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)block intoArray:(NSMutableArray *)array
+- (EucBookPageIndexPoint *)layoutPageFromPoint:(EucBookPageIndexPoint *)point
+                                        inBook:(id<EucBook>)bookIn
 {
-    for(id subBlock in block.children) {
-        if([subBlock isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
-            [self _accumulateRunsBelowBlock:(EucCSSLayoutPositionedBlock *)subBlock intoArray:array];
-        } else if([subBlock isKindOfClass:[EucCSSLayoutPositionedRun class]]) {
-            [array addObject:subBlock];
+    return [self layoutPageFromPoint:point inBook:bookIn centerOnPage:NO];
+}
+
+- (void)_accumulateRunsBelow:(EucCSSLayoutPositionedContainer *)block intoArray:(NSMutableArray *)array
+{
+    if([block isKindOfClass:[EucCSSLayoutPositionedRun class]]) {
+        [array addObject:block];
+    } else {
+        for(EucCSSLayoutPositionedContainer * subBlock in ((EucCSSLayoutPositionedBlock *)block).leftFloatChildren) {
+            [self _accumulateRunsBelow:subBlock intoArray:array];   
         }
+        for(EucCSSLayoutPositionedContainer * subBlock in block.children) {
+            [self _accumulateRunsBelow:subBlock intoArray:array];   
+        }
+        for(EucCSSLayoutPositionedContainer * subBlock in ((EucCSSLayoutPositionedBlock *)block).rightFloatChildren) {
+            [self _accumulateRunsBelow:subBlock intoArray:array];   
+        } 
+    }
+}
+
+static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayoutPositionedRun *rhs, void *context) {
+    uint32_t lhsId = lhs.documentRun.id;
+    uint32_t rhsId = rhs.documentRun.id;
+    if(lhsId < rhsId) {
+        return NSOrderedAscending;
+    } else if (lhsId > rhsId) {
+        return NSOrderedDescending;
+    } else {
+        return NSOrderedSame;
     }
 }
 
@@ -121,7 +158,8 @@
 {
     if(!_runs) {
         _runs = [[NSMutableArray alloc] init];
-        [self _accumulateRunsBelowBlock:self.positionedBlock intoArray:(NSMutableArray *)_runs];
+        [self _accumulateRunsBelow:self.positionedBlock intoArray:(NSMutableArray *)_runs];
+        [(NSMutableArray *)_runs sortUsingFunction:(NSInteger (*)(id, id, void *))runCompare context:NULL];
     }
     return _runs;
 }
@@ -233,6 +271,22 @@
     [self drawRect:rect inContext:UIGraphicsGetCurrentContext()];
 }
 
+- (void)_addAccessibilityElementTo:(NSMutableArray *)array
+                            string:(NSString *)string
+                              rect:(CGRect)rect
+                            traits:(UIAccessibilityTraits)traits
+{
+    UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+    element.accessibilityFrame = rect;
+    NSString *labelString = [string copy];
+    element.accessibilityLabel = labelString;
+    [labelString release];
+    element.accessibilityTraits = traits;
+    [array addObject:element];
+    [element release];
+}
+    
+
 - (NSArray *)accessibilityElements
 {
     if(!_accessibilityElements) {
@@ -240,40 +294,72 @@
         NSArray *runs = [self _runs];
         
         NSMutableArray *buildAccessibilityElements = [[NSMutableArray alloc] initWithCapacity:runs.count];
+    
+        CGRect buildElementFrame = CGRectZero;
+        UIAccessibilityTraits buildElementTraits = UIAccessibilityTraitStaticText;
+        NSMutableString *buildElementString = [NSMutableString string];
+
+        CGRect itemFrame = CGRectZero;
+        
         for(EucCSSLayoutPositionedRun *run in runs) {
-            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            
-            CGRect frame = run.frame;
-            frame.origin.x += myFrame.origin.x;
-            frame.origin.y += myFrame.origin.y;
-            element.accessibilityFrame = frame;
-            
-            NSMutableString *buildString = [NSMutableString string];
+            CGPoint runOrigin = run.absoluteFrame.origin;
+            runOrigin.x += myFrame.origin.x;
+            runOrigin.y += myFrame.origin.y;
             for(EucCSSLayoutPositionedLine *line in run.children) {
+                CGPoint lineOffset = line.frame.origin;
+                lineOffset.x += runOrigin.x;
+                lineOffset.y += runOrigin.y;                
+                
                 EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
                 size_t renderItemsCount = line.renderItemCount;
                     
                 EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
-                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
-                    if(renderItem->altText) {
-                        [buildString appendString:renderItem->altText];
-                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString &&
-                              renderItem->item.stringItem.layoutPoint.element == 0) {
-                        [buildString appendString:renderItem->item.stringItem.string];
+                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {                    
+                    if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                       if(buildElementString.length) {
+                           [buildElementString appendString:@" "];
+                       }
+                       if(renderItem->item.stringItem.layoutPoint.element == 0) {
+                           [buildElementString appendString:renderItem->item.stringItem.string];
+                       } else if(i != 0) {
+                           // First part of a hyphenated word.  The full word
+                           // is placed in the altText.
+                           [buildElementString appendString:renderItem->altText];
+                       }
+                       itemFrame = renderItem->item.stringItem.rect;
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindImage) {
+                        if(buildElementString.length) {
+                            [self _addAccessibilityElementTo:buildAccessibilityElements
+                                                      string:buildElementString
+                                                        rect:buildElementFrame
+                                                      traits:buildElementTraits];
+                            [buildElementString setString:@""];
+                            buildElementFrame = CGRectZero;
+                        }
+                        [self _addAccessibilityElementTo:buildAccessibilityElements
+                                                  string:renderItem->altText
+                                                    rect:CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y)
+                                                  traits:buildElementTraits | UIAccessibilityTraitImage];
                     }
-                    [buildString appendString:@" "];
+                                        
+                    if(!CGRectIsEmpty(itemFrame)) {
+                        if(CGRectIsEmpty(buildElementFrame)) {
+                            buildElementFrame = CGRectOffset(itemFrame, lineOffset.x, lineOffset.y);
+                        } else {
+                            buildElementFrame = CGRectUnion(buildElementFrame, CGRectOffset(itemFrame, lineOffset.x, lineOffset.y));
+                        }
+                        itemFrame = CGRectZero;
+                    }
                 }
             }
-            NSUInteger stringLength = buildString.length;
-            if(stringLength) {
-                [buildString deleteCharactersInRange:NSMakeRange(stringLength - 1, 1)];
-            }            
-            element.accessibilityLabel = buildString;
-            
-            element.accessibilityTraits = UIAccessibilityTraitStaticText;
-            
-            [buildAccessibilityElements addObject:element];
-            [element release];
+            if(buildElementString.length) {
+                [self _addAccessibilityElementTo:buildAccessibilityElements
+                                          string:buildElementString
+                                            rect:buildElementFrame
+                                          traits:buildElementTraits];
+                [buildElementString setString:@""];
+                buildElementFrame = CGRectZero;                
+            }
         }
         
         _accessibilityElements = buildAccessibilityElements;
@@ -411,6 +497,11 @@
     if(touch == _touch)  {
         _touch = nil;
     }    
+}
+
+- (CGRect)contentRect
+{
+    return _positionedBlock.frame;
 }
 
 @end

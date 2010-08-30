@@ -79,8 +79,6 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     // Generic entry point will work out the method to call to render a layout
     // entity of this class.
     
-    
-    //CGContextStrokeRect(_cgContext, layoutEntity.frame);
 
     CGContextSaveGState(_cgContext);
     CGPoint point = layoutEntity.frame.origin;
@@ -90,8 +88,14 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     entityClassName = [entityClassName substringFromIndex:12]; // 12 for "EucCSSLayout"
     SEL selector = NSSelectorFromString([NSString stringWithFormat:@"_render%@:", entityClassName]);
     ((id(*)(id, SEL, id))objc_msgSend)(self, selector, layoutEntity);
-
     CGContextRestoreGState(_cgContext);
+
+    /*
+    CGContextSaveGState(_cgContext);
+    CGContextSetStrokeColorWithCSSColor(_cgContext, 0xffff0000);
+    CGContextStrokeRect(_cgContext, layoutEntity.frame);
+    CGContextRestoreGState(_cgContext);
+    */
 }
 
 
@@ -235,8 +239,21 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     for(id subEntity in block.children) {
         [self _render:subEntity];
     }
+    for(id subEntity in block.leftFloatChildren) {
+        [self _render:subEntity];
+    }
+    for(id subEntity in block.rightFloatChildren) {
+        [self _render:subEntity];
+    }
     CGContextRestoreGState(_cgContext);
-        
+    
+    /*
+    CGContextSaveGState(_cgContext);
+    CGContextSetStrokeColorWithCSSColor(_cgContext, 0xff000000);
+    CGContextStrokeRect(_cgContext, block.borderRect);
+    CGContextRestoreGState(_cgContext);
+    */
+    
     THLogVerbose(@"Positioned Block End");
 }
 
@@ -244,7 +261,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 - (void)_renderPositionedRun:(EucCSSLayoutPositionedRun *)run 
 {
     THLogVerbose(@"Positioned Run: %@", NSStringFromCGRect(run.absoluteFrame));
-    //CGContextStrokeRectWithWidth(_cgContext, run.frame, 0.5)
+    //CGContextStrokeRectWithWidth(_cgContext, run.contentBounds, 0.25);
 
     for(EucCSSLayoutPositionedLine *line in run.children) {
         [self _render:line];
@@ -256,6 +273,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 - (void)_renderPositionedLine:(EucCSSLayoutPositionedLine *)line 
 {
     THLogVerbose(@"Positioned Line: %@", NSStringFromCGRect(line.absoluteFrame));
+    
+    //CGContextStrokeRectWithWidth(_cgContext, line.contentBounds, 0.5);
 
     EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
     size_t renderItemsCount = line.renderItemCount;
@@ -298,7 +317,9 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 NSParameterAssert(currentUnderline);
                 underlinePoints[1].x = renderItem->item.underlineItem.underlinePoint.x;
                 CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
-                currentUnderline = NO;                
+                currentUnderline = NO;    
+                
+                //NSLog(@"Underline: %@ -> %@", NSStringFromCGPoint(underlinePoints[0]), NSStringFromCGPoint(underlinePoints[1])); 
                 break;
             }
             case EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart:
@@ -309,7 +330,9 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 
     if(currentUnderline) {
         underlinePoints[1].x = lastMaxX;
-        CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);        
+        CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
+        
+        //NSLog(@"Underline: %@ -> %@", NSStringFromCGPoint(underlinePoints[0]), NSStringFromCGPoint(underlinePoints[1])); 
     }
     
     THLogVerbose(@"Positioned Line End");

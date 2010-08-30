@@ -19,60 +19,89 @@
         CGRect labelFrame = baseFrame;
         labelFrame.size.height -= baseFrame.size.height / 2;
         
-        _author = [[UILabel alloc] initWithFrame:labelFrame];
-        _author.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize] - 1];
-        _author.textAlignment = UITextAlignmentCenter;
-        _author.adjustsFontSizeToFitWidth = YES;
-        _author.minimumFontSize = 8;
+        _authorLabel = [[UILabel alloc] initWithFrame:labelFrame];
+        _authorLabel.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize] - 1];
+        _authorLabel.textAlignment = UITextAlignmentCenter;
+        _authorLabel.adjustsFontSizeToFitWidth = YES;
+        _authorLabel.minimumFontSize = 8;
 
-        _author.backgroundColor = [UIColor clearColor];
-        _author.textColor = [UIColor whiteColor];
-        _author.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
-        _author.shadowOffset = CGSizeMake(0, -1);
-        _author.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
-        [self addSubview:_author];
+        _authorLabel.backgroundColor = [UIColor clearColor];
+        _authorLabel.textColor = [UIColor whiteColor];
+        _authorLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
+        _authorLabel.shadowOffset = CGSizeMake(0, -1);
+        _authorLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
+        [self addSubview:_authorLabel];
         
         labelFrame.origin.y = baseFrame.size.height / 2 - 1;
-        _title = [[UILabel alloc] initWithFrame:labelFrame];
+        _titleLabel = [[UILabel alloc] initWithFrame:labelFrame];
         
-        _title.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize] + 1];
-        _title.textAlignment = UITextAlignmentCenter;
-        _title.adjustsFontSizeToFitWidth = YES;
-        _title.minimumFontSize = 8;
+        _titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize] + 1];
+        _titleLabel.textAlignment = UITextAlignmentCenter;
+        _titleLabel.adjustsFontSizeToFitWidth = YES;
+        _titleLabel.minimumFontSize = 8;
 
-        _title.backgroundColor = [UIColor clearColor];
-        _title.textColor = [UIColor whiteColor];
-        _title.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
-        _title.shadowOffset = CGSizeMake(0, -1);
-        _title.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
-        [self addSubview:_title];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.textColor = [UIColor whiteColor];
+        _titleLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
+        _titleLabel.shadowOffset = CGSizeMake(0, -1);
+        _titleLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
+        [self addSubview:_titleLabel];
     }
 	return self;
 }
 
-/*
-- (void)drawRect:(CGRect)rect 
-{
-	[super drawRect:rect];
-}
- */
-
 - (void)dealloc
 {
     [_title release];
+    [_titleLabel release];
     [_author release];
+    [_authorLabel release];
 	[super dealloc];
 }
 
 - (void)setTitle:(NSString *)title;
 {
-    _title.text = title;
+    if(title != _title) {
+        [_title release];
+        _title = [title retain];
+        _titleLabel.text = title;
+    }
 }
 
 - (void)setAuthor:(NSString *)author
 {
-    _author.text = author;
+    if(author != _author) {
+        [_author release];
+        _author = [author retain];
+        _authorLabel.text = author;
+    }
 }
 
+- (NSString *)accessibilityLabel
+{
+    if(!_author) {
+        if(_title) {
+            return _title;
+        } else {
+            return NSLocalizedString(@"Unknown book", @"Accessibilty label for book view navigation bar field with no title or author");
+        }
+    } else {
+        if (!_title) {
+            return [NSString stringWithFormat:NSLocalizedString(@"Book by %@",  @"Accessibilty label for book view navigation bar field with no title"), _author];
+        } else {
+            return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@",  @"Accessibilty label for book view navigation bar field"), _title, _author];
+        }
+    }
+}
+
+- (UIAccessibilityTraits)accessibilityTraits
+{
+    return UIAccessibilityTraitStaticText;
+}
+
+- (BOOL)isAccessibilityElement
+{
+    return YES;
+}
 
 @end

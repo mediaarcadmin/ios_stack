@@ -10,10 +10,12 @@
 #import <CoreData/CoreData.h>
 #import "BlioLayoutDataSource.h"
 #import "BlioTimeOrderedCache.h"
+#import "BlioDrmSessionManager.h"
 #import "XpsSdk.h"
 
 @interface BlioXPSProvider : NSObject <BlioLayoutDataSource, NSXMLParserDelegate> {
     NSManagedObjectID *bookID;
+	BlioDrmSessionManager* drmSessionManager;
     
     NSLock *renderingLock;
     NSLock *contentsLock;

@@ -20,12 +20,13 @@
 	autoMode = FALSE;
 //	self.voices = nil;
 	self.voices = [AcapelaSpeech availableVoices];
-	if (voices.count > 0) {
+	if (voices.count > 0 && [[NSUserDefaults standardUserDefaults] stringForKey:kBlioLastVoiceDefaultsKey]) {
 		[self setCurrentVoice:[[NSUserDefaults standardUserDefaults] stringForKey:kBlioLastVoiceDefaultsKey]];
 	}
-	else
+	else {
+		NSLog(@"WARNING: currentVoice in setupTTS is nil!");
 		[self setCurrentVoice:nil];
-	
+	}
 	return self;
 }
 

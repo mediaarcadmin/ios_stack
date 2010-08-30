@@ -40,6 +40,7 @@ struct css_stylesheet;
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
                baseCSSPath:(NSString *)baseCSSPath
+               userCSSPath:(NSString *)userCSSPath
                     isHTML:(BOOL)isHTML;
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key;

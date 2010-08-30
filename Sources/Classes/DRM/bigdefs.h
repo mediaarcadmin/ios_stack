@@ -57,7 +57,7 @@ DRM_API DRM_DWORD DRM_CALL significant_digit_count(const digit_t *, const DRM_DW
 
 #if DRM_INLINING_SUPPORTED
 
-DRMINLINE DRM_VOID DRM_CALL mp_extend
+/*DRMINLINE*/ DRM_VOID DRM_CALL mp_extend
         (const digit_t  a[],
          const DRM_DWORD lnga,
          digit_t   b[],
@@ -71,7 +71,7 @@ DRMINLINE DRM_VOID DRM_CALL mp_extend
     ZEROMEM(b + lnga,( lngb - lnga)*SIZEOF( digit_t ));
 }  // mp_extend
 /****************************************************************************/
-DRMINLINE digit_t DRM_CALL mp_getbit
+/*DRMINLINE*/ digit_t DRM_CALL mp_getbit
         (const digit_t a[],
          const DRM_DWORD ibit)
                 /* Extract bit of multiple precision number */
@@ -79,7 +79,7 @@ DRMINLINE digit_t DRM_CALL mp_getbit
     return digit_getbit(a[ibit/RADIX_BITS],  ibit % RADIX_BITS);
 }
 /****************************************************************************/
-DRMINLINE DRM_VOID DRM_CALL mp_setbit
+/*DRMINLINE*/ DRM_VOID DRM_CALL mp_setbit
         (digit_t   a[],
          const DRM_DWORD ibit,
          const digit_t  new_value)
@@ -112,7 +112,7 @@ DRMINLINE DRM_DWORD DRM_CALL significant_digit_count
     return i;
 }  /* significant_digit_count */
 /****************************************************************************/
-DRMINLINE DRM_BOOL DRM_CALL digits_to_dwords
+/*DRMINLINE*/ DRM_BOOL DRM_CALL digits_to_dwords
         (const digit_t  pdigit[],
          DRM_DWORD     pdword[],
          const DRM_DWORD lng_dwords)
@@ -139,7 +139,7 @@ DRMINLINE DRM_BOOL DRM_CALL digits_to_dwords
     return OK;
 }  /* digits_to_dwords */
 /****************************************************************************/
-DRMINLINE DRM_BOOL DRM_CALL dwords_to_digits
+/*DRMINLINE*/ DRM_BOOL DRM_CALL dwords_to_digits
         (const DRM_DWORD    pdword[],
          digit_t   pdigit[],
          const DRM_DWORD lng_dwords)
@@ -197,7 +197,7 @@ DRMFORCEINLINE DRM_DWORD DRM_CALL significant_bit_count(const digit_t d)
                     // Subtract 5 - significant_bit_count(2*dadj + 1)
 } /* significant_bit_count */
 
-DRMFORCEINLINE DRM_DWORD DRM_CALL mp_significant_bit_count
+/*DRMFORCEINLINE*/ DRM_DWORD DRM_CALL mp_significant_bit_count
         (const digit_t  a[],
         const DRM_DWORD  lnga)
 /*

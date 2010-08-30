@@ -1,0 +1,13 @@
+/* Override ePub margins.  We'll do our own in the rendering code based on 
+screen size */
+body {
+ margin: 0 !important
+}
+
+/* Override Google books crazy margins that take up almost all of a tiny 
+screen... */
+div[style="margin:8em;text-align:justify;"] { 
+ margin:30% 16% 0 !important; 
+ page-break-after:always; 
+ page-break-before:always; 
+}

@@ -12,17 +12,28 @@
 #define HDS_STORE_FILE  L".\\playready.hds"
 #define MAX_URL_SIZE	1024
 
+static const NSInteger BlioDrmManagerInitialLicenseCooldownTime = 10;
+
 @interface BlioDrmManager : NSObject {
 	BOOL drmInitialized;
-    NSManagedObjectID *bookID;
+    NSManagedObjectID *headerBookID;
+    NSManagedObjectID *boundBookID;
+	NSInteger licenseCooldownTime;
+	NSTimer * licenseCooldownTimer;
 }
 
 @property (nonatomic, assign) BOOL drmInitialized;
+@property (nonatomic, assign) NSInteger licenseCooldownTime;
+@property (nonatomic, assign) NSTimer * licenseCooldownTimer;
 
 + (BlioDrmManager*)getDrmManager;
 - (void)initialize;
+- (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name;
+- (BOOL)leaveDomain:(NSString*)token;
 - (void)reportReadingForBookWithID:(NSManagedObjectID *)aBookID;
-- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID;
+- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID sessionToken:(NSString*)token;
 - (BOOL)decryptData:(NSData *)data forBookWithID:(NSManagedObjectID *)aBookID;
+- (void)startLicenseCooldownTimer;
+- (void)resetLicenseCooldownTimer;
 
 @end

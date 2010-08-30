@@ -124,8 +124,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 -(void)displayBookView {
 	NSMutableArray * validFieldViews = [NSMutableArray array];
     self.bookTitle.text = [self.entity title];
-    if ([self.entity author]) {
-        self.authors.text = [[NSString stringWithFormat:@"By %@", [BlioBook standardNameFromCanonicalName:[self.entity author]]] uppercaseString];
+    if ([self.entity authors]) {
+        self.authors.text = [NSString stringWithFormat:@"By %@", [BlioBook standardNamesFromCanonicalNameArray:self.entity.authors]];
     } else if ([self.entity publisher]) {
         self.authors.text = [[NSString stringWithFormat:@"By %@", [self.entity publisher]] uppercaseString];      
     } else {
@@ -205,6 +205,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     self.download.titleLabel.shadowOffset = CGSizeMake(0, -1);
     [self.download setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];
 	
+	NSLog(@"[self.entity coverUrl]: %@",[self.entity coverUrl]);
 	NSLog(@"[self.entity thumbUrl]: %@",[self.entity thumbUrl]);
         
     // Fetch bookThumb
@@ -221,13 +222,14 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 	
 	// check data to see if downloadState must be changed:
 	// access processing manager to see if the corresponding BlioBook is already in library
-	
+	NSLog(@"self.feed.sourceID: %i",self.feed.sourceID);
+	NSLog(@"[self.entity id]: %@",[self.entity id]);
 	BlioBook * resultBook = [self.processingDelegate bookWithSourceID:self.feed.sourceID sourceSpecificID:[self.entity id]];
 
 	if (resultBook != nil) {
 		// then update button options accordingly to prevent possible duplication of entries.
 		NSLog(@"Found Book in context already"); 
-		if ([[resultBook valueForKey:@"processingState"] isEqualToNumber: [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]) {
+		if ([[resultBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 			NSLog(@"and processingState is kBlioBookProcessingStateComplete."); 
 			
 			[self setDownloadState:kBlioStoreDownloadButtonStateDone animated:NO];
@@ -261,6 +263,8 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 - (void)layoutViews {    
     // Layout views
     CGRect containerFrame = self.container.frame;
+//	NSLog(@"containerFrame.origin.x:%f, containerFrame.origin.y:%f, containerFrame.size.width:%f, containerFrame.size.height:%f",containerFrame.origin.x,containerFrame.origin.y,containerFrame.size.width,containerFrame.size.height);
+
     CGRect bookTitleFrame = self.bookTitle.frame;
     bookTitleFrame.size.height = 47;
     bookTitleFrame.size.width = CGRectGetWidth(containerFrame) - 20 - CGRectGetMinX(bookTitleFrame);
@@ -288,10 +292,16 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     [self.summary setFrame:summaryFrame];
     [self.belowSummaryDetails setFrame:belowSummaryFrame];
 
+	CGFloat newWidth = self.view.frame.size.width;
     CGFloat newHeight = CGRectGetMaxY(belowSummaryFrame) > self.view.frame.size.height ? CGRectGetMaxY(belowSummaryFrame) : self.view.frame.size.height;
+	containerFrame.origin.x = 0;
+	containerFrame.origin.y = 0;
+    containerFrame.size.width = newWidth;
     containerFrame.size.height = newHeight;
-//    [self.container setFrame:containerFrame];
- //   [self.scroller setContentSize:containerFrame.size];
+//	NSLog(@"containerFrame.origin.x:%f, containerFrame.origin.y:%f, containerFrame.size.width:%f, containerFrame.size.height:%f",containerFrame.origin.x,containerFrame.origin.y,containerFrame.size.width,containerFrame.size.height);
+
+    [self.container setFrame:containerFrame];
+    [self.scroller setContentSize:containerFrame.size];
     
 }
 
@@ -322,12 +332,19 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 		// start processing download decision
 		NSLog(@"coverPath: %@",self.entity.coverUrl);		
 		NSLog(@"ePubPath: %@",self.entity.ePubUrl);		
-		NSLog(@"pdfPath: %@",self.entity.pdfUrl);		
+		NSLog(@"pdfPath: %@",self.entity.pdfUrl);
+		NSLog(@"self.feed.sourceID: %i",self.feed.sourceID);
+		NSLog(@"self.entity.id: %@",self.entity.id);
+		NSString * modifiedPDFPath = nil;
+		if (self.entity.ePubUrl == nil) {
+			modifiedPDFPath = self.entity.pdfUrl;
+			NSLog(@"There is no epub, so PDF URL will be used if available. resulting PDFPath: %@", modifiedPDFPath);
+		}
 		[self.processingDelegate enqueueBookWithTitle:self.entity.title 
-											  authors:self.entity.author ? [NSArray arrayWithObject:self.entity.author] : [NSArray array]
+											  authors:self.entity.authors ? self.entity.authors : [NSArray array]
 											coverPath:self.entity.coverUrl ? self.entity.coverUrl : nil
 											 ePubPath:self.entity.ePubUrl ? self.entity.ePubUrl : nil 
-											  pdfPath:self.entity.pdfUrl ? self.entity.pdfUrl : nil
+											  pdfPath:modifiedPDFPath
 											  xpsPath:nil
 										 textFlowPath:nil
 										audiobookPath:nil

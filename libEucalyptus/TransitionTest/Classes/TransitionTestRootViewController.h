@@ -6,7 +6,10 @@
 //  Copyright Things Made Out Of Other Things 2009. All rights reserved.
 //
 
-@interface TransitionTestRootViewController : UITableViewController {
+#import <UIKit/UIKit.h>
+#import <libEucalyptus/EucSelector.h>
+
+@interface TransitionTestRootViewController : UITableViewController <EucSelectorDelegate> {
 }
 
 @end

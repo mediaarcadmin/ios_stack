@@ -4,4 +4,6 @@
 - (NSString *)blioDevicePlatform;
 - (CGFloat)blioDeviceMaximumLayoutZoom;
 - (NSInteger)blioDeviceMaximumTileSize;
+- (BOOL)blioDevicePerCharacterSearchEnabled;
+- (NSTimeInterval)blioDeviceSearchInterval;
 @end

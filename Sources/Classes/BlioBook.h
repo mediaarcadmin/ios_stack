@@ -14,11 +14,20 @@
 
 @class BlioXPSProvider;
 
+static const CGFloat kBlioCoverListThumbHeight = 76;
+static const CGFloat kBlioCoverListThumbWidth = 53;
+static const CGFloat kBlioCoverGridThumbWidthPhone = 106;
+static const CGFloat kBlioCoverGridThumbHeightPhone = 140;
+static const CGFloat kBlioCoverGridThumbWidthPad = 140;
+static const CGFloat kBlioCoverGridThumbHeightPad = 210;
+
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
 static const NSInteger kBlioBookProcessingStateIncomplete = 2;
-static const NSInteger kBlioBookProcessingStatePaused = 3;
-static const NSInteger kBlioBookProcessingStateComplete = 4;
+static const NSInteger kBlioBookProcessingStateFailed = 3;
+static const NSInteger kBlioBookProcessingStateNotSupported = 4;
+static const NSInteger kBlioBookProcessingStatePaused = 5;
+static const NSInteger kBlioBookProcessingStateComplete = 6;
 
 static NSString * const BlioManifestEntryLocationFileSystem = @"fileSystem";
 static NSString * const BlioManifestEntryLocationXPS = @"xps";
@@ -35,6 +44,9 @@ static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.j
 static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
 static NSString * const BlioXPSKNFBMetadataFile = @"/Documents/1/Other/KNFB/Metadata.xml";
 static NSString * const BlioXPSKNFBRightsFile = @"/Documents/1/Other/KNFB/Rights.xml";
+static NSString * const BlioXPSAudiobookDirectory = @"/Documents/1/Other/KNFB/Audio/";
+static NSString * const BlioXPSAudiobookMetadataFile = @"/Documents/1/Other/KNFB/Audio/Audio.xml";
+static NSString * const BlioXPSAudiobookReferencesFile = @"/Documents/1/Other/KNFB/Audio/References.xml";
 static NSString * const BlioXPSKNFBDRMHeaderFile = @"/Documents/1/Other/KNFB/DrmpHeader.bin";
 
 static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
@@ -70,8 +82,6 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 
 // Legacy core data attribute-backed convenience accessors TODO: remove these
-@property (nonatomic, assign, readonly) NSString *audiobookPath;
-@property (nonatomic, assign, readonly) NSString *timingIndicesPath;
 @property (nonatomic, assign, readonly) BOOL audioRights;
 @property (nonatomic, assign, readonly) BOOL reflowEnabled;
 
@@ -80,7 +90,6 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 // These convenience acessors are not guranteed to exists after a memory warning
 // If you need to retain the result in your object use the checkout methods in BlioBookManager
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
-@property (nonatomic, retain, readonly) BlioXPSProvider *xpsProvider;
 @property (nonatomic, retain, readonly) id<BlioParagraphSource> paragraphSource;
 
 // Core data attribute-backed convenience accessors
@@ -99,6 +108,9 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, assign, readonly) BOOL hasXps;
 @property (nonatomic, assign, readonly) BOOL hasTextFlow;
 @property (nonatomic, assign, readonly) BOOL isEncrypted;
+@property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForList;
+@property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForGrid;
+
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow etc.)
@@ -111,15 +123,21 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 - (NSArray *)sortedHighlightRangesForRange:(BlioBookmarkRange *)range;
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range;
 
+- (NSData *)textFlowDataWithPath:(NSString *)path;
+
 - (void)setManifestValue:(id)value forKey:(NSString *)key;
 - (BOOL)hasManifestValueForKey:(NSString *)key;
 - (NSData *)manifestDataForKey:(NSString *)key;
 - (BOOL)manifestPath:(NSString *)path existsForLocation:(NSString *)location;
 - (NSString *)manifestPathForKey:(NSString *)key;
+- (NSString *)manifestRelativePathForKey:(NSString *)key;
+- (NSData *)manifestDataForKey:(NSString *)key pathIndex:(NSInteger)index;
 - (NSString *)manifestLocationForKey:(NSString *)key;
-- (NSString *)authorWithStandardFormat;
+- (BOOL)manifestPreAvailabilityCompleteForKey:(NSString *)key;
+- (NSString *)authorsWithStandardFormat;
 
 +(NSString*)standardNameFromCanonicalName:(NSString*)aName;
++(NSString*)standardNamesFromCanonicalNameArray:(NSArray*)aNameArray;
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName;
 
 @end

@@ -19,12 +19,15 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 @synthesize delegate;
 @synthesize service;
+@synthesize serviceTicket;
 @synthesize parsedCategories, parsedEntities;
 
 - (void)dealloc {
+	[self cancel];
     self.delegate = nil;
     [self.service clearLastModifiedDates];
     self.service = nil;  
+    self.serviceTicket = nil;  
     self.parsedCategories = nil;
     self.parsedEntities = nil;
     [super dealloc];
@@ -53,7 +56,7 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 	self.parsedCategories = [NSMutableArray array];
     self.parsedEntities = [NSMutableArray array];
     
-    [self.service fetchFeedWithURL:url
+    self.serviceTicket = [self.service fetchFeedWithURL:url
                           delegate:self
                  didFinishSelector:@selector(volumeListFetchTicket:finishedWithFeed:error:)];
 }
@@ -72,14 +75,18 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 - (void)parsedEntity:(BlioStoreParsedEntity *)entity {
     NSAssert2([NSThread isMainThread], @"%s at line %d called on secondary thread", __FUNCTION__, __LINE__);
-    
-    [self.parsedEntities addObject:entity];
-    if (self.parsedEntities.count > kBlioStoreParserCountForNotification) {
-        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parser:didParseEntities:)]) {
-            [self.delegate parser:self didParseEntities:self.parsedEntities];
-        }
-        [self.parsedEntities removeAllObjects];
-    }
+	if (![entity ePubUrl] && ![entity pdfUrl]) {
+		NSLog(@"Encountered entry with neither ePubUrl nor pdfUrl; ignoring...");
+	}
+	else {
+		[self.parsedEntities addObject:entity];
+		if (self.parsedEntities.count > kBlioStoreParserCountForNotification) {
+			if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parser:didParseEntities:)]) {
+				[self.delegate parser:self didParseEntities:self.parsedEntities];
+			}
+			[self.parsedEntities removeAllObjects];
+		}
+	}
 }
 
 - (void)parseEnded {
@@ -95,6 +102,8 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
     }
     [self.parsedEntities removeAllObjects];
     
+	// TODO: initiate another connection if valid results are not enough.
+
     if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parserDidEndParsingData:)]) {
         [self.delegate parserDidEndParsingData:self];
     }
@@ -109,6 +118,9 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 }
 -(BOOL)isParsing {
 	return isParsing;
+}
+-(void)cancel {
+	if (self.serviceTicket) [self.serviceTicket cancelTicket];
 }
 @end
 
@@ -133,12 +145,12 @@ static NSUInteger kBlioStoreParserCountForNotification = 0;
 
 @implementation BlioStoreParsedEntity
 
-@synthesize title, author, url, summary, ePubUrl, pdfUrl, coverUrl, thumbUrl, releasedDate, publishedDate, publisher, pageCount,id;
+@synthesize title, authors, url, summary, ePubUrl, pdfUrl, coverUrl, thumbUrl, releasedDate, publishedDate, publisher, pageCount,id;
 
 - (void)dealloc {
     self.title = nil;
     self.id = nil;
-    self.author = nil;
+    self.authors = nil;
     self.url = nil;
     self.summary = nil;
     self.ePubUrl = nil;

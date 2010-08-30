@@ -77,4 +77,58 @@
     return tileSize;
 }
 
+- (BOOL)blioDevicePerCharacterSearchEnabled {
+    
+    NSRange iPhoneFamilyRange = {6,1};
+    NSRange iPodFamilyRange = {4,1};  
+    NSRange iPodModelRange = {6,1};
+    
+    NSString *platformString = [self blioDevicePlatform];
+    
+    BOOL perCharacterSearchEnabled = NO;
+    
+    // Devices older than iPhone 3G or iPod 2G will be able to handle per character search
+    if ([[self model] isEqualToString:@"iPhone"]) {
+        if ([[platformString substringWithRange:iPhoneFamilyRange] floatValue] >= 2) perCharacterSearchEnabled = YES;
+    } else if ([[self model] isEqualToString:@"iPod"]) {
+        if ([[platformString substringWithRange:iPodFamilyRange] floatValue] == 2) {
+            if ([[platformString substringWithRange:iPodModelRange] floatValue] >= 2) perCharacterSearchEnabled = YES;
+        } else if ([[platformString substringWithRange:iPodFamilyRange] floatValue] > 2) {
+            perCharacterSearchEnabled = YES;
+        }
+    } else {
+        perCharacterSearchEnabled = YES;
+    }
+    
+    return perCharacterSearchEnabled;
+}
+
+- (NSTimeInterval)blioDeviceSearchInterval {
+    
+    NSRange iPhoneFamilyRange = {6,1};
+    NSRange iPodFamilyRange = {4,1};  
+    NSRange iPodModelRange = {6,1};
+    
+    NSString *platformString = [self blioDevicePlatform];
+    
+    NSTimeInterval timeInterval = 0.1f;
+    NSTimeInterval shortInterval = 0.01f;
+    
+    // Devices older than iPhone 3G or iPod 2G will be able to handle per character search
+    if ([[self model] isEqualToString:@"iPhone"]) {
+        if ([[platformString substringWithRange:iPhoneFamilyRange] floatValue] >= 2) timeInterval = shortInterval;
+    } else if ([[self model] isEqualToString:@"iPod"]) {
+        if ([[platformString substringWithRange:iPodFamilyRange] floatValue] == 2) {
+            if ([[platformString substringWithRange:iPodModelRange] floatValue] >= 2) timeInterval = shortInterval;
+        } else if ([[platformString substringWithRange:iPodFamilyRange] floatValue] > 2) {
+            timeInterval = shortInterval;
+        }
+    } else {
+        timeInterval = shortInterval;
+    }
+    
+    return timeInterval;
+}
+
+
 @end

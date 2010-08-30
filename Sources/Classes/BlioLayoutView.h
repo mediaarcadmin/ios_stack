@@ -60,6 +60,7 @@ typedef enum BlioLayoutPageMode {
     EucSelector *selector;
     NSMutableDictionary *pageCropsCache;
     NSMutableDictionary *viewTransformsCache;
+    CGRect firstPageCrop;
     UIImage *checkerBoard;
     UIImage *shadowBottom;
     UIImage *shadowTop;
@@ -73,7 +74,8 @@ typedef enum BlioLayoutPageMode {
     CGAffineTransform cachedViewTransform;
     NSInteger cachedViewTransformPage;
     NSMutableArray *accessibilityElements;
-    NSArray *previousAccessibilityElements;
+    BlioTimeOrderedCache *accessibilityCache;
+    
     BOOL accessibilityRefreshRequired;
     
     BlioXPSProvider *xpsProvider;

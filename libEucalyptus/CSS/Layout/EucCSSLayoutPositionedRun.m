@@ -7,7 +7,7 @@
 //
 
 #import "EucCSSLayoutPositionedRun.h"
-
+#import "EucCSSLayoutPositionedLine.h"
 
 @implementation EucCSSLayoutPositionedRun
 
@@ -29,6 +29,28 @@
     [super dealloc];
 }
 
+- (CGFloat)minimumWidth
+{
+    CGFloat largestLineWidth = 0;
+    for(EucCSSLayoutPositionedLine *line in self.children) {
+        CGFloat lineMinimum = line.minimumWidth + line.frame.origin.x;
+        if(lineMinimum > largestLineWidth) {
+            largestLineWidth = lineMinimum;
+        }
+    }
+    return largestLineWidth; 
+}
+
+- (void)sizeToFitInWidth:(CGFloat)width
+{
+    CGFloat difference = self.frame.size.width - width;
+    for(EucCSSLayoutPositionedLine *line in self.children) {
+        [line sizeToFitInWidth:line.frame.size.width - difference];
+    }
+    CGRect frame = self.frame;
+    frame.size.width = width;
+    self.frame = frame;
+}
 
 
 @end

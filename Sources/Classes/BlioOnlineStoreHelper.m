@@ -12,6 +12,11 @@
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
 
+#define KNFB_STORE 12151
+#define HP_STORE 12308
+#define TOSHIBA_STORE 12309
+#define DELL_STORE 12327
+
 @interface BlioOnlineStoreHelper (PRIVATE)
 - (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
 - (BOOL)fetchBookISBNArrayFromServer;
@@ -33,7 +38,7 @@
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
 	loginRequest.username = user;	
 	loginRequest.password = password; 
-	loginRequest.siteId =  [NSNumber numberWithInt:12151];		// hard-coded in Windows Blio
+	loginRequest.siteId =  [NSNumber numberWithInt:HP_STORE];
 	BookVaultSoapResponse * response = [vaultBinding LoginUsingParameters:loginRequest];
 	[vaultBinding release];
 			
@@ -102,6 +107,7 @@
 	// add new book entries to PersistentStore as appropriate
 	NSInteger successfulResponseCount = 0;
 	NSInteger newISBNs = 0;
+	NSLog(@"ISBN count: %i",[_isbns count]);
 	for (NSString * isbn in _isbns) {
 		
 		// check to see if BlioBook record is already in the persistent store
@@ -111,14 +117,14 @@
 			ContentCafe_ProductItem* productItem = [self getContentMetaDataFromISBN:isbn];
 			if (productItem) {
 				successfulResponseCount++;
-				// TODO: put in a book for display in the vault.
 				NSString* title = [[productItem Title] Value];
 				NSString* author = [productItem Author];
 				NSString* coverURL = [NSString stringWithFormat:@"http://images.btol.com/cc2images/Image.aspx?SystemID=knfb&IdentifierID=I&IdentifierValue=%@&Source=BT&Category=FC&Sequence=1&Size=L&NotFound=S",isbn];
 				NSLog(@"Title: %@", title);
 				NSLog(@"Author: %@", author);
 				NSLog(@"Cover: %@", coverURL);
-				
+				NSLog(@"URL: %@",[[self URLForBookWithID:isbn] absoluteString]);
+				// TODO: need to discern patterns in how paid books store multiple authors in one string, then parse accordingly into an array.
 				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
 													 authors:[NSArray arrayWithObject:author] 
 													coverPath:coverURL
@@ -129,7 +135,7 @@
 												audiobookPath:nil 
 													sourceID:BlioBookSourceOnlineStore 
 											sourceSpecificID:isbn
-											 placeholderOnly:NO
+											 placeholderOnly:YES
 				 ];
 			}
 			else {
@@ -184,7 +190,7 @@
 		}
 		else if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
 			NSString* url = [bodyPart RequestDownloadWithTokenResult].Url;
-			NSLog(@"Book download url is %s",url);
+			NSLog(@"Book download url is %@",url);
 			return [NSURL URLWithString:url];
 		}
 		else {

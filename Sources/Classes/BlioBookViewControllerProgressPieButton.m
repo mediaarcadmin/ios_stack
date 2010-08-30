@@ -8,6 +8,8 @@
 
 #import "BlioBookViewControllerProgressPieButton.h"
 #import <QuartzCore/QuartzCore.h>
+#import <libEucalyptus/THImageFactory.h>
+#import <libEucalyptus/THUIImageAdditions.h>
 
 @implementation BlioBookViewControllerProgressPieButton
 
@@ -137,6 +139,39 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     CGContextFillPath(c); 
 }
 
+- (UIImage *)pieButtonImage {
+
+    UIImage *buttonImage = [UIImage imageNamed:@"navigationBarBlackTranslucentButton.png"];
+    UIImage *stretchableImage = [buttonImage midpointStretchableImage];
+    
+    // Always draw it at full height to ensure the gloss is at the midpoint
+    CGRect bounds = CGRectMake(0, 0, buttonImage.size.height, buttonImage.size.height);
+    
+    // Create a bitmap to render the button image into.
+    THImageFactory *imageFactory;
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        imageFactory = [[THImageFactory alloc] initWithSize:bounds.size scaleFactor:[[UIScreen mainScreen] scale]];
+    } else {
+        imageFactory = [[THImageFactory alloc] initWithSize:bounds.size];
+    }    
+    CGContextRef myContext = imageFactory.CGContext;
+    
+    // We need to flip the bitmap, because we're goung to draw with UIKit routines
+    // and they have the opposite coordinate system.
+    CGContextTranslateCTM(myContext, 0, bounds.size.height);
+    CGContextScaleCTM(myContext, 1, -1);
+    
+    UIGraphicsPushContext(myContext);
+    
+    [stretchableImage drawInRect:bounds];
+    
+    // Done drawing!
+    UIImage *renderedImage = imageFactory.snapshotUIImage;
+    UIGraphicsPopContext();
+    [imageFactory release];
+    return renderedImage;
+}
+
 - (void)drawRect:(CGRect)rect {    
     // Drawing code
     CGContextRef ctx = UIGraphicsGetCurrentContext();
@@ -166,7 +201,8 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     backgroundFrame = CGRectInset(outerFrame, -xButtonPadding, -yButtonPadding);
     
     CGContextClipToRect(ctx, backgroundFrame);
-        
+
+#if 0
     UIImage *buttonImage = [UIImage imageNamed:@"navigationBarBlackTranslucentButton.png"];
     UIImage *stretchImage = [buttonImage stretchableImageWithLeftCapWidth:floorf(buttonImage.size.width/2.0f) topCapHeight:floorf(buttonImage.size.height/2.0f)];
     
@@ -180,6 +216,9 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
     [stretchImage drawInRect:buttonRect];
     UIImage *backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+#endif
+    
+    UIImage *backgroundImage = [self pieButtonImage];
     
     [backgroundImage drawInRect:backgroundFrame];
     
@@ -227,11 +266,12 @@ void fillOval(CGContextRef c, CGRect rect, float start_angle, float arc_angle) {
 }
 
 - (NSString *)accessibilityValue {
-    return  [NSString stringWithFormat:NSLocalizedString(@"%.0f%%", @"Accessibility label for Book View Controller Progress value"), self.progress * 100];
+    CGFloat percent = MIN(MAX(self.progress * 100, 0), 100);
+    return  [NSString stringWithFormat:NSLocalizedString(@"%.0f%%", @"Accessibility label for Book View Controller Progress value"), percent];
 }
 
 - (NSString *)accessibilityHint {
-    return  NSLocalizedString(@"Toggles book position slider.", @"Accessibility label for Book View Controller Progress hint");
+    return  NSLocalizedString(@"Toggles page chooser.", @"Accessibility label for Book View Controller Progress hint");
 }
 
 @end

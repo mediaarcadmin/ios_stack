@@ -35,7 +35,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (void)dealloc {
-    NSLog(@"*************** dealloc called for scrollview");
+    //NSLog(@"*************** dealloc called for scrollview");
     self.selector = nil;
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;

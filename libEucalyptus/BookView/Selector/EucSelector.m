@@ -463,7 +463,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         CGSize magnificationLoupeSize = highImage.size;
         CGRect magnificationLoupeRect = CGRectMake(0, 0, magnificationLoupeSize.width, magnificationLoupeSize.height);
         
-        CALayer *topmostLayer = self.attachedLayer.topmostLayer;
+        CALayer *attachedLayer = self.attachedLayer;
+        CALayer *windowLayer = attachedLayer.windowLayer;
         CALayer *loupeContentsLayer = self.loupeContentsLayer;
         THImageFactory *loupeContentsImageFactory;
         CALayer *loupeLayer;
@@ -500,22 +501,33 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             highLayer.position = CGPointMake(magnificationLoupeSize.width * 0.5f, magnificationLoupeSize.height * 0.5f);
             [highLayer release];
             
+            CATransform3D loupeTransform = attachedLayer.absoluteTransform;
+            CGSize screenScaleFactors = [attachedLayer screenScaleFactors];
+            loupeTransform = CATransform3DConcat(CATransform3DMakeScale(1.0f / screenScaleFactors.width, 1.0f / screenScaleFactors.height, 1.0f), loupeTransform);
+
+            CATransform3D fromTransform = CATransform3DMakeScale(1.0f / magnificationLoupeSize.width, 1.0f / magnificationLoupeSize.height, 1.0f);
+            fromTransform = CATransform3DConcat(fromTransform, CATransform3DMakeTranslation(0, magnificationLoupeSize.height / 2.0f, 0));
+            fromTransform = CATransform3DConcat(fromTransform, loupeTransform);
+            
+            loupeLayer.transform = fromTransform;
+            
             // Don't add it to self.viewWithSelection - we're using renderInContext:
             // below, so the effect would be an infinite tunnel after a few moves.
-            [topmostLayer addSublayer:loupeLayer];
+            [CATransaction begin];
+            [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+            [windowLayer addSublayer:loupeLayer];
+            [CATransaction commit];
             
             CABasicAnimation *loupePopUp = [[CABasicAnimation alloc] init];
             loupePopUp.keyPath = @"transform";
-            CATransform3D fromTransform = CATransform3DMakeTranslation(0, magnificationLoupeSize.height * 0.5f, 0);
-            fromTransform = CATransform3DScale(fromTransform, 
-                                               1.0f / magnificationLoupeSize.width,
-                                               1.0f / magnificationLoupeSize.height,
-                                               1.0f);
             loupePopUp.fromValue = [NSValue valueWithCATransform3D:fromTransform];
+            loupePopUp.toValue = [NSValue valueWithCATransform3D:loupeTransform];
             loupePopUp.duration = sLoupePopUpDuration;
             [loupeLayer addAnimation:loupePopUp forKey:@"EucSelectorLoupePopUp"];
             [loupePopUp release];
             
+            loupeLayer.transform = loupeTransform;
+
             UIScreen *mainScreen = [UIScreen mainScreen];
             if([mainScreen respondsToSelector:@selector(scale)]) {
                 loupeContentsImageFactory = [[THImageFactory alloc] initWithSize:magnificationLoupeSize scaleFactor:mainScreen.scale];
@@ -551,7 +563,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     
     CGSize layerToMagnifySize = layerToMagnify.bounds.size;
     
-    CALayer *topmostLayer = layerToMagnify.topmostLayer;
+    CALayer *windowLayer = layerToMagnify.windowLayer;
     CGSize screenScaleFactors = [layerToMagnify screenScaleFactors];
     
     // We want 1.25 * bigger.
@@ -585,9 +597,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     // Don't show blank area off the bottom of the view.
     translationPoint.y = MAX(-layerToMagnifySize.height, translationPoint.y); 
     
-    CGContextTranslateCTM(context, 
-                          translationPoint.x,
-                          translationPoint.y);
+    CGContextTranslateCTM(context, translationPoint.x, translationPoint.y);
     
     // Draw the view. 
     [layerToMagnify renderInContext:context];
@@ -601,20 +611,20 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     // We draw the layer content in the -drawLayer:inContext: delegate method.
     loupeContentsLayer.contents = (id)loupeContentsImageFactory.snapshotCGImage;
     
-    CGPoint windowPoint = [layerToMagnify convertPoint:point toLayer:topmostLayer];
-
-    // Position the loupe.
-    CGRect frame = magnificationLoupeRect;
-    frame.origin.x = roundf(windowPoint.x - (frame.size.width * 0.5f));
-    frame.origin.y = roundf(windowPoint.y - frame.size.height + yOffset);
+    CGRect magnificationLoupeRectInLayerCoordinates = [windowLayer convertRect:[loupeLayer convertRect:magnificationLoupeRect
+                                                                                               toLayer:windowLayer] toLayer:layerToMagnify];
+    CGFloat yScale = magnificationLoupeRectInLayerCoordinates.size.height / magnificationLoupeRect.size.height;
+    CGPoint positionPoint = point;
+    positionPoint.y = positionPoint.y - magnificationLoupeRectInLayerCoordinates.size.height + (yOffset * yScale) + magnificationLoupeRectInLayerCoordinates.size.height * 0.5;
     
-    // Make sure the loupe doesn't go too far off the top of the screen so that 
+    // Make sure the loupe doesn't go too far off the top of the screen so that
     // the user can still see the middle of it.
-    CGFloat minY = roundf(-magnificationLoupeSize.height * 0.33f);
-    //frame.origin.x = MAX(frame.origin.x, 0);
-    frame.origin.y = MAX(frame.origin.y, minY);
+    CGRect screenRectInContentsLayerCoordinates = [windowLayer convertRect:[windowLayer bounds] toLayer:layerToMagnify];
+    CGFloat minY = screenRectInContentsLayerCoordinates.origin.y;
+    positionPoint.y = MAX(positionPoint.y, minY);
     
-    loupeLayer.position = CGPointMake(frame.origin.x + frame.size.width * 0.5f, frame.origin.y + frame.size.height * 0.5f);
+    loupeLayer.position = [layerToMagnify convertPoint:positionPoint toLayer:windowLayer];
+    
     [CATransaction commit];
 }
 
@@ -625,11 +635,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     
     CABasicAnimation *loupePopDown = [[CABasicAnimation alloc] init];
     loupePopDown.keyPath = @"transform";
-    CATransform3D toTransform = CATransform3DMakeTranslation(0, magnificationLoupeSize.height / 2.0f, 0);
-    toTransform = CATransform3DScale(toTransform, 1.0f / magnificationLoupeSize.width,
-                                       1.0f / magnificationLoupeSize.height,
-                                       1.0f);
-    loupePopDown.fromValue = [NSValue valueWithCATransform3D:loupeLayer.transform];
+
+    CATransform3D toTransform = CATransform3DMakeScale(1.0f / magnificationLoupeSize.width, 1.0f / magnificationLoupeSize.height, 1.0f);
+    toTransform = CATransform3DConcat(toTransform, CATransform3DMakeTranslation(0, magnificationLoupeSize.height / 2.0f, 0));
+    toTransform = CATransform3DConcat(toTransform, loupeLayer.transform);
+    
     loupePopDown.toValue = [NSValue valueWithCATransform3D:toTransform];
     loupePopDown.duration = sLoupePopDownDuration;
     loupePopDown.delegate = self;
@@ -1275,7 +1285,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             
             CALayer *endLayer = left ? self.highlightEndLayers.first : self.highlightEndLayers.second;
             CGRect endLayerFrame = [endLayer convertRect:endLayer.bounds toLayer:attachedLayer];
-            CGRect endLayerScreenBounds = [attachedLayer convertRect:endLayerFrame toLayer:attachedLayer.topmostLayer];
+            CGRect endLayerScreenBounds = [attachedLayer convertRect:endLayerFrame toLayer:attachedLayer.windowLayer];
             CGFloat yOffset = - roundf(endLayerScreenBounds.size.height * 0.5f) + (left ? -13.0f : -1.0f);
             [self _loupeToPoint:CGPointMake(roundf(endLayerFrame.origin.x + endLayerFrame.size.width * 0.5f),
                                             roundf(endLayerFrame.origin.y + endLayerFrame.size.height * 0.5f))

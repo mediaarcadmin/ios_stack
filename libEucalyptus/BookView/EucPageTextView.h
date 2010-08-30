@@ -14,6 +14,8 @@
 
 @protocol EucPageTextView <THUIViewThreadSafeDrawing> 
 
+@required
+
 @property (nonatomic, assign) id<EucPageTextViewDelegate> delegate;
 @property (nonatomic, assign) CGFloat pointSize;
 @property (nonatomic, assign) BOOL allowScaledImageDistortion;
@@ -34,6 +36,9 @@
 - (void)handleTouchMoved:(UITouch *)touch atLocation:(CGPoint)location;
 - (void)handleTouchEnded:(UITouch *)touch atLocation:(CGPoint)location;
 - (void)handleTouchCancelled:(UITouch *)touch atLocation:(CGPoint)location;
+
+@optional
+- (CGRect)contentRect;
 
 @end
 

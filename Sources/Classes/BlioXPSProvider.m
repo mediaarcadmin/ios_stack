@@ -10,7 +10,8 @@
 #import "BlioBook.h"
 #import "BlioXPSProvider.h"
 #import "BlioBookManager.h"
-#import "BlioDrmManager.h"
+//#import "BlioDrmManager.h"
+#import "BlioDrmSessionManager.h"
 #import "zlib.h"
 
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
@@ -29,6 +30,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @property (nonatomic, retain) NSMutableArray *uriMap;
 @property (nonatomic, retain) BlioTimeOrderedCache *componentCache;
 @property (nonatomic, assign, readonly) BOOL bookIsEncrypted;
+@property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -41,6 +43,13 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize bookID;
 @synthesize tempDirectory, imageInfo, xpsData, uriMap;
 @synthesize componentCache;
+@synthesize drmSessionManager;
+
+- (BlioDrmSessionManager*)drmSessionManager {
+	if ( !drmSessionManager ) 
+		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
+	return drmSessionManager;
+}
 
 - (void)dealloc {   
     [renderingLock lock];
@@ -70,6 +79,9 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     [inflateLock release];
     
     self.componentCache = nil;
+	
+	if ( drmSessionManager )
+		[drmSessionManager release];
     
     [super dealloc];
 }
@@ -77,6 +89,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 - (id)initWithBookID:(NSManagedObjectID *)aBookID {
     if ((self = [super init])) {
         self.bookID = aBookID;
+		
         renderingLock = [[NSLock alloc] init];
         contentsLock = [[NSLock alloc] init];
         inflateLock = [[NSLock alloc] init];
@@ -92,6 +105,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         if (![[NSFileManager defaultManager] fileExistsAtPath:self.tempDirectory]) {
             if (![[NSFileManager defaultManager] createDirectoryAtPath:self.tempDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
                 NSLog(@"Unable to create temp XPS directory at path %@ with error %@ : %@", self.tempDirectory, error, [error userInfo]);
+                CFRelease(UUIDString);
                 return nil;
             }
         }
@@ -100,6 +114,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         NSString *xpsPath = [self.book xpsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:xpsPath]) {
             NSLog(@"Error creating xpsProvider. File does not exist at path: %@", xpsPath);
+            CFRelease(UUIDString);
             return nil;
         }
         
@@ -121,12 +136,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
             };
             
             strncpy(upi.guid, [(NSString *)UUIDString UTF8String], [(NSString *)UUIDString length]);
-            
-            CFRelease(UUIDString);
         
             XPS_RegisterDrmHandler(xpsHandle, &upi);
             //NSLog(@"Registered drm handler for book %@ with handle %p with userdata %p", [self.book valueForKey:@"title"], xpsHandle, self);
         }
+        CFRelease(UUIDString);
         
         XPS_SetAntiAliasMode(xpsHandle, XPS_ANTIALIAS_ON);
         pageCount = XPS_GetNumberPages(xpsHandle, 0);
@@ -138,13 +152,16 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         aCache.totalCostLimit = 1024*1024; // Arbitrary 1MB limit. This may need wteaked or set on a per-device basis
         self.componentCache = aCache;
         [aCache release];
+		
+		drmSessionManager = nil;
     }
     return self;
 }
 
 - (void)reportReading {
     if (self.bookIsEncrypted) {
-        [[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
+		//[[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
+        [self.drmSessionManager reportReading];
     }
 }
 
@@ -154,7 +171,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     NSError *error;
     NSFileManager *threadSafeManager = [[NSFileManager alloc] init];
     if ([threadSafeManager fileExistsAtPath:path]) {
-        NSLog(@"Removing temp XPS directory at path %@");
+        //NSLog(@"Removing temp XPS directory at path %@", path);
 
         if (![threadSafeManager removeItemAtPath:path error:&error]) {
             NSLog(@"Error removing temp XPS directory at path %@ with error %@ : %@", path, error, [error userInfo]);
@@ -281,10 +298,11 @@ static void XPSBitmapReleaseCallback(void *releaseInfo, void *data) {
             size_t dataLength = width * height * 3;
         
             CGDataProviderRef providerRef = CGDataProviderCreateWithData(self, imageInfo->pBits, dataLength, XPSDataReleaseCallback);
+            CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
             CGImageRef imageRef =
-            CGImageCreate(width, height, 8, 24, width * 3, CGColorSpaceCreateDeviceRGB(), 
+            CGImageCreate(width, height, 8, 24, width * 3, rgbColorSpace, 
                           kCGImageAlphaNone, providerRef, NULL, true, kCGRenderingIntentDefault);
-        
+            CGColorSpaceRelease(rgbColorSpace);
             CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
             CGRect imageRect = CGRectMake(0, tileRect.size.height - height, width, height);
             CGContextDrawImage(ctx, imageRect, imageRef);
@@ -416,7 +434,9 @@ static void XPSBitmapReleaseCallback(void *releaseInfo, void *data) {
     NSData *rawData = nil;
     
     XPS_FILE_PACKAGE_INFO packageInfo;
+    [contentsLock lock];
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
+    [contentsLock unlock];
     if (!ret) {
         NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
         return nil;
@@ -443,7 +463,9 @@ static void XPSBitmapReleaseCallback(void *releaseInfo, void *data) {
 
 - (BOOL)componentExistsAtPath:(NSString *)path {
     XPS_FILE_PACKAGE_INFO packageInfo;
+    [contentsLock lock];
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
+    [contentsLock unlock];
     if (ret && (packageInfo.length > 0)) {
         return YES;
     }
@@ -512,8 +534,9 @@ static void XPSBitmapReleaseCallback(void *releaseInfo, void *data) {
     NSData *componentData = [self rawDataForComponentAtPath:componentPath];
              
     if (encrypted) {
-        if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
-            NSLog(@"Error whilst decrypting data at path %@", componentPath);
+		//if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
+        if (![self.drmSessionManager decryptData:componentData] ) {
+			NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
             return nil;
         }
     }
@@ -664,6 +687,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	
 	if (ret != Z_OK) {
         [inflateLock unlock];
+        [outData release];
 		return nil;
     }
 	
@@ -677,16 +701,18 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 		// ret should be Z_STREAM_END
 		switch (ret) {
 			case Z_NEED_DICT:
-				ret = Z_DATA_ERROR;
+				//ret = Z_DATA_ERROR;
 			case Z_DATA_ERROR:
 			case Z_MEM_ERROR:
 				XPS_inflateEnd(&strm);
                 [inflateLock unlock];
+                [outData release];
 				return nil;
 		}
 		bytesDecompressed = BUFSIZE - strm.avail_out;
-		NSData* data = [[NSData alloc] initWithBytes:(const void*)outbuf length:bytesDecompressed];
+		NSData* data = [[NSData alloc] initWithBytesNoCopy:outbuf length:bytesDecompressed freeWhenDone:NO];
 		[outData appendData:data];
+        [data release];
 	}
 	while (strm.avail_out == 0);
 	XPS_inflateEnd(&strm);
@@ -696,6 +722,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	if (ret == Z_STREAM_END || ret == Z_OK)
 		return [outData autorelease];
     
+    [outData release];
 	return nil;
 }
 

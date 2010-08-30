@@ -74,9 +74,9 @@
         [aInlineSegmentedControl addTarget:self action:@selector(inlineSegmentChanged:) forControlEvents:UIControlEventValueChanged];
         
         [[aInlineSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Find previous", @"Accessibility label for Book Search Find Previous button")];
-        [[aInlineSegmentedControl imageForSegmentAtIndex:0] setAccessibilityHint:NSLocalizedString(@"Searches backwards for the previous occurence of the search term.", @"Accessibility hint for Book Search Find Previous button")];
+        [[aInlineSegmentedControl imageForSegmentAtIndex:0] setAccessibilityHint:NSLocalizedString(@"Searches backwards for the previous occurrence of the search term.", @"Accessibility hint for Book Search Find Previous button")];
         [[aInlineSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Find next", @"Accessibility label for Book Search Find Next button")];
-        [[aInlineSegmentedControl imageForSegmentAtIndex:1] setAccessibilityHint:NSLocalizedString(@"Searches forwards for the next occurence of the search term.", @"Accessibility hint for Book Search Find Next button")];
+        [[aInlineSegmentedControl imageForSegmentAtIndex:1] setAccessibilityHint:NSLocalizedString(@"Searches forward for the next occurrence of the search term.", @"Accessibility hint for Book Search Find Next button")];
         
         CGRect segmentFrame = aInlineSegmentedControl.frame;
         segmentFrame.size.width = 88;

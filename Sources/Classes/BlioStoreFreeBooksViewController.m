@@ -368,7 +368,7 @@
 
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseEntities:(NSArray *)parsedEntities {
 	BOOL standardFeed = NO;
-	BOOL searchFeed = NO;
+	//BOOL searchFeed = NO;
     for (BlioStoreFeed *feed in self.feeds) {
         if ([feed.parser isEqual:parser]) {
             [feed.entities addObjectsFromArray:parsedEntities];
@@ -378,7 +378,7 @@
     for (BlioStoreFeed *feed in self.storeSearchTableViewDataSource.feeds) {
         if ([feed.parser isEqual:parser]) {
             [feed.entities addObjectsFromArray:parsedEntities];
-			searchFeed = YES;
+			//searchFeed = YES;
 		}
     }
     // Three scroll view properties are checked to keep the user interface smooth during parse. 

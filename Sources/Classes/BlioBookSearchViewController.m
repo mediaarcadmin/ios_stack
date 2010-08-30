@@ -9,6 +9,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioBookSearchViewController.h"
 #import "BlioBookViewController.h"
+#import "UIDevice+BlioAdditions.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 #define BLIOBOOKSEARCHCELLPAGETAG 1233
 #define BLIOBOOKSEARCHCELLPREFIXTAG 1234
@@ -80,9 +82,12 @@ typedef enum {
 - (void)fadeOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
 - (void)slideOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove;
 - (void)displayStatusBarWithStyle:(UIStatusBarStyle)barStyle animated:(BOOL)animated;
+- (void)hideToolbarsAndView;
+- (void)showToolbarsAndView;
 - (void)dismissSearchToolbarAnimated:(BOOL)animated;
 - (void)highlightCurrentSearchResult;
 - (void)setSearchStatus:(BlioBookSearchStatus)newStatus;
+- (void)refreshAccessibility;
 
 @end
 
@@ -126,6 +131,8 @@ typedef enum {
         
         self.searchResults = [NSMutableArray array];
         currentSearchResult = -1;
+        
+        resultsInterval = [[UIDevice currentDevice] blioDeviceSearchInterval];
     }
     return self;
 }
@@ -180,6 +187,8 @@ typedef enum {
     [self.tableView setTableFooterView:aStatusView];
     self.statusView = aStatusView;
     [aStatusView release];
+    
+    [self.view.layer setZPosition:100];
 }
 
 - (void)highlightCurrentSearchResult {
@@ -269,7 +278,7 @@ typedef enum {
     self.searchActive = YES;
     self.toolbar.inlineMode = NO;
     self.navController = controller;
-    [self.view setFrame:[self fullScreenRect]];
+    [self.view setFrame:[self fullScreenRect]];    
     [self.navController.toolbar.superview addSubview:self.view];
     if ([self.searchResults count]) {
         [self displayFullScreen:animated becomeActive:NO];
@@ -327,6 +336,7 @@ typedef enum {
     }
     
     [self.statusView setStatus:newStatus matches:[self.searchResults count]];
+        
 }
 
 - (void)continueSearching {
@@ -339,6 +349,10 @@ typedef enum {
             [self setSearchStatus:kBlioBookSearchStatusInProgress];
         }
     }    
+}
+
+- (void)refreshAccessibility {
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 #pragma mark -
@@ -362,12 +376,16 @@ typedef enum {
     } else if ([animationID isEqualToString:BlioBookSearchDisplayFullScreenAnimation]) {
         [self.toolbar.searchBar becomeFirstResponder];
     }
+    
+    [self refreshAccessibility];
+    
 }
 
 - (void)displayInToolbar:(BOOL)animated {  
     
     [self displayStatusBarWithStyle:UIStatusBarStyleBlackTranslucent animated:NO];
     [self.navController.toolbar setAlpha:0];
+    [self showToolbarsAndView];
     
     CGRect fullScreen = [self fullScreenRect];
     CGRect collapsedFrame = fullScreen;
@@ -409,6 +427,7 @@ typedef enum {
         CGRect offscreen = fullScreen;
         offscreen.origin.y += fullScreen.size.height;
         [self.view setFrame:offscreen];
+        [self performSelector:@selector(hideToolbarsAndView) withObject:nil afterDelay:0.4f];
     }
     
     [self.view setFrame:fullScreen];
@@ -424,13 +443,15 @@ typedef enum {
     
     if (animated) {
         [UIView commitAnimations];
-    }    
+    } else {
+        [self hideToolbarsAndView];
+    }
 }
 
 - (void)fadeOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove {
     [self displayStatusBarWithStyle:UIStatusBarStyleBlackTranslucent animated:NO];
     
-    [self.navController setToolbarHidden:NO];
+    [self showToolbarsAndView];
     [self.navController.toolbar setAlpha:0];
     
     if (animated) {
@@ -490,7 +511,7 @@ typedef enum {
 - (void)displayOffScreen:(BOOL)animated removedOnCompletion:(BOOL)remove {
     [self displayStatusBarWithStyle:UIStatusBarStyleBlackTranslucent animated:NO];
     
-    [self.navController setToolbarHidden:NO];
+    [self showToolbarsAndView];
     
     CGRect fullScreen = [self fullScreenRect];
     CGRect collapsedFrame = fullScreen;
@@ -532,6 +553,20 @@ typedef enum {
         [(id)application setStatusBarHidden:NO animated:animated]; // typecast as id to mask deprecation warnings.
 }
 
+- (void)hideToolbarsAndView {
+    [self.navController setNavigationBarHidden:YES];
+    [self.navController setToolbarHidden:YES];
+    [[[self.navController topViewController] view] setHidden:YES];
+    [self refreshAccessibility];
+}
+
+- (void)showToolbarsAndView {
+    [self.navController setNavigationBarHidden:NO];
+    [self.navController setToolbarHidden:NO];
+    [[[self.navController topViewController] view] setHidden:NO];
+    [self refreshAccessibility];
+}
+
 #pragma mark -
 #pragma mark Table view data source
 
@@ -568,18 +603,21 @@ typedef enum {
         page.textColor = [UIColor darkGrayColor];
         page.textAlignment = UITextAlignmentRight;
         page.tag = BLIOBOOKSEARCHCELLPAGETAG;
+        [page setIsAccessibilityElement:NO];
         [cell.contentView addSubview:page];
         [page release];
         
         UILabel *prefix = [[UILabel alloc] init];
         prefix.font = [UIFont systemFontOfSize:17];
         prefix.tag = BLIOBOOKSEARCHCELLPREFIXTAG;
+        [prefix setIsAccessibilityElement:NO];
         [cell.contentView addSubview:prefix];
         [prefix release];
         
         UILabel *match = [[UILabel alloc] init];
         match.font = [UIFont boldSystemFontOfSize:17];
         match.tag = BLIOBOOKSEARCHCELLMATCHTAG;
+        [match setIsAccessibilityElement:NO];
         [cell.contentView addSubview:match];
         [match release];
         
@@ -587,6 +625,7 @@ typedef enum {
         suffix.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         suffix.font = [UIFont systemFontOfSize:17];
         suffix.tag = BLIOBOOKSEARCHCELLSUFFIXTAG;
+        [suffix setIsAccessibilityElement:NO];
         [cell.contentView addSubview:suffix];
         [suffix release];
     }
@@ -595,14 +634,15 @@ typedef enum {
     BlioBookSearchResults *result = [self.searchResults objectAtIndex:[indexPath row]];
     
     UILabel *page = (UILabel *)[cell.contentView viewWithTag:BLIOBOOKSEARCHCELLPAGETAG];
-    
+    NSString *pageNumberText;
     if (self.bookView) {
         NSInteger pageNum = [self.bookView pageNumberForBookmarkPoint:result.bookmarkRange.startPoint];
-        NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
-        page.text = [NSString stringWithFormat:@"p.%@", displayPage];
+        pageNumberText = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
+        
     } else {
-        page.text = [NSString stringWithFormat:@"p.%d", result.bookmarkRange.startPoint.layoutPage];
+        pageNumberText = [NSString stringWithFormat:@"%d", result.bookmarkRange.startPoint.layoutPage];
     }
+    page.text = [NSString stringWithFormat:@"p.%@", pageNumberText];
     [page sizeToFit];
     CGRect pageFrame = page.frame;
     pageFrame.origin = CGPointMake(5, (CGRectGetHeight(cell.contentView.frame) - pageFrame.size.height)/2.0f);
@@ -631,7 +671,10 @@ typedef enum {
     suffix.frame = CGRectMake(CGRectGetMaxX(matchFrame), (CGRectGetHeight(cell.contentView.frame) - suffix.frame.size.height)/2.0f, CGRectGetWidth(cell.contentView.frame) - CGRectGetMaxX(matchFrame) - 10, suffix.frame.size.height);
     //suffix.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.3];
     
-    return cell;
+    [cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"Match %d, page %@, %@%@%@", @"Book Search results cell accessibility label string format"), [indexPath row] + 1, pageNumberText, result.prefix, result.match, result.suffix]];
+    [cell setAccessibilityHint:[NSString stringWithFormat:NSLocalizedString(@"Jumps to search match on page %@.", @"Book Search results cell accessibility hint string format"), pageNumberText]];
+
+     return cell;
 }
 
 #pragma mark -
@@ -662,6 +705,14 @@ typedef enum {
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [self.toolbar.searchBar resignFirstResponder];
+    
+    if ([self.statusView status] == kBlioBookSearchStatusIdle) {
+        if ([searchBar.text length] > 0) {
+            BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
+            [self setSearchStatus:kBlioBookSearchStatusInProgress];
+            [self.bookSearchController findString:searchBar.text fromBookmarkPoint:currentBookmarkPoint];
+        }
+    }
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -669,11 +720,22 @@ typedef enum {
     [self.searchResults removeAllObjects];
     currentSearchResult = -1;
     [self.tableView reloadData];
+        
+    BOOL perCharacterSearch = NO;
     
-    if ([searchText length] > 0) {
+    if (([searchText length] > 0) && ([[UIDevice currentDevice] blioDevicePerCharacterSearchEnabled])) {
+        perCharacterSearch = YES;
+        if (UIAccessibilityIsVoiceOverRunning != nil) {
+            if (UIAccessibilityIsVoiceOverRunning()) {
+                perCharacterSearch = NO;
+            }
+        }
+    }
+    
+    if (perCharacterSearch) {
         BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-        [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
         [self setSearchStatus:kBlioBookSearchStatusInProgress];
+        [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
     } else {
         [self setSearchStatus:kBlioBookSearchStatusIdle];
     }
@@ -697,16 +759,23 @@ typedef enum {
     NSIndexPath *newRow = [NSIndexPath indexPathForRow:([self.searchResults count] - 1) inSection:0];
     [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newRow] withRowAnimation:UITableViewRowAnimationFade];
 
-    if (([self.searchResults count] % 100) == 0) {
+    NSUInteger resultsBatch = 100;
+    if (UIAccessibilityIsVoiceOverRunning != nil) {
+        if (UIAccessibilityIsVoiceOverRunning()) {
+            resultsBatch = 10;
+        }
+    }
+    
+    if (([self.searchResults count] % resultsBatch) == 0) {
         [self setSearchStatus:kBlioBookSearchStatusStopped];
     } else {
-        [aSearchController findNextOccurrence];
-    }
+        [aSearchController performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:resultsInterval];
+    }    
 }
 
 - (void)searchControllerDidReachEndOfBook:(BlioBookSearchController *)aSearchController {
-    [aSearchController findNextOccurrence];
     [self setSearchStatus:kBlioBookSearchStatusInProgressHasWrapped];
+    [aSearchController findNextOccurrence];
 }
 
 - (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)aSearchController {
@@ -749,6 +818,7 @@ typedef enum {
         
         UIActivityIndicatorView *aActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         aActivityView.hidesWhenStopped = YES;
+        [aActivityView setIsAccessibilityElement:NO];
         [self addSubview:aActivityView];
         self.activityView = aActivityView;
         [aActivityView release];
@@ -756,6 +826,7 @@ typedef enum {
         UILabel *aStatusLabel = [[UILabel alloc] init];
         [aStatusLabel setBackgroundColor:[UIColor clearColor]];
         [aStatusLabel setFont:[UIFont boldSystemFontOfSize:16]];
+        [aStatusLabel setIsAccessibilityElement:NO];
         [self addSubview:aStatusLabel];
         self.statusLabel = aStatusLabel;
         [aStatusLabel release];
@@ -763,6 +834,7 @@ typedef enum {
         UILabel *aMatchesLabel = [[UILabel alloc] init];
         [aMatchesLabel setBackgroundColor:[UIColor clearColor]];
         [aMatchesLabel setFont:[UIFont systemFontOfSize:14]];
+        [aMatchesLabel setIsAccessibilityElement:NO];
         [self addSubview:aMatchesLabel];
         self.matchesLabel = aMatchesLabel;
         [aMatchesLabel release];
@@ -798,31 +870,44 @@ typedef enum {
             [self.activityView startAnimating];
             [self.statusLabel setText:NSLocalizedString(@"Searching...", @"Book Search search in progress")];
             [self.matchesLabel setText:nil];
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Searching.", @"Book Search search in progress accessibility announcement"));
+            }
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusInProgressHasWrapped:
             [self.activityView startAnimating];
             [self.statusLabel setText:NSLocalizedString(@"Search Wrapped...", @"Book Search search in progress, has reached end and is continuing from the start")];
             [self.matchesLabel setText:nil];
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Search Wrapped.", @"Book Search search in progress, has wrapped, accessibility announcement"));
+            }
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusComplete:
             [self.activityView stopAnimating];
             [self.statusLabel setText:NSLocalizedString(@"Search Completed", @"Book Search search has completed")];
             [self.matchesLabel setText:matchString];
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:NSLocalizedString(@"Search Completed. %@", @"Book Search search has completed, accessibility announcement"), matchString]);
+            }
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusStopped:
             [self.activityView stopAnimating];
             [self.statusLabel setText:NSLocalizedString(@"Load More...", @"Book Search load more results")];
             [self.matchesLabel setText:matchString];
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:NSLocalizedString(@"%@", @"Book Search matches found accessibility announcement"), matchString]);                                                                      
+            }
             [self setHidden:NO];
             break;
         default:
             [self setHidden:YES];
             break;
     }
-    [self setNeedsLayout];    
+    [self setNeedsLayout];
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 
 - (void)layoutSubviews {
@@ -856,7 +941,7 @@ typedef enum {
 
     self.activityView.frame = activityFrame;
     self.statusLabel.frame = statusLabelFrame;
-    self.matchesLabel.frame = matchesLabelFrame;
+    self.matchesLabel.frame = matchesLabelFrame;    
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -877,6 +962,63 @@ typedef enum {
     CGContextMoveToPoint(ctx, 0, CGRectGetMaxY(rect));
     CGContextAddLineToPoint(ctx, CGRectGetMaxX(rect), CGRectGetMaxY(rect));
     CGContextStrokePath(ctx);
+}
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    NSString *label = nil;
+    
+    switch (self.status) {
+        case kBlioBookSearchStatusInProgress:
+            label = NSLocalizedString(@"Searching.", @"Book Search search in progress accessibility announcement");
+            break;
+        case kBlioBookSearchStatusInProgressHasWrapped:
+            label = NSLocalizedString(@"Search Wrapped.", @"Book Search search in progress, has wrapped, accessibility announcement");
+            break;
+        case kBlioBookSearchStatusComplete:
+            label = [NSString stringWithFormat:NSLocalizedString(@"Search Completed. %@", @"Book Search search has completed, accessibility announcement"), self.matchesLabel.text];
+            break;
+        case kBlioBookSearchStatusStopped:
+            label = [NSString stringWithFormat:NSLocalizedString(@"%@", @"Book Search matches found accessibility announcement"), self.matchesLabel.text];                                                                      
+            break;
+        default:
+            break;
+    }
+    
+    return label;
+}
+
+- (NSString *)accessibilityHint {
+    NSString *hint = nil;
+    
+    switch (self.status) {
+        case kBlioBookSearchStatusStopped:
+            hint = NSLocalizedString(@"Continues searching.", @"Book Search load more search results accessibility hint");                                                                      
+            break;
+        default:
+            break;
+    }
+            
+    return hint;
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    
+    UIAccessibilityTraits traits = 0;
+    
+    switch (self.status) {
+        case kBlioBookSearchStatusStopped:
+            traits = UIAccessibilityTraitButton;                                                                      
+            break;
+        default:
+            traits = UIAccessibilityTraitStaticText; 
+            break;
+    }
+    
+    return traits;
 }
 
 @end

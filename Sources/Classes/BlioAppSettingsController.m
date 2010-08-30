@@ -93,13 +93,13 @@
     
 	switch ( [indexPath section] ) {
 		case 0:
-			[cell.textLabel setText:@"Text to Speech"];
+			[cell.textLabel setText:@"Reading Voice"];
 			break;
 		case 1:
 			[cell.textLabel setText:@"Web Tools"];
 			break;
 		case 2:
-			[cell.textLabel setText:@"Paid Books"];
+			[cell.textLabel setText:@"Device Registration"];
 			break;
 		case 3:
 			[cell.textLabel setText:@"Help"];

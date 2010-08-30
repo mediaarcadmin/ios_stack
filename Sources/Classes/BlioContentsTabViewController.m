@@ -130,6 +130,7 @@ typedef enum {
         [self.notesController setToolbarItems:[NSArray arrayWithArray:tabItems]];
     }
     
+    [aRootVC release];
     [aContentsController release];
     [aBookmarksController release];
     [aNotesController release];
@@ -294,8 +295,10 @@ typedef enum {
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    if ([self.delegate respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
-        [self.delegate willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    if (duration) {
+        if ([self.delegate respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
+            [self.delegate willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {

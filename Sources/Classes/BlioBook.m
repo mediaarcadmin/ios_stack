@@ -10,6 +10,7 @@
 #import "BlioBookManager.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/THStringRenderer.h>
 #import <pthread.h>
 
 @interface BlioBook (PRIVATE_DO_NOT_MAKE_PUBLIC)
@@ -19,6 +20,7 @@
 - (NSData *)dataFromXPSAtPath:(NSString *)path;
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path;
 - (BOOL)componentExistsInXPSAtPath:(NSString *)path;
+- (BlioXPSProvider *)xpsProvider;
 
 @end
 
@@ -138,7 +140,7 @@
 }
 
 - (NSString *)bookCacheDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
     return bookPath;
@@ -149,26 +151,6 @@
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
     return bookPath;
-}
-
-- (NSString *)audiobookPath {
-    NSString *filename = [self valueForKey:@"audiobookFilename"];
-    if (filename) {
-        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
-}
-
-- (NSString *)timingIndicesPath {
-    NSString *filename = [self valueForKey:@"timingIndicesFilename"];
-    if (filename) {
-        NSString *path = [[self.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByAppendingPathComponent:filename];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) return path;
-    }
-    
-    return nil;
 }
 
 - (BOOL)audioRights {
@@ -210,19 +192,188 @@
     return [self hasManifestValueForKey:@"drmHeaderFilename"];
 }
 
+- (UIImage *)missingCoverImageOfSize:(CGSize)size {
+    if(UIGraphicsBeginImageContextWithOptions != nil) {
+        UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    } else {
+        UIGraphicsBeginImageContext(size);
+    }
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    UIImage *missingCover = [UIImage imageNamed:@"booktexture-nocover.png"];
+    [missingCover drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    
+    NSString *titleString = [self title];
+    NSUInteger maxTitleLength = 100;
+    if ([titleString length] > maxTitleLength) {
+        titleString = [NSString stringWithFormat:@"%@...", [titleString substringToIndex:maxTitleLength]];
+    }
+    
+    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"Georgia"];
+
+    CGSize fullSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat pointSize = roundf(fullSize.height / 8.0f);
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(size.width / fullSize.width, size.height / fullSize.height);
+    
+    UIEdgeInsets titleInsets = UIEdgeInsetsMake(fullSize.height * 0.2f, fullSize.width * 0.2f, fullSize.height * 0.2f, fullSize.width * 0.1f);
+    CGRect titleRect = UIEdgeInsetsInsetRect(CGRectMake(0, 0, fullSize.width, fullSize.height), titleInsets);
+    
+    BOOL fits = NO;
+    
+    NSUInteger flags = THStringRendererFlagFairlySpaceLastLine | THStringRendererFlagCenter;
+    
+    while (!fits && pointSize >= 2) {
+        CGSize size = [renderer sizeForString:titleString pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+        if ((size.height <= titleRect.size.height) && (size.width <= titleRect.size.width)) {
+            fits = YES;
+        } else {
+            pointSize -= 1.0f;
+        }
+    }
+    
+    CGContextConcatCTM(ctx, scaleTransform);
+    CGContextClipToRect(ctx, titleRect); // if title won't fit at 2 points it gets clipped
+    
+    CGContextSetBlendMode(ctx, kCGBlendModeOverlay);
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0.919 green:0.888 blue:0.862 alpha:0.8f].CGColor);
+    CGContextBeginTransparencyLayer(ctx, NULL);
+    CGContextSetShadow(ctx, CGSizeMake(0, -1*scaleTransform.d), 0);
+    [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+    CGContextEndTransparencyLayer(ctx);
+    
+    CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 1, 0.8f);
+    [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
+    [renderer release];
+    
+    UIImage *aCoverImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    return aCoverImage;
+}
+
 - (UIImage *)coverImage {
     NSData *imageData = [self manifestDataForKey:@"coverFilename"];
-    return [UIImage imageWithData:imageData];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+        return [self missingCoverImageOfSize:CGSizeMake(screenSize.width, screenSize.height)];
+    }
 }
 
+- (BOOL)hasAppropriateCoverThumbForGrid {
+    CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }
+	
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
+	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+	
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		targetThumbWidth = kBlioCoverGridThumbWidthPad;
+		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+	}
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+	if (aCoverImage) return YES;
+	return NO;
+}
 - (UIImage *)coverThumbForGrid {
-    NSData *imageData = [self manifestDataForKey:@"gridThumbFilename"];
+	
+	CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }
+
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
+	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		targetThumbWidth = kBlioCoverGridThumbWidthPad;
+		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+	}
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
+    }
     return [UIImage imageWithData:imageData];
 }
+- (BOOL)hasAppropriateCoverThumbForList {
+	CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }
+	
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
 
+	targetThumbWidth = kBlioCoverListThumbWidth;
+	targetThumbHeight = kBlioCoverListThumbHeight;
+	
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+	if (aCoverImage) return YES;
+	return NO;
+}
 - (UIImage *)coverThumbForList {
-    NSData *imageData = [self manifestDataForKey:@"listThumbFilename"];
-    return [UIImage imageWithData:imageData];
+	
+	CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }
+
+	CGFloat targetThumbWidth = 0;
+	CGFloat targetThumbHeight = 0;
+	NSInteger scaledTargetThumbWidth = 0;
+	NSInteger scaledTargetThumbHeight = 0;
+
+	targetThumbWidth = kBlioCoverListThumbWidth;
+	targetThumbHeight = kBlioCoverListThumbHeight;
+		
+	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+
+    NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
+    UIImage *aCoverImage = [UIImage imageWithData:imageData];
+    if (aCoverImage) {
+        return aCoverImage;
+    } else {
+        return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
+    }
 }
 
 - (NSArray *)sortedBookmarks {
@@ -430,21 +581,22 @@ static void sortedHighlightRangePredicateInit() {
 }
 
 - (void)setManifestValue:(id)value forKey:(NSString *)key {
-    NSMutableDictionary *manifest = nil;
-    NSDictionary *currentManifest = [self valueForKey:@"manifest"];
-    if (currentManifest) {
-        manifest = [NSMutableDictionary dictionaryWithDictionary:currentManifest];
-    } else {
-        manifest = [NSMutableDictionary dictionary];
-    }
-    
-    [manifest setValue:value forKey:key];
-    [self setValue:manifest forKeyPath:@"manifest"];
-    
-    NSError *anError;
-    if (![self.managedObjectContext save:&anError]) {
-        NSLog(@"setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
-    }
+//	NSLog(@"setManifestValue:forKey:%@ \n value: %@ for book with ID %@",key,value,self.objectID);
+		NSMutableDictionary *manifest = nil;
+		NSDictionary *currentManifest = [self valueForKey:@"manifest"];
+		if (currentManifest) {
+			manifest = [NSMutableDictionary dictionaryWithDictionary:currentManifest];
+		} else {
+			manifest = [NSMutableDictionary dictionary];
+		}
+		
+		[manifest setValue:value forKey:key];
+		[self setValue:manifest forKeyPath:@"manifest"];
+		
+		NSError *anError;
+		if (![self.managedObjectContext save:&anError]) {
+			NSLog(@"setManifestValue:%@ forKey:%@] Save failed with error: %@, %@", value, key, anError, [anError userInfo]);
+		}
 }
 
 - (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path {
@@ -488,6 +640,10 @@ static void sortedHighlightRangePredicateInit() {
     return data;
 }
 
+- (NSData *)textFlowDataWithPath:(NSString *)path {
+    return [self dataFromTextFlowAtPath:path];
+}
+
 - (BOOL)hasManifestValueForKey:(NSString *)key
 {
     return [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] != nil;
@@ -501,7 +657,7 @@ static void sortedHighlightRangePredicateInit() {
         NSString *location = [manifestEntry objectForKey:@"location"];
         NSString *path = [manifestEntry objectForKey:@"path"];
         if (location && path) {
-            // TODO: what if the textflow is in the XPS - this won't work? manifestPathForKey should have remained private
+            // TODO: what if the textflow is in the XPS - this won't work? manifestPathForKey perhaps should have stayed private
             if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
                 filePath = [self fullPathOfTextFlowItemAtPath:path];
             } else if ([location isEqualToString:BlioManifestEntryLocationBundle]) {
@@ -510,6 +666,7 @@ static void sortedHighlightRangePredicateInit() {
 				filePath = [self fullPathOfFileSystemItemAtPath:path];
 			} else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
                 // There is no such thing as a full-path to an XPS item - must be accessed via a data accessor
+				NSLog(@"ERROR: manifest path tried to be obtained for an in-XPS item! key: %@, returning nil...",key);
                 filePath = nil;
             } else {
                 filePath = path;
@@ -520,6 +677,15 @@ static void sortedHighlightRangePredicateInit() {
     return filePath;
 }
 
+- (NSString *)manifestRelativePathForKey:(NSString *)key {
+	NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        NSString *path = [manifestEntry objectForKey:@"path"];
+        if (path) return path;
+    }
+    return nil;
+}
+
 - (NSString *)manifestLocationForKey:(NSString *)key {
     NSString *fileLocation = nil;
     
@@ -528,6 +694,16 @@ static void sortedHighlightRangePredicateInit() {
         fileLocation = [manifestEntry objectForKey:@"location"];
     }
     return fileLocation;
+}
+
+- (BOOL)manifestPreAvailabilityCompleteForKey:(NSString *)key {
+    BOOL fileStatus = false;
+    
+    NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
+    if (manifestEntry) {
+        fileStatus = [[manifestEntry objectForKey:@"preAvailabilityComplete"] boolValue];
+    }
+    return fileStatus;
 }
 
 - (NSData *)manifestDataForKey:(NSString *)key {
@@ -548,6 +724,30 @@ static void sortedHighlightRangePredicateInit() {
     }
     [manifestEntry release];
     return data;
+}
+- (NSData *)manifestDataForKey:(NSString *)key pathIndex:(NSInteger)index {
+    NSData *data = nil;
+    NSDictionary *manifestEntry = [[self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] retain];
+    if(manifestEntry) {
+        NSString *location = [manifestEntry objectForKey:@"location"];
+		if ([[manifestEntry objectForKey:@"path"] isKindOfClass:[NSArray class]]) {
+			NSArray *pathArray = [manifestEntry objectForKey:@"path"];
+			NSString * path = nil;
+			if (index < [pathArray count]) path = [pathArray objectAtIndex:index];
+			if (location && path) {
+				if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
+					data = [self dataFromFileSystemAtPath:path];
+				} else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
+					data = [self dataFromXPSAtPath:path];
+				} else if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
+					data = [self dataFromTextFlowAtPath:path];
+				}
+			}
+		}
+		else NSLog(@"WARNING: manifestDataForKey:pathIndex: called, but path value is not an array!");
+    }
+    [manifestEntry release];
+    return data;	
 }
 
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range {
@@ -602,8 +802,12 @@ static void sortedHighlightRangePredicateInit() {
 #pragma mark -
 #pragma mark Author name conversion functions
 
-- (NSString *)authorWithStandardFormat {
-	return [BlioBook standardNameFromCanonicalName:self.author];
+- (NSString *)authorsWithStandardFormat {
+	if (self.author) {
+		NSArray * authorsArray = [self.author componentsSeparatedByString:@"|"];
+		return [BlioBook standardNamesFromCanonicalNameArray:authorsArray];
+	}
+	return nil;
 }
 
 +(NSString*)standardNameFromCanonicalName:(NSString*)aName {
@@ -621,6 +825,22 @@ static void sortedHighlightRangePredicateInit() {
 			[aName substringToIndex:lastCommaLocation.location]];
 	
 }
++(NSString*)standardNamesFromCanonicalNameArray:(NSArray*)aNameArray {
+	if (aNameArray) {
+		NSString * authorsString = @"";
+		for (int i = 0; i < [aNameArray count]; i++) {
+			if (i != 0) {
+				if (i == ([aNameArray count] - 1)) {
+					authorsString = [authorsString stringByAppendingString:@" & "];
+				}
+				else authorsString = [authorsString stringByAppendingString:@", "];
+			}
+			authorsString = [authorsString stringByAppendingString:[BlioBook standardNameFromCanonicalName:[aNameArray objectAtIndex:i]]];
+		}		
+		return authorsString;
+	}
+	return nil;
+}
 
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName {
 	if (!aName) return nil;
@@ -628,7 +848,7 @@ static void sortedHighlightRangePredicateInit() {
 	NSArray* suffixes = [NSArray arrayWithObjects:@"Jr.",@"Sr.",@"Jr",@"Sr",@"Esq.",@"Ph.D.",@"PhD",@"M.D.",@"MD",@"II",@"III",@"IV",@"V",nil];
 	
 	//split name string into pieces by spaces.  Array is mutable so it can be changed later in function
-	NSMutableArray* namePieces = [[aName componentsSeparatedByString:@" "]mutableCopy];
+	NSMutableArray* namePieces = [NSMutableArray arrayWithArray:[aName componentsSeparatedByString:@" "]];
 	
 	//Check Plato case: if single name, return single name unchanged
 	if ([namePieces count] == 1)

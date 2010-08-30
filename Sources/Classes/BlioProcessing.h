@@ -20,10 +20,10 @@ typedef enum {
 	BlioBookSourceGoogleBooks = 4
 } BlioBookSourceID;
 
-extern NSString * const BlioProcessingOperationStartNotification;
-extern NSString * const BlioProcessingOperationProgressNotification;
-extern NSString * const BlioProcessingOperationCompleteNotification;
-extern NSString * const BlioProcessingOperationFailedNotification;
+static NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
+static NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
+static NSString * const BlioProcessingOperationCompleteNotification = @"BlioProcessingOperationCompleteNotification";
+static NSString * const BlioProcessingOperationFailedNotification = @"BlioProcessingOperationFailedNotification";
 
 @interface BlioProcessingOperation : NSOperation {
     NSManagedObjectID *bookID;
@@ -35,7 +35,9 @@ extern NSString * const BlioProcessingOperationFailedNotification;
     NSString *tempDirectory;
     BOOL operationSuccess;
 	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIBackgroundTaskIdentifier backgroundTaskIdentifier;
+#endif
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -46,10 +48,14 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 @property (nonatomic, retain) NSString *cacheDirectory;
 @property (nonatomic, retain) NSString *tempDirectory;
 @property (nonatomic) BOOL operationSuccess;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 @property (nonatomic) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
+#endif
 
+- (NSData *)getBookTextFlowDataWithPath:(NSString *)path;
 - (BOOL)bookManifestPath:(NSString *)path existsForLocation:(NSString *)location;
 - (void)setBookManifestValue:(id)value forKey:(NSString *)key;
+- (BOOL)hasBookManifestValueForKey:(NSString *)key;
 - (NSData *)getBookManifestDataForKey:(NSString *)key;
 - (NSString *)getBookManifestPathForKey:(NSString *)key;
 
@@ -76,6 +82,7 @@ extern NSString * const BlioProcessingOperationFailedNotification;
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
 - (void) resumeProcessing;
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+-(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook;
 - (void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource;
 - (BlioProcessingCompleteOperation *)processingCompleteOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (NSArray *)processingOperationsForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;

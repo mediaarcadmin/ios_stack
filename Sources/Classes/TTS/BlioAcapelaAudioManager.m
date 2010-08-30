@@ -38,9 +38,16 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 - (id)init {
     if ((self = [super init])) {
-		[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:[[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding] user:uid.userId passwd:uid.passwd] autorelease]];
-		[self setSetupData:[[[setupTTS alloc] init] autorelease]];
+		NSString* licenseStr = [[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding];
+		[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:licenseStr user:uid.userId passwd:uid.passwd] autorelease]];
+		[licenseStr release];
+		if (![[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastVoiceDefaultsKey] && [[AcapelaSpeech availableVoices] count] > 0) {
+			NSLog(@"No voice default set; however, a voice has been found, so the default will be set to that voice...");
+			[[NSUserDefaults standardUserDefaults] setObject:[[AcapelaSpeech availableVoices] objectAtIndex:0] forKey:kBlioLastVoiceDefaultsKey];
+		}
+		
 		[self setEngine:[[[AcapelaSpeech alloc] init]autorelease]];
+		[self setSetupData:[[[setupTTS alloc] init] autorelease]];
 		[self setCurrentPage:-1];
 		[self setBlockWords:nil];
 		[self setTextToSpeakChanged:NO];
@@ -51,10 +58,6 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		self.voiceData = [NSDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"BlioVoiceData.plist"]];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingFailedNotification:) name:BlioProcessingOperationFailedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:nil];
-		if (![[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastVoiceDefaultsKey] && [[AcapelaSpeech availableVoices] count] > 0) {
-			[[NSUserDefaults standardUserDefaults] setObject:[[AcapelaSpeech availableVoices] objectAtIndex:0] forKey:kBlioLastVoiceDefaultsKey];
-		}
-
     }
     return self;
 }
@@ -215,9 +218,6 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 }
 
 - (void)setVolume:(float)volume {
-	NSLog(@"setVolume: %f",volume);
-	NSLog(@"is speaking: %i",[engine isSpeaking]);
-	NSLog(@"engine: %@",[engine description]);
 	[engine setVolume:volume];
 }
 
@@ -265,13 +265,14 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 			NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
 			voiceOperation.tempDirectory = docsPath;
-			NSArray *paths2 = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+			NSArray *paths2 = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 			NSString *docsPath2 = ([paths2 count] > 0) ? [paths2 objectAtIndex:0] : nil;
 			voiceOperation.cacheDirectory = docsPath2;
 			voiceOperation.filenameKey = [urlString lastPathComponent];
 			voiceOperation.voice = aVoice;
 			NSLog(@"adding BlioProcessingDownloadAndUnzipVoiceOperation to queue...");
 			[self.downloadQueue addOperation:voiceOperation];
+			[voiceOperation release];
 		}
 	}
 }
@@ -282,6 +283,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		[AcapelaSpeech refreshVoiceList];
 		if ([[AcapelaSpeech availableVoices] count] == 1) {
 			[[NSUserDefaults standardUserDefaults] setObject:[[AcapelaSpeech availableVoices] objectAtIndex:0] forKey:kBlioLastVoiceDefaultsKey];
+			[self.setupData setCurrentVoice:[[AcapelaSpeech availableVoices] objectAtIndex:0]];
 		}
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioVoiceListRefreshedNotification object:self];
 	}

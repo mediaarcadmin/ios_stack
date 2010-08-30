@@ -288,38 +288,45 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     EucCSSIntermediateDocumentNode *currentNode = node;
     EucCSSLayoutDocumentRun *documentRun = nil;
     
-    while(currentNode && !documentRun) {
-        EucCSSIntermediateDocumentNode *previousSiblingNode = currentNode.previousDisplayableSibling;
-        if(previousSiblingNode) {
-            css_computed_style *previousSiblingStyle = previousSiblingNode.computedStyle;
-            if(previousSiblingStyle && (css_computed_display(previousSiblingStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
-                                                            underLimitNode:currentNode.blockLevelParent
-                                                                     forId:currentNode.key
-                                                               scaleFactor:_scaleFactor];
+    css_computed_style *nodeStyle = node.computedStyle;
+    if(nodeStyle && (css_computed_display(nodeStyle, false) & CSS_DISPLAY_BLOCK) == CSS_DISPLAY_BLOCK) {
+        ret.nodeKey = node.key;
+        ret.word = 0;
+        ret.element = 0;
+    } else {    
+        while(currentNode && !documentRun) {
+            EucCSSIntermediateDocumentNode *previousSiblingNode = currentNode.previousDisplayableSibling;
+            if(previousSiblingNode) {
+                css_computed_style *previousSiblingStyle = previousSiblingNode.computedStyle;
+                if(previousSiblingStyle && (css_computed_display(previousSiblingStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                    documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
+                                                                underLimitNode:currentNode.blockLevelParent
+                                                                         forId:currentNode.key
+                                                                   scaleFactor:_scaleFactor];
+                } else {
+                    currentNode = previousSiblingNode;
+                }
             } else {
-                currentNode = previousSiblingNode;
-            }
-        } else {
-            EucCSSIntermediateDocumentNode *parentNode = currentNode.parent;
-            css_computed_style *parentStyle = parentNode.computedStyle;
-            if(parentStyle && (css_computed_display(parentStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
-                                                            underLimitNode:parentNode
-                                                                     forId:parentNode.key
-                                                               scaleFactor:_scaleFactor];
-            } else {
-                currentNode = parentNode;
+                EucCSSIntermediateDocumentNode *parentNode = currentNode.parent;
+                css_computed_style *parentStyle = parentNode.computedStyle;
+                if(parentStyle && (css_computed_display(parentStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+                    documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
+                                                                underLimitNode:parentNode
+                                                                         forId:parentNode.key
+                                                                   scaleFactor:_scaleFactor];
+                } else {
+                    currentNode = parentNode;
+                }
             }
         }
+        
+        if(documentRun) {
+            EucCSSLayoutDocumentRunPoint documentRunPoint = [documentRun pointForNode:node];
+            ret.nodeKey = documentRun.id;
+            ret.word = documentRunPoint.word;
+            ret.element = documentRunPoint.element;
+        }   
     }
-    
-    if(documentRun) {
-        EucCSSLayoutDocumentRunPoint documentRunPoint = [documentRun pointForNode:node];
-        ret.nodeKey = documentRun.id;
-        ret.word = documentRunPoint.word;
-        ret.element = documentRunPoint.element;
-    }   
 
     return ret;
 }
@@ -333,12 +340,12 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     }
 }
 
-- (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
-                                         inFrame:(CGRect)frame
-                              returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                              returningCompleted:(BOOL *)returningCompleted
-                                lastBlockNodeKey:(uint32_t)lastBlockNodeKey
-                           constructingAncestors:(BOOL)constructingAncestors
+- (EucCSSLayoutPositionedBlock *)_layoutFromPoint:(EucCSSLayoutPoint)point
+                                          inFrame:(CGRect)frame
+                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
+                               returningCompleted:(BOOL *)returningCompleted
+                                 lastBlockNodeKey:(uint32_t)lastBlockNodeKey
+                            constructingAncestors:(BOOL)constructingAncestors
 {
     EucCSSLayoutPositionedBlock *positionedRoot = nil;      
     
@@ -436,38 +443,79 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         } else {
             positionedRoot = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode
                                                                            scaleFactor:_scaleFactor];
+            [positionedRoot positionInFrame:frame afterInternalPageBreak:NO];
+            currentPositionedBlock = positionedRoot;
+            currentDocumentNode = currentDocumentNode.nextDisplayable;
         }
                 
         BOOL closedLastNode = NO;
         BOOL reachedBottomOfFrame = NO;
         
         uint32_t nextRunNodeKey = nodeKey;
-        CGFloat nextAbsoluteY = frame.origin.y;
+        CGFloat nextAbsoluteY = [positionedRoot convertRect:positionedRoot.contentBounds toContainer:nil].origin.y;
         CGFloat maxAbsoluteY = CGRectGetMaxY(frame);
+        
+        NSMutableArray *activeLeftFloats = nil;
+        NSMutableArray *activeRightFloats = nil;
         
         while(!reachedBottomOfFrame && !closedLastNode && currentDocumentNode) {            
             // Find the node's parent, closing open blocks until we reach it.
             EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
             EucCSSIntermediateDocumentNode *currentPositionedBlockNode;
             while((currentPositionedBlockNode = currentPositionedBlock.documentNode) != currentDocumentNodeBlockLevelParent) {
-                if(currentPositionedBlockNode == lastBlockNode) {
-                    closedLastNode = YES;
-                    break;
-                }
                 CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
                                                                                          toContainer:nil].origin.y;
                 [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:NO];
                 nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
+                
                 currentPositionedBlock = (EucCSSLayoutPositionedBlock *)currentPositionedBlock.parent;
+                if(currentPositionedBlockNode == lastBlockNode) {
+                    closedLastNode = YES;
+                    break;
+                }
             }
 
-            CGRect potentialFrame = currentPositionedBlock.contentBounds;
-            NSParameterAssert(potentialFrame.size.height == CGFLOAT_MAX);
-
-            potentialFrame.origin.y = nextAbsoluteY - [currentPositionedBlock convertRect:potentialFrame 
-                                                                              toContainer:nil].origin.y;
-                        
             if(!closedLastNode) {
+                CGRect potentialFrame = currentPositionedBlock.contentBounds;
+                NSParameterAssert(potentialFrame.size.height == CGFLOAT_MAX);
+
+                potentialFrame.origin.y = nextAbsoluteY - [currentPositionedBlock convertRect:potentialFrame 
+                                                                                  toContainer:nil].origin.y;
+                
+                if(activeLeftFloats) {
+                    NSMutableIndexSet *toRemove = [[NSMutableIndexSet alloc] init];
+                    NSUInteger i = 0;
+                    for(EucCSSLayoutPositionedContainer *floatContainer in activeLeftFloats) {
+                        if(CGRectGetMaxY(floatContainer.absoluteFrame) < nextAbsoluteY) {
+                            [toRemove addIndex:i];
+                        }
+                        ++i;
+                    }
+                    [activeLeftFloats removeObjectsAtIndexes:toRemove];
+                    [toRemove release];
+                    if(activeLeftFloats.count == 0) {
+                        [activeLeftFloats release];
+                        activeLeftFloats = nil;
+                    }
+                }
+                
+                if(activeRightFloats) {
+                    NSMutableIndexSet *toRemove = [[NSMutableIndexSet alloc] init];
+                    NSUInteger i = 0;
+                    for(EucCSSLayoutPositionedContainer *floatContainer in activeRightFloats) {
+                        if(CGRectGetMaxY(floatContainer.absoluteFrame) < nextAbsoluteY) {
+                            [toRemove addIndex:i];
+                        }
+                        ++i;
+                    }
+                    [activeRightFloats removeObjectsAtIndexes:toRemove];
+                    [toRemove release];
+                    if(activeRightFloats.count == 0) {
+                        [activeRightFloats release];
+                        activeRightFloats = nil;
+                    }
+                }                
+                        
                 css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
                 
                 if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
@@ -479,8 +527,11 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                                                   forId:nextRunNodeKey
                                                                                             scaleFactor:_scaleFactor];
                     
+                    CGRect frameWithMaxHeight = potentialFrame;
+                    frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
                     // Position it.
-                    EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:potentialFrame
+                    EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:frameWithMaxHeight
+                                                                                      inContainer:currentPositionedBlock
                                                                                        wordOffset:wordOffset
                                                                                     elementOffset:elementOffset];
                     if(positionedRun) {
@@ -515,18 +566,36 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     
                     uint8_t computedFloat = css_computed_float(currentNodeStyle);
                     switch(computedFloat) {
-                        case CSS_FLOAT_RIGHT:
-                        case CSS_FLOAT_LEFT: {
-                           /* BOOL completed = NO;
+                        case CSS_FLOAT_LEFT:
+                        case CSS_FLOAT_RIGHT: {
+                            BOOL completed = NO;
                             EucCSSLayoutPoint returnedPoint = { 0 };
                             EucCSSLayoutPoint fromPoint = { currentDocumentNode.key, 0, 0 };
-                            EucCSSLayoutPositionedBlock *floatedBlock = [self layoutFromPoint:fromPoint
+                            EucCSSLayoutPositionedBlock *floatedBlock = [self _layoutFromPoint:fromPoint
                                                                                       inFrame:potentialFrame
                                                                            returningNextPoint:&returnedPoint
                                                                            returningCompleted:&completed 
                                                                              lastBlockNodeKey:currentDocumentNode.key
                                                                         constructingAncestors:NO];
-                            [currentPositionedBlock addChild:floatedBlock];
+                            
+                            [floatedBlock shrinkToFit];       
+                            if(computedFloat == CSS_FLOAT_LEFT) {
+                                [currentPositionedBlock addFloatChild:floatedBlock 
+                                                           atContentY:potentialFrame.origin.y
+                                                               onLeft:YES];
+                                if(!activeLeftFloats) {
+                                    activeLeftFloats = [[NSMutableArray alloc] init];
+                                }
+                                [activeLeftFloats addObject:floatedBlock];
+                            } else {
+                                [currentPositionedBlock addFloatChild:floatedBlock 
+                                                           atContentY:potentialFrame.origin.y
+                                                               onLeft:NO];                                
+                                if(!activeRightFloats) {
+                                    activeRightFloats = [[NSMutableArray alloc] init];
+                                }
+                                [activeRightFloats addObject:floatedBlock];
+                            }
 
                             if(THWillLog()) {
                                 NSParameterAssert(completed == YES);
@@ -534,9 +603,9 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                                                                         under:nil];
                                 NSParameterAssert(returnedPoint.nodeKey == afterFloat.key);
                             }    
-                            
+                                                        
                             currentDocumentNode = [self.document nodeForKey:returnedPoint.nodeKey];
-                            break;*/
+                            break;
                         }
                         default: {
                             THWarn(@"Unexpected uncomputed CSS_FLOAT, %ld", (long)computedFloat);
@@ -550,8 +619,18 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                             }
                             EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
                             [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
-                            [currentPositionedBlock addChild:newBlock];                    
-
+                            [currentPositionedBlock addChild:newBlock];
+                            if(activeLeftFloats) {
+                                NSArray *intrudingLeftFloats = [activeLeftFloats copy];
+                                newBlock.intrudingLeftFloats = intrudingLeftFloats;
+                                [intrudingLeftFloats release];
+                            }
+                            if(activeRightFloats) {
+                                NSArray *intrudingRightFloats = [activeRightFloats copy];
+                                newBlock.intrudingRightFloats = intrudingRightFloats;
+                                [intrudingRightFloats release];
+                            }
+                            
                             nextAbsoluteY = [newBlock convertRect:newBlock.contentBounds toContainer:nil].origin.y;
                             
                             if(hasPreviousSibling) {
@@ -576,29 +655,22 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             reachedBottomOfFrame = nextAbsoluteY >= maxAbsoluteY;
         }
         
+        if(activeLeftFloats) {
+            [activeLeftFloats release];
+        }
+        if(activeRightFloats) {
+            [activeRightFloats release];
+        }
+        
+        if(!reachedBottomOfFrame) {
+        }        
+        
         if(closedLastNode) {
             *returningCompleted = YES;
             EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
             *returningNextPoint = fakeNextPoint;
         } else {
-            if(!reachedBottomOfFrame) {
-                while(currentPositionedBlock) {
-                    CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
-                                                                                             toContainer:nil].origin.y;
-                    [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:reachedBottomOfFrame];
-                    nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
-                    currentPositionedBlock = (EucCSSLayoutPositionedBlock *)currentPositionedBlock.parent;
-                }
-                CGFloat contentHeightToCloseAt = nextAbsoluteY - [positionedRoot convertRect:positionedRoot.contentBounds 
-                                                                                 toContainer:nil].origin.y;
-                [positionedRoot closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:NO];
-            }
-        
-            CGFloat bottomY = positionedRoot.frame.size.height;
-            if(bottomY != CGFLOAT_MAX) {
-                bottomY += positionedRoot.frame.origin.y;
-            }
-            if(bottomY > maxAbsoluteY) {
+            if(reachedBottomOfFrame) {
                 *returningCompleted = NO;
                 EucCSSLayoutPoint nextPoint;
                 BOOL nextPointValid = [self _trimBlockToFrame:frame 
@@ -610,6 +682,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                   pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
                 if(nextPointValid) {
                     *returningNextPoint = nextPoint;
+                    reachedBottomOfFrame = NO;
+                    closedLastNode = YES;
                 } else {
                     // Couldn't find a break.
                     // Not entirely sure of the best thing to do here - for now
@@ -625,12 +699,36 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 *returningCompleted = YES;
             }
         }
+        
+        if(!closedLastNode) {
+            while(currentPositionedBlock) {
+                CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
+                                                                                         toContainer:nil].origin.y;
+                [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:reachedBottomOfFrame];
+                nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
+                currentPositionedBlock = (EucCSSLayoutPositionedBlock *)currentPositionedBlock.parent;
+            }            
+        }
     } else {
         *returningNextPoint = point;
         *returningCompleted = YES;
     }
     
     return positionedRoot;
+}
+
+- (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
+                                         inFrame:(CGRect)frame
+                              returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
+                              returningCompleted:(BOOL *)returningCompleted;
+{    
+    EucCSSLayoutPositionedBlock *ret = [self _layoutFromPoint:point
+                                                      inFrame:frame
+                                           returningNextPoint:returningNextPoint
+                                           returningCompleted:returningCompleted
+                                             lastBlockNodeKey:nil
+                                        constructingAncestors:YES];
+    return ret;
 }
 
 @end

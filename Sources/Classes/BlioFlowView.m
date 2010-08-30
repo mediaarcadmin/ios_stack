@@ -123,7 +123,7 @@
 
 - (CGRect)firstPageRect
 {
-    return [[UIScreen mainScreen] bounds];
+    return _eucBookView.contentRect;
 }
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
@@ -161,7 +161,7 @@
             ret.elementOffset = eucIndexPoint.element;
         }
     } else {
-        ret.layoutPage = eucIndexPoint.source;
+        ret.layoutPage = eucIndexPoint.source + 1;
         ret.blockOffset = eucIndexPoint.block;
         ret.wordOffset = eucIndexPoint.word;
         ret.elementOffset = eucIndexPoint.element;
@@ -194,7 +194,7 @@
             eucIndexPoint.word = wordOffset;
             eucIndexPoint.element = bookmarkPoint.elementOffset;
         } else {
-            eucIndexPoint.source = bookmarkPoint.layoutPage;
+            eucIndexPoint.source = bookmarkPoint.layoutPage - 1;
             eucIndexPoint.block = bookmarkPoint.blockOffset;
             eucIndexPoint.word = bookmarkPoint.wordOffset;
             eucIndexPoint.element = bookmarkPoint.elementOffset;
@@ -262,7 +262,7 @@
     
     if (section && chapter.first) {
         if (pageStr) {
-            ret = [NSString stringWithFormat:@"Page %@ - %@", pageStr, chapter.first];
+            ret = [NSString stringWithFormat:@"Page %@ \u2013 %@", pageStr, chapter.first];
         } else {
             ret = [NSString stringWithFormat:@"%@", chapter.first];
         }
@@ -287,7 +287,7 @@
 
 - (BOOL)toolbarShowShouldBeSuppressed
 {
-    return _pageViewIsTurning;
+    return _pageViewIsTurning || self.selector.tracking;
 }
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
@@ -464,6 +464,51 @@
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
     return [_eucBookView setPageTexture:pageTexture isDark:isDark];
+}
+
+
+#pragma mark -
+#pragma mark Accessibility/TTS interaction.
+
+- (BOOL)isAccessibilityElement 
+{
+    if([self.delegate audioPlaying]) {
+        return YES;
+    } else {
+        return [super isAccessibilityElement];
+    }
+}
+
+- (CGRect)accessibilityFrame {
+    if([self.delegate audioPlaying]) {
+        return CGRectZero;
+    } else {
+        return [super accessibilityFrame];
+    }
+}
+
+- (NSInteger)accessibilityElementCount {
+    if([self.delegate audioPlaying]) {
+        return 0;
+    } else {
+        return [super accessibilityElementCount];
+    }
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index {
+    if([self.delegate audioPlaying]) {
+        return nil;
+    } else {
+        return [super accessibilityElementAtIndex:index];
+    }
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element {
+    if([self.delegate audioPlaying]) {
+        return NSNotFound;
+    } else {
+        return [super indexOfAccessibilityElement:element];
+    }
 }
 
 @end

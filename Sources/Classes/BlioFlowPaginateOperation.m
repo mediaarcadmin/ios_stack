@@ -57,8 +57,6 @@
 
 - (void)start 
 {
-//	NSLog(@"BlioFlowPaginateOperation start entered"); 
-
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     // Must be performed on main thread
     // See http://www.dribin.org/dave/blog/archives/2009/05/05/concurrent_operations/
@@ -67,9 +65,11 @@
         [pool drain];
         return;
     }
+	NSLog(@"BlioFlowPaginateOperation start entered: %@",self); 
+
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
-			NSLog(@"failed dependency found!");
+			NSLog(@"BlioFlowPaginateOperation: failed dependency found! op: %@",blioOp);
 			[self cancel];
 			break;
 		}
@@ -88,10 +88,12 @@
     executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}		
+#endif
 	
     NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
 
@@ -120,6 +122,8 @@
     
     if([eucBook paginationIsComplete] || eucBook == nil) {
         // This book is already fully paginated!
+		NSLog(@"This book is already fully paginated!");
+		self.percentageComplete = 100;
         self.operationSuccess = YES;
         [self finish];
     } else {
@@ -131,6 +135,7 @@
             [[NSFileManager defaultManager] copyItemAtPath:cannedPaginationPath
                                                     toPath:paginationPath 
                                                      error:NULL];
+			self.percentageComplete = 100;
             self.operationSuccess = YES;
             [self finish];
         } else {
@@ -155,7 +160,7 @@
                                                        object:paginator];
                 
             
-            //NSLog(@"Begining pagination for %@", eucBook.title);
+            NSLog(@"Beginning pagination for %@", eucBook.title);
             [paginator paginateBookInBackground:eucBook saveImagesTo:nil];
         }
     }
@@ -182,10 +187,12 @@
         NSLog(@"Using layout equivalent page length of %ld for %@", layoutEquivalentPageCount, [self getBookValueForKey:@"title"]); 
     }
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
 	}				
+#endif
 	
     self.percentageComplete = 100;
     self.operationSuccess = YES;
@@ -201,8 +208,15 @@
     NSDictionary *userInfo = [notification userInfo];
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
     self.percentageComplete = roundf(percentagePaginated);
-}
+//	NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
 
+}
+-(void)cancel {
+	[super cancel];
+	NSLog(@"Cancelling pagination...");
+	[paginator stop];
+	[self finish];	
+}
 -(void) dealloc {
     self.bookTitle = nil;
 	self.paginator = nil;

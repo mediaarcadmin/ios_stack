@@ -80,6 +80,7 @@ static pthread_key_t sManagedObjectContextKey;
         managedObjectContextForCurrentThread = [[NSManagedObjectContext alloc] init]; 
         managedObjectContextForCurrentThread.persistentStoreCoordinator = self.persistentStoreCoordinator; 
         self.managedObjectContextForCurrentThread = managedObjectContextForCurrentThread;
+        [managedObjectContextForCurrentThread release];
     }
     return managedObjectContextForCurrentThread;
 }
@@ -94,7 +95,7 @@ static pthread_key_t sManagedObjectContextKey;
     
     // CFRelease will be called on the object before the thread terminates
     // (see comments in +sharedBookManager).
-    pthread_setspecific(sManagedObjectContextKey, managedObjectContextForCurrentThread);
+    pthread_setspecific(sManagedObjectContextKey, [managedObjectContextForCurrentThread retain]);
 }
 
 - (BOOL)save:(NSError **)error
@@ -128,19 +129,27 @@ static pthread_key_t sManagedObjectContextKey;
 
 - (BlioTextFlow *)checkOutTextFlowForBookWithID:(NSManagedObjectID *)aBookID
 {
+    BlioTextFlow *ret = nil;
+    
+    // Always check out an XPS Provider alongside a TextFlow to guarantee that we have the 
+    // same one underneath it for the duration of any decrypt operation
+    [self checkOutXPSProviderForBookWithID:aBookID];
+    
+    [self.persistentStoreCoordinator lock];
+    
     NSMutableDictionary *myCachedTextFlows = self.cachedTextFlows;
     @synchronized(myCachedTextFlows) {
         BlioTextFlow *previouslyCachedTextFlow = [myCachedTextFlows objectForKey:aBookID];
         if(previouslyCachedTextFlow) {
-            NSLog(@"Returning cached TextFlow for book with ID %@", aBookID);
+            //NSLog(@"Returning cached TextFlow for book with ID %@", aBookID);
             [self.cachedTextFlowCheckoutCounts addObject:aBookID];
-            return previouslyCachedTextFlow;
+            ret = previouslyCachedTextFlow;
         } else {
             BlioBook *book = [self bookWithID:aBookID];
             if([book hasTextFlow]) {
                 BlioTextFlow *textFlow = [[BlioTextFlow alloc] initWithBookID:aBookID];
                 if(textFlow) {
-                    NSLog(@"Creating and caching TextFlow for book with ID %@", aBookID);
+                    //NSLog(@"Creating and caching TextFlow for book with ID %@", aBookID);
                     NSCountedSet *myCachedTextFlowCheckoutCounts = self.cachedTextFlowCheckoutCounts;
                     if(!myCachedTextFlowCheckoutCounts) {
                         myCachedTextFlowCheckoutCounts = [NSCountedSet set];
@@ -149,16 +158,23 @@ static pthread_key_t sManagedObjectContextKey;
                     [myCachedTextFlows setObject:textFlow forKey:aBookID];
                     [myCachedTextFlowCheckoutCounts addObject:aBookID];
                     [textFlow release];
-                    return textFlow;
+                    ret = textFlow;
                 }
             }
         }
     }
-    return nil;
+    
+    [self.persistentStoreCoordinator unlock];
+
+    return ret;
 }
 
 - (void)checkInTextFlowForBookWithID:(NSManagedObjectID *)aBookID
 {
+    // Always check in an XPS Provider alongside a TextFlow to match the fact 
+    // that we always check it out
+    [self checkInXPSProviderForBookWithID:aBookID];
+    
     NSMutableDictionary *myCachedTextFlows = self.cachedTextFlows;
     @synchronized(myCachedTextFlows) {
         NSCountedSet *myCachedTextFlowCheckoutCounts = self.cachedTextFlowCheckoutCounts;
@@ -168,7 +184,7 @@ static pthread_key_t sManagedObjectContextKey;
         } else {
             [myCachedTextFlowCheckoutCounts removeObject:aBookID];
             if (count == 1) {
-                NSLog(@"Releasing cached TextFlow for book with ID %@", aBookID);
+                //NSLog(@"Releasing cached TextFlow for book with ID %@", aBookID);
                 [myCachedTextFlows removeObjectForKey:aBookID];
                 if(myCachedTextFlowCheckoutCounts.count == 0) {
                     // May as well release the set.
@@ -182,13 +198,17 @@ static pthread_key_t sManagedObjectContextKey;
 
 - (EucBUpeBook *)checkOutEucBookForBookWithID:(NSManagedObjectID *)aBookID
 {
+    EucBUpeBook *ret = nil;
+    
+    [self.persistentStoreCoordinator lock];
+    
     NSMutableDictionary *myCachedEucBooks = self.cachedEucBooks;
     @synchronized(myCachedEucBooks) {
         EucBUpeBook *previouslyCachedEucBook = [cachedEucBooks objectForKey:aBookID];
         if(previouslyCachedEucBook) {
-            NSLog(@"Returning cached EucBook for book with ID %@", aBookID);
+            //NSLog(@"Returning cached EucBook for book with ID %@", aBookID);
             [self.cachedEucBookCheckoutCounts addObject:aBookID];
-            return previouslyCachedEucBook;
+            ret = previouslyCachedEucBook;
         } else {
             EucBUpeBook *eucBook = nil;
             BlioBook *book = [self bookWithID:aBookID];
@@ -199,7 +219,7 @@ static pthread_key_t sManagedObjectContextKey;
             }
             if(eucBook) {
                 eucBook.cacheDirectoryPath = [book.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
-                NSLog(@"Creating and caching EucBook for book with ID %@", aBookID);
+                //NSLog(@"Creating and caching EucBook for book with ID %@", aBookID);
                 NSCountedSet *myCachedEucBookCheckoutCounts = self.cachedEucBookCheckoutCounts;
                 if(!myCachedEucBookCheckoutCounts) {
                     myCachedEucBookCheckoutCounts = [NSCountedSet set];
@@ -208,11 +228,14 @@ static pthread_key_t sManagedObjectContextKey;
                 [myCachedEucBooks setObject:eucBook forKey:aBookID];
                 [myCachedEucBookCheckoutCounts addObject:aBookID];
                 [eucBook release];
-                return eucBook;
+                ret = eucBook;
             }            
         }
     }
-    return nil;
+    
+    [self.persistentStoreCoordinator unlock];
+    
+    return ret;
 }
 
 - (void)checkInEucBookForBookWithID:(NSManagedObjectID *)aBookID
@@ -226,7 +249,7 @@ static pthread_key_t sManagedObjectContextKey;
         } else {
             [myCachedEucBookCheckoutCounts removeObject:aBookID];
             if (count == 1) {
-                NSLog(@"Releasing cached Euc book for book with ID %@", aBookID);
+                //NSLog(@"Releasing cached Euc book for book with ID %@", aBookID);
                 [myCachedEucBooks removeObjectForKey:aBookID];
                 if(myCachedEucBookCheckoutCounts.count == 0) {
                     // May as well release the set.
@@ -240,13 +263,17 @@ static pthread_key_t sManagedObjectContextKey;
 
 - (id<BlioParagraphSource>)checkOutParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID
 {   
+    id<BlioParagraphSource> ret = nil;
+
+    [self.persistentStoreCoordinator lock];
+    
     NSMutableDictionary *myCachedParagraphSources = self.cachedParagraphSources;
     @synchronized(myCachedParagraphSources) {
         id<BlioParagraphSource> previouslyCachedParagraphSource = [myCachedParagraphSources objectForKey:aBookID];
         if(previouslyCachedParagraphSource) {
-            NSLog(@"Returning cached ParagraphSource for book with ID %@", aBookID);
+            //NSLog(@"Returning cached ParagraphSource for book with ID %@", aBookID);
             [self.cachedParagraphSourceCheckoutCounts addObject:aBookID];
-            return previouslyCachedParagraphSource;
+            ret= previouslyCachedParagraphSource;
         } else {
             id<BlioParagraphSource> paragraphSource = nil;
             BlioBook *book = [self bookWithID:aBookID];
@@ -257,7 +284,7 @@ static pthread_key_t sManagedObjectContextKey;
             }
             
             if(paragraphSource) {
-                NSLog(@"Creating and caching ParagraphSource for book with ID %@", aBookID);
+                //NSLog(@"Creating and caching ParagraphSource for book with ID %@", aBookID);
                 NSCountedSet *myCachedParagraphSourceCheckoutCounts = self.cachedParagraphSourceCheckoutCounts;
                 if(!myCachedParagraphSourceCheckoutCounts) {
                     myCachedParagraphSourceCheckoutCounts = [NSCountedSet set];
@@ -266,11 +293,14 @@ static pthread_key_t sManagedObjectContextKey;
                 [myCachedParagraphSources setObject:paragraphSource forKey:aBookID];
                 [myCachedParagraphSourceCheckoutCounts addObject:aBookID];
                 [paragraphSource release];
-                return paragraphSource;
+                ret = paragraphSource;
             }
         }
     }
-    return nil;
+    
+    [self.persistentStoreCoordinator unlock];
+    
+    return ret;
 }
 
 - (void)checkInParagraphSourceForBookWithID:(NSManagedObjectID *)aBookID
@@ -284,7 +314,7 @@ static pthread_key_t sManagedObjectContextKey;
         } else {
             [myCachedParagraphSourceCheckoutCounts removeObject:aBookID];
             if (count == 1) {
-                NSLog(@"Releasing cached paragraph source for book with ID %@", aBookID);
+                //NSLog(@"Releasing cached paragraph source for book with ID %@", aBookID);
                 [myCachedParagraphSources removeObjectForKey:aBookID];
                 if(myCachedParagraphSourceCheckoutCounts.count == 0) {
                     // May as well release the set.
@@ -298,19 +328,23 @@ static pthread_key_t sManagedObjectContextKey;
 
 - (BlioXPSProvider *)checkOutXPSProviderForBookWithID:(NSManagedObjectID *)aBookID
 {
+    BlioXPSProvider *ret = nil;
+
+    [self.persistentStoreCoordinator lock];
+    
     NSMutableDictionary *myCachedXPSProviders = self.cachedXPSProviders;
     @synchronized(myCachedXPSProviders) {
         BlioXPSProvider *previouslyCachedXPSProvider = [myCachedXPSProviders objectForKey:aBookID];
         if(previouslyCachedXPSProvider) {
-            NSLog(@"Returning cached XPSProvider for book with ID %@", aBookID);
+            //NSLog(@"Returning cached XPSProvider for book with ID %@", aBookID);
             [self.cachedXPSProviderCheckoutCounts addObject:aBookID];
-            return previouslyCachedXPSProvider;
+            ret = previouslyCachedXPSProvider;
         } else {
             BlioBook *book = [self bookWithID:aBookID];
             if(book.xpsPath) {
                 BlioXPSProvider *xpsProvider = [[BlioXPSProvider alloc] initWithBookID:aBookID];
                 if(xpsProvider) {
-                    NSLog(@"Creating and caching XPSProvider for book with title %@ and ID %@", [book title], aBookID);
+                    //NSLog(@"Creating and caching XPSProvider for book with title %@ and ID %@", [book title], aBookID);
                     NSCountedSet *myCachedXPSProviderCheckoutCounts = self.cachedXPSProviderCheckoutCounts;
                     if(!myCachedXPSProviderCheckoutCounts) {
                         myCachedXPSProviderCheckoutCounts = [NSCountedSet set];
@@ -319,12 +353,15 @@ static pthread_key_t sManagedObjectContextKey;
                     [myCachedXPSProviders setObject:xpsProvider forKey:aBookID];
                     [myCachedXPSProviderCheckoutCounts addObject:aBookID];
                     [xpsProvider release];
-                    return xpsProvider;
+                    ret = xpsProvider;
                 }
             }
         }
     }
-    return nil;
+    
+    [self.persistentStoreCoordinator unlock];
+    
+    return ret;
 }
 
 - (void)checkInXPSProviderForBookWithID:(NSManagedObjectID *)aBookID
@@ -338,7 +375,7 @@ static pthread_key_t sManagedObjectContextKey;
         } else {
             [myCachedXPSProviderCheckoutCounts removeObject:aBookID];
             if (count == 1) {
-                NSLog(@"Releasing cached XPSProvider for book with ID %@", aBookID);
+                //NSLog(@"Releasing cached XPSProvider for book with ID %@", aBookID);
                 [myCachedXPSProviders removeObjectForKey:aBookID];
                 if(myCachedXPSProviderCheckoutCounts.count == 0) {
                     // May as well release the set.
