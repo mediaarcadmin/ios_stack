@@ -13,6 +13,7 @@
 //#import "BlioDrmManager.h"
 #import "BlioDrmSessionManager.h"
 #import "zlib.h"
+#import <objc/runtime.h>
 
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
 void BlioXPSProviderDRMRewind(URI_HANDLE h);
@@ -20,6 +21,14 @@ size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb);
 size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb);
 size_t BlioXPSProviderDRMSize(URI_HANDLE h);
 void BlioXPSProviderDRMClose(URI_HANDLE h);
+
+@interface BlioXPSBitmapReleaseCallback : NSObject {
+    void *data;
+}
+
+@property (nonatomic, assign) void *data;
+
+@end
 
 @interface BlioXPSProvider()
 
@@ -233,10 +242,6 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	XPS_ReleaseImageMemory((void *)data);
 }
 
-static void XPSBitmapReleaseCallback(void *releaseInfo, void *data) {
-	XPS_ReleaseImageMemory(data);
-}
-
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
     
     CGAffineTransform ctm = CGContextGetCTM(ctx);
@@ -352,13 +357,23 @@ static void XPSBitmapReleaseCallback(void *releaseInfo, void *data) {
         size_t height = imageInfo->height;
         
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        bitmapContext = CGBitmapContextCreateWithData(imageInfo->pBits, width, height, 8, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, XPSBitmapReleaseCallback, NULL);
+        //bitmapContext = CGBitmapContextCreateWithData(imageInfo->pBits, width, height, 8, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, XPSBitmapReleaseCallback, NULL);
+
+        bitmapContext = CGBitmapContextCreate(imageInfo->pBits, width, height, 8, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
+        BlioXPSBitmapReleaseCallback *releaseCallback = [[BlioXPSBitmapReleaseCallback alloc] init];
+        releaseCallback.data = imageInfo->pBits;
+                
+        CGImageRef dump = CGBitmapContextCreateImage(bitmapContext);
+        UIImage *dumpImage = [UIImage imageWithCGImage:dump];
+        UIImageWriteToSavedPhotosAlbum(dumpImage, nil, nil, NULL);
+        objc_setAssociatedObject((id)bitmapContext, @"XPSBitmapReleaseCallback", releaseCallback, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        [releaseCallback release];
         
         CGColorSpaceRelease(colorSpace);
     }
     [renderingLock unlock];
     
-    return bitmapContext;
+    return (CGContextRef)[(id)bitmapContext autorelease];
 }
 
 - (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
@@ -777,6 +792,19 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
         }
     }
     return uriMap;
+}
+
+@end
+
+@implementation BlioXPSBitmapReleaseCallback
+
+@synthesize data;
+
+- (void)dealloc {
+    if (self.data) {
+        XPS_ReleaseImageMemory(self.data);
+    }
+    [super dealloc];
 }
 
 @end

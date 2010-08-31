@@ -680,16 +680,18 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
     
     CGRect cropRect = [self.dataSource cropRectForPage:page];
-    [pageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:page]];
-    CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
-    CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
-    [self.pageCropsCache setObject:[NSValue valueWithCGRect:scaledCropRect] forKey:[NSNumber numberWithInt:page]];
+    if (!CGRectEqualToRect(cropRect, CGRectZero)) {
+        [self.pageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:page]];
+    }
     
-    CGRect mediaRect = [self.dataSource mediaRectForPage:page];
-    CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
-    CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
-    CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
-    [self.viewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:page]];
+    if (!CGRectEqualToRect(cropRect, CGRectZero)) {
+        CGRect mediaRect = [self.dataSource mediaRectForPage:page];
+        CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
+        CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(cropRect.origin.x - mediaRect.origin.x, cropRect.origin.y - mediaRect.origin.y);
+        CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
+        CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
+        [self.viewTransformsCache setObject:[NSValue valueWithCGAffineTransform:viewTransform] forKey:[NSNumber numberWithInt:page]];
+    }
 }
 
 - (CGRect)cropForPage:(NSInteger)page {
@@ -713,7 +715,14 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     
     [layoutCacheLock unlock];
     
-    return [pageCropValue CGRectValue];
+    if (pageCropValue) {
+        CGRect cropRect = [pageCropValue CGRectValue];
+        NSLog(@"Crop for page %d is %@", page, NSStringFromCGRect(cropRect));
+        return cropRect;
+    }
+    
+    NSLog(@"Crop for page %d is CGRectZero", page);
+    return CGRectZero;
 }
 
 - (CGAffineTransform)blockTransformForPage:(NSInteger)page {

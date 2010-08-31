@@ -176,6 +176,7 @@ tryAgain:
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
+            // TODO: Re-instate this (removed to speed up launch whilst testing
 			//[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
 		else {
