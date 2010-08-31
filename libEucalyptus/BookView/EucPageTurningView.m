@@ -93,7 +93,7 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 } 
 
 
-@interface EucPageTurningView (PRIVATE)
+@interface EucPageTurningView ()
 
 - (void)_calculateVertexNormals;    
 //- (void)_accumulateForces;  // Not used - see comments around implementation.
@@ -667,6 +667,38 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return _pageContentsInformation[1].pageIndex;
 }
 
+- (void)_setupBitmapPage:(NSUInteger)newPageIndex 
+   forInternalPageOffset:(NSUInteger)pageOffset
+                 minSize:(CGSize)minSize
+{
+    CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
+                                   contentRectForPageAtIndex:newPageIndex];
+    if(!CGRectIsEmpty(thisPageRect)) {
+        CGContextRef thisPageBitmap = [_bitmapDataSource pageTurningView:self
+                                         RGBABitmapContextForPageAtIndex:newPageIndex
+                                                                fromRect:thisPageRect
+                                                                 minSize:minSize];
+        [self _createTextureIn:&_pageContentsInformation[pageOffset].texture
+         fromRGBABitmapContext:thisPageBitmap
+         setTextureCoordinates:_pageContentsInformation[pageOffset].textureCoordinates];
+        _pageContentsInformation[pageOffset].pageIndex = newPageIndex; 
+    } else {
+        _pageContentsInformation[pageOffset].pageIndex = NSUIntegerMax; 
+    }    
+}
+
+- (void)_setupBitmapPage:(NSUInteger)newPageIndex 
+   forInternalPageOffset:(NSUInteger)pageOffset
+{
+    CGSize minSize = self.bounds.size;
+    if([self respondsToSelector:@selector(contentScaleFactor)]) {
+        CGFloat scaleFactor = self.contentScaleFactor;
+        minSize.width *= scaleFactor;
+        minSize.height *= scaleFactor;
+    }
+    [self _setupBitmapPage:newPageIndex forInternalPageOffset:pageOffset minSize:minSize];
+}
+
 - (void)setCurrentPageIndex:(NSUInteger)newPageIndex
 {
     CGSize minSize = self.bounds.size;
@@ -676,55 +708,28 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         minSize.height *= scaleFactor;
     }
     if(newPageIndex != _pageContentsInformation[1].pageIndex) {
-        {
-            CGRect thisPageRect = [_bitmapDataSource pageTurningView:self contentRectForPageAtIndex:newPageIndex];
-            CGContextRef thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                                             RGBABitmapContextForPageAtIndex:newPageIndex
-                                                                    fromRect:thisPageRect
-                                                                     minSize:minSize];
-            [self _createTextureIn:&_pageContentsInformation[1].texture
-             fromRGBABitmapContext:thisPageBitmap
-             setTextureCoordinates:_pageContentsInformation[1].textureCoordinates];
-            _pageContentsInformation[1].pageIndex = newPageIndex;
+        [self _setupBitmapPage:newPageIndex forInternalPageOffset:1 minSize:minSize];
+        if(newPageIndex >= 0) {
+            // Only call this if there could actually be a previous page.
+            [self _setupBitmapPage:newPageIndex - 1 forInternalPageOffset:0 minSize:minSize];
+        } else {
+            _pageContentsInformation[0].pageIndex = NSUIntegerMax;
         }
-        
-        {
-            CGRect thisPageRect = [_bitmapDataSource pageTurningView:self contentRectForPageAtIndex:newPageIndex-1];
-            if(!CGRectIsEmpty(thisPageRect)) {
-                CGContextRef thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                                                 RGBABitmapContextForPageAtIndex:newPageIndex-1
-                                                                        fromRect:thisPageRect
-                                                                         minSize:minSize];
-                [self _createTextureIn:&_pageContentsInformation[0].texture
-                 fromRGBABitmapContext:thisPageBitmap
-                 setTextureCoordinates:_pageContentsInformation[0].textureCoordinates];
-                   _pageContentsInformation[0].pageIndex = newPageIndex-1; 
-           } else {
-               _pageContentsInformation[0].pageIndex = NSUIntegerMax; 
-           }
-        }
-        
-        {
-            CGRect thisPageRect = [_bitmapDataSource pageTurningView:self contentRectForPageAtIndex:newPageIndex+1];
-            if(!CGRectIsEmpty(thisPageRect)) {
-                CGContextRef thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                                                 RGBABitmapContextForPageAtIndex:newPageIndex+1
-                                                                        fromRect:thisPageRect
-                                                                         minSize:minSize ];
-                [self _createTextureIn:&_pageContentsInformation[2].texture
-                 fromRGBABitmapContext:thisPageBitmap
-                 setTextureCoordinates:_pageContentsInformation[2].textureCoordinates];
-                _pageContentsInformation[2].pageIndex = newPageIndex+1; 
-            } else {
-                _pageContentsInformation[2].pageIndex = NSUIntegerMax; 
-            }
-        }
+        [self _setupBitmapPage:newPageIndex + 1 forInternalPageOffset:2 minSize:minSize];
     }
     _flatPageIndex = 1;    
 }
 
 - (void)turnToPageAtIndex:(NSUInteger)newPageIndex forwards:(BOOL)forwards {};
-- (void)refreshPageAtIndex:(NSUInteger)pageIndex {};
+
+- (void)refreshPageAtIndex:(NSUInteger)pageIndex {
+    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(PageContentsInformation); ++i) {
+        if(pageIndex == _pageContentsInformation[i].pageIndex) {
+            [self _setupBitmapPage:pageIndex forInternalPageOffset:i];
+            break;
+        }
+    }
+}
 
 static inline GLfloatTriplet addVector(GLfloatTriplet a, GLfloatTriplet b)
 {
@@ -1748,23 +1753,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 GLfloat diff = yCoord - vertex.y;
                 _pageVertices[row][column].y = (vertex.y += diff * 0.5f);
 
-                /*if(!_touch) {
-                    if(fabsf(vertex.x - _stablePageVertices[row][column].x) <=  0.0125) {
-                    //    _pageVertices[row][column].x = (vertex.x =  _stablePageVertices[row][column].x);
-                    } else if(isFlat) {
-                        isFlat = NO;
-                    } 
-                    if(fabsf(vertex.y - yCoord) <= 0.0125) {
-                    //    _pageVertices[row][column].y = (vertex.y = _stablePageVertices[row][column].y);
-                    } else if(isFlat) {
-                        isFlat = NO;
-                    } 
-                }*/
-                
-                //if(vertex.z > 0) {
-                //    _pageVertices[row][column].z = (vertex.z = 0);
-                //} 
-                        
                 if(hasFlipped &&
                    (column > 0 && vertex.x > 0 && 
                     atanf(-vertex.z / vertex.x) < (((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f))) { 
@@ -1840,21 +1828,26 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 - (void)_postAnimationViewAndTextureRecache
 {
     if(_recacheFlags[0]) {
-        [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageContentsInformation[1].view] forPage:0];
+        if(_viewDataSource) {
+            [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageContentsInformation[1].view] forPage:0];
+        } else {
+            if(_pageContentsInformation[1].pageIndex == 0) {
+                _pageContentsInformation[0].pageIndex = NSUIntegerMax;
+            } else {
+                [self _setupBitmapPage:_pageContentsInformation[1].pageIndex - 1 forInternalPageOffset:0];
+            }
+        }
         _recacheFlags[0] = NO;
     }     
     if(_recacheFlags[2]) {
-        //THTimer *timr = [THTimer timerWithName:@"20 View Caches"];
-        //for(int i = 0; i < 20; ++i) {
-            //NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-            //[self _setView:[_delegate pageTurningView:self nextViewForView:_pageViews[i == 0 ?  1 : 2]] forPage:2];
-            //[pool drain];
-        //}
-        //[timr report];
-        [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageContentsInformation[1].view] forPage:2];
+        if(_viewDataSource) {
+            [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageContentsInformation[1].view] forPage:2];
+        } else {
+            [self _setupBitmapPage:_pageContentsInformation[1].pageIndex + 1 forInternalPageOffset:2];
+        }
         _recacheFlags[2] = NO;
     }
-    if([_delegate respondsToSelector:@selector(pageTurningView:didTurnToView:)]) {
+    if(_viewDataSource && [_delegate respondsToSelector:@selector(pageTurningView:didTurnToView:)]) {
         [_delegate pageTurningView:self didTurnToView:_pageContentsInformation[1].view];
     }                    
     _viewsNeedRecache = NO;
