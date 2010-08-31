@@ -267,12 +267,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                                      animated:YES];
                 aBookView.delegate = self;
                 self.bookView = aBookView;
-                self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
                 [aBookView release];
             }
         } 
             break;
     }
+    
+    self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
     
     bookReady = YES;
     
