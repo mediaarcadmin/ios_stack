@@ -93,7 +93,7 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 } 
 
 
-@interface EucPageTurningView (PRIVATE)
+@interface EucPageTurningView ()
 
 - (void)_calculateVertexNormals;    
 //- (void)_accumulateForces;  // Not used - see comments around implementation.
@@ -1753,23 +1753,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 GLfloat diff = yCoord - vertex.y;
                 _pageVertices[row][column].y = (vertex.y += diff * 0.5f);
 
-                /*if(!_touch) {
-                    if(fabsf(vertex.x - _stablePageVertices[row][column].x) <=  0.0125) {
-                    //    _pageVertices[row][column].x = (vertex.x =  _stablePageVertices[row][column].x);
-                    } else if(isFlat) {
-                        isFlat = NO;
-                    } 
-                    if(fabsf(vertex.y - yCoord) <= 0.0125) {
-                    //    _pageVertices[row][column].y = (vertex.y = _stablePageVertices[row][column].y);
-                    } else if(isFlat) {
-                        isFlat = NO;
-                    } 
-                }*/
-                
-                //if(vertex.z > 0) {
-                //    _pageVertices[row][column].z = (vertex.z = 0);
-                //} 
-                        
                 if(hasFlipped &&
                    (column > 0 && vertex.x > 0 && 
                     atanf(-vertex.z / vertex.x) < (((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f))) { 
