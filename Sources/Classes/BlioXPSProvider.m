@@ -363,9 +363,6 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         BlioXPSBitmapReleaseCallback *releaseCallback = [[BlioXPSBitmapReleaseCallback alloc] init];
         releaseCallback.data = imageInfo->pBits;
                 
-        CGImageRef dump = CGBitmapContextCreateImage(bitmapContext);
-        UIImage *dumpImage = [UIImage imageWithCGImage:dump];
-        UIImageWriteToSavedPhotosAlbum(dumpImage, nil, nil, NULL);
         objc_setAssociatedObject((id)bitmapContext, @"XPSBitmapReleaseCallback", releaseCallback, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [releaseCallback release];
         
