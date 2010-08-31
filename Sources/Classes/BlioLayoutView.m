@@ -256,42 +256,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         // Cache the first page crop to allow fast estimating of crops
         firstPageCrop = [self.dataSource cropRectForPage:1];
         
-        BlioLayoutScrollView *aScrollView = [[BlioLayoutScrollView alloc] initWithFrame:self.bounds];
-        aScrollView.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
-        aScrollView.pagingEnabled = YES;
-        aScrollView.minimumZoomScale = 1.0f;
-        aScrollView.maximumZoomScale = [[UIDevice currentDevice] blioDeviceMaximumLayoutZoom];
-        //aScrollView.maximumZoomScale = 8;
-        aScrollView.showsHorizontalScrollIndicator = NO;
-        aScrollView.showsVerticalScrollIndicator = NO;
-        aScrollView.clearsContextBeforeDrawing = NO;
-        aScrollView.directionalLockEnabled = YES;
-        aScrollView.bounces = YES;
-        aScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        aScrollView.autoresizesSubviews = YES;
-        aScrollView.scrollsToTop = NO;
-        aScrollView.delegate = self;
-        aScrollView.canCancelContentTouches = YES;
-        aScrollView.delaysContentTouches = NO;
-        //[self addSubview:aScrollView];
-        self.scrollView = aScrollView;
-        [aScrollView release];
-        
-        UIView *aContainerView = [[UIView alloc] initWithFrame:self.bounds];
-        //[self.scrollView addSubview:aContainerView];
-        aContainerView.backgroundColor = [UIColor clearColor];
-        aContainerView.autoresizesSubviews = NO;
-        self.containerView = aContainerView;
-        [aContainerView release];
-        
-        BlioLayoutContentView *aContentView = [[BlioLayoutContentView alloc] initWithFrame:self.bounds];
-        //[self.containerView addSubview:aContentView];
-        aContentView.renderingDelegate = self;
-        aContentView.backgroundColor = [UIColor clearColor];
-        aContentView.clipsToBounds = NO;
-        self.contentView = aContentView;
-        [aContentView release];
-                
         EucSelector *aSelector = [[EucSelector alloc] init];
         [aSelector setShouldSniffTouches:NO];
         aSelector.dataSource = self;
@@ -717,11 +681,9 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     
     if (pageCropValue) {
         CGRect cropRect = [pageCropValue CGRectValue];
-        NSLog(@"Crop for page %d is %@", page, NSStringFromCGRect(cropRect));
         return cropRect;
     }
     
-    NSLog(@"Crop for page %d is CGRectZero", page);
     return CGRectZero;
 }
 

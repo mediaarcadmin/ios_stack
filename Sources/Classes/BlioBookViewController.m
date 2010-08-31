@@ -24,6 +24,7 @@
 #import "BlioAlertManager.h"
 #import "BlioBookManager.h"
 #import "BlioBeveledView.h"
+#import "BlioViewSettingsPopover.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -54,6 +55,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @interface BlioBookViewController ()
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
+@property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
+@property (nonatomic, retain) UIPopoverController *viewSettingsPopover;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
@@ -106,6 +109,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize searchViewController;
 @synthesize delegate;
 @synthesize coverView;
+
+@synthesize viewSettingsSheet, viewSettingsPopover;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -230,13 +235,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     } else if (((![self.book hasEPub] && ![self.book hasTextFlow]) || ![self.book reflowEnabled]) && (lastLayout == kBlioPageLayoutPlainText)) {
         lastLayout = kBlioPageLayoutPageLayout;
     } 
-    
-    // TODO: Remove this forced option for iPad
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        if ([self.book hasPdf] || [self.book hasXps]) {
-            lastLayout = kBlioPageLayoutPageLayout;
-        }
-    }
     
     switch (lastLayout) {
         case kBlioPageLayoutSpeedRead: {
@@ -1061,7 +1059,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.managedObjectContext = nil;
     self.delegate = nil;
     self.coverView = nil;
-    
+    self.viewSettingsSheet = nil;
+    self.viewSettingsPopover = nil;
 	[super dealloc];
 }
 
@@ -1719,15 +1718,28 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self setToolbarsForModalOverlayActive:YES];
     }
     
-    BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
-    UIToolbar *toolbar = self.navigationController.toolbar;
-    [aSettingsSheet showFromToolbar:toolbar];
-    [aSettingsSheet release];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
+        [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        self.viewSettingsPopover = aSettingsPopover;
+        [aSettingsPopover release];
+    } else {
+        BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
+        [aSettingsSheet showFromRect:CGRectMake(10,10, 50, 50) inView:self.bookView animated:NO];
+        self.viewSettingsSheet = aSettingsSheet;
+        [aSettingsSheet release];
+    }
+    
 }
 
 - (void)dismissViewSettings:(id)sender {
-    [(BlioViewSettingsSheet *)sender dismissWithClickedButtonIndex:0 animated:YES];
-    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.viewSettingsPopover dismissPopoverAnimated:YES];
+        self.viewSettingsPopover = nil;
+    } else {
+        [self.viewSettingsSheet dismissWithClickedButtonIndex:0 animated:YES];
+        self.viewSettingsSheet = nil;
+    }
     [self setToolbarsForModalOverlayActive:NO];
 }
 

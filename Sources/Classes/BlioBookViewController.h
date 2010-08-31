@@ -130,6 +130,9 @@ typedef enum {
     BOOL coverReady;
     BOOL firstPageReady;
     BOOL coverOpened;
+    
+    UIActionSheet *viewSettingsSheet;
+    UIPopoverController *viewSettingsPopover;
 }
 
 // Designated initializers.
