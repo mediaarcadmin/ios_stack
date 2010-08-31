@@ -430,60 +430,95 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
    fromRGBABitmapContext:(CGContextRef)context
    setTextureCoordinates:(TextureCoordinates *)coordinates
 {
-    BOOL flipCoordinates = NO;
-    
     size_t contextWidth = CGBitmapContextGetWidth(context);
     size_t contextHeight = CGBitmapContextGetHeight(context);
 
-    size_t powerOfTwoWidth = nextPowerOfTwo(contextWidth);
-    size_t powerOfTwoHeight = nextPowerOfTwo(contextHeight);
-    if(powerOfTwoWidth != contextWidth ||
-       powerOfTwoHeight != contextHeight) {
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CGContextRef textureContext = CGBitmapContextCreate(NULL, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
-                                                            colorSpace, kCGImageAlphaPremultipliedLast);
-        CGImageRef image = CGBitmapContextCreateImage(context);
-        CGContextDrawImage(textureContext, CGRectMake(0, 0, contextWidth, contextHeight), image);
-        CGImageRelease(image);
-        CGColorSpaceRelease(colorSpace);
-        
-        context = (CGContextRef)[(id)textureContext autorelease];
-        
-        flipCoordinates = YES;
-    }
+    size_t powerOfTwoWidth;
+    size_t powerOfTwoHeight;
     
     [EAGLContext setCurrentContext:_textureUploadContext];
-    if(!*textureRef) { 
-        glGenTextures(1, textureRef);
+    
+    BOOL newTextureSize = NO;
+    BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(context) != contextWidth * 4;
+    if(!*textureRef || // There's no existing texture
+       !coordinates || // There are no pre-calculated texture coordinates.
+       coordinates->texturePixelWidth < contextWidth || 
+       coordinates->texturePixelHeight < contextHeight || // The new texture is larger than the existing one.
+       dataIsNonContiguous
+       ) {
+        // If any of the above are true, we can't use upload a subimage to
+        // an existing texture, we need a new one.
+        newTextureSize = YES;
+        
+        powerOfTwoWidth = nextPowerOfTwo(contextWidth);
+        powerOfTwoHeight = nextPowerOfTwo(contextHeight);
+
+        GLubyte *textureData = NULL;
+        
+        if(powerOfTwoWidth != contextWidth ||
+           powerOfTwoHeight != contextHeight ||
+           dataIsNonContiguous) {
+            // We need to generate contiguous, power-of-two sized data to
+            // upload.
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+
+            size_t byteLength = powerOfTwoWidth * powerOfTwoHeight * 4;
+            textureData = (GLubyte *)malloc(byteLength);
+            memset(textureData, 0xFFFFFFFF, byteLength);        
+            CGContextRef textureContext = CGBitmapContextCreate(textureData, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
+                                                                colorSpace, kCGImageAlphaPremultipliedLast);
+            CGImageRef image = CGBitmapContextCreateImage(context);
+            
+            CGContextDrawImage(textureContext, CGRectMake(0, powerOfTwoHeight - contextHeight, contextWidth, contextHeight), image);
+            CGImageRelease(image);
+            CGColorSpaceRelease(colorSpace);
+            
+            context = (CGContextRef)[(id)textureContext autorelease];
+        }
+        
+        if(!*textureRef) { 
+            glGenTextures(1, textureRef);
+        }
+        glBindTexture(GL_TEXTURE_2D, *textureRef); 
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+        
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));
+    
+        if(textureData) {
+            free(textureData);
+        }
+    } else {
+        // We're able to just overwrite a subsection of the old texture directly.
+        glBindTexture(GL_TEXTURE_2D, *textureRef); 
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, contextWidth, contextHeight, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));    
+        powerOfTwoWidth = coordinates->texturePixelWidth;
+        powerOfTwoHeight = coordinates->texturePixelHeight;
     }
-    glBindTexture(GL_TEXTURE_2D, *textureRef); 
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
-    
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));
-    
-    if(coordinates && coordinates->innerPixelWidth != contextWidth && coordinates -> innerPixelHeight != contextHeight) {
-        CGFloat po2WidthScale = (CGFloat)contextWidth / (CGFloat)powerOfTwoWidth;
-        CGFloat po2HeightScale = (CGFloat)contextHeight / (CGFloat)powerOfTwoHeight;
-        GLfloat yAddition = (GLfloat)(powerOfTwoHeight - contextHeight) / (GLfloat)powerOfTwoHeight;
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                GLfloat x = (_pageVertices[row][column].x / PAGE_WIDTH) * po2WidthScale;
-                coordinates->textureCoordinates[row][column].x = x;
-                GLfloat y;
-                if(flipCoordinates) {
-                    y = (_pageVertices[row][column].y / PAGE_HEIGHT) * po2HeightScale + yAddition;
-                } else {
-                    y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) * po2HeightScale + yAddition;
+    if(coordinates) {
+        if(coordinates->innerPixelWidth != contextWidth || coordinates->innerPixelHeight != contextHeight || newTextureSize) {
+            // We need to regenerate the texture coordinates.
+            CGFloat po2WidthScale = (CGFloat)contextWidth / (CGFloat)powerOfTwoWidth;
+            CGFloat po2HeightScale = (CGFloat)contextHeight / (CGFloat)powerOfTwoHeight;
+            for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+                for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+                    GLfloat x = (_pageVertices[row][column].x / PAGE_WIDTH) * po2WidthScale;
+                    coordinates->textureCoordinates[row][column].x = x;
+                    GLfloat y = (_pageVertices[row][column].y / PAGE_HEIGHT) * po2HeightScale;
+                    coordinates->textureCoordinates[row][column].y = y;
                 }
-                coordinates->textureCoordinates[row][column].y = y;
-            }
-        }     
-    }
+            }  
+            coordinates->innerPixelWidth = contextWidth;
+            coordinates->innerPixelHeight = contextHeight;
+            coordinates->texturePixelWidth = powerOfTwoWidth;
+            coordinates->texturePixelHeight = powerOfTwoHeight;            
+        }
+    }    
 }
 
 - (void)_createTextureIn:(GLuint *)textureRef 
@@ -545,7 +580,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
         
     [self _createTextureIn:textureRef
-                fromRGBABitmapContext:textureContext
+     fromRGBABitmapContext:textureContext
      setTextureCoordinates:nil];
     
     CGContextRelease(textureContext);
