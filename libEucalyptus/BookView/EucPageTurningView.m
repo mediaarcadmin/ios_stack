@@ -937,16 +937,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
-    /*
-    glActiveTexture(GL_TEXTURE0);
-    glEnable (GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glEnable (GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    */
-    glActiveTexture(GL_TEXTURE0);
 
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
     glViewport(0, 0, _backingWidth, _backingHeight);
@@ -993,13 +983,23 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, _linearAttenutaionFactor);
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION,_quadraticAttenuationFactor );
     
+    
     glClientActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_DECAL); 
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_DECAL); 
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
     
     glClientActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE1);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
@@ -1017,13 +1017,9 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     
     glClientActiveTexture(GL_TEXTURE0);
-    glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates.textureCoordinates);
-    
-    glClientActiveTexture(GL_TEXTURE1);
-    
     glActiveTexture(GL_TEXTURE0);
-    glClientActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
+    glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates.textureCoordinates);
     glVertexPointer(3, GL_FLOAT, 0, _stablePageVertices);
     glNormalPointer(GL_FLOAT, 0, _stablePageVertexNormals);    
     
@@ -1092,6 +1088,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             glNormalPointer(GL_FLOAT, 0, pageVertexNormals);
         }        
         
+        glClientActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         // By starting 1 into the triangle strip in glDrawElements, we draw the
