@@ -61,7 +61,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)_trackTouch:(UITouch *)touch;
 
-// Cache's the data sources responses during selection.
+// Cache's the data source's responses during selection.
 - (void)_clearSelectionCaches;
 - (NSArray *)_blockIdentifiers;
 - (NSArray *)_identifiersForElementsOfBlockWithIdentifier:(id)blockId;
