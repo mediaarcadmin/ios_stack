@@ -430,60 +430,95 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
    fromRGBABitmapContext:(CGContextRef)context
    setTextureCoordinates:(TextureCoordinates *)coordinates
 {
-    BOOL flipCoordinates = NO;
-    
     size_t contextWidth = CGBitmapContextGetWidth(context);
     size_t contextHeight = CGBitmapContextGetHeight(context);
 
-    size_t powerOfTwoWidth = nextPowerOfTwo(contextWidth);
-    size_t powerOfTwoHeight = nextPowerOfTwo(contextHeight);
-    if(powerOfTwoWidth != contextWidth ||
-       powerOfTwoHeight != contextHeight) {
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CGContextRef textureContext = CGBitmapContextCreate(NULL, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
-                                                            colorSpace, kCGImageAlphaPremultipliedLast);
-        CGImageRef image = CGBitmapContextCreateImage(context);
-        CGContextDrawImage(textureContext, CGRectMake(0, 0, contextWidth, contextHeight), image);
-        CGImageRelease(image);
-        CGColorSpaceRelease(colorSpace);
-        
-        context = (CGContextRef)[(id)textureContext autorelease];
-        
-        flipCoordinates = YES;
-    }
+    size_t powerOfTwoWidth;
+    size_t powerOfTwoHeight;
     
     [EAGLContext setCurrentContext:_textureUploadContext];
-    if(!*textureRef) { 
-        glGenTextures(1, textureRef);
+    
+    BOOL newTextureSize = NO;
+    BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(context) != contextWidth * 4;
+    if(!*textureRef || // There's no existing texture
+       !coordinates || // There are no pre-calculated texture coordinates.
+       coordinates->texturePixelWidth < contextWidth || 
+       coordinates->texturePixelHeight < contextHeight || // The new texture is larger than the existing one.
+       dataIsNonContiguous
+       ) {
+        // If any of the above are true, we can't use upload a subimage to
+        // an existing texture, we need a new one.
+        newTextureSize = YES;
+        
+        powerOfTwoWidth = nextPowerOfTwo(contextWidth);
+        powerOfTwoHeight = nextPowerOfTwo(contextHeight);
+
+        GLubyte *textureData = NULL;
+        
+        if(powerOfTwoWidth != contextWidth ||
+           powerOfTwoHeight != contextHeight ||
+           dataIsNonContiguous) {
+            // We need to generate contiguous, power-of-two sized data to
+            // upload.
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+
+            size_t byteLength = powerOfTwoWidth * powerOfTwoHeight * 4;
+            textureData = (GLubyte *)malloc(byteLength);
+            memset(textureData, 0xFFFFFFFF, byteLength);        
+            CGContextRef textureContext = CGBitmapContextCreate(textureData, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
+                                                                colorSpace, kCGImageAlphaPremultipliedLast);
+            CGImageRef image = CGBitmapContextCreateImage(context);
+            
+            CGContextDrawImage(textureContext, CGRectMake(0, powerOfTwoHeight - contextHeight, contextWidth, contextHeight), image);
+            CGImageRelease(image);
+            CGColorSpaceRelease(colorSpace);
+            
+            context = (CGContextRef)[(id)textureContext autorelease];
+        }
+        
+        if(!*textureRef) { 
+            glGenTextures(1, textureRef);
+        }
+        glBindTexture(GL_TEXTURE_2D, *textureRef); 
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+        
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));
+    
+        if(textureData) {
+            free(textureData);
+        }
+    } else {
+        // We're able to just overwrite a subsection of the old texture directly.
+        glBindTexture(GL_TEXTURE_2D, *textureRef); 
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, contextWidth, contextHeight, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));    
+        powerOfTwoWidth = coordinates->texturePixelWidth;
+        powerOfTwoHeight = coordinates->texturePixelHeight;
     }
-    glBindTexture(GL_TEXTURE_2D, *textureRef); 
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
-    
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));
-    
-    if(coordinates && coordinates->innerPixelWidth != contextWidth && coordinates -> innerPixelHeight != contextHeight) {
-        CGFloat po2WidthScale = (CGFloat)contextWidth / (CGFloat)powerOfTwoWidth;
-        CGFloat po2HeightScale = (CGFloat)contextHeight / (CGFloat)powerOfTwoHeight;
-        GLfloat yAddition = (GLfloat)(powerOfTwoHeight - contextHeight) / (GLfloat)powerOfTwoHeight;
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                GLfloat x = (_pageVertices[row][column].x / PAGE_WIDTH) * po2WidthScale;
-                coordinates->textureCoordinates[row][column].x = x;
-                GLfloat y;
-                if(flipCoordinates) {
-                    y = (_pageVertices[row][column].y / PAGE_HEIGHT) * po2HeightScale + yAddition;
-                } else {
-                    y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) * po2HeightScale + yAddition;
+    if(coordinates) {
+        if(coordinates->innerPixelWidth != contextWidth || coordinates->innerPixelHeight != contextHeight || newTextureSize) {
+            // We need to regenerate the texture coordinates.
+            CGFloat po2WidthScale = (CGFloat)contextWidth / (CGFloat)powerOfTwoWidth;
+            CGFloat po2HeightScale = (CGFloat)contextHeight / (CGFloat)powerOfTwoHeight;
+            for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+                for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+                    GLfloat x = (_pageVertices[row][column].x / PAGE_WIDTH) * po2WidthScale;
+                    coordinates->textureCoordinates[row][column].x = x;
+                    GLfloat y = (_pageVertices[row][column].y / PAGE_HEIGHT) * po2HeightScale;
+                    coordinates->textureCoordinates[row][column].y = y;
                 }
-                coordinates->textureCoordinates[row][column].y = y;
-            }
-        }     
-    }
+            }  
+            coordinates->innerPixelWidth = contextWidth;
+            coordinates->innerPixelHeight = contextHeight;
+            coordinates->texturePixelWidth = powerOfTwoWidth;
+            coordinates->texturePixelHeight = powerOfTwoHeight;            
+        }
+    }    
 }
 
 - (void)_createTextureIn:(GLuint *)textureRef 
@@ -545,7 +580,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
         
     [self _createTextureIn:textureRef
-                fromRGBABitmapContext:textureContext
+     fromRGBABitmapContext:textureContext
      setTextureCoordinates:nil];
     
     CGContextRelease(textureContext);
@@ -885,6 +920,20 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     }
 }
 
+- (void)_cyclePageContentsInformationForTurnForwards:(BOOL)forwards
+{
+    if(forwards) {
+        PageContentsInformation tempView = _pageContentsInformation[0];
+        _pageContentsInformation[0] = _pageContentsInformation[1];
+        _pageContentsInformation[1] = _pageContentsInformation[2];
+        _pageContentsInformation[2] = tempView;
+    } else {
+        PageContentsInformation tempView = _pageContentsInformation[2];
+        _pageContentsInformation[2] = _pageContentsInformation[1];
+        _pageContentsInformation[1] = _pageContentsInformation[0];
+        _pageContentsInformation[0] = tempView;
+    }
+}
 
 - (void)drawView 
 {        
@@ -902,16 +951,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
-    /*
-    glActiveTexture(GL_TEXTURE0);
-    glEnable (GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glEnable (GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    */
-    glActiveTexture(GL_TEXTURE0);
 
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
     glViewport(0, 0, _backingWidth, _backingHeight);
@@ -958,13 +997,23 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, _linearAttenutaionFactor);
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION,_quadraticAttenuationFactor );
     
+    
     glClientActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_DECAL); 
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_DECAL); 
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
     
     glClientActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE1);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
@@ -982,13 +1031,9 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     
     
     glClientActiveTexture(GL_TEXTURE0);
-    glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates.textureCoordinates);
-    
-    glClientActiveTexture(GL_TEXTURE1);
-    
     glActiveTexture(GL_TEXTURE0);
-    glClientActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
+    glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates.textureCoordinates);
     glVertexPointer(3, GL_FLOAT, 0, _stablePageVertices);
     glNormalPointer(GL_FLOAT, 0, _stablePageVertexNormals);    
     
@@ -1057,12 +1102,34 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             glNormalPointer(GL_FLOAT, 0, pageVertexNormals);
         }        
         
+        glClientActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         // By starting 1 into the triangle strip in glDrawElements, we draw the
         // strip with the opposite winding order, making the back the front (the
-        // first triangle is degenerate anyway, so skippable).        
+        // first triangle is degenerate anyway, so skippable).       
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 3, GL_UNSIGNED_BYTE, _triangleStripIndices + 1);
+        
+        glClientActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glClientActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+        glColor4f(0.2f, 0.2f, 0.2f, 0.0f);
+        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 3, GL_UNSIGNED_BYTE, _triangleStripIndices + 1);
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_LIGHTING);
+        glEnable(GL_DEPTH_TEST);
         
         if(_isTurningAutomatically) {
             if(_automaticTurnPercentage > 0.0f) {
@@ -1121,26 +1188,17 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             
             if(++_automaticTurnFrame >= (_automaticTurnIsForwards ? _animatedTurnFrameCount : (_reverseAnimatedTurnFrameCount + 1))) {
                 shouldStopAnimating = YES;
-                [[UIApplication sharedApplication] endIgnoringInteractionEvents];
                 
                 _isTurningAutomatically = NO;
+                
+                [self _cyclePageContentsInformationForTurnForwards:_flatPageIndex == 2];
+                _flatPageIndex = 1;
+
+                _recacheFlags[0] = YES;
+                _recacheFlags[2] = YES;                    
                 _viewsNeedRecache = YES;
                 
-                if(_flatPageIndex == 2) {
-                    PageContentsInformation tempView = _pageContentsInformation[0];
-                    _pageContentsInformation[0] = _pageContentsInformation[1];
-                    _pageContentsInformation[1] = _pageContentsInformation[2];
-                    _pageContentsInformation[2] = tempView;
-                    _flatPageIndex = 1;
-                } else {
-                    PageContentsInformation tempView = _pageContentsInformation[2];
-                    _pageContentsInformation[2] = _pageContentsInformation[1];
-                    _pageContentsInformation[1] = _pageContentsInformation[0];
-                    _pageContentsInformation[0] = tempView;
-                }
-                
-                _recacheFlags[0] = YES;
-                _recacheFlags[2] = YES;
+                [[UIApplication sharedApplication] endIgnoringInteractionEvents];
             }
         } 
         
@@ -1796,24 +1854,16 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             
             if(_flatPageIndex == 2) {
                 if(hasFlipped) {
-                    PageContentsInformation tempView = _pageContentsInformation[0];
-                    _pageContentsInformation[0] = _pageContentsInformation[1];
-                    _pageContentsInformation[1] = _pageContentsInformation[2];
-                    _pageContentsInformation[2] = tempView;
-                    
-                    _viewsNeedRecache = YES;
+                    [self _cyclePageContentsInformationForTurnForwards:YES];
                     _recacheFlags[2] = YES;
+                    _viewsNeedRecache = YES;
                 } 
                 _flatPageIndex = 1;
             } else {
                 if(!hasFlipped) {
-                    PageContentsInformation tempView = _pageContentsInformation[2];
-                    _pageContentsInformation[2] = _pageContentsInformation[1];
-                    _pageContentsInformation[1] = _pageContentsInformation[0];
-                    _pageContentsInformation[0] = tempView;
-                    
-                    _viewsNeedRecache = YES;
+                    [self _cyclePageContentsInformationForTurnForwards:NO];
                     _recacheFlags[0] = YES;
+                    _viewsNeedRecache = YES;
                 }
             }  
             

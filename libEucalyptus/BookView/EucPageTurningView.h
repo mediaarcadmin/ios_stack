@@ -38,6 +38,8 @@ typedef struct {
     GLfloatPair textureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     GLuint innerPixelWidth;
     GLuint innerPixelHeight;
+    GLuint texturePixelWidth;
+    GLuint texturePixelHeight;
 } TextureCoordinates;
 
 typedef struct {
