@@ -12,12 +12,13 @@
 @interface BlioViewSettingsPopover()
 
 @property (nonatomic, retain) BlioViewSettingsContentsView *contentsView;
+@property (nonatomic, assign) id<BlioViewSettingsDelegate> viewSettingsDelegate;
 
 @end
 
 @implementation BlioViewSettingsPopover
 
-@synthesize contentsView;
+@synthesize contentsView, viewSettingsDelegate;
 
 - (void)dealloc {
     self.contentsView = nil;
@@ -29,17 +30,26 @@
     BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsContentsView alloc] initWithDelegate:newDelegate];
     UIViewController *contentController = [[UIViewController alloc] init];
     contentController.view = aContentsView;
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
+    contentController.navigationItem.title = NSLocalizedString(@"Visual Options", "Title for View Settings Popover");
     
-    if ((self = [super initWithContentViewController:contentController])) {
+    if ((self = [super initWithContentViewController:navController])) {
         // Custom initialization
+        self.popoverContentSize = CGSizeMake(320, [aContentsView contentsHeight]);
         self.contentsView = aContentsView;
-        self.contentViewController = contentController;
+        self.delegate = self;
+        self.viewSettingsDelegate = newDelegate;
     }
     
     [aContentsView release];
     [contentController release];
+    [navController release];
 
     return self;
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    [self.viewSettingsDelegate dismissViewSettings:self];
 }
 
 @end

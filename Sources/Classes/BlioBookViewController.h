@@ -50,7 +50,8 @@ typedef enum BlioFontSize {
 @protocol BlioViewSettingsDelegate <NSObject>
 @required
 - (void)changePageLayout:(id)sender;
-- (BOOL)shouldShowPageAttributeSettings;
+- (BOOL)shouldShowFontSizeSettings;
+- (BOOL)shouldShowPageColorSettings;
 - (void)dismissViewSettings:(id)sender;
 - (BOOL)isRotationLocked;
 - (void)changeLockRotation;

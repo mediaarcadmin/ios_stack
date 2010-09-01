@@ -1585,11 +1585,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
-- (BOOL)shouldShowPageAttributeSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
+- (BOOL)shouldShowFontSizeSettings {
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead) {
         return NO;
-    else
+    } else {
         return YES;
+    }
+}
+
+- (BOOL)shouldShowPageColorSettings {
+    if ([self currentPageLayout] == kBlioPageLayoutSpeedRead) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 - (BlioFontSize)currentFontSize {
@@ -1720,13 +1729,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
-        [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-        self.viewSettingsPopover = aSettingsPopover;
-        [aSettingsPopover release];
+        if (![self.viewSettingsPopover isPopoverVisible]) {
+            BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
+            [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+            self.viewSettingsPopover = aSettingsPopover;
+            [aSettingsPopover release];
+        }
     } else {
         BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
-        [aSettingsSheet showFromRect:CGRectMake(10,10, 50, 50) inView:self.bookView animated:NO];
+        [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
         self.viewSettingsSheet = aSettingsSheet;
         [aSettingsSheet release];
     }
@@ -1735,7 +1746,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)dismissViewSettings:(id)sender {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.viewSettingsPopover dismissPopoverAnimated:YES];
         self.viewSettingsPopover = nil;
     } else {
         [self.viewSettingsSheet dismissWithClickedButtonIndex:0 animated:YES];

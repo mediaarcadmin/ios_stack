@@ -39,7 +39,7 @@
 
 - (void)layoutSubviews {    
     CGRect origFrame = self.frame;
-    [self.contentsView setFrame:CGRectMake(0, 0, origFrame.size.width, 0)];
+    [self.contentsView setFrame:CGRectMake(0, 0, origFrame.size.width, [self.contentsView contentsHeight])];
     [self.contentsView layoutSubviews];
     CGFloat heightOffset = self.contentsView.bounds.size.height;
     origFrame.origin.y -= heightOffset;

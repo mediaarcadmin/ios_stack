@@ -37,6 +37,7 @@
 @property (nonatomic, assign) id<BlioViewSettingsDelegate> viewSettingsDelegate;
 
 - (id)initWithDelegate:(id)newDelegate;
+- (CGFloat)contentsHeight;
 
 @end
 

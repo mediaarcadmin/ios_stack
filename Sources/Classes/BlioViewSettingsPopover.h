@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @class BlioViewSettingsContentsView;
+@protocol BlioViewSettingsDelegate;
 
-@interface BlioViewSettingsPopover : UIPopoverController {
+@interface BlioViewSettingsPopover : UIPopoverController <UIPopoverControllerDelegate> {
     BlioViewSettingsContentsView *contentsView;
+    id<BlioViewSettingsDelegate> viewSettingsDelegate;
 }
 
 - (id)initWithDelegate:(id)newDelegate;

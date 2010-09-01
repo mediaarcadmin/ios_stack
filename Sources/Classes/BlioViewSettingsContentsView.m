@@ -25,7 +25,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 @property (nonatomic, retain) UIImage *tapTurnOffImage;
 @property (nonatomic, retain) UIImage *lockRotationImage;
 @property (nonatomic, retain) UIImage *unlockRotationImage;
-
 @end
 
 @implementation BlioViewSettingsContentsView
@@ -57,36 +56,42 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 }
 
 - (void)displayPageAttributes {
-    BOOL showPageAttributes = NO;
+    BOOL showFontSize = NO;
+    BOOL showPageColor = NO;
     
-    if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowPageAttributeSettings)])
-        showPageAttributes = [self.viewSettingsDelegate shouldShowPageAttributeSettings];
+    if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowFontSizeSettings)]) {
+        showFontSize = [self.viewSettingsDelegate shouldShowFontSizeSettings];
+    }
     
-    if (showPageAttributes) {
+    if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowPageColorSettings)]) {
+        showPageColor = [self.viewSettingsDelegate shouldShowPageColorSettings];
+    }
+    
+    if (showFontSize) {
         self.fontSizeLabel.enabled = YES;
-        self.pageColorLabel.enabled = YES;
         self.fontSizeSegment.enabled = YES;
-        self.pageColorSegment.enabled = YES;
         self.fontSizeSegment.alpha = 1.0f;
-        self.pageColorSegment.alpha = 1.0f;
-        
 		self.fontSizeLabel.accessibilityLabel = self.fontSizeLabel.text;
-		self.pageColorLabel.accessibilityLabel = self.pageColorLabel.text;
-        
     } else {
         self.fontSizeLabel.enabled = NO;
-        self.pageColorLabel.enabled = NO;
         self.fontSizeSegment.enabled = NO;
-        self.pageColorSegment.enabled = NO;
         self.fontSizeSegment.alpha = 0.35f;
-        self.pageColorSegment.alpha = 0.35f;
-		
-		self.fontSizeLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.fontSizeLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];
-		self.pageColorLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.pageColorLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];
-        
-	}    
-	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+		self.fontSizeLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.fontSizeLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];        
+	}
     
+    if (showPageColor) {
+        self.pageColorLabel.enabled = YES;
+        self.pageColorSegment.enabled = YES;
+        self.pageColorSegment.alpha = 1.0f;
+		self.pageColorLabel.accessibilityLabel = self.pageColorLabel.text;
+    } else {
+        self.pageColorLabel.enabled = NO;
+        self.pageColorSegment.enabled = NO;
+        self.pageColorSegment.alpha = 0.35f;
+		self.pageColorLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.pageColorLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];
+	} 
+    
+	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 
 - (id)initWithDelegate:(id)newDelegate {
@@ -204,62 +209,72 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         [self.pageColorSegment addTarget:self.viewSettingsDelegate action:@selector(changePageColor:) forControlEvents:UIControlEventValueChanged];
         
-        BlioAccessibilitySegmentedControl *aLockButtonSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] init];
-        aLockButtonSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aLockButtonSegmentedControl.tintColor = [UIColor darkGrayColor];
-        aLockButtonSegmentedControl.momentary = YES;
-        [self addSubview:aLockButtonSegmentedControl];
-        self.lockButtonSegment = aLockButtonSegmentedControl;
-        [aLockButtonSegmentedControl release];
-        
-        self.unlockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:@"Unlock Rotation" font:defaultFont color:white textInset:inset];
-        self.lockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:@"Lock Rotation" font:defaultFont color:white textInset:inset];
-        
-        BOOL currentLock = [self.viewSettingsDelegate isRotationLocked];
-        if (currentLock) {
-            [aLockButtonSegmentedControl insertSegmentWithImage:self.unlockRotationImage atIndex:0 animated:NO];
-            [aLockButtonSegmentedControl setTintColor:kBlioViewSettingsGreenButton];
-            [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Unlock rotation", @"Accessibility label for View Settings Unlock Rotation button")];
-            [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
-        } else {
-            [aLockButtonSegmentedControl insertSegmentWithImage:self.lockRotationImage atIndex:0 animated:NO];
-            [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Lock Rotation", @"Accessibility label for View Settings Lock Rotation button")];
-            [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            
+            BlioAccessibilitySegmentedControl *aLockButtonSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] init];
+            aLockButtonSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+            aLockButtonSegmentedControl.tintColor = [UIColor darkGrayColor];
+            aLockButtonSegmentedControl.momentary = YES;
+            [self addSubview:aLockButtonSegmentedControl];
+            self.lockButtonSegment = aLockButtonSegmentedControl;
+            [aLockButtonSegmentedControl release];
+            
+            self.unlockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:@"Unlock Rotation" font:defaultFont color:white textInset:inset];
+            self.lockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:@"Lock Rotation" font:defaultFont color:white textInset:inset];
+            
+            BOOL currentLock = [self.viewSettingsDelegate isRotationLocked];
+            if (currentLock) {
+                [aLockButtonSegmentedControl insertSegmentWithImage:self.unlockRotationImage atIndex:0 animated:NO];
+                [aLockButtonSegmentedControl setTintColor:kBlioViewSettingsGreenButton];
+                [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Unlock rotation", @"Accessibility label for View Settings Unlock Rotation button")];
+                [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
+            } else {
+                [aLockButtonSegmentedControl insertSegmentWithImage:self.lockRotationImage atIndex:0 animated:NO];
+                [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Lock Rotation", @"Accessibility label for View Settings Lock Rotation button")];
+                [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
+            }
+            
+            
+            [self.lockButtonSegment addTarget:self action:@selector(changeLockRotation:) forControlEvents:UIControlEventValueChanged];  
+            
+            UIButton *aDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            aDoneButton.showsTouchWhenHighlighted = NO;
+            [aDoneButton setTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") forState:UIControlStateNormal];
+            [aDoneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:20.0f]];
+            [aDoneButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [aDoneButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];
+            [aDoneButton.titleLabel setShadowOffset:CGSizeMake(0.0f, 1.0f)];
+            [aDoneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            [aDoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+            [aDoneButton setBackgroundImage:[UIImage imageNamed:@"done-button-up.png"] forState:UIControlStateNormal];
+            [aDoneButton setBackgroundImage:[UIImage imageNamed:@"done-button-down.png"] forState:UIControlStateHighlighted];
+            [aDoneButton addTarget:self action:@selector(dismissSheet:) forControlEvents:UIControlEventTouchUpInside];
+            [self addSubview:aDoneButton];
+            self.doneButton = aDoneButton;
         }
-        
-        
-        [self.lockButtonSegment addTarget:self action:@selector(changeLockRotation:) forControlEvents:UIControlEventValueChanged];  
-        
-        UIButton *aDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        aDoneButton.showsTouchWhenHighlighted = NO;
-        [aDoneButton setTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") forState:UIControlStateNormal];
-        [aDoneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:20.0f]];
-        [aDoneButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [aDoneButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];
-        [aDoneButton.titleLabel setShadowOffset:CGSizeMake(0.0f, 1.0f)];
-        [aDoneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [aDoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-        [aDoneButton setBackgroundImage:[UIImage imageNamed:@"done-button-up.png"] forState:UIControlStateNormal];
-        [aDoneButton setBackgroundImage:[UIImage imageNamed:@"done-button-down.png"] forState:UIControlStateHighlighted];
-        [aDoneButton addTarget:self action:@selector(dismissSheet:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:aDoneButton];
-        self.doneButton = aDoneButton;
         
         [self displayPageAttributes];
 	}
 	return self;
 }
 
-- (void)layoutSubviews {    
+- (CGFloat)contentsHeight {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        return kBlioViewSettingsYInset * 1 + kBlioViewSettingsRowSpacing*4 + kBlioViewSettingsSegmentButtonHeight*4 + kBlioViewSettingsDoneButtonHeight;
+    } else {
+        return kBlioViewSettingsYInset * 2 + kBlioViewSettingsRowSpacing*3 + kBlioViewSettingsSegmentButtonHeight*3;
+    }
+}
 
-    CGRect origFrame = self.frame;
-    CGFloat heightOffset = kBlioViewSettingsYInset * 1 + kBlioViewSettingsRowSpacing*4 + kBlioViewSettingsSegmentButtonHeight*4 + kBlioViewSettingsDoneButtonHeight - origFrame.size.height;
-    origFrame.origin.y -= heightOffset;
-    origFrame.origin.y = 0;
-    origFrame.size.height += heightOffset;
-    self.frame = origFrame;
+- (void)layoutSubviews {
+    CGFloat yInset;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        yInset = kBlioViewSettingsYInset;
+    } else {
+        yInset = kBlioViewSettingsYInset/2.0f;
+    }
     
-    [self.pageLayoutSegment setFrame:CGRectMake(kBlioViewSettingsXInset, kBlioViewSettingsYInset, CGRectGetWidth(self.bounds) - 2*kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
+    [self.pageLayoutSegment setFrame:CGRectMake(kBlioViewSettingsXInset, yInset, CGRectGetWidth(self.bounds) - 2*kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
     [self.fontSizeLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageLayoutSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
     [self.fontSizeSegment setFrame:CGRectMake(CGRectGetMaxX([self.fontSizeLabel frame]), CGRectGetMinY([self.fontSizeLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.fontSizeLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
     [self.pageColorLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.fontSizeSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
