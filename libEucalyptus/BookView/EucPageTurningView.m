@@ -1094,8 +1094,28 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         
         // By starting 1 into the triangle strip in glDrawElements, we draw the
         // strip with the opposite winding order, making the back the front (the
-        // first triangle is degenerate anyway, so skippable).        
+        // first triangle is degenerate anyway, so skippable).       
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 3, GL_UNSIGNED_BYTE, _triangleStripIndices + 1);
+        
+        glClientActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glClientActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+        glColor4f(0.2f, 0.2f, 0.2f, 0.0f);
+        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 3, GL_UNSIGNED_BYTE, _triangleStripIndices + 1);
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_LIGHTING);
+        glEnable(GL_DEPTH_TEST);
         
         if(_isTurningAutomatically) {
             if(_automaticTurnPercentage > 0.0f) {
