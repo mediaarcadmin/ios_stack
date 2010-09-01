@@ -920,6 +920,20 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     }
 }
 
+- (void)_cyclePageContentsInformationForTurnForwards:(BOOL)forwards
+{
+    if(forwards) {
+        PageContentsInformation tempView = _pageContentsInformation[0];
+        _pageContentsInformation[0] = _pageContentsInformation[1];
+        _pageContentsInformation[1] = _pageContentsInformation[2];
+        _pageContentsInformation[2] = tempView;
+    } else {
+        PageContentsInformation tempView = _pageContentsInformation[2];
+        _pageContentsInformation[2] = _pageContentsInformation[1];
+        _pageContentsInformation[1] = _pageContentsInformation[0];
+        _pageContentsInformation[0] = tempView;
+    }
+}
 
 - (void)drawView 
 {        
@@ -1174,26 +1188,17 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             
             if(++_automaticTurnFrame >= (_automaticTurnIsForwards ? _animatedTurnFrameCount : (_reverseAnimatedTurnFrameCount + 1))) {
                 shouldStopAnimating = YES;
-                [[UIApplication sharedApplication] endIgnoringInteractionEvents];
                 
                 _isTurningAutomatically = NO;
+                
+                [self _cyclePageContentsInformationForTurnForwards:_flatPageIndex == 2];
+                _flatPageIndex = 1;
+
+                _recacheFlags[0] = YES;
+                _recacheFlags[2] = YES;                    
                 _viewsNeedRecache = YES;
                 
-                if(_flatPageIndex == 2) {
-                    PageContentsInformation tempView = _pageContentsInformation[0];
-                    _pageContentsInformation[0] = _pageContentsInformation[1];
-                    _pageContentsInformation[1] = _pageContentsInformation[2];
-                    _pageContentsInformation[2] = tempView;
-                    _flatPageIndex = 1;
-                } else {
-                    PageContentsInformation tempView = _pageContentsInformation[2];
-                    _pageContentsInformation[2] = _pageContentsInformation[1];
-                    _pageContentsInformation[1] = _pageContentsInformation[0];
-                    _pageContentsInformation[0] = tempView;
-                }
-                
-                _recacheFlags[0] = YES;
-                _recacheFlags[2] = YES;
+                [[UIApplication sharedApplication] endIgnoringInteractionEvents];
             }
         } 
         
@@ -1849,24 +1854,16 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             
             if(_flatPageIndex == 2) {
                 if(hasFlipped) {
-                    PageContentsInformation tempView = _pageContentsInformation[0];
-                    _pageContentsInformation[0] = _pageContentsInformation[1];
-                    _pageContentsInformation[1] = _pageContentsInformation[2];
-                    _pageContentsInformation[2] = tempView;
-                    
-                    _viewsNeedRecache = YES;
+                    [self _cyclePageContentsInformationForTurnForwards:YES];
                     _recacheFlags[2] = YES;
+                    _viewsNeedRecache = YES;
                 } 
                 _flatPageIndex = 1;
             } else {
                 if(!hasFlipped) {
-                    PageContentsInformation tempView = _pageContentsInformation[2];
-                    _pageContentsInformation[2] = _pageContentsInformation[1];
-                    _pageContentsInformation[1] = _pageContentsInformation[0];
-                    _pageContentsInformation[0] = tempView;
-                    
-                    _viewsNeedRecache = YES;
+                    [self _cyclePageContentsInformationForTurnForwards:NO];
                     _recacheFlags[0] = YES;
+                    _viewsNeedRecache = YES;
                 }
             }  
             
