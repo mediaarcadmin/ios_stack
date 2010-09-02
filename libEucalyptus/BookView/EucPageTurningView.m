@@ -1003,10 +1003,9 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glRotatef(180, 0, 0, 1);
-    FadiGluLookAt(PAGE_WIDTH / 2, PAGE_HEIGHT / 2, 1.5f * -((PAGE_WIDTH /2 ) / tanf(FOV_ANGLE * (float)M_PI / 360.0f)), 
-                  PAGE_WIDTH / 2, PAGE_HEIGHT / 2, 0, 
+    FadiGluLookAt(PAGE_WIDTH * 0.5f, PAGE_HEIGHT * 0.5f, - (PAGE_HEIGHT * 0.5f) / tanf(FOV_ANGLE * ((float)M_PI / 360.0f)), 
+                  PAGE_WIDTH * 0.5f, PAGE_HEIGHT * 0.5f, 0, 
                   0, 1, 0);
-    
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
