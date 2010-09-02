@@ -359,7 +359,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         //bitmapContext = CGBitmapContextCreateWithData(imageInfo->pBits, width, height, 8, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, XPSBitmapReleaseCallback, NULL);
 
-        bitmapContext = CGBitmapContextCreate(imageInfo->pBits, width, height, 8, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
+        bitmapContext = CGBitmapContextCreate(imageInfo->pBits, width, height, 8, imageInfo->rowStride, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
         BlioXPSBitmapReleaseCallback *releaseCallback = [[BlioXPSBitmapReleaseCallback alloc] init];
         releaseCallback.data = imageInfo->pBits;
                 

@@ -50,7 +50,8 @@ typedef enum BlioFontSize {
 @protocol BlioViewSettingsDelegate <NSObject>
 @required
 - (void)changePageLayout:(id)sender;
-- (BOOL)shouldShowPageAttributeSettings;
+- (BOOL)shouldShowFontSizeSettings;
+- (BOOL)shouldShowPageColorSettings;
 - (void)dismissViewSettings:(id)sender;
 - (BOOL)isRotationLocked;
 - (void)changeLockRotation;
@@ -130,6 +131,9 @@ typedef enum {
     BOOL coverReady;
     BOOL firstPageReady;
     BOOL coverOpened;
+    
+    UIActionSheet *viewSettingsSheet;
+    UIPopoverController *viewSettingsPopover;
 }
 
 // Designated initializers.
