@@ -35,9 +35,7 @@
             THLog(@"Opened index at %@", indexPath);
         }
         
-        struct stat stat;
-        fstat(_fd, &stat);
-        _lastPageNumber = stat.st_size / (sizeof(uint32_t) * 4);   
+        _lastPageNumber = lseek(_fd, 0, SEEK_END) / (sizeof(uint32_t) * 4);   
     }
     return self;
 }

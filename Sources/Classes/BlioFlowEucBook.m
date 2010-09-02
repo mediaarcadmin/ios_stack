@@ -171,7 +171,11 @@
 {
     if(!_indexSourceScaleFactors) {
         NSUInteger sectionCount = textFlow.sections.count + 1;
-        size_t *sizes = malloc(sectionCount * sizeof(size_t));;
+        
+        
+        // TODO: make this actually based on section length for accurate pagination progress.
+        
+        /*size_t *sizes = malloc(sectionCount * sizeof(size_t));;
         size_t total = 0;
         
         struct stat statResult;
@@ -190,7 +194,12 @@
             _indexSourceScaleFactors[i] = (float)sizes[i] / (float)total;
         }
         
-        free(sizes);
+        free(sizes);*/
+        
+        _indexSourceScaleFactors = malloc(sectionCount * sizeof(float));
+        for(int i = 0; i < sectionCount; ++i) {
+            _indexSourceScaleFactors[i] = 1.0f / sectionCount;
+        }
     }
     
     return _indexSourceScaleFactors;
