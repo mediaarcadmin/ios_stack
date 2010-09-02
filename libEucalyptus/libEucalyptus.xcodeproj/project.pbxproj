@@ -14,6 +14,7 @@
 		7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */; };
 		7D035BDA11ECD03B00F39592 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
 		7D035BDB11ECD03B00F39592 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
+		7D05483F122EF101002B72C9 /* EucSelectorKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05483E122EF101002B72C9 /* EucSelectorKnob.m */; };
 		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
 		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */; };
@@ -618,6 +619,8 @@
 		7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestMainWindow.xib; sourceTree = "<group>"; };
 		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
 		7D035B6811ECD03B00F39592 /* Pride and Prejudice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Pride and Prejudice"; sourceTree = "<group>"; };
+		7D05483D122EF101002B72C9 /* EucSelectorKnob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorKnob.h; sourceTree = "<group>"; };
+		7D05483E122EF101002B72C9 /* EucSelectorKnob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorKnob.m; sourceTree = "<group>"; };
 		7D0D818211075E2A00C672AC /* EucSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelector.h; sourceTree = "<group>"; };
 		7D0D818311075E2A00C672AC /* EucSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelector.m; sourceTree = "<group>"; };
 		7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSStringSmartQuotes.h; sourceTree = "<group>"; };
@@ -1390,6 +1393,8 @@
 				7D883FCB111C7735009669A8 /* EucMenuView.m */,
 				7D883F63111C586F009669A8 /* EucMenuController.h */,
 				7D883F64111C586F009669A8 /* EucMenuController.m */,
+				7D05483D122EF101002B72C9 /* EucSelectorKnob.h */,
+				7D05483E122EF101002B72C9 /* EucSelectorKnob.m */,
 			);
 			path = Selector;
 			sourceTree = "<group>";
@@ -3267,6 +3272,7 @@
 				7D034F9B10C2CD820085778B /* TransitionTestRootViewController.m in Sources */,
 				7D034F9C10C2CD820085778B /* TransitionTestAppDelegate.m in Sources */,
 				7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */,
+				7D05483F122EF101002B72C9 /* EucSelectorKnob.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

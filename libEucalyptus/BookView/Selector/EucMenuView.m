@@ -7,6 +7,7 @@
 //
 
 #import "EucMenuView.h"
+#import "EucMenuItem.h"
 #import "THUIImageAdditions.h"
 #import "THCALayerAdditions.h"
 #import <QuartzCore/QuartzCore.h>
@@ -33,12 +34,13 @@ static const CGFloat sOuterYPadding = 2.0f;
 @property (nonatomic, readonly) UIImage *ridgeImage;
 @property (nonatomic, readonly) UIFont *font;
 
+@property (nonatomic, readonly) NSArray *accessibilityElements;
+
 @end
 
 @implementation EucMenuView
 
-@synthesize titles = _titles;
-@synthesize colors = _colors;
+@synthesize items = _items;
 @synthesize mainRect = _mainRect;
 @synthesize arrowAtTop = _arrowAtTop;
 @synthesize arrowMidX = _arrowMidX;
@@ -60,6 +62,8 @@ static const CGFloat sOuterYPadding = 2.0f;
 
 - (void)dealloc
 {
+    [_items release];
+    
     [_mainImage release];
     [_mainImageHighlighted release];
     
@@ -77,6 +81,8 @@ static const CGFloat sOuterYPadding = 2.0f;
     [_font release];
     
     free(_regionRects);
+    
+    [_accessibilityElements release];
     
     [super dealloc];
 }
@@ -118,7 +124,7 @@ static const CGFloat sOuterYPadding = 2.0f;
     CGRect fullBounds = self.bounds;
     CGFloat height = self.mainImage.size.height + self.bottomArrowImage.size.height;
     
-    NSArray *titles = self.titles;
+    NSArray *titles = [self.items valueForKey:@"title"];
     NSUInteger titlesCount = titles.count;
     
     free(_regionRects);
@@ -174,6 +180,9 @@ static const CGFloat sOuterYPadding = 2.0f;
         mainRect.origin.y += self.topArrowImage.size.height - 1;
     }
     self.mainRect = mainRect;
+    
+    [_accessibilityElements release];
+    _accessibilityElements = nil;
     
     [self setNeedsDisplay];
 }
@@ -282,9 +291,8 @@ static const CGFloat sOuterYPadding = 2.0f;
         CGContextRestoreGState(context);
     }
     
-    NSArray *titles =  self.titles;
-    NSArray *colors =  self.colors;
-    NSUInteger titlesCount = titles.count;
+    NSArray *items =  self.items;
+    NSUInteger titlesCount = items.count;
     NSUInteger breaks = titlesCount - 1;
     for(int i = 0; i < breaks; ++i) {
         [self.ridgeImage drawAtPoint:CGPointMake(_regionRects[i].origin.x + _regionRects[i].size.width, self.mainRect.origin.y)];
@@ -294,8 +302,9 @@ static const CGFloat sOuterYPadding = 2.0f;
     UIFont *font = self.font;
     UIColor *whiteColor = [UIColor whiteColor];
     for(int i = 0; i < titlesCount; ++i) {
-        NSString *title = [titles objectAtIndex:i];
-        UIColor *color = [colors objectAtIndex:i];
+        EucMenuItem *item = [items objectAtIndex:i];
+        NSString *title = item.title;
+        UIColor *color = item.color;
         if(color && (id)color != (id)[NSNull null]) {
             [color set];
         } else {
@@ -323,8 +332,8 @@ static const CGFloat sOuterYPadding = 2.0f;
     NSUInteger selectedIndex = 0;
     BOOL inRect = NO;
     CGPoint touchPoint = [touch locationInView:self];
-    NSUInteger titlesCount = self.titles.count;
-    for(int i = 0; i < titlesCount; ++i) {
+    NSUInteger itemCount = self.items.count;
+    for(int i = 0; i < itemCount; ++i) {
         if(CGRectContainsPoint(_regionRects[i], touchPoint)) {
             selectedIndex = i;
             inRect = YES;
@@ -346,8 +355,8 @@ static const CGFloat sOuterYPadding = 2.0f;
         NSUInteger upIndex = 0;
         BOOL inRect = NO;
         CGPoint touchPoint = [touch locationInView:self];
-        NSUInteger titlesCount = self.titles.count;
-        for(int i = 0; i < titlesCount; ++i) {
+        NSUInteger itemCount = self.items.count;
+        for(int i = 0; i < itemCount; ++i) {
             if(CGRectContainsPoint(_regionRects[i], touchPoint)) {
                 upIndex = i;
                 inRect = YES;
@@ -462,4 +471,49 @@ static const CGFloat sOuterYPadding = 2.0f;
     return _font;
 }
         
+
+#pragma mark -
+#pragma mark Accessibility
+
+- (NSArray *)accessibilityElements
+{
+    if(!_accessibilityElements) {
+        NSArray *items = self.items;
+        NSUInteger itemsCount = items.count;
+        NSMutableArray *buildAccessibilityElements = [[NSMutableArray alloc] initWithCapacity:itemsCount];
+        for(NSUInteger i = 0; i < itemsCount; ++i) {
+            EucMenuItem *item = [items objectAtIndex:i];
+            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            element.accessibilityTraits = UIAccessibilityTraitButton;
+            CGRect rect = [self convertRect:_regionRects[i] toView:nil];
+            element.accessibilityFrame = rect;
+            element.accessibilityLabel = item.accessibilityLabel ?: item.title;
+            [buildAccessibilityElements addObject:element];
+            [element release];
+        }
+        _accessibilityElements = buildAccessibilityElements;
+    }
+    return _accessibilityElements;
+}
+
+- (BOOL)isAccessibilityElement
+{
+    return NO;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return [[self accessibilityElements] count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    return [[self accessibilityElements] objectAtIndex:index];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    return [[self accessibilityElements] indexOfObject:element];
+}
+
 @end

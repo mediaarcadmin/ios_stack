@@ -51,9 +51,9 @@ typedef enum EucSelectorTrackingStage {
     
     NSMutableArray *_highlightLayers;
     THPair *_highlightEndLayers;
-    THPair *_highlightKnobLayers;    
+    THPair *_highlightKnobs;    
     
-    CALayer *_draggingKnob;
+    UIView *_draggingKnob;
     CGFloat _draggingKnobVerticalOffset;
     
     EucMenuController *_menuController;
@@ -146,6 +146,7 @@ typedef enum EucSelectorTrackingStage {
 - (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)id;
 - (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)id;
 - (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+- (NSString *)eucSelector:(EucSelector *)selector accessibilityLabelForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 
 @optional
 // Should return an array of EucSelectorRanges.

@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "EucSelector.h"
 #import "EucSelectorRange.h"
+#import "EucSelectorKnob.h"
 #import "EucMenuController.h"
 #import "EucMenuItem.h"
 
@@ -51,9 +52,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 @property (nonatomic, retain) NSMutableArray *highlightLayers;
 @property (nonatomic, retain) THPair *highlightEndLayers;
-@property (nonatomic, retain) THPair *highlightKnobLayers;
+@property (nonatomic, retain) THPair *highlightKnobs;
 
-@property (nonatomic, retain) CALayer *draggingKnob;
+@property (nonatomic, retain) UIView *draggingKnob;
 @property (nonatomic, assign) CGFloat draggingKnobVerticalOffset;
 
 @property (nonatomic, retain) EucMenuController *menuController;
@@ -106,7 +107,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 @synthesize highlightLayers = _highlightLayers;
 @synthesize highlightEndLayers = _highlightEndLayers;
-@synthesize highlightKnobLayers = _highlightKnobLayers;
+@synthesize highlightKnobs = _highlightKnobs;
 
 @synthesize draggingKnob = _draggingKnob;
 @synthesize draggingKnobVerticalOffset = _draggingKnobVerticalOffset;
@@ -137,7 +138,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     }
     
     [_highlightEndLayers release];
-    [_highlightKnobLayers release];
+    [_highlightKnobs release];
     
     [super dealloc];
 }
@@ -371,27 +372,18 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     return _highlightEndLayers;
 }
 
-- (THPair *)highlightKnobLayers
+- (THPair *)highlightKnobs
 {
-    if(!_highlightKnobLayers) {
-        UIImage *knobImage = [UIImage imageNamed:@"SelectionKnob.png"];
-        CGSize imageSize = knobImage.size;
-        CGImageRef knobCGImage = knobImage.CGImage;
+    if(!_highlightKnobs) {        
+        EucSelectorKnob *knob1 = [[EucSelectorKnob alloc] init];
+        EucSelectorKnob *knob2 = [[EucSelectorKnob alloc] init];
         
-        CALayer *highlightKnobLayer1 = [[CALayer alloc] init];
-        highlightKnobLayer1.contents = (id)knobCGImage;
-        highlightKnobLayer1.bounds = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
+        _highlightKnobs = [[THPair alloc] initWithFirst:knob1 second:knob2];
         
-        CALayer *highlightKnobLayer2 = [[CALayer alloc] init];
-        highlightKnobLayer2.contents = (id)knobCGImage;
-        highlightKnobLayer2.bounds = CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height);
-        
-        _highlightKnobLayers = [[THPair alloc] initWithFirst:highlightKnobLayer1 second:highlightKnobLayer2];
-        
-        [highlightKnobLayer1 release];
-        [highlightKnobLayer2 release];        
+        [knob1 release];
+        [knob2 release];        
     }
-    return _highlightKnobLayers;
+    return _highlightKnobs;
 }
 
 - (void)_positionKnobs
@@ -408,7 +400,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     NSArray *highlightLayers = self.highlightLayers;
     
     THPair *highlightEndLayers = self.highlightEndLayers;
-    THPair *highlightKnobLayers = self.highlightKnobLayers;
+    THPair *highlightKnobs = self.highlightKnobs;
  
     CALayer *leftHighlightLayer = [highlightLayers objectAtIndex:0];
     
@@ -420,12 +412,12 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     leftEndLayer.position = CGPointMake(-0.5f * inverseScaleFactors.width, leftSelectionHeight * 0.5f);
     leftEndLayer.hidden = NO;
     
-    CALayer *leftKnobLayer = highlightKnobLayers.first;
+    EucSelectorKnob *leftKnobView = highlightKnobs.first;
+    CALayer *leftKnobLayer = leftKnobView.layer;
     [leftHighlightLayer addSublayer:leftKnobLayer];
     leftKnobLayer.position = CGPointMake(-0.5f * inverseScaleFactors.width, -4.5f * inverseScaleFactors.height);
     leftKnobLayer.transform = knobTransform;
     leftKnobLayer.hidden = NO;
-    
     
     CALayer *rightHighlightLayer = [highlightLayers lastObject];
     for(NSUInteger i = highlightLayers.count - 2; rightHighlightLayer.isHidden; --i) {
@@ -440,7 +432,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     rightEndLayer.position = CGPointMake(rightSelectionSize.width + (0.5f * inverseScaleFactors.width), rightSelectionSize.height * 0.5f);
     rightEndLayer.hidden = NO;
     
-    CALayer *rightKnobLayer = highlightKnobLayers.second;
+    EucSelectorKnob *rightKnobView = highlightKnobs.second;
+    CALayer *rightKnobLayer = rightKnobView.layer;
     [rightHighlightLayer addSublayer:rightKnobLayer];
     rightKnobLayer.position = CGPointMake(rightSelectionSize.width + (0.5f  * inverseScaleFactors.width), rightSelectionSize.height + (7.5f * inverseScaleFactors.width));
     rightKnobLayer.transform = knobTransform;
@@ -661,7 +654,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     [self.highlightLayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
     self.highlightLayers = nil;
     self.highlightEndLayers = nil;
-    self.highlightKnobLayers = nil;    
+    self.highlightKnobs = nil;    
 }
 
 
@@ -1223,6 +1216,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                     break;
                 }
             }
+            
+            if(![newSelectedRange isEqual:self.selectedRange]) {
+                NSString *label = [_dataSource eucSelector:self
+                accessibilityLabelForElementWithIdentifier:elementId 
+                                     ofBlockWithIdentifier:blockId];
+                if(label) {
+                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
+                }
+            }
         }
         
         self.selectedRange = newSelectedRange;
@@ -1241,7 +1243,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             
             EucSelectorRange *currentSelectedRange = self.selectedRange;
 
-            BOOL left = self.draggingKnob == self.highlightKnobLayers.first;
+            BOOL left = self.draggingKnob == self.highlightKnobs.first;
             if(left) {
                 newSelectedRange.endBlockId = currentSelectedRange.endBlockId;
                 newSelectedRange.endElementId = currentSelectedRange.endElementId;
@@ -1304,12 +1306,13 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)_setDraggingKnobFromTouch:(UITouch *)touch
 {
-    CALayer *draggingKnob = nil;
+    UIView *draggingKnob = nil;
     CGFloat draggingKnobVerticalOffset = 0.0f;
     
-    THPair *highlightKnobLayers = self.highlightKnobLayers;
-    if(highlightKnobLayers) {
-        CALayer *leftKnobLayer = self.highlightKnobLayers.first;
+    THPair *highlightKnobs = self.highlightKnobs;
+    if(highlightKnobs) {
+        UIView *leftKnob = self.highlightKnobs.first;
+        CALayer *leftKnobLayer = leftKnob.layer;
         if(!leftKnobLayer.hidden) {
             CALayer *attachedLayer = self.attachedLayer;
             
@@ -1317,15 +1320,16 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             CGRect leftKnobRect = [leftKnobLayer convertRect:CGRectInset(leftKnobLayer.bounds, -8.0f, -8.0f) toLayer:attachedLayer];
 
             if(CGRectContainsPoint(leftKnobRect, touchPoint)) {
-                draggingKnob = leftKnobLayer;
+                draggingKnob = leftKnob;
                 CALayer *endLayer = self.highlightEndLayers.first;
                 CGPoint endLayerCenter = [endLayer convertPoint:endLayer.position toLayer:attachedLayer];
                 draggingKnobVerticalOffset = endLayerCenter.y - touchPoint.y;
             } else {
-                CALayer *rightKnobLayer = self.highlightKnobLayers.second;
+                UIView *rightKnob = self.highlightKnobs.second;
+                CALayer *rightKnobLayer = rightKnob.layer;
                 CGRect rightKnobRect = [rightKnobLayer convertRect:CGRectInset(rightKnobLayer.bounds, -8.0f, -8.0f) toLayer:attachedLayer];
                 if(CGRectContainsPoint(rightKnobRect, touchPoint)) {
-                    draggingKnob = rightKnobLayer;
+                    draggingKnob = rightKnob;
                     CALayer *endLayer = self.highlightEndLayers.second;
                     CGPoint endLayerCenter = [endLayer convertPoint:endLayer.position toLayer:attachedLayer];
                     draggingKnobVerticalOffset = endLayerCenter.y - touchPoint.y;                    
