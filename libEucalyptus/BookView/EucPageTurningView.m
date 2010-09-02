@@ -612,7 +612,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _pageTextureIsDark = isDark;
 }
 
-- (void)_setView:(UIView *)view forPage:(int)page
+- (void)_setView:(UIView *)view forInternalPageOffsetPage:(int)page
 {
     if(_pageContentsInformation[page].view != view) {
         [_pageContentsInformation[page].view release];
@@ -633,9 +633,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)setCurrentPageView:(UIView *)newCurrentView;
 {
     if(newCurrentView != _pageContentsInformation[1].view) {
-        [self _setView:[_viewDataSource pageTurningView:self previousViewForView:newCurrentView] forPage:0];
-        [self _setView:newCurrentView forPage:1];
-        [self _setView:[_viewDataSource pageTurningView:self nextViewForView:newCurrentView] forPage:2];
+        [self _setView:[_viewDataSource pageTurningView:self previousViewForView:newCurrentView] forInternalPageOffsetPage:0];
+        [self _setView:newCurrentView forInternalPageOffsetPage:1];
+        [self _setView:[_viewDataSource pageTurningView:self nextViewForView:newCurrentView] forInternalPageOffsetPage:2];
     }
     _flatPageIndex = 1;
 }
@@ -653,7 +653,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 {
     if(newCurrentView != _pageContentsInformation[1].view) {
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-        [self _setView:newCurrentView forPage:forwards ? 2 : 0];
+        [self _setView:newCurrentView forInternalPageOffsetPage:forwards ? 2 : 0];
         _isTurningAutomatically = YES;
         _automaticTurnIsForwards = forwards;
         if(forwards) {
@@ -755,7 +755,52 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _flatPageIndex = 1;    
 }
 
-- (void)turnToPageAtIndex:(NSUInteger)newPageIndex forwards:(BOOL)forwards {};
+- (void)turnToPageAtIndex:(NSUInteger)newPageIndex {
+    NSUInteger currentPageIndex = _pageContentsInformation[1].pageIndex;
+    if(currentPageIndex != newPageIndex) {
+        [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+        BOOL forwards = newPageIndex > currentPageIndex;
+        
+        [self _setupBitmapPage:newPageIndex forInternalPageOffset:forwards ? 2 : 0];
+        
+        _isTurningAutomatically = YES;
+        _automaticTurnIsForwards = forwards;
+        if(forwards) {
+            _flatPageIndex = 2;
+            _automaticTurnFrame = 0;
+        } else {
+            _flatPageIndex = 1;
+            _automaticTurnFrame = 0;
+        }
+        
+        NSUInteger pageCount;
+        if(newPageIndex > currentPageIndex) {
+            pageCount = newPageIndex - currentPageIndex;
+        } else {
+            pageCount = currentPageIndex - newPageIndex;
+        }
+        
+        CGFloat percentage = (CGFloat)pageCount / 512.0f;
+        if(pageCount == 1) {
+            percentage = 0;
+        } else if(percentage > 1.0f) {
+            percentage = 1.0f;
+        } else {
+            percentage = powf(percentage, 0.7f);
+        }
+        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+            GLfloat yCoord = (GLfloat)row / (GLfloat)Y_VERTEX_COUNT-1;
+            _pageEdgeTextureCoordinates[row][0].x = 0.5f + percentage * 0.5f;
+            _pageEdgeTextureCoordinates[row][0].y = yCoord;
+            _pageEdgeTextureCoordinates[row][1].x = 0.5f - percentage * 0.5f;
+            _pageEdgeTextureCoordinates[row][1].y = yCoord;
+        }                
+        
+        _automaticTurnPercentage = percentage;
+        
+        self.animating = YES;
+    }    
+}
 
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex {
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(PageContentsInformation); ++i) {
@@ -1401,7 +1446,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                                                        pinchNowAt:currentPinchPoints
                                                 currentScaledView:_pageContentsInformation[3].view];
             if(scaledView && scaledView != _pageContentsInformation[3].view) {
-                [self _setView:scaledView forPage:3];
+                [self _setView:scaledView forInternalPageOffsetPage:3];
                 _flatPageIndex = 3;
                 
                 //NSLog(@"Pinch %f -> %f, scalefactor %f", (float)startDistance,(float)nowDistance, (float)(nowDistance / startDistance));
@@ -1470,15 +1515,15 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 _pageContentsInformation[1] = _pageContentsInformation[3];
                 _pageContentsInformation[3] = tempView;
                 
-                [self _setView:nil forPage:3];
+                [self _setView:nil forInternalPageOffsetPage:3];
                 _flatPageIndex = 1;
 
                 if([_delegate respondsToSelector:@selector(pageTurningView:didScaleToView:)]) {
                     [_delegate pageTurningView:self didScaleToView:_pageContentsInformation[1].view];
                 }
                 
-                [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageContentsInformation[1].view] forPage:0];
-                [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageContentsInformation[1].view] forPage:2];
+                [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageContentsInformation[1].view] forInternalPageOffsetPage:0];
+                [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageContentsInformation[1].view] forInternalPageOffsetPage:2];
 
                 [self drawView];
             }
@@ -1521,13 +1566,24 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             BOOL turning = NO;
             
             CGPoint point = [_touch locationInView:self];
-            CGFloat tapTurnMargin = [self _tapTurnMarginForView:_pageContentsInformation[1].view];
-            if(point.x < tapTurnMargin && _pageContentsInformation[0].view) {
-                [self turnToPageView:_pageContentsInformation[0].view forwards:NO pageCount:1];
-                turning = YES;
-            } else if(point.x > (_pageContentsInformation[1].view.bounds.size.width - tapTurnMargin) && _pageContentsInformation[2].view) {
-                [self turnToPageView:_pageContentsInformation[2].view forwards:YES pageCount:1];
-                turning = YES;
+            if(_pageContentsInformation[1].view) {
+                CGFloat tapTurnMargin = [self _tapTurnMarginForView:_pageContentsInformation[1].view];
+                if(point.x < tapTurnMargin && _pageContentsInformation[0].view) {
+                    [self turnToPageView:_pageContentsInformation[0].view forwards:NO pageCount:1];
+                    turning = YES;
+                } else if(point.x > (_pageContentsInformation[1].view.bounds.size.width - tapTurnMargin) && _pageContentsInformation[2].view) {
+                    [self turnToPageView:_pageContentsInformation[2].view forwards:YES pageCount:1];
+                    turning = YES;
+                }                
+            } else {
+                CGFloat tapTurnMargin = 0.1f * _pageContentsInformation->textureCoordinates->innerPixelWidth;
+                if(point.x < tapTurnMargin && _pageContentsInformation[0].pageIndex != NSUIntegerMax) {
+                    [self turnToPageAtIndex:_pageContentsInformation[0].pageIndex];
+                    turning = YES;
+                } else if(point.x > (_pageContentsInformation->textureCoordinates->innerPixelWidth - tapTurnMargin) && _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
+                    [self turnToPageAtIndex:_pageContentsInformation[2].pageIndex];
+                    turning = YES;
+                }                
             }
             
             if(turning) {
@@ -1879,7 +1935,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 {
     if(_recacheFlags[0]) {
         if(_viewDataSource) {
-            [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageContentsInformation[1].view] forPage:0];
+            [self _setView:[_viewDataSource pageTurningView:self previousViewForView:_pageContentsInformation[1].view] forInternalPageOffsetPage:0];
         } else {
             if(_pageContentsInformation[1].pageIndex == 0) {
                 _pageContentsInformation[0].pageIndex = NSUIntegerMax;
@@ -1891,7 +1947,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     }     
     if(_recacheFlags[2]) {
         if(_viewDataSource) {
-            [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageContentsInformation[1].view] forPage:2];
+            [self _setView:[_viewDataSource pageTurningView:self nextViewForView:_pageContentsInformation[1].view] forInternalPageOffsetPage:2];
         } else {
             [self _setupBitmapPage:_pageContentsInformation[1].pageIndex + 1 forInternalPageOffset:2];
         }

@@ -165,7 +165,7 @@ typedef struct {
 
 // Bitmap based page contents:
 @property (nonatomic, assign) NSUInteger currentPageIndex;
-- (void)turnToPageAtIndex:(NSUInteger)newPageIndex forwards:(BOOL)forwards;
+- (void)turnToPageAtIndex:(NSUInteger)newPageIndex;
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex;
 
 @end
