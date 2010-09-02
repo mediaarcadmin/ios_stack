@@ -1641,9 +1641,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     UIView<BlioBookView> *bookView = self.bookView;
     if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
-        NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
+        UIImage *pageTexture = nil;
+        if ((newColor == kBlioPageColorWhite) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+            pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"paper-white-ipad" ofType:@"png"]]];
+        } else {
+            NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
                                                               ofType:@""];
-        UIImage *pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+            pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+        }
         [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
     }  
     _currentPageColor = newColor;

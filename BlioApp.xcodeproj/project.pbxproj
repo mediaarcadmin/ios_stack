@@ -560,6 +560,8 @@
 		C9B620CE1137BE170012CE7E /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C61137BE170012CE7E /* unzip.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		C9B620CF1137BE170012CE7E /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C81137BE170012CE7E /* zip.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		C9B620D01137BE170012CE7E /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9B620CB1137BE170012CE7E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
+		C9BA7501122FADBA00A7FEFA /* paper-white-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = C9BA7500122FADBA00A7FEFA /* paper-white-ipad.png */; };
+		C9BA7502122FADBA00A7FEFA /* paper-white-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = C9BA7500122FADBA00A7FEFA /* paper-white-ipad.png */; };
 		C9C37B9C122D278800DD350F /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
 		C9C37B9D122D278800DD350F /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
 		C9C37C2E122D3F5900DD350F /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
@@ -1290,6 +1292,7 @@
 		C9B620C91137BE170012CE7E /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		C9B620CA1137BE170012CE7E /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		C9B620CB1137BE170012CE7E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
+		C9BA7500122FADBA00A7FEFA /* paper-white-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white-ipad.png"; sourceTree = "<group>"; };
 		C9C37B9A122D278800DD350F /* BlioViewSettingsContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsContentsView.h; sourceTree = "<group>"; };
 		C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsContentsView.m; sourceTree = "<group>"; };
 		C9C37C2C122D3F5900DD350F /* BlioViewSettingsPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsPopover.h; sourceTree = "<group>"; };
@@ -1599,6 +1602,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C9BA7500122FADBA00A7FEFA /* paper-white-ipad.png */,
 				C9CEBD751211959B0040CEFF /* booktexture-nocover.png */,
 				A31E8320120B40CD00CB6657 /* XPS */,
 				A3FE55B412074EFA0038DA0C /* credits.html */,
@@ -2684,6 +2688,7 @@
 				DC5FCDD51227640D003C57CA /* badge-tts@2x.png in Resources */,
 				DC5FCDD61227640D003C57CA /* badge-notsupported@2x.png in Resources */,
 				DC5FCDD71227640D003C57CA /* badge-audiobook@2x.png in Resources */,
+				C9BA7502122FADBA00A7FEFA /* paper-white-ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2879,6 +2884,7 @@
 				DC5FCDDB1227640D003C57CA /* badge-tts@2x.png in Resources */,
 				DC5FCDDC1227640D003C57CA /* badge-notsupported@2x.png in Resources */,
 				DC5FCDDD1227640D003C57CA /* badge-audiobook@2x.png in Resources */,
+				C9BA7501122FADBA00A7FEFA /* paper-white-ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
