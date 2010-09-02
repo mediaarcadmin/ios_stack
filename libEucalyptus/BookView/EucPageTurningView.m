@@ -108,9 +108,6 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 
 @implementation EucPageTurningView
 
-#define PAGE_WIDTH 4
-#define PAGE_HEIGHT 6
-
 @synthesize delegate = _delegate;
 
 @synthesize viewDataSource = _viewDataSource;
@@ -230,43 +227,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _lightPosition.x = 0.5f;
     _lightPosition.y = 0.25f;
     _lightPosition.z = 1.79f;
-    
-    EAGLContext *eaglContext = self.eaglContext;
-    [EAGLContext setCurrentContext:eaglContext];
-
-    
-    GLfloat yCoord = 0;
-    
-    GLfloat xStep = ((GLfloat)PAGE_WIDTH * 2) / (2 * X_VERTEX_COUNT - 3);
-    GLfloat yStep = ((GLfloat)PAGE_HEIGHT / (Y_VERTEX_COUNT - 1));
-    
-    // Construct a hex-mesh of triangles;
-    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-        GLfloat xCoord = 0;
-        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-            _stablePageVertices[row][column].x = MIN(xCoord, (GLfloat)PAGE_WIDTH);
-            _stablePageVertices[row][column].y = MIN(yCoord, (GLfloat)PAGE_HEIGHT);
-            // z is already 0.
-            
-            if(xCoord == 0 && row % 2 == 1) {
-                xCoord = xStep / 2;
-            } else {
-                xCoord += xStep;
-            }
-        }
-        yCoord += yStep;
-    }
-    
-    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-            // x and y are already 0.
-            _stablePageVertexNormals[row][column].z = -1;
-        }
-    }
-    
-    memcpy(_pageVertices, _stablePageVertices, sizeof(_oldPageVertices));
-    memcpy(_oldPageVertices, _stablePageVertices, sizeof(_oldPageVertices));
-    
+        
+    // Set up our page triangle strips (page coordinates will be set up in
+    // -layoutSubviews, below).
     int triangleStripIndex = 0;
     for(int row = 0; row < Y_VERTEX_COUNT - 1; ++row) {
         if(row % 2 == 0) {
@@ -289,11 +252,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(0, row+1);
         }
     }
-    
-    [self _setupConstraints];
-    
+        
     NSParameterAssert(triangleStripIndex == TRIANGLE_STRIP_COUNT);
         
+    EAGLContext *eaglContext = self.eaglContext;
+    [EAGLContext setCurrentContext:eaglContext];
+    
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
     
@@ -377,6 +341,55 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [_nextPageTapZone release];
     
     [super dealloc];
+}
+
+
+-(void)layoutSubviews
+{    
+    CGSize size = self.bounds.size;
+    if(size.width < size.height) {
+        _viewportLogicalSize.width = 4.0f;
+        _viewportLogicalSize.height = (size.height / size.width) * _viewportLogicalSize.width;
+    } else {
+        _viewportLogicalSize.height = 4.0f;
+        _viewportLogicalSize.width = (size.width / size.height) * _viewportLogicalSize.height;
+    }
+    
+    GLfloat yCoord = 0;
+    
+    GLfloat xStep = ((GLfloat)_viewportLogicalSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
+    GLfloat yStep = ((GLfloat)_viewportLogicalSize.height / (Y_VERTEX_COUNT - 1));
+    
+    // Construct a hex-mesh of triangles;
+    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+        GLfloat xCoord = 0;
+        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+            _stablePageVertices[row][column].x = MIN(xCoord, (GLfloat)_viewportLogicalSize.width);
+            _stablePageVertices[row][column].y = MIN(yCoord, (GLfloat)_viewportLogicalSize.height);
+            // z is already 0.
+            
+            if(xCoord == 0 && row % 2 == 1) {
+                xCoord = xStep / 2;
+            } else {
+                xCoord += xStep;
+            }
+        }
+        yCoord += yStep;
+    }
+    
+    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+            // x and y are already 0.
+            _stablePageVertexNormals[row][column].z = -1;
+        }
+    }
+    
+    memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+    memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+    
+    [self _setupConstraints];
+    
+    [super layoutSubviews];
 }
 
 
@@ -505,14 +518,25 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             // We need to regenerate the texture coordinates.
             CGFloat po2WidthScale = (CGFloat)contextWidth / (CGFloat)powerOfTwoWidth;
             CGFloat po2HeightScale = (CGFloat)contextHeight / (CGFloat)powerOfTwoHeight;
+                        
+            GLfloat xStep = 2.0f / (2 * X_VERTEX_COUNT - 3);
+            GLfloat yStep = 1.0f / (Y_VERTEX_COUNT - 1);
+            
+            GLfloat yCoord = 0.0f;
             for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+                GLfloat xCoord = 0.0f;
                 for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                    GLfloat x = (_pageVertices[row][column].x / PAGE_WIDTH) * po2WidthScale;
-                    coordinates->textureCoordinates[row][column].x = x;
-                    GLfloat y = (_pageVertices[row][column].y / PAGE_HEIGHT) * po2HeightScale;
-                    coordinates->textureCoordinates[row][column].y = y;
+                    coordinates->textureCoordinates[row][column].x = MIN(xCoord, 1.0f) * po2WidthScale;
+                    coordinates->textureCoordinates[row][column].y = MIN(yCoord, 1.0f) * po2HeightScale;                    
+                    if(xCoord == 0 && row % 2 == 1) {
+                        xCoord = xStep / 2;
+                    } else {
+                        xCoord += xStep;
+                    }
                 }
-            }  
+                yCoord += yStep;
+            }
+            
             coordinates->innerPixelWidth = contextWidth;
             coordinates->innerPixelHeight = contextHeight;
             coordinates->texturePixelWidth = powerOfTwoWidth;
@@ -560,13 +584,18 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef textureContext = CGBitmapContextCreate(textureData, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
                                                         colorSpace, kCGImageAlphaPremultipliedLast);
-    
+    CGContextTranslateCTM(textureContext, 0, powerOfTwoHeight - scaledSize.height);
     if([viewOrImage isKindOfClass:[UIView class]]) {
         CGContextSetFillColorSpace(textureContext, colorSpace);
         CGContextSetStrokeColorSpace(textureContext, colorSpace);
+        
         if(scaleFactor != 1.0f) {
             CGContextScaleCTM(textureContext, scaleFactor, scaleFactor);   
         }
+        
+        CGContextScaleCTM(textureContext, 1.0f, -1.0f);
+        CGContextTranslateCTM(textureContext, 0, -rawSize.height);
+        
         UIView *view = (UIView *)viewOrImage;
         if([view respondsToSelector:@selector(drawRect:inContext:)] && !view.layer.sublayers) {
             [(UIView<THUIViewThreadSafeDrawing> *)view drawRect:CGRectMake(0, 0, rawSize.width, rawSize.height)
@@ -576,7 +605,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
     } else {
         CGImageRef image = ((UIImage *)viewOrImage).CGImage;
-        CGContextDrawImage(textureContext, CGRectMake(0, 0, scaledSize.width,scaledSize.height), image);
+        CGContextDrawImage(textureContext, CGRectMake(0, 0, scaledSize.width, scaledSize.height), image);
     }
         
     [self _createTextureIn:textureRef
@@ -588,18 +617,33 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     free(textureData);
     
     if(coordinates && coordinates->innerPixelWidth != scaledSize.width && coordinates -> innerPixelHeight != scaledSize.height) {
-        CGFloat po2WidthScale = scaledSize.width / powerOfTwoSize.width;
-        CGFloat po2HeightScale = scaledSize.height / powerOfTwoSize.height;
-        GLfloat yAddition = (powerOfTwoSize.height - scaledSize.height) / powerOfTwoSize.height;
+        // We need to regenerate the texture coordinates.
+        CGFloat po2WidthScale = (CGFloat)scaledSize.width / (CGFloat)powerOfTwoWidth;
+        CGFloat po2HeightScale = (CGFloat)scaledSize.height / (CGFloat)powerOfTwoHeight;
+        
+        GLfloat xStep = 2.0f / (2 * X_VERTEX_COUNT - 3);
+        GLfloat yStep = 1.0f / (Y_VERTEX_COUNT - 1);
+        
+        GLfloat yCoord = 0.0f;
         for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+            GLfloat xCoord = 0.0f;
             for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                GLfloat x = (_pageVertices[row][column].x / PAGE_WIDTH) * po2WidthScale;
-                coordinates->textureCoordinates[row][column].x = x;
-                GLfloat y = (1 - (_pageVertices[row][column].y / PAGE_HEIGHT)) * po2HeightScale + yAddition;
-                coordinates->textureCoordinates[row][column].y = y;
+                coordinates->textureCoordinates[row][column].x = MIN(xCoord, 1.0f) * po2WidthScale;
+                coordinates->textureCoordinates[row][column].y = MIN(yCoord, 1.0f) * po2HeightScale;                    
+                if(xCoord == 0 && row % 2 == 1) {
+                    xCoord = xStep / 2;
+                } else {
+                    xCoord += xStep;
+                }
             }
-        }     
-    }
+            yCoord += yStep;
+        }
+        
+        coordinates->innerPixelWidth = scaledSize.width;
+        coordinates->innerPixelHeight = scaledSize.height;
+        coordinates->texturePixelWidth = powerOfTwoWidth;
+        coordinates->texturePixelHeight = powerOfTwoHeight;            
+    }        
     
     THLog(@"CreatedTexture of scaled size (%f, %f) from point size (%f, %f)", scaledSize.width, scaledSize.height, rawSize.width, rawSize.height);
 }
@@ -882,6 +926,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 
 - (void)_setupConstraints
 {
+    _constraintCount = 0;
+    
     // Adding the constaints in reverse-order seems to produce nicer turning
     // (perhaps because the eye is less drtawn to the systematic error that is 
     // introdiced by evaluating the constraints in-order during the animation if
@@ -1003,13 +1049,13 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glRotatef(180, 0, 0, 1);
-    FadiGluLookAt(PAGE_WIDTH * 0.5f, PAGE_HEIGHT * 0.5f, - (PAGE_HEIGHT * 0.5f) / tanf(FOV_ANGLE * ((float)M_PI / 360.0f)), 
-                  PAGE_WIDTH * 0.5f, PAGE_HEIGHT * 0.5f, 0, 
+    FadiGluLookAt(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, - (_viewportLogicalSize.height * 0.5f) / tanf(FOV_ANGLE * ((float)M_PI / 360.0f)), 
+                  _viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, 0, 
                   0, 1, 0);
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    GLUPerspective(FOV_ANGLE, (GLfloat)PAGE_WIDTH / (GLfloat)PAGE_HEIGHT, 0.5, 1000.0);
+    GLUPerspective(FOV_ANGLE, (GLfloat)_viewportLogicalSize.width / (GLfloat)_viewportLogicalSize.height, 0.5, 1000.0);
     
     glMatrixMode(GL_MODELVIEW);
     
@@ -1028,9 +1074,9 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     
-    GLfloat lightPosition[] = { PAGE_WIDTH * _lightPosition.x, 
-                                PAGE_HEIGHT * _lightPosition.y, 
-                                -PAGE_WIDTH * (_lightPosition.z - (_dimQuotient * (_lightPosition.z - 0.3f))), 
+    GLfloat lightPosition[] = { _viewportLogicalSize.width * _lightPosition.x, 
+                                _viewportLogicalSize.height * _lightPosition.y, 
+                                -MIN(_viewportLogicalSize.width, _viewportLogicalSize.height) * (_lightPosition.z - (_dimQuotient * (_lightPosition.z - 0.3f))), 
                                 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glLightfv(GL_LIGHT0, GL_AMBIENT, _ambientLightColor);
@@ -1294,8 +1340,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 - (void)setTouchPointForX:(GLfloat)x
 {
     _touchPoint.x = x;
-    _touchPoint.y = ((GLfloat)_touchRow / (Y_VERTEX_COUNT - 1)) * PAGE_HEIGHT;
-    _touchPoint.z = - PAGE_WIDTH * sqrtf(-(powf((x/PAGE_WIDTH), 2) - 1));    
+    _touchPoint.y = ((GLfloat)_touchRow / (Y_VERTEX_COUNT - 1)) * _viewportLogicalSize.height;
+    _touchPoint.z = - _viewportLogicalSize.width * sqrtf(-(powf((x/_viewportLogicalSize.width), 2) - 1));    
 }
 
 - (void)setTouchLocationFromTouch:(UITouch *)touch firstTouch:(BOOL)first;
@@ -1303,17 +1349,17 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     CGSize size = self.bounds.size;
     CGPoint viewTouchPoint =  [touch locationInView:self];
 
-    GLfloatPair modelTouchPoint = { (viewTouchPoint.x / size.width) * PAGE_WIDTH,
-                                    (viewTouchPoint.y / size.height) * PAGE_HEIGHT };
+    GLfloatPair modelTouchPoint = { (viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
+                                    (viewTouchPoint.y / size.height) * _viewportLogicalSize.height };
     
-    _touchRow = ((modelTouchPoint.y / PAGE_HEIGHT) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
+    _touchRow = ((modelTouchPoint.y / _viewportLogicalSize.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
     if(first) {
         _touchXOffset = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - modelTouchPoint.x;
     }
     
     modelTouchPoint.x =  modelTouchPoint.x + _touchXOffset;
-    if(modelTouchPoint.x > PAGE_WIDTH) {
-        modelTouchPoint.x = PAGE_WIDTH;
+    if(modelTouchPoint.x > _viewportLogicalSize.width) {
+        modelTouchPoint.x = _viewportLogicalSize.width;
     } 
     NSTimeInterval thisTouchTime = [touch timestamp];
     if(_touchTime) {
@@ -1776,8 +1822,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
 {    
     if(!_touch && _touchVelocity) {
         GLfloat newX = _touchPoint.x + _touchVelocity /** difference*/;
-        if(newX > PAGE_WIDTH) {
-            newX = PAGE_WIDTH;
+        if(newX > _viewportLogicalSize.width) {
+            newX = _viewportLogicalSize.width;
         } 
         [self setTouchPointForX:newX];
     }
@@ -1857,7 +1903,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         // above the surface.
         BOOL isFlat = !_touch && _touchVelocity >= 0;
         BOOL hasFlipped = !_touch && _touchVelocity <= 0;
-        GLfloat yStep = ((GLfloat)PAGE_HEIGHT / (Y_VERTEX_COUNT - 1));
+        GLfloat yStep = ((GLfloat)_viewportLogicalSize.height / (Y_VERTEX_COUNT - 1));
         GLfloat yCoord = 0;
         for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
             for(int column = 0; column < X_VERTEX_COUNT; ++column) {
@@ -1878,8 +1924,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             _pageVertices[row][0].y = yCoord;
             
 
-            if(_pageVertices[row][X_VERTEX_COUNT - 1].x > (PAGE_WIDTH - 0.0125f)) {
-                _pageVertices[row][X_VERTEX_COUNT - 1].x = PAGE_WIDTH;
+            if(_pageVertices[row][X_VERTEX_COUNT - 1].x > (_viewportLogicalSize.width - 0.0125f)) {
+                _pageVertices[row][X_VERTEX_COUNT - 1].x = _viewportLogicalSize.width;
             } else {
                 if(isFlat) {
                     isFlat = NO;
@@ -1897,8 +1943,8 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             
 
             yCoord += yStep;
-            if(yCoord > PAGE_HEIGHT) {
-                yCoord = PAGE_HEIGHT;
+            if(yCoord > _viewportLogicalSize.height) {
+                yCoord = _viewportLogicalSize.height;
             }            
         }
         

@@ -50,10 +50,8 @@ typedef struct {
 } PageContentsInformation;
 
 @interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate> {
-    GLfloat _touchVelocity;
+    CGSize _viewportLogicalSize;
     
-    CGSize _powerOf2Bounds;
-
     GLfloatTriplet _stablePageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     GLfloatTriplet _stablePageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
 
@@ -82,6 +80,7 @@ typedef struct {
     GLfloat _touchXOffset;
     NSTimeInterval _touchTime;
     GLfloatTriplet _touchPoint;
+    GLfloat _touchVelocity;
     
     BOOL _pinchUnderway;
     UITouch *_pinchTouches[2];
