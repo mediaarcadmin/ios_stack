@@ -14,7 +14,6 @@
 		7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */; };
 		7D035BDA11ECD03B00F39592 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
 		7D035BDB11ECD03B00F39592 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
-		7D05483F122EF101002B72C9 /* EucSelectorKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05483E122EF101002B72C9 /* EucSelectorKnob.m */; };
 		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
 		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */; };
@@ -465,6 +464,8 @@
 		7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
 		7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
+		7DC0FD2912311FB100FBE9B3 /* EucSelectorKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05483E122EF101002B72C9 /* EucSelectorKnob.m */; };
+		7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D05483D122EF101002B72C9 /* EucSelectorKnob.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DCA57B2114981FC007EDB15 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA57B1114981FC007EDB15 /* libiconv.dylib */; };
 		7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
@@ -2855,6 +2856,7 @@
 				7DF8BC3311B526E3003B7A97 /* THBaseEAGLView.h in Headers */,
 				7DF1AF9D11D9169700506BD5 /* THUIDeviceAdditions.h in Headers */,
 				7D27DC861223E166009E7B64 /* THAccessibilityElement.h in Headers */,
+				7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3272,7 +3274,6 @@
 				7D034F9B10C2CD820085778B /* TransitionTestRootViewController.m in Sources */,
 				7D034F9C10C2CD820085778B /* TransitionTestAppDelegate.m in Sources */,
 				7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */,
-				7D05483F122EF101002B72C9 /* EucSelectorKnob.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3490,6 +3491,7 @@
 				7DF8BC3411B526E3003B7A97 /* THBaseEAGLView.m in Sources */,
 				7DF1AF9B11D9168F00506BD5 /* THUIDeviceAdditions.m in Sources */,
 				7D27DC851223E161009E7B64 /* THAccessibilityElement.m in Sources */,
+				7DC0FD2912311FB100FBE9B3 /* EucSelectorKnob.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1235,6 +1235,32 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return [NSArray array];
 }
 
+- (NSString *)eucSelector:(EucSelector *)selector accessibilityLabelForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)blockID {
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    
+    BlioTextFlowBlock *block = nil;
+    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+        if (candidateBlock.blockID == blockID) {
+            block = candidateBlock;
+            break;
+        }
+    }
+    
+    if (block) {
+        BlioTextFlowPositionedWord *word = nil;
+        for (BlioTextFlowPositionedWord *candidateWord in [block words]) {
+            if([[candidateWord wordID] isEqual:wordID]) {
+                word = candidateWord;
+                break;
+            }
+        }        
+        if (word) {
+            return word.string;
+        }
+    } 
+    return nil;
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == self.selector) {
         if ([keyPath isEqualToString:@"tracking"]) {

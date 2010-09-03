@@ -390,32 +390,42 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {   
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-
+    
+    CALayer *attachedLayer = self.attachedLayer;
+    
     // We scale the layers we're adding or apply transforms to ensure they appear
     // at the correct size on screen even if the layer they're part of is zoomed.
-    CGSize scaleFactors = [self.attachedLayer screenScaleFactors];
-    CGSize inverseScaleFactors = CGSizeMake(1.0f / scaleFactors.width, 1.0f / scaleFactors.height);
-    CATransform3D knobTransform = CATransform3DMakeScale(inverseScaleFactors.width, inverseScaleFactors.height, 1);
+    CGSize attachedLayerScaleFactors = [attachedLayer screenScaleFactors];
+    CGSize inverseAttachedLayerScaleFactors = CGSizeMake(1.0f / attachedLayerScaleFactors.width, 1.0f / attachedLayerScaleFactors.height);
+    
+    UIView *closestView = [attachedLayer closestView];
+    CALayer *closestViewLayer = [closestView layer];
+    CGSize closestViewScaleFactors = [closestViewLayer screenScaleFactors];
+    CGSize inverseClosestViewScaleFactors = CGSizeMake(1.0f / closestViewScaleFactors.width, 1.0f / closestViewScaleFactors.height);
+    
+    CATransform3D knobTransform = CATransform3DMakeScale(inverseClosestViewScaleFactors.width, inverseClosestViewScaleFactors.height, 1);
     
     NSArray *highlightLayers = self.highlightLayers;
     
     THPair *highlightEndLayers = self.highlightEndLayers;
     THPair *highlightKnobs = self.highlightKnobs;
- 
+    
     CALayer *leftHighlightLayer = [highlightLayers objectAtIndex:0];
     
     CALayer *leftEndLayer = highlightEndLayers.first;
     [leftHighlightLayer addSublayer:leftEndLayer];
     
     CGFloat leftSelectionHeight = leftHighlightLayer.bounds.size.height;
-    leftEndLayer.bounds = CGRectMake(0, 0, 3.0f * inverseScaleFactors.width, leftSelectionHeight);
-    leftEndLayer.position = CGPointMake(-0.5f * inverseScaleFactors.width, leftSelectionHeight * 0.5f);
+    leftEndLayer.bounds = CGRectMake(0, 0, 3.0f * inverseAttachedLayerScaleFactors.width, leftSelectionHeight);
+    leftEndLayer.position = CGPointMake(-0.5f * inverseAttachedLayerScaleFactors.width, leftSelectionHeight * 0.5f);
     leftEndLayer.hidden = NO;
     
-    EucSelectorKnob *leftKnobView = highlightKnobs.first;
-    CALayer *leftKnobLayer = leftKnobView.layer;
-    [leftHighlightLayer addSublayer:leftKnobLayer];
-    leftKnobLayer.position = CGPointMake(-0.5f * inverseScaleFactors.width, -4.5f * inverseScaleFactors.height);
+    UIView *leftKnob = highlightKnobs.first;
+    CALayer *leftKnobLayer = leftKnob.layer;
+    [closestView addSubview:leftKnob];
+    leftKnobLayer.position = [leftHighlightLayer convertPoint:CGPointMake(-0.5f * inverseAttachedLayerScaleFactors.width, -4.5f * inverseAttachedLayerScaleFactors.height)
+                                                      toLayer:closestViewLayer];
+    leftKnobLayer.zPosition = 1000;
     leftKnobLayer.transform = knobTransform;
     leftKnobLayer.hidden = NO;
     
@@ -428,18 +438,20 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     [rightHighlightLayer addSublayer:rightEndLayer];
     
     CGSize rightSelectionSize = rightHighlightLayer.bounds.size;
-    rightEndLayer.bounds = CGRectMake(0, 0, 3.0f * inverseScaleFactors.width, rightSelectionSize.height);
-    rightEndLayer.position = CGPointMake(rightSelectionSize.width + (0.5f * inverseScaleFactors.width), rightSelectionSize.height * 0.5f);
+    rightEndLayer.bounds = CGRectMake(0, 0, 3.0f * inverseAttachedLayerScaleFactors.width, rightSelectionSize.height);
+    rightEndLayer.position = CGPointMake(rightSelectionSize.width + (0.5f * inverseAttachedLayerScaleFactors.width), rightSelectionSize.height * 0.5f);
     rightEndLayer.hidden = NO;
     
-    EucSelectorKnob *rightKnobView = highlightKnobs.second;
-    CALayer *rightKnobLayer = rightKnobView.layer;
-    [rightHighlightLayer addSublayer:rightKnobLayer];
-    rightKnobLayer.position = CGPointMake(rightSelectionSize.width + (0.5f  * inverseScaleFactors.width), rightSelectionSize.height + (7.5f * inverseScaleFactors.width));
+    UIView *rightKnob = highlightKnobs.second;
+    CALayer *rightKnobLayer = rightKnob.layer;
+    [closestView addSubview:rightKnob];
+    rightKnobLayer.position = [rightHighlightLayer convertPoint:CGPointMake(rightSelectionSize.width + (0.5f  * inverseAttachedLayerScaleFactors.width), rightSelectionSize.height + (7.5f * inverseAttachedLayerScaleFactors.width))
+                                                        toLayer:closestViewLayer];
     rightKnobLayer.transform = knobTransform;
-    rightEndLayer.hidden = NO;
-
-    [CATransaction commit];
+    rightKnobLayer.zPosition = 1000;
+    rightKnobLayer.hidden = NO;
+    
+    [CATransaction commit];    
 }
 
 - (void)_setupLoupe:(NSString *)loupeKind
@@ -653,7 +665,13 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     [self.highlightLayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
     self.highlightLayers = nil;
+    
+    [self.highlightEndLayers.first removeFromSuperlayer];
+    [self.highlightEndLayers.second removeFromSuperlayer];
     self.highlightEndLayers = nil;
+    
+    [self.highlightKnobs.first removeFromSuperview];
+    [self.highlightKnobs.second removeFromSuperview];
     self.highlightKnobs = nil;    
 }
 
