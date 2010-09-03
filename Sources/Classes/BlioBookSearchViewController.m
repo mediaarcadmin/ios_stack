@@ -10,6 +10,7 @@
 #import "BlioBookSearchViewController.h"
 #import "BlioBookViewController.h"
 #import "UIDevice+BlioAdditions.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 #define BLIOBOOKSEARCHCELLPAGETAG 1233
 #define BLIOBOOKSEARCHCELLPREFIXTAG 1234
