@@ -308,6 +308,7 @@ typedef enum {
         
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self.navigationItem setTitle:NSLocalizedString(@"Jump to\u2026", "Title for Contents Popover")];
+        [self.tableView setShowsVerticalScrollIndicator:NO];
     }
 }
 
@@ -362,6 +363,7 @@ typedef enum {
      self.navigationItem.rightBarButtonItem = self.editButtonItem;
      if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
          [self.navigationItem setTitle:NSLocalizedString(@"Jump to\u2026", "Title for Contents Popover")];
+         [self.tableView setShowsVerticalScrollIndicator:NO];
      }
  }
 
@@ -435,7 +437,7 @@ typedef enum {
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         
@@ -536,6 +538,7 @@ typedef enum {
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self.navigationItem setTitle:NSLocalizedString(@"Jump to\u2026", "Title for Contents Popover")];
+        [self.tableView setShowsVerticalScrollIndicator:NO];
     }
 }
 
@@ -611,7 +614,7 @@ typedef enum {
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         
