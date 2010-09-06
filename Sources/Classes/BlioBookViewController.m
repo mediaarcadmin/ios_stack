@@ -2313,6 +2313,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.contentsPopover.contentViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {    
@@ -2320,6 +2321,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
     [self.searchViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    [self.contentsPopover presentPopoverFromBarButtonItem:[self.toolbarItems objectAtIndex:1] permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.contentsPopover.contentViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 #pragma mark -

@@ -11,7 +11,7 @@
 #define MAINLABEL_TAG 1
 #define SECONDLABEL_TAG 2
 #define MINPOPOVERHEIGHT 88
-#define MAXPOPOVERHEIGHT 685
+#define MAXPOPOVERHEIGHT 585
 #define POPOVERSURROUNDHEIGHT 75
 #define POPOVERRESIZEDELAY 0.1f
 
@@ -260,27 +260,35 @@ typedef enum {
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if ([self.delegate isRotationLocked]) {
         return NO;
     } else {
-        if ([self.delegate isRotationLocked]) {
-            return NO;
-        } else {
-            return YES;
+        return YES;
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if (duration) {
+            if ([self.delegate respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
+                [self.delegate willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
         }
     }
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    if (duration) {
-        if ([self.delegate respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
-            [self.delegate willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    }
-}
-
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    if ([self.delegate respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
-        [self.delegate didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if ([self.delegate respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
+            [self.delegate didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    } else {
+        // Need to hide and show nav bar to workaround bug when rotating which hides the nav bar and toolbar
+        [self setNavigationBarHidden:YES];
+        [self setNavigationBarHidden:NO];
+    }
 }
 
 
@@ -314,6 +322,14 @@ typedef enum {
     contentSize.height += POPOVERSURROUNDHEIGHT; // Accomodates the toolbar and navbar
 
     [[(BlioContentsTabViewController *)self.navigationController popoverController] setPopoverContentSize:contentSize];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 @end
@@ -373,13 +389,13 @@ typedef enum {
  }
  */
 
-/*
- // Override to allow orientations other than the default portrait orientation.
- - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
- // Return YES for supported orientations
- return (interfaceOrientation == UIInterfaceOrientationPortrait);
- }
- */
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -549,13 +565,13 @@ typedef enum {
  }
  */
 
-/*
- // Override to allow orientations other than the default portrait orientation.
- - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
- // Return YES for supported orientations
- return (interfaceOrientation == UIInterfaceOrientationPortrait);
- }
- */
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
