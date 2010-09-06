@@ -10,7 +10,9 @@
 
 
 @interface EucSelectorAccessibilityMask : UIView {
-
+    UIView *_pageOverlay;
 }
+
+- (void)setSelectionString:(NSString *)selectionString;
 
 @end

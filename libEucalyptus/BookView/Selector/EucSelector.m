@@ -62,6 +62,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @property (nonatomic, assign) BOOL menuShouldBeAvailable;
 
 @property (nonatomic, retain) EucSelectorAccessibilityMask *accessibilityMask;
+@property (nonatomic, assign) BOOL accessibilityAnnouncedSelecting;
 
 - (void)_trackTouch:(UITouch *)touch;
 
@@ -120,6 +121,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @synthesize menuShouldBeAvailable = _menuShouldBeAvailable;
 
 @synthesize accessibilityMask = _accessibilityMask;
+@synthesize accessibilityAnnouncedSelecting = _accessibilityAnnouncedSelecting;
 
 - (id)init 
 {
@@ -808,6 +810,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                     [((THEventCapturingWindow *)mask.window) removeTouchObserver:self forView:mask];
                     [mask removeFromSuperview];
                     self.accessibilityMask = nil;
+                    self.accessibilityAnnouncedSelecting = NO;
                 }
                 self.tracking = NO;
                 break;
@@ -821,6 +824,23 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 }
                 [self _setupLoupe:@"Magnification"];
                 [self _trackTouch:self.trackingTouch];
+                
+                if(&UIAccessibilityIsVoiceOverRunning && UIAccessibilityIsVoiceOverRunning() &&
+                   !self.accessibilityMask) {
+                    CALayer *attachedLayer = self.attachedLayer;
+                    CALayer *windowLayer = attachedLayer.windowLayer;                        
+                    CGRect windowFrame = [attachedLayer convertRect:attachedLayer.bounds toLayer:windowLayer];
+                    
+                    EucSelectorAccessibilityMask *accessibilityMask = [[EucSelectorAccessibilityMask alloc] initWithFrame:windowFrame];
+                    
+                    [((UIWindow *)[[self.attachedLayer windowLayer] delegate]) addSubview:accessibilityMask];
+                    
+                    self.accessibilityMask = accessibilityMask;
+                    
+                    [(THEventCapturingWindow *)accessibilityMask.window addTouchObserver:self forView:accessibilityMask];
+                    [accessibilityMask release];
+                }
+                
                 break;
             } 
             case EucSelectorTrackingStageSelectedAndWaiting:
@@ -839,24 +859,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                             }
                         }
                     } 
-                }
-                
-                if(&UIAccessibilityIsVoiceOverRunning && UIAccessibilityIsVoiceOverRunning() &&
-                   !self.accessibilityMask) {
-                    CALayer *attachedLayer = self.attachedLayer;
-                    CALayer *windowLayer = attachedLayer.windowLayer;                        
-                    CGRect windowFrame = [attachedLayer convertRect:attachedLayer.bounds toLayer:windowLayer];
-                    
-                    EucSelectorAccessibilityMask *accessibilityMask = [[EucSelectorAccessibilityMask alloc] initWithFrame:windowFrame];
-
-                    [((UIWindow *)[[self.attachedLayer windowLayer] delegate]) addSubview:accessibilityMask];
-                    
-                    self.accessibilityMask = accessibilityMask;
-                    
-                    [(THEventCapturingWindow *)accessibilityMask.window addTouchObserver:self forView:accessibilityMask];
-                    [accessibilityMask release];
-                }
-                
+                }                
                 [self _positionKnobs]; 
                 id<EucSelectorDelegate> delegate = self.delegate;
                 if([delegate respondsToSelector:@selector(menuItemsForEucSelector:)]) {
@@ -1152,6 +1155,73 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     return ret;
 }
 
+- (NSString *)_accessibilityLabelForRange:(EucSelectorRange *)selectedRange 
+{
+    NSMutableString *ret = [NSMutableString string];
+    NSArray *blockIds = [self _blockIdentifiers];
+    
+    NSUInteger blockIdsCount = blockIds.count;    
+    
+    if(blockIdsCount) {        
+        id startBlockId = selectedRange.startBlockId;
+        id endBlockId = selectedRange.endBlockId;
+        id startElementId = selectedRange.startElementId;
+        id endElementId = selectedRange.endElementId;
+        
+        NSUInteger blockIdIndex = 0;
+        
+        BOOL isFirstBlock;
+        if([[blockIds objectAtIndex:0] compare:startBlockId] == NSOrderedDescending) {
+            // The real first block was before the first block we have seen.
+            isFirstBlock = NO;
+        } else {
+            while(blockIdIndex < blockIdsCount &&
+                  [[blockIds objectAtIndex:blockIdIndex] compare:startBlockId] == NSOrderedAscending) {
+                ++blockIdIndex;
+            }
+            isFirstBlock = YES;
+        }
+        
+        BOOL isLastBlock = NO;
+        while(!isLastBlock && blockIdIndex < blockIdsCount) {
+            id blockId = [blockIds objectAtIndex:blockIdIndex];
+            
+            NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:blockId];
+            NSUInteger elementIdCount = elementIds.count;
+            NSUInteger elementIdIndex = 0;
+            
+            isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
+            
+            id elementId;
+            if(isFirstBlock) {
+                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                    ++elementIdIndex;
+                }
+                isFirstBlock = NO;
+            }
+            
+            do {
+                elementId = [elementIds objectAtIndex:elementIdIndex];
+                [ret appendString:[self.dataSource eucSelector:self 
+                    accessibilityLabelForElementWithIdentifier:elementId 
+                                         ofBlockWithIdentifier:blockId]];
+                [ret appendString:@" "];
+                ++elementIdIndex;
+            } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
+                     elementIdIndex < elementIdCount);
+            ++blockIdIndex;
+        }
+ 
+    }
+    NSUInteger retLength = ret.length;
+    if(retLength) {
+        // Trim the trailing space.
+        [ret deleteCharactersInRange:NSMakeRange(retLength - 1, 1)];
+    }
+    return ret;
+}
+
+
 - (void)redisplaySelectedRange
 {
     EucSelectorRange *selectedRange = self.selectedRange;
@@ -1292,21 +1362,26 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     
     if(newSelectedRange) {
         if(![newSelectedRange isEqual:self.selectedRange]) {
-            NSString *label;
+            NSString *newSelectedWord;
             if(isLeftBoundary) {
-                label = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.startElementId 
-                           ofBlockWithIdentifier:newSelectedRange.startBlockId];
+                newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.startElementId 
+                                     ofBlockWithIdentifier:newSelectedRange.startBlockId];
                 
             } else {
-                label = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.endElementId 
-                           ofBlockWithIdentifier:newSelectedRange.endBlockId];
+                newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.endElementId 
+                                     ofBlockWithIdentifier:newSelectedRange.endBlockId];
             }
-
+            NSString *entireSelection = [self _accessibilityLabelForRange:newSelectedRange];
             
+            NSString *announcementFormat = NSLocalizedString(@"%@. Selection: %@", @"Accessibility announcement for extending text selection. Arg0 = newly selected word, Arg1 = entire selection");
             
-            if(label) {
-                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
+            NSString *announcement = [NSString stringWithFormat:announcementFormat, newSelectedWord ?: @"", entireSelection ?: @""];
+            
+            if(announcement) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, announcement);
             }
+            
+            [self.accessibilityMask setSelectionString:entireSelection];
         }                
         
         self.selectedRange = newSelectedRange;
@@ -1346,12 +1421,19 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             }
             
             if(![newSelectedRange isEqual:self.selectedRange]) {
-                NSString *label = [_dataSource eucSelector:self
-                accessibilityLabelForElementWithIdentifier:elementId 
-                                     ofBlockWithIdentifier:blockId];
+                NSString *labelFormat = @"%@";
+                if(!self.accessibilityAnnouncedSelecting) {
+                    labelFormat = NSLocalizedString(@"Selecting: %@", @"Accessibility announcement when selector is first used.  Arg = word hovered over");
+                    self.accessibilityAnnouncedSelecting = YES;
+                }
+                NSString *labelString = [_dataSource eucSelector:self
+                      accessibilityLabelForElementWithIdentifier:elementId 
+                                           ofBlockWithIdentifier:blockId];
+                NSString *label = [NSString stringWithFormat:labelFormat, labelString ?: @""];
                 if(label) {
                     UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
                 }
+                [self.accessibilityMask setSelectionString:labelString];
             }
         }
         

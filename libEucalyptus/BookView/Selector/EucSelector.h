@@ -70,6 +70,7 @@ typedef enum EucSelectorTrackingStage {
     CGFloat _screenScaleFactor;
     
     EucSelectorAccessibilityMask *_accessibilityMask;
+    BOOL _accessibilityAnnouncedSelecting;
 }
 
 @property (nonatomic, assign) BOOL selectionDisabled;

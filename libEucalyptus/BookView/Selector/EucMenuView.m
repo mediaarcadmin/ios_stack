@@ -144,6 +144,7 @@ static const CGFloat sOuterYPadding = 2.0f;
         width += [[titles objectAtIndex:i] sizeWithFont:font].width;
         width += sInnerMargins;
         _regionRects[i].origin.x = i == 0 ? 0.0f : startX;
+        _regionRects[i].origin.y = 0.0f;
         _regionRects[i].size.width = width - _regionRects[i].origin.x;
         _regionRects[i].size.height = mainRectHeight;
     }
@@ -183,6 +184,7 @@ static const CGFloat sOuterYPadding = 2.0f;
     
     [_accessibilityElements release];
     _accessibilityElements = nil;
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     
     [self setNeedsDisplay];
 }
@@ -486,8 +488,12 @@ static const CGFloat sOuterYPadding = 2.0f;
             UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             element.accessibilityTraits = UIAccessibilityTraitButton;
             CGRect rect = [self convertRect:_regionRects[i] toView:nil];
+            NSLog(@"%@: %@", item.accessibilityLabel ?: item.title, NSStringFromCGRect(_regionRects[i]));
+            NSLog(@"%@: %@", item.accessibilityLabel ?: item.title, NSStringFromCGRect(rect));
             element.accessibilityFrame = rect;
             element.accessibilityLabel = item.accessibilityLabel ?: item.title;
+            NSLog(@"%@: %@", element.accessibilityLabel, NSStringFromCGRect(element.accessibilityFrame));
+
             [buildAccessibilityElements addObject:element];
             [element release];
         }

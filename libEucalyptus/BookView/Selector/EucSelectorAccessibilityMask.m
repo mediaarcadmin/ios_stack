@@ -17,13 +17,25 @@
         
         UIView *pageOverlay = [[UIView alloc] initWithFrame:self.bounds];
         pageOverlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        pageOverlay.accessibilityLabel = @"Book Page";
         pageOverlay.accessibilityHint = @"Double tap to dismiss selection";
-        //pageOverlay.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5f]; 
+        pageOverlay.accessibilityTraits = UIAccessibilityTraitUpdatesFrequently;
         pageOverlay.isAccessibilityElement = YES;
+        _pageOverlay = pageOverlay;
+        [self setSelectionString:nil];
         [self addSubview:pageOverlay];
     }
     return self;
 }
+
+- (void)setSelectionString:(NSString *)label
+{
+    if(label.length) {
+        NSString *labelFormat = NSLocalizedString(@"Selection: %@", @"Accessibility summary for selection.  Arg = selected string");
+        [_pageOverlay setAccessibilityLabel:[NSString stringWithFormat:labelFormat, label]];
+    } else {
+        [_pageOverlay setAccessibilityLabel:NSLocalizedString(@"Selection", @"Accessibility summary for selection with zero length")];
+    }
+}
+
 
 @end
