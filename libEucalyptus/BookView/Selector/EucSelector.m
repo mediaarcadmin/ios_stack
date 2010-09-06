@@ -12,6 +12,7 @@
 #import "EucSelectorKnob.h"
 #import "EucMenuController.h"
 #import "EucMenuItem.h"
+#import "EucSelectorAccessibilityMask.h"
 
 #import "THGeometryUtils.h"
 #import "THEventCapturingWindow.h"
@@ -59,6 +60,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 @property (nonatomic, retain) EucMenuController *menuController;
 @property (nonatomic, assign) BOOL menuShouldBeAvailable;
+
+@property (nonatomic, retain) EucSelectorAccessibilityMask *accessibilityMask;
 
 - (void)_trackTouch:(UITouch *)touch;
 
@@ -115,6 +118,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @synthesize menuController = _menuController;
 @synthesize shouldHideMenu = _shouldHideMenu;
 @synthesize menuShouldBeAvailable = _menuShouldBeAvailable;
+
+@synthesize accessibilityMask = _accessibilityMask;
 
 - (id)init 
 {
@@ -375,8 +380,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (THPair *)highlightKnobs
 {
     if(!_highlightKnobs) {        
-        EucSelectorKnob *knob1 = [[EucSelectorKnob alloc] init];
-        EucSelectorKnob *knob2 = [[EucSelectorKnob alloc] init];
+        EucSelectorKnob *knob1 = [[EucSelectorKnob alloc] initWithKind:EucSelectorKnobKindLeft];
+        EucSelectorKnob *knob2 = [[EucSelectorKnob alloc] initWithKind:EucSelectorKnobKindRight];
         
         _highlightKnobs = [[THPair alloc] initWithFirst:knob1 second:knob2];
         
@@ -398,12 +403,17 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     CGSize attachedLayerScaleFactors = [attachedLayer screenScaleFactors];
     CGSize inverseAttachedLayerScaleFactors = CGSizeMake(1.0f / attachedLayerScaleFactors.width, 1.0f / attachedLayerScaleFactors.height);
     
-    UIView *closestView = [attachedLayer closestView];
-    CALayer *closestViewLayer = [closestView layer];
-    CGSize closestViewScaleFactors = [closestViewLayer screenScaleFactors];
-    CGSize inverseClosestViewScaleFactors = CGSizeMake(1.0f / closestViewScaleFactors.width, 1.0f / closestViewScaleFactors.height);
+    UIView *viewForKnobs = self.accessibilityMask;
+    if(!viewForKnobs) {
+        viewForKnobs = [attachedLayer closestView];    
+    }
     
-    CATransform3D knobTransform = CATransform3DMakeScale(inverseClosestViewScaleFactors.width, inverseClosestViewScaleFactors.height, 1);
+    CALayer *viewForKnobsLayer = [viewForKnobs layer];
+    CGSize viewForKnobsScaleFactors = [viewForKnobsLayer screenScaleFactors];
+    CGSize inverseClosestViewScaleFactors = CGSizeMake(1.0f / viewForKnobsScaleFactors.width, 1.0f / viewForKnobsScaleFactors.height);
+    
+    CATransform3D knobTransform = CATransform3DScale([attachedLayer transformFromAncestor:viewForKnobs.layer.superlayer],
+                                                     inverseClosestViewScaleFactors.width, inverseClosestViewScaleFactors.height, 1);
     
     NSArray *highlightLayers = self.highlightLayers;
     
@@ -422,9 +432,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     
     UIView *leftKnob = highlightKnobs.first;
     CALayer *leftKnobLayer = leftKnob.layer;
-    [closestView addSubview:leftKnob];
+    [viewForKnobs addSubview:leftKnob];
     leftKnobLayer.position = [leftHighlightLayer convertPoint:CGPointMake(-0.5f * inverseAttachedLayerScaleFactors.width, -4.5f * inverseAttachedLayerScaleFactors.height)
-                                                      toLayer:closestViewLayer];
+                                                      toLayer:viewForKnobsLayer];
     leftKnobLayer.zPosition = 1000;
     leftKnobLayer.transform = knobTransform;
     leftKnobLayer.hidden = NO;
@@ -444,9 +454,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     
     UIView *rightKnob = highlightKnobs.second;
     CALayer *rightKnobLayer = rightKnob.layer;
-    [closestView addSubview:rightKnob];
+    [viewForKnobs addSubview:rightKnob];
     rightKnobLayer.position = [rightHighlightLayer convertPoint:CGPointMake(rightSelectionSize.width + (0.5f  * inverseAttachedLayerScaleFactors.width), rightSelectionSize.height + (7.5f * inverseAttachedLayerScaleFactors.width))
-                                                        toLayer:closestViewLayer];
+                                                        toLayer:viewForKnobsLayer];
     rightKnobLayer.transform = knobTransform;
     rightKnobLayer.zPosition = 1000;
     rightKnobLayer.hidden = NO;
@@ -751,7 +761,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [snapshotLayer removeFromSuperlayer];
                 self.snapshotLayer = nil;
                 
-                [CATransaction commit];
+                    [CATransaction commit];
             }
         }
         
@@ -791,6 +801,12 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 self.selectedRangeIsHighlight = NO;
                 [self _removeAllHighlightLayers];
                 [self _clearSelectionCaches];
+                EucSelectorAccessibilityMask *mask = self.accessibilityMask;
+                if(mask) {
+                    [((THEventCapturingWindow *)mask.window) removeTouchObserver:self forView:mask];
+                    [mask removeFromSuperview];
+                    self.accessibilityMask = nil;
+                }
                 self.tracking = NO;
                 break;
             } 
@@ -821,6 +837,22 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                             }
                         }
                     } 
+                }
+                
+                if(//&UIAccessibilityIsVoiceOverRunning && UIAccessibilityIsVoiceOverRunning() &&
+                   !self.accessibilityMask) {
+                    CALayer *attachedLayer = self.attachedLayer;
+                    CALayer *windowLayer = attachedLayer.windowLayer;                        
+                    CGRect windowFrame = [attachedLayer convertRect:attachedLayer.bounds toLayer:windowLayer];
+                    
+                    EucSelectorAccessibilityMask *accessibilityMask = [[EucSelectorAccessibilityMask alloc] initWithFrame:windowFrame];
+
+                    [((UIWindow *)[[self.attachedLayer windowLayer] delegate]) addSubview:accessibilityMask];
+                    
+                    self.accessibilityMask = accessibilityMask;
+                    
+                    [(THEventCapturingWindow *)accessibilityMask.window addTouchObserver:self forView:accessibilityMask];
+                    [accessibilityMask release];
                 }
                 
                 [self _positionKnobs]; 

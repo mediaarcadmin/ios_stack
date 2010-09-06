@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "THEventCapturingWindow.h"
 
-@class EucSelectorRange, THPair, EucMenuController, THImageFactory;
+@class EucSelectorRange, THPair, EucMenuController, EucSelectorAccessibilityMask, THImageFactory;
 @protocol EucSelectorDataSource, EucSelectorDelegate;
 
 typedef enum EucSelectorTrackingStage {
@@ -67,6 +67,8 @@ typedef enum EucSelectorTrackingStage {
     NSArray *_cachedHighlightRanges;
     
     CGFloat _screenScaleFactor;
+    
+    EucSelectorAccessibilityMask *_accessibilityMask;
 }
 
 @property (nonatomic, assign) BOOL selectionDisabled;
@@ -135,6 +137,9 @@ typedef enum EucSelectorTrackingStage {
 // Optionally return a UIColor to use for the selection highlight (nil = default blue color).
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange;
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)selectedRange movedToRange:(EucSelectorRange *)selectedRange;
+
+- (void)eucSelectorWillBeginModalAccessibility:(EucSelector *)selector ;
+- (void)eucSelectorDidEndModalAccessibility:(EucSelector *)selector ;
 
 @end
 

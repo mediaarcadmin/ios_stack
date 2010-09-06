@@ -40,6 +40,21 @@
     return potentialView;
 }
 
+- (CATransform3D)transformFromAncestor:(CALayer *)ancestor
+{   
+    CATransform3D transform = self.transform;
+    CALayer *layer = self;
+    
+    // We check for a window with a UIWindow delegate, becase on the Retnia
+    // display, the window does in fact have a superlayer, which we don't 
+    // want to know about.
+    while((layer = layer.superlayer) && layer != ancestor) {
+        transform = CATransform3DConcat(layer.transform, transform);
+    }
+    
+    return transform;    
+}
+
 - (CATransform3D)absoluteTransform
 {   
     CATransform3D transform = self.transform;
@@ -61,5 +76,12 @@
 {
     return [self convertRect:CGRectMake(0, 0, 1, 1) toLayer:self.windowLayer].size;
 }
+
+- (CGSize)scaleFactorFromAncestor:(CALayer *)ancestor
+{
+    return [self convertRect:CGRectMake(0, 0, 1, 1) toLayer:ancestor].size;
+}
+
+
 
 @end

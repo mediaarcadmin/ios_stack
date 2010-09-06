@@ -8,9 +8,31 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol EucSelectorKnobDelegate;
 
-@interface EucSelectorKnob : UIView {}
+typedef enum {
+    EucSelectorKnobKindLeft,
+    EucSelectorKnobKindRight,
+} EucSelectorKnobKind;
 
-- (id)init;
+@interface EucSelectorKnob : UIView {
+    id<EucSelectorKnobDelegate> *delegate;
+    EucSelectorKnobKind _kind;
+}
+
+@property (nonatomic, assign) id<EucSelectorKnobDelegate> delegate;
+@property (nonatomic, assign, readonly) EucSelectorKnobKind kind;
+
+- (id)initWithKind:(EucSelectorKnobKind)kind;
+
+@end
+
+
+@protocol EucSelectorKnobDelegate
+
+@required
+
+- (void)eucSelectorKnobShouldIncrement:(EucSelectorKnob *)knob;
+- (void)eucSelectorKnobShouldDecrement:(EucSelectorKnob *)knob;
 
 @end

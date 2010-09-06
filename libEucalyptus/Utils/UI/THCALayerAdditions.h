@@ -14,7 +14,11 @@
 - (CALayer *)windowLayer;
 - (UIView *)closestView;
 
+- (CATransform3D)transformFromAncestor:(CALayer *)ancestor;
+
 - (CATransform3D)absoluteTransform;
 - (CGSize)screenScaleFactors;
+
+- (CGSize)scaleFactorFromAncestor:(CALayer *)ancestor;
 
 @end
