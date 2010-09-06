@@ -1518,6 +1518,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [self.scrollView setContentOffset:[self contentOffsetToCenterPage:targetPage zoomScale:self.scrollView.zoomScale]]; 
         self.pageNumber = targetPage;
         [self didChangeValueForKey:@"pageNumber"];
+        
+        // This is set to YES when scrolling is seen, and usually set back to NO
+        // when animation ends, but we're not animating.
+        [self.selector setShouldHideMenu:NO];
     }
     //NSLog(@"Done go to");
 }
