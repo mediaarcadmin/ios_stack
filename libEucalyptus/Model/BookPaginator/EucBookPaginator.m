@@ -119,27 +119,21 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
         
     // See if we can read the last index point (i.e. if the files are in-progress).
     for(NSUInteger i = 0; i < sDesiredPointSizesCount * sDesiredPageSizesCount; ++i) {
-        struct stat stat;
-        if(fstat(pageIndexFDs[i], &stat) != 0) {
-            THWarn(@"Error %d attempting to stat index", errno);
-            goto abandon;
+        off_t currentIndexSize = lseek(pageIndexFDs[i], 0, SEEK_END);
+        if((currentIndexSize % indexPointSize) != 0) {
+            // Just in case we quit in the middle of writing a point:
+            currentIndexSize = currentIndexSize / indexPointSize;
+            ftruncate(pageIndexFDs[i], currentIndexSize);            
+        }
+        if(currentIndexSize > 0) {
+            lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
+            currentPoints[i] = [[EucBookPageIndexPoint bookPageIndexPointFromOpenFD:pageIndexFDs[i]] retain];
+            lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
+            // We'll overwrite this point, below.
+            
+            _pageCounts[i] = (currentIndexSize / indexPointSize) - 1;
         } else {
-            off_t currentIndexSize = stat.st_size;
-            if((currentIndexSize % indexPointSize) != 0) {
-                // Just in case we quit in the middle of writing a point:
-                currentIndexSize = currentIndexSize / indexPointSize;
-                ftruncate(pageIndexFDs[i], currentIndexSize);            
-            }
-            if(currentIndexSize > 0) {
-                lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
-                currentPoints[i] = [[EucBookPageIndexPoint bookPageIndexPointFromOpenFD:pageIndexFDs[i]] retain];
-                lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
-                // We'll overwrite this point, below.
-                
-                _pageCounts[i] = (currentIndexSize / indexPointSize) - 1;
-            } else {
-                currentPoints[i] = [[EucBookPageIndexPoint alloc] init];
-            }
+            currentPoints[i] = [[EucBookPageIndexPoint alloc] init];
         }
     }    
     

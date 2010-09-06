@@ -577,19 +577,6 @@ static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return tree;    
 }
 
-- (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex {
-    BlioTextFlowSection *section = [self.sections objectAtIndex:sectionIndex];
-    size_t length = 0;
-    NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
-
-    //NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
-    NSData *data = [self.book textFlowDataWithPath:section.flowSourceFileName];
-    
-    length = [data length];
-    [innerPool drain];
-    return length;
-}
-
 #pragma mark -
 #pragma mark Convenience methods
 

@@ -136,7 +136,6 @@ typedef enum BlioTextFlowFlowTreeKind
 
 - (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex;
 - (BlioTextFlowXAMLTree *)xamlTreeForSectionIndex:(NSUInteger)sectionIndex;
-- (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex;
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;

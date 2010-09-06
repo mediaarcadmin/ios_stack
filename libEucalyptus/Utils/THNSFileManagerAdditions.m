@@ -72,20 +72,20 @@ static struct getattrret get_xattr_from_backup_if_necessary(NSString *path, NSSt
                 fd = open([backupXattrFilePath fileSystemRepresentation], O_RDONLY);
             } 
             if(fd > 0) {
-                if(fstat(fd, &statResult) == 0) {
-                    if(statResult.st_size > 0) {
-                        ret.value = malloc(statResult.st_size);
-                        ret.size = statResult.st_size;
-                        read(fd, ret.value, ret.size);
-                        
-                        THLog(@"Read xattr %@ for %@ from backup %@", name, path, [backupXattrFilePath lastPathComponent]);
-                        
-                        setxattr(pathFsrep, 
-                                 utf8Name,
-                                 ret.value,
-                                 ret.size, 
-                                 0, 0);
-                    }
+                off_t size = lseek(fd, 0, SEEK_END);
+                if(size > 0) {
+                    lseek(fd, 0, SEEK_SET);
+                    ret.value = malloc(size);
+                    ret.size = size;
+                    read(fd, ret.value, ret.size);
+                    
+                    THLog(@"Read xattr %@ for %@ from backup %@", name, path, [backupXattrFilePath lastPathComponent]);
+                    
+                    setxattr(pathFsrep, 
+                             utf8Name,
+                             ret.value,
+                             ret.size, 
+                             0, 0);
                 }
             }
         }

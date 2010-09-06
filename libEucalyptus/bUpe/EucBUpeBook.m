@@ -771,15 +771,13 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 
                 _currentPageIndexPointFD = open([path fileSystemRepresentation], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
                 if(_currentPageIndexPointFD != -1) {
-                    struct stat statResult;
-                    if(fstat(_currentPageIndexPointFD, &statResult) != -1) {
-                        if(statResult.st_size == 0) {
-                            EucBookPageIndexPoint *cover = [[EucBookPageIndexPoint alloc] init];
-                            [self setCurrentPageIndexPoint:cover];
-                            return [cover autorelease]; 
-                        }
+                    off_t size = lseek(_currentPageIndexPointFD, 0, SEEK_END);
+                    if(size == 0) {
+                        EucBookPageIndexPoint *cover = [[EucBookPageIndexPoint alloc] init];
+                        [self setCurrentPageIndexPoint:cover];
+                        return [cover autorelease]; 
                     } else {
-                        THWarn(@"Could not stat file at %@, error %d", path, errno);
+                        lseek(_currentPageIndexPointFD, 0, SEEK_SET);
                     }
                 } else {
                     _currentPageIndexPointFD = 0;
