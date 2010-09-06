@@ -134,6 +134,7 @@ typedef enum {
     
     UIActionSheet *viewSettingsSheet;
     UIPopoverController *viewSettingsPopover;
+    UIPopoverController *contentsPopover;
 }
 
 // Designated initializers.

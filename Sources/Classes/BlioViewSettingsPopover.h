@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioModalPopoverController.h"
 
 @class BlioViewSettingsContentsView;
 @protocol BlioViewSettingsDelegate;
 
-@interface BlioViewSettingsPopover : UIPopoverController <UIPopoverControllerDelegate> {
+@interface BlioViewSettingsPopover : BlioModalPopoverController <UIPopoverControllerDelegate> {
     BlioViewSettingsContentsView *contentsView;
     id<BlioViewSettingsDelegate> viewSettingsDelegate;
 }

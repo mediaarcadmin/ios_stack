@@ -508,6 +508,8 @@
 		A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B612074EFA0038DA0C /* userdoc.html */; };
 		C918B6991121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */; };
 		C918B8B51122AEE1008B6ADC /* Feeds in Resources */ = {isa = PBXBuildFile; fileRef = C918B8B21122AEE1008B6ADC /* Feeds */; };
+		C9221745123504E500992E2E /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
+		C9221746123504E500992E2E /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
 		C926F769116E293500FCC291 /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */; };
 		C926F76B116E295A00FCC291 /* CellTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9387E116BD63500E53BD3 /* CellTextField.m */; };
 		C926F76D116E297600FCC291 /* EditableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F93880116BD63500E53BD3 /* EditableTableViewCell.m */; };
@@ -1210,6 +1212,8 @@
 		C918B6971121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreFeedBooksNonGDataParser.h; sourceTree = "<group>"; };
 		C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFeedBooksNonGDataParser.m; sourceTree = "<group>"; };
 		C918B8B21122AEE1008B6ADC /* Feeds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Feeds; sourceTree = "<group>"; };
+		C9221743123504E500992E2E /* BlioModalPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioModalPopoverController.h; sourceTree = "<group>"; };
+		C9221744123504E500992E2E /* BlioModalPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioModalPopoverController.m; sourceTree = "<group>"; };
 		C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsSheet.h; sourceTree = "<group>"; };
 		C932B03910ECBC6000B8286A /* BlioNotesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioNotesView.h; sourceTree = "<group>"; };
 		C932B03A10ECBC6000B8286A /* BlioNotesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioNotesView.m; sourceTree = "<group>"; };
@@ -2145,6 +2149,8 @@
 				7D7917F510F21CD400C4D839 /* BlioBookViewController.m */,
 				7D79CF7B117F1E070081F554 /* BlioBookViewControllerProgressPieButton.h */,
 				7D79CF7C117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m */,
+				C9221743123504E500992E2E /* BlioModalPopoverController.h */,
+				C9221744123504E500992E2E /* BlioModalPopoverController.m */,
 				C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */,
 				C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */,
 				C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */,
@@ -2999,6 +3005,7 @@
 				A3729AF51225A18800E68C25 /* BlioDrmSessionManager.m in Sources */,
 				C9C37B9D122D278800DD350F /* BlioViewSettingsContentsView.m in Sources */,
 				C9C37C2F122D3F5900DD350F /* BlioViewSettingsPopover.m in Sources */,
+				C9221745123504E500992E2E /* BlioModalPopoverController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3110,6 +3117,7 @@
 				A3729AF61225A18800E68C25 /* BlioDrmSessionManager.m in Sources */,
 				C9C37B9C122D278800DD350F /* BlioViewSettingsContentsView.m in Sources */,
 				C9C37C2E122D3F5900DD350F /* BlioViewSettingsPopover.m in Sources */,
+				C9221746123504E500992E2E /* BlioModalPopoverController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

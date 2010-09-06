@@ -25,6 +25,7 @@
 #import "BlioBookManager.h"
 #import "BlioBeveledView.h"
 #import "BlioViewSettingsPopover.h"
+#import "BlioModalPopoverController.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -57,6 +58,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
 @property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
 @property (nonatomic, retain) UIPopoverController *viewSettingsPopover;
+@property (nonatomic, retain) UIPopoverController *contentsPopover;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
@@ -110,7 +112,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize delegate;
 @synthesize coverView;
 
-@synthesize viewSettingsSheet, viewSettingsPopover;
+@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -1062,6 +1064,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.coverView = nil;
     self.viewSettingsSheet = nil;
     self.viewSettingsPopover = nil;
+    self.contentsPopover = nil;
 	[super dealloc];
 }
 
@@ -1710,10 +1713,25 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)showContents:(id)sender {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
-    BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
-    aContentsTabView.delegate = self;
-    [self presentModalViewController:aContentsTabView animated:YES];
-    [aContentsTabView release];    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (![self.contentsPopover isPopoverVisible]) {
+            BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
+            aContentsTabView.delegate = self;
+            BlioModalPopoverController *aContentsPopover = [[BlioModalPopoverController alloc] initWithContentViewController:aContentsTabView];
+            aContentsTabView.popoverController = aContentsPopover;
+            [aContentsTabView release];
+            [aContentsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+            self.contentsPopover = aContentsPopover;
+            [aContentsPopover release];
+        } else {
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        }
+    } else {
+        BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
+        aContentsTabView.delegate = self;
+        [self presentModalViewController:aContentsTabView animated:YES];
+        [aContentsTabView release];  
+    }
 }
 
 - (void)showAddMenu:(id)sender {

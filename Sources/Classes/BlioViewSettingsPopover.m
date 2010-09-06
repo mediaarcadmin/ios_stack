@@ -29,13 +29,13 @@
     
     BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsContentsView alloc] initWithDelegate:newDelegate];
     UIViewController *contentController = [[UIViewController alloc] init];
+    contentController.contentSizeForViewInPopover = CGSizeMake(320, [aContentsView contentsHeight]);
     contentController.view = aContentsView;
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
     contentController.navigationItem.title = NSLocalizedString(@"Visual Options", "Title for View Settings Popover");
     
     if ((self = [super initWithContentViewController:navController])) {
         // Custom initialization
-        self.popoverContentSize = CGSizeMake(320, [aContentsView contentsHeight]);
         self.contentsView = aContentsView;
         self.delegate = self;
         self.viewSettingsDelegate = newDelegate;

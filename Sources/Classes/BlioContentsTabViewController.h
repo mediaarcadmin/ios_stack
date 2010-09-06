@@ -40,6 +40,7 @@
     UIBarButtonItem *doneButton;
     BlioBook *book;
     UISegmentedControl *tabSegment;
+    UIPopoverController *popoverController;
 }
 
 @property (nonatomic, retain) BlioContentsTabContentsViewController *contentsController;
@@ -50,6 +51,7 @@
 @property (nonatomic, retain) UIBarButtonItem *doneButton;
 @property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, retain) UISegmentedControl *tabSegment;
+@property (nonatomic, assign) UIPopoverController *popoverController;
 
 - (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook;
 
