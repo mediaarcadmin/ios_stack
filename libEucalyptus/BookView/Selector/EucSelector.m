@@ -381,7 +381,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     if(!_highlightKnobs) {        
         EucSelectorKnob *knob1 = [[EucSelectorKnob alloc] initWithKind:EucSelectorKnobKindLeft];
+        knob1.delegate = self;
         EucSelectorKnob *knob2 = [[EucSelectorKnob alloc] initWithKind:EucSelectorKnobKindRight];
+        knob2.delegate = self;
         
         _highlightKnobs = [[THPair alloc] initWithFirst:knob1 second:knob2];
         
@@ -839,7 +841,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                     } 
                 }
                 
-                if(//&UIAccessibilityIsVoiceOverRunning && UIAccessibilityIsVoiceOverRunning() &&
+                if(&UIAccessibilityIsVoiceOverRunning && UIAccessibilityIsVoiceOverRunning() &&
                    !self.accessibilityMask) {
                     CALayer *attachedLayer = self.attachedLayer;
                     CALayer *windowLayer = attachedLayer.windowLayer;                        
@@ -993,23 +995,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     return ret;
 }
 
-- (THPair *)_blockAndElementIdsForPoint:(CGPoint)point
-{
-    for(id blockId in [self _blockIdentifiers]) {
-        if(CGRectContainsPoint([self _frameOfBlockWithIdentifier:blockId], point)) {
-            for(id elementId in [self _identifiersForElementsOfBlockWithIdentifier:blockId]) {
-                NSArray *rectsForElement = [self _rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
-                for(NSValue *rectValue in rectsForElement) {
-                    if(CGRectContainsPoint([rectValue CGRectValue], point)) {
-                        return [THPair pairWithFirst:blockId second:elementId];
-                    }
-                }
-            }
-        }
-    }
-    return nil;
-}
-
 - (THPair *)_closestBlockAndElementIdsForPoint:(CGPoint)point
 {
     id bestBlockId = nil;
@@ -1037,6 +1022,26 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     }
 }
 
+- (THPair *)_blockAndElementIdsForPoint:(CGPoint)point
+{
+    if(&UIAccessibilityIsVoiceOverRunning && UIAccessibilityIsVoiceOverRunning()) {
+        return [self _closestBlockAndElementIdsForPoint:point];
+    } else {
+        for(id blockId in [self _blockIdentifiers]) {
+            if(CGRectContainsPoint([self _frameOfBlockWithIdentifier:blockId], point)) {
+                for(id elementId in [self _identifiersForElementsOfBlockWithIdentifier:blockId]) {
+                    NSArray *rectsForElement = [self _rectsForElementWithIdentifier:elementId ofBlockWithIdentifier:blockId];
+                    for(NSValue *rectValue in rectsForElement) {
+                        if(CGRectContainsPoint([rectValue CGRectValue], point)) {
+                            return [THPair pairWithFirst:blockId second:elementId];
+                        }
+                    }
+                }
+            }
+        }
+        return nil;
+    } 
+}
 
 + (NSArray *)coalescedLineRectsForElementRects:(NSArray *)elementRects
 {        
@@ -1238,6 +1243,79 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     }
 }
 
+- (void)_moveSelectionBoundaryToBlockAndElement:(THPair *)closestBlockAndElement 
+                                 isLeftBoundary:(BOOL)isLeftBoundary  
+{
+    EucSelectorRange *newSelectedRange = [[[EucSelectorRange alloc] init] autorelease];
+    
+    id blockId = closestBlockAndElement.first;
+    id elementId = closestBlockAndElement.second;
+    
+    EucSelectorRange *currentSelectedRange = self.selectedRange;
+    
+    if(isLeftBoundary) {
+        newSelectedRange.endBlockId = currentSelectedRange.endBlockId;
+        newSelectedRange.endElementId = currentSelectedRange.endElementId;
+        NSComparisonResult blockComparison = [blockId compare:currentSelectedRange.endBlockId];
+        if(blockComparison == NSOrderedAscending ||
+           (blockComparison == NSOrderedSame && [elementId compare:currentSelectedRange.endElementId] == NSOrderedAscending)) {
+            newSelectedRange.startBlockId = blockId;
+            newSelectedRange.startElementId = elementId;
+        } else {
+            newSelectedRange.startBlockId = currentSelectedRange.endBlockId;
+            newSelectedRange.startElementId = currentSelectedRange.endElementId;
+        }
+    } else {
+        newSelectedRange.startBlockId = currentSelectedRange.startBlockId;
+        newSelectedRange.startElementId = currentSelectedRange.startElementId;
+        NSComparisonResult blockComparison = [blockId compare:currentSelectedRange.startBlockId];
+        if(blockComparison == NSOrderedDescending ||
+           (blockComparison == NSOrderedSame && [elementId compare:currentSelectedRange.startElementId] == NSOrderedDescending)) {
+            newSelectedRange.endBlockId = blockId;
+            newSelectedRange.endElementId = elementId;
+        } else {
+            newSelectedRange.endBlockId = currentSelectedRange.startBlockId;
+            newSelectedRange.endElementId = currentSelectedRange.startElementId;
+        }
+    }
+    
+    // We're not allowed to drag over highlight ranges unless they're
+    // the one we started editing, so if we overlap any,
+    // reset the selection.
+    for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
+        if([highlightRange overlaps:newSelectedRange] && 
+           ![highlightRange isEqual:self.selectedRangeOriginalHighlightRange]) {
+            newSelectedRange = nil;
+            break;
+        }
+    }
+    
+    if(newSelectedRange) {
+        if(![newSelectedRange isEqual:self.selectedRange]) {
+            NSString *label;
+            if(isLeftBoundary) {
+                label = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.startElementId 
+                           ofBlockWithIdentifier:newSelectedRange.startBlockId];
+                
+            } else {
+                label = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.endElementId 
+                           ofBlockWithIdentifier:newSelectedRange.endBlockId];
+            }
+
+            
+            
+            if(label) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
+            }
+        }                
+        
+        self.selectedRange = newSelectedRange;
+    }
+    
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+}
+
+
 - (void)_trackTouch:(UITouch *)touch
 {       
     CALayer *attachedLayer = self.attachedLayer;
@@ -1285,63 +1363,19 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         location.y += self.draggingKnobVerticalOffset;
         THPair *closestBlockAndElement = [self _closestBlockAndElementIdsForPoint:location];
         
-        if(closestBlockAndElement) {
-            EucSelectorRange *newSelectedRange = [[[EucSelectorRange alloc] init] autorelease];
-            
-            id blockId = closestBlockAndElement.first;
-            id elementId = closestBlockAndElement.second;
-            
-            EucSelectorRange *currentSelectedRange = self.selectedRange;
+        if(closestBlockAndElement) {            
+            BOOL isLeft = self.draggingKnob == self.highlightKnobs.first;
+        
+            [self _moveSelectionBoundaryToBlockAndElement:closestBlockAndElement 
+                                           isLeftBoundary:isLeft];
 
-            BOOL left = self.draggingKnob == self.highlightKnobs.first;
-            if(left) {
-                newSelectedRange.endBlockId = currentSelectedRange.endBlockId;
-                newSelectedRange.endElementId = currentSelectedRange.endElementId;
-                NSComparisonResult blockComparison = [blockId compare:currentSelectedRange.endBlockId];
-                if(blockComparison == NSOrderedAscending ||
-                   (blockComparison == NSOrderedSame && [elementId compare:currentSelectedRange.endElementId] == NSOrderedAscending)) {
-                    newSelectedRange.startBlockId = blockId;
-                    newSelectedRange.startElementId = elementId;
-                } else {
-                    newSelectedRange.startBlockId = currentSelectedRange.endBlockId;
-                    newSelectedRange.startElementId = currentSelectedRange.endElementId;
-                }
-            } else {
-                newSelectedRange.startBlockId = currentSelectedRange.startBlockId;
-                newSelectedRange.startElementId = currentSelectedRange.startElementId;
-                NSComparisonResult blockComparison = [blockId compare:currentSelectedRange.startBlockId];
-                if(blockComparison == NSOrderedDescending ||
-                   (blockComparison == NSOrderedSame && [elementId compare:currentSelectedRange.startElementId] == NSOrderedDescending)) {
-                    newSelectedRange.endBlockId = blockId;
-                    newSelectedRange.endElementId = elementId;
-                } else {
-                    newSelectedRange.endBlockId = currentSelectedRange.startBlockId;
-                    newSelectedRange.endElementId = currentSelectedRange.startElementId;
-                }
-            }
-            
-            // We're not allowed to drag over highlight ranges unless they're
-            // the one we started editing, so if we overlap any,
-            // reset the selection.
-            for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
-                if([highlightRange overlaps:newSelectedRange] && 
-                   ![highlightRange isEqual:self.selectedRangeOriginalHighlightRange]) {
-                    newSelectedRange = nil;
-                    break;
-                }
-            }
-            
-            if(newSelectedRange) {
-                self.selectedRange = newSelectedRange;
-            }
-            
-            CALayer *endLayer = left ? self.highlightEndLayers.first : self.highlightEndLayers.second;
+            CALayer *endLayer = isLeft ? self.highlightEndLayers.first : self.highlightEndLayers.second;
             CGRect endLayerFrame = [endLayer convertRect:endLayer.bounds toLayer:attachedLayer];
             CGRect endLayerScreenBounds = [attachedLayer convertRect:endLayerFrame toLayer:attachedLayer.windowLayer];
-            CGFloat yOffset = - roundf(endLayerScreenBounds.size.height * 0.5f) + (left ? -13.0f : -1.0f);
+            CGFloat yOffset = - roundf(endLayerScreenBounds.size.height * 0.5f) + (isLeft ? -13.0f : -1.0f);
             [self _loupeToPoint:CGPointMake(roundf(endLayerFrame.origin.x + endLayerFrame.size.width * 0.5f),
                                             roundf(endLayerFrame.origin.y + endLayerFrame.size.height * 0.5f))
-                        yOffset:yOffset];                            
+                        yOffset:yOffset];   
         }
     }
 }
@@ -1391,6 +1425,99 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     self.draggingKnob = draggingKnob;
     self.draggingKnobVerticalOffset = draggingKnobVerticalOffset;
 }
+
+
+ 
+ 
+/* Allowing use of the accessibility increment.decrement on the knobs /seems/
+ like a good idea, but it's not because when they move, the iPhone resets 
+ the accessibility cursor :-(
+ */
+
+- (void)eucSelectorKnobShouldIncrement:(EucSelectorKnob *)knob
+{
+   /*  EucSelectorRange *selectedRange = self.selectedRange;
+    if(knob.kind == EucSelectorKnobKindLeft) {
+    } else {
+        THPair *moveTo = nil;
+        id startBlockId = selectedRange.startBlockId;
+        id startElementId = selectedRange.startElementId;
+        
+        NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:startBlockId];
+        NSUInteger elementIdIndex = [elementIds indexOfObject:startElementId];
+        if(elementIdIndex > 0) {
+            moveTo = [THPair pairWithFirst:startBlockId second:[elementIds objectAtIndex:elementIdIndex - 1]];
+        } else {
+            id newBlockId = nil;
+            NSUInteger newElementIdCount;
+            
+            NSArray *blockIds = [self _blockIdentifiers];
+            NSUInteger blockIdIndex = [blockIds indexOfObject:startBlockId];
+            do {
+                if(blockIdIndex > 0) {
+                    --blockIdIndex;
+                    newBlockId = [blockIds objectAtIndex:blockIdIndex]; 
+                    elementIds = [self _identifiersForElementsOfBlockWithIdentifier:newBlockId];
+                    newElementIdCount = elementIds.count;
+                } else {
+                    newBlockId = nil;
+                    newElementIdCount = 0;
+                }
+            } while(newBlockId && newElementIdCount == 0);
+            if(newBlockId) {
+                moveTo = [THPair pairWithFirst:newBlockId second:[elementIds lastObject]];
+            }
+        }
+        if(moveTo) {
+            [self _moveSelectionBoundaryToBlockAndElement:moveTo 
+                                           isLeftBoundary:knob.kind == EucSelectorKnobKindLeft];
+        }
+    }*/
+}
+
+
+- (void)eucSelectorKnobShouldDecrement:(EucSelectorKnob *)knob
+{
+ /*   EucSelectorRange *selectedRange = self.selectedRange;
+    if(knob.kind == EucSelectorKnobKindLeft) {
+        THPair *moveTo = nil;
+        id startBlockId = selectedRange.startBlockId;
+        id startElementId = selectedRange.startElementId;
+        
+        NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:startBlockId];
+        NSUInteger elementIdIndex = [elementIds indexOfObject:startElementId];
+        if(elementIdIndex > 0) {
+            moveTo = [THPair pairWithFirst:startBlockId second:[elementIds objectAtIndex:elementIdIndex - 1]];
+        } else {
+            id newBlockId = nil;
+            NSUInteger newElementIdCount;
+            
+            NSArray *blockIds = [self _blockIdentifiers];
+            NSUInteger blockIdIndex = [blockIds indexOfObject:startBlockId];
+            do {
+                if(blockIdIndex > 0) {
+                    --blockIdIndex;
+                    newBlockId = [blockIds objectAtIndex:blockIdIndex]; 
+                    elementIds = [self _identifiersForElementsOfBlockWithIdentifier:newBlockId];
+                    newElementIdCount = elementIds.count;
+                } else {
+                    newBlockId = nil;
+                    newElementIdCount = 0;
+                }
+            } while(newBlockId && newElementIdCount == 0);
+            if(newBlockId) {
+                moveTo = [THPair pairWithFirst:newBlockId second:[elementIds lastObject]];
+            }
+        }
+        if(moveTo) {
+            [self _moveSelectionBoundaryToBlockAndElement:moveTo 
+                                           isLeftBoundary:knob.kind == EucSelectorKnobKindLeft];
+        }
+        
+    } else {
+    }*/
+}
+
 
 - (void)setSelectionDisabled:(BOOL)selectionDisabled
 {

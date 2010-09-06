@@ -20,9 +20,10 @@
     CGSize imageSize = knobImage.size;
     CGRect frame = CGRectMake(0, 0, imageSize.width, imageSize.height);
     if ((self = [super initWithFrame:frame])) {
+        _kind = kind;
         self.layer.contents = (id)knobImage.CGImage;
         self.isAccessibilityElement = YES;
-        self.accessibilityTraits = UIAccessibilityTraitAdjustable;
+        self.accessibilityTraits = UIAccessibilityTraitNone;
         if(kind == EucSelectorKnobKindLeft) {
             self.accessibilityLabel = NSLocalizedString(@"Leftmost text selection edge", @"Accesibilily label for left-hand text selection knob");
             self.accessibilityHint = NSLocalizedString(@"Double tap and hold, then drag to change the text selection size.",

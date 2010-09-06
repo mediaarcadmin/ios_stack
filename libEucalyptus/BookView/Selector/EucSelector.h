@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "THEventCapturingWindow.h"
+#import "EucSelectorKnob.h"
 
 @class EucSelectorRange, THPair, EucMenuController, EucSelectorAccessibilityMask, THImageFactory;
 @protocol EucSelectorDataSource, EucSelectorDelegate;
@@ -19,7 +20,7 @@ typedef enum EucSelectorTrackingStage {
     EucSelectorTrackingStageChangingSelection,
 } EucSelectorTrackingStage;
 
-@interface EucSelector : NSObject <THEventCaptureObserver> {
+@interface EucSelector : NSObject <THEventCaptureObserver, EucSelectorKnobDelegate> {
     BOOL _shouldSniffTouches;
     BOOL _selectionDisabled;
     
