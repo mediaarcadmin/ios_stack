@@ -63,48 +63,6 @@
     [self setNeedsDisplay];
 }
 
-void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
-    CGContextSaveGState(c);
-    
-    if (radius > rect.size.width/2.0)
-        radius = rect.size.width/2.0;
-    if (radius > rect.size.height/2.0)
-        radius = rect.size.height/2.0;    
-    
-    CGFloat minx = CGRectGetMinX(rect);
-    CGFloat midx = CGRectGetMidX(rect);
-    CGFloat maxx = CGRectGetMaxX(rect);
-    CGFloat miny = CGRectGetMinY(rect);
-    CGFloat midy = CGRectGetMidY(rect);
-    CGFloat maxy = CGRectGetMaxY(rect);
-    CGContextMoveToPoint(c, minx, midy);
-    CGContextAddArcToPoint(c, minx, miny, midx, miny, radius);
-    CGContextAddArcToPoint(c, maxx, miny, maxx, midy, radius);
-    CGContextAddArcToPoint(c, maxx, maxy, midx, maxy, radius);
-    CGContextAddArcToPoint(c, minx, maxy, minx, midy, radius);
-    
-    CGContextClosePath(c); 
-    CGContextRestoreGState(c); 
-}
-
-void drawGlossGradient(CGContextRef c, CGRect rect) {
-    CGGradientRef glossGradient;
-    CGColorSpaceRef rgbColorspace;
-    size_t num_locations = 2;
-    CGFloat locations[2] = { 0.0, 1.0 };
-    CGFloat components[8] = { 1.0, 1.0, 1.0, 0.380,  // Start color
-        1.0, 1.0, 1.0, 0.188 }; // End color
-    
-    rgbColorspace = CGColorSpaceCreateDeviceRGB();
-    glossGradient = CGGradientCreateWithColorComponents(rgbColorspace, components, locations, num_locations);
-    
-    CGPoint topCenter = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
-    CGPoint midCenter = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
-    CGContextDrawLinearGradient(c, glossGradient, topCenter, midCenter, 0);    
-    CGGradientRelease(glossGradient);
-    CGColorSpaceRelease(rgbColorspace);
-}
-
 void addOvalToPath(CGContextRef c, CGPoint center, float a, float b, 
                    float start_angle, float arc_angle, int pie) { 
     float CGstart_angle = 90.0 - start_angle; 

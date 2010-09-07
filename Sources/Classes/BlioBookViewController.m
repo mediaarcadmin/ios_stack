@@ -2331,13 +2331,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark BlioContentsTabViewControllerDelegate
 
 - (void)dismissContentsTabView:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (self.contentsPopover) {
+            [self.contentsPopover dismissPopoverAnimated:YES];
+            self.contentsPopover = nil;
+        }
+    } else {
+        [self dismissModalViewControllerAnimated:YES];
+    }
 }
 
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated {
-    //if (_pageJumpView && ![_pageJumpView isHidden]) [self performSelector:@selector(togglePageJumpPanel)];
     [self setToolbarsForModalOverlayActive:YES];
-    //UIView *container = self.navigationController.visibleViewController.view;
     UIView *container = self.view;
     
     BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithRange:range note:note];
