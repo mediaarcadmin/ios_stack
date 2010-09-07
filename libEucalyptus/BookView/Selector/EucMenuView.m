@@ -487,13 +487,8 @@ static const CGFloat sOuterYPadding = 2.0f;
             EucMenuItem *item = [items objectAtIndex:i];
             UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             element.accessibilityTraits = UIAccessibilityTraitButton;
-            CGRect rect = [self convertRect:_regionRects[i] toView:nil];
-            NSLog(@"%@: %@", item.accessibilityLabel ?: item.title, NSStringFromCGRect(_regionRects[i]));
-            NSLog(@"%@: %@", item.accessibilityLabel ?: item.title, NSStringFromCGRect(rect));
-            element.accessibilityFrame = rect;
+            element.accessibilityFrame = [self convertRect:_regionRects[i] toView:nil];
             element.accessibilityLabel = item.accessibilityLabel ?: item.title;
-            NSLog(@"%@: %@", element.accessibilityLabel, NSStringFromCGRect(element.accessibilityFrame));
-
             [buildAccessibilityElements addObject:element];
             [element release];
         }
