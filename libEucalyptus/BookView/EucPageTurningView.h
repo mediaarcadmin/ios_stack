@@ -51,6 +51,8 @@ typedef struct {
 
 @interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate> {
     CGSize _viewportLogicalSize;
+    CGFloat _pageAspectRatio;
+    CGRect _pageFrame;
     
     GLfloatTriplet _stablePageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     GLfloatTriplet _stablePageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
@@ -152,6 +154,8 @@ typedef struct {
 @property (nonatomic, copy) UIColor *diffuseLightColor;
 
 @property (nonatomic, assign) GLfloatTriplet lightPosition;
+
+@property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 

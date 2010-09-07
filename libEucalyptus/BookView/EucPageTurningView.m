@@ -121,6 +121,8 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
 
 @synthesize lightPosition = _lightPosition;
 
+@synthesize pageAspectRatio = _pageAspectRatio;
+
 
 - (UIColor *)specularColor
 {
@@ -232,7 +234,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     // -layoutSubviews, below).
     int triangleStripIndex = 0;
     for(int row = 0; row < Y_VERTEX_COUNT - 1; ++row) {
-        if(row % 2 == 0) {
+        if((row % 2) == 0) {
             int i = 0;
             _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
             for(; i < X_VERTEX_COUNT; ++i) {
@@ -343,8 +345,15 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [super dealloc];
 }
 
+- (void)setPageAspectRatio:(CGFloat)pageAspectRatio
+{
+    if(_pageAspectRatio != pageAspectRatio) {
+        _pageAspectRatio = pageAspectRatio;
+        [self setNeedsLayout];
+    }
+}
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {    
     CGSize size = self.bounds.size;
     if(size.width < size.height) {
@@ -355,21 +364,37 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         _viewportLogicalSize.width = (size.width / size.height) * _viewportLogicalSize.height;
     }
     
-    GLfloat yCoord = 0;
+    // Construct a hex-mesh of triangles:
+    CGSize pageSize;
+    if(_pageAspectRatio == 0.0f) {
+        pageSize = _viewportLogicalSize;
+    } else {
+        pageSize.height = _viewportLogicalSize.height;
+        pageSize.width =  pageSize.height * _pageAspectRatio;
+        if(pageSize.width > _viewportLogicalSize.width) {
+            pageSize.width = _viewportLogicalSize.width;
+            pageSize.height = pageSize.width / _pageAspectRatio;
+        }        
+    }
+    GLfloat xStep = ((GLfloat)pageSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
+    GLfloat yStep = ((GLfloat)pageSize.height / (Y_VERTEX_COUNT - 1));
+    GLfloat baseXCoord = (_viewportLogicalSize.width - pageSize.width) * 0.5f;
+    GLfloat yCoord = (_viewportLogicalSize.height - pageSize.height) * 0.5f;
+
+    _pageFrame = CGRectMake(baseXCoord, yCoord, pageSize.width, pageSize.height);
     
-    GLfloat xStep = ((GLfloat)_viewportLogicalSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
-    GLfloat yStep = ((GLfloat)_viewportLogicalSize.height / (Y_VERTEX_COUNT - 1));
-    
-    // Construct a hex-mesh of triangles;
+    GLfloat maxX = pageSize.width + baseXCoord;
+    GLfloat maxY = pageSize.height + yCoord;
+        
     for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-        GLfloat xCoord = 0;
+        GLfloat xCoord = baseXCoord;
         for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-            _stablePageVertices[row][column].x = MIN(xCoord, (GLfloat)_viewportLogicalSize.width);
-            _stablePageVertices[row][column].y = MIN(yCoord, (GLfloat)_viewportLogicalSize.height);
+            _stablePageVertices[row][column].x = MIN(xCoord, maxX);
+            _stablePageVertices[row][column].y = MIN(yCoord, maxY);
             // z is already 0.
             
-            if(xCoord == 0 && row % 2 == 1) {
-                xCoord = xStep / 2;
+            if(xCoord == baseXCoord && (row % 2) == 1) {
+                xCoord += xStep * 0.5f;
             } else {
                 xCoord += xStep;
             }
@@ -387,9 +412,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
     memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
     
+    
     [self _setupConstraints];
     
     [super layoutSubviews];
+    
+    [self setNeedsDraw];
 }
 
 
@@ -528,8 +556,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                 for(int column = 0; column < X_VERTEX_COUNT; ++column) {
                     coordinates->textureCoordinates[row][column].x = MIN(xCoord, 1.0f) * po2WidthScale;
                     coordinates->textureCoordinates[row][column].y = MIN(yCoord, 1.0f) * po2HeightScale;                    
-                    if(xCoord == 0 && row % 2 == 1) {
-                        xCoord = xStep / 2;
+                    if(xCoord == 0.0f && (row % 2) == 1) {
+                        xCoord += xStep * 0.5f;
                     } else {
                         xCoord += xStep;
                     }
@@ -630,8 +658,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             for(int column = 0; column < X_VERTEX_COUNT; ++column) {
                 coordinates->textureCoordinates[row][column].x = MIN(xCoord, 1.0f) * po2WidthScale;
                 coordinates->textureCoordinates[row][column].y = MIN(yCoord, 1.0f) * po2HeightScale;                    
-                if(xCoord == 0 && row % 2 == 1) {
-                    xCoord = xStep / 2;
+                if(xCoord == 0.0f && (row % 2) == 1) {
+                    xCoord = xStep * 0.5f;
                 } else {
                     xCoord += xStep;
                 }
@@ -1903,9 +1931,10 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         // above the surface.
         BOOL isFlat = !_touch && _touchVelocity >= 0;
         BOOL hasFlipped = !_touch && _touchVelocity <= 0;
-        GLfloat yStep = ((GLfloat)_viewportLogicalSize.height / (Y_VERTEX_COUNT - 1));
-        GLfloat yCoord = 0;
         for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+            GLfloat xCoord = _stablePageVertices[row][0].x;
+            GLfloat yCoord = _stablePageVertices[row][0].y;
+            GLfloat zCoord = _stablePageVertices[row][0].z;
             for(int column = 0; column < X_VERTEX_COUNT; ++column) {
                 GLfloatTriplet vertex = _pageVertices[row][column];
                 
@@ -1913,19 +1942,19 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 _pageVertices[row][column].y = (vertex.y += diff * 0.5f);
 
                 if(hasFlipped &&
-                   (column > 0 && vertex.x > 0 && 
+                   (column > 0 && vertex.x > xCoord && 
                     atanf(-vertex.z / vertex.x) < (((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f))) { 
                     hasFlipped = NO;
                 }
             }
                                     
-            _pageVertices[row][0].x = 0;
-            _pageVertices[row][0].z = 0;
+            _pageVertices[row][0].x = xCoord;
             _pageVertices[row][0].y = yCoord;
+            _pageVertices[row][0].z = zCoord;
             
 
-            if(_pageVertices[row][X_VERTEX_COUNT - 1].x > (_viewportLogicalSize.width - 0.0125f)) {
-                _pageVertices[row][X_VERTEX_COUNT - 1].x = _viewportLogicalSize.width;
+            if(_pageVertices[row][X_VERTEX_COUNT - 1].x > (_stablePageVertices[row][X_VERTEX_COUNT - 1].x - 0.0125f)) {
+                _pageVertices[row][X_VERTEX_COUNT - 1].x = _stablePageVertices[row][X_VERTEX_COUNT - 1].x;
             } else {
                 if(isFlat) {
                     isFlat = NO;
@@ -1940,12 +1969,6 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                     }
                 }
             }
-            
-
-            yCoord += yStep;
-            if(yCoord > _viewportLogicalSize.height) {
-                yCoord = _viewportLogicalSize.height;
-            }            
         }
         
         if(isFlat || hasFlipped) {
