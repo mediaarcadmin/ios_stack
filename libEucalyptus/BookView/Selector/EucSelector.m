@@ -1426,9 +1426,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                     labelFormat = NSLocalizedString(@"Selecting: %@", @"Accessibility announcement when selector is first used.  Arg = word hovered over");
                     self.accessibilityAnnouncedSelecting = YES;
                 }
-                NSString *labelString = [_dataSource eucSelector:self
-                      accessibilityLabelForElementWithIdentifier:elementId 
-                                           ofBlockWithIdentifier:blockId];
+                NSString *labelString;
+                if(newSelectedRangeIsHighlight) {
+                    NSString *highlightString = [self _accessibilityLabelForRange:newSelectedRange];
+                    NSString *labelStringFormat = NSLocalizedString(@"Highlight: %@", @"Accessibility announcement when selector is first used and the user is hovering over an existing highlight.  Arg = highlighted text hovered over");
+                    labelString = [NSString stringWithFormat:labelStringFormat, highlightString ?: @""];
+                } else {
+                    labelString = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:elementId 
+                                     ofBlockWithIdentifier:blockId];
+                }
                 NSString *label = [NSString stringWithFormat:labelFormat, labelString ?: @""];
                 if(label) {
                     UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
