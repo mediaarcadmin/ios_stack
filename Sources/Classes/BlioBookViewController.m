@@ -59,6 +59,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
 @property (nonatomic, retain) UIPopoverController *viewSettingsPopover;
 @property (nonatomic, retain) UIPopoverController *contentsPopover;
+@property (nonatomic, retain) UIBarButtonItem *contentsButton;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
@@ -112,7 +113,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize delegate;
 @synthesize coverView;
 
-@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover;
+@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, contentsButton;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -524,7 +525,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            action:@selector(showContents:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Contents", @"Accessibility label for Book View Controller Contents button")];
     [item setAccessibilityHint:NSLocalizedString(@"Shows table of contents, bookmarks and notes.", @"Accessibility label for Book View Controller Contents hint")];
-
+    self.contentsButton = item;
     [readingItems addObject:item];
     [item release];
     
@@ -606,7 +607,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            action:@selector(showViewSettings:)];
     
     [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Book View Controller Settings button")];
-
+    
     [readingItems addObject:item];
     [item release];
     
@@ -1065,6 +1066,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.viewSettingsSheet = nil;
     self.viewSettingsPopover = nil;
     self.contentsPopover = nil;
+    self.contentsButton = nil;
 	[super dealloc];
 }
 
@@ -2321,7 +2323,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
     [self.searchViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    [self.contentsPopover presentPopoverFromBarButtonItem:[self.toolbarItems objectAtIndex:1] permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.contentsPopover presentPopoverFromBarButtonItem:self.contentsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     [self.contentsPopover.contentViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
