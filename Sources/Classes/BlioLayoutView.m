@@ -142,6 +142,12 @@
         pageCount = [self.dataSource pageCount];
         // Cache the first page crop to allow fast estimating of crops
         firstPageCrop = [self.dataSource cropRectForPage:1];
+        if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
+            [self.pageTurningView setPageAspectRatio:1];
+        } else {
+            [self.pageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
+        }
+
         
         EucSelector *aSelector = [[EucSelector alloc] init];
         [aSelector setShouldSniffTouches:NO];
