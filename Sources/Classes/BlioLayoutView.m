@@ -149,7 +149,7 @@
         aSelector.shouldSniffTouches = YES;
         aSelector.dataSource = self;
         aSelector.delegate =  self;
-        [aSelector attachToView:self.pageTurningView];
+        [aSelector attachToView:self];
         [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         //[aSelector addObserver:self forKeyPath:@"trackingStage" options:0 context:NULL];
         self.selector = aSelector;
