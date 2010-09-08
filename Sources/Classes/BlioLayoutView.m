@@ -69,8 +69,11 @@
     self.pageTurningView = nil;
     self.pageTexture = nil;
     
-    [self.selector detatch];
-    self.selector = nil;
+    if(self.selector) {
+        [self.selector removeObserver:self forKeyPath:@"tracking"];
+        [self.selector detatch];
+        self.selector = nil;
+    }    
     
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
@@ -150,17 +153,15 @@
 
         
         EucSelector *aSelector = [[EucSelector alloc] init];
-        [aSelector setShouldSniffTouches:NO];
+        aSelector.shouldSniffTouches = YES;
         aSelector.dataSource = self;
         aSelector.delegate =  self;
-        aSelector.loupeBackgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
-        self.selector = aSelector;
-       // [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
+        [aSelector attachToView:self.pageTurningView];
+        [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         //[aSelector addObserver:self forKeyPath:@"trackingStage" options:0 context:NULL];
+        self.selector = aSelector;
         [aSelector release];
-        
-       // [self addObserver:self forKeyPath:@"currentPageLayer" options:0 context:NULL];
-        
+                
         NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
@@ -330,6 +331,13 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 #pragma mark -
 #pragma mark Selector
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if(object == self.selector &&
+       [keyPath isEqualToString:@"tracking"]) {
+        self.pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
+    }
+}
+
 - (void)clearSnapshots {
     self.pageSnapshot = nil;
     self.highlightsSnapshot = nil; 
@@ -340,7 +348,8 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
-    return nil;
+    return [self.pageTurningView screenshot];
+    //return nil;
 }
 
 - (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
