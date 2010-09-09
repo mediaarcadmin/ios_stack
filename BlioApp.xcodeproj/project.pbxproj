@@ -458,8 +458,6 @@
 		A37A586D113C45640003CCFF /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
 		A37A586E113C45640003CCFF /* forward-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586B113C45640003CCFF /* forward-gray.png */; };
 		A37E2F2D1222CDD90004B11D /* devcerttemplate.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F291222CDD90004B11D /* devcerttemplate.dat */; };
-		A37E2F2E1222CDDA0004B11D /* ipadcert.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F2A1222CDD90004B11D /* ipadcert.dat */; };
-		A37E2F2F1222CDDA0004B11D /* ipadzgpriv.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F2B1222CDD90004B11D /* ipadzgpriv.dat */; };
 		A37E2F301222CDDA0004B11D /* priv.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F2C1222CDD90004B11D /* priv.dat */; };
 		A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
 		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
@@ -501,6 +499,10 @@
 		A3C7437E11CAC178005A2219 /* paper-neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */; };
 		A3C7437F11CAC178005A2219 /* paper-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436F11CAC178005A2219 /* paper-white@2x.png */; };
 		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
+		A3E6419912397C0400D2B85A /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
+		A3E6419A12397C0400D2B85A /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
+		A3E641D512397F6700D2B85A /* iphonecert.dat in Resources */ = {isa = PBXBuildFile; fileRef = A3E641D312397F6700D2B85A /* iphonecert.dat */; };
+		A3E641D612397F6700D2B85A /* iphonezgpriv.dat in Resources */ = {isa = PBXBuildFile; fileRef = A3E641D412397F6700D2B85A /* iphonezgpriv.dat */; };
 		A3FE55B012074EBD0038DA0C /* BlioAboutSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55A912074EBD0038DA0C /* BlioAboutSettingsController.m */; };
 		A3FE55B112074EBD0038DA0C /* BlioEULATextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */; };
 		A3FE55B212074EBD0038DA0C /* BlioHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */; };
@@ -1114,8 +1116,6 @@
 		A37DAE7C11B21458005F949A /* drmxmlsigconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsigconstants.h; path = DRM/drmxmlsigconstants.h; sourceTree = "<group>"; };
 		A37DAE7D11B21458005F949A /* drmxmlutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlutilities.h; path = DRM/drmxmlutilities.h; sourceTree = "<group>"; };
 		A37E2F291222CDD90004B11D /* devcerttemplate.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = devcerttemplate.dat; sourceTree = "<group>"; };
-		A37E2F2A1222CDD90004B11D /* ipadcert.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = ipadcert.dat; sourceTree = "<group>"; };
-		A37E2F2B1222CDD90004B11D /* ipadzgpriv.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = ipadzgpriv.dat; sourceTree = "<group>"; };
 		A37E2F2C1222CDD90004B11D /* priv.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = priv.dat; sourceTree = "<group>"; };
 		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
 		A37FC33310EA785F00F3DC5A /* BlioAcapelaAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioAcapelaAudioManager.h; path = TTS/BlioAcapelaAudioManager.h; sourceTree = "<group>"; };
@@ -1187,6 +1187,10 @@
 		A3C7436F11CAC178005A2219 /* paper-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white@2x.png"; sourceTree = "<group>"; };
 		A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioBookManager.h; sourceTree = "<group>"; };
 		A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioBookManager.m; sourceTree = "<group>"; };
+		A3E6419712397C0400D2B85A /* icon-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back.png"; sourceTree = "<group>"; };
+		A3E6419812397C0400D2B85A /* icon-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back@2x.png"; sourceTree = "<group>"; };
+		A3E641D312397F6700D2B85A /* iphonecert.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = iphonecert.dat; sourceTree = "<group>"; };
+		A3E641D412397F6700D2B85A /* iphonezgpriv.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = iphonezgpriv.dat; sourceTree = "<group>"; };
 		A3EC8A21122857E100D27D8C /* bigdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigdefs.h; path = DRM/bigdefs.h; sourceTree = "<group>"; };
 		A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLoginViewController.h; sourceTree = "<group>"; };
 		A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLoginViewController.m; sourceTree = "<group>"; };
@@ -1599,6 +1603,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3E6419712397C0400D2B85A /* icon-back.png */,
+				A3E6419812397C0400D2B85A /* icon-back@2x.png */,
 				C9CEBD751211959B0040CEFF /* booktexture-nocover.png */,
 				A31E8320120B40CD00CB6657 /* XPS */,
 				A3FE55B412074EFA0038DA0C /* credits.html */,
@@ -2200,7 +2206,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2286,9 +2292,9 @@
 		DCB0363E11BDC42C00B341D4 /* Resources-iPad */ = {
 			isa = PBXGroup;
 			children = (
+				A3E641D312397F6700D2B85A /* iphonecert.dat */,
+				A3E641D412397F6700D2B85A /* iphonezgpriv.dat */,
 				A37E2F291222CDD90004B11D /* devcerttemplate.dat */,
-				A37E2F2A1222CDD90004B11D /* ipadcert.dat */,
-				A37E2F2B1222CDD90004B11D /* ipadzgpriv.dat */,
 				A37E2F2C1222CDD90004B11D /* priv.dat */,
 				A382D3D611C9159000CFEB88 /* Default-Landscape.png */,
 				A382D3D711C9159000CFEB88 /* Default-Portrait.png */,
@@ -2474,10 +2480,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2869,8 +2875,6 @@
 				DCA1B907122289EF0022D410 /* downloadButton@2x.png in Resources */,
 				DCA1B908122289EF0022D410 /* downloadButtonPressed@2x.png in Resources */,
 				A37E2F2D1222CDD90004B11D /* devcerttemplate.dat in Resources */,
-				A37E2F2E1222CDDA0004B11D /* ipadcert.dat in Resources */,
-				A37E2F2F1222CDDA0004B11D /* ipadzgpriv.dat in Resources */,
 				A37E2F301222CDDA0004B11D /* priv.dat in Resources */,
 				DC32BF8E12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */,
 				DC5FCDD81227640D003C57CA /* badge-audiobook.png in Resources */,
@@ -2879,6 +2883,10 @@
 				DC5FCDDB1227640D003C57CA /* badge-tts@2x.png in Resources */,
 				DC5FCDDC1227640D003C57CA /* badge-notsupported@2x.png in Resources */,
 				DC5FCDDD1227640D003C57CA /* badge-audiobook@2x.png in Resources */,
+				A3E6419912397C0400D2B85A /* icon-back.png in Resources */,
+				A3E6419A12397C0400D2B85A /* icon-back@2x.png in Resources */,
+				A3E641D512397F6700D2B85A /* iphonecert.dat in Resources */,
+				A3E641D612397F6700D2B85A /* iphonezgpriv.dat in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

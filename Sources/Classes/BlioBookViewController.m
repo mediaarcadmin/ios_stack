@@ -515,6 +515,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
+	
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
+                                            style:UIBarButtonItemStylePlain
+                                           target:self 
+                                           action:nil];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
+    [item setEnabled:NO];
+	
+    [readingItems addObject:item];
+    [item release]; 
+	
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
     
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
                                             style:UIBarButtonItemStylePlain
@@ -525,11 +540,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
     [readingItems addObject:item];
     [item release];
-    
+	
+ /*     
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
-    
+  
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
@@ -540,7 +556,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
     [readingItems addObject:item];
     [item release];
-    
+ */   
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];  
