@@ -1752,12 +1752,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aActionSheet release];
 }
 
-- (void)showViewSettings:(id)sender {
-    if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-        // Hide toolbars so the view settings don't overlap them
-        [self setToolbarsForModalOverlayActive:YES];
-    }
-    
+- (void)showViewSettings:(id)sender {    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         if (![self.viewSettingsPopover isPopoverVisible]) {
             BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
@@ -1766,6 +1761,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [aSettingsPopover release];
         }
     } else {
+        if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+            // Hide toolbars so the view settings don't overlap them
+            [self setToolbarsForModalOverlayActive:YES];
+        }
         BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
         [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
         self.viewSettingsSheet = aSettingsSheet;
