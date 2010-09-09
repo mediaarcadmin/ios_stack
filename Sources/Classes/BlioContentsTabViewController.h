@@ -31,7 +31,7 @@
 
 @class BlioContentsTabContentsViewController, BlioContentsTabBookmarksViewController, BlioContentsTabNotesViewController;
 
-@interface BlioContentsTabViewController : UINavigationController <EucBookContentsTableViewControllerDelegate> {
+@interface BlioContentsTabViewController : UINavigationController <EucBookContentsTableViewControllerDelegate, UIPopoverControllerDelegate> {
     BlioContentsTabContentsViewController *contentsController;
     BlioContentsTabBookmarksViewController *bookmarksController;
     BlioContentsTabNotesViewController *notesController;

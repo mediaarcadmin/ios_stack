@@ -61,7 +61,7 @@ typedef enum BlioFontSize {
 - (BOOL)reflowEnabled;
 @end
 
-@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton;
+@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton, BlioModalPopoverController;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -133,9 +133,10 @@ typedef enum {
     BOOL coverOpened;
     
     UIActionSheet *viewSettingsSheet;
-    UIPopoverController *viewSettingsPopover;
-    UIPopoverController *contentsPopover;
+    BlioModalPopoverController *viewSettingsPopover;
+    BlioModalPopoverController *contentsPopover;
     UIBarButtonItem* contentsButton;
+    UIBarButtonItem* viewSettingsButton;
 }
 
 // Designated initializers.

@@ -57,9 +57,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
 @property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
-@property (nonatomic, retain) UIPopoverController *viewSettingsPopover;
-@property (nonatomic, retain) UIPopoverController *contentsPopover;
+@property (nonatomic, retain) BlioModalPopoverController *viewSettingsPopover;
+@property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
 @property (nonatomic, retain) UIBarButtonItem *contentsButton;
+@property (nonatomic, retain) UIBarButtonItem *viewSettingsButton;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
@@ -113,7 +114,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize delegate;
 @synthesize coverView;
 
-@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, contentsButton;
+@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, contentsButton, viewSettingsButton;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -608,6 +609,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Book View Controller Settings button")];
     
+    self.viewSettingsButton = item;
+    
     [readingItems addObject:item];
     [item release];
     
@@ -1067,6 +1070,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.viewSettingsPopover = nil;
     self.contentsPopover = nil;
     self.contentsButton = nil;
+    self.viewSettingsButton = nil;
 	[super dealloc];
 }
 
@@ -1720,6 +1724,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
             aContentsTabView.delegate = self;
             BlioModalPopoverController *aContentsPopover = [[BlioModalPopoverController alloc] initWithContentViewController:aContentsTabView];
+            aContentsPopover.delegate = aContentsTabView;
             aContentsTabView.popoverController = aContentsPopover;
             [aContentsTabView release];
             [aContentsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
@@ -2315,7 +2320,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self.contentsPopover.contentViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.contentsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.viewSettingsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {    
@@ -2323,8 +2329,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
     [self.searchViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+
     [self.contentsPopover presentPopoverFromBarButtonItem:self.contentsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-    [self.contentsPopover.contentViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    [self.contentsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self.viewSettingsPopover presentPopoverFromBarButtonItem:self.viewSettingsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.viewSettingsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 #pragma mark -

@@ -97,6 +97,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 - (id)initWithDelegate:(id)newDelegate {
         
 	if ((self = [super initWithFrame:CGRectZero])) {
+        self.backgroundColor = [UIColor yellowColor];
         self.viewSettingsDelegate = newDelegate;
         UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
         UIColor *white = [UIColor whiteColor];
