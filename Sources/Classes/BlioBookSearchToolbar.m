@@ -9,6 +9,21 @@
 #import "BlioBookSearchToolbar.h"
 #import "BlioAccessibilitySegmentedControl.h"
 #import "BlioUIImageAdditions.h"
+#import <libEucalyptus/THUIImageAdditions.h>
+
+@interface BlioBookSearchCustomSearchField : UITextField
+@end
+
+
+@interface BlioBookSearchCustomSearchBar : UIView <BlioBookSearchBar, UITextFieldDelegate> { // UISearchBar with transparent surround
+    BlioBookSearchCustomSearchField *searchField;
+    id<UISearchBarDelegate> delegate;
+}
+
+@property (nonatomic, retain) BlioBookSearchCustomSearchField *searchField;
+@property (nonatomic, retain) id<UISearchBarDelegate> delegate;
+
+@end
 
 @interface BlioBookSearchToolbarDecoration : UIView
 @end
@@ -44,19 +59,25 @@
         [self setClipsToBounds:YES];
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         
-        UINavigationBar *aNavBar = [[UINavigationBar alloc] init];
-        self.doneNavBar = aNavBar;
-        [self addSubview:aNavBar];
-        [aNavBar release];
-                
-        UIBarButtonItem *aButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(done:)];
-        self.doneButton = aButton;
-        [aButton release];
+        UINavigationBar *aNavBar;
+        UIBarButtonItem *aButton;
+        UINavigationItem *aNavItem;
         
-        UINavigationItem *aNavItem = [[UINavigationItem alloc] init];
-        [aNavItem setRightBarButtonItem:self.doneButton];
-        [self.doneNavBar setItems:[NSArray arrayWithObject:aNavItem] animated:NO];
-        [aNavItem release];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            aNavBar = [[UINavigationBar alloc] init];
+            self.doneNavBar = aNavBar;
+            [self addSubview:aNavBar];
+            [aNavBar release];
+            
+            aButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(done:)];
+            self.doneButton = aButton;
+            [aButton release];
+            
+            aNavItem = [[UINavigationItem alloc] init];
+            [aNavItem setRightBarButtonItem:self.doneButton];
+            [self.doneNavBar setItems:[NSArray arrayWithObject:aNavItem] animated:NO];
+            [aNavItem release];
+        }
         
         aNavBar = [[UINavigationBar alloc] init];
         self.inlineNavBar = aNavBar;
@@ -91,10 +112,15 @@
         [aButton release];
         [aNavItem release];
         
-        UISearchBar *aSearchBar = [[UISearchBar alloc] init];
+        UIView <BlioBookSearchBar> *aSearchBar;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            aSearchBar = [[UISearchBar alloc] init];            
+        } else {
+            aSearchBar = [[BlioBookSearchCustomSearchBar alloc] init];
+        }
         [aSearchBar setPlaceholder:NSLocalizedString(@"Search",@"\"Search\" placeholder text in Search bar")];
         [aSearchBar setShowsCancelButton:NO];
-        [aSearchBar setBackgroundColor:[UIColor clearColor]];
+        [aSearchBar setBarStyle:UIBarStyleBlackOpaque];
         [aSearchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         [self addSubview:aSearchBar];
         self.searchBar = aSearchBar;
@@ -109,13 +135,13 @@
     return self;
 }
 
-- (void)setFrame:(CGRect)newFrame {
-    [super setFrame:newFrame];
-}
-
 - (void)layoutSubviews {
-    CGFloat doneWidth = [self.doneButton.title sizeWithFont:[UIFont boldSystemFontOfSize:12.0f]].width + 10*2 + 6*2;
-    [self.doneNavBar setFrame:CGRectMake(0, 0, doneWidth, CGRectGetHeight(self.bounds))];
+    CGFloat doneWidth = 0;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        doneWidth = [self.doneButton.title sizeWithFont:[UIFont boldSystemFontOfSize:12.0f]].width + 10*2 + 6*2;
+        [self.doneNavBar setFrame:CGRectMake(0, 0, doneWidth, CGRectGetHeight(self.bounds))];
+    }
     
     CGFloat inlineWidth = CGRectGetWidth(self.inlineSegmentedControl.frame) + 6*2;
     
@@ -196,3 +222,164 @@
 }
 
 @end
+
+@implementation BlioBookSearchCustomSearchBar
+
+
+@synthesize searchField, delegate;
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    self.searchField = nil;
+    self.delegate = nil;
+    [super dealloc];
+}
+
+- (id)init {
+    if ((self = [super init])) {
+        self.autoresizesSubviews = YES;
+        
+        UIImageView *aSearchView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"searchFieldIcon.png"]];
+        
+        BlioBookSearchCustomSearchField *aSearchField = [[BlioBookSearchCustomSearchField alloc] init];
+        aSearchField.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        aSearchField.background = [UIImage stretchableImageNamed:@"searchBarBorder.png" leftCapWidth:17 topCapHeight:16];
+        aSearchField.clearButtonMode = UITextFieldViewModeAlways;
+        aSearchField.leftView = aSearchView;
+        aSearchField.leftViewMode = UITextFieldViewModeAlways;
+        aSearchField.textColor = [UIColor darkTextColor];
+        aSearchField.font = [UIFont systemFontOfSize:14];
+        aSearchField.delegate = self;
+        aSearchField.returnKeyType = UIReturnKeySearch;
+        [self addSubview:aSearchField];
+        self.searchField = aSearchField;
+        [aSearchField release];
+        [aSearchView release];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchTextDidChange:) name:UITextFieldTextDidChangeNotification object:self.searchField];
+    }
+    return self;
+}
+
+- (void)setPlaceholder:(NSString *)placeholder {
+    [self.searchField setPlaceholder:placeholder];
+}
+
+- (void)setShowsCancelButton:(BOOL)showCancel {
+    // Do nothing
+}
+
+- (void)setBarStyle:(UIBarStyle)barStyle {
+    // Do nothing
+}
+
+- (void)setTintColor:(UIColor *)tintColor {
+    // Do nothing
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    BOOL ret = YES;
+    if ([self.delegate respondsToSelector:@selector(searchBarShouldBeginEditing:)]) {
+        ret = [self.delegate searchBarShouldBeginEditing:(id)self];
+    }
+    return ret;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    if ([self.delegate respondsToSelector:@selector(searchBarTextDidBeginEditing:)]) {
+        [self.delegate searchBarTextDidBeginEditing:(id)self];
+    }
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    BOOL ret = YES;
+    if ([self.delegate respondsToSelector:@selector(searchBarShouldEndEditing:)]) {
+        ret = [self.delegate searchBarShouldEndEditing:(id)self];
+    }
+    return ret;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if ([self.delegate respondsToSelector:@selector(searchBarTextDidEndEditing:)]) {
+        [self.delegate searchBarTextDidEndEditing:(id)self];
+    }
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    BOOL ret = YES;
+    if ([self.delegate respondsToSelector:@selector(searchBar:shouldChangeTextInRange:replacementText:)]) {
+        ret = [self.delegate searchBar:(id)self shouldChangeTextInRange:range replacementText:string];
+    }
+    
+    return ret;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if ([self.delegate respondsToSelector:@selector(searchBarSearchButtonClicked:)]) {
+        [self.delegate searchBarSearchButtonClicked:(id)self];
+    }
+    return YES;
+}
+
+- (void)searchTextDidChange:(NSNotification *)notification {
+    if ([self.delegate respondsToSelector:@selector(searchBar:textDidChange:)]) {
+        [self.delegate searchBar:(id)self textDidChange:[[notification object] text]];
+    }
+}
+
+@end
+
+static const CGFloat kBlioBookSearchCustomSearchFieldTextInset = 5;
+static const CGFloat kBlioBookSearchCustomSearchFieldPaddingInset = 2;
+static const CGFloat kBlioBookSearchCustomSearchFieldLeftViewInset = 9;
+static const CGFloat kBlioBookSearchCustomSearchFieldClearButtonXInset = 5;
+static const CGFloat kBlioBookSearchCustomSearchFieldClearButtonYInset = 1;
+static const CGFloat kBlioBookSearchCustomSearchFieldTextPadding = 4;
+static const CGFloat kBlioBookSearchCustomSearchBarXInset = 6;
+static const CGFloat kBlioBookSearchCustomSearchBarHeight = 31;
+
+
+@implementation BlioBookSearchCustomSearchField
+
+- (CGRect)placeholderRectForBounds:(CGRect)bounds {
+    return [self textRectForBounds:bounds];
+}
+
+- (CGRect)leftViewRectForBounds:(CGRect)bounds {
+    CGRect rect = [super leftViewRectForBounds:bounds];
+    rect.origin.x += kBlioBookSearchCustomSearchBarXInset + kBlioBookSearchCustomSearchFieldLeftViewInset;
+    return rect;
+}
+
+- (CGRect)borderRectForBounds:(CGRect)bounds {
+    CGRect insetRect = CGRectInset(bounds, kBlioBookSearchCustomSearchBarXInset, 0);
+    insetRect.origin.y = floorf((CGRectGetHeight(insetRect) - kBlioBookSearchCustomSearchBarHeight)/2.0f);
+    insetRect.size.height = kBlioBookSearchCustomSearchBarHeight;
+    return insetRect;
+}
+
+- (CGRect)textRectForBounds:(CGRect)bounds {
+    CGRect rect = [super textRectForBounds:bounds];
+    rect.origin.x += kBlioBookSearchCustomSearchFieldTextInset;
+    rect.size.width -= kBlioBookSearchCustomSearchFieldTextInset * 2;
+    CGFloat textHeight = self.font.pointSize + kBlioBookSearchCustomSearchFieldTextPadding;
+    rect.size.height = textHeight;
+    rect.origin.y = floorf((CGRectGetHeight(bounds) - textHeight)/2.0f);
+    
+    return rect;
+}
+
+- (CGRect)editingRectForBounds:(CGRect)bounds {
+    return [self textRectForBounds:bounds];
+}
+
+- (CGRect)clearButtonRectForBounds:(CGRect)bounds {
+    CGRect rect = [super clearButtonRectForBounds:bounds];
+    rect.origin.x -= kBlioBookSearchCustomSearchFieldClearButtonXInset;
+    rect.origin.y -= kBlioBookSearchCustomSearchFieldClearButtonYInset;
+    return rect;
+}
+
+@end
+
+

@@ -135,8 +135,10 @@ typedef enum {
     UIActionSheet *viewSettingsSheet;
     BlioModalPopoverController *viewSettingsPopover;
     BlioModalPopoverController *contentsPopover;
+    BlioModalPopoverController *searchPopover;
     UIBarButtonItem* contentsButton;
     UIBarButtonItem* viewSettingsButton;
+    UIBarButtonItem* searchButton;
 }
 
 // Designated initializers.

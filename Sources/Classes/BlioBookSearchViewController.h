@@ -30,6 +30,7 @@
     id <BlioBookView> bookView;
     BlioBookSearchStatusView *statusView;
     NSTimeInterval resultsInterval;
+    UIPopoverController *popoverController;
 }
 
 @property (nonatomic, retain) UITableView *tableView;
@@ -44,6 +45,7 @@
 @property (nonatomic, getter=isToolbarHidden) BOOL toolbarHidden; // Defaults to YES, i.e. hidden.
 @property (nonatomic, assign) id <BlioBookView> bookView;
 @property (nonatomic, readonly, getter=isSearchActive) BOOL searchActive;
+@property (nonatomic, assign) UIPopoverController *popoverController;
 
 - (void)showInController:(UINavigationController *)controller animated:(BOOL)animated;
 - (void)removeFromControllerAnimated:(BOOL)animated;

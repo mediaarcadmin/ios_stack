@@ -100,6 +100,7 @@ typedef enum {
 @synthesize tintColor, navController;
 @synthesize toolbarHidden, searchActive;
 @synthesize bookView;
+@synthesize popoverController;
 
 - (void)dealloc {
     self.tableView = nil;
@@ -114,6 +115,7 @@ typedef enum {
     self.navController = nil;
     self.bookView = nil;
     self.statusView = nil;
+    self.popoverController = nil;
     [super dealloc];
 }
 
@@ -191,6 +193,11 @@ typedef enum {
     [self.view.layer setZPosition:100];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.popoverController.popoverContentSize = CGSizeMake(320, 400);
+}
+
 - (void)highlightCurrentSearchResult {
     if (currentSearchResult >= [self.searchResults count]) {
         currentSearchResult = 0;
@@ -234,10 +241,12 @@ typedef enum {
 }
 
 - (void)setTintColor:(UIColor *)newTintColor {
-    [newTintColor retain];
-    [tintColor release];
-    tintColor = newTintColor;
-    [self.toolbar setTintColor:tintColor];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [newTintColor retain];
+        [tintColor release];
+        tintColor = newTintColor;
+        [self.toolbar setTintColor:tintColor];
+    }
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -361,18 +370,24 @@ typedef enum {
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     if ([animationID isEqualToString:BlioBookSearchDisplayOffScreenAnimation]) {
         [self.view removeFromSuperview];
-        [self.toolbar setTintColor:self.tintColor];
-        [self.toolbar setBarStyle:UIBarStyleDefault];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [self.toolbar setTintColor:self.tintColor];
+            [self.toolbar setBarStyle:UIBarStyleDefault];
+        }
     } else if ([animationID isEqualToString:BlioBookSearchFadeOffScreenAnimation]) {
         [self.view removeFromSuperview];
         [self.view setAlpha:1];
-        [self.toolbar setTintColor:self.tintColor];
-        [self.toolbar setBarStyle:UIBarStyleDefault];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [self.toolbar setTintColor:self.tintColor];
+            [self.toolbar setBarStyle:UIBarStyleDefault];
+        }
     } else if ([animationID isEqualToString:BlioBookSearchSlideOffScreenAnimation]) {
         [self.view removeFromSuperview];
         [self.view setAlpha:1];
-        [self.toolbar setTintColor:self.tintColor];
-        [self.toolbar setBarStyle:UIBarStyleDefault];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [self.toolbar setTintColor:self.tintColor];
+            [self.toolbar setBarStyle:UIBarStyleDefault];
+        }
     } else if ([animationID isEqualToString:BlioBookSearchDisplayFullScreenAnimation]) {
         [self.toolbar.searchBar becomeFirstResponder];
     }
@@ -400,8 +415,10 @@ typedef enum {
         }
         
         [self.view setFrame:collapsedFrame];
-        [self.toolbar setTintColor:self.navController.toolbar.tintColor];
-        [self.toolbar setBarStyle:self.navController.toolbar.barStyle];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [self.toolbar setTintColor:self.navController.toolbar.tintColor];
+            [self.toolbar setBarStyle:self.navController.toolbar.barStyle];
+        }
         [self.toolbar setInlineMode:YES];
         
         if (animated) {
@@ -431,8 +448,10 @@ typedef enum {
     }
     
     [self.view setFrame:fullScreen];
-    [self.toolbar setTintColor:self.tintColor];
-    [self.toolbar setBarStyle:UIBarStyleDefault];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self.toolbar setTintColor:self.tintColor];
+        [self.toolbar setBarStyle:UIBarStyleDefault];
+    }
     if (self.toolbar.inlineMode) {
         [self.toolbar setInlineMode:NO];
     }
