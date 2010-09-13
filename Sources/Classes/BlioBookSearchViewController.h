@@ -24,7 +24,6 @@
     UIColor *tintColor;
     
     BlioBookSearchStatus searchStatus;
-    NSString *savedSearchTerm;
     NSInteger currentSearchResult;
     NSTimeInterval resultsInterval;
 }

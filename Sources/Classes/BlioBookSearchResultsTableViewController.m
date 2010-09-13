@@ -14,6 +14,10 @@
 #define BLIOBOOKSEARCHCELLPREFIXTAG 1234
 #define BLIOBOOKSEARCHCELLMATCHTAG 1235
 #define BLIOBOOKSEARCHCELLSUFFIXTAG 1236
+#define BLIOBOOKSEARCHSTATUSHEIGHT 66
+
+@interface BlioBookSearchResultsTableView : UITableView
+@end
 
 @interface BlioBookSearchStatusView : UIView {
     UILabel *statusLabel;
@@ -69,24 +73,29 @@
     return self;
 }
 
-
-
 #pragma mark -
 #pragma mark View lifecycle
 
+- (void)loadView {
+    BlioBookSearchResultsTableView *aTableView = [[BlioBookSearchResultsTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.tableView = aTableView;
+    [aTableView release];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIView *aDimmingView = [[UIView alloc] initWithFrame:self.tableView.bounds];
-    [aDimmingView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-    [aDimmingView setBackgroundColor:[UIColor colorWithHue:0 saturation:0 brightness:0.2f alpha:1]];
-    [aDimmingView setAlpha:0];
-    [self.view addSubview:aDimmingView];
-    self.dimmingView = aDimmingView;
-    [aDimmingView release];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        UIView *aDimmingView = [[UIView alloc] initWithFrame:self.tableView.bounds];
+        [aDimmingView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+        [aDimmingView setBackgroundColor:[UIColor colorWithHue:0 saturation:0 brightness:0.2f alpha:1]];
+        [aDimmingView setAlpha:0];
+        [self.view addSubview:aDimmingView];
+        self.dimmingView = aDimmingView;
+        [aDimmingView release];
+    }
     
-    BlioBookSearchStatusView *aStatusView = [[BlioBookSearchStatusView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), self.tableView.rowHeight * 1.5f)];
+    BlioBookSearchStatusView *aStatusView = [[BlioBookSearchStatusView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), BLIOBOOKSEARCHSTATUSHEIGHT)];
     [aStatusView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [aStatusView setStatus:kBlioBookSearchStatusIdle matches:0];
     [aStatusView setBackgroundColor:[UIColor colorWithHue:0 saturation:0 brightness:0.9f alpha:1]];
@@ -125,7 +134,9 @@
     UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
         
         UIView *aBackgroundView = [[UIView alloc] init];
         aBackgroundView.backgroundColor = [UIColor whiteColor];
@@ -212,47 +223,6 @@
 }
 
 
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-
 #pragma mark -
 #pragma mark Table view delegate
 
@@ -260,7 +230,6 @@
     [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
     [self.resultsDelegate resultsController:self didSelectResultAtIndex:[indexPath row]];
 }
-
 
 #pragma mark -
 #pragma mark Memory management
@@ -329,9 +298,7 @@
 }
 
 - (id)initWithFrame:(CGRect)frame {
-    if ((self == [super initWithFrame:frame])) {
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        
+    if ((self == [super initWithFrame:frame])) {        
         UIActivityIndicatorView *aActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         aActivityView.hidesWhenStopped = YES;
         [aActivityView setIsAccessibilityElement:NO];
@@ -539,3 +506,15 @@
 
 @end
 
+@implementation BlioBookSearchResultsTableView
+
+- (void)setContentInset:(UIEdgeInsets)newInset {
+    // Don't adjust the inset on the iPad - it will be in a popover
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [super setContentInset:UIEdgeInsetsZero];
+    } else {
+        [super setContentInset:newInset];
+    }
+}
+
+@end

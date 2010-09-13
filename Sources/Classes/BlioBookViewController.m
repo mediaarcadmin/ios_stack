@@ -2174,22 +2174,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.searchViewController showInController:self.navigationController animated:YES];
     } else {
         if (!self.searchPopover) {
+            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+            [aBookSearchController setMaxPrefixAndMatchLength:20];
+            [aBookSearchController setMaxSuffixLength:100];
+            
             BlioBookSearchPopoverController *aSearchPopover = [[BlioBookSearchPopoverController alloc] init];
+            [aSearchPopover setBookView:self.bookView];
+            [aSearchPopover setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
+            [aBookSearchController setDelegate:aSearchPopover]; // this delegate is assigned to avoid a retain loop
             self.searchPopover = aSearchPopover;
             [aSearchPopover release];
-            //BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
-//            [aBookSearchController setMaxPrefixAndMatchLength:20];
-//            [aBookSearchController setMaxSuffixLength:100];
-//            
-//            BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
-//            [aSearchViewController setTintColor:_returnToNavigationBarTint];
-//            [aSearchViewController setBookView:self.bookView];
-//            [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
-//            [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
-//            self.searchViewController = aSearchViewController;
-//            
-//            [aSearchViewController release];
-//            [aBookSearchController release];
+            [aBookSearchController release];
         }
         if (![self.searchPopover isPopoverVisible]) {
             [self.searchPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];

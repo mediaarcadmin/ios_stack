@@ -8,7 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "BlioBookSearchViewController.h"
-#import "BlioBookViewController.h"
+#import <libEucalyptus/EucBookContentsTableViewController.h>
 #import "BlioBookSearchResultsTableViewController.h"
 #import "BlioBookSearchResult.h"
 #import "UIDevice+BlioAdditions.h"
@@ -25,9 +25,7 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 @interface BlioBookSearchViewController()
 
 @property (nonatomic, retain) BlioBookSearchResultsTableViewController *resultsController;
-@property (nonatomic, retain) NSString *savedSearchTerm;
 @property (nonatomic, assign) UINavigationController *navController;
-@property (nonatomic, assign) BOOL searchActive;
 
 - (CGRect)rotatedScreenRectWithOrientation:(UIInterfaceOrientation)orientation;
 - (CGRect)fullScreenRect;
@@ -51,16 +49,14 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 @synthesize resultsController;
 @synthesize toolbar;
 @synthesize bookSearchController;
-@synthesize savedSearchTerm;
 @synthesize tintColor, navController;
-@synthesize toolbarHidden, searchActive;
+@synthesize toolbarHidden;
 @synthesize bookView;
 
 - (void)dealloc {
     self.resultsController = nil;
     self.toolbar = nil;
     self.bookSearchController = nil;
-    self.savedSearchTerm = nil;
     self.navController = nil;
     self.bookView = nil;
     [super dealloc];
@@ -150,7 +146,6 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 - (void)dismissSearchToolbarAnimated:(BOOL)animated {
     [self.bookSearchController cancel];
     [self.toolbar.searchBar resignFirstResponder];
-    self.searchActive = NO;
     [self setSearchStatus:kBlioBookSearchStatusStopped];
         
     if ([self.toolbar inlineMode]) {
@@ -159,7 +154,10 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
         [self.navController.toolbar setAlpha:1];
         [self displayOffScreen:animated removedOnCompletion:YES];
     }
-    [(id)[(BlioBookViewController *)self.navController.topViewController bookView] highlightWordAtBookmarkPoint:nil];
+    
+    if ([self.bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
+        [self.bookView highlightWordAtBookmarkPoint:nil];
+    }
 }
 
 - (void)setTintColor:(UIColor *)newTintColor {
@@ -204,7 +202,6 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 }
 
 - (void)showInController:(UINavigationController *)controller animated:(BOOL)animated {
-    self.searchActive = YES;
     self.toolbar.inlineMode = NO;
     self.navController = controller;
     [self.view setFrame:[self fullScreenRect]];    
@@ -219,7 +216,6 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 - (void)removeFromControllerAnimated:(BOOL)animated {
     [self.bookSearchController cancel];
     [self.toolbar.searchBar resignFirstResponder];
-    self.searchActive = NO;
     
     if ([self.toolbar inlineMode]) {
         [self slideOffScreen:animated removedOnCompletion:YES];
@@ -253,17 +249,6 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 - (void)setSearchStatus:(BlioBookSearchStatus)newStatus {
     searchStatus = newStatus;
     [self.resultsController setSearchStatus:newStatus];
-}
-
-- (void)resultsControllerDidContinueSearch:(BlioBookSearchResultsTableViewController *)resultsController {
-    if ((searchStatus == kBlioBookSearchStatusIdle) || (searchStatus == kBlioBookSearchStatusStopped)) {
-        [self.bookSearchController findNextOccurrence];
-        if (self.bookSearchController.hasWrapped) {
-            [self setSearchStatus:kBlioBookSearchStatusInProgressHasWrapped];
-        } else {
-            [self setSearchStatus:kBlioBookSearchStatusInProgress];
-        }
-    }    
 }
 
 - (void)refreshAccessibility {
@@ -494,6 +479,17 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
     [self displayInToolbar:YES];
 }
 
+- (void)resultsControllerDidContinueSearch:(BlioBookSearchResultsTableViewController *)resultsController {
+    if ((searchStatus == kBlioBookSearchStatusIdle) || (searchStatus == kBlioBookSearchStatusStopped)) {
+        [self.bookSearchController findNextOccurrence];
+        if (self.bookSearchController.hasWrapped) {
+            [self setSearchStatus:kBlioBookSearchStatusInProgressHasWrapped];
+        } else {
+            [self setSearchStatus:kBlioBookSearchStatusInProgress];
+        }
+    }    
+}
+
 #pragma mark -
 #pragma mark Results Controller Formatter
 
@@ -524,7 +520,10 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
         if ([searchBar.text length] > 0) {
             BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
             [self setSearchStatus:kBlioBookSearchStatusInProgress];
-            [self.bookSearchController findString:searchBar.text fromBookmarkPoint:currentBookmarkPoint];
+            BOOL success = [self.bookSearchController findString:searchBar.text fromBookmarkPoint:currentBookmarkPoint];
+            if (!success) {
+                [self setSearchStatus:kBlioBookSearchStatusIdle];
+            }
         }
     }
 }
@@ -537,7 +536,7 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
         
     BOOL perCharacterSearch = NO;
     
-    if (([searchText length] > 0) && ([[UIDevice currentDevice] blioDevicePerCharacterSearchEnabled])) {
+    if (([searchText length] > 2) && ([[UIDevice currentDevice] blioDevicePerCharacterSearchEnabled])) {
         perCharacterSearch = YES;
         if (UIAccessibilityIsVoiceOverRunning != nil) {
             if (UIAccessibilityIsVoiceOverRunning()) {
@@ -549,7 +548,10 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
     if (perCharacterSearch) {
         BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
         [self setSearchStatus:kBlioBookSearchStatusInProgress];
-        [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
+        BOOL success = [self.bookSearchController findString:searchText fromBookmarkPoint:currentBookmarkPoint];
+        if (!success) {
+            [self setSearchStatus:kBlioBookSearchStatusIdle];
+        }
     } else {
         [self setSearchStatus:kBlioBookSearchStatusIdle];
     }
