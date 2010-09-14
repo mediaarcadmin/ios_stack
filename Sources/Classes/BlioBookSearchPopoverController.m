@@ -6,6 +6,7 @@
 //  Copyright 2010 BitWink. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "BlioBookSearchPopoverController.h"
 #import "BlioBookSearchToolbar.h"
 #import "BlioBookSearchResultsTableViewController.h"
@@ -21,6 +22,7 @@
 @property (nonatomic, retain) BlioBookSearchResultsTableViewController *resultsController;
 @property (nonatomic, retain) UINavigationController *navigationController;
 @property (nonatomic, retain) BlioBookSearchToolbar *toolbar;
+@property (nonatomic, assign) UIBarButtonItem *barButtonItem;
 
 - (void)setSearchStatus:(BlioBookSearchStatus)newStatus;
 - (void)highlightCurrentSearchResult;
@@ -31,6 +33,7 @@
 
 @synthesize resultsController, navigationController, toolbar;
 @synthesize bookSearchController, bookView;
+@synthesize barButtonItem;
 
 - (void)dealloc {
     self.resultsController = nil;
@@ -38,6 +41,7 @@
     self.toolbar = nil;
     self.bookSearchController = nil;
     self.bookView = nil;
+    self.barButtonItem = nil;
     [super dealloc];
 }
 
@@ -65,6 +69,11 @@
     [aResultsController release];
     [aNavigationController release];
     return self;
+}
+
+- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections animated:(BOOL)animated {
+    self.barButtonItem = item;
+    [super presentPopoverFromBarButtonItem:item permittedArrowDirections:arrowDirections animated:animated];
 }
 
 #pragma mark -
@@ -204,6 +213,21 @@
         }
     } else {
         [self setSearchStatus:kBlioBookSearchStatusIdle];
+    }
+}
+
+- (void)representFromBarButtonItem:(UIBarButtonItem *)item {
+    [self presentPopoverFromBarButtonItem:item permittedArrowDirections:UIPopoverArrowDirectionAny animated:NO];
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    if (self.barButtonItem) {
+        // Force the popover back to the toolbar
+        // Changing the popover size forces an animation that syncs with the keyboard
+        // presenting teh popover again ensures that the positioning at the end of the animation is correct
+        self.popoverContentSize = CGSizeMake(320, SEARCHEXPANDEDPOPOVERHEIGHT + 1);
+        self.popoverContentSize = CGSizeMake(320, SEARCHEXPANDEDPOPOVERHEIGHT);
+        [self presentPopoverFromBarButtonItem:self.barButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     }
 }
 

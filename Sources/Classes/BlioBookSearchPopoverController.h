@@ -25,6 +25,8 @@
     BlioBookSearchStatus searchStatus;
     NSInteger currentSearchResult;
     NSTimeInterval resultsInterval;
+    
+    UIBarButtonItem *barButtonItem;
 }
 
 @property (nonatomic, retain) BlioBookSearchController *bookSearchController;

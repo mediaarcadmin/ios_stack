@@ -251,6 +251,7 @@
         aSearchField.font = [UIFont systemFontOfSize:14];
         aSearchField.delegate = self;
         aSearchField.returnKeyType = UIReturnKeySearch;
+        aSearchField.autocorrectionType = UITextAutocorrectionTypeNo; // Matches a searchBar
         [self addSubview:aSearchField];
         self.searchField = aSearchField;
         [aSearchField release];
@@ -275,6 +276,10 @@
 
 - (void)setTintColor:(UIColor *)tintColor {
     // Do nothing
+}
+
+- (NSString *)text {
+    return self.searchField.text;
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
