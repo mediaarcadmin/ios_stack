@@ -146,7 +146,7 @@
 		7D3637721238F534002BDD2B /* EucPageTurningView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3637701238F534002BDD2B /* EucPageTurningView.m */; };
 		7D36377A1238F80C002BDD2B /* EucPageTurningPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3637781238F80C002BDD2B /* EucPageTurningPage.h */; };
 		7D36377B1238F80C002BDD2B /* EucPageTurningPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3637791238F80C002BDD2B /* EucPageTurningPage.m */; };
-		7D3637921238F889002BDD2B /* THOpenGLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3637911238F889002BDD2B /* THOpenGLUtils.h */; };
+		7D3637921238F889002BDD2B /* THOpenGLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3637911238F889002BDD2B /* THOpenGLUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3637C812391151002BDD2B /* EucPageTurningMeshSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3637C612391151002BDD2B /* EucPageTurningMeshSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3637C912391151002BDD2B /* EucPageTurningMeshSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3637C712391151002BDD2B /* EucPageTurningMeshSource.m */; };
 		7D3AED52114963560059C5B6 /* EucCSSInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341471149602300C318E7 /* EucCSSInternal.h */; };
@@ -3097,7 +3097,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "libEucalyptus" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* libEucalyptus */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
@@ -3643,7 +3650,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv6 x86_64";
 				WARNING_CFLAGS = "-Wall";
