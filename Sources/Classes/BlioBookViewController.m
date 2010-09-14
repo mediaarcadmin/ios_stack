@@ -2337,6 +2337,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
         [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
+    if ([self.searchPopover isPopoverVisible]) {
+        shouldDisplaySearchAfterRotation = YES;
+    }
+    
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.contentsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.viewSettingsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
@@ -2353,9 +2357,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     [self.viewSettingsPopover presentPopoverFromBarButtonItem:self.viewSettingsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     [self.viewSettingsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-
-    [self.searchPopover presentPopoverFromBarButtonItem:self.searchButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-    [self.searchPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    if (shouldDisplaySearchAfterRotation) {
+        shouldDisplaySearchAfterRotation = NO;
+        [self.searchPopover presentPopoverFromBarButtonItem:self.searchButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        [self.searchPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    }
 }
 
 #pragma mark -

@@ -93,6 +93,8 @@
         [self.view addSubview:aDimmingView];
         self.dimmingView = aDimmingView;
         [aDimmingView release];
+    } else {
+        self.tableView.showsVerticalScrollIndicator = NO;
     }
     
     BlioBookSearchStatusView *aStatusView = [[BlioBookSearchStatusView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), BLIOBOOKSEARCHSTATUSHEIGHT)];
