@@ -26,6 +26,7 @@
 #import "BlioBeveledView.h"
 #import "BlioViewSettingsPopover.h"
 #import "BlioModalPopoverController.h"
+#import "BlioBookSearchPopoverController.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -57,9 +58,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
 @property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
-@property (nonatomic, retain) UIPopoverController *viewSettingsPopover;
-@property (nonatomic, retain) UIPopoverController *contentsPopover;
+@property (nonatomic, retain) BlioModalPopoverController *viewSettingsPopover;
+@property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
+@property (nonatomic, retain) BlioModalPopoverController *searchPopover;
 @property (nonatomic, retain) UIBarButtonItem *contentsButton;
+@property (nonatomic, retain) UIBarButtonItem *viewSettingsButton;
+@property (nonatomic, retain) UIBarButtonItem *searchButton;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
@@ -113,7 +117,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize delegate;
 @synthesize coverView;
 
-@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, contentsButton;
+@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, viewSettingsButton, searchButton;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -553,7 +557,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            target:self 
                                            action:@selector(search:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Search", @"Accessibility label for Book View Controller Search button")];
-    
+    self.searchButton = item;
     [readingItems addObject:item];
     [item release];
     
@@ -607,7 +611,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            action:@selector(showViewSettings:)];
     
     [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Book View Controller Settings button")];
-    
+    self.viewSettingsButton = item;
     [readingItems addObject:item];
     [item release];
     
@@ -1066,7 +1070,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.viewSettingsSheet = nil;
     self.viewSettingsPopover = nil;
     self.contentsPopover = nil;
+    self.searchPopover = nil;
     self.contentsButton = nil;
+    self.viewSettingsButton = nil;
+    self.searchButton = nil;
 	[super dealloc];
 }
 
@@ -1720,6 +1727,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
             aContentsTabView.delegate = self;
             BlioModalPopoverController *aContentsPopover = [[BlioModalPopoverController alloc] initWithContentViewController:aContentsTabView];
+            aContentsPopover.delegate = aContentsTabView;
             aContentsTabView.popoverController = aContentsPopover;
             [aContentsTabView release];
             [aContentsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
@@ -1747,12 +1755,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aActionSheet release];
 }
 
-- (void)showViewSettings:(id)sender {
-    if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-        // Hide toolbars so the view settings don't overlap them
-        [self setToolbarsForModalOverlayActive:YES];
-    }
-    
+- (void)showViewSettings:(id)sender {    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         if (![self.viewSettingsPopover isPopoverVisible]) {
             BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
@@ -1761,6 +1764,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [aSettingsPopover release];
         }
     } else {
+        if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+            // Hide toolbars so the view settings don't overlap them
+            [self setToolbarsForModalOverlayActive:YES];
+        }
         BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
         [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
         self.viewSettingsSheet = aSettingsSheet;
@@ -2148,25 +2155,46 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)search:(id)sender {
-    if (!self.searchViewController) {
-        BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
-        [aBookSearchController setMaxPrefixAndMatchLength:20];
-        [aBookSearchController setMaxSuffixLength:100];
-        
-        BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
-        [aSearchViewController setTintColor:_returnToNavigationBarTint];
-        [aSearchViewController setBookView:self.bookView];
-        [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
-        [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
-        self.searchViewController = aSearchViewController;
-        
-        [aSearchViewController release];
-        [aBookSearchController release];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if (!self.searchViewController) {
+            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+            [aBookSearchController setMaxPrefixAndMatchLength:20];
+            [aBookSearchController setMaxSuffixLength:100];
+            
+            BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
+            [aSearchViewController setTintColor:_returnToNavigationBarTint];
+            [aSearchViewController setBookView:self.bookView];
+            [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
+            [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
+            self.searchViewController = aSearchViewController;
+            
+            [aSearchViewController release];
+            [aBookSearchController release];
+        }
+        [self.searchViewController showInController:self.navigationController animated:YES];
+    } else {
+        if (!self.searchPopover) {
+            BlioBookSearchPopoverController *aSearchPopover = [[BlioBookSearchPopoverController alloc] init];
+            self.searchPopover = aSearchPopover;
+            [aSearchPopover release];
+            //BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+//            [aBookSearchController setMaxPrefixAndMatchLength:20];
+//            [aBookSearchController setMaxSuffixLength:100];
+//            
+//            BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
+//            [aSearchViewController setTintColor:_returnToNavigationBarTint];
+//            [aSearchViewController setBookView:self.bookView];
+//            [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
+//            [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
+//            self.searchViewController = aSearchViewController;
+//            
+//            [aSearchViewController release];
+//            [aBookSearchController release];
+        }
+        if (![self.searchPopover isPopoverVisible]) {
+            [self.searchPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        }
     }
-    
-
-    [self.searchViewController showInController:self.navigationController animated:YES];
-    
 }
     
 #pragma mark -
@@ -2315,7 +2343,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self.contentsPopover.contentViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.contentsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.viewSettingsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {    
@@ -2323,8 +2352,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
     [self.searchViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+
     [self.contentsPopover presentPopoverFromBarButtonItem:self.contentsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-    [self.contentsPopover.contentViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    [self.contentsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self.viewSettingsPopover presentPopoverFromBarButtonItem:self.viewSettingsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.viewSettingsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+
+    [self.searchPopover presentPopoverFromBarButtonItem:self.searchButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.searchPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 #pragma mark -

@@ -16,4 +16,14 @@
     [super setPassthroughViews:[NSArray array]];
 }
 
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    //[self.contentViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+ 
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self.contentViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+}
+
 @end

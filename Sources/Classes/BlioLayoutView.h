@@ -24,14 +24,15 @@
     
     BlioTextFlow *textFlow;
     CGPDFDocumentRef pdf;
-    NSInteger pageNumber;
-    NSInteger pageCount;
+    
     EucSelector *selector;
     NSMutableDictionary *pageCropsCache;
     NSMutableDictionary *viewTransformsCache;
+    
+    NSInteger pageNumber;
+    NSInteger pageCount;
     CGRect firstPageCrop;
-    UIImage *pageSnapshot;
-    UIImage *highlightsSnapshot;
+    CGSize pageSize;
        
     BlioXPSProvider *xpsProvider;
     id<BlioLayoutDataSource> dataSource;

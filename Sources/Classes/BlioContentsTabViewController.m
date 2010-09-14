@@ -299,6 +299,13 @@ typedef enum {
 	// Release any cached data, images, etc that aren't in use.
 }
 
+#pragma mark Popover Delegate methods
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    if ([self.delegate respondsToSelector:@selector(dismissContentsTabView:)])
+        [self.delegate performSelector:@selector(dismissContentsTabView:) withObject:self];
+}
+
 @end
 
 @implementation BlioContentsTabContentsViewController
@@ -509,7 +516,6 @@ typedef enum {
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
     }   
 }
- 
 
 @end
 

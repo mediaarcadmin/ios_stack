@@ -8,11 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol BlioBookSearchBar
+
+- (void)setBarStyle:(UIBarStyle)barStyle;
+- (void)setTintColor:(UIColor *)tintColor;
+- (void)setDelegate:(id)delegate;
+- (void)setPlaceholder:(NSString *)placeholder;
+- (void)setShowsCancelButton:(BOOL)showCancel;
+
+@end
+
+
 @protocol BlioBookSearchToolbarDelegate;
 
 @interface BlioBookSearchToolbar : UIView {
     id <BlioBookSearchToolbarDelegate> delegate;
-    UISearchBar *searchBar;
+    UIView<BlioBookSearchBar> *searchBar;
     UINavigationBar *doneNavBar;
     UIBarButtonItem *doneButton;
     UINavigationBar *inlineNavBar;
@@ -21,9 +32,9 @@
     BOOL inlineMode;
 }
 
-@property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, assign) id <BlioBookSearchToolbarDelegate> delegate;
 @property (nonatomic, assign) BOOL inlineMode;
+@property (nonatomic, retain) UIView<BlioBookSearchBar> *searchBar;
 
 - (void)setTintColor:(UIColor *)tintColor;
 - (void)setBarStyle:(UIBarStyle)barStyle;

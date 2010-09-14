@@ -68,6 +68,9 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.autoresizesSubviews = YES;
         
+        // Ensures that the note shows above it's sibling views
+        self.layer.zPosition = 1000;
+        
         bottomInset = kBlioNotesViewNotePadBottomInset;
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -110,7 +113,9 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
 - (void)showInView:(UIView *)view animated:(BOOL)animated {
     [self removeFromSuperview];
     self.showInView = view;
-    [[self.showInView superview] addSubview:self];
+    // Insert below the view so that it gets the rotation resizing
+    // The layer zPosition will take care of showing it above it's sibling
+    [[self.showInView superview] insertSubview:self belowSubview:self.showInView];
     [self.showInView setUserInteractionEnabled:NO];
     
     UILabel *aToolbarLabel = [[UILabel alloc] initWithFrame:CGRectZero];
