@@ -287,7 +287,7 @@
 		expectedContentLength = NSURLResponseUnknownLength;
         executing = NO;
         finished = NO;
-		resume = NO;
+		resume = YES;
     }
     
     return self;
@@ -423,7 +423,7 @@
 		if ([bytesAlreadyDownloaded longValue] != 0)
 		{
 			NSString * rangeString = [NSString stringWithFormat:@"bytes=%@-",[bytesAlreadyDownloaded stringValue]];
-			NSLog(@"rangeString: %@",rangeString);
+			NSLog(@"will use rangeString: %@",rangeString);
 			[aRequest addValue:rangeString forHTTPHeaderField:@"Range"];
 		}
 		else resume = NO;
@@ -480,8 +480,8 @@
 					break;
 				}
 			}			
+			NSLog(@"Accept-Ranges: %@",acceptRanges);
 			if (acceptRanges == nil) {
-//				NSLog(@"No Accept-Ranges available.");
 				//  most servers accept byte ranges without explicitly saying so- will try partial download.
 				resume = YES;
 				[theConnection cancel];
@@ -507,13 +507,15 @@
 		}
 	}
 	else if (theConnection == connection) {
-		if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] &&  // i.e. we're not a file:// download
-            (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO)) {
-			// we are not getting partial content; try again from scratch.
-			// TODO: just erase previous progress and keep using this connection instead of starting from scratch
-			resume = NO;
-			[theConnection cancel];
-			[self startDownload];
+		if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {  // i.e. we're not a file:// download
+			NSLog(@"downloadConnection httpResponse.statusCode: %i",httpResponse.statusCode);
+			if (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO) {
+				// we are not getting partial content; try again from scratch.
+				// TODO: just erase previous progress and keep using this connection instead of starting from scratch
+				resume = NO;
+				[theConnection cancel];
+				[self startDownload];
+			}
 		}		
 	}
 }

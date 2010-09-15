@@ -69,7 +69,7 @@
 			return;
 		}
 		else {
-			NSLog(@"Login error: %s",[bodyPart LoginResult].Message);
+			NSLog(@"Login error: %@",[bodyPart LoginResult].Message);
 			[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
 			return;
 		}
@@ -264,7 +264,7 @@
 	for(id bodyPart in responseBodyParts) {
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error for VaultContents: %s",err);
+			NSLog(@"SOAP error for VaultContents: %@",err);
 			// TODO: Message
 			return NO;
 		}
@@ -274,7 +274,7 @@
 			return YES;
 		}
 		else {
-			NSLog(@"VaultContents error: %s",[bodyPart VaultContentsWithTokenResult].Message);
+			NSLog(@"VaultContents error: %@",[bodyPart VaultContentsWithTokenResult].Message);
 			// TODO: Message
 			return NO;
 		}

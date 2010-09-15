@@ -12,14 +12,16 @@
 #import "BlioDownloadVoicesViewController.h"
 #import "BlioAcapelaAudioManager.h"
 #import "AcapelaSpeech.h"
+#import "BlioBookManager.h"
 
 @interface BlioAudioSettingsController(PRIVATE)
 - (void)layoutControlsForOrientation:(UIInterfaceOrientation)orientation;
+- (NSString *)ttsBooksInLibraryDisclosure;
 @end
 
 @implementation BlioAudioSettingsController
 
-@synthesize voiceControl, speedControl, volumeControl, playButton, voiceLabel, speedLabel, volumeLabel, availableVoices, contentView, footerHeight;
+@synthesize voiceControl, speedControl, volumeControl, playButton, voiceLabel, speedLabel, volumeLabel, availableVoices, contentView, footerHeight,ttsFetchedResultsController,totalFetchedResultsController;
 
 - (id)init
 {
@@ -46,6 +48,8 @@
     self.volumeLabel = nil;
 	self.availableVoices = nil;
 	self.contentView = nil;
+	self.ttsFetchedResultsController = nil;
+	self.totalFetchedResultsController = nil;
 	[super dealloc];
 }
 - (void)viewDidLoad {
@@ -54,10 +58,67 @@
 
     // Uncomment the following line to preserve selection between presentations.
 //    self.clearsSelectionOnViewWillAppear = YES;
+	
+	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread]; 
+	if (!moc) NSLog(@"WARNING: ManagedObjectContext is nil inside BlioLibraryViewController!");
+	
+	NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO] autorelease];
+    NSArray *sorters = [NSArray arrayWithObject:sortDescriptor]; 
+	
+    NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+	
+    [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
+    [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"hasAudiobookRights == %@ && processingState == %@", [NSNumber numberWithBool:NO], [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
+	[request setSortDescriptors:sorters];
+ 
+	 self.ttsFetchedResultsController = [[[NSFetchedResultsController alloc]
+									   initWithFetchRequest:request
+									   managedObjectContext:moc
+									   sectionNameKeyPath:nil
+									   cacheName:@"BlioTTSBooks"] autorelease];
+	 [request release];
+	 
+	 [ttsFetchedResultsController setDelegate:self];
+	 NSError *error = nil; 
+	 [ttsFetchedResultsController performFetch:&error];
+	 
+	 if (error) 
+	 NSLog(@"Error loading from persistent store: %@, %@", error, [error userInfo]);
+	 else {
+		 ttsBooks = [[ttsFetchedResultsController fetchedObjects] count];
+	 }	
+	 
+	 request = [[NSFetchRequest alloc] init]; 
+	 
+	 [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
+	 [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
+	[request setSortDescriptors:sorters];
+
+	  self.totalFetchedResultsController = [[[NSFetchedResultsController alloc]
+										initWithFetchRequest:request
+										managedObjectContext:moc
+										sectionNameKeyPath:nil
+										cacheName:@"BlioTotalBooks"] autorelease];
+	  [request release];
+	  
+	  [totalFetchedResultsController setDelegate:self];
+	  error = nil; 
+	  [totalFetchedResultsController performFetch:&error];
+	  
+	  if (error) 
+	  NSLog(@"Error loading from persistent store: %@, %@", error, [error userInfo]);
+	  else {
+		  totalBooks = [[totalFetchedResultsController fetchedObjects] count];
+		  [self.tableView reloadData];
+	  }	
+	  
 }
 -(void)viewDidUnload {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioVoiceListRefreshedNotification object:nil];
 }
+
 - (void)viewWillDisappear:(BOOL)animated {
 	BlioAcapelaAudioManager * tts = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
 	if (tts != nil && [tts isSpeaking] )
@@ -147,26 +208,12 @@
 }
 
 - (void)layoutControlsForOrientation:(UIInterfaceOrientation)orientation {
-    CGFloat topMargin = kTopMargin;
-    CGFloat tweenMargin = kTweenMargin;
+    CGFloat topMargin = floorf(kTopMargin/2.0f);
+    CGFloat tweenMargin = floorf(kTweenMargin/2.0f);;
     
-    if (UIInterfaceOrientationIsLandscape(orientation)) {
-        topMargin = floorf(topMargin/2.0f);
-        tweenMargin = floorf(tweenMargin/2.0f);
-    }
-    CGRect frame = CGRectZero;
+	CGRect frame = CGRectZero;
     CGFloat yPlacement = topMargin;
-//	frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
-//    voiceLabel.frame = frame;
-//    
-//    yPlacement += tweenMargin + kLabelHeight;
-//    frame = CGRectMake(	kLeftMargin,
-//					   yPlacement,
-//					   self.view.bounds.size.width - (kRightMargin * 2.0),
-//					   kSegmentedControlHeight);
-//    voiceControl.frame = frame;
-//    
-//    yPlacement += (tweenMargin * 2.0) + kSegmentedControlHeight;
+
 	frame = CGRectMake(	kLeftMargin,
 					   yPlacement,
 					   self.view.bounds.size.width,
@@ -267,21 +314,29 @@
 		
 	}
 }
+- (NSString *)ttsBooksInLibraryDisclosure {
+	return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"TTS_BOOKS_IN_LIBRARY_DISCLOSURE",nil,[NSBundle mainBundle],@"%i of %i books in your library may be read aloud by Blio.",@"Message that discloses how many of the user's books can be read by TTS."),ttsBooks,totalBooks];
+}
 #pragma mark UITableViewDataSource Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+	if (self.availableVoices && [self.availableVoices count] > 0) return 2;
 	return 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	return NSLocalizedString(@"Voices",@"\"Voices\" table header in Audio Settings View");
+	if (section == 0) return NSLocalizedString(@"Voices",@"\"Voices\" table header in Audio Settings View");
+	return nil;
 }
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	NSInteger voicesAvailableForDownloadStatus = 0;
-	if ([[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForDownload]) voicesAvailableForDownloadStatus = 1;
-	return [self.availableVoices count] + voicesAvailableForDownloadStatus;
+	if (section == 0) {
+		NSInteger voicesAvailableForDownloadStatus = 0;
+		if ([[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForDownload]) voicesAvailableForDownloadStatus = 1;
+		return [self.availableVoices count] + voicesAvailableForDownloadStatus;
+	}
+	return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -311,6 +366,10 @@
 	return cell;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+	return [self ttsBooksInLibraryDisclosure];
+}
+
 #pragma mark UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -336,10 +395,25 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-	if (self.availableVoices && [self.availableVoices count] > 0) return self.contentView;
-	else return nil;
+	if (section == 1 && self.availableVoices && [self.availableVoices count] > 0) return self.contentView;
+	return nil;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-	return self.footerHeight;
+	if (section == 0) return ([[self ttsBooksInLibraryDisclosure] sizeWithFont:[UIFont boldSystemFontOfSize:13] constrainedToSize:CGSizeMake(self.view.bounds.size.width - kLeftMargin - kRightMargin, self.view.bounds.size.height) lineBreakMode:UILineBreakModeWordWrap]).height + 15;
+	if (section == 1) return self.footerHeight;
+	return 0;
 }
+
+#pragma mark -
+#pragma mark Fetched Results Controller Delegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+	NSLog(@"BlioAudioSettingsController controllerDidChangeContent entered");
+	ttsBooks = [[ttsFetchedResultsController fetchedObjects] count];
+	totalBooks = [[totalFetchedResultsController fetchedObjects] count];
+
+	[self.tableView reloadData];	
+}
+
+
 @end

@@ -1615,7 +1615,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryGridViewCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel;
+@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel,statusBadge;
 @synthesize accessibilityElements;
 
 - (void)dealloc {
@@ -1631,6 +1631,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.stateLabel = nil;
     self.delegate = nil;
     self.accessibilityElements = nil;
+	self.statusBadge = nil;
     [super dealloc];
 }
 
@@ -1687,6 +1688,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		resumeButton.hidden = YES;
 		[self.contentView addSubview:resumeButton];
 		
+		statusBadge = [[UIImageView alloc] initWithFrame:CGRectMake(bookWidth - 25, bookHeight - 30, 20, 20)];
+		statusBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+		[self.contentView addSubview:statusBadge];		
+		
         [aBookView release];
 	}
     return self;
@@ -1699,7 +1704,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	pauseButton.hidden = YES;
 	resumeButton.hidden = YES;
 	stateLabel.hidden = YES;
+	stateLabel.font = [UIFont boldSystemFontOfSize:12.0];
 	self.bookView.alpha = 1;
+	self.statusBadge.image = nil;
 }
 -(void)onPauseButtonPressed:(id)sender {
 	[delegate pauseProcessingForBook:[self book]];
@@ -1767,9 +1774,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.titleLabel.text = [newBook title];
 	self.cellContentDescription = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
-    if ([newBook audioRights]) {
-        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
-    }
+//    if ([newBook audioRights]) {
+//        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
+//    }
     self.progressSlider.value = [[newBook progress] floatValue];
     [self setNeedsLayout];
 //	NSLog(@"[[self.book valueForKey:@processingState] intValue]: %i",[[self.book valueForKey:@"processingState"] intValue]);
@@ -1818,9 +1825,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
 			self.resumeButton.hidden = NO;
 			self.stateLabel.hidden = NO;
-			self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
+			stateLabel.font = [UIFont boldSystemFontOfSize:10.0];
+			self.stateLabel.text = NSLocalizedString(@"Update App","\"Update App\" status indicator in BlioLibraryGridViewCell");
 			self.progressView.hidden = YES;
-			self.pauseButton.hidden = YES;			
+			self.pauseButton.hidden = YES;
+			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
 	}
 	else {
@@ -1830,6 +1839,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.pauseButton.hidden = YES;
 		self.progressBackgroundView.hidden = YES;
 		bookView.alpha = 1;
+		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
+		}
+		else if (![self.book audioRights]) {
+			self.statusBadge.image = [UIImage imageNamed:@"badge-tts.png"];
+		}
+		
 	}
 }
 -(void) listenToProcessingNotifications {
@@ -1876,11 +1892,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)onProcessingFailedNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
-		self.resumeButton.hidden = NO;
-		self.stateLabel.hidden = NO;
-		self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
-		self.progressView.hidden = YES;
-		self.pauseButton.hidden = YES;		
+//		self.resumeButton.hidden = NO;
+//		self.stateLabel.hidden = NO;
+//		self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
+//		self.progressView.hidden = YES;
+//		self.pauseButton.hidden = YES;		
 	}
 }
 
@@ -2058,7 +2074,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
 			self.accessoryView = resumeButton;
-			self.authorLabel.text = NSLocalizedString(@"Not Supported...","\"Not Supported...\" status indicator in BlioLibraryListCell");
+			self.authorLabel.text = NSLocalizedString(@"App Update Required","\"App Update Required\" status indicator in BlioLibraryListCell");
 			self.progressView.hidden = YES;
 			self.progressSlider.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];

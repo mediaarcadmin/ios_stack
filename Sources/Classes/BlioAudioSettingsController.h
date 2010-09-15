@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BlioAcapelaAudioManager.h"
 
-@interface BlioAudioSettingsController : UITableViewController {
+@interface BlioAudioSettingsController : UITableViewController <NSFetchedResultsControllerDelegate> {
 	UISegmentedControl* voiceControl;
 	UISlider* speedControl;
 	UISlider* volumeControl;
@@ -20,6 +20,10 @@
 	NSArray * availableVoices;
 	UIView * contentView;
 	CGFloat footerHeight;
+	NSInteger ttsBooks;
+	NSInteger totalBooks;
+	NSFetchedResultsController * ttsFetchedResultsController;
+	NSFetchedResultsController * totalFetchedResultsController;
 }
 @property (nonatomic, retain) UISegmentedControl * voiceControl;
 @property (nonatomic, retain) UISlider * speedControl;
@@ -31,5 +35,7 @@
 @property (nonatomic, retain) NSArray * availableVoices;
 @property (nonatomic, retain) UIView * contentView;
 @property (nonatomic, assign) CGFloat footerHeight;
+@property (nonatomic, retain) NSFetchedResultsController * ttsFetchedResultsController;
+@property (nonatomic, retain) NSFetchedResultsController * totalFetchedResultsController;
 
 @end

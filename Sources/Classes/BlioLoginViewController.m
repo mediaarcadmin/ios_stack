@@ -11,6 +11,7 @@
 #import "CellTextField.h"
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
+#import "BlioCreateAccountViewController.h"
 
 @implementation BlioLoginViewController
 
@@ -55,7 +56,7 @@
 //	[(UILabel*)self.navigationItem.titleView setTextAlignment:UITextAlignmentCenter];
 //	[(UILabel*)self.navigationItem.titleView setFont:[UIFont boldSystemFontOfSize:18.0f]];
  	
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] 
+	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
 											  initWithTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" bar button") 
 											   style:UIBarButtonItemStyleDone 
 											   target:self
@@ -86,9 +87,10 @@
 	usernameField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	usernameField.keyboardType = UIKeyboardTypeAlphabet;
 	usernameField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	usernameField.returnKeyType = UIReturnKeyNext;
 	usernameField.autocapitalizationType = UITextAutocapitalizationTypeWords;
 	usernameField.autocorrectionType = UITextAutocorrectionTypeNo;
-	usernameField.placeholder = NSLocalizedString(@"Username",@"\"Username\" placeholder");
+	usernameField.placeholder = NSLocalizedString(@"E-mail Address",@"\"E-mail Address\" placeholder");
 	usernameField.delegate = self;
 	
 	NSMutableDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] objectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
@@ -194,38 +196,62 @@
 	
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 1;
+	return 3;
 }
 	
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return 2;
+	if (section == 0) return 2;
+	else return 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	return NSLocalizedStringWithDefaultValue(@"LOGIN_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"If you have a blioreader.com username, login now to retrieve your latest blioreader.com purchases.",@"Explanatory message that appears at the bottom of the Login table.");
+	if (section == 0) return NSLocalizedStringWithDefaultValue(@"LOGIN_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"If you have a blioreader.com username, login now to retrieve your latest blioreader.com purchases.",@"Explanatory message that appears at the bottom of the Login table.");
+	return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	
 	return kCellHeight;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	UITableViewCell *cell = nil;
+	NSInteger section = [indexPath section];
 	NSInteger row = [indexPath row];
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellTextField_ID];
-    if (cell == nil) {
-		cell = [[[CellTextField alloc] initWithFrame:CGRectZero reuseIdentifier:kCellTextField_ID] autorelease];
-		//((CellTextField *)cell).delegate = self;
-        //cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellTextField_ID] autorelease];
-    }
-	
-	if (row == 0) 
-		((CellTextField *)cell).view = [self createUsernameTextField];
-	else
-		((CellTextField *)cell).view = [self createPasswordTextField];
-	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+	if (section == 0) {
+		cell = [tableView dequeueReusableCellWithIdentifier:kCellTextField_ID];
+		if (cell == nil) {
+			cell = [[[CellTextField alloc] initWithFrame:CGRectZero reuseIdentifier:kCellTextField_ID] autorelease];
+			//((CellTextField *)cell).delegate = self;
+			//cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellTextField_ID] autorelease];
+		}
+		
+		if (row == 0) 
+			((CellTextField *)cell).view = [self createUsernameTextField];
+		else
+			((CellTextField *)cell).view = [self createPasswordTextField];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+	}
+	else {
+		NSString * genericTableViewCellID = @"genericTableCell";
+		cell = [tableView dequeueReusableCellWithIdentifier:genericTableViewCellID];
+		if (cell == nil) cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:genericTableViewCellID] autorelease];		
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+		if (section == 1) cell.textLabel.text = @"Forgot Password";
+		else if (section == 2) cell.textLabel.text = @"Create New Account";
+	}
 	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSInteger section = [indexPath section];
+	if (section == 1) {
+		return;
+	}
+	else if (section == 2) {
+		BlioCreateAccountViewController * createAccountViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
+		[self.navigationController pushViewController:createAccountViewController animated:YES];
+	}
 }
 
 @end
