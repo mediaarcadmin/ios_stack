@@ -12,11 +12,13 @@
     NSString *_title;
     SEL _action;
     UIColor *_color;
+    NSString *_accessibilityLabel;
 }
 
 @property(nonatomic, copy) NSString *title;
 @property(nonatomic, assign) SEL action;
 @property(nonatomic, retain) UIColor* color;
+@property(nonatomic, copy) NSString *accessibilityLabel;
 
 - (id)initWithTitle:(NSString *)title action:(SEL)action;
 - (void)invokeAt:(UIResponder *)responder;

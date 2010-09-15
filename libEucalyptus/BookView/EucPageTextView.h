@@ -26,9 +26,10 @@
                                         inBook:(id<EucBook>)book;
 
 - (NSArray *)blockIdentifiers;
-- (CGRect)frameOfBlockWithIdentifier:(id)id;
-- (NSArray *)identifiersForElementsOfBlockWithIdentifier:(id)id;
-- (NSArray *)rectsForElementWithIdentifier:(id)paragraphId ofBlockWithIdentifier:(id)wordOffset;
+- (CGRect)frameOfBlockWithIdentifier:(id)blockId;
+- (NSArray *)identifiersForElementsOfBlockWithIdentifier:(id)blockId;
+- (NSArray *)rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+- (NSString *)accessibilityLabelForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 
 - (void)clear;
 

@@ -52,8 +52,7 @@
         
         EucMenuView *menuView = self.menuView;
         if(menuView) {
-            menuView.titles = [menuItems valueForKey:@"title"];
-            menuView.colors = [menuItems valueForKey:@"color"];
+            menuView.items = menuItems;
 
             if(self.isMenuVisible) {
                 if(_menuSelectStepCount != 0) {
@@ -64,7 +63,8 @@
                 
                 menuView.selected = NO;
                 [menuView positionAndResizeForAttachingToRect:self.targetRect fromView:self.targetView];
-                
+                UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+
                 CATransition *transition = [CATransition animation];
                 transition.type = kCATransitionFade;
                 transition.duration = 0.1f;
@@ -81,6 +81,7 @@
         if(menuView && menuView.isHidden) {
             [menuView removeFromSuperview];
             self.menuView = nil;
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         }
     }
 }
@@ -103,10 +104,12 @@
             }
             
             NSArray *menuItems = self.menuItems;
-            menuView.titles = [menuItems valueForKey:@"title"];
-            menuView.colors = [menuItems valueForKey:@"color"];
+            menuView.items = menuItems;
+
             [self.targetView.window addSubview:menuView];
             [menuView positionAndResizeForAttachingToRect:self.targetRect fromView:self.targetView];
+            
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         } else {
             if(menuView) {
                 menuView.hidden = YES;
@@ -172,7 +175,7 @@
                 [[UIApplication sharedApplication] endIgnoringInteractionEvents]; 
             }
             break;
-    }
+    }    
 }
 
 

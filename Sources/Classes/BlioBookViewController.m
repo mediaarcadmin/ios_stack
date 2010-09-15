@@ -515,6 +515,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
+	
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
+                                            style:UIBarButtonItemStylePlain
+                                           target:self 
+                                           action:nil];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
+    [item setEnabled:NO];
+	
+    [readingItems addObject:item];
+    [item release]; 
+	
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
     
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
                                             style:UIBarButtonItemStylePlain
@@ -525,11 +540,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
     [readingItems addObject:item];
     [item release];
-    
+	
+ /*     
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
-    
+  
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
@@ -540,7 +556,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
     [readingItems addObject:item];
     [item release];
-    
+ */   
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];  
@@ -568,7 +584,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                    action:@selector(toggleAudio:)];
             [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
             [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
-            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitStartsMediaSession];
+            
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitStartsMediaSession];
+            } else {
+                [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
+            }
             
         } else {
             audioImage = [UIImage imageNamed:@"icon-noTTS.png"];
@@ -578,7 +599,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                    action:nil];
             [item setEnabled:NO];
             [item setAccessibilityLabel:NSLocalizedString(@"Audio is not available for this book", @"Accessibility label for Book View Controller Audio unavailable button")];
-            [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitStartsMediaSession| UIAccessibilityTraitNotEnabled];
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitStartsMediaSession| UIAccessibilityTraitNotEnabled];
+            } else {
+                [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitNotEnabled];
+            }
         }
 
     [readingItems addObject:item];
@@ -1381,8 +1406,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         slider.bookViewController = self;
         slider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         [slider setAccessibilityLabel:NSLocalizedString(@"Page Chooser", @"Accessibility label for Book View Controller Progress slider")];
-        [slider setAccessibilityTraits:UIAccessibilityTraitAdjustable];
-        [slider setAccessibilityHint:NSLocalizedString(@"Double-tap and hold, then drag left or right to change the page", @"Accessibility hint for Book View Controller Progress slider")];
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            [slider setAccessibilityTraits:UIAccessibilityTraitAdjustable];
+            [slider setAccessibilityHint:NSLocalizedString(@"Double-tap and hold, then drag left or right to change the page", @"Accessibility hint for Book View Controller Progress slider")];
+        }
         //[
         _pageJumpSlider = slider;
         
@@ -1504,7 +1531,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if(![currentValue isEqualToString:newValue]) {
         [_pageJumpSlider setAccessibilityValue:newValue];
         if(self.toolbarsVisible && !_pageJumpView.isHidden) {
-            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newValue);
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newValue);
+            }
         }
     }
 }

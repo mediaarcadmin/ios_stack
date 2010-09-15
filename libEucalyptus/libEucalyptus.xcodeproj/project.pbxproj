@@ -464,6 +464,10 @@
 		7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
 		7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
+		7DC0FD2912311FB100FBE9B3 /* EucSelectorKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05483E122EF101002B72C9 /* EucSelectorKnob.m */; };
+		7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D05483D122EF101002B72C9 /* EucSelectorKnob.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DC0FE381234E85A00FBE9B3 /* EucSelectorAccessibilityMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */; };
+		7DC0FE391234E85F00FBE9B3 /* EucSelectorAccessibilityMask.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DC0FDBA1234059600FBE9B3 /* EucSelectorAccessibilityMask.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DCA57B2114981FC007EDB15 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA57B1114981FC007EDB15 /* libiconv.dylib */; };
 		7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
@@ -618,6 +622,8 @@
 		7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestMainWindow.xib; sourceTree = "<group>"; };
 		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
 		7D035B6811ECD03B00F39592 /* Pride and Prejudice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Pride and Prejudice"; sourceTree = "<group>"; };
+		7D05483D122EF101002B72C9 /* EucSelectorKnob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorKnob.h; sourceTree = "<group>"; };
+		7D05483E122EF101002B72C9 /* EucSelectorKnob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorKnob.m; sourceTree = "<group>"; };
 		7D0D818211075E2A00C672AC /* EucSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelector.h; sourceTree = "<group>"; };
 		7D0D818311075E2A00C672AC /* EucSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelector.m; sourceTree = "<group>"; };
 		7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSStringSmartQuotes.h; sourceTree = "<group>"; };
@@ -1169,6 +1175,8 @@
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
 		7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Down and out in the Magic Kingdom"; sourceTree = "<group>"; };
+		7DC0FDBA1234059600FBE9B3 /* EucSelectorAccessibilityMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorAccessibilityMask.h; sourceTree = "<group>"; };
+		7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorAccessibilityMask.m; sourceTree = "<group>"; };
 		7DCA57B1114981FC007EDB15 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		7DCA5804114985C7007EDB15 /* pg103.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pg103.epub; sourceTree = "<group>"; };
 		7DCF826E114E5D0800603379 /* EucCSSLayouter_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayouter_Package.h; sourceTree = "<group>"; };
@@ -1390,6 +1398,10 @@
 				7D883FCB111C7735009669A8 /* EucMenuView.m */,
 				7D883F63111C586F009669A8 /* EucMenuController.h */,
 				7D883F64111C586F009669A8 /* EucMenuController.m */,
+				7D05483D122EF101002B72C9 /* EucSelectorKnob.h */,
+				7D05483E122EF101002B72C9 /* EucSelectorKnob.m */,
+				7DC0FDBA1234059600FBE9B3 /* EucSelectorAccessibilityMask.h */,
+				7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */,
 			);
 			path = Selector;
 			sourceTree = "<group>";
@@ -2850,6 +2862,8 @@
 				7DF8BC3311B526E3003B7A97 /* THBaseEAGLView.h in Headers */,
 				7DF1AF9D11D9169700506BD5 /* THUIDeviceAdditions.h in Headers */,
 				7D27DC861223E166009E7B64 /* THAccessibilityElement.h in Headers */,
+				7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */,
+				7DC0FE391234E85F00FBE9B3 /* EucSelectorAccessibilityMask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3484,6 +3498,8 @@
 				7DF8BC3411B526E3003B7A97 /* THBaseEAGLView.m in Sources */,
 				7DF1AF9B11D9168F00506BD5 /* THUIDeviceAdditions.m in Sources */,
 				7D27DC851223E161009E7B64 /* THAccessibilityElement.m in Sources */,
+				7DC0FD2912311FB100FBE9B3 /* EucSelectorKnob.m in Sources */,
+				7DC0FE381234E85A00FBE9B3 /* EucSelectorAccessibilityMask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

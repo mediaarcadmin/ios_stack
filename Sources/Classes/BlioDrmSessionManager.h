@@ -36,11 +36,6 @@
 - (void)reportReading;
 - (BOOL)getLicense:(NSString*)token;
 - (BOOL)decryptData:(NSData *)data;
-//- (void)reportReadingForBookWithID:(NSManagedObjectID *)aBookID;
-//- (BOOL)getLicenseForBookWithID:(NSManagedObjectID *)aBookID sessionToken:(NSString*)token;
-//- (BOOL)decryptData:(NSData *)data forBookWithID:(NSManagedObjectID *)aBookID;
-- (void)startLicenseCooldownTimer;
-- (void)resetLicenseCooldownTimer;
 
 @end
 

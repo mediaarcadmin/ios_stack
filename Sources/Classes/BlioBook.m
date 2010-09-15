@@ -262,7 +262,10 @@
 }
 
 - (BOOL)hasAppropriateCoverThumbForGrid {
-	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+    CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }
 	
 	CGFloat targetThumbWidth = 0;
 	CGFloat targetThumbHeight = 0;
@@ -289,7 +292,10 @@
 }
 - (UIImage *)coverThumbForGrid {
 	
-	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+	CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }
 
 	CGFloat targetThumbWidth = 0;
 	CGFloat targetThumbHeight = 0;
@@ -319,7 +325,10 @@
     return [UIImage imageWithData:imageData];
 }
 - (BOOL)hasAppropriateCoverThumbForList {
-	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+	CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }
 	
 	CGFloat targetThumbWidth = 0;
 	CGFloat targetThumbHeight = 0;
@@ -340,7 +349,10 @@
 }
 - (UIImage *)coverThumbForList {
 	
-	CGFloat scaleFactor = [[UIScreen mainScreen] scale];
+	CGFloat scaleFactor = 1;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        scaleFactor = [[UIScreen mainScreen] scale];
+    }
 
 	CGFloat targetThumbWidth = 0;
 	CGFloat targetThumbHeight = 0;

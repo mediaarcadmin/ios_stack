@@ -1235,6 +1235,32 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return [NSArray array];
 }
 
+- (NSString *)eucSelector:(EucSelector *)selector accessibilityLabelForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)blockID {
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    
+    BlioTextFlowBlock *block = nil;
+    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+        if (candidateBlock.blockID == blockID) {
+            block = candidateBlock;
+            break;
+        }
+    }
+    
+    if (block) {
+        BlioTextFlowPositionedWord *word = nil;
+        for (BlioTextFlowPositionedWord *candidateWord in [block words]) {
+            if([[candidateWord wordID] isEqual:wordID]) {
+                word = candidateWord;
+                break;
+            }
+        }        
+        if (word) {
+            return word.string;
+        }
+    } 
+    return nil;
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == self.selector) {
         if ([keyPath isEqualToString:@"tracking"]) {
@@ -1492,6 +1518,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [self.scrollView setContentOffset:[self contentOffsetToCenterPage:targetPage zoomScale:self.scrollView.zoomScale]]; 
         self.pageNumber = targetPage;
         [self didChangeValueForKey:@"pageNumber"];
+        
+        // This is set to YES when scrolling is seen, and usually set back to NO
+        // when animation ends, but we're not animating.
+        [self.selector setShouldHideMenu:NO];
     }
     //NSLog(@"Done go to");
 }

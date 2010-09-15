@@ -491,7 +491,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
                                               authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
 											 ePubPath:nil
-		 //                                   pdfPath:@"PDFs/Three Little Pigs.pdf
 											  pdfPath:nil
 											  xpsPath:@"XPS/Three Little Pigs.xps"
 										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
@@ -503,6 +502,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
 		
 #endif // DEMO_MODE
+#ifdef DEV_MODE
 
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
@@ -601,6 +601,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
+		
+#endif // DEV_MODE
         
     }
 }

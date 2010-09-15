@@ -13,6 +13,7 @@
 @synthesize title = _title;
 @synthesize action = _action;
 @synthesize color = _color;
+@synthesize accessibilityLabel = _accessibilityLabel;
 
 - (id)initWithTitle:(NSString *)title action:(SEL)action
 {

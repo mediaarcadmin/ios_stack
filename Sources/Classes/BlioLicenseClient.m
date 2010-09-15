@@ -35,7 +35,9 @@
 			[self.request setValue:@"http://schemas.microsoft.com/DRM/2007/03/protocols/JoinDomain" forHTTPHeaderField:@"SoapAction"];
 		else if ( action == BlioSoapActionLeaveDomain ) 
 			[self.request setValue:@"http://schemas.microsoft.com/DRM/2007/03/protocols/LeaveDomain" forHTTPHeaderField:@"SoapAction"];
-			
+		else if ( action == BlioSoapActionAcknowledgeLicense ) 
+			[self.request setValue:@"http://schemas.microsoft.com/DRM/2007/03/protocols/AcknowledgeLicense" forHTTPHeaderField:@"SoapAction"];
+		
 		[self.request setValue:[NSString stringWithFormat:@"%d",msgSize] forHTTPHeaderField:@"Content-Length"];
 		[self.request setHTTPBody:[NSData dataWithBytes:(const void*)msg length:(NSUInteger)msgSize]];		
 	}

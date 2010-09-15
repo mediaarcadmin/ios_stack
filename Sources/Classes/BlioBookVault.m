@@ -1,8 +1,16 @@
 #import "BlioBookVault.h"
 #import <libxml/xmlstring.h>
+
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
+
+#ifdef TEST_MODE
+static NSString* const testBookvaultUrl = @"http://prl.kreader.net/Bookvault.asmx";
+#else
+static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.com/BookVault.asmx";
+#endif
+
 @implementation BookVault_RegisterSale
 - (id)init
 {
@@ -2831,11 +2839,21 @@
 }
 + (BookVaultSoap *)BookVaultSoap
 {
-	return [[[BookVaultSoap alloc] initWithAddress:@"http://bookvault.blioreader.com/BookVault.asmx"] autorelease];
+#ifdef TEST_MODE
+	return [[[BookVaultSoap alloc] initWithAddress:testBookvaultUrl] autorelease];
+#else	
+	return [[[BookVaultSoap alloc] initWithAddress:productionBookvaultUrl] autorelease];
+#endif
 }
 + (BookVaultSoap12 *)BookVaultSoap12
 {
-	return [[[BookVaultSoap12 alloc] initWithAddress:@"http://bookvault.blioreader.com/BookVault.asmx"] autorelease];
+#ifdef TEST_MODE
+	return [[[BookVaultSoap12 alloc] initWithAddress:testBookvaultUrl] autorelease];
+#else	
+	//return [[[BookVaultSoap12 alloc] initWithAddress:@"http://bookvault.blioreader.com/BookVault.asmx"] autorelease];
+	return [[[BookVaultSoap12 alloc] initWithAddress:productionBookvaultUrl] autorelease];
+#endif
+	
 }
 @end
 @implementation BookVaultSoap

@@ -1074,7 +1074,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
 
 #pragma mark -
-#pragma mark Highlighter
+#pragma mark Selector
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector
 {
@@ -1115,6 +1115,14 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
         return ret;
     }
     return nil;
+}
+
+- (NSString *)eucSelector:(EucSelector *)selector accessibilityLabelForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+{
+    EucPageView *pageView = (EucPageView *)(_pageTurningView.currentPageView);
+    UIView<EucPageTextView> *pageTextView = pageView.pageTextView;
+    return [pageTextView accessibilityLabelForElementWithIdentifier:elementId
+                                              ofBlockWithIdentifier:blockId];
 }
 
 - (NSArray *)_highlightRangesForIndexPointRange:(THPair *)indexPointRange

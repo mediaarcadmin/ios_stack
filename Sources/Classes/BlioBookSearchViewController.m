@@ -10,6 +10,7 @@
 #import "BlioBookSearchViewController.h"
 #import "BlioBookViewController.h"
 #import "UIDevice+BlioAdditions.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 #define BLIOBOOKSEARCHCELLPAGETAG 1233
 #define BLIOBOOKSEARCHCELLPREFIXTAG 1234
@@ -869,28 +870,36 @@ typedef enum {
             [self.activityView startAnimating];
             [self.statusLabel setText:NSLocalizedString(@"Searching...", @"Book Search search in progress")];
             [self.matchesLabel setText:nil];
-            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Searching.", @"Book Search search in progress accessibility announcement"));
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Searching.", @"Book Search search in progress accessibility announcement"));
+            }
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusInProgressHasWrapped:
             [self.activityView startAnimating];
             [self.statusLabel setText:NSLocalizedString(@"Search Wrapped...", @"Book Search search in progress, has reached end and is continuing from the start")];
             [self.matchesLabel setText:nil];
-            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Search Wrapped.", @"Book Search search in progress, has wrapped, accessibility announcement"));
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Search Wrapped.", @"Book Search search in progress, has wrapped, accessibility announcement"));
+            }
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusComplete:
             [self.activityView stopAnimating];
             [self.statusLabel setText:NSLocalizedString(@"Search Completed", @"Book Search search has completed")];
             [self.matchesLabel setText:matchString];
-            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:NSLocalizedString(@"Search Completed. %@", @"Book Search search has completed, accessibility announcement"), matchString]);
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:NSLocalizedString(@"Search Completed. %@", @"Book Search search has completed, accessibility announcement"), matchString]);
+            }
             [self setHidden:NO];
             break;
         case kBlioBookSearchStatusStopped:
             [self.activityView stopAnimating];
             [self.statusLabel setText:NSLocalizedString(@"Load More...", @"Book Search load more results")];
             [self.matchesLabel setText:matchString];
-            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:NSLocalizedString(@"%@", @"Book Search matches found accessibility announcement"), matchString]);                                                                      
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:NSLocalizedString(@"%@", @"Book Search matches found accessibility announcement"), matchString]);                                                                      
+            }
             [self setHidden:NO];
             break;
         default:
