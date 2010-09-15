@@ -143,9 +143,9 @@
 	else NSLog(@"WARNING: Cannot retrieve books, there is no store helper for sourceID: %i",sourceID);
 }
 - (NSString*)tokenForSourceID:(BlioBookSourceID)sourceID {
-	return @"0cac1444-f4a7-4d47-96c8-6a926bc10a00";
-	//if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] && [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] hasValidToken]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] token];
-	//return nil;
+	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] && [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] hasValidToken]) 
+		return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] token];
+	return nil;
 }
 - (void)logoutForSourceID:(BlioBookSourceID)sourceID {
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] logout];
