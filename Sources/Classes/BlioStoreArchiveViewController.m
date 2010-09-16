@@ -11,9 +11,16 @@
 #import "BlioLibraryViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
+#import "BlioDrmSessionManager.h"
+#import "BlioAppSettingsConstants.h"
+
+@interface BlioStoreArchiveViewController()
+@property (nonatomic, retain) BlioBook* currBook;
+@end
 
 @implementation BlioStoreArchiveViewController
 
+@synthesize currBook;
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate,noResultsLabel,maxLayoutPageEquivalentCount;
@@ -23,6 +30,7 @@
         self.title = NSLocalizedString(@"Archive",@"\"Archive\" view controller header");
         UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Archive",@"\"Archive\" button title") image:[UIImage imageNamed:@"icon-vault.png"] tag:kBlioStoreMyVaultTag];
         self.tabBarItem = theItem;
+		self.currBook = nil;
         [theItem release];
     }
     return self;
@@ -155,8 +163,35 @@
 -(void) pauseProcessingForBook:(BlioBook*)book {
 	[self.processingDelegate pauseProcessingForBook:book];
 }
+
 -(void) enqueueBook:(BlioBook*)book {
+	if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] != BlioDeviceRegisteredStatusRegistered ) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"This device is not registered...",@"\"This device is not registered...\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for viewing paid content. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
+									delegate:self 
+						   cancelButtonTitle:nil
+						   otherButtonTitles:@"Not Now", @"Register", nil];
+		currBook = book;
+		return;
+	}
 	[self.processingDelegate enqueueBook:book];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if (buttonIndex == 1) {
+		BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
+		if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
+										delegate:self 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:@"OK", nil];
+		}
+		else if ( currBook != nil )
+			[self enqueueBook:currBook]; 
+		[drmSessionManager release];
+	}
 }
 
 -(void) calculateMaxLayoutPageEquivalentCount {

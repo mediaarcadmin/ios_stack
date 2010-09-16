@@ -9,9 +9,9 @@
 #import "BlioStoreManager.h"
 #import "BlioOnlineStoreHelper.h"
 #import "BlioLoginViewController.h"
-// RESTORE FOR OLD DRM INTERFACE
-//#import "BlioDrmManager.h"
+#import "BlioAlertManager.h"
 #import "BlioDrmSessionManager.h"
+#import "BlioAppSettingsConstants.h"
 
 @implementation BlioStoreManager
 
@@ -124,12 +124,19 @@
 	if (keys && [keys count] > 0) {
 		[self.deviceRegistrationPromptAlertViews removeObjectForKey:[keys objectAtIndex:0]];
 		BlioStoreHelper * storeHelper = [self storeHelperForSourceID:[[keys objectAtIndex:0] intValue]];
-		if (storeHelper && buttonIndex == 1) {
-			//if ( [[BlioDrmManager getDrmManager] joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
-			BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-			if ( [drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
-					[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
-			[drmSessionManager release];
+		if (storeHelper ) {
+			if ( buttonIndex == 1 ) {
+				BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
+				if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
+					[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+												 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
+													delegate:self 
+												cancelButtonTitle:nil
+												otherButtonTitles:@"OK", nil];
+				[drmSessionManager release];
+			}
+			else if (  buttonIndex == 0 )
+				[[NSUserDefaults standardUserDefaults] setInteger:BlioDeviceRegisteredStatusUnregistered forKey:kBlioDeviceRegisteredDefaultsKey];
 		}
 	}
 }
