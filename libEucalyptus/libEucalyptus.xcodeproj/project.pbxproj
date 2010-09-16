@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D021762124025E7008CE201 /* euc_page_turning.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 7D021760124025E7008CE201 /* euc_page_turning.fsh */; };
+		7D021763124025E7008CE201 /* euc_page_turning.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 7D021761124025E7008CE201 /* euc_page_turning.vsh */; };
+		7D0217A912402B17008CE201 /* THEmbeddedResourceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0217A712402B17008CE201 /* THEmbeddedResourceManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D0217AA12402B17008CE201 /* THEmbeddedResourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0217A812402B17008CE201 /* THEmbeddedResourceManager.m */; };
 		7D034F9B10C2CD820085778B /* TransitionTestRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9310C2CD820085778B /* TransitionTestRootViewController.m */; };
 		7D034F9C10C2CD820085778B /* TransitionTestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9510C2CD820085778B /* TransitionTestAppDelegate.m */; };
 		7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9710C2CD820085778B /* TransitionTestMain.m */; };
@@ -511,6 +515,31 @@
 		AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */; settings = {ATTRIBUTES = (); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildRule section */
+		7D02176B1240264C008CE201 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.thresource";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_NAME).c",
+			);
+			script = "pushd \"${INPUT_FILE_DIR}\"\nxxd -i \"${INPUT_FILE_NAME}\" \"${DERIVED_FILES_DIR}/${INPUT_FILE_NAME}.c\"\npopd";
+		};
+		7D021790124029C7008CE201 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.[vf]sh";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_NAME).thresource",
+			);
+			script = "dd if=\"${INPUT_FILE_PATH}\" of=\"${DERIVED_FILES_DIR}/${INPUT_FILE_NAME}.thresource\" conv=ibm";
+		};
+/* End PBXBuildRule section */
+
 /* Begin PBXContainerItemProxy section */
 		7D3F4C2F11EF29940065A5F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -613,6 +642,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D021760124025E7008CE201 /* euc_page_turning.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = euc_page_turning.fsh; sourceTree = "<group>"; };
+		7D021761124025E7008CE201 /* euc_page_turning.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = euc_page_turning.vsh; sourceTree = "<group>"; };
+		7D0217A712402B17008CE201 /* THEmbeddedResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEmbeddedResourceManager.h; sourceTree = "<group>"; };
+		7D0217A812402B17008CE201 /* THEmbeddedResourceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEmbeddedResourceManager.m; sourceTree = "<group>"; };
 		7D034F8910C2CCBE0085778B /* TransitionTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TransitionTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D034F8B10C2CCBF0085778B /* TransitionTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TransitionTest-Info.plist"; sourceTree = "<group>"; };
 		7D034F9210C2CD820085778B /* TransitionTestRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransitionTestRootViewController.h; sourceTree = "<group>"; };
@@ -1357,6 +1390,15 @@
 				AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */,
 			);
 			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		7D02175F124025E7008CE201 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				7D021760124025E7008CE201 /* euc_page_turning.fsh */,
+				7D021761124025E7008CE201 /* euc_page_turning.vsh */,
+			);
+			path = Shaders;
 			sourceTree = "<group>";
 		};
 		7D034F9110C2CD820085778B /* Classes */ = {
@@ -2213,12 +2255,13 @@
 		7D36376E1238F534002BDD2B /* PageTurning */ = {
 			isa = PBXGroup;
 			children = (
-				7D36376F1238F534002BDD2B /* EucPageTurningView.h */,
-				7D3637701238F534002BDD2B /* EucPageTurningView.m */,
 				7D3637781238F80C002BDD2B /* EucPageTurningPage.h */,
 				7D3637791238F80C002BDD2B /* EucPageTurningPage.m */,
 				7D3637C612391151002BDD2B /* EucPageTurningMeshSource.h */,
 				7D3637C712391151002BDD2B /* EucPageTurningMeshSource.m */,
+				7D36376F1238F534002BDD2B /* EucPageTurningView.h */,
+				7D3637701238F534002BDD2B /* EucPageTurningView.m */,
+				7D02175F124025E7008CE201 /* Shaders */,
 			);
 			path = PageTurning;
 			sourceTree = "<group>";
@@ -2312,6 +2355,8 @@
 				7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */,
 				7DF1AF9C11D9169700506BD5 /* THUIDeviceAdditions.h */,
 				7DF1AF9A11D9168F00506BD5 /* THUIDeviceAdditions.m */,
+				7D0217A712402B17008CE201 /* THEmbeddedResourceManager.h */,
+				7D0217A812402B17008CE201 /* THEmbeddedResourceManager.m */,
 				7D3F4D1111EF38B80065A5F7 /* Base */,
 			);
 			path = Utils;
@@ -2876,6 +2921,7 @@
 				7D36377A1238F80C002BDD2B /* EucPageTurningPage.h in Headers */,
 				7D3637921238F889002BDD2B /* THOpenGLUtils.h in Headers */,
 				7D3637C812391151002BDD2B /* EucPageTurningMeshSource.h in Headers */,
+				7D0217A912402B17008CE201 /* THEmbeddedResourceManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3078,6 +3124,8 @@
 				D2AAC07B0554694100DB518D /* Sources */,
 			);
 			buildRules = (
+				7D021790124029C7008CE201 /* PBXBuildRule */,
+				7D02176B1240264C008CE201 /* PBXBuildRule */,
 			);
 			dependencies = (
 				7D3F4E6B11EF3CFE0065A5F7 /* PBXTargetDependency */,
@@ -3519,6 +3567,9 @@
 				7D3637721238F534002BDD2B /* EucPageTurningView.m in Sources */,
 				7D36377B1238F80C002BDD2B /* EucPageTurningPage.m in Sources */,
 				7D3637C912391151002BDD2B /* EucPageTurningMeshSource.m in Sources */,
+				7D021762124025E7008CE201 /* euc_page_turning.fsh in Sources */,
+				7D021763124025E7008CE201 /* euc_page_turning.vsh in Sources */,
+				7D0217AA12402B17008CE201 /* THEmbeddedResourceManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

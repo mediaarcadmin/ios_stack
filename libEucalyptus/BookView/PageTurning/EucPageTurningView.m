@@ -15,8 +15,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import <AudioToolbox/AudioToolbox.h>
-#include <tgmath.h>
+#import <tgmath.h>
 #import "THBaseEAGLView.h"
+#import "THEmbeddedResourceManager.h"
 
 #define FOV_ANGLE ((GLfloat)10.0f)
 
@@ -213,7 +214,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 }
 
 - (void)_pageTurningViewInternalInit
-{    
+{       
     GLfloat white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     memcpy(_specularColor, white, 4 * sizeof(GLfloat));
     _shininess = 60.0;
