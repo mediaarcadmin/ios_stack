@@ -528,8 +528,8 @@
 				}
 				[bookOps addObject:paidBookOp];
 //			}
-		}	
-		if (![aBook manifestPreAvailabilityCompleteForKey:@"xpsFilename"]) {
+		}
+		if (![aBook manifestPreAvailabilityCompleteForKey:@"xpsFilename"] && !placeholderOnly) {
 
 			NSMutableArray * xpsOps = [NSMutableArray array];
 
