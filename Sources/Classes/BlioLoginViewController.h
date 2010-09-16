@@ -11,14 +11,14 @@
 #import "BlioStoreManager.h"
 
 @interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource> {
-	UITextField* usernameField;
+	UITextField* emailField;
 	UITextField* passwordField;
 	UILabel* statusField;
 	UIActivityIndicatorView* activityIndicator;
 	BlioBookSourceID sourceID;
 }
 
-@property (nonatomic,retain) UITextField* usernameField;
+@property (nonatomic,retain) UITextField* emailField;
 @property (nonatomic,retain) UITextField* passwordField;
 @property (nonatomic,retain) UILabel* statusField;
 @property (nonatomic,retain) UIActivityIndicatorView* activityIndicator;
@@ -27,5 +27,7 @@
 
 -(void)receivedLoginResult:(BlioLoginResult)loginResult;
 -(id)initWithSourceID:(BlioBookSourceID)bookSourceID;
+- (UITextField *)createEmailTextField;
+- (UITextField *)createPasswordTextField;
 
 @end

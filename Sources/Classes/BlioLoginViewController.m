@@ -15,7 +15,7 @@
 
 @implementation BlioLoginViewController
 
-@synthesize sourceID, usernameField, passwordField, activityIndicator, statusField;
+@synthesize sourceID, emailField, passwordField, activityIndicator, statusField;
 
 - (id)initWithSourceID:(BlioBookSourceID)bookSourceID
 {
@@ -81,27 +81,27 @@
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-- (UITextField *)createUsernameTextField {
+- (UITextField *)createEmailTextField {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.usernameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
-	usernameField.clearButtonMode = UITextFieldViewModeWhileEditing;
-	usernameField.keyboardType = UIKeyboardTypeAlphabet;
-	usernameField.keyboardAppearance = UIKeyboardAppearanceAlert;
-	usernameField.returnKeyType = UIReturnKeyNext;
-	usernameField.autocapitalizationType = UITextAutocapitalizationTypeWords;
-	usernameField.autocorrectionType = UITextAutocorrectionTypeNo;
-	usernameField.placeholder = NSLocalizedString(@"E-mail Address",@"\"E-mail Address\" placeholder");
-	usernameField.delegate = self;
+	self.emailField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
+	emailField.keyboardType = UIKeyboardTypeAlphabet;
+	emailField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	emailField.returnKeyType = UIReturnKeyNext;
+	emailField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+	emailField.autocorrectionType = UITextAutocorrectionTypeNo;
+	emailField.placeholder = NSLocalizedString(@"E-mail Address",@"\"E-mail Address\" placeholder");
+	emailField.delegate = self;
 	
 	NSMutableDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] objectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
 	if (loginCredentials && [loginCredentials objectForKey:@"username"]) {
-		usernameField.text = [loginCredentials objectForKey:@"username"];
+		emailField.text = [loginCredentials objectForKey:@"username"];
 	}
 	
 	//temporarily populate to save time
-//	usernameField.text = @"achien@knfbreader.com";
+//	emailField.text = @"achien@knfbreader.com";
 	
-	return usernameField;
+	return emailField;
 }
 	
 - (UITextField *)createPasswordTextField
@@ -138,7 +138,7 @@
 }
 
 - (void)dealloc {
-	self.usernameField = nil;
+	self.emailField = nil;
 	self.passwordField = nil;
 	self.statusField = nil;
 	self.activityIndicator = nil;
@@ -149,7 +149,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
-	if (textField == usernameField) 
+	if (textField == emailField) 
 		[passwordField becomeFirstResponder];
 	else { 
 		statusField.textColor = [UIColor colorWithRed:76.0/255.0 green:86.0/255.0 blue:108.0/255.0 alpha:1.0];
@@ -157,11 +157,11 @@
 		[activityIndicator startAnimating];
 		
 		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-		[loginCredentials setObject:[NSString stringWithString:usernameField.text] forKey:@"username"];
+		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
 		[loginCredentials setObject:[NSString stringWithString:passwordField.text] forKey:@"password"];
 		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
 
-		[[BlioStoreManager sharedInstance] loginWithUsername:usernameField.text password:passwordField.text sourceID:self.sourceID];
+		[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
 	}
 	[textField resignFirstResponder];
 	return NO;
@@ -227,7 +227,7 @@
 		}
 		
 		if (row == 0) 
-			((CellTextField *)cell).view = [self createUsernameTextField];
+			((CellTextField *)cell).view = [self createEmailTextField];
 		else
 			((CellTextField *)cell).view = [self createPasswordTextField];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;

@@ -11,6 +11,9 @@
 #import "BlioAppSettingsConstants.h"
 #import "BlioAlertManager.h"
 
+@interface BlioCreateAccountViewController (PRIVATE)
+- (UITextField *)createConfirmPasswordTextField;
+@end
 
 @implementation BlioCreateAccountViewController
 
@@ -93,8 +96,8 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 */
-- (UITextField *)createUsernameTextField {
-	UITextField * textField = [super createUsernameTextField];
+- (UITextField *)createEmailTextField {
+	UITextField * textField = [super createEmailTextField];
 	textField.text = @"";
 	return textField;
 }
@@ -156,7 +159,7 @@
 		}
 		
 	if (row == 0) 
-		((CellTextField *)cell).view = [self createUsernameTextField];
+		((CellTextField *)cell).view = [self createEmailTextField];
 	else if (row == 1) 
 		((CellTextField *)cell).view = [self createPasswordTextField];
 	else
@@ -225,12 +228,16 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
-	if (textField == usernameField) 
+	if (textField == emailField) 
 		[passwordField becomeFirstResponder];
 	else if (textField == passwordField) {
 		[confirmPasswordField becomeFirstResponder];
 	}
 	else {
+		// TODO: validate email address
+		
+		
+		
 		// check to confirm password fields match
 		if (![passwordField.text isEqualToString:confirmPasswordField.text]) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
@@ -297,7 +304,7 @@
 		[activityIndicator startAnimating];
 
 		// attempt account creation
-		NSString *post = @"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>70.124.88.130</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio; Default; Build 2.0.4722.0; Microsoft Windows NT 6.1.7600.0</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>Joe</FirstName><LastName>Consumer</LastName><UserName></UserName><UserEmail>joe.consumer@domain.com</UserEmail><UserPassword>password</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>";
+		NSString *post = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>70.124.88.130</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio iPhone/1.0; APPID-OEM-HP-001-</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>Joe</FirstName><LastName>Consumer</LastName><UserName></UserName><UserEmail>%@</UserEmail><UserPassword>%@</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>",self.emailField.text,self.passwordField.text];
 
 //		CFStringRef urlString = CFURLCreateStringByAddingPercentEscapes(
 //																		NULL,
@@ -322,6 +329,7 @@
 		self.createAccountResponseData = [NSMutableData data];
 
 		NSURLConnection * urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+		[urlConnection start];
 		[request release];
 		// attempt login
 //		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];

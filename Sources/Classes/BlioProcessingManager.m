@@ -71,7 +71,7 @@
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
 	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
 					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
-				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO fromBundle:NO];    
+				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:placeholderOnly fromBundle:NO];    
 	
 }
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
@@ -196,7 +196,7 @@
 }
 
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
-//	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
+	NSLog(@"BlioProcessingManager enqueueBook: %@ placeholderOnly: %i",aBook, placeholderOnly);
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
