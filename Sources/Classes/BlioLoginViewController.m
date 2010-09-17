@@ -46,7 +46,7 @@
 - (void)loadView {
 	[super loadView];
 	self.tableView.frame = [[UIScreen mainScreen] applicationFrame];
-	self.tableView.scrollEnabled = NO;
+	self.tableView.scrollEnabled = YES;
 	self.tableView.autoresizesSubviews = YES;
 	
 //	self.navigationItem.titleView = [[[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)] autorelease];

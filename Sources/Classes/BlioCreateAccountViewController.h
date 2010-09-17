@@ -8,16 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioLoginViewController.h"
+#import "DigitalLockerGateway.h"
 
 static NSString * const BlioPasswordInvalidCharacters = @"&\"<>'";
 static const NSUInteger BlioPasswordCharacterLengthMinimum = 8;
 
-@interface BlioCreateAccountViewController : BlioLoginViewController {
+@interface BlioCreateAccountViewController : BlioLoginViewController <DigitalLockerConnectionDelegate> {
 	UITextField* confirmPasswordField;
+	UITextField* firstNameField;
+	UITextField* lastNameField;
 	NSMutableData * createAccountResponseData;
 
 }
 @property (nonatomic,retain) UITextField* confirmPasswordField;
-@property (nonatomic,retain) NSMutableData * createAccountResponseData;
+@property (nonatomic,retain) UITextField* firstNameField;
+@property (nonatomic,retain) UITextField* lastNameField;
 
 @end

@@ -971,6 +971,9 @@
 		DCD1034B11CAB587003B737E /* DRM in Resources */ = {isa = PBXBuildFile; fileRef = DC2EB05411C96E28006AC1B6 /* DRM */; };
 		DCE78E3C123CB9960038970C /* BlioCreateAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */; };
 		DCE78E3D123CB9960038970C /* BlioCreateAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */; };
+		DCEB07741242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
+		DCEB07751242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
+		DCEB07761242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
 		DCFF6192117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
 		DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6191117F6F4E00463427 /* button-delete-black.png */; };
 		DCFF6198117F703A00463427 /* library-resumebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6196117F703A00463427 /* library-resumebutton.png */; };
@@ -1724,6 +1727,8 @@
 		DCCE467411BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFreeBooksViewController.m; sourceTree = "<group>"; };
 		DCE78E3A123CB9960038970C /* BlioCreateAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioCreateAccountViewController.h; sourceTree = "<group>"; };
 		DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioCreateAccountViewController.m; sourceTree = "<group>"; };
+		DCEB07721242AFEF0073881D /* DigitalLockerGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DigitalLockerGateway.h; sourceTree = "<group>"; };
+		DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DigitalLockerGateway.m; sourceTree = "<group>"; };
 		DCFF6190117F6F4E00463427 /* button-delete-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-red.png"; sourceTree = "<group>"; };
 		DCFF6191117F6F4E00463427 /* button-delete-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-black.png"; sourceTree = "<group>"; };
 		DCFF6196117F703A00463427 /* library-resumebutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "library-resumebutton.png"; sourceTree = "<group>"; };
@@ -1868,6 +1873,7 @@
 				DC0B993D1194F03B0040CEFB /* BlioStoreHelper.m */,
 				A368C69C116A3A52008653CF /* BlioOnlineStoreHelper.h */,
 				A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */,
+				DCEB075D1242A2A10073881D /* Digital Locker Gateway */,
 				A3892C1D1164331A006D8DF4 /* BookVault */,
 				C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */,
 				C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */,
@@ -2582,10 +2588,10 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData.framework */,
+				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2682,6 +2688,15 @@
 				DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */,
 			);
 			path = "Resources-iPad";
+			sourceTree = "<group>";
+		};
+		DCEB075D1242A2A10073881D /* Digital Locker Gateway */ = {
+			isa = PBXGroup;
+			children = (
+				DCEB07721242AFEF0073881D /* DigitalLockerGateway.h */,
+				DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */,
+			);
+			name = "Digital Locker Gateway";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2859,7 +2874,7 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData.framework */ = {
+		C986765B112411060070A03E /* GData */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = GData;
@@ -2880,7 +2895,7 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = GDataTouchUnitTests.octest;
@@ -3597,6 +3612,7 @@
 				7D8A801F121A99FB00A54E16 /* BlioBeveledView.m in Sources */,
 				A3729AF51225A18800E68C25 /* BlioDrmSessionManager.m in Sources */,
 				DCE78E3C123CB9960038970C /* BlioCreateAccountViewController.m in Sources */,
+				DCEB07751242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3708,6 +3724,7 @@
 				A30E101F123EA5B400D31157 /* BlioViewSettingsSheet.m in Sources */,
 				A30E1020123EA5B400D31157 /* BlioBeveledView.m in Sources */,
 				A30E1021123EA5B400D31157 /* BlioDrmSessionManager.m in Sources */,
+				DCEB07741242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3820,6 +3837,7 @@
 				7D8A8020121A99FB00A54E16 /* BlioBeveledView.m in Sources */,
 				A3729AF61225A18800E68C25 /* BlioDrmSessionManager.m in Sources */,
 				DCE78E3D123CB9960038970C /* BlioCreateAccountViewController.m in Sources */,
+				DCEB07761242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

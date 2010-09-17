@@ -17,7 +17,7 @@
 
 @implementation BlioCreateAccountViewController
 
-@synthesize confirmPasswordField, createAccountResponseData;
+@synthesize confirmPasswordField,firstNameField,lastNameField;
 
 #pragma mark -
 #pragma mark Initialization
@@ -41,7 +41,7 @@
 - (void)loadView {
 	[super loadView];
 	self.tableView.frame = [[UIScreen mainScreen] applicationFrame];
-	self.tableView.scrollEnabled = NO;
+	self.tableView.scrollEnabled = YES;
 	self.tableView.autoresizesSubviews = YES;
 	 	
 	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
@@ -52,9 +52,9 @@
 											 autorelease];
 	
 	
-	CGFloat yPlacement = kTopMargin + 2*kCellHeight;
+//	CGFloat yPlacement = kTopMargin + 2*kCellHeight;
 	
-	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(kLeftMargin, yPlacement, 16.0f, 16.0f)] autorelease];
+	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/2, 16.0f, 16.0f)] autorelease];
 	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
 	[self.view addSubview:activityIndicator];
 	
@@ -69,21 +69,27 @@
 }
 */
 
-/*
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) 
+                                                 name:UIKeyboardWillShowNotification object:self.view.window]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) 
+                                                 name:UIKeyboardWillHideNotification object:self.view.window]; 	
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 */
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil]; 
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -128,6 +134,36 @@
 	
 	return confirmPasswordField;
 }
+- (UITextField *)createFirstNameTextField
+{
+	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
+	self.firstNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	firstNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
+	firstNameField.keyboardType = UIKeyboardTypeAlphabet;
+	firstNameField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	firstNameField.returnKeyType = UIReturnKeyNext;
+	firstNameField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+	firstNameField.autocorrectionType = UITextAutocorrectionTypeNo;
+	firstNameField.placeholder = NSLocalizedString(@"First Name",@"\"First Name\" placeholder");
+	firstNameField.delegate = self;
+		
+	return firstNameField;
+}
+- (UITextField *)createLastNameTextField
+{
+	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
+	self.lastNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	lastNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
+	lastNameField.keyboardType = UIKeyboardTypeAlphabet;
+	lastNameField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	lastNameField.returnKeyType = UIReturnKeyNext;
+	lastNameField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+	lastNameField.autocorrectionType = UITextAutocorrectionTypeNo;
+	lastNameField.placeholder = NSLocalizedString(@"Last Name",@"\"Last Name\" placeholder");
+	lastNameField.delegate = self;
+	
+	return lastNameField;
+}
 
 
 #pragma mark -
@@ -141,7 +177,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 3;
+    return 5;
 }
 
 
@@ -159,8 +195,12 @@
 		}
 		
 	if (row == 0) 
-		((CellTextField *)cell).view = [self createEmailTextField];
+		((CellTextField *)cell).view = [self createFirstNameTextField];
 	else if (row == 1) 
+		((CellTextField *)cell).view = [self createLastNameTextField];
+	else if (row == 2) 
+		((CellTextField *)cell).view = [self createEmailTextField];
+	else if (row == 3) 
 		((CellTextField *)cell).view = [self createPasswordTextField];
 	else
 		((CellTextField *)cell).view = [self createConfirmPasswordTextField];
@@ -224,11 +264,21 @@
 	return;
 }
 
-#pragma mark UITextField delegate methods
-
+#pragma mark UITextFieldDelegate methods
+- (void)textFieldDidBeginEditing:(UITextField *)textField {           // became first responder
+	if (textField.superview) {
+		NSInteger offsetY = [textField convertPoint:textField.center toView:self.view].y - kCellHeight * 2;
+		if (offsetY < 0) offsetY = 0;
+		[self.tableView setContentOffset:CGPointMake(0, offsetY) animated:YES];
+	}
+}
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
-	if (textField == emailField) 
+	if (textField == firstNameField) 
+		[lastNameField becomeFirstResponder];
+	else if (textField == lastNameField) 
+		[emailField becomeFirstResponder];
+	else if (textField == emailField) 
 		[passwordField becomeFirstResponder];
 	else if (textField == passwordField) {
 		[confirmPasswordField becomeFirstResponder];
@@ -242,7 +292,7 @@
 		if (![passwordField.text isEqualToString:confirmPasswordField.text]) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORDS_MUST_MATCH_ALERT_TEXT",nil,[NSBundle mainBundle],@"Please make sure your passwords match.",@"Alert Text informing the end-user that the password and confirm password fields must match.")
-										delegate:self 
+										delegate:nil 
 							   cancelButtonTitle:@"OK"
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
@@ -257,7 +307,7 @@
 			NSString * offendingCharacter = [passwordField.text substringWithRange:passwordInvalidCharacterRange];
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_NOT_CONTAIN_INVALID_CHARACTER_ALERT_TEXT",nil,[NSBundle mainBundle],@"Please make sure your password does not contain the character: %@.",@"Alert Text informing the end-user that the password and confirm password fields must match."),offendingCharacter]
-										delegate:self 
+										delegate:nil 
 							   cancelButtonTitle:@"OK"
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
@@ -269,7 +319,7 @@
 		if ([passwordField.text length] < BlioPasswordCharacterLengthMinimum) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_CONTAIN_MINIMUM_NUMBER_OF_CHARACTERS",nil,[NSBundle mainBundle],@"Please make sure your password contains at least %u characters.",@"Alert Text informing the end-user that the password must contain the minimum number of characters."),BlioPasswordCharacterLengthMinimum]
-										delegate:self 
+										delegate:nil 
 							   cancelButtonTitle:@"OK"
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
@@ -281,7 +331,7 @@
 		if ([passwordField.text rangeOfCharacterFromSet:[NSCharacterSet uppercaseLetterCharacterSet]].location == NSNotFound) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_CONTAIN_UPPERCASE_CHARACTER",nil,[NSBundle mainBundle],@"Please make sure your password contains at least one uppercase character.",@"Alert Text informing the end-user that the password must contain at least one uppercase character.")
-										delegate:self 
+										delegate:nil 
 							   cancelButtonTitle:@"OK"
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
@@ -293,7 +343,7 @@
 		if ([passwordField.text rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet]].location == NSNotFound) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_CONTAIN_DIGIT",nil,[NSBundle mainBundle],@"Please make sure your password contains at least one digit.",@"Alert Text informing the end-user that the password must contain at least one digit.")
-										delegate:self 
+										delegate:nil 
 							   cancelButtonTitle:@"OK"
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
@@ -304,92 +354,58 @@
 		[activityIndicator startAnimating];
 
 		// attempt account creation
+
 		NSString *post = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>70.124.88.130</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio iPhone/1.0; APPID-OEM-HP-001-</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>Joe</FirstName><LastName>Consumer</LastName><UserName></UserName><UserEmail>%@</UserEmail><UserPassword>%@</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>",self.emailField.text,self.passwordField.text];
-
-//		CFStringRef urlString = CFURLCreateStringByAddingPercentEscapes(
-//																		NULL,
-//																		(CFStringRef)post,
-//																		NULL,
-//																		(CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
-//																		kCFStringEncodingNonLossyASCII );
-//		post = [(NSString *)urlString autorelease];
-		
-		NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
-		NSString *postLength = [NSString stringWithFormat:@"%d",[postData length]];
-		NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-		[request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://gw.bliodigitallocker.net/nww/gateway/request"]]];
-		[request setHTTPMethod:@"POST"];
-//		[request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
-		[request setValue:postLength forHTTPHeaderField:@"Content-Length"];
-//		[request setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];  
-//		[request setValue:@"application/xml" forHTTPHeaderField:@"Content-Type"];  
-		[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-		[request setHTTPBody:postData];
-		
-		self.createAccountResponseData = [NSMutableData data];
-
-		NSURLConnection * urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-		[urlConnection start];
+		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
+		request.xmlString = post;
+		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
+		[connection start];
 		[request release];
-		// attempt login
-//		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-//		[loginCredentials setObject:[NSString stringWithString:usernameField.text] forKey:@"username"];
-//		[loginCredentials setObject:[NSString stringWithString:passwordField.text] forKey:@"password"];
-//		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
-//		
-//		[[BlioStoreManager sharedInstance] loginWithUsername:usernameField.text password:passwordField.text sourceID:self.sourceID];
 		[textField resignFirstResponder];
 	}
 	return NO;
 }
-#pragma mark -
-#pragma mark NSURLConnectionDelegate methods
 
-- (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
-	NSLog(@"BlioCreateAccountViewController didReceiveResponse: %@",[[response URL] absoluteString]);
-	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
-	NSLog(@"MIMEType: %@",response.MIMEType);
-	NSLog(@"textEncodingName: %@",response.textEncodingName);
-	NSLog(@"suggestedFilename: %@",response.suggestedFilename);
-	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {		
-		NSLog(@"statusCode: %i",httpResponse.statusCode);
-		NSLog(@"allHeaderFields: %@",httpResponse.allHeaderFields);
+#pragma mark -
+#pragma mark DigitalLockerConnectionDelegate methods
+
+- (void)connectionDidFinishLoading:(DigitalLockerConnection *)aConnection {
+	NSLog(@"BlioCreateAccountViewController connectionDidFinishLoading...");
+	[activityIndicator stopAnimating];
+	if (aConnection.digitalLockerResponse.ReturnCode == 0) {
+		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
+		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
+		[loginCredentials setObject:[NSString stringWithString:passwordField.text] forKey:@"password"];
+		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+		NSString * alertMessage = NSLocalizedStringWithDefaultValue(@"ACCOUNT_CREATED",nil,[NSBundle mainBundle],@"Your account has been created! Blio will now login under your new account.",@"Alert Text informing the end-user that an account has been created, and the app will now login under that new account.");
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Congratulations",@"\"Congratulations\" alert message title") 
+									 message:alertMessage
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
 	}
-}
-
-- (void)connection:(NSURLConnection *)aConnection didReceiveData:(NSData *)data {
-	NSLog(@"BlioCreateAccountViewController connection:%@ didReceiveData: %@",aConnection,data);
-	[self.createAccountResponseData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
-	NSString * stringData = [[[NSString alloc] initWithData:self.createAccountResponseData encoding:NSUTF8StringEncoding] autorelease];
-	NSLog(@"stringData: %@",stringData);
-	[aConnection release];
-}
-- (void)connection:(NSURLConnection *)aConnection didFailWithError:(NSError *)error {
-	NSLog(@"BlioCreateAccountViewController connection:%@ didFailWithError: %@, %@",aConnection,error,[error localizedDescription]);
+	else if (aConnection.digitalLockerResponse.ReturnCode == 300) {
+		NSString * errorMessage = @"An error occurred.";
+		if (aConnection.digitalLockerResponse.Errors && [aConnection.digitalLockerResponse.Errors count] > 0) errorMessage = ((DigitalLockerResponseError*)[aConnection.digitalLockerResponse.Errors objectAtIndex:0]).ErrorText;
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:errorMessage
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
+	}
 	[aConnection release];
 }
 
-// TODO: consider taking the two delegate methods below out for final release, as this is a work-around for B&T's godaddy certificate (reads as invalid)!
-- (BOOL)connection: ( NSURLConnection * )connection canAuthenticateAgainstProtectionSpace: ( NSURLProtectionSpace * ) protectionSpace {
-	NSLog(@"BlioCreateAccountViewController connection:%@ canAuthenticateAgainstProtectionSpace: %@",connection, protectionSpace);
-	return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+- (void)connection:(DigitalLockerConnection *)aConnection didFailWithError:(NSError *)error {
+	[aConnection release];
 }
-- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {  
-	NSLog(@"BlioCreateAccountViewController connection:%@ didReceiveAuthenticationChallenge: %@",connection, challenge);
-    //if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])  
-	//if ([trustedHosts containsObject:challenge.protectionSpace.host])  
-	[challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];  
-	
-    [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];  
-}  
 
 #pragma mark -
-#pragma mark NSXMLParserDelegate methods
+#pragma mark UIAlertViewDelegate
 
-
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+	[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
+}
 
 #pragma mark -
 #pragma mark Memory management
@@ -408,9 +424,29 @@
 
 
 - (void)dealloc {
+	self.confirmPasswordField = nil;
+	self.firstNameField = nil;
+	self.lastNameField = nil;
     [super dealloc];
 }
 
+- (void)keyboardWillShow:(NSNotification *)notification {
+//	NSValue* sizeValue = [notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];			
+//	CGSize keyboardSize = [sizeValue CGRectValue].size;
+//	
+//	CGRect viewFrame = self.tableView.frame;
+//	viewFrame.size.height -= keyboardSize.height;
+//	self.tableView.frame = viewFrame;
+	    
+}
+- (void)keyboardWillHide:(NSNotification *)notification {
+//	NSValue* sizeValue = [notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey];			
+//	CGSize keyboardSize = [sizeValue CGRectValue].size;
+//	
+//	CGRect viewFrame = self.tableView.frame;
+//	viewFrame.size.height += keyboardSize.height;
+//	self.tableView.frame = viewFrame;	
+}
 
 @end
 
