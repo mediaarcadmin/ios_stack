@@ -187,24 +187,22 @@
 	UITableViewCell *cell = nil;
 //	NSInteger section = [indexPath section];
 	NSInteger row = [indexPath row];
-		cell = [tableView dequeueReusableCellWithIdentifier:kCellTextField_ID];
+		cell = [tableView dequeueReusableCellWithIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]];
 		if (cell == nil) {
-			cell = [[[CellTextField alloc] initWithFrame:CGRectZero reuseIdentifier:kCellTextField_ID] autorelease];
-			//((CellTextField *)cell).delegate = self;
-			//cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellTextField_ID] autorelease];
+			cell = [[[CellTextField alloc] initWithFrame:CGRectZero reuseIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]] autorelease];
+			if (row == 0) 
+				((CellTextField *)cell).view = [self createFirstNameTextField];
+			else if (row == 1) 
+				((CellTextField *)cell).view = [self createLastNameTextField];
+			else if (row == 2) 
+				((CellTextField *)cell).view = [self createEmailTextField];
+			else if (row == 3) 
+				((CellTextField *)cell).view = [self createPasswordTextField];
+			else
+				((CellTextField *)cell).view = [self createConfirmPasswordTextField];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		}
 		
-	if (row == 0) 
-		((CellTextField *)cell).view = [self createFirstNameTextField];
-	else if (row == 1) 
-		((CellTextField *)cell).view = [self createLastNameTextField];
-	else if (row == 2) 
-		((CellTextField *)cell).view = [self createEmailTextField];
-	else if (row == 3) 
-		((CellTextField *)cell).view = [self createPasswordTextField];
-	else
-		((CellTextField *)cell).view = [self createConfirmPasswordTextField];
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
 }
 
@@ -284,7 +282,7 @@
 		[confirmPasswordField becomeFirstResponder];
 	}
 	else {
-		// TODO: validate email address
+		// TODO: validate email address using regex
 		
 		
 		
@@ -355,8 +353,9 @@
 
 		// attempt account creation
 
-		NSString *post = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>70.124.88.130</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio iPhone/1.0; APPID-OEM-HP-001-</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>Joe</FirstName><LastName>Consumer</LastName><UserName></UserName><UserEmail>%@</UserEmail><UserPassword>%@</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>",self.emailField.text,self.passwordField.text];
 		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
+		NSString *post = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>%@</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio iPhone/1.0; APPID-OEM-HP-001-</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>%@</FirstName><LastName>%@</LastName><UserName></UserName><UserEmail>%@</UserEmail><UserPassword>%@</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>",[request getIPAddress],self.firstNameField.text,self.lastNameField.text,self.emailField.text,self.passwordField.text];
+		NSLog(@"POST body: %@",post);
 		request.xmlString = post;
 		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
 		[connection start];

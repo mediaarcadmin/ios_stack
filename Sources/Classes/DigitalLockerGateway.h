@@ -51,6 +51,7 @@ static NSString * const DigitalLockerGatewayURLProduction = @"https://gw.bliodig
 @interface DigitalLockerRequest : DigitalLockerXMLObject {
 	NSString * xmlString;
 }
+- (NSString *)getIPAddress;
 
 @property (nonatomic, copy) NSString * xmlString;
 

@@ -17,7 +17,6 @@ static const NSUInteger BlioPasswordCharacterLengthMinimum = 8;
 	UITextField* confirmPasswordField;
 	UITextField* firstNameField;
 	UITextField* lastNameField;
-	NSMutableData * createAccountResponseData;
 
 }
 @property (nonatomic,retain) UITextField* confirmPasswordField;

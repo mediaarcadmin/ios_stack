@@ -219,9 +219,9 @@
 	NSInteger section = [indexPath section];
 	NSInteger row = [indexPath row];
 	if (section == 0) {
-		cell = [tableView dequeueReusableCellWithIdentifier:kCellTextField_ID];
+		cell = [tableView dequeueReusableCellWithIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]];
 		if (cell == nil) {
-			cell = [[[CellTextField alloc] initWithFrame:CGRectZero reuseIdentifier:kCellTextField_ID] autorelease];
+			cell = [[[CellTextField alloc] initWithFrame:CGRectZero reuseIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]] autorelease];
 			//((CellTextField *)cell).delegate = self;
 			//cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellTextField_ID] autorelease];
 		}
