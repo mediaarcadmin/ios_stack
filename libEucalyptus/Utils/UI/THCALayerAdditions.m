@@ -32,7 +32,7 @@
 {
     CALayer *layer = self;
     Class uiViewClass = [UIView class];
-    UIView *potentialView;
+    UIView *potentialView = nil;
     while(layer && ((potentialView = layer.delegate),
                     ![potentialView isKindOfClass:uiViewClass])) {
         layer = layer.superlayer;
