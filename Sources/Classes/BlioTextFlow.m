@@ -498,36 +498,48 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 
 @synthesize flowTreeKind;
 
-static void metadataXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) {
-    if(strcmp("Source", name) == 0) {
-        BlioTextFlow *self = (BlioTextFlow *)ctx;
+struct FlowDetectionParsingContext
+{
+    XML_Parser parser;
+    BlioTextFlowFlowTreeKind flowTreeKind;
+};
+
+static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) {
+    if(strcmp("Flow", name) == 0) {
         for(int i = 0; atts[i]; i+=2) {
-            if(strcmp("Type", atts[i]) == 0) {
-                if(strcasecmp("epub", atts[i+1]) == 0) {
-                    self.flowTreeKind = BlioTextFlowFlowTreeKindXaml;
+            if(strcmp("xmlns", atts[i]) == 0) {
+                if(strcasestr(atts[i+1], "xaml") != NULL) {
+                    ((struct FlowDetectionParsingContext *)ctx)->flowTreeKind =  BlioTextFlowFlowTreeKindXaml;
                 }
             }
         }
+        XML_StopParser(((struct FlowDetectionParsingContext *)ctx)->parser, XML_FALSE);
     }
 }
 
 - (BlioTextFlowFlowTreeKind)flowTreeKind {
     if(flowTreeKind == BlioTextFlowFlowTreeKindUnknown) {
-        NSData *data = [self.book manifestDataForKey:@"KNFBMetadataFilename"];
-        if(data) {
-            XML_Parser metadataParser = XML_ParserCreate(NULL);
-            XML_SetStartElementHandler(metadataParser, metadataXMLParsingStartElementHandler);
-            XML_SetUserData(metadataParser, (void *)self);    
-            if(!XML_Parse(metadataParser, [data bytes], [data length], XML_TRUE)) {
-                char *anError = (char *)XML_ErrorString(XML_GetErrorCode(metadataParser));
-                NSLog(@"TextFlow parsing error: '%s' in metadata file", anError);
-            }
-            XML_ParserFree(metadataParser);
-        } 
-        // We didn't find another format - assume flow format.
-        if(flowTreeKind == BlioTextFlowFlowTreeKindUnknown) {
-            flowTreeKind = BlioTextFlowFlowTreeKindFlow;
+        NSArray *allSections = self.sections;
+        if(allSections.count) {
+            BlioTextFlowSection *firstSection = [allSections objectAtIndex:0];
+            NSData *data = [self.book textFlowDataWithPath:firstSection.flowSourceFileName];
+            if(data) {
+                XML_Parser flowDetectionParser = XML_ParserCreate(NULL);
+                XML_SetStartElementHandler(flowDetectionParser, flowDetectionXMLParsingStartElementHandler);
+                struct FlowDetectionParsingContext context = { flowDetectionParser, BlioTextFlowFlowTreeKindUnknown };
+                XML_SetUserData(flowDetectionParser, &context);    
+                if(!XML_Parse(flowDetectionParser, [data bytes], [data length], XML_TRUE)) {
+                    char *anError = (char *)XML_ErrorString(XML_GetErrorCode(flowDetectionParser));
+                    NSLog(@"TextFlow parsing error: '%s' in metadata file", anError);
+                } else {
+                    self.flowTreeKind = context.flowTreeKind;
+                }
+                XML_ParserFree(flowDetectionParser);
+            }             
         }
+    }
+    if(flowTreeKind == BlioTextFlowFlowTreeKindUnknown) {
+        flowTreeKind = BlioTextFlowFlowTreeKindFlow;
     }
     return flowTreeKind;
 }
