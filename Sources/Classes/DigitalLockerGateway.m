@@ -274,11 +274,9 @@ static NSString * SessionId = nil;
 @end
 
 @implementation DigitalLockerRequest
-@synthesize xmlString;
 @synthesize Service,Method,InputData;
 
 -(void) dealloc {
-	self.xmlString = nil;
 	self.Service = nil;
 	self.Method = nil;
 	self.InputData = nil;
@@ -333,7 +331,6 @@ static NSString * SessionId = nil;
 		//																		kCFStringEncodingNonLossyASCII );
 		//		post = [(NSString *)urlString autorelease];
 		
-//		NSString * requestString = [self.Request xmlString];
 		NSString * requestString = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\">%@%@</Gateway>",[self.State serialize],[self.Request serialize]];
 		NSLog(@"requestString: %@",requestString);
 		NSData *postData = [requestString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];

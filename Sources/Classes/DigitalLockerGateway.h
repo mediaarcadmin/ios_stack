@@ -90,13 +90,11 @@ static NSString * const DigitalLockerInputDataEmailOptionKey = @"EmailOption";
 @end
 
 @interface DigitalLockerRequest : DigitalLockerXMLObject {
-	NSString * xmlString;
 	NSString * Service;
 	NSString * Method;
 	NSMutableDictionary * InputData;
 }
 
-@property (nonatomic, copy) NSString * xmlString;
 @property (nonatomic, retain) NSString * Service;
 @property (nonatomic, retain) NSString * Method;
 @property (nonatomic, retain) NSMutableDictionary * InputData;

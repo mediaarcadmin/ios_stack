@@ -277,9 +277,6 @@
 	NSMutableDictionary * inputData = [NSMutableDictionary dictionaryWithCapacity:1];
 	[inputData setObject:[NSString stringWithString:self.emailField.text] forKey:DigitalLockerInputDataEmailKey];
 	request.InputData = inputData;
-//	NSString *post = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>%@</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio iPhone/1.0; APPID-OEM-HP-001-</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>%@</FirstName><LastName>%@</LastName><UserName></UserName><UserEmail>%@</UserEmail><UserPassword>%@</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>",[DigitalLockerState IPAddress],self.firstNameField.text,self.lastNameField.text,self.emailField.text,self.passwordField.text];
-//	NSLog(@"POST body: %@",post);
-//	request.xmlString = post;
 	DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
 	[connection start];
 	[request release];	
