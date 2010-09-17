@@ -803,6 +803,7 @@
 		A3B6F6F4120C5E2E00D48E04 /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
 		A3B6F88B120CB11900D48E04 /* BlioCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = C96785EF120C0AAC008669BA /* BlioCoverView.m */; };
 		A3B6F8A1120CB45300D48E04 /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
+		A3C66F2E1242A63700C61BDA /* BlioCreateAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */; };
 		A3C7437011CAC178005A2219 /* icon-freebooks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */; };
 		A3C7437111CAC178005A2219 /* icon-cart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436111CAC178005A2219 /* icon-cart@2x.png */; };
 		A3C7437211CAC178005A2219 /* icon-contents@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436211CAC178005A2219 /* icon-contents@2x.png */; };
@@ -2588,7 +2589,7 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData */,
+				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
 				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
@@ -2874,7 +2875,7 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData */ = {
+		C986765B112411060070A03E /* GData.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = GData;
@@ -3725,6 +3726,7 @@
 				A30E1020123EA5B400D31157 /* BlioBeveledView.m in Sources */,
 				A30E1021123EA5B400D31157 /* BlioDrmSessionManager.m in Sources */,
 				DCEB07741242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
+				A3C66F2E1242A63700C61BDA /* BlioCreateAccountViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,13 +21,9 @@
 	BOOL drmInitialized;
     NSManagedObjectID *headerBookID;
     NSManagedObjectID *boundBookID;
-	NSInteger licenseCooldownTime;
-	NSTimer * licenseCooldownTimer;
 }
 
 @property (nonatomic, assign) BOOL drmInitialized;
-@property (nonatomic, assign) NSInteger licenseCooldownTime;
-@property (nonatomic, assign) NSTimer * licenseCooldownTimer;
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (void)initialize;

@@ -45,8 +45,6 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 @synthesize drmAppContext, oDecryptContext;
 @synthesize drmInitialized;
 @synthesize headerBookID, boundBookID;
-@synthesize licenseCooldownTime;
-@synthesize licenseCooldownTimer;
 
 
 -(void) dealloc {
@@ -54,7 +52,6 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 	Oem_MemFree(drmAppContext);
     self.headerBookID = nil;
     self.boundBookID = nil;
-	self.licenseCooldownTimer = nil;
 	[super dealloc];
 }
 
@@ -82,7 +79,9 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 	ChkDR( Drm_Initialize( drmAppContext,
 							NULL,
 							&dstrDataStoreFile ) );
-	ChkDR( [self setHeaderForBookWithID:self.headerBookID] );
+	if ( self.headerBookID != nil )
+		// Device registration does not require a book. 
+		ChkDR( [self setHeaderForBookWithID:self.headerBookID] );
 }
 	
 ErrorExit:
@@ -169,6 +168,11 @@ ErrorExit:
     DRM_BYTE *pbResponse = NULL;
     DRM_DWORD cbResponse = 0;
 	
+	if ( !self.drmInitialized ) {
+        NSLog(@"DRM error: cannot leave domain because DRM is not initialized.");
+        return NO;
+    }
+	
 	if ( token == nil ) {
 		NSLog(@"DRM error attempting to leave domain outside login session.");
 		return NO;
@@ -249,7 +253,8 @@ ErrorExit:
 	
 	Oem_MemFree(aidBuf);
 	Oem_MemFree(sidBuf);
-	Oem_MemFree(pbChallenge);
+	if ( pbChallenge )
+		Oem_MemFree(pbChallenge);
 	// These are "standard success values."
 	if ( dr == DRM_SUCCESS || dr == DRM_S_FALSE || dr == DRM_S_MORE_DATA  ) {
 		[[NSUserDefaults standardUserDefaults] setInteger:BlioDeviceRegisteredStatusUnregistered forKey:kBlioDeviceRegisteredDefaultsKey];
@@ -272,6 +277,11 @@ ErrorExit:
     DRM_BYTE *pbResponse = NULL;
     DRM_DWORD cbResponse = 0;
     //DRM_DOMAIN_ID oDomainIdReturned = {{ 0 }};
+	
+	if ( !self.drmInitialized ) {
+        NSLog(@"DRM error: cannot join domain because DRM is not initialized.");
+        return NO;
+    }
 	
 	if ( token == nil ) {
 		NSLog(@"DRM error attempting to join domain outside login session.");
@@ -333,8 +343,8 @@ ErrorExit:
 	}
     
 ErrorExit:
-	
-	Oem_MemFree(pbChallenge);
+	if ( pbChallenge )
+		Oem_MemFree(pbChallenge);
 	// These are "standard success values."
 	if ( dr == DRM_SUCCESS || dr == DRM_S_FALSE || dr == DRM_S_MORE_DATA  ) {
 		[[NSUserDefaults standardUserDefaults] setInteger:BlioDeviceRegisteredStatusRegistered forKey:kBlioDeviceRegisteredDefaultsKey];
@@ -387,10 +397,12 @@ ErrorExit:
 }
 
 ErrorExit:
-	Oem_MemFree(pbChallenge);
+	if ( pbChallenge )
+		Oem_MemFree(pbChallenge);
 	return dr;
 											  
 }
+
 
 - (DRM_RESULT)getDRMLicense:(NSString*)token {
 	
@@ -480,7 +492,8 @@ ErrorExit:
 	
 	
 ErrorExit:
-	Oem_MemFree(pbChallenge);
+	if ( pbChallenge )
+		Oem_MemFree(pbChallenge);
 	return dr;
 }
 
@@ -507,11 +520,12 @@ ErrorExit:
 	DRM_RESULT dr = DRM_SUCCESS;
 	
     dr = [self getDRMLicense:token];
+	// TODO: get the domain name from the license response
 	// Getting DRM_E_XMLNOTFOUND when domain join required!
 	if( dr == DRM_E_SERVER_DOMAIN_REQUIRED || dr == DRM_E_XMLNOTFOUND )
     {
-		// TODO: really get the domain name from the license response
-		// TODO?:  ask the user (again?) if they want to register the device???
+		// This shouldn't happen because device registration is a prerequisite for this function.
+		// So we assume here that the device should be registered and we go ahead and do it.
 		ChkDR( [self joinDomain:token domainName:@"novel"] );
         ChkDR( [self getDRMLicense:token] );
     }
