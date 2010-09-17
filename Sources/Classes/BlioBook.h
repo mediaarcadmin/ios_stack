@@ -92,6 +92,8 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 @property (nonatomic, retain) NSNumber *layoutPageEquivalentCount;
 @property (nonatomic, retain) NSNumber *libraryPosition;
 @property (nonatomic, retain) NSNumber *reflowRight;
+
+// the following two attributes are used to quickly calculate the number of TTS-compatible books
 @property (nonatomic, retain) NSNumber *hasAudiobook;
 @property (nonatomic, retain) NSNumber *hasAudiobookRights;
 

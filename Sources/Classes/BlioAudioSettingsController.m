@@ -69,7 +69,7 @@
 	
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
- 	[request setPredicate:[NSPredicate predicateWithFormat:@"hasAudiobookRights == %@ && processingState == %@", [NSNumber numberWithBool:NO], [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"hasAudiobook == %@ && hasAudiobookRights == %@ && processingState == %@", [NSNumber numberWithBool:NO], [NSNumber numberWithBool:NO], [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
 	[request setSortDescriptors:sorters];
  
 	 self.ttsFetchedResultsController = [[[NSFetchedResultsController alloc]
@@ -315,7 +315,7 @@
 	}
 }
 - (NSString *)ttsBooksInLibraryDisclosure {
-	return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"TTS_BOOKS_IN_LIBRARY_DISCLOSURE",nil,[NSBundle mainBundle],@"%i of %i books in your library may be read aloud by Blio.",@"Message that discloses how many of the user's books can be read by TTS."),ttsBooks,totalBooks];
+	return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"TTS_BOOKS_IN_LIBRARY_DISCLOSURE",nil,[NSBundle mainBundle],@"%i of %i books in your library may be read aloud by Blio Text-To-Speech voices.",@"Message that discloses how many of the user's books can be read by TTS."),ttsBooks,totalBooks];
 }
 #pragma mark UITableViewDataSource Methods
 
