@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "BlioProcessing.h"
 #import "BlioStoreManager.h"
+#import "DigitalLockerGateway.h"
 
-@interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource> {
+@interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate> {
 	UITextField* emailField;
 	UITextField* passwordField;
 	UILabel* statusField;
@@ -29,5 +30,5 @@
 -(id)initWithSourceID:(BlioBookSourceID)bookSourceID;
 - (UITextField *)createEmailTextField;
 - (UITextField *)createPasswordTextField;
-
+-(void)forgotPassword;
 @end

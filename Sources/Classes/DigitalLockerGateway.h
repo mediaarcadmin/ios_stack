@@ -8,14 +8,32 @@
 
 #import <Foundation/Foundation.h>
 
+static NSString * const DigitalLockerBlioAppID = @"APPID-OEM-HP-001-";
+static NSString * const DigitalLockerBlioIOSSiteKey = @"B7DFE07B232B97FC282A1774AC662E79A3BBD61A";
+
 static NSString * const DigitalLockerGatewayURLTest = @"https://gw.bliodigitallocker.net/nww/gateway/request";
 static NSString * const DigitalLockerGatewayURLProduction = @"https://gw.bliodigitallocker.com/nww/gateway/request";
+
+static NSString * const DigitalLockerServiceRegistration = @"Registration";
+
+static NSString * const DigitalLockerMethodCreate = @"Create";
+static NSString * const DigitalLockerMethodForgot = @"Forgot";
+
+static NSString * const DigitalLockerInputDataFirstNameKey = @"FirstName";
+static NSString * const DigitalLockerInputDataLastNameKey = @"LastName";
+static NSString * const DigitalLockerInputDataEmailKey = @"UserEmail";
+static NSString * const DigitalLockerInputDataPasswordKey = @"UserPassword";
+static NSString * const DigitalLockerInputDataEmailOptionKey = @"EmailOption";
+
+
 
 @interface DigitalLockerXMLObject : NSObject<NSXMLParserDelegate> {
 	NSMutableString * parserCharacters;
 	DigitalLockerXMLObject * parent;
 }
 @property (nonatomic, assign) DigitalLockerXMLObject * parent;
+
++(NSString*)serializeDictionary:(NSDictionary*)dictionary withName:(NSString*)aName;
 
 @end
 
@@ -48,12 +66,40 @@ static NSString * const DigitalLockerGatewayURLProduction = @"https://gw.bliodig
 
 @end
 
+@interface DigitalLockerState : DigitalLockerXMLObject {
+	NSString * _ClientIPAddress;
+	NSString * _ClientDomain;
+	NSString * _ClientLanguage;
+	NSString * _ClientLocation;
+	NSString * _ClientUserAgent;
+	NSString * _SiteKey;
+	NSString * _AppID;	
+}
+
++(NSString *) IPAddress;
++(NSString *) SessionId;
+
+@property (nonatomic, readonly) NSString * ClientIPAddress;
+@property (nonatomic, readonly) NSString * ClientDomain;
+@property (nonatomic, readonly) NSString * ClientLanguage;
+@property (nonatomic, readonly) NSString * ClientLocation;
+@property (nonatomic, readonly) NSString * ClientUserAgent;
+@property (nonatomic, readonly) NSString * SiteKey;
+@property (nonatomic, readonly) NSString * AppID;
+
+@end
+
 @interface DigitalLockerRequest : DigitalLockerXMLObject {
 	NSString * xmlString;
+	NSString * Service;
+	NSString * Method;
+	NSMutableDictionary * InputData;
 }
-- (NSString *)getIPAddress;
 
 @property (nonatomic, copy) NSString * xmlString;
+@property (nonatomic, retain) NSString * Service;
+@property (nonatomic, retain) NSString * Method;
+@property (nonatomic, retain) NSMutableDictionary * InputData;
 
 @end
 
@@ -72,7 +118,8 @@ static NSString * const DigitalLockerGatewayURLProduction = @"https://gw.bliodig
 @end
 
 @interface DigitalLockerConnection : DigitalLockerXMLObject {
-	DigitalLockerRequest * _request;
+	DigitalLockerRequest * _Request;
+	DigitalLockerState * _State;
 	id<DigitalLockerConnectionDelegate> _delegate;
 	NSURLConnection * urlConnection;
 	NSMutableData * _responseData;
@@ -83,7 +130,8 @@ static NSString * const DigitalLockerGatewayURLProduction = @"https://gw.bliodig
 -(id)initWithDigitalLockerRequest:(DigitalLockerRequest*)request delegate:(id)delegate;
 -(void)start;
 
-@property (nonatomic, retain) DigitalLockerRequest * request;
+@property (nonatomic, retain) DigitalLockerRequest * Request;
+@property (nonatomic, readonly) DigitalLockerState * State;
 @property (nonatomic, assign) id<DigitalLockerConnectionDelegate> delegate;
 @property (nonatomic, retain) NSURLConnection * urlConnection;
 @property (nonatomic, retain) DigitalLockerResponse * digitalLockerResponse;

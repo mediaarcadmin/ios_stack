@@ -354,7 +354,16 @@
 		// attempt account creation
 
 		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
-		NSString *post = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>%@</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio iPhone/1.0; APPID-OEM-HP-001-</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>%@</FirstName><LastName>%@</LastName><UserName></UserName><UserEmail>%@</UserEmail><UserPassword>%@</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>",[request getIPAddress],self.firstNameField.text,self.lastNameField.text,self.emailField.text,self.passwordField.text];
+		request.Service = DigitalLockerServiceRegistration;
+		request.Method = DigitalLockerMethodCreate;
+		NSMutableDictionary * inputData = [NSMutableDictionary dictionaryWithCapacity:6];
+		[inputData setObject:[NSString stringWithString:self.firstNameField.text] forKey:DigitalLockerInputDataFirstNameKey];
+		[inputData setObject:[NSString stringWithString:self.lastNameField.text] forKey:DigitalLockerInputDataLastNameKey];
+		[inputData setObject:[NSString stringWithString:self.emailField.text] forKey:DigitalLockerInputDataEmailKey];
+		[inputData setObject:[NSString stringWithString:self.passwordField.text] forKey:DigitalLockerInputDataPasswordKey];
+		[inputData setObject:@"N"forKey:DigitalLockerInputDataEmailOptionKey];
+		request.InputData = inputData;
+		NSString *post = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>%@</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio iPhone/1.0; APPID-OEM-HP-001-</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>%@</FirstName><LastName>%@</LastName><UserName></UserName><UserEmail>%@</UserEmail><UserPassword>%@</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>",[DigitalLockerState IPAddress],self.firstNameField.text,self.lastNameField.text,self.emailField.text,self.passwordField.text];
 		NSLog(@"POST body: %@",post);
 		request.xmlString = post;
 		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
@@ -383,9 +392,11 @@
 						   cancelButtonTitle:@"OK"
 						   otherButtonTitles:nil];
 	}
-	else if (aConnection.digitalLockerResponse.ReturnCode == 300) {
-		NSString * errorMessage = @"An error occurred.";
-		if (aConnection.digitalLockerResponse.Errors && [aConnection.digitalLockerResponse.Errors count] > 0) errorMessage = ((DigitalLockerResponseError*)[aConnection.digitalLockerResponse.Errors objectAtIndex:0]).ErrorText;
+	else {
+		NSString * errorMessage = aConnection.digitalLockerResponse.ReturnMessage;
+		if (aConnection.digitalLockerResponse.ReturnCode == 300) {
+			if (aConnection.digitalLockerResponse.Errors && [aConnection.digitalLockerResponse.Errors count] > 0) errorMessage = ((DigitalLockerResponseError*)[aConnection.digitalLockerResponse.Errors objectAtIndex:0]).ErrorText;
+		}
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:errorMessage
 									delegate:nil 

@@ -236,9 +236,15 @@
 		NSString * genericTableViewCellID = @"genericTableCell";
 		cell = [tableView dequeueReusableCellWithIdentifier:genericTableViewCellID];
 		if (cell == nil) cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:genericTableViewCellID] autorelease];		
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-		if (section == 1) cell.textLabel.text = @"Forgot Password";
-		else if (section == 2) cell.textLabel.text = @"Create New Account";
+		if (section == 1) {
+			cell.textLabel.textAlignment = UITextAlignmentCenter;
+			cell.textLabel.text = @"Forgot Password";
+			
+		}
+		else if (section == 2) {
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			cell.textLabel.text = @"Create New Account";
+		}
 	}
 	return cell;
 }
@@ -246,12 +252,72 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger section = [indexPath section];
 	if (section == 1) {
+		[tableView deselectRowAtIndexPath:indexPath animated:YES];
+		[self forgotPassword];
 		return;
 	}
 	else if (section == 2) {
 		BlioCreateAccountViewController * createAccountViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
 		[self.navigationController pushViewController:createAccountViewController animated:YES];
 	}
+}
+
+-(void)forgotPassword {
+	if (!self.emailField.text || [self.emailField.text isEqualToString:@""]) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"ENTER_PASSWORD_IF_FORGOTTEN",nil,[NSBundle mainBundle],@"In order for Blio to send you your password, please first enter your email address.",@"Alert Text informing the end-user that his/her email address must be entered before Blio can send his/her password.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];	
+		return;
+	}
+	DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
+	request.Service = DigitalLockerServiceRegistration;
+	request.Method = DigitalLockerMethodForgot;
+	NSMutableDictionary * inputData = [NSMutableDictionary dictionaryWithCapacity:1];
+	[inputData setObject:[NSString stringWithString:self.emailField.text] forKey:DigitalLockerInputDataEmailKey];
+	request.InputData = inputData;
+//	NSString *post = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\"><State><ClientIPAddress>%@</ClientIPAddress><ClientDomain>gw.bliodigitallocker.net</ClientDomain><ClientLanguage>en</ClientLanguage><ClientLocation>US</ClientLocation><ClientUserAgent>Blio iPhone/1.0; APPID-OEM-HP-001-</ClientUserAgent><SiteKey>B7DFE07B232B97FC282A1774AC662E79A3BBD61A</SiteKey><SessionId>NEW</SessionId></State><Request><Service>Registration</Service><Method>Create</Method><InputData><FirstName>%@</FirstName><LastName>%@</LastName><UserName></UserName><UserEmail>%@</UserEmail><UserPassword>%@</UserPassword><EmailOption>Y</EmailOption></InputData></Request></Gateway>",[DigitalLockerState IPAddress],self.firstNameField.text,self.lastNameField.text,self.emailField.text,self.passwordField.text];
+//	NSLog(@"POST body: %@",post);
+//	request.xmlString = post;
+	DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
+	[connection start];
+	[request release];	
+}
+
+#pragma mark -
+#pragma mark DigitalLockerConnectionDelegate methods
+
+- (void)connectionDidFinishLoading:(DigitalLockerConnection *)aConnection {
+	NSLog(@"BlioLoginViewController connectionDidFinishLoading...");
+	[activityIndicator stopAnimating];
+	if (aConnection.digitalLockerResponse.ReturnCode == 0) {
+		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
+		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
+		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+		NSString * alertMessage = NSLocalizedStringWithDefaultValue(@"PASSWORD_SENT",nil,[NSBundle mainBundle],@"Your password has been sent to your email address.",@"Alert Text informing the end-user that his/her password has been sent to the email address specified.");
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:alertMessage
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
+	}
+	else {
+		NSString * errorMessage = aConnection.digitalLockerResponse.ReturnMessage;
+		if (aConnection.digitalLockerResponse.ReturnCode == 300) {
+			if (aConnection.digitalLockerResponse.Errors && [aConnection.digitalLockerResponse.Errors count] > 0) errorMessage = ((DigitalLockerResponseError*)[aConnection.digitalLockerResponse.Errors objectAtIndex:0]).ErrorText;
+		}
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:errorMessage
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
+	}
+	[aConnection release];
+}
+
+- (void)connection:(DigitalLockerConnection *)aConnection didFailWithError:(NSError *)error {
+	[aConnection release];
 }
 
 @end

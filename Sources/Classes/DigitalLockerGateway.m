@@ -34,6 +34,20 @@
 	parser.delegate = self.parent;
 }
 
++(NSString*)serializeDictionary:(NSDictionary*)dictionary withName:(NSString*)aName {
+	NSMutableString * serialization = [NSMutableString string];
+	if (aName) [serialization appendString:[NSString stringWithFormat:@"<%@>",aName]];
+	for (id key in dictionary)
+	{
+		if ([key isKindOfClass:[NSString class]]) {
+			id valueForKey = [dictionary objectForKey:key];
+			if (valueForKey && [valueForKey isKindOfClass:[NSString class]]) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,valueForKey,key]];
+			else if (valueForKey && [valueForKey isKindOfClass:[NSDictionary class]]) [DigitalLockerXMLObject serializeDictionary:valueForKey withName:nil];
+		}
+	}
+	if (aName) [serialization appendString:[NSString stringWithFormat:@"</%@>",aName]];
+	return serialization;
+}
 @end
 
 
@@ -155,14 +169,51 @@
 
 @end
 
-@implementation DigitalLockerRequest
-@synthesize xmlString;
--(void) dealloc {
-	self.xmlString = nil;
-	[super dealloc];
+@implementation DigitalLockerState
+
+@synthesize ClientIPAddress = _ClientIPAddress;
+@synthesize ClientDomain = _ClientDomain;
+@synthesize ClientLanguage = _ClientLanguage;
+@synthesize ClientLocation = _ClientLocation;
+@synthesize ClientUserAgent = _ClientUserAgent;
+@synthesize SiteKey = _SiteKey;
+@synthesize AppID = _AppID;
+
+static NSString * SessionId = nil;
+
+-(id)init {
+	self = [super init];
+	if (self) {
+		_ClientIPAddress = [DigitalLockerState IPAddress];
+		[_ClientIPAddress retain];
+		_ClientDomain = @"gw.bliodigitallocker.net";
+		[_ClientDomain retain];
+		_ClientLanguage = @"en";
+		[_ClientLanguage retain];
+		_ClientLocation = @"US";
+		[_ClientLocation retain];
+		_ClientUserAgent = [NSString stringWithFormat:@"Blio iPhone/%@",[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+		[_ClientUserAgent retain];
+		_SiteKey = DigitalLockerBlioIOSSiteKey;
+		[_SiteKey retain];
+		_AppID = DigitalLockerBlioAppID;
+		[_AppID retain];
+	}	
+	return self;	
 }
-- (NSString *)getIPAddress
-{
+
++(NSString *) SessionId {
+	if (SessionId == nil) {
+		SessionId = [[NSString alloc] initWithString:@"NEW"];
+	}
+	return SessionId;
+}
++(void) setSessionId:(NSString *)sessionId {
+	if (SessionId) [SessionId release];
+	SessionId = [[NSString alloc] initWithString:sessionId];
+}
+
++(NSString *) IPAddress {
 	NSString *address = @"error";
 	struct ifaddrs *interfaces = NULL;
 	struct ifaddrs *temp_addr = NULL;
@@ -195,21 +246,78 @@
 	
 	return address;
 }
+-(NSString *) serialize {
+	NSArray * keys = [NSArray arrayWithObjects:@"ClientIPAddress",@"ClientDomain",@"ClientLanguage",@"ClientLocation",@"SiteKey",nil];
+	NSMutableString * serialization = [NSMutableString stringWithString:@"<State>"];
+	
+	for (NSString* key in keys) {
+		NSString * valueForKey = [self valueForKey:key];
+		if (valueForKey) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,valueForKey,key]];
+	}
+	[serialization appendString:@"</State>"];
+	NSLog(@"serialization: %@",serialization);
+	return serialization;
+}
+
+-(void) dealloc {
+	if (_ClientIPAddress) [_ClientIPAddress release];
+	if (_ClientDomain) [_ClientDomain release];
+	if (_ClientLanguage) [_ClientLanguage release];
+	if (_ClientLocation) [_ClientLocation release];
+	if (_ClientUserAgent) [_ClientUserAgent release];
+	if (_SiteKey) [_SiteKey release];
+	if (_AppID) [_AppID release];
+	[super dealloc];
+}
+
+
+@end
+
+@implementation DigitalLockerRequest
+@synthesize xmlString;
+@synthesize Service,Method,InputData;
+
+-(void) dealloc {
+	self.xmlString = nil;
+	self.Service = nil;
+	self.Method = nil;
+	self.InputData = nil;
+	[super dealloc];
+}
+
+-(NSString *) serialize {
+	NSArray * keys = [NSArray arrayWithObjects:@"Service",@"Method",@"InputData",nil];
+	NSMutableString * serialization = [NSMutableString stringWithString:@"<Request>"];
+	
+	for (NSString* key in keys) {
+		id valueForKey = [self valueForKey:key];
+		if (valueForKey && [valueForKey isKindOfClass:[NSString class]]) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,(NSString*)valueForKey,key]];
+		else if (valueForKey && [valueForKey isKindOfClass:[NSDictionary class]]) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,[DigitalLockerXMLObject serializeDictionary:(NSDictionary*)valueForKey withName:nil],key]];
+	}
+	[serialization appendString:@"</Request>"];
+	NSLog(@"serialization: %@",serialization);
+	return serialization;
+}
+
 @end
 
 @implementation DigitalLockerConnection
 
-@synthesize request = _request;
+@synthesize Request = _Request;
+@synthesize State = _State;
 @synthesize delegate = _delegate;
 @synthesize digitalLockerResponse,urlConnection,parserDelegateStack;
 
--(id)initWithDigitalLockerRequest:(DigitalLockerRequest*)request delegate:(id)delegate {
-	if (!request) return nil;
+-(id)initWithDigitalLockerRequest:(DigitalLockerRequest*)aRequest delegate:(id)delegate {
+	if (!aRequest) return nil;
 	self = [super init];
 	if (self)
 	{
-		self.request = request;
+		self.Request = aRequest;
 		self.delegate = delegate;
+		
+		_State = [[DigitalLockerState alloc] init];
+
 #ifdef TEST_MODE
 		_gatewayURL = DigitalLockerGatewayURLTest;
 #else	
@@ -225,7 +333,10 @@
 		//																		kCFStringEncodingNonLossyASCII );
 		//		post = [(NSString *)urlString autorelease];
 		
-		NSData *postData = [[self.request xmlString] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+//		NSString * requestString = [self.Request xmlString];
+		NSString * requestString = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\">%@%@</Gateway>",[self.State serialize],[self.Request serialize]];
+		NSLog(@"requestString: %@",requestString);
+		NSData *postData = [requestString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
 		NSString *postLength = [NSString stringWithFormat:@"%d",[postData length]];
 		NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] init];
 		[urlRequest setURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://gw.bliodigitallocker.net/nww/gateway/request"]]];
@@ -254,8 +365,9 @@
 #pragma mark Memory management
 
 - (void)dealloc {
-	self.request = nil;
+	if (_Request) [_Request release];
 	self.delegate = nil;
+	if (_State) [_State release];
 	self.urlConnection = nil;
 	if (_responseData) [_responseData release];
 	self.digitalLockerResponse = nil;
