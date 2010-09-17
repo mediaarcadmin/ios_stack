@@ -426,12 +426,12 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
 
 
 #pragma mark -
-#pragma mark Sections XML (block) parsing
+#pragma mark Sections XML parsing
 
 static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) {
     BlioTextFlow *textFlow = (BlioTextFlow *)ctx;
     
-    if (strcmp("Section", name) == 0) {
+    /*if (strcmp("Section", name) == 0) {
         BlioTextFlowSection *newSection = [[BlioTextFlowSection alloc] init];
         
         for(int i = 0; atts[i]; i+=2) {
@@ -450,18 +450,38 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         
         [textFlow.sections addObject:newSection];
         [newSection release];
-    } else if (strcmp("FlowReference", name) == 0) {
-        BlioTextFlowSection *currentSection = textFlow.sections.lastObject;
+    } else */if (strcmp("FlowReference", name) == 0) {
+        BlioTextFlowSection *newSection = [[BlioTextFlowSection alloc] init];
 
+        BOOL pageIndexFound = NO;
+        BOOL flowSourceFound = NO;
+        
         for(int i = 0; atts[i]; i+=2) {
-            if (strcmp("Source", atts[i]) == 0) {
+            if (strcmp("PageIndices", atts[i]) == 0) {
+                newSection.startPage = atoi(atts[i+1]);
+                pageIndexFound = YES;
+            } else if (strcmp("Source", atts[i]) == 0) {
                 NSString *sourceString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != sourceString) {
-                    currentSection.flowSourceFileName = sourceString;
+                    newSection.flowSourceFileName = sourceString;
                     [sourceString release];
+                    flowSourceFound = YES;
                 }                
             }
         }
+        
+        if(pageIndexFound && flowSourceFound) {
+            newSection.name = @"TODO: FIXME";
+            [textFlow.sections addObject:newSection];
+        } else {
+            if(!pageIndexFound) {
+                NSLog(@"Warning - FlowReference with no page index");
+            }
+            if(!flowSourceFound) {
+                NSLog(@"Warning - FlowReference with no page index");
+            }
+        }
+        [newSection release];
     }
 }
 
@@ -483,7 +503,6 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 NSLog(@"TextFlow sections parsing error: '%s'", anError);
             }
             XML_ParserFree(flowParser);
-            //[data release];
         }
     }
     return sections;
@@ -527,9 +546,11 @@ static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char
                 XML_Parser flowDetectionParser = XML_ParserCreate(NULL);
                 XML_SetStartElementHandler(flowDetectionParser, flowDetectionXMLParsingStartElementHandler);
                 struct FlowDetectionParsingContext context = { flowDetectionParser, BlioTextFlowFlowTreeKindUnknown };
-                XML_SetUserData(flowDetectionParser, &context);    
-                if(!XML_Parse(flowDetectionParser, [data bytes], [data length], XML_TRUE)) {
-                    char *anError = (char *)XML_ErrorString(XML_GetErrorCode(flowDetectionParser));
+                XML_SetUserData(flowDetectionParser, &context); 
+                enum XML_Error error = XML_ERROR_NONE;
+                if(!XML_Parse(flowDetectionParser, [data bytes], [data length], XML_TRUE) &&
+                   (error = XML_GetErrorCode(flowDetectionParser)) != XML_ERROR_ABORTED) {
+                    char *anError = (char *)XML_ErrorString(error);
                     NSLog(@"TextFlow parsing error: '%s' in metadata file", anError);
                 } else {
                     self.flowTreeKind = context.flowTreeKind;
@@ -554,6 +575,8 @@ static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char
 
             //NSData *data = [self.book manifestDataForKey:section.flowSourceFileName];
             NSData *data = [self.book textFlowDataWithPath:section.flowSourceFileName];
+            
+            [data writeToFile:[NSString stringWithFormat:@"/tmp/%@Flow%ld.xml", self.book.title,(long)sectionIndex] atomically:NO]; 
             
             if(data) {
                 tree = [[BlioTextFlowFlowTree alloc] initWithTextFlow:self
