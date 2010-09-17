@@ -500,7 +500,7 @@ ErrorExit:
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID {
 	DRM_RESULT dr = DRM_SUCCESS;
 	
-    NSData *headerData = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] manifestDataForKey:@"drmHeaderFilename"];
+    NSData *headerData = [[[BlioBookManager sharedBookManager] bookWithID:aBookID] manifestDataForKey:BlioManifestDrmHeaderKey];
 	
 	unsigned char* headerBuff = (unsigned char*)[headerData bytes]; 
 	

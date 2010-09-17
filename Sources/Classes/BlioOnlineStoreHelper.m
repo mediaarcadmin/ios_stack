@@ -124,9 +124,10 @@
 				NSLog(@"Author: %@", author);
 				NSLog(@"Cover: %@", coverURL);
 				NSLog(@"URL: %@",[[self URLForBookWithID:isbn] absoluteString]);
-				
-				NSMutableArray * authors = [NSMutableArray array];
-				if (author) [authors addObject:author];
+				NSArray * authors = [NSArray array];
+				if (author) {
+					authors = [author componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@";"]];
+				}
 				// TODO: need to discern patterns in how paid books store multiple authors in one string, then parse accordingly into an array.
 				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
 													 authors:authors   

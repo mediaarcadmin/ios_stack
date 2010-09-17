@@ -254,6 +254,7 @@ static NSString * SessionId = nil;
 		NSString * valueForKey = [self valueForKey:key];
 		if (valueForKey) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,valueForKey,key]];
 	}
+	[serialization appendString:[NSString stringWithFormat:@"<ClientUserAgent>%@; %@</ClientUserAgent>", self.ClientUserAgent, self.AppID]];
 	[serialization appendString:@"</State>"];
 	NSLog(@"serialization: %@",serialization);
 	return serialization;

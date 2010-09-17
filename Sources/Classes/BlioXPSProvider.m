@@ -310,7 +310,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 
 - (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
     UIImage *thumbnail = nil;
-    NSString *thumbnailsLocation = [self.book manifestLocationForKey:@"thumbnailDirectory"];
+    NSString *thumbnailsLocation = [self.book manifestLocationForKey:BlioManifestThumbnailDirectoryKey];
     if ([thumbnailsLocation isEqualToString:BlioManifestEntryLocationXPS]) {
         NSString *thumbPath = [BlioXPSMetaDataDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.jpg", pageNumber]];
         NSData *thumbData = [self dataForComponentAtPath:thumbPath];
