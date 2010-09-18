@@ -29,10 +29,9 @@ NSString* productionUrl = @"http://prl.kreader.net/PlayReadyDomains/service/Lice
 @interface BlioDrmSessionManager()
 
 DRM_APP_CONTEXT* drmAppContext;
-DRM_DECRYPT_CONTEXT  oDecryptContext;
+DRM_DECRYPT_CONTEXT  drmDecryptContext;
+DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
 
-@property (nonatomic, assign) DRM_APP_CONTEXT* drmAppContext;
-@property (nonatomic, assign) DRM_DECRYPT_CONTEXT oDecryptContext;
 @property (nonatomic, retain) NSManagedObjectID *headerBookID;
 @property (nonatomic, retain) NSManagedObjectID *boundBookID;
 
@@ -42,7 +41,6 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 
 @implementation BlioDrmSessionManager
 
-@synthesize drmAppContext, oDecryptContext;
 @synthesize drmInitialized;
 @synthesize headerBookID, boundBookID;
 
@@ -79,6 +77,11 @@ DRM_DECRYPT_CONTEXT  oDecryptContext;
 	ChkDR( Drm_Initialize( drmAppContext,
 							NULL,
 							&dstrDataStoreFile ) );
+	
+	ChkDR( Drm_Revocation_SetBuffer( drmAppContext, 
+									drmRevocationBuffer, 
+									SIZEOF(drmRevocationBuffer)));
+	
 	if ( self.headerBookID != nil )
 		// Device registration does not require a book. 
 		ChkDR( [self setHeaderForBookWithID:self.headerBookID] );
@@ -584,20 +587,20 @@ ErrorExit:
 			rgpdstrRights[0] = &readRight; 
 			int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
 			for (int i=0;i<bufferSz;++i)
-				oDecryptContext.rgbBuffer[i] = 0;
+				drmDecryptContext.rgbBuffer[i] = 0;
 			ChkDR( Drm_Reader_Bind( drmAppContext,
 								   rgpdstrRights,
 								   NO_OF(rgpdstrRights),
 								   NULL, 
 								   NULL,
-								   &oDecryptContext ) );
+								   &drmDecryptContext ) );
             
             self.boundBookID = self.headerBookID;
 			
         }
         DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
         dataBuff = (unsigned char*)[data bytes]; 
-        ChkDR(Drm_Reader_Decrypt (&oDecryptContext,
+        ChkDR(Drm_Reader_Decrypt (&drmDecryptContext,
                                   &oCtrContext,
                                   dataBuff, 
                                   [data length]));

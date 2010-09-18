@@ -10,12 +10,21 @@
 #ifndef __DRMREVOCATION_H__
 #define __DRMREVOCATION_H__
 
+/*
 #include <drmcontextsizes.h>
 #include <drmliceval.h>
 #include <drmrevocationstore.h>
 
 ENTER_PK_NAMESPACE;
 #include <drmrevocationtypes.h>
+*/
+
+#include "drmcontextsizes.h"
+#include "drmliceval.h"
+#include "drmrevocationstore.h"
+
+ENTER_PK_NAMESPACE;
+#include "drmrevocationtypes.h"
 
 #if DRM_SUPPORT_REVOCATION
 
