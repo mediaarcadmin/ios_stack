@@ -15,8 +15,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import <AudioToolbox/AudioToolbox.h>
-#include <tgmath.h>
+#import <tgmath.h>
 #import "THBaseEAGLView.h"
+#import "THEmbeddedResourceManager.h"
 
 #define FOV_ANGLE ((GLfloat)10.0f)
 
@@ -183,7 +184,7 @@ static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat 
     }
 }
 
-#define indexForPageVertex(row, column) (((void *)(&(_pageVertices[column][row].x)) - (void *)_pageVertices) / (3 * sizeof(GLfloat)))
+#define indexForPageVertex(column, row)  ((row) * X_VERTEX_COUNT + (column))
 
 static uint32_t nextPowerOfTwo(uint32_t n)
 {
@@ -213,7 +214,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 }
 
 - (void)_pageTurningViewInternalInit
-{    
+{       
     GLfloat white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     memcpy(_specularColor, white, 4 * sizeof(GLfloat));
     _shininess = 60.0;
@@ -290,10 +291,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _textureUploadContext = [[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
     
     _animatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"animatedBookTurnVertices" ofType:@"vertexData"]];
-    _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
+    _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THGLfloatPoint3D) * 2);
     
     _reverseAnimatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"reverseAnimatedBookTurnVertices" ofType:@"vertexData"]];
-    _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(GLfloatTriplet) * 2);
+    _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THGLfloatPoint3D) * 2);
 
     self.multipleTouchEnabled = YES;
     //self.exclusiveTouch = YES;
@@ -883,52 +884,52 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
 }
 
-static inline GLfloatTriplet addVector(GLfloatTriplet a, GLfloatTriplet b)
+static inline THGLfloatPoint3D addVector(THGLfloatPoint3D a, THGLfloatPoint3D b)
 {
-    GLfloatTriplet ret = { a.x + b.x, a.y + b.y, a.z + b.z };
+    THGLfloatPoint3D ret = { a.x + b.x, a.y + b.y, a.z + b.z };
     return ret;
 }
 
-static inline GLfloatTriplet subtractVector(GLfloatTriplet a, GLfloatTriplet b)
+static inline THGLfloatPoint3D subtractVector(THGLfloatPoint3D a, THGLfloatPoint3D b)
 {
-    GLfloatTriplet ret = { a.x - b.x, a.y - b.y, a.z - b.z };
+    THGLfloatPoint3D ret = { a.x - b.x, a.y - b.y, a.z - b.z };
     return ret;
 }
 
-static inline GLfloatTriplet multiplyVector(GLfloatTriplet a, GLfloat b)
+static inline THGLfloatPoint3D multiplyVector(THGLfloatPoint3D a, GLfloat b)
 {
-    GLfloatTriplet ret = { a.x * b, a.y * b, a.z * b };
+    THGLfloatPoint3D ret = { a.x * b, a.y * b, a.z * b };
     return ret;
 }
 
-static inline GLfloatTriplet crossProduct(GLfloatTriplet a, GLfloatTriplet b)
+static inline THGLfloatPoint3D crossProduct(THGLfloatPoint3D a, THGLfloatPoint3D b)
 {
-    GLfloatTriplet ret = { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
+    THGLfloatPoint3D ret = { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
     return ret;
 }
 
-static inline GLfloat dotProduct(GLfloatTriplet a) 
+static inline GLfloat dotProduct(THGLfloatPoint3D a) 
 {
     return a.x * a.x + a.y * a.y + a.z * a.z;
 }
 
-static inline GLfloat magnitude(GLfloatTriplet a) 
+static inline GLfloat magnitude(THGLfloatPoint3D a) 
 {
     return fabsf(sqrtf(dotProduct(a)));
 }
 
-static inline GLfloatTriplet normalise(GLfloatTriplet a)
+static inline THGLfloatPoint3D normalise(THGLfloatPoint3D a)
 {
     GLfloat aMagnitude = magnitude(a); 
-    GLfloatTriplet ret = { a.x / aMagnitude, a.y / aMagnitude, a.z / aMagnitude};
+    THGLfloatPoint3D ret = { a.x / aMagnitude, a.y / aMagnitude, a.z / aMagnitude};
     return ret;
 }
 
 
-static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle, GLfloatTriplet right)
+static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D middle, THGLfloatPoint3D right)
 {
-    GLfloatTriplet leftVector = subtractVector(right, middle);
-    GLfloatTriplet rightVector = subtractVector(right, left);
+    THGLfloatPoint3D leftVector = subtractVector(right, middle);
+    THGLfloatPoint3D rightVector = subtractVector(right, left);
 
     return normalise(crossProduct(leftVector, rightVector));
 }
@@ -943,7 +944,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         }
     }
     if(shouldAdd) {
-        GLfloatTriplet *flatPageVertices = (GLfloatTriplet *)_pageVertices;
+        THGLfloatPoint3D *flatPageVertices = (THGLfloatPoint3D *)_pageVertices;
         _constraints[_constraintCount].particleAIndex = indexA;
         _constraints[_constraintCount].particleBIndex = indexB;
         _constraints[_constraintCount].lengthSquared = powf(magnitude(subtractVector(flatPageVertices[indexA], flatPageVertices[indexB])), 2);
@@ -1004,7 +1005,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     // run through the vertex normals normalising them.
     memset(_pageVertexNormals, 0, sizeof(_pageVertexNormals));
     
-    GLfloatTriplet *flatPageVertexNormals = (GLfloatTriplet *)_pageVertexNormals;
+    THGLfloatPoint3D *flatPageVertexNormals = (THGLfloatPoint3D *)_pageVertexNormals;
     for(int i = 0; i < TRIANGLE_STRIP_COUNT - 2; ++i) {
         GLubyte leftVertexIndex;
         GLubyte middleVertexIndex;
@@ -1021,11 +1022,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         if(leftVertexIndex != rightVertexIndex &&
            leftVertexIndex != middleVertexIndex &&
            middleVertexIndex != rightVertexIndex) {
-            GLfloatTriplet leftVertex = ((GLfloatTriplet *)_pageVertices)[leftVertexIndex];
-            GLfloatTriplet middleVertex = ((GLfloatTriplet *)_pageVertices)[middleVertexIndex];
-            GLfloatTriplet rightVertex = ((GLfloatTriplet *)_pageVertices)[rightVertexIndex];
+            THGLfloatPoint3D leftVertex = ((THGLfloatPoint3D *)_pageVertices)[leftVertexIndex];
+            THGLfloatPoint3D middleVertex = ((THGLfloatPoint3D *)_pageVertices)[middleVertexIndex];
+            THGLfloatPoint3D rightVertex = ((THGLfloatPoint3D *)_pageVertices)[rightVertexIndex];
             
-            GLfloatTriplet normal = triangleNormal(leftVertex, middleVertex, rightVertex);
+            THGLfloatPoint3D normal = triangleNormal(leftVertex, middleVertex, rightVertex);
             flatPageVertexNormals[leftVertexIndex] = 
                             addVector(flatPageVertexNormals[leftVertexIndex], normal);
             flatPageVertexNormals[middleVertexIndex] = 
@@ -1170,20 +1171,20 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);
         glTexCoordPointer(2, GL_FLOAT, 0, &_pageContentsInformation[_flatPageIndex-1].textureCoordinates->textureCoordinates);
 
-        const GLfloatTriplet *pageVertices, *pageVertexNormals;        
+        const THGLfloatPoint3D *pageVertices, *pageVertexNormals;        
         if(!_isTurningAutomatically) {
-            pageVertices = (GLfloatTriplet *)_pageVertices;
-            pageVertexNormals = (GLfloatTriplet *)_pageVertexNormals;
+            pageVertices = (THGLfloatPoint3D *)_pageVertices;
+            pageVertexNormals = (THGLfloatPoint3D *)_pageVertexNormals;
             
             //fwrite(pageVertices, sizeof(GLfloatTriplet), X_VERTEX_COUNT * Y_VERTEX_COUNT, tempFile);
             //fwrite(pageVertexNormals, sizeof(GLfloatTriplet), X_VERTEX_COUNT * Y_VERTEX_COUNT, tempFile);
             //fflush(tempFile);
         } else {
             if(!_automaticTurnIsForwards && _automaticTurnFrame == _reverseAnimatedTurnFrameCount) {
-                pageVertices = (const GLfloatTriplet *)_stablePageVertices;
-                pageVertexNormals = (const GLfloatTriplet *)_stablePageVertexNormals;
+                pageVertices = (const THGLfloatPoint3D *)_stablePageVertices;
+                pageVertexNormals = (const THGLfloatPoint3D *)_stablePageVertexNormals;
             } else {
-                pageVertices = (const GLfloatTriplet *)[_automaticTurnIsForwards ? _animatedTurnData : _reverseAnimatedTurnData bytes] + (X_VERTEX_COUNT * Y_VERTEX_COUNT * 2) * _automaticTurnFrame;
+                pageVertices = (const THGLfloatPoint3D *)[_automaticTurnIsForwards ? _animatedTurnData : _reverseAnimatedTurnData bytes] + (X_VERTEX_COUNT * Y_VERTEX_COUNT * 2) * _automaticTurnFrame;
                 pageVertexNormals = pageVertices + (X_VERTEX_COUNT * Y_VERTEX_COUNT);
             }
         }
@@ -1192,7 +1193,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         glNormalPointer(GL_FLOAT, 0, pageVertexNormals);
 
         // The front faces of the page.
-        if(!_isTurningAutomatically || pageVertexNormals == (const GLfloatTriplet *)_stablePageVertexNormals) {
+        if(!_isTurningAutomatically || pageVertexNormals == (const THGLfloatPoint3D *)_stablePageVertexNormals) {
             // The normals in the automatic turn files are acidentally facing
             // backwards.  I should really re-record them.
             // Instead, for the moment, we draw the face below, after we've
@@ -1201,7 +1202,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         }
         
         // Flip the normals and draw the back faces.
-        GLfloatTriplet invertedPageVertexNormals[X_VERTEX_COUNT * Y_VERTEX_COUNT];
+        THGLfloatPoint3D invertedPageVertexNormals[X_VERTEX_COUNT * Y_VERTEX_COUNT];
         for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
             invertedPageVertexNormals[i].x = -(pageVertexNormals)[i].x;
             invertedPageVertexNormals[i].y = -(pageVertexNormals)[i].y;
@@ -1210,7 +1211,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         
         glNormalPointer(GL_FLOAT, 0, invertedPageVertexNormals);
 
-        if(_isTurningAutomatically && pageVertexNormals != (const GLfloatTriplet *)_stablePageVertexNormals) {
+        if(_isTurningAutomatically && pageVertexNormals != (const THGLfloatPoint3D *)_stablePageVertexNormals) {
             // Compensating for the normals in the automatic turn files being 
             // backwards (see above).
             glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 2, GL_UNSIGNED_BYTE, _triangleStripIndices);
@@ -1254,15 +1255,15 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                 glActiveTexture(GL_TEXTURE0);
                 glClientActiveTexture(GL_TEXTURE0);
 
-                GLfloatTriplet pageEdge[Y_VERTEX_COUNT][2];
-                GLfloatTriplet pageEdgeNormals[Y_VERTEX_COUNT * 2] = { {0, 0, 0} };
+                THGLfloatPoint3D pageEdge[Y_VERTEX_COUNT][2];
+                THGLfloatPoint3D pageEdgeNormals[Y_VERTEX_COUNT * 2] = { {0, 0, 0} };
                 int column = X_VERTEX_COUNT - 1;
                 for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
                     pageEdge[row][0] = addVector(pageVertices[row * X_VERTEX_COUNT + column] , 
                                                  multiplyVector(pageVertexNormals[row * X_VERTEX_COUNT + column], _automaticTurnPercentage));
                     pageEdge[row][1] = pageVertices[row * X_VERTEX_COUNT + column];
                 } 
-                GLfloatTriplet *flatPageEdge = (GLfloatTriplet *)pageEdge;
+                THGLfloatPoint3D *flatPageEdge = (THGLfloatPoint3D *)pageEdge;
                 for(int i = 1; i < Y_VERTEX_COUNT * 2 - 1; ++i) {
                     int leftVertexIndex;
                     int rightVertexIndex;
@@ -1276,11 +1277,11 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
                         middleVertexIndex = i;
                         rightVertexIndex = i - 1;            
                     }
-                    GLfloatTriplet leftVertex = flatPageEdge[leftVertexIndex];
-                    GLfloatTriplet middleVertex = flatPageEdge[middleVertexIndex];
-                    GLfloatTriplet rightVertex = flatPageEdge[rightVertexIndex];
+                    THGLfloatPoint3D leftVertex = flatPageEdge[leftVertexIndex];
+                    THGLfloatPoint3D middleVertex = flatPageEdge[middleVertexIndex];
+                    THGLfloatPoint3D rightVertex = flatPageEdge[rightVertexIndex];
                     
-                    GLfloatTriplet normal = triangleNormal(leftVertex, middleVertex, rightVertex);
+                    THGLfloatPoint3D normal = triangleNormal(leftVertex, middleVertex, rightVertex);
                     pageEdgeNormals[leftVertexIndex] = 
                         addVector(pageEdgeNormals[leftVertexIndex], normal);
                     pageEdgeNormals[middleVertexIndex] = 
@@ -1377,7 +1378,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
     CGSize size = self.bounds.size;
     CGPoint viewTouchPoint =  [touch locationInView:self];
 
-    GLfloatPair modelTouchPoint = { (viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
+    THGLfloatPoint2D modelTouchPoint = { (viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
                                     (viewTouchPoint.y / size.height) * _viewportLogicalSize.height };
     
     _touchRow = ((modelTouchPoint.y / _viewportLogicalSize.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
@@ -1856,15 +1857,15 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         [self setTouchPointForX:newX];
     }
     
-    GLfloatTriplet *flatPageVertices = (GLfloatTriplet *)_pageVertices;
-    GLfloatTriplet *flatOldPageVertices = (GLfloatTriplet *)_oldPageVertices;
+    THGLfloatPoint3D *flatPageVertices = (THGLfloatPoint3D *)_pageVertices;
+    THGLfloatPoint3D *flatOldPageVertices = (THGLfloatPoint3D *)_oldPageVertices;
     //GLfloatTriplet *flatForceAccumulators = (GLfloatTriplet *)_forceAccumulators;
     GLfloat gravity = (_touch || _touchVelocity) ? 0.002 : 0.01;
     
     for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
-        GLfloatTriplet x = flatPageVertices[i];
-        GLfloatTriplet temp = x;
-        GLfloatTriplet oldx = flatOldPageVertices[i];
+        THGLfloatPoint3D x = flatPageVertices[i];
+        THGLfloatPoint3D temp = x;
+        THGLfloatPoint3D oldx = flatOldPageVertices[i];
         //GLfloatTriplet a = flatForceAccumulators[i];
         
         // This gives better time-correct movement, but makes the model unstable.
@@ -1895,7 +1896,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         pageHasRigidEdge = NO;
     }
     
-    GLfloatTriplet *flatPageVertices = (GLfloatTriplet *)_pageVertices;
+    THGLfloatPoint3D *flatPageVertices = (THGLfloatPoint3D *)_pageVertices;
     int j;
     for(j=0; j < NUM_ITERATIONS; ++j) {              
         if(_touch || _touchVelocity) {        
@@ -1906,9 +1907,9 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
         
         for(int i = 0; i < CONSTRAINT_COUNT; ++i) {
             VerletContstraint constraint = _constraints[i];
-            GLfloatTriplet a = flatPageVertices[constraint.particleAIndex];
-            GLfloatTriplet b = flatPageVertices[constraint.particleBIndex];
-            GLfloatTriplet delta = subtractVector(b, a);
+            THGLfloatPoint3D a = flatPageVertices[constraint.particleAIndex];
+            THGLfloatPoint3D b = flatPageVertices[constraint.particleBIndex];
+            THGLfloatPoint3D delta = subtractVector(b, a);
             /*
             GLfloat distance = magnitude(delta);
             GLfloat diff = (distance - constraint.length)/distance;
@@ -1936,7 +1937,7 @@ static GLfloatTriplet triangleNormal(GLfloatTriplet left, GLfloatTriplet middle,
             GLfloat yCoord = _stablePageVertices[row][0].y;
             GLfloat zCoord = _stablePageVertices[row][0].z;
             for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                GLfloatTriplet vertex = _pageVertices[row][column];
+                THGLfloatPoint3D vertex = _pageVertices[row][column];
                 
                 GLfloat diff = yCoord - vertex.y;
                 _pageVertices[row][column].y = (vertex.y += diff * 0.5f);

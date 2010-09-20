@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "THOpenGLUtils.h"
 #import "THBaseEAGLView.h"
 #import "THAccessibilityElement.h"
 
@@ -18,24 +19,13 @@
 #define CONSTRAINT_COUNT (((X_VERTEX_COUNT * 2 - 1) + (X_VERTEX_COUNT - 1)) * (Y_VERTEX_COUNT - 1) + (X_VERTEX_COUNT - 1)  + X_VERTEX_COUNT + Y_VERTEX_COUNT)
 
 typedef struct {
-    GLfloat x;
-    GLfloat y;
-} GLfloatPair;
-
-typedef struct {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-} GLfloatTriplet;
-
-typedef struct {
     GLubyte particleAIndex;
     GLubyte particleBIndex;
     GLfloat lengthSquared;
 } VerletContstraint;
 
 typedef struct {
-    GLfloatPair textureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    THGLfloatPoint2D textureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     GLuint innerPixelWidth;
     GLuint innerPixelHeight;
     GLuint texturePixelWidth;
@@ -54,12 +44,12 @@ typedef struct {
     CGFloat _pageAspectRatio;
     CGRect _pageFrame;
     
-    GLfloatTriplet _stablePageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
-    GLfloatTriplet _stablePageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    THGLfloatPoint3D _stablePageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    THGLfloatPoint3D _stablePageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
 
-    GLfloatTriplet _pageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
-    GLfloatTriplet _oldPageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
-    GLfloatTriplet _pageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    THGLfloatPoint3D _pageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    THGLfloatPoint3D _oldPageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+    THGLfloatPoint3D _pageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     
     GLubyte _triangleStripIndices[TRIANGLE_STRIP_COUNT];
 
@@ -74,14 +64,14 @@ typedef struct {
     TextureCoordinates _blankPageTextureCoordinates;
 
     GLuint _bookEdgeTexture;
-    GLfloatPair _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
+    THGLfloatPoint2D _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
     UITouch *_touch;
     NSTimeInterval _touchBeganTime;
     NSInteger _touchRow;
     GLfloat _touchXOffset;
     NSTimeInterval _touchTime;
-    GLfloatTriplet _touchPoint;
+    THGLfloatPoint3D _touchPoint;
     GLfloat _touchVelocity;
     
     BOOL _pinchUnderway;
@@ -127,7 +117,7 @@ typedef struct {
     GLfloat _ambientLightColor[4];
     GLfloat _diffuseLightColor[4];
     
-    GLfloatTriplet _lightPosition;
+    THGLfloatPoint3D _lightPosition;
     
     NSArray *_accessibilityElements;
     THAccessibilityElement *_nextPageTapZone;
@@ -153,7 +143,7 @@ typedef struct {
 @property (nonatomic, copy) UIColor *ambientLightColor;
 @property (nonatomic, copy) UIColor *diffuseLightColor;
 
-@property (nonatomic, assign) GLfloatTriplet lightPosition;
+@property (nonatomic, assign) THGLfloatPoint3D lightPosition;
 
 @property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
 
