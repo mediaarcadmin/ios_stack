@@ -188,6 +188,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     id delegate;
     NSArray *accessibilityElements;
 	NSString * librarySortKey;
+	UIImageView * statusBadge;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
@@ -202,6 +203,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) UILabel *stateLabel;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) NSArray *accessibilityElements;
+@property (nonatomic, retain) UIImageView *statusBadge;
 
 -(void)listenToProcessingNotifications;
 -(void)stopListeningToProcessingNotifications;

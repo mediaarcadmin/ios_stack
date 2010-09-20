@@ -45,7 +45,7 @@
         BlioBook *blioBook = [bookManager bookWithID:blioBookID];
         self.textFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
         self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:blioBookID];
-        self.fakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:@"coverFilename"];
+        self.fakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:BlioManifestCoverKey];
         
         self.title = blioBook.title;
         self.author = blioBook.author;
@@ -117,7 +117,7 @@
 - (NSData *)dataForURL:(NSURL *)url
 {
     if([[url absoluteString] isEqualToString:@"textflow:coverimage"]) {
-        return [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] manifestDataForKey:@"coverFilename"];
+        return [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] manifestDataForKey:BlioManifestCoverKey];
     } else if([[url scheme] isEqualToString:@"textflow"]) {
         BlioXPSProvider *provider = [[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:self.bookID];
         NSData *ret = [provider dataForComponentAtPath:[[url absoluteURL] path]];

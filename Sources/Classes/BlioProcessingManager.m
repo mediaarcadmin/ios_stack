@@ -71,7 +71,7 @@
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
 	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
 					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
-				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO fromBundle:NO];    
+				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:placeholderOnly fromBundle:NO];    
 	
 }
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
@@ -145,39 +145,40 @@
 		else locationValue = BlioManifestEntryLocationWeb;
         if (coverPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:locationValue forKey:@"location"];
-            [manifestEntry setValue:coverPath forKey:@"path"];
-            [aBook setManifestValue:manifestEntry forKey:@"coverFilename"];
+            [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
+            [manifestEntry setValue:coverPath forKey:BlioManifestEntryPathKey];
+            [aBook setManifestValue:manifestEntry forKey:BlioManifestCoverKey];
         }
 		if (ePubPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:locationValue forKey:@"location"];
-            [manifestEntry setValue:ePubPath forKey:@"path"];
-            [aBook setManifestValue:manifestEntry forKey:@"epubFilename"];
+            [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
+            [manifestEntry setValue:ePubPath forKey:BlioManifestEntryPathKey];
+            [aBook setManifestValue:manifestEntry forKey:BlioManifestEPubKey];
         }
         if (pdfPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:locationValue forKey:@"location"];
-            [manifestEntry setValue:pdfPath forKey:@"path"];
-            [aBook setManifestValue:manifestEntry forKey:@"pdfFilename"];
+            [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
+            [manifestEntry setValue:pdfPath forKey:BlioManifestEntryPathKey];
+            [aBook setManifestValue:manifestEntry forKey:BlioManifestPDFKey];
         }
         if (xpsPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:locationValue forKey:@"location"];
-            [manifestEntry setValue:xpsPath forKey:@"path"];
-            [aBook setManifestValue:manifestEntry forKey:@"xpsFilename"];
+            [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
+            [manifestEntry setValue:xpsPath forKey:BlioManifestEntryPathKey];
+            [aBook setManifestValue:manifestEntry forKey:BlioManifestXPSKey];
         }
         if (textFlowPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:locationValue forKey:@"location"];
-            [manifestEntry setValue:textFlowPath forKey:@"path"];
-            [aBook setManifestValue:manifestEntry forKey:@"textFlowFilename"];
+            [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
+            [manifestEntry setValue:textFlowPath forKey:BlioManifestEntryPathKey];
+            [aBook setManifestValue:manifestEntry forKey:BlioManifestTextFlowKey];
         }
         if (audiobookPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:locationValue forKey:@"location"];
-            [manifestEntry setValue:audiobookPath forKey:@"path"];
-            [aBook setManifestValue:manifestEntry forKey:@"audiobookFilename"];
+            [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
+            [manifestEntry setValue:audiobookPath forKey:BlioManifestEntryPathKey];
+            [aBook setManifestValue:manifestEntry forKey:BlioManifestAudiobookKey];
+			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobook"];
         }
 		
 		if ([aBook valueForKey:@"uuid"] == nil)
@@ -196,7 +197,7 @@
 }
 
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
-//	NSLog(@"BlioProcessingManager enqueueBook: %@",aBook);
+	NSLog(@"BlioProcessingManager enqueueBook: %@ placeholderOnly: %i",aBook, placeholderOnly);
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
@@ -221,7 +222,7 @@
 			NSURL * xpsURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:[[aBook valueForKey:@"sourceSpecificID"] intValue] sourceSpecificID:[aBook valueForKey:@"sourceSpecificID"]];
 			if (xpsURL != nil) {
 				NSLog(@"[xpsURL absoluteString]: %@",[xpsURL absoluteString]);
-//				[aBook setValue:[xpsURL absoluteString] forKey:@"xpsFilename"];
+//				[aBook setValue:[xpsURL absoluteString] forKey:BlioManifestXPSKey];
 //				if (![moc save:&error]) {
 //					NSLog(@"Save failed for xps filename in processing manager with error: %@, %@", error, [error userInfo]);
 //				}				
@@ -265,7 +266,7 @@
 	NSUInteger alreadyCompletedOperations = 0;
 //	NSString * bundlePath = [[NSBundle mainBundle] bundlePath];
 	
-	manifestLocation = [aBook manifestLocationForKey:@"coverFilename"];
+	manifestLocation = [aBook manifestLocationForKey:BlioManifestCoverKey];
 
 	if (manifestLocation) {
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem]) {
@@ -277,7 +278,7 @@
         }
 	}
 	
-	manifestLocation = [aBook manifestLocationForKey:@"epubFilename"];
+	manifestLocation = [aBook manifestLocationForKey:BlioManifestEPubKey];
 	if (manifestLocation) {
 
 		BOOL usedPreExistingOperation = NO;
@@ -288,7 +289,7 @@
 			url = nil;
 		}
 		else {
-			stringURL = [aBook manifestPathForKey:@"epubFilename"];
+			stringURL = [aBook manifestPathForKey:BlioManifestEPubKey];
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
@@ -317,7 +318,7 @@
 			}
 		}
 		
-		if (![aBook manifestPreAvailabilityCompleteForKey:@"epubFilename"]) {
+		if (![aBook manifestPreAvailabilityCompleteForKey:BlioManifestEPubKey]) {
 			NSArray *ePubPreAvailOps = [BlioFlowView preAvailabilityOperations];
 			NSMutableArray * epubOps = [NSMutableArray array];
 			for (BlioProcessingOperation *preAvailOp in ePubPreAvailOps) {
@@ -343,7 +344,7 @@
 			}
 			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
 			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
-			preAvailabilityCompleteOp.filenameKey = @"epubFilename";
+			preAvailabilityCompleteOp.filenameKey = BlioManifestEPubKey;
 			preAvailabilityCompleteOp.bookID = bookID;
 			preAvailabilityCompleteOp.sourceID = sourceID;
 			preAvailabilityCompleteOp.sourceSpecificID = sourceSpecificID;
@@ -359,14 +360,14 @@
 		}		
 	}
 	
-	manifestLocation = [aBook manifestLocationForKey:@"pdfFilename"];
+	manifestLocation = [aBook manifestLocationForKey:BlioManifestPDFKey];
 	if (manifestLocation) {
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
 		}
 		else {
-			stringURL = [aBook manifestPathForKey:@"pdfFilename"];
+			stringURL = [aBook manifestPathForKey:BlioManifestPDFKey];
 			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadPdfOperation * pdfOp = nil;
 			
@@ -398,9 +399,9 @@
 		}
 	}
 
-	manifestLocation = [aBook manifestLocationForKey:@"textFlowFilename"];
+	manifestLocation = [aBook manifestLocationForKey:BlioManifestTextFlowKey];
 	if (manifestLocation) {
-		if ([[aBook manifestLocationForKey:@"textFlowFilename"] isEqualToString:BlioManifestEntryLocationTextflow] || placeholderOnly) {
+		if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationTextflow] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
 		}
@@ -409,14 +410,14 @@
 		}
 	}
 	
-	manifestLocation = [aBook manifestLocationForKey:@"audiobookFilename"];
+	manifestLocation = [aBook manifestLocationForKey:BlioManifestAudiobookKey];
 	if (manifestLocation) {
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
 		}
 		else {
-			stringURL = [aBook manifestPathForKey:@"audiobookFilename"];
+			stringURL = [aBook manifestPathForKey:BlioManifestAudiobookKey];
 			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadAudiobookOperation * audiobookOp = nil;
 			
@@ -448,14 +449,14 @@
 	}
     
     // non-encrypted XPS books
-    manifestLocation = [aBook manifestLocationForKey:@"xpsFilename"];
+    manifestLocation = [aBook manifestLocationForKey:BlioManifestXPSKey];
 	if (manifestLocation && (sourceID != BlioBookSourceOnlineStore)) {
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
 		}
 		else {
-			stringURL = [aBook manifestPathForKey:@"xpsFilename"];
+			stringURL = [aBook manifestPathForKey:BlioManifestXPSKey];
 			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadXPSOperation * xpsOp = nil;
 			
@@ -489,7 +490,7 @@
     
     
 	// paid books only.
-	manifestLocation = [aBook manifestLocationForKey:@"xpsFilename"];
+	manifestLocation = [aBook manifestLocationForKey:BlioManifestXPSKey];
 	if (manifestLocation || (sourceID == BlioBookSourceOnlineStore)) {
 		
 		BOOL usedPreExistingOperation = NO;
@@ -500,14 +501,14 @@
 			url = nil;
 		}
 		else {
-//			stringURL = [aBook manifestPathForKey:@"xpsFilename"];			
+//			stringURL = [aBook manifestPathForKey:BlioManifestXPSKey];			
 //			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
 				paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadPaidBookOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!paidBookOp || paidBookOp.isCancelled) {
 					if (manifestLocation && [manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
-						stringURL = [aBook manifestPathForKey:@"xpsFilename"];
+						stringURL = [aBook manifestPathForKey:BlioManifestXPSKey];
 						url = [NSURL fileURLWithPath:stringURL];
 					}
 					else {
@@ -528,8 +529,8 @@
 				}
 				[bookOps addObject:paidBookOp];
 //			}
-		}	
-		if (![aBook manifestPreAvailabilityCompleteForKey:@"xpsFilename"]) {
+		}
+		if (![aBook manifestPreAvailabilityCompleteForKey:BlioManifestXPSKey] && !placeholderOnly) {
 
 			NSMutableArray * xpsOps = [NSMutableArray array];
 
@@ -568,14 +569,14 @@
 			[bookOps addObject:manifestOp];
 
 			
-			if ([[aBook manifestLocationForKey:@"coverFilename"] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+			if ([[aBook manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
 				alreadyCompletedOperations++;
 				url = nil;
 			} else {
 				[self addCoverOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];
 			}
 			
-			if ([[aBook manifestLocationForKey:@"textFlowFilename"] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
 				alreadyCompletedOperations++;
 				url = nil;
 			} else {
@@ -584,7 +585,7 @@
 						
 			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
 			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
-			preAvailabilityCompleteOp.filenameKey = @"xpsFilename";
+			preAvailabilityCompleteOp.filenameKey = BlioManifestXPSKey;
 			preAvailabilityCompleteOp.bookID = bookID;
 			preAvailabilityCompleteOp.sourceID = sourceID;
 			preAvailabilityCompleteOp.sourceSpecificID = sourceSpecificID;
@@ -635,7 +636,7 @@
 
 - (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {
     
-    NSString *stringURL = [aBook manifestPathForKey:@"coverFilename"];
+    NSString *stringURL = [aBook manifestPathForKey:BlioManifestCoverKey];
     BlioProcessingDownloadCoverOperation * coverOp = nil;
     
     NSURL *url = nil;
@@ -690,7 +691,7 @@
     
     // If the TextFlow is in an XPS then we don't need to download it. Otherwise we do
     if ((manifestLocation != nil) && ![manifestLocation isEqualToString:BlioManifestEntryLocationXPS]) {
-        NSString *stringURL = [aBook manifestPathForKey:@"textFlowFilename"];
+        NSString *stringURL = [aBook manifestPathForKey:BlioManifestTextFlowKey];
         if (nil != stringURL) {
             // we still need to finish downloading this file
             // so check to see if operation already exists
@@ -918,7 +919,7 @@
 		// delete all files except the thumbnail so that we can put the book back in the vault.
 		NSString * listThumbnailFilename = [aBook valueForKey:@"listThumbFilename"];
 		NSString * gridThumbnailFilename = [aBook valueForKey:@"gridThumbFilename"];
-		NSString * coverFilename = [aBook valueForKey:@"coverFilename"];
+		NSString * coverFilename = [aBook valueForKey:BlioManifestCoverKey];
 		if ([fileManager fileExistsAtPath:[aBook bookCacheDirectory]]) {
 			NSError * directoryContentError;
 			NSArray *fileList = [fileManager contentsOfDirectoryAtPath:[aBook bookCacheDirectory] error:&directoryContentError];
@@ -931,11 +932,11 @@
 					}
 				}
 				// reset asset values in BlioBook.
-				[aBook setManifestValue:nil forKey:@"audiobookFilename"];
-				[aBook setManifestValue:nil forKey:@"epubFilename"];
-				[aBook setManifestValue:nil forKey:@"pdfFilename"];
-				[aBook setManifestValue:nil forKey:@"textFlowFilename"];
-				[aBook setManifestValue:nil forKey:@"xpsFilename"];
+				[aBook setManifestValue:nil forKey:BlioManifestAudiobookKey];
+				[aBook setManifestValue:nil forKey:BlioManifestEPubKey];
+				[aBook setManifestValue:nil forKey:BlioManifestPDFKey];
+				[aBook setManifestValue:nil forKey:BlioManifestTextFlowKey];
+				[aBook setManifestValue:nil forKey:BlioManifestXPSKey];
 				[aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
 			}
 			else {

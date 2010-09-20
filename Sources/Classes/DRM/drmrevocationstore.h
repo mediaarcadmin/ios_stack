@@ -11,9 +11,14 @@
 #ifndef __DRM_REVOCATIONSTORE_H__
 #define __DRM_REVOCATIONSTORE_H__
 
+/*
 #include <drmdatastore.h>
 #include <drmsecurestore.h>
 #include <drmblackbox.h>
+ */
+#include "drmdatastore.h"
+#include "drmsecurestore.h"
+#include "drmblackbox.h"
 
 ENTER_PK_NAMESPACE;
 

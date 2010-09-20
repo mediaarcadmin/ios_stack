@@ -537,7 +537,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     BlioTextFlowSectionsXMLParsingContext context = { [NSMutableArray array], [NSMutableArray array] };
 
     BlioBook *aBook = self.book;
-    NSData *data = [aBook manifestDataForKey:@"textFlowFilename"];
+    NSData *data = [aBook manifestDataForKey:BlioManifestTextFlowKey];
     
     if(data) {
         XML_Parser flowParser = XML_ParserCreate(NULL);
@@ -1078,11 +1078,11 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-    NSData *data = [self getBookManifestDataForKey:@"textFlowFilename"];
+    NSData *data = [self getBookManifestDataForKey:BlioManifestTextFlowKey];
     
     if (nil == data) {
         //NSLog(@"Could not create TextFlow data file.");
-        NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist at path: %@.", [self getBookManifestPathForKey:@"textFlowFilename"]);
+        NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist at path: %@.", [self getBookManifestPathForKey:BlioManifestTextFlowKey]);
         [pool drain];
         return;
     }
@@ -1104,7 +1104,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     XML_SetUserData(pageRangeFileParser, (void *)pageRangesSet);    
     if (!XML_Parse(pageRangeFileParser, [data bytes], [data length], XML_TRUE)) {
         char *anError = (char *)XML_ErrorString(XML_GetErrorCode(pageRangeFileParser));
-        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", anError, [self getBookManifestPathForKey:@"textFlowFilename"]);
+        NSLog(@"TextFlow parsing error: '%s' in file: '%@'", anError, [self getBookManifestPathForKey:BlioManifestTextFlowKey]);
     }
     XML_ParserFree(pageRangeFileParser);
     //[data release];
@@ -1113,8 +1113,8 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     
     for (BlioTextFlowPageRange *pageRange in pageRangesSet) {
 //        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-//        [manifestEntry setValue:@"textflow" forKey:@"location"];
-//        [manifestEntry setValue:[pageRange fileName] forKey:@"path"];
+//        [manifestEntry setValue:@"textflow" forKey:BlioManifestEntryLocationKey];
+//        [manifestEntry setValue:[pageRange fileName] forKey:BlioManifestEntryPathKey];
 //        [self setBookManifestValue:manifestEntry forKey:[pageRange fileName]];
         
         NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];

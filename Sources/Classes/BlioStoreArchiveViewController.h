@@ -20,6 +20,7 @@ static const NSInteger kBlioStoreMyVaultTag = 3;
     id <BlioProcessingDelegate> processingDelegate;
 	NSUInteger maxLayoutPageEquivalentCount;
 	UILabel * noResultsLabel;
+	BlioBook * currBook;
 
 }
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;

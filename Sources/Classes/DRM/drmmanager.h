@@ -11,7 +11,8 @@
 
 #include "drmcommon.h"
 #if DRM_SUPPORT_REVOCATION
-#include <drmrevocation.h>
+//#include <drmrevocation.h>
+#include "drmrevocation.h"
 #endif /* DRM_SUPPORT_REVOCATION */
 #include "drmcontextsizes.h"
 #include "drmviewprops.h"

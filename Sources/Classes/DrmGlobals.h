@@ -24,19 +24,16 @@
 	DRM_WCHAR* _readRight;
 	DRM_STRING readRight;
 	
-	// App context.
-	DRM_APP_CONTEXT* drmAppContext;
-	
 	// Keychain items.
 	KeychainItemWrapper* devKeyEncryptItem;
 	KeychainItemWrapper* devKeySignItem;
+	KeychainItemWrapper* devCertItem;
 	
 }
 
 @property (nonatomic, assign) DRM_STRING drmPath;
 @property (nonatomic, assign) DRM_STRING dataStore;
 @property (nonatomic, assign) DRM_STRING readRight;
-@property (nonatomic, assign) DRM_APP_CONTEXT* drmAppContext;
 @property (nonatomic, retain) KeychainItemWrapper* devDecryptKeyItem;
 @property (nonatomic, retain) KeychainItemWrapper* devSignKeyItem;
 
