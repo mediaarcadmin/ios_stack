@@ -35,6 +35,7 @@ DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
 @property (nonatomic, retain) NSManagedObjectID *headerBookID;
 @property (nonatomic, retain) NSManagedObjectID *boundBookID;
 
+- (void)initialize;
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
 
 @end
@@ -561,6 +562,42 @@ ErrorExit:
     return ret;
 }
 
+- (BOOL)bindToLicense {
+    if ( !self.drmInitialized ) {
+        NSLog(@"DRM error: cannot bind to license because DRM is not initialized.");
+        return FALSE;
+    }
+    DRM_RESULT dr = DRM_SUCCESS;
+	if ( ![self.boundBookID isEqual:self.headerBookID] ) { 
+		// Search for a license to bind to with the Read right.
+		const DRM_CONST_STRING *rgpdstrRights[1] = {0};
+		DRM_CONST_STRING readRight;
+		readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
+		readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
+		// Roundabout assignment needed to get around compiler complaint.
+		rgpdstrRights[0] = &readRight; 
+		int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
+		for (int i=0;i<bufferSz;++i)
+			drmDecryptContext.rgbBuffer[i] = 0;
+		ChkDR( Drm_Reader_Bind( drmAppContext,
+							   rgpdstrRights,
+							   NO_OF(rgpdstrRights),
+							   NULL, 
+							   NULL,
+							   &drmDecryptContext ) );
+		self.boundBookID = self.headerBookID;
+	}
+	
+ErrorExit:
+	if (dr != DRM_SUCCESS) {
+		NSLog(@"DRM bind error: %08X",dr);
+		self.headerBookID = nil;
+		self.boundBookID = nil;
+		return NO;
+	}
+    return YES;
+}
+
 - (BOOL)decryptData:(NSData *)data {
     if ( !self.drmInitialized ) {
         NSLog(@"DRM error: content cannot be decrypted because DRM is not initialized.");
@@ -568,58 +605,50 @@ ErrorExit:
     }
     
     DRM_RESULT dr = DRM_SUCCESS;
-	unsigned char* dataBuff = NULL;
-    
-    //@synchronized (self) {
-        //if ( ![self.headerBookID isEqual:aBookID] ) { 
-        //    ChkDR( [self setHeaderForBookWithID:aBookID] );
-        //}
-        
-        if ( ![self.boundBookID isEqual:self.headerBookID] ) { 
-            NSLog(@"Binding to license.");
+/*        
+	if ( ![self.boundBookID isEqual:self.headerBookID] ) { 
+		//NSLog(@"Binding to license.");
 			
-			// Search for a license to bind to with the Read right.
-			const DRM_CONST_STRING *rgpdstrRights[1] = {0};
-			DRM_CONST_STRING readRight;
-			readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
-			readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
-			// Roundabout assignment needed to get around compiler complaint.
-			rgpdstrRights[0] = &readRight; 
-			int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
-			for (int i=0;i<bufferSz;++i)
-				drmDecryptContext.rgbBuffer[i] = 0;
-			ChkDR( Drm_Reader_Bind( drmAppContext,
-								   rgpdstrRights,
-								   NO_OF(rgpdstrRights),
-								   NULL, 
-								   NULL,
-								   &drmDecryptContext ) );
+		// Search for a license to bind to with the Read right.
+		const DRM_CONST_STRING *rgpdstrRights[1] = {0};
+		DRM_CONST_STRING readRight;
+		readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
+		readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
+		// Roundabout assignment needed to get around compiler complaint.
+		rgpdstrRights[0] = &readRight; 
+		int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
+		for (int i=0;i<bufferSz;++i)
+			drmDecryptContext.rgbBuffer[i] = 0;
+		ChkDR( Drm_Reader_Bind( drmAppContext,
+							   rgpdstrRights,
+							   NO_OF(rgpdstrRights),
+							   NULL, 
+							   NULL,
+							   &drmDecryptContext ) );
             
-            self.boundBookID = self.headerBookID;
-			
-        }
-        DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
-        dataBuff = (unsigned char*)[data bytes]; 
-        ChkDR(Drm_Reader_Decrypt (&drmDecryptContext,
-                                  &oCtrContext,
-                                  dataBuff, 
-                                  [data length]));
+		self.boundBookID = self.headerBookID;
+	}
+*/	
+	
+	DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
+	unsigned char* dataBuff = (unsigned char*)[data bytes]; 
+	ChkDR(Drm_Reader_Decrypt (&drmDecryptContext,
+								&oCtrContext,
+								dataBuff, 
+								[data length]));
         
-        // At this point, the buffer is PlayReady-decrypted.
+	// At this point, the buffer is PlayReady-decrypted.
         
-	ErrorExit:
-		if (dr != DRM_SUCCESS) {
-            NSLog(@"DRM decryption error: %08X",dr);
-            self.headerBookID = nil;
-            self.boundBookID = nil;
-            return NO;
-        }
-    //}
-    
+ErrorExit:
+	if (dr != DRM_SUCCESS) {
+		NSLog(@"DRM decryption error: %08X",dr);
+		self.headerBookID = nil;
+		self.boundBookID = nil;
+		return NO;
+	}
     // This XOR step is to undo an additional encryption step that was needed for .NET environment.
     for (int i=0;i<[data length];++i)
         dataBuff[i] ^= 0xA0;
-    
     return YES;
 }
 
