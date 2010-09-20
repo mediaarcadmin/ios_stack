@@ -502,7 +502,7 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 #pragma mark BlioBookSearchDelegate
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     if ([self.toolbar inlineMode]) {
-        if ([[searchBar text] isEqualToString:@""]) {
+        if ([self isSearchActive]) {
             // Resign immediately but become active in the animation completion
             [self displayFullScreen:YES becomeActive:YES];
             [self.toolbar.searchBar resignFirstResponder];

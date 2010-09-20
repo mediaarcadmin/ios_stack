@@ -135,6 +135,8 @@
     [self.toolbar.searchBar resignFirstResponder];
     currentSearchResult = index;
     [self highlightCurrentSearchResult];
+    self.popoverContentSize = CGSizeMake(320, SEARCHCOLLAPSEDPOPOVERHEIGHT);
+    [self.toolbar setInlineMode:YES];
 }
 
 - (void)resultsControllerDidContinueSearch:(BlioBookSearchResultsTableViewController *)resultsController {
@@ -160,18 +162,13 @@
 #pragma mark -
 #pragma mark SearchBar Delegate
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-#if 0
     if ([self.toolbar inlineMode]) {
-        if ([[searchBar text] isEqualToString:@""]) {
-            // Resign immediately but become active in the animation completion
-            [self displayFullScreen:YES becomeActive:YES];
-            [self.toolbar.searchBar resignFirstResponder];
-        } else {
-            [self displayFullScreen:YES becomeActive:NO];
-            [self.toolbar.searchBar resignFirstResponder];
+        [self.toolbar setInlineMode:NO];
+        
+        if ([self isSearchActive]) {
+            self.popoverContentSize = CGSizeMake(320, SEARCHEXPANDEDPOPOVERHEIGHT);
         }
     }
-#endif
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {    
@@ -225,8 +222,9 @@
         // Force the popover back to the toolbar
         // Changing the popover size forces an animation that syncs with the keyboard
         // presenting teh popover again ensures that the positioning at the end of the animation is correct
-        self.popoverContentSize = CGSizeMake(320, SEARCHEXPANDEDPOPOVERHEIGHT + 1);
-        self.popoverContentSize = CGSizeMake(320, SEARCHEXPANDEDPOPOVERHEIGHT);
+        CGSize currentSize = self.popoverContentSize;
+        self.popoverContentSize = CGSizeMake(currentSize.width, currentSize.height + 1);
+        self.popoverContentSize = currentSize;
         [self presentPopoverFromBarButtonItem:self.barButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     }
 }
