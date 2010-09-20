@@ -26,6 +26,7 @@
 @property (nonatomic, assign) NSManagedObjectID *bookID;
 @property (nonatomic, assign) BOOL fakeCover;
 @property (nonatomic, retain) BlioTextFlow *textFlow;
+@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 
 @end
 
@@ -34,6 +35,7 @@
 @synthesize bookID;
 @synthesize fakeCover;
 @synthesize textFlow;
+@synthesize paragraphSource;
 
 - (id)initWithBookID:(NSManagedObjectID *)blioBookID
 {
@@ -42,6 +44,7 @@
         BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
         BlioBook *blioBook = [bookManager bookWithID:blioBookID];
         self.textFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
+        self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:blioBookID];
         self.fakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:@"coverFilename"];
         
         self.title = blioBook.title;
@@ -55,6 +58,8 @@
 
 - (void)dealloc
 {
+    self.paragraphSource = nil;
+    [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.bookID];
     self.textFlow = nil;
     [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:self.bookID];
     self.bookID = nil;
@@ -65,18 +70,15 @@
 - (NSArray *)navPoints
 {
     NSMutableArray *navPoints = [NSMutableArray array];
-    
-    NSArray *sections = self.textFlow.sections; 
-    long index = 0;
+   
+    NSArray *sections = self.textFlow.tableOfContents; 
     if(self.fakeCover) {
         [navPoints addPairWithFirst:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
-                             second:[NSString stringWithFormat:@"textflow:$ld", (long)index]];
-        ++index;
+                             second:[NSString stringWithFormat:@"textflow:0"]];
     }
-    for(BlioTextFlowSection *section in sections) {
+    for(BlioTextFlowTOCEntry *section in sections) {
         [navPoints addPairWithFirst:section.name
-                             second:[NSString stringWithFormat:@"textflow:%ld", (long)index]];
-        ++index;
+                             second:[NSString stringWithFormat:@"textflowLayoutPage:%ld", section.startPage]];
     }
     
     return navPoints;
@@ -140,9 +142,9 @@
             }
         }
         if(!tree) {
-            tree = [self.textFlow flowTreeForSectionIndex:section];
+            tree = [self.textFlow flowTreeForFlowIndex:section];
             if(!tree) {
-                tree = [self.textFlow xamlTreeForSectionIndex:section];
+                tree = [self.textFlow xamlTreeForFlowIndex:section];
             }
         }
     }
@@ -162,6 +164,14 @@
     if(indexString) {
         indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
         indexPoint.source = [indexString integerValue];
+    } else {
+        NSString *layoutPageString = [[identifier matchPOSIXRegex:@"^textflowLayoutPage:([[:digit:]]+)$"] match:1];
+        if(layoutPageString) {
+            BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
+            point.layoutPage = [layoutPageString integerValue];
+
+            return [self bookPageIndexPointFromBookmarkPoint:point];
+        }
     }
     
     return indexPoint;
@@ -170,8 +180,11 @@
 - (float *)indexSourceScaleFactors
 {
     if(!_indexSourceScaleFactors) {
-        NSUInteger sectionCount = textFlow.sections.count + 1;
-        size_t *sizes = malloc(sectionCount * sizeof(size_t));;
+        NSUInteger flowCount = textFlow.flowReferences.count + 1;
+        
+        // TODO: make this actually based on section length for accurate pagination progress.
+        
+        /*size_t *sizes = malloc(sectionCount * sizeof(size_t));;
         size_t total = 0;
         
         struct stat statResult;
@@ -190,7 +203,12 @@
             _indexSourceScaleFactors[i] = (float)sizes[i] / (float)total;
         }
         
-        free(sizes);
+        free(sizes);*/
+        
+        _indexSourceScaleFactors = malloc(flowCount * sizeof(float));
+        for(int i = 0; i < flowCount; ++i) {
+            _indexSourceScaleFactors[i] = 1.0f / flowCount;
+        }
     }
     
     return _indexSourceScaleFactors;
@@ -201,6 +219,76 @@
     // Superclass persists the ePub anchors here, but we don't have any 
     // (ePub uses them in indexPointForId:, but we can compute that directly)
     // so we do nothing.
+}
+    
+
+- (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
+{
+    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    
+    EucBookPageIndexPoint *eucIndexPoint = [indexPoint copy];
+    
+    // EucIndexPoint words start with word 0 == before the first word,
+    // but Blio thinks that the first word is at 0.  This is a bit lossy,
+    // but there's not much else we can do.
+    if(eucIndexPoint.word == 0) {
+        eucIndexPoint.element = 0;
+    } else {
+        eucIndexPoint.word -= 1;
+    }
+    
+    if(eucIndexPoint.source == 0 && self.fakeCover) {
+        // This is the cover section.
+        ret.layoutPage = 1;
+        ret.blockOffset = 0;
+        ret.wordOffset = 0;
+        ret.elementOffset = 0;
+    } else if(self.fakeCover) {
+        eucIndexPoint.source--;
+    }
+    
+    NSUInteger indexes[2] = { eucIndexPoint.source , [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
+    NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
+    BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
+    [indexPath release];
+    
+    ret.layoutPage = bookmarkPoint.layoutPage;
+    ret.blockOffset = bookmarkPoint.blockOffset;
+    ret.wordOffset = bookmarkPoint.wordOffset;
+    ret.elementOffset = eucIndexPoint.element;
+
+    [eucIndexPoint release];
+    
+    return [ret autorelease];    
+}
+
+- (EucBookPageIndexPoint *)bookPageIndexPointFromBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    if(!bookmarkPoint) {
+        return nil;   
+    } else {
+        EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
+        
+        NSIndexPath *paragraphID = nil;
+        uint32_t wordOffset = 0;
+            
+        [self.paragraphSource bookmarkPoint:bookmarkPoint
+                                toParagraphID:&paragraphID 
+                                    wordOffset:&wordOffset];
+        
+        eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
+        eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
+        eucIndexPoint.word = wordOffset;
+        eucIndexPoint.element = bookmarkPoint.elementOffset;
+
+        
+        // EucIndexPoint words start with word 0 == before the first word,
+        // but Blio thinks that the first word is at 0.  This is a bit lossy,
+        // but there's not much else we can do.    
+        eucIndexPoint.word += 1;
+        
+        return [eucIndexPoint autorelease];  
+    }
 }
 
 @end

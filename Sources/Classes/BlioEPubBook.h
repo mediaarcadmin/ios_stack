@@ -10,8 +10,9 @@
 #import <CoreData/CoreData.h>
 #import <libEucalyptus/EucBUpeBook.h>
 
-@interface BlioEPubBook : EucBUpeBook {
-}
+#import "BlioBUpeBook.h"
+
+@interface BlioEPubBook : EucBUpeBook <BlioBUpeBook> {}
 
 @property (nonatomic, retain) NSManagedObjectID *blioBookID;
 

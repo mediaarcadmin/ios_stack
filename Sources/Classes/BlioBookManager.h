@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 
 @class BlioBook, BlioTextFlow, BlioEPubBook, BlioXPSProvider, EucBUpeBook;
-@protocol BlioParagraphSource;
+@protocol BlioParagraphSource, BlioBUpeBook;
 
 @interface BlioBookManager : NSObject {
 }
@@ -50,7 +50,7 @@
 - (void)checkInTextFlowForBookWithID:(NSManagedObjectID *)aBookID;
 
 // Returns a thread-safe object; May be passed between threads.
-- (EucBUpeBook *)checkOutEucBookForBookWithID:(NSManagedObjectID *)aBookID;
+- (EucBUpeBook<BlioBUpeBook>*)checkOutEucBookForBookWithID:(NSManagedObjectID *)aBookID;
 - (void)checkInEucBookForBookWithID:(NSManagedObjectID *)aBookID;
 
 // Returns a thread-safe object; May be passed between threads.

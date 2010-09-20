@@ -92,16 +92,25 @@
 
 @end
 
-@interface BlioTextFlowSection : NSObject {
-    NSString *name;
-    NSString *flowSourceFileName;
+@interface BlioTextFlowFlowReference : NSObject {
     NSUInteger startPage;
-    NSUInteger endPage;
+    NSString *flowSourceFileName;
 }
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *flowSourceFileName;
-@property (nonatomic) NSUInteger startPage;
+@property (nonatomic, assign, readonly) NSUInteger startPage;
+@property (nonatomic, retain, readonly) NSString *flowSourceFileName;
+
+@end
+
+@interface BlioTextFlowTOCEntry: NSObject {
+    NSString *name;
+    NSUInteger startPage;
+    NSUInteger level;
+}
+
+@property (nonatomic, retain, readonly) NSString *name;
+@property (nonatomic, assign, readonly) NSUInteger startPage;
+@property (nonatomic, assign, readonly) NSUInteger level;
 
 @end
 
@@ -117,7 +126,8 @@ typedef enum BlioTextFlowFlowTreeKind
 @interface BlioTextFlow : NSObject <BlioProcessingManagerOperationProvider, EucBookContentsTableViewControllerDataSource> {
     NSSet *pageRanges;
     
-    NSMutableArray *sections;
+    NSArray *flowReferences;
+    NSArray *tableOfContents;
     
     NSManagedObjectID *bookID;
     
@@ -128,15 +138,15 @@ typedef enum BlioTextFlowFlowTreeKind
     BlioTextFlowFlowTreeKind flowTreeKind;
 }
 
-@property (nonatomic, retain, readonly) NSMutableArray *sections;
+@property (nonatomic, retain, readonly) NSArray *flowReferences;
+@property (nonatomic, retain, readonly) NSArray *tableOfContents;
 @property (nonatomic, retain) NSManagedObjectID *bookID;
 @property (nonatomic, assign, readonly) BlioTextFlowFlowTreeKind flowTreeKind;
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 
-- (BlioTextFlowFlowTree *)flowTreeForSectionIndex:(NSUInteger)sectionIndex;
-- (BlioTextFlowXAMLTree *)xamlTreeForSectionIndex:(NSUInteger)sectionIndex;
-- (size_t)sizeOfSectionWithIndex:(NSUInteger)sectionIndex;
+- (BlioTextFlowFlowTree *)flowTreeForFlowIndex:(NSUInteger)sectionIndex;
+- (BlioTextFlowXAMLTree *)xamlTreeForFlowIndex:(NSUInteger)sectionIndex;
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;

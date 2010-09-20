@@ -9,6 +9,7 @@
 #import "BlioBookManager.h"
 #import "BlioBook.h"
 #import "BlioTextFlow.h"
+#import "BlioBUpeBook.h"
 #import "BlioEPubBook.h"
 #import "BlioFlowEucBook.h"
 #import "BlioParagraphSource.h"

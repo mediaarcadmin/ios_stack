@@ -128,85 +128,12 @@
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
-    
-    EucBookPageIndexPoint *eucIndexPoint = [indexPoint copy];
-    
-    // EucIndexPoint words start with word 0 == before the first word,
-    // but Blio thinks that the first word is at 0.  This is a bit lossy,
-    // but there's not much else we can do.
-    if(eucIndexPoint.word == 0) {
-        eucIndexPoint.element = 0;
-    } else {
-        eucIndexPoint.word -= 1;
-    }
-    
-    if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
-       _textFlowFlowTreeKind == BlioTextFlowFlowTreeKindFlow) {
-        if(eucIndexPoint.source == 0) {
-            // This is the cover section.
-            ret.layoutPage = 1;
-            ret.blockOffset = 0;
-            ret.wordOffset = 0;
-            ret.elementOffset = 0;
-        } else {
-            NSUInteger indexes[2] = { eucIndexPoint.source - 1, [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
-            NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
-            BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
-            [indexPath release];
-            
-            ret.layoutPage = bookmarkPoint.layoutPage;
-            ret.blockOffset = bookmarkPoint.blockOffset;
-            ret.wordOffset = bookmarkPoint.wordOffset;
-            ret.elementOffset = eucIndexPoint.element;
-        }
-    } else {
-        ret.layoutPage = eucIndexPoint.source + 1;
-        ret.blockOffset = eucIndexPoint.block;
-        ret.wordOffset = eucIndexPoint.word;
-        ret.elementOffset = eucIndexPoint.element;
-    }
-    
-    [eucIndexPoint release];
-    
-    return [ret autorelease];    
+    return [_eucBook bookmarkPointFromBookPageIndexPoint:indexPoint];
 }
 
 - (EucBookPageIndexPoint *)bookPageIndexPointFromBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
-    if(!bookmarkPoint) {
-        return nil;   
-    } else {
-        EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
-        
-        
-        if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
-           _textFlowFlowTreeKind == BlioTextFlowFlowTreeKindFlow) {
-            NSIndexPath *paragraphID = nil;
-            uint32_t wordOffset = 0;
-            
-            [self.paragraphSource bookmarkPoint:bookmarkPoint
-                                  toParagraphID:&paragraphID 
-                                     wordOffset:&wordOffset];
-            
-            eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
-            eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
-            eucIndexPoint.word = wordOffset;
-            eucIndexPoint.element = bookmarkPoint.elementOffset;
-        } else {
-            eucIndexPoint.source = bookmarkPoint.layoutPage - 1;
-            eucIndexPoint.block = bookmarkPoint.blockOffset;
-            eucIndexPoint.word = bookmarkPoint.wordOffset;
-            eucIndexPoint.element = bookmarkPoint.elementOffset;
-        }    
-        
-        // EucIndexPoint words start with word 0 == before the first word,
-        // but Blio thinks that the first word is at 0.  This is a bit lossy,
-        // but there's not much else we can do.    
-        eucIndexPoint.word += 1;
-        
-        return [eucIndexPoint autorelease];  
-    }
+    return [_eucBook bookPageIndexPointFromBookmarkPoint:bookmarkPoint];
 }
 
 - (BlioBookmarkPoint *)currentBookmarkPoint
