@@ -470,15 +470,17 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         
         BOOL pageIndexFound = NO;
         BOOL nameFound = NO;
-        
+                
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("PageIndex", atts[i]) == 0) {
                 tocEntry.startPage = atoi(atts[i+1]);
+                pageIndexFound = YES;
             } else if (strcmp("Name", atts[i]) == 0) {
                 NSString *nameString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != nameString) {
                     if(nameString.length) {
                         tocEntry.name = nameString;
+                        nameFound = YES;
                     }
                     [nameString release];
                 }
@@ -552,6 +554,21 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     }
     
     self.flowReferences = context.buildFlowReferences;
+    
+    // If there are no TOC entries for page index 0, add an artificial one.
+    BOOL makeArtificialFrontEnrty = YES;
+    for(BlioTextFlowTOCEntry *entry in context.buildTableOfContents) {
+        if(entry.startPage == 0) {
+            makeArtificialFrontEnrty = NO;
+        }
+    }
+    if(makeArtificialFrontEnrty) {
+        BlioTextFlowTOCEntry *tocEntry = [[BlioTextFlowTOCEntry alloc] init];
+        tocEntry.name = NSLocalizedString(@"Front of book", @"Name for the single table-of-contents entry for the front page of a book that does not specify a TOC entry for the front page");
+        [context.buildTableOfContents addObject:tocEntry];
+        [tocEntry release];
+    }
+
     self.tableOfContents = context.buildTableOfContents;
 }
 
@@ -568,7 +585,18 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     if(!tableOfContents) {
         [self parseSectionsXML];
     }
-    return tableOfContents;
+    
+    // TODO: Should be showing these in a hierarchy, and respecting order.
+    // But the UI can't handle that. For now, use only level 0 in page order.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"startPage" ascending:YES];
+    NSArray *descriptorArray = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    NSArray *ret =  [[tableOfContents 
+                      filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"level == 0"]] 
+                     sortedArrayUsingDescriptors:descriptorArray];
+    [sortDescriptor release];
+    [descriptorArray release];
+
+    return ret;
 }
 
 - (BlioBook *)book {

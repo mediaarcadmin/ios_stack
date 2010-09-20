@@ -78,7 +78,7 @@
     }
     for(BlioTextFlowTOCEntry *section in sections) {
         [navPoints addPairWithFirst:section.name
-                             second:[NSString stringWithFormat:@"textflowLayoutPage:%ld", section.startPage]];
+                             second:[NSString stringWithFormat:@"textflowLayoutPageIndex:%ld", section.startPage]];
     }
     
     return navPoints;
@@ -165,10 +165,10 @@
         indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
         indexPoint.source = [indexString integerValue];
     } else {
-        NSString *layoutPageString = [[identifier matchPOSIXRegex:@"^textflowLayoutPage:([[:digit:]]+)$"] match:1];
-        if(layoutPageString) {
+        NSString *layoutPageIndexString = [[identifier matchPOSIXRegex:@"^textflowLayoutPageIndex:([[:digit:]]+)$"] match:1];
+        if(layoutPageIndexString) {
             BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
-            point.layoutPage = [layoutPageString integerValue];
+            point.layoutPage = [layoutPageIndexString integerValue] + 1;
 
             return [self bookPageIndexPointFromBookmarkPoint:point];
         }
@@ -273,14 +273,17 @@
         uint32_t wordOffset = 0;
             
         [self.paragraphSource bookmarkPoint:bookmarkPoint
-                                toParagraphID:&paragraphID 
-                                    wordOffset:&wordOffset];
+                              toParagraphID:&paragraphID 
+                                 wordOffset:&wordOffset];
         
-        eucIndexPoint.source = [paragraphID indexAtPosition:0] + 1;
+        eucIndexPoint.source = [paragraphID indexAtPosition:0];
         eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
         eucIndexPoint.word = wordOffset;
         eucIndexPoint.element = bookmarkPoint.elementOffset;
 
+        if(self.fakeCover) {
+            eucIndexPoint.source++;
+        }        
         
         // EucIndexPoint words start with word 0 == before the first word,
         // but Blio thinks that the first word is at 0.  This is a bit lossy,
