@@ -46,8 +46,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize drmSessionManager;
 
 - (BlioDrmSessionManager*)drmSessionManager {
-	if ( !drmSessionManager ) 
+	if ( !drmSessionManager ) {
 		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
+        NSLog(@"------- BOUND TO BOOK %@ --------------", [self.book title]);
+        [drmSessionManager bindToLicense];
+    }
 	return drmSessionManager;
 }
 
@@ -80,8 +83,12 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     
     self.componentCache = nil;
 	
-	if ( drmSessionManager )
+	if (drmSessionManager) {
+        // Only reports reading if decryption actually took place
+        [drmSessionManager reportReading];
+        NSLog(@"------- REPORTED READING FOR BOOK %@ --------------", [self.book title]);
 		[drmSessionManager release];
+    }
     
     [super dealloc];
 }
@@ -120,7 +127,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         
         xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
-        if ([self.book isEncrypted]) {
+        if ([self bookIsEncrypted]) {
             XPS_URI_PLUGIN_INFO	upi = {
                 XPS_URI_SOURCE_PLUGIN,
                 sizeof(XPS_URI_PLUGIN_INFO),
@@ -156,13 +163,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 		drmSessionManager = nil;
     }
     return self;
-}
-
-- (void)reportReading {
-    if (self.bookIsEncrypted) {
-		//[[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
-        [self.drmSessionManager reportReading];
-    }
 }
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path {

@@ -40,6 +40,5 @@
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (NSData *)dataForComponentAtPath:(NSString *)path;
 - (BOOL)componentExistsAtPath:(NSString *)path;
-- (void)reportReading;
 
 @end
